@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "An Effect is not a Promise or an eager task",
   invalidBody: "Storing, passing, or returning an Effect does not start it or memoize its result. If work must run once or be shared, use the resource or concurrency API whose ownership and lifetime make that behavior explicit.",
   diagnosticsBody: "Type displays keep R, E, and A visible. Mismatches point to the requirement field, failure channel, or success value that does not compose rather than reporting a generic asynchronous error.",
-  provenanceBody: "This article covers the Effect meaning in specification 5.4. Function forms, environments, errors, and execution boundaries are separate leaves."
 }

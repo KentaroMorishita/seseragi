@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Similar literals do not imply the same cost",
   invalidBody: "There is no one-element tuple or implicit Array/List conversion. Repeated Array head-rest matching can be quadratic, while List tail sharing supports linear recursive traversal.",
   diagnosticsBody: "The checker reports unresolved empty element types, mixed element types, tuple arity mismatches, wrong index types, and Array/List confusion.",
-  provenanceBody: "This article covers specification 3.8, including literal, pattern, indexing, conversion, representation, and complexity contracts."
 }

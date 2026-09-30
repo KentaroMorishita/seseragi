@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Trait methods cannot carry default bodies",
   invalidBody: "A method body belongs in an instance. A missing type, a mismatched constructor arity, or a supertrait with the wrong kind is rejected at the declaration boundary.",
   diagnosticsBody: "Parser diagnostics identify malformed method signatures. Kind and arity diagnostics point to the offending trait parameter or partial application before any instance is considered.",
-  provenanceBody: "This article covers specification 4.2 and uses the shared type-constructor and function-type rules."
 }

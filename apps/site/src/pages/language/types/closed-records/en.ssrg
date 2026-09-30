@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Closed does not mean no extra host fields",
   invalidBody: "Free variables, unresolved rows or constraints, duplicate names, recursive aliases whose fields cannot be enumerated, and optional service fields make a host requirement non-closed. Extra fields in the concrete host value do not.",
   diagnosticsBody: "Boundary diagnostics identify the construct preventing field enumeration and retain the expanded alias path. They are separate from ordinary missing-field diagnostics and from requirement-merge conflicts.",
-  provenanceBody: "This article covers the closed structural record subsection of specification 2.6. The displayed requirement alias is a focused documentation example checked during the site build."
 }

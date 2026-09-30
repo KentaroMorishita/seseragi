@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not use a constructor where a value type is required",
   invalidBody: "A parameter annotated Maybe has not selected the contained type. Annotate Maybe<Int> or introduce a type parameter. Passing Int as M<_> also fails: Int cannot be applied to another type. Extra arguments are not ignored and missing slots do not become Unknown.",
   diagnosticsBody: "Kind and arity errors are compile-time errors. Read the expected constructor shape, then check whether each argument is a complete type or a constructor of that shape. Add the missing argument rather than treating _ as a general inference escape hatch.",
-  provenanceBody: "Specification 2.10 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

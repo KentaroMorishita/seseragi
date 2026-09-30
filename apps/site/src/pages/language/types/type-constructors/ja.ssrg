@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "山括弧で囲んでも不完全な型は使えない",
   invalidBody: "Maybe<Int, String>、値の注釈のMaybeだけ、異なるkindの構築子を渡すことはエラーです。タプル、レコード、Effectの要求、関数型にはそれぞれの文法があり、汎用のカンマ付き呼び出しにはなりません。",
   diagnosticsBody: "構文解析器は文脈から型の区切りと演算子を区別します。個数の診断は構築子と期待個数、kindの診断は引数位置を示します。ツールの署名でも型構築子の入れ子を保ちます。",
-  provenanceBody: "言語仕様2.3に基づきます。例は型パラメーターを持つ名前付き型とその構築を示します。"
 }

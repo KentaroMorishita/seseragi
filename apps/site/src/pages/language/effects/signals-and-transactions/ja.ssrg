@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "純粋な式の中では、Signalの現在値を読めない",
   invalidBody: "純粋なコードでSignal自体を受け渡すことはできますが、現在値は読めません。Effectの中でSignal.readか接頭辞*を使います。現在値をもとに新しい値を決めたい場合は、読み取った古い値を後で書き戻すのではなく、updateを使います。",
   diagnosticsBody: "読み取り専用のSignalを更新しようとした場合や、更新する値の型が合わない場合は型エラーになります。実行時の診断では、更新の準備、公開、派生値の再計算、購読者への通知のどの段階で問題が起きたかを区別します。",
-  provenanceBody: "言語仕様5.12に基づきます。派生Signalの依存関係と、Signalの演算子は、別のページで説明しています。"
 }

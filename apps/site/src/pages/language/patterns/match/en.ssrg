@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A final-looking arm can still be incomplete",
   invalidBody: "A guard may be false, so a guarded constructor arm cannot cover that constructor by itself. Add an unguarded fallback and remove arms shadowed by an earlier total pattern.",
   diagnosticsBody: "The checker reports pattern/type mismatch, inaccessible fields, duplicate bindings, non-Bool guards, non-exhaustive cases, unreachable arms, and inconsistent result types.",
-  provenanceBody: "This article covers specification 3.10 and relies on the shared binding and irrefutability rules."
 }

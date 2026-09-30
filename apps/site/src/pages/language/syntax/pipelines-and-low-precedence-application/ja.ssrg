@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "user-defined 演算子ではなく固定構文",
   invalidBody: "$は再定義、overload、($)での関数値化ができません。pipelineは|ではなく|>です。非関数への適用は通常の型エラーで、:=は$より弱いままです。",
   diagnosticsBody: "構文解析器が結合と優先順位を決め、型診断は元の|>や$の範囲を保って適用関係を示します。formatterもこの解析を変えません。",
-  provenanceBody: "言語仕様1.6に基づきます。短い専用例を公式コンパイラで検査します。"
 }

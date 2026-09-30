@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "An alias is not a constructor or an API privacy escape",
   invalidBody: "Pair 1 2 is not a value construction. Write the tuple value. A private alias cannot be imported, and a public alias's expanded type must not expose a private type. Changing the visible spelling does not make a private representation public or compatible with a different nominal type.",
   diagnosticsBody: "For an alias error, expand it mentally one layer at a time and verify every argument. Tooling may show the friendly alias while checking its expanded type. Resolve cycles by choosing an actual nominal recursive data declaration, not by adding another transparent alias around the cycle.",
-  provenanceBody: "Specification 2.17 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

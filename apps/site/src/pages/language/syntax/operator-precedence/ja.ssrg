@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "優先順位で曖昧な連鎖は許されない",
   invalidBody: "a < b < cは拒否し、a < b && b < cと書きます。overloadの演算子値が曖昧なら型注釈が必要です。unaryの*・-と二項の乗算・減算は位置で区別し、別のグループには括弧を使います。",
   diagnosticsBody: "構文解析器とformatterは同じ表を使います。非結合の連鎖は構文、証拠不足や演算子値の曖昧さは型の診断です。ツールでも短絡形式を通常の関数呼び出しと混同しません。",
-  provenanceBody: "言語仕様1.7に基づきます。Maybe、trait、pipeline、custom 演算子、Signalの各規則と合わせて参照します。"
 }

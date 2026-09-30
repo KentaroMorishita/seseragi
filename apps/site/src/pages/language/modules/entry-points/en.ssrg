@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "main does not return an arbitrary process exit code",
   invalidBody: "Application code has no direct exit primitive or entry overload returning an integer status. The host derives status from success, typed failure, defect, cancellation and process signals under its target contract. This keeps ordinary application code from skipping finalizers. Defects and cancellation must not be disguised as AppError.",
   diagnosticsBody: "Entry checking validates the public binding, signature, concrete requirements and failure evidence before execution. If build rejects main, inspect those parts separately from ordinary function typing. The shown console example uses the official Console capability; an unsupported target cannot invent that service by a runtime name lookup.",
-  provenanceBody: "Specification 6.11 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
 }

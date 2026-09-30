@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Readable density",
-  summary: "Concise forms express the data shape and flow directly without hiding typing, order, failure, or cost.",
-  ruleTitle: "Density comes from composition",
-  ruleBody: "Currying, partial application, pipelines, type inference, comprehensions, and Signal operators reduce ceremony when their expansion and evaluation remain clear. Seseragi does not measure readability by the smallest character count.",
-  consequenceOne: "Dedicated syntax is admitted only with defined types, evaluation order, expansion, failure conditions, and formatter behavior.",
-  consequenceTwo: "Explicit Effect, failure, module, interop, and capability boundaries remain visible even when values inside those boundaries compose tersely.",
-  consequenceThree: "The canonical formatter gives equivalent source one stable readable layout and does not invent a second language style.",
-  boundaryTitle: "Short syntax does not justify hidden control flow",
-  boundaryBody: "General macros, implicit returns, non-local loop control, truthiness, and opaque conversions are not added merely to shorten common code. A surface form must be at least as explainable as the ordinary functions beneath it.",
-  provenanceBody: "Section 0.2 defines readable density. Function application, pipelines, operators, comprehensions, Signal operators, and formatter pages specify the accepted concise forms."
+  summary: "Concise code should make the data and its path through the program easier to see, not merely use fewer characters.",
+  meaningTitle: "Write the flow in the order you read it",
+  meaningBody: "Seseragi offers concise forms for common ideas, such as applying part of a function's arguments and passing a value along a pipeline. Their purpose is to expose the processing steps without surrounding bookkeeping. More symbols are not automatically better or worse; what matters is whether the code communicates the operation.",
+  exampleTitle: "Double a value, then add one",
+  readingTitle: "How to read the example",
+  reading: [
+    "Read the last calculation from left to right: start with 3, pass it to double to obtain 6, then pass 6 to add 1 to obtain 7. The output is 7.",
+    "add takes its two arguments in sequence. add 1 supplies the first argument and creates a function waiting for the second. This is partial application. The pipeline is equivalent to add 1 (double 3); it does not change the functions' behavior."
+  ],
+  reasonTitle: "Why use a dedicated form?",
+  reason: [
+    "When several transformations follow one another, a pipeline can show their order more directly than deeply nested parentheses. Array and list literals similarly show data, while comprehensions show how a collection is formed. These forms express recognizable ideas, not arbitrary shorthand.",
+    "A concise form still has specified types, evaluation order, and meaning in terms of ordinary operations. It must not hide a possible missing result, a failure, an effect, or a conversion. A shorter expression is not an excuse to leave those cases unexplained."
+  ],
+  boundaryTitle: "Readability sometimes needs more lines",
+  boundary: [
+    "Name an intermediate value when it helps explain a decision or when the value is used more than once. Split a long pipeline when its individual steps need explanation. The formatter supplies consistent layout, but it cannot choose meaningful names or decide how much a reader needs to know.",
+    "This principle is not a promise that the shortest program is the best program, and it does not introduce arbitrary syntax macros. Dedicated syntax must remain understandable from the language's stated rules."
+  ],
 }

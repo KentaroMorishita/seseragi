@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Resolving a function is not initializing everything it may read",
   invalidBody: "Moving an early read into a function body and immediately calling it from an initializer still reads too early. Imported modules shared by several consumers do not initialize again for each import. Do not use import as an implicit Effect runner.",
   diagnosticsBody: "Compiler, formatter, LSP and document generator must never evaluate foreign runtime code. At runtime, a foreign pure-load module may load once during initialization under its contract; task-load code waits for the first foreign Task execution. Read initialization diagnostics as an ordering problem, not as a request for a missing-service runtime lookup.",
-  provenanceBody: "Specification 6.10 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
 }

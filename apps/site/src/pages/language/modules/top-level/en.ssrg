@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A function can delay a reference, not initialize it early",
   invalidBody: "A function body may refer to a later top-level let if the function runs after initialization. Calling that function from an earlier initializer is different: if its call chain reads the current or a later uninitialized let, compilation stops with SES-N0201. Reordering function declarations does not make a value initialize sooner. Mutually recursive functions also require one rec group.",
   diagnosticsBody: "Illegal binding patterns and unresolved names are reported at the declaration. SES-N0201 identifies an initialization-before-use dependency reached through a function call. Importing an Effect value does not execute it; execution requires an explicit runtime boundary, normally the selected public main. Tooling must not execute foreign runtime code to inspect a module.",
-  provenanceBody: "Specification 6.3 lists top-level forms. Section 6.10 defines initialization and delayed references; sections 2.9 and 3.2 distinguish module recursion from local declaration scope."
 }
 
 pub fn layoutTitle -> String = "Private inference and public contracts"

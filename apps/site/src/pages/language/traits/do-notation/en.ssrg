@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do does not mean Effect",
   invalidBody: "Maybe, Either, user monads, and Effect may all use do when they provide Monad evidence. Different monads are never mixed or lifted implicitly, and a failing pattern is not converted through MonadFail.",
   diagnosticsBody: "Diagnostics identify a missing final expression, refutable bind pattern, mixed constructor, unresolved Monad evidence, or an item whose type is not the selected M<_>.",
-  provenanceBody: "This article covers specification 4.11. Desugaring and complete block typing are documented on separate pages."
 }

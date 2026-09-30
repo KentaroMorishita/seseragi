@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Task does not mean arbitrary async work",
   invalidBody: "Removing R or E from notation is valid only when they are exactly {} and Never. Do not erase a service requirement or recoverable failure merely to obtain the shorter alias.",
   diagnosticsBody: "Alias expansion reports mismatches against Effect<{}, Never, A>, showing whether the problem is a required service, a non-Never failure, or the success type.",
-  provenanceBody: "This article covers specification 5.7. Task uses the Effect standard-library and runtime contracts unchanged."
 }

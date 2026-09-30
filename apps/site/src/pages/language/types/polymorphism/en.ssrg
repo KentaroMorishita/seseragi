@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Fresh instantiation is not unresolved ambiguity",
   invalidBody: "A use still fails when its arguments impose inconsistent equations or retained trait constraints lack unique evidence. A recursive member cannot assume a different type for each call while its group is being checked, and forall cannot be written in an ordinary source annotation.",
   diagnosticsBody: "Type errors report the concrete instantiation involved at the failing use while preserving the declaration's generic scheme in tooling. Recursive-group errors identify the monomorphic group boundary rather than degrading later uses to Unknown.",
-  provenanceBody: "This article covers specification section 2.5. The displayed source calls one generic identity function at Bool and Int to demonstrate fresh use-site instantiation."
 }

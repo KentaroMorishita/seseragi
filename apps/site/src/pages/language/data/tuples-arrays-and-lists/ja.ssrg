@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "似たliteralでもcostは同じではない",
   invalidBody: "1要素tupleと暗黙のArray/List変換はありません。Arrayのhead-rest再帰は二乗時間になり得ますが、Listのtail共有なら線形走査できます。",
   diagnosticsBody: "empty要素型の未解決、混在要素型、tuple arity不一致、誤ったindex型、Array/List混同を報告します。",
-  provenanceBody: "literal、pattern、index、変換、表現、complexityを含む仕様3.8を扱います。"
 }

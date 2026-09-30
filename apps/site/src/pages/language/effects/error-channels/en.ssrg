@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Expected external failure is not a defect",
   invalidBody: "Network refusal, invalid input, and other anticipated outcomes belong in E or an ordinary Either. Do not hide them behind a runtime defect simply to avoid designing an application error type.",
   diagnosticsBody: "Failure mismatches show each concrete E and the operation that introduced it. Inferred effect functions suggest an ADT plus mapError or recover when multiple non-Never failures meet.",
-  provenanceBody: "This article covers specification 5.6. Defects, cancellation, and foreign exception conversion have separate contracts."
 }

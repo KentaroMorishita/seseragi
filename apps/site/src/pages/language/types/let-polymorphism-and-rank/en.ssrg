@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A generic binding is not a higher-rank value",
   invalidBody: "A polymorphic scheme cannot be placed inside a function parameter, record field or array element. forall A. A -> A is explanatory specification notation, not source syntax. If a callback must work at different concrete types, restructure the interface rather than assuming a parameter carries its own forall.",
   diagnosticsBody: "Read a hover's concrete type separately from the binding's scheme. A mismatch involving a captured value is not fixed by re-generalizing it. At a generic declaration, provide type parameters and constraints explicitly; at an ambiguous use, provide an annotation that actually supplies the missing type information.",
-  provenanceBody: "Specification 2.13 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

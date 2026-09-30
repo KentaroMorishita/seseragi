@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A subtype element does not make a subtype container",
   invalidBody: "An array of wider records cannot be assigned to a narrower-record array without conversion. Changing a recoverable error ADT also requires an explicit mapping; Never's special rule is not an automatic union of errors. Forgetting Signal write capability does not change its contained A.",
   diagnosticsBody: "When a generic mismatch appears, compare all arguments rather than only the record's visible fields. Use map for data conversion, mapError for deliberate error conversion, or the specific capability rule when it genuinely applies. The compiler does not insert collection traversals to make types fit.",
-  provenanceBody: "Specification 2.19 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

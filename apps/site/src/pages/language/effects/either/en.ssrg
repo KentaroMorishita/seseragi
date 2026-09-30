@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Either is not an Effect failure channel",
   invalidBody: "An Either value has already been produced. Use Effect.fromEither to defer its interpretation inside Effect, and use Effect.attempt when an Effect outcome must become inspectable data.",
   diagnosticsBody: "Diagnostics retain the distinct E and A positions and report branch, mapping, or expected-result mismatches at the operation that introduced them.",
-  provenanceBody: "This article covers specification 5.3. The accumulating Validation contract and std/either API have dedicated reference pages."
 }

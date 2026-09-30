@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "No hidden danger",
-  summary: "Absence, recoverable failure, effects, and conversion stay visible in the program's values and types.",
-  ruleTitle: "Risk crosses an explicit type boundary",
-  ruleBody: "Seseragi has no ordinary null or undefined value. Maybe represents recoverable absence, Either represents a pure recoverable choice, and Effect exposes delayed work, required services, and typed failure.",
-  consequenceOne: "Conditionals require Bool; values do not become truthy or falsy, and numeric types do not convert implicitly.",
-  consequenceTwo: "Recoverable failures do not appear as hidden exceptions, while runtime defects remain a distinct non-recovery channel.",
-  consequenceThree: "Nullish values, thrown exceptions, promises, and mutable objects from foreign code must be decoded or adapted at the interop boundary.",
-  boundaryTitle: "Explicit does not mean every operation returns Either",
-  boundaryBody: "Total pure operations keep ordinary result types. Maybe, Either, or Effect appears where the semantic operation can be absent, recoverably fail, or require execution by a host.",
-  provenanceBody: "Section 0.2 states the principle. The Maybe, Either, Effect, defects, numeric conversion, conditional, and TypeScript interop articles own the detailed cases."
+  summary: "If a result can be missing or an operation can fail, its type says so. The caller must decide how to handle that possibility.",
+  meaningTitle: "A missing result is a case to handle",
+  meaningBody: "Ordinary Seseragi values are never null or undefined. An operation that might not find a value returns Maybe<A>: Just contains an A, and Nothing means no value was found. This makes absence visible before the program runs.",
+  exampleTitle: "Look up an array element that does not exist",
+  readingTitle: "How to read the example",
+  reading: [
+    "The array has two elements, at indexes 0 and 1. arrays.get 5 values therefore returns Nothing, not an invalid Int. Its result type is Maybe<Int>, rather than Int.",
+    "The match handles both possibilities. Just value gives access to the integer when one exists. Nothing supplies the missing-result message. The output here is not found. Leaving out that case is a compile error because the match would not cover every result."
+  ],
+  reasonTitle: "Why not just return null or throw?",
+  reason: [
+    "A function accepting an Int can rely on receiving an integer. The caller first has to turn a Maybe<Int> into a suitable result, for example by providing a default, showing an error, or choosing another action. A missing value cannot silently travel through ordinary integer calculations.",
+    "When the reason for failure matters, Either<E, A> carries Left with an error E or Right with a successful value A. Effect<R, E, A> describes work that needs services R, can fail with E, and succeeds with A. Building an Effect does not run the work; the runtime executes it later. Task<A> is the case needing no services and having no recoverable failure."
+  ],
+  boundaryTitle: "This does not mean every operation is safe for every input",
+  boundary: [
+    "Programmer errors can still stop execution. For example, integer division by zero is a runtime defect, not an Either returned by /. When zero is an expected input, use std/int.checkedDivide, which reports the failure as an Either so you can handle it.",
+    "Foreign code can still provide null or throw exceptions. Interop adapters must validate or translate those cases before exposing ordinary Seseragi values. Conditions also require Bool, and different numeric types are not silently converted."
+  ],
 }

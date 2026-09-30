@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Same representation does not mean same type",
   invalidBody: "Field access, record spread, struct update, implicit coercion, and automatic inheritance of the representation type's instances are unavailable.",
   diagnosticsBody: "A representation value used where the newtype is expected, or the reverse, reports the two nominally distinct types and requires explicit construction or matching.",
-  provenanceBody: "This article covers expression and pattern behavior from specification 3.6; type identity and runtime representation are covered in chapter 2."
 }

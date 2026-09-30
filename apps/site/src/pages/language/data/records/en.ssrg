@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Brace forms are intentionally distinct",
   invalidBody: "{} is the empty record, while { expression } is a block. A one-field shorthand record requires a trailing comma. Unknown access, direct duplicates, and spreading a non-record are rejected.",
   diagnosticsBody: "Diagnostics name missing, extra, duplicate, and unknown fields and show nested structural differences. Optional presence is never silently converted into a required value.",
-  provenanceBody: "This article covers specification 3.7 and connects record expressions with record types and record patterns."
 }

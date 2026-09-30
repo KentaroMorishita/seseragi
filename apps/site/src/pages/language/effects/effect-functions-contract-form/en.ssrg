@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Contract defaults are promises, not inference requests",
   invalidBody: "Writing -> Unit without with or fails fixes Effect<{}, Never, Unit>. The compiler does not inspect the body and silently add Console, Clock, or an error type to that explicit API.",
   diagnosticsBody: "Contract errors show both the declaration and the body operation or result that introduced an extra requirement, different failure, or different success type.",
-  provenanceBody: "This article covers the contract form in specification 5.4. The compact inferred form has different omission rules and its own page."
 }

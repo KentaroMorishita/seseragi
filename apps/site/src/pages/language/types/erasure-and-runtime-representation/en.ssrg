@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not branch on an abstract type at runtime",
   invalidBody: "A cannot be compared, printed or inspected as a value merely because it appears in a parameter list. If behavior depends on a capability, declare a trait constraint; if it depends on a finite set of runtime cases, use an ADT and match its value. Neither mechanism is hidden type reflection.",
   diagnosticsBody: "Type checking validates generic calls before backend lowering. When profiling generated code, distinguish an observed backend layout from a portable language contract. Performance documentation describes costs explicitly; generic syntax alone does not promise zero allocation or one specialization per type.",
-  provenanceBody: "Specification 2.20 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

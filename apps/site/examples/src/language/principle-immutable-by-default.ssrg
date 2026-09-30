@@ -1,0 +1,4 @@
+let original = { name: "Aki", score: 10 }
+let updated = { ...original, score: original.score + 1 }
+
+pub effect fn main = println `${original.score} -> ${updated.score}`

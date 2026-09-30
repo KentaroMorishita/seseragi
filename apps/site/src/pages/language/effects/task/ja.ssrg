@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "非同期処理なら何でもTaskになるわけではない",
   invalidBody: "RとEを省略してTaskと書けるのは、Rが正確に{}で、EがNeverの場合だけです。短く書くために、必要なサービスや回復可能な失敗を型から隠すことはできません。",
   diagnosticsBody: "型が合わない場合は、TaskをEffect<{}, Never, A>として見直し、必要なサービス、失敗型、成功値の型のどこが違うかを確認してください。",
-  provenanceBody: "言語仕様5.7に基づきます。標準ライブラリと実行時の規則は、Effectと共通です。"
 }

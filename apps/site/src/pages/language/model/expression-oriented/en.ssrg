@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Expression-oriented",
-  summary: "Functions and control forms produce values, so control flow and data flow share one typing model.",
-  ruleTitle: "Control forms are expressions",
-  ruleBody: "A function body is an expression. if, match, blocks, lambdas, and do expressions also produce values, and their types participate in the surrounding expression instead of living in a separate statement language.",
-  consequenceOne: "if and match branches must agree on a result type, with Never accepted where a branch cannot return normally.",
-  consequenceTwo: "A block evaluates in order and yields its final expression; a form with no meaningful result uses Unit rather than an absent value.",
-  consequenceThree: "Declarations introduce names, but expressions remain the units that compute, compose, fail, or construct an Effect value.",
-  boundaryTitle: "Expression-oriented does not mean top-level execution",
-  boundaryBody: "Modules contain imports and declarations at top level. Arbitrary top-level expressions are rejected, so module loading never becomes an implicit execution mechanism.",
-  provenanceBody: "Section 0.2 defines the principle. The block, conditional, pattern-match, Never, Unit, and do-notation articles define the exact typing and evaluation rules."
+  summary: "An if, a match, or a block produces a value. You can use that value directly instead of assigning to a variable in each branch.",
+  meaningTitle: "A branch chooses a value",
+  meaningBody: "An expression is a piece of code that produces a value, such as 1 + 2. In Seseragi, choosing between branches is also an expression. An if does not just decide which statements to run: it produces the value of the chosen branch.",
+  exampleTitle: "An if provides the function's result",
+  readingTitle: "How to read the example",
+  reading: [
+    "The result function takes an integer score and returns a String. With 85 as its argument, score >= 80 is True, so the if produces \"pass\". With 60, it would produce \"retry\". Only the chosen branch is evaluated.",
+    "The expression after = is the function body, and its value is the return value. There is no return statement or result variable to assign in the branches. The same idea applies to match, which chooses a case, and to a block, whose last expression is its result."
+  ],
+  reasonTitle: "Why this is useful",
+  reason: [
+    "A calculation and a decision can be combined without changing how the result is passed along. You can put an if directly on the right of let, use it as an argument, or make it the body of a function.",
+    "Both branches must return the same type. Replacing \"retry\" with 0 is a type error: the caller cannot receive a String sometimes and an Int at other times. An else is required, so the result is defined whichever branch is chosen."
+  ],
+  boundaryTitle: "Producing a value is not the same as executing an application",
+  boundary: [
+    "Expressions without a meaningful result use Unit, written (). A block containing only declarations also returns Unit. The type Never is a separate special case for a branch that cannot return normally.",
+    "Source files still have declarations and imports at their top level. An executable application starts from its public main function; arbitrary top-level expressions are not allowed. Expression-oriented does not mean every line is executed when a module is imported."
+  ],
 }

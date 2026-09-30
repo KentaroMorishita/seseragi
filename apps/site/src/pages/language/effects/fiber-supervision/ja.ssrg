@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "forkはfire-and-forgetではない",
   invalidBody: "Fiber handleを捨ててもownershipはdaemon registryへ移りません。enclosing scopeはsupervised cleanupを待ち、testは未観測child failureを診断してもparentのtyped resultを変えません。",
   diagnosticsBody: "Fiber診断はparent scope、spawn site、completion state、failure観測有無を保持します。grace period後のhost forced terminationはcooperative保証外です。",
-  provenanceBody: "仕様5.11のFiber supervision subsectionとroot scope shutdown規則を扱います。"
 }

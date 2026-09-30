@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "trait methodにdefault bodyは書けない",
   invalidBody: "method bodyはinstanceへ置きます。型の欠落、型構築子arityの不一致、kindが違うsupertraitは宣言境界で拒否されます。",
   diagnosticsBody: "parserは不正なmethod signatureを示します。kind・arity診断はinstance探索前に、問題のtrait parameterまたは部分適用を指します。",
-  provenanceBody: "仕様4.2を扱い、共通の型構築子規則と関数型規則を参照します。"
 }

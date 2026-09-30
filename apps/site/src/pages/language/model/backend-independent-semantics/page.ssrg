@@ -1,19 +1,16 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) [] [
-    [InternalLink (
-      localized "What Seseragi is" "Seseragiとは",
-      "/docs/language/model/what-is-seseragi/"
-    )],
+  principlePage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) "principle-backend-independent-semantics" "-3, 3.5" [
+    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
     [InternalLink
-        (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")],
+        (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
     [InternalLink (
-      localized "Programs and entry points" "プログラムと実行入口",
-      "/docs/language/model/programs/"
+      localized "Erasure and runtime representation" "型消去と実行時表現",
+      "/docs/language/types/erasure-and-runtime-representation/"
     )]
   ]

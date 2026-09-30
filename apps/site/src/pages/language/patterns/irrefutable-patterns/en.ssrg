@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A likely match is still refutable",
   invalidBody: "let [head, ...tail] = values is rejected because an Array may be empty. Use match, a total library operation returning Maybe, or bind [...all] when no length test is needed.",
   diagnosticsBody: "A forbidden refutable binding points at the complete pattern. Shape, tuple arity, field, constructor payload, and element-type mismatches are reported before refutability is accepted.",
-  provenanceBody: "This article covers the complete classification in specification 3.2.2."
 }

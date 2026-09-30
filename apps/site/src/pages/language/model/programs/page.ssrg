@@ -6,7 +6,11 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   conceptPage "language.model.programs" "/docs/language/model/programs/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("language-program-entry", localized "A typed executable entry" "型付きの実行entry")] [
+      (
+        "language-program-entry",
+        localized "Declare the entry point and required console service"
+      "実行入口と必要なコンソールを宣言する"
+      )] [
         [InternalLink (
           localized "Function application" "関数適用",
           "/docs/language/syntax/function-application/"

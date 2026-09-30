@@ -13,6 +13,14 @@ if (
   typeof drawer.showModal === "function"
 ) {
   const mobile = matchMedia("(max-width: 760px)")
+  // Safari treats programmatic dialog focus as :focus-visible even after a tap.
+  // Keep initial focus for assistive technology, but show its ring for keys only.
+  drawer.addEventListener("keydown", () => {
+    drawer.dataset.navigationInput = "keyboard"
+  })
+  drawer.addEventListener("pointerdown", () => {
+    drawer.dataset.navigationInput = "pointer"
+  })
   let scrollPosition = 0
   let previousTop = ""
   navigation.dataset.enhanced = "true"
@@ -39,6 +47,7 @@ if (
     if (!mobile.matches || drawer.open) return
     scrollPosition = window.scrollY
     previousTop = document.body.style.top
+    drawer.dataset.navigationInput = event.detail === 0 ? "keyboard" : "pointer"
     navigation.open = true
     drawer.showModal()
     trigger.setAttribute("aria-expanded", "true")

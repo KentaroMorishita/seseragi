@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Desugaring does not erase monad semantics",
   invalidBody: "Expansion removes only surface syntax. Failure, branching, state, scheduling, and resource behavior still come from the selected Monad implementation and cannot be optimized into pure sequencing indiscriminately.",
   diagnosticsBody: "Source diagnostics map failures in generated flatMap structure back to the original bind or item. Users should not need to debug backend-generated dictionary or lambda names.",
-  provenanceBody: "This article covers specification 4.12 and states the normative expansion shared by all backends."
 }

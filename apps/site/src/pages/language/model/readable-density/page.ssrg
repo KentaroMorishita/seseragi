@@ -1,19 +1,21 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.readable-density" "/docs/language/model/readable-density/" (en.copy ()) (ja.copy ()) [] [
-    [InternalLink
-        (localized "Expression-oriented" "式指向", "/docs/language/model/expression-oriented/")],
+  principlePage "language.model.readable-density" "/docs/language/model/readable-density/" (en.copy ()) (ja.copy ()) "principle-readable-density" "7" [
     [InternalLink (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"
     )],
     [InternalLink (
-      localized "Features the language does not have" "中核に存在しない機能",
-      "/docs/language/model/non-features/"
+      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    )],
+    [InternalLink (
+      localized "Ranges and comprehensions" "範囲と内包表記",
+      "/docs/language/expressions/ranges-and-comprehensions/"
     )]
   ]

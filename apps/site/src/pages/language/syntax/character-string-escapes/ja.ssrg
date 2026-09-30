@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "定義していないescapeは使えない",
   invalidBody: "hex byte、octal、名前付きUnicode、別区切りのescape、空のUnicode、六桁超、範囲外、surrogateは拒否します。別の文字へ修復したり、生成先の文字列構文解析器に意味を任せたりしません。",
   diagnosticsBody: "不正escapeはbackslashから末尾までSES-P0201、未閉鎖literalはSES-P0001、Charが零個・複数scalarならliteral全体にSES-P0202です。formatterは有効なescapeの綴りと意味を保ちます。",
-  provenanceBody: "言語仕様1.2.1に基づきます。文字の例と、不正なscalar数・surrogateの拒否を検査します。"
 }

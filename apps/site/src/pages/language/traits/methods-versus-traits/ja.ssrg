@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "instanceをextension-method namespaceとして使わない",
   invalidBody: "trait instanceを定義しても全trait操作がvalue.methodで使えるわけではありません。implもrequired coherent instanceを別途定義しない限りtrait requirementを満たしません。",
   diagnosticsBody: "member診断はreceiverとvisible impl候補を示します。trait診断は所有trait、evidence requirement、曖昧さまたはinstance欠落を示し、修正箇所を分離します。",
-  provenanceBody: "仕様4.10を扱い、独立したinherent implページとmethod call構文ページへ接続します。"
 }

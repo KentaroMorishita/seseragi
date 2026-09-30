@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Overloading cannot change grammar",
   invalidBody: "An instance cannot alter precedence, associativity, or the meaning of a different token. New tokens use custom operator declarations, while standard syntax remains tied to its fixed trait.",
   diagnosticsBody: "A failed expression reports the concrete missing or conflicting operator evidence and the operand types. Float ordering never falls back to a host-language comparison.",
-  provenanceBody: "This article covers specification 4.7 and links operator syntax to the coherence rules shared by ordinary instances."
 }

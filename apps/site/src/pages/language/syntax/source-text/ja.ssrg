@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "見た目だけで識別子を判断しない",
   invalidBody: "数字や句読記号から識別子を始められません。走査中の末尾apostropheは識別子に属します。block commentのような文字列に特別な意味はなく、lexerはglyphの似方でなくUnicode属性とtoken境界を使います。",
   diagnosticsBody: "lexerが不正なUTF-8とtoken境界を診断します。formatterとLSPも同じ構文pipelineを使い、account'をaccountとChar開始に読み替えません。",
-  provenanceBody: "言語仕様1.1に基づきます。専用例でUnicode名とapostropheを検査します。"
 }

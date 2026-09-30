@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A compatible backend representation grants no conversion",
   invalidBody: "Passing Int where Float is required, a newtype where its representation is expected, a struct where a record is expected, or nullable foreign data where Maybe is expected is rejected. Wrapping a value in Just or calling toFloat is an explicit program step.",
   diagnosticsBody: "Mismatch diagnostics name the source and target identities and may point to the relevant explicit boundary API. They never report success merely because TypeScript or another backend would accept the underlying representation.",
-  provenanceBody: "This article covers specification section 2.8 and links the exact record and Never exceptions. The rejected source isolates an attempted implicit newtype representation coercion."
 }

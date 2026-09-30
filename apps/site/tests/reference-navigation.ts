@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
-import { join } from "node:path"
+import { readFileSync } from "node:fs"
+import { join, resolve } from "node:path"
 import type { Browser } from "../../playground/node_modules/@playwright/test"
 
 const principles = [
@@ -15,6 +16,16 @@ const principles = [
   ["visible-costs", "Visible costs", "コストを見えるようにする"],
   ["readable-density", "Readable density", "読みやすい密度"],
 ] as const
+
+const outputs: Record<string, string> = {
+  "expression-oriented": "pass",
+  "immutable-by-default": "10 -> 11",
+  "no-hidden-danger": "not found",
+  "backend-independent-semantics": "-3, 3.5",
+  "diagnosable-behavior": "`[]",
+  "visible-costs": "[2, 4, 6]",
+  "readable-density": "7",
+}
 
 export async function verifyReferenceNavigation(
   browser: Browser,
@@ -44,6 +55,32 @@ export async function verifyReferenceNavigation(
           await link.click()
           await page.waitForURL(`${origin}${destination}`)
           assert.equal(await page.locator("h1").innerText(), title)
+          const article = page.locator(".article-content")
+          const code = article.locator(".code-panel pre > code")
+          assert.equal(await code.count(), 2)
+          assert.equal(
+            await code.nth(0).textContent(),
+            readFileSync(
+              resolve(
+                import.meta.dir,
+                `../examples/src/language/principle-${slug}.ssrg`
+              ),
+              "utf8"
+            )
+          )
+          assert.equal(await code.nth(1).textContent(), outputs[slug])
+          for (const section of [
+            "meaning",
+            "reading-the-example",
+            "why",
+            "limits",
+            "related-rules",
+          ])
+            assert.equal(await article.locator(`h2#${section}`).count(), 1)
+          // Six explanation paragraphs plus the meaning and output introduction.
+          // A missing locale paragraph must not disappear silently through zip.
+          assert.equal(await article.locator(":scope > p").count(), 8)
+          assert.equal(await article.locator(".callout").count(), 0)
           assert.equal(
             await page.locator(".breadcrumb-current").innerText(),
             title,
@@ -80,10 +117,10 @@ export async function verifyReferenceNavigation(
             ),
             false
           )
-          if (screenshots && locale === "ja" && slug === "expression-oriented")
+          if (screenshots && locale === "ja")
             await page.screenshot({
-              path: join(screenshots, `reference-title-${width}.png`),
-              fullPage: false,
+              path: join(screenshots, `principle-${slug}-${width}.png`),
+              fullPage: true,
             })
         }
         await page.goto(`${origin}${prefix}/docs/language/effects/task/`)

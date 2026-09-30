@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "値の状態でconstraintを免除できない",
   invalidBody: "たまたま要素を見ないbranch、空container、特定constructorでも宣言済みrequirementは消えません。再帰選択のleaf evidenceがなければ型errorです。",
   diagnosticsBody: "evidence欠落はnested conditional requirementを含む具体的な未充足適用を報告します。曖昧なevidenceと未確定型変数は別に報告します。",
-  provenanceBody: "仕様4.4を扱い、generic polymorphismとinstance選択を接続します。"
 }

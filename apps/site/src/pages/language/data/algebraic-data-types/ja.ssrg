@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "variant集合は閉じている",
   invalidBody: "別moduleからconstructorを追加したり、同じconstructorを並べた別declを同一型として扱ったりできません。domainが違う場合は新しい型と明示変換を使います。",
   diagnosticsBody: "未知のconstructor、payloadのarity・型不一致、非公開constructor、非網羅matchはcompile-time diagnosticです。",
-  provenanceBody: "仕様3.4を扱い、構築規則をgeneric ADT、visibility、pattern exhaustivenessへ接続します。"
 }

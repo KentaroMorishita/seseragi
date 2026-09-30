@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Backend-independent semantics",
-  summary: "Generated representations may differ, but observable language behavior does not follow the host language by accident.",
-  ruleTitle: "One program has one language meaning",
-  ruleBody: "Integer arithmetic, division, evaluation order, record structure, pattern coverage, Effect laziness, failure, cancellation, and resource lifetime are Seseragi rules. A backend implements those rules rather than borrowing whatever its output language happens to do.",
-  consequenceOne: "A backend may erase types, inline functions, specialize dictionaries, or choose another data representation when observable meaning stays unchanged.",
-  consequenceTwo: "Foreign values enter through adapters that validate and convert them instead of weakening internal types or evaluation rules.",
-  consequenceThree: "Conformance compares stable results and runtime traces without treating generated paths or host module caches as language identity.",
-  boundaryTitle: "Representation freedom ends at observable behavior",
-  boundaryBody: "Optimization cannot reorder visible work, duplicate evaluation, change rounding or failure, skip finalizers, or alter cancellation merely because a host runtime makes that convenient.",
-  provenanceBody: "Section 0.2 establishes backend independence. Runtime ABI, Provider, interop, conformance, and performance chapters define the preserved observations and permitted implementation freedom."
+  summary: "Seseragi defines what your code means. The language used to implement or run it does not quietly change its results.",
+  meaningTitle: "The generated language does not define the rules",
+  meaningBody: "A compiler backend turns Seseragi into code that a runtime can execute. The current backend emits TypeScript, but TypeScript and JavaScript rules are not automatically Seseragi rules. The backend must implement Seseragi's specified behavior.",
+  exampleTitle: "Integer division is different from floating-point division",
+  readingTitle: "How to read the example",
+  reading: [
+    "integerResult is an Int. Dividing -7 by 2 discards the fractional part toward zero, giving -3, not -3.5 or -4. decimalResult uses Float operands and gives 3.5.",
+    "The program prints -3, 3.5. JavaScript's ordinary division would give -3.5 for -7 / 2, so simply translating the operator without preserving its Int behavior would be incorrect. An implementation must retain the distinction."
+  ],
+  reasonTitle: "What you can rely on",
+  reason: [
+    "You read an integer calculation using the integer rules, regardless of how generated code represents the value. The same requirement applies to left-to-right, once-only argument evaluation and immutable records.",
+    "Effects must also remain delayed until execution. A compiler cannot run an Effect early, change the order of visible operations, or skip resource cleanup just because that would be convenient in its output language. These are language guarantees, not accidental behavior of one host."
+  ],
+  boundaryTitle: "Equal meaning does not promise equal speed or available services",
+  boundary: [
+    "This principle does not claim that multiple production backends already exist, or that every program can run in every environment. The current implementation uses a TypeScript runtime. A browser and a process also provide different services, so code requiring a file service needs an appropriate host.",
+    "Implementations may choose different data layouts and optimizations, and their speed or memory use may differ. Values from foreign code still need explicit conversion into Seseragi types; backend independence does not make arbitrary external values safe."
+  ],
 }

@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "An import spelling is not an identity",
   invalidBody: "Renaming a namespace alias does not create a new module, and adding the .ssrg suffix does not create a new type. Conversely, two files with identical contents are still separate modules. When a type mismatch occurs, inspect the defining package and module instead of comparing only the displayed type name.",
   diagnosticsBody: "The resolver canonicalizes paths and rejects an ambiguous or invalid module path. Module paths use NFC-normalized Unicode and matching filename case; two files that collapse to one normalized spelling, or differ only by case within a package, are not valid independent modules. Symlink aliases must resolve to one canonical path without escaping the package.",
-  provenanceBody: "Language specification 6.1 defines file-based identity. Sections 11.2–11.4 define package identity, tagged roots and normalized module paths."
 }
 
 pub fn layoutTitle -> String = "Source roots give paths their meaning"

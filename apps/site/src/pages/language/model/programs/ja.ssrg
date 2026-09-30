@@ -2,13 +2,13 @@ import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "プログラムと実行入口",
-  summary: "パッケージはモジュール、モジュールは宣言を持ち、公開mainがホスト targetへの入口になります。",
-  ruleTitle: "プログラムの構造を明示する",
-  ruleBody: "ソース file一つが一つのmoduleです。moduleはimportと宣言を持ち、seseragi.tomlがソースとexportの構造を定めます。実行可能パッケージは公開mainを持つソース moduleを一つ選びます。",
-  consequenceOne: "仕様は任意のtop-level式を許しません。importをアプリケーションコードの暗黙の実行方法にはしません。",
-  consequenceTwo: "実行可能mainは、閉じたサービス環境、型付き失敗、Unitの成功を持つEffectを返すUnit関数です。",
-  consequenceThree: "ライブラリはmainなしで宣言をexportできます。一つのパッケージがライブラリmoduleと実行入口の両方を公開しても構いません。",
-  boundaryTitle: "コンパイルと実行の担当を分ける",
-  boundaryBody: "コンパイラがmodule、型、Effect、入口の意味を確定します。選択したホスト targetが互換のサービスを供給し、成功、型付き失敗、defect、キャンセル、signalをホストの結果へ対応付けます。Effectの意味は変えません。",
-  provenanceBody: "言語仕様0.3に基づきます。package 配置、module、入口、Effect環境、Provider、target、実行時で境界を説明します。現在の実装範囲は仕様とは別に管理します。"
+  summary: "ソースファイル一つがモジュール一つに対応します。実行するプログラムは、パッケージで選んだモジュールの公開main関数から始めます。",
+  ruleTitle: "ファイルでコードを定義し、mainから実行する",
+  ruleBody: "モジュールには、関数や型などの宣言と、他のモジュールを使うためのimportを書きます。importは定義を使えるようにするもので、アプリケーションの処理を書く場所ではありません。実行可能なパッケージでは、seseragi.tomlで実行入口のモジュールを選び、そのモジュールからmainを公開します。",
+  consequencesTitle: "例のmainを、上から読む",
+  consequenceOne: "pubはmainをモジュールの外へ公開します。effect fnはEffectを返す関数の宣言です。Unitは、成功して完了した後に、別の結果を返す必要がないことを表します。",
+  consequenceTwo: "with Consoleは、コンソールのサービスが必要だという指定です。fails ConsoleErrorは、その処理でこの型のエラーが起こり得るという指定です。printlnはHello, Seseragi!と改行を出力します。",
+  consequenceThree: "実行時の仕組みが必要なサービスを用意し、mainのEffectを実行します。mainがエラーを返す可能性がある場合、そのエラーにはShowによる表示処理が必要です。処理されなかったエラーを、実行環境が表示できるようにするためです。",
+  boundaryTitle: "ライブラリにはmainは不要",
+  boundaryBody: "ライブラリは、他のコードが使う定義を公開するもので、実行入口のmainは不要です。一つのパッケージがライブラリと実行可能なプログラムの両方を提供することもできます。プロセスやブラウザなど、選んだ実行環境は、プログラムに必要なサービスを提供する必要があります。"
 }

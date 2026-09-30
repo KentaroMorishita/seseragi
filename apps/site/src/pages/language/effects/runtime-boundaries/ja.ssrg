@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "helper関数から境界の外へ逃げない",
   invalidBody: "通常のapplication codeにはrunEffectを公開しません。nested実行はenvironment・cancellation tree・resource ownershipを分断するため、programはEffect値を合成します。",
   diagnosticsBody: "build・startup診断は非対応serviceと選択targetを示します。runtime reportも境界、typed failure表示、defect、cancellation理由を区別します。",
-  provenanceBody: "仕様5.9を扱い、entry pointとprovider contractへ接続します。"
 }

@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "局所的な推論でAPIを隠さない",
   invalidBody: "注釈のない関数引数、戻り型、注釈が必要な公開宣言は拒否されます。初期値に別の有効な推論型があっても、letに書いた注釈との矛盾はエラーです。",
   diagnosticsBody: "境界の注釈不足は宣言headerを、不一致は期待型と実際の型を示します。LSPのhoverはprivate letの推論型を表示してもソースを書き換えません。",
-  provenanceBody: "言語仕様2.4に基づきます。注釈した引数、推論する不変値、宣言scopeの型情報を示します。"
 }

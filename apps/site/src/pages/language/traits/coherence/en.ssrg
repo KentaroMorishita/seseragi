@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Aliases and specificity do not escape overlap",
   invalidBody: "An alias expands before identity checks, and a more specific head does not outrank a generic one. Conflicting evidence must be removed or expressed through distinct nominal types.",
   diagnosticsBody: "Overlap diagnostics identify both declarations. Orphan diagnostics identify the unowned trait and outer type. Functional-dependency diagnostics show the inputs that would determine incompatible outputs.",
-  provenanceBody: "This article covers specification 4.6, including global uniqueness, ownership, sealed structural evidence, and functional dependencies."
 }

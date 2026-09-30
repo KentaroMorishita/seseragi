@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Empty braces are a record",
   invalidBody: "{} is the empty record literal, not a Unit block. Write { () } for an explicit no-op Unit block. Type, trait, impl, instance, operator, foreign, and pub declarations are not local block items.",
   diagnosticsBody: "A reference to a later local binding is unresolved. Mutually recursive local functions must be placed in one rec group so every member has a defined scope.",
-  provenanceBody: "This article covers specification 3.2: block values, local declaration forms, scope, capture, recursion, and the empty-record distinction."
 }

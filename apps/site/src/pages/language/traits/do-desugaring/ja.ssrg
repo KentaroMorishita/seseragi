@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "desugarしてもmonad semanticsは消えない",
   invalidBody: "展開で消えるのは表面構文だけです。failure、branch、state、scheduling、resource動作は選択したMonad実装に残り、無条件にpure sequencingへ最適化できません。",
   diagnosticsBody: "生成flatMap構造での失敗を元のbindまたはitemへsource mappingします。userがbackend生成dictionary名やlambda名をdebugする必要はありません。",
-  provenanceBody: "仕様4.12を扱い、全backendが共有するnormativeな展開を定義します。"
 }

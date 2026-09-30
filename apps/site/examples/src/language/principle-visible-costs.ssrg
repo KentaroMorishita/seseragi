@@ -1,0 +1,6 @@
+fn double value: Int -> Int = value * 2
+
+let values = [1, 2, 3]
+let doubled = values |> map double
+
+pub effect fn main = println (show doubled)

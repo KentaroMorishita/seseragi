@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A repeated name does not introduce a second parameter",
   invalidBody: "Duplicate names in one parameter list are rejected, as is shadowing an enclosing type parameter in a nested declaration. Writing an undeclared uppercase name does not request implicit generic inference. If the name is not an accessible type or a declared parameter, it cannot be used as a type.",
   diagnosticsBody: "For an unresolved type name, inspect the declaration's parameter list and its imports. For a shadowing error, rename the inner parameter and update its annotations consistently. Scope ends with the declaration, so a later declaration must introduce its own parameter.",
-  provenanceBody: "Specification 2.11 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

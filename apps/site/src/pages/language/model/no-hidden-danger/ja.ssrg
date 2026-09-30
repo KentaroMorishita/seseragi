@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "危険を暗黙に隠さない",
-  summary: "欠如、回復可能な失敗、副作用、変換を値と型に現します。",
-  ruleTitle: "危険は明示した型の境界を通る",
-  ruleBody: "通常の値としてnullやundefinedはありません。Maybeは回復可能な欠如、Eitherは純粋な成功・失敗の結果、Effectは遅延計算と必要なサービスと型付き失敗を表します。",
-  consequenceOne: "条件分岐にはBoolが必要です。truthyやfalsyの解釈と、数値型の暗黙変換はありません。",
-  consequenceTwo: "回復可能な失敗を隠れた例外にしません。実行時のdefectは、それとは別の回復対象でない経路です。",
-  consequenceThree: "外部コードのnullish値、例外、Promise、変更可能なobjectは、外部連携の境界でdecodeやadapterを通します。",
-  boundaryTitle: "すべての操作がEitherになるわけではない",
-  boundaryBody: "全域で純粋な操作は通常の結果型を保ちます。意味として欠如、回復可能な失敗、ホストによる実行がある位置にMaybe、Either、Effectを使います。",
-  provenanceBody: "言語仕様0.2に基づきます。Maybe、Either、Effect、defect、数値変換、条件分岐、TypeScript連携で具体例を説明します。"
+  summary: "値が見つからない可能性や処理が失敗する可能性は、型に表します。呼ぶ側が、その場合にどうするかを決めます。",
+  meaningTitle: "「見つからない」を、扱うべき場合として表す",
+  meaningBody: "Seseragiの通常の値にはnullやundefinedがありません。値が見つからない可能性のある操作はMaybe<A>を返します。JustはA型の値が見つかった場合、Nothingは見つからなかった場合です。結果がない可能性を、実行前に型から確認できます。",
+  exampleTitle: "存在しない配列の要素を取り出そうとする",
+  readingTitle: "このコードで何が起きるか",
+  reading: [
+    "valuesには二つの要素があり、添字は0と1です。そのためarrays.get 5 valuesはNothingを返します。「不正な整数」が返るのではありません。戻り値の型はIntではなくMaybe<Int>です。",
+    "matchで両方の場合を扱います。Just valueなら見つかった整数を使い、Nothingなら見つからなかったことを示す文字列を返します。この例の出力はnot foundです。Nothingの側を省略すると、すべての場合を扱っていないためコンパイルエラーになります。"
+  ],
+  reasonTitle: "なぜnullや例外にしないのか",
+  reason: [
+    "Intを受け取る関数は、渡されたものが整数だと考えて処理できます。Maybe<Int>を受け取った側は、既定値を使う、エラーを表示する、別の処理を選ぶ、といった対応を先に決めます。値がないことを見落としたまま、通常の整数計算へ渡すことはできません。",
+    "失敗の理由も必要ならEither<E, A>を使います。LeftにはE型のエラー、RightにはA型の成功結果が入ります。Effect<R, E, A>は、Rで示すサービスを必要とし、E型のエラーで失敗する可能性があり、成功するとA型の値を返す処理を表します。Effectを作っただけでは処理は実行されません。必要なサービスも回復可能な失敗もない場合をTask<A>と書きます。"
+  ],
+  boundaryTitle: "どんな入力でも安全、という意味ではない",
+  boundary: [
+    "プログラムの誤りによって実行が停止することはあります。例えば整数の/で0除算をすると、Eitherが返るのではなく、実行時の異常になります。0が入力される可能性を通常のケースとして扱うなら、std/int.checkedDivideを使います。失敗をEitherで受け取って対応できます。",
+    "外部コードからはnullや例外が来ることもあります。外部連携の処理で検査や変換を行い、そのまま通常のSeseragiの値として持ち込まないようにします。また、条件に使えるのはBoolだけで、異なる数値型の暗黙変換もありません。"
+  ],
 }

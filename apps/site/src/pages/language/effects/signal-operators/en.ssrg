@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not treat * as a pure dereference",
   invalidBody: "A pure function cannot return *source as A because the expression is Task<A>. Likewise, target := *target is neither an atomic increment nor valid pure assignment; use update instead.",
   diagnosticsBody: "Diagnostics distinguish prefix * from multiplication by position, show the resulting Task type, and report when := receives a read-only Signal or a non-Signal target.",
-  provenanceBody: "This article covers specification 5.14 and the fixed * and := forms. Their precedence is part of the language grammar."
 }

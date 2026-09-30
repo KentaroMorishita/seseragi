@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "省略可能は暗黙のMaybe 内部の値ではない",
   invalidBody: "id?: Stringを必須のid: Stringに使えません。id?: Maybe<String>は二段階の欠如を持ち、まとめません。struct、関数引数、ADT 内部の値に省略可能 markerを直接付ける構文はありません。",
   diagnosticsBody: "省略可能なフィールドのhoverはMaybe<A>です。診断は必須フィールドの不足、省略可能から必須への不一致、フィールド型の不一致を区別します。構文解析器とformatterはレコード構文のフィールド?: Aを保ちます。",
-  provenanceBody: "言語仕様2.6と構文1.10に基づきます。不在、必須の存在、Maybeを返す参照を専用例で示します。"
 }

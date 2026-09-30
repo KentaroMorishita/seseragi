@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "rangeは方向を推測しない",
   invalidBody: "stepは常に1で、startがendより大きければ空です。降順はlibrary operationを使います。pureなcomprehension sourceへEffectは渡せません。",
   diagnosticsBody: "Iterable evidenceの欠落、Boolでないguard、pattern不一致、結果要素型の不一致を指します。sourceと結果のcollection kindを暗黙変換しません。",
-  provenanceBody: "endpoint semanticsとgenerator展開を含む仕様3.9を扱います。"
 }

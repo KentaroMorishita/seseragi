@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "生成先の表現が似ていても型は同じではない",
   invalidBody: "ホストで同じnumberを使ってもIntとFloatは交換できません。複数scalarの文字はCharではなく、Unitは空レコードでもNeverでもありません。範囲外のInt literalを丸めたりwrapしたりしません。",
   diagnosticsBody: "literalの綴り、scalar数、範囲、Floatのoverflow、escapeを型検査前に検証します。演算でIntのsafe rangeを越える場合は実行時 defectです。ツールはホストの格納型でなくSeseragiの型を表示します。",
-  provenanceBody: "言語仕様2.2と1.2のliteral・escape規則に基づきます。有効な例と拒否する例をsiteの検査で確認します。"
 }

@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "壊れた数値を短い有効tokenに分割しない",
   invalidBody: "_は同じ基数のdigitの間に一個だけ置けます。十進の先行zero、baseのdigit不足、十六進Float、suffix、未完の指数、1.、.5は拒否します。短い有効tokenと後続tokenへ分割して受理しません。",
   diagnosticsBody: "不正な綴りと範囲外は数値tokenにSES-P0203を出します。後の整数演算で範囲を越えると実行時 defectで、wrapしません。formatterは有効な数値の綴りとseparatorを保ちます。",
-  provenanceBody: "言語仕様1.2のescape以外の規則に基づきます。有効なliteralと不正なseparatorをsiteの検査で確認します。"
 }

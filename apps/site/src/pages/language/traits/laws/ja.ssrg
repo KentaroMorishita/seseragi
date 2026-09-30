@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "compile成功はlawの証明書ではない",
   invalidBody: "実装は型検査に通ってもreflexivity、順序整合性、identity、associativityを破れます。compiler診断が不可能でも、そのinstanceは意味上不正です。",
   diagnosticsBody: "型診断は不正methodとevidence欠落を引き続き検出します。law failureはtestでproperty、生成input、最小の再現counterexampleを報告します。",
-  provenanceBody: "仕様4.8を扱います。各traitの正確なlawは個別の標準library contractページで定義します。"
 }

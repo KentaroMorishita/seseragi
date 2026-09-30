@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A Signal is not an implicitly changing pure value",
   invalidBody: "Pure code may hold a Signal but cannot read its current value. Use Signal.read or the prefix * operator in an Effect, and use update when a write depends on the current value.",
   diagnosticsBody: "Type errors distinguish read-only Signal from MutableSignal and report the exact planned value mismatch. Runtime diagnostics identify staging, commit, derived recomputation, and subscriber notification phases.",
-  provenanceBody: "This article covers specification 5.12. Derived graph semantics and the Signal operators each have their own pages."
 }

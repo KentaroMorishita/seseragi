@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "The operator alphabet is intentionally bounded",
   invalidBody: "Symbols use at least two allowed ASCII operator characters. Standard operators, ->, <-, ranges, comments, ??, and := are reserved; angle-bracket-only symbols conflict with generic delimiters. Prefix and postfix custom operators do not exist. A lone & is only contextual requirement merge syntax.",
   diagnosticsBody: "Duplicate imported symbols are ambiguous. Mixing equal-precedence operators with different fixities requires parentheses. Raw scanning remains lossless; shared header scanning, module-interface collection, flat-chain parsing, and fixity resolution keep compiler, formatter, and language server aligned.",
-  provenanceBody: "This article covers specification section 1.8 and the tooling fixity contract. Its valid and rejected panels are focused documentation examples checked during the site build."
 }

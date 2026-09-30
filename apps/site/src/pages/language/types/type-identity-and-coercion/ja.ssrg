@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "実行時の表現が同じでも、そのまま渡せるとは限らない",
   invalidBody: "Floatが必要な場所へIntを、Intが必要な場所へnewtypeの値を、そのまま渡すことはできません。structをレコードへ、外部のnullableな値をMaybeへ直接渡すこともできません。toFloatを呼ぶ、Justで包む、newtypeをパターンで取り出すなど、意図した操作を示します。",
   diagnosticsBody: "型が合わない場合は、元の型と要求される型を見比べ、対応する変換関数やコンストラクターを確認してください。生成先のTypeScriptなどで同じ形として扱えても、それを理由にSeseragiの型検査を通すことはありません。",
-  provenanceBody: "言語仕様2.8に基づきます。レコードとNeverの限定された例外を別ページに分け、暗黙のnewtype取り出しを拒否する例も示します。"
 }

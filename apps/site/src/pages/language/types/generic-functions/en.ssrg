@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A return-only parameter still needs evidence",
   invalidBody: "identity<String> 42 contradicts the argument type. An incomplete argument list is rejected. Calling empty () without an expected type leaves A ambiguous. A resolved type must also satisfy its trait constraints; writing explicit arguments does not bypass the evidence check.",
   diagnosticsBody: "When inference is ambiguous, add an expected type or a complete explicit type-argument list. When constraints conflict, compare the written arguments, value arguments and expected result together. The result is a static specialization of one declaration, not runtime dispatch based on the value.",
-  provenanceBody: "Specification 2.12 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

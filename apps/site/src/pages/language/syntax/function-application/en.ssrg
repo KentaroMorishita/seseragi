@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Application does not infer a different call grammar",
   invalidBody: "A non-function callee, an unresolved generic constraint, or an argument outside the callee's parameter type is a type error. Group if an if, match, do, or lambda must be one ordinary argument. Custom infix operators require surrounding whitespace, while an operator value such as (<+>) has no inner whitespace.",
   diagnosticsBody: "Parser diagnostics own malformed application and type-argument boundaries. Type checking owns non-functions, argument mismatches, and incomplete constraints. Tooling preserves the same left-associated application tree used by the compiler.",
-  provenanceBody: "This article covers specification sections 1.4, 2.7, and 3.1. The displayed source is a focused documentation example checked with the Seseragi compiler during the site build."
 }

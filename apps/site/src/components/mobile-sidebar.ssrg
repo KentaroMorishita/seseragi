@@ -40,7 +40,11 @@ pub fn mobileSidebar<Action> messages: Messages
                 buttonType: "button",
                 class: "mobile-navigation-close",
                 ariaLabel: messages.closeNavigation,
-                children: html.span { ariaHidden: True, children: "×" }
+                children: html.span {
+                  class: "navigation-dismiss-icon",
+                  ariaHidden: True,
+                  children: ""
+                }
               }
             ]
           },

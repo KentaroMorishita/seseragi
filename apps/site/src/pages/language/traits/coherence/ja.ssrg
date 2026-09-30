@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "aliasやspecificityでoverlapを回避できない",
   invalidBody: "identity判定前にaliasを展開し、specificなheadもgeneric headより優先されません。競合evidenceを除くか、異なるnominal型で表現します。",
   diagnosticsBody: "overlap診断は両方の宣言を示します。orphan診断は所有していないtraitと外側の型を示します。functional dependency診断は矛盾するoutputを決定するinputを示します。",
-  provenanceBody: "仕様4.6のglobal uniqueness、ownership、sealed structural evidence、functional dependencyを扱います。"
 }

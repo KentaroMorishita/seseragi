@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "brace formは意図的に区別される",
   invalidBody: "{}はempty record、{ expression }はblockです。shorthand一つだけのrecordにはtrailing commaが必要です。未知field access、直接重複、non-record spreadを拒否します。",
   diagnosticsBody: "欠落・追加・重複・未知fieldを示し、入れ子のstructural differenceも表示します。optional presenceをrequired valueへ暗黙変換しません。",
-  provenanceBody: "仕様3.7を扱い、record expressionをrecord type・record patternへ接続します。"
 }

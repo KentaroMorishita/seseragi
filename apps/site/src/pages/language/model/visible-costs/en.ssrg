@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Visible costs",
-  summary: "Abstractions may remove representation overhead, but APIs and documentation keep essential work inferable.",
-  ruleTitle: "Essential work is part of the contract",
-  ruleBody: "Collection traversal, allocation, closure capture, dictionary passing, Effect scheduling, synchronization, resource acquisition, and foreign copying are real operations. Their presence and broad complexity must remain discoverable from an API and its documentation.",
-  consequenceOne: "Type aliases, erased phantom types, and surface sugar should not demand runtime identity when the semantics need none.",
-  consequenceTwo: "A collection combinator does not pretend to be constant time, and a foreign bridge does not pretend that validation or copying is free.",
-  consequenceThree: "Release optimization may specialize or fuse work only while preserving evaluation, failure, cancellation, and resource observations.",
-  boundaryTitle: "Visible cost is not a ban on abstraction",
-  boundaryBody: "Users should compose high-level functions and Effects. The rule is that composition keeps material traversals, scheduling boundaries, copies, and lifetime behavior understandable instead of disguising them as zero-cost syntax.",
-  provenanceBody: "Section 0.2 states the principle. Collection modules, Effect runtime, foreign interop, build profiles, benchmarks, and the performance model provide operation-specific guarantees."
+  summary: "Short code can still do substantial work. APIs should explain which operations traverse data, allocate results, or manage ongoing work.",
+  meaningTitle: "Short syntax does not make work disappear",
+  meaningBody: "Cost means the processing and memory an operation needs. A type name or a pipeline symbol need not introduce extra runtime work, but transforming an array still needs to process its elements. The language distinguishes a convenient spelling from the work that spelling asks for.",
+  exampleTitle: "A one-line transformation visits every element",
+  readingTitle: "How to read the example",
+  reading: [
+    "values |> map double means map double values. The |> symbol passes the value to the following function; it does not start a background task or make the array lazy.",
+    "map applies double to 1, 2, and 3 and returns [2, 4, 6]. For an array of n elements, a simple transformation like this takes work proportional to n. The output array is a new value; the input remains [1, 2, 3]."
+  ],
+  reasonTitle: "What to look for when choosing an API",
+  reason: [
+    "An API should say whether it traverses all elements, can stop early, creates a result collection, or retains input data. That lets you reason about large inputs without reading generated code. Callback work also counts: mapping an expensive function costs more than multiplying an integer.",
+    "Type aliases only give types another spelling; they do not require an extra runtime wrapper. In contrast, keeping a partially applied function can require storage for captured arguments. Effects and subscriptions can require execution queues and cleanup. Those costs should be explained, not presented as free because the syntax is small."
+  ],
+  boundaryTitle: "This is not a fixed-speed or no-optimization promise",
+  boundary: [
+    "The compiler may remove unnecessary layers, inline a function, or combine compatible traversals when the result and observable behavior stay the same. Immutability does not force a full copy on every operation.",
+    "It cannot make sequential visible work concurrent, omit required calls, or change failure and resource cleanup merely to improve a benchmark. Exact running time depends on inputs and the runtime; use measurements as well as the documented operation costs."
+  ],
 }

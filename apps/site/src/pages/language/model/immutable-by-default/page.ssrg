@@ -1,19 +1,18 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.immutable-by-default" "/docs/language/model/immutable-by-default/" (en.copy ()) (ja.copy ()) [] [
+  principlePage "language.model.immutable-by-default" "/docs/language/model/immutable-by-default/" (en.copy ()) (ja.copy ()) "principle-immutable-by-default" "10 -> 11" [
+    [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
     [InternalLink (
-      localized "No hidden danger" "危険を暗黙に隠さない",
-      "/docs/language/model/no-hidden-danger/"
+      localized "Tuples, arrays, and lists" "タプル・配列・リスト",
+      "/docs/language/data/tuples-arrays-and-lists/"
     )],
-    [InternalLink
-        (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")],
     [InternalLink (
-      localized "Features the language does not have" "中核に存在しない機能",
-      "/docs/language/model/non-features/"
+      localized "Signals and transactions" "Signalとトランザクション",
+      "/docs/language/effects/signals-and-transactions/"
     )]
   ]

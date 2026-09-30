@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Close names are not close enough",
   invalidBody: "A missing method, extra incompatible method, or result type that differs from the substituted signature rejects the instance. Writing impl Trait<Type> does not declare evidence.",
   diagnosticsBody: "Contract diagnostics name the trait method and show expected and actual types. Head and constraint diagnostics identify parameters that cannot be determined from the requested evidence.",
-  provenanceBody: "This article covers specification 4.3. Coherence and visibility decide whether a well-typed instance may participate in selection."
 }

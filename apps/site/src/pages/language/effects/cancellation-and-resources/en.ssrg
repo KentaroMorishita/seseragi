@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A finalizer cannot leak a recoverable failure",
   invalidBody: "Handle an expected close failure inside the finalizer and convert it to Never. If one finalizer defects, the runtime still attempts the remaining finalizers before reporting the first defect with later defects attached as diagnostics.",
   diagnosticsBody: "Resource diagnostics distinguish acquisition, use, and release phases and preserve the original outcome alongside any finalizer defect. A finalizer that never completes also prevents its scope from completing.",
-  provenanceBody: "This article covers specification 5.11 cancellation and resource ownership. Scheduling and Fiber ownership are documented separately."
 }

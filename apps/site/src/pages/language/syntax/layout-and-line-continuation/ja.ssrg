@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "indentは継続の合図ではない",
   invalidBody: "行を右へずらしても、完成した二つの式はつながりません。継続条件がなければ括弧を使うか、演算子を次行の先頭へ置いてください。;は常に現在の形式を終えます。",
   diagnosticsBody: "editorの回復解析が部分構文木を保っても、ビルドでは構文解析器のエラーを報告します。formatterは二spacesと演算子-firstを使い、波括弧と区切りの意味を保ちます。",
-  provenanceBody: "言語仕様1.3に基づきます。専用の短いコードでbindとpipelineの折り返しを示します。"
 }

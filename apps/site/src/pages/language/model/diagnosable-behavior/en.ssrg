@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Diagnosable behavior",
-  summary: "Inference and abstraction succeed only when the compiler can identify and explain one result.",
-  ruleTitle: "Ambiguity is a compile error",
-  ruleBody: "Overload resolution, type inference, method lookup, operator values, Provider selection, and implicit typeclass dictionaries may automate a choice only when the applicable rule yields one stable candidate.",
-  consequenceOne: "Multiple viable instances, methods, providers, or overloaded meanings produce a diagnostic rather than a priority guess based on values or source order.",
-  consequenceTwo: "Parser, formatter, compiler, LSP, Playground, and documentation share compiler-owned syntax and interface artifacts instead of maintaining competing interpretations.",
-  consequenceThree: "Diagnostics identify the owning phase and source range; a later runtime adapter does not relabel a compile or target error as a generic defect.",
-  boundaryTitle: "Inference remains useful, not magical",
-  boundaryBody: "The compiler can infer types and dictionaries from declared constraints. It cannot inspect runtime values, silently search unrelated namespaces, or select an arbitrary candidate to make a program compile.",
-  provenanceBody: "Section 0.2 defines diagnosability. Name resolution, type inference, traits, impls, diagnostics, formatter, LSP, and Provider pages define each decision procedure."
+  summary: "The compiler infers what the code determines. When information is missing or conflicting, it reports the problem instead of guessing.",
+  meaningTitle: "Omitting a type does not mean choosing an arbitrary type",
+  meaningBody: "Type inference works out types from arguments, results, and annotations. You do not have to repeat every type, but the program still needs enough information for a definite answer. The compiler does not use runtime values or an arbitrary priority to settle an unclear choice.",
+  exampleTitle: "Tell the compiler what an empty list contains",
+  readingTitle: "How to read the example",
+  reading: [
+    "empty<A> can create a list of any element type A. It takes no values, so there is no element from which to infer A. The annotation List<Int> on values supplies the missing information: this call creates a list of integers.",
+    "The output is `[], the notation for an empty list. Although the list has no elements, its element type is known. Writing empty<Int> () is another way to make the same choice. If you pass an empty list to show without information about its element type, the compiler cannot choose the required display implementation and rejects the program."
+  ],
+  reasonTitle: "Why stop instead of picking a default?",
+  reason: [
+    "An empty integer list and an empty string list look identical when printed, but later operations can require different types. Guessing from that runtime shape would move a type decision into execution and make the meaning harder to predict.",
+    "The same idea applies to trait methods. A trait describes an operation supported by types; an instance supplies the implementation for a particular type. The compiler selects that implementation from the types. If multiple trait names remain possible, qualify the method with the trait name; overlapping instances are rejected, not ordered by priority."
+  ],
+  boundaryTitle: "A diagnostic still needs a concrete repair",
+  boundary: [
+    "For this example, supply List<Int> or call empty<Int> (). For conflicting branch types, change the branches to return the same type. For an unclear name, qualify it. Each repair makes the intended choice part of the program rather than suppressing the error.",
+    "Inference is not a proof that the program meets your business requirements. A well-typed formula can still be the wrong formula. This principle concerns whether language choices can be determined and explained, not whether the compiler understands the application's intent."
+  ],
 }

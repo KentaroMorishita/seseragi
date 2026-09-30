@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Signalは意図的にMonadではない",
   invalidBody: "dynamic dependencyにはsubscription lifetimeが伴うため、switchMapなど名前付きoperationで表します。observer確保と解放を制限のないbindへ隠してはいけません。",
   diagnosticsBody: "observer defectはruntime policyに従って該当observerを停止し、他subscriberのtyped failureにはなりません。lifetime診断はactive・released・重複unsubscribeを識別します。",
-  provenanceBody: "仕様5.15を扱います。failure channelが必要なconsumerとの境界にはStream変換を使います。"
 }

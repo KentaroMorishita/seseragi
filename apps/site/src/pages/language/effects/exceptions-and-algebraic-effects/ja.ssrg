@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "throw・catch・try・perform・handleはlanguage formではない",
   invalidBody: "EやRを迂回するpseudo syntaxを書きません。domain errorはdataにし、回復可能operationはEffectへ持ち上げ、adapter固有exception処理はinterop境界へ置きます。",
   diagnosticsBody: "parserは未対応exception・handler formをsource range付きで報告します。interop診断はadapter operationとnormalize済みForeignErrorを保持し、任意host stackをtyped program dataとして公開しません。",
-  provenanceBody: "仕様5.16を扱います。defectとtyped failure channelはそれぞれのreference pageで定義します。"
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Binding syntax does not invent a second inference rule",
   invalidBody: "A let cannot accept a refutable pattern just because the right side happens to match at runtime. Choose match or a filtering comprehension when failure is part of the control flow.",
   diagnosticsBody: "The compiler, typed representation, analysis, and language server share the same typed-pattern result, including symbol identity, nested types, refutability, and source-range diagnostics.",
-  provenanceBody: "This article covers specification 3.2.1 and is the common contract used by every pattern-bearing construct."
 }

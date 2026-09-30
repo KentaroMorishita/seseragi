@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "省略可能 markerは構造的レコード専用",
   invalidBody: "struct フィールド、関数引数、ADT 内部の値へ直接?を付けません。不正位置の?、重複フィールド、不明なaccess、不在の必須フィールドを要求するpatternは、構文か型の担当境界で拒否します。",
   diagnosticsBody: "formatterは有効なmarkerの配置を揃えます。構文解析器は位置、レコードの型検査は存在の互換性、access、patternを担当し、不在と必須Maybeを区別します。",
-  provenanceBody: "言語仕様1.10とレコード型・patternの存在規則に基づきます。有効操作と拒否操作を短い専用例で示します。"
 }

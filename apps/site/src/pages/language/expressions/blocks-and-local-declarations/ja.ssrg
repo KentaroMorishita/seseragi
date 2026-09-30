@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "空のbraceはrecord",
   invalidBody: "{}はempty record literalで、Unit blockではありません。何もしないUnit blockは{ () }です。type、trait、impl、instance、operator、foreign、pub declarationはblock内へ置けません。",
   diagnosticsBody: "後から宣言するlocal bindingへの参照はname未解決です。相互再帰するlocal functionは一つのrec groupへ置き、全memberのscopeを明示します。",
-  provenanceBody: "仕様3.2のblock value、local declaration、scope、capture、再帰、empty recordとの違いを扱います。"
 }

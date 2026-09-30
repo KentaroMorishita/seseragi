@@ -23,7 +23,6 @@ pub struct SyntaxCopy {
   invalidTitle: String,
   invalidBody: String,
   diagnosticsBody: String,
-  provenanceBody: String
 }
 
 fn blocks english: SyntaxCopy
@@ -51,10 +50,8 @@ fn blocks english: SyntaxCopy
     ],
     invalidDetails,
     [
-      Heading ("diagnostics", localized "Diagnostics and tools" "診断とtooling"),
+      Heading ("diagnostics", localized "Diagnostics and tools" "エラーの確認"),
       Paragraph ([Words (localized english.diagnosticsBody japanese.diagnosticsBody)]),
-      Heading ("specification", localized "Specification source" "仕様source"),
-      Paragraph ([Words (localized english.provenanceBody japanese.provenanceBody)]),
       Heading ("related-rules", localized "Related rules" "関連する規則"),
       BulletList related
     ]

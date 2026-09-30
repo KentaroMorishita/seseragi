@@ -2,13 +2,26 @@ import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Features the language does not have",
-  summary: "Intentional absences define the core model and point to explicit replacements rather than unfinished placeholders.",
-  ruleTitle: "Absence is part of the design",
-  ruleBody: "Seseragi omits features that would add ambient mutation, hidden absence, implicit conversion, non-local control, value-directed magic, or unrestricted compile-time rewriting. Similar foreign behavior is contained at an explicit boundary.",
-  consequenceOne: "Ordinary data has no reassignment, mutable fields, null, undefined, truthiness, implicit numeric conversion, or non-exhaustive match.",
-  consequenceTwo: "Recoverable error handling does not use exceptions, and Effect requirements are not a general union/intersection type or an algebraic perform/handle system.",
-  consequenceThree: "The language has no general syntax/procedural macros, user-defined prefix/postfix operators, or return, break, and continue control transfer.",
-  boundaryTitle: "Not present does not mean not implemented yet",
-  boundaryBody: "These surfaces are outside the language model. Their supported replacements—new values, Maybe/Either/Effect, exhaustive matching, ordinary functions, reduceUntil/forEachUntil, closed deriving, and explicit interop—are the intended design.",
-  provenanceBody: "Section 0.4 is the normative inventory. Later chapters define the replacements and the limited compile-time behavior of deriving and template strings."
+  summary: "Some familiar constructs are intentionally absent. Find the Seseragi mechanism for the problem you want to solve.",
+  ruleTitle: "Find the operation, not an identical spelling",
+  ruleBody: "You cannot always translate another language by replacing keywords. Updating a record creates a new record, not a field assignment. A function produces its body expression's value rather than using return. The list below pairs absent constructs with their alternatives.",
+  consequencesTitle: "Three distinctions to keep clear",
+  consequenceOne: "Maybe and Either are data types for absence and typed results. Effect describes executable work and possible failure. These are not nullable values or exception-based error handling in disguise.",
+  consequenceTwo: "Effect can combine required services, but that limited mechanism does not allow arbitrary union and intersection types for ordinary data. It is not a perform/handle algebraic-effect system.",
+  consequenceThree: "deriving generates supported instances, and template strings format embedded values. These defined features do not let users invent arbitrary syntax through macros.",
+  boundaryTitle: "An absent construct is not a missing application capability",
+  boundaryBody: "Changing application state, recovering from errors, and stopping collection traversal early are still possible. Use explicit state APIs, typed results, and reduceUntil or forEachUntil respectively. Interop adapts foreign constructs without changing ordinary Seseragi rules."
 }
+
+pub fn alternatives -> Array<String> = [
+  "Reassignment and mutable fields: create a new value, or use an explicit state API when the operation really changes state.",
+  "null, undefined, and implicit nullable types: use Maybe; decode potentially null foreign values before using them.",
+  "Implicit numeric conversions and truthiness: convert numeric types explicitly; an if condition must be Bool.",
+  "Non-exhaustive matches: handle every possible case, or explicitly handle remaining cases with a wildcard.",
+  "Exceptions for recoverable failure: use Either for a result, or Effect for executable work with typed failure.",
+  "Arbitrary union and intersection types: use a data type listing the cases you need. Combining Effect or Stream services is a separate, limited mechanism.",
+  "perform/handle algebraic effects: Seseragi instead composes typed Effect values and the services they require.",
+  "General syntax and procedural macros: use ordinary functions. deriving and template strings are defined features, not arbitrary code-rewriting tools.",
+  "User-defined prefix or postfix operators: use a named function or a declared infix operator.",
+  "return, break, and continue: use a function's result expression; use reduceUntil or forEachUntil to stop a collection traversal early."
+]

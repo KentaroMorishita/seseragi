@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Compilation is not a law certificate",
   invalidBody: "An implementation can type-check and still violate reflexivity, ordering consistency, identity, or associativity. Such an instance is semantically invalid even when no compiler diagnostic is possible.",
   diagnosticsBody: "Type diagnostics still catch malformed methods and missing evidence. Law failures belong to tests and should report the property, generated input, and smallest reproducible counterexample.",
-  provenanceBody: "This article covers specification 4.8. Individual standard-library contract pages define the exact laws for each trait."
 }

@@ -1,19 +1,21 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.visible-costs" "/docs/language/model/visible-costs/" (en.copy ()) (ja.copy ()) [] [
+  principlePage "language.model.visible-costs" "/docs/language/model/visible-costs/" (en.copy ()) (ja.copy ()) "principle-visible-costs" "[2, 4, 6]" [
     [InternalLink (
-      localized "Immutable by default" "デフォルトで不変",
-      "/docs/language/model/immutable-by-default/"
+      localized "Tuples, arrays, and lists" "タプル・配列・リスト",
+      "/docs/language/data/tuples-arrays-and-lists/"
     )],
     [InternalLink (
-      localized "Backend-independent semantics" "生成先に依存しない意味",
-      "/docs/language/model/backend-independent-semantics/"
+      localized "Erasure and runtime representation" "型消去と実行時表現",
+      "/docs/language/types/erasure-and-runtime-representation/"
     )],
-    [InternalLink
-        (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
+    [InternalLink (
+      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    )]
   ]
