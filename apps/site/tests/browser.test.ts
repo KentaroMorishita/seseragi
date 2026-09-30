@@ -454,7 +454,9 @@ try {
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(await page.locator("h1").textContent(), "do記法")
         const japaneseDoText = await page.locator("body").innerText()
-        assert.ok(japaneseDoText.includes("doはgenericなMonad構文"))
+        assert.ok(
+          japaneseDoText.includes("doは、Monadの処理を読みやすく書く構文")
+        )
         assert.ok(!japaneseDoText.match(/#[0-9]+/u))
         const japaneseDoWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
@@ -609,11 +611,13 @@ try {
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(
           await page.locator("h1").textContent(),
-          "Signalとtransaction"
+          "Signalとトランザクション"
         )
         const japaneseSignalText = await page.locator("body").innerText()
         assert.ok(
-          japaneseSignalText.includes("Signal stateにはEffectからaccessする")
+          japaneseSignalText.includes(
+            "Signalの現在値は、Effectの中で読み書きする"
+          )
         )
         assert.ok(!japaneseSignalText.match(/#[0-9]+/u))
         const japaneseSignalWidth = await page.evaluate(

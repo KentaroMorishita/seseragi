@@ -1,14 +1,14 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Effectのenvironment requirement",
-  summary: "RはEffectが実行境界へ要求するserviceを正確に表すstructural recordです。",
-  ruleTitle: "必要serviceはglobalではなくfieldで表す",
-  ruleBody: "Effectを合成するとrequired fieldの和集合を取ります。同名fieldは同じcanonical型でなければならず、optionalにはできません。serviceはambient singletonではなくEffect.serviceで取得します。",
-  typingBody: "Effect<R1, E, A>は、R1の全fieldを同じ型で含むrequirement record R2へwidenできます。これはEffect専用規則で、generic型一般のcovarianceではありません。public generic signatureではrestricted requirement merge R & { service: Service }を使います。",
-  evaluationBody: "Effect.provideは実行前にenvironmentを固定し、provideSomeは大きな外側environmentから内側requirementへ変換します。hostやprovider wrapperがrecord全体を先に検証するため、runtime lookupは失敗しません。",
-  invalidTitle: "optional capabilityは明示的なservice operationにする",
-  invalidBody: "optional fieldを許すとservice欠落の判断がruntime lookupへ移ります。optional capabilityはMaybeを返すoperationにするか、実行前に具体serviceを選んでprovideします。",
-  diagnosticsBody: "requirement errorは競合field、両canonical型、source spanを示します。境界検証は選択targetが提供できないserviceを処理開始前に列挙します。",
-  provenanceBody: "仕様5.5を扱い、仕様2.6のrestricted requirement merge規則へ接続します。"
+  title: "Effectが必要とするサービス",
+  summary: "型Rに、計算を実行するために必要なサービスをレコードのフィールドとして書きます。",
+  ruleTitle: "サービスを、暗黙のグローバル値にしない",
+  ruleBody: "複数のEffectを組み合わせると、それぞれが必要とするサービスをまとめて要求します。同じ名前のサービスは型も一致しなければならず、省略可能なフィールドにはできません。計算の中では、暗黙のグローバル値ではなくEffect.serviceを通して取得します。",
+  typingBody: "ある計算が必要とするサービスをすべて同じ型で備えていれば、追加のサービスを持つ環境でもその計算を使えます。これはEffectに対して定めた規則であり、任意のジェネリック型に適用できるものではありません。ジェネリックな関数の型では、R & { service: Service }のように必要なサービスを加えられます。",
+  evaluationBody: "Effect.provideは、計算を実行する前に使うサービスを指定します。provideSomeは、外側の環境から計算が必要とする環境を作ります。ホストやプロバイダーは、処理を始める前に環境全体を検査するため、計算の途中で必要なサービスが見つからなくなることはありません。",
+  invalidTitle: "使えるかどうかが変わる機能は、操作の結果で表す",
+  invalidBody: "サービスのフィールド自体を省略可能にすると、計算の途中で存在確認が必要になってしまいます。機能が使えない場合を表したいなら、Maybeを返す操作をサービスに用意するか、実行前に使えるサービスを選んでprovideします。",
+  diagnosticsBody: "必要なサービスが合わない場合は、フィールド名と型、問題の位置を確認してください。実行する環境で提供できないサービスは、処理を開始する前に報告されます。",
+  provenanceBody: "言語仕様5.5に基づきます。R & Sでサービスを組み合わせる規則は2.6で定めています。"
 }

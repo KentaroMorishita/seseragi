@@ -1,14 +1,14 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Signalとtransaction",
-  summary: "Signal<A>は型付きdependency graphのread-only nodeで、MutableSignal<A>が明示的な更新capabilityを加えます。",
-  ruleTitle: "Signal stateにはEffectからaccessする",
-  ruleBody: "生成・読み取り・更新・購読はruntime stateへ触れるためTaskまたはEffectを返します。MutableSignal<A>はSignal<A>へwrite capabilityを落とせますが、逆変換はありません。",
-  typingBody: "planSetとplanUpdateはopaqueなSignalChangeを作り、targetを公開せず異なるvalue型のchangeを同じArrayへ入れられます。transactionはそのplanを受け取りTask<Unit>を返します。",
-  evaluationBody: "transactionはArray順にchangeをstageし、全updateを計算して一度だけ公開します。staging中のdefectやcommit前cancellationでは一件も公開せず、commit開始後は再計算と通知完了までatomicに進みます。",
-  invalidTitle: "Signalは暗黙に変化するpure valueではない",
-  invalidBody: "pure codeはSignalを保持できますが現在値を読めません。Effect内でSignal.readまたはprefix *を使い、現在値に依存するwriteにはupdateを使います。",
-  diagnosticsBody: "型errorはread-only SignalとMutableSignalを区別し、planしたvalue型の不一致箇所を示します。runtime診断はstaging・commit・derived再計算・subscriber通知phaseを識別します。",
-  provenanceBody: "仕様5.12を扱います。derived graph semanticsとSignal operatorはそれぞれ別pageです。"
+  title: "Signalとトランザクション",
+  summary: "時間とともに変わる値をSignalで読み取り、MutableSignalで更新します。複数の更新はまとめて公開できます。",
+  ruleTitle: "Signalの現在値は、Effectの中で読み書きする",
+  ruleBody: "Signalの生成、読み取り、更新、購読は状態にアクセスするため、TaskまたはEffectを返します。MutableSignal<A>を読み取り専用のSignal<A>として渡すことはできますが、その逆はできません。読み取り専用にしても、中身の型Aは変わりません。",
+  typingBody: "planSetとplanUpdateで更新の計画を作り、transactionに渡します。計画の型SignalChangeは更新対象を外から隠すため、中身の型が違うSignalへの更新も同じArrayにまとめられます。transactionはTask<Unit>を返します。計画を作るだけでは、まだ更新は公開されません。",
+  evaluationBody: "transactionは配列の順に更新を準備し、すべての結果を計算してから一度に公開します。準備中に想定外の不具合が起きた場合や、公開前にキャンセルされた場合は、一件も公開しません。公開を開始した後は、派生値の再計算と購読者への通知が終わるまで、一まとまりとして処理します。",
+  invalidTitle: "純粋な式の中では、Signalの現在値を読めない",
+  invalidBody: "純粋なコードでSignal自体を受け渡すことはできますが、現在値は読めません。Effectの中でSignal.readか接頭辞*を使います。現在値をもとに新しい値を決めたい場合は、読み取った古い値を後で書き戻すのではなく、updateを使います。",
+  diagnosticsBody: "読み取り専用のSignalを更新しようとした場合や、更新する値の型が合わない場合は型エラーになります。実行時の診断では、更新の準備、公開、派生値の再計算、購読者への通知のどの段階で問題が起きたかを区別します。",
+  provenanceBody: "言語仕様5.12に基づきます。派生Signalの依存関係と、Signalの演算子は、別のページで説明しています。"
 }
