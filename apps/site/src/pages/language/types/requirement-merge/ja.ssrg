@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Requirement merge" "Effect/Stream requirement限定のR & S・normalization・conflict診断を説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "要求のマージ",
+  summary: "R & SはEffect・Streamの要求位置だけでサービスをまとめ、一般の交差型にはしません。",
+  ruleTitle: "必要なサービスフィールドをコンパイル時に統合する",
+  ruleBody: "EffectまたはStreamの第一型引数では、必須フィールドの構造的レコード、または完全なレコード型の要求と分かるパラメーターをR & Sでまとめられます。R & {}はRです。衝突がなければ順序と括弧を変えても同じフィールドの対応になります。",
+  identityBody: "マージにコンストラクター、実行時タグ、フィールド参照、値の表現はありません。同型の重複フィールドは一つにまとめます。同名で型が異なる場合はSES-E0001です。一つのホストサービス名で非互換の要求を満たせないためです。",
+  checkingBody: "被演算子は必須フィールドのレコード型の要求か、その位置で適切に制約されるパラメーターです。省略可能なフィールド、名前付きの構造体、通常の値型はマージできません。正規化後の実行入口の要求も閉じている必要があります。",
+  invalidTitle: "&は汎用交差ではない",
+  invalidBody: "Effect・Streamの要求以外でR & Sを使うとSES-T0501です。値の単独&も演算子ではありません。要求パラメーターは行型の断片でなく完全なレコードです。",
+  diagnosticsBody: "SES-E0001は衝突したフィールドと両型、SES-T0501は許されない位置を示します。型別名の展開と正規化を追い、どのジェネリックな合成がサービスを加えたか確認してください。",
+  provenanceBody: "言語仕様2.6の要求のマージに基づきます。有効なR & {clock: Clock}と拒否する名前付きマージを検査します。"
+}

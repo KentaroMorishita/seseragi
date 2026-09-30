@@ -1,0 +1,13 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { referencePage } from "../../reference-article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  referencePage "language.modules.entry-points" "/docs/language/modules/entry-points/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("language-program-entry", localized "Executable entry points" "実行入口")] [] [
+    [InternalLink (localized "Programs and entry points" "プログラムと実行入口", "/docs/language/model/programs/")],
+    [InternalLink (localized "Effect runtime boundaries" "Effectのruntime境界", "/docs/language/effects/runtime-boundaries/")],
+    [InternalLink (localized "Module initialization" "モジュールの初期化", "/docs/language/modules/initialization/")]
+  ]

@@ -1,0 +1,10 @@
+newtype UserId = Int
+newtype OrderId = Int
+
+fn toInt id: UserId -> Int = match id {
+  UserId value -> value
+}
+
+let user = UserId 42
+let order = OrderId 42
+let value = toInt user

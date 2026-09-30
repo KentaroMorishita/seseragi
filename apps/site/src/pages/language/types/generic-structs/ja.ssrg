@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "ジェネリックstruct",
+  summary: "fieldから型引数を推論し、参照や更新でも具体化された型を保ちます。",
+  ruleTitle: "fieldが構築する型を制約する",
+  ruleBody: "struct Box<A>はA型のfieldを持つnominalな型の族を宣言します。Box { value: 42 }はfieldからBox<Int>を推論します。Box<String> { value: \"hello\" }は型引数を明示し、fieldをStringとして検査します。全fieldと期待型は同じ型適用を制約し、矛盾する情報から混在したBoxは作りません。",
+  identityBody: "fieldを参照するときは、受け取った値の型引数を代入します。Box<Int>のvalueはInt、Box<String>のvalueはStringです。同じ宣言を異なる静的な型引数で使っているのであって、無関係なfield検索ではありません。structはnominalなので、valueというfieldを持つrecordがBoxになるわけではありません。",
+  checkingBody: "明示した型引数は、fieldと周囲の期待型の両方に一致する必要があります。値の型注釈に未解決の_を残すことはできません。更新とspreadは具体化済みのstructの型をそのまま保ちます。Box<Int>のvalueを更新するにはIntが必要で、結果もBox<Int>です。Stringへ暗黙に型引数を変えません。",
+  invalidTitle: "更新は型を変えるコンストラクターではない",
+  invalidBody: "Box<Int> { value: \"hello\" }は矛盾しています。Box<Int>からBox<String>が必要なら、例のlabelのように変換して新しい値を構築します。recordのwidth subtypingを使って、nominal型の型引数を変更することもできません。",
+  diagnosticsBody: "fieldの不一致を調べる前に、受け取った値の具体的な型を確認してください。fieldから決まらないパラメーターには期待型や明示した型引数を与えます。更新に失敗した場合は同じ型の値を使うか、明示的に構築し直してください。",
+  provenanceBody: "言語仕様2.15に基づく規則です。表示する短い例はこのリファレンス専用に管理し、公式コンパイラで検査しています。Tourのレッスンではありません。"
+}

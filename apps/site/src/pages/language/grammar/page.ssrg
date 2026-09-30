@@ -1,0 +1,66 @@
+import { BuildInput } from "../../../model/build"
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  BulletList,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page input: BuildInput -> PageDefinition = PageDefinition {
+  id: "language.grammar",
+  path: "/docs/language/grammar/",
+  kind: Article,
+  title: localized (en.title ()) (ja.title ()),
+  summary: localized (en.summary ()) (ja.summary ()),
+  blocks: [
+    Heading ("reading", localized (en.readingTitle ()) (ja.readingTitle ())),
+    Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+    Paragraph ([Words (localized (en.lexical ()) (ja.lexical ()))]),
+    Heading ("productions", localized (en.grammarTitle ()) (ja.grammarTitle ())),
+    Paragraph ([Words (localized (en.grammarBody ()) (ja.grammarBody ()))]),
+    Terminal (localized "Appendix A · EBNF" "付録A · EBNF", input.grammar),
+    Heading ("semantic-boundaries", localized (en.limitsTitle ()) (ja.limitsTitle ())),
+    Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+    Paragraph ([Words (localized (en.ambiguity ()) (ja.ambiguity ()))]),
+    Heading ("related", localized (en.relatedTitle ()) (ja.relatedTitle ())),
+    BulletList (
+      [
+        [InternalLink (
+          localized "Source text and comments" "ソースとコメント",
+          "/docs/language/syntax/source-text/"
+        )],
+        [InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        )],
+        [InternalLink (
+          localized "Operator precedence" "演算子の優先順位",
+          "/docs/language/syntax/operator-precedence/"
+        )],
+        [InternalLink (
+          localized "Blocks and declarations" "ブロックとローカル宣言",
+          "/docs/language/expressions/blocks-and-local-declarations/"
+        )],
+        [InternalLink
+            (localized "Pattern matching" "パターンマッチ", "/docs/language/patterns/match/")],
+        [InternalLink (
+          localized "Type constructors" "型構築子",
+          "/docs/language/types/type-constructors/"
+        )],
+        [InternalLink (
+          localized "Module declarations" "モジュールの宣言",
+          "/docs/language/modules/top-level/"
+        )]
+      ]
+    ),
+    Heading ("source", localized (en.sourceTitle ()) (ja.sourceTitle ())),
+    Paragraph ([Words (localized (en.source ()) (ja.source ()))]),
+  ]
+}

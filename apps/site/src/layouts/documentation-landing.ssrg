@@ -1,5 +1,11 @@
 import * as html from "std/web/html"
+import * as arrays from "std/array"
 import { article } from "../components/article"
+import {
+  directoryGroups,
+  directoryHeadings,
+  referenceDirectory
+} from "../components/reference-directory"
 import { mobileOnThisPage, onThisPage } from "../components/on-this-page"
 import { mobileSidebar, sidebar } from "../components/sidebar"
 import { Messages } from "../i18n/model"
@@ -30,10 +36,19 @@ pub fn documentationLandingLayout<Action> input: BuildInput
               html.p { class: "page-lead", children: translate locale page.summary }
             ]
           },
-          mobileOnThisPage messages locale page.blocks,
+          mobileOnThisPage messages locale
+            (arrays.concat [
+              directoryHeadings (directoryGroups page areas),
+              page.blocks
+            ]),
+          referenceDirectory locale (directoryGroups page areas),
           article input messages locale page.blocks
         ]
       },
-      onThisPage messages locale page.blocks
+      onThisPage messages locale
+            (arrays.concat [
+              directoryHeadings (directoryGroups page areas),
+              page.blocks
+            ])
     ]
   }

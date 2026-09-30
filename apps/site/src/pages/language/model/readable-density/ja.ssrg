@@ -1,4 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy = incomplete "読める密度" "型・評価順・failure・costを隠さず簡潔に組み立てます。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "読みやすい密度",
+  summary: "簡潔な形式でデータの形と処理を直接示し、型、順序、失敗、コストを隠しません。",
+  ruleTitle: "密度は合成によって生まれる",
+  ruleBody: "カリー化、部分適用、pipeline、型推論、comprehension、Signal 演算子は、展開と評価が明確な場合に手間を減らします。文字数を最小にすることが読みやすさではありません。",
+  consequenceOne: "独自構文には型、評価順序、展開、失敗条件、formatterの振る舞いを定義します。",
+  consequenceTwo: "境界の内側で簡潔に合成しても、Effect、失敗、module、外部連携、能力の境界は見えるままにします。",
+  consequenceThree: "canonical formatterは等価なソースを一つの読みやすい配置にし、別の言語スタイルを作りません。",
+  boundaryTitle: "短さは隠れた制御の流れを正当化しない",
+  boundaryBody: "一般的なmacro、暗黙変換、非局所的なloop control、truthinessを、よく使うコードを短くするだけの理由では追加しません。構文は、その下の通常関数と同程度に説明可能である必要があります。",
+  provenanceBody: "言語仕様0.2に基づきます。関数適用、pipeline、演算子、comprehension、Signal 演算子、formatterで具体的な形式を定めます。"
+}

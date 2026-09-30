@@ -4,11 +4,7 @@ import { anchor } from "../components/primitives"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
 import { Locale, localizedRoute, translate } from "../model/locale"
-import {
-  NavigationArea,
-  NavigationGroup,
-  PageDefinition
-} from "../model/page"
+import { NavigationArea, NavigationGroup, PageDefinition } from "../model/page"
 
 fn groupPath area: NavigationArea -> group: NavigationGroup -> String =
   match group.sections {
@@ -20,22 +16,15 @@ fn groupLink<Action> locale: Locale
   -> area: NavigationArea
   -> group: NavigationGroup
   -> html.Html<Action> =
-  anchor
-    (translate locale group.title)
-    (localizedRoute locale (groupPath area group))
-    "reference-topic-link"
+  anchor (translate locale group.title) (localizedRoute locale (groupPath area group)) "reference-topic-link"
 
-fn areaCard<Action> locale: Locale
-  -> area: NavigationArea
-  -> html.Html<Action> =
+fn areaCard<Action> locale: Locale -> area: NavigationArea -> html.Html<Action> =
   html.section {
     class: "reference-area-card",
     children: [
       html.h2 {
-        children: anchor
-          (translate locale area.title)
-          (localizedRoute locale area.landing.path)
-          "reference-area-link"
+        children: anchor (translate locale area.title)
+          (localizedRoute locale area.landing.path) "reference-area-link"
       },
       html.p {
         class: "reference-area-description",

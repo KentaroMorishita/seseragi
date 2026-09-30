@@ -9,6 +9,12 @@ setDefaultTimeout(180_000)
 
 type SiteManifest = {
   pages: string[]
+  referenceCoverage: Array<{
+    area: string
+    planned: number
+    published: number
+    missing: string[]
+  }>
   examples: Array<{ id: string; sourcePath: string }>
   referenceModules: Array<{
     symbols: Array<{ itemKind: string }>
@@ -50,7 +56,40 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3938)
+    expect(manifest.pages).toHaveLength(3974)
+    expect(
+      manifest.referenceCoverage.find(({ area }) => area === "language")
+    ).toEqual({
+      area: "language",
+      planned: 106,
+      published: 106,
+      missing: [],
+    })
+    expect(
+      manifest.referenceCoverage.find(({ area }) => area === "interop")?.missing
+        .length
+    ).toBeGreaterThan(0)
+    const grammar = readFileSync(
+      join(output, "docs/language/grammar/index.html"),
+      "utf8"
+    )
+    const normativeGrammar = readFileSync(
+      join(root, "docs/spec/grammar.md"),
+      "utf8"
+    )
+      .split("```ebnf\n")[1]
+      .split("```")[0]
+      .trimEnd()
+    expect(textContent(grammar)).toContain(normativeGrammar)
+    const japaneseApi = readFileSync(
+      join(output, "ja/docs/library/array/function/get/index.html"),
+      "utf8"
+    )
+    expect(japaneseApi).toContain("APIの詳細説明（英語原文）")
+    expect(japaneseApi).toContain('<p lang="en">')
+    expect(textContent(japaneseApi)).not.toMatch(/準備中|整備中/u)
+    expect(japaneseApi).toContain("型パラメーター")
+    expect(japaneseApi).toContain('href="/ja/docs/library/array/"')
     for (const route of [
       "/",
       "/docs/",
@@ -277,9 +316,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(japanese).toContain("詳しい日本語解説は準備中です")
+    expect(textContent(japanese)).toContain("空白で引数を一つずつ適用する")
+    expect(textContent(japanese)).not.toMatch(/準備中|整備中|#[0-9]+/u)
     expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
-    expect(japanese).toContain("Language Reference")
+    expect(japanese).toContain("言語リファレンス")
     expect(japanese).toContain('class="breadcrumbs"')
     expect(japanese).toContain('class="reference-sequence"')
     expect(japanese).toContain('href="/ja/docs/language/syntax/method-calls/"')

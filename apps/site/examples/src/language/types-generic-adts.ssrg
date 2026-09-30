@@ -1,0 +1,11 @@
+type Outcome<E, A> =
+  | Failure E
+  | Success A
+
+type Tree<A> =
+  | Leaf A
+  | Node (Array<Tree<A>>)
+
+let success: Outcome<String, Int> = Success 42
+let failure: Outcome<String, Int> = Failure "missing"
+let tree: Tree<Int> = Node [Leaf 1, Leaf 2]

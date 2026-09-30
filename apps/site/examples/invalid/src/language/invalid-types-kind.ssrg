@@ -1,0 +1,2 @@
+alias Bad<M<_>, A> = M<A>
+let value: Bad<Int, String> = "wrong"

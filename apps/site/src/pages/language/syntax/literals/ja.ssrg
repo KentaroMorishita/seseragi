@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "literal" "各literalのspelling・型・range・token境界・評価規則を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "リテラル",
+  summary: "綴りごとの型、値域、token境界、評価規則を説明します。",
+  formsTitle: "リテラルの形で型が決まる",
+  formsBody: "整数の綴りはInt、小数点または指数があればFloatです。True・FalseはBool、一重引用符のscalarはChar、二重引用符はStringです。backtick直後が[ならList、それ以外ならtemplate String、()はUnitです。",
+  typingBody: "数値literalは型クラスでoverloadしません。Intには十進・二進・八進・十六進があり、別のunary minusを考慮した値域は±9007199254740991です。Floatは十進の綴りからbinary64になります。",
+  evaluationBody: "template内の式は左から右へ一度ずつ評価し、各型のShowで文字列にします。結果は純粋なStringでI/Oをしません。Floatはnearest・ties-to-evenで丸め、有限な綴りからinfinityへoverflowすると拒否します。underflowは符号付きzeroを保ちます。",
+  invalidTitle: "壊れた数値を短い有効tokenに分割しない",
+  invalidBody: "_は同じ基数のdigitの間に一個だけ置けます。十進の先行zero、baseのdigit不足、十六進Float、suffix、未完の指数、1.、.5は拒否します。短い有効tokenと後続tokenへ分割して受理しません。",
+  diagnosticsBody: "不正な綴りと範囲外は数値tokenにSES-P0203を出します。後の整数演算で範囲を越えると実行時 defectで、wrapしません。formatterは有効な数値の綴りとseparatorを保ちます。",
+  provenanceBody: "言語仕様1.2のescape以外の規則に基づきます。有効なliteralと不正なseparatorをsiteの検査で確認します。"
+}

@@ -1,0 +1,2 @@
+alias Pair<A> = (A, A)
+let wrong: Pair<Int> = (1, "hello")

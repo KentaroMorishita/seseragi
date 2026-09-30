@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Operator precedence" "全built-in operatorの優先順位・結合・短絡評価・関数値化を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "演算子の優先順位",
+  summary: "組み込み演算子の優先順位、結合、短絡評価、関数値として使える範囲を説明します。",
+  formsTitle: "accessからSignal更新までの順序",
+  formsBody: "強い順にフィールド・メソッド・index、適用、prefixの!・-・Signal readの*、**、乗除余、加減とList cons、比較、&&、||、Maybe fallbackの??、>>=・<$>・<*>・|>、$、:=です。",
+  typingBody: "算術、比較、cons、型クラスの二項演算子は括弧でカリー化された関数値にできます。期待型とtrait制約で一つのoverloadを選びます。短絡、pipeline、$、Signal、prefixは関数値にできません。",
+  evaluationBody: "&&、||、??は必要な場合だけ右を評価します。他の二項演算子は左、右の順です。**、:、??、$、:=は右結合、比較は非結合、それ以外の組み込みは左結合です。",
+  invalidTitle: "優先順位で曖昧な連鎖は許されない",
+  invalidBody: "a < b < cは拒否し、a < b && b < cと書きます。overloadの演算子値が曖昧なら型注釈が必要です。unaryの*・-と二項の乗算・減算は位置で区別し、別のグループには括弧を使います。",
+  diagnosticsBody: "構文解析器とformatterは同じ表を使います。非結合の連鎖は構文、証拠不足や演算子値の曖昧さは型の診断です。ツールでも短絡形式を通常の関数呼び出しと混同しません。",
+  provenanceBody: "言語仕様1.7に基づきます。Maybe、trait、pipeline、custom 演算子、Signalの各規則と合わせて参照します。"
+}

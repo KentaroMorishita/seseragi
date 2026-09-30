@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Type system" "static typing・HM inference・nominal/structural identity・constraintを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "型システム",
+  summary: "実行前にすべての式の型を確定します。不明な意味を暗黙のAnyやUnknownで通しません。",
+  ruleTitle: "実行より先に静的な型を確定する",
+  ruleBody: "型推論はHindley–Milnerの単一化を基礎に、名前付きなADT・struct・newtype、不変レコードの構造的型付け、trait制約、Neverからの型変換を加えます。型検査に失敗したプログラムは実行しません。",
+  identityBody: "名前付き型は表現が同じでも宣言の同一性を保ちます。レコードは構造で同一性を決めます。型が生成を導いても、バックエンドが値、順序、失敗、Effectの意味を変える権限にはなりません。",
+  checkingBody: "局所的な型の方程式とtraitの証拠を解決します。一つに決まらなければ注釈を求め、動的な抜け道を挿入しません。成功したビルドに未解決のUnknownを残して実行することはありません。",
+  invalidTitle: "静的な検査は推測ではない",
+  invalidBody: "将来の実行時値から型を決めたり、曖昧なinstanceを選んだり、不一致をAnyに変えたりしません。名前付き・構造的の互換性、Never、レコード幅は限定された規則で、一般的な変換ではありません。",
+  diagnosticsBody: "構文解析器は壊れた型構文、型検査は単一化、証拠不足、曖昧さ、不正な型変換を診断します。コンパイラ、formatter、LSP、ドキュメントの例は別の型構文を作らず、同じソースのモデルを使います。",
+  provenanceBody: "言語仕様2.1に基づきます。例では名前付きな型と型注釈、不変の値を短く示します。"
+}

@@ -17,6 +17,7 @@ import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { playgroundUrlForSource } from "../../playground/src/workspace/source-link"
+import { referenceCoverage } from "./coverage"
 import { compilerReferenceModules } from "./reference"
 
 const app = resolve(import.meta.dir, "..")
@@ -75,7 +76,112 @@ function generatorInput(playgroundUrl: string) {
     origin: "",
     playgroundUrl,
     tourUrl: new URL("tour/", playgroundUrl).href,
+    grammar: readFileSync(resolve(root, "docs/spec/grammar.md"), "utf8")
+      .split("```ebnf\n")[1]
+      .split("```")[0]
+      .trimEnd(),
     examples: [
+      canonicalExample(
+        "types-kind-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-kind.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-function-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-generic-function.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-adt-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-generic-adt.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-struct-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-generic-struct.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-alias-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-generic-alias.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-newtype-invalid",
+        "apps/site/examples/invalid/src/language/invalid-types-newtype.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-re-exports",
+        "apps/site/examples/src/language/modules-re-exports.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "modules-namespaces",
+        "apps/site/examples/src/language/modules-namespaces.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "modules-initialization",
+        "apps/site/examples/src/language/modules-initialization.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-kinds",
+        "apps/site/examples/src/language/types-kinds.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-scope",
+        "apps/site/examples/src/language/types-scope.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-functions",
+        "apps/site/examples/src/language/types-generic-functions.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-let-rank",
+        "apps/site/examples/src/language/types-let-rank.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-adts",
+        "apps/site/examples/src/language/types-generic-adts.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-structs",
+        "apps/site/examples/src/language/types-generic-structs.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-methods",
+        "apps/site/examples/src/language/types-generic-methods.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-generic-aliases",
+        "apps/site/examples/src/language/types-generic-aliases.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-newtypes",
+        "apps/site/examples/src/language/types-newtypes.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-variance",
+        "apps/site/examples/src/language/types-variance.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "types-erasure",
+        "apps/site/examples/src/language/types-erasure.ssrg",
+        playgroundUrl
+      ),
       canonicalExample(
         "modules-domain",
         "apps/site/examples/src/language/modules-domain.ssrg",
@@ -641,6 +747,12 @@ function routeFile(output: string, route: string): string {
 function validateInternalLinks(pages: RenderedPage[]) {
   const byRoute = new Map(pages.map((page) => [page.route, page.html]))
   for (const page of pages) {
+    const ids = [...page.html.matchAll(/\sid="([^"]+)"/gu)].map(([, id]) => id)
+    assert.equal(
+      new Set(ids).size,
+      ids.length,
+      `Duplicate HTML id in ${page.route}`
+    )
     const links = page.html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/gu)
     for (const match of links) {
       const href = match[1]
@@ -754,7 +866,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (94 + referencePageCount),
+      2 * (112 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(
@@ -763,6 +875,16 @@ export function buildSite(options: BuildOptions) {
       "Duplicate generated route"
     )
     validateInternalLinks(pages)
+    const coverage = referenceCoverage(pages.map(({ route }) => route))
+    for (const { route, html } of pages) {
+      if (!route.startsWith("/ja/")) continue
+      const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/u)?.[1]
+      assert.ok(main, `Missing article main: ${route}`)
+      assert.ok(
+        !/準備中|整備中|詳しい日本語解説|日本語本文は#[0-9]+/u.test(main),
+        `Untranslated article placeholder: ${route}`
+      )
+    }
     mkdirSync(output, { recursive: true })
     for (const page of pages) {
       assert.ok(!page.html.includes("site-build-error"), page.route)
@@ -780,6 +902,7 @@ export function buildSite(options: BuildOptions) {
     const manifest = {
       schema: 1,
       generator: "seseragi/official-site",
+      referenceCoverage: coverage,
       pages: pages.map(({ route }) => route).sort(),
       examples: input.examples.map(({ id, sourcePath, sha256 }) => ({
         id,

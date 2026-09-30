@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Dependency graphs and cycles",
+  summary: "Keep the complete module graph acyclic, including type, trait and re-export edges.",
+  ruleTitle: "Every import is a dependency edge",
+  ruleBody: "The module graph includes ordinary imports and re-exports. Cycles are forbidden whether the imported declaration is a value, type or trait. There is no type-only exception and no distinction that allows a cycle merely because no immediate function call crosses it. An acyclic graph gives linking and initialization one consistent dependency order.",
+  typingBody: "The focused example is a one-way consumer-to-domain dependency. Importing the same domain with two equivalent spellings still points to one canonical node. Graph identity follows package identity and normalized module path, not the count of import statements. Aliasing a name does not break a cycle.",
+  evaluationBody: "To remove a cycle, move shared types or contracts into a third module that both depend on, then keep their implementation dependencies one-way. If functions truly need mutual recursion within one module, declare them in the same rec group. That local rule does not grant permission for mutually importing modules.",
+  invalidTitle: "Type-only imports do not make a cycle harmless",
+  invalidBody: "A imports a type from B and B imports a type from A is still a module cycle. Re-exporting either dependency through a facade also retains the edges. Adding a delayed Effect may change execution timing, but it cannot legalize a cyclic source graph.",
+  diagnosticsBody: "Cycle diagnostics identify the module paths that form the loop. Read the entire loop, not only the final import reported as its closing edge. Refactor ownership so the shared declaration has one lower-level home; remove the edge rather than suppressing it with an alias.",
+  provenanceBody: "Specification 6.9 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
+}

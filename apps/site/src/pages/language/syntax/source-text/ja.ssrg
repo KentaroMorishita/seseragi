@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "source textとcomment" "UTF-8・Unicode identifier・改行・apostrophe・keyword・commentの字句規則です。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "ソーステキストとコメント",
+  summary: "UTF-8、Unicode識別子、改行、apostrophe、予約語、コメントの字句規則を説明します。",
+  formsTitle: "UTF-8でソースを書く",
+  formsBody: "ソースはUTF-8です。LFとCRLFは同じ意味で受理します。識別子はUnicode XID_Startで始まり、XID_Continueが続き、末尾などにapostropheを含められます。",
+  typingBody: "名前の綴りは名前解決や型検査より前にtokenになります。予約語はASCIIで大文字・小文字を区別します。TrueはBoolのコンストラクターですが、trueは条件を満たすなら通常の小文字識別子です。",
+  evaluationBody: "改行の正規化とコメントの除去は字句入力の処理で、実行時評価ではありません。//から正規化した行末までがコメントです。block commentはありません。",
+  invalidTitle: "見た目だけで識別子を判断しない",
+  invalidBody: "数字や句読記号から識別子を始められません。走査中の末尾apostropheは識別子に属します。block commentのような文字列に特別な意味はなく、lexerはglyphの似方でなくUnicode属性とtoken境界を使います。",
+  diagnosticsBody: "lexerが不正なUTF-8とtoken境界を診断します。formatterとLSPも同じ構文pipelineを使い、account'をaccountとChar開始に読み替えません。",
+  provenanceBody: "言語仕様1.1に基づきます。専用例でUnicode名とapostropheを検査します。"
+}

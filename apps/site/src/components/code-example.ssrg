@@ -2,7 +2,7 @@ import * as arrays from "std/array"
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput, ExampleSource, ReferenceSymbol } from "../model/build"
-import { Locale, LocalizedText, translate } from "../model/locale"
+import { En, Ja, Locale, LocalizedText, localized, translate } from "../model/locale"
 import { referenceSummary } from "../reference/catalog"
 import { anchor } from "./primitives"
 
@@ -17,8 +17,23 @@ fn referenceMatches identity: String
   && reference.namespace == namespace
   && reference.itemKind == itemKind
 
-fn renderValues values: Array<String> -> String =
-  if arrays.length values == 0 then "None" else join ", " values
+fn renderValues locale: Locale -> values: Array<String> -> String =
+  if arrays.length values == 0 then translate locale (localized "None" "なし") else join ", " values
+
+fn referenceDescription<Action> locale: Locale -> reference: ReferenceSymbol -> html.Html<Action> =
+  if reference.itemKind == "instance" then
+    html.p { children: translate locale (referenceSummary reference) }
+  else
+    match locale {
+      En -> html.p { children: reference.description }
+      Ja -> html.details {
+        class: "reference-description",
+        children: [
+          html.summary { children: "APIの詳細説明（英語原文）" },
+          html.p { lang: "en", children: reference.description }
+        ]
+      }
+    }
 
 fn renderExample<Action> messages: Messages
   -> locale: Locale
@@ -89,20 +104,20 @@ fn renderReference<Action> locale: Locale
         children: [
           html.p {
             children: [
-              html.strong { children: "Module" },
+              html.strong { children: translate locale (localized "Module" "モジュール") },
               html.code { children: reference.module }
             ]
           },
           html.p {
             children: [
-              html.strong { children: "Type parameters" },
-              html.code { children: renderValues reference.typeParameters }
+              html.strong { children: translate locale (localized "Type parameters" "型パラメーター") },
+              html.code { children: renderValues locale reference.typeParameters }
             ]
           },
           html.p {
             children: [
-              html.strong { children: "Constraints" },
-              html.code { children: renderValues reference.constraints }
+              html.strong { children: translate locale (localized "Constraints" "制約") },
+              html.code { children: renderValues locale reference.constraints }
             ]
           }
         ]
@@ -113,7 +128,7 @@ fn renderReference<Action> locale: Locale
           children: [html.span { class: part.className, children: part.text } | part <- reference.highlighted]
         }]
       },
-      html.p { children: translate locale (referenceSummary reference) }
+      referenceDescription locale reference
     ]
   }
 

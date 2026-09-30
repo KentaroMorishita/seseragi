@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Namespaces and name resolution",
+  summary: "Use a name's syntactic position and lexical scope to identify the declaration it refers to.",
+  ruleTitle: "Names live in five separate namespaces",
+  ruleBody: "Seseragi separates type/trait/type-parameter names, value/function/constructor names, field/inherent-method names, module aliases and custom operators. A newtype can therefore have a type name and a constructor with the same spelling. UserId in an annotation selects the type; UserId 42 selects the constructor. A namespace-qualified name is resolved statically, not by inspecting an arbitrary runtime object.",
+  typingBody: "Unqualified lookup proceeds through local bindings and local functions, current-module declarations, explicit imports and finally the prelude. A nearer binding wins over a farther stage. Within one stage, multiple candidates are an ambiguity error. Adding another import does not silently select a different declaration from an ambiguous set.",
+  evaluationBody: "Names cannot be declared twice in the same namespace and scope. ADT/newtype constructors enter the value namespace; type parameters enter the type namespace of their declaration. Field and method resolution depends on the receiver's statically known nominal type. Module aliases qualify exported names rather than turning a module into a value.",
+  invalidTitle: "The same spelling is not permission for same-namespace duplicates",
+  invalidBody: "A type and its constructor can share a spelling because positions distinguish their namespaces. Two value declarations cannot use that reasoning to coexist in the same scope. To disambiguate imported values, use distinct aliases or qualified imports rather than hoping that declaration order chooses one.",
+  diagnosticsBody: "The example uses UserId in both a type annotation and a constructor expression and shadows a module value with a local binding. When a name is unresolved, check its position, scope and import spelling. When it is ambiguous, make the intended declaration explicit; the compiler will not inspect runtime values to decide.",
+  provenanceBody: "Specification 6.8 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
+}

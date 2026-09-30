@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Erasure and runtime representation",
+  summary: "Generic types guide checking without becoming inspectable runtime type arguments.",
+  ruleTitle: "Type arguments are not runtime values",
+  ruleBody: "In identity<A>, A is part of the static contract, not a value available inside the function. The same body returns its argument at Int and String. There is no typecase that branches on A, no reflection over the selected parameter and no implicit runtime specialization selected by source-level type information.",
+  identityBody: "A backend can erase arguments or monomorphize an implementation. Neither strategy is a language-level guarantee about memory layout, allocation or function identity. The source program may depend on the declared semantics, but cannot inspect which compiler strategy was chosen.",
+  checkingBody: "Optimization must preserve values, evaluation order, typed failure, cancellation and resource lifetime. Erasing a newtype's physical wrapper still preserves its nominal static boundary. Eliminating alias names still preserves alias transparency. Dictionary or closure optimizations must not alter which evidence is selected or how many times an argument is evaluated.",
+  invalidTitle: "Do not branch on an abstract type at runtime",
+  invalidBody: "A cannot be compared, printed or inspected as a value merely because it appears in a parameter list. If behavior depends on a capability, declare a trait constraint; if it depends on a finite set of runtime cases, use an ADT and match its value. Neither mechanism is hidden type reflection.",
+  diagnosticsBody: "Type checking validates generic calls before backend lowering. When profiling generated code, distinguish an observed backend layout from a portable language contract. Performance documentation describes costs explicitly; generic syntax alone does not promise zero allocation or one specialization per type.",
+  provenanceBody: "Specification 2.20 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

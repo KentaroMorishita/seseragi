@@ -1,4 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy = incomplete "危険を隠さない" "欠如・failure・Effect・変換を値と型へ明示します。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "危険を暗黙に隠さない",
+  summary: "欠如、回復可能な失敗、副作用、変換を値と型に現します。",
+  ruleTitle: "危険は明示した型の境界を通る",
+  ruleBody: "通常の値としてnullやundefinedはありません。Maybeは回復可能な欠如、Eitherは純粋な成功・失敗の結果、Effectは遅延計算と必要なサービスと型付き失敗を表します。",
+  consequenceOne: "条件分岐にはBoolが必要です。truthyやfalsyの解釈と、数値型の暗黙変換はありません。",
+  consequenceTwo: "回復可能な失敗を隠れた例外にしません。実行時のdefectは、それとは別の回復対象でない経路です。",
+  consequenceThree: "外部コードのnullish値、例外、Promise、変更可能なobjectは、外部連携の境界でdecodeやadapterを通します。",
+  boundaryTitle: "すべての操作がEitherになるわけではない",
+  boundaryBody: "全域で純粋な操作は通常の結果型を保ちます。意味として欠如、回復可能な失敗、ホストによる実行がある位置にMaybe、Either、Effectを使います。",
+  provenanceBody: "言語仕様0.2に基づきます。Maybe、Either、Effect、defect、数値変換、条件分岐、TypeScript連携で具体例を説明します。"
+}

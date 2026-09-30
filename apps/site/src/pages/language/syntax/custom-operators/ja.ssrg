@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Custom operators and fixity" "宣言・symbol alphabet・fixity・namespace・tooling pipelineを説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "custom 演算子とfixity",
+  summary: "top-level宣言で二項infixの記号、結合、優先順位、型、制約、本体を一緒に定めます。",
+  formsTitle: "演算子の契約をまとめて宣言する",
+  formsBody: "演算子<A> infixr 5 <+> left: A -> right: A -> A where Semiグループ<A> = append left rightは記号、右結合、優先順位、型スキーム、証拠、実装を定めます。import { 演算子 <+> }で明示importします。",
+  typingBody: "left <+> rightは(<+>) left rightへ展開し、演算子値はカリー化されたで部分適用できます。値とは別のnamespaceです。標準演算子の型別overloadにはtraitまたはstruct・newtypeの演算子糖衣を使います。",
+  evaluationBody: "infixlは左、infixrは右、infixは非結合です。優先順位は0〜8で、適用とpostfix accessより強くできません。interfaceで先に宣言を収集するため、記述位置より前でも使えます。",
+  invalidTitle: "記号の集合は意図的に限定する",
+  invalidBody: "許されたASCII 演算子文字を二文字以上使います。標準演算子、->、<-、range、comment、??、:=は予約済みです。山括弧だけの記号も禁止です。custom prefix・postfixはなく、単独&は要求のマージ専用です。",
+  diagnosticsBody: "同じimport記号は曖昧です。同優先順位で異なるfixityを混ぜると括弧が必要です。losslessな走査、header scan、interface、flat chain、fixity解決を共有してコンパイラ・formatter・LSPを揃えます。",
+  provenanceBody: "言語仕様1.8とtoolingのfixity契約に基づきます。有効例と拒否例はこのsite専用に検査します。"
+}

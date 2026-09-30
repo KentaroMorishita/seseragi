@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic algebraic data types",
+  summary: "Instantiate constructor parameters and preserve them when matching recursive data.",
+  ruleTitle: "Constructors quantify the declaration's parameters",
+  ruleBody: "A generic ADT introduces a family of nominal types. Outcome<String, Int> and Outcome<String, Bool> are different applications of the same constructor. Each value constructor quantifies every parameter of the ADT, even when its payload mentions only some of them. Failure carries E but still produces Outcome<E, A>; Success carries A but still produces Outcome<E, A>.",
+  identityBody: "Each construction gets fresh type variables. A payload can fix one parameter while leaving another to the expected result type or explicit arguments. The annotated success in the example fixes E to String even though Success has no error payload. Do not interpret an unused payload parameter as Never or as a type omitted from the result.",
+  checkingBody: "Matching substitutes the scrutinee's arguments into each constructor payload. Matching Outcome<String, Int> therefore binds a Failure payload as String and a Success payload as Int. Recursive references must apply the ADT's parameters explicitly: Node holds Array<Tree<A>>, not a bare Tree. This keeps one consistent A throughout that tree.",
+  invalidTitle: "A payload does not necessarily determine the whole ADT",
+  invalidBody: "Without an expected type, Success 42 may leave its failure parameter unresolved. Supply the full result annotation or complete constructor type arguments. A recursive field using bare Tree is not a complete type. Constructors do not select unrelated parameter types independently of the expected ADT.",
+  diagnosticsBody: "For an ambiguous constructor, check which declaration parameters are absent from the payload. Those parameters need information from the surrounding expression. Pattern matching and exhaustiveness checking use the already instantiated nominal ADT rather than reconstructing a new type from each arm.",
+  provenanceBody: "Specification 2.14 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

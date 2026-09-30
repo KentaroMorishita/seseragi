@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "costを見える形にする" "走査・allocation・scheduling・foreign copyの本質的costを隠しません。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "コストを見えるようにする",
+  summary: "表現上の負担を消せても、本質的な処理はAPIと説明から把握できるようにします。",
+  ruleTitle: "必要な処理も契約の一部",
+  ruleBody: "走査、割り当て、closureの捕捉、辞書の受け渡し、Effectのscheduling、同期、リソース取得、foreignのcopyは実際の操作です。その存在と大まかな計算量はAPIとドキュメントから分かる必要があります。",
+  consequenceOne: "alias、消去できるphantom型、糖衣構文は、意味に不要な実行時同一性を要求しません。",
+  consequenceTwo: "コレクションの操作を定数時間のように見せたり、外部境界の検証とcopyを無料のように見せたりしません。",
+  consequenceThree: "releaseの特殊化やfusionは、評価、失敗、キャンセル、リソースの観測を保つ場合だけ行います。",
+  boundaryTitle: "コストを見せても抽象化は禁止しない",
+  boundaryBody: "高水準の関数やEffectを合成して構いません。重要な走査、scheduling、copy、寿命をゼロコストの構文に偽装せず、合成後も理解できるようにする規則です。",
+  provenanceBody: "言語仕様0.2に基づきます。コレクション、Effect 実行時、外部連携、ビルド profile、benchmark、性能モデルが操作ごとの保証を定めます。"
+}

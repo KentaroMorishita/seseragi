@@ -1,0 +1,10 @@
+struct Box<A> { value: A, }
+
+impl<A> Box<A> {
+  fn get self: Box<A> -> A = self.value
+
+  fn replace<B> self: Box<A> -> value: B -> Box<B> = Box { value }
+}
+
+let number = Box { value: 42 }
+let text = number.replace "hello"

@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Annotations and inference" "public API・parameter・returnのannotationとprivate let inferenceを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "型注釈と推論",
+  summary: "公開APIと関数の境界には型を示し、非公開の不変値は局所的な情報から推論できます。",
+  ruleTitle: "安定した境界には注釈する",
+  ruleBody: "すべての関数引数と戻り型に注釈が必要です。公開宣言も型を明示します。非公開の非再帰letは初期値から型が決まるなら注釈を省略できます。型パラメーターはfn identity<A>のように宣言名の直後に書きます。",
+  identityBody: "注釈は生成先の表現ではなくSeseragiの型を表します。module APIの明示により別々のコンパイルとドキュメントを安定させ、再帰関数の戻り型は本体から自分を参照する前に契約を固定します。",
+  checkingBody: "注釈付きの初期値は宣言した型に合わせて検査し、省略されたprivate letの型を推論します。公開署名を変えたり、未宣言の型パラメーターを作ったり、未解決の境界をUnknownにしたりしません。",
+  invalidTitle: "局所的な推論でAPIを隠さない",
+  invalidBody: "注釈のない関数引数、戻り型、注釈が必要な公開宣言は拒否されます。初期値に別の有効な推論型があっても、letに書いた注釈との矛盾はエラーです。",
+  diagnosticsBody: "境界の注釈不足は宣言headerを、不一致は期待型と実際の型を示します。LSPのhoverはprivate letの推論型を表示してもソースを書き換えません。",
+  provenanceBody: "言語仕様2.4に基づきます。注釈した引数、推論する不変値、宣言scopeの型情報を示します。"
+}

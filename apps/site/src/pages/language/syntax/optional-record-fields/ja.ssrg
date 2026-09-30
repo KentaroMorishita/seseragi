@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Optional record field syntax" "field?: Aのtoken配置・presence型・pattern query・禁止位置を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "省略可能なレコードフィールドの構文",
+  summary: "フィールド?: Aは存在の省略を表し、必須Maybe フィールドや汎用? 演算子ではありません。",
+  formsTitle: "フィールド名の直後に?を付ける",
+  formsBody: "id?: Stringと書きます。formatterはこの形に揃えます。単独?が意味を持つのはこの位置とレコード patternの省略可能 queryだけで、式の単独演算子にはなりません。",
+  typingBody: "省略可能フィールドと必須のMaybe<A>は別です。省略可能なフィールド参照はMaybe<A>を返します。必須Aのフィールドは対応する省略可能要求を満たし、レコード操作でも存在情報を保ちます。",
+  evaluationBody: "省略したフィールドに隠れたNothingを作りません。不在はレコードの存在情報です。patternは必須と仮定せず省略可能を問い合わせられ、書いたフィールドの式は通常どおり一度だけ評価します。",
+  invalidTitle: "省略可能 markerは構造的レコード専用",
+  invalidBody: "struct フィールド、関数引数、ADT 内部の値へ直接?を付けません。不正位置の?、重複フィールド、不明なaccess、不在の必須フィールドを要求するpatternは、構文か型の担当境界で拒否します。",
+  diagnosticsBody: "formatterは有効なmarkerの配置を揃えます。構文解析器は位置、レコードの型検査は存在の互換性、access、patternを担当し、不在と必須Maybeを区別します。",
+  provenanceBody: "言語仕様1.10とレコード型・patternの存在規則に基づきます。有効操作と拒否操作を短い専用例で示します。"
+}

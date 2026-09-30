@@ -1,5 +1,6 @@
 // Source is UTF-8. Comments are not part of the program value.
-pub let initial: Char = '瀬'
+let userName = "Aki"
+let 次の値 = 42
 
-/* Apostrophes may continue a lower-case value name. */
-pub let account' = "primary"
+// Apostrophes may continue a lowercase value name.
+let account' = "primary"

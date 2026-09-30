@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Char・String・templateのescape" "閉じたescape集合、delimiter固有規則、Unicode scalar境界を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "文字と文字列のescape",
+  summary: "Char、String、templateで共通の閉じたescape集合と、区切りごとの違いを説明します。",
+  formsTitle: "定めたescapeだけを復号する",
+  formsBody: "backslash、改行、carriage return、tab、null、一〜六桁のUnicode scalar escapeを使えます。Charでは一重引用符、Stringでは二重引用符、templateではbacktickをescapeします。template内のliteralな${には直前のbackslashが必要ですが、$単独には不要です。",
+  typingBody: "Charの復号結果はUnicode scalar一個です。éは一個ですが、eと結合acuteは二個なのでCharになりません。surrogateはscalarでないため、どのtext literalにも入れられません。",
+  evaluationBody: "escapeは型検査前にscalarへ復号します。Stringはbyteやgraphemeでなくscalar列です。templateはraw LFを含められ、CRLFもLF一個になります。Charと二重引用符のStringにはraw改行やcontrol characterを置けません。",
+  invalidTitle: "定義していないescapeは使えない",
+  invalidBody: "hex byte、octal、名前付きUnicode、別区切りのescape、空のUnicode、六桁超、範囲外、surrogateは拒否します。別の文字へ修復したり、生成先の文字列構文解析器に意味を任せたりしません。",
+  diagnosticsBody: "不正escapeはbackslashから末尾までSES-P0201、未閉鎖literalはSES-P0001、Charが零個・複数scalarならliteral全体にSES-P0202です。formatterは有効なescapeの綴りと意味を保ちます。",
+  provenanceBody: "言語仕様1.2.1に基づきます。文字の例と、不正なscalar数・surrogateの拒否を検査します。"
+}

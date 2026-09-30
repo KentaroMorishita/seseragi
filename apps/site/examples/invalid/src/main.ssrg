@@ -34,5 +34,11 @@ import * as invalidSignalRead from "./language/invalid-signal-read"
 import * as invalidSignalDistinct from "./language/invalid-signal-distinct"
 import * as invalidSignalWrite from "./language/invalid-signal-write"
 import * as invalidEffectThrow from "./language/invalid-effect-throw"
+import * as types_kind from "./language/invalid-types-kind"
+import * as types_generic_function from "./language/invalid-types-generic-function"
+import * as types_generic_adt from "./language/invalid-types-generic-adt"
+import * as types_generic_struct from "./language/invalid-types-generic-struct"
+import * as types_generic_alias from "./language/invalid-types-generic-alias"
+import * as types_newtype from "./language/invalid-types-newtype"
 
 pub effect fn main -> Unit = effects.succeed ()

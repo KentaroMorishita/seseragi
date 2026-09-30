@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Type constructors" "built-in constructor・再帰型引数・arity・kind・delimiterを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "型構築子",
+  summary: "型引数を再帰的に組み合わせ、個数、kind、区切り、関数型の結合を検査します。",
+  ruleTitle: "検査した構築子から大きな型を作る",
+  ruleBody: "Maybe<A>、Either<E, A>、Effect<R, E, A>、Task<A>、Array<A>、List<A>、Range<A>、Signal<A>、MutableSignal<A>、タプル、レコード、A -> Bがあります。型引数はカンマで区切り、中に別の完成した型を入れられます。",
+  identityBody: "Task<A>はEffect<{}, Never, A>の透明な型別名です。A -> B -> CはA -> (B -> C)です。型の位置で連続する>>や>>>は型の区切りであり、式の演算子ではありません。Array<Maybe<Int>>は一つの完成した型です。",
+  checkingBody: "各適用で引数個数とkindを独立に検査します。値の型は最終的にkind Typeになる必要があります。余分な引数を無視したり、不足する引数をUnknownで埋めたりしません。",
+  invalidTitle: "山括弧で囲んでも不完全な型は使えない",
+  invalidBody: "Maybe<Int, String>、値の注釈のMaybeだけ、異なるkindの構築子を渡すことはエラーです。タプル、レコード、Effectの要求、関数型にはそれぞれの文法があり、汎用のカンマ付き呼び出しにはなりません。",
+  diagnosticsBody: "構文解析器は文脈から型の区切りと演算子を区別します。個数の診断は構築子と期待個数、kindの診断は引数位置を示します。ツールの署名でも型構築子の入れ子を保ちます。",
+  provenanceBody: "言語仕様2.3に基づきます。例は型パラメーターを持つ名前付き型とその構築を示します。"
+}

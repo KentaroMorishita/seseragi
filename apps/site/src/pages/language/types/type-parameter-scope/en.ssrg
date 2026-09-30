@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Type parameter scope",
+  summary: "Follow a declared type parameter from its parameter list to the end of its declaration.",
+  ruleTitle: "The declaration owns the parameter",
+  ruleBody: "In identity<A>, A becomes available after the type-parameter list and remains in scope until the declaration ends. It can appear in value-parameter types, the return type, constraints and annotations inside the body. A different function's A is a separate parameter even when both use the same spelling.",
+  identityBody: "A type parameter takes precedence over a module-level type of the same name within its declaration. This is static name resolution, not a change to either type's runtime identity. Capitalized spelling is required, but capitalization alone never declares a parameter. You must introduce it in the parameter list.",
+  checkingBody: "The example annotates a local binding with the same A used by the parameter and return type. The binding therefore keeps the caller's chosen type; it does not create another fresh A. An inner declaration cannot rebind a type parameter that is still in scope. Give a method-local parameter a different name from its impl parameter.",
+  invalidTitle: "A repeated name does not introduce a second parameter",
+  invalidBody: "Duplicate names in one parameter list are rejected, as is shadowing an enclosing type parameter in a nested declaration. Writing an undeclared uppercase name does not request implicit generic inference. If the name is not an accessible type or a declared parameter, it cannot be used as a type.",
+  diagnosticsBody: "For an unresolved type name, inspect the declaration's parameter list and its imports. For a shadowing error, rename the inner parameter and update its annotations consistently. Scope ends with the declaration, so a later declaration must introduce its own parameter.",
+  provenanceBody: "Specification 2.11 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Method calls" "dot構文・static receiver型・impl解決・applicationとの優先順位を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "メソッド呼び出し",
+  summary: "dot構文はreceiverを先頭に置く静的な適用で、実行時の動的dispatchではありません。",
+  formsTitle: "receiverを先頭に渡すdot構文",
+  formsBody: "value.メソッド argはType.メソッド value argへ展開します。dotは通常適用より強いため、account.deposit 1000は静的な型からdepositを選んで1000を適用します。value メソッド argという空白だけの構文はありません。",
+  typingBody: "receiverの名前付き型がinherent implを一意に選びます。trait メソッドには可視な証拠が必要です。generic receiverの引数を代入してから残りのメソッド引数を推論し、部分適用なら後のパラメーターが残る場合があります。",
+  evaluationBody: "dotで動的dispatchを追加しません。receiverと引数は通常の正格評価な左から右の評価に従い、宣言は静的な名前解決で固定します。",
+  invalidTitle: "dotで実行時値を検索しない",
+  invalidBody: "member不足、非公開メソッド、重複定義、impl対象と異なるself、未解決の曖昧さは拒否します。同じ表記でもフィールドとメソッドは別の名前解決です。",
+  diagnosticsBody: "名前解決はdot位置にreceiver型と不足・曖昧さを示します。impl検証はselfと重複、通常適用は後の引数を検査します。",
+  provenanceBody: "言語仕様1.5に基づきます。receiver、impl、名前解決の有効例と拒否例をsiteの検査で確認します。"
+}

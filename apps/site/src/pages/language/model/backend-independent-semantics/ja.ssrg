@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "backend-independent semantics" "生成先に左右されない言語semanticsを説明します。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "生成先に依存しない意味",
+  summary: "生成された表現が違っても、観測できる言語の振る舞いをホストの都合で変えません。",
+  ruleTitle: "一つのプログラムには一つの言語の意味がある",
+  ruleBody: "整数演算、除算、評価順、レコード、照合の網羅性、Effectの遅延性、失敗、キャンセル、リソースの寿命はSeseragiの規則です。バックエンドは、生成先の言語の振る舞いを借りるのではなく、この規則を実装します。",
+  consequenceOne: "観測可能な意味を保つ範囲で、型消去、inline化、辞書の特殊化、データ表現の変更を行えます。",
+  consequenceTwo: "外部値は検証と変換を行うadapterを通して入り、内部の型や評価規則を弱めません。",
+  consequenceThree: "適合性検査は安定した結果と実行traceを比較します。生成パスやホスト module cacheを言語の同一性にしません。",
+  boundaryTitle: "表現の自由は観測できる振る舞いまで",
+  boundaryBody: "最適化は可視の処理の順序を変えたり、評価を重複したり、丸めや失敗を変えたり、finalizerを飛ばしたり、キャンセルを変えたりできません。ホストで都合がよくても同じです。",
+  provenanceBody: "言語仕様0.2の原則です。実行時 ABI、Provider、外部連携、適合性、性能の契約が、保つべき観測と実装の自由を定めます。"
+}

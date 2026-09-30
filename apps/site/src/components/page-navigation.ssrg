@@ -13,10 +13,11 @@ import { anchor } from "./primitives"
 fn isCurrent current: String -> page: PageDefinition -> Bool = page.id == current
 
 fn sectionIsCurrent current: String -> value: NavigationSection -> Bool =
-  value.overview.id == current || match arrays.find (isCurrent current) value.pages {
-    Nothing -> False
-    Just _ -> True
-  }
+  value.overview.id == current
+  || match arrays.find (isCurrent current) value.pages {
+  Nothing -> False
+  Just _ -> True
+}
 
 fn groupIsCurrent current: String -> value: NavigationGroup -> Bool =
   match arrays.find (sectionIsCurrent current) value.sections {
@@ -25,30 +26,35 @@ fn groupIsCurrent current: String -> value: NavigationGroup -> Bool =
   }
 
 fn areaIsCurrent current: String -> value: NavigationArea -> Bool =
-  value.landing.id == current || match arrays.find (groupIsCurrent current) value.groups {
-    Nothing -> False
-    Just _ -> True
-  }
+  value.landing.id == current
+  || match arrays.find (groupIsCurrent current) value.groups {
+  Nothing -> False
+  Just _ -> True
+}
 
-fn sectionPages value: NavigationSection -> Array<PageDefinition> =
-  arrays.concat [[value.overview], value.pages]
+fn sectionPages value: NavigationSection -> Array<PageDefinition> = arrays.concat [
+  [value.overview],
+  value.pages
+]
 
 fn groupPages value: NavigationGroup -> Array<PageDefinition> =
   arrays.concat [sectionPages section | section <- value.sections]
 
-fn areaPages value: NavigationArea -> Array<PageDefinition> =
-  arrays.concat [
-    [value.landing],
-    arrays.concat [groupPages group | group <- value.groups]
-  ]
+fn areaPages value: NavigationArea -> Array<PageDefinition> = arrays.concat [
+  [value.landing],
+  arrays.concat [groupPages group | group <- value.groups]
+]
 
-fn separator<Action> unit: Unit -> html.Html<Action> =
-  html.span { class: "breadcrumb-separator", children: "/" }
+fn separator<Action> unit: Unit -> html.Html<Action> = html.span {
+  class: "breadcrumb-separator",
+  children: "/"
+}
 
-fn currentLabel<Action> locale: Locale
-  -> page: PageDefinition
-  -> html.Html<Action> =
-  html.span { class: "breadcrumb-current", children: translate locale page.title }
+fn currentLabel<Action> locale: Locale -> page: PageDefinition -> html.Html<Action> =
+  html.span {
+    class: "breadcrumb-current",
+    children: translate locale page.title
+  }
 
 fn sectionTrail<Action> locale: Locale
   -> page: PageDefinition
@@ -70,10 +76,8 @@ fn sectionTrail<Action> locale: Locale
       separator (),
       html.span { children: translate locale group.title },
       separator (),
-      anchor
-        (translate locale section.title)
-        (localizedRoute locale section.overview.path)
-        "",
+      anchor (translate locale section.title)
+        (localizedRoute locale section.overview.path) "",
       separator (),
       currentLabel locale page
     ]
@@ -92,11 +96,13 @@ fn areaTrail<Action> locale: Locale
   -> page: PageDefinition
   -> area: NavigationArea
   -> Array<html.Html<Action>> =
-  if area.landing.id == page.id then [currentLabel locale page] else
+  if area.landing.id == page.id then
+    [currentLabel locale page]
+  else
     match arrays.find (groupIsCurrent page.id) area.groups {
-      Nothing -> [currentLabel locale page]
-      Just group -> groupTrail locale page area group
-    }
+  Nothing -> [currentLabel locale page]
+  Just group -> groupTrail locale page area group
+}
 
 pub fn breadcrumbs<Action> locale: Locale
   -> page: PageDefinition
@@ -104,11 +110,12 @@ pub fn breadcrumbs<Action> locale: Locale
   -> html.Html<Action> =
   html.nav {
     class: "breadcrumbs",
-    children: match arrays.find (areaIsCurrent page.id) areas {
+    children:
+      match arrays.find (areaIsCurrent page.id) areas {
       Nothing -> [currentLabel locale page]
       Just area -> areaTrail locale page area
     }
-  }
+}
 
 fn adjacentPages current: String
   -> pages: Array<PageDefinition>

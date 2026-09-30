@@ -1,0 +1,7 @@
+struct Box<A> { value: A, }
+
+fn unwrap<A> box: Box<A> -> A = box.value
+fn label box: Box<Int> -> Box<String> = Box { value: show box.value }
+
+let number = Box { value: 42 }
+let text = label number

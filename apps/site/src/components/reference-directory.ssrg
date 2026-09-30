@@ -1,0 +1,45 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import { Locale, localizedRoute, translate } from "../model/locale"
+import {
+  Block,
+  Heading,
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition
+} from "../model/page"
+import { anchor } from "./primitives"
+
+pub fn directoryGroups page: PageDefinition
+  -> areas: Array<NavigationArea>
+  -> Array<NavigationGroup> =
+  arrays.concat [
+    area.groups | area <- areas,
+    area.landing.id == page.id
+  ]
+
+pub fn directoryHeadings groups: Array<NavigationGroup> -> Array<Block> =
+  [Heading ("directory-" + group.id, group.title) | group <- groups]
+
+fn sectionLink<Action> locale: Locale
+  -> section: NavigationSection
+  -> html.Html<Action> =
+  anchor (translate locale section.title) (localizedRoute locale section.overview.path) "directory-link"
+
+fn groupCard<Action> locale: Locale -> group: NavigationGroup -> html.Html<Action> =
+  html.section {
+    class: "directory-group",
+    children: [
+      html.h2 { id: "directory-" + group.id, children: translate locale group.title },
+      html.nav { children: [sectionLink locale section | section <- group.sections] }
+    ]
+  }
+
+pub fn referenceDirectory<Action> locale: Locale
+  -> groups: Array<NavigationGroup>
+  -> html.Html<Action> =
+  html.div {
+    class: "reference-directory",
+    children: [groupCard locale group | group <- groups]
+  }
