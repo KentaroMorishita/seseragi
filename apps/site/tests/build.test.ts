@@ -5,7 +5,10 @@ import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 
 const root = resolve(import.meta.dir, "../../..")
-setDefaultTimeout(180_000)
+// This test builds all 3974 routes twice to verify deterministic output.
+// Keep each build bounded, and allow both builds within the test budget.
+const buildTimeout = 180_000
+setDefaultTimeout(2 * buildTimeout + 60_000)
 
 type SiteManifest = {
   pages: string[]
@@ -22,19 +25,28 @@ type SiteManifest = {
 }
 
 function build(output: string): SiteManifest {
+  const started = performance.now()
   const result = spawnSync(
     "bun",
     ["apps/site/scripts/build.ts", output, "https://seseragi.example"],
     {
       cwd: root,
       encoding: "utf8",
+      timeout: buildTimeout,
       env: {
         ...process.env,
         SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
       },
     }
   )
-  expect(result.status, result.stderr || result.stdout).toBe(0)
+  const elapsed = Math.round(performance.now() - started)
+  const detail = `SSG build (${output}) after ${elapsed}ms: ${
+    result.error?.message ?? `status=${result.status}, signal=${result.signal}`
+  }\n${result.stderr || result.stdout}`
+  expect(result.error, detail).toBeUndefined()
+  expect(result.signal, detail).toBeNull()
+  expect(result.status, detail).toBe(0)
+  console.info(`SSG build completed in ${elapsed}ms`)
   return JSON.parse(
     readFileSync(join(output, "site-manifest.json"), "utf8")
   ) as SiteManifest
