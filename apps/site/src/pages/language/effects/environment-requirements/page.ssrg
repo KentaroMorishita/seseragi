@@ -6,21 +6,21 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   referencePage "language.effects.environment-requirements" "/docs/language/effects/environment-requirements/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("effects-environment", localized "Selecting one typed service" "型付きserviceを一つ取得")] [CodeExample
+      ("effects-environment", localized "Selecting one typed service" "必要なサービスを取得する")] [CodeExample
       (
         "effects-invalid-contract",
-        localized "Rejected missing Console requirement" "Console requirement欠落を拒否"
+        localized "Rejected missing Console requirement" "Consoleの要求が不足する例"
       )] [
         [InternalLink (
-          localized "Requirement merge" "requirement merge",
+          localized "Requirement merge" "必要なサービスの組み合わせ",
           "/docs/language/types/requirement-merge/"
         )],
         [InternalLink (
-          localized "Effect function contracts" "effect fn contract",
+          localized "Effect function contracts" "Effect関数の型を明示する形式",
           "/docs/language/effects/effect-functions-contract-form/"
         )],
         [InternalLink (
-          localized "Runtime boundaries" "runtime境界",
+          localized "Runtime boundaries" "実行の境界",
           "/docs/language/effects/runtime-boundaries/"
         )]
       ]
