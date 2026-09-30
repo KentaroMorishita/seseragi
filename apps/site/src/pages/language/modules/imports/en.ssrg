@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Namespace import is not an unqualified wildcard",
   invalidBody: "import * as text from \"std/text\" supplies text.trim, not bare trim. There is no syntax that introduces every export unqualified. Imports also cannot introduce the same local name twice in one scope. Use distinct aliases or keep one namespace-qualified. Import only public names: knowing a private function's spelling does not make it accessible.",
   diagnosticsBody: "A missing exported name is rejected as MissingExport and an existing private name as PrivateExport. Unused imports produce warnings without changing program semantics. An import that supplies a trait instance selected during type checking counts as used even if its alias or named value never appears in source; organize-imports must retain it.",
-  provenanceBody: "Specification 6.5 defines named, aliased, namespace and operator imports, paired type/value imports and instance-aware use tracking. Section 6.8 defines the name-resolution order and separate namespaces."
 }
 
 pub fn layoutTitle -> String = "Operators bring their parsing contract"

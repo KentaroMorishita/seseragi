@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "elseを省略したり、別々の型を返したりはできない",
   invalidBody: "ifは値を返す式です。elseを省略して暗黙のUnitを返したり、異なる型を自動でまとめたりはしません。両方の結果を明示し、同じ型に揃えてください。",
   diagnosticsBody: "条件がBoolでない場合、elseがない場合、両方の結果の型が違う場合を、それぞれ報告します。Neverの分岐は許されますが、それによって他の型の不一致がなくなるわけではありません。",
-  provenanceBody: "言語仕様3.3と、型システムで定めるNeverの規則に基づきます。"
 }

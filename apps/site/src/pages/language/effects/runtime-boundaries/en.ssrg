@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A helper function cannot escape the boundary",
   invalidBody: "There is no runEffect available to ordinary application code. Nested execution would split environments, cancellation trees, and resource ownership, so programs compose Effect values instead.",
   diagnosticsBody: "Build and startup diagnostics list the exact unsupported service and selected target. Runtime reports keep the boundary, typed failure display, defect, and cancellation reason distinct.",
-  provenanceBody: "This article covers specification 5.9 and connects to the entry-point and provider contracts."
 }

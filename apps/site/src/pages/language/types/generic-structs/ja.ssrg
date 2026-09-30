@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "更新では、フィールドの型を変更できない",
   invalidBody: "Box<Int> { value: \"hello\" }は、IntとStringが一致しないため型エラーです。Box<Int>からBox<String>へ変えたい場合は、例のlabelのように値を変換し、新しいBoxを作ります。レコードの追加フィールドを許す規則によって、structの型引数を変えることもできません。",
   diagnosticsBody: "まず、更新・参照する値がBox<Int>なのかBox<String>なのかを確認してください。構築時に型引数を決められない場合は、型注釈か明示的な型引数を補います。異なる型のフィールドを持たせたい場合は、更新ではなく新しい値を構築します。",
-  provenanceBody: "言語仕様2.15に基づきます。ページ内の例は公式コンパイラで検査しています。"
 }

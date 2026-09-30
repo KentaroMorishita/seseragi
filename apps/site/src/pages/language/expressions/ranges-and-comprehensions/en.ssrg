@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A range does not infer direction",
   invalidBody: "The step is always one and a start greater than end produces an empty range. Use library operations for descending sequences; an Effect cannot be a pure comprehension source.",
   diagnosticsBody: "Errors identify missing Iterable evidence, a non-Bool guard, a pattern mismatch, or incompatible result elements. Source and result collection kinds are never converted implicitly.",
-  provenanceBody: "This article covers specification 3.9, including endpoint semantics and the generator expansion model."
 }

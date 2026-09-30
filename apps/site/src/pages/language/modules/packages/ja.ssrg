@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "pubとexport mapは役割が違う",
   invalidBody: "pubは、そのモジュールを解決できる他モジュールへ宣言を公開します。packageのexport mapは、外部packageからどのsource moduleを解決できるかを決めます。pubを付けてもpackage内の全パスが公開されるわけではなく、exportsへ載せてもそのモジュールの全宣言が公開されるわけではありません。",
   diagnosticsBody: "package名は小文字ASCIIのsegmentを/でつなぎ、std・self・genのprefixは予約されています。対応外の言語version、未宣言の直接dependency、存在しない公開subpath、競合するsource identity、package外へ抜けるパスは実行前に診断されます。lockfileは解決済みgraphを記録するため、packageやsourceを変更したときは明示的に更新します。",
-  provenanceBody: "仕様6.2がpackageの境界を導入します。11章がmanifest、identity、layout、export map、dependency graph、lockfileの契約を定めます。"
 }
 
 pub fn layoutTitle -> String = "通常sourceと補助rootを区別する"

@@ -1,19 +1,21 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.diagnosable-behavior" "/docs/language/model/diagnosable-behavior/" (en.copy ()) (ja.copy ()) [] [
+  principlePage "language.model.diagnosable-behavior" "/docs/language/model/diagnosable-behavior/" (en.copy ()) (ja.copy ()) "principle-diagnosable-behavior" "`[]" [
     [InternalLink (
-      localized "No hidden danger" "危険を暗黙に隠さない",
-      "/docs/language/model/no-hidden-danger/"
+      localized "Generic functions" "ジェネリック関数",
+      "/docs/language/types/generic-functions/"
     )],
     [InternalLink (
-      localized "Backend-independent semantics" "生成先に依存しない意味",
-      "/docs/language/model/backend-independent-semantics/"
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
     )],
-    [InternalLink
-        (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
+    [InternalLink (
+      localized "Coherence and ownership" "インスタンスの一意性と所有権",
+      "/docs/language/traits/coherence/"
+    )]
   ]

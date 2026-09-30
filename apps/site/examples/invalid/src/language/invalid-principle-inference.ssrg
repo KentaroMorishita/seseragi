@@ -1,0 +1,3 @@
+fn empty<A> -> List<A> = `[]
+
+pub effect fn main = println (show (empty ()))

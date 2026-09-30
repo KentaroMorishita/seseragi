@@ -1,14 +1,24 @@
-import { ConceptCopy } from "../concept"
+import { PrincipleCopy } from "../principle"
 
-pub fn copy -> ConceptCopy = ConceptCopy {
+pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Immutable by default",
-  summary: "Ordinary bindings and data do not change after construction; state transitions are represented explicitly.",
-  ruleTitle: "Values are created, not reassigned",
-  ruleBody: "let introduces an immutable binding. Records, structs, algebraic data values, arrays, and lists are immutable after construction, so an update produces a new value or passes through a library abstraction that names state explicitly.",
-  consequenceOne: "There are no mutable local variables or mutable fields whose later contents must be inferred from control flow.",
-  consequenceTwo: "Persistent collection operations return new collection values and keep aliasing behavior independent of a backend's mutable containers.",
-  consequenceThree: "External state changes occur through Effect services; time-varying UI values use capabilities such as Signal or Ref whose operations expose the boundary.",
-  boundaryTitle: "A state abstraction is not a mutable ordinary value",
-  boundaryBody: "Signal, Ref, DOM services, files, and foreign objects may represent changing systems, but access to that change is typed and scoped. Their existence does not add assignment semantics to let, records, or fields.",
-  provenanceBody: "Section 0.2 fixes immutability as a language principle. Data, collection, Effect, Signal, Ref, resource, and interop pages define the specific operations and lifetime rules."
+  summary: "Once an ordinary value is created, it does not change. To update data, create a new value and keep the old one intact.",
+  meaningTitle: "An update creates a new value",
+  meaningBody: "A let gives a name to a value; it is not a variable you can reassign later. Records, structs, algebraic data values, arrays, and lists are also immutable. Reading the same value later does not reveal a field that someone else has silently changed.",
+  exampleTitle: "Keep the original score and create the updated score",
+  readingTitle: "How to read the example",
+  reading: [
+    "original has a score of 10. The spread ...original takes its fields, and score: original.score + 1 supplies the new score. updated therefore has the same name and a score of 11.",
+    "The output is 10 -> 11. Creating updated does not modify original, and any other code holding original still sees 10. Assigning original.score = 11 is not an alternative syntax: mutable fields are not part of the language."
+  ],
+  reasonTitle: "Why keep the old value?",
+  reason: [
+    "You can understand a function from its inputs and result without searching for code that might modify the same object elsewhere. This also makes comparisons between previous and next state straightforward.",
+    "Arrays and lists follow the same rule. Operations that transform them return new collection values instead of changing the collection supplied by the caller. Immutability does not require the implementation to copy every unchanged element; it may safely share internal storage."
+  ],
+  boundaryTitle: "Applications can still have changing state",
+  boundary: [
+    "A counter, an editable form, and a file all involve change. Seseragi represents that change explicitly rather than making every value mutable. Ref is a library type for a value read and changed through operations. Signal represents a value that can change over time and notify dependent computations.",
+    "Effects describe work to be executed, such as writing to a file or updating an external system. These operations do not add assignment to ordinary let bindings or record fields. Choose a new value for a data transformation; use an explicit state or Effect API when the operation really changes a system."
+  ],
 }

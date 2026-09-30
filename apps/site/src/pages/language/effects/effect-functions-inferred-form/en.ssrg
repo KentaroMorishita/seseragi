@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Compact does not mean partly explicit",
   invalidBody: "with, fails, and where cannot appear without ->. Either write the complete contract beginning with its success type or remove all clauses and let the body determine the whole Effect type.",
   diagnosticsBody: "Diagnostics distinguish a non-Effect body, conflicting requirement fields, multiple failure types, and incompatible success branches, with the source spans that contributed each type.",
-  provenanceBody: "This article covers the compact inferred form in specification 5.4 and its ModuleInterface and TypedInterface contract."
 }

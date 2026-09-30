@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "recの外ではソース順のscopeが重要",
   invalidBody: "通常のletは自身を読めません。先行するlocal functionが後続の兄弟を呼ぶにはrecが必要です。グループ内の重複名や戻り型の不一致も拒否され、memberを先に一般化して通すことはありません。",
   diagnosticsBody: "scopeの診断は前方参照と不明な外部名を区別します。グループの重複、不一致、制約の失敗は各memberの位置を示します。直接のself tail位置以外にstack保証を広げて読まないでください。",
-  provenanceBody: "言語仕様2.9と14.8に基づきます。再帰グループと、許されない前方参照を専用例で示します。"
 }

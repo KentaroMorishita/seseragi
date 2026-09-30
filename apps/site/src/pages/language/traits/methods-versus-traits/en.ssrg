@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not use instance as an extension-method namespace",
   invalidBody: "A trait instance does not make every trait operation available as value.method. An impl cannot satisfy a trait requirement unless it also defines the required coherent instance.",
   diagnosticsBody: "Member diagnostics name the receiver and visible impl candidates. Trait diagnostics name the owning trait, evidence requirement, and ambiguity or missing instance. Keeping them separate makes fixes local.",
-  provenanceBody: "This article covers specification 4.10 and links back to the independent inherent-impl and method-call syntax pages."
 }

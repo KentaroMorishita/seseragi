@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "一時的な値の組み合わせへ依存しない",
   invalidBody: "subscriberが一方のderived inputだけ更新済みの状態を観測することはありません。重複値を除きたい場合はdistinctを明示し、通常のset・updateはEqで同値でも通知します。",
   diagnosticsBody: "構築時はdependency cycleとEq evidence不足を拒否します。runtime graph診断はderived nodeとconstructorを示し、再計算を起こしたtransactionを保持します。",
-  provenanceBody: "仕様5.13を扱います。SignalはFunctorとApplicativeの振る舞いを持ちますがMonad instanceは持ちません。"
 }

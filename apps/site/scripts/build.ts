@@ -84,6 +84,41 @@ function generatorInput(playgroundUrl: string) {
       .trimEnd(),
     examples: [
       canonicalExample(
+        "principle-expression-oriented",
+        "apps/site/examples/src/language/principle-expression-oriented.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-immutable-by-default",
+        "apps/site/examples/src/language/principle-immutable-by-default.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-no-hidden-danger",
+        "apps/site/examples/src/language/principle-no-hidden-danger.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-backend-independent-semantics",
+        "apps/site/examples/src/language/principle-backend-independent-semantics.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-diagnosable-behavior",
+        "apps/site/examples/src/language/principle-diagnosable-behavior.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-visible-costs",
+        "apps/site/examples/src/language/principle-visible-costs.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "principle-readable-density",
+        "apps/site/examples/src/language/principle-readable-density.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
         "types-variance-invalid",
         "apps/site/examples/invalid/src/language/types-variance.ssrg",
         playgroundUrl

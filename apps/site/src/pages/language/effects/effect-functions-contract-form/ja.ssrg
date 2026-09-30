@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "contractの省略値は推論依頼ではなく約束",
   invalidBody: "withとfailsなしで-> Unitと書くとEffect<{}, Never, Unit>に固定されます。compilerがbodyからConsole・Clock・error型を調べて明示APIへ勝手に追加することはありません。",
   diagnosticsBody: "追加requirement、異なるfailure、異なるsuccessを導入した宣言側とbody operation・result側の両方を示します。",
-  provenanceBody: "仕様5.4のcontract formを扱います。省略規則が異なるcompact inferred formは独立pageです。"
 }

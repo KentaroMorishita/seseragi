@@ -2,13 +2,13 @@ import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Programs and entry points",
-  summary: "Packages contain modules, modules contain declarations, and a public typed main crosses into a host target.",
-  ruleTitle: "Program structure is explicit",
-  ruleBody: "Each source file is one module. Modules contain imports and declarations, packages define source and export topology in seseragi.toml, and executable packages identify one source module whose public main is the host entry point.",
-  consequenceOne: "Arbitrary top-level expressions are rejected; importing a module never runs application code as an incidental side effect.",
-  consequenceTwo: "An executable main is a Unit function returning Effect with a closed service environment, a typed failure channel, and Unit success.",
-  consequenceThree: "A library package exports declarations without requiring main, while one package may expose both library modules and an executable entry.",
-  boundaryTitle: "Compilation and execution have different owners",
-  boundaryBody: "The compiler establishes module, type, Effect, and entry-point meaning. The selected host target supplies compatible services and maps success, typed failure, defect, cancellation, and signals to host results without changing the Effect semantics.",
-  provenanceBody: "Section 0.3 defines programs and main. Package layout, modules, entry points, Effect environments, Providers, build targets, and runtime chapters define the complete boundary. Product STATUS records current implementation coverage separately from these language rules."
+  summary: "A source file is a module. An executable starts from the public main function in the module selected by its package.",
+  ruleTitle: "Files define code; main starts the program",
+  ruleBody: "Modules contain declarations, such as functions and types, and imports of other modules. Importing makes definitions available; it is not a place to write application actions. An executable package selects its entry module in seseragi.toml, and that module exports main.",
+  consequencesTitle: "Read the entry point in the example",
+  consequenceOne: "pub makes main available outside its module. effect fn declares a function returning an Effect. Unit means successful completion has no further result to return.",
+  consequenceTwo: "with Console says the work needs a console service. fails ConsoleError names the possible console error type. println writes Hello, Seseragi! followed by a newline.",
+  consequenceThree: "The runtime supplies the declared services and executes main's Effect. If main can report errors, they need a Show implementation so the host can display an unhandled failure.",
+  boundaryTitle: "Libraries do not need main",
+  boundaryBody: "A library exports definitions for other code and needs no executable entry point. A package may offer both a library and an executable. The selected execution target, such as a process or browser, must provide the services the executable needs."
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "不在と失敗は別の問い",
   invalidBody: "EitherをMaybeへ置き換えてerror理由を捨てたり、??をtruthyな汎用fallbackとして使ったりしません。callerに必要なdomain情報を保つdata型を選びます。",
   diagnosticsBody: "Maybeでない左operand、またはAと異なるfallback型を示します。直接matchする場合はNothingとJustの両方を網羅する必要があります。",
-  provenanceBody: "仕様5.2を扱います。標準Maybe関数とinstanceはstd/maybe referenceに分けて掲載します。"
 }

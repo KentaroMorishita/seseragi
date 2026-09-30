@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A shared method name may need qualification",
   invalidBody: "If type information cannot determine which trait owns an unqualified name, the call is ambiguous even when both candidates have similar signatures. Qualify the trait or add useful type information.",
   diagnosticsBody: "Diagnostics distinguish unknown names, ambiguous trait ownership, missing instance evidence, and a method result that cannot satisfy the expected type.",
-  provenanceBody: "This article covers specification 4.5 and applies the ordinary function-application and currying rules."
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Returning an Effect is not running it",
   invalidBody: "A function cannot print, read a clock, or mutate a Signal while claiming to return Unit, Instant, or another plain value. Keep the Effect in the result type and compose it explicitly.",
   diagnosticsBody: "A mismatch identifies the position that requires an Effect value or the plain value that cannot satisfy one. Tools show the complete R, E, and A arguments so the missing boundary stays visible.",
-  provenanceBody: "This article covers specification 5.1. Cold Effect construction and host execution boundaries are documented separately."
 }

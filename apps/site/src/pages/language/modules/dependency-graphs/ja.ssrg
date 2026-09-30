@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "型だけのimportでも循環は禁止",
   invalidBody: "AがBの型をimportし、BがAの型をimportすればモジュールの循環です。窓口経由の再公開でも辺は残ります。遅延Effectを加えると実行時期は変わりますが、循環したソースの依存グラフを合法にはできません。",
   diagnosticsBody: "循環の診断は循環経路を作るモジュールパスを示します。最後に循環経路を閉じたimportだけでなく、循環経路全体を読んでください。共有宣言の所属をより下位の一つのモジュールへ移し、aliasで隠すのではなく依存の辺を取り除きます。",
-  provenanceBody: "言語仕様6.9のモジュール契約に基づきます。関係する型、import、実行の規則は、それぞれの専用ページで説明しています。"
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Type-only imports do not make a cycle harmless",
   invalidBody: "A imports a type from B and B imports a type from A is still a module cycle. Re-exporting either dependency through a facade also retains the edges. Adding a delayed Effect may change execution timing, but it cannot legalize a cyclic source graph.",
   diagnosticsBody: "Cycle diagnostics identify the module paths that form the loop. Read the entire loop, not only the final import reported as its closing edge. Refactor ownership so the shared declaration has one lower-level home; remove the edge rather than suppressing it with an alias.",
-  provenanceBody: "Specification 6.9 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
 }

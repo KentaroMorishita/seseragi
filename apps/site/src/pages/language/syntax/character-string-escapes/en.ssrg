@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Only documented escapes exist",
   invalidBody: "Hex-byte, octal, named-Unicode, cross-delimiter, empty Unicode, over-six-digit, out-of-range, and surrogate escapes are rejected. The lexer never repairs them into another character or delegates their meaning to a backend string parser.",
   diagnosticsBody: "An invalid escape reports SES-P0201 from the backslash through the escape end. An unterminated literal reports SES-P0001. A Char whose decoded value has zero or multiple scalars reports SES-P0202 over the complete literal. Formatting preserves valid escape meaning and spelling.",
-  provenanceBody: "This article implements section 1.2.1. Valid values come from the char-literal package; invalid scalar counts and surrogate escapes come from the canonical char-literal-invalid artifact."
 }

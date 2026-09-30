@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "fork is not fire-and-forget",
   invalidBody: "Dropping a Fiber handle does not transfer ownership to a daemon registry. The enclosing scope still waits for supervised cleanup, and tests may diagnose an unobserved child failure without changing the parent's typed result.",
   diagnosticsBody: "Fiber diagnostics retain parent scope, spawn site, completion state, and whether a failure was observed. Forced host termination after a grace period is outside the cooperative guarantee.",
-  provenanceBody: "This article covers the Fiber-supervision subsection of specification 5.11 and the root-scope shutdown rule."
 }

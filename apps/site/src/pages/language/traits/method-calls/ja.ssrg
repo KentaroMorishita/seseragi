@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "同名methodにはtrait修飾が必要な場合がある",
   invalidBody: "型情報から非修飾名の所有traitを決められなければ、候補のsignatureが似ていても曖昧です。traitを修飾するか、有効な型情報を追加します。",
   diagnosticsBody: "未知の名前、trait所有者の曖昧さ、instance evidence欠落、期待型を満たさないmethod結果を区別して報告します。",
-  provenanceBody: "仕様4.5を扱い、通常の関数applicationとcurrying規則を適用します。"
 }

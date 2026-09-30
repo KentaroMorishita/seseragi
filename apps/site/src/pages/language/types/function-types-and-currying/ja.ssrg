@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "引数を省略した宣言は即時の値ではない",
   invalidBody: "clockだけではInstantではなく関数値です。結果にはclock ()が必要です。f(x, y)は複数引数のカリー化された callではありません。A -> B -> Cは括弧なしでは(A -> B) -> Cを意味しません。",
   diagnosticsBody: "hoverは右結合した署名と部分適用後の型を示します。適用の診断は失敗した一つの引数層を示し、全引数をホスト風の一回の呼び出しに平坦化しません。",
-  provenanceBody: "言語仕様2.7と1.4・3.1に基づきます。短い例でカリー化された宣言と部分適用を示します。"
 }

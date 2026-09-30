@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Different constructors require an explicit bridge",
   invalidBody: "Maybe and Either, two transformer stacks, or a pure value and an Effect cannot coexist as monadic items without an explicit lift or conversion that makes every item share M<_>.",
   diagnosticsBody: "Errors show the selected constructor, the item with a mismatched constructor or payload, a non-unary kind, missing Monad evidence, or an absent final result.",
-  provenanceBody: "This article covers specification 4.13 and completes the syntax and desugaring rules for do notation."
 }

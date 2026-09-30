@@ -43,7 +43,7 @@ export async function verifyMobileNavigation(
         const articleTop = await page
           .locator("main")
           .evaluate((main) => main.getBoundingClientRect().top)
-        await menu.click()
+        await menu.tap()
         assert.equal(
           await drawer.evaluate((element) => element.matches(":modal")),
           true
@@ -77,6 +77,40 @@ export async function verifyMobileNavigation(
         assert.equal(
           await close.evaluate((button) => button === document.activeElement),
           true
+        )
+        assert.equal(
+          await drawer.getAttribute("data-navigation-input"),
+          "pointer"
+        )
+        assert.equal(
+          await close.evaluate(
+            (button) => getComputedStyle(button).outlineStyle
+          ),
+          "none",
+          "Touch autofocus must not show Safari's default close-button outline"
+        )
+        const closeBox = await close.boundingBox()
+        assert.ok(closeBox && closeBox.width >= 44 && closeBox.height >= 44)
+        if (screenshots)
+          await page.screenshot({
+            caret: "initial",
+            path: join(screenshots, `navigation-touch-${locale}-${width}.png`),
+          })
+        await close.tap()
+        await page.waitForFunction(
+          () => !document.querySelector("dialog[open]")
+        )
+        await menu.press("Enter")
+        assert.equal(
+          await drawer.getAttribute("data-navigation-input"),
+          "keyboard"
+        )
+        assert.equal(
+          await close.evaluate(
+            (button) => getComputedStyle(button).outlineStyle
+          ),
+          "solid",
+          "Keyboard users must retain a visible initial focus indicator"
         )
         // Tab may visit browser chrome (activeElement becomes body), but never
         // focuses links in the background article/header while modal.

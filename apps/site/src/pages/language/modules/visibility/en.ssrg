@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Public types do not automatically publish every method",
   invalidBody: "Inherent methods default to private even when their owner type is public. Mark an externally callable method with pub fn. A non-opaque public newtype cannot wrap a private type because the representation appears in its API; an opaque newtype may do so because the hidden representation does not appear in the external signature.",
   diagnosticsBody: "Importing an existing private name is rejected as PrivateExport; importing a name that does not exist is MissingExport. The private-import example refers to a domain module containing private internal and public exposed functions. Use exposed instead. For an opaque type, construction, field access and patterns must remain in its defining module; callers use exported functions and methods.",
-  provenanceBody: "Specification 6.4 defines private declarations, public signatures, opaque representations, method visibility and instance reachability. Section 6.5 defines import use tracking; section 4.6 defines instance coherence."
 }
 
 pub fn layoutTitle -> String = "Instances follow the import graph"

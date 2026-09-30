@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "finalizerから回復可能failureを漏らさない",
   invalidBody: "想定できるclose failureはfinalizer内で処理してNeverへ変換します。一つのfinalizerがdefectになっても、runtimeは残りを試してから最初のdefectを報告し、後続defectを診断へ添付します。",
   diagnosticsBody: "resource診断はacquire・use・release phaseを区別し、元の終了結果とfinalizer defectを併記します。永久に完了しないfinalizerはscope完了も止めます。",
-  provenanceBody: "仕様5.11のcancellationとresource ownershipを扱います。schedulingとFiber ownershipは別pageで説明します。"
 }

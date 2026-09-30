@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "An update is not a type-changing constructor",
   invalidBody: "Box<Int> { value: \"hello\" } is inconsistent. If you need a Box<String> from a Box<Int>, construct a new value with a conversion, as the example's label function does. Record width subtyping cannot be used to change a generic nominal receiver's arguments.",
   diagnosticsBody: "Inspect the instantiated receiver type before diagnosing a field mismatch. If inference has no field information for a parameter, use an expected type or explicit arguments. A failed field update should be fixed with a same-type value or an explicit reconstruction, not by hiding the receiver's parameters.",
-  provenanceBody: "Specification 2.15 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

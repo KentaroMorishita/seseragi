@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "compilerはEffectを自動parallel化できない",
   invalidBody: "外部順序、resource ownership、failure選択、cancellationは観測可能です。独立して見えるEffectでも、programが明示parallel operationを選ぶまでは逐次です。",
   diagnosticsBody: "schedule前にrequirement・failure・successの不一致を示します。runtime診断はconcurrent failureでも選択operationとinput位置を保持します。",
-  provenanceBody: "仕様5.8を扱います。scheduler fairness、Fiber supervision、parallel API詳細は独立pageです。"
 }

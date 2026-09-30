@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "EitherはEffectのfailure channelではない",
   invalidBody: "Either値はすでに生成済みです。Effect内で遅延して解釈するならEffect.fromEitherを使い、Effectの結果を調べられるdataにするならEffect.attemptを使います。",
   diagnosticsBody: "EとAの位置を区別したまま、branch・mapping・期待resultの不一致を、それを導入したoperationで報告します。",
-  provenanceBody: "仕様5.3を扱います。errorを蓄積するValidation contractとstd/either APIは専用pageへ分けます。"
 }

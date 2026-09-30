@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Effectを返すことと実行することは違う",
   invalidBody: "UnitやInstantなどの通常値を返すふりをして、出力・時刻取得・Signal更新はできません。結果型にEffectを残し、明示的に合成します。",
   diagnosticsBody: "診断はEffect値が必要な位置、またはEffectを満たせない通常値を示します。toolはR・E・Aを省略せず表示し、欠けた境界を明らかにします。",
-  provenanceBody: "仕様5.1を扱います。coldなEffect構築とhost実行境界は独立したpageで説明します。"
 }

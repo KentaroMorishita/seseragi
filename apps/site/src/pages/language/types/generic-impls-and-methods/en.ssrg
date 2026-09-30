@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "An impl parameter cannot float free of its target",
   invalidBody: "A parameter declared by impl must appear in the target type. Introducing impl<A> for a concrete unrelated target leaves no receiver information for A and is rejected. A method cannot redeclare A while the impl's A is in scope. Use a distinct method-local name.",
   diagnosticsBody: "Distinguish receiver mismatches from method-argument mismatches. First check which impl the receiver selects, then check the method's own constraints. Inherent methods are statically associated with nominal owners and do not acquire trait-instance dispatch merely because they are generic.",
-  provenanceBody: "Specification 2.16 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

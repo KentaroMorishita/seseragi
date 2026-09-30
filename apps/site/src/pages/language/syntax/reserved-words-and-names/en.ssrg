@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "A wildcard is not a binding you can read",
   invalidBody: "_ discards a value and cannot be referenced. A reserved word cannot name a declaration, uppercase value names and lowercase type names are rejected, and changing case creates a different name rather than an alias.",
   diagnosticsBody: "The lexer preserves identifier spelling and the parser applies contextual keyword rules only in their owning grammar. Naming diagnostics point at the declaration name; unresolved-name diagnostics never reinterpret _ or a reserved word as a value.",
-  provenanceBody: "This article enumerates specification section 1.9 completely. The displayed source is intentionally narrow; the complete keyword inventory remains in the article text."
 }

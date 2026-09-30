@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "異なる型構築子には明示的bridgeが必要",
   invalidBody: "MaybeとEither、異なるtransformer stack、pure値とEffectは、全itemを同じM<_>にする明示liftまたは変換なしにmonadic itemとして混在できません。",
   diagnosticsBody: "選択済みconstructor、不一致itemとpayload、非単項kind、Monad evidence欠落、最後の結果欠落を具体的に示します。",
-  provenanceBody: "仕様4.13を扱い、do記法の構文とdesugar規則を完成させます。"
 }

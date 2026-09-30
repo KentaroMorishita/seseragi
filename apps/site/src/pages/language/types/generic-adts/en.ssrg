@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "A payload does not necessarily determine the whole ADT",
   invalidBody: "Without an expected type, Success 42 may leave its failure parameter unresolved. Supply the full result annotation or complete constructor type arguments. A recursive field using bare Tree is not a complete type. Constructors do not select unrelated parameter types independently of the expected ADT.",
   diagnosticsBody: "For an ambiguous constructor, check which declaration parameters are absent from the payload. Those parameters need information from the surrounding expression. Pattern matching and exhaustiveness checking use the already instantiated nominal ADT rather than reconstructing a new type from each arm.",
-  provenanceBody: "Specification 2.14 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

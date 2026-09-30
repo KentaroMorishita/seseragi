@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A filesystem path does not bypass a package API",
   invalidBody: "An undeclared dependency, a private package subpath or a specifier with no candidate is an error. Multiple candidates are also an error rather than an arbitrary choice. Moving a file into a directory does not make ./directory search for index.ssrg. Update the explicit import path.",
   diagnosticsBody: "Start with the importing module's location and the specifier category. Then check the manifest, export map and exact source path. The example imports one sibling both with and without .ssrg and passes its nominal UserId between those names; it needs both source files and is not a standalone Playground program.",
-  provenanceBody: "Specification 6.6 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
 }

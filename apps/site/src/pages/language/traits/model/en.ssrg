@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not read a trait as inheritance",
   invalidBody: "Declaring Trait<A> does not make A a child type or attach methods to each value. Member syntax belongs to inherent impls; trait operations are ordinary constrained functions.",
   diagnosticsBody: "Missing evidence reports the concrete trait application that could not be selected. Ambiguity reports competing method owners or unresolved type information rather than inspecting runtime values.",
-  provenanceBody: "This article covers specification 4.1. The following pages define declarations, instances, constraints, calls, and coherence separately."
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "application errorの近道にdefectを使わない",
   invalidBody: "parse失敗、認可拒否、service unavailableなど想定できるcaseは調べられる形に残します。defectへ変換すると型から回復経路が消え、caller contractを壊します。",
   diagnosticsBody: "runtime診断はdefectをtyped failureと分け、利用可能なsource・causal frameを保持し、applicationのShow<E>経路では表示しません。",
-  provenanceBody: "仕様5.10を扱います。resource finalizerの優先規則とforeign exception変換はそれぞれのpageで定義します。"
 }

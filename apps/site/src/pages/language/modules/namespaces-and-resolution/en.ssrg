@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "The same spelling is not permission for same-namespace duplicates",
   invalidBody: "A type and its constructor can share a spelling because positions distinguish their namespaces. Two value declarations cannot use that reasoning to coexist in the same scope. To disambiguate imported values, use distinct aliases or qualified imports rather than hoping that declaration order chooses one.",
   diagnosticsBody: "The example uses UserId in both a type annotation and a constructor expression and shadows a module value with a local binding. When a name is unresolved, check its position, scope and import spelling. When it is ambiguous, make the intended declaration explicit; the compiler will not inspect runtime values to decide.",
-  provenanceBody: "Specification 6.8 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
 }

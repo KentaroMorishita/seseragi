@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not use defects as an application error shortcut",
   invalidBody: "Parsing, authorization refusal, unavailable services, and other expected cases must remain inspectable. Converting them to defects removes recovery from the type and breaks the caller's contract.",
   diagnosticsBody: "Runtime diagnostics label defects separately from typed failures, preserve source and causal frames where available, and never render them through the application's Show<E> path.",
-  provenanceBody: "This article covers specification 5.10. Resource-finalizer priority and foreign exception conversion are defined on their owning pages."
 }

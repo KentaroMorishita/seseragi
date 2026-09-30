@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A variant list is closed",
   invalidBody: "Code cannot add a constructor from another module or treat two declarations with identical constructors as the same type. Use a new declaration and explicit conversion when the domain differs.",
   diagnosticsBody: "Unknown constructors, wrong payload arity or type, inaccessible constructors, and non-exhaustive matches are compile-time diagnostics.",
-  provenanceBody: "This article covers specification 3.4 and links construction to generic ADTs, visibility, and pattern exhaustiveness."
 }

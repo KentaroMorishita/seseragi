@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "binding構文ごとに別の推論規則は作られない",
   invalidBody: "実行時には一致すると分かっていても、letでrefutable patternは使えません。失敗をcontrol flowに含めるならmatchまたはfiltering comprehensionを使います。",
   diagnosticsBody: "compiler、typed representation、analysis、language serverはsymbol identity、nested型、refutability、source rangeを含む同じtyped-pattern結果を共有します。",
-  provenanceBody: "仕様3.2.1を扱い、patternを持つすべての構文が従う共通contractを定義します。"
 }

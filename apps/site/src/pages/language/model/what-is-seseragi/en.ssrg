@@ -2,13 +2,13 @@ import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "What Seseragi is",
-  summary: "A precise language model: expression-oriented, statically typed, immutable by default, and explicit about boundaries.",
-  ruleTitle: "The language is defined by semantics",
-  ruleBody: "Seseragi is an expression-oriented, statically typed programming language whose ordinary values are immutable. Its identity comes from the meaning of programs, not from short syntax or a particular generated language.",
-  consequenceOne: "Functions are curried and support partial application, while algebraic data types make distinct states explicit.",
-  consequenceTwo: "Absence, recoverable failure, asynchronous work, and effects remain visible in values and types instead of becoming ambient behavior.",
-  consequenceThree: "Pattern matching is exhaustive, typeclasses separate behavior from representation, and modules give names a stable boundary.",
-  boundaryTitle: "Foreign systems do not redefine Seseragi",
-  boundaryBody: "JavaScript, TypeScript, host services, and generated backends are entered through explicit conversion and provider boundaries. Their nullish values, exceptions, evaluation details, or mutation do not silently become Seseragi semantics.",
-  provenanceBody: "This page follows section 0.1 of the language specification. Detailed syntax, typing, runtime, and interop pages own the exact rules summarized here."
+  summary: "Seseragi builds programs from functions and immutable values. Types are checked before execution, and missing values and failures are explicit.",
+  ruleTitle: "Three ideas to start with",
+  ruleBody: "Expression-oriented means a decision such as if produces a value. Statically typed means the compiler checks types before the program runs. Immutable means an ordinary value cannot be changed after creation. The example's function chooses a String based on an Int score; each design-principle page explains a rule with its own example.",
+  consequencesTitle: "How this appears in code",
+  consequenceOne: "Functions take arguments in sequence. Supplying the first argument makes a function waiting for the next, so you can reuse a transformation with some inputs already supplied.",
+  consequenceTwo: "Data types list the different cases a value may have. Maybe distinguishes a present value from an absent one. match handles the cases, and the compiler checks that none is forgotten.",
+  consequenceThree: "Effect describes work such as file or console access. Its type states the required services, possible errors, and successful result. Creating this description is separate from executing it.",
+  boundaryTitle: "Reference or Tour?",
+  boundaryBody: "Use the reference to understand one concept and check its rules. The interactive Tour is the step-by-step learning path. You do not need to read every reference article in order; follow the links from the concept you are investigating."
 }

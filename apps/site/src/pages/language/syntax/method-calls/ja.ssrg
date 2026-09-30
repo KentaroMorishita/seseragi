@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "dotで実行時値を検索しない",
   invalidBody: "member不足、非公開メソッド、重複定義、impl対象と異なるself、未解決の曖昧さは拒否します。同じ表記でもフィールドとメソッドは別の名前解決です。",
   diagnosticsBody: "名前解決はdot位置にreceiver型と不足・曖昧さを示します。impl検証はselfと重複、通常適用は後の引数を検査します。",
-  provenanceBody: "言語仕様1.5に基づきます。receiver、impl、名前解決の有効例と拒否例をsiteの検査で確認します。"
 }

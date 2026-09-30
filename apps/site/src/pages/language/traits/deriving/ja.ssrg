@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "derivingはmacro systemではない",
   invalidBody: "user-defined traitや任意code生成は未対応です。同じheadへの明示instanceとderived instanceは競合し、field evidence欠落は宣言を拒否します。",
   diagnosticsBody: "未対応trait、nested evidence欠落、Hashが必要とするEq、生成evidence重複を区別し、nominal宣言と対象field・payloadを示します。",
-  provenanceBody: "仕様4.9を扱います。JSON固有のshapeとwire動作はJSON codecの標準library contractで定義します。"
 }

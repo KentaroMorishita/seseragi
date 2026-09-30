@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "for blockは汎用的なloop脱出ではない",
   invalidBody: "要素をskipするならsucceed ()を返す明示branch、正常な早期終了ならforEachUntilのContinue・Breakを使います。別関数やFiberからの非local jumpにはなりません。",
   diagnosticsBody: "Iterableでない入力、refutable pattern、Effectでないbody、Unitでないsuccess、requirement・failure不一致を該当itemで報告します。",
-  provenanceBody: "仕様5.4のeffectful forを扱います。pureなrangeとcomprehensionは別の意味規則を持ちます。"
 }

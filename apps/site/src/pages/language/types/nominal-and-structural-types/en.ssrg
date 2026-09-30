@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Same representation is not the same type",
   invalidBody: "A Player struct cannot be passed as { name: String } merely because it exposes name, and one newtype cannot replace another over the same Int. A record whose shared field has a narrower or wider nested record type fails because field types remain invariant.",
   diagnosticsBody: "Nominal mismatches name both declarations. Structural diagnostics identify missing fields separately from incompatible field types and retain extra fields for tooling. No backend layout decision weakens these source-level identities.",
-  provenanceBody: "This article covers the nominal and structural core of specification section 2.6. Its focused sources contrast declared types with immutable record-shaped values and rejected structural mismatches."
 }

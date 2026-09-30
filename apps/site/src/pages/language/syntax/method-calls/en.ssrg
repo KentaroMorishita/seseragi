@@ -10,5 +10,4 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "A dot does not search runtime values",
   invalidBody: "Missing members, inaccessible methods, duplicate inherent definitions, a self parameter whose type differs from the impl target, and unresolved inherent-versus-trait ambiguity are rejected. A field and method with the same surface spelling remain distinct resolution cases.",
   diagnosticsBody: "Name resolution reports the missing or ambiguous member at the dot access and includes the receiver type. Impl validation owns invalid self declarations and duplicate method definitions; ordinary application diagnostics own later arguments.",
-  provenanceBody: "This article covers specification section 1.5. Its valid and rejected sources isolate receiver, impl, and name-resolution rules and are checked during the site build."
 }

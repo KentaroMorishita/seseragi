@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Do not treat a newtype as its underlying value",
   invalidBody: "Passing UserId 42 to a function expecting Int fails even though the representation is Int. Extract it deliberately, as toInt does in the example. Conversely, an Int is not accepted where UserId is expected until it is wrapped. Methods and instances can define intentional domain operations without removing that boundary.",
   diagnosticsBody: "A backend may erase the physical wrapper only if observable behavior stays the same. Erasure must not weaken nominal checking or introduce implicit conversions. Opaque public newtypes can keep construction and extraction inside their defining module while exposing the type name and safe operations.",
-  provenanceBody: "Specification 2.18 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "lambdaはhostの多引数callbackではない",
   invalidBody: "parameterを複数書いてもcurried functionです。foreign callbackの変換とlifetimeはinteropで明示する規則であり、lambdaだけ別のcalling conventionにはなりません。",
   diagnosticsBody: "parameterや結果が制約されなければ推論ambiguityを報告します。parameter注釈を付けるか、期待function型がある位置へ置きます。",
-  provenanceBody: "仕様3.11とchapter 2のfunction type・currying規則を扱います。"
 }

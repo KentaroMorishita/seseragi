@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "Similar host representations do not merge types",
   invalidBody: "A backend number representation does not make Int and Float interchangeable. A multi-scalar character is not Char, Unit is not an empty record or Never, and out-of-safe-range Int spelling is rejected rather than rounded or wrapped.",
   diagnosticsBody: "Literal diagnostics validate spelling, scalar count, range, Float overflow, and escapes before later type checking. Arithmetic leaving the Int safe range is a runtime defect; tools display the Seseragi type rather than a backend storage type.",
-  provenanceBody: "This article covers specification section 2.2 and relies on the literal and escape rules in section 1.2. Its valid and rejected panels are focused documentation examples checked during the site build."
 }

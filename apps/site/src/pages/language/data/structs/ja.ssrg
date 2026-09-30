@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "structはstructural recordではない",
   invalidBody: "field名が同じでも別structやrecordと互換にはなりません。欠落、重複、未知field、spread位置、異なる型からのspreadを拒否します。",
   diagnosticsBody: "構築diagnosticは欠落・重複・未知・型不一致のfieldを示します。toolingはnominal declarationからfieldを解決しvisibilityを守ります。",
-  provenanceBody: "仕様3.5を扱います。generic identity、opacity、method、patternは専用pageへ分けます。"
 }

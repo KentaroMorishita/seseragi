@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A lambda is not a multi-argument host callback",
   invalidBody: "Writing several parameters still produces curried functions. Foreign callback conversion and lifetime rules are explicit interoperability concerns, not a different lambda calling convention.",
   diagnosticsBody: "An unconstrained parameter or result reports an inference ambiguity. Add a parameter annotation or place the lambda where an expected function type is available.",
-  provenanceBody: "This article covers specification 3.11 and relies on the function type and currying rules in chapter 2."
 }

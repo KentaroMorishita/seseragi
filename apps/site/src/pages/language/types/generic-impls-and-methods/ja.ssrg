@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "対象型と無関係なimplパラメーターは置けない",
   invalidBody: "implで宣言したパラメーターは対象型に現れる必要があります。無関係な具体型にimpl<A>を付けても、receiverからAを決められないため拒否されます。implのAが有効な場所でメソッドのAを再宣言することもできません。別の名前を使ってください。",
   diagnosticsBody: "receiverの不一致と、メソッドの引数の不一致を区別してください。まずreceiverが選ぶimplを確認し、その後にメソッド固有の制約を確認します。inherent methodはnominalな所有型に静的に関連付けられ、ジェネリックであってもtrait instanceによる選択にはなりません。",
-  provenanceBody: "言語仕様2.16に基づく規則です。表示する短い例はこのリファレンス専用に管理し、公式コンパイラで検査しています。Tourのレッスンではありません。"
 }

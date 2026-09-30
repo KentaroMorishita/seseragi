@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "overloadは新しい構文を作らない",
   invalidBody: "固定されたoperatorだけをoverloadできます。precedenceとassociativityは標準のままです。custom tokenはtop-level custom operator declarationを使い、明示instanceとの重複は拒否します。",
   diagnosticsBody: "不正operator名、operand・結果contract、equalityの不正結果、evidence重複、利用位置でのcoherent instance欠落を報告します。",
-  provenanceBody: "仕様3.13を扱い、糖衣をstandard operator traitとcoherenceへ接続します。"
 }

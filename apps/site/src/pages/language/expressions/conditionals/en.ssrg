@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "if is not a statement",
   invalidBody: "Omitting else or mixing unrelated branch types does not create an implicit Unit result or union type. Make both alternatives explicit and type-compatible.",
   diagnosticsBody: "Diagnostics identify a non-Bool condition, a missing else, or the branch whose type differs. A diverging Never branch is accepted without hiding other mismatches.",
-  provenanceBody: "This article covers specification 3.3 and the Never coercion defined by the type system."
 }

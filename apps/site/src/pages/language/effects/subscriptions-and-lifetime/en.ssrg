@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Signal is deliberately not a Monad",
   invalidBody: "Dynamic dependencies carry subscription lifetime, so they are expressed with named operations such as switchMap. Do not hide observer allocation and release behind an unrestricted bind operation.",
   diagnosticsBody: "A defect stops the affected observer under runtime policy without becoming another subscriber's typed failure. Lifetime diagnostics identify active, released, and duplicate-unsubscribe states.",
-  provenanceBody: "This article covers specification 5.15. Stream conversion is the boundary for consumers that need a failure channel."
 }

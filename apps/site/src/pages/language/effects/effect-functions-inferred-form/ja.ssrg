@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "compact formは部分的な明示ではない",
   invalidBody: "with・fails・whereを->なしでは書けません。success型から完全なcontractを書くか、clauseをすべて外してbodyにEffect型全体を決めさせます。",
   diagnosticsBody: "Effectでないbody、requirement field競合、複数failure型、合流できないsuccess branchを区別し、各型を導入したsource spanを示します。",
-  provenanceBody: "仕様5.4のcompact inferred formとModuleInterface・TypedInterface contractを扱います。"
 }

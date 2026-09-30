@@ -1,21 +1,19 @@
 import { localized } from "../../../../model/locale"
 import { InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) [] [
+  principlePage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) "principle-no-hidden-danger" "not found" [
+    [InternalLink
+        (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/")],
     [InternalLink (
-      localized "Immutable by default" "デフォルトで不変",
-      "/docs/language/model/immutable-by-default/"
+      localized "Either and typed results" "Eitherによる成功と失敗",
+      "/docs/language/effects/either/"
     )],
     [InternalLink (
-      localized "Diagnosable behavior" "説明可能な振る舞い",
-      "/docs/language/model/diagnosable-behavior/"
-    )],
-    [InternalLink (
-      localized "Features the language does not have" "中核に存在しない機能",
-      "/docs/language/model/non-features/"
+      localized "Effect error channels" "Effectの回復可能な失敗",
+      "/docs/language/effects/error-channels/"
     )]
   ]

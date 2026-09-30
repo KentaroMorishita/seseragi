@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "*をpure dereferenceとして扱わない",
   invalidBody: "pure functionは*sourceをAとして返せません。この式の型はTask<A>です。同様にtarget := *targetはatomic incrementでもpure assignmentでもないためupdateを使います。",
   diagnosticsBody: "診断は位置からprefix *と乗算を区別し、結果のTask型を示します。:=へread-only Signalまたは非Signal targetを渡すと対象を明示して報告します。",
-  provenanceBody: "仕様5.14と固定form *・:=を扱います。precedenceはlanguage grammarで定義されます。"
 }

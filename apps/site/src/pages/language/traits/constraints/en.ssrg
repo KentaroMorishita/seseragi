@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Values cannot waive a constraint",
   invalidBody: "A branch that happens not to inspect an element, an empty container, or a particular constructor does not remove its declared requirement. Missing recursive leaf evidence remains a type error.",
   diagnosticsBody: "Missing-evidence diagnostics report the concrete unsatisfied application, including nested conditional requirements. Ambiguous evidence and unresolved type variables are reported separately.",
-  provenanceBody: "This article covers specification 4.4 and connects generic polymorphism to instance selection."
 }

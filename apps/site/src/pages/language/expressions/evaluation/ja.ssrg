@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "暗黙の遅延評価を想定しない",
   invalidBody: "pureな関数呼び出し、record field、collection要素は、後で値を使わないという理由では遅延されません。処理を遅らせる場合は明示的な関数またはEffectを使います。",
   diagnosticsBody: "型とnameのerrorは実行前に報告されます。参照同一性を比較するoperatorはなく、等しいimmutable valueをallocation identityで区別できません。",
-  provenanceBody: "仕様3.1を扱います。各expression pageは同じ左から右・一度だけという規則を個別の構文へ適用します。"
 }

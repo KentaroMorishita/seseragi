@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "似たsignatureでは足りない",
   invalidBody: "method欠落、互換性のない余分なmethod、置換後signatureと異なる結果型はinstanceを拒否します。impl Trait<Type>と書いてもevidenceにはなりません。",
   diagnosticsBody: "contract診断はtrait method名と期待型・実際型を示します。headとconstraintの診断は、要求evidenceから決められないparameterを指します。",
-  provenanceBody: "仕様4.3を扱います。型の正しいinstanceが選択対象になれるかはcoherenceとvisibilityで決まります。"
 }

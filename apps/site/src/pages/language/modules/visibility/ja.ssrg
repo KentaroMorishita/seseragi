@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "型を公開しても全methodが公開されるわけではない",
   invalidBody: "inherent methodは、型がpublicでも既定ではprivateです。外部から呼べるmethodにはpub fnを付けます。非opaqueな公開newtypeの表現型はAPIへ現れるため、private型を使えません。opaque newtypeなら外部signatureに表現が現れないため、private型を内部表現に使えます。",
   diagnosticsBody: "存在するprivate名をimportするとPrivateExport、存在しない名前ならMissingExportになります。private-importの例のdomainにはprivateなinternalとpublicなexposedがあります。呼び出し側はexposedを使ってください。opaque型の構築・field access・patternは定義元へ置き、外部では公開された関数とmethodを通して操作します。",
-  provenanceBody: "仕様6.4がprivate宣言、公開signature、opaque表現、methodのvisibility、instanceの到達範囲を定めます。6.5はimportの使用判定、4.6はinstanceのcoherenceを定めます。"
 }
 
 pub fn layoutTitle -> String = "instanceはimport graphを通じて見える"

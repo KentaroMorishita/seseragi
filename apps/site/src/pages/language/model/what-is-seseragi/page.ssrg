@@ -7,8 +7,8 @@ import * as ja from "./ja"
 pub fn page -> PageDefinition =
   conceptPage "language.model.what-is-seseragi" "/docs/language/model/what-is-seseragi/" (en.copy ()) (ja.copy ()) [CodeExample
       (
-        "function-application",
-        localized "Functions compose by application" "関数適用によるcomposition"
+        "principle-expression-oriented",
+        localized "A decision produces the function's result" "分岐の結果を返す関数"
       )] [
         [InternalLink
       (localized "Design principles" "設計原則", "/docs/language/model/design-principles/")],

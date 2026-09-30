@@ -1,20 +1,19 @@
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { conceptPage } from "../concept"
+import { InternalLink, PageDefinition } from "../../../../model/page"
+import { principlePage } from "../principle"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
-  conceptPage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("function-application", localized "Values flow through functions" "関数を流れる値")] [
-        [InternalLink (
-          localized "Function application" "関数適用",
-          "/docs/language/syntax/function-application/"
-        )],
-        [InternalLink (
-          localized "Programs and entry points" "プログラムと実行入口",
-          "/docs/language/model/programs/"
-        )],
-        [InternalLink
-      (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
-      ]
+  principlePage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) "principle-expression-oriented" "pass" [
+    [InternalLink (
+      localized "Conditional expressions" "条件式",
+      "/docs/language/expressions/conditionals/"
+    )],
+    [InternalLink (
+      localized "Blocks and local declarations" "ブロックとローカル宣言",
+      "/docs/language/expressions/blocks-and-local-declarations/"
+    )],
+    [InternalLink
+        (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")]
+  ]

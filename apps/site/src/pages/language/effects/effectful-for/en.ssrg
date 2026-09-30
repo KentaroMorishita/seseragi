@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A for block is not a general loop escape",
   invalidBody: "Skipping an element is an explicit branch returning succeed (), while successful early termination uses Continue or Break with forEachUntil. Neither becomes a non-local jump from another function or Fiber.",
   diagnosticsBody: "Errors identify non-Iterable input, a refutable pattern, non-Effect body, non-Unit success, or incompatible requirement and failure types at the relevant item.",
-  provenanceBody: "This article covers effectful for in specification 5.4. Range and comprehension expressions remain pure and have separate semantics."
 }

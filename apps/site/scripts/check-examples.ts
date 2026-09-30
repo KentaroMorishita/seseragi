@@ -1,5 +1,11 @@
 import assert from "node:assert/strict"
-import { mkdtempSync, readdirSync, rmSync } from "node:fs"
+import {
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmSync,
+} from "node:fs"
 import { tmpdir } from "node:os"
 import { basename, join, resolve } from "node:path"
 
@@ -36,6 +42,42 @@ try {
     0,
     `Compiled examples failed at runtime: ${execution.stderr.toString()}${execution.stdout.toString()}`
   )
+
+  // These are runnable snippets, not merely modules that happen to typecheck.
+  // Keep each article's displayed output tied to actual CLI execution.
+  for (const [slug, expected] of [
+    ["expression-oriented", "pass"],
+    ["immutable-by-default", "10 -> 11"],
+    ["no-hidden-danger", "not found"],
+    ["backend-independent-semantics", "-3, 3.5"],
+    ["diagnosable-behavior", "`[]"],
+    ["visible-costs", "[2, 4, 6]"],
+    ["readable-density", "7"],
+  ]) {
+    const source = join(examples, "src/language", `principle-${slug}.ssrg`)
+    // run <file> inside a package uses that package's declared entry point.
+    // Isolate this snippet as main so its effectful entry is actually executed.
+    const snippet = join(temporary, slug)
+    mkdirSync(join(snippet, "src"), { recursive: true })
+    copyFileSync(
+      join(examples, "seseragi.toml"),
+      join(snippet, "seseragi.toml")
+    )
+    copyFileSync(source, join(snippet, "src/main.ssrg"))
+    const lock = Bun.spawnSync([cli, "lock", "update", snippet], {
+      cwd: root,
+      stdout: "pipe",
+      stderr: "pipe",
+    })
+    assert.equal(lock.exitCode, 0, lock.stderr.toString())
+    const result = Bun.spawnSync([cli, "run", snippet], {
+      cwd: root,
+      stdout: "pipe",
+      stderr: "pipe",
+    })
+    assert.equal(result.exitCode, 0, `${slug}: ${result.stderr}`)
+    assert.equal(result.stdout.toString(), `${expected}\n`, slug)
+  }
 
   const invalid = build(join(examples, "invalid"), join(temporary, "invalid"))
   assert.notEqual(

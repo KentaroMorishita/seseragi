@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "throw, catch, try, perform, and handle are not language forms",
   invalidBody: "Do not write pseudo-syntax that bypasses E or R. Model a domain error as data, lift a recoverable operation into Effect, and keep adapter-specific exception handling at the interop boundary.",
   diagnosticsBody: "The parser reports unsupported exception or handler forms at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
-  provenanceBody: "This article covers specification 5.16. Defects and typed failure channels are defined on their own reference pages."
 }

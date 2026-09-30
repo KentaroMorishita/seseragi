@@ -84,6 +84,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     let checkedReferenceLinks = 0
     for (const [route, html] of languagePages) {
       checkedReferenceLinks += assertReferenceLinkTitles(html, titles, route)
+      expect(html, route).not.toContain('id="specification"')
       if (route.startsWith("/ja/"))
         expect(textContent(html), route).not.toContain("式中心")
     }
@@ -344,7 +345,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(languageModel).toContain(
-      "Not present does not mean not implemented yet"
+      "An absent construct is not a missing application capability"
     )
     expect(textContent(languageModel)).toContain("return, break, and continue")
     const literals = readFileSync(

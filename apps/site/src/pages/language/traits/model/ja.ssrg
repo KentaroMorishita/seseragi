@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "traitを継承として読まない",
   invalidBody: "Trait<A>を宣言してもAが子型になったり、各値へmethodが付いたりしません。member構文はinherent impl、trait操作は通常のconstraint付き関数です。",
   diagnosticsBody: "evidence欠落は選べなかった具体的なtrait適用を報告します。曖昧さはruntime値を調べず、競合するmethod所有者や未確定の型情報を示します。",
-  provenanceBody: "仕様4.1を扱います。後続ページで宣言、instance、constraint、呼び出し、coherenceを個別に定義します。"
 }

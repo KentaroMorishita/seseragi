@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "関数名の解決は、その関数が読む値の初期化ではない",
   invalidBody: "早すぎる参照を関数本体へ移して初期化式から直ちに呼んでも、参照は早すぎるままです。複数の利用側が同じモジュールをimportしても初期化を繰り返しません。importを暗黙のEffect runnerとして使わないでください。",
   diagnosticsBody: "コンパイラ、フォーマッター、LSP、ドキュメント生成器は外部の実行時コードを評価してはいけません。実行時のpure-load moduleは契約に従って初期化中に一度読み込めますが、task-loadは最初のforeign Task実行まで待ちます。初期化診断は順序の問題として読み、足りないサービスを実行時に探す要求と混同しないでください。",
-  provenanceBody: "言語仕様6.10のモジュール契約に基づきます。関係する型、import、実行の規則は、それぞれの専用ページで説明しています。"
 }

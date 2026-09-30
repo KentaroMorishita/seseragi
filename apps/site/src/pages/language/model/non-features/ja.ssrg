@@ -2,13 +2,26 @@ import { ConceptCopy } from "../concept"
 
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "中核に存在しない機能",
-  summary: "意図的に設けない機能と、代わりに使う明示的な仕組みを説明します。",
-  ruleTitle: "存在しないことも設計の一部",
-  ruleBody: "周囲に隠れた変更、欠如、変換、非局所制御、値による曖昧な選択、無制限なコンパイル時書き換えを導入する機能は設けません。似たforeignの振る舞いは明示した境界に閉じます。",
-  consequenceOne: "通常のデータには再代入、可変フィールド、null、undefined、truthiness、暗黙の数値変換、非網羅的matchがありません。",
-  consequenceTwo: "回復可能な失敗に例外を使いません。Effectの要求は一般のunionや交差ではなく、perform/handle型の代数的Effectでもありません。",
-  consequenceThree: "一般的な構文・手続きmacro、ユーザー定義prefix/postfix 演算子、return・break・continueの非局所制御はありません。",
-  boundaryTitle: "未実装ではなく、言語モデルの外にある",
-  boundaryBody: "新しい値、Maybe・Either・Effect、網羅的な照合、通常関数、reduceUntil・forEachUntil、限定されたderiving、明示的な外部連携が意図した代替です。",
-  provenanceBody: "言語仕様0.4の一覧に基づきます。後の章が代替と、deriving・template Stringの限定的なコンパイル時の意味を定めます。"
+  summary: "他の言語でよく使う構文でも、Seseragiでは意図的に設けていないものがあります。何がなく、同じ目的には何を使うかを確認できます。",
+  ruleTitle: "同じ記号ではなく、同じ目的の操作を探す",
+  ruleBody: "他の言語のコードを、キーワードだけ変えて移せるとは限りません。例えば、レコードの更新ではフィールドへ代入せず、新しいレコードを作ります。関数の結果はreturnで返すのではなく、関数本体の式の値を使います。下の一覧で、目的に対応する仕組みを確認してください。",
+  consequencesTitle: "混同しやすい三つの違い",
+  consequenceOne: "MaybeとEitherは、値がない場合や成功・失敗の結果を表すデータ型です。Effectは実行する処理と起こり得る失敗を表します。これらはnullや例外を別の名前にしたものではありません。",
+  consequenceTwo: "Effectには必要なサービスを組み合わせて指定する仕組みがあります。ただし、一般のデータ型に任意の共用体型や交差型を使えるわけではありません。performやhandleで処理を扱う代数的エフェクトの仕組みとも別です。",
+  consequenceThree: "derivingは対応するinstanceの実装を生成し、テンプレート文字列は埋め込んだ値を表示できます。いずれも言語で決められた機能で、自由な構文を作る汎用マクロではありません。",
+  boundaryTitle: "構文がなくても、同じ目的は実現できる",
+  boundaryBody: "状態が変わるアプリケーション、エラーからの回復、コレクション走査の途中終了は実現できます。それぞれ、明示的な状態のAPI、型で表した結果、reduceUntilやforEachUntilを使います。外部コードが別の仕組みを提供する場合も、外部連携で変換し、通常のSeseragiの規則は変えません。"
 }
+
+pub fn alternatives -> Array<String> = [
+  "変数への再代入と可変フィールド：データの更新では新しい値を作ります。実際に状態を変える場合は、専用の状態のAPIを使います。",
+  "null、undefined、暗黙にnullを許す型：値がない可能性はMaybeで表します。外部の値にnullがあり得る場合は、使う前に検査・変換します。",
+  "暗黙の数値変換と、値を自動的に真偽とみなす処理：数値型は明示的に変換します。ifの条件に使えるのはBoolだけです。",
+  "扱わない場合が残るmatch：すべての場合を記述するか、残りの場合をワイルドカードで明示的に扱います。",
+  "回復可能な失敗のための例外：結果にはEitherを使い、実行する処理の失敗にはEffectのエラー型を使います。",
+  "任意の共用体型と交差型：必要な場合を列挙したデータ型を使います。EffectやStreamの必要なサービスを組み合わせる仕組みは、これとは別の限定的なものです。",
+  "performとhandleで扱う代数的エフェクト：Seseragiでは、型で表したEffectと必要なサービスを組み合わせます。",
+  "汎用の構文マクロと手続きマクロ：通常の関数を使います。derivingやテンプレート文字列は、動作の決まった機能で、自由なコード書き換えの仕組みではありません。",
+  "ユーザー定義の前置・後置演算子：名前付き関数か、宣言した中置演算子を使います。",
+  "return、break、continue：関数では本体の式の値を結果にします。コレクションの走査を途中で止める場合は、reduceUntilやforEachUntilを使います。"
+]

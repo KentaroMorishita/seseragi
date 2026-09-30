@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "ファイルの場所を知っていても公開APIを迂回できない",
   invalidBody: "未宣言の依存、非公開公開パス、候補ゼロの指定はエラーです。候補が複数あっても適当に選ばずエラーにします。ファイルをディレクトリーへ移しても./directoryからindex.ssrgを探索しません。importを正しいパスへ更新してください。",
   diagnosticsBody: "import元の場所と指定の表記の種類から確認し、その後にマニフェスト、公開パスの対応表、正確なパスを調べます。例は同じ兄弟モジュールを.ssrgあり・なしで読み、同じUserId型として使います。両方のソースが必要なので、単独のPlaygroundプログラムではありません。",
-  provenanceBody: "言語仕様6.6のモジュール契約に基づきます。関係する型、import、実行の規則は、それぞれの専用ページで説明しています。"
 }

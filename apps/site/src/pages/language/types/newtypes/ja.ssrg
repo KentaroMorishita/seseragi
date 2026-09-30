@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "UserIdが必要な場所に、Intをそのまま渡さない",
   invalidBody: "Intを受け取る関数にUserId 42を渡すと型エラーになります。例のtoIntのように、意図を示して中身を取り出してください。逆にUserIdが必要な場所には、IntをUserIdで包んで渡します。メソッドやtrait実装を追加しても、この型の区別はなくなりません。",
   diagnosticsBody: "コンパイラが実行時の余分な包みを省くことがあっても、ソース上では型の区別が保たれます。また、newtypeをopaqueとして公開すれば、利用側には型名と安全な操作だけを見せ、値の構築や中身の取り出しを定義元のモジュールに限定できます。",
-  provenanceBody: "言語仕様2.18に基づきます。ページ内の例は公式コンパイラで検査しています。"
 }

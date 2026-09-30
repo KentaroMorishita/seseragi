@@ -1,39 +1,56 @@
+import * as arrays from "std/array"
 import { localized } from "../../../../model/locale"
 import {
+  Article,
   BulletList,
+  Heading,
   Inline,
   InternalLink,
-  PageDefinition
+  PageDefinition,
+  Paragraph,
+  Words
 } from "../../../../model/page"
-import { conceptPage } from "../concept"
 import * as en from "./en"
 import * as ja from "./ja"
+import { OverviewCopy } from "../principle"
 
-fn principle label: String -> japanese: String -> path: String -> Array<Inline> =
-  [InternalLink (localized label japanese, path)]
+fn entry pair: ((String, String, String), (String, String)) -> Array<Inline> =
+  match pair {
+    ((label, translated, path), (description, translatedDescription)) -> [
+      InternalLink (localized label translated, path),
+      Words (localized description translatedDescription)
+    ]
+  }
 
-pub fn page -> PageDefinition =
-  conceptPage "language.model.design-principles" "/docs/language/model/design-principles/" (en.copy ()) (ja.copy ()) [BulletList
-      [
-        principle "Expression-oriented" "式指向"
-      "/docs/language/model/expression-oriented/",
-        principle "Immutable by default" "デフォルトで不変"
-      "/docs/language/model/immutable-by-default/",
-        principle "No hidden danger" "危険を暗黙に隠さない"
-      "/docs/language/model/no-hidden-danger/",
-        principle "Backend-independent semantics" "生成先に依存しない意味"
-      "/docs/language/model/backend-independent-semantics/",
-        principle "Diagnosable behavior" "説明可能な振る舞い"
-      "/docs/language/model/diagnosable-behavior/",
-        principle "Visible costs" "コストを見えるようにする" "/docs/language/model/visible-costs/",
-        principle "Readable density" "読みやすい密度" "/docs/language/model/readable-density/"
-      ]] [
-        [InternalLink (
-          localized "What Seseragi is" "Seseragiとは",
-          "/docs/language/model/what-is-seseragi/"
-        )],
-        [InternalLink (
-          localized "Features the language does not have" "中核に存在しない機能",
-          "/docs/language/model/non-features/"
-        )]
-      ]
+pub fn page -> PageDefinition = {
+  let english: OverviewCopy = en.copy ()
+  let japanese: OverviewCopy = ja.copy ()
+  let labels = [
+    ("Expression-oriented", "式指向", "/docs/language/model/expression-oriented/"),
+    ("Immutable by default", "デフォルトで不変", "/docs/language/model/immutable-by-default/"),
+    ("No hidden danger", "危険を暗黙に隠さない", "/docs/language/model/no-hidden-danger/"),
+    (
+      "Backend-independent semantics",
+      "生成先に依存しない意味",
+      "/docs/language/model/backend-independent-semantics/"
+    ),
+    ("Diagnosable behavior", "説明可能な振る舞い", "/docs/language/model/diagnosable-behavior/"),
+    ("Visible costs", "コストを見えるようにする", "/docs/language/model/visible-costs/"),
+    ("Readable density", "読みやすい密度", "/docs/language/model/readable-density/")
+  ]
+  let descriptions = arrays.zip japanese.descriptions english.descriptions
+  PageDefinition {
+    id: "language.model.design-principles",
+    path: "/docs/language/model/design-principles/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: [
+      Paragraph ([Words (localized english.introduction japanese.introduction)]),
+      Heading ("principles", localized english.section japanese.section),
+      BulletList (map entry (arrays.zip descriptions labels)),
+      Heading ("together", localized english.closingTitle japanese.closingTitle),
+      Paragraph ([Words (localized english.closing japanese.closing)])
+    ]
+  }
+}

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Do not infer hidden laziness",
   invalidBody: "A pure function call, record field, or collection element is not delayed because its value is unused later. Use an explicit function or Effect when work must be deferred.",
   diagnosticsBody: "Type and name errors are reported before execution. There is no reference-identity operator, so a program cannot distinguish two equal immutable values by allocation identity.",
-  provenanceBody: "This article covers specification 3.1. More specific expression pages refine the same left-to-right, exactly-once rule."
 }

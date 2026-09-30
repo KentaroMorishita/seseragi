@@ -10,13 +10,14 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "モジュールの別名を付けても、すべての名前を直接使えるわけではない",
   invalidBody: "import * as text from \"std/text\"で取り込んだ関数は、trimではなくtext.trimと書きます。公開名をすべて無修飾で取り込む構文はありません。同じスコープに同じ名前を二度importすることもできません。別名を付けるか、モジュール名で修飾してください。非公開の名前は、名前を知っていてもimportできません。",
   diagnosticsBody: "公開されていない名前や、存在しない名前のimportはエラーになります。使っていないimportは警告になりますが、型検査で必要なtrait実装を供給しているimportは使用済みとして扱います。コード中にその別名が出てこなくても、必要なimportを整理機能で削除しないようにします。",
-  provenanceBody: "言語仕様6.5に基づきます。名前解決の順序と名前空間の区分は6.8で定めています。"
 }
 
 pub fn layoutTitle -> String = "独自演算子は、解析に必要な規則と一緒に取り込む"
 
-pub fn layoutBody -> String = "独自演算子はimport { operator <+> }のように指定します。取得する情報には、演算子の型だけでなく、結合の向きや優先順位も含まれます。コンパイラとlanguage serverはこの公開情報を使い、取り込み先の関数本体を実行せずに、演算子を含む式を解析します。演算子の名前は通常の値の名前とは別に扱います。"
+pub fn layoutBody -> String =
+  "独自演算子はimport { operator <+> }のように指定します。取得する情報には、演算子の型だけでなく、結合の向きや優先順位も含まれます。コンパイラとlanguage serverはこの公開情報を使い、取り込み先の関数本体を実行せずに、演算子を含む式を解析します。演算子の名前は通常の値の名前とは別に扱います。"
 
 pub fn exampleTitle -> String = "関数の別名と、モジュール名による修飾を使い分ける"
 
-pub fn exampleBody -> String = "arrayLengthはstd/arrayのlengthに付けた別名です。textはモジュールの別名なので、text.trimは公開関数の参照であり、textという値のフィールド参照ではありません。この例は標準ライブラリだけを使うため、Playgroundで単独で実行できます。相対importを使う例には、参照先のソースファイルも必要です。"
+pub fn exampleBody -> String =
+  "arrayLengthはstd/arrayのlengthに付けた別名です。textはモジュールの別名なので、text.trimは公開関数の参照であり、textという値のフィールド参照ではありません。この例は標準ライブラリだけを使うため、Playgroundで単独で実行できます。相対importを使う例には、参照先のソースファイルも必要です。"

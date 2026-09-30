@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Deriving is not a macro system",
   invalidBody: "User-defined traits and arbitrary code generation are not supported. An explicit instance and a derived instance for the same head conflict, and missing field evidence rejects the declaration.",
   diagnosticsBody: "Diagnostics identify an unsupported trait, missing nested evidence, Eq required by Hash, or duplicate generated evidence. They point back to the nominal declaration and affected field or payload.",
-  provenanceBody: "This article covers specification 4.9. JSON-specific shape and wire behavior belongs to the standard-library contract for JSON codecs."
 }

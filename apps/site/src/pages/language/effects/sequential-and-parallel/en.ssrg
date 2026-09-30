@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "The compiler cannot auto-parallelize Effects",
   invalidBody: "External order, resource ownership, failure choice, and cancellation are observable. Even apparently independent Effects remain sequential until the program selects an explicit parallel operation.",
   diagnosticsBody: "Type errors identify incompatible requirements, failures, or successes before scheduling. Runtime diagnostics retain the selected operation and input position for concurrent failures.",
-  provenanceBody: "This article covers specification 5.8. Scheduler fairness, Fiber supervision, and detailed parallel APIs are documented separately."
 }

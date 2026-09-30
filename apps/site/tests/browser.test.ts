@@ -756,9 +756,7 @@ try {
           `http://127.0.0.1:${server.port}/ja/docs/language/model/non-features/`
         )
         const japaneseModelText = await page.locator("body").innerText()
-        assert.ok(
-          japaneseModelText.includes("再代入とmutable fieldはありません")
-        )
+        assert.ok(japaneseModelText.includes("変数への再代入と可変フィールド"))
         assert.ok(!japaneseModelText.match(/#[0-9]+/u))
 
         await page.goto(

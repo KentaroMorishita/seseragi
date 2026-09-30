@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "A struct is not a structural record",
   invalidBody: "Matching field names do not make another struct or record interchangeable. Missing, duplicate, unknown, misplaced-spread, and cross-type spread fields are rejected.",
   diagnosticsBody: "Construction diagnostics name missing, duplicate, unknown, and wrong-typed fields. Tooling resolves field access from the nominal declaration and respects visibility.",
-  provenanceBody: "This article covers specification 3.5; generic identity, opacity, methods, and patterns are documented on their dedicated pages."
 }

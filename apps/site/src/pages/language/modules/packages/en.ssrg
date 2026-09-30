@@ -10,7 +10,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "pub and the export map answer different questions",
   invalidBody: "A pub declaration is visible to another module that can resolve its defining module. The package export map controls which source modules an external package may resolve. Publishing a declaration does not expose every private package path, and listing a module in exports does not make all its declarations public.",
   diagnosticsBody: "The package name uses lowercase ASCII segments separated by /. The std, self and gen prefixes are reserved. An incompatible language range, missing direct dependency, unavailable export subpath, conflicting source identity or a path escaping the package is diagnosed before application execution. A lockfile records the resolved graph; explicitly update it when package or source inputs change.",
-  provenanceBody: "Specification 6.2 introduces the package boundary. Chapter 11 defines the manifest, identity, layout, export map, dependency graph and lockfile contracts."
 }
 
 pub fn layoutTitle -> String = "Ordinary source and auxiliary roots"

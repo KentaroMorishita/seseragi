@@ -10,5 +10,4 @@ pub fn copy -> TypeCopy = TypeCopy {
   invalidTitle: "& is not a general-purpose intersection",
   invalidBody: "Using R & S outside an Effect or Stream requirement position reports SES-T0501. A lone & in value syntax is not an operator, and requirement parameters are complete records rather than row fragments.",
   diagnosticsBody: "SES-E0001 identifies the conflicting field and both types. SES-T0501 owns invalid contexts. Alias expansion and normalization remain visible to tooling so a diagnostic can trace a service back through the generic combinator that added it.",
-  provenanceBody: "This article covers the requirement-merge subsection of specification 2.6. The valid and rejected sources isolate R & { clock: Clock } and an invalid nominal merge."
 }

@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "一致しそうでもrefutable",
   invalidBody: "Arrayは空かもしれないため、let [head, ...tail] = valuesは拒否します。match、Maybeを返すtotal library operation、または長さを検査しない[...all]を使います。",
   diagnosticsBody: "禁止されたrefutable bindingではpattern全体を指します。shape、tuple arity、field、constructor payload、要素型の不一致を先に報告します。",
-  provenanceBody: "仕様3.2.2の完全な分類を扱います。"
 }

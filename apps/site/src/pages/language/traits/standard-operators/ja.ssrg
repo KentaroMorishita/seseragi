@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "overloadでgrammarは変えられない",
   invalidBody: "instanceはprecedence、associativity、別tokenの意味を変えられません。新tokenはcustom operator宣言を使い、標準構文は固定のtraitに結び付きます。",
   diagnosticsBody: "失敗した式は具体的なoperator evidenceの欠落または競合とoperand型を報告します。Floatの順序はhost言語比較へfallbackしません。",
-  provenanceBody: "仕様4.7を扱い、operator構文を通常instanceと共通のcoherence規則へ接続します。"
 }

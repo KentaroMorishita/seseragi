@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "並行cleanupへglobal orderを仮定しない",
   invalidBody: "input順やwaiter登録順がenqueue順を決めるのはAPIが明示した箇所だけです。すべてのcleanupを待つAPIでも、独立sibling finalizer間にglobal orderはありません。",
   diagnosticsBody: "runtime traceはcheckpointやenqueue eventを示せますが、worker数の違いが仕様上のresult順・failure選択・同一scope内LIFOを変えてはいけません。",
-  provenanceBody: "仕様5.11のscheduler fairness subsectionを扱います。Fiber supervisionは次pageで定義します。"
 }

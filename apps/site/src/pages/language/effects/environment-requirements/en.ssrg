@@ -10,5 +10,4 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   invalidTitle: "Optional capabilities are explicit service operations",
   invalidBody: "An optional record field would move a missing-service decision into runtime lookup. Model optional capability as an operation returning Maybe, or choose and provide a concrete service before executing the Effect.",
   diagnosticsBody: "Requirement errors name conflicting fields, both canonical types and their source spans. Boundary validation lists services a selected target cannot provide before work begins.",
-  provenanceBody: "This article covers specification 5.5 and connects to the restricted requirement merge rules in specification 2.6."
 }
