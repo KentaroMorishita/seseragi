@@ -44,6 +44,27 @@ export async function verifyReferenceNavigation(
           await link.click()
           await page.waitForURL(`${origin}${destination}`)
           assert.equal(await page.locator("h1").innerText(), title)
+          assert.equal(
+            await page.locator(".breadcrumb-current").innerText(),
+            title,
+            `${destination}: current breadcrumb must remain readable at ${width}px`
+          )
+          const currentBreadcrumb = await page
+            .locator(".breadcrumb-current")
+            .boundingBox()
+          assert.ok(currentBreadcrumb && currentBreadcrumb.width > 0)
+          assert.equal(
+            await page.locator(".breadcrumbs").evaluate((trail) => {
+              const current = trail.querySelector(".breadcrumb-current")
+              return (
+                current !== null &&
+                current.scrollWidth <= current.clientWidth + 1 &&
+                trail.scrollWidth <= trail.clientWidth + 1
+              )
+            }),
+            true,
+            `${destination}: breadcrumb text must not be clipped at ${width}px`
+          )
           assert.ok(
             (await page.locator(".breadcrumbs").innerText()).endsWith(title)
           )
