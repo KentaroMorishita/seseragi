@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Eitherと型付きresult",
+  title: "Eitherによる成功と失敗",
   summary: "Eitherは計算済みのsuccessまたは回復可能なfailureを通常の値として保持します。",
   ruleTitle: "LeftとRightはdataであり、実行中の計算ではない",
   ruleBody: "Either<E, A>はLeft EまたはRight Aです。callerが明示的な理由を必要とする同期validationやparseに適し、Effectは遅延処理、Validationは独立errorの蓄積を表します。",

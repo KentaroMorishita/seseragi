@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "derived Signal",
+  title: "派生Signal",
   summary: "derived Signalはpure constructorでdependencyを宣言し、glitchを観測させず更新します。",
   ruleTitle: "dependencyを明示する",
   ruleBody: "map・combine・constant・distinct・switchMapがgraph edgeを直接構築します。任意関数内のreadを追跡してhidden dependencyを推論する仕組みはありません。",

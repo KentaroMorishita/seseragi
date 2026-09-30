@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Effectのruntime境界",
+  title: "Effectを実行する境界",
   summary: "宣言されたhost境界だけがserviceを供給してSeseragi Effectを実行できます。",
   ruleTitle: "通常codeに汎用Effect runnerはない",
   ruleBody: "main、test runner、定義済みcallback adapterが実行境界です。environmentを一度組み立て、target capabilityを検証し、coldなEffectを実行して終了結果をhost contractへ変換します。",

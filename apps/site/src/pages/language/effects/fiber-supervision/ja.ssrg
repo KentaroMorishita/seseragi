@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "Fiber supervision",
+  title: "Fiberの所有と監督",
   summary: "すべてのFiberはroot main scopeまたは最も内側のscoped resource ownerに属し、forkはunscoped daemonを作りません。",
   ruleTitle: "child lifetimeはscopeを越えない",
   ruleBody: "scope終了時は未完了childすべてへcancellationを要求し、child finalizerを待ってから閉じます。parentがsuccess・typed failure・cancellationのどれで終わっても同じです。",

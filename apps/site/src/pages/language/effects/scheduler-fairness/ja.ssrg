@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "scheduler fairness",
+  title: "実行順と公平性",
   summary: "Effect runtimeはcheckpointを境界に、cooperative FIFO schedulingとweak fairnessを保証します。",
   ruleTitle: "progressにはcheckpoint到達が必要",
   ruleBody: "async wait、yieldNow、Queue・Deferred・Semaphoreの待機、sleep、I/O境界、cancellation観測がcheckpointです。runnable FiberはFIFO queueへ入り、他のFiberがcheckpointへ到達し続ける限り最終的に実行されます。",

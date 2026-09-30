@@ -1,7 +1,7 @@
 import { ReferenceCopy } from "../../reference-article"
 
 pub fn copy -> ReferenceCopy = ReferenceCopy {
-  title: "例外とalgebraic effect",
+  title: "例外と代数的Effect",
   summary: "Seseragiにはthrow・catch・try構文も、perform・handleによるalgebraic effect構文もありません。",
   ruleTitle: "failureとcapabilityは一つの明示effect modelが所有する",
   ruleBody: "想定可能failureはEitherまたはEffectのEを通ります。foreign adapterは境界でhost例外を捕捉し、Either<ForeignError, A>またはEffect<R, ForeignError, A>へ変換します。",
