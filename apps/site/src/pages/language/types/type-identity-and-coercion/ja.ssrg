@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Type identity and coercion" "禁止される暗黙変換とNever・record widthだけの一般coercionを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "型の同一性と型変換",
+  summary: "一般に暗黙で許すのはNeverとレコード幅だけです。数値、名前付き、欠如、外部値の変換は明示します。",
+  ruleTitle: "似た値や表現でも同一性を保つ",
+  ruleBody: "IntとFloatは別です。Aは自動でMaybe<A>やEither<E, A>にならず、structは同じフィールドのレコードになりません。newtypeを暗黙に包んだり取り出したり、Js.Nullable<A>をMaybe<A>へ変えたりもしません。それぞれの境界関数を使います。",
+  identityBody: "一般の型変換はNeverから要求型への変換と、広い構造的レコードを必要なフィールド集合へ使う幅部分型です。Effect・Stream・Signal・MutableSignalの能力の関係は別に定める例外で、一般の共変性ではありません。",
+  checkingBody: "元と先の同一性を確定してから、期待型の境界で許された型変換だけを使います。推測した変換を連結したり、実行時の値を調べたりしません。明示変換は通常の型付き関数で、必要な失敗も見えます。",
+  invalidTitle: "生成先で互換でも変換を許さない",
+  invalidBody: "FloatへInt、内部表現の型へnewtype、レコードへstruct、Maybeへ外部nullableをそのまま渡すと拒否されます。Justで包むことやtoFloatを呼ぶことは、明示するプログラムの操作です。",
+  diagnosticsBody: "不一致は元と先の同一性を示します。TypeScriptなどのバックエンドが同じ内部表現を受け取れても成功にはしません。必要なら対応する明示変換APIを確認します。",
+  provenanceBody: "言語仕様2.8に基づきます。レコードとNeverの限定された例外を別ページに分け、暗黙のnewtype取り出しを拒否する例も示します。"
+}

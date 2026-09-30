@@ -95,7 +95,7 @@ fn instanceSummary symbol: ReferenceSymbol -> LocalizedText = {
 
 pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
   if symbol.itemKind != "instance" then
-    localized symbol.description "詳しい日本語解説は準備中です。signatureとavailabilityは現在の公開情報を表示しています。"
+    localized symbol.description "公開APIの署名と型制約を確認できます。詳細説明は英語原文で参照できます。"
   else
     instanceSummary symbol
 
@@ -112,12 +112,12 @@ fn symbolPage symbol: ReferenceSymbol -> PageDefinition = PageDefinition {
       [
         Words (
           localized
-            "Use the Standard Library guide for module semantics and Examples for executable programs."
-            "module semanticsはStandard Library guide、実行可能なprogramはExamplesで確認できます。"
+            "Browse the owning module for related public symbols, or consult the language reference for syntax and typing rules."
+            "関連する公開シンボルは所属するモジュール、構文や型付けの規則は言語リファレンスで確認できます。"
         ),
         InternalLink
-            (localized " Standard Library" " Standard Library", "/docs/library/"),
-        InternalLink (localized " Examples" " Examples", "/examples/")
+            (localized (" " + symbol.module) (" " + symbol.module), moduleRoute symbol.module),
+        InternalLink (localized " Language Reference" " 言語リファレンス", "/docs/language/")
       ]
     )
   ]
@@ -129,13 +129,13 @@ fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
   kind: Reference,
   title: localized value.specifier value.specifier,
   summary: localized (`Compiler-owned public API for ${value.specifier}.`)
-    (`${value.specifier}のcompiler-owned public APIです。`),
+    (`${value.specifier}の公開APIを参照できます。`),
   blocks: [
     Paragraph (
       [Words (
         localized
     "Signatures and availability on this page come from the compiler reference artifact."
-    "このページのsignatureとavailabilityはcompiler reference artifactから生成されます。"
+    "署名と利用可能な環境は、コンパイラが管理する公開APIの情報に基づきます。"
       )]
     ),
     Paragraph (
@@ -143,11 +143,11 @@ fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
         localized (
           "Availability: " + value.availability + ". Targets: " + join ", " value.targets + "."
         ) (
-          "Availability: " + value.availability + ". Target: " + join ", " value.targets + "。"
+          "利用可能な環境: " + value.availability + "。対象: " + join ", " value.targets + "。"
         )
       )]
     ),
-    Heading ("public-api", localized "Public API" "Public API"),
+    Heading ("public-api", localized "Public API" "公開API"),
     BulletList (
       [[InternalLink (
         localized (referenceLabel symbol) (referenceLabel symbol),
@@ -187,7 +187,7 @@ fn group id: String
 
 pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup> = [
   group "prelude" "Prelude" "Prelude" ["std/prelude"] modules,
-  group "data-validation" "Data and validation" "Dataとvalidation" [
+  group "data-validation" "Data and validation" "データと検証" [
     "std/maybe",
     "std/either",
     "std/validation",
@@ -197,7 +197,7 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/transformer/state",
     "std/transformer/writer"
   ] modules,
-  group "collections" "Collections" "Collection" [
+  group "collections" "Collections" "コレクション" [
     "std/collection",
     "std/array",
     "std/list",
@@ -206,14 +206,14 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/set",
     "std/iterator"
   ] modules,
-  group "text" "Text" "Text" [
+  group "text" "Text" "文字列" [
     "std/text",
     "std/regex",
     "std/text/grapheme",
     "std/text/unicode",
     "std/char"
   ] modules,
-  group "numbers-bytes" "Numbers and bytes" "数値とbyte" [
+  group "numbers-bytes" "Numbers and bytes" "数値とバイト" [
     "std/number",
     "std/int",
     "std/float",
@@ -224,7 +224,7 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/bytes/hex",
     "std/bytes/base64"
   ] modules,
-  group "data-formats" "Data formats" "Data format" ["std/json"] modules,
+  group "data-formats" "Data formats" "データ形式" ["std/json"] modules,
   group "time-randomness" "Time and randomness" "時刻と乱数" [
     "std/time",
     "std/clock",
@@ -242,7 +242,7 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/stream",
     "std/signal"
   ] modules,
-  group "system" "System capabilities" "System capability" [
+  group "system" "System capabilities" "システムの能力" [
     "std/console",
     "std/log",
     "std/stdin",
@@ -251,7 +251,7 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/process",
     "std/child-process"
   ] modules,
-  group "network-browser" "Networking and browser" "Networkとbrowser" [
+  group "network-browser" "Networking and browser" "ネットワークとブラウザー" [
     "std/http",
     "std/http/server",
     "std/http/multipart",
@@ -265,6 +265,6 @@ pub fn referenceGroups modules: Array<ReferenceModule> -> Array<NavigationGroup>
     "std/web/svg",
     "std/web/dom"
   ] modules,
-  group "testing" "Testing and measurement" "Testと計測" ["std/test", "std/benchmark"]
+  group "testing" "Testing and measurement" "テストと計測" ["std/test", "std/benchmark"]
     modules
 ]

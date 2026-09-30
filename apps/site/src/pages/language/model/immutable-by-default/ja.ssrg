@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "default immutable" "通常のbindingとdataを変更せず、状態遷移を明示する原則です。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "デフォルト不変",
+  summary: "通常の束縛とデータは構築後に変わりません。状態の遷移は明示します。",
+  ruleTitle: "値は作り、再代入しない",
+  ruleBody: "letは不変の束縛を導入します。レコード、struct、ADT、Array、Listも構築後は不変です。更新では新しい値を作るか、状態を明示するライブラリの抽象を使います。",
+  consequenceOne: "変更可能なローカル変数やフィールドはなく、制御の流れによって後の中身を追跡する必要はありません。",
+  consequenceTwo: "永続コレクションの操作は新しい値を返します。別名からの観測は、生成先の変更可能なコンテナーに依存しません。",
+  consequenceThree: "外部状態の変更はEffect サービスを通します。時間とともに変わる値にはSignalやRefなど、操作が境界を表す能力を使います。",
+  boundaryTitle: "状態の抽象は通常の可変値ではない",
+  boundaryBody: "Signal、Ref、DOM サービス、ファイル、foreign objectは変化する仕組みを表せますが、アクセスは型と寿命で制約します。その存在によってletやレコードやフィールドに代入を追加しません。",
+  provenanceBody: "言語仕様0.2に基づきます。データ、コレクション、Effect、Signal、Ref、リソース、外部連携で操作と寿命を説明します。"
+}

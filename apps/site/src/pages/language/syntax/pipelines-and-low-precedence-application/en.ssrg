@@ -5,7 +5,7 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   summary: "Use |> to move a value forward and $ to extend one application across a low-precedence expression.",
   formsTitle: "Two fixed application forms",
   formsBody: "x |> f means f x and associates left. f $ x also means f x but associates right and binds below every binary operator except Signal update :=. A lone | remains an ADT-variant or comprehension separator, never a pipeline.",
-  typingBody: "Both forms reuse ordinary one-argument function application. They do not manufacture multi-argument calls, overloads, or delayed values. The left side must have a function type accepting the right-side result after desugaring.",
+  typingBody: "Both forms reuse ordinary one-argument function application. They do not manufacture multi-argument calls, overloads, or delayed values. For $, the left side is the function; for |>, the right side is the function. In each case it must accept the value supplied by the other side.",
   evaluationBody: "$ evaluates its left side once, then its right side once, then performs one application. It neither runs a returned Effect nor delays the right side. A newline may follow $, and if, match, do, or a lambda may appear there without grouping.",
   invalidTitle: "These tokens are syntax, not user-defined operators",
   invalidBody: "$ cannot be redefined, overloaded, or referenced as ($). Pipeline syntax uses |>, not |. A non-function left side receives the same type error as ordinary application, and := remains lower-precedence than $.",

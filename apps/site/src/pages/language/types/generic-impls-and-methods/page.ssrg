@@ -1,0 +1,13 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.generic-impls-and-methods" "/docs/language/types/generic-impls-and-methods/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("types-generic-methods", localized "Generic impls and methods" "ジェネリックimplとメソッド")] [] [
+    [InternalLink (localized "Inherent impls and methods" "inherent implとメソッド", "/docs/language/data/impls-and-methods/")],
+    [InternalLink (localized "Calling trait methods" "trait methodの呼び出し", "/docs/language/traits/method-calls/")],
+    [InternalLink (localized "Generic structs" "ジェネリックstruct", "/docs/language/types/generic-structs/")]
+  ]

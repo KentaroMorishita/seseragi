@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Re-exports",
+  summary: "Expose a selected dependency through a public facade without copying its declarations.",
+  ruleTitle: "A facade extends its public interface",
+  ruleBody: "pub import { UserId, toInt } from \"./modules-domain\" adds the named public declarations to this module's API. A consumer can import those names from the facade rather than their original file. A named re-export preserves the original declaration identity, so a UserId arriving through the facade is the same nominal UserId defined by the domain module.",
+  typingBody: "pub import * as domain exposes a public namespace. Consumers use qualified access through that namespace; it is not an unqualified wildcard. Re-exporting a namespace introduces a namespace in the public API rather than duplicating all its declarations. The facade's own private names remain private.",
+  evaluationBody: "A re-export is also an import-graph edge. Resolution, visibility and cycle checks apply to it just as they apply to an ordinary import. Imported trait instances are available through the transitive import closure. A facade does not create a separate set of instances or new implementations.",
+  invalidTitle: "Re-export does not manufacture visibility or identity",
+  invalidBody: "A private declaration cannot become accessible just because a facade names it. Export only names that the source module makes public. Renaming a public declaration changes its exposed spelling, not its nominal identity. Avoid facade cycles: a re-export graph has no special cycle exception.",
+  diagnosticsBody: "The example facade re-exports the domain's public type and operation and retains its opaque representation. Its source intentionally contains a relative import, so use it with the sibling domain module. A consumer should see a stable public interface, not depend on private files behind the facade.",
+  provenanceBody: "Specification 6.7 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
+}

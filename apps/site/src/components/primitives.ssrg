@@ -31,6 +31,19 @@ pub fn metadata<Action> key: String -> value: String -> html.Html<Action> = html
   content: value
 }
 
+pub fn alternateResource<Action> language: String
+  -> value: String
+  -> html.Html<Action> =
+  match (html.parseWebUrl value, html.attribute "hreflang" language) {
+    (Left error, _) -> html.span { class: "site-build-error", children: show error }
+    (_, Left error) -> html.span { class: "site-build-error", children: show error }
+    (Right url, Right languageAttribute) -> html.link {
+      rel: "alternate",
+      href: url,
+      attributes: [languageAttribute]
+    }
+  }
+
 pub fn renderInline<Action> locale: Locale -> inline: Inline -> html.Html<Action> =
   match inline {
     Words value -> html.span { children: translate locale value }

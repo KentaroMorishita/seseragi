@@ -99,6 +99,21 @@
   gap: 4px;
 }
 
+.reference-description {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: var(--type-body);
+  line-height: 1.7;
+}
+
+.reference-description summary {
+  cursor: pointer;
+}
+
+.reference-description p {
+  margin-top: 16px;
+}
+
 .api-reference-metadata strong {
   color: var(--text-soft);
   font-size: 11px;

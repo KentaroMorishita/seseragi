@@ -1,0 +1,14 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.kinds" "/docs/language/types/kinds/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("types-kinds", localized "Kinds and type constructors" "kindと型構築子")] [CodeExample
+      ("types-kind-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
+    [InternalLink (localized "Type constructors" "型構築子", "/docs/language/types/type-constructors/")],
+    [InternalLink (localized "Generic functions" "ジェネリック関数", "/docs/language/types/generic-functions/")],
+    [InternalLink (localized "Trait constraints" "trait constraint", "/docs/language/traits/constraints/")]
+  ]

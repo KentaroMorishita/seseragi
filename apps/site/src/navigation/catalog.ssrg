@@ -1,4 +1,22 @@
 import * as arrays from "std/array"
+import { page as grammarPage } from "../pages/language/grammar/page"
+import { page as specifierResolutionPage } from "../pages/language/modules/specifier-resolution/page"
+import { page as reExportsPage } from "../pages/language/modules/re-exports/page"
+import { page as namespacesAndResolutionPage } from "../pages/language/modules/namespaces-and-resolution/page"
+import { page as dependencyGraphsPage } from "../pages/language/modules/dependency-graphs/page"
+import { page as initializationPage } from "../pages/language/modules/initialization/page"
+import { page as entryPointsPage } from "../pages/language/modules/entry-points/page"
+import { page as kindsTypePage } from "../pages/language/types/kinds/page"
+import { page as typeParameterScopeTypePage } from "../pages/language/types/type-parameter-scope/page"
+import { page as genericFunctionsTypePage } from "../pages/language/types/generic-functions/page"
+import { page as letPolymorphismAndRankTypePage } from "../pages/language/types/let-polymorphism-and-rank/page"
+import { page as genericAdtsTypePage } from "../pages/language/types/generic-adts/page"
+import { page as genericStructsTypePage } from "../pages/language/types/generic-structs/page"
+import { page as genericImplsAndMethodsTypePage } from "../pages/language/types/generic-impls-and-methods/page"
+import { page as genericAliasesTypePage } from "../pages/language/types/generic-aliases/page"
+import { page as newtypesTypePage } from "../pages/language/types/newtypes/page"
+import { page as varianceTypePage } from "../pages/language/types/variance/page"
+import { page as erasureAndRuntimeRepresentationTypePage } from "../pages/language/types/erasure-and-runtime-representation/page"
 import { BuildInput } from "../model/build"
 import { localized } from "../model/locale"
 import {
@@ -105,7 +123,7 @@ import { page as examplesPage } from "../pages/examples/page"
 import { page as releasesPage } from "../pages/releases/page"
 import { referenceGroups } from "../reference/catalog"
 
-fn languageArea -> NavigationArea = NavigationArea {
+fn languageArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "language",
   title: localized "Language Reference" "言語リファレンス",
   description: localized
@@ -119,7 +137,7 @@ fn languageArea -> NavigationArea = NavigationArea {
       sections: [
         NavigationSection {
           id: "language-model",
-          title: localized "The language model" "言語model",
+          title: localized "The language model" "言語モデル",
           kind: FlatSection,
           overview: whatIsSeseragiPage (),
           pages: [programsPage (), nonFeaturesPage ()]
@@ -143,22 +161,23 @@ fn languageArea -> NavigationArea = NavigationArea {
     },
     NavigationGroup {
       id: "source-and-syntax",
-      title: localized "Source and syntax" "sourceと構文",
+      title: localized "Source and syntax" "ソースと構文",
       sections: [
         NavigationSection {
           id: "source-forms",
-          title: localized "Reading source" "sourceを読む",
+          title: localized "Reading source" "ソースを読む",
           kind: FlatSection,
           overview: sourceTextPage (),
           pages: [
             literalsPage (),
             characterStringEscapesPage (),
-            layoutLineContinuationPage ()
+            layoutLineContinuationPage (),
+            grammarPage input
           ]
         },
         NavigationSection {
           id: "names-and-fields",
-          title: localized "Names and fields" "nameとfield",
+          title: localized "Names and fields" "名前とフィールド",
           kind: FlatSection,
           overview: reservedWordsPage (),
           pages: [optionalRecordFieldsPage ()]
@@ -167,7 +186,7 @@ fn languageArea -> NavigationArea = NavigationArea {
     },
     NavigationGroup {
       id: "functions-and-operators",
-      title: localized "Functions and operators" "関数とoperator",
+      title: localized "Functions and operators" "関数と演算子",
       sections: [
         NavigationSection {
           id: "calling-functions",
@@ -178,7 +197,7 @@ fn languageArea -> NavigationArea = NavigationArea {
         },
         NavigationSection {
           id: "operators",
-          title: localized "Operators" "operator",
+          title: localized "Operators" "演算子",
           kind: FlatSection,
           overview: operatorPrecedencePage (),
           pages: [customOperatorsPage ()]
@@ -203,7 +222,7 @@ fn languageArea -> NavigationArea = NavigationArea {
         },
         NavigationSection {
           id: "data-shapes",
-          title: localized "Nominal and structural data" "nominal・structural data",
+          title: localized "Nominal and structural data" "名前付き型と構造的な型",
           kind: FlatSection,
           overview: nominalStructuralPage (),
           pages: [
@@ -218,6 +237,28 @@ fn languageArea -> NavigationArea = NavigationArea {
           kind: FlatSection,
           overview: functionTypesPage (),
           pages: [identityCoercionPage (), recursiveDeclarationsPage ()]
+        },
+        NavigationSection {
+          id: "generic-types",
+          title: localized "Generic types" "ジェネリック型",
+          kind: FlatSection,
+          overview: kindsTypePage (),
+          pages: [
+            typeParameterScopeTypePage (),
+            genericFunctionsTypePage (),
+            letPolymorphismAndRankTypePage (),
+            genericAdtsTypePage (),
+            genericStructsTypePage (),
+            genericImplsAndMethodsTypePage (),
+            genericAliasesTypePage ()
+          ]
+        },
+        NavigationSection {
+          id: "representation-and-variance",
+          title: localized "Identity and representation" "同一性と表現",
+          kind: FlatSection,
+          overview: newtypesTypePage (),
+          pages: [varianceTypePage (), erasureAndRuntimeRepresentationTypePage ()]
         }
       ]
     },
@@ -227,14 +268,14 @@ fn languageArea -> NavigationArea = NavigationArea {
       sections: [
         NavigationSection {
           id: "evaluation-and-scope",
-          title: localized "Evaluation and local scope" "評価とlocal scope",
+          title: localized "Evaluation and local scope" "評価とローカルスコープ",
           kind: FlatSection,
           overview: evaluationPage (),
           pages: [blocksLocalPage (), conditionalsPage (), lambdasPage ()]
         },
         NavigationSection {
           id: "ranges-and-comprehensions",
-          title: localized "Ranges and comprehensions" "rangeとcomprehension",
+          title: localized "Ranges and comprehensions" "範囲と内包表記",
           kind: FlatSection,
           overview: rangesComprehensionsPage (),
           pages: []
@@ -281,11 +322,11 @@ fn languageArea -> NavigationArea = NavigationArea {
     },
     NavigationGroup {
       id: "traits-and-abstraction",
-      title: localized "Traits and abstraction" "traitと抽象",
+      title: localized "Traits and abstraction" "traitと抽象化",
       sections: [
         NavigationSection {
           id: "trait-evidence",
-          title: localized "Traits and evidence" "traitとevidence",
+          title: localized "Traits and evidence" "traitと型の証拠",
           kind: FlatSection,
           overview: traitModelPage (),
           pages: [
@@ -297,7 +338,7 @@ fn languageArea -> NavigationArea = NavigationArea {
         },
         NavigationSection {
           id: "coherence-and-contracts",
-          title: localized "Coherence and contracts" "coherenceとcontract",
+          title: localized "Coherence and contracts" "一貫性と契約",
           kind: FlatSection,
           overview: traitCoherencePage (),
           pages: [
@@ -318,7 +359,7 @@ fn languageArea -> NavigationArea = NavigationArea {
     },
     NavigationGroup {
       id: "effects-and-failure",
-      title: localized "Effects and failure" "Effectとfailure",
+      title: localized "Effects and failure" "Effectと失敗",
       sections: [
         NavigationSection {
           id: "values-and-computations",
@@ -329,7 +370,7 @@ fn languageArea -> NavigationArea = NavigationArea {
         },
         NavigationSection {
           id: "effect-programs",
-          title: localized "Writing Effect programs" "Effect programを書く",
+          title: localized "Writing Effect programs" "Effectを組み立てる",
           kind: FlatSection,
           overview: effectContractFormPage (),
           pages: [
@@ -344,29 +385,48 @@ fn languageArea -> NavigationArea = NavigationArea {
           id: "effect-execution",
           title: localized "Execution and faults" "実行と異常終了",
           kind: FlatSection,
+          overview: runtimeBoundariesPage (),
+          pages: [defectsPage (), exceptionsAlgebraicPage ()]
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "concurrency-and-resources",
+      title: localized "Concurrency and resources" "並行処理とリソース",
+      sections: [
+        NavigationSection {
+          id: "execution-order",
+          title: localized "Execution order" "実行順序",
+          kind: FlatSection,
           overview: sequentialParallelPage (),
-          pages: [runtimeBoundariesPage (), defectsPage ()]
+          pages: []
         },
         NavigationSection {
           id: "runtime-ownership",
-          title: localized "Runtime ownership" "runtime ownership",
+          title: localized "Runtime ownership" "実行時の所有関係",
           kind: FlatSection,
           overview: cancellationResourcesPage (),
           pages: [schedulerFairnessPage (), fiberSupervisionPage ()]
-        },
+        }
+      ]
+    },
+    NavigationGroup {
+      id: "signals",
+      title: localized "Signals" "Signal",
+      sections: [
         NavigationSection {
           id: "reactive-state",
-          title: localized "Reactive state" "reactive state",
+          title: localized "Reactive state" "反応的な状態",
           kind: FlatSection,
           overview: signalsTransactionsPage (),
           pages: [derivedSignalsPage (), signalOperatorsPage ()]
         },
         NavigationSection {
           id: "observation-boundaries",
-          title: localized "Observation and boundaries" "observationと境界",
+          title: localized "Observation and boundaries" "監視と境界",
           kind: FlatSection,
           overview: subscriptionsLifetimePage (),
-          pages: [exceptionsAlgebraicPage ()]
+          pages: []
         }
       ]
     },
@@ -383,10 +443,24 @@ fn languageArea -> NavigationArea = NavigationArea {
         },
         NavigationSection {
           id: "module-interfaces",
-          title: localized "Public interfaces" "公開interface",
+          title: localized "Public interfaces" "公開インターフェース",
           kind: FlatSection,
           overview: visibilityPage (),
-          pages: [importsPage ()]
+          pages: [importsPage (), reExportsPage ()]
+        },
+        NavigationSection {
+          id: "module-resolution",
+          title: localized "Resolution and dependency graph" "名前解決と依存グラフ",
+          kind: FlatSection,
+          overview: specifierResolutionPage (),
+          pages: [namespacesAndResolutionPage (), dependencyGraphsPage ()]
+        },
+        NavigationSection {
+          id: "module-execution",
+          title: localized "Initialization and entry" "初期化と実行入口",
+          kind: FlatSection,
+          overview: initializationPage (),
+          pages: [entryPointsPage ()]
         }
       ]
     }
@@ -396,8 +470,7 @@ fn languageArea -> NavigationArea = NavigationArea {
 fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
   id: "library",
   title: localized "Standard Library" "標準ライブラリ",
-  description: localized "Look up modules and public symbols."
-    "標準moduleと公開symbolを調べられます。",
+  description: localized "Look up modules and public symbols." "標準モジュールと公開シンボルを調べられます。",
   landing: libraryOverviewPage (),
   groups: referenceGroups input.referenceModules
 }
@@ -417,7 +490,7 @@ fn areaPages area: NavigationArea -> Array<PageDefinition> = arrays.concat [
 
 pub fn catalog input: BuildInput -> SiteCatalog = {
   let home = homePage ()
-  let areas = [languageArea (), libraryArea input]
+  let areas = [languageArea input, libraryArea input]
   SiteCatalog {
     home,
     areas,

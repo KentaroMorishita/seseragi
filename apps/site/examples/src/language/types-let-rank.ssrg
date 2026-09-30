@@ -1,0 +1,8 @@
+fn unchanged<A> value: A -> A = value
+let identity = unchanged
+
+let number = identity 42
+let text = identity "hello"
+
+fn wrap<A> value: A -> Maybe<A> = Just value
+let fixed = wrap 42

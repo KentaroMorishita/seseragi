@@ -1,0 +1,5 @@
+fn readLater -> Int = later
+
+let first = 1
+let later = first + 1
+let result = readLater ()

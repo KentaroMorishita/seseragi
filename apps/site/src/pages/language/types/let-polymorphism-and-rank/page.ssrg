@@ -1,0 +1,30 @@
+import { localized } from "../../../../model/locale"
+import {
+  Callout,
+  Warning,
+  Words,
+  CodeExample,
+  InternalLink,
+  PageDefinition
+} from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.let-polymorphism-and-rank" "/docs/language/types/let-polymorphism-and-rank/" (en.copy ()) (ja.copy ()) [
+    CodeExample ("types-let-rank", localized "Let-polymorphism and rank" "let多相性とrank"),
+    Callout (
+      Warning,
+      localized "Current compiler limitation" "現在のコンパイラの制約",
+      [Words (
+        localized
+          "The current compiler cannot infer the parameter type of an unconstrained identity lambda at a let binding. The example uses an explicitly generic named function and then instantiates its let-bound value at different types. This workaround does not change the specified let-generalization rule."
+          "現在のコンパイラは、期待型のないlet束縛で恒等ラムダの引数型を推論できません。例では型パラメーターを明示した名前付き関数を束縛し、その値を異なる型で参照します。この回避方法によって、仕様のlet一般化規則が変わるわけではありません。"
+      )]
+    )
+  ] [] [
+    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
+    [InternalLink (localized "Recursive declarations" "再帰宣言", "/docs/language/types/recursive-declarations/")],
+    [InternalLink (localized "Generic functions" "ジェネリック関数", "/docs/language/types/generic-functions/")]
+  ]

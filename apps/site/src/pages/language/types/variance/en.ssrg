@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Variance and capability coercions",
+  summary: "Do not lift record subtyping through arbitrary containers; understand the few explicit capability exceptions.",
+  ruleTitle: "Generic arguments are invariant",
+  ruleBody: "User ADTs, structs, newtypes and collection types are invariant in every parameter. Seseragi has no variance annotations and does not infer variance from how a declaration uses its parameters. Array<{ name: String, id: Int }> is not implicitly an Array<{ name: String }> even though each individual record can be passed to a function requiring only name.",
+  identityBody: "Record width subtyping is a rule for record values themselves. To change a collection's element type, map an explicit conversion or projection over it, as the example does. The resulting collection has the desired element type without pretending that the original collection already had it.",
+  checkingBody: "The exceptions are capability-specific, not general covariance. Effect and Stream allow the documented requirement widening and Never failure widening; MutableSignal<A> can be used as read-only Signal<A>. Successful A and other failure types remain invariant. These exceptions do not permit arbitrary element or error conversion.",
+  invalidTitle: "A subtype element does not make a subtype container",
+  invalidBody: "An array of wider records cannot be assigned to a narrower-record array without conversion. Changing a recoverable error ADT also requires an explicit mapping; Never's special rule is not an automatic union of errors. Forgetting Signal write capability does not change its contained A.",
+  diagnosticsBody: "When a generic mismatch appears, compare all arguments rather than only the record's visible fields. Use map for data conversion, mapError for deliberate error conversion, or the specific capability rule when it genuinely applies. The compiler does not insert collection traversals to make types fit.",
+  provenanceBody: "Specification 2.19 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

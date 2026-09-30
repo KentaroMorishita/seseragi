@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic impls and methods",
+  summary: "Separate parameters fixed by the receiver from parameters introduced by one method.",
+  ruleTitle: "The receiver determines the impl parameters",
+  ruleBody: "impl<A> Box<A> attaches methods to every application of Box. A belongs to the impl and must occur in the target type; it is not a free choice made independently when calling get. For Box<Int>, the receiver fixes A to Int before the method's remaining parameters are checked.",
+  identityBody: "A method can introduce its own parameters, such as B in replace<B>. They belong to that method, not to every other method in the impl. They must not shadow an enclosing parameter. The example's replace returns Box<B> by constructing a new Box; the original Box<A> remains unchanged.",
+  checkingBody: "Inference first matches the receiver against the impl target to determine impl parameters. It then follows ordinary generic-function inference for method-local parameters, value arguments and the expected result. Calling number.replace \"hello\" fixes A from number and B from \"hello\", giving Box<String>. This is an explicit type-changing operation, not mutation or an implicit coercion.",
+  invalidTitle: "An impl parameter cannot float free of its target",
+  invalidBody: "A parameter declared by impl must appear in the target type. Introducing impl<A> for a concrete unrelated target leaves no receiver information for A and is rejected. A method cannot redeclare A while the impl's A is in scope. Use a distinct method-local name.",
+  diagnosticsBody: "Distinguish receiver mismatches from method-argument mismatches. First check which impl the receiver selects, then check the method's own constraints. Inherent methods are statically associated with nominal owners and do not acquire trait-instance dispatch merely because they are generic.",
+  provenanceBody: "Specification 2.16 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

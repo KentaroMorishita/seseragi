@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "実行入口",
+  summary: "具体的な環境・失敗型とUnitの結果を持つ、公開されたEffectfulなmainを一つ用意します。",
+  ruleTitle: "マニフェストが入口モジュールを選ぶ",
+  ruleBody: "実行可能パッケージはマニフェストで選んだモジュールから公開mainを一つ解決します。pub effect fn main -> Unit with AppEnv fails AppErrorはUnit -> Effect<AppEnv, AppError, Unit>型の関数です。ホストが()を渡し、戻ったEffectに環境を供給して実行します。mainを持つモジュールをimportしただけでは呼びません。",
+  typingBody: "AppEnvは閉じた構造的レコードで、必要なサービスのフィールドがすべて静的に確定している必要があります。型パラメーターを持つmain、自由な型変数、未解決の要求フィールドは入口に残せません。ホストはフィールド幅による部分型関係で余分なフィールドを渡せますが、ターゲットが供給しないアプリケーション側のサービスはmainが返すEffectを構成する時点でprovideします。",
+  evaluationBody: "失敗型も具体型でなければなりません。Never以外なら、入口モジュールの推移的なインポートの依存集合から一意で整合性のあるShowインスタンスを解決し、ホストが未処理の型付き失敗を表示できるようにします。成功型はUnitです。ライブラリは入口を持たずにimportでき、アプリケーションを実行する必要はありません。",
+  invalidTitle: "mainは任意の終了コードを返さない",
+  invalidBody: "アプリケーションのコードには直接の強制終了の組み込み操作や整数終了状態を返す入口多重定義はありません。ホストが成功、型付き失敗、defect、キャンセル、プロセスへのシグナルからターゲット契約に従って終了状態を決めます。通常のコードが終了処理を飛ばすのを防ぐためです。defectやキャンセルをAppErrorに偽装してはいけません。",
+  diagnosticsBody: "実行前に公開束縛、署名、具体的なrequirement、失敗型の証拠を検査します。mainが拒否されたら通常の関数の型検査とは分けて、その各項目を確認してください。例のconsole programは公式Console能力を使います。対応しないターゲットが実行時の名前検索でサービスを作り出すことはありません。",
+  provenanceBody: "言語仕様6.11のモジュール契約に基づきます。関係する型、import、実行の規則は、それぞれの専用ページで説明しています。"
+}

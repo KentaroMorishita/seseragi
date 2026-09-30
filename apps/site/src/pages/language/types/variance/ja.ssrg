@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "変性と能力固有のcoercion",
+  summary: "recordの部分型関係を任意のコンテナーへ広げず、限られた能力固有の変換を区別します。",
+  ruleTitle: "ジェネリックの型引数は不変",
+  ruleBody: "ユーザーのADT、struct、newtype、コレクションの型引数はすべて不変です。変性注釈はなく、パラメーターの使い方から変性を推論することもありません。個々のrecordをnameだけ要求する関数に渡せても、Array<{ name: String, id: Int }>が暗黙にArray<{ name: String }>になるわけではありません。",
+  identityBody: "recordのwidth subtypingはrecord値そのものに適用する規則です。コレクションの要素型を変えるには、例のように変換や射影を明示してmapします。元のコレクションを別の型とみなすのではなく、必要な要素型を持つ結果を新しく作ります。",
+  checkingBody: "例外は能力ごとの規則であり、一般的な共変性ではありません。EffectとStreamは仕様で定めるrequirementの拡張とNeverの失敗型拡張を許し、MutableSignal<A>は読み取り専用のSignal<A>として使えます。成功型Aと、それ以外の失敗型は不変です。任意の要素やエラーを変換する規則にはなりません。",
+  invalidTitle: "要素が部分型でもコンテナーは部分型にならない",
+  invalidBody: "fieldの多いrecordのArrayを、変換せずfieldの少ないrecordのArrayへ代入することはできません。回復可能なエラーのADTを変えるときも明示的な写像が必要で、Neverの規則はエラーの自動unionではありません。Signalの書き込み能力を捨てても、中のAは変わりません。",
+  diagnosticsBody: "ジェネリックの不一致では見えるfieldだけでなく、すべての型引数を比較してください。データにはmap、意図したエラー変換にはmapErrorを使い、本当に該当する場合だけ能力固有の規則を使います。コンパイラが型を合わせるためにコレクション走査を挿入することはありません。",
+  provenanceBody: "言語仕様2.19に基づく規則です。表示する短い例はこのリファレンス専用に管理し、公式コンパイラで検査しています。Tourのレッスンではありません。"
+}

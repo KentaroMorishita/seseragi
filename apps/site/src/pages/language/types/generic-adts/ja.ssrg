@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "ジェネリックな代数的データ型",
+  summary: "コンストラクターの型引数を確定し、再帰的なデータの照合でもその型を保ちます。",
+  ruleTitle: "コンストラクターは宣言の全パラメーターを量化する",
+  ruleBody: "ジェネリックADTは、名前によって区別される型の族を導入します。Outcome<String, Int>とOutcome<String, Bool>は、同じ型構築子の異なる適用です。値のコンストラクターは、payloadに一部しか現れなくてもADTの全パラメーターを量化します。FailureのpayloadはEですが、結果はOutcome<E, A>です。SuccessのpayloadはAでも、結果にはEが残ります。",
+  identityBody: "構築のたびに新しい型変数を用意します。payloadで一つのパラメーターが決まり、別のパラメーターが期待型や明示した型引数によって決まる場合があります。例のsuccessは結果の注釈によってEがStringに決まります。Successにエラーpayloadがないからといって、EがNeverになったり、結果型から消えたりはしません。",
+  checkingBody: "照合では、対象の型引数を各コンストラクターのpayloadに代入します。Outcome<String, Int>ならFailureの束縛はString、Successの束縛はIntです。再帰するfieldにも型引数を明示します。Nodeが持つのはArray<Tree<A>>で、Treeだけではありません。これにより木全体で同じAを保ちます。",
+  invalidTitle: "payloadだけでADT全体の型が決まるとは限らない",
+  invalidBody: "期待型がないSuccess 42では失敗側のパラメーターが未解決になることがあります。結果型を注釈するか、コンストラクターの型引数をすべて指定してください。再帰fieldのTreeだけという注釈も完成した型ではありません。コンストラクターは期待されるADTと無関係に引数の型を選びません。",
+  diagnosticsBody: "コンストラクターが曖昧な場合は、宣言のどのパラメーターがpayloadに現れないかを確認してください。そのパラメーターには周囲の式から情報を与える必要があります。照合と網羅性検査は、各分岐から型を作り直すのではなく、具体化された同じnominal型を使います。",
+  provenanceBody: "言語仕様2.14に基づく規則です。表示する短い例はこのリファレンス専用に管理し、公式コンパイラで検査しています。Tourのレッスンではありません。"
+}

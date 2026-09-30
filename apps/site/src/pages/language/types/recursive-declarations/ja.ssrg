@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Recursive declarations" "self recursion・local scope・rec group・monomorphic checking・tail保証を説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "再帰宣言",
+  summary: "名前付き関数と型は再帰でき、相互再帰は一つの単相検査するrec グループに置きます。",
+  ruleTitle: "再帰のscopeを明示する",
+  ruleBody: "名前付き関数とtypeは自身を参照できます。再帰関数にも戻り型の注釈が必要です。通常のletは非再帰です。相互再帰関数は同じrec グループに置き、member名はグループ全体とその後で見えますが、グループより前では見えません。",
+  identityBody: "ローカルfn・effect fnは自身の本体と後続block itemで有効です。後のローカル関数は前から見えません。rec グループは一つの検査単位を定め、宣言した型を変えたり、関数を可変参照にしたりしません。",
+  checkingBody: "グループの検査中は各memberを宣言の境界に対して単相で検査し、全体が成功した後に明示型パラメーターを一般化します。直接のself tail callは一定のホスト stackを保証しますが、相互再帰やnon-tail callには保証しません。",
+  invalidTitle: "recの外ではソース順のscopeが重要",
+  invalidBody: "通常のletは自身を読めません。先行するlocal functionが後続の兄弟を呼ぶにはrecが必要です。グループ内の重複名や戻り型の不一致も拒否され、memberを先に一般化して通すことはありません。",
+  diagnosticsBody: "scopeの診断は前方参照と不明な外部名を区別します。グループの重複、不一致、制約の失敗は各memberの位置を示します。直接のself tail位置以外にstack保証を広げて読まないでください。",
+  provenanceBody: "言語仕様2.9と14.8に基づきます。再帰グループと、許されない前方参照を専用例で示します。"
+}

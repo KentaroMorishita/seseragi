@@ -1,7 +1,15 @@
 import * as html from "std/web/html"
 import { messages } from "../i18n/messages"
 import { BuildInput } from "../model/build"
-import { Locale, localeCode, localizedRoute, translate } from "../model/locale"
+import {
+  En,
+  Ja,
+  Locale,
+  localized,
+  localeCode,
+  localizedRoute,
+  translate
+} from "../model/locale"
 import {
   Article,
   DocumentationIndex,
@@ -13,7 +21,7 @@ import {
   SiteCatalog
 } from "../model/page"
 import { siteHeader } from "../components/site-header"
-import { anchor, metadata, resource } from "../components/primitives"
+import { alternateResource, anchor, metadata, resource } from "../components/primitives"
 import { articleLayout } from "../layouts/article"
 import { documentationLandingLayout } from "../layouts/documentation-landing"
 import { documentationIndexLayout } from "../layouts/documentation-index"
@@ -30,8 +38,7 @@ fn pageBody<Action> input: BuildInput
     match page.kind {
       Home -> homeLayout input labels locale catalog.areas page
       SiteLanding -> landingLayout input labels locale page
-      DocumentationIndex ->
-        documentationIndexLayout input labels locale catalog.areas page
+      DocumentationIndex -> documentationIndexLayout input labels locale catalog.areas page
       DocumentationLanding -> documentationLandingLayout input labels locale catalog.areas page
       Article -> articleLayout input labels locale catalog.areas page
       Reference -> articleLayout input labels locale catalog.areas page
@@ -57,12 +64,16 @@ pub fn renderDocument input: BuildInput
               html.title { children: translate locale page.title + " · Seseragi" },
               metadata "description" (translate locale page.summary),
               resource "canonical" (input.origin + route),
+              alternateResource "en" (input.origin + localizedRoute En page.path),
+              alternateResource "ja" (input.origin + localizedRoute Ja page.path),
+              alternateResource "x-default" (input.origin + page.path),
               resource "stylesheet" "/assets/site.css"
             ]
           },
           html.body {
             children: [
-              anchor "Skip to content" "#content" "skip-link",
+              anchor (translate locale (localized "Skip to content" "本文へスキップ"))
+                "#content" "skip-link",
               siteHeader input labels locale page,
               pageBody input catalog locale page,
               html.footer { class: "site-footer", children: "Seseragi" }

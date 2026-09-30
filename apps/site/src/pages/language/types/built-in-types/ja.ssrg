@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Built-in types" "Int・Float・Bool・Char・String・Unit・Neverの正確な値domainを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "組み込み型",
+  summary: "Int、Float、Bool、Char、String、Unit、Neverには、それぞれ正確な値の範囲があります。",
+  ruleTitle: "七つの型が表す値",
+  ruleBody: "Intは-9007199254740991から9007199254740991の正確なsafe integer、FloatはIEEE 754 binary64です。BoolはTrueとFalse、CharはUnicode scalar一個、Stringは不変のscalar列、Unitは()だけ、Neverは値を一つも持ちません。",
+  identityBody: "Intにnegative zeroはありません。Floatにはnegative zeroがあります。Unitは完了した計算の通常の値を一つ持ち、Neverは値を返せない計算を表すため、両者は交換できません。",
+  checkingBody: "literalの構文がIntかFloatを直接決め、型クラスで数値literalをoverloadしません。Int・Float・BigIntの間の暗黙変換はありません。Neverは実際の値が境界を通らないため、要求される任意の型として使えます。",
+  invalidTitle: "生成先の表現が似ていても型は同じではない",
+  invalidBody: "ホストで同じnumberを使ってもIntとFloatは交換できません。複数scalarの文字はCharではなく、Unitは空レコードでもNeverでもありません。範囲外のInt literalを丸めたりwrapしたりしません。",
+  diagnosticsBody: "literalの綴り、scalar数、範囲、Floatのoverflow、escapeを型検査前に検証します。演算でIntのsafe rangeを越える場合は実行時 defectです。ツールはホストの格納型でなくSeseragiの型を表示します。",
+  provenanceBody: "言語仕様2.2と1.2のliteral・escape規則に基づきます。有効な例と拒否する例をsiteの検査で確認します。"
+}

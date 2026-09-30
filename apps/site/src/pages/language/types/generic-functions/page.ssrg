@@ -1,0 +1,14 @@
+import { localized } from "../../../../model/locale"
+import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import { typePage } from "../article"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn page -> PageDefinition =
+  typePage "language.types.generic-functions" "/docs/language/types/generic-functions/" (en.copy ()) (ja.copy ()) [CodeExample
+      ("types-generic-functions", localized "Generic functions" "ジェネリック関数")] [CodeExample
+      ("types-generic-function-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
+    [InternalLink (localized "Annotations and inference" "型注釈と推論", "/docs/language/types/annotations-and-inference/")],
+    [InternalLink (localized "Let-polymorphism and rank" "let多相性とrank", "/docs/language/types/let-polymorphism-and-rank/")],
+    [InternalLink (localized "Function types and currying" "関数型とカリー化", "/docs/language/types/function-types-and-currying/")]
+  ]

@@ -26,6 +26,16 @@ try {
     0,
     `${valid.stderr.toString()}${valid.stdout.toString()}`
   )
+  const execution = Bun.spawnSync([cli, "run", examples], {
+    cwd: root,
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  assert.equal(
+    execution.exitCode,
+    0,
+    `Compiled examples failed at runtime: ${execution.stderr.toString()}${execution.stdout.toString()}`
+  )
 
   const invalid = build(join(examples, "invalid"), join(temporary, "invalid"))
   assert.notEqual(

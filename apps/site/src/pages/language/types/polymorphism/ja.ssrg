@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Polymorphism" "let-polymorphism・fresh instantiation・value restriction・recursive groupを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "多相性",
+  summary: "一般化した宣言は参照ごとに新しく具体化します。forallは説明用の表記です。",
+  ruleTitle: "一つの束縛を、参照ごとに新しい型で使う",
+  ruleBody: "明示的な型パラメーターを持つ宣言と非再帰letは、型スキームとして一般化できます。恒等関数identityのスキームをforall A. A -> Aと表すと、別々の参照でAをIntやStringなどに具体化できます。",
+  identityBody: "forallはスキームを説明する仕様上の表記で、ソースの予約語ではありません。具体化は各参照を検査する新しい型変数を作り、実行時値を複製したり、型objectを付けたり、値を調べて意味を変えたりしません。",
+  checkingBody: "通常の値は不変で外部状態をEffectに閉じるため、非再帰letに値制限は設けません。再帰グループの検査中は単相とし、グループ全体の検査が成功した後に一般化します。",
+  invalidTitle: "新しい具体化でも曖昧なままにはできない",
+  invalidBody: "引数の制約が矛盾したり、残るtrait制約に一意の証拠がなかったりすれば失敗します。検査中の再帰するメンバーが呼び出しごとに異なる型を仮定することはできず、ソースの型注釈にforallを書くこともできません。",
+  diagnosticsBody: "診断は失敗した参照の具体型を示し、ツールには宣言のジェネリックなスキームを保ちます。再帰グループのエラーでは単相検査の境界を示し、後の参照をUnknownにしません。",
+  provenanceBody: "言語仕様2.5に基づきます。表示する例は一つのジェネリック関数をBoolとIntで使い、参照ごとの具体化を確認します。"
+}

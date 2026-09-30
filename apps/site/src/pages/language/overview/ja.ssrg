@@ -1,21 +1,3 @@
-pub fn title -> String = "Language Reference"
+pub fn title -> String = "言語リファレンス"
 
-pub fn summary -> String = "Seseragiプログラミング言語の構文と意味論を網羅するリファレンスです。"
-
-pub fn modelTitle -> String = "言語model"
-
-pub fn modelBody -> String = "個別の形式を調べる前に、式指向のmodel、program境界、意図的に持たない機能を理解できます。"
-
-pub fn syntaxTitle -> String = "構文"
-
-pub fn syntaxBody -> String = "source形式、name、literal、layout、codeの解釈を決める規則を調べられます。"
-
-pub fn functionsTitle -> String = "関数"
-
-pub fn functionsBody -> String =
-  "関数適用からmethod call、pipeline、優先順位、custom operatorまでを関連づけて説明します。"
-
-pub fn typesTitle -> String = "型"
-
-pub fn typesBody -> String =
-  "Seseragiの型modelを起点に、推論、polymorphism、nominal・structural data、coercion、再帰を調べられます。"
+pub fn summary -> String = "調べたい概念から、規則の説明と正確な構文・意味論へ辿れます。"

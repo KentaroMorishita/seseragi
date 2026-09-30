@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "programとentry point" "package・module・declaration・expressionとhost entryの境界です。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "プログラムと実行入口",
+  summary: "パッケージはモジュール、モジュールは宣言を持ち、公開mainがホスト targetへの入口になります。",
+  ruleTitle: "プログラムの構造を明示する",
+  ruleBody: "ソース file一つが一つのmoduleです。moduleはimportと宣言を持ち、seseragi.tomlがソースとexportの構造を定めます。実行可能パッケージは公開mainを持つソース moduleを一つ選びます。",
+  consequenceOne: "仕様は任意のtop-level式を許しません。importをアプリケーションコードの暗黙の実行方法にはしません。",
+  consequenceTwo: "実行可能mainは、閉じたサービス環境、型付き失敗、Unitの成功を持つEffectを返すUnit関数です。",
+  consequenceThree: "ライブラリはmainなしで宣言をexportできます。一つのパッケージがライブラリmoduleと実行入口の両方を公開しても構いません。",
+  boundaryTitle: "コンパイルと実行の担当を分ける",
+  boundaryBody: "コンパイラがmodule、型、Effect、入口の意味を確定します。選択したホスト targetが互換のサービスを供給し、成功、型付き失敗、defect、キャンセル、signalをホストの結果へ対応付けます。Effectの意味は変えません。",
+  provenanceBody: "言語仕様0.3に基づきます。package 配置、module、入口、Effect環境、Provider、target、実行時で境界を説明します。現在の実装範囲は仕様とは別に管理します。"
+}

@@ -7,6 +7,7 @@ import {
   type Locator,
 } from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
+import { plannedReferenceRoutes } from "../scripts/coverage"
 
 async function codeSurface(locator: Locator) {
   return locator.evaluate((code) => {
@@ -290,11 +291,8 @@ try {
             "punctuation",
           ]
         )
-        assert.equal(typeSystemCode.fontSize, width === 390 ? "13px" : "14px")
-        assert.equal(
-          typeSystemCode.lineHeight,
-          width === 390 ? "21.45px" : "23.1px"
-        )
+        assert.equal(typeSystemCode.fontSize, "14px")
+        assert.equal(typeSystemCode.lineHeight, "23.1px")
         assert.equal(
           await page
             .locator(".code-panel-header")
@@ -555,7 +553,7 @@ try {
               ".docs-sidebar > .sidebar-area[open] .sidebar-group[open] > summary"
             )
             .textContent(),
-          "Effects and failure"
+          "Signals"
         )
         assert.equal(
           await page
@@ -570,7 +568,7 @@ try {
             /\s+/gu,
             " "
           ),
-          "Language Reference / Effects and failure / Signals and transactions"
+          "Language Reference / Signals / Signals and transactions"
         )
         assert.equal(
           await page.locator(".reference-previous strong").textContent(),
@@ -893,7 +891,7 @@ try {
             .nth(1)
             .locator("pre")
             .evaluate((pre) => getComputedStyle(pre).fontSize),
-          width === 390 ? "13px" : "14px"
+          "14px"
         )
         assert.ok(
           await page.evaluate(
@@ -1063,6 +1061,126 @@ try {
         assert.deepEqual(failures, [])
         await context.close()
       }
+      let auditedArticles = 0
+      for (const width of [320, 1280]) {
+        const context = await browser.newContext({
+          viewport: { width, height: 900 },
+          javaScriptEnabled: false,
+        })
+        try {
+          const page = await context.newPage()
+          for (const locale of ["en", "ja"]) {
+            const prefix = locale === "ja" ? "/ja" : ""
+            await page.goto(
+              `http://127.0.0.1:${server.port}${prefix}/docs/language/`
+            )
+            assert.equal(await page.locator(".directory-group").count(), 12)
+            assert.equal(
+              await page.evaluate(
+                () => document.documentElement.scrollWidth - innerWidth
+              ),
+              0
+            )
+            if (screenshots)
+              await page.screenshot({
+                path: join(
+                  screenshots,
+                  `language-directory-${locale}-${width}.png`
+                ),
+                fullPage: true,
+              })
+            await page.goto(
+              `http://127.0.0.1:${server.port}/ja/docs/library/array/function/get/`
+            )
+            assert.equal(
+              await page
+                .locator(".reference-description summary")
+                .textContent(),
+              "APIの詳細説明（英語原文）"
+            )
+            await page.locator(".reference-description summary").click()
+            assert.equal(
+              await page
+                .locator(".reference-description p")
+                .getAttribute("lang"),
+              "en"
+            )
+            assert.equal(
+              await page.evaluate(
+                () => document.documentElement.scrollWidth - innerWidth
+              ),
+              0
+            )
+          }
+          for (const route of plannedReferenceRoutes.filter((route) =>
+            route.startsWith("/docs/language/")
+          )) {
+            for (const locale of ["en", "ja"]) {
+              const localizedRoute = locale === "ja" ? `/ja${route}` : route
+              const response = await page.goto(
+                `http://127.0.0.1:${server.port}${localizedRoute}`
+              )
+              assert.equal(response?.status(), 200, localizedRoute)
+              assert.equal(
+                await page.locator("html").getAttribute("lang"),
+                locale
+              )
+              assert.equal(await page.locator("main h1").count(), 1)
+              assert.ok(
+                (await page.locator(".breadcrumbs").innerText()).length > 0
+              )
+              assert.equal(
+                await page
+                  .locator(".reference-next, .reference-previous")
+                  .count(),
+                route.endsWith("/modules/entry-points/") ? 1 : 2
+              )
+              assert.equal(
+                await page.locator('link[hreflang="ja"]').getAttribute("href"),
+                `https://seseragi.example/ja${route}`
+              )
+              const layout = await page.locator("main").evaluate((main) => ({
+                overflow: document.documentElement.scrollWidth - innerWidth,
+                codeFonts: [...main.querySelectorAll("pre > code")].map(
+                  (code) => Number.parseFloat(getComputedStyle(code).fontSize)
+                ),
+                text: main.textContent ?? "",
+              }))
+              assert.equal(
+                layout.overflow,
+                0,
+                `${localizedRoute} at ${width}px`
+              )
+              assert.ok(
+                layout.codeFonts.every((font) => font >= 13 && font <= 15),
+                `${localizedRoute}: code font ${layout.codeFonts.join(",")}`
+              )
+              assert.ok(
+                !/準備中|整備中|Lesson|#[0-9]+/u.test(layout.text),
+                localizedRoute
+              )
+              if (
+                screenshots &&
+                /\/(?:generic-functions|variance|re-exports)\/$/u.test(route)
+              ) {
+                await page.screenshot({
+                  path: join(
+                    screenshots,
+                    `review-${route.split("/").at(-2)}-${locale}-${width}.png`
+                  ),
+                  fullPage: true,
+                })
+              }
+              auditedArticles += 1
+            }
+          }
+        } finally {
+          await context.close()
+        }
+      }
+      console.log(
+        `Reviewed ${auditedArticles} language article/locale/viewport combinations without JavaScript`
+      )
     } finally {
       await browser.close()
     }

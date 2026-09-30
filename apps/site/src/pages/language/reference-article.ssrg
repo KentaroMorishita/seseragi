@@ -39,7 +39,7 @@ fn blocks english: ReferenceCopy
     ],
     ruleDetails,
     [
-      Heading ("typing", localized "Typing and scope" "型とscope"),
+      Heading ("typing", localized "Typing and scope" "型とスコープ"),
       Paragraph ([Words (localized english.typingBody japanese.typingBody)]),
       Heading ("evaluation", localized "Evaluation" "評価"),
       Paragraph ([Words (localized english.evaluationBody japanese.evaluationBody)]),
@@ -51,9 +51,9 @@ fn blocks english: ReferenceCopy
     ],
     invalidDetails,
     [
-      Heading ("diagnostics", localized "Diagnostics and tools" "診断とtooling"),
+      Heading ("diagnostics", localized "Diagnostics and tools" "診断とツール"),
       Paragraph ([Words (localized english.diagnosticsBody japanese.diagnosticsBody)]),
-      Heading ("specification", localized "Specification source" "仕様source"),
+      Heading ("specification", localized "Specification source" "仕様の出典"),
       Paragraph ([Words (localized english.provenanceBody japanese.provenanceBody)]),
       Heading ("related-rules", localized "Related rules" "関連する規則"),
       BulletList related

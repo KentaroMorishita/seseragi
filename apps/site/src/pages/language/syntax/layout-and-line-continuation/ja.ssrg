@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "layoutとline continuation" "brace・newline・semicolonと二つのcontinuation条件を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "レイアウトと行継続",
+  summary: "blockは括弧で区切り、改行とsemicolonには明示した継続規則を適用します。",
+  formsTitle: "blockは必ず波括弧で囲む",
+  formsBody: "indentだけではblockを始めたり閉じたりしません。{と}が境界で、改行か;で宣言と式を区切ります。括弧内の改行は自由です。括弧外では直前のtokenが右辺を必要とするか、次のtokenが|>、$、算術・比較演算子のときだけ継続します。",
+  typingBody: "レイアウトは型検査より前にtokenのグループを決めます。indent幅は型やscopeに影響しません。bind、純粋なlet、通常の式に、同じ演算子-firstの折り返しを使えます。",
+  evaluationBody: "行継続は解析だけを変えます。グループが決まった後の部分式は通常の評価順に従います。semicolonは常に区切りで、indentや次の演算子で継続へ読み替えません。",
+  invalidTitle: "indentは継続の合図ではない",
+  invalidBody: "行を右へずらしても、完成した二つの式はつながりません。継続条件がなければ括弧を使うか、演算子を次行の先頭へ置いてください。;は常に現在の形式を終えます。",
+  diagnosticsBody: "editorの回復解析が部分構文木を保っても、ビルドでは構文解析器のエラーを報告します。formatterは二spacesと演算子-firstを使い、波括弧と区切りの意味を保ちます。",
+  provenanceBody: "言語仕様1.3に基づきます。専用の短いコードでbindとpipelineの折り返しを示します。"
+}

@@ -1,5 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy =
-  incomplete "式指向" "functionとcontrol formが値を返すtyping modelを説明します。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "式中心",
+  summary: "関数と制御構造が値を返すため、処理の流れとデータの流れを同じ型の仕組みで扱います。",
+  ruleTitle: "制御構造も式",
+  ruleBody: "関数本体は式です。if、match、block、lambda、doも値を返し、その型が周囲の式に参加します。値を作る式とは別の、制御専用の文の体系を設けません。",
+  consequenceOne: "ifとmatchの分岐の結果型は一致する必要があります。正常に戻らない分岐のNeverは、要求される型として使えます。",
+  consequenceTwo: "blockは順に評価し、最後の式を結果にします。意味のある結果がない場合も、値の欠如ではなくUnitを使います。",
+  consequenceThree: "宣言は名前を導入します。計算、合成、失敗、Effectの構築は式の単位で表します。",
+  boundaryTitle: "式中心でもtop-levelで実行するわけではない",
+  boundaryBody: "モジュールのtop-levelはimportと宣言で構成します。仕様は任意のtop-level式を許しません。モジュールを読み込むことを、暗黙のアプリケーション実行機構にしないためです。",
+  provenanceBody: "言語仕様0.2に基づきます。block、条件分岐、照合、Never、Unit、doのページで型と評価の規則を説明します。"
+}

@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "モジュール指定の解決",
+  summary: "ディレクトリーのindexや作業ディレクトリーを推測せず、指定を一つの同一のモジュールへ解決します。",
+  ruleTitle: "先頭の形式で解決方法が決まる",
+  ruleBody: "importの指定は、複数の解決方法を順に試すのではなく、先頭の形式で分類します。./と../はimport元のモジュールからの相対パスです。self/は現在のパッケージのsource、std/は標準ライブラリ、gen/は生成されたbindingを指します。それ以外の修飾されていないモジュール指定は宣言済みの直接依存と、その公開公開パスを指します。",
+  typingBody: "相対指定の./userは、import元と同じディレクトリーのuser.ssrgへ正確に解決します。./user.ssrgも同じ同一のモジュールの別表記です。ディレクトリーのindex、拡張子の総当たり、シェルの作業ディレクトリーへのfallbackはありません。同じパッケージの同一性と正規化パスに解決する表記は、名前付き型を二重に作りません。",
+  evaluationBody: "依存がacme/httpならacme/http/clientは公開されたclient 公開パスを選びます。利用側がアクセスできる範囲はリポジトリーの配置ではなく公開パスの対応表で決まります。依存のaliasと生成・sourceのrootはプロジェクトの契約に従います。相対importでsource、test、generatedの境界を越えることは禁止です。",
+  invalidTitle: "ファイルの場所を知っていても公開APIを迂回できない",
+  invalidBody: "未宣言の依存、非公開公開パス、候補ゼロの指定はエラーです。候補が複数あっても適当に選ばずエラーにします。ファイルをディレクトリーへ移しても./directoryからindex.ssrgを探索しません。importを正しいパスへ更新してください。",
+  diagnosticsBody: "import元の場所と指定の表記の種類から確認し、その後にマニフェスト、公開パスの対応表、正確なパスを調べます。例は同じ兄弟モジュールを.ssrgあり・なしで読み、同じUserId型として使います。両方のソースが必要なので、単独のPlaygroundプログラムではありません。",
+  provenanceBody: "言語仕様6.6のモジュール契約に基づきます。関係する型、import、実行の規則は、それぞれの専用ページで説明しています。"
+}

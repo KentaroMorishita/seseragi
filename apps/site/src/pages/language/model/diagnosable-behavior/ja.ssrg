@@ -1,4 +1,14 @@
 import { ConceptCopy } from "../concept"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> ConceptCopy = incomplete "診断可能な挙動" "compilerが一意に説明できる推論と選択だけを許可します。"
+pub fn copy -> ConceptCopy = ConceptCopy {
+  title: "説明可能な振る舞い",
+  summary: "推論と抽象化は、コンパイラが一つの結果を特定して説明できる場合に成功します。",
+  ruleTitle: "曖昧さはコンパイルエラー",
+  ruleBody: "overload、型推論、メソッド検索、演算子値、Provider、暗黙の型クラス辞書の選択は、適用する規則で一つの安定した候補が決まる場合だけ自動化します。",
+  consequenceOne: "有効なinstance、メソッド、provider、意味の候補が複数あれば診断を出します。値やソース順から適当に選びません。",
+  consequenceTwo: "構文解析器、formatter、コンパイラ、LSP、Playground、document generatorは、コンパイラが管理する構文とinterfaceの成果物を共有します。",
+  consequenceThree: "診断は担当する段階とソース範囲を示します。後段のadapterがコンパイルやtargetのエラーを一般的なdefectへ言い換えません。",
+  boundaryTitle: "推論は便利にする仕組みで、魔法ではない",
+  boundaryBody: "宣言された制約から型と辞書を推論できます。しかし実行時の値を調べたり、無関係なnamespaceを黙って探索したり、通すために任意の候補を選んだりはしません。",
+  provenanceBody: "言語仕様0.2に基づきます。名前解決、型推論、trait、impl、診断、formatter、LSP、Providerで個別の手順を説明します。"
+}

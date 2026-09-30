@@ -1,0 +1,14 @@
+import { ReferenceCopy } from "../../reference-article"
+
+pub fn copy -> ReferenceCopy = ReferenceCopy {
+  title: "Module specifier resolution",
+  summary: "Resolve a source spelling to one canonical module without directory-index or working-directory guesses.",
+  ruleTitle: "The prefix chooses the resolver",
+  ruleBody: "An import specifier is classified by its leading form, not tried against several resolvers until something works. ./ and ../ resolve relative to the importing module. self/ names the current package's source modules; std/ names the standard library; gen/ names generated bindings. Other bare specifiers name a declared direct dependency and one of its public subpaths.",
+  typingBody: "A relative ./user resolves exactly to user.ssrg in the importing module's directory. Writing ./user.ssrg is another spelling of that same canonical module. There is no implicit directory index, extension search or fallback to the shell's current working directory. Package identity and the normalized source path determine module identity, so equivalent relative spellings do not duplicate nominal types.",
+  evaluationBody: "For a dependency such as acme/http, acme/http/client selects its exported client subpath. The dependency's export map, not knowledge of its repository layout, determines what consumers can reach. Dependency aliases and generated/source roots follow the project contract. Relative imports cannot cross source, test and generated root boundaries.",
+  invalidTitle: "A filesystem path does not bypass a package API",
+  invalidBody: "An undeclared dependency, a private package subpath or a specifier with no candidate is an error. Multiple candidates are also an error rather than an arbitrary choice. Moving a file into a directory does not make ./directory search for index.ssrg. Update the explicit import path.",
+  diagnosticsBody: "Start with the importing module's location and the specifier category. Then check the manifest, export map and exact source path. The example imports one sibling both with and without .ssrg and passes its nominal UserId between those names; it needs both source files and is not a standalone Playground program.",
+  provenanceBody: "Specification 6.6 defines this module contract. The linked type, import and execution rules are documented separately rather than replaced by this page."
+}

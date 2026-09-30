@@ -1,5 +1,14 @@
 import { TypeCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> TypeCopy =
-  incomplete "Function types and currying" "nested one-parameter型・部分適用・Unit parameterを説明します。"
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "関数型とカリー化",
+  summary: "各関数は一度に一つの引数を受け取り、複数引数の宣言は右結合した関数型になります。",
+  ruleTitle: "関数の一層ごとに引数を一つ受け取る",
+  ruleBody: "fn add x: Int -> y: Int -> Intの型はInt -> (Int -> Int)です。->が右結合なので括弧を省略できます。add 1は外側の引数を消費し、Int -> Int型の関数を返します。",
+  identityBody: "カリー化は型と呼び出しのモデルで、最適化の書き換えやタプル呼び出しではありません。引数は左から束縛します。引数を書かない宣言も匿名Unit引数を一つ持ち、Unit -> A型で()を渡して呼びます。",
+  checkingBody: "各適用は現在の外側の引数型と値を検査し、残りの戻り型を表します。部分適用では、未解決のgeneric・trait制約を後の引数や期待型まで保つことがあります。",
+  invalidTitle: "引数を省略した宣言は即時の値ではない",
+  invalidBody: "clockだけではInstantではなく関数値です。結果にはclock ()が必要です。f(x, y)は複数引数のカリー化された callではありません。A -> B -> Cは括弧なしでは(A -> B) -> Cを意味しません。",
+  diagnosticsBody: "hoverは右結合した署名と部分適用後の型を示します。適用の診断は失敗した一つの引数層を示し、全引数をホスト風の一回の呼び出しに平坦化しません。",
+  provenanceBody: "言語仕様2.7と1.4・3.1に基づきます。短い例でカリー化された宣言と部分適用を示します。"
+}

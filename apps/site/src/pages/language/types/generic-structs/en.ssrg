@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic structs",
+  summary: "Infer parameters from fields, then preserve the instantiated type through access and updates.",
+  ruleTitle: "Fields constrain the constructor",
+  ruleBody: "struct Box<A> declares a nominal family with a field of type A. Box { value: 42 } infers Box<Int> from that field. Box<String> { value: \"hello\" } instead states the parameter explicitly and checks the field against String. All fields and any expected type contribute constraints to the same application; incompatible constraints cannot produce a mixed Box.",
+  identityBody: "Field access substitutes the receiver's actual parameters. A Box<Int> has an Int value field, while Box<String> has a String value field. This is the same declaration with different static arguments, not two unrelated field lookups. A struct remains nominal: a record with a value field is not a Box.",
+  checkingBody: "A construction with explicit arguments must agree with both its fields and the surrounding expected type. An unresolved slot cannot remain as _ in a value annotation. Updates and spreads preserve the exact instantiated struct type. Updating Box<Int>'s value requires Int and returns Box<Int>; it does not silently change the parameter to String.",
+  invalidTitle: "An update is not a type-changing constructor",
+  invalidBody: "Box<Int> { value: \"hello\" } is inconsistent. If you need a Box<String> from a Box<Int>, construct a new value with a conversion, as the example's label function does. Record width subtyping cannot be used to change a generic nominal receiver's arguments.",
+  diagnosticsBody: "Inspect the instantiated receiver type before diagnosing a field mismatch. If inference has no field information for a parameter, use an expected type or explicit arguments. A failed field update should be fixed with a same-type value or an explicit reconstruction, not by hiding the receiver's parameters.",
+  provenanceBody: "Specification 2.15 defines these rules. The focused example is owned by this reference site and compiled with the official compiler; it is not a Tour lesson."
+}

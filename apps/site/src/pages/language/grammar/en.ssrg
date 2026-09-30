@@ -1,0 +1,20 @@
+pub fn title -> String = "Grammar reference"
+pub fn summary -> String =
+  "Read the complete EBNF alongside the rules that give each syntactic form its meaning."
+pub fn readingTitle -> String = "How to read this grammar"
+pub fn reading -> String =
+  "A production gives a name to a syntactic form. Quoted text is a token written in source; unquoted names refer to other productions. A comma joins successive parts, a vertical bar gives alternatives, square brackets make a part optional, and braces allow zero or more repetitions. The semicolon ends a production in EBNF; it is not necessarily a semicolon in a Seseragi program."
+pub fn lexical -> String =
+  "Names such as INTEGER and LOWER_IDENTIFIER stand for lexer tokens, not source identifiers to copy. Unicode identifier rules, comments, literal boundaries and escapes are explained on their own pages. NEWLINE and a source semicolon separate declarations or block items. Indentation is not a block delimiter."
+pub fn grammarTitle -> String = "Complete grammar"
+pub fn grammarBody -> String =
+  "The following productions are taken directly from the normative grammar appendix during the site build. They describe modules, declarations, expressions, patterns and types without introducing a second independently maintained grammar."
+pub fn limitsTitle -> String = "Syntax is not the whole language"
+pub fn limits -> String =
+  "A production can describe a form that still fails name resolution or type checking. Function application associates to the left, function types associate to the right, and operator fixity resolves precedence after the initial parse. Exhaustive matching, public declaration requirements, record merging, trait coherence and capability restrictions belong to the explanatory rules, not to this EBNF alone."
+pub fn ambiguity -> String =
+  "For example, {} is an empty record, { expression } is a block, and a single-field shorthand record needs a comma: { x, }. Parentheses group an expression, form a tuple, or denote Unit; they do not introduce a separate multi-argument call syntax. Read the dedicated pages before treating a familiar-looking form as equivalent to another language."
+pub fn relatedTitle -> String = "Read the rules behind the productions"
+pub fn sourceTitle -> String = "Normative source"
+pub fn source -> String =
+  "Appendix A supplies the complete production text. The language specification takes precedence where parsing context, operator fixity, name resolution, typing or exhaustiveness completes the grammar."

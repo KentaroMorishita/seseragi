@@ -10,5 +10,5 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   invalidTitle: "Do not infer identifiers from visual appearance",
   invalidBody: "An identifier cannot start with a digit or punctuation, a trailing apostrophe belongs to the identifier being scanned, and a block-comment-looking sequence has no special meaning. The lexer follows Unicode properties and token boundaries, not what two glyphs happen to look like.",
   diagnosticsBody: "The lexer owns invalid UTF-8 and token boundaries. The formatter and LSP consume the same syntax pipeline, so neither tool invents a different identifier or reinterprets account' as account followed by a Char literal.",
-  provenanceBody: "This article implements section 1.1 of docs/spec/01-syntax.md and uses the canonical char-literal package for Unicode and apostrophe examples."
+  provenanceBody: "Specification 1.1 defines these rules. The focused source-text example demonstrates Unicode identifiers, trailing apostrophes and line comments and is checked through compilation and execution."
 }

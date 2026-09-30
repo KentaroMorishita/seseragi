@@ -1,0 +1,9 @@
+newtype UserId = Int
+
+let value = 1
+fn local -> Int = {
+  let value = 42
+  value
+}
+
+let user: UserId = UserId (local ())

@@ -1,5 +1,14 @@
 import { SyntaxCopy } from "../article"
-import { incomplete } from "../ja-fallback"
 
-pub fn copy -> SyntaxCopy =
-  incomplete "Pipelineと低優先順位適用" "|>と$の展開・結合規則・評価順序・改行規則を説明します。"
+pub fn copy -> SyntaxCopy = SyntaxCopy {
+  title: "pipelineと低優先順位の適用",
+  summary: "|>で値を前へ渡し、$で低優先順位の式を一引数として適用します。",
+  formsTitle: "固定された二つの適用形式",
+  formsBody: "x |> fはf xで左結合です。f $ xもf xですが右結合で、Signal更新:=以外の二項演算子より弱く結合します。単独の|はADT variantやcomprehensionの区切りで、pipelineではありません。",
+  typingBody: "両方とも通常の一引数適用です。複数引数呼び出し、overload、遅延値を作りません。$では左側の関数が右側の結果を受け取る型である必要があります。|>では右側の関数が左側の値を受け取ります。",
+  evaluationBody: "$は左を一度、右を一度評価して一回適用します。戻ったEffectを実行したり右辺を遅らせたりしません。$直後に改行でき、if、match、do、lambdaを括弧なしで置けます。",
+  invalidTitle: "user-defined 演算子ではなく固定構文",
+  invalidBody: "$は再定義、overload、($)での関数値化ができません。pipelineは|ではなく|>です。非関数への適用は通常の型エラーで、:=は$より弱いままです。",
+  diagnosticsBody: "構文解析器が結合と優先順位を決め、型診断は元の|>や$の範囲を保って適用関係を示します。formatterもこの解析を変えません。",
+  provenanceBody: "言語仕様1.6に基づきます。短い専用例を公式コンパイラで検査します。"
+}
