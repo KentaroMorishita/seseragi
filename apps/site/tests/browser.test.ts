@@ -8,6 +8,7 @@ import {
 } from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
 import { plannedReferenceRoutes } from "../scripts/coverage"
+import { verifyLanguageMenu } from "./language-menu"
 import { verifyMobileNavigation } from "./mobile-navigation"
 
 async function codeSurface(locator: Locator) {
@@ -202,12 +203,14 @@ try {
         if (width === 390) {
           assert.notEqual(
             await page
-              .locator(".locale-switch")
+              .locator(".language-trigger")
               .evaluate((link) => getComputedStyle(link).display),
             "none"
           )
           assert.equal(
-            await page.locator(".locale-switch").getAttribute("href"),
+            await page
+              .locator('.language-option[hreflang="ja"]')
+              .getAttribute("href"),
             "/ja/docs/language/syntax/function-application/"
           )
           const headerRows = await page
@@ -1078,6 +1081,11 @@ try {
         await context.close()
       }
       await verifyMobileNavigation(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
+      await verifyLanguageMenu(
         browser,
         `http://127.0.0.1:${server.port}`,
         screenshots

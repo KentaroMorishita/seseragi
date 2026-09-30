@@ -26,6 +26,7 @@ const styleFiles = [
   "tokens.css",
   "base.css",
   "shell.css",
+  "language-menu.css",
   "home.css",
   "docs.css",
   "mobile-navigation.css",
@@ -854,10 +855,19 @@ function publishAssets(output: string): string[] {
     readFileSync(join(app, "client/mobile-navigation.ts"), "utf8")
   )
   writeFileSync(join(assets, "mobile-navigation.js"), client)
+  copyFileSync(join(app, "public/language.svg"), join(assets, "language.svg"))
+  writeFileSync(
+    join(assets, "language-menu.js"),
+    new Bun.Transpiler({ loader: "ts" }).transformSync(
+      readFileSync(join(app, "client/language-menu.ts"), "utf8")
+    )
+  )
   return [
     "assets/seseragi-icon.svg",
     "assets/site.css",
     "assets/mobile-navigation.js",
+    "assets/language.svg",
+    "assets/language-menu.js",
   ]
 }
 
@@ -912,7 +922,13 @@ export function buildSite(options: BuildOptions) {
             '<script type="module" src="/assets/mobile-navigation.js"></script></body>'
           )
         : page.html
-      writeFileSync(path, html)
+      writeFileSync(
+        path,
+        html.replace(
+          "</body>",
+          '<script type="module" src="/assets/language-menu.js"></script></body>'
+        )
+      )
     }
     const assets = publishAssets(output)
     const files = [

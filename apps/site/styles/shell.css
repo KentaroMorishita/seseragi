@@ -37,16 +37,14 @@
   gap: 24px;
 }
 
-.site-nav a,
-.locale-switch {
+.site-nav a {
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 650;
   text-decoration: none;
 }
 
-.site-nav a:hover,
-.locale-switch:hover {
+.site-nav a:hover {
   color: var(--text);
 }
 

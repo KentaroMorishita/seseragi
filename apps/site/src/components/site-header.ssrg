@@ -1,9 +1,10 @@
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
-import { Locale, alternateLocale, localizedRoute } from "../model/locale"
+import { Locale, localizedRoute } from "../model/locale"
 import { PageDefinition } from "../model/page"
 import { anchor } from "./primitives"
+import { languageMenu } from "./language-menu"
 
 fn brand<Action> locale: Locale -> html.Html<Action> =
   match (
@@ -42,8 +43,7 @@ fn tools<Action> messages: Messages
   -> html.Html<Action> =
   html.div {
     class: "site-tools",
-    children: anchor messages.language
-      (localizedRoute (alternateLocale locale) page.path) "locale-switch"
+    children: languageMenu messages locale page.path
   }
 
 pub fn siteHeader<Action> input: BuildInput

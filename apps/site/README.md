@@ -22,6 +22,8 @@ pipeline.
   dialog for focus isolation, Escape and backdrop dismissal, and preserves the
   reader's scroll position. The same Seseragi-rendered tree remains an off-canvas
   sidebar without JavaScript; no client routing or second content tree is used.
+  The globe language picker is native details with same-page locale links;
+  its enhancement only adds outside/Escape dismissal and focus handling.
 - `scripts/reference.ts`: validates and joins the canonical Reference and
   Prelude instance artifacts without owning routes or page prose.
 - `scripts/build.ts`: host adapter that reads canonical inputs, invokes the
