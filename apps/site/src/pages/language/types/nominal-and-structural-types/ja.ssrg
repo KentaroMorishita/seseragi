@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "宣言の同一性とレコードの形を区別する",
   ruleBody: "別々に宣言したADT・struct・newtypeは、中の値やフィールドが同じでも別の型です。一方、レコードは必要なフィールドを同じ型で持っていれば渡せます。たとえば{name: String}を受け取る場所へ、nameとidを持つレコードを渡すことができます。",
-  identityBody: "UserIdとOrderIdを区別したい場合のように、用途を分けたいときは名前付き型を使います。必要なフィールドだけを受け取りたいときはレコードを使えます。ただし、余分なフィールドを許す規則は外側のレコードだけに適用されます。共通のフィールドに格納する値の型は一致している必要があります。",
+  identityBody: "同じ整数でもUserIdとOrderIdを区別したいなら、名前付き型を使います。必要なフィールドだけを受け取りたいならレコードを使えます。追加のフィールドを許すのは、渡すレコードの外側だけです。共通のフィールドに入る値は、内側のレコードも含めて同じ型でなければなりません。",
   checkingBody: "レコードを使う位置で必要なフィールドを列挙し、フィールド型が一致することを確認して追加フィールドを無視します。structを同じ形のレコードへ変換したり、別の名前付き宣言を同一視したりしません。",
   invalidTitle: "同じ表現でも同じ型ではない",
   invalidBody: "nameというフィールドを持つPlayer structでも、普通の{name: String}レコードとしてそのまま渡すことはできません。同じIntを包む二つのnewtypeも別の型です。また、共通フィールドの中のレコードに余分なフィールドがある場合、外側のレコードを渡せる規則だけで、その内側の型まで変更することはできません。",
@@ -15,7 +15,7 @@ pub fn copy -> TypeCopy = TypeCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "同じフィールドを持つ値を、そのまま交換できるか",
-  summary: "構造体は、その型を宣言したものとして区別します。普通のレコードは、必要な名前と型のフィールドを持つかで判断します。",
+  summary: "structやnewtypeは、同じ形でも別々に宣言すれば別の型です。普通のレコードは、受け取り側に必要な名前と型のフィールドを持っていれば渡せます。",
   reading: "playerNameはPlayerを受け取り、recordNameは{name: String}を受け取ります。普通のsummaryレコードにはactiveもありますが、必要なnameがあるためrecordNameへ渡せます。同じ名前を返す関数でも、受け取る型は違います。",
   result: "結果の名前は\"Aki\"と\"Mio\"です。Playerがnameを持っていても、自動では普通のレコードになりません。レコードを渡したい場合は、{ name: player.name }のように明示的に作ります。"
 }

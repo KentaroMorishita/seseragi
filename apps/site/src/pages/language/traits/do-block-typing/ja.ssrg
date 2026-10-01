@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "取り出す処理を、一種類の型で揃える",
   ruleBody: "最初の取り出し、最後の式、または周囲が要求する型から、処理の種類Mを決めます。x <- mxでmxがM<A>ならxはAです。最後の式がM<R>ならdo全体もM<R>です。",
-  typingBody: "Maybe、Either、Effectなど、一つのdoで同じ種類の処理を使い、対応するMonadが必要です。普通のletは処理の種類を決めません。種類が分からない場合は型注釈で補います。",
+  typingBody: "一つのdoでは、Maybe、Either、Effectなどの種類を揃え、対応するMonad実装を使います。型構築子は型を一つ受け取る形でなければなりません。普通のletには通常の値や関数を置けますが、letだけではdoの種類は決まりません。決める情報が足りなければ、ブロックの結果に型注釈を補います。",
   evaluationBody: "取り出した値はその行より後で使えます。MaybeでNothing、EitherでLeftなど、後続を進めない結果では、そのMonadの規則で後の行を実行しません。",
   invalidTitle: "異なる種類の処理は明示的に変換する",
   invalidBody: "MaybeとEither、通常の値とEffectをそのまま混ぜることはできません。fromEitherなどの変換を使い、一種類の処理に揃えてください。",
@@ -15,7 +15,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "一つのdoにMaybeとEffectを混ぜてよいか",
-  summary: "一つのdoブロックでは、包む計算の種類を揃えます。取り出す中身の型は行ごとに変わっても、MaybeやEffectといった外側の種類は同じです。",
+  summary: "Maybeのdoから取り出す式も最後の式も、Maybeで揃えます。途中ではIntなどの通常の値を使えますが、Maybeの取り出しとEffectの取り出しをそのまま混ぜることはできません。",
   reading: "pairでは、leftとrightのMaybe<Int>からfirstとsecondを取り出します。pure (first, second)はMaybe<(Int, Int)>です。最後の中身はタプルになりますが、外側のMaybeは変わりません。",
   result: "presentはJust (20, 22)、absentはNothingです。途中のletで普通の値を計算しても、EitherやEffectをMaybeへ変換したことにはなりません。種類を変えるなら明示的な操作が必要です。"
 }

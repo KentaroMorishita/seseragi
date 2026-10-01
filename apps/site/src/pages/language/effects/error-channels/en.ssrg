@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect error channels",
   summary: (explanation ()).summary,
-  ruleTitle: "Application failures are designed, not auto-unioned",
-  ruleBody: "Effects in one composition use one recoverable error type. mapError converts dependency errors into an application ADT; the compiler never synthesizes an anonymous union merely because two operations can fail differently.",
-  typingBody: "Effect<R, Never, A> may widen to Effect<R, E, A> because it cannot produce a recoverable failure. No other failure coercion exists. recover handles E only and must return an Effect with the replacement error type.",
-  evaluationBody: "A typed failure stops the current sequential continuation and is passed to the nearest explicit recovery operation. It is distinct from a defect and cancellation, neither of which recover catches or converts to E.",
-  invalidTitle: "Expected external failure is not a defect",
-  invalidBody: "Network refusal, invalid input, and other anticipated outcomes belong in E or an ordinary Either. Do not hide them behind a runtime defect simply to avoid designing an application error type.",
+  ruleTitle: "Convert different error types to a common type before composing",
+  ruleBody: "One Effect composition uses one recoverable error type. If libraries return different error types, define a type for application errors. It can be an ADT with several cases, with mapError converting each library's error into the appropriate case.",
+  typingBody: "Effect<R, Never, A> cannot return a recoverable failure, so it can be used where failures of type E are allowed. Other error types do not change implicitly. recover receives a failure of type E and returns an Effect for recovery. The resulting error type is the error type of that recovery Effect.",
+  evaluationBody: "A recoverable failure stops subsequent normal processing. If recover has been composed around the work, the failure value goes to the nearest recovery operation. A defect, meaning a computation defect, and cancellation are separate termination reasons: recover neither catches them nor converts them to E.",
+  invalidTitle: "Return anticipated failures in a type the caller can handle",
+  invalidBody: "Use E or Either for results the caller should handle, such as connection refusal or invalid input. Representing these as defects prevents recovery through operations such as recover. A computation defect is not a substitute for defining an application error type.",
   diagnosticsBody: "Failure mismatches show each concrete E and the operation that introduced it. Inferred effect functions suggest an ADT plus mapError or recover when multiple non-Never failures meet.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I turn library errors into application errors?",
-  summary: "An Effect's E names its recoverable error values. Convert errors explicitly when operations use different error types.",
-  reading: "rawLoad succeeds with 1 for \"present\" and otherwise fails with the key String. load uses mapError MissingRecord to wrap that String in the application's AppError type. The successful Int remains unchanged.",
-  result: "Executing load \"missing\" fails with MissingRecord \"missing\". A recovery operation can handle that declared failure. It does not catch cancellation or defects, which are different termination paths."
+  summary: "An Effect's E names the failures that callers can handle with recovery operations. To compose operations using different error types, convert them to a common type with mapError or a similar explicit operation.",
+  reading: "rawLoad constructs an Effect succeeding with 1 when its key is \"present\". Other keys fail with the key String. load uses mapError MissingRecord to convert that String into the MissingRecord case of AppError. The successful Int remains unchanged.",
+  result: "Executing load \"missing\" fails with MissingRecord \"missing\". recover can receive that AppError and return another computation. Cancellation and defects are not AppError values and are not caught by this recovery operation."
 }

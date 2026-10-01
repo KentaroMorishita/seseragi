@@ -7,11 +7,6 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "A branch chooses a value",
   meaningBody: "An expression is a piece of code that produces a value, such as 1 + 2. In Seseragi, choosing between branches is also an expression. An if does not just decide which statements to run: it produces the value of the chosen branch.",
   exampleTitle: "An if provides the function's result",
-  readingTitle: "How to read the example",
-  reading: [
-    "The result function takes an integer score and returns a String. With 85 as its argument, score >= 80 is True, so the if produces \"pass\". With 60, it would produce \"retry\". Only the chosen branch is evaluated.",
-    "The expression after = is the function body, and its value is the return value. There is no return statement or result variable to assign in the branches. The same idea applies to match, which chooses a case, and to a block, whose last expression is its result."
-  ],
   reasonTitle: "Why this is useful",
   reason: [
     "A calculation and a decision can be combined without changing how the result is passed along. You can put an if directly on the right of let, use it as an argument, or make it the body of a function.",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why can if be the entire body of a function?",
-  summary: "Expression-oriented means that constructs such as if, match, and blocks produce values that other expressions can use.",
-  reading: "result's if selects \"pass\" for scores at least 80 and \"retry\" otherwise. Both branches return String, matching the function's result type. There is no separate return statement assigning the selected result.",
-  result: "main prints pass for 85. Expression orientation does not make every branch type compatible: an Int branch and a String branch still need an explicitly shared result representation."
+  summary: "if and match return the selected branch's value; a block returns its last expression. Expression-oriented code uses those results as function results or inputs to other calculations.",
+  reading: "result's if selects \"pass\" for scores at least 80 and \"retry\" otherwise. A score of 85 produces \"pass\"; 60 produces \"retry\". The unselected branch is not executed. Both branches return String, matching the function's result type. No separate return statement is needed.",
+  result: "result 85 returns the String \"pass\", and println outputs pass. Both then and else return String. Replacing one branch with the Int value 0 makes their types disagree and causes a compile error."
 }

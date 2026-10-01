@@ -10,10 +10,10 @@ fn content -> PageDefinition =
   referencePage "language.traits.standard-operators" "/docs/language/traits/standard-operators/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "traits-standard-operators",
-        localized "Operator syntax backed by evidence" "演算子に対応するtraitの実装を使う"
+        localized "Using the trait implementation for an operator" "演算子に対応するtraitの実装を使う"
       )] [CodeExample (
         "traits-invalid-coherence",
-        localized "Duplicate operator evidence is incoherent" "同じ演算子に複数の実装があると選べない"
+        localized "Multiple implementations for one operator are ambiguous" "同じ演算子に複数の実装があると選べない"
       )] [
         [InternalLink (
           localized "Operator overloads" "演算子オーバーロード",

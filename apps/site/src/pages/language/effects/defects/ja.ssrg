@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "想定外の不具合（defect）",
   summary: (explanation ()).summary,
-  ruleTitle: "想定して扱う失敗と、プログラムを停止する不具合を分ける",
-  ruleBody: "整数の範囲超過、0除算、実行基盤の前提の破壊、メモリ不足、安全な外部連携の約束に違反する値などは、想定外の不具合（defect）として計算を停止できます。入力の間違いや通信の失敗など、呼び出し側が扱える結果はEitherやEffectのEで表します。",
-  typingBody: "defectはEffectのEに入りません。recoverは型付きの失敗だけを扱い、defectを成功へ変えるための一般的なcatch構文はありません。",
-  evaluationBody: "defectが起きると、その計算は止まり、登録済みのリソースの後片付けが始まります。解放処理にも不具合がある場合、残りの解放処理を試してから報告します。",
+  ruleTitle: "回復可能な失敗と、処理を停止する不具合を分ける",
+  ruleBody: "整数の範囲超過や0除算など、処理を続けられない不具合をdefectと呼びます。実行基盤が保証する条件に違反した場合、メモリ不足、安全な外部連携で約束した型に違反する値も、この不具合として処理を停止する場合があります。不正な入力や通信の失敗など、呼び出し側が処理できる結果にはEitherやEffectのEを使います。",
+  typingBody: "defectはEffectのEの値ではありません。recoverが受け取るのは回復可能な失敗だけです。任意のdefectを捕捉して成功値に変える一般的なcatch構文もありません。",
+  evaluationBody: "defectが起きると、その処理を止め、登録済みのリソースの後片付けを始めます。解放処理にも不具合が起きた場合は、残りの解放処理を試してから最初の不具合を報告します。後から起きた不具合も診断に記録します。",
   invalidTitle: "想定できる失敗をdefectに変えない",
-  invalidBody: "解析の失敗、権限の拒否、サービスの利用不能など、アプリケーションが想定する結果をdefectへ変えてはいけません。呼び出し側から回復方法が見えなくなるためです。",
-  diagnosticsBody: "実行時の診断では、型付きの失敗とdefectを分けて確認してください。利用可能なソース位置と、その処理が呼ばれた経緯も報告されます。",
+  invalidBody: "解析の失敗、権限の拒否、サービスが使えない場合など、アプリケーションが想定する結果は、呼び出し側が調べられる型で返してください。defectへ変えると、戻り値の型から回復方法を確認できなくなります。",
+  diagnosticsBody: "実行時の診断では、回復可能な失敗とdefectを分けて確認してください。診断には、取得できたソース位置と呼び出しの経緯も記録されます。defectはEの値ではないため、アプリケーションのShow<E>による表示は行いません。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "入力が不正なとき、実行を止める不具合として扱うべきか",
-  summary: "defectは、宣言した回復可能な失敗の型では扱わない想定外の不具合です。予測できる不正入力は、呼び出し側が処理できる結果として返します。",
+  summary: "defectは、整数の0除算など、処理を停止する不具合です。呼び出し側が予測して扱う不正入力は、回復できる結果の型で返してください。",
   reading: "checkedDivideは除算前にdivisorを調べます。0ならLeft ZeroDivisorを返すため、不正な除算をせずに、呼び出し側で理由を説明できます。それ以外なら商をRightに入れて返します。",
-  result: "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorです。想定した失敗を型に残すことと、すべての実行時の不具合を通常の失敗に変えることは異なります。"
+  result: "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorを返します。0を除数にする可能性を先に確認し、理由を通常の値として返すので、呼び出し側で処理できます。recoverなどがすべての実行時の不具合を捕捉するわけではありません。"
 }

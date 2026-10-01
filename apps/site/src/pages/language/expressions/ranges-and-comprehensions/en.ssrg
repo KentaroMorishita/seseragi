@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Ranges and comprehensions",
   summary: (explanation ()).summary,
-  ruleTitle: "Generation order is written in the source",
-  ruleBody: "start..end excludes end and start..=end includes it. Comprehensions process generator and Bool guard clauses left to right; multiple generators nest with the leftmost generator outermost.",
-  typingBody: "A generator source must have Iterable evidence. Its pattern receives the element type, guards are Bool, and the result expression determines the Array or List element type independently of the source collection type.",
-  evaluationBody: "Each source expression is evaluated once for each surrounding generator element, then traversed in Iterable order. A refutable generator pattern filters nonmatching elements without partial bindings.",
-  invalidTitle: "A range does not infer direction",
-  invalidBody: "The step is always one and a start greater than end produces an empty range. Use library operations for descending sequences; an Effect cannot be a pure comprehension source.",
-  diagnosticsBody: "Errors identify missing Iterable evidence, a non-Bool guard, a pattern mismatch, or incompatible result elements. Source and result collection kinds are never converted implicitly.",
+  ruleTitle: "Specify iteration order and which values to keep",
+  ruleBody: "start..end excludes the end; start..=end includes it. In a comprehension, write sources and Bool conditions from left to right. With several sources, the leftmost one acts as the outer loop.",
+  typingBody: "A source type needs an Iterable implementation for retrieving elements in order. Its pattern must fit the element type and each condition must be Bool. The expression before | determines the resulting Array or List element type. The source and result may be different collection kinds.",
+  evaluationBody: "Sources are traversed in order. An inner source expression is computed once for each element of its outer source. An element that does not match its pattern is omitted from the result.",
+  invalidTitle: "A larger start does not create a descending range",
+  invalidBody: "A range always steps by one. If the start is larger than the end, the range is empty. Use library operations for descending sequences. An Effect cannot be the source of a pure comprehension.",
+  diagnosticsBody: "Check that the source implements Iterable, the condition is Bool, and the pattern fits the source element type. Every resulting element must have the same type.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I build a collection from a range and a condition?",
   summary: "A comprehension builds a collection by taking elements from sources, optionally filtering them, and computing a result for each remaining element.",
   reading: "value <- 1 ..= limit takes integers including limit. value % 2 == 0 keeps even integers. The expression before | squares each kept value. For limit 8, the kept inputs are 2, 4, 6, and 8.",
-  result: "evenSquares 8 returns [4, 16, 36, 64]. Using .. instead of ..= excludes the end. This is a pure collection construction, not a loop that executes external Effect operations."
+  result: "evenSquares 8 returns [4, 16, 36, 64]. ..= includes the end value 8. With .., 8 is excluded, so its square 64 does not enter the result. A comprehension constructs a collection from ordinary values."
 }

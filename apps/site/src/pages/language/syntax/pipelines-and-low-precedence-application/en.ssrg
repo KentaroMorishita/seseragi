@@ -5,21 +5,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Pipelines and low-precedence application",
   summary: (explanation ()).summary,
   purpose: [
-    "A pipeline is another way to write a function call, not a new kind of computation. x |> f means f x. It is useful when the result of one operation becomes the input of the next.",
-    "The example has two ordinary functions: double multiplies an integer by two, and addOne adds one. Three different spellings call those functions in the same order."
+    "A pipeline writes a call that passes one function's result to the next function. x |> f has the same meaning as f x.",
+    "In this example, double multiplies an integer by two and addOne adds one. The pipeline, parentheses, and $ forms all describe the same order of calculation."
   ],
   exampleTitle: "Three spellings of the same calculation",
   reading: [
-    "3 |> double calls double 3, producing 6. The following |> addOne passes that result to addOne, producing 7. Follow a chain from its leftmost value.",
-    "addOne (double 3) is the same calculation written with parentheses. The inner call finishes first; its value becomes the argument of the outer call.",
-    "addOne $ double 3 is also equivalent to addOne (double 3). $ lets the expression on its right form the argument without that outer pair of parentheses.",
-    "The three printed values are all 7. Neither symbol delays work, starts a task, or changes the parameter and result types of the functions."
+    "3 |> double calls double 3, producing 6. The following |> addOne passes 6 to addOne, producing 7. Read a pipeline chain from its leftmost value.",
+    "addOne (double 3) writes the same calculation with parentheses. The inner double 3 supplies the argument to the outer addOne.",
+    "addOne $ double 3 also means addOne (double 3). $ groups the expression on its right as an argument without the outer pair of parentheses.",
+    "The three outputs are all 7. Each spelling passes the integer 3 to double, then passes its resulting integer 6 to addOne."
   ],
   rules: [
-    "Pipelines group to the left: x |> f |> g means g (f x). A function needing several arguments must already have its earlier arguments supplied before the pipeline supplies its next argument.",
-    "$ groups to the right: f $ g $ x means f (g x). Ordinary binary operators bind more tightly than $, except the Signal update operator :=. Thus f $ x + 1 passes x + 1 to f.",
-    "A mixed expression render $ values |> transform means render (transform values). Here transform takes one argument. This describes grouping; the usual function-call type checks still apply.",
-    "Both forms use ordinary strict evaluation: the function and the supplied argument are evaluated before the function body uses that argument. These spellings do not make a function lazy."
+    "|> groups to the left. x |> f |> g means g (f x). For a function taking several arguments, supply its earlier arguments first; the pipeline then supplies its next argument.",
+    "$ groups to the right. f $ g $ x means f (g x). Binary operators other than the Signal update symbol := group more tightly than $. Thus f $ x + 1 passes the whole x + 1 to f.",
+    "render $ values |> transform means render (transform values). Here transform takes one argument. Pass values to transform first, then pass its result to render.",
+    "Both spellings use ordinary function-call type checking and evaluation order. The function and its arguments are evaluated before the body runs. A pipeline or $ alone does not start delayed evaluation or concurrent work."
   ],
   mistakes: [
     "A single | is not a pipeline. It has other roles in type declarations and collection comprehensions; write |> for a pipeline.",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can I read a chain of transformations from left to right?",
   summary: "A pipeline passes one function's result to the next. The $ form groups a right-hand expression as an argument without outer parentheses.",
   reading: "double multiplies an integer by two; addOne adds one. Starting at 3, 3 |> double produces 6, then |> addOne produces 7. addOne (double 3) and addOne $ double 3 describe the same calculation.",
-  result: "All three printed results are 7. These forms do not add parallelism, delayed evaluation, or new error handling. Each connection still requires the previous result's type to match the next parameter."
+  result: "All three outputs are 7. The next function must accept the previous function's result type. Here double returns Int and addOne takes Int."
 }

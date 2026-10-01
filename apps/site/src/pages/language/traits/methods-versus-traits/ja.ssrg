@@ -5,8 +5,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "固有メソッドとtrait操作",
   summary: (explanation ()).summary,
   ruleTitle: "一つの型に属する操作と、型をまたぐ共通の操作を分ける",
-  ruleBody: "impl UserはUserにメソッドを作り、user.methodの形で呼びます。instance Eq<User>は共通の等価比較をUserに実装し、==やtraitの関数から使います。",
-  typingBody: "implの操作はドットの前の型から探します。traitの操作は必要なtrait、引数の型、whereの条件とinstanceから選びます。二つは別の仕組みです。",
+  ruleBody: "impl UserにdisplayNameを書くと、Userの値からuser.displayNameと呼べます。一方、instance DebugName<User>は、traitで宣言したdebugNameをUser用に実装します。この操作はdebugName userと呼び、他の型にも同じtraitを実装して共通に使えます。",
+  typingBody: "ドットのメソッドは、ドットの前の値の型と、公開されているimplから探します。traitの操作は、どのtraitの関数か、引数の型、where条件、使えるinstanceから決まります。例えば、UserのdisplayNameが存在しても、DebugName<User>の代わりにはなりません。",
   evaluationBody: "どちらもコンパイル時に決まる実装を呼びます。実行時にクラスを探して選び直すことはありません。",
   invalidTitle: "traitを実装してもドット呼び出しは増えない",
   invalidBody: "traitを実装しても、すべての操作がドットで呼べるようにはなりません。implで似た名前のメソッドを書くだけではtraitの実装になりません。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "この操作をメソッドにするか、traitにするか",
   summary: "一つの型に固有の操作にはimplを使います。複数の型で共通の操作を要求し、共通のコードから使う場合にはtraitを使います。",
   reading: "UserのdisplayNameはimpl Userにあるドットのメソッドです。DebugName<User>は別のdebugName操作を実装します。同じ名前のフィールドを読んでも、呼び方と結果の形式が異なります。",
-  result: "publicNameは\"Aki\"、diagnosticNameは\"User(Aki)\"です。displayNameを定義しただけではDebugName<User>を満たさず、instanceを定義しただけでドットのメソッドにもなりません。"
+  result: "user.displayNameは\"Aki\"、debugName userは\"User(Aki)\"を返します。この例では、通常の表示と診断用の表示を別の操作にしています。implとinstanceは別々の宣言なので、必要な呼び方に合わせて実装を用意してください。"
 }

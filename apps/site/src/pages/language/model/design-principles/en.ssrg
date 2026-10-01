@@ -4,24 +4,24 @@ import { OverviewCopy } from "../principle"
 pub fn copy -> OverviewCopy = OverviewCopy {
   title: "Design principles",
   summary: (explanation ()).summary,
-  introduction: "These pages explain the reason for a language rule, using a small example and its result. For the exact syntax or type rules, follow the related reference links at the end of each article. You can read the principles in any order; this is not a second lesson sequence alongside the Tour.",
+  introduction: "These pages explain decisions you make when writing Seseragi: how to return a value, update data, and handle a failure. Each principle includes code and its result.",
   section: "What each principle explains",
-  closingTitle: "The principles work together",
-  closing: "A short calculation should still make its result and possible failure clear. For example, an array lookup returns Maybe so you must handle the missing case; match turns those cases into a value; immutable data keeps other code from changing the input behind your back. Concise syntax does not remove these guarantees.",
+  closingTitle: "Several principles apply to the same code",
+  closing: "Reading an Array element returns Maybe: Just when the element exists, Nothing otherwise. A match handles both cases. The Array is immutable, so passing it to another function does not change its elements. Types and immutability let you determine what this code does.",
   descriptions: [
-    " — Use the value returned by an if, a match, or a block directly.",
-    " — Update data by creating a new value, without changing the old one.",
-    " — Handle missing values and failures because the types make them visible.",
-    " — Rely on Seseragi's calculation rules, not accidental rules of generated code.",
-    " — Supply enough type information for the compiler to make an unambiguous choice.",
-    " — Distinguish concise notation from the processing and memory an operation needs.",
-    " — Show the data and processing order clearly, rather than aiming for the fewest characters."
+    ". Use the result of if or match as a function result or another calculation's input.",
+    ". Keep the previous value and construct a changed value.",
+    ". Check types for missing values and possible failures.",
+    ". Preserve Seseragi's calculation rules in generated code.",
+    ". Use a diagnostic to identify missing type information and supply it.",
+    ". Check work that grows with element count and the data an operation creates.",
+    ". Choose code that makes values and processing order clear, rather than merely short."
   ]
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Why do these language rules fit together?",
-  summary: "The design principles explain practical choices: branches return values, ordinary data stays immutable, and possible absence or failure remains visible.",
-  reading: "For example, an array lookup returns Maybe because the requested position may not exist. You must handle Just and Nothing, and the array cannot be changed behind your back by an ordinary field assignment. These rules support each other rather than merely sharing a slogan.",
-  result: "Read the principle that answers your current question; the list is not a second Tour. Each detailed principle contains a small program, its result, the reason for the rule, and what the rule does not guarantee."
+  question: "What guides the way you write Seseragi code?",
+  summary: "Seseragi combines expressions through their results. Ordinary data is immutable, and types represent missing values and failures. Each principle explains how those choices affect the code you write.",
+  reading: "An Array may have no element at a requested index. Matching its Maybe result distinguishes Just, which contains an element, from Nothing, which does not. Reading the element leaves the immutable Array unchanged.",
+  result: "Read Expression-oriented for using a branch's result, or Immutable by default for updating data. No hidden danger explains why types represent missing values and failed operations."
 }

@@ -1,4 +1,6 @@
 pub fn title -> String = "リリース"
-pub fn summary -> String = "言語、コンパイラ、実行環境、Playground、開発ツールの変更を、リリースごとに確認できます。"
+pub fn summary -> String =
+  "言語、コンパイラ、実行環境、Playground、開発ツールの変更を、リリースごとに確認できます。"
 pub fn heading -> String = "変更内容と更新方法を確認する"
-pub fn body -> String = "リリースノートでは、使い方に影響する変更や修正、対応するバージョン、必要な移行手順を確認できます。"
+pub fn body -> String =
+  "リリースノートで、使い方に影響する変更や修正を確認してください。対応するバージョンと、更新に必要な手順も記載しています。"

@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "派生Signal",
   summary: (explanation ()).summary,
   ruleTitle: "元のSignalから、変化に追従する値を作る",
-  ruleBody: "mapは一つの値、combineは複数の値から派生値を作ります。constantは変わらない値、distinctは連続した同じ値を除く操作、switchMapは使うSignalを切り替える操作です。どのSignalに依存するかは、これらの関数へ明示的に渡します。通常の関数で読み取ったSignalを自動追跡する仕組みではありません。",
-  typingBody: "mapとcombineは読み取り専用のSignalを返します。distinctは値の一致を調べるためにEq<A>の実装が必要です。switchMapは元の値から次に使うSignalを選び、その現在値を持つSignalを返します。",
-  evaluationBody: "一回の更新では、元の値に近い派生値から順に再計算します。同じ派生値をその更新中に何度も計算せず、すべてが揃った後に通知します。switchMapで切り替える場合も、古いSignalの購読を終了してから新しい安定した値を公開します。",
+  ruleBody: "mapは一つのSignal、combineは複数のSignalから値を計算する、派生Signalを作ります。constantは変わらない値を持つSignalです。distinctは直前と同じ値の通知を除き、switchMapは値の取得元となるSignalを切り替えます。依存先は、これらの関数への引数で明示してください。",
+  typingBody: "派生Signalを作る操作は純粋な関数です。mapとcombineは読み取り専用のSignalを返します。distinctには、値の一致を調べるEq<A>の実装が必要です。switchMapは元の値から次のSignalを選び、選んだSignalの現在値を持つ読み取り専用Signalを返します。",
+  evaluationBody: "一つのトランザクションでは、元の値に近い派生Signalから順に再計算します。同じ派生Signalの計算は、その更新中に高々一回です。すべての値が揃ってから通知します。switchMapも同じトランザクション内で古い依存先を解除し、新しい依存先の現在値を一度公開します。",
   invalidTitle: "更新途中の組み合わせに依存しない",
-  invalidBody: "購読者には、一方だけが更新された途中の組み合わせを見せません。同じ値の通知を省きたい場合はdistinctを使います。通常のsetやupdateは、前の値と等しくても通知します。",
+  invalidBody: "購読者への通知では、片方だけ更新済みの不整合な組み合わせを見せません。通常のsetやupdateは、前の値と等しくても通知します。同じ値の通知を省きたい場合はdistinctを使ってください。通常の関数で読んだSignalを、自動で依存先として追跡する仕組みはありません。",
   diagnosticsBody: "依存関係が循環している、またはdistinctに必要なEqがない場合は構築や型検査で拒否されます。依存するSignalを作る関数と引数を確認してください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "二つの値に追従する合計を作るには",
-  summary: "派生Signalは、明示した元のSignalから値を計算し、元の値の変化に追従します。",
-  reading: "leftは1、rightは2です。combine add left rightで、両方に依存する読み取り専用の合計を作ります。トランザクションで10と20へ更新すると、totalはその合計を再計算します。",
-  result: "stableTotalを実行すると30を返し、片方だけ古い値の一時的な合計は見せません。依存する値はcombineなどの操作で指定し、任意の関数内の読み取りから自動で推測するわけではありません。"
+  summary: "派生Signalは、指定したSignalから現在値を計算します。元のSignalが更新されると、合計などの派生値も更新に合わせて再計算します。",
+  reading: "leftの初期値は1、rightは2です。combine add left rightは、二つの現在値をaddへ渡す読み取り専用のtotalを作ります。トランザクションでleftを10、rightを20にすると、その更新後の値からtotalを再計算します。",
+  result: "stableTotalは30を返します。二つの更新をまとめたため、片方だけ古い一時的な合計は通知しません。どの値から計算するかはcombineの引数に書いてあり、関数内の読み取りから依存先を自動で推測しません。"
 }

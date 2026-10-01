@@ -5,7 +5,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "多相性",
   summary: (explanation ()).summary,
   ruleTitle: "同じ関数を複数の型で使う",
-  ruleBody: "identity<A>のように型パラメーターを持つ関数は、呼び出しごとにAを選べます。identity TrueはBool、identity 42はIntを返します。非再帰のletで付けた別の名前からも、この性質を保って使える場合があります。",
+  ruleBody: "identity<A>のAは、呼び出しごとに選べる型です。identity TrueはBool、identity 42はIntを返します。このように、一つの関数を異なる型で使える性質を多相性と呼びます。再帰しないletで関数に別名を付けた場合も、その性質を保てる場合があります。",
   identityBody: "仕様で使うforall A. A -> Aは、Aに異なる型を選べることを説明する記法です。ソースにforallを書くわけではありません。型を選び直しても値や関数を複製する操作ではなく、実行中の値を見て処理を切り替える仕組みでもありません。",
   checkingBody: "通常の値は不変なので、再帰しないletには、初期値が単純な値かどうかによる追加の制限を設けません。ただし、再帰する関数同士を検査している間は、各関数に同じ型を使います。再帰グループ全体の検査が済んでから、外の呼び出しで型を選べるようにします。",
   invalidTitle: "呼び出しごとに選べても、一回の呼び出し内で矛盾させない",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "同じ関数を整数にも真偽値にも使えるか",
   summary: "多相性は、一つの宣言を異なる型で使える仕組みです。一回ごとの呼び出しには、実行前に決まる具体的な型があります。",
   reading: "identity<A>は同じA型の値を受け取って返します。identity TrueはBoolのTrue、identity 42はIntの42を返します。Aは型の置き場所で、二つの呼び出しでは独立に決まります。",
-  result: "一つの値に型を混ぜたり、実行中の値を見て別の処理を選んだりする仕組みではありません。仕様のforall Aは、複数の型で使えることを説明する表記で、ソースに書く構文ではありません。"
+  result: "identityの同じAは、一回の呼び出しの中では同じ型を表します。整数を渡して文字列を返すことはできません。仕様のforall A. A -> Aは、呼び出しごとにAを選べるという説明用の記法です。Seseragiのソースにはforallを書きません。"
 }

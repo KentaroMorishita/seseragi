@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Scheduler fairness",
   summary: (explanation ()).summary,
-  ruleTitle: "Progress depends on reaching checkpoints",
-  ruleBody: "Async waits, yieldNow, Queue, Deferred and Semaphore waits, sleep, I/O boundaries, and cancellation observation are checkpoints. Runnable Fibers enter a FIFO queue and eventually run while other Fibers keep reaching checkpoints.",
-  typingBody: "Scheduling does not change an Effect type or expose a Fiber priority. yieldNow is a Task<Unit>; inserting it makes a cooperative boundary explicit without adding a service or recoverable failure.",
-  evaluationBody: "Weak fairness promises eventual rescheduling, not equal wall-clock time or equal step counts. A long pure calculation is not preempted automatically and can starve every other Fiber until it yields.",
+  ruleTitle: "Switch work at waits and yield points",
+  ruleBody: "A Fiber represents a running computation. The runtime switches to another Fiber at waits or operations such as yieldNow. These switching points are called checkpoints. Asynchronous waits, Queue, Deferred and Semaphore waits, sleep, and I/O are also checkpoints. Cancellation is observed there too.",
+  typingBody: "yieldNow has type Task<Unit>. It temporarily pauses the current computation so another runnable Fiber can execute. It adds no service requirement or recoverable failure. There is no operation for setting a Fiber priority.",
+  evaluationBody: "Runnable Fibers execute in queue insertion order. As long as other Fibers keep reaching checkpoints, a queued runnable Fiber eventually resumes. This does not guarantee equal execution time or step counts. A long pure calculation is not interrupted automatically and may prevent other Fibers from resuming.",
   invalidTitle: "Do not infer a global order for concurrent cleanup",
-  invalidBody: "Input order and waiter registration determine enqueue order only where an operation states it. Independent sibling finalizers have no global order even when an API waits for all of them before returning.",
-  diagnosticsBody: "Runtime tracing may expose checkpoint and enqueue events, but changing worker counts cannot change specified result order, failure selection, or the LIFO order within one resource scope.",
+  invalidBody: "Check the selected API's order guarantees whenever order matters. Finalizers within one scope run in reverse registration order, but independent child finalizers have no global order. Even an API waiting for all cleanup does not necessarily perform each finalizer's external operations in input order.",
+  diagnosticsBody: "When execution tracing is available, inspect checkpoint arrival, enqueueing, and resumption. Different runtime thread counts cannot change the API's specified result order, failure selection, or reverse finalizer order within one scope.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can a long calculation prevent other Fibers from progressing?",
-  summary: "The runtime shares execution cooperatively. Fibers give other runnable work a chance at waits and explicit yield points, not by automatic interruption of every pure calculation.",
-  reading: "yieldNow creates an explicit handoff point before cooperativeStep succeeds with 42. It does not request a service or produce a recoverable error; it simply allows already-runnable work an opportunity to advance.",
-  result: "The result is still 42. Fairness does not guarantee equal elapsed time or a fixed response deadline. A long uninterrupted pure loop can delay other work, so choose appropriate handoff points when designing CPU-heavy Effect code."
+  summary: "The runtime switches to another Fiber when work waits or executes yieldNow. It does not automatically interrupt a long pure calculation in the middle.",
+  reading: "cooperativeStep executes yieldNow before succeeding with 42. yieldNow temporarily pauses the current computation so other runnable Fibers can progress. It adds neither a service requirement nor a recoverable failure.",
+  result: "After resuming, cooperativeStep returns 42. yieldNow sets no response deadline and does not equalize execution time across computations. If long pure work delays other work, divide the calculation and insert yieldNow between parts."
 }

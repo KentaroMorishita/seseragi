@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "型パラメーターを関数名の後に書く",
   ruleBody: "identity<A>のAは、呼び出すときに具体的な型を選ぶための型パラメーターです。引数をそのまま返すidentityなら、identity 42はIntを、identity \"hello\"はStringを返します。先にIntで呼び出したからといって、その後の呼び出しもIntに固定されるわけではありません。",
-  identityBody: "コンパイラは、渡した引数と、呼び出し結果に要求される型から型引数を推論します。この二つの情報は一致している必要があります。何も情報がないときに、適当な型を選んでコンパイルを通すことはありません。trait制約を持つ関数では、選んだ型に必要なtrait実装があるかも検査します。",
+  identityBody: "コンパイラは、渡した引数の型と、呼び出し結果に要求される型から型引数を推論します。例えば、Intの引数から推論したAに対し、戻り値だけStringを要求することはできません。trait制約がある関数では、選んだ型の実装も検査します。型を決める情報が足りなければエラーです。",
   checkingBody: "型引数は、すべて省略して推論に任せるか、宣言順にすべて指定します。一部だけの指定や名前による指定はできません。例のempty<Int> ()では、空のリストに要素がなく、要素型が分からないためIntを指定しています。受け取る値にList<Int>という型注釈を付けて、戻り値に必要な型を伝える方法もあります。",
   invalidTitle: "型を選ぶ情報がなければ、型引数や注釈を補う",
   invalidBody: "identity<String> 42は、指定したStringと引数のIntが一致しないため型エラーになります。empty ()も、結果の型を決める情報がなければ使えません。また、型引数を明示してもtrait制約の検査がなくなるわけではありません。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "異なる型で使える関数を書くには",
   summary: "関数名の後に型パラメーターを宣言し、引数や戻り値の型に使います。具体的な型は、呼び出しごとに決まります。",
   reading: "identity<A>はAを受け取り、同じAを返します。identity 42ではIntを推論し、identity<String> \"hello\"ではStringを明示しています。empty<A>には要素がないため、呼び出し側でList<Int>という注釈か<Int>を補います。",
-  result: "型パラメーターは型の置き場所であり、型のない値ではありません。identity<String> 42は、指定した型と引数の型が合わないためエラーです。省略した型引数は実行前に推論されます。"
+  result: "identity 42の結果はInt、identity<String> \"hello\"の結果はStringです。identity<String> 42では、指定したStringと引数のIntが矛盾するためエラーになります。型引数は呼び出しごとに、実行前に決まります。"
 }

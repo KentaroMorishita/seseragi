@@ -13,7 +13,7 @@ fn content -> PageDefinition =
         localized "Evidence owned beside a nominal type" "型を定義した場所でtraitを実装する"
       )] [CodeExample (
         "traits-invalid-coherence",
-        localized "Rejected overlapping evidence" "複数の実装が同じ型に当てはまるとエラー"
+        localized "Overlapping implementations for the same types are rejected" "複数の実装が同じ型に当てはまるとエラー"
       )] [
         [InternalLink
       (localized "Instances" "インスタンス", "/docs/language/traits/instances/")],

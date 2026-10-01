@@ -7,7 +7,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   ruleTitle: "包む操作と取り出す操作を明示する",
   ruleBody: "newtype UserId = Intなら、UserId 42でIntを包んだUserIdの値を作ります。中身を取り出すにはUserId valueというパターンを使います。UserIdに専用のメソッドや演算子を定義することもできます。",
   typingBody: "UserIdとIntは別の型です。UserIdを必要とする関数へIntを直接渡すことはできません。型パラメーターを持つnewtypeでも同じです。pub opaqueで公開すると、他モジュールは型名を使えますが、コンストラクターや取り出し用のパターンは使えません。",
-  evaluationBody: "包む値は一度だけ計算します。生成されたプログラムが包みの保存領域を省略しても、別の型として検査する規則は変わりません。利用側は内部の保存形式に依存せず、宣言した構築・取り出し操作を使います。",
+  evaluationBody: "包む値は一度だけ計算します。生成先によっては、UserIdのための追加の保存領域を使わない実装にできます。それでもUserIdとIntを別の型として検査する規則は変わりません。利用側は、UserId 42で作り、UserId numberのパターンで取り出します。",
   invalidTitle: "中身の型の操作を自動で引き継ぐわけではない",
   invalidBody: "Intを包んでも、Intの演算子やtraitの実装が自動で使えるわけではありません。また、レコードのようなフィールド参照や更新もできません。必要な操作をnewtypeに定義するか、中身を明示的に取り出します。",
   diagnosticsBody: "中身の型とnewtypeの取り違えがないか確認してください。必要ならコンストラクターで包み、受け取る側ではパターンで取り出します。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "newtypeの値を作り、中身を取り出すには",
   summary: "newtypeは、既存の型の値を中身に持つ別の型を作ります。コンストラクターで包み、対応するパターンで取り出します。",
   reading: "UserId 42は、通常のIntではなくUserIdを作ります。rawはUserId numberに照合してnumberを返します。型を書く位置、値を作る位置、中身を取り出す位置で、同じUserIdという名前を使います。",
-  result: "numberはIntの42です。明示的に取り出さない限り、Intが必要な場所へUserIdを渡せません。IDを無関係な整数の操作へ渡す間違いを防げます。"
+  result: "numberはIntの42です。UserIdをIntを受け取る関数へ渡したい場合は、rawで取り出してから渡します。整数をUserIdとして使う場合は、UserId 42のようにコンストラクターで包みます。"
 }

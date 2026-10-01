@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalの演算子",
   summary: (explanation ()).summary,
-  ruleTitle: "*で読み、:=で更新する。ただし、どちらもEffect",
-  ruleBody: "*sourceはSignal.read sourceと同じで、Task<A>を返します。target := valueはSignal.set value targetと同じで、Task<Unit>を返します。*が二つの値の間にある場合は、通常の乗算です。",
+  ruleTitle: "*で現在値を読み、:=で更新する",
+  ruleBody: "接頭辞の*sourceはSignal.read sourceと同じで、Task<A>を返します。target := valueはSignal.set value targetと同じで、Task<Unit>を返す更新操作です。二つの値の間に書く*は、通常の乗算のままです。",
   typingBody: "SignalとMutableSignalはどちらも読めますが、:=で更新できるのはMutableSignalだけです。通常のletやstructのフィールドを代入可能にする記号ではありません。",
-  evaluationBody: "一回の:=が一つの更新になります。*は、その処理が実行された時点の安定した現在値を読みます。現在値から新しい値を計算して一つの操作で更新するならupdateを使います。",
+  evaluationBody: "一回の:=は、一件のトランザクションとして実行します。*は、Taskを実行した時点の更新が確定した現在値を返します。現在値から新しい値を計算し、一つの操作として更新するにはupdateを使います。",
   invalidTitle: "現在値を読む操作もEffectである",
-  invalidBody: "*sourceはAそのものではなくTask<A>です。純粋な関数からAとして返せません。また、読み取りを行って後で書き戻す操作と、updateによる一回の更新は同じではありません。",
-  diagnosticsBody: ":=の左に読み取り専用のSignalや普通の値を置いていないか確認します。*の結果を使うときは、Taskを実行して中の値を受け取る必要があります。",
+  invalidBody: "*sourceの型はTask<A>なので、純粋な関数からAとして返すと型エラーになります。また、古い値を読んで後から書き戻す場合は、その間の変更を反映できないことがあります。現在値から計算して更新するにはupdateを使ってください。",
+  diagnosticsBody: ":=の左側がMutableSignalか確認してください。読み取り専用のSignalや普通の値は更新できません。*の結果がTask<A>であることにも注意し、doなどで実行後のAを受け取って使います。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Signalに対する*と:=は何をするか",
-  summary: "接頭辞の*はEffectとしてSignalの現在値を読み、:=はMutableSignalに書き込みます。普通の変数への代入ではありません。",
-  reading: "countは0で作られます。count := 1で現在値を1にし、signals.updateでその値に1を足します。最後の* countが更新後の現在値を読みます。",
-  result: "readAndWriteを実行すると2を返します。* countの型はTask<Int>なので、純粋な関数で直接Intとしては使えません。現在値から新しい値を作る場合は、読み取りと書き戻しを別々にせずupdateを使います。"
+  summary: "接頭辞の*は、Signalの現在値を読むTaskを作ります。:=はMutableSignalの更新を表すTaskです。どちらも実行したときに状態へアクセスする操作です。",
+  reading: "countの初期値は0です。count := 1を実行すると現在値が1になります。signals.updateはその現在値に1を足し、最後の* countが更新後の値を読みます。これらのTaskをdoで順につないでいます。",
+  result: "readAndWriteは2を返します。* count自体はTask<Int>で、通常のIntとして使えません。また、:=はMutableSignalに限った操作で、letの変数やstructのフィールドへの代入には使えません。"
 }

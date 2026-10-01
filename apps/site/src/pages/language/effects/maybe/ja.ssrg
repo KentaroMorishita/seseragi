@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Maybeと値の不在",
   summary: (explanation ()).summary,
   ruleTitle: "値がないことも正常なら、Nothingを返す",
-  ruleBody: "Maybe<A>は、値のないNothingと、Aを持つJustのどちらかです。検索で見つからない場合などに使います。失敗理由が必要ならEitherを使います。外部言語のnullを持つ値は、連携する境界でMaybeへ変換します。",
-  typingBody: "value ?? fallbackは、左のMaybe<A>からAを取り出し、ない場合に右のAを返します。戻り値はMaybeではなくAです。??はMaybeだけに使え、Eitherや通常の値には使えません。",
-  evaluationBody: "まず左を計算します。Justなら中身を返し、右を計算しません。Nothingのときだけ右を計算します。そのため、右に置いた高価な計算は、値がないときにだけ行われます。",
+  ruleBody: "Maybe<A>は、値のないNothingか、Aの値を持つJustです。検索で見つからない場合など、値がなくても正常な結果として扱うときに使います。不在の理由も返す必要があるならEitherを選んでください。外部言語のnullを含む値は、連携する境界でMaybeへ変換します。",
+  typingBody: "value ?? fallbackは、Justの中からAの値を取り出します。valueがNothingなら、代わりに右側のfallbackを返すため、その型もAである必要があります。式全体の型はAです。??は右からまとまり、Maybeにだけ使えます。Either、外部言語のnullを含む値、通常の値には使えません。",
+  evaluationBody: "??は左側を先に計算します。Just valueならvalueを返し、右側は計算しません。Nothingの場合にだけ右側を計算するので、時間のかかる代替値の計算も必要になったときだけ行います。",
   invalidTitle: "値の不在と、理由を持つ失敗を分ける",
-  invalidBody: "値がないことと、失敗したことは違います。失敗理由を伝える必要がある処理をMaybeに変えると、その情報が失われます。また、Falseや0が自動でNothingになることはありません。",
+  invalidBody: "Maybeには、値がない理由を入れる場所がありません。呼び出し側へ理由を伝える必要がある処理をMaybeで表すと、その情報を返せなくなります。Falseや0は通常の値で、自動的にNothingへ変換されることもありません。",
   diagnosticsBody: "??の左がMaybeか、右の型がJustの中身と一致するか確認します。matchを使うなら、NothingとJustの両方を扱ってください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "値がない場合も扱いながら、中身を使うには",
-  summary: "Maybe<A>には、Aを持つJustと、値がないNothingの二つの場合があります。正常に起こる不在を表し、失敗の理由を持つ型ではありません。",
+  summary: "Maybe<A>は、値を持つJustと、値のないNothingを区別する型です。検索で見つからない場合など、値の不在を正常な結果として扱うときに使います。",
   reading: "displayNameはcachedを先に調べ、なければrequested、それもなければ\"anonymous\"を使います。??はJustの文字列を取り出し、Nothingのときだけ右側を評価します。右からまとまるため、cachedの代替値はrequested ?? \"anonymous\"です。",
   result: "cachedがJust \"Aki\"なら結果は\"Aki\"です。両方がNothingなら\"anonymous\"になります。有無で処理を分けたい場合はmatchを使い、不在の理由が必要ならEitherを使います。"
 }

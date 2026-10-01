@@ -5,8 +5,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "メソッド呼び出し",
   summary: (explanation ()).summary,
   purpose: [
-    "メソッドは、特定の型に対して定義した関数です。original.add 5ではCounterに属するaddを呼び、最初の引数にoriginal、次の引数に5を渡します。",
-    "この例では、valueという整数のフィールドを持つCounter型を作ります。implは、その型に属する関数をまとめる宣言です。継承や値の書き換え、ジェネリック型を知らなくても、この例は読めます。"
+    "メソッドは、特定の型に対して定義した関数です。original.add 5ではCounterのaddを呼びます。最初の引数にoriginal、次の引数に5を渡します。",
+    "例のCounterは、valueという整数のフィールドを持つ型です。implは、その型のメソッドをまとめて宣言するために使います。addでは、元のCounterに値を代入せず、加算後のCounterを返します。"
   ],
   exampleTitle: "元の値を変えずにカウンターへ加算する",
   reading: [
@@ -22,8 +22,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "traitの関数は別の仕組みです。複数の型で使う操作を宣言し、instanceで型ごとの実装を指定します。traitに関数名を書いただけで、その名前をドットで呼べるようになるわけではありません。"
   ],
   mistakes: [
-    "original add 5ではメソッド呼び出しになりません。ドットが必要です。また、add (original, 5)は二つの引数ではなく、一つのタプルを渡す書き方です。",
-    "selfを省略したり、所属する型とは無関係な型にしたりすると、次の宣言はエラーになります。実行時の振り分けを探すのではなく、診断が指す引数の宣言を確認してください。"
+    "original add 5では、originalを関数として呼び出す意味になります。メソッドを呼ぶ場合はoriginal.add 5と書いてください。add (original, 5)は一つのタプルを渡す書き方で、二つの引数を渡す呼び出しとは異なります。",
+    "メソッドの最初の引数はselfで、型はそのメソッドが属する型でなければなりません。次の不正な宣言のようにselfを省略したり別の型にしたりすると、コンパイル時にエラーになります。診断が指す引数の名前と型を確認してください。"
   ],
   related: [
     "引数の渡し方や、一部の引数だけを渡す書き方を確認できます。",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "ドットの前の値は、どの引数に渡されるか",
   summary: "メソッドは、名前付きの型に属する関数です。ドットで呼ぶと、ドットの前の値が最初の引数に渡されます。",
   reading: "Counterは整数のvalueを持ちます。original.add 5では、selfにoriginal、amountに5を渡します。addはself.value + amountを持つ新しいCounterを作り、元のフィールドを書き換えません。",
-  result: "updatedは整数の15ではなく、Counter { value: 15 }です。original.valueは10のままで、updated.valueは15です。出力の二行で、元の値と新しい値の違いを確認できます。"
+  result: "updatedはCounter { value: 15 }です。original.valueは10のままで、updated.valueは15になります。整数の結果だけが欲しい場合は、updated.valueのようにフィールドを読めます。"
 }

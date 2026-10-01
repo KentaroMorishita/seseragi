@@ -5,15 +5,15 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Tuples, arrays, and lists",
   summary: (explanation ()).summary,
   purpose: [
-    "Use a tuple for a fixed set of values with different roles, such as a label and a number. (\"answer\", 42) has two positions; their types can differ.",
-    "Use an Array for a sequence accessed by integer positions. Use a List for operations that repeatedly add or remove a first element. They are separate immutable types, not two spellings of one collection."
+    "A tuple groups values with different roles, such as a label and a number. (\"answer\", 42) has two positions: the first is String and the second Int.",
+    "Use Array to read elements at integer positions. Use List when adding elements at the front or taking them in order from the front. Both are immutable, so a changed result is a new value. Array and List are different types."
   ],
   exampleTitle: "Choose a shape and read its values",
   reading: [
-    "pair contains a String in its first position and an Int in its second. let (label, number) = pair takes those two parts out and gives each a name. The first two lines of output are answer and 42.",
-    "[10, 20, 30] makes an Array<Int>. Positions start at zero, so numbers[1] refers to 20. Indexed access returns Maybe<Int>, not an unconditionally present integer.",
-    "Just 20 means the element exists and has value 20. Nothing means no element exists at that index. numbers[9] produces Nothing rather than reading arbitrary data or throwing a bounds exception. show converts these result values to text before println prints them.",
-    "A backtick before the brackets makes a List: `[\"Aki\", \"Mio\"]. The colon in \"Ren\" : names makes a new list with Ren at the front. names itself is unchanged. The backtick in the final output identifies the list."
+    "pair contains a String in its first position and an Int in its second. let (label, number) = pair extracts them and gives them names, so the first outputs are answer and 42.",
+    "[10, 20, 30] has type Array<Int>. Positions start at zero, so numbers[1] refers to 20. Indexed access returns Maybe<Int>.",
+    "Just 20 means an element exists at that position with value 20; Nothing means none exists. numbers[9] is outside the array, so it returns Nothing. selected uses match to extract an integer from Just, or uses 0 for Nothing.",
+    "A backtick before the brackets makes a List: `[\"Aki\", \"Mio\"]. \"Ren\" : names creates a new list with Ren at the front. names is unchanged. The final output, converted to text with show, also has a backtick identifying the list."
   ],
   rules: [
     "A tuple has a fixed length and a type for each position. There is no one-element tuple. Array and List elements must all have one common type; an Array<Int> cannot contain a String.",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Which collection should I use, and how do I read an element?",
   summary: "A tuple has fixed positions, possibly of different types. An Array or List has any number of elements of one type, with different access and construction operations.",
   reading: "(label, number) unpacks the tuple. Array indexes start at zero, so numbers[1] is Just 20 and numbers[9] is Nothing. The match for selected extracts value from Just, or chooses 0 for Nothing. selected is therefore an Int with value 20, ready for arithmetic.",
-  result: "The list literal has a leading backtick, and \"Ren\" : names adds a new head without changing names. Array and List do not convert automatically. The printed Maybe values demonstrate safe lookup, not integers already usable in arithmetic."
+  result: "selected is the Int 20. After extracting the indexed result with match, it can be used in integer calculations. \"Ren\" : names creates a list with a new first element, leaving names unchanged. Use library conversion functions to convert between Array and List."
 }

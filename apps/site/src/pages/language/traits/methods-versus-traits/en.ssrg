@@ -5,8 +5,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Inherent methods versus trait operations",
   summary: (explanation ()).summary,
   ruleTitle: "Two forms solve different lookup problems",
-  ruleBody: "impl User adds members resolved from a User receiver and called with member syntax. instance Eq<User> implements an existing abstract operation, called as a constrained function after evidence selection.",
-  typingBody: "Inherent lookup uses the receiver's nominal identity, declaration visibility, and generic substitution. Trait lookup uses the operation's owning trait, inferred type arguments, constraints, visible instances, and coherence.",
+  ruleBody: "Defining displayName in impl User lets a User value call user.displayName. instance DebugName<User> instead implements the trait's declared debugName for User. Call it as debugName user; other types can implement the same trait for use by shared code.",
+  typingBody: "Dot-method lookup uses the type before the dot and visible impl methods. Trait lookup uses the operation's trait, argument types, where constraints, and available instances. Having displayName on User, for example, does not satisfy DebugName<User>.",
   evaluationBody: "Both eventually call statically known code, but neither performs dynamic object dispatch by default. The surface spelling does not merge their namespaces or ownership rules.",
   invalidTitle: "Do not use instance as an extension-method namespace",
   invalidBody: "A trait instance does not make every trait operation available as value.method. An impl cannot satisfy a trait requirement unless it also defines the required coherent instance.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Should this operation be a method or a trait?",
   summary: "Use an impl for operations specific to one named type. Use a trait when multiple types should satisfy a shared operation required by common code.",
   reading: "User's displayName is a dot method defined in impl User. DebugName<User> supplies the separate debugName operation. Both read the same user's name but offer different interfaces and output formats.",
-  result: "publicName is \"Aki\" and diagnosticName is \"User(Aki)\". Defining displayName does not fulfill DebugName<User>, nor does that instance create a dot method. The shared contract and the owned method are separate declarations."
+  result: "user.displayName returns \"Aki\"; debugName user returns \"User(Aki)\". The example separates ordinary display from diagnostic display. impl and instance are separate declarations, so provide the implementation appropriate to the intended interface."
 }

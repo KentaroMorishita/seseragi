@@ -33,7 +33,7 @@ fn referenceDescription<Action> locale: Locale
 }
   else
     match locale {
-  En -> html.p { children: reference.description }
+  En -> html.p { children: reference.descriptionEn }
   Ja -> html.p { children: reference.descriptionJa }
 }
 

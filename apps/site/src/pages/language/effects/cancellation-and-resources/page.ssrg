@@ -13,7 +13,7 @@ fn content -> PageDefinition =
         localized "Scoped acquisition and release" "使い終わったリソースを必ず解放する"
       )] [CodeExample (
         "effects-invalid-finalizer",
-        localized "Rejected fallible finalizer" "型付きの失敗がある後片付けは登録できない"
+        localized "A finalizer with recoverable failures cannot be registered" "回復可能な失敗がある後片付けは登録できない"
       )] [
         [InternalLink
       (localized "Defects" "想定外の不具合（defect）", "/docs/language/effects/defects/")],

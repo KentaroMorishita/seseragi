@@ -5,7 +5,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Trait laws",
   summary: (explanation ()).summary,
   ruleTitle: "A valid signature is necessary but not sufficient",
-  ruleBody: "Eq, Ord, Functor, Applicative, Monad, and other documented abstractions define equations or observational properties. Each instance author accepts those contracts in addition to the method types.",
+  ruleBody: "Eq requires a value to equal itself. With Functor's map, a function returning its input unchanged must preserve the original result. These requirements about related results, beyond parameter and result types, are called laws. Eq, Ord, Functor, Applicative, Monad, and other documented traits have their own laws.",
   typingBody: "Laws do not add hidden type rules or change instance selection. They describe relationships among well-typed calls. Equality used by a law follows the documented observational equality for the values involved.",
   evaluationBody: "The compiler does not run arbitrary proofs while type checking. Standard-library instances are checked by maintained law suites, and user instances can use reusable law helpers with representative generated values.",
   invalidTitle: "Compilation is not a law certificate",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can an implementation have the right types but wrong behavior?",
   summary: "A trait law describes behavior an implementation must preserve, beyond the parameter and result types checked by the compiler.",
   reading: "reflexive checks one equality property: a value should equal itself. Eq<A> lets the function compare its input. The integer and text calls show two types using that same check.",
-  result: "Both example checks return True. An Eq implementation that always returns False may have the required Bool return type while failing this law. Compilation does not prove laws; test relevant properties with representative cases."
+  result: "Both reflexive 42 and reflexive \"seseragi\" return True. An Eq implementation always returning False has the required Bool result type but violates reflexivity. When writing an instance, test these relationships with concrete values."
 }

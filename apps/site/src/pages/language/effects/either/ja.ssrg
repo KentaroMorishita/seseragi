@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Eitherによる成功と失敗",
   summary: (explanation ()).summary,
   ruleTitle: "失敗の理由か成功値を、通常の値として返す",
-  ruleBody: "Either<E, A>はLeft EかRight Aです。文字列の解析や入力検証のように、すぐに結果が分かり、失敗理由も返したい処理に使います。Effectとは違い、これから実行する処理ではなく、計算済みの結果を表します。",
-  typingBody: "成功側のmapはAだけを変え、失敗型Eを保ちます。失敗側の変換はEだけを変えます。複数の処理をつなぐ操作では、最初のLeftで後続の成功処理が止まります。異なる失敗型を自動ではまとめません。",
-  evaluationBody: "LeftやRightを作るだけで入出力などが始まることはありません。matchなら、実際の値が持つ側の分岐だけを実行します。",
+  ruleBody: "Either<E, A>は、失敗の理由Eを持つLeftか、成功値Aを持つRightです。文字列の解析や入力検証など、計算した結果と失敗理由を返すために使います。Eitherは計算済みの結果で、Effectはこれから実行する処理を表す値です。独立した検証の失敗を複数集めたい場合はValidationを使います。",
+  typingBody: "mapRightはRightの成功値だけを変え、Leftの失敗理由は保ちます。失敗側の変換はEだけを変えます。Eitherの処理を順につなぐと、最初のLeftで後続の成功処理を止めます。複数の失敗型を使う場合は、共通の型へ明示的に変換してください。",
+  evaluationBody: "LeftやRightを作ると、通常の値としてその場で結果を得られます。matchや変換操作は、実際の値がLeftかRightかを調べ、必要な側の関数だけを呼びます。Eitherを作るだけで入出力が始まることはありません。",
   invalidTitle: "Eitherの値と、Effectの失敗を区別する",
-  invalidBody: "EitherのLeftとEffectの失敗は別の表現です。EitherをEffectでの処理に変えるにはfromEither、Effectの型付き失敗をEitherの結果へ変えるにはattemptを使います。",
+  invalidBody: "EitherのLeftは通常の値で、Effectの回復可能な失敗とは別の表現です。fromEitherを使うと、Leftを実行時の失敗、Rightを成功として返すEffectを作れます。逆にattemptは、Effectの回復可能な失敗をLeft、成功をRightとして受け取るための操作です。",
   diagnosticsBody: "EとAの順序を確認してください。Leftに入れる値はE、Rightに入れる値はAです。成功と失敗を取り違えると、分岐や変換で型が合わなくなります。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "成功した値か、失敗の理由を返すには",
-  summary: "Either<E, A>は、成功時のRight Aか、失敗時のLeft Eを持ちます。どちらも計算済みの通常の値です。",
+  summary: "Either<E, A>は、成功値Aを持つRightか、失敗理由Eを持つLeftを返す型です。呼び出し側は、どちらの結果になったかを調べて処理できます。",
   reading: "positiveは正の整数ならRight value、それ以外ならLeft (NotPositive value)を返します。incrementのmapRightは成功値だけに1を足し、失敗の理由はそのまま残します。",
-  result: "increment (positive 2)はRight 3です。0ならLeft (NotPositive 0)のままです。表示や回復をする場合はmatchで両方の場合を扱います。Effectとは違い、この値を作るために実行環境の処理開始を待つ必要はありません。"
+  result: "increment (positive 2)の結果はRight 3です。入力が0なら、Left (NotPositive 0)のまま返します。呼び出し側でmatchを使えば、成功値の表示と失敗理由に応じた処理を分けられます。Eitherは通常の値なので、Effectのように実行開始を待つ必要はありません。"
 }

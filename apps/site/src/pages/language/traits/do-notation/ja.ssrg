@@ -4,9 +4,9 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "do記法",
   summary: (explanation ()).summary,
-  ruleTitle: "doは、Monadの処理を読みやすく書く構文",
+  ruleTitle: "取り出した結果を、次の計算で使う",
   ruleBody: "pattern <- expressionと書くと、計算の結果から値を取り出し、次の行で使えます。letでは通常の値や関数を束縛できます。計算の結果を使わずに次へ進むこともできます。最後には、ブロック全体の結果となる計算の式が必要です。",
-  typingBody: "ブロック内の計算は、すべて同じ型構築子M<_>を使い、対応するMonad<M>実装が必要です。pureには、Monadの前提となるApplicativeの実装を使います。M<A>から取り出す値の型はAです。取り出すパターンは、値に対して必ず一致するものでなければなりません。",
+  typingBody: "この例の各行はMaybeの計算です。MaybeのMonad実装は、Justの中身を次の行へ渡し、Nothingなら残りの行を実行しません。一般には、すべての取り出しと最後の式が同じ型構築子M<_>を使い、Monad<M>が必要です。pureにはその前提となるApplicativeを使います。取り出すパターンは、中の値に必ず一致する必要があります。",
   evaluationBody: "各行はflatMapの規則に従って、ソースに書いた順に組み合わされます。letは通常の値の束縛であり、それだけでEffectなどの計算を実行したり、値を計算の型で包んだりはしません。最後の式がブロック全体の結果になります。",
   invalidTitle: "doは、Effectだけの構文ではない",
   invalidBody: "Maybe、Either、自分で定義した型、Effectのいずれも、Monadの実装があればdoを使えます。ただし、一つのブロックに異なる種類の計算を暗黙に混ぜることはできません。また、一致しない可能性のあるパターンを、自動で失敗処理に変換することもありません。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "包まれた結果を取り出し、次の計算へ渡すには",
   summary: "doは、結果を次へ渡す計算を順に書く構文です。<-で中の値に名前を付けても、MaybeやEffectなどの計算全体の型を失いません。",
   reading: "この例ではnumber <- valueがMaybeのJustからIntを取り出します。let nextで普通の加算をし、pure nextで同じMaybeに包み直すため、戻り値はMaybe<Int>です。",
-  result: "increment (Just 41)はJust 42です。Nothingなら残りの計算をせずNothingになります。Effectのdoでは同じ構文が処理の順次実行を表し、具体的な振る舞いは使う型の実装で決まります。"
+  result: "increment (Just 41)はJust 42を返します。increment Nothingは加算せず、Nothingを返します。doの書き方は同じでも、Maybeでは不在の扱い、Effectでは処理の順次実行という、各Monad実装の規則に従います。"
 }

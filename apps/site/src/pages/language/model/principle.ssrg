@@ -30,8 +30,6 @@ pub struct PrincipleCopy {
   meaningTitle: String,
   meaningBody: String,
   exampleTitle: String,
-  readingTitle: String,
-  reading: Array<String>,
   reasonTitle: String,
   reason: Array<String>,
   boundaryTitle: String,
@@ -67,15 +65,12 @@ pub fn principlePage id: String
         Paragraph (
           [Words (
             localized
-              "main is the executable entry point; println writes one line of text. This example prints:"
+              "main is the executable entry point; println writes one line of text. The output is shown below."
               "mainは実行開始の関数で、printlnは一行の文字列を出力します。この例の出力は次のとおりです。"
           )]
         ),
-        Terminal (localized "Output" "実行結果", output),
-        Heading
-              ("reading-the-example", localized english.readingTitle japanese.readingTitle)
+        Terminal (localized "Output" "実行結果", output)
       ],
-      paragraphs english.reading japanese.reading,
       [Heading ("why", localized english.reasonTitle japanese.reasonTitle)],
       paragraphs english.reason japanese.reason,
       [Heading ("limits", localized english.boundaryTitle japanese.boundaryTitle)],

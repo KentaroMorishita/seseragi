@@ -7,15 +7,10 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "「見つからない」を、扱うべき場合として表す",
   meaningBody: "Seseragiの通常の値にはnullやundefinedがありません。値が見つからない可能性のある操作はMaybe<A>を返します。JustはA型の値が見つかった場合、Nothingは見つからなかった場合です。結果がない可能性を、実行前に型から確認できます。",
   exampleTitle: "存在しない配列の要素を取り出そうとする",
-  readingTitle: "このコードで何が起きるか",
-  reading: [
-    "valuesには二つの要素があり、添字は0と1です。そのためarrays.get 5 valuesはNothingを返します。「不正な整数」が返るのではありません。戻り値の型はIntではなくMaybe<Int>です。",
-    "matchで両方の場合を扱います。Just valueなら見つかった整数を使い、Nothingなら見つからなかったことを示す文字列を返します。この例の出力はnot foundです。Nothingの側を省略すると、すべての場合を扱っていないためコンパイルエラーになります。"
-  ],
   reasonTitle: "なぜnullや例外にしないのか",
   reason: [
-    "Intを受け取る関数は、渡されたものが整数だと考えて処理できます。Maybe<Int>を受け取った側は、既定値を使う、エラーを表示する、別の処理を選ぶ、といった対応を先に決めます。値がないことを見落としたまま、通常の整数計算へ渡すことはできません。",
-    "失敗の理由も必要ならEither<E, A>を使います。LeftにはE型のエラー、RightにはA型の成功結果が入ります。Effect<R, E, A>は、Rで示すサービスを必要とし、E型のエラーで失敗する可能性があり、成功するとA型の値を返す処理を表します。Effectを作っただけでは処理は実行されません。必要なサービスも回復可能な失敗もない場合をTask<A>と書きます。"
+    "Intを受け取る関数へ、Maybe<Int>をそのまま渡すことはできません。まずJustから整数を取り出すか、Nothingのときの既定値を選びます。値がなければエラーを表示するなど、別の対応も選べます。",
+    "失敗の理由も必要ならEither<E, A>を使います。LeftはE型のエラー、RightはA型の成功結果を持ちます。Effect<R, E, A>は、実行する処理を表します。Rは必要なサービス、Eは回復可能な失敗、Aは成功時の結果です。Effectを作っただけでは処理は始まりません。サービスの要求と回復可能な失敗がない場合はTask<A>と書けます。"
   ],
   boundaryTitle: "どんな入力でも安全、という意味ではない",
   boundary: [
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "配列の指定した位置に値がない場合、どう分かるか",
-  summary: "値がない可能性のある操作は、その可能性を表す型を返します。呼び出し側は、値がない場合も明示的に扱います。",
+  summary: "配列の範囲外など、値が得られない場合はMaybeで表します。呼び出した側は、値がある場合とない場合を分けて処理します。",
   reading: "valuesには位置0と1しかないため、arrays.get 5 valuesはNothingです。matchで、Just valueなら見つかった値を表示し、Nothingなら\"not found\"を返します。どちらもStringです。",
-  result: "出力はnot foundです。整数があるふりをしたり、不在を未処理のまま使ったりしません。この原則は不具合が一切ないという保証ではなく、通常起こる可能性を型や操作に表す考え方です。"
+  result: "出力はnot foundです。取得結果はMaybe<Int>なので、整数として使う前にJustとNothingを分けます。Nothingの分岐を省くと、matchがすべての場合を扱っていないためエラーになります。"
 }

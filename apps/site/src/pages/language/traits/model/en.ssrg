@@ -10,16 +10,16 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   ],
   exampleTitle: "Give a ticket a label",
   reading: [
-    "struct Ticket { number: Int } introduces a ticket type holding one integer. Ticket { number: 42 } creates the ticket used by main.",
-    "trait Label<A> declares an operation for a type represented by A. A is a type parameter: a placeholder that will be replaced by a particular type. fn label value: A -> String requires a function taking that type and returning text. It supplies no function body.",
-    "instance Label<Ticket> supplies that body for Ticket. Here A has been replaced by Ticket. The implementation reads value.number, converts the integer to text with show, and prefixes it with \"ticket-\".",
-    "When the compiler checks label ticket, it knows ticket has type Ticket. It selects Label<Ticket> and checks its implementation exists. The program then calls that label function and prints ticket-42."
+    "struct Ticket { number: Int } defines a ticket holding one integer. Ticket { number: 42 } in main creates ticket number 42.",
+    "A in trait Label<A> is a type parameter for the type being labeled. fn label value: A -> String declares an operation taking A and returning String; it has no implementation body.",
+    "instance Label<Ticket> substitutes Ticket for A and supplies label's body. It converts value.number to text with show and prefixes it with \"ticket-\".",
+    "The compiler checks that ticket in label ticket has type Ticket and selects Label<Ticket>. Execution calls that label implementation and prints ticket-42."
   ],
   rules: [
-    "The implementation's availability is checked before execution. Implementation evidence means confirmation that an operation required for a type has a matching instance. You do not need to construct a separate evidence object to make the call.",
-    "The choice depends on types, not on the runtime value. Ticket { number: 1 } and Ticket { number: 42 } use the same Label<Ticket> instance. An instance is not chosen by inspecting the number.",
-    "A trait does not make Ticket inherit from Label or become a subtype. It does not add fields or inherent dot methods. label ticket is an ordinary function call with an additional requirement for a matching trait implementation.",
-    "labelOf<A> is the shared caller in this example. where Label<A> means that A must support label. Person has such an instance, so labelOf (Person { name: \"Aki\" }) returns \"Aki\". Ticket also has one, so labelOf can accept a Ticket without changing its own function body."
+    "Before execution, the compiler checks that each call has the required instance. A missing implementation is a type error.",
+    "The argument type selects the instance. Ticket { number: 1 } and Ticket { number: 42 } both use Label<Ticket>.",
+    "Declaring a trait adds no fields or dot methods to Ticket. label ticket is a function call requiring an instance for the argument type. This differs from object inheritance.",
+    "where Label<A> on labelOf<A> requires A to support label. Person has an instance, so labelOf (Person { name: \"Aki\" }) returns \"Aki\". Ticket has one too, so the same labelOf body also accepts Ticket."
   ],
   mistakes: [
     "Declaring Label<A> alone does not supply a label implementation. Calling label with a type lacking an instance fails during type checking; it does not wait for runtime.",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can different types share one named operation?",
   summary: "A trait declares a shared operation; an instance supplies its implementation for a particular type. A generic caller can require that operation without knowing each type's representation.",
   reading: "Label<A> declares label: A -> String. Ticket has an integer number; Person has a name. Each instance supplies label for its own type. labelOf<A> calls label without knowing either representation; where Label<A> requires that the supplied type supports this operation. personLabel is \"Aki\", and label ticket in main produces \"ticket-42\".",
-  result: "The result is \"ticket-42\". You can define Label for another owned type and reuse a caller constrained by Label<A>. The benefit is a shared contract, not making every label operation a dot method or inspecting values for a runtime class."
+  result: "For Ticket, the label uses its number to produce \"ticket-42\". For Person, it returns the name \"Aki\". Types with a Label implementation can use the shared labelOf function. Implementation selection is determined during type checking before execution."
 }

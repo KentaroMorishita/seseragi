@@ -17,7 +17,7 @@ fn content -> PageDefinition =
   syntaxPage "language.syntax.reserved-words" "/docs/language/syntax/reserved-words-and-names/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-reserved-words",
-      localized "Reserved and contextual words in canonical grammar source"
+      localized "Reserved words and names with a meaning in specific contexts"
         "予約語と、特定の構文で特別になる名前"
     ),
     BulletList [

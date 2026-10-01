@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "The Effect type",
   summary: (explanation ()).summary,
   ruleTitle: "Construction and execution are separate",
-  ruleBody: "R is the structural service requirement, E is the recoverable error, and A is the success value. Building an Effect records a computation; it does not perform the represented I/O, scheduling, state access, or asynchronous work.",
-  typingBody: "Effect composition merges compatible requirement fields and keeps one explicit failure type. Functor changes A, Applicative combines independent descriptions in its documented order, and Monad sequences later work from an earlier success.",
-  evaluationBody: "Each execution starts the cold computation again. Sequential combinators run left to right and stop on typed failure, defect, or cancellation according to the selected operation's contract.",
-  invalidTitle: "An Effect is not a Promise or an eager task",
-  invalidBody: "Storing, passing, or returning an Effect does not start it or memoize its result. If work must run once or be shared, use the resource or concurrency API whose ownership and lifetime make that behavior explicit.",
-  diagnosticsBody: "Type displays keep R, E, and A visible. Mismatches point to the requirement field, failure channel, or success value that does not compose rather than reporting a generic asynchronous error.",
+  ruleBody: "Effect<R, E, A> is a value representing work to execute. R names required services, E names recoverable failures, and A is the successful result type. Creating an Effect does not start I/O or state updates. First compose the work, then return it to an execution boundary.",
+  typingBody: "map applies a function to a successful value and changes A. flatMap receives that value and chooses the next Effect to execute. They are also operations of the Functor and Monad traits, respectively. Applicative operations combine computations in a specified order. The combined computation requires all compatible services and uses one recoverable error type.",
+  evaluationBody: "Executing the same Effect again starts its work from the beginning. This property is called cold execution. Sequential work proceeds from left to right. Stopping on recoverable failure, defect, or cancellation follows the selected operation's rules.",
+  invalidTitle: "Creating an Effect does not start its work",
+  invalidBody: "Saving, passing, or returning an Effect does not start it. Nor does it automatically store or share the execution result. To share work started once, choose a resource or concurrency API and define the scope that manages it and the operations used at its end.",
+  diagnosticsBody: "For a type error, inspect which part of Effect<R, E, A> differs. Checking required services R, recoverable errors E, and successful results A separately helps identify why the operations cannot compose.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Is an Effect a result, or a description of work?",
-  summary: "Effect<R, E, A> describes work that needs services R, may fail with E, and succeeds with A. Creating that value does not start the work.",
-  reading: "greeting receives a name and returns a Task<String>, the service-free, recoverable-error-free form of Effect. defer delays choosing the inner computation until execution; succeed then completes with the constructed greeting.",
-  result: "Executing greeting \"Aki\" yields \"Hello, Aki\". Merely storing greeting \"Aki\" does not obtain that String. Operations such as map transform the eventual success value while keeping the computation represented as an Effect."
+  question: "Does creating an Effect value also start the work?",
+  summary: "Effect<R, E, A> represents work using services R that may fail with E or return A. Creating the value and executing the work are separate stages.",
+  reading: "greeting takes a name and returns Task<String>. Task is an alias for an Effect that needs no services and has no recoverable failure. The function passed to defer is called at execution time. Its succeed represents a computation returning the constructed string successfully.",
+  result: "Executing greeting \"Aki\" succeeds with \"Hello, Aki\". Merely storing greeting \"Aki\" in a variable does not retrieve a String. Even after map transforms the successful result, the return remains an Effect."
 }

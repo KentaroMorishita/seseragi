@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalとトランザクション",
   summary: (explanation ()).summary,
   ruleTitle: "Signalの現在値は、Effectの中で読み書きする",
-  ruleBody: "Signalの生成、読み取り、更新、購読は状態にアクセスするため、TaskまたはEffectを返します。MutableSignal<A>を読み取り専用のSignal<A>として渡すことはできますが、その逆はできません。読み取り専用にしても、中身の型Aは変わりません。",
-  typingBody: "planSetとplanUpdateで更新の計画を作り、transactionに渡します。計画の型SignalChangeは更新対象を外から隠すため、中身の型が違うSignalへの更新も同じArrayにまとめられます。transactionはTask<Unit>を返します。計画を作るだけでは、まだ更新は公開されません。",
-  evaluationBody: "transactionは配列の順に更新を準備し、すべての結果を計算してから一度に公開します。更新の準備段階で想定外の不具合が起きた場合や、公開前にキャンセルされた場合は、一件も公開しません。公開を開始した後は、派生値の再計算と購読者への通知が終わるまで、一まとまりとして処理します。",
+  ruleBody: "Signalは、変化を観測できる現在値を持ちます。生成・読み取り・更新・購読には状態へのアクセスが必要なので、TaskかEffectを返します。書き込み可能なMutableSignal<A>は、読み取り専用のSignal<A>として渡せます。逆の変換はできず、中身の型Aも変わりません。",
+  typingBody: "planSetとplanUpdateで、実行する更新の計画を作ります。計画の型SignalChangeから更新対象や値を取り出す操作はないため、中身の型が異なるSignalへの更新も同じArrayに入れられます。transactionは、その計画を受け取るTask<Unit>です。計画を作っただけでは現在値は変わりません。",
+  evaluationBody: "transactionは配列の順に更新を準備し、すべて計算できてから一度に公開します。同じSignalへのplanUpdateは、それ以前の計画で準備した値を受け取ります。更新を準備している間に処理の不具合が起きたり、公開前にキャンセルされたりした場合は、一件も公開しません。公開開始後は、派生値の再計算と通知が終わるまでキャンセルを保留します。",
   invalidTitle: "純粋な式の中では、Signalの現在値を読めない",
-  invalidBody: "純粋なコードでSignal自体を受け渡すことはできますが、現在値は読めません。Effectの中でSignal.readか接頭辞*を使います。現在値をもとに新しい値を決めたい場合は、読み取った古い値を後で書き戻すのではなく、updateを使います。",
+  invalidBody: "純粋なコードでは、Signalの値自体を受け渡せても、現在値は読めません。現在値はEffectの中でSignal.readか接頭辞*を使って読みます。古い値を読んで後から書き戻すと、その間の更新を反映できない場合があります。現在値から次の値を計算して更新するにはupdateを使ってください。",
   diagnosticsBody: "読み取り専用のSignalを更新しようとした場合や、更新する値の型が合わない場合は型エラーになります。実行時の診断では、更新の準備、公開、派生値の再計算、購読者への通知のどの段階で問題が起きたかを区別します。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "二つの値を、中途半端な状態を見せずに更新するには",
-  summary: "Signalは、変化を観測できる値を表します。トランザクションは複数の更新を準備し、まとめて公開します。",
-  reading: "xは1、yは2から始まります。planSet 10 xはxを10にする計画で、planUpdateはyに20を足す計画です。transactionが両方をまとめて公開し、その後の*で確定した現在値を読みます。",
-  result: "updateCoordinatesを実行すると(10, 22)で成功します。この更新による途中の(10, 2)を観測者に通知しません。計画を作るだけでは値は変わらず、普通の不変なフィールドが書き換え可能になるわけでもありません。"
+  summary: "Signalは、変化を観測できる現在値を持つ仕組みです。複数のSignalを同時に更新するには、更新計画を作り、transactionへ渡します。",
+  reading: "xの初期値は1、yは2です。planSet 10 xはxを10にする計画、planUpdateはyに20を足す計画を作ります。transactionが両方をまとめて公開し、その後の*で更新済みの現在値を読みます。",
+  result: "updateCoordinatesは(10, 22)で成功します。このトランザクションの通知で、途中の(10, 2)を見せることはありません。まとめて更新する対象はSignalだけです。通常の不変なフィールドを書き換えたり、入出力をtransactionへ入れたりする操作ではありません。"
 }

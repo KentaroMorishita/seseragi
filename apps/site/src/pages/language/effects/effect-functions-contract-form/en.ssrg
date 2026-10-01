@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect functions with an explicit contract",
   summary: (explanation ()).summary,
-  ruleTitle: "Start the contract with ->",
-  ruleBody: "effect fn parameters -> A with R fails E = body declares a function returning Effect<R, E, A>. The surface A is the success type; with names required services and fails names the recoverable error.",
-  typingBody: "Omitting with means {}, and omitting fails means Never. The body must already be an Effect with every required field, the declared failure, and the declared success; ordinary values are not lifted implicitly. A Never success may widen when the body cannot succeed.",
-  evaluationBody: "The form changes only the source notation for the function type. Calling the function constructs its cold Effect, and an authorized boundary still controls execution.",
-  invalidTitle: "Contract defaults are promises, not inference requests",
+  ruleTitle: "Declare the result, required services, and failures",
+  ruleBody: "effect fn parameters -> A with R fails E = body is notation for a function returning Effect<R, E, A>. A is the successful result, R names required services, and E is the recoverable error type. Callers can read the declaration to see which services to supply and failures to handle.",
+  typingBody: "Omitting with specifies the service-free requirement {}. Omitting fails specifies Never, meaning no recoverable failure. The body's Effect must match the declaration; ordinary values are not converted implicitly into Effects. Only a computation whose success type is Never, and which cannot return successfully, may be used where another success type is required.",
+  evaluationBody: "This form explicitly states the returned Effect type. Calling the function constructs an Effect, which is returned to an execution boundary or composed with another Effect. Explicit notation does not start external operations when the function is called.",
+  invalidTitle: "Omitted with and fails clauses still specify types",
   invalidBody: "Writing -> Unit without with or fails fixes Effect<{}, Never, Unit>. The compiler does not inspect the body and silently add Console, Clock, or an error type to that explicit API.",
-  diagnosticsBody: "Contract errors show both the declaration and the body operation or result that introduced an extra requirement, different failure, or different success type.",
+  diagnosticsBody: "Compare the declared type with the type returned by the body's operations. Check required services, recoverable errors, and successful results separately. Omitting with or fails does not ask the compiler to fill them from the body.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I state a function's services and errors explicitly?",
-  summary: "An effect fn signature names the successful result after ->, required services after with, and recoverable failure after fails.",
+  summary: "To state an effect fn type explicitly, write the successful result after ->, required services after with, and the recoverable error type after fails.",
   reading: "announce takes message: String. -> Unit says that success has no useful payload; with Console requires output support, and fails ConsoleError permits an output error. println message is itself the Effect returned by the body.",
-  result: "Calling announce constructs the output operation; execution prints the message. Omitting with or fails in an explicit signature means {} or Never, not an invitation to infer missing services or errors."
+  result: "Calling announce constructs an Effect that prints the message. Output happens when that Effect executes. Omitting with declares no required services; omitting fails declares no recoverable failures. Write those clauses to match the operations in the body."
 }

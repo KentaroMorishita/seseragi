@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "A constructor is not yet a value type",
   ruleBody: "A kind describes what a type expression accepts. Int has kind Type: it can be the type of a value. Maybe has kind Type -> Type: it needs one Type argument before it can describe a value. Maybe<Int> is complete, while a bare Maybe is not. A two-parameter constructor has kind Type -> Type -> Type; supplying only its first argument does not make it a value type.",
-  identityBody: "Constructor parameters are written M<_> for one slot, and can appear in functions, ADTs, structs, aliases, traits and impls. They let one declaration refer to a family of containers without choosing a particular container. The example's Wrapped accepts Maybe as that family and applies it to Int. Kinds exist for static checking; M is not a runtime object.",
+  identityBody: "Write M<_> when a parameter should accept a type constructor that takes one type. If M is Maybe, using M<Int> gives Maybe<Int>; M could also be List. This form can occur in function, type, trait, and impl declarations, and kinds are checked at compile time. It does not declare a runtime object named M.",
   checkingBody: "Check every application layer independently: both the number of arguments and their kinds must match. Partial constructors such as Either<String, _> are allowed when a constructor is expected. The underscore is a constructor slot, not an unknown value type. It may occur in constructor-parameter declarations and partial constructor applications, but cannot remain in an ordinary value annotation.",
   invalidTitle: "Do not use a constructor where a value type is required",
   invalidBody: "A parameter annotated Maybe has not selected the contained type. Annotate Maybe<Int> or introduce a type parameter. Passing Int as M<_> also fails: Int cannot be applied to another type. Extra arguments are not ignored and missing slots do not become Unknown.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why can I pass Maybe as a type argument but not use it alone as a value type?",
   summary: "Some type parameters accept complete types such as Int; others accept type constructors such as Maybe. A kind describes which shape is required.",
   reading: "Wrapped<M<_>, A> takes M, which needs one type argument, and applies it to A. Wrapped<Maybe, Int> therefore means Maybe<Int>. keep receives and returns this complete type.",
-  result: "Maybe by itself still needs its element type; Maybe<Int> does not. The _ in M<_> denotes an available type-argument position. It is not permission to leave an ordinary value's type unknown."
+  result: "Maybe requires one type argument, supplied in Maybe<Int>. The _ in M<_> marks one position that accepts a type. Passing Int as M is a kind error because Int cannot accept another type argument."
 }

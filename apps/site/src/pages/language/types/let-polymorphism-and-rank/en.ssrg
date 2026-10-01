@@ -4,18 +4,18 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Let-polymorphism and rank",
   summary: (explanation ()).summary,
-  ruleTitle: "Generalize the binding, instantiate each use",
-  ruleBody: "At a non-recursive let binding, free type variables that do not occur in the surrounding environment become quantified variables in a type scheme. Every use instantiates those variables freshly. The example's identity is therefore usable at Int and String. Variables already fixed by the environment are not generalized: a closure does not forget the type of a value it captures.",
-  identityBody: "Trait constraints mentioning generalized variables remain part of the scheme and must be satisfied at each use. Constraints involving only the environment remain attached to that environment. Normal let bindings have no value restriction because values are immutable and stateful computation is explicit. Recursive groups are checked monomorphically first and generalized only after the group is checked.",
-  checkingBody: "Generalization does not undo a type already fixed by evaluation's static constraints. Applying a wrapper to 42 produces Maybe<Int>, not an arbitrary Maybe<A>. Seseragi supports rank-1 schemes at bindings. A function parameter typed A -> A uses the one A belonging to its enclosing declaration; it is not a function that can choose a new type independently for every call inside the body.",
-  invalidTitle: "A generic binding is not a higher-rank value",
-  invalidBody: "A polymorphic scheme cannot be placed inside a function parameter, record field or array element. forall A. A -> A is explanatory specification notation, not source syntax. If a callback must work at different concrete types, restructure the interface rather than assuming a parameter carries its own forall.",
-  diagnosticsBody: "Read a hover's concrete type separately from the binding's scheme. A mismatch involving a captured value is not fixed by re-generalizing it. At a generic declaration, provide type parameters and constraints explicitly; at an ambiguous use, provide an annotation that actually supplies the missing type information.",
+  ruleTitle: "A function stored in let can remain usable at multiple types",
+  ruleBody: "The example gives the generic function unchanged another name with let identity = unchanged. identity 42 uses Int, while identity \"hello\" uses String. This ability to use several types is polymorphism; preserving it on a let binding is generalization. A type already fixed by surrounding values is not generalized.",
+  identityBody: "If a function captures an outer Int value, that value cannot become String on a later call. A function with a trait constraint needs the required implementation for each type used. An ordinary let can preserve polymorphism whether its right-hand side is a simple value or a computation. During recursive calls, a declaration is checked at one consistent type; generalization happens after those checks.",
+  checkingBody: "Wrapping a value already known to be Int produces Maybe<Int>. Generalization does not turn that Int back into an arbitrary type. A function parameter typed A -> A uses the one A selected for that call. Its body cannot independently use that callback at Int and at String. This limitation is called rank-1 polymorphism.",
+  invalidTitle: "Each function parameter does not carry independent polymorphism",
+  invalidBody: "A parameter typed A -> A cannot choose a fresh A on each call inside the receiving function. The same limitation applies when storing functions in record fields or array elements. forall A. A -> A describes polymorphism in the specification, but forall is not Seseragi source syntax.",
+  diagnosticsBody: "If a call fails because a captured value has a fixed type, a new let name will not change that type. Compare the types at the failing call. Declare type parameters and trait constraints on a generic function; if the compiler lacks information at a use, add a type annotation supplying the missing type.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Does storing a function in let fix its argument type?",
   summary: "An unchanged generic function can remain reusable at different types. A value produced by a particular call already has that call's type.",
   reading: "let identity = unchanged stores the function, so identity 42 and identity \"hello\" use Int and String separately. let fixed = wrap 42 instead stores Just 42, a Maybe<Int>; it is not the function wrap.",
-  result: "This distinction does not make every function parameter automatically generic. A generic declaration names its type parameters. Passing a function that must itself work at many types involves additional limits described below."
+  result: "identity can be called with Int or String, but fixed is a value of one type, Maybe<Int>. A parameter of type A -> A also has one A chosen for that call. The function body cannot independently call that parameter once at Int and once at String."
 }

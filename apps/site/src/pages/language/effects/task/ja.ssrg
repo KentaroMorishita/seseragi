@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Task",
   summary: (explanation ()).summary,
   ruleTitle: "Taskは、Effect<{}, Never, A>の短い名前",
-  ruleBody: "Task<A>とEffect<{}, Never, A>は同じ型です。独立した実行方式やtrait実装を持つ別の型ではありません。{}はサービスが不要であること、Neverは回復可能な失敗を返さないこと、Aは成功値の型を表します。",
-  typingBody: "サービスが不要でも失敗する可能性があれば、Task<A>ではなくEffect<{}, E, A>を使います。Taskは失敗型がNeverなので、別の失敗型を要求する計算と組み合わせられます。一方、サービスを必要とする計算は、失敗型がNeverでもTaskにはなりません。",
-  evaluationBody: "TaskもEffectと同じく、作っただけでは実行されません。処理順、キャンセル、リソースの管理、実行の割り当てはEffectの規則に従います。Taskという名前を使うことで処理が早く始まったり、結果が自動で共有されたりすることはありません。",
+  ruleBody: "Task<A>はEffect<{}, Never, A>の別名です。{}はサービス不要、Neverは回復可能な失敗なし、Aは成功値の型を表します。Taskと書いても型の同一性や使える操作は変わらず、Effectと同じ実行方式やtraitの実装を使います。",
+  typingBody: "サービスが不要でも、回復可能な失敗を返す処理はEffect<{}, E, A>です。Taskの失敗型はNeverなので、別の失敗型が許される処理とも組み合わせられます。サービスが必要な処理は、失敗型がNeverでもTaskとは書けません。",
+  evaluationBody: "Taskは、作っただけでは実行されません。処理順、キャンセル、リソースの管理、他の処理への実行の切り替えは、Effectと同じ規則に従います。実行結果の保存や共有も、Taskという名前だけで自動的に行われるものではありません。",
   invalidTitle: "非同期処理なら何でもTaskになるわけではない",
-  invalidBody: "RとEを省略してTaskと書けるのは、Rが正確に{}で、EがNeverの場合だけです。短く書くために、必要なサービスや回復可能な失敗を型から隠すことはできません。",
+  invalidBody: "Taskと短く書けるのは、Rが正確に{}、EがNeverのときだけです。必要なサービスや回復可能な失敗があるなら、Effect<R, E, A>にその型を残してください。",
   diagnosticsBody: "型が合わない場合は、TaskをEffect<{}, Never, A>として見直し、必要なサービス、失敗型、成功値の型のどこが違うかを確認してください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Effectの型をTaskと短く書けるのはいつか",
-  summary: "Task<A>はEffect<{}, Never, A>の別名です。外部サービスが不要で、回復可能な失敗を返さない処理を表し、実行方式はEffectと同じです。",
-  reading: "cachedはsucceedで受け取った整数を成功値にするため、Task<Int>と書けます。fallibleはStringで失敗する場合があるため、Task<Int>とは書けず、失敗の型を残しています。",
-  result: "cached 42も、実行するまでは処理の説明です。Neverは回復可能な失敗がないことを表し、キャンセルや実行時の不具合が絶対に起きないという保証ではありません。"
+  summary: "Task<A>は、必要なサービスも回復可能な失敗もないEffectの別名です。成功値の型をAだけで書けますが、Effectと実行方式は変わりません。",
+  reading: "cachedは、受け取った整数を成功値にする処理をsucceedで作ります。サービスも回復可能な失敗もないので、戻り値をTask<Int>と書けます。fallibleにはStringで失敗する場合があるため、Effect<{}, String, Int>という失敗型を含む宣言が必要です。",
+  result: "cached 42は、実行すると成功値42を返します。Neverは回復可能な失敗がないことを表し、キャンセルや処理の不具合で止まらないことを保証する型ではありません。"
 }

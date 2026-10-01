@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Conditional expressions",
   summary: (explanation ()).summary,
-  ruleTitle: "Both branches are part of one expression",
-  ruleBody: "The condition must be Bool, else is required, and the then and else branches must produce the same type. A Never branch coerces to the type of the other branch.",
-  typingBody: "The checker validates the condition and both branch types even though only one branch runs. There is no truthiness conversion from Int, String, collection, or foreign values.",
-  evaluationBody: "The condition is evaluated once. Exactly one selected branch is then evaluated; work in the other branch does not run.",
-  invalidTitle: "if is not a statement",
-  invalidBody: "Omitting else or mixing unrelated branch types does not create an implicit Unit result or union type. Make both alternatives explicit and type-compatible.",
-  diagnosticsBody: "Diagnostics identify a non-Bool condition, a missing else, or the branch whose type differs. A diverging Never branch is accepted without hiding other mismatches.",
+  ruleTitle: "then and else determine the result of one expression",
+  ruleBody: "if takes a Bool condition. Write both then and else, and make their result types match. For example, if then returns String, else must also return String. A branch that returns no value, of type Never, is the exception: the other branch's type becomes the result type.",
+  typingBody: "Only one branch runs, but the compiler checks the condition and both branches. There is no conversion that treats zero or an empty string as false. For a number, string, collection, or foreign value, write a comparison or test returning Bool.",
+  evaluationBody: "The condition is evaluated once. If it is true, then is evaluated; if false, else is evaluated. Work in the unselected branch is not executed.",
+  invalidTitle: "Supply else and matching branch types",
+  invalidBody: "if returns a value. Omitting else does not return an implicit Unit, and different branch types are not combined automatically. Write both results explicitly and give them the same type.",
+  diagnosticsBody: "A non-Bool condition, a missing else, or different result types causes an error. Check the condition or branch identified by the diagnostic. A Never branch is allowed, but the remaining branch must match the required result type.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can I assign the result of an if directly?",
   summary: "An if expression returns the value of one branch. Its condition must be Bool and its branch results must have compatible types.",
-  reading: "accessLabel receives allowed: Bool. True selects \"allowed\" and False selects \"denied\"; both are String. let label = accessLabel True therefore stores a String rather than an instruction to run a branch later.",
-  result: "label is \"allowed\". Only the selected branch is evaluated. An integer condition is not treated as truthy, and returning an integer from one branch and a string from the other is not automatically a union result."
+  reading: "accessLabel takes allowed: Bool. True returns \"allowed\" and False returns \"denied\"; both are String. let label = accessLabel True names the string computed by that call.",
+  result: "label is \"allowed\". The selected then branch is evaluated and the else branch is skipped. To use a number as a condition, first write a comparison that produces Bool."
 }

@@ -7,11 +7,6 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "分岐も値を作る",
   meaningBody: "式とは、1 + 2のように、計算すると値が得られるコードのことです。Seseragiではifも式です。「どちらの処理を実行するか」を選ぶだけでなく、選んだ側の値をif全体の結果として返します。",
   exampleTitle: "ifの結果を、そのまま関数の戻り値にする",
-  readingTitle: "このコードで何が起きるか",
-  reading: [
-    "resultは整数の点数を受け取り、文字列を返す関数です。85を渡すとscore >= 80がTrueになり、ifの結果は\"pass\"になります。60なら\"retry\"になります。選ばれなかった側の式は実行しません。",
-    "=の後にある式が関数本体で、その値が戻り値です。returnを書いたり、分岐ごとに結果用の変数へ代入したりする必要はありません。matchも選んだ場合の値を返し、ブロックも最後の式の値を返します。"
-  ],
   reasonTitle: "なぜこの形にするのか",
   reason: [
     "計算の結果と分岐の結果を、同じように次の処理へ渡せるためです。ifをletの右側に置く、関数の引数に渡す、関数本体にする、といった書き方ができます。",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "ifだけを関数の本体にできるのはなぜか",
-  summary: "式指向とは、ifやmatch、ブロックなどが値を返し、その値を他の式で使えるということです。",
-  reading: "resultのifは80以上なら\"pass\"、それ以外なら\"retry\"を選びます。どちらもStringなので、関数の戻り値の型に合います。選んだ値を返すための別のreturn文は不要です。",
-  result: "85ではpassを出力します。式指向だからといって、Intの分岐とStringの分岐を自動で同じ型として扱うわけではありません。共通の結果の形を明示する必要があります。"
+  summary: "ifやmatchは、選んだ分岐の値を返します。ブロックは最後の式の値を返します。その結果を関数の戻り値や別の計算に使う書き方を、式指向と呼びます。",
+  reading: "resultのifは80以上なら\"pass\"、それ以外なら\"retry\"を選びます。85なら\"pass\"、60なら\"retry\"です。選ばれなかった側は実行しません。どちらもStringなので、関数の戻り値の型に合います。選んだ値を返すための別のreturn文は不要です。",
+  result: "result 85の戻り値は文字列の\"pass\"で、printlnがpassを出力します。thenとelseはどちらもStringを返します。片方をIntの0に変えると、分岐の型が一致せずコンパイルエラーになります。"
 }

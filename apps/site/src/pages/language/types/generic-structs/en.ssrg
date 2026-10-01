@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Fields constrain the constructor",
   ruleBody: "struct Box<A> declares a nominal family with a field of type A. Box { value: 42 } infers Box<Int> from that field. Box<String> { value: \"hello\" } instead states the parameter explicitly and checks the field against String. All fields and any expected type contribute constraints to the same application; incompatible constraints cannot produce a mixed Box.",
-  identityBody: "Field access substitutes the receiver's actual parameters. A Box<Int> has an Int value field, while Box<String> has a String value field. This is the same declaration with different static arguments, not two unrelated field lookups. A struct remains nominal: a record with a value field is not a Box.",
+  identityBody: "The value field is Int in Box<Int> and String in Box<String>. Reading it yields a value of the type selected for that Box. Box is a named type declared with struct. An ordinary { value: 42 } record cannot be passed in its place.",
   checkingBody: "A construction with explicit arguments must agree with both its fields and the surrounding expected type. An unresolved slot cannot remain as _ in a value annotation. Updates and spreads preserve the exact instantiated struct type. Updating Box<Int>'s value requires Int and returns Box<Int>; it does not silently change the parameter to String.",
   invalidTitle: "An update is not a type-changing constructor",
   invalidBody: "Box<Int> { value: \"hello\" } is inconsistent. If you need a Box<String> from a Box<Int>, construct a new value with a conversion, as the example's label function does. Record width subtyping cannot be used to change a generic nominal receiver's arguments.",
@@ -15,7 +15,7 @@ pub fn copy -> TypeCopy = TypeCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can a struct hold a value of a chosen type?",
-  summary: "A generic struct names a data shape while leaving one or more field types to be chosen when you construct it.",
+  summary: "A declaration such as struct Box<A> lets the same field structure hold integers, text, or other types. Box<Int> and Box<String> are structs with different types for their value field.",
   reading: "Box<A> has one field, value, whose type is A. Box { value: 42 } is Box<Int>. unwrap reads that field. label converts the integer to text with show and constructs a different Box<String>.",
   result: "The result of label number contains the string \"42\". Updating an existing Box<Int> must still supply an Int; changing the stored type requires constructing a new Box, as label does."
 }

@@ -1,8 +1,10 @@
 pub fn title -> String = "Standard Library"
 
-pub fn summary -> String = "Modules, types and functions shipped with Seseragi."
+pub fn summary -> String =
+  "Look up Seseragi's standard modules, types, and functions. Each API page explains what an operation does and how to read its argument and result types."
 
-pub fn collectionsTitle -> String = "Collections"
+pub fn collectionsTitle -> String =
+  "Collections"
 
 pub fn collectionsBody -> String =
-  "Reference pages preserve the compiler-owned signature, constraints and symbol identity."
+  "Find operations for inspecting, transforming, and combining arrays and lists. Choose the module for your task, then check the function's arguments and result."

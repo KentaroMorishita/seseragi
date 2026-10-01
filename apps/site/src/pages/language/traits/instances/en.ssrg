@@ -5,8 +5,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Instances",
   summary: (explanation ()).summary,
   purpose: [
-    "After a trait states the required operations, an instance makes those operations usable for your type. Label<Ticket> means that Ticket supports the labeling operation declared by Label.",
-    "An instance declaration is not a new Ticket value and not an object allocated per call. It registers a type-specific implementation that the compiler can select."
+    "An instance supplies the implementation of a trait's operations for a particular type. Label<Ticket>, for example, defines the body of label that accepts Ticket and returns text.",
+    "Declaring an instance does not construct a Ticket value. The compiler selects an instance matching the type passed to label."
   ],
   exampleTitle: "Implement Label for Ticket",
   reading: [
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Where do I write a type's implementation of a trait?",
   summary: "An instance implements the operations a trait requires for one type application. It is a declaration of behavior, not construction of an object.",
   reading: "Ticket holds a number; its Label instance prefixes that number with \"ticket-\". Person holds a name; its Label instance returns that name. labelOf<A> has the condition Label<A>, so the same function can call the correct implementation for either argument type.",
-  result: "The call for Ticket { number: 42 } returns \"ticket-42\". Changing the number changes the returned string, but not the selected instance. Selection is based on Ticket's type, and overlapping instances are rejected."
+  result: "label (Ticket { number: 42 }) returns \"ticket-42\". Other Ticket numbers use the same instance. Two instances applying to the same type produce an error because the compiler cannot choose one unambiguously."
 }

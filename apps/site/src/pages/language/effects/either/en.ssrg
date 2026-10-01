@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Either and typed results",
   summary: (explanation ()).summary,
-  ruleTitle: "Left and Right are data, not running computations",
-  ruleBody: "Either<E, A> is Left E or Right A. It suits synchronous validation and parsing where a caller needs an explicit reason, while Effect represents deferred work and Validation represents accumulating independent errors.",
-  typingBody: "Mapping the right side changes A while preserving E; mapping the left side changes E while preserving A. Its Functor, Applicative, and Monad behavior stops at the first Left and never invents a common error union.",
-  evaluationBody: "Constructing Left or Right performs no additional work. Transformations inspect the existing constructor once, preserve source order, and call only the branch required by that constructor.",
+  ruleTitle: "Return a success value or an error reason",
+  ruleBody: "Either<E, A> is Left containing an error reason E or Right containing a successful result A. Use it for a calculated result with an error reason, such as parsing text or validating input. Either stores a result already calculated; Effect represents work to execute. Use Validation when independent validation errors must be accumulated.",
+  typingBody: "mapRight changes only the successful value inside Right and preserves a Left error. Mapping the error side changes only E. Chaining Either operations stops subsequent success processing at the first Left. Convert distinct error types explicitly to a common type before combining them.",
+  evaluationBody: "Constructing Left or Right produces an ordinary result immediately. Matching and transformations inspect which case is present and call only the required branch. Creating an Either does not itself start I/O.",
   invalidTitle: "Either is not an Effect failure channel",
-  invalidBody: "An Either value has already been produced. Use Effect.fromEither to defer its interpretation inside Effect, and use Effect.attempt when an Effect outcome must become inspectable data.",
+  invalidBody: "Left in Either is ordinary data, separate from an Effect's recoverable failure. fromEither creates an Effect that interprets Left as failure and Right as success when executed. Conversely, attempt receives an Effect's recoverable failure as Left and success as Right.",
   diagnosticsBody: "Diagnostics retain the distinct E and A positions and report branch, mapping, or expected-result mismatches at the operation that introduced them.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I return a successful value or an error reason?",
-  summary: "Either<E, A> stores Right A for success or Left E for failure. Both are ordinary already-calculated values.",
+  summary: "Either<E, A> returns Right containing a successful A or Left containing an error reason E. The caller can inspect which result it received and act accordingly.",
   reading: "positive returns Right value when the integer is positive and Left (NotPositive value) otherwise. increment uses mapRight to add one only to a successful value, preserving any failure reason.",
-  result: "increment (positive 2) is Right 3. For zero, the result remains Left (NotPositive 0). Use match to display or recover from each case. Unlike Effect, this value does not wait for a runner to execute its construction."
+  result: "increment (positive 2) returns Right 3. For zero it returns Left (NotPositive 0) unchanged. A caller can use match to separate successful output from handling each error reason. Either is ordinary data, so it does not wait for execution to start as an Effect does."
 }

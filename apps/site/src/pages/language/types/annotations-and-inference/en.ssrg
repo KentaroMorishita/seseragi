@@ -4,10 +4,10 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Annotations and inference",
   summary: (explanation ()).summary,
-  ruleTitle: "Annotate stable boundaries",
-  ruleBody: "Every function parameter and return type is annotated, and every public declaration exposes an explicit type. A private non-recursive let may omit its annotation when its initializer determines one type. Type parameters appear directly after the declaration name, as in fn identity<A>.",
+  ruleTitle: "Write parameter and result types on ordinary fn declarations",
+  ruleBody: "Ordinary fn declarations require parameter and result types. Public let declarations also require annotations. The compact effect fn form is an exception: omit all of ->, with, fails, and where, write the parameter types, and infer the returned Effect type from the body. A private, non-recursive let may also omit its annotation when the initializer determines its type.",
   identityBody: "Annotations describe Seseragi types, not backend representations. Keeping module APIs explicit makes separate compilation and documentation stable; requiring recursive return types fixes the contract before the body refers back to the declaration.",
-  checkingBody: "The compiler checks an annotated initializer against its declared type and infers only omitted private-let types. Inference never changes a public signature, invents undeclared type parameters, or replaces an unresolved boundary with Unknown.",
+  checkingBody: "With an annotation, the compiler checks that the value or result matches it. For a let that permits omission, the initializer determines the type. For a compact effect fn, the body's Effect determines the required services, recoverable failure, and success type. Insufficient information to determine one type is an error.",
   invalidTitle: "Inference is local, not an excuse to hide an API",
   invalidBody: "An untyped function parameter, missing function return type, or public declaration without its required annotation is rejected. A conflicting let annotation is an error even when the initializer could have another valid inferred type.",
   diagnosticsBody: "Missing-boundary diagnostics point to the declaration header and suggest the required annotation position. Mismatch diagnostics retain expected and actual types. Language-server hovers report inferred private-let types without rewriting source.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Which types must I write?",
   summary: "Type annotations state what a value or function accepts. Inference fills in types only where the language allows you to omit them.",
   reading: "In add, left: Int and right: Int name two integer parameters; the final Int after -> is the result type. let addOne = add 1 needs no annotation: its initializer tells the compiler that it is a function waiting for one more integer.",
-  result: "An annotation checks the value; it does not convert it. Writing String beside an integer produces a type error, not text. An effect fn without signature clauses has its own inference rules, described separately below."
+  result: "Passing text to add, which accepts Int, is a type error. Changing an annotation does not convert the value. A compact effect fn may infer its result; an ordinary fn must state its result type."
 }

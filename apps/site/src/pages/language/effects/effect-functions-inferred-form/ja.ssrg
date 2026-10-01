@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect関数の型を推論する形式",
   summary: (explanation ()).summary,
   ruleTitle: "本体の操作からEffectの型を決める",
-  ruleBody: "->、with、fails、whereを一つも書かないeffect fnは、本体から必要なサービスR、失敗型E、成功型Aを推論します。推論された型は、公開されるモジュールの情報にも残ります。",
-  typingBody: "サービスは名前と型が一致する場合にまとめます。失敗しないNeverを除き、失敗型が一種類ならその型を使います。複数種類の失敗を自動で一つにまとめることはありません。分岐の成功値も同じ型になる必要があります。",
-  evaluationBody: "型を推論する形式でも、同じ型を明示した形式でも実行結果は変わりません。呼び出しただけでは処理を実行しない点も同じです。",
+  ruleBody: "->、with、fails、whereをすべて省略したeffect fnでは、コンパイラが本体から戻り値のEffect<R, E, A>を推論します。Rは必要なサービス、Eは回復可能な失敗、Aは成功値の型です。推論した型は、公開されるモジュールの型情報にも記録されます。",
+  typingBody: "同じ名前と型のサービスは一つにまとめます。回復可能な失敗がなければEはNever、失敗型が一種類ならEはその型です。異なる失敗型が複数ある場合は、自動で共通の型を作らず型エラーにします。分岐の成功値にも、同じ型が必要です。",
+  evaluationBody: "推論した型と同じ型を明示形式で書いても、実行結果は変わりません。どちらの形式でも、関数の呼び出しではEffectを作るだけで、表している処理を実行しません。",
   invalidTitle: "明示する形式と推論する形式を混ぜない",
-  invalidBody: "一部だけの推論指定はできません。->で成功型を明示してwithやfailsを書くか、四つの指定をすべて省いて本体から全体を推論させます。",
+  invalidBody: "->を省略したままwith、fails、whereだけを書くことはできません。成功型を->で指定して必要な型情報を明示するか、四つの指定をすべて省略して全体を推論させてください。",
   diagnosticsBody: "本体がEffectでない場合、同じ名前のサービスの型が衝突する場合、失敗型や成功型が一致しない場合を区別して確認してください。失敗型はmapErrorなどで明示的に揃えます。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Effectの型を、本体から決めてもらうには",
-  summary: "引数の後の署名をすべて省略すると、effect fnのサービス・失敗・成功値の型を、本体からまとめて推論します。",
+  summary: "effect fnの->、with、fails、whereをすべて省略すると、本体から必要なサービス・回復可能な失敗・成功値の型を推論します。",
   reading: "announceInferredの本体はprintln messageです。printlnはConsoleを必要とし、ConsoleErrorで失敗する可能性があるため、Effect<Console, ConsoleError, Unit>を推論します。値を作るだけでは出力しません。",
-  result: "本体にEffect型全体を決めさせたい場合に使います。withやfailsだけを追加する部分的な指定はできません。完全な明示形式か、署名をすべて省略する推論形式を選びます。"
+  result: "announceInferredの戻り値はEffect<Console, ConsoleError, Unit>です。短い宣言でも、必要なサービスと失敗型は型情報に記録されます。一部だけ型を指定したい場合は、->で始まる明示形式へ変更してください。"
 }

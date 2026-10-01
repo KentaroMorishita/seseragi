@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Inherent impls and methods",
   summary: (explanation ()).summary,
-  ruleTitle: "The nominal type owns its methods",
-  ruleBody: "impl T may appear only in the module that defines T. A method's first parameter is named self and has the impl target type; later parameters remain curried ordinary parameters.",
-  typingBody: "Receiver type selects the impl and substitutes generic type arguments before ordinary method inference continues. Multiple impl blocks are allowed, but method names for one target must be unique.",
-  evaluationBody: "Method syntax resolves statically and then applies an ordinary function to the receiver. It does not perform runtime class dispatch or mutate the receiver.",
-  invalidTitle: "impl is not a trait instance",
-  invalidBody: "Use instance Trait<T> for typeclass evidence. impl Trait<T>, impl of a foreign nominal type, a missing self name, and a mismatched self type are rejected.",
-  diagnosticsBody: "Errors identify the non-local target, invalid self parameter, duplicate method, visibility violation, or receiver type that has no matching method.",
+  ruleTitle: "Define methods in the module defining their type",
+  ruleBody: "Write a type's methods inside impl T. The first parameter is named self and has type T. Calling value.method passes value to self. Supply later arguments in order, separated by spaces as for ordinary functions.",
+  typingBody: "The type of the value passed to self determines which method is called. Generic parameters are replaced with concrete types before checking. Several impl blocks can target one type, but the same method name cannot be defined twice.",
+  evaluationBody: "A method call passes the value before the dot as self to the function selected by its type. You cannot assign to self's fields. A method that changes a value returns a new value. With no parameters other than self, write value.get; do not pass () unless get requires a Unit argument.",
+  invalidTitle: "Adding a method and implementing a trait use different declarations",
+  invalidBody: "impl T belongs only in the module defining T. Use instance Trait<T> to implement a trait's operations. impl Trait<T> does not implement that trait.",
+  diagnosticsBody: "Check the defining module of the type, the name and type of self, and duplicate method names. A method called from another module needs pub.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Where do I put operations belonging to my type?",
   summary: "An impl groups methods for a named type. Define it in the module that owns the type and give each method its receiver as the first self parameter.",
-  reading: "Box<A> has a value field. impl<A> Box<A> defines get, whose self: Box<A> receives the Box before the dot. It returns self.value with the same element type A.",
-  result: "Box<Int> { value: 42 }.get returns 42. get reads an existing value; it neither mutates it nor creates a trait implementation. A trait promise must be fulfilled with instance separately."
+  reading: "Box<A> contains a field value of type A. get, defined in impl<A> Box<A>, receives the Box before the dot through self: Box<A>. It returns self.value, so its result type is also A.",
+  result: "Box<Int> { value: 42 }.get returns the Int 42. get reads the contained value without changing the Box. An impl method and an instance trait implementation are separate declarations."
 }

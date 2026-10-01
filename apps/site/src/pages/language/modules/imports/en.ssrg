@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Imports state where names come from",
   ruleBody: "Imports appear at the beginning of a module. A named import introduces the selected public declarations; as changes their local spelling. A namespace import introduces an alias and keeps access qualified, such as text.trim. The example gives array length the local name arrayLength and uses trim through text. Neither form imports every exported name into unqualified scope.",
-  typingBody: "Imports carry declarations' canonical identities and type schemes. Renaming a function does not alter its type or create a new implementation. If one spelling is exported in both the type and value namespaces, one named import brings both into scope and an alias renames both. This lets a non-opaque newtype be imported once for its type name and constructor, with the reference position choosing the namespace.",
+  typingBody: "Renaming an import does not change its type or defining module. Importing a public, non-opaque newtype makes both its type name and value constructor available. With an as alias, use that alias in both type annotations and value construction.",
   evaluationBody: "Importing links the module into the dependency graph; it does not call its functions or execute its Effects. Namespaces are resolved by the compiler, not by inspecting a runtime object. A namespace alias can qualify public values, functions, types, traits, constructors and nested foreign namespaces. It cannot provide a qualified infix spelling for a custom operator.",
   invalidTitle: "Namespace import is not an unqualified wildcard",
   invalidBody: "import * as text from \"std/text\" supplies text.trim, not bare trim. There is no syntax that introduces every export unqualified. Imports also cannot introduce the same local name twice in one scope. Use distinct aliases or keep one namespace-qualified. Import only public names: knowing a private function's spelling does not make it accessible.",
@@ -27,5 +27,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I use a function from another module without a name collision?",
   summary: "A named import brings selected public declarations into scope. A namespace import lets you qualify public names with a module alias.",
   reading: "length as arrayLength brings std/array's function in under a different local name. import * as text lets normalize call text.trim. The imported signatures stay unchanged; an alias does not wrap or duplicate the function.",
-  result: "itemCount [1, 2, 3] returns 3 and normalize \"  Aki  \" returns \"Aki\". Private declarations cannot be imported even when their names are known. Imports make definitions available but do not execute their Effects."
+  result: "itemCount [1, 2, 3] returns 3 and normalize \"  Aki  \" returns \"Aki\". arrayLength and text.trim refer to the original standard functions under these names. Only public declarations can be imported. Importing does not call the functions or execute their returned Effects."
 }

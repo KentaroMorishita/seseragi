@@ -16,7 +16,7 @@ pub fn copy -> ConceptCopy = ConceptCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What will feel different when I write Seseragi?",
-  summary: "Seseragi is a statically typed, expression-oriented language built around immutable values and functions. External work is represented explicitly with Effect.",
+  summary: "Seseragi is an expression-oriented language that checks value types before execution. Functions and calculations can use the result of if, and data updates construct new values. Effect describes operations to execute, such as output or file access.",
   reading: "result accepts an integer score and returns a String chosen by if. if is a value-producing expression, so the function can use it directly as its body. main uses println to turn that result into an explicit output operation.",
-  result: "The program prints pass for score 85. You do not need to read the entire specification before using this reference: each topic introduces its own necessary terms, then explains the exact rules. The Tour is the separate ordered practice path."
+  result: "result 85 returns \"pass\", and main outputs pass followed by a newline. With a score of 60, the result and output become retry. In both cases the function returns String."
 }

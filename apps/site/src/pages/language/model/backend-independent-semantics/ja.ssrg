@@ -5,13 +5,8 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "生成先に依存しない意味",
   summary: (explanation ()).summary,
   meaningTitle: "生成されたコードの言語に、規則を任せない",
-  meaningBody: "バックエンドとは、Seseragiを実行可能なコードへ変換するコンパイラの部分です。現在はTypeScriptを生成しますが、TypeScriptやJavaScriptの規則をそのままSeseragiの規則として使うわけではありません。Seseragiで決めた振る舞いを実装する必要があります。",
+  meaningBody: "コンパイラのバックエンドは、Seseragiを実行可能なコードへ変換します。現在のバックエンドはTypeScriptを生成します。生成したコードでも、整数の除算や評価順序にはSeseragiの規則を適用します。",
   exampleTitle: "整数の除算と、小数の除算を区別する",
-  readingTitle: "このコードで何が起きるか",
-  reading: [
-    "integerResultはIntです。-7を2で割った結果は、小数部分を0に近づく向きに切り捨てた-3になります。-3.5でも-4でもありません。一方、decimalResultはFloat同士の計算なので3.5になります。",
-    "出力は-3, 3.5です。JavaScriptで普通に-7 / 2を計算すると-3.5になるため、演算子をそのまま置き換えるだけでは正しくありません。生成するコードでもIntとFloatの違いを保ちます。"
-  ],
   reasonTitle: "書いたコードから何を判断できるか",
   reason: [
     "整数の計算なら、実行に使う仕組みを調べる前に、整数の規則で結果を判断できます。関数の引数を左から右へ一度ずつ評価することや、レコードが不変であることも同じです。",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "計算結果を、生成先の言語の規則で判断してよいか",
-  summary: "別の言語へコードを生成しても、観測できる計算結果はSeseragiの規則で判断します。",
+  summary: "コンパイラがTypeScriptのコードを生成しても、整数の計算や評価順序にはSeseragiの規則が適用されます。生成先の言語の規則だけで、結果を判断しないでください。",
   reading: "integerResultの-7 / 2は整数の除算で、0へ向かって端数を切り捨てます。decimalResultはFloat同士の除算で、小数の商を返します。二つの式は、異なる数値型の計算を明示しています。",
-  result: "出力は-3, 3.5です。生成したTypeScriptの都合ではなく、言語の規則による結果です。一方で、すべての実行環境でメモリ配置や性能が同じになるという保証ではありません。"
+  result: "出力は-3, 3.5です。Int同士の除算は整数を返し、Float同士の除算は小数の商を返します。データの保存形式、実行速度、メモリ使用量は実装や実行環境によって変わります。"
 }

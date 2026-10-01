@@ -2,6 +2,7 @@ import { expect, test } from "bun:test"
 import { readdirSync, readFileSync } from "node:fs"
 import { resolve } from "node:path"
 import { compilerReferenceModules } from "../scripts/reference"
+import { referenceDescription } from "../scripts/reference-copy"
 import { outerArrows, signatureReading } from "../scripts/signature-reading"
 
 test("outer signature arrows preserve callback, record, and nested generic types", () => {
@@ -22,19 +23,39 @@ test("outer signature arrows preserve callback, record, and nested generic types
     signatureReading("Just: A -> Maybe<A>", "constructor", ["A"], []).ja
   ).toContain("引数は1個")
   expect(
+    signatureReading("Just: A -> Maybe<A>", "constructor", ["A"], []).ja
+  ).toContain("Aの順で渡してください")
+  expect(
+    signatureReading("Just: A -> Maybe<A>", "constructor", ["A"], []).ja
+  ).not.toContain("Just: Aの順")
+  expect(
     signatureReading("identity<A> value: A -> A", "function", ["A"], []).ja
   ).toContain("戻り値の型はA")
 })
 
-test("every compiler API has a Japanese explanation and a declaration walkthrough", () => {
+test("every compiler API has paired reader copy and a declaration walkthrough", () => {
   const modules = compilerReferenceModules()
   const items = modules.flatMap(({ items }) => items)
+  const instanceCopy = readFileSync(
+    resolve(import.meta.dir, "../src/reference/instance-copy.ssrg"),
+    "utf8"
+  )
   expect(modules).toHaveLength(63)
   expect(items).toHaveLength(1812)
   for (const item of items) {
     if (item.itemKind !== "instance") {
+      expect(item.descriptionEn, item.identity).not.toBe("")
       expect(item.descriptionJa, item.identity).not.toBe("")
       expect(item.descriptionJa, item.identity).not.toBe(item.description)
+      expect(referenceDescription(item.description), item.identity).toEqual({
+        en: item.descriptionEn,
+        ja: item.descriptionJa,
+      })
+    } else {
+      const traitName = item.name.split("<")[0]
+      expect(instanceCopy, item.identity).toContain(
+        `"${traitName}" -> localized`
+      )
     }
     expect(item.reading.en, item.identity).not.toBe("")
     expect(item.reading.ja, item.identity).not.toBe("")
@@ -48,6 +69,20 @@ test("every compiler API has a Japanese explanation and a declaration walkthroug
   )
   for (const module of modules)
     expect(moduleCopy).toContain(`"${module.specifier}" -> localized`)
+})
+
+test("unknown upstream descriptions fail instead of bypassing bilingual review", () => {
+  expect(() => referenceDescription("Unreviewed new API description")).toThrow(
+    "Missing bilingual API explanation"
+  )
+  expect(
+    referenceDescription(
+      "Standard function provided by the compiler-owned library surface."
+    )
+  ).toEqual({
+    ja: "標準ライブラリの関数です。渡す引数と戻り値の型は、下の宣言とその読み方で確認してください。",
+    en: "A standard-library function. See the declaration and its explanation below for the argument types and result type.",
+  })
 })
 
 test("every conceptual article owns a bilingual example explanation", () => {

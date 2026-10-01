@@ -7,15 +7,10 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "A missing result is a case to handle",
   meaningBody: "Ordinary Seseragi values are never null or undefined. An operation that might not find a value returns Maybe<A>: Just contains an A, and Nothing means no value was found. This makes absence visible before the program runs.",
   exampleTitle: "Look up an array element that does not exist",
-  readingTitle: "How to read the example",
-  reading: [
-    "The array has two elements, at indexes 0 and 1. arrays.get 5 values therefore returns Nothing, not an invalid Int. Its result type is Maybe<Int>, rather than Int.",
-    "The match handles both possibilities. Just value gives access to the integer when one exists. Nothing supplies the missing-result message. The output here is not found. Leaving out that case is a compile error because the match would not cover every result."
-  ],
   reasonTitle: "Why not just return null or throw?",
   reason: [
-    "A function accepting an Int can rely on receiving an integer. The caller first has to turn a Maybe<Int> into a suitable result, for example by providing a default, showing an error, or choosing another action. A missing value cannot silently travel through ordinary integer calculations.",
-    "When the reason for failure matters, Either<E, A> carries Left with an error E or Right with a successful value A. Effect<R, E, A> describes work that needs services R, can fail with E, and succeeds with A. Building an Effect does not run the work; the runtime executes it later. Task<A> is the case needing no services and having no recoverable failure."
+    "A function expecting Int cannot directly receive Maybe<Int>. First extract the integer from Just or choose a default for Nothing. You can instead handle absence by showing an error or choosing another action.",
+    "Use Either<E, A> when the result also needs a failure reason: Left contains an E error, and Right contains an A success value. Effect<R, E, A> describes an operation to execute. R specifies its required services, E its recoverable failures, and A its successful result. Constructing an Effect does not start it. Task<A> denotes an Effect with no service requirements or recoverable failures."
   ],
   boundaryTitle: "This does not mean every operation is safe for every input",
   boundary: [
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What happens when an array position does not exist?",
-  summary: "An operation that can lack a value returns a type that represents that possibility, so the caller must handle it explicitly.",
+  summary: "Maybe represents an operation that may produce no value, such as an out-of-range Array lookup. The caller handles presence and absence separately.",
   reading: "values has only positions 0 and 1. arrays.get 5 values therefore produces Nothing. match handles Just value with a found message and Nothing with \"not found\", so both paths return String.",
-  result: "The program prints not found instead of pretending there is an integer or leaving a missing result unchecked. This principle does not promise that programs have no defects; it keeps documented ordinary risks visible in interfaces."
+  result: "The output is not found. The lookup returns Maybe<Int>, so distinguish Just from Nothing before using an integer. Omitting the Nothing branch produces an error because the match does not handle every case."
 }

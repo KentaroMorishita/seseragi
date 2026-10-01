@@ -8,8 +8,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   ruleBody: "Modules initialize once in dependency-topological order. Within a module, top-level lets evaluate in source order. Function, type, newtype, alias, struct and trait names can be resolved before that evaluation. A module-level function's name being available does not permit arbitrary recursive function cycles: those still require the rec-group rules.",
   typingBody: "The backend establishes the module's function runtime bindings before evaluating its lets. A let may refer to earlier lets and function declarations, but not directly to a later let. A function body can mention a later let when the call is delayed until initialization has finished. Block-local functions instead use declaration-position scope; they do not inherit the module's hoisting rule.",
   evaluationBody: "If an initializer calls a function whose call chain reads the current or a later uninitialized let, execution stops with SES-N0201. This is not fixed by the function name having resolved successfully. The example creates a later-reading function but calls it only after later is initialized. Constructing a cold Effect similarly does not execute its I/O during import.",
-  invalidTitle: "Resolving a function is not initializing everything it may read",
-  invalidBody: "Moving an early read into a function body and immediately calling it from an initializer still reads too early. Imported modules shared by several consumers do not initialize again for each import. Do not use import as an implicit Effect runner.",
+  invalidTitle: "Call a function that reads a later value after that value initializes",
+  invalidBody: "When a let initializer calls a function, every let that function reads must already be initialized. Moving the reference into a function does not fix an early call. A module initializes once even if several consumers import it. Importing is not an operation that runs an Effect.",
   diagnosticsBody: "Compiler, formatter, LSP and document generator must never evaluate foreign runtime code. At runtime, a foreign pure-load module may load once during initialization under its contract; task-load code waits for the first foreign Task execution. Read initialization diagnostics as an ordering problem, not as a request for a missing-service runtime lookup.",
 }
 
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can a function read a value declared later in the module?",
   summary: "Module values initialize in source order. A function may mention a later value, but a call must not read that value before it is initialized.",
   reading: "readLater mentions later. first initializes to 1, then later to 2, then result calls readLater. At that point later is ready, so the call is valid.",
-  result: "result is 2. Moving the call before later's initialization would be an early-read error even if the reference is hidden inside a function. Importing a module from multiple places does not repeat its initialization."
+  result: "Calling readLater returns 2. Moving this call before later initializes produces an error because later has no initialized value yet. Check where the function is called, not merely where it is declared."
 }

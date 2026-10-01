@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Algebraic data types",
   summary: (explanation ()).summary,
-  ruleTitle: "Variants define a closed nominal sum",
-  ruleBody: "A type declaration lists every constructor. A constructor with no payload is a value; a constructor with a payload is a function into the declared type. Multiple payload values are carried by one tuple.",
-  typingBody: "Constructors introduce module-scope names and instantiate generic type parameters from their payload or expected result type. Matching uses the same nominal type and substituted payload types.",
-  evaluationBody: "Constructor application evaluates its one payload once and builds the selected value. Match later observes only the declared constructor and payload, not a backend representation.",
-  invalidTitle: "A variant list is closed",
-  invalidBody: "Code cannot add a constructor from another module or treat two declarations with identical constructors as the same type. Use a new declaration and explicit conversion when the domain differs.",
-  diagnosticsBody: "Unknown constructors, wrong payload arity or type, inaccessible constructors, and non-exhaustive matches are compile-time diagnostics.",
+  ruleTitle: "Declare alternatives and the data each alternative needs",
+  ruleBody: "A type declaration lists constructors, which name the ways to create a value of that type. An alternative without an argument is already a value. An alternative with an argument receives a value of its declared type. To carry several values, put them in one tuple. Separate alternatives for success and failure let you distinguish a successful value from a failure reason.",
+  typingBody: "Constructors are names in the module defining the type. A type parameter such as <A> is determined from the supplied payload or the expected result type. match checks which alternative a value holds and extracts that alternative's payload.",
+  evaluationBody: "An expression passed to a constructor is computed once. match branches on the constructor used to create the value. A value made with Loaded, for example, exposes its payload in a Loaded branch.",
+  invalidTitle: "Alternatives cannot be added after the declaration",
+  invalidBody: "The type declaration fixes its alternatives. Another module cannot add one. Separate declarations are separate types even if their alternatives have the same names. To convert between them, unpack the source with match and construct the target alternative explicitly.",
+  diagnosticsBody: "Check the constructor's name, visibility, and the type and number of arguments. A match that omits a required alternative also causes an error before execution.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I describe a value with a fixed set of cases?",
   summary: "An algebraic data type names a fixed set of alternatives. Each alternative can carry the data needed for that case.",
-  reading: "LoadState<A> is either Idle or Loaded A. Loaded \"ready\" carries a String. describe handles Idle with \"idle\" and Loaded by extracting its stored value. The parameter <A> lets other uses choose a different payload type.",
-  result: "message is \"ready\". There is no additional undeclared case that match must discover at runtime. This fixed set lets the compiler report a missing branch when you forget one."
+  reading: "LoadState<A> has Idle, which carries no value, and Loaded, which carries an A value. In Loaded \"ready\", A becomes String. describe returns \"idle\" for Idle, or the contained string for Loaded.",
+  result: "message is \"ready\". The alternatives of LoadState are fixed as Idle and Loaded. Omitting Loaded or another required alternative from match causes a compile-time error."
 }

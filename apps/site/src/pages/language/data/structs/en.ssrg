@@ -5,8 +5,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Structs",
   summary: (explanation ()).summary,
   purpose: [
-    "A struct gives a data shape its own type name. User can hold an id and a name. Another struct named Product remains a different type even if it declares the same fields.",
-    "This distinction helps prevent mixing values with different meanings. A plain record is identified by its fields; a struct is identified by its declaration. The latter is called nominal typing."
+    "A struct gives a type name to data with several fields. User can hold id and name. A Product declaration with the same fields still defines a different type.",
+    "A struct's type depends on the declaration that creates it. This is called nominal typing. Unlike records, whose types depend on field names and types, structs distinguish data with different meanings even when their shapes match."
   ],
   exampleTitle: "Create a User and rename a copy",
   reading: [
@@ -16,10 +16,10 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "The output shows that original still contains Aki, renamed contains Mio, and the copied id remains 1. Reading a field uses a dot; updating a copy is not assignment to the old value."
   ],
   rules: [
-    "Every declared field must receive a value of its declared type. Unknown fields are not allowed. Two different struct declarations are distinct even when their field names and types match.",
-    "A struct update accepts at most one spread, before any explicitly supplied fields. The spread value must have the same struct type. Unlike a record update, it cannot change a field's type.",
-    "Field shorthand is available: when a local variable is named id, id can stand for id: id inside the construction. Field names select the destinations; written item order determines evaluation order.",
-    "A struct can have generic parameters, such as Box<A>, but none are needed here. Within an impl you can add functions belonging to the declared type. Module visibility also matters: importing a private or opaque representation does not grant access to its construction or fields."
+    "Every declared field needs a value of its declared type. Unknown fields are not allowed. Separate struct declarations are separate types even when their field names and types match.",
+    "A struct update accepts at most one spread, before explicitly supplied fields. The source must have the same struct type. Unlike a record update, it cannot change a field's type.",
+    "When a variable has the same name as a field, id can abbreviate id: id. Field names select their destinations; written order determines when values are computed.",
+    "A struct can use type parameters, such as Box<A>. impl can add methods for that type. Check visibility when using the struct from another module. Private fields or a struct's contents hidden by opaque cannot be accessed freely."
   ],
   mistakes: [
     "User { id: 1 } is incomplete because name is required. The following example is rejected for a missing field.",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why name a data shape instead of using an ordinary record?",
   summary: "A struct gives a data shape a named identity, preventing unrelated declarations with the same fields from being confused.",
   reading: "struct User declares id: Int and name: String. User before the braces constructs that specific type. User { ...original, name: \"Mio\" } builds another User with the copied id and the replacement name.",
-  result: "The outputs are Aki, Mio, and 1. Both values remain User, and original is unchanged. An ordinary { id: 1, name: \"Aki\" } record is not automatically a User."
+  result: "The outputs are Aki, Mio, and 1. original still holds the name Aki; only renamed holds Mio. Both have type User. User { ...original, name: \"Mio\" } constructs a new value of that same type."
 }

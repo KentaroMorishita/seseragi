@@ -1,4 +1,4 @@
 pub fn title -> String = "Language Reference"
 
 pub fn summary -> String =
-  "Find a concept, understand its rules, and follow the exact syntax and semantics."
+  "Choose the concept you need, such as calling functions, organizing data, or handling failures and state. Each article explains how to read an example and gives the detailed rules."

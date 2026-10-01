@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Maybeだけでは、値の型はまだ決まらない",
   ruleBody: "Intはそのまま値の型に使えますが、Maybeには中身の型が必要です。Maybe<Int>と書けば、Intを持つか、値がないことを表す完成した型になります。このように型を受け取って別の型を作るものを型構築子と呼びます。その引数と結果の形を表すのがkindです。IntのkindはType、MaybeのkindはType -> Typeです。",
-  identityBody: "型を一つ受け取る型構築子を引数にしたい場合は、M<_>という型パラメーターを使います。MaybeやListなど、具体的な種類を固定せずに扱えます。例のWrappedはMaybeを受け取り、それにIntを与えて型を作っています。kindはコンパイル時の検査に使う情報であり、実行時に型を表すオブジェクトを作るものではありません。",
+  identityBody: "型を一つ受け取る型構築子をパラメーターにしたい場合は、M<_>と書きます。例えばMにMaybeを指定し、M<Int>と使えばMaybe<Int>になります。MにはListなども選べます。関数、型、trait、implの宣言で使え、kindの検査はコンパイル時に行います。Mという実行時のオブジェクトを作る宣言ではありません。",
   checkingBody: "型引数を与えるたびに、引数の数とkindを検査します。型構築子が必要な位置では、Either<String, _>のように、一部の引数を空けた形も使えます。この_は型構築子の空き位置を示し、不明な値の型ではありません。型構築子のパラメーター宣言と部分適用に限って使え、通常の値の型注釈に残すことはできません。",
   invalidTitle: "値の型を書く場所では、必要な型引数を揃える",
   invalidBody: "関数の引数の型をMaybeだけにすると、中身の型が決まりません。Maybe<Int>と書くか、型パラメーターを宣言してMaybe<A>と書きます。逆に、M<_>へIntを渡すこともできません。Mには別の型を受け取るものが必要ですが、Intはそれ以上型引数を受け取らないためです。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Maybeを型引数に渡せるのに、値の型として単独で使えないのはなぜか",
   summary: "型引数には、Intのような完成した型を受け取る場所と、Maybeのように別の型を待つものを受け取る場所があります。その形を表す情報がkindです。",
   reading: "Wrapped<M<_>, A>は、型引数を一つ待つMにAを渡します。Wrapped<Maybe, Int>はMaybe<Int>の意味です。keepが受け取って返すのは、この完成した型です。",
-  result: "Maybeだけでは中身の型が不足し、Maybe<Int>なら揃っています。M<_>の_は型引数の空き位置を示します。通常の値の型を不明なままにしてよい、という意味ではありません。"
+  result: "Maybeは型引数を一つ必要とし、Maybe<Int>ではその引数が揃っています。M<_>の_は、一つの型を受け取る位置です。例えば、MにIntを渡すと、Intはさらに型引数を受け取れないためkindのエラーになります。"
 }

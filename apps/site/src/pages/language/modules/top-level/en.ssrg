@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Top level contains declarations",
   ruleBody: "A module may contain imports and re-exports, let bindings, fn and effect fn declarations, type, newtype, alias and struct declarations, inherent impl blocks, trait declarations and instances, custom operators, foreign declarations and rec groups. Each form introduces declarations or changes the module interface. Arbitrary expression statements are not a top-level form; a call belongs in a binding or function body.",
-  typingBody: "A top-level let needs an irrefutable binding pattern and a pure right-hand expression. Pure does not mean that the resulting value must be a scalar: constructing an Effect is pure because it describes work without running it. In the example, report is an Effect function and pending holds the Effect returned by report (). No console operation runs when pending is initialized.",
+  typingBody: "A top-level let requires an always-matching pattern and a pure right-hand expression. Constructing an Effect is pure because it does not yet execute external work. In the example, let pending = report () stores a value describing a println operation. Initializing pending does not print anything.",
   evaluationBody: "Top-level let bindings evaluate once in source order. A binding can directly refer to earlier lets and any module-level function declaration, but cannot directly read a later let. Function and type declarations are available to name resolution before the lets execute. Module-level function bindings are established before evaluating initializers, so a function can be declared below the let that calls it.",
   invalidTitle: "A function can delay a reference, not initialize it early",
   invalidBody: "A function body may refer to a later top-level let if the function runs after initialization. Calling that function from an earlier initializer is different: if its call chain reads the current or a later uninitialized let, compilation stops with SES-N0201. Reordering function declarations does not make a value initialize sooner. Mutually recursive functions also require one rec group.",
@@ -16,7 +16,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 pub fn layoutTitle -> String = "Private inference and public contracts"
 
 pub fn layoutBody -> String =
-  "Private functions may use inferred types; the module's public API has explicit type contracts under the visibility rules. Imports appear before declarations. A module-level declaration is not the same as a local declaration inside a block: local functions enter scope at their declaration position, while module functions use the module-wide name-resolution rules."
+  "A private let may infer its type from the initializer. An ordinary fn requires parameter and result types even when private. The compact effect fn is an exception: omit all of ->, with, fails, and where, write parameter types, and infer the returned Effect. Public APIs follow this form's rules as well as visibility rules. Place imports before other declarations. A block-local function is available from its declaration position."
 
 pub fn exampleTitle -> String = "Initialization constructs work without running it"
 
@@ -26,6 +26,6 @@ pub fn exampleBody -> String =
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Does a top-level Effect run when the module is imported?",
   summary: "Top-level declarations define module names and initialize ordinary values. Storing an Effect value does not execute its described operation.",
-  reading: "base becomes 20 and answer becomes double 21, which is 42. report () constructs the output operation and stores it in pending. The println remains part of that operation rather than printing during module initialization.",
+  reading: "base is 20. answer computes double 21 and stores 42. report () constructs an Effect that performs output and stores it in pending. println runs later, so this initialization does not produce output.",
   result: "A runner or other designated execution boundary must execute the stored Effect. Top level does not allow arbitrary expression statements: put a computed value in a declaration, or external work inside the returned Effect."
 }

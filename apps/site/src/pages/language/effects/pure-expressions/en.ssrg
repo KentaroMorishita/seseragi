@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Pure expressions",
   summary: (explanation ()).summary,
-  ruleTitle: "A value does not secretly run external work",
-  ruleBody: "A pure function computes from its arguments. Console, network, filesystem, time, randomness, mutable runtime state, and asynchronous work appear only through an Effect value whose type exposes the boundary.",
-  typingBody: "Purity is enforced by the types of operations rather than by a pure annotation. A pure function may construct and return Effect<R, E, A>, but it cannot turn that value into A or call an effectful operation as though it returned an ordinary value.",
-  evaluationBody: "Ordinary expressions remain strict and deterministic according to their value operations. Constructing a cold Effect evaluates only the pure code needed to build its description; the represented work waits for an authorized runtime boundary.",
+  ruleTitle: "Separate calculation from external operations",
+  ruleBody: "A pure function calculates its result from the arguments it receives. Use Effect for output, network and file operations, reading the clock, or obtaining randomness. Mutable state access and asynchronous work also appear as Effect values, so a function's return type identifies its external operations.",
+  typingBody: "The compiler checks operation types to distinguish pure calculation from external work. A pure function can construct and return Effect<R, E, A>. That value represents work to execute, however, and cannot be used as its eventual result A.",
+  evaluationBody: "Ordinary expressions evaluate arguments in order before calling a function. Constructing an Effect also performs the pure calculations needed to build it. The represented output or state update does not start until an execution boundary runs the Effect.",
   invalidTitle: "Returning an Effect is not running it",
-  invalidBody: "A function cannot print, read a clock, or mutate a Signal while claiming to return Unit, Instant, or another plain value. Keep the Effect in the result type and compose it explicitly.",
-  diagnosticsBody: "A mismatch identifies the position that requires an Effect value or the plain value that cannot satisfy one. Tools show the complete R, E, and A arguments so the missing boundary stays visible.",
+  invalidBody: "A function that prints must return an Effect representing the output operation. Reading the clock and updating a Signal follow the same rule. Those operations cannot run inside a function declared to return an ordinary Unit or time value.",
+  diagnosticsBody: "If a type error occurs, check whether an Effect describing work has been confused with its eventual result. In Effect<R, E, A>, R names required services, E names recoverable failures, and A is the successful result.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can a normal function print or read the clock?",
-  summary: "A pure expression calculates a value without accessing changing external state. External operations remain visible as Effect values.",
-  reading: "lineTotal multiplies its two integer inputs and directly returns an Int. plannedTotal calculates the same number and puts it inside succeed, so it returns Task<Int> instead. It has described a computation, not printed or executed it.",
-  result: "lineTotal 20 3 is 60. Executing plannedTotal 20 3 succeeds with 60. You cannot disguise an external operation as a normal Int-returning function by dropping Effect from its annotation."
+  summary: "A pure expression calculates a value without reading or changing external state. External operations such as output are returned as Effect values representing work to execute.",
+  reading: "lineTotal multiplies two integers and returns the calculated Int. plannedTotal passes the same calculation to succeed and returns Task<Int>. Task is an alias for Effect and here represents work whose successful result is an Int. Calling plannedTotal does not execute that work.",
+  result: "lineTotal 20 3 returns 60. plannedTotal 20 3 returns a description of work; executing it succeeds with 60. Passing that Task<Int> directly where an ordinary Int is required produces a type mismatch."
 }

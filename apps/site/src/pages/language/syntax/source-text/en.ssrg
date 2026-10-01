@@ -4,18 +4,18 @@ import { SyntaxCopy } from "../article"
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Source text and comments",
   summary: (explanation ()).summary,
-  formsTitle: "Write UTF-8 source",
-  formsBody: "Seseragi source is UTF-8. LF and CRLF line endings are accepted and have the same language meaning. An identifier starts with Unicode XID_Start and continues with XID_Continue; apostrophes may follow as part of the identifier.",
-  typingBody: "Identifier spelling determines a token before name resolution or typing. Keywords are ASCII, case-sensitive tokens, so True is the Bool constructor while true is an ordinary lowercase identifier if it is otherwise valid.",
-  evaluationBody: "Line-ending normalization and comment removal affect lexical input, not runtime evaluation. A line comment begins with // and ends at the normalized line boundary; the language has no block-comment form.",
-  invalidTitle: "Do not infer identifiers from visual appearance",
-  invalidBody: "An identifier cannot start with a digit or punctuation, a trailing apostrophe belongs to the identifier being scanned, and a block-comment-looking sequence has no special meaning. The lexer follows Unicode properties and token boundaries, not what two glyphs happen to look like.",
-  diagnosticsBody: "The lexer owns invalid UTF-8 and token boundaries. The formatter and LSP consume the same syntax pipeline, so neither tool invents a different identifier or reinterprets account' as account followed by a Char literal.",
+  formsTitle: "Save source files as UTF-8",
+  formsBody: "Save source files as UTF-8. LF and CRLF line endings have the same meaning. The first character of a name must belong to the Unicode XID_Start category; later characters use XID_Continue. A trailing apostrophe (') is also part of the name.",
+  typingBody: "Names are case-sensitive. True is the Bool value for true, while true is a different name. Reserved words cannot name a variable or function. The compiler checks whether a name uses valid characters separately from checking the type of the value it refers to.",
+  evaluationBody: "A comment starts at // and extends to the end of that line. Comments explain code but do not affect the program's result. To write a comment over several lines, start each line with //.",
+  invalidTitle: "Check where names and comments begin and end",
+  invalidBody: "A name cannot start with a digit or punctuation. The /* ... */ form is not a block comment in Seseragi. Similar-looking characters may denote different names when they are different Unicode characters.",
+  diagnosticsBody: "An encoding error or invalid name character points to the character involved. account' is one name; it does not mean account followed by a character literal.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How are comments and source characters treated?",
   summary: "Seseragi source is UTF-8. A comment explains code to readers without contributing a value to the program.",
-  reading: "The // lines are comments. userName and 次の値 are ordinary declarations; the example also shows an apostrophe continuing a value name in account'. The characters belong to source names, not strings passed to a hidden runtime parser.",
-  result: "The commented text is not executed. Character encoding and name rules are separate: a character being valid UTF-8 does not necessarily make it a valid identifier character. See the precise lexical rules below when a name is rejected."
+  reading: "userName and 次の値 each declare a name for a value. Text after // is a comment until the end of the line. In account', the final apostrophe is part of the name.",
+  result: "Changing a comment does not change the values the program computes. A character representable in UTF-8 may still be disallowed in a name, particularly at its beginning. When a name is rejected, check its characters and the reserved-word rules."
 }

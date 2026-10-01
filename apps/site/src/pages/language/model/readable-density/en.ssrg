@@ -7,11 +7,6 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "Write the flow in the order you read it",
   meaningBody: "Seseragi offers concise forms for common ideas, such as applying part of a function's arguments and passing a value along a pipeline. Their purpose is to expose the processing steps without surrounding bookkeeping. More symbols are not automatically better or worse; what matters is whether the code communicates the operation.",
   exampleTitle: "Double a value, then add one",
-  readingTitle: "How to read the example",
-  reading: [
-    "Read the last calculation from left to right: start with 3, pass it to double to obtain 6, then pass 6 to add 1 to obtain 7. The output is 7.",
-    "add takes its two arguments in sequence. add 1 supplies the first argument and creates a function waiting for the second. This is partial application. The pipeline is equivalent to add 1 (double 3); it does not change the functions' behavior."
-  ],
   reasonTitle: "Why use a dedicated form?",
   reason: [
     "When several transformations follow one another, a pipeline can show their order more directly than deeply nested parentheses. Array and list literals similarly show data, while comprehensions show how a collection is formed. These forms express recognizable ideas, not arbitrary shorthand.",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "When is a compact expression still easy to follow?",
-  summary: "Concise code should make the data flow visible. Prefer a small named function or a clear pipeline over compression that hides inputs and intermediate meaning.",
-  reading: "double multiplies by two, and add 1 is the function adding one to its next argument. Starting at 3, the pipeline computes 6 and then 7. Each step's input is the preceding result.",
-  result: "The output is 7. Compactness does not change evaluation or type rules. If the chain needs explanation at every symbol, name a meaningful intermediate value or split the expression instead of relying on cleverness."
+  summary: "A pipeline makes successive transformations readable from left to right. If an intermediate value needs explanation, name it and split the expression. Prefer making the calculation clear over making it short.",
+  reading: "double multiplies by two. add 1 supplies only the first argument and creates a function waiting for the remaining argument, called partial application. Starting at 3, the pipeline computes 6 and then 7. Passing each preceding result into the next step gives the same calculation as add 1 (double 3).",
+  result: "The output is 7: double 3 to get 6, then add 1. When a longer chain makes intermediate values hard to understand, name those results with let."
 }

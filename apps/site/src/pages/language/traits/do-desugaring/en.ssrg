@@ -5,11 +5,11 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "How do blocks desugar",
   summary: (explanation ()).summary,
   ruleTitle: "Each bind introduces one nested continuation",
-  ruleBody: "x <- mx becomes flatMap (\\x -> rest) mx. A discarded mx uses an ignored lambda parameter. let x = value remains a pure local binding around the rest. A final expression is returned unchanged.",
+  ruleBody: "x <- mx followed by rest corresponds to flatMap (\\x -> rest) mx. flatMap passes the payload of mx to the lambda parameter x and performs the remaining computation there. A discarded result uses a lambda that ignores its argument. let remains an ordinary local declaration, and the final expression supplies the do result.",
   typingBody: "The lambda parameter has the payload type A from M<A>, not the monadic type. Pattern typing and irrefutability are checked at that parameter. Constraints required by flatMap remain attached to the expansion.",
   evaluationBody: "The outer monadic expression runs before its continuation. Later items are not constructed or evaluated early. Backend optimization may avoid materializing lambdas only when it preserves this scope and ordering.",
   invalidTitle: "Desugaring does not erase monad semantics",
-  invalidBody: "Expansion removes only surface syntax. Failure, branching, state, scheduling, and resource behavior still come from the selected Monad implementation and cannot be optimized into pure sequencing indiscriminately.",
+  invalidBody: "Rewriting do as flatMap preserves the chosen type's behavior. Maybe skips the continuation for Nothing; Effect executes work sequentially. Failure, state, waiting, and resource rules also continue to follow the Monad implementation.",
   diagnosticsBody: "Source diagnostics map failures in generated flatMap structure back to the original bind or item. Users should not need to debug backend-generated dictionary or lambda names.",
 }
 
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How is do related to flatMap?",
   summary: "do is a readable syntax for nested flatMap calls. Each step's remaining work becomes a function receiving the preceding payload.",
   reading: "value <- source followed by increment value corresponds to flatMap (\\value -> increment value) source. The lambda receives the Int inside the Maybe, not the Maybe itself. The two functions shown express the same operation.",
-  result: "Both return Just 42 for Just 41 and Nothing for Nothing. The equality check is True. Expanding the syntax does not remove Maybe's absence handling or change Effect sequencing into ordinary pure evaluation."
+  result: "For Just 41, both the do function and the flatMap function return Just 42. Both return Nothing for Nothing. Their comparison produces True. Using the shorter do syntax preserves Maybe's absence handling."
 }

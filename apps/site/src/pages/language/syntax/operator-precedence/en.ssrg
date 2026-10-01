@@ -4,18 +4,18 @@ import { SyntaxCopy } from "../article"
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Operator precedence",
   summary: (explanation ()).summary,
-  formsTitle: "Precedence from access through Signal update",
-  formsBody: "From strongest to weakest: field/method/index access; application; prefix !, unary -, and Signal read *; **; multiplicative operators; additive operators and list cons; comparisons; &&; ||; Maybe fallback ??; >>=, <$>, <*>, and |>; $; then Signal update :=.",
-  typingBody: "Arithmetic, comparison, cons, and typeclass-backed binary operators may be parenthesized as curried function values. Expected types and trait constraints must select one overload. Short-circuit, pipeline, $, Signal, and prefix operators cannot become function values.",
-  evaluationBody: "&&, ||, and ?? evaluate the right operand only when needed; ?? follows Maybe fallback typing. Other binary operators evaluate left then right. **, :, ??, $, and := associate right; comparisons do not associate; remaining built-ins associate left.",
-  invalidTitle: "Precedence never licenses an ambiguous chain",
-  invalidBody: "a < b < c is rejected; write a < b && b < c. Ambiguous overloaded operator references need a type annotation. Unary * and - are distinguished by position from binary multiplication and subtraction, and parentheses are required whenever a different grouping is intended.",
-  diagnosticsBody: "The shared parser and formatter use one precedence table. Non-associative chains are syntax diagnostics; missing trait evidence and ambiguous operator values are type diagnostics; short-circuit forms retain their source operator rather than lowering to an ordinary function call in tooling.",
+  formsTitle: "Read the operations that group most tightly first",
+  formsBody: "An operation with higher precedence forms an expression first. Multiplication binds more tightly than addition, so 1 + 2 * 3 means 1 + (2 * 3). From strongest to weakest: field/method/index access; function application; prefix !, -, and Signal read *; **; multiplication/division/remainder; addition/subtraction and List :; comparisons; &&; ||; Maybe ??; >>=, <$>, <*>, and |>; $; Signal update :=. Grouping and evaluation order are separate rules.",
+  typingBody: "Arithmetic, comparisons, List :, and trait-provided binary operators can be written as functions in parentheses, such as (+). The argument types and required traits determine which operation is used. &&, ||, pipelines, $, Signal reads and writes, and prefix operators cannot be written as function values in this form.",
+  evaluationBody: "&& skips the right side when the left is False. || skips it when the left is True. ?? skips it when the left contains a value. Other binary operators evaluate left then right. **, :, ??, $, and := group right; the other built-in operators group left. Comparisons cannot be chained.",
+  invalidTitle: "Split chained comparisons into Bool expressions",
+  invalidBody: "a < b < c is not allowed; write a < b && b < c. Add a type annotation if an operator used as a function has an ambiguous type. Position distinguishes prefix * and - from multiplication and subtraction. Use parentheses when you need a different grouping.",
+  diagnosticsBody: "A chained comparison causes a syntax error. An unavailable operation for the input type, or an ambiguous operator type, causes a type error. Rewrite the expression with parentheses, then check the input types of each operation.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Which part of this expression is computed together?",
   summary: "Precedence determines how an expression groups. Parentheses make your intended grouping explicit.",
   reading: "In 1 + 2 * 3, multiplication groups first, so the result is 7. In (1 + 2) * 3, the parenthesized addition groups first, so the result is 9. comparison combines two Bool tests with &&.",
-  result: "comparison is True. Grouping is not permission to evaluate effectful operations in an arbitrary order. && and || additionally short-circuit: they skip the right side when the left side already determines the answer."
+  result: "comparison is True. After grouping is determined, ordinary binary operators evaluate their inputs left to right. && and || short-circuit, skipping the right side when the left already determines the result."
 }

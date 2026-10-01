@@ -13,7 +13,7 @@ fn content -> PageDefinition =
         localized "A constrained generic function" "必要なtraitを条件にした、型を共通化する関数"
       )] [CodeExample (
         "traits-invalid-constraint",
-        localized "Missing concrete evidence" "必要なtraitの実装がない場合"
+        localized "A required trait implementation is missing" "必要なtraitの実装がない場合"
       )] [
         [InternalLink
       (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],

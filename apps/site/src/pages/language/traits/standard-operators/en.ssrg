@@ -6,8 +6,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Each standard operator has a trait contract",
   ruleBody: "Equality uses Eq, ordering uses Ord.compare, arithmetic uses Add, Sub, Mul, Div, Rem, or Pow, and the functional operators use Functor, Applicative, or Monad. The selected instance defines the operation.",
-  typingBody: "Arithmetic evidence records left, right, and output types, with the operand pair determining one output. Ordering compares two values of one type. A mixed-type expression is valid only when its exact evidence exists; no numeric coercion is inserted.",
-  evaluationBody: "Operands are evaluated left to right and once before the selected operation runs. Comparison derives all four relational results from one compare call. Boolean short-circuit operators remain built-in control flow rather than trait calls.",
+  typingBody: "An arithmetic instance specifies the left operand, right operand, and result types. The operand pair must determine one result type. Ordering compares two values of the same type. Mixed operations such as Int with Float require an instance for that exact pair; implicit numeric conversion does not supply one.",
+  evaluationBody: "Operands are evaluated once each, from left to right, before calling the operator instance. <, <=, >, and >= use the result of one compare call. && and || are instead built-in short-circuit syntax that may skip the right operand, not trait operations.",
   invalidTitle: "Overloading cannot change grammar",
   invalidBody: "An instance cannot alter precedence, associativity, or the meaning of a different token. New tokens use custom operator declarations, while standard syntax remains tied to its fixed trait.",
   diagnosticsBody: "A failed expression reports the concrete missing or conflicting operator evidence and the operand types. Float ordering never falls back to a host-language comparison.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Which implementation does a standard operator call?",
   summary: "Supported standard operators use trait implementations selected from operand types. Your named types can supply the corresponding operation.",
   reading: "Distance wraps Int. The + member unpacks its two Distance values, adds their integer payloads, and returns another Distance. This supplies addition for Distance rather than using an implicit conversion to Int.",
-  result: "total is Distance 42. Operator spelling, precedence, and grouping stay the same; the statically selected operation changes. Avoid defining a conflicting explicit instance for the same operation and types."
+  result: "Distance 20 + Distance 22 produces Distance 42. Defining addition for Distance does not change +'s precedence or associativity. Two instances for the same operand types cannot be provided."
 }

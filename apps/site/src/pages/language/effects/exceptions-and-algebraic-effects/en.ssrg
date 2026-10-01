@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Exceptions and algebraic effects",
   summary: (explanation ()).summary,
-  ruleTitle: "One explicit effect model owns failure and capabilities",
-  ruleBody: "Expected failure travels through Either or Effect E. Foreign adapters catch host exceptions at the boundary and convert them to Either<ForeignError, A> or Effect<R, ForeignError, A>.",
-  typingBody: "Because exception edges do not exist in ordinary Seseragi expressions, every recoverable failure remains visible in a return type. Environment requirements, resources, and cancellation remain visible in Effect rather than a second handler system.",
-  evaluationBody: "A foreign adapter performs host-specific catch and normalization before Seseragi code resumes. A violated safe-wrapper contract is a defect, not a hidden exception that ordinary code can catch.",
-  invalidTitle: "throw, catch, try, perform, and handle are not language forms",
-  invalidBody: "Do not write pseudo-syntax that bypasses E or R. Model a domain error as data, lift a recoverable operation into Effect, and keep adapter-specific exception handling at the interop boundary.",
+  ruleTitle: "Represent failure in the return type",
+  ruleBody: "Return anticipated failures through Either or Effect's E. When foreign-language code throws, an interop adapter catches the exception. The adapter converts it into an Either or Effect containing ForeignError and returns that declared result.",
+  typingBody: "Seseragi has no throw, catch, or try syntax for throwing and catching exceptions. Nor does it have algebraic-effect syntax for requesting operations with perform and handling them with handle. Required services, recoverable failures, resources, and cancellation are handled through Effect.",
+  evaluationBody: "A foreign adapter converts target-language exceptions to its declared result type. A value violating a safe adapter's promised type is treated as a computation defect, not as a normal recoverable failure.",
+  invalidTitle: "Other languages' exception syntax is not supported",
+  invalidBody: "Writing another language's try or catch produces a syntax error in Seseragi. Express application failures in the return type. The interop adapter is responsible for catching foreign-language exceptions.",
   diagnosticsBody: "The parser reports unsupported exception or handler forms at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What replaces try and catch in ordinary Seseragi code?",
-  summary: "Expected failures are values in Either or the E of Effect. Seseragi has no throw/catch syntax or perform/handle language forms.",
+  summary: "Use Either or Effect's E for anticipated failures. An interop adapter catches foreign-language exceptions and converts them into its declared error type.",
   reading: "decodeForeign models an adapter result: success becomes Right 42 and rejection becomes Left with a ForeignError explanation. A real adapter must catch foreign-language exceptions at its boundary and return the declared result type.",
-  result: "For False, the caller receives Left (ForeignError \"adapter rejected the value\"). This example demonstrates result handling, not a hidden implementation of try/catch. Ordinary Seseragi callers inspect the declared result, not an arbitrary foreign exception."
+  result: "decodeForeign False returns Left (ForeignError \"adapter rejected the value\"). The example shows the result shape returned to callers, not an implementation catching a foreign exception. Callers handle the declared ForeignError with match or another result operation."
 }

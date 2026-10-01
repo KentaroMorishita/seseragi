@@ -10,16 +10,16 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   ],
   exampleTitle: "チケットを表示用のラベルにする",
   reading: [
-    "struct Ticket { number: Int }は、整数を一つ持つチケット型です。mainのTicket { number: 42 }で、番号42のチケットを作っています。",
-    "trait Label<A>のAは型のパラメーターで、あとで具体的な型に置き換える仮の名前です。fn label value: A -> Stringは「A型の値を受け取って文字列を返すlabelが必要」という宣言です。ここには処理の本体を書きません。",
-    "instance Label<Ticket>で、Ticketに対する処理の本体を定義します。AをTicketに置き換え、value.numberをshowで文字列にして、先頭に\"ticket-\"を付けています。",
-    "label ticketを検査するとき、コンパイラーはticketがTicket型だと分かっています。そのためLabel<Ticket>の実装を選び、その実装があることを確認します。実行すると、そのlabelが呼ばれ、ticket-42が出力されます。"
+    "struct Ticket { number: Int }は、整数を一つ持つチケット型です。mainのTicket { number: 42 }で、番号42のチケットを作ります。",
+    "trait Label<A>のAは、ラベルにする対象の型を表す型パラメーターです。fn label value: A -> Stringは、A型の値を受け取ってStringを返す操作の宣言で、処理の本体はありません。",
+    "instance Label<Ticket>では、AをTicketに置き換えてlabelの本体を書きます。value.numberをshowで文字列にし、先頭に\"ticket-\"を付けます。",
+    "コンパイラは、label ticketのticketがTicket型であることを確認し、Label<Ticket>の実装を選びます。実行するとそのlabelが呼ばれ、ticket-42が出力されます。"
   ],
   rules: [
-    "呼び出せる実装があることは、実行前に確認されます。「実装の証拠」とは、この確認を指す言葉です。呼び出すために、別途「証拠のオブジェクト」を自分で作る必要はありません。",
-    "実装は型で選びます。Ticket { number: 1 }でもTicket { number: 42 }でも、使うのは同じLabel<Ticket>です。実行時に番号を見て実装を選ぶ仕組みではありません。",
-    "traitを宣言しても、TicketがLabelを継承したり、その下位の型になったりはしません。フィールドやドットで呼ぶメソッドも増えません。label ticketは通常の関数呼び出しに、型に合う実装が必要という条件が付いたものです。",
-    "labelOf<A>が共通の呼び出し側です。where Label<A>は、Aにlabelの実装が必要という条件です。Personには実装があるため、labelOf (Person { name: \"Aki\" })は\"Aki\"を返します。Ticketにも実装があるので、labelOfの本体を変えずにTicketも渡せます。"
+    "呼び出しに必要なinstanceがあるか、コンパイラは実行前に検査します。実装がなければ型エラーになります。",
+    "instanceは引数の型で選びます。Ticket { number: 1 }もTicket { number: 42 }も、同じLabel<Ticket>を使います。",
+    "traitを宣言しても、Ticketにフィールドやドットのメソッドは増えません。label ticketは、引数の型に対応するinstanceを必要とする関数呼び出しです。オブジェクトの継承とは異なります。",
+    "labelOf<A>のwhere Label<A>は、Aにlabelの実装が必要という条件です。Personに実装があるので、labelOf (Person { name: \"Aki\" })は\"Aki\"を返します。Ticketにも実装があるため、labelOfの本体を変えずにTicketも渡せます。"
   ],
   mistakes: [
     "Label<A>を宣言しただけでは、処理の実装はできていません。instanceがない型でlabelを呼ぶと、実行前の型検査でエラーになります。",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "異なる型から、共通の名前で操作を呼ぶには",
   summary: "traitは共通の操作を宣言し、instanceは特定の型の処理を定義します。共通の呼び出し側は、その型の内部表現を知らずに操作を要求できます。",
   reading: "Label<A>はAからStringを返すlabelを宣言します。Ticketは番号、Personは名前を持ち、各instanceがそれぞれのlabelを定義します。labelOf<A>は内部の形を知らずにlabelを呼びます。where Label<A>は、渡す型にこの操作の実装が必要という条件です。personLabelは\"Aki\"、mainのlabel ticketは\"ticket-42\"になります。",
-  result: "結果は\"ticket-42\"です。別の型にもLabelを実装すれば、Label<A>を要求する共通の関数を使えます。利点は共通の約束であり、自動でドット呼び出しを追加したり、値から実行時のクラスを探したりすることではありません。"
+  result: "Ticketを渡すと、番号を使って\"ticket-42\"を作ります。Personを渡すと、名前の\"Aki\"を返します。Labelの実装がある型なら、共通のlabelOfへ渡せます。実装の選択は実行前の型検査で決まります。"
 }

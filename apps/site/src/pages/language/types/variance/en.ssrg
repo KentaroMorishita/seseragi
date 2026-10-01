@@ -4,18 +4,18 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Variance and capability coercions",
   summary: (explanation ()).summary,
-  ruleTitle: "Generic arguments are invariant",
-  ruleBody: "User ADTs, structs, newtypes and collection types are invariant in every parameter. Seseragi has no variance annotations and does not infer variance from how a declaration uses its parameters. Array<{ name: String, id: Int }> is not implicitly an Array<{ name: String }> even though each individual record can be passed to a function requiring only name.",
-  identityBody: "Record width subtyping is a rule for record values themselves. To change a collection's element type, map an explicit conversion or projection over it, as the example does. The resulting collection has the desired element type without pretending that the original collection already had it.",
-  checkingBody: "The exceptions are capability-specific, not general covariance. Effect and Stream allow the documented requirement widening and Never failure widening; MutableSignal<A> can be used as read-only Signal<A>. Successful A and other failure types remain invariant. These exceptions do not permit arbitrary element or error conversion.",
-  invalidTitle: "A subtype element does not make a subtype container",
+  ruleTitle: "Arrays with different element types cannot be substituted directly",
+  ruleBody: "Array<{ name: String, id: Int }> and Array<{ name: String }> are different types. Each element of the first has name, but the whole array cannot be used as the second type. Requiring type arguments to match exactly is called invariance. List and user-defined ADTs, structs and newtypes follow this rule too. There are no variance annotations, and the compiler does not infer exceptions from a type declaration's use of its parameters.",
+  identityBody: "A function accepting only name can receive a record with name and id. A function accepting Array<{ name: String }> cannot directly receive Array<{ name: String, id: Int }>. The example uses map to construct a new name-only record for each element, explicitly changing the array's element type. Records differing only in field order have the same type.",
+  checkingBody: "Some standard types allow limited conversions. Effect and Stream can be used with an environment providing all their required services. Never, meaning no recoverable failure, can be used where another failure type is allowed. MutableSignal<A> can also be passed as read-only Signal<A>. These rules do not change the successful value or Signal's contained A, and other failure types still must match.",
+  invalidTitle: "Convert the elements explicitly to change an array's type",
   invalidBody: "An array of wider records cannot be assigned to a narrower-record array without conversion. Changing a recoverable error ADT also requires an explicit mapping; Never's special rule is not an automatic union of errors. Forgetting Signal write capability does not change its contained A.",
   diagnosticsBody: "When a generic mismatch appears, compare all arguments rather than only the record's visible fields. Use map for data conversion, mapError for deliberate error conversion, or the specific capability rule when it genuinely applies. The compiler does not insert collection traversals to make types fit.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why does a record fit, but an array of those records does not?",
-  summary: "Compatibility of an outer record does not automatically extend inside arrays or other generic containers. Their type arguments normally have to match.",
+  summary: "A record with name can be accepted even if it also has id, but the same rule does not apply to an array containing those records. Type arguments of Array, List, and similar types normally must match exactly.",
   reading: "users is an array of records containing name and id. nameOnly constructs a new record containing just name. map applies that conversion to each element, producing the explicitly requested Array<{ name: String }>.",
   result: "The result contains { name: \"Aki\" }. This is an explicit element-by-element transformation, not an assignment that changes the array's type. The special Effect and Signal conversions below are limited exceptions, not a general container rule."
 }

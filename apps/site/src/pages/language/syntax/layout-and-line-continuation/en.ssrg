@@ -4,18 +4,18 @@ import { SyntaxCopy } from "../article"
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Layout and line continuation",
   summary: (explanation ()).summary,
-  formsTitle: "Use braces for every block",
-  formsBody: "Indentation never creates or closes a block. Braces are the block boundary, and a newline or semicolon separates declarations and expressions. Newlines inside parentheses are free. Outside parentheses, a line continues only when the previous token still requires a right-hand side or the next token is |>, $, arithmetic, or comparison operator.",
-  typingBody: "Layout decides how tokens group before typing; indentation width contributes no type or scope information. Bind, pure let, and ordinary expressions can therefore use the same operator-first continuation style without introducing an indentation grammar.",
-  evaluationBody: "Continuation changes parsing only. Once grouped, subexpressions use their ordinary evaluation order. A semicolon is always a separator and cannot be recovered as continuation by indentation or the next operator.",
-  invalidTitle: "Indentation is not a continuation signal",
-  invalidBody: "Moving a line to the right does not join two complete expressions. If neither continuation condition holds, use parentheses or rewrite the operator at the beginning of the following line. A semicolon always terminates the current form.",
-  diagnosticsBody: "Incomplete-source recovery may retain a partial tree for editor tooling, but a build still reports the parser boundary. The formatter writes two-space indentation and operator-first continuation while preserving the brace and separator semantics.",
+  formsTitle: "Enclose blocks in braces",
+  formsBody: "Enclose a block in { and }, separating declarations or expressions with newlines or semicolons. Indentation alone does not create a block. Newlines are unrestricted inside parentheses. Outside them, an expression continues only if the previous token requires more input, or the next line starts with |>, $, an arithmetic operator, or a comparison operator.",
+  typingBody: "Changing indentation width does not change a type or the scope of a name. In a multi-line expression, putting the continuing operator at the start of the next line makes the continuation visible.",
+  evaluationBody: "Newline rules determine where an expression ends. After grouping, ordinary evaluation rules apply. A semicolon always separates items; indenting the next line cannot make it a continuation.",
+  invalidTitle: "Indentation alone cannot continue an expression",
+  invalidBody: "Indenting the line after a complete expression does not join the two expressions. If neither continuation rule applies, enclose the whole expression in parentheses.",
+  diagnosticsBody: "For a syntax error at a newline, check whether the previous expression was already complete. The formatter uses two-space indentation but preserves the meaning of parentheses and semicolons.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Does indentation start a block?",
-  summary: "Blocks use braces, not indentation. Newlines can separate items or continue an unfinished expression under explicit rules.",
+  summary: "Braces create blocks. A newline separates declarations or expressions, except when an unfinished expression or a continuing operator allows the expression to continue on the next line.",
   reading: "In a multi-line function, = followed by an expression continues the declaration because the right-hand side is still needed. Inside parentheses you may break lines freely. For a pipeline, placing |> at the beginning of the next line marks continuation.",
-  result: "Indenting a complete expression does not join it to the next expression. Use braces for a block and parentheses when grouping is unclear. A semicolon always separates items; the next line cannot turn it back into continuation."
+  result: "Use braces for a block and parentheses to break one expression freely across lines. Indentation alone cannot continue an expression. A semicolon always separates items, so text after it cannot continue the same expression."
 }

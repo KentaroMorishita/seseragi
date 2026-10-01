@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "実行順と公平性",
   summary: (explanation ()).summary,
-  ruleTitle: "待機やyieldの地点で、別の処理へ実行を渡す",
-  ruleBody: "非同期の待機、yieldNow、Queue・Deferred・Semaphoreの待機、sleep、入出力、キャンセルの確認が、実行を切り替えられる地点です。実行可能なFiberは待ち行列へ入り、他の処理もこの地点へ到達し続ける限り、順に実行されます。",
-  typingBody: "yieldNowはTask<Unit>です。サービスや回復可能な失敗を追加せず、明示的に実行を譲ります。Fiberに優先度を付ける操作はありません。",
-  evaluationBody: "保証されるのは、実行可能な処理がいずれ実行されることです。実時間や実行ステップ数が全処理で等しくなる保証ではありません。長い純粋な計算の途中で自動的に割り込むことはないため、他の処理を長く待たせる場合があります。",
+  ruleTitle: "待機やyieldの地点で、実行する処理を切り替える",
+  ruleBody: "Fiberは実行中の処理を表します。実行機構は、待機やyieldNowなどの地点で別のFiberへ切り替えます。この切り替え可能な地点をcheckpointと呼びます。非同期処理、Queue・Deferred・Semaphoreの待機、sleep、入出力もcheckpointです。キャンセルもそこで確認します。",
+  typingBody: "yieldNowの型はTask<Unit>です。現在の処理を一時停止して、実行できる別のFiberへ処理を切り替えるための操作です。サービスや回復可能な失敗は追加しません。Fiberに優先度を指定する操作はありません。",
+  evaluationBody: "実行できるFiberは、待ち行列へ入った順に実行します。他のFiberもcheckpointへ到達し続ける限り、待ち行列にいるFiberはいずれ再開します。実行時間やステップ数が等しくなる保証ではありません。長い純粋な計算には自動で割り込まないため、他のFiberが再開できない場合があります。",
   invalidTitle: "独立した後片付けの全体順序は保証されない",
-  invalidBody: "順序が必要なら、使うAPIが何の順序を保証するか確認してください。独立した子の処理の解放が、全体で必ず一定の順番になるとは限りません。",
-  diagnosticsBody: "実行の記録では、待機・再開・待ち行列への追加を確認できます。ただし、実行方法の違いでAPIが保証する結果順や、同じscope内の逆順の解放を変えることはできません。",
+  invalidBody: "順序が必要な処理では、使うAPIの保証を確認してください。例えば、同じscope内の解放処理は登録と逆順ですが、独立した子の処理の解放には全体で一定の順序がありません。すべての解放を待つAPIでも、各解放処理の外部への操作を入力順にするとは限りません。",
+  diagnosticsBody: "実行の記録を使える場合は、checkpointへの到達、待ち行列への追加、再開を確認してください。実行環境のスレッド数が違っても、APIが保証する結果順や失敗の選択、同じscope内の逆順の解放は変わりません。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "長い計算で、他の処理を待たせてしまうことはあるか",
-  summary: "実行の割り当ては協調的に行います。待機や明示的なyieldで他の処理へ機会を渡し、長い純粋な計算を自動で細切れに中断するわけではありません。",
-  reading: "例のyieldNowは、cooperativeStepが42で成功する前に、実行を譲る機会を作ります。サービスの要求や回復可能な失敗を追加せず、実行可能な他の処理へ機会を渡します。",
-  result: "結果は42のままです。公平性は、全処理の実行時間が均等になることや、決まった時間内の応答を保証しません。長い純粋な計算が続けば、他の処理を待たせる可能性があります。"
+  summary: "実行機構は、処理が待機したりyieldNowを実行したりする地点で、別のFiberへ切り替えます。長い純粋な計算を途中で自動的に中断する仕組みではありません。",
+  reading: "cooperativeStepは、42で成功する前にyieldNowを実行します。yieldNowは現在の処理を一時停止し、実行できる他のFiberを進めるための操作です。サービスや回復可能な失敗は追加しません。",
+  result: "cooperativeStepは再開後に42を返します。yieldNowは応答時間を指定したり、全処理の実行時間を均等にしたりする操作ではありません。長い純粋な計算で他の処理を待たせるなら、計算を分けてyieldNowを挟んでください。"
 }

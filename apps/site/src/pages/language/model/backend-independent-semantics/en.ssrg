@@ -5,13 +5,8 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Backend-independent semantics",
   summary: (explanation ()).summary,
   meaningTitle: "The generated language does not define the rules",
-  meaningBody: "A compiler backend turns Seseragi into code that a runtime can execute. The current backend emits TypeScript, but TypeScript and JavaScript rules are not automatically Seseragi rules. The backend must implement Seseragi's specified behavior.",
+  meaningBody: "The compiler backend turns Seseragi into executable code. The current backend generates TypeScript. The generated code still follows Seseragi's rules for integer division and evaluation order.",
   exampleTitle: "Integer division is different from floating-point division",
-  readingTitle: "How to read the example",
-  reading: [
-    "integerResult is an Int. Dividing -7 by 2 discards the fractional part toward zero, giving -3, not -3.5 or -4. decimalResult uses Float operands and gives 3.5.",
-    "The program prints -3, 3.5. JavaScript's ordinary division would give -3.5 for -7 / 2, so simply translating the operator without preserving its Int behavior would be incorrect. An implementation must retain the distinction."
-  ],
   reasonTitle: "What you can rely on",
   reason: [
     "You read an integer calculation using the integer rules, regardless of how generated code represents the value. The same requirement applies to left-to-right, once-only argument evaluation and immutable records.",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Should I use the generated language's arithmetic rules?",
-  summary: "Seseragi's observable calculation rules belong to Seseragi, even when the compiler emits another language.",
+  summary: "Although the compiler generates TypeScript, integer calculations and evaluation order follow Seseragi's rules. Do not infer their result solely from the target language's rules.",
   reading: "integerResult uses integer division -7 / 2, which truncates toward zero. decimalResult uses Float operands and produces the fractional quotient. The two source forms deliberately choose different arithmetic types.",
-  result: "The program prints -3, 3.5. These results must follow the language contract rather than an accidental property of generated TypeScript. Backend independence does not promise identical machine layout or performance on every host."
+  result: "The output is -3, 3.5. Dividing Int values returns an integer; dividing Float values returns a floating-point quotient. Storage, speed, and memory use depend on the implementation and execution environment."
 }

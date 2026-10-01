@@ -1,6 +1,6 @@
 pub fn title -> String = "Seseragi Reference"
 pub fn summary -> String =
-  "Understand the language by concept, then follow each rule to its exact syntax, semantics, diagnostics, and related API."
+  "Look up how to call functions, write types, and understand what your code does. Use the language reference for language rules and the standard library for functions and types."
 pub fn tourTitle -> String = "Learning Seseragi"
 pub fn tourBody -> String =
-  "The interactive Tour is the ordered learning path. The reference stays organized for explanation and lookup instead of repeating that course."
+  "Use the Tour to learn in order while running code. In this reference, choose the concept or operation you need and read a small example alongside its detailed rules."

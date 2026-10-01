@@ -28,6 +28,7 @@ for (const command of [
     "apps/site/tests/reference-titles.test.ts",
     "apps/site/tests/explanations.test.ts",
   ],
+  ["python3", "-B", "apps/site/tests/prose.test.py"],
   ["cargo", "build", "-p", "seseragi-cli"],
   ["bun", "apps/site/scripts/check-examples.ts"],
   [

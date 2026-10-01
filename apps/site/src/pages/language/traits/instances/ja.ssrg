@@ -5,8 +5,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "インスタンス",
   summary: (explanation ()).summary,
   purpose: [
-    "traitで必要な操作を宣言したら、instanceで自分の型に対する処理を用意します。Label<Ticket>なら、TicketをLabelの操作でラベルにできる、という実装です。",
-    "instanceの宣言は、新しいTicketの値を作る操作ではありません。呼び出しごとに別のオブジェクトを作るものでもありません。コンパイラーが選べる、型ごとの実装を定義しています。"
+    "instanceには、traitの操作を特定の型でどう実行するか書きます。例えばLabel<Ticket>なら、Ticketを受け取って文字列を返すlabelの本体を定義します。",
+    "instanceの宣言でTicketの値を作るわけではありません。コンパイラは、labelに渡す引数の型に合うinstanceを選びます。"
   ],
   exampleTitle: "Ticketに対するLabelを実装する",
   reading: [
@@ -19,7 +19,7 @@ pub fn copy -> ReaderCopy = ReaderCopy {
     "instanceは、traitが要求するすべての操作を実装します。引数の順番と戻り値の型は、型パラメーターを置き換えた宣言に合わせます。ジェネリックなinstanceを宣言する場合、その型パラメーターはinstanceが実装する型の指定に含まれている必要があります。",
     "ユーザーが定義するinstanceは、traitを定義したモジュールか、対象のいちばん外側の名前付き型を定義したモジュールに属します。この規則で、実装を追加できる場所を制限します。別のモジュールで両方の名前をimportしただけでは、そこで実装を追加する権限は得られません。",
     "使える実装は一つに決まらなければなりません。重複したり、同じ型に当てはまる範囲が重なったりするinstanceはエラーです。実行時の登録順で選ぶことはありません。型の別名を付けても、別の型としてこの制限を回避することはできません。",
-    "instanceがほかのtraitを条件として要求する場合、選択時にはその条件も満たす必要があります。実装はコンパイル時の型で選び、実行中の値を分岐して選びません。組み込みの構造的な型については、コンパイラーが用意する実装の代わりに、任意のユーザーinstanceを追加できるわけではありません。"
+    "instanceがほかのtraitを条件として要求する場合、選択時にはその条件も満たす必要があります。実装はコンパイル時の型で選び、実行中の値を分岐して選びません。組み込みの構造的な型については、コンパイラが用意する実装の代わりに、任意のユーザーinstanceを追加できるわけではありません。"
   ],
   mistakes: [
     "impl TicketはTicketに属する関数を定義しますが、Label<Ticket>を実装する宣言ではありません。traitの実装にはinstanceを使ってください。",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "型ごとのtraitの処理は、どこに書くか",
   summary: "instanceは、指定した型に対してtraitの必要な操作を実装する宣言です。オブジェクトの値を作る操作ではありません。",
   reading: "Ticketは番号を持ち、そのLabelの実装は番号の前に\"ticket-\"を付けます。Personは名前を持ち、そのLabelの実装は名前を返します。labelOf<A>はwhere Label<A>を条件にして、同じ関数から引数の型に合う処理を呼びます。",
-  result: "Ticket { number: 42 }を渡すと\"ticket-42\"を返します。番号を変えれば文字列は変わりますが、選ぶinstanceは変わりません。型によって選び、重複する実装はエラーになります。"
+  result: "label (Ticket { number: 42 })は\"ticket-42\"を返します。同じTicket型なら番号が違っても同じinstanceを使います。二つのinstanceが同じ型に当てはまる場合、どちらを使うか選べないためエラーになります。"
 }

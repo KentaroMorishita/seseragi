@@ -40,6 +40,59 @@ Explanation text is owned by each page's `en.ssrg` and `ja.ssrg`. Its summary
 is reused by the article copy; `guide.ssrg` only selects the optional example
 and pairs locale copies. Absence is `WithoutExample`, not an empty-string identity.
 
+### Japanese-first editorial pass with yomiyasu (2026-10-01)
+
+The next editorial pass uses yomiyasu's `tech` guidance. All 106 existing
+language pages were edited in Japanese and English, including the original rule,
+evaluation and mistake sections, not just their new introductions. Six paired
+entrance pages were also revised. Explanations now identify the relevant value,
+operation and result instead of relying on compiler-internal vocabulary.
+
+Technical review corrected the exception for inferred `effect fn` signatures,
+the difference between `bracket` and scope-registered release, and the conditions
+for automatic subscription cleanup. The normative specification, runnable
+examples and API declarations were preserved.
+
+All 376 distinct canonical API descriptions now have explicit Japanese/English
+reader-copy pairs. Original descriptions remain unchanged in the compiler
+metadata; 49 pairs received substantive editorial corrections. Instance pages
+explain the operations provided by each trait and any conditional/structural
+requirements. This shared copy reaches all 1,812 generated API/instance pages,
+but is not 1,812 individually authored examples or reader acceptances. The 63
+existing module introductions were read and retained where accurate.
+
+`check-prose.py` extracts rendered Japanese paragraphs and list items, excluding
+code blocks and marking inline code. Its yomiyasu report is advisory. Repeated
+endings, lists of genuine alternatives and negative constraints are reviewed in
+context; a warning-free score is not a completion condition. Lint runs in the
+foreground and does not start a browser or persistent Python process.
+
+The rendered reading pass also found a duplicated walkthrough on seven design
+principle pages. Each now explains its canonical example once; the rules,
+constraints and verified output remain. Constructor reading now treats `A`, not
+`Just: A`, as the argument type in `Just: A -> Maybe<A>`.
+
+Verification: `bun run check:site` passed, including deterministic generation of
+3,974 routes, executable examples, canonical metadata, 12 Bun tests and 424
+language article/locale/viewport checks. Additional instance-purpose coverage
+passed in the focused explanation tests. Chromium and WebKit also passed 72
+paired route/locale/viewport combinations at 390/1280px, including drawer
+close/Escape and same-identity locale switching. Japanese desktop and mobile
+screenshots and the resource/immutability explanations were read as rendered.
+
+The final foreground yomiyasu report covers all 1,987 Japanese routes. Its
+remaining findings include repeated sentence endings, real negative constraints
+and lists of genuine alternatives. The sole colon-format warning is the
+canonical `std/prelude:::` operator identity, not prose punctuation; retain it.
+These advisory findings do not override the specification or count as reader
+acceptance. The review browser, its Python daemon and the local Bun server were
+stopped and their processes/listening ports checked after use.
+
+Page-by-page acceptance remains separate below. Neither this editorial pass nor
+the generated route count bulk-checks the remaining entries. API-specific
+examples, all outstanding reader walkthroughs and the 245 unimplemented non-core
+articles remain work to do.
+
 - [ ] `/docs/language/model/what-is-seseragi/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/design-principles/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation
 - [ ] `/docs/language/model/expression-oriented/` — English explanation / Japanese explanation / prerequisites / example walkthrough / navigation

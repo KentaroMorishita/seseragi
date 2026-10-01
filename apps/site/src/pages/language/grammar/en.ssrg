@@ -1,20 +1,21 @@
 pub fn title -> String = "Grammar reference"
 pub fn summary -> String =
-  "Read the complete EBNF alongside the rules that give each syntactic form its meaning."
+  "Seseragi's syntax is written here using EBNF, a notation for grammars. The articles for each construct explain how that syntax behaves."
 pub fn readingTitle -> String = "How to read this grammar"
 pub fn reading -> String =
-  "A production gives a name to a syntactic form. Quoted text is a token written in source; unquoted names refer to other productions. A comma joins successive parts, a vertical bar gives alternatives, square brackets make a part optional, and braces allow zero or more repetitions. The semicolon ends a production in EBNF; it is not necessarily a semicolon in a Seseragi program."
+  "An EBNF production names a syntactic form. Quoted text is a symbol or keyword written directly in source. Unquoted names refer to other productions. A comma joins parts in order, and a vertical bar gives alternatives. Square brackets make a part optional; braces allow zero or more repetitions. The final semicolon separates EBNF productions. It does not mean every Seseragi construct needs a semicolon."
 pub fn lexical -> String =
-  "Names such as INTEGER and LOWER_IDENTIFIER stand for lexer tokens, not source identifiers to copy. Unicode identifier rules, comments, literal boundaries and escapes are explained on their own pages. NEWLINE and a source semicolon separate declarations or block items. Indentation is not a block delimiter."
+  "INTEGER and LOWER_IDENTIFIER name categories identified during lexical analysis, such as integer literals and identifiers beginning with a lowercase letter. Do not copy INTEGER into source as an identifier. The corresponding articles explain Unicode identifiers, comments, literals, and escapes. NEWLINE and source semicolons separate declarations or block items; indentation depth does not delimit blocks."
 pub fn grammarTitle -> String = "Complete grammar"
 pub fn grammarBody -> String =
-  "The following productions are taken directly from the normative grammar appendix during the site build. They describe modules, declarations, expressions, patterns and types without introducing a second independently maintained grammar."
-pub fn limitsTitle -> String = "Syntax is not the whole language"
+  "This grammar is read from the language specification during the site build. It brings together the syntax for modules, declarations, expressions, patterns, and types."
+pub fn limitsTitle -> String =
+  "Valid syntax can still have a type error"
 pub fn limits -> String =
-  "A production can describe a form that still fails name resolution or type checking. Function application associates to the left, function types associate to the right, and operator fixity resolves precedence after the initial parse. Exhaustive matching, public declaration requirements, record merging, trait coherence and capability restrictions belong to the explanatory rules, not to this EBNF alone."
+  "Code can match the grammar and still fail because it uses an undefined name or passes a value of the wrong type. Function application associates to the left; function types associate to the right. Each operator's fixity rules determine its precedence. Conditions such as covering every case in match or making a declaration public cannot be determined from the syntax alone. Read the corresponding article for its meaning and restrictions."
 pub fn ambiguity -> String =
-  "For example, {} is an empty record, { expression } is a block, and a single-field shorthand record needs a comma: { x, }. Parentheses group an expression, form a tuple, or denote Unit; they do not introduce a separate multi-argument call syntax. Read the dedicated pages before treating a familiar-looking form as equivalent to another language."
+  "For example, {} is an empty record, while { expression } is a block. A single-field shorthand record needs a comma, as in { x, }. Parentheses group an expression, form a tuple, or denote Unit. To pass multiple function arguments, separate them with spaces, as in f x y."
 pub fn relatedTitle -> String = "Read the rules behind the productions"
 pub fn sourceTitle -> String = "Normative source"
 pub fn source -> String =
-  "Appendix A supplies the complete production text. The language specification takes precedence where parsing context, operator fixity, name resolution, typing or exhaustiveness completes the grammar."
+  "These productions come from the language specification's grammar. Rules in the specification also determine conditions that syntax alone does not settle, including name resolution, type checking, and exhaustive matching."
