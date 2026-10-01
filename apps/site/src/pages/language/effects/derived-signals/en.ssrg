@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Derived Signals",
   summary: (explanation ()).summary,
-  ruleTitle: "Dependencies are explicit",
-  ruleBody: "map, combine, constant, distinct, and switchMap construct graph edges directly. Seseragi does not track reads performed inside arbitrary functions to infer hidden dependencies.",
-  typingBody: "map and combine preserve a read-only Signal result. distinct requires Eq<A>; switchMap maps each source value to one selected inner Signal and returns Signal<B> without exposing subscription handles.",
-  evaluationBody: "One source transaction recomputes affected nodes at most once in topological order and notifies only after the graph is stable. switchMap replaces the old inner dependency and publishes the stable new value in the same transaction.",
-  invalidTitle: "Do not depend on transient combinations",
-  invalidBody: "Subscribers cannot observe one derived input before another has caught up. If duplicate values should be suppressed, request distinct explicitly; ordinary set and update notify even when Eq would consider the value unchanged.",
+  ruleTitle: "Derive changing values from specified source Signals",
+  ruleBody: "map derives a value from one Signal; combine derives a value from several Signals. constant holds an unchanging value. distinct removes notifications equal to the previous value, while switchMap changes which Signal supplies the current value. Specify dependencies explicitly as arguments to these functions.",
+  typingBody: "Operations constructing derived Signals are pure functions. map and combine return read-only Signals. distinct requires Eq<A> to compare values. switchMap chooses the next Signal from a source value and returns a read-only Signal holding the selected Signal's current value.",
+  evaluationBody: "Within one transaction, derived Signals are recalculated starting with those nearest the sources. Each affected derived Signal is recalculated at most once for that update, and notification waits until all values are ready. In the same transaction, switchMap releases the old dependency and publishes the selected dependency's current value once.",
+  invalidTitle: "Notifications contain consistent derived values",
+  invalidBody: "Subscribers do not receive an inconsistent combination where only one input has updated. Ordinary set and update notify even if the new value equals the old one. Use distinct to omit equal-value notifications. Reading a Signal inside an arbitrary function does not automatically register it as a dependency.",
   diagnosticsBody: "Construction rejects dependency cycles and missing Eq evidence. Runtime graph diagnostics identify the derived node and constructor while preserving the transaction that triggered recomputation.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can a total stay synchronized with two source values?",
-  summary: "A derived Signal computes its current value from explicitly declared source Signals. It updates when those sources change.",
-  reading: "left starts at 1 and right at 2. combine add left right creates a read-only total depending on both. A transaction changes the sources to 10 and 20; reading total after the transaction obtains the recomputed sum.",
-  result: "Executing stableTotal returns 30, not a temporary sum using one old input. Dependencies are created by named operations such as combine; the runtime does not discover arbitrary dependencies by watching reads inside any function."
+  summary: "A derived Signal calculates its current value from specified source Signals. When those sources update, derived values such as totals are recalculated to match.",
+  reading: "left starts at 1 and right at 2. combine add left right creates a read-only total that passes both current values to add. A transaction changes left to 10 and right to 20, and total is recalculated from those updated values.",
+  result: "stableTotal returns 30. Because both changes belong to one transaction, notifications do not contain a temporary sum with one old input. The dependencies are written as combine arguments rather than inferred automatically from reads inside a function."
 }

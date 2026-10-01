@@ -7,11 +7,6 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "Omitting a type does not mean choosing an arbitrary type",
   meaningBody: "Type inference works out types from arguments, results, and annotations. You do not have to repeat every type, but the program still needs enough information for a definite answer. The compiler does not use runtime values or an arbitrary priority to settle an unclear choice.",
   exampleTitle: "Tell the compiler what an empty list contains",
-  readingTitle: "How to read the example",
-  reading: [
-    "empty<A> can create a list of any element type A. It takes no values, so there is no element from which to infer A. The annotation List<Int> on values supplies the missing information: this call creates a list of integers.",
-    "The output is `[], the notation for an empty list. Although the list has no elements, its element type is known. Writing empty<Int> () is another way to make the same choice. If you pass an empty list to show without information about its element type, the compiler cannot choose the required display implementation and rejects the program."
-  ],
   reasonTitle: "Why stop instead of picking a default?",
   reason: [
     "An empty integer list and an empty string list look identical when printed, but later operations can require different types. Guessing from that runtime shape would move a type decision into execution and make the meaning harder to predict.",
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What should I add when the compiler cannot infer a type?",
-  summary: "Inference requires enough information to determine one type and implementation. When information is missing, an annotation expresses your intent.",
+  summary: "The compiler determines expression types from values and annotations. When that information is insufficient, as with an empty collection, supply an annotation or explicit type argument.",
   reading: "empty<A> creates an empty List<A> and has no element that could reveal A. List<Int> on values tells the call to choose integer elements. empty<Int> () is another way to supply the same information.",
-  result: "The printed result is the empty list `[]. Its element type is still Int. An annotation resolves missing information; it cannot excuse an actual disagreement between an argument and a required type."
+  result: "The output is `[], an empty List. The annotation on values fixes its element type to Int. This List<Int> cannot be passed directly where List<String> is required."
 }

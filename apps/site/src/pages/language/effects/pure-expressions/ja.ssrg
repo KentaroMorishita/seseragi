@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "純粋な式",
   summary: (explanation ()).summary,
   ruleTitle: "外部の読み書きと、値の計算を分ける",
-  ruleBody: "純粋な関数は引数から結果を計算します。出力、通信、ファイル、時刻、乱数、変更可能な状態、非同期処理はEffectを通じて扱います。これにより、関数が外部で何をするかが結果の型から分かります。",
-  typingBody: "純粋性は特別な注釈ではなく、操作の型で検査します。純粋な関数でEffectを組み立てて返すことはできます。ただし、そのEffectを実行済みの結果Aとして扱うことはできません。",
-  evaluationBody: "通常の式は引数から順に計算します。Effectを組み立てる際にも、その記述を作る純粋な式だけを計算します。表している入出力や更新は、実行する境界で初めて始まります。",
+  ruleBody: "純粋な関数は、渡された引数から戻り値を計算します。画面への出力、通信、ファイル操作、時刻や乱数の取得にはEffectを使います。変更可能な状態の読み書きや非同期処理もEffectで表すため、戻り値の型から外部への操作を確認できます。",
+  typingBody: "コンパイラは、使う操作の型を検査して純粋な計算と外部への操作を区別します。純粋な関数からEffect<R, E, A>を作って返すことは可能です。ただし、Effectはこれから実行する処理を表す値なので、実行後の結果Aとしては使えません。",
+  evaluationBody: "通常の式では、引数を順に計算してから関数を呼びます。Effectを作る際にも、必要な純粋な計算はその場で行います。出力や状態の更新など、Effectが表す外部への操作は、実行入口でそのEffectを実行するまで始まりません。",
   invalidTitle: "Effectを返すことと実行することは違う",
-  invalidBody: "通常のUnitや時刻の値を返す関数のふりをして、内部で出力や時刻の取得、Signalの更新を行うことはできません。戻り値にEffectを残して組み合わせます。",
-  diagnosticsBody: "型エラーでは、通常の値とEffectを取り違えていないか確認します。EffectのR・E・Aを分けて見ると、必要なサービスと失敗と成功値が分かります。",
+  invalidBody: "出力する関数の戻り値には、出力処理を表すEffectが必要です。時刻の取得やSignalの更新も同じです。通常のUnitや時刻の値を返す宣言のまま、内部でこれらの操作を実行することはできません。",
+  diagnosticsBody: "型エラーが出たら、処理を表すEffectと、実行して得られる値を取り違えていないか確認してください。Effect<R, E, A>のRは必要なサービス、Eは回復可能な失敗、Aは成功時の戻り値です。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "通常の関数の中で、出力や時刻の取得をしてよいか",
-  summary: "純粋な式は、変化する外部状態へアクセスせずに値を計算します。外部操作を行う場合は、型にEffectとして表します。",
-  reading: "lineTotalは二つの整数を掛け、そのままIntを返します。plannedTotalは同じ結果をsucceedに入れるため、戻り値はTask<Int>です。処理を説明する値を作ったのであり、出力や実行はしていません。",
-  result: "lineTotal 20 3は60です。plannedTotal 20 3を実行すると、成功値が60になります。外部処理の型からEffectを消して、通常のIntを返す関数に見せかけることはできません。"
+  summary: "純粋な式は、変化する外部の状態を読み書きせずに値を計算します。出力などの外部への操作は、実行する処理を表すEffectとして返します。",
+  reading: "lineTotalは二つの整数を掛け、計算したIntを返します。plannedTotalは同じ計算結果をsucceedへ渡し、Task<Int>を返す関数です。TaskはEffectの別名で、この場合は成功値がIntの処理を表します。plannedTotalを呼ぶだけでは、その処理を実行しません。",
+  result: "lineTotal 20 3の結果は60です。plannedTotal 20 3は処理を表す値で、実行すると成功値60を返します。通常のIntが必要な場所に、このTask<Int>をそのまま渡すと型が合いません。"
 }

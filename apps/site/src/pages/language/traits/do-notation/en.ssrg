@@ -4,9 +4,9 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Do notation",
   summary: (explanation ()).summary,
-  ruleTitle: "Do is generic Monad syntax",
+  ruleTitle: "Use an extracted result in the next computation",
   ruleBody: "A block may bind a monadic payload with pattern <- expression, introduce a pure local with let, discard a monadic result, and finish with a monadic expression. The final expression is required.",
-  typingBody: "All monadic items use one constructor M<_> with unique Monad<M> evidence. pure uses its Applicative supertrait. Bind patterns receive the payload A from M<A> and must be irrefutable.",
+  typingBody: "Each computation in this example uses Maybe. Its Monad implementation passes a Just payload to the next step and skips the remaining steps for Nothing. In general, every bind and the final expression must use one type constructor M<_>, with a Monad<M> instance. pure uses its required Applicative implementation. A bind pattern must always match the payload.",
   evaluationBody: "Items execute in source order according to flatMap. A local let evaluates as an ordinary pure binding and does not run or lift a computation. The final expression supplies the block result.",
   invalidTitle: "Do does not mean Effect",
   invalidBody: "Maybe, Either, user monads, and Effect may all use do when they provide Monad evidence. Different monads are never mixed or lifted implicitly, and a failing pattern is not converted through MonadFail.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I use a wrapped result in the next calculation?",
   summary: "do writes successive dependent computations in order. The <- form names the successful or present value without forgetting the surrounding computation type.",
   reading: "number <- value extracts Int from Just in this Maybe computation. let next performs ordinary arithmetic. pure next wraps the result back into the same kind of computation, so this function returns Maybe<Int>.",
-  result: "increment (Just 41) is Just 42; increment Nothing is Nothing and skips the remaining steps. In an Effect do block, the same syntax sequences work instead. The behavior comes from the selected computation type."
+  result: "increment (Just 41) returns Just 42. increment Nothing skips the addition and returns Nothing. The same do syntax follows each Monad implementation's rules: absence handling for Maybe and sequential execution for Effect."
 }

@@ -17,30 +17,30 @@ fn content -> PageDefinition =
   syntaxPage "language.syntax.operator-precedence" "/docs/language/syntax/operator-precedence/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-operator-precedence",
-      localized "Operators in the grammar coverage fixture" "標準の演算子を組み合わせる"
+      localized "Combining standard operators" "標準の演算子を組み合わせる"
     ),
     BulletList [
       [
         InlineCode "9",
-        Words (localized ": field/method ., index []." ": field/method .、index []。")
+        Words (localized ". Field and method access with . and indexing with []." "。ドットによるフィールド・メソッドの参照と、[]による要素の参照です。")
       ],
-      [InlineCode "8", Words (localized ": function application." ": 関数適用。")],
+      [InlineCode "8", Words (localized ". Function application." "。空白で引数を渡す関数適用です。")],
       [
         InlineCode "7..4",
         Words (
-          localized ": prefix, power, multiplicative, then additive and cons."
-            ": 単項演算、累乗、乗除、加減、リストの先頭追加の順です。"
+          localized ". Prefix operations, powers, multiplication and division, then addition, subtraction and list cons."
+            "。単項演算、累乗、乗除、加減、リストの先頭追加の順です。"
         )
       ],
       [
         InlineCode "3..0",
-        Words (localized ": comparisons, &&, ||, then ??." ": comparison・&&・||・??。")
+        Words (localized ". Comparisons, &&, ||, then ??." "。比較、&&、||、??の順です。")
       ],
       [
         InlineCode "-1..-3",
         Words (
-          localized ": monadic/applicative/pipeline, $, then :=."
-            ": monad/applicative/pipeline・$・:=。"
+          localized ". The >>=, <$>, <*>, and pipeline operators, then $, then :=."
+            "。>>=、<$>、<*>、パイプラインの演算子、$、:=の順です。"
         )
       ]
     ]

@@ -4,13 +4,13 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Trait constraints",
   summary: (explanation ()).summary,
-  ruleTitle: "Constraints travel with polymorphic code",
-  ruleBody: "Write one or more trait applications after where. A generic function receives matching dictionaries as implicit parameters. A conditional instance may request child evidence and selection resolves those requirements recursively.",
-  typingBody: "At a concrete call site every required application must have one visible coherent instance. Selection depends on static types alone: an empty collection or Nothing still requires the same element evidence as a populated value.",
-  evaluationBody: "Passing evidence does not evaluate the constrained values. When the constrained operation is called, the statically selected dictionary supplies its implementation.",
+  ruleTitle: "Use where to state the operations a shared function needs",
+  ruleBody: "where Label<A> requires a label implementation for A. A generic function can call label under that condition. Its caller chooses an A with a Label instance. If that instance requires another trait, the corresponding implementation is required too.",
+  typingBody: "The compiler checks that a concrete call has one applicable instance for each requirement. Types, not value contents, select instances. An empty collection or Nothing still has an element type, so constraints on that type remain.",
+  evaluationBody: "where is a type requirement, not an expression that executes work. Calling an operation such as label in the function body executes the implementation from the instance selected for the type.",
   invalidTitle: "Values cannot waive a constraint",
   invalidBody: "A branch that happens not to inspect an element, an empty container, or a particular constructor does not remove its declared requirement. Missing recursive leaf evidence remains a type error.",
-  diagnosticsBody: "Missing-evidence diagnostics report the concrete unsatisfied application, including nested conditional requirements. Ambiguous evidence and unresolved type variables are reported separately.",
+  diagnosticsBody: "Check which trait is missing for which type. If an instance requires another trait, inspect that condition too. If the type itself is unresolved, supply an annotation or type argument before looking for the matching instance.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {

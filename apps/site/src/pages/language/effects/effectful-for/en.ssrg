@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effectful for",
   summary: (explanation ()).summary,
-  ruleTitle: "Traversal is sequential unless the program says otherwise",
-  ruleBody: "for pattern <- values { body } desugars to forEach with an irrefutable pattern. body and the complete expression have Effect<R, E, Unit>; an empty collection succeeds without running the body.",
-  typingBody: "values must provide Iterable evidence, the pattern receives one element and must be irrefutable, and every body path must return the same Effect<R, E, Unit>. Requirements merge and failures remain explicit as in other Effect composition.",
-  evaluationBody: "Elements are pulled in Iterable order, one body completes before the next begins, and the first typed failure stops traversal. There is no implicit parallelism, break, or continue; forEachParallel and forEachUntil express those distinct contracts.",
-  invalidTitle: "A for block is not a general loop escape",
-  invalidBody: "Skipping an element is an explicit branch returning succeed (), while successful early termination uses Continue or Break with forEachUntil. Neither becomes a non-local jump from another function or Fiber.",
+  ruleTitle: "Complete one element's operation before starting the next",
+  ruleBody: "for pattern <- values { body } executes an Effect sequentially for each element. The body and the whole expression are Effects whose success type is Unit. An empty collection succeeds without executing the body.",
+  typingBody: "The collection must implement Iterable to provide elements in order. Use a pattern that matches every element. Every body branch must return an Effect with the same services and error type, and Unit as its success type.",
+  evaluationBody: "Elements are obtained in the order specified by Iterable. Each body operation completes before the next element starts, and the first recoverable failure stops the traversal. This for does not execute in parallel and has no break or continue syntax.",
+  invalidTitle: "Use explicit operations for early termination",
+  invalidBody: "To skip an element, return succeed () from a branch. For successful early termination, return Continue or Break from the function passed to forEachUntil. Use forEachParallel for parallel processing. These control traversal through returned values, not non-local jumps from another function or Fiber.",
   diagnosticsBody: "Errors identify non-Iterable input, a refutable pattern, non-Effect body, non-Unit success, or incompatible requirement and failure types at the relevant item.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I execute an operation for each element?",
-  summary: "An effectful for builds a sequential operation over a collection. Each iteration returns an Effect with Unit as its success value.",
+  summary: "An effectful for performs work sequentially for each collection element. Each iteration returns an Effect whose success type is Unit.",
   reading: "announceAll receives an Array<String>. for message <- messages binds each element to message and describes println message for that iteration. Unlike a comprehension, it is not collecting the returned messages into a new array.",
   result: "Executing announceAll [\"Aki\", \"Mio\"] prints Aki and then Mio on separate lines. If one iteration fails, later iterations do not start. An empty input completes without printing."
 }

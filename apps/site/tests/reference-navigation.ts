@@ -70,16 +70,21 @@ export async function verifyReferenceNavigation(
           )
           assert.equal(await code.nth(1).textContent(), outputs[slug])
           for (const section of [
+            "understand-this",
             "meaning",
-            "reading-the-example",
             "why",
             "limits",
             "related-rules",
           ])
             assert.equal(await article.locator(`h2#${section}`).count(), 1)
-          // The local walkthrough precedes the existing principle explanation.
-          // A missing locale paragraph must not disappear silently through zip.
-          assert.equal(await article.locator(":scope > p").count(), 10)
+          // One walkthrough explains the example before the rules and limits.
+          // Do not reintroduce the old duplicate walkthrough or lose locale pairs.
+          assert.equal(
+            await article.locator("h2#reading-the-example").count(),
+            0
+          )
+          assert.equal(await article.locator(".seseragi-highlight").count(), 1)
+          assert.equal(await article.locator(":scope > p").count(), 8)
           assert.equal(await article.locator(".callout").count(), 0)
           assert.equal(
             await page.locator(".breadcrumb-current").innerText(),

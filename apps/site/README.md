@@ -31,9 +31,12 @@ pipeline.
   its enhancement only adds outside/Escape dismissal and focus handling.
 - `scripts/reference.ts`: validates and joins the canonical Reference and
   Prelude instance artifacts without owning routes or page prose.
-- `scripts/reference-copy.ts`: reviewed Japanese descriptions keyed by exact
-  canonical English descriptions. Unknown upstream copy fails the build rather
-  than silently falling back to English.
+- `scripts/reference-copy.ts`: Japanese-first reader descriptions and their
+  reviewed English counterparts, keyed by exact canonical descriptions. The
+  original metadata remains intact. Unknown upstream copy fails the build;
+  it never silently falls back to untranslated copy.
+- `src/reference/instance-copy.ssrg`: explains what each standard trait
+  implementation lets the reader do, together with conditional constraints.
 - `scripts/signature-reading.ts`: derives argument and result explanations
   from canonical signatures, keeping nested function arrows distinct from
   top-level arguments. These explanations supplement, not replace, API prose.
@@ -63,7 +66,10 @@ or package inputs.
 
 ## Japanese editorial checks
 
-Japanese pages explain the same rules as English pages, not a reduced summary.
+Write Japanese first using yomiyasu's technical-writing guidance, then revise
+English from the same explanation. Both locales explain the same rules; neither
+is a reduced summary. See `docs/design/docs-site/reader-contract.md` for the
+editing and reader-acceptance criteria.
 Start with what the reader can do and a concrete example, then explain the
 rule and its limits. Introduce technical terms where they are first needed;
 do not stack compiler-internal terms or untranslated English nouns into prose.
@@ -74,6 +80,19 @@ Review page copy together with code captions, related links and sidebar labels.
 Read the rendered page in order: a passing build or a phrase assertion does
 not establish that the explanation is understandable. Keep current compiler
 limitations explicit and distinct from the language specification.
+
+After building, run the installed skill's bundled lint against every rendered
+Japanese page, excluding code blocks and protecting inline code:
+
+```sh
+python3 apps/site/scripts/check-prose.py target/site \
+  /path/to/yomiyasu/scripts/yomiyasu_lint.py
+```
+
+This foreground command emits an advisory JSON report and starts no background
+process. A lint score does not establish reader acceptance. Review findings in
+context, with at most two editorial correction passes; preserve legitimate
+technical restrictions and examples.
 
 ## Vercel ownership
 

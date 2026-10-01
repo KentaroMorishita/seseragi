@@ -5,28 +5,23 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Immutable by default",
   summary: (explanation ()).summary,
   meaningTitle: "An update creates a new value",
-  meaningBody: "A let gives a name to a value; it is not a variable you can reassign later. Records, structs, algebraic data values, arrays, and lists are also immutable. Reading the same value later does not reveal a field that someone else has silently changed.",
+  meaningBody: "let names a value. There is no syntax to assign a different value to that name later. Records, structs, algebraic data values, Arrays, and Lists are also immutable. To update a score, construct a new value and keep the original.",
   exampleTitle: "Keep the original score and create the updated score",
-  readingTitle: "How to read the example",
-  reading: [
-    "original has a score of 10. The spread ...original takes its fields, and score: original.score + 1 supplies the new score. updated therefore has the same name and a score of 11.",
-    "The output is 10 -> 11. Creating updated does not modify original, and any other code holding original still sees 10. Assigning original.score = 11 is not an alternative syntax: mutable fields are not part of the language."
-  ],
   reasonTitle: "Why keep the old value?",
   reason: [
-    "You can understand a function from its inputs and result without searching for code that might modify the same object elsewhere. This also makes comparisons between previous and next state straightforward.",
-    "Arrays and lists follow the same rule. Operations that transform them return new collection values instead of changing the collection supplied by the caller. Immutability does not require the implementation to copy every unchanged element; it may safely share internal storage."
+    "A value passed to a function remains unchanged even when another function uses it. Follow a function's inputs and result to see how it transforms data. You can also compare the previous and updated values.",
+    "Transforming an Array or List returns a new collection and leaves the original unchanged. This does not require the implementation to copy every element: it may share storage for unchanged parts."
   ],
   boundaryTitle: "Applications can still have changing state",
   boundary: [
-    "A counter, an editable form, and a file all involve change. Seseragi represents that change explicitly rather than making every value mutable. Ref is a library type for a value read and changed through operations. Signal represents a value that can change over time and notify dependent computations.",
-    "Effects describe work to be executed, such as writing to a file or updating an external system. These operations do not add assignment to ordinary let bindings or record fields. Choose a new value for a data transformation; use an explicit state or Effect API when the operation really changes a system."
+    "Use state APIs to change a counter or form value. Ref provides operations to read and write a stored value. Signal represents a value that changes over time and lets dependent calculations update when it changes.",
+    "Effect describes operations that affect the outside world, such as writing a file. Using Ref or Signal does not permit assignment to ordinary let bindings or record fields. Construct new values for data transformations; use the appropriate API to change state."
   ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I update data when values are immutable?",
-  summary: "An update normally constructs a new value while preserving the original. This makes it possible to reason about each value without hidden reassignment.",
-  reading: "original contains score 10. ...original brings its fields into updated, and score: original.score + 1 supplies 11 for the new field. name is copied unchanged.",
-  result: "The output is 10 -> 11. original remains available with 10; updated holds 11. Changing application state over time uses explicit state APIs such as Signal or Ref, not ordinary record-field assignment."
+  summary: "A let binding and the contents of ordinary data cannot be reassigned. Updating a score means constructing a new value while keeping the original.",
+  reading: "original.score is 10. ...original brings the original fields into a new record. score: original.score + 1 sets updated.score to 11. name remains the same.",
+  result: "The output is 10 -> 11: original.score stays 10, and updated.score is 11. Use Signal or Ref operations for changing state such as a counter."
 }

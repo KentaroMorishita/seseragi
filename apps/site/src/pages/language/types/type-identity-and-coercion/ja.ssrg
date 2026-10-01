@@ -4,8 +4,8 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "型の同一性と型変換",
   summary: (explanation ()).summary,
-  ruleTitle: "似た値や表現でも同一性を保つ",
-  ruleBody: "IntとFloatは別の型です。IntをFloatとして使いたい場合は、変換関数を使います。値AをMaybe<A>として使う場合も、Justで包むなどの操作が必要です。同じフィールドを持つstructとレコードも交換できません。newtypeを包む・取り出す操作や、外部のJs.Nullable<A>からMaybe<A>への変換も明示します。",
+  ruleTitle: "異なる型へ渡すときは、必要な変換を書く",
+  ruleBody: "IntをFloatとして使うには、toFloatのような変換関数を呼びます。IntをMaybe<Int>にするにはJustで包みます。同じフィールドを持つstructとレコードも、別々の型です。newtypeを包む・取り出す操作や、外部のJs.Nullable<A>からMaybe<A>への変換も明示してください。",
   identityBody: "一般に暗黙で許されるのは、値を返さないNeverを要求された型として扱う規則と、レコードに余分なフィールドがあっても必要なフィールドを持つ場所へ渡せる規則です。Effect・Stream・Signal・MutableSignalには、それぞれの用途に応じた例外があります。それらは任意の型を自動変換する規則ではありません。",
   checkingBody: "コンパイラは、元の値の型と、その場所で要求される型を比較し、定められた変換だけを許します。複数の変換を推測してつなげたり、実行時の値を調べて決めたりはしません。明示的な変換関数にも型があり、変換に失敗する可能性があれば、その失敗も型で表します。",
   invalidTitle: "実行時の表現が同じでも、そのまま渡せるとは限らない",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "似た値なら自動で型を変えてくれるか",
   summary: "Seseragiでは、多くの型変換をコードで明示します。実行時の形が似ているだけでは、同じ型として扱えません。",
   reading: "42というIntは自動でFloatにはなりません。Just 42はIntではなくMaybe<Int>です。UserIdで包んだ42も、そのまま整数としては使えません。値の不在を見落としたり、IDを取り違えたりするのを防ぐ区別です。",
-  result: "数値の変換、Justでの包み込み、matchでのnewtypeの取り出しなど、意図した操作を示します。後述する限定的な自動変換は、任意の変換を勝手につなぐ規則ではありません。"
+  result: "42をFloatにするならtoFloatを呼び、値のあるMaybeを作るならJust 42と書きます。UserIdの中身を使うなら、matchでIntを取り出します。型エラーが出たら、渡す値の型と受け取り側の型を比べ、どの変換が必要か確認してください。"
 }

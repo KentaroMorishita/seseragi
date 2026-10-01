@@ -4,6 +4,7 @@ import { ReferenceModule, ReferenceSymbol } from "../model/build"
 import { LocalizedText, localized } from "../model/locale"
 import { modulePurpose } from "./module-copy"
 import { itemKindLabel } from "./labels"
+import { instanceSummary } from "./instance-copy"
 import {
   ApiReference,
   BulletList,
@@ -77,29 +78,9 @@ fn referenceLabel symbol: ReferenceSymbol -> LocalizedText = {
   localized (symbol.name + " · " + kind.en) (symbol.name + " · " + kind.ja)
 }
 
-fn instanceSummary symbol: ReferenceSymbol -> LocalizedText = {
-  let english = match symbol.instanceClass {
-    "standard" -> "Standard " + symbol.name + " instance provided by the compiler."
-    "conditional" -> "Conditional " + symbol.name + " instance. Its constraints must also be available."
-    "dictionary" -> "The standard implementation of " + symbol.name + "."
-    "operator-abi" -> "The standard operator implementation of " + symbol.name + "."
-    "structural" -> "Structural " + symbol.name + " instance synthesized by the compiler."
-    _ -> "Compiler-provided " + symbol.name + " instance."
-  }
-  let japanese = match symbol.instanceClass {
-    "standard" -> symbol.name + "の標準実装です。"
-    "conditional" -> symbol.name + "の条件付き実装です。宣言のwhere節にある操作も、この型で使える必要があります。"
-    "dictionary" -> symbol.name + "の標準実装です。"
-    "operator-abi" -> symbol.name + "に対する標準の演算子の実装です。"
-    "structural" -> symbol.name + "の実装です。レコードやタプルの各要素の型から、必要な操作が組み立てられます。"
-    _ -> symbol.name + "の標準実装です。"
-  }
-  localized english japanese
-}
-
 pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
   if symbol.itemKind != "instance" then
-    localized symbol.description symbol.descriptionJa
+    localized symbol.descriptionEn symbol.descriptionJa
   else
     instanceSummary symbol
 

@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Defects",
   summary: (explanation ()).summary,
-  ruleTitle: "Defects stay separate from E",
-  ruleBody: "Integer overflow, division by zero, runtime invariant violations, memory exhaustion, and a foreign value violating a safe wrapper may terminate a computation as defects. Anticipated input and external failures belong in ordinary data or E instead.",
-  typingBody: "A defect has no value inhabiting the Effect error type and is never inserted into Either or E. recover handles only typed failures; ordinary Seseragi code has no catch form that converts an arbitrary defect into success.",
-  evaluationBody: "A defect stops the affected computation and begins the same supervised cleanup required by other terminal outcomes. Finalizer defects follow the resource contract and may take precedence only after remaining finalizers are attempted.",
+  ruleTitle: "Distinguish recoverable failures from defects that stop work",
+  ruleBody: "A defect is a computation problem that prevents continued execution, such as integer overflow or division by zero. Violating a runtime guarantee, exhausting memory, or receiving a foreign value that violates a safe wrapper's promised type may also terminate work as a defect. Use Either or Effect's E for outcomes callers can handle, such as invalid input or communication failure.",
+  typingBody: "A defect is not a value of Effect's E. recover receives only recoverable failures. There is no general catch syntax to turn an arbitrary defect into a successful value.",
+  evaluationBody: "A defect stops the affected work and starts registered resource cleanup. If cleanup also defects, the runner attempts remaining finalizers before reporting the first defect. Later defects are also recorded in diagnostics.",
   invalidTitle: "Do not use defects as an application error shortcut",
-  invalidBody: "Parsing, authorization refusal, unavailable services, and other expected cases must remain inspectable. Converting them to defects removes recovery from the type and breaks the caller's contract.",
-  diagnosticsBody: "Runtime diagnostics label defects separately from typed failures, preserve source and causal frames where available, and never render them through the application's Show<E> path.",
+  invalidBody: "Return anticipated outcomes such as parsing failure, authorization refusal, or service unavailability in a type the caller can inspect. Converting them into defects prevents the caller from identifying recovery through the return type.",
+  diagnosticsBody: "Distinguish recoverable failures from defects in runtime diagnostics. Available source positions and call history are also recorded. Since defects are not E values, they are not displayed through the application's Show<E> implementation.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Should invalid user input stop the runtime?",
-  summary: "A defect is an unexpected failure outside the declared recoverable error type. Expected bad input should instead have an explicit result the caller can handle.",
+  summary: "A defect is a computation problem that stops work, such as integer division by zero. Return anticipated invalid input in a result type that permits caller handling.",
   reading: "checkedDivide tests the divisor before division. For zero it returns Left ZeroDivisor, so the caller can explain the problem instead of performing invalid integer division. Otherwise it returns Right with the quotient.",
-  result: "checkedDivide 7 2 is Right 3, while checkedDivide 7 0 is Left ZeroDivisor. Recoverable result handling does not turn every runtime defect into an ordinary error. Keep predictable failures visible in the public function type."
+  result: "checkedDivide 7 2 returns Right 3, while checkedDivide 7 0 returns Left ZeroDivisor. Checking for a zero divisor first lets the function return a reason as ordinary data the caller can handle. Operations such as recover do not catch every runtime defect."
 }

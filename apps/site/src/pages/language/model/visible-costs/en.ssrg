@@ -7,15 +7,10 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   meaningTitle: "Short syntax does not make work disappear",
   meaningBody: "Cost means the processing and memory an operation needs. A type name or a pipeline symbol need not introduce extra runtime work, but transforming an array still needs to process its elements. The language distinguishes a convenient spelling from the work that spelling asks for.",
   exampleTitle: "A one-line transformation visits every element",
-  readingTitle: "How to read the example",
-  reading: [
-    "values |> map double means map double values. The |> symbol passes the value to the following function; it does not start a background task or make the array lazy.",
-    "map applies double to 1, 2, and 3 and returns [2, 4, 6]. For an array of n elements, a simple transformation like this takes work proportional to n. The output array is a new value; the input remains [1, 2, 3]."
-  ],
   reasonTitle: "What to look for when choosing an API",
   reason: [
-    "An API should say whether it traverses all elements, can stop early, creates a result collection, or retains input data. That lets you reason about large inputs without reading generated code. Callback work also counts: mapping an expensive function costs more than multiplying an integer.",
-    "Type aliases only give types another spelling; they do not require an extra runtime wrapper. In contrast, keeping a partially applied function can require storage for captured arguments. Effects and subscriptions can require execution queues and cleanup. Those costs should be explained, not presented as free because the syntax is small."
+    "Check whether an operation visits every element, stops early, or creates a result collection. Include the function passed to it. Mapping a simple doubling function costs less than mapping a function that scans another collection for every element.",
+    "A type alias changes how a type is written and requires no additional runtime wrapper. A partially applied function may need storage for the supplied arguments. Running an Effect or subscribing to a Signal also involves execution management and cleanup."
   ],
   boundaryTitle: "This is not a fixed-speed or no-optimization promise",
   boundary: [
@@ -26,7 +21,7 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Does a short expression mean little work?",
-  summary: "Syntax length and computational cost are different. Collection operations can visit or allocate for many elements even in one short line.",
-  reading: "values |> map double applies double separately to 1, 2, and 3. It constructs the mapped Array instead of overwriting values. With more elements, the transform is called correspondingly more times.",
-  result: "The output is [2, 4, 6]. The example shows traversal, not a performance benchmark or a zero-allocation guarantee. Choose APIs using their documented complexity and lifetime behavior, not just the shortest spelling."
+  summary: "For a collection operation, check how many elements it processes and the storage needed for its result. Even a one-line map calls a function for each element and creates a new Array.",
+  reading: "values |> map double is the same application as map double values. It applies double separately to 1, 2, and 3 and constructs a new Array without overwriting values. The pipeline does not defer this calculation. With more elements, the transform is called correspondingly more times.",
+  result: "The output is [2, 4, 6]. map calls double three times and creates the result Array. When each call takes constant work, as double does here, total work grows in proportion to element count. Include the callback's work when assessing an operation."
 }

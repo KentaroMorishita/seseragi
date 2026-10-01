@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Binding rules",
   summary: (explanation ()).summary,
-  ruleTitle: "One model binds names everywhere",
-  ruleBody: "Top-level and block let, do let, monadic bind, match arms, comprehension generators, and effectful for all type one pattern against one input. They differ only in the input type, resulting scope, and whether refutable patterns are allowed.",
-  typingBody: "A pattern annotation constrains the complete pattern. Nested names receive types recursively and enter scope together only after the whole match succeeds; duplicate names and self-reference from the input expression are rejected.",
-  evaluationBody: "The input expression is evaluated once, regardless of nested tuple, record, struct, constructor, Array, or List destructuring. A failed refutable match exposes no partial bindings.",
-  invalidTitle: "Binding syntax does not invent a second inference rule",
-  invalidBody: "A let cannot accept a refutable pattern just because the right side happens to match at runtime. Choose match or a filtering comprehension when failure is part of the control flow.",
-  diagnosticsBody: "The compiler, typed representation, analysis, and language server share the same typed-pattern result, including symbol identity, nested types, refutability, and source-range diagnostics.",
+  ruleTitle: "Give names to parts of one input value",
+  ruleBody: "A pattern on the left of let extracts parts from the right-hand value and gives them names. This is called binding. Patterns are also used in do, match branches, comprehensions, and Effect for loops. The input type determines each name's type. The syntax determines where the names can be used and whether a pattern may fail to match.",
+  typingBody: "A pattern annotation specifies the type of the complete input. Types of names inside the pattern follow from it. One name cannot be defined twice in the same pattern. While computing the right side, names newly introduced on the left are not yet available.",
+  evaluationBody: "The input is computed once even when extracting nested tuples or records. All extracted names become available after the match succeeds. Names from a failed match branch cannot be used in another branch.",
+  invalidTitle: "Use only guaranteed matches in let",
+  invalidBody: "A pattern demanding the first array element does not match an empty array. It is not allowed in let even if this particular value is known to be nonempty. Use match to handle failure. A comprehension can use such a pattern to filter out nonmatching elements.",
+  diagnosticsBody: "Check the input type, fields and number of elements, duplicate names, and whether the pattern can fail. Names are available only within the scope of their block or branch.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How does a pattern give names to parts of a value?",
-  summary: "A binding pattern extracts parts of one input and makes their names available in a defined scope.",
+  summary: "A pattern extracts parts of one value and gives them names. The binding syntax, such as let or match, determines where those names can be used.",
   reading: "Player { name, score } on the left of let takes the corresponding fields from the Player on the right. name becomes \"Aki\" and score becomes 42. The same syntax can nest patterns to unpack more complex data.",
-  result: "summary is (\"Aki\", 42). Names become available only after the whole binding succeeds. A let pattern must accept every possible value of its input type; use match when a pattern may fail to match."
+  result: "summary is (\"Aki\", 42). Player always has its declared name and score fields, so let can extract them. If a pattern can fail for some values, use match and handle the nonmatching cases."
 }

@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Subscriptions and lifetime",
   summary: (explanation ()).summary,
-  ruleTitle: "Observation has a lifetime",
-  ruleBody: "subscribe first invokes the observer with the current value, then delivers updates in order. Observers on one Signal run in registration order and never receive overlapping notifications.",
-  typingBody: "The observer returns Effect<R, Never, Unit>, so recoverable failure cannot escape. subscribe returns Effect<R, Never, Subscription>; unsubscribe is an idempotent Task<Unit>.",
-  evaluationBody: "An observer update is queued as a new transaction after the current one, preventing synchronous re-entrancy. Scope exit, typed failure, and cancellation all release a registered subscription and unused derived Signals release dependencies.",
-  invalidTitle: "Signal is deliberately not a Monad",
-  invalidBody: "Dynamic dependencies carry subscription lifetime, so they are expressed with named operations such as switchMap. Do not hide observer allocation and release behind an unrestricted bind operation.",
-  diagnosticsBody: "A defect stops the affected observer under runtime policy without becoming another subscriber's typed failure. Lifetime diagnostics identify active, released, and duplicate-unsubscribe states.",
+  ruleTitle: "Choose when observation starts and ends",
+  ruleBody: "Executing subscribe registers a function receiving Signal notifications, called an observer. It first receives the current value and then subsequent updates in order. Observers on the same Signal execute in registration order. A new notification does not overlap an observer's processing of the previous one.",
+  typingBody: "An observer takes the notified A and returns Effect<R, Never, Unit>. Handle recoverable failures from its operations inside that function. subscribe succeeds with a Subscription representing the registration. unsubscribe returns Task<Unit> to release it, and repeated execution does not release it twice.",
+  evaluationBody: "Updating a Signal during notification queues a new update after the current transaction ends. The same notification handler is not entered again while it is still running. A subscription registered in a scope is released after that scope's success, failure, or cancellation. A derived Signal without subscribers also releases unnecessary dependency subscriptions.",
+  invalidTitle: "Use switchMap to change dependencies",
+  invalidBody: "Signal has no general Monad implementation for choosing subsequent work from a successful value. Use switchMap to change the source Signal dynamically. This operation manages releasing the old subscription and starting the new one as a single update.",
+  diagnosticsBody: "A computation defect in a notification function stops that observer. It does not propagate as another observer's recoverable failure. Check where unsubscribe executes or where the subscription is registered in a scope, according to the period during which notifications are needed.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I stop observing a Signal when I no longer need it?",
-  summary: "A subscription attaches an observer to a Signal and has a lifetime. Unsubscribe it explicitly or let its resource scope release it.",
-  reading: "subscribe first sends source's current value to the callback, which writes it into mirror. Setting source to 2 updates mirror. After unsubscribe, setting source to 3 no longer invokes that observer.",
-  result: "Executing observeThenRelease returns 2. The callback's argument value is the notified value, not the Signal handle. Keeping a subscription forever can retain associated work; tie it to the lifetime of the feature using it."
+  summary: "Subscribing registers a function to receive Signal changes. Use unsubscribe when observation is no longer needed. A subscription registered in a resource scope is released when that scope ends.",
+  reading: "subscribe first passes source's current value to the function, which writes it into mirror. Setting source to 2 also updates mirror. After unsubscribe releases the subscription, setting source to 3 no longer invokes that function.",
+  result: "observeThenRelease returns 2 because mirror receives no updates after release. The notification argument value is source's current value, not the Signal itself. Release the subscription so notifications last only as long as needed."
 }

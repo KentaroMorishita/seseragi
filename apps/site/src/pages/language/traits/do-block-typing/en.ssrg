@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Every monadic item shares one M<_>",
   ruleBody: "The first bind, final expression, or expected block type can determine M. A bind checks M<A>, introduces an A binding, and types the remainder as M<B>. The final expression determines the block result M<R>.",
-  typingBody: "The compiler requires unique Monad<M> evidence and equal constructors across all monadic items. A pure let does not constrain M. Partial constructors must have unary kind, and unresolved candidates produce ambiguity rather than a guessed default.",
+  typingBody: "A do block keeps one constructor such as Maybe, Either, or Effect and uses the corresponding Monad instance. That constructor must accept one type argument. Ordinary let bindings may contain normal values or functions but do not determine the block's constructor by themselves. Supply an expected result annotation when information is insufficient.",
   evaluationBody: "Typing does not change sequencing: each payload becomes available only to its continuation. A short-circuiting monad may skip later items according to its flatMap contract.",
   invalidTitle: "Different constructors require an explicit bridge",
   invalidBody: "Maybe and Either, two transformer stacks, or a pure value and an Effect cannot coexist as monadic items without an explicit lift or conversion that makes every item share M<_>.",
@@ -15,7 +15,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can I mix Maybe and Effect inside one do block?",
-  summary: "A do block uses one computation type throughout. The payload types can change between steps, but the surrounding type constructor must agree.",
+  summary: "In a Maybe do block, bound computations and the final expression all use Maybe. Intermediate plain values may be Int or other types, but Maybe and Effect binds cannot be mixed directly.",
   reading: "pair extracts first from left and second from right, both Maybe<Int>. pure (first, second) produces Maybe<(Int, Int)>. The final payload is a tuple, but the outer Maybe is unchanged.",
   result: "present is Just (20, 22), while absent is Nothing. An ordinary let can calculate a pure value between steps; it does not convert an Either or Effect into Maybe. Such a change needs an explicit operation."
 }

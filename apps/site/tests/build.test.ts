@@ -361,7 +361,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(textContent(documentation)).toContain("Standard Library")
     expect(textContent(documentation)).toContain("Functions and operators")
     expect(textContent(documentation)).toContain("Collections")
-    expect(textContent(documentation)).toContain("The interactive Tour")
+    expect(textContent(documentation)).toContain(
+      "Use the Tour to learn in order"
+    )
     expect(textContent(documentation)).not.toContain("Get Started")
     expect(documentation).not.toContain("docs-sidebar")
     expect(documentation.match(/reference-area-card/g)).toHaveLength(2)
@@ -387,7 +389,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(language).toContain("Function application")
     expect(textContent(language)).toContain("fn add left")
     expect(textContent(language)).toContain("add(1, 2)")
-    expect(textContent(language)).toContain("Effect constructs the cold Effect")
+    expect(textContent(language)).toContain("does not start the described I/O")
     const japanese = readFileSync(
       join(output, "ja/docs/language/syntax/function-application/index.html"),
       "utf8"
@@ -404,7 +406,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       join(output, "docs/language/syntax/operator-precedence/index.html"),
       "utf8"
     )
-    expect(textContent(operators)).toContain("9: field/method ., index []")
+    expect(textContent(operators)).toContain(
+      "9. Field and method access with . and indexing with []."
+    )
     expect(textContent(operators)).toContain("a < b < c")
     expect(textContent(operators)).toContain("Functions and operators")
     const customOperators = readFileSync(
@@ -425,16 +429,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       join(output, "docs/language/types/type-system/index.html"),
       "utf8"
     )
-    expect(textContent(typeSystem)).toContain("turn a mismatch into Any")
+    expect(textContent(typeSystem)).toContain("prevent execution")
     expect(textContent(typeSystem)).toContain("TypesUnderstanding types")
     for (const [route, explanation] of [
       ["types/kinds", "Maybeだけでは、値の型はまだ決まらない"],
-      ["traits/do-notation", "Nothingなら残りの計算をせずNothingになります"],
+      ["traits/do-notation", "Nothingなら残りの行を実行しません"],
       ["effects/effect-type", "Effectを作っただけでは、処理は開始されない"],
-      [
-        "effects/environment-requirements",
-        "サービスを、暗黙のグローバル値にしない",
-      ],
+      ["effects/environment-requirements", "必要なサービスをEffectの型に書く"],
       ["effects/task", "Task<A>はEffect<{}, Never, A>の別名です"],
       [
         "effects/signals-and-transactions",
@@ -443,7 +444,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       ["types/type-system", "Intを受け取る関数にStringを渡す"],
       [
         "types/generic-functions",
-        "指定した型と引数の型が合わないためエラーです",
+        "指定したStringと引数のIntが矛盾するためエラーになります",
       ],
       ["types/generic-adts", "失敗値の型Eはこの値だけでは分かりません"],
       ["types/generic-structs", "更新では、フィールドの型を変更できない"],
@@ -458,10 +459,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
         "types/let-polymorphism-and-rank",
         "現在の実装にはこの制約が残っています",
       ],
-      ["modules/imports", "名前を知っていても非公開の宣言はimportできません"],
+      ["modules/imports", "非公開の名前は、名前を知っていてもimportできません"],
       ["modules/identity", "importの別名と、モジュールそのものを混同しない"],
       ["modules/re-exports", "利用側が参照する窓口をまとめる"],
-      ["patterns/match", "ガード付きの分岐だけでは、取りこぼしが残る"],
+      ["patterns/match", "ガード条件が偽ならその分岐を使いません"],
       [
         "expressions/conditionals",
         "0や空文字列を偽として扱うような変換はありません",
@@ -512,7 +513,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       ),
       "utf8"
     )
-    expect(textContent(recordTypes)).toContain("width subtyping")
+    expect(textContent(recordTypes)).toContain("only { name: String }")
     expect(textContent(recordTypes)).toContain("Player struct")
     const requirementMerge = readFileSync(
       join(output, "docs/language/types/requirement-merge/index.html"),
@@ -542,6 +543,19 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(textContent(instance)).toContain(
       "instance<A> Eq<Array<A>> where Eq<A>"
     )
+    expect(textContent(instance)).toContain("Compare two values for equality")
+    for (const locale of ["", "ja/"]) {
+      const principle = readFileSync(
+        join(
+          output,
+          `${locale}docs/language/model/immutable-by-default/index.html`
+        ),
+        "utf8"
+      )
+      expect(principle).not.toContain('id="reading-the-example"')
+      expect(principle.match(/seseragi-highlight/g)).toHaveLength(1)
+      expect(textContent(principle)).toContain("10 -> 11")
+    }
     const repeatedManifest = build(repeatedOutput)
     expect(repeatedManifest).toEqual(manifest)
   } finally {

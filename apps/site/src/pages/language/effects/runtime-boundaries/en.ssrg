@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect runtime boundaries",
   summary: (explanation ()).summary,
-  ruleTitle: "Ordinary code has no general Effect runner",
-  ruleBody: "main, the test runner, and defined callback adapters are execution boundaries. They assemble one environment, validate target capabilities, invoke the cold Effect, and translate its terminal outcome to the host contract.",
-  typingBody: "A boundary wrapper must satisfy every field in R before execution. An application-specific service is provided while constructing main's returned Effect; unsupported target services reject build or startup instead of becoming a dynamic missing-service lookup.",
-  evaluationBody: "The boundary calls the entry function, executes its returned Effect once, waits for resource scopes and supervised children, and maps success, typed failure, defect, or cancellation without conflating the channels.",
-  invalidTitle: "A helper function cannot escape the boundary",
-  invalidBody: "There is no runEffect available to ordinary application code. Nested execution would split environments, cancellation trees, and resource ownership, so programs compose Effect values instead.",
+  ruleTitle: "Compose work and start it at an execution boundary",
+  ruleBody: "Effects start at main, test entry points, or defined callback adapters. The runner supplies required services, calls the entry function, and executes its returned Effect. It then returns the terminal outcome to the target host.",
+  typingBody: "Before execution, the runner validates that every service listed in R can be supplied. Specify application-specific services with provide on the Effect being run. A service unavailable on the selected target is rejected during build or startup.",
+  evaluationBody: "The runner executes the entry function's returned Effect once and waits for resource release and child cleanup. Success, recoverable failure, computation defect, and cancellation remain distinct termination reasons.",
+  invalidTitle: "Return Effects from helper functions",
+  invalidBody: "Ordinary application code has no runEffect operation for executing arbitrary Effects. Return an Effect from a helper and compose it with other Effects. Adding a separate execution entry in the middle would separate service environments, cancellation, and resource management from the surrounding work.",
   diagnosticsBody: "Build and startup diagnostics list the exact unsupported service and selected target. Runtime reports keep the boundary, typed failure display, defect, and cancellation reason distinct.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Where does a stored Effect actually start?",
-  summary: "A designated execution boundary, such as main or the test runner, starts an Effect after supplying its required services.",
-  reading: "program returns a Task<String> built with succeed. Calling program () gives the description, not an immediate output operation. A host integration can invoke the function and execute its returned Task under that host's contract.",
-  result: "The executed result is \"ready for the host boundary\". An arbitrary helper cannot pull A out of Effect<R, E, A> by pretending to be a runner; compose Effects and return them to the actual execution boundary."
+  summary: "Designated boundaries such as main and the test runner start Effects. They provide required services before execution and wait for cleanup at the end.",
+  reading: "program returns a Task<String> constructed with succeed. Calling program () describes work returning a string successfully; the example does not print anything. It demonstrates the shape of a function that host integration can call before executing its returned Task.",
+  result: "The Task's successful result is \"ready for the host boundary\". Ordinary helper code has no operation to extract A directly from Effect<R, E, A>. Compose Effects in helpers and return them to the execution boundary."
 }

@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "例外と代数的Effect",
   summary: (explanation ()).summary,
   ruleTitle: "失敗をthrowではなく戻り値の型に残す",
-  ruleBody: "想定して扱う失敗はEitherやEffectのEで返します。外部言語の例外は外部連携のアダプターが捕捉し、ForeignErrorを持つEitherやEffectへ変換します。",
-  typingBody: "Seseragiにはthrow・catch・tryや、perform・handleの構文がありません。必要なサービス、回復可能な失敗、リソース、キャンセルは、別々の隠れた仕組みではなくEffectで扱います。",
-  evaluationBody: "外部アダプターが生成先の例外を整理してから、Seseragiの処理へ戻します。安全なアダプターが守るべき約束に違反する値は、通常の回復可能な失敗ではなくdefectです。",
+  ruleBody: "予測して扱う失敗は、EitherやEffectのEで返します。外部言語の処理が例外を投げる場合は、連携用アダプターが捕捉します。アダプターは、ForeignErrorを持つEitherかEffectへ変換して結果を返します。",
+  typingBody: "Seseragiには、例外を投げて捕捉するthrow、catch、tryの構文はありません。処理をperformで要求し、handleで引き受ける代数的Effectの構文もありません。必要なサービス、回復可能な失敗、リソース、キャンセルはEffectで扱います。",
+  evaluationBody: "外部アダプターは、生成先の言語で起きた例外を宣言した結果の型へ変換します。安全なアダプターが約束した型に違反する値は、通常の回復可能な失敗にせず、処理の不具合であるdefectとして扱います。",
   invalidTitle: "他の言語の例外構文は使えない",
-  invalidBody: "他の言語のtryやcatchをそのまま書かないでください。アプリケーションの失敗は型付きの値、外部の例外の捕捉は連携する境界に置きます。",
+  invalidBody: "他の言語と同じtryやcatchを書いても、Seseragiでは構文エラーになります。アプリケーションの失敗は戻り値の型で表してください。外部言語の例外の捕捉は、連携用アダプターが担当します。",
   diagnosticsBody: "未対応の構文では、そのソース位置に構文エラーが出ます。外部連携の失敗では、操作名とForeignErrorの内容を確認してください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "通常のコードでtryやcatchの代わりに何を使うか",
-  summary: "予測して扱う失敗は、EitherかEffectのEで表します。Seseragiにはthrow/catchや、perform/handleという構文はありません。",
+  summary: "予測して扱う失敗にはEitherかEffectのEを使います。外部言語の例外は、連携用アダプターが捕捉し、宣言した失敗型へ変換します。",
   reading: "decodeForeignは、外部連携の結果の形を示す例です。成功ならRight 42、拒否なら理由を持つForeignErrorをLeftで返します。実際の連携処理では、外部言語の例外を境界で捕捉して、このような宣言した型へ変換します。",
-  result: "FalseではLeft (ForeignError \"adapter rejected the value\")を返します。この例は結果の扱い方を示し、隠れたtry/catchの実装ではありません。呼び出し側は、外部の任意の例外ではなく、宣言された結果を扱います。"
+  result: "decodeForeign Falseは、Left (ForeignError \"adapter rejected the value\")を返します。この例は外部言語の例外を捕捉する実装ではなく、呼び出し側へ返す結果の形を示しています。呼び出し側は、宣言されたForeignErrorをmatchなどで扱います。"
 }

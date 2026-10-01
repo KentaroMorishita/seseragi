@@ -5,12 +5,12 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "trait制約",
   summary: (explanation ()).summary,
   ruleTitle: "共通の関数で必要な操作をwhereに書く",
-  ruleBody: "where Label<A>は、Aをラベルにできる実装が必要だという条件です。ジェネリック関数の本体はその操作を使えます。呼び出す側はAに選んだ型の実装を用意します。条件付きinstanceに別のtraitが必要なら、その条件も検査します。",
-  typingBody: "具体的な呼び出しでは各条件を満たす実装が一つ必要です。選ぶのは値の中身ではなく型です。空のコレクションやNothingでも、中身の型に対する条件がなくなるわけではありません。",
-  evaluationBody: "where自体は値を計算しません。その操作を呼んだ時点で、型に対応する実装が実行されます。",
+  ruleBody: "where Label<A>は、A型にlabelの実装が必要という条件です。ジェネリック関数は、その条件のもとでlabelを呼べます。関数を使う側は、Labelのinstanceがある型をAに選びます。選んだinstanceがさらに別のtraitを条件にしていれば、その実装も必要です。",
+  typingBody: "コンパイラは、具体的な呼び出しに必要なinstanceが一つに決まるか検査します。instanceは値の中身ではなく型で選びます。空のコレクションやNothingにも要素の型があるため、その型に対する条件は残ります。",
+  evaluationBody: "whereは型の条件であり、処理を実行する式ではありません。関数の本体でlabelなどの操作を呼ぶと、型に対応するinstanceの実装が実行されます。",
   invalidTitle: "空の値でも、型に必要な条件は残る",
   invalidBody: "操作を使わない分岐を通るとしても、宣言した条件は必要です。条件付きinstanceが要求する別の実装まで揃わなければ、型エラーになります。",
-  diagnosticsBody: "どの型に対するどのtraitが不足しているかを確認します。実装がない場合と、型そのものが未確定の場合は別の問題です。",
+  diagnosticsBody: "エラーでは、どの型に対するどのtraitが不足しているか確認してください。instanceが別のtraitを必要とする場合は、その条件も確認します。型自体が未確定なら、型注釈や型引数で補ってから、対応するinstanceを調べます。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {

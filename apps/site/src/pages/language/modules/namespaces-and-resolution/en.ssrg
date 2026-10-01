@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Names live in five separate namespaces",
   ruleBody: "Seseragi separates type/trait/type-parameter names, value/function/constructor names, field/inherent-method names, module aliases and custom operators. A newtype can therefore have a type name and a constructor with the same spelling. UserId in an annotation selects the type; UserId 42 selects the constructor. A namespace-qualified name is resolved statically, not by inspecting an arbitrary runtime object.",
-  typingBody: "Unqualified lookup proceeds through local bindings and local functions, current-module declarations, explicit imports and finally the prelude. A nearer binding wins over a farther stage. Within one stage, multiple candidates are an ambiguity error. Adding another import does not silently select a different declaration from an ambiguous set.",
+  typingBody: "An unqualified name is looked up first among nearby local bindings and functions, then in the current module, explicit imports, and finally the standard prelude. A function's local let value, for example, takes precedence over the module's value. Several candidates at the same stage produce an ambiguity error.",
   evaluationBody: "Names cannot be declared twice in the same namespace and scope. ADT/newtype constructors enter the value namespace; type parameters enter the type namespace of their declaration. Field and method resolution depends on the receiver's statically known nominal type. Module aliases qualify exported names rather than turning a module into a value.",
   invalidTitle: "The same spelling is not permission for same-namespace duplicates",
   invalidBody: "A type and its constructor can share a spelling because positions distinguish their namespaces. Two value declarations cannot use that reasoning to coexist in the same scope. To disambiguate imported values, use distinct aliases or qualified imports rather than hoping that declaration order chooses one.",
@@ -15,7 +15,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why does UserId work as both a type name and a constructor?",
-  summary: "Names are resolved according to their position and scope. Type names and value names belong to separate namespaces.",
+  summary: "The spelling UserId denotes a type in an annotation and a constructor in a value expression. The compiler determines the reference from its position and scope. These separate groups of names for different purposes are called namespaces.",
   reading: "In user: UserId, UserId denotes the type. In UserId (local ()), it denotes the constructor. local's let value = 42 is nearer than the module's value = 1 and is therefore the value read inside that function.",
   result: "user becomes UserId 42; the outer value is still 1. Reusing a name in a permitted inner scope is not mutation. Ambiguous imports must be renamed or qualified rather than resolved by arbitrary import order."
 }

@@ -5,8 +5,8 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Trait declarations",
   summary: (explanation ()).summary,
   purpose: [
-    "A trait declaration answers one question: what must a type provide for shared code to use this operation? Label<A> says that labeling an A must produce a String.",
-    "The declaration and its implementation are separate. The complete example also includes an instance so it can run, but this page focuses on the three-line trait declaration."
+    "A trait declares the names and types of operations shared by several types. Label<A> declares an operation that accepts A and returns a String label.",
+    "Implementation bodies belong in instances. The example also implements the trait for Ticket and Person. Reading the trait declaration first shows the parameter and result types that both implementations must satisfy."
   ],
   exampleTitle: "Declare a label operation and use one implementation",
   reading: [
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What does the trait declaration promise?",
   summary: "A trait names operations and their parameter and result types. The implementation bodies are provided separately in instances.",
   reading: "Ticket and Person are two different data types. Label<A> declares one label operation whose input type is A and result is String. The Ticket and Person instances implement that declaration. labelOf<A> requires Label<A> and can call either implementation; personLabel is its Person call.",
-  result: "The instance below the declaration fulfills this promise; main then invokes it and prints ticket-42. A trait declaration alone neither computes a label nor creates a Ticket."
+  result: "Label<A> requires label to accept A and return String. The Ticket and Person instances substitute their own types for A and supply the body. main calls the Ticket implementation and prints ticket-42."
 }

@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Effect functions with an inferred contract",
   summary: (explanation ()).summary,
   ruleTitle: "Remove every signature clause to request inference",
-  ruleBody: "An effect fn with no ->, with, fails, or where clause infers R, E, and A from its body. The normalized Effect type is still emitted in typed artifacts and public module interfaces.",
-  typingBody: "Requirement fields merge by canonical name and identical type. Zero non-Never failures infer Never; one infers that type; multiple distinct recoverable failures are rejected instead of synthesized into a union. Branch success values must converge normally.",
-  evaluationBody: "Expanding the inferred form to an equivalent explicit contract does not change behavior. The difference is whether source fixes the API or generated typed interface records it for review.",
-  invalidTitle: "Compact does not mean partly explicit",
-  invalidBody: "with, fails, and where cannot appear without ->. Either write the complete contract beginning with its success type or remove all clauses and let the body determine the whole Effect type.",
+  ruleBody: "For an effect fn omitting ->, with, fails, and where, the compiler infers the returned Effect<R, E, A> from the body. R names required services, E names recoverable errors, and A is the success type. The inferred type is also recorded in the public module's type information.",
+  typingBody: "Services with the same name and type merge into one field. With no recoverable failures, E is Never; with one error type, E is that type. Distinct error types produce a type error instead of an automatically generated common type. Success values in different branches must also have the same type.",
+  evaluationBody: "Writing an explicit declaration with the same inferred type does not change execution results. In either form, calling the function constructs an Effect without executing its represented work.",
+  invalidTitle: "Do not mix explicit and inferred forms",
+  invalidBody: "with, fails, or where cannot appear while -> is omitted. Either state the success type after -> and specify the required type information, or omit all four clauses to infer the whole type.",
   diagnosticsBody: "Diagnostics distinguish a non-Effect body, conflicting requirement fields, multiple failure types, and incompatible success branches, with the source spans that contributed each type.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can the compiler derive an Effect signature from its body?",
-  summary: "Omit all signature clauses after the parameters to infer an effect fn's required services, failure type, and successful result together.",
+  summary: "Omitting ->, with, fails, and where from an effect fn lets the compiler infer required services, recoverable errors, and the successful result from its body.",
   reading: "announceInferred receives a String and returns println message. Since println needs Console and may fail with ConsoleError, the inferred return is Effect<Console, ConsoleError, Unit>. No output happens merely from constructing it.",
-  result: "Use this form when the body should determine the full Effect type. Adding only with or fails does not partially constrain it: choose either the complete explicit form or the clause-free inferred form."
+  result: "announceInferred returns Effect<Console, ConsoleError, Unit>. The compact declaration still records its services and error type in type information. To specify any part explicitly, change to the explicit form beginning with ->."
 }

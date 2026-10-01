@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Compile-time union of required service fields",
   ruleBody: "Inside the first type argument of Effect or Stream, R & S normalizes to the union of fields from two required-field structural records or parameters known to be complete record requirements. R & {} is R; grouping and order do not change a conflict-free normalized field map.",
-  identityBody: "Requirement merge has no constructor, runtime tag, field access, or value representation. Equal duplicate fields collapse to one. A duplicate field with different types is SES-E0001, because one host service name cannot satisfy two incompatible requirements.",
+  identityBody: "R & S combines the types of services required by a computation. It is not a function that merges record values at runtime. Fields with the same name and type become one requirement. If the same name requires different types, one service cannot satisfy both, producing SES-E0001.",
   checkingBody: "Each operand must be a required-field record requirement or an appropriately constrained requirement parameter. Optional fields, nominal structs, and ordinary value types cannot merge. The normalized entry requirement must still be closed.",
   invalidTitle: "& is not a general-purpose intersection",
   invalidBody: "Using R & S outside an Effect or Stream requirement position reports SES-T0501. A lone & in value syntax is not an operator, and requirement parameters are complete records rather than row fragments.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I require both an existing environment and a clock?",
   summary: "The & notation combines service requirements in an Effect or Stream type. It describes what execution needs, not how to merge runtime records.",
   reading: "Timed<R, E, A> abbreviates an Effect that needs everything in R plus a clock field of type Clock. E still describes recoverable failures and A the success value; adding the service does not change either.",
-  result: "Two requirements with the same field name must agree on its type. R & {} adds nothing. At an execution boundary, the combined required fields must resolve completely so the runner can provide them."
+  result: "A clock required by Timed and a clock already required by R must have the same type; different types produce a field conflict. R & {} adds no service and has the same requirement as R. Every required field must be determined at the execution entry point."
 }

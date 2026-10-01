@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "An alias names an existing type",
   ruleBody: "alias Pair<A> = (A, A) abbreviates a type expression. Pair<Int> and (Int, Int) have the same type identity; no constructor or extraction step is needed. Expanding an alias substitutes its arguments without capturing unrelated parameters. The example's first function accepts a tuple directly through its Pair annotation.",
-  identityBody: "Aliases are transparent during checking and may be erased after normalization. Tooling can retain the alias name and source span to make signatures readable, but that presentation does not create a nominal boundary. Use newtype when you need a distinct domain type rather than a short spelling.",
+  identityBody: "Type checking expands an alias, so Pair<Int> and (Int, Int) are the same type. Diagnostics may display an alias name for readability. Use newtype when you need the type checker to distinguish uses such as UserId and OrderId, even if both contain Int.",
   checkingBody: "Arity and kinds are checked wherever an alias appears, including parameter types, local annotations, lambda annotations and constraints. Constructor-kinded parameters also follow the ordinary kind rules. An alias cannot hide a wrong constructor shape. Direct and indirect alias cycles are rejected; expansion must terminate at a meaningful type.",
   invalidTitle: "An alias is not a constructor or an API privacy escape",
   invalidBody: "Pair 1 2 is not a value construction. Write the tuple value. A private alias cannot be imported, and a public alias's expanded type must not expose a private type. Changing the visible spelling does not make a private representation public or compatible with a different nominal type.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Can I give a repeated type expression a shorter name?",
   summary: "A type alias abbreviates an existing type. Adding parameters lets the same abbreviation work for different element types.",
   reading: "Pair<A> means (A, A). Pair<Int> therefore means (Int, Int), and first (42, 7) passes an ordinary tuple. The pattern (left, _) extracts 42 and ignores the second element.",
-  result: "The result is Int with value 42. Pair does not construct a value and does not create a distinct type. Use a newtype when confusing two values with the same underlying representation must be prevented."
+  result: "first (42, 7) returns the Int value 42. Pair is another name for the tuple type. Construct a value as (42, 7), not Pair 42 7. Use newtype if different uses require distinct types."
 }

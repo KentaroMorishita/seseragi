@@ -4,18 +4,18 @@ import { SyntaxCopy } from "../article"
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Optional record field syntax",
   summary: (explanation ()).summary,
-  formsTitle: "Attach ? directly to a record field name",
-  formsBody: "Write id?: String. The formatter normalizes spacing to that form, not id? : String or id ? : String. A lone ? token is meaningful only here and in the optional-query position of a record pattern; expressions have no standalone ? operator.",
-  typingBody: "An absent optional field is different from a required field of type Maybe<A>. Accessing an optional field produces Maybe<A>. A record with a required A field may satisfy the matching optional field, and a provided optional field preserves its presence information through record operations.",
-  evaluationBody: "Omitting the field constructs no hidden Nothing payload; absence is record presence. Record patterns may query an optional field without pretending it was required. Field expressions that are present follow ordinary exactly-once record evaluation.",
-  invalidTitle: "Optional markers belong only to structural record positions",
-  invalidBody: "Do not attach ? directly to struct fields, function parameters, or ADT payloads. Spaced marker forms, a standalone expression ?, duplicate fields, unknown access, and patterns that demand a missing required field are rejected at their owning syntax or type boundary.",
-  diagnosticsBody: "The formatter canonicalizes valid marker spacing. Parser diagnostics own misplaced ? tokens; record typing owns incompatible presence, field access, and pattern requirements. Diagnostics preserve the distinction between absence and a required Maybe value.",
+  formsTitle: "Write ? immediately after the field name",
+  formsBody: "Write id?: String, placing ? directly after the field name. This marker belongs to record types and record patterns. It is not an operator on an ordinary expression or function argument.",
+  typingBody: "id?: String allows id itself to be absent. id: Maybe<String> requires the field to exist, holding either Just or Nothing. Reading an optional field returns Maybe<String>. A value with a required id: String field can also be passed to a function expecting id?: String.",
+  evaluationBody: "When a field is omitted, that field is absent from the record. This differs from storing Nothing in a required Maybe field. Record patterns can query whether an optional field exists. Expressions for fields supplied in the record are evaluated once.",
+  invalidTitle: "Check where the ? marker is allowed",
+  invalidBody: "This form belongs to structural records. You cannot attach ? directly to struct fields, function parameters, or ADT payloads. A pattern cannot require an optional field to be present unconditionally.",
+  diagnosticsBody: "A misplaced ? causes a syntax error. Reading an unknown field or omitting a required field causes a type error. Check whether you meant an optional field or a required field of type Maybe.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Where does the ? for an optional field go?",
   summary: "Write field?: Type inside a structural record type. The marker means that the field itself may be absent.",
-  reading: "Props uses id?: String and required children: String. Both minimal and named satisfy Props. Reading props.id returns Maybe<String>, and ?? chooses the existing string or the fallback \"anonymous\".",
-  result: "? is not a general optional parameter or optional chaining operator. Do not attach it to ordinary function parameters or struct fields. A field whose type is Maybe is present even when its stored value is Nothing."
+  reading: "In Props, id?: String is optional and children: String is required. Both minimal and named satisfy Props. props.id returns Maybe<String>: Just supplies its string, while Nothing selects the \"anonymous\" fallback to the right of ??.",
+  result: "label minimal returns \"anonymous\"; label named returns its supplied \"hero\". This distinguishes an omitted id from one containing a string. With a required id: Maybe<String>, the id field must exist even when it holds Nothing."
 }

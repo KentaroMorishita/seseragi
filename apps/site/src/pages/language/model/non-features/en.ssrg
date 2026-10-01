@@ -4,12 +4,12 @@ import { ConceptCopy } from "../concept"
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Features the language does not have",
   summary: (explanation ()).summary,
-  ruleTitle: "Find the operation, not an identical spelling",
-  ruleBody: "You cannot always translate another language by replacing keywords. Updating a record creates a new record, not a field assignment. A function produces its body expression's value rather than using return. The list below pairs absent constructs with their alternatives.",
+  ruleTitle: "Replace operations familiar from another language",
+  ruleBody: "Seseragi represents a data update by constructing a new value. A function returns its body expression. This page compares familiar syntax from other languages with the corresponding Seseragi forms.",
   consequencesTitle: "Three distinctions to keep clear",
-  consequenceOne: "Maybe and Either are data types for absence and typed results. Effect describes executable work and possible failure. These are not nullable values or exception-based error handling in disguise.",
-  consequenceTwo: "Effect can combine required services, but that limited mechanism does not allow arbitrary union and intersection types for ordinary data. It is not a perform/handle algebraic-effect system.",
-  consequenceThree: "deriving generates supported instances, and template strings format embedded values. These defined features do not let users invent arbitrary syntax through macros.",
+  consequenceOne: "Maybe represents presence or absence; Either represents a successful or failed result value. Effect describes an operation to execute and the failures it can produce. Choose according to whether you are inspecting a value or executing an operation.",
+  consequenceTwo: "An Effect type can list the services its operation requires. This combination rule applies to service requirements, not arbitrary union or intersection types for ordinary data. Seseragi has no perform or handle syntax for algebraic effects.",
+  consequenceThree: "deriving generates instances for supported traits. Template strings insert expression values into text. Both have fixed behavior; neither is a macro for introducing arbitrary syntax.",
   boundaryTitle: "An absent construct is not a missing application capability",
   boundaryBody: "Changing application state, recovering from errors, and stopping collection traversal early are still possible. Use explicit state APIs, typed results, and reduceUntil or forEachUntil respectively. Interop adapts foreign constructs without changing ordinary Seseragi rules."
 }
@@ -29,7 +29,7 @@ pub fn alternatives -> Array<String> = [
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What should I use instead of familiar missing keywords?",
-  summary: "The absence of assignment, null, or return does not mean Seseragi cannot express updates, missing values, or function results. It uses different explicit forms.",
-  reading: "For an immutable record, construct { ...old, field: newValue } rather than assigning old.field. Use Just and Nothing for ordinary presence and absence. A function returns its body's expression, and a block returns its final expression.",
-  result: "For recoverable errors, use Either or Effect's failure type. For early collection termination, use the dedicated operations described in the list. These alternatives keep control flow and possible results visible rather than recreating another language's hidden behavior."
+  summary: "Where another language uses assignment, null, or return, Seseragi uses new values, Maybe, and a function's body expression. This page compares the forms by the operation you want to perform.",
+  reading: "Write { ...old, field: newValue } to construct an updated record. Just contains a present value, and Nothing represents absence. A function returns its body expression; a block returns its last expression.",
+  result: "Use Either for a failed result represented as data and Effect for failure of an operation to execute. Use reduceUntil or forEachUntil to stop traversing a collection early."
 }

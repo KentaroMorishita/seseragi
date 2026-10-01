@@ -4,10 +4,10 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Sequential and parallel Effects",
   summary: (explanation ()).summary,
-  ruleTitle: "flatMap, >>=, and do run in source order",
-  ruleBody: "A later sequential Effect starts only after the earlier one succeeds. Merely placing independent Effects beside each other never authorizes reordering or concurrency; Effect.parallel and related APIs carry that different contract.",
-  typingBody: "Sequential composition passes the prior success into the continuation and merges compatible R and E. Parallel operations require a collection of compatible Effects and return results in the order promised by their library contract.",
-  evaluationBody: "Sequential failure prevents later work from starting. Parallel result order, failure selection, sibling cancellation, and cleanup follow the specific API rather than completion timing or a compiler optimization guess.",
+  ruleTitle: "Choose an explicit operation for parallel execution",
+  ruleBody: "Effects linked with flatMap, >>=, or do start the next operation only after the previous one succeeds. The next operation can use that successful value. Merely placing independent Effects together does not execute them concurrently. Use an operation such as parallel for parallel execution.",
+  typingBody: "Combining Effects requires compatible services and recoverable error types. Parallel operations also take a collection of compatible Effects. Their result order is specified by the selected API.",
+  evaluationBody: "A sequential failure prevents later work from starting. In parallel execution, failure selection, cancellation of other work, and cleanup follow the selected API's rules. Completion timing alone does not determine the order of returned results.",
   invalidTitle: "The compiler cannot auto-parallelize Effects",
   invalidBody: "External order, resource ownership, failure choice, and cancellation are observable. Even apparently independent Effects remain sequential until the program selects an explicit parallel operation.",
   diagnosticsBody: "Type errors identify incompatible requirements, failures, or successes before scheduling. Runtime diagnostics retain the selected operation and input position for concurrent failures.",
@@ -15,7 +15,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Do independent-looking Effects run together automatically?",
-  summary: "Effect composition runs sequentially by default. Choose an explicit parallel operation when you want computations to overlap.",
+  summary: "Linking Effects with flatMap or do executes them in sequence. Use an explicit parallel operation to allow independent computations to progress concurrently.",
   reading: "twice describes a computation returning twice its input. sequential obtains the result of twice 2 before obtaining twice 3 and then adds them. parallel explicitly passes both computations to effects.parallel.",
-  result: "Executing sequential succeeds with 10. Executing parallel succeeds with [4, 6] in input order, not a sum. Parallel execution changes scheduling and failure management; it is not merely another spelling of do."
+  result: "sequential succeeds with 10. parallel returns [4, 6] in input order rather than their sum. Parallel execution changes when work starts and how other work is cancelled on failure; it is not another notation for do's behavior."
 }

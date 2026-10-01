@@ -5,7 +5,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "関数型とカリー化",
   summary: (explanation ()).summary,
   ruleTitle: "一部の引数を渡すと、残りを受け取る関数になる",
-  ruleBody: "fn add x: Int -> y: Int -> Intの型はInt -> (Int -> Int)です。最初のIntを受け取り、次のIntを受け取る関数を返す、と読みます。add 1はInt -> Intという関数です。このように複数の引数を一つずつ受け取る形をカリー化と呼びます。",
+  ruleBody: "fn add x: Int -> y: Int -> Intの型はInt -> (Int -> Int)です。最初の整数を受け取り、次の整数を受け取る関数を返す、と読みます。add 1の型はInt -> Intです。複数の引数を一つずつ受け取る関数の組み立て方を、カリー化と呼びます。",
   identityBody: "引数は左から渡します。add (1, 2)のようにタプルを一個渡すこととは違います。また、引数を書かない関数宣言でも、実際にはUnit型の引数を一個持ちます。たとえばclockの結果を得るにはclock ()と書きます。",
   checkingBody: "一つの引数を渡すたびに、その値の型が合うかを検査します。戻り値は、まだ渡していない引数を受け取る関数か、最終結果です。ジェネリックな型やtraitの条件は、残りの引数や結果の型によって後から確定する場合があります。",
   invalidTitle: "関数そのものと、呼んで得た結果を区別する",
@@ -16,6 +16,6 @@ pub fn copy -> TypeCopy = TypeCopy {
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "引数を一つだけ渡すと、何が返るか",
   summary: "関数に一部の引数だけを渡すと、残りの引数を待つ関数が返ります。これを部分適用と呼び、その仕組みを表す関数型の組み立て方をカリー化と呼びます。",
-  reading: "addはleftとrightを受け取り、その和を返します。add 1の結果は整数ではなく、「次の引数に1を足す関数」です。その関数にaddOneという名前を付け、addOne 2で呼ぶと3になります。",
+  reading: "addはleftとrightを受け取り、その和を返します。add 1は、受け取った整数に1を足す関数です。let addOne = add 1でその関数に名前を付け、addOne 2で呼ぶと3になります。",
   result: "Int -> Int -> IntはInt -> (Int -> Int)の意味です。引数名を書かない関数もUnitを一つ受け取るため、()を渡して呼びます。タプルを一つ渡す関数とは、引数の型も呼び方も異なります。"
 }

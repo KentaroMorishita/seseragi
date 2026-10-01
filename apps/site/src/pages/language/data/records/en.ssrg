@@ -5,21 +5,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Records",
   summary: (explanation ()).summary,
   purpose: [
-    "Use a record when several values belong together: for example a person's name and score. { name: \"Aki\", score: 10 } creates one value with two fields; a field is a named part of that value.",
-    "A record's type describes its field names and their types. It does not depend on a declaration name. This is structural typing: a function requiring a name field can accept a record that also contains other required fields."
+    "A record groups values that belong together, such as a name and a score. { name: \"Aki\", score: 10 } has two fields. A field is a named part such as name or score.",
+    "A record's type depends on its field names and the type of each field. This is called structural typing. A function requiring name can receive a record that also has other required fields, such as score."
   ],
   exampleTitle: "Read a field and make an updated record",
   reading: [
-    "original stores a record with name equal to \"Aki\" and score equal to 10. original.score reads the integer in its score field.",
-    "...original copies the fields into the new record literal. The following score: 42 replaces score in that new value. It does not change original; the first two outputs demonstrate this.",
-    "nameOf declares a parameter of type { name: String }. This means the function needs a record with a required string field named name. It reads person.name and returns that string.",
-    "updated also has a score field, but nameOf does not need it. Passing updated is valid and prints Aki. This does not convert updated into a named struct or give the function access to an undeclared field."
+    "original holds a record with name \"Aki\" and score 10. original.score reads the integer from the score field.",
+    "...original brings the original fields into a new record. This is called a spread. The following score: 42 sets the score of the new record. original stays unchanged.",
+    "nameOf takes { name: String }, a record with a required string field named name. It reads person.name and returns that string.",
+    "updated also has score, but can be passed to nameOf. Inside the function, the accessible field is name, as specified by its parameter type. The final output is Aki because the copied name field is unchanged."
   ],
   rules: [
-    "Record fields and spread operands are evaluated once, in their written order. Multiple spreads are allowed. If spreads contain the same field, a later spread wins; a following explicit field wins over earlier spreads.",
-    "An update can change a field's type. The result then has a new record type; the old record keeps its old type and value. A spread operand itself must be a record.",
-    "A shorthand such as { name, } means { name: name }. The comma is required for a single shorthand field, to distinguish the record from a block. {} is an empty record, not the Unit value ().",
-    "Required and optional fields are different. A required field must exist; an optional field may be absent. Reading an optional field returns Maybe, a value that distinguishes a present result from an absent result. Its detailed rules belong to the optional-fields page."
+    "Field values and spread source expressions are evaluated once each in written order. Several spreads are allowed. If they contain the same field, the later spread wins; a following explicit field replaces that result.",
+    "A copy can change a field's type. The result then has a different record type. The original record keeps its type and value. A spread source must be a record.",
+    "{ name, } abbreviates { name: name }. With one shorthand field, the trailing comma distinguishes a record from a block. {} is an empty record; the Unit value is written ().",
+    "A required field always exists, while an optional field may be absent. Reading an optional field returns Maybe: handle Just value if present and Nothing if absent."
   ],
   mistakes: [
     "You cannot assign updated.score = 99. Records are immutable: construct another record if the score should change.",
@@ -36,5 +36,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I change a field without changing the original value?",
   summary: "A record groups named fields without declaring a type name. Read fields with a dot and construct an updated copy with a spread.",
   reading: "original holds name \"Aki\" and score 10. ...original copies its fields into a new record, and score: 42 replaces the new record's score. nameOf requires only a String field named name, so updated may also contain score.",
-  result: "The outputs are 10, 42, and Aki. The first two distinguish the original from its updated copy. This operation is construction, not an assignment to original.score."
+  result: "The outputs are 10, 42, and Aki. original.score stays 10; updated.score is 42. To use changed data, construct and use a new record rather than assigning to the old one."
 }

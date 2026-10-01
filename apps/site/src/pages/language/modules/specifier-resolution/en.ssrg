@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "The prefix chooses the resolver",
   ruleBody: "An import specifier is classified by its leading form, not tried against several resolvers until something works. ./ and ../ resolve relative to the importing module. self/ names the current package's source modules; std/ names the standard library; gen/ names generated bindings. Other bare specifiers name a declared direct dependency and one of its public subpaths.",
-  typingBody: "A relative ./user resolves exactly to user.ssrg in the importing module's directory. Writing ./user.ssrg is another spelling of that same canonical module. There is no implicit directory index, extension search or fallback to the shell's current working directory. Package identity and the normalized source path determine module identity, so equivalent relative spellings do not duplicate nominal types.",
+  typingBody: "./user refers to user.ssrg beside the file containing the import. ./user.ssrg names the same module. It does not search for index.ssrg inside a user directory or try other extensions. The shell's working directory is not the resolution base.",
   evaluationBody: "For a dependency such as acme/http, acme/http/client selects its exported client subpath. The dependency's export map, not knowledge of its repository layout, determines what consumers can reach. Dependency aliases and generated/source roots follow the project contract. Relative imports cannot cross source, test and generated root boundaries.",
   invalidTitle: "A filesystem path does not bypass a package API",
   invalidBody: "An undeclared dependency, a private package subpath or a specifier with no candidate is an error. Multiple candidates are also an error rather than an arbitrary choice. Moving a file into a directory does not make ./directory search for index.ssrg. Update the explicit import path.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Which file does ./user mean?",
   summary: "An import path is resolved by its explicit form. Relative paths are relative to the importing source file, not the shell's working directory.",
   reading: "./modules-domain and ./modules-domain.ssrg both identify the sibling file modules-domain.ssrg. In the example, constructing a UserId from one spelling and reading it through the other is valid because the target module is the same.",
-  result: "For ./user the resolver does not try user/index.ssrg or unrelated extensions as fallbacks. Prefixes such as self/, std/, and gen/ select their documented roots. An external package path must be declared and exported, not merely exist somewhere on disk."
+  result: "Use ./user for user.ssrg and ./user/index for user/index.ssrg. self/ selects your own package, std/ the standard library, and gen/ generated modules. For an external package, check its dependency declaration and public path."
 }

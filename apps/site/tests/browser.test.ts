@@ -244,7 +244,7 @@ try {
         }
         assert.ok(
           (await page.locator("body").innerText()).includes(
-            "Application does not infer a different call grammar"
+            "add (1, 2) passes one tuple, whereas add 1 2 passes two integers"
           )
         )
         const functionApplicationSource = await page
@@ -296,7 +296,7 @@ try {
         assert.equal(await page.locator("h1").textContent(), "Type system")
         assert.ok(
           (await page.locator("body").innerText()).includes(
-            "The compiler detects these mismatches before running the program"
+            "Passing String to a function that accepts Int produces a type error before execution"
           )
         )
         const typeSystemCode = await syntaxPresentation(
@@ -400,9 +400,7 @@ try {
         assert.ok(
           japaneseMatch.includes("上から順に照合し、最初に一致した分岐を使う")
         )
-        assert.ok(
-          japaneseMatch.includes("ガード付きの分岐だけでは、取りこぼしが残る")
-        )
+        assert.ok(japaneseMatch.includes("ガードが偽になる場合も扱う"))
         assert.ok(!japaneseMatch.match(/#[0-9]+/u))
         const japaneseMatchWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
@@ -450,7 +448,11 @@ try {
           "How do blocks desugar"
         )
         const doText = await page.locator("body").innerText()
-        assert.ok(doText.includes("Do is generic Monad syntax"))
+        assert.ok(
+          doText.includes(
+            "increment Nothing skips the addition and returns Nothing"
+          )
+        )
         assert.ok(!doText.includes("Lesson"))
         assert.ok(!doText.match(/#[0-9]+/u))
         assert.equal(await page.locator(".seseragi-highlight").count(), 2)
@@ -474,7 +476,9 @@ try {
         assert.equal(await page.locator("h1").textContent(), "do記法")
         const japaneseDoText = await page.locator("body").innerText()
         assert.ok(
-          japaneseDoText.includes("doは、Monadの処理を読みやすく書く構文")
+          japaneseDoText.includes(
+            "Maybe、Either、自分で定義した型、Effectのいずれも"
+          )
         )
         assert.ok(!japaneseDoText.match(/#[0-9]+/u))
         const japaneseDoWidth = await page.evaluate(
@@ -791,7 +795,11 @@ try {
         assert.ok(documentationText.includes("Standard Library"))
         assert.ok(documentationText.includes("Functions and operators"))
         assert.ok(documentationText.includes("Collections"))
-        assert.ok(documentationText.includes("interactive Tour"))
+        assert.ok(
+          documentationText.includes(
+            "Use the Tour to learn in order while running code"
+          )
+        )
         assert.ok(!documentationText.includes("Get Started"))
         assert.equal(
           await page

@@ -16,7 +16,7 @@ pub fn copy -> ConceptCopy = ConceptCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "他の言語から来たとき、何が違って見えるか",
-  summary: "Seseragiは、実行前に型を検査する式指向の言語です。不変の値と関数を組み合わせ、外部処理はEffectとして明示します。",
+  summary: "Seseragiは、実行前に値の型を検査する式指向の言語です。ifなどの結果を関数や計算に使い、データの更新では新しい値を作ります。出力やファイル操作は、実行する処理を表すEffectで記述します。",
   reading: "resultは整数の点数を受け取り、ifで選んだStringを返します。if自体が値を返す式なので、関数の本体に直接使えます。mainのprintlnは、その結果を表示する外部処理です。",
-  result: "点数85ではpassを出力します。仕様全体を先に読む必要はなく、各記事で必要な用語と規則を説明します。順を追って実践する学習経路は、別に用意されたTourです。"
+  result: "result 85は\"pass\"を返し、mainがpassと改行を出力します。点数を60にすると、戻り値も出力もretryになります。どちらの場合も、関数の戻り値はStringです。"
 }

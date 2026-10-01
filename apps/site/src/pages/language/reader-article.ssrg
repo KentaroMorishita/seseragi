@@ -34,7 +34,7 @@ fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> 
 fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
   ((title, path), (english, japanese)) -> Paragraph ([
     InternalLink (title, path),
-    Words (localized (" — " + english) ("：" + japanese))
+    Words (localized (". " + english) ("。" + japanese))
   ])
 }
 
@@ -61,8 +61,8 @@ pub fn readerPage id: String
         Paragraph (
           [Words (
             localized
-              "pub exposes main as the entry function. effect fn means it returns an Effect describing external work. The runner executes that work; println writes each displayed value followed by a newline. This program produces:"
-              "pubはmainを実行入口として公開する指定です。effect fnは外部処理を表すEffectを返す関数で、実行機構がその処理を開始します。printlnは表示する値と改行を出力します。このプログラムの実行結果は次のとおりです。"
+              "pub makes main available as the entry function. effect fn returns an Effect representing work to execute. The runner executes the Effect returned by main. println writes a value followed by a newline. The output is shown below."
+              "pubはmainを実行入口として公開する指定です。effect fnは、実行する処理を表すEffectを返す関数です。mainで返したEffectは実行機構が開始します。printlnは値と改行を出力します。実行結果は次のとおりです。"
           )]
         ),
         Terminal (localized "Output" "実行結果", output),

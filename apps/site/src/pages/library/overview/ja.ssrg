@@ -1,8 +1,10 @@
 pub fn title -> String = "標準ライブラリ"
 
-pub fn summary -> String = "Seseragiに同梱されるmodule・型・関数のリファレンスです。"
+pub fn summary -> String =
+  "Seseragiの標準モジュール、型、関数を調べられます。各APIページでは、操作の役割と、引数・戻り値の型を説明します。"
 
-pub fn collectionsTitle -> String = "Collection"
+pub fn collectionsTitle -> String =
+  "コレクション"
 
 pub fn collectionsBody -> String =
-  "compilerが所有するsignature・制約・symbol identityをそのまま参照します。"
+  "配列やリストの要素を調べる、変換する、まとめる操作があります。目的に合うモジュールを選び、関数の引数と戻り値を確認してください。"

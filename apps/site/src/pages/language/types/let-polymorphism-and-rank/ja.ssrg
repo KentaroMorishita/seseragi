@@ -4,8 +4,8 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "letの多相性と使える範囲",
   summary: (explanation ()).summary,
-  ruleTitle: "同じ関数を、IntでもStringでも使う",
-  ruleBody: "例では、型パラメーターを持つidentity関数をletで別の名前に束縛しています。その名前をIntの値に使うときとStringの値に使うときで、型を別々に選べます。このように複数の型で使えることを多相性と呼び、束縛にその性質を持たせることを一般化と呼びます。ただし、周囲の値によってすでに決まっている型は一般化されません。",
+  ruleTitle: "letに付けた関数名も、複数の型で使える場合がある",
+  ruleBody: "例では、ジェネリック関数unchangedをlet identity = unchangedで別の名前に束縛しています。identity 42ではInt、identity \"hello\"ではStringを選べます。このように複数の型で使えることを多相性と呼び、letの名前にもその性質を持たせることを一般化と呼びます。周囲の値からすでに決まっている型は、一般化の対象になりません。",
   identityBody: "たとえば、関数が外側のIntの値を取り込んでいるなら、その値が別の呼び出しでStringになるわけではありません。trait制約を持つ関数は、使う型ごとに必要な実装を満たす必要があります。通常のletでは、右辺が単純な値か計算かという理由だけで一般化を制限しません。再帰する宣言は、再帰の途中では同じ型で検査し、その後に一般化します。",
   checkingBody: "すでにIntと決まった値を包む関数の結果はMaybe<Int>です。一般化によって、そのIntが任意の型に戻るわけではありません。また、関数引数として受け取るA -> AのAは、その呼び出しで選ばれた一つの型です。そのコールバックを、本体の中でInt用とString用に別々に使えるわけではありません。この範囲をrank-1と呼びます。",
   invalidTitle: "関数の引数が、それぞれ独立した多相性を持つわけではない",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "関数をletに入れると、引数の型は固定されるか",
   summary: "ジェネリック関数をそのまま別名で使う場合と、一度呼び出した結果に名前を付ける場合では、使える型の範囲が違います。",
   reading: "let identity = unchangedでは関数を保存するため、identity 42とidentity \"hello\"を別々の型で使えます。一方、let fixed = wrap 42は呼び出し済みのJust 42を保存し、その型はMaybe<Int>です。",
-  result: "この違いによって、あらゆる関数の引数が自動でジェネリックになるわけではありません。宣言では型パラメーターを明示します。複数の型で使える関数を別の関数へ渡す場合には、後述の制限があります。"
+  result: "identityはIntでもStringでも呼べますが、fixedはMaybe<Int>という一つの型の値です。また、関数の引数として受け取るA -> Aは、その呼び出しでAを一つ選びます。その引数を関数本体でInt用とString用に別々に使うことはできません。"
 }

@@ -22,6 +22,7 @@ pub struct ReferenceSymbol deriving JsonDecode {
   itemKind: String,
   signature: String,
   description: String,
+  descriptionEn: String,
   descriptionJa: String,
   reading: ReferenceReading,
   typeParameters: Array<String>,

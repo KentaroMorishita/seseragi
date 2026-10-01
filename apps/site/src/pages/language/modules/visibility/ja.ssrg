@@ -4,8 +4,8 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "公開範囲とopaqueな表現",
   summary: (explanation ()).summary,
-  ruleTitle: "宣言は既定でモジュール内だけに公開される",
-  ruleBody: "pubがない宣言は、定義したモジュールだけで使えます。let、fn、effect fn、型やtraitなどの宣言にpubを付けると、他モジュールへ公開します。公開関数の本体では非公開の補助関数を使えます。利用側が知る必要があるのは、公開関数の引数と結果です。公開するletや関数には完全な型注釈が必要で、その型から非公開の型を露出させることはできません。",
+  ruleTitle: "pubがない宣言は、同じモジュールだけで使える",
+  ruleBody: "宣言にpubを付けると、他のモジュールから使えます。let、fn、effect fn、型、trait、演算子、foreignなどを公開できます。公開関数の本体では非公開の補助関数も使えます。公開letと通常のfnには型注釈が必要です。短いeffect fnでは戻り値を推論できますが、公開する型に非公開の型を含めることはできません。",
   typingBody: "通常の公開された代数的データ型はコンストラクターも公開します。公開newtypeはコンストラクターと中身の型、公開structはフィールドも公開します。pub opaqueなら、他モジュールへ公開するのは型名だけです。外部では値を受け渡せますが、直接の構築、フィールド参照、パターンによる分解はできません。定義元では引き続き使えます。",
   evaluationBody: "opaqueは、型検査で許可する操作を制限する指定です。暗号化や実行時のセキュリティー検査ではありません。例のuserIdはIntを検証してUserIdを作り、toIntは中身を取り出す公開操作です。isValidも公開メソッドなので外から呼べますが、補助関数validは非公開のままです。",
   invalidTitle: "型を公開しても、すべてのメソッドを公開するわけではない",
@@ -27,5 +27,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "不正なIDを直接作らせず、型と操作だけ公開するには",
   summary: "pubは宣言を公開します。名前付きの型にopaqueも付けると、外部へは型を公開しつつ、内部の作り方や取り出し方を隠せます。",
   reading: "UserIdはIntを包みますが、pub opaqueです。公開関数userIdは正数か検査し、正しい場合だけJust (UserId value)を返します。toIntは意図して用意した読み取り方法で、外部からコンストラクターを直接使えるわけではありません。",
-  result: "userId 42はIDのある結果、userId 0はNothingです。これはソース上のアクセス制限で、実行時の暗号化ではありません。型を公開しても、外部から使うメソッドには個別にpubが必要です。"
+  result: "userId 42はJustで包んだID、userId 0はNothingを返します。外部のコードはUserIdを直接構築できないので、公開関数userIdの検証を通します。opaqueはソースの操作を制限する指定です。外部から呼ぶメソッドにも個別にpubが必要です。"
 }

@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "A call specializes the declared scheme",
   ruleBody: "A generic declaration lists its type parameters immediately after its name. identity<A> describes one scheme that works for any A. Each call begins with a fresh variable for every declared parameter, rather than reusing the types chosen by an earlier call. identity 42 and identity \"hello\" can consequently return Int and String independently.",
-  identityBody: "Call-site inference has five steps: introduce fresh variables; collect constraints from value arguments; add constraints from the expected return type; resolve trait evidence; reject any remaining ambiguity. Both the argument and the expected result must agree. Inference does not choose an arbitrary type merely to make an otherwise unconstrained call compile.",
+  identityBody: "The compiler infers type arguments from the supplied arguments and the expected result type. If an Int argument fixes A as Int, the result cannot instead be required to use String for A. A constrained function also checks the chosen type's trait implementations. Insufficient information to determine a type is an error.",
   checkingBody: "Explicit type arguments attach directly to the function name and follow declaration order. Supply all of them or omit all of them: there are no named or partly supplied lists. In the example, empty<Int> () selects the return-only parameter explicitly. An annotated binding can instead supply the expected List<Int> type. The empty list carries no element that could determine A by itself.",
   invalidTitle: "A return-only parameter still needs evidence",
   invalidBody: "identity<String> 42 contradicts the argument type. An incomplete argument list is rejected. Calling empty () without an expected type leaves A ambiguous. A resolved type must also satisfy its trait constraints; writing explicit arguments does not bypass the evidence check.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I write one function that accepts different types?",
   summary: "Declare a type parameter after the function name and use it in the parameter and result types. Each call chooses a concrete type.",
   reading: "identity<A> accepts an A and returns the same A. identity 42 infers Int; identity<String> \"hello\" explicitly selects String. empty<A> has no element from which to infer A, so its caller supplies List<Int> or an explicit <Int>.",
-  result: "A type parameter is a placeholder for a type, not an untyped value. identity<String> 42 is rejected because the selected type and the actual argument disagree. Omitted type arguments are inferred, never guessed at runtime."
+  result: "identity 42 returns Int, and identity<String> \"hello\" returns String. identity<String> 42 is an error because the selected String conflicts with the Int argument. Type arguments are determined for each call before execution."
 }

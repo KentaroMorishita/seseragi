@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Lambda expressions",
   summary: (explanation ()).summary,
-  ruleTitle: "Anonymous functions use the same function model",
-  ruleBody: "A lambda is written with backslash parameters, an arrow, and a body. Multiple parameters desugar to nested one-parameter lambdas, so partial application works exactly as it does for named functions.",
-  typingBody: "Parameter types may be inferred from an expected function type or annotated directly. Parameters enter scope from left to right and may be referenced by later parameter annotations and the body.",
-  evaluationBody: "Evaluating a lambda creates a closure without evaluating its body. Captured immutable bindings keep their lexical values; the body runs on each application.",
-  invalidTitle: "A lambda is not a multi-argument host callback",
-  invalidBody: "Writing several parameters still produces curried functions. Foreign callback conversion and lifetime rules are explicit interoperability concerns, not a different lambda calling convention.",
-  diagnosticsBody: "An unconstrained parameter or result reports an inference ambiguity. Add a parameter annotation or place the lambda where an expected function type is available.",
+  ruleTitle: "Write parameters and an expression where a function is needed",
+  ruleBody: "Write parameters after a backslash and the body after an arrow. A lambda with several parameters still receives them one at a time. As with fn, supplying only some parameters creates a function waiting for the rest.",
+  typingBody: "Parameter types are inferred from the function type expected where the lambda is supplied, or written on the parameters. In the example, Int -> Int specifies an Int parameter and result. Earlier parameter names can be referenced by later parameter annotations and the body.",
+  evaluationBody: "A lambda constructs a function value. Its body is computed when that function is called. The body can refer to outer names; those names are resolved where the lambda was written, not where it is called.",
+  invalidTitle: "Several parameters are still received one at a time",
+  invalidBody: "A lambda with several parameters differs from a function taking one tuple. Passing it to a callback in another language, such as JavaScript, requires the explicit foreign conversion rules. Writing a lambda alone does not change its calling convention.",
+  diagnosticsBody: "If the parameter or result type cannot be inferred, add parameter annotations or supply the lambda where the required function type is known.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I pass a small function without naming it?",
   summary: "A lambda is a function expression. It lets you put the function where a value is needed, for example as an argument to map.",
   reading: "In \\value -> value + 1, value names the parameter and the expression after -> is the result. The annotation Int -> Int beside increment supplies the parameter and result types. The add lambda has two parameters.",
-  result: "increment 20 is 21, and add 21 21 is 42, so answer is 42. The backslash begins the lambda; it is not an escape within a string. A captured outer value remains subject to the usual immutability rules."
+  result: "increment 20 is 21 and add 21 21 is 42, so answer is 42. Defining increment or add does not compute their parameter-dependent bodies. Calling them does."
 }

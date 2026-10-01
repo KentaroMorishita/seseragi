@@ -1,6 +1,7 @@
 pub fn title -> String = "Releases"
 pub fn summary -> String =
-  "Language, compiler, runtime, Playground, and tooling changes by release."
-pub fn heading -> String = "One release record"
+  "Find changes to the language, compiler, runtime, Playground, and development tools for each release."
+pub fn heading -> String =
+  "Check the changes and update instructions"
 pub fn body -> String =
-  "Release notes will connect user-visible changes to their language version, artifacts, and migration guidance."
+  "Read the release notes for changes and fixes that affect your code. They also identify the relevant version and any steps needed to update."

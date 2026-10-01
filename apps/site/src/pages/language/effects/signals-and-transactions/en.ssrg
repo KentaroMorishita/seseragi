@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signals and transactions",
   summary: (explanation ()).summary,
   ruleTitle: "Signal state is accessed through Effect",
-  ruleBody: "Creating, reading, updating, and subscribing touch runtime state and therefore return Task or Effect. MutableSignal<A> can lose write capability by coercing to Signal<A>, but the reverse conversion does not exist.",
-  typingBody: "planSet and planUpdate produce opaque SignalChange values, allowing heterogeneous changes in one Array without exposing their targets. transaction accepts those plans and returns Task<Unit>.",
-  evaluationBody: "A transaction stages changes in Array order, computes every update, and publishes once. A defect during staging or cancellation before commit publishes nothing; after commit begins, recomputation and notification finish atomically before cancellation is observed.",
+  ruleBody: "A Signal holds a current value whose changes can be observed. Creating, reading, updating, and subscribing access state, so they return Task or Effect. A writable MutableSignal<A> can be passed as a read-only Signal<A>. The reverse conversion is unavailable, and the contained type A remains unchanged.",
+  typingBody: "planSet and planUpdate construct update plans. SignalChange exposes no operation to extract a plan's target or value, allowing changes to Signals containing different types in one Array. transaction takes those plans and returns Task<Unit>. Creating a plan alone does not change the current value.",
+  evaluationBody: "transaction prepares changes in Array order and publishes once all calculations succeed. A planUpdate for the same Signal receives the value prepared by earlier plans. A defect during preparation or cancellation before publication publishes nothing. Once publication starts, cancellation is deferred until derived recomputation and notification finish.",
   invalidTitle: "A Signal is not an implicitly changing pure value",
-  invalidBody: "Pure code may hold a Signal but cannot read its current value. Use Signal.read or the prefix * operator in an Effect, and use update when a write depends on the current value.",
+  invalidBody: "Pure code may pass a Signal value around but cannot read its current value. Use Signal.read or prefix * within an Effect. Reading an old value and writing it back later can miss updates made between those operations. Use update to calculate and write the next value from the current value.",
   diagnosticsBody: "Type errors distinguish read-only Signal from MutableSignal and report the exact planned value mismatch. Runtime diagnostics identify staging, commit, derived recomputation, and subscriber notification phases.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I change two observed values without exposing a half-updated state?",
-  summary: "A Signal represents a changing observable value. A transaction prepares several updates and publishes them together.",
-  reading: "x starts at 1 and y at 2. planSet 10 x prepares x = 10; planUpdate adds 20 to y. transaction applies both plans as one update. currentX and currentY then read the stable values using *.",
-  result: "Executing updateCoordinates succeeds with (10, 22). Observers do not receive the half-state (10, 2) from this transaction. Preparing plans alone does not change a Signal, and ordinary immutable record fields do not become writable."
+  summary: "A Signal holds a current value whose changes can be observed. To update several Signals together, construct update plans and pass them to transaction.",
+  reading: "x starts at 1 and y at 2. planSet 10 x plans x = 10; planUpdate plans adding 20 to y. transaction publishes both changes together. The following * operations read the updated current values.",
+  result: "updateCoordinates succeeds with (10, 22). This transaction's notifications do not expose the intermediate state (10, 2). Only Signal updates are grouped this way; transaction does not make ordinary immutable fields writable or include I/O operations."
 }

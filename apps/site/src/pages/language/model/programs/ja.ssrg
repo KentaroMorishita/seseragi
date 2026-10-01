@@ -16,7 +16,7 @@ pub fn copy -> ConceptCopy = ConceptCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "ソースファイルを実行するプログラムにするには",
-  summary: "ソースファイル一つがモジュールです。実行するパッケージでは、公開mainを持つモジュールを選び、返すEffectで外部処理を表します。",
-  reading: "pubはmainを実行機構へ公開します。-> Unitは成功後に内容を返さない指定、with Consoleは出力サービスの要求、fails ConsoleErrorは出力が失敗する可能性の指定です。",
+  summary: "ソースファイルは、関数や型を宣言するモジュールです。パッケージを実行するときは、公開mainを持つモジュールを指定します。mainが返すEffectに、出力などの処理を記述します。",
+  reading: "pubでmainを公開します。-> Unitは、成功後に使うデータがないことを表します。with Consoleは、出力にConsoleのサービスが必要だという指定です。fails ConsoleErrorは、その処理がConsoleErrorで失敗する可能性を表します。",
   result: "実行機構がサービスを渡して処理を実行し、Hello, Seseragi!と改行を出力します。importは定義を使えるようにするもので、プログラムを起動する命令ではありません。"
 }

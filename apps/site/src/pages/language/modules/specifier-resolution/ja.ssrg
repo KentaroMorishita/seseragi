@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "先頭の形式で解決方法が決まる",
   ruleBody: "./と../は、importを書いたファイルからの相対パスです。self/は現在のパッケージの通常のソース、std/は標準ライブラリ、gen/は生成されたモジュールを指します。それ以外の指定は、宣言した直接の依存先と、その公開パスを指します。これらを順番に試すのではなく、先頭の書き方で解決方法が決まります。",
-  typingBody: "./userは、同じディレクトリーのuser.ssrgを指します。./user.ssrgと書いても同じモジュールです。ディレクトリーのindex.ssrgや複数の拡張子を自動で探すことはありません。コマンドを実行したディレクトリーも、相対importの基準にはなりません。同じモジュールを違う表記で読み込んでも、そこで定義した型が二つに分かれることはありません。",
+  typingBody: "./userは、importを書いたファイルと同じディレクトリのuser.ssrgを指します。./user.ssrgも同じ指定です。userというディレクトリのindex.ssrgや、別の拡張子のファイルは探しません。シェルでコマンドを実行したディレクトリも基準になりません。",
   evaluationBody: "依存先がacme/httpなら、acme/http/clientは、そのパッケージで公開したclientというパスを指します。リポジトリーにファイルが存在するだけでは、外部から参照できません。また、相対importで通常のソースからテストや生成用のルートへ越えることもできません。",
   invalidTitle: "ファイルの場所を知っていても公開APIを迂回できない",
   invalidBody: "依存先を宣言していない場合、公開されていないパス、ファイルが見つからない指定はエラーです。./directoryが自動で./directory/index.ssrgを探すことはありません。ファイルを移したら、importも正しいパスへ更新してください。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "./userは、どのファイルを指すか",
   summary: "importの指定は、書いた形式によって解決します。相対パスの基準はimportを書くソースファイルであり、シェルの作業ディレクトリではありません。",
   reading: "./modules-domainと./modules-domain.ssrgは、どちらも兄弟のmodules-domain.ssrgです。一方からUserIdを作り、もう一方の関数へ渡せるのは、同じモジュールを指しているためです。",
-  result: "./userからuser/index.ssrgや別の拡張子を総当たりしません。self/・std/・gen/は決まった参照先を選びます。外部パッケージのパスは、ファイルがあるだけでなく、依存と公開パスの宣言が必要です。"
+  result: "./userならuser.ssrgを指定し、user/index.ssrgを使うなら./user/indexと書きます。self/は自分のパッケージ、std/は標準ライブラリ、gen/は生成されたモジュールの指定です。外部パッケージは、依存先の宣言と公開パスを確認してください。"
 }

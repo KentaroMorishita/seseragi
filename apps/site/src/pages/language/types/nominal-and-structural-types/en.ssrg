@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Declaration identity versus record shape",
   ruleBody: "Two ADTs, structs, or newtypes are different nominal types even when their payload or fields match. A structural record R1 is a subtype of R2 when R1 contains every field required by R2 at exactly the same field type; additional R1 fields are permitted.",
-  identityBody: "Nominal identity protects domain boundaries and attached behavior. Record identity is only its immutable field map. Record fields are invariant: width subtyping may forget extra fields, but there is no implicit depth subtyping inside a shared field.",
+  identityBody: "Use named types to distinguish UserId from OrderId even when both contain integers. Use records when an interface should accept only the fields it needs. Extra fields are permitted only at the outer record being passed. Values in shared fields, including nested records, must have exactly the same types.",
   checkingBody: "At a record use site, the checker enumerates required fields, verifies exact field-type equality, then ignores additional source fields. It never converts a struct to a same-shaped record or equates separately declared nominal types.",
   invalidTitle: "Same representation is not the same type",
   invalidBody: "A Player struct cannot be passed as { name: String } merely because it exposes name, and one newtype cannot replace another over the same Int. A record whose shared field has a narrower or wider nested record type fails because field types remain invariant.",
@@ -15,7 +15,7 @@ pub fn copy -> TypeCopy = TypeCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "When are two similarly shaped values interchangeable?",
-  summary: "A named struct is identified by its declaration. An ordinary record is accepted by the fields its type requires.",
+  summary: "Separately declared structs and newtypes are different types even if their shapes match. An ordinary record is accepted when it contains the fields, with their required names and types, that the receiving interface needs.",
   reading: "playerName takes Player, so it accepts the explicitly constructed Player value. recordName takes { name: String }, so the ordinary summary record is accepted even though it also has active. The two functions both return a name but accept different interfaces.",
   result: "The resulting names are \"Aki\" and \"Mio\". A Player does not automatically become a record merely because it has name. Construct { name: player.name } explicitly if the record interface is what you need."
 }

@@ -4,18 +4,18 @@ import { SyntaxCopy } from "../article"
 pub fn copy -> SyntaxCopy = SyntaxCopy {
   title: "Custom operators and fixity",
   summary: (explanation ()).summary,
-  formsTitle: "Declare the complete operator contract",
-  formsBody: "A declaration such as operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left right defines the symbol, associativity, precedence, polymorphic scheme, evidence, and implementation together. Import it explicitly with import { operator <+> } from a module.",
-  typingBody: "left <+> right desugars to (<+>) left right, so the operator value is curried and may be partially applied. Operators live in a namespace separate from values. Standard overloads belong to traits or struct/newtype operator sugar instead of custom declarations.",
-  evaluationBody: "infixl associates left, infixr right, and infix is non-associative. Precedence is an integer from 0 through 8, so custom operators never outrank application or postfix access. Module interfaces collect declarations before bodies, allowing use before textual declaration.",
-  invalidTitle: "The operator alphabet is intentionally bounded",
-  invalidBody: "Symbols use at least two allowed ASCII operator characters. Standard operators, ->, <-, ranges, comments, ??, and := are reserved; angle-bracket-only symbols conflict with generic delimiters. Prefix and postfix custom operators do not exist. A lone & is only contextual requirement merge syntax.",
-  diagnosticsBody: "Duplicate imported symbols are ambiguous. Mixing equal-precedence operators with different fixities requires parentheses. Raw scanning remains lossless; shared header scanning, module-interface collection, flat-chain parsing, and fixity resolution keep compiler, formatter, and language server aligned.",
+  formsTitle: "Declare the symbol, grouping, and operation",
+  formsBody: "operator declares an operator symbol and its function. In operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left right, <+> groups to the right at precedence 5. append combines left and right, returning an A value. where Semigroup<A> requires an append implementation for A. Import it from another module with import { operator <+> }.",
+  typingBody: "left <+> right is the same function call as (<+>) left right. You can supply only its first argument. Operator names and ordinary value names are separate. To use an existing operator for a particular type, use the corresponding trait or a struct/newtype operator declaration rather than declaring a new symbol.",
+  evaluationBody: "infixl groups left and infixr groups right. Repeated uses of an infix operator require parentheses to choose grouping. Precedence ranges from 0 to 8; larger numbers group more tightly. Function application and dot access group more tightly still. Within one module, an operator can be used before its declaration.",
+  invalidTitle: "Do not redefine reserved symbols",
+  invalidBody: "A symbol uses at least two permitted ASCII operator characters. Standard operators, ->, <-, range and comment symbols, ??, and := are reserved. A symbol made only of angle brackets is not allowed. Custom prefix and postfix operators are not supported. A single & combines requirements.",
+  diagnosticsBody: "Importing the same symbol from several sources makes it ambiguous. When combining equal-precedence operators with left and right grouping, add parentheses to state the grouping.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I define a readable operator for my operation?",
   summary: "A custom binary operator names a function used between two operands. Its declaration also states how expressions with that operator group.",
-  reading: "The example defines <+> for two strings using append. left and right are the input parameters; the result is String. infixr 4 declares right grouping at precedence level 4, so a chain groups from its right end.",
-  result: "label becomes \"Seseragi docs\". The precedence declaration changes grouping, not the operand types or evaluation rules. You must import a custom operator explicitly from another module; merely importing a similarly named value does not bring it in."
+  reading: "The example's <+> joins two String arguments, left and right, with append. infixr 4 selects right grouping at precedence 4. A chain a <+> b <+> c therefore means a <+> (b <+> c).",
+  result: "label is \"Seseragi docs\". infixr determines grouping; it does not change argument evaluation from left-to-right to right-to-left. Import a custom operator explicitly with operator when using it from another module."
 }

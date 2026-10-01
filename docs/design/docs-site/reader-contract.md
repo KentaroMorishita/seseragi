@@ -44,7 +44,34 @@ specification-chapter label nor a link to a specification replaces explanation.
 Do not silently change a specification or compiler behavior to make an example
 appear to work. Record discrepancies and use genuinely executable examples.
 
-## Review and completion
+## Japanese-first editing with yomiyasu
+
+Use the `tech` guidance from [yomiyasu](https://github.com/nanaism/yomiyasu),
+pinned for this review to `30ee6041c328ce21d38a7963f667e079a93d7a12`.
+Write the Japanese explanation first. Then revise English from that explanation,
+preserving the same example, conditions, restrictions and result. The normative
+specification and executable sources remain the authority for language behavior.
+
+Identify the subject, action and object of each explanation. Replace vague
+references and abstract conclusions with the actual value, operation or error.
+Explain a required term locally before using it. Keep a real restriction or
+negative example when it is needed to explain correct usage; do not remove it
+merely because a style checker detects a negative sentence. Retain readable
+paragraphs and use lists for genuinely parallel items such as alternatives.
+
+Review the entire rendered page, including existing rules and mistakes, not only
+the introductory explanation. Review generated module and API pages too: their
+shared templates and descriptions are reader-facing prose, not exemptions.
+Keep source keywords, code, signatures and diagnostic identifiers unchanged.
+
+Run the bundled yomiyasu lint on prose extracted from rendered Japanese pages.
+Exclude code blocks and mark inline code so prose rules do not alter syntax.
+Its report is advisory, not an acceptance score. Make at most two editorial
+passes for its findings; record intentional technical exceptions instead of
+rewriting valid facts to obtain a clean score. Run Python in the foreground and
+verify that no lint or browser process remains after the checks.
+
+## Reader acceptance remains separate
 
 Review both rendered locales from the perspective of someone who knows basic
 programming but not Seseragi's compiler implementation. Answer the ten questions

@@ -16,7 +16,7 @@ import * as ja from "./ja"
 fn content -> PageDefinition =
   syntaxPage "language.syntax.literals" "/docs/language/syntax/literals/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("syntax-literals", localized "Canonical literal forms" "canonical literal form"),
+      ("syntax-literals", localized "Writing values directly in source" "値をソースに直接書く"),
     BulletList [
       [InlineCode "0b1010_0110", Words (localized " is binary Int." " は2進数の整数です。")],
       [InlineCode "0o755", Words (localized " is octal Int." " は8進数の整数です。")],

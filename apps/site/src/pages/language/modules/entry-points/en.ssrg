@@ -6,10 +6,10 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "The manifest selects the entry module",
   ruleBody: "An executable package resolves one public main from the module selected by its manifest. pub effect fn main -> Unit with AppEnv fails AppError declares a function of type Unit -> Effect<AppEnv, AppError, Unit>. The host passes (), supplies the environment to the returned Effect and runs it. Merely importing a module with main never invokes it.",
-  typingBody: "AppEnv must be a closed structural record: every required service field is statically known. Generic main, free type variables and unresolved requirement fields cannot cross this boundary. The host may supply extra fields under record width subtyping, but application services that the target cannot supply must be provided while composing the Effect returned by main.",
+  typingBody: "At the entry point, every type parameter and required service type must be determined. AppEnv is a record listing mandatory service names and types. The runner may provide extra fields but cannot omit required ones. For a custom service unavailable from the standard runner, return an Effect from main with that service supplied by provide.",
   evaluationBody: "The failure type must also be concrete. If it is not Never, the entry module's transitive import closure must supply one coherent Show instance so the host can render an unhandled typed failure. Success must be Unit. A library need not expose an entry point and can be imported without running an application.",
   invalidTitle: "main does not return an arbitrary process exit code",
-  invalidBody: "Application code has no direct exit primitive or entry overload returning an integer status. The host derives status from success, typed failure, defect, cancellation and process signals under its target contract. This keeps ordinary application code from skipping finalizers. Defects and cancellation must not be disguised as AppError.",
+  invalidBody: "The runner derives exit status from success, recoverable failure, defects, cancellation, and other target-defined conditions. main cannot return an integer exit code. Cancellation and defects are handled separately from ordinary AppError and must not be converted into it.",
   diagnosticsBody: "Entry checking validates the public binding, signature, concrete requirements and failure evidence before execution. If build rejects main, inspect those parts separately from ordinary function typing. The shown console example uses the official Console capability; an unsupported target cannot invent that service by a runtime name lookup.",
 }
 
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What function does the runner execute first?",
   summary: "An executable package selects an entry module with a public main function returning an Effect whose success value is Unit.",
   reading: "pub makes main visible to the runner. effect fn returns an Effect; with Console and fails ConsoleError state the needed output service and possible output failure. println describes printing the message followed by a newline.",
-  result: "Execution prints Hello, Seseragi! and completes with (). Importing this module does not call main. A library can expose functions without an entry point, and a program's main is not an arbitrary integer exit-code function."
+  result: "Execution prints Hello, Seseragi! and a newline, then completes with the Unit value (). The runner executes public main from the selected entry module. Importing it from another module does not call main. A library package need not have main."
 }

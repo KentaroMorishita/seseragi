@@ -4,8 +4,8 @@ import { TypeCopy } from "../article"
 pub fn copy -> TypeCopy = TypeCopy {
   title: "Type identity and coercion",
   summary: (explanation ()).summary,
-  ruleTitle: "Identity survives similar values and representations",
-  ruleBody: "Int and Float are distinct; A does not become Maybe<A> or Either<E, A>; structs do not become same-field records; newtypes do not implicitly wrap or unwrap; and Js.Nullable<A> does not become Maybe<A>. Use the named boundary conversion for each case.",
+  ruleTitle: "Write the required conversion when passing a value to another type",
+  ruleBody: "To use an Int as Float, call a conversion such as toFloat. To create Maybe<Int> from an Int, wrap it in Just. A struct and an ordinary record are different types even when their fields match. Explicitly wrap or unpack newtypes and convert foreign Js.Nullable<A> values to Maybe<A> as well.",
   identityBody: "The only general implicit coercions are Never into any demanded type and a wider structural record into the narrower required field set. Effect, Stream, Signal, and MutableSignal capability relationships are separately specified exceptions rather than evidence of general covariance.",
   checkingBody: "The checker first establishes source and target identity, then applies only an allowed coercion at the exact expected-type boundary. It does not chain guessed conversions or consult runtime values. Explicit conversions remain ordinary typed functions with visible failure where needed.",
   invalidTitle: "A compatible backend representation grants no conversion",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Will the compiler convert a similar value for me?",
   summary: "Seseragi keeps most type conversions explicit. A similar representation is not enough to make two types compatible.",
   reading: "An Int such as 42 is not automatically a Float, Just 42 is a Maybe<Int> rather than an Int, and a UserId wrapping 42 is not a raw integer. These distinctions prevent accidentally dropping absence handling or mixing identifiers.",
-  result: "Use the conversion operation you intend: a numeric conversion, Just to wrap a present value, or match to unpack a newtype. The limited automatic rules below do not permit arbitrary chains of inferred conversions."
+  result: "Call toFloat to convert 42 to Float, or write Just 42 to construct a present Maybe. Use match to extract the Int from UserId. For a type error, compare the value's type with the receiving interface's type and identify the required conversion."
 }

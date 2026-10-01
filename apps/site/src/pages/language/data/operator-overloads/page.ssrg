@@ -13,7 +13,7 @@ fn content -> PageDefinition =
         localized "A newtype addition contract" "newtype同士の加算を定義する"
       )] [CodeExample (
         "data-invalid-operator-overload",
-        localized "Rejected duplicate evidence" "同じ演算の実装を二重に定義するとエラー"
+        localized "Defining the same operation twice is an error" "同じ演算の実装を二重に定義するとエラー"
       )] [
         [InternalLink (
           localized "Custom operators and fixity" "カスタム演算子と結合規則",

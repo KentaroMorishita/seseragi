@@ -5,8 +5,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Calling trait methods",
   summary: (explanation ()).summary,
   ruleTitle: "Calls use function syntax and static evidence",
-  ruleBody: "A method in scope may be called by its unqualified name. Its explicit arguments are curried normally; its trait application is an implicit requirement. A trait-qualified name disambiguates two traits that expose the same method name.",
-  typingBody: "Concrete arguments or an expected result infer the trait parameters and select an instance. Generic callers must state the matching constraint. A partial application can retain unresolved evidence until later arguments determine its type.",
+  ruleBody: "Call a trait operation with its function name followed by arguments, as in label ticket. Arguments use spaces, as for ordinary functions. If several traits expose the same operation name, qualify it with the trait, for example Label.label.",
+  typingBody: "The compiler determines the trait arguments and instance from the arguments and expected result type. A generic function must state the required trait in where before calling the operation. After partial application, later arguments may determine types still unresolved.",
   evaluationBody: "Explicit arguments keep ordinary application order. The chosen method implementation runs directly; the runtime does not search a value's shape, constructor, or host class for a matching method.",
   invalidTitle: "A shared method name may need qualification",
   invalidBody: "If type information cannot determine which trait owns an unqualified name, the call is ambiguous even when both candidates have similar signatures. Qualify the trait or add useful type information.",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Do trait operations use a dot call?",
   summary: "A trait operation is called as a constrained function. Its name comes from the trait, and its implementation is selected from the argument types.",
   reading: "Render<Status> provides render. withPrefix calls render value and prepends text. withPrefix \"status: \" partially applies the first parameter; renderStatus Online then provides the Status value.",
-  result: "text is \"status: online\". Declaring a trait does not automatically add value.render dot syntax. Dot methods belong to an impl of a named type, while a generic trait caller declares the corresponding where constraint."
+  result: "renderStatus Online returns \"status: online\". render value is a trait function call. To use a dot method such as value.render, define it separately in an impl for the target type."
 }

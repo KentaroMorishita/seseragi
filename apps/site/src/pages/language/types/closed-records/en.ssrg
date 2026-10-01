@@ -8,8 +8,8 @@ pub fn copy -> TypeCopy = TypeCopy {
   ruleBody: "After alias expansion, a closed requirement has a record at its top level, fixed unique field names and types, no free type variable or unresolved row remainder, no recursive alias or unresolved constraint that could change the fields, and no optional field for an Effect or Stream host requirement.",
   identityBody: "Closed is a compile-time host-boundary property rather than a new runtime record type or an exact-record mode. The host may provide extra fields through ordinary width subtyping; the program cannot access fields absent from its declared requirement.",
   checkingBody: "Entry-point checking expands aliases and normalizes requirement merges before enumerating services. A generic variable still denotes one complete record rather than an open row, and it must be resolved to a closed field set at the host boundary.",
-  invalidTitle: "Closed does not mean no extra host fields",
-  invalidBody: "Free variables, unresolved rows or constraints, duplicate names, recursive aliases whose fields cannot be enumerated, and optional service fields make a host requirement non-closed. Extra fields in the concrete host value do not.",
+  invalidTitle: "Determine the service types at the execution entry point",
+  invalidBody: "Unresolved type parameters at the execution entry point prevent the compiler from listing the required services. Check the type arguments and alias definitions so each required field has a known name and type. Effect and Stream requirements cannot contain optional service fields. Extra services in the supplied environment are allowed.",
   diagnosticsBody: "Boundary diagnostics identify the construct preventing field enumeration and retain the expanded alias path. They are separate from ordinary missing-field diagnostics and from requirement-merge conflicts.",
 }
 
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How does the runner know which services to provide?",
   summary: "At a program's execution boundary, the compiler must know every required service name and type. A closed requirement record is a record whose required fields are all determined.",
   reading: "Timed<R, E, A> in the example adds a clock field to the services represented by R. While R is still a type parameter, this is a useful reusable description, but not yet a complete list that a runner can supply.",
-  result: "Before execution, R must resolve to a concrete record of mandatory services. Extra services in the supplied environment are allowed; closed does not mean that the environment must contain exactly those fields. Optional services are not permitted in this execution requirement."
+  result: "At the execution entry point, R must be a concrete record type of mandatory services. The supplied environment may contain extra services. Closed means that the list of fields required by the computation is determined."
 }

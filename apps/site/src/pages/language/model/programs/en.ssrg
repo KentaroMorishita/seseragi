@@ -16,7 +16,7 @@ pub fn copy -> ConceptCopy = ConceptCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How does a file become an executable program?",
-  summary: "Each source file is a module. An executable package chooses a module with a public main, whose returned Effect describes the program's external work.",
-  reading: "pub makes main accessible to the runner. -> Unit says successful completion has no further payload; with Console requires the output service; fails ConsoleError keeps a possible output failure visible in the type.",
+  summary: "A source file is a module declaring functions and types. To run a package, select a module with a public main. The Effect returned by main describes operations such as console output.",
+  reading: "pub makes main public. -> Unit means there is no result data to use after success. with Console requires the Console service for output. fails ConsoleError states that the operation may fail with a ConsoleError.",
   result: "The runner supplies the service and executes the returned operation, printing Hello, Seseragi! followed by a newline. Importing a module only makes its definitions available; it is not the program's execution command."
 }

@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Irrefutable patterns",
   summary: (explanation ()).summary,
-  ruleTitle: "Irrefutability is a property of shape and type",
-  ruleBody: "Names and wildcards always match. Tuples, records, and structs are irrefutable when every nested pattern is. A single-constructor ADT or newtype constructor is irrefutable when its payload pattern is.",
-  typingBody: "Only collection patterns that bind the entire collection as rest are irrefutable. Literals, fixed collection elements, and constructors from multi-variant ADTs remain refutable even when an example value matches.",
-  evaluationBody: "Checking irrefutability is compile-time reasoning; it does not insert a runtime test into let or effectful for. Destructuring still evaluates the input once.",
-  invalidTitle: "A likely match is still refutable",
-  invalidBody: "let [head, ...tail] = values is rejected because an Array may be empty. Use match, a total library operation returning Maybe, or bind [...all] when no length test is needed.",
-  diagnosticsBody: "A forbidden refutable binding points at the complete pattern. Shape, tuple arity, field, constructor payload, and element-type mismatches are reported before refutability is accepted.",
+  ruleTitle: "The input type determines whether a pattern always matches",
+  ruleBody: "A name or _ always matches. Tuple, record, and struct patterns always match if all their nested patterns do. The same applies to a single-constructor algebraic data type or a newtype when its payload pattern always matches. These are called irrefutable patterns.",
+  typingBody: "Arrays and Lists can be empty or have different lengths. A pattern requiring a particular number of elements is therefore not guaranteed to match. A pattern taking all elements as rest matches regardless of length. A specific literal or one alternative of a multi-variant type is also not guaranteed to match.",
+  evaluationBody: "The compiler determines from the input type whether a pattern always matches. let and Effect for use guaranteed patterns rather than testing for failure during execution. The input is still computed once.",
+  invalidTitle: "Matching this value differs from matching every possible value",
+  invalidBody: "let [head, ...tail] = values is rejected because values may be empty. Use match to handle empty input, or a library operation returning Maybe. If you do not need a first element, [...all] takes all elements.",
+  diagnosticsBody: "A pattern that may fail in a guaranteed-match position causes an error pointing to the complete pattern. First check whether its shape fits the input type, then whether it also matches empty values or other alternatives.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Why can I unpack a tuple in let but not demand a first array element?",
-  summary: "An irrefutable pattern must match every value of the known input type. This is why let can bind without a failure branch.",
+  summary: "An irrefutable pattern matches every value of its input type. let requires one because it has no branch for a failed match.",
   reading: "A UserId always has its wrapped integer, and a (String, Int) tuple always has two positions. The example can therefore extract rawId, name, and score with let without testing whether those parts exist.",
-  result: "identity is (42, \"Aki\", 100). An Array may be empty, so [head, ...tail] is not guaranteed to match; use match with an empty case, or an operation returning Maybe. Knowing one example array is nonempty does not change the general rule."
+  result: "identity is (42, \"Aki\", 100). The example's UserId and tuple patterns always extract their contents. An array has no such guarantee for its first element; use match and handle an empty array when writing [head, ...tail]."
 }

@@ -9,7 +9,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   identityBody: "メソッドはreplace<B>のBのように独自の型パラメーターを導入できます。それはそのメソッドに属し、implの他のメソッドに共有されません。外側のパラメーターを同名で隠すこともできません。例のreplaceは新しいBoxを作ってBox<B>を返し、元のBox<A>は変更しません。",
   checkingBody: "最初に、ドットの前の値とimplの対象型を照らし合わせます。その後でメソッドの引数と戻り値を検査します。number.replaceに文字列を渡すと、numberからAがInt、文字列からBがStringに決まります。結果は新しいBox<String>であり、元のBox<Int>のフィールドを書き換える操作ではありません。",
   invalidTitle: "対象型と無関係なimplパラメーターは置けない",
-  invalidBody: "implで宣言したパラメーターは対象型に現れる必要があります。無関係な具体型にimpl<A>を付けても、receiverからAを決められないため拒否されます。implのAが有効な場所でメソッドのAを再宣言することもできません。別の名前を使ってください。",
+  invalidBody: "implで宣言した型パラメーターは、対象型に現れる必要があります。例えば、Box<Int>にimpl<A>を付けても、ドットの前の値からAを決められないため拒否されます。implのAをメソッドでもAとして再宣言することはできません。メソッド固有の型パラメーターにはBなど別の名前を使ってください。",
   diagnosticsBody: "まず、ドットの前の値がimplの対象型に合うかを確認します。次に、メソッド固有の引数や制約を確認します。implのメソッドは対象の名前付き型に属します。ジェネリックであっても、traitのinstanceを選ぶ仕組みに変わるわけではありません。",
 }
 
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "値の型とメソッドの型パラメーターを区別するには",
   summary: "implの型パラメーターは、ドットの前の値の型から決まります。メソッド自身には、その呼び出しで決まる別の型パラメーターを追加できます。",
   reading: "numberはBox<Int>なので、impl<A> Box<A>のAはIntです。number.replace \"hello\"ではメソッドのBがStringになり、新しいBox<String>を作ります。selfはドットの前のnumberを受け取る引数です。",
-  result: "元のnumberはBox<Int>のままです。フィールドの型を書き換えたのではなく、新しい値を作っています。AとBは異なる型の選択を表すため、別の名前にします。"
+  result: "number.getはIntの42を返します。number.replace \"hello\"はStringを持つ新しいBoxを作り、元のnumberはBox<Int>のままです。implのAとメソッドのBは別々に決まる型を表します。"
 }

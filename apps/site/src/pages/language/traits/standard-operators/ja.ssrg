@@ -6,8 +6,8 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "引数の型に対応するtraitの演算を使う",
   ruleBody: "等価比較はEq、順序はOrd.compare、算術はAdd・Sub・Mul・Div・Rem・Powに対応します。<$>、<*>、>>=はFunctor・Applicative・Monadの操作です。instanceが、その型での処理を定めます。",
-  typingBody: "算術の実装は左・右・結果の型を持ちます。左と右の組み合わせから結果の型は一つに決まります。異なる型同士の計算も、その組み合わせの実装がある場合だけ使えます。IntからFloatへの自動変換はありません。",
-  evaluationBody: "左右を一度ずつ計算してから演算を行います。順序の四つの演算子はcompareを一度呼んだ結果から決まります。&&や||は右を計算しない場合がある構文で、traitの呼び出しではありません。",
+  typingBody: "加算などの算術instanceは、左の値、右の値、結果の型を指定します。左右の型が決まると、結果の型も一つに決まる必要があります。順序比較では同じ型の値を二つ比較します。IntとFloatなど異なる型の演算には、その組み合わせのinstanceが必要です。数値を自動変換して補うことはありません。",
+  evaluationBody: "左右の値を左から右へ一度ずつ評価してから、演算のinstanceを呼びます。<、<=、>、>=はcompareを一度呼んだ結果で判定します。一方、&&と||は右を評価しない場合がある組み込み構文で、traitの操作ではありません。",
   invalidTitle: "実装で演算子の構文は変えられない",
   invalidBody: "instanceを変えても優先順位や結合規則は変わりません。別の記号を使いたい場合はカスタム演算子を宣言します。",
   diagnosticsBody: "左右の型と対応するinstanceを確認します。Floatの順序もSeseragiの規則に従い、生成先の比較へ任せることはありません。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "標準演算子は、どの実装を呼ぶのか",
   summary: "対応する標準演算子は、引数の型から選ぶtrait実装を使います。名前付きの自分の型にも、その処理を用意できます。",
   reading: "DistanceはIntを包みます。+の実装では二つのDistanceの中身を取り出して足し、再びDistanceを返します。Intへの暗黙変換ではなく、Distanceの加算を定義しています。",
-  result: "totalはDistance 42です。記号・優先順位・まとまり方はそのままで、型に対応する処理が選ばれます。同じ操作と型に対する重複したinstanceは定義できません。"
+  result: "Distance 20 + Distance 22の結果はDistance 42です。Distance用の加算を定義しても、+の優先順位や結合の向きは変わりません。同じ引数の型に二つのinstanceを置くことはできません。"
 }

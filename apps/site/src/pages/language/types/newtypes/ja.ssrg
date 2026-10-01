@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "同じIntを使っていても、別の型として区別する",
   ruleBody: "newtype UserId = Intは、Intの別名ではなく、新しい型UserIdを作ります。UserId 42で値を作り、UserIdのパターンで中のIntを取り出します。同じIntを使うOrderIdを別に宣言しても、UserIdとは交換できません。識別子や単位を取り違える間違いを型検査で防げます。",
-  identityBody: "newtypeに型パラメーターを付けることもできます。中の値に使わない型パラメーターでも、用途の異なる型を区別できます。そのパラメーターを値から推論できない場合は、結果の型注釈や明示的な型引数で指定します。宣言の右辺に書くのはフィールドの一覧ではなく、中身を表す一つの型です。",
+  identityBody: "newtypeにも型パラメーターを宣言できます。中身に使わない型パラメーターでも、異なる用途の型を区別できます。その型が値から分からない場合は、結果の型注釈か明示的な型引数で指定してください。宣言の右辺には、中身の値の型を一つ書きます。structのようなフィールド一覧は書きません。",
   checkingBody: "UserIdの値にUserIdのパターンを使えば、必ず中身を取り出せます。ただし、IntからUserIdへの変換や、その逆の変換が暗黙に行われることはありません。フィールド参照や汎用のcoerceで中身を取り出すこともできません。中身の型が、自分自身へ直接または間接に戻る循環は認められません。再帰的な選択肢が必要ならADTを使います。",
   invalidTitle: "UserIdが必要な場所に、Intをそのまま渡さない",
   invalidBody: "Intを受け取る関数にUserId 42を渡すと型エラーになります。例のtoIntのように、意図を示して中身を取り出してください。逆にUserIdが必要な場所には、IntをUserIdで包んで渡します。メソッドやtrait実装を追加しても、この型の区別はなくなりません。",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "整数で表す二種類のIDを取り違えないようにするには",
   summary: "newtypeは、既存の型を中身に持つ別の型を作ります。実行時の形が似ていても、用途の違いを型検査で区別できます。",
   reading: "UserId 42とOrderId 42は同じ整数を持ちますが、型は別です。toIntはUserIdだけを受け取り、matchで中の整数を取り出します。OrderIdを渡すと型エラーになります。",
-  result: "取り出した結果はIntの42です。包む操作と取り出す操作は明示します。newtypeを宣言しただけで、自動変換や値の検証が追加されるわけではありません。"
+  result: "toInt (UserId 42)はIntの42を返します。UserIdとして使うには包み、Intとして使うには取り出します。入力値を検証したい場合は、newtypeの宣言とは別に、値を作る関数へ検証処理を書いてください。"
 }

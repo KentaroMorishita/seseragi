@@ -8,14 +8,14 @@ pub fn copy -> SyntaxCopy = SyntaxCopy {
   formsBody: "予約語はas、alias、deprecated、deriving、do、effect、else、fails、False、fn、for、foreign、from、if、impl、import、infix、infixl、infixr、instance、let、match、newtype、opaque、operator、pub、rec、struct、then、trait、True、type、when、where、withです。これらは構文に使うため、宣言する名前には使えません。",
   typingBody: "型、値を作るコンストラクター、traitの名前は大文字で始めます。値、関数、フィールド、importに付ける別名は小文字で始めます。たとえば型名Userと値名userは別の名前です。",
   evaluationBody: "constructor、method、property、value、pure、task、namespaceはforeign宣言の中だけ、sinceは非推奨を示すdeprecated節だけで特別な意味を持ちます。このように、決まった構文の中だけで使う語を文脈予約語と呼びます。selfはimplのメソッドの最初の引数に使います。",
-  invalidTitle: "捨てた値に名前を付け直して参照しない",
-  invalidBody: "_は値を使わずに捨てるための記号です。後から_を読んでその値を取り出すことはできません。予約語を名前にする、値名を大文字で始める、型名を小文字で始める、といった宣言はエラーになります。",
-  diagnosticsBody: "命名のエラーが出たら、診断が指す宣言名と先頭の大文字・小文字を確認してください。名前の大文字・小文字を変えると別の名前になります。元の名前の別名を作る操作ではありません。",
+  invalidTitle: "_で捨てた値は、後から参照できない",
+  invalidBody: "_は、値に名前を付けずに捨てるための記号です。後から_を読んでその値を取り出すことはできません。予約語を名前にする宣言、値名を大文字で始める宣言、型名を小文字で始める宣言もエラーになります。",
+  diagnosticsBody: "命名のエラーが出たら、診断が指す宣言名と先頭の大文字・小文字を確認してください。Userとuserのように、大文字・小文字が違えば別の名前です。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "値や型には、どんな名前を付けられるか",
-  summary: "値の名前、型の名前、構文の予約語を区別します。名前の規則は、どれが値や型なのかを読み取る手掛かりにもなります。",
+  summary: "型とコンストラクターの名前は大文字、値と関数の名前は小文字で始めます。typeやfnなど、構文に使う予約語は名前にできません。",
   reading: "Readingは型名、SampleはIntを持つコンストラクターです。describeやvalueは値の名前です。type、fn、matchは構文を始める予約語で、その位置で普通の名前としては使えません。",
-  result: "describe (Sample 42)は文字列の\"42\"を返します。大文字で書くだけでは型パラメーターにならず、宣言のパラメーター一覧が必要です。使用できる綴りと予約語の詳細は以下に示します。"
+  result: "describe (Sample 42)は文字列の\"42\"を返します。ReadingとSampleは大文字、describeとvalueは小文字で始めています。型パラメーターを使う場合は、<A>のように宣言のパラメーター一覧へ書く必要があります。"
 }

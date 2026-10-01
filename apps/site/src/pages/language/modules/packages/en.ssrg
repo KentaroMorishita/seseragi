@@ -7,7 +7,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   ruleTitle: "The manifest defines the boundary",
   ruleBody: "A package has one seseragi.toml at its root. It declares the package name, version and supported language range, and may specify layout, direct dependencies and public entry modules. The compiler does not infer this boundary from package.json or merge several parent manifests. Organizing files into directories inside a source root does not create additional packages.",
   typingBody: "A module's identity incorporates the package's identity: name, exact version and source identity. Two versions of the same dependency can have distinct internal identities. Two sources claiming the same name and exact version in one dependency graph cause a dependency-confusion error; the compiler does not silently pick one. Types imported from different package identities retain their declaring identities.",
-  evaluationBody: "An import can use only dependencies declared directly in the importing package's manifest. A transitive dependency used by one of your dependencies is not automatically available to your source. Resolution selects the declared dependency and its public export map before loading the module. A package boundary alone performs no I/O; module initialization and Effect execution retain their own rules.",
+  evaluationBody: "Declare an external package as a direct dependency in seseragi.toml before importing it. If a library you use depends on another library, that further dependency does not automatically become available to your source. Add it to your own dependencies if needed. The imported module is selected through the dependency's public exports paths.",
   invalidTitle: "pub and the export map answer different questions",
   invalidBody: "A pub declaration is visible to another module that can resolve its defining module. The package export map controls which source modules an external package may resolve. Publishing a declaration does not expose every private package path, and listing a module in exports does not make all its declarations public.",
   diagnosticsBody: "The package name uses lowercase ASCII segments separated by /. The std, self and gen prefixes are reserved. An incompatible language range, missing direct dependency, unavailable export subpath, conflicting source identity or a path escaping the package is diagnosed before application execution. A lockfile records the resolved graph; explicitly update it when package or source inputs change.",
@@ -25,7 +25,7 @@ pub fn exampleBody -> String =
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What makes a group of files one package?",
-  summary: "seseragi.toml defines a package's name, version, source layout, dependencies, and public entry modules. A directory alone is not a separate package.",
+  summary: "A package is a unit with a seseragi.toml manifest. That file declares its name, version, source layout, dependencies, and modules available to external consumers. Splitting directories within one package does not create another package.",
   reading: "In the example manifest, the public path acme/validation points to src/lib.ssrg and acme/validation/email points to src/email.ssrg. Other files can support those modules internally without becoming public package paths.",
   result: "pub on a declaration and the package's exports have different jobs: exports makes a module reachable from another package, while pub makes a declaration usable once that module is reached. A library need not have main."
 }

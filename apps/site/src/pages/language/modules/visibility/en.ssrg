@@ -4,8 +4,8 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Visibility and opaque representations",
   summary: (explanation ()).summary,
-  ruleTitle: "Declarations are private by default",
-  ruleBody: "A declaration without pub belongs to its defining module. Add pub to expose a let, fn, effect fn, type, newtype, alias, struct, trait, custom operator or foreign block. A public declaration can still call private helpers in its body: callers need its public contract, not access to its implementation. Public lets and functions require complete type annotations, and public type signatures must not expose private types.",
+  ruleTitle: "Declarations without pub are usable only in the same module",
+  ruleBody: "Add pub to make a declaration usable from other modules. let, fn, effect fn, types, traits, operators, and foreign declarations can be public. A public function's body may use private helpers. Public let and ordinary fn declarations require annotations. A compact effect fn may infer its result, but a public type signature cannot expose a private type.",
   typingBody: "A public ADT normally exposes its constructors, a public newtype its constructor and representation type, and a public struct its fields. Add opaque to a public struct, ADT or newtype to expose only the type name. Outside its defining module, code may pass values of that type but cannot construct, inspect or destructure its representation. The defining module retains those operations.",
   evaluationBody: "opaque controls access at compilation; it does not perform encryption or a runtime security check. In the example, userId validates a positive Int before constructing UserId, and toInt exposes a deliberate observation. Calling isValid works from another module because the inherent method is public. Its helper valid remains private. The wrapper preserves UserId's nominal type identity.",
   invalidTitle: "Public types do not automatically publish every method",
@@ -28,5 +28,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can I expose an ID without letting callers construct invalid ones?",
   summary: "pub exposes a declaration. Adding opaque to a named type hides its representation from other modules while keeping the type usable in public signatures.",
   reading: "UserId wraps Int but is pub opaque. The public userId function validates the input and returns Just (UserId value) only when positive. toInt is an explicitly supplied way to read the integer; external callers cannot directly use the hidden constructor.",
-  result: "userId 42 returns a present ID and userId 0 returns Nothing. This controls source-level access, not runtime encryption. A public type's methods still need pub individually before other modules can call them."
+  result: "userId 42 returns an ID wrapped in Just; userId 0 returns Nothing. External code cannot construct UserId directly, so it uses the validation in public userId. opaque restricts source-level operations. Each method also needs pub if external callers should use it."
 }

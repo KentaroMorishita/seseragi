@@ -4,18 +4,18 @@ import { ReferenceCopy } from "../../reference-article"
 pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Match expressions",
   summary: (explanation ()).summary,
-  ruleTitle: "Pattern choice is ordered and exhaustive",
-  ruleBody: "Patterns may nest literals, bindings, wildcards, constructors, tuples, records, structs, arrays, and lists. A guard is Bool and can use names bound by its arm. Every possible input must reach an arm.",
-  typingBody: "The scrutinee type checks every pattern, guard, and nested binding. All arm results have one type, with Never coercion where applicable. A guarded arm does not contribute to exhaustiveness.",
-  evaluationBody: "The scrutinee is evaluated once. Arms are tested in source order; only the first matching arm with a true guard evaluates its body. There is no fallthrough.",
-  invalidTitle: "A final-looking arm can still be incomplete",
-  invalidBody: "A guard may be false, so a guarded constructor arm cannot cover that constructor by itself. Add an unguarded fallback and remove arms shadowed by an earlier total pattern.",
-  diagnosticsBody: "The checker reports pattern/type mismatch, inaccessible fields, duplicate bindings, non-Bool guards, non-exhaustive cases, unreachable arms, and inconsistent result types.",
+  ruleTitle: "Try branches in order and use the first match",
+  ruleBody: "A pattern extracts data or tests for a particular value. Patterns can nest literals, names, _, constructors, tuples, records, structs, Arrays, and Lists. A guard after when must be Bool and can use names extracted by the pattern. Every possible input must match some branch.",
+  typingBody: "The input type determines the types extracted by each pattern. All branch results must have the same type, except a Never branch that returns no value. A guard can be false, so that branch alone does not count as handling every value of its case.",
+  evaluationBody: "The input is evaluated once. Branches are tried in written order. Only the first matching branch with a true guard is evaluated. Execution does not continue into later branches afterward.",
+  invalidTitle: "Handle the case where a guard is false",
+  invalidBody: "A matching constructor does not select a branch if its guard is false. Add an unguarded branch for that constructor or a fallback for the remaining values. If an earlier branch matches every value, later branches cannot be reached.",
+  diagnosticsBody: "The compiler reports pattern/type mismatches, private field access, duplicate bound names, non-Bool guards, omitted cases, unreachable branches, and different result types.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do I handle every case stored in a value?",
   summary: "match selects the first matching branch and returns that branch's result. The compiler checks that no possible input case is missing.",
-  reading: "Status has Waiting and Complete carrying an Int. The first Complete branch also requires count > 0; the next Complete _ handles all remaining counts. _ means the carried value is not needed in that branch.",
-  result: "message (Complete 3) returns \"3 complete\". A condition on a branch may be false, so it cannot by itself cover every Complete value. All selected branch results here are String."
+  reading: "Status has Waiting and Complete carrying Int. Complete count when count > 0 matches only when the extracted count is positive. The following Complete _ also handles counts of zero or less. _ discards the contained value.",
+  result: "message (Complete 3) returns \"3 complete\". Complete 0 fails the guarded branch, so the next branch returns \"complete\". Every selected branch returns String."
 }

@@ -5,17 +5,17 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "Type system",
   summary: (explanation ()).summary,
   ruleTitle: "Static types before execution",
-  ruleBody: "A Seseragi program runs only after every expression has a type. Inference is based on Hindley-Milner unification and extends it with nominal ADTs, structs and newtypes, structural immutable records, trait constraints, and bottom coercion from Never.",
-  identityBody: "Nominal declarations preserve declared identity even when representations match. Record identity is structural. Types guide compilation but do not authorize a backend to change observable values, evaluation order, failure, or Effect behavior.",
-  checkingBody: "Inference solves locally available equations and trait evidence. When those constraints do not determine one type, the compiler asks for an annotation instead of inserting a dynamic escape hatch. No successful build carries an unresolved Unknown type into execution.",
-  invalidTitle: "Static does not mean guessed",
-  invalidBody: "The compiler does not infer a type from a future runtime value, silently choose among ambiguous instances, or turn a mismatch into Any. Nominal and structural compatibility, Never coercion, and record width are explicit rules rather than general conversion.",
-  diagnosticsBody: "Parser diagnostics own malformed type syntax; type diagnostics own unification, missing evidence, ambiguity, and invalid coercion. The compiler, formatter, language server, and documentation examples consume the same source model rather than separate type grammars.",
+  ruleBody: "Passing String to a function that accepts Int produces a type error before execution. The compiler checks every expression's arguments, results, and operations. Where an annotation can be omitted, values and their uses determine the inferred type. Unresolved or conflicting types prevent execution.",
+  identityBody: "Named types such as structs and newtypes are distinct when declared separately, even if their values have the same shape. Record types instead depend on field names and types. The related page on nominal and structural types explains this distinction in more detail.",
+  checkingBody: "Type inference compares the type known from a value, the type required by a function parameter, and any written annotation. A trait constraint also requires a matching implementation. Add an annotation when information is missing; an annotation cannot make a conflicting value valid.",
+  invalidTitle: "Type inference does not choose a type by inspecting runtime values",
+  invalidBody: "Types are determined while checking the source. For example, assigning String to a binding annotated Int is rejected before execution. Adding an annotation does not resolve a conflict with the value's type. Correct the value or operation, or write the necessary conversion explicitly.",
+  diagnosticsBody: "Read the expected type, actual type, and source location in the error. Correct wrongly passed arguments, or add an annotation if information is missing. For a missing trait implementation, check whether the selected type provides the required operation.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "What mistakes does type checking prevent?",
   summary: "Every expression has a type checked before execution. Types describe which values a function or operation may accept and return.",
   reading: "Player groups a name, a Score, and a Rank. Score is a distinct wrapper around Int; Rank permits only Bronze, Silver, or Gold. The player value supplies a String, Score 42, and Gold in the appropriate fields.",
-  result: "A raw integer cannot silently replace Score, nor can arbitrary text replace Rank. The compiler detects these mismatches before running the program. Inference can save annotations but cannot make an invalid combination valid."
+  result: "Player accepts Score 42 for score and Gold for rank. Passing the raw integer 42 as score or arbitrary text as rank is a type error. Named types distinguish purposes even when the values have similar representations."
 }

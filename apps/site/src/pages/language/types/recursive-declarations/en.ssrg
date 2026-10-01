@@ -6,16 +6,16 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "Make recursive scope explicit",
   ruleBody: "A named function or type declaration may refer to itself. Recursive functions require return annotations. Ordinary let is non-recursive. Mutually recursive functions appear in one rec group whose member names are visible throughout the group and after it, but not before it.",
-  identityBody: "A local fn or effect fn is visible in its own body and following block items; a later local function is not visible backward. A rec group defines one checking unit without changing the declared function types or turning functions into runtime references.",
-  checkingBody: "Every rec-group member is checked monomorphically against its declared boundary while the group is open. Explicit type parameters generalize only after the entire group succeeds. Direct self tail calls receive the specified constant-host-stack guarantee; mutual and non-tail calls do not.",
+  identityBody: "A local function's name is available in its own body and in code after its declaration. Declaring even before odd alone does not let even call odd. Placing both declarations in rec makes both names available in each body within the group.",
+  checkingBody: "While checking a rec group, each function uses one consistent declared type. Its type parameters become reusable from outside the group after all members pass. A call directly to the same function as its final operation does not grow the host stack with call count. Mutual recursion and calls followed by more work do not have that guarantee.",
   invalidTitle: "Source order still matters outside rec",
   invalidBody: "A normal let cannot read itself, an earlier local function cannot call a later sibling without rec, duplicate group names are rejected, and a mutually recursive return mismatch fails the whole group. Generalizing one member early is never used to make the group pass.",
-  diagnosticsBody: "Scope diagnostics distinguish a forward reference from an unknown external name. Group diagnostics identify duplicate members, declared-result mismatches, and constraint failures while retaining each member's source range. Tail-call tooling must not promise the guarantee outside direct self tail position.",
+  diagnosticsBody: "For an unresolved name, check declaration order and the rec group containing it. In deeply recursive code, also check whether the direct self call is really the final operation; the constant-stack guarantee does not apply otherwise.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How do two functions call each other?",
   summary: "Use rec to declare mutually recursive local functions together. A function's ordinary self-call and a let initializer follow different rules.",
   reading: "even checks for zero, then calls odd with one less; odd does the opposite. The rec group makes both names visible in both bodies. For a nonnegative input, repeatedly subtracting one reaches the zero case.",
-  result: "isEven 4 returns True. These functions do not define behavior for negative inputs that reaches the base case. Nor does mutual recursion carry the constant-stack guarantee given to direct self tail calls; termination and stack behavior are separate concerns."
+  result: "isEven 4 returns True. Subtracting one from a positive input eventually reaches the zero case; a negative input does not reach it. Mutual recursion also lacks the constant-stack guarantee of a direct self tail call."
 }

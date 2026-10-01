@@ -5,7 +5,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "Generic algebraic data types",
   summary: (explanation ()).summary,
   ruleTitle: "Constructors quantify the declaration's parameters",
-  ruleBody: "A generic ADT introduces a family of nominal types. Outcome<String, Int> and Outcome<String, Bool> are different applications of the same constructor. Each value constructor quantifies every parameter of the ADT, even when its payload mentions only some of them. Failure carries E but still produces Outcome<E, A>; Success carries A but still produces Outcome<E, A>.",
+  ruleBody: "Outcome<E, A> lets you choose the failure type E and success type A. Outcome<String, Int> and Outcome<String, Bool> are different types. Failure contains a value of E and Success a value of A; both are values of Outcome<E, A>. Constructing either alternative still requires both E and A to be determined.",
   identityBody: "Each construction gets fresh type variables. A payload can fix one parameter while leaving another to the expected result type or explicit arguments. The annotated success in the example fixes E to String even though Success has no error payload. Do not interpret an unused payload parameter as Never or as a type omitted from the result.",
   checkingBody: "Matching substitutes the scrutinee's arguments into each constructor payload. Matching Outcome<String, Int> therefore binds a Failure payload as String and a Success payload as Int. Recursive references must apply the ADT's parameters explicitly: Node holds Array<Tree<A>>, not a bare Tree. This keeps one consistent A throughout that tree.",
   invalidTitle: "A payload does not necessarily determine the whole ADT",
@@ -17,5 +17,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "How can the same result type store different payload types?",
   summary: "A generic ADT describes a fixed set of alternatives while letting you choose the types stored in them.",
   reading: "Outcome<E, A> has Failure carrying E and Success carrying A. For Outcome<String, Int>, Failure contains text and Success contains an integer. Both alternatives are values of the same complete Outcome<String, Int> type.",
-  result: "Success 42 determines A but says nothing about E. The annotation supplies that missing information. Tree<A> also shows recursion: a Node stores child trees whose elements use the same A, not arbitrarily different types."
+  result: "The integer in Success 42 determines A as Int. The success value supplies no information about E, so the annotation fixes it as String with Outcome<String, Int>. Child trees in Tree<A> also use the same A, keeping the element type consistent throughout the tree."
 }

@@ -6,7 +6,7 @@ pub fn copy -> TypeCopy = TypeCopy {
   summary: (explanation ()).summary,
   ruleTitle: "七つの型が表す値",
   ruleBody: "Intは-9007199254740991から9007199254740991の整数、Floatは64ビットの浮動小数点数です。BoolはTrueとFalse、CharはUnicodeスカラー値一個、Stringはその列を表します。Unitの値は()だけです。Neverは値を一つも持たず、正常に値を返さない計算を表します。",
-  identityBody: "Intに負の0はありませんが、Floatにはあります。Unitは処理が完了したときに返せる通常の値です。Neverは値を返さないことを示すため、Unitとは違います。",
+  identityBody: "Intには負の0がありません。Floatには負の0があります。内容を返す必要がない処理は、Unitの値()で正常に完了できます。Neverには値がないため、()を返す処理の型には使いません。",
   checkingBody: "整数と小数の書き方でIntかFloatが決まります。必要な型に合わせて自動でInt・Float・BigIntの間を変換することはありません。Neverの式は実際の値を返さないため、別の型の値を求める場所でも使えます。",
   invalidTitle: "似た数値や文字でも型を区別する",
   invalidBody: "IntとFloatは別の型です。複数のUnicodeスカラー値から成る文字列はCharではありません。Unitは空のレコード{}でもNeverでもありません。Intの範囲外の数値を、自動で丸めて受け付けることもありません。",
@@ -15,7 +15,7 @@ pub fn copy -> TypeCopy = TypeCopy {
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "この値にはどの型を使うか",
-  summary: "整数にはInt、小数にはFloat、真偽値にはBool、文字にはChar、文字列にはStringを使います。UnitとNeverは、計算の結果について異なる意味を持ちます。",
+  summary: "Intは整数、Floatは浮動小数点数の型です。Boolは真偽値、CharはUnicodeスカラー値一個、Stringはその列を表します。Unitは内容を返さず完了した結果、Neverは正常に結果を返さない計算を表す型です。",
   reading: "例のmillionはInt、avogadroはFloatです。newlineとlambdaはChar、quotedとtemplateはStringです。テンプレート文字列では、埋め込んだ式の値を表示用の文字列にして挿入します。",
   result: "Unitには()という値が一つあり、「返す内容のない正常な完了」を表します。Neverには値がなく、「結果を返せないこと」を表します。整数に見える値でも、IntとFloatは自動では変換されません。"
 }

@@ -5,17 +5,17 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   title: "Signalの購読と寿命",
   summary: (explanation ()).summary,
   ruleTitle: "変化を受け取る期間を決め、購読を解放する",
-  ruleBody: "subscribeは、最初に現在値を通知し、その後の更新を順に届けます。この通知を受ける関数を購読者と呼びます。同じSignalの購読者は登録順に呼ばれ、一つの購読者へ複数の通知を重ねて実行しません。",
-  typingBody: "通知の関数はEffect<R, Never, Unit>を返します。回復可能な失敗を外へ残せないため、必要なら関数の中で処理します。subscribeは購読の値Subscriptionを返し、unsubscribeで解放できます。何度解放しても二重に処理しません。",
-  evaluationBody: "通知の中でSignalを更新した場合、現在の更新が終わった後に別の更新として実行します。scopeの終了や失敗、キャンセルでは登録済みの購読を解放します。使わなくなった派生Signalの依存も解放されます。",
+  ruleBody: "subscribeを実行すると、通知を受け取る関数をSignalへ登録します。その関数を購読者と呼びます。最初に現在値を通知し、その後の更新も順に渡します。同じSignalの購読者は登録順に実行し、一つの購読者が通知を処理している間は次の通知を重ねません。",
+  typingBody: "購読者は、通知された値Aを受け取り、Effect<R, Never, Unit>を返す関数です。回復可能な失敗がある操作は、その関数の中で処理してください。subscribeの成功値は、登録した購読を表すSubscriptionです。unsubscribeは、その購読を解除するTask<Unit>を返し、重ねて実行しても二重に解除しません。",
+  evaluationBody: "通知中にSignalを更新した場合は、現在のトランザクションが終わった後に、次の更新として実行します。通知の処理中に、同じ通知処理へ再び入ることはありません。scopeへ登録した購読は、そのscopeの成功・失敗・キャンセルのいずれでも解除します。購読者のいない派生Signalも、不要な依存先の購読を解放します。",
   invalidTitle: "依存先を変えるにはswitchMapを使う",
-  invalidBody: "Signalには一般的なMonadの実装はありません。依存するSignalを動的に切り替える場合はswitchMapを使い、購読の開始と終了が明確な操作にします。",
-  diagnosticsBody: "通知の中でdefectが起きた場合、その購読者が停止します。別の購読者の型付きの失敗にはなりません。購読を続けたい期間と解放の位置を確認してください。",
+  invalidBody: "Signalには、成功値から次の処理を選ぶMonadの一般的な実装はありません。依存するSignalを動的に切り替える場合はswitchMapを使います。この操作なら、古いSignalの購読解除と新しいSignalの購読開始を、一つの更新として管理できます。",
+  diagnosticsBody: "通知の関数に処理の不具合であるdefectが起きると、その購読者を停止します。他の購読者の回復可能な失敗としては伝えません。購読を続けたい期間に合わせて、unsubscribeを実行する位置やscopeへの登録を確認してください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "Signalの監視が不要になったら、どう止めるか",
-  summary: "購読は、Signalの変化を観測する処理を登録します。寿命があるため、不要になったら明示的に解除するか、管理範囲の終了時に解放します。",
-  reading: "subscribeは最初にsourceの現在値をコールバックへ渡し、mirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeした後の3への更新では、その観測処理は呼ばれません。",
-  result: "observeThenReleaseの結果は2です。コールバックのvalueは通知された値であり、Signalのハンドルではありません。必要な機能の寿命に合わせて購読を管理します。"
+  summary: "購読は、Signalの変化を受け取る関数を登録する操作です。不要になった購読はunsubscribeで解除します。リソースのscopeへ登録した場合は、scopeの終了時に解除します。",
+  reading: "subscribeは最初にsourceの現在値を関数へ渡し、その関数がmirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeで購読を解除した後にsourceを3へ更新しても、その関数は呼ばれません。",
+  result: "observeThenReleaseは2を返します。mirrorは解除後の更新を受け取らないためです。通知の引数valueは、sourceの現在値であってSignalそのものではありません。必要な期間だけ通知を受け取るよう、購読を解除してください。"
 }

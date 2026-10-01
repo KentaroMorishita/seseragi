@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
-import { japaneseReferenceDescription } from "./reference-copy"
+import { referenceDescription } from "./reference-copy"
 import { signatureReading } from "./signature-reading"
 
 const root = resolve(import.meta.dir, "../../..")
@@ -324,6 +324,10 @@ export function compilerReferenceModules() {
       targets: module.targets,
       items: module.items.map((item) => {
         assert.equal(item.module, module.specifier, item.identity)
+        const description =
+          item.description === ""
+            ? { en: "", ja: "" }
+            : referenceDescription(item.description)
         return {
           identity: item.identity,
           name: item.name,
@@ -333,10 +337,8 @@ export function compilerReferenceModules() {
           itemKind: item.kind,
           signature: item.signature,
           description: item.description,
-          descriptionJa:
-            item.description === ""
-              ? ""
-              : japaneseReferenceDescription(item.description),
+          descriptionEn: description.en,
+          descriptionJa: description.ja,
           reading: signatureReading(
             item.signature,
             item.kind,

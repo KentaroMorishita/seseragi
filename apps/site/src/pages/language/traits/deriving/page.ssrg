@@ -8,7 +8,7 @@ import * as ja from "./ja"
 
 fn content -> PageDefinition =
   referencePage "language.traits.deriving" "/docs/language/traits/deriving/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("traits-deriving", localized "Derived nominal evidence" "自分の型のEqやShowを自動で実装する")] [CodeExample
+      ("traits-deriving", localized "Generating Eq and Show implementations for your type" "自分の型のEqやShowを自動で実装する")] [CodeExample
       (
         "traits-invalid-deriving",
         localized "Unsupported deriving target" "自動で導出できないtraitを指定した場合"

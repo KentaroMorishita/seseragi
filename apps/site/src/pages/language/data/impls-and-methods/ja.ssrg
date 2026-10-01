@@ -7,7 +7,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   ruleTitle: "型と同じモジュールにメソッドを定義する",
   ruleBody: "impl Tの中に、型Tのメソッドを書きます。最初の引数はselfという名前で、型はTです。value.methodと呼ぶと、valueがselfに渡されます。残りの引数は、通常の関数と同じく空白で順番に渡します。",
   typingBody: "呼び出し先は、selfに渡す値の型から決まります。型パラメーターがあれば具体的な型を当てはめて検査します。一つの型に複数のimplを書けますが、同じ名前のメソッドを二重に定義することはできません。",
-  evaluationBody: "メソッド呼び出しは、選ばれた関数へselfを渡す呼び出しです。オブジェクトの状態をその場で書き換える操作ではありません。値を変えたいメソッドでは、新しい値を返します。self以外に引数がないメソッドはvalue.getのように呼び、余分な()を渡しません。",
+  evaluationBody: "メソッド呼び出しでは、型から決まる関数へドットの前の値をselfとして渡します。selfのフィールドに代入することはできません。値を変えたいメソッドでは、新しい値を返します。self以外に引数がない場合はvalue.getと書きます。getがUnit引数を要求していなければ、()は渡しません。",
   invalidTitle: "メソッドの追加とtraitの実装は別の宣言",
   invalidBody: "impl Tは、Tを定義したモジュールにだけ書けます。traitの条件を満たす実装にはinstance Trait<T>を使います。impl Trait<T>を書いてもtraitの実装にはなりません。",
   diagnosticsBody: "定義する型の所属、selfの名前と型、メソッド名の重複を確認してください。他モジュールから呼ぶメソッドにはpubが必要です。",
@@ -16,6 +16,6 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "自分の型に属する操作は、どこに書くか",
   summary: "implには、名前付きの型に属するメソッドをまとめます。型の定義元のモジュールに書き、最初のself引数で操作する値を受け取ります。",
-  reading: "Box<A>はvalueを持ちます。impl<A> Box<A>のgetでは、self: Box<A>がドットの前のBoxを受け取り、self.valueを同じA型のまま返します。",
-  result: "Box<Int> { value: 42 }.getの結果は42です。値を読み取る操作で、書き換えやtrait実装の追加ではありません。traitの約束を満たすには別途instanceを使います。"
+  reading: "Box<A>のvalueはA型のフィールドです。impl<A> Box<A>に定義したgetは、ドットの前のBoxをself: Box<A>で受け取ります。self.valueを返すので、戻り値もA型です。",
+  result: "Box<Int> { value: 42 }.getの結果はIntの42です。getはselfの中身を読み、Boxの値を変更しません。implによるメソッドの追加と、instanceによるtraitの実装は別の宣言です。"
 }

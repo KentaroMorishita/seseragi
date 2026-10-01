@@ -16,32 +16,32 @@ import * as ja from "./ja"
 fn content -> PageDefinition =
   typePage "language.types.built-in-types" "/docs/language/types/built-in-types/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("syntax-literals", localized "Built-in values in canonical source" "組み込み型に対応する値"),
+      ("syntax-literals", localized "Values of built-in types" "組み込み型に対応する値"),
     BulletList [
       [
         InlineCode "Int",
         Words (
-          localized " — exact safe integer, without negative zero."
-      " — 正確に表せる範囲が決まった整数です。負のゼロはありません。"
+          localized ". An exact integer within a defined range, without negative zero."
+      "。正確に表せる範囲が決まった整数です。負のゼロはありません。"
         )
       ],
       [
         InlineCode "Float",
         Words (
-          localized " — IEEE 754 binary64, including signed zero."
-      " — IEEE 754の64ビット浮動小数点数です。正と負のゼロを区別します。"
+          localized ". An IEEE 754 64-bit floating-point number, distinguishing positive and negative zero."
+      "。IEEE 754の64ビット浮動小数点数です。正と負のゼロを区別します。"
         )
       ],
       [
         InlineCode "Char / String",
         Words (
-          localized " — one Unicode scalar / an immutable scalar sequence."
-      " — CharはUnicodeの符号位置一つ、Stringはその不変の列です。"
+          localized ". Char represents one Unicode scalar value; String is an immutable sequence of scalar values."
+      "。CharはUnicodeスカラー値一個、Stringはその不変の列です。"
         )
       ],
       [
         InlineCode "Unit / Never",
-        Words (localized " — one value / no values." " — 値一個 / 値なし。")
+        Words (localized ". Unit has the single value (); Never has no values." "。Unitの値は()一個です。Neverには値がありません。")
       ]
     ]
   ] [CodeExample (

@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "ファイルの直下には宣言を置く",
   ruleBody: "モジュール直下にはimport、再公開、let、fn、effect fn、型、impl、trait、instance、演算子、foreign、recなどの宣言を置きます。単独の関数呼び出しを文として並べることはできません。計算結果を保持するならletの右辺、処理を定義するなら関数の本体に書きます。",
-  typingBody: "モジュール直下のletの右辺は、純粋な計算である必要があります。Effectの値を作ることは、処理を記述するだけなので純粋な計算です。例のpendingはreport ()が返すEffectを保持します。pendingの初期化だけでは、printlnの出力は起きません。",
+  typingBody: "モジュール直下のletには、必ず一致するパターンと純粋な右辺が必要です。Effectの値を作るだけなら、外部処理をまだ実行しないため純粋な計算です。例のlet pending = report ()は、printlnを実行する処理の値を保存します。pendingの初期化時には出力しません。",
   evaluationBody: "letは上から順に一度だけ計算します。先のletとモジュールの関数を参照できますが、後のletを直接読むことはできません。関数の宣言はletの後にあっても呼べます。ただし、その関数がまだ初期化していないletを読むことはできません。",
   invalidTitle: "関数に移しても、未初期化の値は読めない",
   invalidBody: "関数の本体から後のletを参照すること自体はできます。問題になるのは、そのletの初期化前に関数を呼んでしまう場合です。SES-N0201はこの呼び出しを拒否します。関数宣言を上へ移すだけでは解消しません。関数同士の相互再帰には同じrecが必要です。",
@@ -16,7 +16,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 pub fn layoutTitle -> String = "公開する型を明示し、名前の範囲を区別する"
 
 pub fn layoutBody -> String =
-  "非公開のletでは、右辺から型を推論できます。通常のfnでは、非公開でも引数と戻り値の型注釈が必要です。型を推論する短いeffect fnの形式とは区別してください。公開APIの型は公開範囲の規則に従って明示します。importは他の宣言より前に置きます。ブロック内のローカル関数は、宣言した位置からだけ使えます。"
+  "非公開のletでは、右辺から型を推論できます。通常のfnは、非公開でも引数と戻り値の型を書きます。例外となる短いeffect fnでは、->、with、fails、whereをすべて省略し、引数の型は書いたうえで戻り値のEffectを推論します。公開APIも、この形式の規則と公開範囲の規則に従います。importは他の宣言より前に置きます。ブロック内のローカル関数は宣言位置から使えます。"
 
 pub fn exampleTitle -> String = "初期化では処理を構築し、実行は後へ残す"
 
@@ -26,6 +26,6 @@ pub fn exampleBody -> String =
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "モジュール直下で作ったEffectは、import時に実行されるか",
   summary: "モジュール直下の宣言は名前を定義し、通常の値を初期化します。Effectの値を保存しても、その説明する処理は実行しません。",
-  reading: "baseは20で、answerはdouble 21の42になります。report ()は出力処理の説明を作り、pendingに保存します。printlnはその処理に残り、モジュールの初期化では出力しません。",
+  reading: "baseは20です。answerではdouble 21を計算し、42を保存します。report ()は、出力を行うEffectの値を作り、pendingへ保存します。printlnの実行は後に残るため、この初期化では画面やコンソールに出力しません。",
   result: "保存したEffectを実行するのは、実行入口などの定められた境界です。トップレベルに単独の式文は置かず、値は宣言に、外部操作は返すEffectの中に書きます。"
 }

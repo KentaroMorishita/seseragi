@@ -6,7 +6,7 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   summary: (explanation ()).summary,
   ruleTitle: "名前の取得元をimportで明示する",
   ruleBody: "importはモジュールの先頭に書きます。名前を指定すると、その公開名を直接使えるようになります。asで別名を付けることもできます。import * as textのようにモジュールの別名を付ける場合は、text.trimのように参照します。例では、arrayのlengthをarrayLengthという名前で取り込み、trimはtextを通して使います。",
-  typingBody: "importしても、宣言の型や定義元は変わりません。関数に別名を付けても、新しい実装が作られるわけではありません。同じ名前が型と値の両方で公開されている場合は、一度のimportで両方を取り込みます。たとえば、中身を隠していないnewtypeをimportすれば、型名と値を作るコンストラクターの両方を使えます。",
+  typingBody: "importで別名を付けても、宣言の型や定義元は変わりません。中身を隠さず公開したnewtypeをimportすると、型名と値を作るコンストラクターの両方を使えます。asで別名を付けた場合も、型注釈と値の構築の両方でその別名を使います。",
   evaluationBody: "importはモジュールを依存先に加えますが、関数を呼び出したりEffectを実行したりはしません。モジュールの別名を使った参照先は、コンパイラが静的に決めます。公開された値、関数、型、trait、コンストラクター、外部の入れ子の名前空間を修飾できます。ただし、独自演算子をモジュール名で修飾した中置表記はありません。",
   invalidTitle: "モジュールの別名を付けても、すべての名前を直接使えるわけではない",
   invalidBody: "import * as text from \"std/text\"で取り込んだ関数は、trimではなくtext.trimと書きます。公開名をすべて無修飾で取り込む構文はありません。同じスコープに同じ名前を二度importすることもできません。別名を付けるか、モジュール名で修飾してください。非公開の名前は、名前を知っていてもimportできません。",
@@ -27,5 +27,5 @@ pub fn explanation -> ExplanationCopy = ExplanationCopy {
   question: "別のモジュールの関数を、名前の衝突を避けて使うには",
   summary: "名前を指定するimportは、その公開宣言を直接使えるようにします。モジュールの別名を付けるimportでは、別名を前に付けて公開名を使います。",
   reading: "length as arrayLengthは、std/arrayの関数に利用側の別名を付けます。import * as textならtext.trimとして呼びます。別名を付けても、関数の型や実装は変わりません。",
-  result: "itemCount [1, 2, 3]は3、normalize \"  Aki  \"は\"Aki\"です。名前を知っていても非公開の宣言はimportできません。importは定義を使えるようにしますが、そのEffectを実行しません。"
+  result: "itemCount [1, 2, 3]は3、normalize \"  Aki  \"は\"Aki\"です。arrayLengthとtext.trimは、元の標準関数をそれぞれの名前で使います。importできるのは公開宣言です。import時に関数や、その返すEffectを実行することはありません。"
 }

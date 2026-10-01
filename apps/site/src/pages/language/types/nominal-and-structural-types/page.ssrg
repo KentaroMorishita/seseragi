@@ -24,14 +24,14 @@ fn content -> PageDefinition =
       [
         InlineCode "ADT / struct / newtype",
         Words (
-          localized " — compatibility follows declaration identity."
-        " — 別々の宣言なら、フィールドが同じでも別の型です。"
+          localized ". Separate declarations define separate types even when their fields match."
+        "。別々の宣言なら、フィールドが同じでも別の型です。"
         )
       ],
       [
         InlineCode "{ id: Int, name: String }",
         Words
-        (localized " — may flow to { name: String } by width." " — nameだけを要求する関数にも渡せます。")
+        (localized ". Can also be passed to a function requiring only { name: String }." "。nameだけを要求する関数にも渡せます。")
       ],
       [Words (
         localized
