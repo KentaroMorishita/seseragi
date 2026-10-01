@@ -1,21 +1,44 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Character and string escapes",
   summary: (explanation ()).summary,
-  formsTitle: "Use a backslash for characters you cannot write directly",
-  formsBody: "A backslash followed by a supported symbol writes a newline, tab, carriage return, null, or backslash itself. A Unicode code-point escape uses one to six digits. Char uses single quotes, String double quotes, and a template String backticks. Escape the same delimiter when writing it inside the literal. In a template, place a backslash before ${ to write those characters literally.",
-  typingBody: "Char contains exactly one Unicode scalar value: a code point outside the surrogate range. A precomposed é fits Char, but e followed by a separate combining accent contains two scalars and does not. A character that looks single on screen may use several scalars.",
-  evaluationBody: "Escapes are converted to characters before type checking. String is a sequence of Unicode scalars. Templates may contain raw newlines; CRLF in source becomes a single LF. Char and double-quoted String cannot contain raw newlines or control characters.",
-  invalidTitle: "Use only the supported escapes",
-  invalidBody: "Octal escapes, hexadecimal byte escapes, and named Unicode escapes are not supported. An empty Unicode escape, more than six digits, an out-of-range value, or a surrogate value also causes an error. Check that an escaped quote matches the literal's delimiter.",
-  diagnosticsBody: "An invalid escape reports SES-P0201. A missing closing quote reports SES-P0001. An empty Char or one containing several scalars reports SES-P0202. Check the backslash or quote identified by the diagnostic.",
+  purpose: [
+    "A double quote written directly inside a double-quoted string would be read as the end of that string. Newlines and backslashes also need a clear way to be written in source.",
+    "An escape is a backslash followed by a supported combination of characters that represents an actual character. For example, the source spelling \\n contains a backslash and an n, but the resulting string contains one newline."
+  ],
+  exampleTitle: "Display quotes, a backslash, a Unicode character, and newlines",
+  reading: [
+    "let declares a name for a value. The outer double quotes in quote enclose its string; each inner \\\" represents a double quote included in the value. The first output line therefore displays Seseragi with a double quote on each side.",
+    "The \\\\ in the source for path becomes one backslash in its value. The output docs\\guide contains just one backslash followed by an ordinary g. Writing only one backslash in source would instead begin the undefined escape \\g.",
+    "The : Char annotation in lambda: Char checks that the value has the single-character type Char. Inside the single quotes, \\u{03BB} represents the Greek letter λ, assigned the number 03BB in Unicode. The output is λ itself, not the spelling \\u{03BB}.",
+    "The \\n in lines becomes a newline between first and second. The three \\n escapes in the template in main are also newlines. quote, path, and lambda each occupy one line, followed by first and second on separate lines. println adds the final newline."
+  ],
+  rules: [
+    "Char uses single quotes, String double quotes, and a template string backticks. All three support \\\\ for a backslash, \\n for line feed (LF), \\r for carriage return (CR), \\t for a tab, \\0 for null, and \\u{...} for a Unicode number.",
+    "To include the same delimiter inside a literal, use \\' in a Char, \\\" in a double-quoted String, or \\` in a template. Escaping a different kind of quote is not supported. In a template, ${ begins an inserted expression; write \\${ to include those two characters literally. A lone $ needs no escape.",
+    "Unicode calls the number assigned to a character a code point. Inside \\u{...}, write that number using one to six hexadecimal digits. It must be from 0 through 0x10FFFF, excluding 0xD800 through 0xDFFF, the range reserved for surrogates. One value in this permitted range is called a Unicode scalar value.",
+    "Escapes become actual characters before type checking. A Char contains exactly one Unicode scalar value; a String contains a sequence of them. The precomposed 'é' contains one scalar and fits Char, but 'e\\u{0301}' combines e with a separate accent and contains two. This rule is independent of whether the result looks like one character on screen.",
+    "Char and double-quoted String cannot contain raw newlines or control characters. Write newlines and characters such as U+0000 through U+001F and U+007F using supported escapes. Templates can contain newlines directly; CRLF in source becomes one LF in the value. The delimiter and backslash itself each need their respective escapes."
+  ],
+  mistakes: [
+    "The \\q below is undefined and reports SES-P0201. To display just q, remove the backslash. To display the two characters backslash and q, write \\\\q in source. Hexadecimal byte escapes such as \\xNN, octal escapes, and named Unicode escapes are unsupported too.",
+    "An empty Unicode escape \\u{}, more than six digits, a number above 0x10FFFF, or a surrogate also reports SES-P0201. The diagnostic highlights from the backslash to the end of the escape, so check that whole range.",
+    "A missing closing quote reports SES-P0001. An empty Char or one containing multiple scalars after escape conversion reports SES-P0202 and highlights the whole character literal. Use a double-quoted String if you need several characters; remove extra scalars if you need a single Char."
+  ],
+  related: [
+    "Find out how a literal's spelling, including single or double quotes, determines its type.",
+    "Find out about UTF-8 source files, apostrophes at the end of names, and comments.",
+    "Distinguish a newline inside a string value from continuing source code onto another line."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I write quotes, newlines, or Unicode characters?",
-  summary: "An escape starts with a backslash and writes a character that is difficult to include directly in a literal.",
-  reading: "The values array contains three Char values: 'a', the Greek letter lambda written as a Unicode escape, and '瀬'. quote writes a single quote inside single quotes; slash writes a backslash by escaping it.",
-  result: "After converting escapes to characters, a Char must contain one Unicode scalar value. Count the scalars used, rather than deciding from whether the character looks single on screen."
+  question: "How do I include quotes or newlines in a string?",
+  summary: "Backslash escapes let you include quotes, newlines, and the backslash itself in a value. Distinguish the symbols written in source from the actual characters printed.",
+  reading: "quote contains \"Seseragi\" with double quotes, path contains docs\\guide with one backslash, lambda contains λ, and lines contains first and second separated by a newline. main displays them in that order.",
+  result: "The output has five lines in total. Spellings such as \\n and \\u{03BB} are not printed; they become real newlines and λ. println also adds a newline after second on the fifth line."
 }
+
+pub fn title -> String = (copy ()).title

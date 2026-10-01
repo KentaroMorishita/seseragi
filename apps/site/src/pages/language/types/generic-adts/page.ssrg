@@ -1,12 +1,21 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.generic-adts" "/docs/language/types/generic-adts/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-generic-adts", localized "Generic algebraic data types" "ジェネリックな代数的データ型")] [CodeExample
       ("types-generic-adt-invalid", localized "Rejected type mismatch" "拒否される型の不一致")] [
@@ -23,5 +32,34 @@ fn content -> PageDefinition =
           "/docs/language/types/kinds/"
         )]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [[CodeExample
+        ("type-reader-adts", localized (en.readerCaption ()) (ja.readerCaption ())), Paragraph
+        ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]), Paragraph
+        ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]), Terminal
+        (localized "Output" "実行結果", "ok: 42\nerror: missing"),
+
+        CodeExample (
+          "type-reader-adts-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ), Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]), Paragraph (
+          [
+            InternalLink (
+              localized "Algebraic data types" "代数的データ型",
+              "/docs/language/data/algebraic-data-types/"
+            ),
+            Words (localized (en.readerRelated ()) (ja.readerRelated ()))
+          ]
+        ), Heading (
+          "declaration-example",
+          localized "Continue into the detailed rules" "詳しい規則と宣言例を読む"
+        ), Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]), Paragraph ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]), Paragraph ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])], page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

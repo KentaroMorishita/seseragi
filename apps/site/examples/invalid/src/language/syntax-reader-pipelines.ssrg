@@ -1,0 +1,3 @@
+fn decorate text: String -> String = "(" + text + ")"
+let result = 3 |> decorate
+pub effect fn main = println result

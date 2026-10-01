@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "キーに対応する値を探します。値があればJustに入り、そのキーがなければNothingになります。",
+  taskTitle: "キーから名前を読む",
+  purpose: "Mapはキーと値の対応を持ちます。この例では、\"name\"に\"Aki\"、\"empty\"に空文字列を保存します。キーを探した後、値がある場合とキーがない場合を、それぞれ文字列にして表示します。",
+  setup: "import * as mapsはstd/mapをmapsという名前で読み込みます。引数は関数名の後ろに空白で区切って書きます。maps.get \"name\" namesでは、キー、Mapの順に渡します。letはinsertが返したMapに名前を付けています。insertは入力のMapを変更しません。",
+  codeTitle: "値・空文字列・存在しないキーを扱う完全なプログラム",
+  outputTitle: "実行結果",
+  after: [
+    "Maybe<String>には二つの形があります。Just textは文字列を持ち、Nothingは値を持ちません。matchは形に合う処理を選び、Just textのtextは中の値に付ける名前です。バッククォートで囲む文字列の${text}に値が入るため、空文字列があればfound: []と表示されます。",
+    "maps.singletonは最初の一件を作ります。maps.empty<String, String> ()は、キーも値も文字列の空のMapを作ります。要素がなくても型が分かるように、型引数を指定しています。()は追加の入力を持たないUnitの値です。pub effect fn mainが実行入口で、doに並べた順にprintlnで結果を表示します。"
+  ],
+  comparisonTitle: "TypeScriptで同じキーを探す",
+  comparisonBefore: "JavaScriptのMap<string, string>では、getの結果は文字列かundefinedです。undefinedとの比較なら、保存された空文字列も残せます。if (value)で判定すると、空文字列と値の欠如を区別できません。",
+  comparisonAfter: "どちらの例も、キーがない場合と空文字列がある場合を分けています。TypeScript側でundefinedも保存できる型を選んだ場合は、hasでキーの有無を確かめます。SeseragiではNothingが値の欠如を表します。",
+  detailTitle: "キーの比較と戻り値の型",
+  details: [
+    "Kはキー、Vは値の型です。Eq<K>はキーの等しさを判定する実装、Hash<K>はキーの候補を探すためのハッシュを計算する実装を要求します。等しいキーには整合するハッシュが必要です。この例ではStringの標準実装を使います。",
+    "getはMapを変更せず、Maybe<V>を返します。キーは整数の位置ではありません。Intを渡す場合も、整数そのものがキーです。値が必要なく、有無だけを知りたいときはcontainsKeyを使えます。"
+  ]
+}

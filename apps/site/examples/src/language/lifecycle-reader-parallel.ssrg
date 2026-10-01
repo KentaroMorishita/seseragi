@@ -1,0 +1,17 @@
+import * as effects from "std/effect"
+
+fn job value: Int -> Task<Int> = do {
+  effects.yieldNow ()
+  effects.succeed value
+}
+
+pub effect fn main = do {
+  first <- job 10
+  second <- job 20
+  together <- effects.parallel [job 10, job 20]
+  let noJobs: Array<Task<Int>> = []
+  empty <- effects.parallel noJobs
+  _ <- println (show [first, second])
+  _ <- println (show together)
+  println (show empty)
+}

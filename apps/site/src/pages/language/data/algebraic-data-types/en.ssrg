@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I describe a value with a fixed set of cases?",
-  summary: "An algebraic data type names a fixed set of alternatives. Each alternative can carry the data needed for that case.",
-  reading: "LoadState<A> has Idle, which carries no value, and Loaded, which carries an A value. In Loaded \"ready\", A becomes String. describe returns \"idle\" for Idle, or the contained string for Loaded.",
-  result: "message is \"ready\". The alternatives of LoadState are fixed as Idle and Loaded. Omitting Loaded or another required alternative from match causes a compile-time error."
+  question: "How do pending and shipped deliveries carry different data?",
+  summary: "A delivery is either Pending or Shipped. Only Shipped needs a tracking number. Declare the alternatives together with the data each one carries.",
+  reading: "The | lines under type Delivery separate alternatives. Pending is a value with no payload; Shipped String carries one string. Shipped \"JP42\" creates a shipped value. A name that constructs an alternative is called a constructor.",
+  result: "The output is not shipped and tracking: JP42. The match inside label returns the pending message for Pending, or uses the tracking number inside Shipped. This example introduces alternatives without first requiring a success/failure model.",
 }
+
+pub fn readerCaption -> String = "Construct a pending or shipped value"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript can distinguish object shapes using an ordinary field named kind. The | in this TypeScript example permits either of two shapes. Only kind: \"shipped\" has tracking. Switching on kind determines which fields are available."
+
+pub fn readerBridgeTwo -> String =
+  "Seseragi identifies the alternatives with Pending and Shipped. The Shipped tracking branch names the carried value tracking. println displays both results; \\n separates the lines. A type that lists alternatives this way is an algebraic data type, or ADT."
+
+pub fn readerInvalidCaption -> String = "An integer is not a tracking string"
+
+pub fn readerMistake -> String =
+  "Shipped 42 produces SES-T0101 because the constructor needs String, not Int. Supply a string such as Shipped \"JP42\" in this example."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."
+
+pub fn readerComparisonScope -> String =
+  "The TS example also reports a missing pending branch under strict checking and its explicit return type. Both languages model the same states and results; the comparison shows how each spells them."

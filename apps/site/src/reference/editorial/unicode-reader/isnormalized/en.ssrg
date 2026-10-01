@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Check whether text already has a chosen normalization form",
+  purpose: "Use isNormalized when received or stored text must follow a chosen spelling convention. It returns True if normalizing the text to the selected form would leave it unchanged, and False otherwise. Bool is the type for these two truth values. Use normalize when you need the converted string itself.",
+  reading: "let names the values original and composed. The e\\u{0301} in original is written with two codes: e and combining acute accent U+0301. composed contains é after normalize converts the input to NFC. Passing unicode.NFC and each string to isNormalized gives False before and True after.",
+  boundaries: "NFC combines characters where possible; NFD decomposes characters such as é into e and its accent. original already has the NFD spelling, so original still decomposed is True. Neither checking nor normalization changes original. The empty string also stays unchanged in NFC, so the last empty line is True.",
+  rules: "The first argument is one of the NormalizationForm values NFC, NFD, NFKC, or NFKD. NFKC and NFKD also remove compatibility distinctions such as ① versus 1, with composition or decomposition respectively. The check answers only for the selected form. True for NFC does not imply True for NFD. Checking examines the string content; it does not read a form label stored on the string.",
+  mistake: "False does not mean the string is malformed. The example’s e plus accent is valid text that does not yet have the NFC spelling. If NFC text is required, use the result of normalize unicode.NFC. A True result alone also does not validate the allowed characters or safety of a username.",
+}

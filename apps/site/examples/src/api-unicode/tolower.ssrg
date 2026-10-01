@@ -1,0 +1,7 @@
+import * as text from "std/text"
+
+pub effect fn main =
+  println `ordinary: ${text.toLower "Hello"}
+Greek: ${text.toLower "ΟΣ ΟΣΑ Σ"}
+dotted I: ${text.toLower "İ"}
+empty: [${text.toLower ""}]`

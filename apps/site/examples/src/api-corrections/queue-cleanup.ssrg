@@ -1,0 +1,28 @@
+import * as queues from "std/queue"
+import * as effects from "std/effect"
+import * as deferred from "std/deferred"
+import * as refs from "std/ref"
+type AppError deriving Show =
+  | QueueFailure queues.QueueClosed
+  | ConsoleFailure ConsoleError
+pub effect fn main -> Unit with Console fails AppError = do {
+  queue <- queues.unbounded<Int> ()
+  ready <- deferred.make<Never, Unit> ()
+  cleaned <- refs.make False
+  effects.scoped $ do {
+    _ <- effects.fork (do {
+        _ <- effects.acquireRelease (effects.succeed ()) (\_: Unit -> refs.set True cleaned)
+        _ <- deferred.succeed () ready
+        queues.take queue
+      }
+    )
+    _ <- deferred.await ready
+    effects.succeed ()
+  }
+  released <- refs.get cleaned
+  queues.offer 42 queue |> effects.mapError QueueFailure
+  value <- queues.take queue |> effects.mapError QueueFailure
+  queues.close queue
+  println released |> effects.mapError ConsoleFailure
+  println value |> effects.mapError ConsoleFailure
+}

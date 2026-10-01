@@ -1,0 +1,15 @@
+fn label pair: (String, Int) -> String = {
+  let (name, count) = pair
+  `${name}: ${count}`
+}
+
+fn firstOrZero values: Array<Int> -> Int = match values {
+  [] -> 0
+  [first, ...rest] -> first
+}
+
+let product = label ("Notebook", 2)
+let empty = firstOrZero []
+let first = firstOrZero [10, 20]
+
+pub effect fn main = println `${product}\n${empty}\n${first}`

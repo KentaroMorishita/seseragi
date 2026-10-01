@@ -1,0 +1,12 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  InlineCode,
+  Words
+} from "../../../../model/page"
+
+pub fn forms -> Array<Block> = []
+
+pub fn rejected -> Array<Block> = []

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "文字列が指定した正規化形式か調べる",
+  purpose: "保存や受け取りの際に、文字列の表記が決めた形式にそろっているか確かめたいときに使います。isNormalizedはその文字列を指定形式に正規化しても変わらないならTrue、変わるならFalseを返します。戻り値のBoolは、この二つの真偽値を表す型です。変換した文字列が必要な場合はnormalizeを使ってください。",
+  reading: "letでoriginalとcomposedに値を付けます。originalのe\\u{0301}は、eと結合アクセントU+0301の二つの番号で書いた文字列です。composedにはnormalizeでNFC形式にしたéが入ります。isNormalizedへ形式のunicode.NFCと対象の文字列を渡すと、beforeはFalse、afterはTrueです。",
+  boundaries: "NFCは合成できる文字をまとめる形式、NFDはéをeとアクセントへ分ける形式です。originalはもともとNFDなので、original still decomposedの行はTrueになります。検査や正規化でoriginalは変更されていません。空文字列はNFCでもそのままなので、最後のemptyもTrueです。",
+  rules: "第一引数にはNormalizationFormの値NFC、NFD、NFKC、NFKDを指定します。NFKCとNFKDは、合成するか分解するかに加え、①と1のような互換表記もそろえる形式です。検査は渡した形式だけについて答えます。NFCでTrueだった文字列がNFDでもTrueとは限りません。検査には文字列の内容を調べる処理が必要で、文字列に記録された形式名を読む操作ではありません。",
+  mistake: "Falseは文字列が壊れているという意味ではありません。例のeとアクセントも正しい文字列ですが、NFCの表記にはまだそろっていません。NFCの文字列が必要ならnormalize unicode.NFCの結果を使ってください。isNormalizedのTrueだけでは、利用者名の許可文字や安全性まで判定できません。",
+}

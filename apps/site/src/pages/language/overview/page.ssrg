@@ -1,7 +1,25 @@
 import { localized } from "../../../model/locale"
-import { DocumentationLanding, PageDefinition } from "../../../model/page"
+import {
+  BulletList,
+  DocumentationLanding,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as valuesEn from "../model/immutable-by-default/en"
+import * as valuesJa from "../model/immutable-by-default/ja"
+import * as typesEn from "../types/built-in-types/en"
+import * as typesJa from "../types/built-in-types/ja"
+import * as declarationsEn from "../types/annotations-and-inference/en"
+import * as declarationsJa from "../types/annotations-and-inference/ja"
+import * as callsEn from "../syntax/function-application/en"
+import * as callsJa from "../syntax/function-application/ja"
+import * as firstEn from "../../docs/first-run/en"
+import * as firstJa from "../../docs/first-run/ja"
 
 pub fn page -> PageDefinition = PageDefinition {
   id: "language.overview",
@@ -9,5 +27,45 @@ pub fn page -> PageDefinition = PageDefinition {
   kind: DocumentationLanding,
   title: localized (en.title ()) (ja.title ()),
   summary: localized (en.summary ()) (ja.summary ()),
-  blocks: []
+  blocks: [
+    Heading ("values-and-functions", localized (en.startTitle ()) (ja.startTitle ())),
+    BulletList [
+      [
+        Words (localized (en.valuesPurpose ()) (ja.valuesPurpose ())),
+        InternalLink (
+          localized (valuesEn.title ()) (valuesJa.title ()),
+          "/docs/language/model/immutable-by-default/"
+        )
+      ],
+      [
+        Words (localized (en.typesPurpose ()) (ja.typesPurpose ())),
+        InternalLink (
+          localized (typesEn.title ()) (typesJa.title ()),
+          "/docs/language/types/built-in-types/"
+        )
+      ],
+      [
+        Words (localized (en.declarationsPurpose ()) (ja.declarationsPurpose ())),
+        InternalLink (
+          localized (declarationsEn.title ()) (declarationsJa.title ()),
+          "/docs/language/types/annotations-and-inference/"
+        )
+      ],
+      [
+        Words (localized (en.callsPurpose ()) (ja.callsPurpose ())),
+        InternalLink (
+          localized (callsEn.title ()) (callsJa.title ()),
+          "/docs/language/syntax/function-application/"
+        )
+      ]
+    ],
+    Paragraph (
+      [
+        Words (localized (en.setupPurpose ()) (ja.setupPurpose ())),
+        InternalLink
+          (localized (firstEn.title ()) (firstJa.title ()), "/docs/first-run/")
+      ]
+    ),
+    Heading ("find-concept", localized (en.groupsTitle ()) (ja.groupsTitle ()))
+  ]
 }

@@ -1,0 +1,3 @@
+import { operator <^> } from "./operators"
+
+pub effect fn main = println (show (10 <^> 3 <^> 2))

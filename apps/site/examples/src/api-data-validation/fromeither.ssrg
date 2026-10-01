@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+import * as text from "std/text"
+import * as validation from "std/validation"
+import { Validation, Valid, Invalid } from "std/validation"
+fn requireName name: String -> Either<String, String> =
+  if name == "" then Left "name is required" else Right name
+fn describe result: Validation<String, String> -> String = match result {
+  Valid value -> "OK: " + value
+  Invalid errors -> "Errors: " + text.join "; " (arrays.fromIterable errors)
+}
+pub effect fn main = do {
+  println (describe (validation.fromEither (requireName "Ada")))
+  println (describe (validation.fromEither (requireName "")))
+}

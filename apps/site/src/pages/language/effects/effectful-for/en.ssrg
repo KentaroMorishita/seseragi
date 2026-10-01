@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I execute an operation for each element?",
-  summary: "An effectful for performs work sequentially for each collection element. Each iteration returns an Effect whose success type is Unit.",
-  reading: "announceAll receives an Array<String>. for message <- messages binds each element to message and describes println message for that iteration. Unlike a comprehension, it is not collecting the returned messages into a new array.",
-  result: "Executing announceAll [\"Aki\", \"Mio\"] prints Aki and then Mio on separate lines. If one iteration fails, later iterations do not start. An empty input completes without printing."
+  question: "How do I run an output operation for each item in order?",
+  summary: "Effectful for handles one item at a time, starting at the beginning. It finishes one item before moving on and does nothing for an empty collection.",
+  reading: "announce builds a procedure taking an array of strings named names. for name <- names gives each item the name name. An empty string chooses succeed (), a successful no-op; otherwise println writes the name.",
+  result: "The first call prints Aki and Mio in that order. The empty array in the second call prints nothing, and main ends by printing done. Skipping the empty-string item still allows Mio to be processed."
 }
+
+pub fn readerBridgeOne -> String =
+  "The import names std/effect as effects. Array<String> is an array of strings; effect fn declares a function that builds a procedure. pub effect fn main is the entry point. In its do block, _ <- waits for announce to finish before continuing."
+
+pub fn readerBridgeTwo -> String =
+  "The loop body must return an Effect with Unit as its success value. Unit carries no meaningful result; () is its value. This loop performs an operation for each item, rather than collecting values as an array comprehension does. A typed failure stops later items."
+
+pub fn readerMistake -> String =
+  "The rejected body value + 1 only computes an integer; it is not the required Effect. Use a comprehension to collect values, or println to output them. There is no break or continue syntax. To end the whole traversal successfully, use forEachUntil with the ordinary Continue/Break results."
+
+pub fn readerCaption -> String =
+  "Print names in order, including empty-item and empty-array cases"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "announceAll receives an Array<String>. for message <- messages binds each element to message and describes println message for that iteration. Unlike a comprehension, it is not collecting the returned messages into a new array."
+
+pub fn readerLegacyResult -> String =
+  "Executing announceAll [\"Aki\", \"Mio\"] prints Aki and then Mio on separate lines. If one iteration fails, later iterations do not start. An empty input completes without printing."

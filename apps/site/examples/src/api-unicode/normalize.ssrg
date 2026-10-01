@@ -1,0 +1,12 @@
+import * as unicode from "std/text/unicode"
+import * as text from "std/text"
+
+let original = "e\u{0301}"
+let composed = unicode.normalize unicode.NFC original
+pub effect fn main =
+  println `NFC: ${composed}
+NFD scalars: ${text.lengthScalars (unicode.normalize unicode.NFD "é")}
+NFKC: ${unicode.normalize unicode.NFKC "ﬃ①"}
+NFKD: ${unicode.normalize unicode.NFKD "①"}
+idempotent: ${unicode.normalize unicode.NFC composed == composed}
+original scalars: ${text.lengthScalars original}`

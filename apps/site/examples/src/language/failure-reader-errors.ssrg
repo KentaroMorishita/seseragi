@@ -1,0 +1,14 @@
+import * as effects from "std/effect"
+
+fn readName key: String -> Effect<{}, String, String> =
+  if key == "present" then effects.succeed "Aki" else effects.fail "missing"
+
+effect fn display key: String = do {
+  name <- effects.recover (\reason -> effects.succeed (`fallback: ${reason}`)) (readName key)
+  println name
+}
+
+pub effect fn main = do {
+  _ <- display "present"
+  display "missing"
+}

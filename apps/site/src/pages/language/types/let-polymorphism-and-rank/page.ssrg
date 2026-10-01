@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -7,13 +8,16 @@ import {
   Words,
   CodeExample,
   InternalLink,
-  PageDefinition
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Heading
 } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.let-polymorphism-and-rank" "/docs/language/types/let-polymorphism-and-rank/" (en.copy ()) (ja.copy ()) [
     CodeExample ("types-let-rank", localized "Let-polymorphism and rank" "同じ関数を異なる型で使う"),
     Callout (
@@ -36,5 +40,44 @@ fn content -> PageDefinition =
       "/docs/language/types/generic-functions/"
     )]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample
+          ("type-limits-rank", localized (en.readerCaption ()) (ja.readerCaption ())),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "42\nready\nJust 42"),
+        CodeExample (
+          "type-limits-rank-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Paragraph (
+          [
+            InternalLink
+          (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/"),
+            Words (localized (en.readerRelated ()) (ja.readerRelated ()))
+          ]
+        ),
+        Heading (
+          "declaration-example",
+          localized "Continue into the detailed rules" "詳しい規則と宣言例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

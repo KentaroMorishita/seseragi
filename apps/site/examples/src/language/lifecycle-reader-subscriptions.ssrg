@@ -1,0 +1,24 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as arrays from "std/array"
+import * as signals from "std/signal"
+
+pub effect fn main = do {
+  source <- signals.make 1
+  seen <- refs.make (arrays.empty<Int> ())
+  _ <- effects.scoped $ do {
+    _ <- effects.acquireRelease (
+      signals.subscribe (
+        \value: Int -> refs.update (\values: Array<Int> -> arrays.append [value] values)
+          seen
+      ) source
+    ) signals.unsubscribe
+    source := 2
+    source := 2
+  }
+  source := 3
+  history <- refs.get seen
+  current <- *source
+  _ <- println (show history)
+  println current
+}

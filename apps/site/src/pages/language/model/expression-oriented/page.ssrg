@@ -1,23 +1,49 @@
 import { explainPage } from "../../explanation"
-import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import {
+  Block,
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { readerPrinciplePage } from "../reader-principle"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as guide from "./guide"
+
+fn leading -> Array<Block> = []
+
+fn rejected -> Array<Block> = [
+  CodeExample
+    ("model-reader-expression-invalid", localized "Rejected source" "エラーになるコード"),
+  Terminal (localized "Diagnostic excerpt" "診断の抜粋", "SES-T0101")
+]
+
+fn advanced -> Array<Block> = []
 
 fn content -> PageDefinition =
-  principlePage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) "principle-expression-oriented" "pass" [
-    [InternalLink (
-      localized "Conditional expressions" "条件式",
-      "/docs/language/expressions/conditionals/"
-    )],
-    [InternalLink (
-      localized "Blocks and local declarations" "ブロックとローカル宣言",
-      "/docs/language/expressions/blocks-and-local-declarations/"
-    )],
-    [InternalLink
-        (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")]
+  readerPrinciplePage "language.model.expression-oriented" "/docs/language/model/expression-oriented/" (en.copy ()) (ja.copy ()) (en.reader ()) (ja.reader ()) "principle-expression-oriented" "pass" (leading ()) (rejected ()) (advanced ()) [
+    [
+      InternalLink (
+        localized "Conditional expressions" "条件式",
+        "/docs/language/expressions/conditionals/"
+      ),
+      Words (localized ". Which rules apply to if?" "。ifの条件と分岐にはどんな規則があるか")
+    ],
+    [
+      InternalLink (
+        localized "Blocks and local declarations" "ブロックとローカル宣言",
+        "/docs/language/expressions/blocks-and-local-declarations/"
+      ),
+      Words (localized ". How does a block choose its result?" "。ブロックの結果はどう決まるか")
+    ],
+    [
+      InternalLink
+        (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/"),
+      Words (localized ". How do I branch on named alternatives?" "。値の種類ごとにどう分岐するか")
+    ]
   ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

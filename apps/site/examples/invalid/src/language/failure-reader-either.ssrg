@@ -1,0 +1,1 @@
+fn wrong -> Either<String, Int> = Right "2"

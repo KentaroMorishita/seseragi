@@ -1,0 +1,16 @@
+pub fn purpose -> String =
+  "std/textはStringを検索し、分け、つなぎ、必要な部分を取り出す操作を提供します。対象の文字列を直接書き換えず、結果を新しい値として受け取ります。引数の順序は各ページの実行例で確認できます。"
+pub fn choose -> String =
+  "一つにつなぐならconcatかjoin、分けるならsplitかlinesです。含まれるかどうかはcontains、先頭や末尾はstartsWithとendsWithで調べます。replaceは最初の一致、replaceAllは重ならない全一致を変え、trimは両端の空白を取り除きます。"
+pub fn units -> String =
+  "同じ文字列でも、数える単位によって長さが違います。Aé😀e\\u{301}にはA、é、😀、e、結合アクセントU+0301の五つのUnicode scalarがあります。scalarは一つのUnicodeの番号の単位です。最後のeとアクセントが組み合わさって見えるため、利用者が一文字と感じるgraphemeのまとまりは四つです。"
+pub fn bytes -> String =
+  "UTF-8では順に1、2、4、1、2バイトなので合計10です。TypeScriptのString.lengthはUTF-16 code unitを数え、😀が二単位になるため6です。どちらの言語でも用途に合う単位を選べます。これは言語の優劣ではなく、呼び出すAPIの契約の違いです。"
+pub fn seseragi -> String =
+  "graphemesはstd/text/graphemeに付けた名前で、graphemes.lengthは見た目のまとまりを数えます。text.lengthScalarsはscalar、text.lengthBytesはUTF-8のバイト数です。\\u{301}は結合アクセントを書く表記です。mainは実行入口、doは出力の順番、_ <-は一つ出力して次へ進む指定で、showは数を文字列にします。"
+pub fn typescript -> String =
+  "TypeScriptでもArray.from(value)でscalar単位に並べ、TextEncoderでUTF-8へ変換し、Intl.Segmenterのgrapheme指定で見た目のまとまりを列挙できます。例の四つの出力は、それぞれ別の単位を明示して数えています。実装ごとのUnicode versionで変わる細かな境界まで、この一例が同一性を保証するものではありません。"
+pub fn maybe -> String =
+  "scalarAtは指定した位置を取り出せた場合のJustと、範囲外だった場合のNothingを返します。Maybeはこの二つの場合を持つ型です。matchの後に調べる結果を書き、{ }の中で両方の場合を扱います。Just letterは中のCharにletterという名前を付け、->の右で使えます。chars.toStringはChar一つをStringへ変えます。"
+pub fn either -> String =
+  "sliceScalarsは正しい範囲ならRightに文字列を入れ、正しくなければLeftに理由を入れます。Eitherはこの成功と失敗の二つの場合を持つ型です。Right partとLeft errorでそれぞれ中身に名前を付け、->の右側で使います。終了位置は含めず、範囲を自動で丸めません。"

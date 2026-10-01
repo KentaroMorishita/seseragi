@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "主なMaybeがNothingなら別のMaybeを選びます。両方の引数は先に計算されます。",
+  taskTitle: "別の候補を試し、値がない可能性を残す",
+  purpose: "プロフィールの名前がなければチームの名前を使います。どちらにも名前がなければ、結果はNothingです。orElseは値の有無を消さず、Maybe<String>を返します。",
+  setup: "std/maybeの関数をmaybe.で呼びます。Maybe、Just、Nothingはimportなしで使えます。fn describeのnickname: Maybe<String>は引数、-> Stringは戻り値の型です。matchはJustかNothingを調べ、その行の式を返します。",
+  after: [
+    "Just nameではnameに文字列が入り、Nothingには値がありません。describeはその違いを表示します。orElseの第1引数は代わりの候補、第2引数は主な候補です。",
+    "主な候補Just \"Ada\"はJust \"team\"より優先されます。主な候補がNothingならteamを選びます。両方がNothingならNothing、主な候補がJust \"\"なら空文字列を保ちます。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのchooseも関数として書き、代わりの候補と主な候補を引数に取ります。関数を呼ぶ前に両方の引数が計算される点もorElseと同じです。",
+  comparisonAfter: "どちらの例も値がない可能性を戻り値に残します。SeseragiではMaybeを返す複数の検索に同じorElseを使えます。TypeScriptなら直接primary ?? fallbackと書く方法も簡潔ですが、右側の計算を遅らせる点が異なります。",
+  details: [
+    "orElse<A>のAは候補の中の型で、ここではStringです。引数二つと戻り値はすべてMaybe<A>です。文字列そのものを渡す操作ではありません。",
+    "主な候補がJustでも、代わりの候補を作る式は実行されます。必要な場合だけ次の検索をしたいなら、主なMaybeをmatchし、Nothingの行で検索を呼びます。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

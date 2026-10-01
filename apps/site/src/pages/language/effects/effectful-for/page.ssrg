@@ -1,29 +1,61 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.effectful-for" "/docs/language/effects/effectful-for/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-effectful-for",
         localized "Sequential output in Iterable order" "要素を取り出す順に、一つずつ出力する"
       )] [] [
-        [InternalLink (
-          localized "Ranges and comprehensions" "範囲と内包表記",
-          "/docs/language/expressions/ranges-and-comprehensions/"
-        )],
-        [InternalLink (
-          localized "Irrefutable patterns" "反駁不能パターン",
-          "/docs/language/patterns/irrefutable-patterns/"
-        )],
-        [InternalLink (
-          localized "Sequential and parallel Effects" "Effectの逐次・並列実行",
-          "/docs/language/effects/sequential-and-parallel/"
-        )]
+        [InternalLink (localized "Ranges and comprehensions" "範囲と内包表記", "/docs/language/expressions/ranges-and-comprehensions/"), Words (localized ": Build a collection of values instead of running a loop" "：処理の繰り返しと、値を集める内包表記を比べる")],
+        [InternalLink (localized "Irrefutable patterns" "反駁不能パターン", "/docs/language/patterns/irrefutable-patterns/"), Words (localized ": Choose a binding that accepts every input element" "：どの入力要素も受け取れる束縛を選ぶ")],
+        [InternalLink (localized "Sequential and parallel Effects" "Effectの逐次・並列実行", "/docs/language/effects/sequential-and-parallel/"), Words (localized ": Choose sequential or explicit parallel execution" "：逐次実行と明示的な並列実行を選ぶ")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample
+          ("lifecycle-reader-for", localized (en.readerCaption ()) (ja.readerCaption ())),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "Aki\nMio\ndone"),
+        CodeExample (
+          "lifecycle-reader-for-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,0 +1,6 @@
+// Source files use UTF-8. A comment does not change these values.
+let userName = "Aki"
+let 次の値 = 42
+let account' = "primary"
+
+pub effect fn main = println `${userName}: ${次の値} (${account'})`

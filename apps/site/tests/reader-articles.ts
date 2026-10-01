@@ -6,12 +6,12 @@ import type { Browser } from "../../playground/node_modules/@playwright/test"
 const articles = [
   {
     route: "/docs/language/syntax/method-calls/",
-    source: "reader-method-calls",
+    source: "syntax-reader-methods",
     output: "10\n15",
   },
   {
     route: "/docs/language/syntax/pipelines-and-low-precedence-application/",
-    source: "reader-pipelines",
+    source: "syntax-reader-pipelines",
     output: "7\n7\n7",
   },
   {
@@ -26,8 +26,8 @@ const articles = [
   },
   {
     route: "/docs/language/data/tuples-arrays-and-lists/",
-    source: "reader-collections",
-    output: "answer\n42\nJust 20\nNothing\n`[Ren, Aki, Mio]",
+    source: "data-operations-collections",
+    output: "answer\n42\nJust 20\nNothing\n20\n`[Ren, Aki, Mio]",
   },
   {
     route: "/docs/language/traits/model/",

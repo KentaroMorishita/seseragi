@@ -21,6 +21,7 @@ pub struct ExplanationCopy {
 pub type ExampleSelection =
   | WithoutExample
   | ArticleExample String
+  | ArticleExamples (Array<String>)
 
 pub struct Explanation {
   question: LocalizedText,
@@ -47,25 +48,67 @@ fn isExample id: String -> block: Block -> Bool = match block {
   _ -> False
 }
 
+fn containsId id: String -> ids: Array<String> -> Bool = match ids {
+  [] -> False
+  [value, ...rest] -> id == value || containsId id rest
+}
+
+// A group is all-or-nothing: every requested ID must name exactly one panel.
+// Return the original blocks, including their localized labels, in ID order.
+pub fn selectArticleExamples ids: Array<String>
+  -> blocks: Array<Block>
+  -> Either<String, Array<Block>> =
+  match ids {
+    [] -> Right []
+    [id, ...rest] ->
+      if containsId id rest then
+        Left ("ArticleExamples duplicate requested ID: " + id)
+      else
+        match arrays.filter (isExample id) blocks {
+      [] -> Left ("ArticleExamples missing page CodeExample: " + id)
+      [block] -> match selectArticleExamples rest blocks {
+        Left error -> Left error
+        Right remaining -> Right (arrays.concat [[block], remaining])
+      }
+      _ -> Left ("ArticleExamples duplicate page CodeExample: " + id)
+    }
+  }
+
 fn keepExample id: ExampleSelection -> block: Block -> Bool = match id {
   WithoutExample -> True
   ArticleExample value -> !(isExample value block)
+  ArticleExamples values -> match block {
+    CodeExample (value, _) -> !(containsId value values)
+    _ -> True
+  }
 }
 
-pub fn explainPage explanation: Explanation -> page: PageDefinition -> PageDefinition =
-  {
-    let source = match explanation.exampleId {
+pub fn explainPage explanation: Explanation -> page: PageDefinition -> PageDefinition = {
+    let selected: Either<String, Array<Block>> = match explanation.exampleId {
       WithoutExample -> {
         let empty: Array<Block> = []
-        empty
+        Right empty
       }
       ArticleExample id -> match arrays.find (isExample id) page.blocks {
         Nothing -> {
           let empty: Array<Block> = []
-          empty
+          Right empty
         }
-        Just block -> [block]
+        Just block -> Right [block]
       }
+      ArticleExamples ids -> selectArticleExamples ids page.blocks
+    }
+    let (source, remaining) = match selected {
+      Right blocks -> (blocks, arrays.filter (keepExample explanation.exampleId) page.blocks)
+      // This reserved, deliberately absent example surfaces the diagnostic as
+      // site-build-error through the existing renderer and build validation.
+      Left error -> (
+        [CodeExample (
+          "__invalid-article-examples__/" + page.id + "/" + error,
+          explanation.question
+        )],
+        page.blocks
+      )
     }
     PageDefinition {
       ...page,
@@ -77,7 +120,7 @@ pub fn explainPage explanation: Explanation -> page: PageDefinition -> PageDefin
           Paragraph ([Words explanation.reading]),
           Paragraph ([Words explanation.result])
         ],
-        arrays.filter (keepExample explanation.exampleId) page.blocks
+        remaining
       ]
     }
   }

@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can the compiler derive an Effect signature from its body?",
-  summary: "Omitting ->, with, fails, and where from an effect fn lets the compiler infer required services, recoverable errors, and the successful result from its body.",
-  reading: "announceInferred receives a String and returns println message. Since println needs Console and may fail with ConsoleError, the inferred return is Effect<Console, ConsoleError, Unit>. No output happens merely from constructing it.",
-  result: "announceInferred returns Effect<Console, ConsoleError, Unit>. The compact declaration still records its services and error type in type information. To specify any part explicitly, change to the explicit form beginning with ->."
+  question: "How can an output function’s body determine its contract?",
+  summary: "Keep parameter types and omit all of ->, with, fails and where to infer an effect fn’s requirements, failure and success types from its body.",
+  reading: "announce returns println message. send is annotated String -> Effect<{ console: Console }, ConsoleError, Unit>, checking that the inferred announce can be used as that function type.",
+  result: "Running main prints one line, ready. The shorter declaration does not remove its Console requirement or possible ConsoleError; main still uses that information when it runs.",
 }
+
+pub fn readerCaption -> String =
+  "Check the inferred type against an explicit annotation"
+
+pub fn readerBridgeOne -> String =
+  "String -> starts a function accepting a string; the following Effect is its result. The first type argument is the requirement record { console: Console }, not Console alone. send is another name for announce, not an additional operation."
+
+pub fn readerBridgeTwo -> String =
+  "TypeScript return-type inference is a useful starting point. Seseragi’s compact effect fn infers not only the success value but also capabilities and recoverable failure. Inferring a type does not execute the external work."
+
+pub fn readerInvalidCaption -> String = "Add only with to the inferred form"
+
+pub fn readerMistake -> String =
+  "Writing with Console while omitting -> reports SES-P0001. Remove with to infer the whole contract, or begin the explicit form with -> Unit with Console fails ConsoleError."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "announceInferred receives a String and returns println message. Since println needs Console and may fail with ConsoleError, the inferred return is Effect<{ console: Console }, ConsoleError, Unit>. No output happens merely from constructing it."
+
+pub fn readerLegacyResult -> String =
+  "announceInferred returns Effect<{ console: Console }, ConsoleError, Unit>. The compact declaration still records its services and error type in type information. To specify any part explicitly, change to the explicit form beginning with ->."

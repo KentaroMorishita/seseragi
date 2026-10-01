@@ -1,0 +1,7 @@
+fn nextScore score: Int -> Int = score + 1
+fn label score: Int -> String = if score >= 80 then "pass" else "retry"
+
+let original = 79
+let updated = nextScore original
+
+pub effect fn main = println `${original}, ${updated}, ${label updated}`

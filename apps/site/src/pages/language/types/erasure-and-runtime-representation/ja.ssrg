@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "ジェネリック関数の中で型引数を調べられるか",
-  summary: "型パラメーターはコンパイル時の検査に使います。実行中にその型を調べて処理を分けるための値ではありません。",
-  reading: "例のidentity<A>は、AがIntでもStringでも引数をそのまま返します。二つの呼び出しの戻り値はそれぞれの型を保ちます。関数の中に、表示や比較のできるAという値があるわけではありません。",
-  result: "値を表示したいなら、Show<A>のようなtrait制約で必要な操作を指定します。値に保存された選択肢によって分岐したいなら、代数的データ型をmatchで調べます。Aという型パラメーター自体を実行中に比較することはできません。"
+  question: "関数の中で、Aという型を値のように使えるか",
+  summary: "型パラメーターは、受け取る値と返す値の関係を検査するための名前です。実行中に表示したり比較したりできる値として渡されるわけではありません。",
+  reading: "keep<A>のAは呼び出しで選ぶ型です。keep 42ではInt、keep \"ready\"ではStringになり、受け取ったvalueをそのまま返します。実際の入力はvalueで、Aはその型を書く位置にだけ現れます。",
+  result: "numberはIntなので1を足せ、textはStringなので\"!\"をつなげられます。mainの出力は43とready!です。keepの本体は型を調べて分岐しなくても、両方の値をそのまま返せます。",
 }
+
+pub fn readerCaption -> String = "型を保ったまま、渡された値を返す"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptでも、generic関数のAという型パラメーターが実行時の変数になるわけではありません。JavaScriptのtypeofで調べる対象は実際の値であり、型パラメーターそのものとは別です。Seseragiでも、何を表示・分岐したいのかは実際の値や明示した選択肢から決めます。"
+
+pub fn readerBridgeTwo -> String =
+  "pub effect fn mainは公開された実行入口です。バッククォート内の${...}へ計算結果を埋め込み、\\nで行を分けてprintlnで表示します。生成コードで型の情報をどう扱うかはコンパイラが決めます。この例だけで、メモリの配置や追加の割り当てがないことを保証するわけではありません。"
+
+pub fn readerInvalidCaption -> String = "型の名前Aを、返す値として使う"
+
+pub fn readerMistake -> String =
+  "= Aと書くと、値としてのAが定義されていないためSES-N0001になります。入力を返すなら= valueに直します。型ごとに表示などの共通操作が必要なら、その操作を渡す関数やtraitの条件を使います。型名を値の代わりに返しても解決しません。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則のidentityも入力の型を保って返します。Show<A>はAを表示できる操作があるという条件です。実行中にAという型を調べる操作ではありません。最適化で保つべき実行結果や順序も確認できます。"
+
+pub fn readerLegacyReading -> String =
+  "例のidentity<A>は、AがIntでもStringでも引数をそのまま返します。二つの呼び出しの戻り値はそれぞれの型を保ちます。関数の中に、表示や比較のできるAという値があるわけではありません。"
+
+pub fn readerLegacyResult -> String =
+  "値を表示したいなら、Show<A>のようなtrait制約で必要な操作を指定します。値に保存された選択肢によって分岐したいなら、代数的データ型をmatchで調べます。Aという型パラメーター自体を実行中に比較することはできません。"
+
+pub fn readerRelated -> String = "では、型を保ったまま使い回す関数の基本を確認できます。"

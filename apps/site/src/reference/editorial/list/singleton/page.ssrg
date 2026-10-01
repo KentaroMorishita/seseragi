@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { sequenceEditorial } from "../../sequence-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  sequenceEditorial "std/list::singleton" "list" "sequence-list-singleton" "`[42]\n`[Aki]\n`[`[]]\n1" (en.copy ()) (ja.copy ())

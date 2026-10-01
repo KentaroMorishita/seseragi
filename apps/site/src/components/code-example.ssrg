@@ -2,7 +2,7 @@ import * as arrays from "std/array"
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput, ExampleSource, ReferenceSymbol } from "../model/build"
-import { En, Ja, Locale, LocalizedText, localized, translate } from "../model/locale"
+import { Locale, LocalizedText, localized, translate } from "../model/locale"
 import { referenceSummary } from "../reference/catalog"
 import { itemKindLabel } from "../reference/labels"
 import { anchor } from "./primitives"
@@ -27,14 +27,8 @@ fn renderValues locale: Locale -> values: Array<String> -> String =
 fn referenceDescription<Action> locale: Locale
   -> reference: ReferenceSymbol
   -> html.Html<Action> =
-  if reference.itemKind == "instance" then
-    html.p {
-      children: translate locale (referenceSummary reference)
-}
-  else
-    match locale {
-  En -> html.p { children: reference.descriptionEn }
-  Ja -> html.p { children: reference.descriptionJa }
+  html.p {
+  children: translate locale (referenceSummary reference)
 }
 
 fn renderExample<Action> messages: Messages

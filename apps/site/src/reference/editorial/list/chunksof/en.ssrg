@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Split a List into non-overlapping batches",
+  purpose: "Use chunksOf when each value belongs to one batch, such as processing up to two records at a time. Pass the positive size first and the List second.",
+  reading: "describe receives size and values. match chooses Right groups for successful batches or Left error for an invalid size. Each branch returns display text; no exception is thrown by returning Left. Five values at size 2 produce two full batches and a final one-element batch.",
+  boundaries: "Size 8 keeps the two-element input as one batch; size 1 gives one-element batches. A positive size with empty input succeeds with an empty List. Zero and negative sizes fail even when the input is empty.",
+  rules: "Right contains List<List<Int>>: the outer List holds batches and each inner List holds integers. Input order is preserved and the input is unchanged. Work follows the input and output sizes.",
+  mistake: "Use windows when adjacent groups should overlap. A TypeScript for loop using slice can form the same batches; it also needs an explicit invalid-size policy. Here that policy is visible in Either: Right carries the result and Left carries NonPositiveSize.",
+}

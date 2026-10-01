@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Char一個のUnicode番号を得る",
+  purpose: "記号の番号をログに残したいときは、codePointにCharを渡します。CharはUnicodeの番号一個に対応するscalarを表す型で、単一引用符で書きます。例の'👍'は一個のscalarです。見た目の一文字には複数のscalarが含まれる場合があるため、Charが常に見た目の一文字全体を表すわけではありません。",
+  reading: "symbolには👍を表すCharを入れ、char.codePoint symbolでその番号128077を得ます。戻り値は整数のIntです。次の行はAの番号65、最後はnull文字の番号0です。\\0はnull文字を書くescapeで、数字の文字'0'とは違います。",
+  boundaries: "128077は文字列中の位置でも、UTF-8の一バイトでもありません。👍をUTF-8に変換すると四バイトになりますが、Unicode番号は一個です。この操作はCharの番号を返し、文字列を切り出す処理はしません。",
+  rules: "引数はCharなので、空文字列や複数scalarの文字列は渡せません。Unicode番号のうちD800からDFFFはUTF-16の組み合わせ用の範囲で、surrogateと呼ばれます。この範囲はscalarではなく、Charにも入りません。文字の表記や大文字・小文字を変える操作ではありません。",
+  mistake: "二重引用符の\"👍\"はStringです。そのままcodePointへ渡すと、Charが必要な場所へStringを渡した型エラーになります。一個と決まっているこの例なら'👍'と書きます。任意のStringから調べたいときはscalarAtで取り出し、値がない場合も扱ってください。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptでは、同じ一個の記号を含むStringにcodePointAt(0)を使えます。最初の三行は同じUnicode番号です。charCodeAt(0)はUTF-16の最初の単位を返すため55357になり、String.lengthの2もUTF-16の単位数です。"
+
+pub fn comparisonBoundary -> String =
+  "このTS例のsymbolは、一個のscalarを含むことが分かっているStringです。一般のStringは空や複数文字にもなり、codePointAtは範囲外ならundefinedを返します。JSにはChar専用の型がないため、この例の前提を任意のStringにも広げないでください。"

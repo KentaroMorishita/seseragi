@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "別のSetにある要素を除く",
+  purpose: "除きたい値を別のSetで指定するときにdifferenceを使います。difference removed valuesと呼び、除く要素を先、元の要素を後に渡します。",
+  reading: "sets.difference right leftは左から2と1を除き、[3]を残します。交換すると右から左の要素を除くので、[4]が残ります。",
+  boundaries: "空のSetを除く場合、元の要素と順序を保ちます。元が空なら結果も空です。両方の入力Setは変わりません。",
+  rules: "残る要素は元の順序を保ちます。この操作には向きがあり、引数を交換すると順序だけでなく要素の有無も変わり得ます。EqとHashで一致を決めます。",
+  mistake: "TSの例は元の値を!removed.has(value)に相当する条件で絞ります。コードの関数はその入力をleftとrightと名付け、元の値を先に渡しています。その順を写すのでなく、示したSeseragiの引数順で呼んでください。",
+}

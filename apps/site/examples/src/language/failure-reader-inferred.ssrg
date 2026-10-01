@@ -1,0 +1,5 @@
+effect fn announce message: String = println message
+
+let send: String -> Effect<{ console: Console }, ConsoleError, Unit> = announce
+
+pub effect fn main = send "ready"

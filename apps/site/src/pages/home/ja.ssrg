@@ -1,4 +1,16 @@
 pub fn title -> String = "Seseragi"
 pub fn summary -> String =
-  "値を返す式と不変のデータを組み合わせる、静的型付きの言語です。実行前に型を検査し、値がない場合や処理に失敗する場合も明示して扱います。"
-pub fn codeTitle -> String = "小さなSeseragiプログラム"
+  "端末で動くプログラムやWeb UIを、小さな関数で組み立てる言語です。元のデータを書き換えず、新しい値を作って更新します。実行前に型を検査します。まずは、普段のTypeScriptで書くような計算を比べてみてください。"
+pub fn exampleTitle -> String = "同じ送料の条件を、いくつもの注文に使う"
+pub fn task -> String =
+  "5,000円以上なら送料無料、それ未満は送料500円。小計3,200円と5,000円の注文は、3700, 5000と表示します。各引数は0〜1,000,000円の整数とし、入力の検証は省いています。"
+pub fn codeTitle -> String = "Seseragi：送料込みの金額を計算する"
+pub fn reading -> String =
+  "fnは関数を定義し、: Intは整数を表します。矢印は引数と戻り値の型を区切り、ifは返す値を選びます。呼び出しでは空白で引数を並べます。totalWithShipping 5000 500 3200は3700です。"
+pub fn reuse -> String =
+  "letで名前を付けたstandardTotalには、最初の二つの引数を渡してあります。小計を渡すと金額を計算できます。TypeScriptでは矢印関数で書く処理を、Seseragiでは普通の呼び出しと同じ書き方で表せます。"
+pub fn output -> String =
+  "pubは実行入口のmainを公開します。effectは、ここでは出力という外部とのやり取りを表します。printlnは文字列と改行を表示し、${...}には計算した値が入ります。"
+pub fn compare -> String = "TypeScript版と比べて、各行の読み方や制限を確認する："
+pub fn try -> String = "自分のファイルを作って試す："
+pub fn limits -> String = "開発中の言語です。対応環境や使える機能を確認してから採用を判断してください。"

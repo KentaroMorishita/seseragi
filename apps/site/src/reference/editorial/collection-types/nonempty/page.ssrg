@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { collectionTypeEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  collectionTypeEditorial "std/non-empty-list::NonEmptyList" "type" "opaque-type" "nonempty" "10\n`[20, 30]\n`[]\n0\nno scores" "10\n[20,30]\n[]\n0\nno scores" (en.copy ()) (ja.copy ())

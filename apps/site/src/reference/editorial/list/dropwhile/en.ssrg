@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Skip the matching prefix",
+  purpose: "Skip consecutive values from the start while the condition is true. positive receives an Int and returns whether it is greater than 0.",
+  reading: "The first result begins at 0 and keeps 0 and 3. Testing stops at 0; the later 3 does not restart the matching prefix.",
+  boundaries: "When the first value fails, the whole input remains. If every value matches, the result is empty. Empty input returns an empty List.",
+  rules: "The condition is called from the start through the first failing value only. Later elements are not tested. The input is unchanged; walking the prefix takes work proportional to that prefix.",
+  mistake: "filter tests all elements and keeps all matches. This operation instead finds one prefix boundary. A TypeScript while loop can find that boundary, then slice from it to get the same elements.",
+}

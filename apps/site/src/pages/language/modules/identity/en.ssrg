@@ -1,31 +1,46 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Module identity",
   summary: (explanation ()).summary,
-  ruleTitle: "One file defines one module",
-  ruleBody: "A .ssrg file contains one module; it does not start with a module-name declaration. Within an ordinary source root, the relative file path names that module. For example, src/domain/user.ssrg has the module path domain/user when src is the package's source root. The package identity supplies the other half of its name, so domain/user in two different packages does not become the same module.",
-  typingBody: "A nominal type belongs to its declaring module. An import changes how you refer to that declaration, not which type it is. In the example, UserId and toInt come from the same file through spellings with and without the .ssrg suffix. The UserId produced by userId is therefore accepted by toInt. Copying the declaration into a second file would create a different nominal type.",
-  evaluationBody: "Multiple imports of one module share its declarations and top-level values. Initialization occurs once, after its dependencies. For example, importing UserId twice under different names does not create two UserId types.",
-  invalidTitle: "An import spelling is not an identity",
-  invalidBody: "Renaming a namespace alias does not create a new module, and adding the .ssrg suffix does not create a new type. Conversely, two files with identical contents are still separate modules. When a type mismatch occurs, inspect the defining package and module instead of comparing only the displayed type name.",
-  diagnosticsBody: "The resolver canonicalizes paths and rejects an ambiguous or invalid module path. Module paths use NFC-normalized Unicode and matching filename case; two files that collapse to one normalized spelling, or differ only by case within a package, are not valid independent modules. Symlink aliases must resolve to one canonical path without escaping the package.",
+  purpose: ["Imports resolving to one file share its definitions, allowing callers with different aliases to use the same functions and types. TypeScript import aliases also change the local spelling. The useful distinction here is between that spelling and the definition it refers to."],
+  exampleTitle: "Name the same file in two ways",
+  reading: [
+    "pub makes greet available to another file. fn declares a function; name: String and -> String describe its argument and result. do in main runs the two println output operations in order.",
+    "A module is identified by its package and the path from that package's source root to the file. For src/domain/user.ssrg, the ordinary module path is domain/user. The same path in another package identifies a different module."
+  ],
+  rules: [
+    "The next pub newtype UserId = Int defines a named type wrapping an integer. UserId 42 constructs a value; UserId in let id: UserId is its type annotation. The match in toInt unwraps the integer: UserId value -> value names the contents value and returns it.",
+    "UserId is imported without the extension and toInt with it, but both refer to declarations in the same domain.ssrg. toInt id therefore returns 42. Copying the newtype declaration into another file creates a distinct type with another defining module, which cannot be passed in its place.",
+    "A package is distinguished by its name, exact version and source identity. Generated code, tests and benchmarks have separate roots from ordinary source, with @generated, @test and @benchmark identity tags. A relative import cannot use .. to cross into a different root.",
+    "Identity paths use / separators and omit .ssrg. Relative paths and symlinks that reach the same file resolve to one canonical path. Importing that module from several places initializes its top-level values only once and shares them among callers.",
+    "Unicode can represent some identical characters with different code-point sequences. Module paths use NFC normalization for identity. Two files normalizing to the same path cannot coexist in one root. Modules differing only in letter case cannot coexist in one package. Match the actual filename's case in an import; a symlink cannot escape the package boundary."
+  ],
+  mistakes: [
+    "The next example copies domain.ssrg to copied-domain.ssrg. Importing UserId from the copy and toInt from the original produces SES-T0101. Both printed type names can be UserId while their defining modules differ. Inspect the two import targets rather than relying on the spelling alone.",
+    "Import the type and its operation from the same domain.ssrg again to print 42. Giving an import an alias is different from duplicating a declaration in another file."
+  ],
+  related: [
+    "Check the package name and dependency declarations that form part of identity.",
+    "Learn how to publish a type while hiding its representation.",
+    "Review named imports and local aliases."
+  ],
 }
-
-pub fn layoutTitle -> String = "Source roots give paths their meaning"
-
-pub fn layoutBody -> String =
-  "Package identity includes its name, exact version and source identity. Source, generated, test and benchmark roots remain distinct: generated modules use @generated, tests use @test and benchmarks use @benchmark in their identities. A relative import stays within the current root; it cannot use .. to cross into another root. Filesystem separators normalize to / and .ssrg is omitted from the module identity."
-
-pub fn exampleTitle -> String = "Two imports, one defining module"
-
-pub fn exampleBody -> String =
-  "Place these files next to each other in the same source root. The first file owns the type and public functions. The second refers to that file twice; the second spelling explicitly includes its extension. These panels form a two-file example."
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Are two imports of the same file two different types?",
-  summary: "A source file is one module. Different valid spellings that resolve to that file refer to the same declarations.",
-  reading: "modules-domain defines UserId and the public functions userId and toInt. The companion example imports UserId without .ssrg and toInt with .ssrg; both imports resolve to that one file in the same package.",
-  result: "UserId and toInt from different imports work together because they share one defining module. Copying the same newtype declaration into another file creates a distinct type defined in that file. Type identity depends on its declaration's origin, not only its contents."
+  question: "Do two imports of one file create different functions?",
+  summary: "Use one function through two imports. Different local spellings still refer to the same declaration when both imports resolve to the same file.",
+  reading: "The imports use \"./greeting\" and \"./greeting.ssrg\". Both select greeting.ssrg at the same location. The second import uses as greetAgain to give the caller a distinct local name.",
+  result: "greet \"Aki\" and greetAgain \"Aki\" both call the same greet function, printing Hello, Aki! on two lines. A different import spelling or alias does not copy the function or create another module.",
 }
+
+pub fn setup -> String =
+  "Create seseragi.toml and the two files under src in an empty directory, at the paths shown by the panels. No declaration of the module name is needed inside a source file. Run the commands below from that directory."
+
+pub fn detailsTitle -> String = "A type name alone does not identify its declaration"
+
+pub fn mistakesTitle -> String =
+  "Copying the declaration does not preserve the original UserId"
+
+pub fn title -> String = (copy ()).title

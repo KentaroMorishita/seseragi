@@ -1,0 +1,38 @@
+// Shared by both locales. The focused first-run test executes the displayed
+// directory, lint and run commands with the canonical Hello World source.
+pub fn platform -> String = "uname -sm\ngetconf GNU_LIBC_VERSION"
+
+pub fn installBun -> String =
+  "curl -fsSL https://bun.com/install | bash -s \"bun-v1.3.9\"\nexport PATH=\"$HOME/.bun/bin:$PATH\"\nbun --version"
+
+pub fn installCli -> String =
+  "version=0.61.19\nmkdir -p \"$HOME/.local/opt/seseragi/$version\"\ncd \"$HOME/.local/opt/seseragi/$version\"\nbase=\"https://github.com/KentaroMorishita/seseragi/releases/download/v$version\"\narchive=\"seseragi-v$version-linux-x64.tar.gz\"\ncurl -fLO \"$base/$archive\" &&\ncurl -fLO \"$base/$archive.sha256\" &&\nsha256sum -c \"$archive.sha256\" &&\ntar -xzf \"$archive\" &&\nexport PATH=\"$PWD:$PATH\" &&\nseseragi --version"
+
+pub fn versionOutput -> String =
+  "seseragi 0.61.19 (release, commit a8641b5a81a4, target x86_64-unknown-linux-gnu)"
+
+pub fn createDirectory -> String =
+  "cd \"$HOME\"\nmkdir hello-seseragi\ncd hello-seseragi"
+
+pub fn lint -> String = "seseragi lint main.ssrg"
+
+pub fn run -> String = "seseragi run main.ssrg"
+
+pub fn output -> String = "Hello, Seseragi!"
+
+pub fn restorePath -> String =
+  "export PATH=\"$HOME/.local/opt/seseragi/0.61.19:$HOME/.bun/bin:$PATH\"\ncommand -v seseragi bun"
+
+pub fn macPlatform -> String = "uname -m"
+
+pub fn installMac -> String =
+  "version=0.61.19\ntarget=darwin-arm64\nmkdir -p \"$HOME/.local/opt/seseragi/$version\"\ncd \"$HOME/.local/opt/seseragi/$version\"\nbase=\"https://github.com/KentaroMorishita/seseragi/releases/download/v$version\"\narchive=\"seseragi-v$version-$target.tar.gz\"\ncurl -fLO \"$base/$archive\" &&\ncurl -fLO \"$base/$archive.sha256\" &&\nshasum -a 256 -c \"$archive.sha256\" &&\ntar -xzf \"$archive\" &&\nexport PATH=\"$PWD:$HOME/.bun/bin:$PATH\" &&\nseseragi --version"
+
+pub fn installWindows -> String =
+  "iex \"& {$(irm https://bun.com/install.ps1)} -Version 1.3.9\"\n$env:Path = \"$env:USERPROFILE\\.bun\\bin;$env:Path\"\nbun --version\n$version = \"0.61.19\"\n$directory = \"$env:LOCALAPPDATA\\Seseragi\\$version\"\nNew-Item -ItemType Directory -Force $directory | Out-Null\nSet-Location $directory\n$archive = \"seseragi-v$version-win32-x64.zip\"\n$base = \"https://github.com/KentaroMorishita/seseragi/releases/download/v$version\"\nInvoke-WebRequest \"$base/$archive\" -OutFile $archive\nInvoke-WebRequest \"$base/$archive.sha256\" -OutFile \"$archive.sha256\"\n$expected = (Get-Content \"$archive.sha256\").Split()[0]\n$actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()\nif ($actual -eq $expected) {\n  Expand-Archive $archive -DestinationPath . -Force\n  $env:Path = \"$directory;$env:Path\"\n  seseragi --version\n} else {\n  throw \"SHA-256 checksum mismatch\"\n}"
+
+pub fn createWindowsDirectory -> String =
+  "Set-Location $HOME\nNew-Item -ItemType Directory hello-seseragi\nSet-Location hello-seseragi"
+
+pub fn restoreWindowsPath -> String =
+  "$env:Path = \"$env:LOCALAPPDATA\\Seseragi\\0.61.19;$env:USERPROFILE\\.bun\\bin;$env:Path\"\nGet-Command seseragi, bun"

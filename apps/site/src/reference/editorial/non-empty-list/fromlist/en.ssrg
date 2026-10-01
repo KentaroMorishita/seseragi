@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Return Just a NonEmptyList for a nonempty List, or Nothing for an empty one. Preserve its elements and order.",
+  taskTitle: "Use the first score when a score exists",
+  purpose: "An incoming list of scores may be empty. Checking it with fromList handles that case before calling head. A score of zero is still a valid score.",
+  setup: "fn firstScore takes values: List<Int>, a list of integers, and -> String declares its text result. `[0, 20] and `[] use List syntax, with a backtick before [. import * as nonempty defines the prefix used for the operations.",
+  after: [
+    "Maybe has two forms: Just with a value, or Nothing without one. match selects a branch by that form. In the Just scores branch, scores is a NonEmptyList<Int>, so head returns an integer directly.",
+    "A first element of zero still selects Just and prints first: 0. Only the empty List produces no score. Here + joins strings and show converts an integer to text. The do in pub effect fn main runs the two println calls in order."
+  ],
+  comparisonBefore: "The TypeScript version also checks array length rather than an element’s value. A nonempty array becomes a readonly [T, ...T[]] tuple; an empty one produces undefined. This required-first-element type allows direct access to [0].",
+  comparisonAfter: "Neither version treats zero as missing. === undefined separates only the absent result. The ! in values[0]! asserts that the preceding length check established a first element. The example constructs a new tuple without changing the original array.",
+  details: [
+    "The result is Maybe<NonEmptyList<A>>. fromList accepts a List<A> and preserves its element type A and order. Extract the value inside Just before passing it to NonEmptyList operations such as head or reduce1.",
+    "This operation leaves the input unchanged and does not add a placeholder to an empty list. The caller chooses a message or replacement in the Nothing branch. If one value is already available, singleton can construct the collection directly."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input, result and evaluation rules"
+}

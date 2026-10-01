@@ -1,0 +1,2 @@
+fn greeting name: String -> String = "Hello, " + name + "!"
+pub fn main -> String = greeting "Aki"

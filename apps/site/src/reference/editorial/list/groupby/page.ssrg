@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { listEditorial } from "../../list-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  listEditorial "std/list::groupBy" "list-groupby" "[1, 0]\ngroup: `[3, 5, 7]\ngroup: `[2, 4]\nno group\n0" (en.copy ()) (ja.copy ())

@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Convert Valid to Right or Invalid to Left containing every error.",
+  taskTitle: "Pass success or all errors to the next step",
+  purpose: "Pass completed independent validation to a caller that handles Either. Invalid does not select only the first error: all errors enter Left in the same order.",
+  setup: "Import the Validation type and result alternatives from std/validation, and NonEmptyList from std/non-empty-list. validation and nonempty name the functions. The argument of fn describe is Either<NonEmptyList<String>, String>: failure contains one or more strings; success contains a string. -> String is the display result type.",
+  after: [
+    "let accepted constructs success with valid. let rejected uses nonempty.cons to join a first error to a remaining List, then invalidMany constructs failure. The leading backtick in `[...] is List syntax. The annotations specify the successful and error types.",
+    "validation.toEither converts Valid to Right and Invalid to Left. The match in describe reads the successful string in Right value or all errors in Left errors. arrays.fromIterable makes an Array and text.join joins it for display.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "TypeScript Checked uses valid to select between two object shapes, while Result uses ok. The conversion preserves the entire error array. The TypeScript type [string, ...string[]] requires a first string followed by any number of further strings. Both examples therefore keep the rule that an error group cannot be empty.",
+  comparisonAfter: "Both programs make the conversion explicit. Seseragi can connect the resulting Either to a next step that needs the successful value. That step also needs to agree on the NonEmptyList<String> failure type.",
+  details: [
+    "In toEither<E, A>, E is one error’s type and A the successful type; both are String here. The result is Either<NonEmptyList<E>, A>, not Either<E, A>, so it cannot be passed directly to a function expecting one String failure.",
+    "The conversion is not implicit. It neither reruns validation nor catches exceptions. If a later caller does not need all errors, make its rule for discarding them explicit."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

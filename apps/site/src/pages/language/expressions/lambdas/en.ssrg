@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Lambda expressions",
   summary: (explanation ()).summary,
-  ruleTitle: "Write parameters and an expression where a function is needed",
-  ruleBody: "Write parameters after a backslash and the body after an arrow. A lambda with several parameters still receives them one at a time. As with fn, supplying only some parameters creates a function waiting for the rest.",
-  typingBody: "Parameter types are inferred from the function type expected where the lambda is supplied, or written on the parameters. In the example, Int -> Int specifies an Int parameter and result. Earlier parameter names can be referenced by later parameter annotations and the body.",
-  evaluationBody: "A lambda constructs a function value. Its body is computed when that function is called. The body can refer to outer names; those names are resolved where the lambda was written, not where it is called.",
-  invalidTitle: "Several parameters are still received one at a time",
-  invalidBody: "A lambda with several parameters differs from a function taking one tuple. Passing it to a callback in another language, such as JavaScript, requires the explicit foreign conversion rules. Writing a lambda alone does not change its calling convention.",
-  diagnosticsBody: "If the parameter or result type cannot be inferred, add parameter annotations or supply the lambda where the required function type is known.",
+  exampleTitle: "Pass a function that adds a bonus to each score",
+  purpose: [
+    "To apply the same calculation to every element, pass that calculation as a function. Here a lambda fills the role of a TypeScript expression such as score => score + bonus.",
+    "The first example adds two points to every score. It then shows supplying only one input to a two-parameter lambda: as with a named function, this returns a function waiting for the remaining input.",
+  ],
+  reading: [
+    "bonus is 2 and scores is [10, 20, 30]. map takes a transformation function first and a source collection next, applies the function to each element, and returns a new collection. This map name is available by default.",
+    "In \\score: Int -> score + bonus, score names the integer input, Int declares its type, and the expression after the arrow supplies the result. Parentheses group the whole lambda as one argument. Adding 2 to 10, 20 and 30 produces adjusted, [12, 22, 32].",
+    "bonus is defined outside the lambda. Referring to an available outer name from the body is called capturing an outer value. A coincidentally identical name at a caller does not replace that reference.",
+    "The type Int -> Int -> Int of add accepts one integer and returns a function waiting for another. \\left right -> left + right writes both parameters. add 5 creates addFive, and addFive 3 is 8. show adjusted converts the array to a string. In main, backticks enclose a template, ${...} inserts each result, and \\n separates the lines.",
+  ],
+  rules: [
+    "Write parameters after a backslash and the body after an arrow. A lambda with several parameters still receives them one at a time. As with fn, supplying only some parameters creates a function waiting for the rest.",
+    "Parameter types are inferred from the function type expected where the lambda is supplied, or written on the parameters. In add, Int -> Int -> Int specifies two Int inputs and a final Int result. Earlier parameter names can be referenced by later parameter annotations and the body.",
+    "A lambda constructs a function value. Its body is computed when that function is called. The body can refer to outer names; those names are resolved where the lambda was written, not where it is called.",
+    "A lambda with several parameters differs from a function taking one tuple. Passing it to a callback in another language, such as JavaScript, requires the explicit foreign conversion rules. Writing a lambda alone does not change its calling convention.",
+    "If the parameter or result type cannot be inferred, add parameter annotations or supply the lambda where the required function type is known.",
+  ],
+  mistakes: [
+    "increment below is annotated Int -> Int, but its body returns the String \"one\", producing SES-T0101. Replace the body with value + 1 to make increment 2 produce 3.",
+    "If there is insufficient information to determine a parameter type, write it explicitly, as in \\score: Int -> .... An annotation checks input and result types; it does not convert a value.",
+  ],
+  related: [
+    "Check the function type that remains after supplying one argument.",
+    "Review ordinary space-separated function calls.",
+    "Write several local declarations in a lambda body.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I pass a small function without naming it?",
-  summary: "A lambda is a function expression. It lets you put the function where a value is needed, for example as an argument to map.",
-  reading: "In \\value -> value + 1, value names the parameter and the expression after -> is the result. The annotation Int -> Int beside increment supplies the parameter and result types. The add lambda has two parameters.",
-  result: "increment 20 is 21 and add 21 21 is 42, so answer is 42. Defining increment or add does not compute their parameter-dependent bodies. Calling them does."
+  question: "How do I pass a small transformation to an array operation?",
+  summary: "A lambda writes a function value in place. Put parameters after a backslash and the result expression after the arrow, then pass it to an operation such as map.",
+  reading: "The lambda passed to map adds the score input to the outer bonus. The add example receives its two integers one at a time.",
+  result: "The transformed array is [12, 22, 32], and addFive 3 is 8. scores stays unchanged while a new array is produced.",
 }

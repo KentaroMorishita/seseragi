@@ -1,31 +1,58 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Top-level declarations",
   summary: (explanation ()).summary,
-  ruleTitle: "Top level contains declarations",
-  ruleBody: "A module may contain imports and re-exports, let bindings, fn and effect fn declarations, type, newtype, alias and struct declarations, inherent impl blocks, trait declarations and instances, custom operators, foreign declarations and rec groups. Each form introduces declarations or changes the module interface. Arbitrary expression statements are not a top-level form; a call belongs in a binding or function body.",
-  typingBody: "A top-level let requires an always-matching pattern and a pure right-hand expression. Constructing an Effect is pure because it does not yet execute external work. In the example, let pending = report () stores a value describing a println operation. Initializing pending does not print anything.",
-  evaluationBody: "Top-level let bindings evaluate once in source order. A binding can directly refer to earlier lets and any module-level function declaration, but cannot directly read a later let. Function and type declarations are available to name resolution before the lets execute. Module-level function bindings are established before evaluating initializers, so a function can be declared below the let that calls it.",
-  invalidTitle: "A function can delay a reference, not initialize it early",
-  invalidBody: "A function body may refer to a later top-level let if the function runs after initialization. Calling that function from an earlier initializer is different: if its call chain reads the current or a later uninitialized let, compilation stops with SES-N0201. Reordering function declarations does not make a value initialize sooner. Mutually recursive functions also require one rec group.",
-  diagnosticsBody: "Illegal binding patterns and unresolved names are reported at the declaration. SES-N0201 identifies an initialization-before-use dependency reached through a function call. Importing an Effect value does not execute it; execution requires an explicit runtime boundary, normally the selected public main. Tooling must not execute foreign runtime code to inspect a module.",
+  purpose: [
+    "Put shared calculations and functions outside other functions. This position is called top level, or module level. One .ssrg file is one module.",
+    "Here summary.ssrg publishes the value 42, and main.ssrg displays it. The useful distinction is between preparing a calculation result and performing output.",
+  ],
+  exampleTitle: "Define a computed value and work that waits to run",
+  reading: [
+    "seseragi.toml configures the project. package declares its name, version and supported language versions. Under run, entry = \"main\" selects main.ssrg in the default src directory; target = \"process\" selects a process application.",
+    "fn double value: Int -> Int defines a function with one integer parameter, value, and an integer result. The expression value * 2 after = supplies that result. pub let answer: Int = double 21 calls the function with 21 and stores 42. let names a value; pub makes that name available to other modules.",
+    "An Effect is a value describing work such as input or output to perform later. effect fn report returns that value. In report (), () is the Unit value passed as its argument. let pending = report () calls the function and stores the Effect, without executing its println. println describes writing a string and a newline.",
+    "The public main in summary.ssrg is also just a function definition. main.ssrg imports answer using import { answer } from \"./summary\". Its own main uses show answer to turn 42 into text and passes that text to println. The runner executes the Effect returned by this selected main, so only 42 is printed.",
+  ],
+  rules: [
+    "Place imports before other declarations. A top-level let needs a pure expression on its right-hand side: the calculation itself must not perform external input or output. double 21 calculates immediately. A call such as report () also qualifies when it only constructs an Effect.",
+    "A let pattern must always match. The simple name answer names the entire value and cannot fail. A pattern that selects only one of several possible shapes is not allowed in a top-level let.",
+    "Top-level lets initialize in source order, once per module. An initializer may use earlier lets and module-level function declarations, but cannot directly read a later let. Function bindings are established before lets evaluate, so the called function can be declared further down the file.",
+    "Function and type names resolve before lets evaluate. This includes type, newtype, alias, struct and trait declarations. Functions that call each other still need the same rec group. A function local to a block is available from its declaration position instead; it does not use the module-level rule.",
+  ],
+  mistakes: [
+    "The separate project below fails even though readLater is declared. Initializing answer calls readLater (), whose body reads later before later has initialized. SES-N0201 is a compile-time diagnostic, before the program runs. The same rule covers a function reading the let currently being initialized, including reads reached through further function calls.",
+    "Move the initialization of later before the call. The complete repair below prints 42. Moving the function declaration upwards does not prepare the value earlier. A function body may refer to a later let provided it is called after that value is initialized.",
+  ],
+  related: [
+    "Check when two import paths refer to the same file and module.",
+    "Check the types required for public values and functions, and which implementation details stay private.",
+    "Look up the syntax for bringing names from another file into this one.",
+  ],
 }
 
-pub fn layoutTitle -> String = "Private inference and public contracts"
+pub fn title -> String = (copy ()).title
 
-pub fn layoutBody -> String =
-  "A private let may infer its type from the initializer. An ordinary fn requires parameter and result types even when private. The compact effect fn is an exception: omit all of ->, with, fails, and where, write parameter types, and infer the returned Effect. Public APIs follow this form's rules as well as visibility rules. Place imports before other declarations. A block-local function is available from its declaration position."
+pub fn declarationsTitle -> String = "Declarations allowed at module level"
 
-pub fn exampleTitle -> String = "Initialization constructs work without running it"
+pub fn declarations -> Array<String> = [
+  "The complete list is imports and re-exports, let, fn, effect fn, type, newtype, alias, struct, inherent impl, trait, trait instance, custom operator, foreign declarations and rec groups.",
+  "type defines values with named alternative shapes; newtype gives an existing value a distinct type; alias names a type; and struct declares a type with fields. impl attaches methods to a type; trait and instance declare shared operations and their implementations for individual types; operator declares an operator; foreign connects to another language; and rec groups declarations such as mutually calling functions. These declare available names or operations rather than acting as standalone commands.",
+  "The language specification does not allow standalone expression statements, such as a bare function call, at module level. Put calculated values in lets and input or output inside a returned Effect. The current compiler still accepts some standalone expression statements contrary to that rule. This page does not present them as a verified rejection case.",
+]
 
-pub fn exampleBody -> String =
-  "base initializes first, then answer becomes 42. Calling report () constructs pending; the println remains inside the returned Effect. Even if another module imports this file, that import does not print the answer."
+pub fn signaturesTitle -> String = "Where to write types and where inference is allowed"
+
+pub fn signatures -> Array<String> = [
+  "A private let can infer its type from its initializer. A public let needs a complete type annotation. An ordinary fn needs parameter and result types whether public or private. The example writes these as : Int and -> Int.",
+  "The compact effect fn form is an exception. Omit all of ->, with, fails and where to infer the returned Effect’s success value, required services and failure type from the body. Any parameters still need types. Both main functions and report use this form. Public functions follow this form’s rules as well as visibility rules.",
+  "Invalid patterns and unresolved names are diagnosed while checking declarations. The compiler and editor must not execute foreign runtime code merely to inspect a module.",
+]
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Does a top-level Effect run when the module is imported?",
-  summary: "Top-level declarations define module names and initialize ordinary values. Storing an Effect value does not execute its described operation.",
-  reading: "base is 20. answer computes double 21 and stores 42. report () constructs an Effect that performs output and stores it in pending. println runs later, so this initialization does not produce output.",
-  result: "A runner or other designated execution boundary must execute the stored Effect. Top level does not allow arbitrary expression statements: put a computed value in a declaration, or external work inside the returned Effect."
+  question: "What is calculated at top level, and what waits until the program runs?",
+  summary: "Top-level declarations define values and functions. Ordinary calculations run during initialization; input and output stored in an Effect wait for an execution entry point.",
+  reading: "In summary.ssrg, initialization calculates double 21 and gives answer the value 42. report () stores an Effect describing output in pending. The configuration file selects src/main.ssrg as the entry module.",
+  result: "Save these three files as one project and run it: the only output is 42 and a newline. Neither stored Effect must not run nor imported main must not run is printed. This separates pure calculations needed during import from input and output that wait for execution.",
 }

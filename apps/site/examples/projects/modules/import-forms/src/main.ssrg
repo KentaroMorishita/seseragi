@@ -1,0 +1,9 @@
+import { greet } from "./greeting"
+import { greet as welcome } from "./greeting"
+import * as words from "./greeting"
+
+pub effect fn main = do {
+  println (greet "Aki")
+  println (welcome "Aki")
+  println (words.greet "Aki")
+}

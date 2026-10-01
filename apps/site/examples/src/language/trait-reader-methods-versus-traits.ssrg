@@ -1,0 +1,12 @@
+struct User { name: String }
+
+impl User {
+  fn displayName self: User -> String = self.name
+}
+
+instance Show<User> {
+  fn show value: User -> String = "User(" + value.name + ")"
+}
+
+let user = User { name: "Aki" }
+pub effect fn main = println (user.displayName + "\n" + show user)

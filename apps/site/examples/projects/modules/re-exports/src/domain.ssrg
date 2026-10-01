@@ -1,0 +1,3 @@
+pub newtype UserId = Int
+
+pub fn toInt id: UserId -> Int = match id { UserId value -> value }

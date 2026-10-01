@@ -28,12 +28,14 @@ export function assertReferenceLinkTitles(
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/u)
   assert.ok(article, `${route}: missing article`)
   let checked = 0
+  // Do not let an unmatched item consume the closing anchor and spill into
+  // a later list item or paragraph when searching for a purpose separator.
   const links = [
     ...article[1].matchAll(
-      /<li\b[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<\/li>/gu
+      /<li\b[^>]*>\s*<a\b([^>]*)>((?:(?!<\/a>)[\s\S])*)<\/a>\s*<\/li>/gu
     ),
     ...article[1].matchAll(
-      /<p\b[^>]*>\s*<a\b([^>]*)>([\s\S]*?)<\/a>\s*<span>\s*(?:：|—)/gu
+      /<(?:p|li)\b[^>]*>\s*<a\b([^>]*)>((?:(?!<\/a>)[\s\S])*)<\/a>\s*<span>\s*(?:：|:\s|—|\.\s|。)/gu
     ),
   ]
   for (const link of links) {

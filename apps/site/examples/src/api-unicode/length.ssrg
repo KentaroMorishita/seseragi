@@ -1,0 +1,9 @@
+import * as graphemes from "std/text/grapheme"
+import * as text from "std/text"
+
+let label = "A👍🏽e\u{0301}"
+pub effect fn main =
+  println `visible pieces: ${graphemes.length label}
+scalars: ${text.lengthScalars label}
+UTF-8 bytes: ${text.lengthBytes label}
+empty: ${graphemes.length ""}`

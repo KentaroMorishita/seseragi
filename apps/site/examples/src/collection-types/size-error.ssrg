@@ -1,0 +1,17 @@
+import * as arrays from "std/array"
+import * as collections from "std/collection"
+fn describe problem: collections.SizeError -> String = match problem {
+  collections.NonPositiveSize size -> "size must be positive: " + show size
+}
+fn batches size: Int -> values: Array<Int> -> String =
+  match arrays.chunksOf size values {
+    Left problem -> describe problem
+    Right groups -> show groups
+  }
+pub effect fn main = do {
+  println (batches 2 [10, 20, 30])
+  println (batches 2 [])
+  println (batches 0 [])
+  println (batches (0 - 2) [10])
+  println (show (collections.NonPositiveSize 2))
+}

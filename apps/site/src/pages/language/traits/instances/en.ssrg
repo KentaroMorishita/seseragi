@@ -5,36 +5,35 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Instances",
   summary: (explanation ()).summary,
   purpose: [
-    "An instance supplies the implementation of a trait's operations for a particular type. Label<Ticket>, for example, defines the body of label that accepts Ticket and returns text.",
-    "Declaring an instance does not construct a Ticket value. The compiler selects an instance matching the type passed to label."
-  ],
-  exampleTitle: "Implement Label for Ticket",
-  reading: [
-    "Label<A> requires label to take A and return String. In instance Label<Ticket>, replace A with Ticket. The required function now takes Ticket and returns String.",
-    "The instance supplies fn label value: Ticket -> String. Its body reads value.number; show turns that integer into text, and + joins it to \"ticket-\".",
-    "main creates a Ticket value with number 42. Calling label ticket requires Label<Ticket>, which is the instance declared above. The result is the string ticket-42.",
-    "Changing the ticket's number changes the resulting text but not the selected instance. Selection is based on Ticket, not on the contents of an individual ticket."
-  ],
-  rules: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "The trait declares an operation’s type; the instance supplies a matching body. Compare fn label value: Ticket -> String in the instance with the trait’s fn line. Ticket replaces A.",
+    "value.number reads the integer, and show converts it to text. show is also a standard trait operation; this call uses the Int implementation. Adding the prefix produces the returned String.",
+    "An instance declaration is not an expression that creates a value, like JavaScript new. Ticket { number: 42 } creates the actual value, and label first calls the operation."
+  ], rules: [
     "An instance must provide every required operation, with the declared parameter order and result type after substitution. A generic instance must account for its type parameters in the instance's type application.",
     "A user-defined instance belongs to the module that defines the trait or the outermost named type involved. This ownership rule limits where implementations may be added; importing both names alone does not make another module an owner.",
     "There must be one applicable implementation. Duplicate or overlapping instances are rejected rather than chosen by runtime order. A type alias does not create a new type identity for bypassing those rules.",
-    "Type constraints required by an instance must also be satisfied when it is selected. Instance lookup uses static types; it does not branch on a runtime constructor. For built-in structural types, general-purpose user instances are not a substitute for compiler-provided instances."
+    "Type constraints required by an instance must also be satisfied when it is selected. Instance lookup uses static types; it does not branch on a runtime constructor. For built-in structural types, general-purpose user instances are not a substitute for compiler-provided instances.",
+    "An instance is not a value you explicitly construct or pass as a function argument. Selection completes during type checking; it does not inspect JavaScript class names or object shapes at runtime.",
+    "The specification requires the same signature checks for standard trait instances. The tested 0.61.19 compiler nevertheless accepted an Eq declaration with an incorrect String result. Even when accepted, implementations must match the standard trait’s arguments and result."
+  ], mistakes: [
+    "The rejected instance declares an Int result where the trait requires String, producing SES-T0101. Change its result to String and its body to \"ticket-\" + show value.number. That matches the contract; this file’s main prints ready.",
+    "Even matching types do not permit missing or duplicate operations. An annotation at a call cannot repair an invalid instance declaration."
+  ], related: [
+    "Check how to declare the arguments and results an implementation must provide.",
+    "Check overlapping implementations and permitted declaration sites.",
+    "Decide between a dot method and a trait operation."
   ],
-  mistakes: [
-    "Writing impl Ticket defines functions belonging to Ticket, not an implementation of Label<Ticket>. Use instance for a trait implementation.",
-    "If Label declares String as the result, an implementation returning Int is invalid. The example below is rejected because its method signature does not fulfill the trait declaration; changing the call site does not repair that mismatch."
-  ],
-  related: [
-    "Compare the implementation against the required operation's declaration.",
-    "Check where an instance may be declared and why overlapping implementations are rejected.",
-    "Distinguish type-owned dot methods from trait implementations."
-  ]
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Implementation types and permitted declaration sites"
+pub fn mistakesTitle -> String = "Match the trait’s signature"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Where do I write a type's implementation of a trait?",
-  summary: "An instance implements the operations a trait requires for one type application. It is a declaration of behavior, not construction of an object.",
-  reading: "Ticket holds a number; its Label instance prefixes that number with \"ticket-\". Person holds a name; its Label instance returns that name. labelOf<A> has the condition Label<A>, so the same function can call the correct implementation for either argument type.",
-  result: "label (Ticket { number: 42 }) returns \"ticket-42\". Other Ticket numbers use the same instance. Two instances applying to the same type produce an error because the compiler cannot choose one unambiguously."
+  question: "How do you implement a display rule for Ticket?",
+  summary: "An instance implements the operations declared by a trait for a particular type. Here it supplies the body that turns Ticket into text.",
+  reading: "Label<A> requires label to take A and return String. instance Label<Ticket> substitutes Ticket for A, reads its number and builds the label.",
+  result: "Numbers 42 and 7 produce ticket-42 and ticket-7. The values differ, but both have type Ticket and use the same instance body."
 }

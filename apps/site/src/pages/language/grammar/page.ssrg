@@ -1,9 +1,13 @@
+import * as arrays from "std/array"
 import { BuildInput } from "../../../model/build"
 import { localized } from "../../../model/locale"
 import {
   Article,
+  Block,
   BulletList,
+  CodeExample,
   Heading,
+  Inline,
   InternalLink,
   PageDefinition,
   Paragraph,
@@ -13,63 +17,75 @@ import {
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn page input: BuildInput -> PageDefinition = PageDefinition {
-  id: "language.grammar",
-  path: "/docs/language/grammar/",
-  kind: Article,
-  title: localized (en.title ()) (ja.title ()),
-  summary: localized (en.summary ()) (ja.summary ()),
-  blocks: [
-    Heading ("reading", localized (en.readingTitle ()) (ja.readingTitle ())),
-    Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
-    Terminal
-      (localized "A small grammar rule" "文法の記法の例", "boolean = \"True\" | \"False\" ;"),
-    Paragraph (
-      [Words (
-        localized
-      "This example rule permits exactly the source words True and False. The name boolean labels the rule; | means either alternative. Neither boolean = nor the final semicolon is part of a boolean literal you write in a program."
-      "この例の規則が許すソースはTrueかFalseです。booleanは規則の名前、|は選択肢を表します。boolean =や末尾のセミコロンを、真偽値のリテラルとしてプログラムに書くわけではありません。"
-      )]
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn related pair: ((String, String, String), (String, String)) -> Array<Inline> =
+  match pair {
+    ((english, japanese, path), (purpose, purposeJa)) -> [
+      InternalLink (localized english japanese, path),
+      Words (localized (". " + purpose) ("。" + purposeJa))
+    ]
+  }
+
+pub fn page input: BuildInput -> PageDefinition = {
+  let links = [
+    ("Source text and comments", "ソーステキストとコメント", "/docs/language/syntax/source-text/"),
+    ("Function application", "関数適用", "/docs/language/syntax/function-application/"),
+    ("Operator precedence", "演算子の優先順位", "/docs/language/syntax/operator-precedence/"),
+    (
+      "Blocks and local declarations",
+      "ブロックとローカル宣言",
+      "/docs/language/expressions/blocks-and-local-declarations/"
     ),
-    Paragraph ([Words (localized (en.lexical ()) (ja.lexical ()))]),
-    Heading ("productions", localized (en.grammarTitle ()) (ja.grammarTitle ())),
-    Paragraph ([Words (localized (en.grammarBody ()) (ja.grammarBody ()))]),
-    Terminal (localized "Appendix A · EBNF" "付録A · EBNF", input.grammar),
-    Heading ("semantic-boundaries", localized (en.limitsTitle ()) (ja.limitsTitle ())),
-    Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
-    Paragraph ([Words (localized (en.ambiguity ()) (ja.ambiguity ()))]),
-    Heading ("related", localized (en.relatedTitle ()) (ja.relatedTitle ())),
-    BulletList (
-      [
-        [InternalLink (
-          localized "Source text and comments" "ソーステキストとコメント",
-          "/docs/language/syntax/source-text/"
-        )],
-        [InternalLink (
-          localized "Function application" "関数適用",
-          "/docs/language/syntax/function-application/"
-        )],
-        [InternalLink (
-          localized "Operator precedence" "演算子の優先順位",
-          "/docs/language/syntax/operator-precedence/"
-        )],
-        [InternalLink (
-          localized "Blocks and local declarations" "ブロックとローカル宣言",
-          "/docs/language/expressions/blocks-and-local-declarations/"
-        )],
-        [InternalLink
-      (localized "Match expressions" "パターン照合", "/docs/language/patterns/match/")],
-        [InternalLink (
-          localized "Type constructors" "型構築子",
-          "/docs/language/types/type-constructors/"
-        )],
-        [InternalLink (
-          localized "Top-level declarations" "トップレベルの宣言",
-          "/docs/language/modules/top-level/"
-        )]
-      ]
-    ),
-    Heading ("source", localized (en.sourceTitle ()) (ja.sourceTitle ())),
-    Paragraph ([Words (localized (en.source ()) (ja.source ()))]),
+    ("Match expressions", "パターン照合", "/docs/language/patterns/match/"),
+    ("Type constructors", "型構築子", "/docs/language/types/type-constructors/"),
+    ("Top-level declarations", "トップレベルの宣言", "/docs/language/modules/top-level/")
   ]
+  PageDefinition {
+    id: "language.grammar",
+    path: "/docs/language/grammar/",
+    kind: Article,
+    title: localized (en.title ()) (ja.title ()),
+    summary: localized (en.summary ()) (ja.summary ()),
+    blocks: arrays.concat [
+      [
+        Heading ("reading", localized (en.readingTitle ()) (ja.readingTitle ())),
+        Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+        Terminal
+          (localized "A small grammar rule" "文法の記法の例", "boolean = \"True\" | \"False\" ;"),
+        Paragraph ([Words (localized (en.booleanReading ()) (ja.booleanReading ()))]),
+        Paragraph ([Words (localized (en.notation ()) (ja.notation ()))]),
+        CodeExample
+          ("model-reader-grammar", localized (en.exampleTitle ()) (ja.exampleTitle ())),
+        Terminal (localized "Program output" "プログラムの実行結果", "3, 4")
+      ],
+      map paragraph (arrays.zip (ja.exampleReading ()) (en.exampleReading ())),
+      [
+        Paragraph ([Words (localized (en.lexical ()) (ja.lexical ()))]),
+        Heading ("productions", localized (en.grammarTitle ()) (ja.grammarTitle ())),
+        Paragraph ([Words (localized (en.grammarBody ()) (ja.grammarBody ()))]),
+        Terminal (localized "Appendix A · EBNF" "付録A · EBNF", input.grammar),
+        Heading
+          ("semantic-boundaries", localized (en.limitsTitle ()) (ja.limitsTitle ())),
+        Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+        CodeExample (
+          "model-reader-grammar-invalid",
+          localized (en.invalidTitle ()) (ja.invalidTitle ())
+        ),
+        Paragraph ([Words (localized (en.invalidReading ()) (ja.invalidReading ()))]),
+        Paragraph ([Words (localized (en.ambiguity ()) (ja.ambiguity ()))]),
+        Heading ("related", localized (en.relatedTitle ()) (ja.relatedTitle ())),
+        BulletList (
+          map related (
+            arrays.zip (arrays.zip (ja.relatedPurposes ()) (en.relatedPurposes ()))
+          links
+          )
+        ),
+        Heading ("source", localized (en.sourceTitle ()) (ja.sourceTitle ())),
+        Paragraph ([Words (localized (en.source ()) (ja.source ()))]),
+      ]
+    ]
+  }
 }

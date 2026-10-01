@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Effectの値を作ると、その処理も始まるか",
-  summary: "Effect<R, E, A>は、必要なサービスRを使い、Eで失敗するかAを返す処理を表す値です。値を作る段階と、処理を実行する段階は分かれています。",
-  reading: "greetingは名前を受け取り、Task<String>を返します。Taskはサービスが不要で、回復可能な失敗のないEffectの別名です。deferに渡した関数は実行時に呼ばれます。その中のsucceedは、作った文字列を成功値として返す処理を表します。",
-  result: "greeting \"Aki\"を実行すると、成功値\"Hello, Aki\"を返します。greeting \"Aki\"を変数へ保存するだけでは、Stringを取り出せません。mapで成功値を変換した場合も、戻り値は引き続きEffectです。"
+  question: "出力する処理を変数へ入れたら、その場で表示されるか",
+  summary: "Effectは、これから実行する処理を表す値です。変数へ保存することと、実行して結果を得ることを分けて確認します。",
+  reading: "announce \"run\"は出力処理を作り、plannedへ保存します。この行では表示しません。mainのdoは処理を順に実行します。_ <-は処理を実行して戻り値を使わない指定で、最後のplannedも実行します。",
+  result: "出力はbefore、run、runの順です。保存した時点ではrunが表示されず、同じplannedを二回使うと二回表示されます。これは、すでに開始したPromiseを保存して結果を共有する場合とは異なります。",
 }
+
+pub fn readerCaption -> String = "作った処理を二回実行する"
+
+pub fn readerBridgeOne -> String =
+  "このplannedの型はEffect<{ console: Console }, ConsoleError, Unit>です。必要な出力機能、起こり得る出力の失敗、返す中身のない正常な完了が順に表れます。一般形では、その三つをR、E、Aと書きます。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptで関数を保存し、後で呼ぶ場合が近い手掛かりです。ただしEffectは、必要な機能と失敗の型も含む処理の値です。pubで公開したmainを実行機構が呼び、返った処理を開始します。Effectを普通のIntやStringとして使うことはできません。"
+
+pub fn readerInvalidCaption -> String = "処理の値を、その成功値として使う"
+
+pub fn readerMistake -> String =
+  "effects.succeed 42は、実行すると42で成功する処理です。Intと書いたletへ代入するとSES-T0101です。処理の中で値を受け取りたい場合は、doでvalue <- ...のように取り出して後続の処理へ渡します。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "greetingは名前を受け取り、Task<String>を返します。Taskはサービスが不要で、回復可能な失敗のないEffectの別名です。deferに渡した関数は実行時に呼ばれます。その中のsucceedは、作った文字列を成功値として返す処理を表します。"
+
+pub fn readerLegacyResult -> String =
+  "greeting \"Aki\"を実行すると、成功値\"Hello, Aki\"を返します。greeting \"Aki\"を変数へ保存するだけでは、Stringを取り出せません。mapで成功値を変換した場合も、戻り値は引き続きEffectです。"

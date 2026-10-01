@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { textEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  textEditorial "std/text::startsWith" "text-startswith" "True\nFalse\nTrue\nFalse" (en.copy ()) (ja.copy ())

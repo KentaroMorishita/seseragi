@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::findAll" "findall" "[0..5:ORD-1, 6..11:ORD-2]\n[]\n[0..0:, 1..1:, 5..5:]\n[1..2:a, 2..3:a]\n[1..3:aa]\n[0..4:👍, 4..8:🏽]" "[0..5:ORD-1, 6..11:ORD-2]\n[]\n[0..0:, 1..1:, 3..3:]\n[1..2:a, 2..3:a]\n[1..3:aa]\n[0..2:👍, 2..4:🏽]" (en.copy ()) (ja.copy ())

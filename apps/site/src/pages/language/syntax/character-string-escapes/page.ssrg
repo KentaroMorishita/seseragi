@@ -1,55 +1,34 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.character-string-escapes" "/docs/language/syntax/character-string-escapes/" (en.copy ()) (ja.copy ()) [
-    CodeExample
-      ("syntax-char-valid", localized "Valid Char and escape forms" "文字の値とエスケープの書き方"),
-    BulletList [
-      [
-        InlineCode "\\n \\r \\t \\0",
-        Words (localized " are the common control escapes." " は改行やタブなどの制御文字を書く形式です。")
-      ],
-      [
-        InlineCode "\\u{03BB}",
-        Words
-      (localized " decodes one Unicode scalar." " はUnicodeの符号位置一つを指定して、文字に変換されます。")
-      ],
-      [
-        InlineCode "\\${",
-        Words (
-          localized " writes literal ${ in a template."
-      " はテンプレート文字列に、埋め込みではない文字列として${を書きます。"
-        )
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.character-string-escapes"
+    "/docs/language/syntax/character-string-escapes/" (en.copy ()) (ja.copy ())
+    "syntax-reader-escapes" "\"Seseragi\"\ndocs\\guide\nλ\nfirst\nsecond" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-escapes-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
       ]
+    ) [
+      (localized "Literals" "リテラル", "/docs/language/syntax/literals/"),
+      (
+        localized "Source text and comments" "ソーステキストとコメント",
+        "/docs/language/syntax/source-text/"
+      ),
+      (
+        localized "Layout and line continuation" "レイアウトと行継続",
+        "/docs/language/syntax/layout-and-line-continuation/"
+      )
     ]
-  ] [
-    CodeExample
-      ("syntax-char-invalid", localized "Rejected Char scalar counts" "Charに文字を二つ入れるとエラー"),
-    CodeExample
-      ("syntax-invalid-escape", localized "Rejected with SES-P0201" "SES-P0201で拒否")
-  ] [
-    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
-    [InternalLink (
-      localized "Source text and comments" "ソーステキストとコメント",
-      "/docs/language/syntax/source-text/"
-    )],
-    [InternalLink (
-      localized "Layout and line continuation" "レイアウトと行継続",
-      "/docs/language/syntax/layout-and-line-continuation/"
-    )]
-  ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

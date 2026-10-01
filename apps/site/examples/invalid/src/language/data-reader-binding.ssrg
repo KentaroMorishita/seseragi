@@ -1,0 +1,1 @@
+let { name, score: name } = { name: "Aki", score: 42 }

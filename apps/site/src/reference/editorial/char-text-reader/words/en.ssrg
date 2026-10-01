@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Split whitespace-separated pieces into a String array",
+  purpose: "Use words when you want to treat whitespace-separated input as several pieces. It returns Array<String>, an array of Strings. Separators follow Unicode White_Space. Repeated separators and padding at either end do not create empty items, and punctuation is retained.",
+  reading: "sentence puts EM SPACE between hello, and 世界!. The escape \\u{2003} writes that space by its number. pieces contains two Strings. json.encodeString displays the array as JSON with visible quotes, while text.join \" | \" pieces joins the same two items with a vertical-bar separator.",
+  boundaries: "The comma after hello and the exclamation mark after 世界 remain. 東京都渋谷区 contains no White_Space and stays one item. Empty and whitespace-only input produce an empty array. FEFF preserved checks that \\u{FEFF}, which is not White_Space, remains at the end of the first item.",
+  rules: "This is whitespace splitting, not dictionary-based word recognition or Japanese morphological analysis. Seseragi pins the Unicode version used for separators and leaves spelling and normalization unchanged. Processing is linear in the input and output UTF-8 byte counts.",
+  mistake: "Do not infer language-aware word boundaries from the function name. For a specific literal separator with empty parts retained, use split. Expecting one empty item from whitespace-only input is also incorrect: words returns [] in that case.",
+}
+
+pub fn comparison -> String =
+  "The TypeScript example splits on runs matching \\p{White_Space}+ and filters out empty parts. The \\p{...} escape selects a Unicode property, + means one or more, and u enables Unicode-aware interpretation. JSON.stringify displays the array, like json.encodeString on the Seseragi side."
+
+pub fn comparisonBoundary -> String =
+  "The familiar \\s uses a different whitespace set. This host excludes NEL but includes FEFF, demonstrated by the last two output lines. The White_Space-specific TS example and Seseragi agree on these inputs. That does not establish identical behavior for every character or a shared Unicode data version throughout the host."

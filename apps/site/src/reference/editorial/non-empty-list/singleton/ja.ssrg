@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "一つの値からNonEmptyListを作ります。先頭は必ず存在し、残りのListは空になります。",
+  taskTitle: "一件の得点を非空の一覧にする",
+  purpose: "得点がすでに一つあるなら、空かどうかを調べる必要はありません。singleton 10は、10だけを持つNonEmptyList<Int>を作ります。",
+  setup: "import * as nonemptyは操作の名前に付ける短い名前です。let scoresで結果に名前を付けます。singletonの引数は空白の後に書き、head scoresのように別の操作へ渡せます。",
+  after: [
+    "headは整数10を直接返します。toListは通常のList `[10]へ変換し、tailは先頭を除いた空のList `[]を返します。表示の[の前にあるバッククォートはListを示します。",
+    "pub effect fn mainとdoはprintlnを順番に実行するための入口です。showがそれぞれの結果を表示用の文字列にします。singletonやheadは出力処理ではなく、値を作る・読む計算です。"
+  ],
+  comparisonBefore: "TypeScriptでもreadonly [T, ...T[]]を使えば、一つ以上の要素を要求できます。scoresには一件だけ入れ、[0]で先頭、slice(1)で残りを読みます。",
+  comparisonAfter: "どちらも先頭は10で、残りは空です。TypeScriptのJSON.stringifyは配列をJSONで表示し、SeseragiのshowはListをバッククォート付きで表示します。これは表示形式の違いです。",
+  details: [
+    "singleton<A>のAは渡した値の型です。10ならIntで、結果はNonEmptyList<Int>になります。Nothingを処理する分岐は不要です。",
+    "後続の要素もあるならconsに先頭とListを渡します。空かもしれないListをそのままsingletonに渡すと、そのList自体を一つの要素として包みます。中身の非空確認にはfromListを使います。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、計算の規則"
+}

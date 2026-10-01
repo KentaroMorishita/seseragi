@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "処理が途中で止まったとき、誰が後片付けするか",
-  summary: "ファイルや接続などのリソースを取得するときに、解放処理も登録します。処理が成功した場合だけでなく、失敗やキャンセルで止まった場合も、その解放処理を実行します。",
-  reading: "この例は、読み書きできる状態Refで後片付けを確認します。releasedの初期値はFalseです。scopedは内側の管理範囲を作ります。その中のacquireReleaseは、refs.set True releasedを解放処理として登録し、範囲が終わると実行します。",
-  result: "useScopedはTrueを返します。これは、管理範囲が終わった後にreleasedを読み、登録した解放処理が動いたと確認できるためです。実際のファイルなら、取得したハンドルを閉じる処理を登録します。このような登録済みの後片付けをfinalizerと呼びます。"
+  question: "成功しても失敗しても、使い終えたものを片付けるには",
+  summary: "リソースは使い終わりに解放が必要なものです。scopedで管理する範囲を作り、acquireReleaseで取得と後片付けを結び付けると、その範囲を出る前に後片付けを行います。",
+  reading: "例は実際のファイルを開かず、A、B、Cという名前の取得と解放を記録します。traceは記録用の文字列を持つRefです。acquireは名前を取得したことにして、解放時にその名前をtraceの末尾へ足す処理を登録します。",
+  result: "最初のscopeは42で成功し、後から取得したB、次にAを解放するためBAになります。次はCを取得し、failWithでexpectedという理由の失敗を作ります。failWithは空の理由ならokで成功し、それ以外ならその理由で失敗する関数です。recoverが理由を成功値に変える前にCの解放を終えるので、最後の記録はBACです。"
 }
+
+pub fn readerBridgeOne -> String =
+  "importでeffectsとrefsを読み込みます。fnの引数nameとtraceに続くTask<String>は、名前を成功値にする処理の型です。\\released: String -> ...は後片付けの関数、内側の\\text: String -> text + releasedは記録を更新する関数です。mainの<-は処理の成功値を受け取り、_ <-はその値を使わず完了を待ちます。 effects.scoped $ do { ... }は、effects.scoped (do { ... })と同じく、do全体を一つの引数にする書き方です。|>は左に書いた処理の値を、右の関数呼び出しの最後の引数へ渡します。例ではscopedで囲んだ処理をrecoverへ渡し、失敗した場合の対応を結び付けています。"
+
+pub fn readerBridgeTwo -> String =
+  "後片付けの関数をfinalizer、管理範囲をscopeと呼びます。同じscopeでは後から登録したものを先に、一度ずつ実行します。キャンセルでも同じ規則です。これは処理へ停止を要求する仕組みで、失敗型の値とは別です。取得成功とfinalizer登録の間にキャンセルされても取得物を失わない契約があります。"
+
+pub fn readerMistake -> String =
+  "拒否例のように、finalizerから型付きの失敗を残すことはできません。後片付け内で必要な失敗を扱い、Neverの失敗型に揃えてください。defectが起きても残りの解放を試みますが、終わらないfinalizerやプロセスの強制終了では完了を保証できません。"
+
+pub fn readerCaption -> String = "取得と後片付けを記録して順序を確かめる"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "この例は、読み書きできる状態Refで後片付けを確認します。releasedの初期値はFalseです。scopedは内側の管理範囲を作ります。その中のacquireReleaseは、refs.set True releasedを解放処理として登録し、範囲が終わると実行します。"
+
+pub fn readerLegacyResult -> String =
+  "useScopedはTrueを返します。これは、管理範囲が終わった後にreleasedを読み、登録した解放処理が動いたと確認できるためです。実際のファイルなら、取得したハンドルを閉じる処理を登録します。このような登録済みの後片付けをfinalizerと呼びます。"

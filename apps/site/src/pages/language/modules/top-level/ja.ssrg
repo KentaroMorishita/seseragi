@@ -1,31 +1,58 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "トップレベルの宣言",
   summary: (explanation ()).summary,
-  ruleTitle: "ファイルの直下には宣言を置く",
-  ruleBody: "モジュール直下にはimport、再公開、let、fn、effect fn、型、impl、trait、instance、演算子、foreign、recなどの宣言を置きます。単独の関数呼び出しを文として並べることはできません。計算結果を保持するならletの右辺、処理を定義するなら関数の本体に書きます。",
-  typingBody: "モジュール直下のletには、必ず一致するパターンと純粋な右辺が必要です。Effectの値を作るだけなら、外部処理をまだ実行しないため純粋な計算です。例のlet pending = report ()は、printlnを実行する処理の値を保存します。pendingの初期化時には出力しません。",
-  evaluationBody: "letは上から順に一度だけ計算します。先のletとモジュールの関数を参照できますが、後のletを直接読むことはできません。関数の宣言はletの後にあっても呼べます。ただし、その関数がまだ初期化していないletを読むことはできません。",
-  invalidTitle: "関数に移しても、未初期化の値は読めない",
-  invalidBody: "関数の本体から後のletを参照すること自体はできます。問題になるのは、そのletの初期化前に関数を呼んでしまう場合です。SES-N0201はこの呼び出しを拒否します。関数宣言を上へ移すだけでは解消しません。関数同士の相互再帰には同じrecが必要です。",
-  diagnosticsBody: "使う名前が宣言済みか、letのパターンが必ず一致するか、初期化中に未初期化の値へ到達していないかを確認してください。Effectをimportしただけでは実行しません。実行はmainなどの明示的な入口で行います。",
+  purpose: [
+    "複数のファイルで使う計算結果や関数は、関数の外側に定義できます。この位置をトップレベル、またはモジュール直下と呼びます。一つの.ssrgファイルが一つのモジュールです。",
+    "この例ではsummary.ssrgが42という値を公開し、main.ssrgがそれを表示します。計算結果を準備する段階と、画面へ出力する段階を分けて読めるのがポイントです。",
+  ],
+  exampleTitle: "計算する値と、実行を待つ処理を同じファイルで定義する",
+  reading: [
+    "seseragi.tomlはプロジェクトの設定ファイルです。packageは名前、バージョン、対応する言語バージョンを指定します。runのentry = \"main\"は標準のsrcフォルダーにあるmain.ssrgを入口に選び、target = \"process\"はプロセスとして実行する指定です。",
+    "fn double value: Int -> Intは、整数の引数valueを一つ受け取り、整数を返す関数です。=の右側のvalue * 2が戻り値になります。pub let answer: Int = double 21は、21を渡して得た42をanswerに保存します。letは値へ名前を付け、pubは他のモジュールからその名前を使えるようにします。",
+    "Effectは、これから実行する入出力などを表す値です。effect fn reportはその値を返す関数で、report ()の()は引数として渡すUnitの値です。let pending = report ()は関数を呼んでEffectを保存しますが、中のprintlnはまだ実行しません。printlnは文字列と改行を出力する処理です。",
+    "summary.ssrgの公開mainも関数として定義されるだけです。main.ssrgはimport { answer } from \"./summary\"でanswerを取り込みます。そこで定義したmainのshow answerは42を文字列に変え、printlnへ渡します。実行機構がこのmainの返したEffectを実行するので、42だけが出力されます。",
+  ],
+  rules: [
+    "importは他の宣言より前に置きます。値を作るletの右辺は純粋な式である必要があります。ここで純粋とは、計算そのものが外部への入出力を実行しないことです。double 21はその場で計算します。report ()のようにEffectを作るだけの呼び出しも、この条件を満たします。",
+    "letで使うパターンは必ず一致する必要があります。単にanswerと書けば値全体へ名前が付き、失敗する場合はありません。複数の形を持つ値から一つの形だけを選ぶパターンは、モジュール直下のletには使えません。",
+    "letはソースに書いた順に、一つのモジュールにつき一度だけ初期化します。右辺では先のletとモジュール内の関数宣言を参照できます。後のletを直接読むことはできません。関数を呼ぶための名前はletの評価前に用意されるので、呼ばれる関数の宣言自体は後ろに置けます。",
+    "関数と型の名前は、letを評価する前から解決できます。型にはtype、newtype、alias、struct、traitが含まれます。ただし、関数同士が互いを呼ぶなら同じrecグループへまとめます。ブロック内のローカル関数は宣言した位置から使えるため、モジュール直下とは規則が違います。",
+  ],
+  mistakes: [
+    "次の別プロジェクトは、readLaterを宣言していても失敗します。answerの初期化でreadLater ()を呼ぶと、本体がまだ初期化されていないlaterを読むためです。SES-N0201は実行前のコンパイル診断です。関数が自分自身の初期化中のletを読む場合も同じです。さらに別の関数を呼ぶ場合も、その先で読む値まで同じ検査を行います。",
+    "直すには、laterの初期化を呼び出しより前へ移します。下の修正版は42を出力します。関数宣言を上へ移すだけでは値の準備は早まりません。関数の本体に後のletへの参照があっても、その値を初期化してから呼ぶなら使えます。",
+  ],
+  related: [
+    "一つのファイルを別のパスでimportしたとき、同じモジュールとして扱う条件を確認できます。",
+    "公開する値や関数の型と、他のファイルへ見せない実装の境界を確認できます。",
+    "別のファイルで定義した名前を取り込む書き方を確認できます。",
+  ],
 }
 
-pub fn layoutTitle -> String = "公開する型を明示し、名前の範囲を区別する"
+pub fn title -> String = (copy ()).title
 
-pub fn layoutBody -> String =
-  "非公開のletでは、右辺から型を推論できます。通常のfnは、非公開でも引数と戻り値の型を書きます。例外となる短いeffect fnでは、->、with、fails、whereをすべて省略し、引数の型は書いたうえで戻り値のEffectを推論します。公開APIも、この形式の規則と公開範囲の規則に従います。importは他の宣言より前に置きます。ブロック内のローカル関数は宣言位置から使えます。"
+pub fn declarationsTitle -> String = "モジュール直下に置ける宣言"
 
-pub fn exampleTitle -> String = "初期化では処理を構築し、実行は後へ残す"
+pub fn declarations -> Array<String> = [
+  "モジュール直下で使える形式は、importと再公開、let、fn、effect fn、type、newtype、alias、struct、inherent impl、trait、trait instance、custom operator、foreign宣言、recグループです。",
+  "typeは複数の名前付きの形から選ぶ値の型、newtypeは既存の値と区別する新しい型、aliasは型の別名、structはフィールドを持つ型を定義します。implは型に属するメソッド、traitとinstanceは共通の操作とその型ごとの実装、operatorは独自の演算子、foreignは外部の言語との接続、recは互いを呼ぶ関数などの宣言をまとめます。これらも単独の実行命令ではなく、使える名前や操作の宣言です。",
+  "言語仕様では、関数呼び出しなどを単独の式文としてモジュール直下へ並べません。計算する値はletへ、入出力は返すEffectへ置きます。ただし、現在のコンパイラには単独の式文を受理する実装差が残っています。このページでは、それを検証済みの拒否例とは扱いません。",
+]
 
-pub fn exampleBody -> String =
-  "まずbaseが初期化され、続いてanswerが42になります。report ()はpendingを構築しますが、printlnの処理は返されたEffectの中に残ります。他モジュールがこのファイルをimportしても、answerを出力することはありません。"
+pub fn signaturesTitle -> String = "型を書く場所と、省略できる場所"
+
+pub fn signatures -> Array<String> = [
+  "非公開のletは右辺から型を推論できます。公開letには完全な型注釈を書きます。通常のfnは公開・非公開を問わず引数と戻り値の型を書きます。例の: Intと-> Intがそれに当たります。",
+  "短いeffect fnは例外です。->、with、fails、whereをすべて省略すると、返すEffectの成功値、必要なサービス、失敗の型を本体から推論します。引数があればその型は書きます。例の二つのmainとreportはこの形式です。公開する場合も、この形式と公開範囲の規則に従います。",
+  "不適切なパターンや未解決の名前は宣言を調べる段階で診断されます。コンパイラやエディターがモジュールを調べるためにforeignの外部実行コードを動かすことはありません。",
+]
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "モジュール直下で作ったEffectは、import時に実行されるか",
-  summary: "モジュール直下の宣言は名前を定義し、通常の値を初期化します。Effectの値を保存しても、その説明する処理は実行しません。",
-  reading: "baseは20です。answerではdouble 21を計算し、42を保存します。report ()は、出力を行うEffectの値を作り、pendingへ保存します。printlnの実行は後に残るため、この初期化では画面やコンソールに出力しません。",
-  result: "保存したEffectを実行するのは、実行入口などの定められた境界です。トップレベルに単独の式文は置かず、値は宣言に、外部操作は返すEffectの中に書きます。"
+  question: "ファイルの直下では、何を計算し、何を実行まで残すのか",
+  summary: "モジュール直下には値や関数を宣言します。通常の計算は初期化時に行い、Effectに保存した入出力は実行入口が開始するまで残します。",
+  reading: "summary.ssrgのdouble 21は初期化時に計算され、answerは42になります。同じファイルのreport ()は出力を表すEffectをpendingへ保存します。入口は設定ファイルが選んだsrc/main.ssrgです。",
+  result: "この三つのファイルを同じプロジェクトに保存して実行すると、出力は42と改行だけです。stored Effect must not runもimported main must not runも出力されません。importに必要な純粋な計算と、実行を待つ入出力を区別できます。",
 }

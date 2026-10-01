@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "ValidをRightに、Invalidをすべてのエラーを持つLeftに変換します。",
+  taskTitle: "成功値か全エラーを次の処理へ渡す",
+  purpose: "独立した検証を終えた結果をEitherで扱う呼び出し側へ渡します。Invalidから最初のエラーだけを選ぶことはなく、全エラーが同じ順でLeftに入ります。",
+  setup: "std/validationから型と結果の種類、std/non-empty-listからNonEmptyListを読み込みます。validationとnonemptyは関数を呼ぶ名前です。fn describeの引数はEither<NonEmptyList<String>, String>で、失敗側には一つ以上の文字列、成功側には文字列があります。-> Stringは表示文の型です。",
+  after: [
+    "let acceptedはvalidで成功値を作ります。let rejectedはnonempty.consで先頭のエラーと残りのListをつなぎ、invalidManyで失敗結果にします。`[...]の先頭のバッククォートはListの記法です。型注釈は成功値とエラーの型を指定します。",
+    "validation.toEitherはValidからRight、InvalidからLeftへ変換します。describeのmatchでRight valueなら成功した文字列、Left errorsなら全エラーを読みます。arrays.fromIterableでArrayにし、text.joinで表示用につなぎます。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのCheckedはvalid欄で二つの形を選び、Resultはok欄で二つの形を選びます。変換時にエラーの配列全体を保っています。TypeScriptの[string, ...string[]]は、先頭の文字列が必須で、その後に任意個の文字列が続く配列型です。空のエラー配列を受け入れない条件を、両方の例に保っています。",
+  comparisonAfter: "どちらも変換をコードに明記しています。Seseragiでは変換後のEitherを、成功値が必要な次の処理へつなげられます。その処理は失敗型がNonEmptyList<String>であることも合わせる必要があります。",
+  details: [
+    "toEither<E, A>のEはエラー一個、Aは成功値の型です。ここでは両方Stringです。戻り値はEither<E, A>ではなくEither<NonEmptyList<E>, A>なので、失敗を一文字列として扱う関数にはそのまま渡せません。",
+    "変換は暗黙には行われません。前の検証をやり直したり、例外を捕まえたりする操作でもありません。全エラーが不要な呼び出し側へ渡す場合も、捨てる規則は別に明記します。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

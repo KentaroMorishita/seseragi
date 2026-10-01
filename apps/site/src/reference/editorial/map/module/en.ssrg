@@ -1,0 +1,26 @@
+pub fn purpose -> String =
+  "Use a Map when a key, such as a product name, identifies a value. Map<String, Int> is a lookup table from text keys to integer values. Each key has at most one value; values may repeat under different keys."
+
+pub fn choice -> String =
+  "Use Array or List when position and sequence processing are central. Use Map when you repeatedly name the entry you want. Standard String keys have equality and hashing already; Eq<K> and Hash<K> in signatures are the requirements that make key lookup possible."
+
+pub fn example -> String =
+  "Keep an original price table, replace one price, and add a new product. Seseragi updates return a new Map, so names such as original, replaced and added can refer to different versions. Key order follows insertion: replacement stays in place and a new key goes last."
+
+pub fn reading -> String =
+  "import names std/map as maps and std/json as json. let binds a name. (\"b\", 2) is a two-position key/value pair; the surrounding [] collects pairs in an Array. maps.fromEntries makes the table. Calls separate arguments with spaces; parentheses group nested calls. pub effect fn main and do run the prints in order. maps.entries reads pairs and json.encodeString displays them as JSON; println adds a newline."
+
+pub fn outcomes -> String =
+  "The first output replaces b with 9 without moving it. The next adds c after a. original still contains b=2 and a=1. The final call inserts first into an empty Map. maps.empty<String, Int> () gives the empty table explicit key/value types and passes Unit, spelled (), meaning no additional input."
+
+pub fn comparison -> String =
+  "TypeScript Map is already a useful lookup table. Its set and delete methods mutate that Map, while Seseragi insert and remove return a new one. For an unchanged original in TypeScript, start with new Map(original). The operation pages show executable counterparts with the same data and results."
+
+pub fn absence -> String =
+  "get returns Maybe<V>: Just value when the key exists, Nothing when it does not. A present zero or empty string is still present. The get page shows a complete match consumer. upsert uses that same presence distinction to compute a value to store."
+
+pub fn order -> String =
+  "fromEntries keeps the last value for a duplicate key but its first position. Removing and reinserting a key moves it to the end. keys, values and entries return Arrays in insertion order. Map equality compares key/value associations, not this order."
+
+pub fn limits -> String =
+  "fromEntries reads a finite input to its end; an endless input never finishes. A Map is not automatically sorted. Transforming keys can create collisions, and merging tables can find the same key on both sides: mapKeysWith and mergeWith require an explicit function to combine those values."

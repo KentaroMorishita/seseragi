@@ -1,0 +1,9 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let values = maps.fromEntries [("zero", 0), ("tea", 2)]
+  println (maps.containsKey "zero" values)
+  println (maps.containsKey "missing" values)
+  println (maps.containsKey "tea" (maps.empty<String, Int> ()))
+}

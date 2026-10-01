@@ -5,17 +5,43 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "Type identity and coercion",
   summary: (explanation ()).summary,
   ruleTitle: "Write the required conversion when passing a value to another type",
-  ruleBody: "To use an Int as Float, call a conversion such as toFloat. To create Maybe<Int> from an Int, wrap it in Just. A struct and an ordinary record are different types even when their fields match. Explicitly wrap or unpack newtypes and convert foreign Js.Nullable<A> values to Maybe<A> as well.",
+  ruleBody: "To use an Int as Float, call a conversion such as fromInt from std/float. To create Maybe<Int> from an Int, wrap it in Just. A struct and an ordinary record are different types even when their fields match. Explicitly wrap or unpack newtypes and convert foreign Js.Nullable<A> values to Maybe<A> as well.",
   identityBody: "The only general implicit coercions are Never into any demanded type and a wider structural record into the narrower required field set. Effect, Stream, Signal, and MutableSignal capability relationships are separately specified exceptions rather than evidence of general covariance.",
   checkingBody: "The checker first establishes source and target identity, then applies only an allowed coercion at the exact expected-type boundary. It does not chain guessed conversions or consult runtime values. Explicit conversions remain ordinary typed functions with visible failure where needed.",
   invalidTitle: "A compatible backend representation grants no conversion",
-  invalidBody: "Passing Int where Float is required, a newtype where its representation is expected, a struct where a record is expected, or nullable foreign data where Maybe is expected is rejected. Wrapping a value in Just or calling toFloat is an explicit program step.",
+  invalidBody: "Passing Int where Float is required, a newtype where its representation is expected, a struct where a record is expected, or nullable foreign data where Maybe is expected is rejected. Wrapping a value in Just or calling fromInt from std/float is an explicit program step.",
   diagnosticsBody: "Mismatch diagnostics name the source and target identities and may point to the relevant explicit boundary API. They never report success merely because TypeScript or another backend would accept the underlying representation.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Will the compiler convert a similar value for me?",
-  summary: "Seseragi keeps most type conversions explicit. A similar representation is not enough to make two types compatible.",
-  reading: "An Int such as 42 is not automatically a Float, Just 42 is a Maybe<Int> rather than an Int, and a UserId wrapping 42 is not a raw integer. These distinctions prevent accidentally dropping absence handling or mixing identifiers.",
-  result: "Call toFloat to convert 42 to Float, or write Just 42 to construct a present Maybe. Use match to extract the Int from UserId. For a type error, compare the value's type with the receiving interface's type and identify the required conversion."
+  question: "What must change before passing an integer to a floating-point calculation?",
+  summary: "Changing an annotation does not turn an Int into a Float. Write a conversion call to show where that change occurs.",
+  reading: "The import loads fromInt from the standard module std/float. count is the integer 42. fromInt count converts it to a Float before half receives it. Both the parameter and result of half are Float, as is 2.0.",
+  result: "The calculation produces the Float 21.0. show creates display text and println in main prints 21.0 on one line. count itself remains the Int 42.",
 }
+
+pub fn readerCaption -> String =
+  "Explicitly convert an integer to Float before halving it"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript’s number does not distinguish 42 and 21.0 as these separate numeric types. Seseragi separates integer counts from Float calculations. This comparison explains the type distinction; TypeScript can of course perform the same division."
+
+pub fn readerBridgeTwo -> String =
+  "The parentheses in half (fromInt count) group the conversion result as the argument to half. Just 42, which constructs Maybe<Int>, and a pattern unpacking UserId are explicit operations too. They serve different purposes, and the compiler does not invent a chain of conversions."
+
+pub fn readerInvalidCaption -> String = "Pass an Int directly to a Float parameter"
+
+pub fn readerMistake -> String =
+  "half 42 produces SES-T0101 because the required Float differs from the supplied Int. Write 42.0 for a Float literal or pass fromInt count to convert an existing integer. Merely changing the annotation to let count: Float = 42 does not resolve the mismatch."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules distinguish explicit conversions from limited implicit compatibility, such as extra record fields. The rejected newtype example shows that its payload is not automatically extracted."
+
+pub fn readerLegacyReading -> String =
+  "An Int such as 42 is not automatically a Float, Just 42 is a Maybe<Int> rather than an Int, and a UserId wrapping 42 is not a raw integer. These distinctions prevent accidentally dropping absence handling or mixing identifiers."
+
+pub fn readerLegacyResult -> String =
+  "Call fromInt from std/float to convert 42 to Float, or write Just 42 to construct a present Maybe. Use match to extract the Int from UserId. For a type error, compare the value's type with the receiving interface's type and identify the required conversion."
+
+pub fn readerRelated -> String =
+  " explains the ranges and distinctions of Int, Float and other basic types."

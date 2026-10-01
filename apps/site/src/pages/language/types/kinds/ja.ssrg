@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Maybeを型引数に渡せるのに、値の型として単独で使えないのはなぜか",
-  summary: "型引数には、Intのような完成した型を受け取る場所と、Maybeのように別の型を待つものを受け取る場所があります。その形を表す情報がkindです。",
-  reading: "Wrapped<M<_>, A>は、型引数を一つ待つMにAを渡します。Wrapped<Maybe, Int>はMaybe<Int>の意味です。keepが受け取って返すのは、この完成した型です。",
-  result: "Maybeは型引数を一つ必要とし、Maybe<Int>ではその引数が揃っています。M<_>の_は、一つの型を受け取る位置です。例えば、MにIntを渡すと、Intはさらに型引数を受け取れないためkindのエラーになります。"
+  question: "Maybe<Int>の中身だけでなく、Maybeの部分も選ぶには",
+  summary: "普通の型パラメーターAにはIntなどを選びます。より汎用的な型の別名では、MaybeやArrayのように中身の型を一つ待つもの自体を選ぶこともできます。",
+  reading: "Wrapped<M<_>, A> = M<A>は型の別名です。M<_>は「型を一つ受け取るもの」を選ぶ位置で、Aはその中身の型を選ぶ位置です。Wrapped<Maybe, Int>はMaybe<Int>、Wrapped<Array, Int>はArray<Int>と同じ型になります。",
+  result: "keepはMaybe<Int>を受け取ってそのまま返します。Just 42は整数がある場合、Nothingはない場合の値です。numbersは整数の配列[1, 2]です。mainはそれぞれをshowで文字列にして、Just 42、Nothing、[1, 2]を表示します。",
 }
+
+pub fn readerCaption -> String = "同じ型別名へMaybeとArrayを選んで渡す"
+
+pub fn readerBridgeOne -> String =
+  "M<_>の_は一つの型引数を受け取る場所を表し、値が不明という意味ではありません。Maybeだけでは中身が決まらないため値の型には使えませんが、M<_>に渡すものとしては使えます。値の型を書くときはMaybe<Int>のように必要な型引数を揃えます。"
+
+pub fn readerBridgeTwo -> String =
+  "この引数と結果の形をkindと呼びます。Intは完成した型なのでType、Maybeは型を一つ受け取るのでType -> Typeと表します。これは型を説明する記法で、実行中に渡す関数ではありません。MにMaybeを選び、AにIntを選ぶという二つの指定を分けると、Wrapped<Maybe, Int>を読み解けます。"
+
+pub fn readerInvalidCaption -> String = "型引数を待つMの位置へIntを渡す"
+
+pub fn readerMistake -> String =
+  "Wrapped<Int, Int>では、Mに選んだIntへさらにIntを渡す形になります。Intは型引数を受け取らないためSES-T0604です。MaybeやArrayのように型引数を一つ受け取るものを渡すか、普通のIntの値が欲しいなら注釈をIntに直します。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則では、必要な型引数の個数、Either<String, _>のように一部を決めた形、_を残せる位置を確認できます。Either<String, _>は失敗理由をStringに決め、成功値の型を一つ待つ形です。"
+
+pub fn readerLegacyReading -> String =
+  "Wrapped<M<_>, A>は、型引数を一つ待つMにAを渡します。Wrapped<Maybe, Int>はMaybe<Int>の意味です。keepが受け取って返すのは、この完成した型です。"
+
+pub fn readerLegacyResult -> String =
+  "Maybeは型引数を一つ必要とし、Maybe<Int>ではその引数が揃っています。M<_>の_は、一つの型を受け取る位置です。例えば、MにIntを渡すと、Intはさらに型引数を受け取れないためkindのエラーになります。"
+
+pub fn readerRelated -> String = "では、Box<Int>のように中身の型を指定する基本を確認できます。"

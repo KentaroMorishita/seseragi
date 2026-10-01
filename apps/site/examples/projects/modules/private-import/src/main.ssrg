@@ -1,0 +1,3 @@
+import { punctuate } from "./greeting"
+
+pub effect fn main = println (punctuate "Hello, Aki")

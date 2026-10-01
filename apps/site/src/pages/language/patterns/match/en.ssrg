@@ -14,8 +14,27 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I handle every case stored in a value?",
-  summary: "match selects the first matching branch and returns that branch's result. The compiler checks that no possible input case is missing.",
-  reading: "Status has Waiting and Complete carrying Int. Complete count when count > 0 matches only when the extracted count is positive. The following Complete _ also handles counts of zero or less. _ discards the contained value.",
-  result: "message (Complete 3) returns \"3 complete\". Complete 0 fails the guarded branch, so the next branch returns \"complete\". Every selected branch returns String."
+  question: "How do I handle each delivery state without forgetting a case?",
+  summary: "match selects a branch that fits the value and returns its result. Start with two delivery states and check the message produced for each.",
+  reading: "Delivery has two alternatives: Pending and Shipped String. Shipped \"JP42\" carries a tracking number. Inside match delivery, write an alternative on the left and the returned value after ->.",
+  result: "Pending produces not shipped; Shipped \"JP42\" produces tracking: JP42. Shipped tracking names the contained string tracking. Both branches return String, so label returns String too.",
 }
+
+pub fn readerCaption -> String = "Display both delivery states"
+
+pub fn readerBridgeOne -> String =
+  "In TypeScript, an ordinary identifying field such as kind can be checked with switch. This Seseragi example directly checks the alternative names Pending and Shipped. Delivery is the type containing those two alternatives, not a value."
+
+pub fn readerBridgeTwo -> String =
+  "A pattern is syntax for checking a value’s shape or naming its contents; Shipped tracking is one example. main prints the results of passing both inputs to label. The later sections cover additional branch conditions."
+
+pub fn readerInvalidCaption -> String = "The Pending branch is missing"
+
+pub fn readerMistake -> String =
+  "The rejected example only handles Shipped, leaving no result for Pending, so it reports SES-T0301. Add Pending -> \"not shipped\". Listing the two cases explicitly makes omissions easier to notice than immediately hiding the remainder behind _."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

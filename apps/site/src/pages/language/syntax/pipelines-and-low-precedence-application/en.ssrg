@@ -4,37 +4,39 @@ import { ReaderCopy } from "../../reader-article"
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Pipelines and low-precedence application",
   summary: (explanation ()).summary,
+  exampleTitle: "Read doubling and adding one from left to right",
   purpose: [
-    "A pipeline writes a call that passes one function's result to the next function. x |> f has the same meaning as f x.",
-    "In this example, double multiplies an integer by two and addOne adds one. The pipeline, parentheses, and $ forms all describe the same order of calculation."
+    "A pipeline writes a sequence of calls from left to right, passing each result into the next function. x |> f means the ordinary call f x.",
+    "Here double doubles the integer 3 and addOne adds 1. Compare the pipeline with ordinary parenthesized calls and with $, which groups a right-hand expression as an argument.",
   ],
-  exampleTitle: "Three spellings of the same calculation",
   reading: [
-    "3 |> double calls double 3, producing 6. The following |> addOne passes 6 to addOne, producing 7. Read a pipeline chain from its leftmost value.",
-    "addOne (double 3) writes the same calculation with parentheses. The inner double 3 supplies the argument to the outer addOne.",
-    "addOne $ double 3 also means addOne (double 3). $ groups the expression on its right as an argument without the outer pair of parentheses.",
-    "The three outputs are all 7. Each spelling passes the integer 3 to double, then passes its resulting integer 6 to addOne."
+    "double and addOne both take and return Int, the integer type. The name after fn identifies the function; value: Int declares the parameter and its type; the final -> Int declares the result type.",
+    "In piped, 3 |> double calls double 3 and produces 6. |> addOne on the next line receives 6 and produces 7. The actual source spans several lines, with |> at each continuation.",
+    "nested passes the inner result, 6, to addOne in addOne (double 3). withoutParentheses uses addOne $ double 3 to group the right-hand double 3 as one argument.",
+    "main prints the three values separated by newlines. Each form passes the same values through the same functions, so the output is three lines containing 7.",
   ],
   rules: [
-    "|> groups to the left. x |> f |> g means g (f x). For a function taking several arguments, supply its earlier arguments first; the pipeline then supplies its next argument.",
-    "$ groups to the right. f $ g $ x means f (g x). Binary operators other than the Signal update symbol := group more tightly than $. Thus f $ x + 1 passes the whole x + 1 to f.",
-    "render $ values |> transform means render (transform values). Here transform takes one argument. Pass values to transform first, then pass its result to render.",
-    "Both spellings use ordinary function-call type checking and evaluation order. The function and its arguments are evaluated before the body runs. A pipeline or $ alone does not start delayed evaluation or concurrent work."
+    "|> groups left: x |> f |> g means g (f x). For a multi-argument function, supply earlier arguments first; the value on the left of the pipeline becomes its next argument. A pipeline does not automatically supply every remaining argument.",
+    "$ groups right: f $ g $ x means f (g x). Binary operators other than the Signal update symbol := bind more tightly than $. Therefore f $ x + 1 passes the whole x + 1 to f.",
+    "A pipeline binds more tightly than $. render $ values |> transform means render (transform values), with transform taking one argument: transform values first, then pass that result to render.",
+    "Both forms use ordinary call typing and evaluation order. The supplied value must match the next parameter type. Evaluate the function and arguments before its body. Neither |> nor $ alone delays evaluation, creates parallel work, or executes an Effect.",
   ],
   mistakes: [
-    "A single | is not a pipeline. It has other roles in type declarations and collection comprehensions; write |> for a pipeline.",
-    "$ is fixed call syntax, not an overloadable operator or a function value. You cannot pass ($) as an argument. If a chain gives a type error, inspect the result type of one stage and the parameter type of the following stage."
+    "decorate below requires String but receives the Int 3, producing SES-T0101. Supply a string, or convert first with show 3 |> decorate.",
+    "A single | is not a pipeline; it has other roles such as separating type alternatives. $ is fixed call syntax rather than an overloadable operator or a function value. You cannot pass ($) as an argument.",
   ],
   related: [
-    "Look up how supplying earlier arguments produces a function for a pipeline.",
-    "Check where a pipeline may continue onto another line.",
-    "Check the complete grouping rules when several operator kinds occur together."
-  ]
+    "Check how supplying earlier arguments creates a function waiting for the next value.",
+    "Check when a pipeline remains one expression across newlines.",
+    "Look up grouping when $ and |> are mixed with arithmetic or other operators.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How can I read a chain of transformations from left to right?",
-  summary: "A pipeline passes one function's result to the next. The $ form groups a right-hand expression as an argument without outer parentheses.",
-  reading: "double multiplies an integer by two; addOne adds one. Starting at 3, 3 |> double produces 6, then |> addOne produces 7. addOne (double 3) and addOne $ double 3 describe the same calculation.",
-  result: "All three outputs are 7. The next function must accept the previous function's result type. Here double returns Int and addOne takes Int."
+  question: "How do I read a transformation from left to right?",
+  summary: "|> passes its left value to the function on the right. $ groups the expression on its right as an argument.",
+  reading: "Both are ways to write ordinary function calls. Start by following functions that take one argument.",
+  result: "The pipeline, parentheses, and $ all double the same 3 and then add 1, producing 7.",
 }

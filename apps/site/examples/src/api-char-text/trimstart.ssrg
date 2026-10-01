@@ -1,0 +1,12 @@
+import * as text from "std/text"
+
+let label = "  Aki  "
+let withBom = "\u{FEFF} Aki"
+
+pub effect fn main =
+  println `result: [${text.trimStart label}]
+original: [${label}]
+NEL removed: ${text.trimStart "\u{0085}Aki" == "Aki"}
+FEFF preserved: ${text.trimStart withBom == withBom}
+empty: [${text.trimStart ""}]
+only whitespace: [${text.trimStart "\n\t\u{2003}"}]`

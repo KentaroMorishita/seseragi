@@ -1,0 +1,13 @@
+import * as unicode from "std/text/unicode"
+import * as text from "std/text"
+
+let original = "Straße"
+let folded = unicode.fullCaseFold original
+pub effect fn main =
+  println `folded: ${folded}
+original: ${original}
+same comparison: ${folded == unicode.fullCaseFold "STRASSE"}
+dotted I: ${unicode.fullCaseFold "İ"}
+sigmas: ${unicode.fullCaseFold "Σς"}
+accent scalars: ${text.lengthScalars (unicode.fullCaseFold "e\u{0301}")}
+empty: [${unicode.fullCaseFold ""}]`

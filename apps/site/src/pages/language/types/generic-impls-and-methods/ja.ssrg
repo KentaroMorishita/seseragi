@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "値の型とメソッドの型パラメーターを区別するには",
-  summary: "implの型パラメーターは、ドットの前の値の型から決まります。メソッド自身には、その呼び出しで決まる別の型パラメーターを追加できます。",
-  reading: "numberはBox<Int>なので、impl<A> Box<A>のAはIntです。number.replace \"hello\"ではメソッドのBがStringになり、新しいBox<String>を作ります。selfはドットの前のnumberを受け取る引数です。",
-  result: "number.getはIntの42を返します。number.replace \"hello\"はStringを持つ新しいBoxを作り、元のnumberはBox<Int>のままです。implのAとメソッドのBは別々に決まる型を表します。"
+  question: "入れ物の型と、メソッドで作る結果の型を分けるには",
+  summary: "整数のBoxから値を取り出す型はIntに決まっています。一方、新しい中身を渡して別のBoxを作るメソッドでは、その呼び出しの型を別に選べます。",
+  reading: "struct Box<A>はA型のvalueを持つ名前付きの型です。impl<A> Box<A>は、その型に操作を追加します。getのselfはドットの前の値を受け取り、self.valueを返します。numberがBox<Int>なのでnumber.getはIntです。",
+  result: "replace<B>のBはメソッド自身の型パラメーターです。number.replace \"ready\"ではBがStringとなり、新しいBox<String>を作ります。出力は43とready!で、元のnumberは整数42を持つBox<Int>のままです。",
 }
+
+pub fn readerCaption -> String = "入れ物の型を保つgetと、別の入れ物を作るreplace"
+
+pub fn readerBridgeOne -> String =
+  "getに追加の値引数はありません。selfをドットの前から渡すのでnumber.getと書き、()は付けません。replaceには新しい値を空白で渡します。Aは受け手のBoxから、Bは新しい引数から決まるため、この二つを同じ名前で再宣言しないでください。"
+
+pub fn readerBridgeTwo -> String =
+  "pub effect fn mainが公開された出力の入口です。number.get + 1は整数の加算、text.get + \"!\"は文字列の連結です。どちらもメソッドが返す型に合わせて検査し、${...}で表示用の文字列へ埋め込みます。"
+
+pub fn readerInvalidCaption -> String = "Box<Int>のgetをStringとして受け取る"
+
+pub fn readerMistake -> String =
+  "number.getの結果はIntなので、let text: Stringに入れるとSES-T0101になります。整数ならIntとして受け取り、表示用の文字列ならshow number.getのように変換します。getの呼び出しだけで、受け手のBoxの型をStringへ変更することはできません。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則でも、受け手からimplのAを決めた後にメソッドのBを決めます。対象型に現れないimplパラメーターや、内側で同じ名前を宣言する場合の制限を確認できます。宣言だけの例にはmainがありません。"
+
+pub fn readerComparison -> String =
+  "TypeScriptでもclass Box<A>とメソッド固有の<B>で同じ関係を書けます。この例のreadonly valueは構築後に再代入しないフィールドです。replaceはthis.valueを書き換えずnew Box(value)を返します。両方の例が同じ二行を表示しますが、TypeScriptのget()とSeseragiのgetの呼び方は異なります。"
+
+pub fn readerLegacyReading -> String =
+  "numberはBox<Int>なので、impl<A> Box<A>のAはIntです。number.replace \"hello\"ではメソッドのBがStringになり、新しいBox<String>を作ります。selfはドットの前のnumberを受け取る引数です。"
+
+pub fn readerLegacyResult -> String =
+  "number.getはIntの42を返します。number.replace \"hello\"はStringを持つ新しいBoxを作り、元のnumberはBox<Int>のままです。implのAとメソッドのBは別々に決まる型を表します。"
+
+pub fn readerRelated -> String = "では、Boxの中身の型を選び、新しい値を作る方法を確認できます。"

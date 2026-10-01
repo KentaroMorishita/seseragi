@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I state a function's services and errors explicitly?",
-  summary: "To state an effect fn type explicitly, write the successful result after ->, required services after with, and the recoverable error type after fails.",
-  reading: "announce takes message: String. -> Unit says that success has no useful payload; with Console requires output support, and fails ConsoleError permits an output error. println message is itself the Effect returned by the body.",
-  result: "Calling announce constructs an Effect that prints the message. Output happens when that Effect executes. Omitting with declares no required services; omitting fails declares no recoverable failures. Write those clauses to match the operations in the body."
+  question: "How do I state an output function’s requirements and failure type?",
+  summary: "An effect fn declaration can state its success type, required capability and failure type. A small output example shows what callers must prepare.",
+  reading: "announce takes a String. -> Unit means successful completion without a contents value; with Console requires terminal output; fails ConsoleError names the possible output-failure type.",
+  result: "Running main prints one line, ready. Calling announce constructs work; the runner starts the work returned by main. Merely writing the declaration does not print.",
 }
+
+pub fn readerCaption -> String = "State success, requirements and failure"
+
+pub fn readerBridgeOne -> String =
+  "The normalized return type is Effect<{ console: Console }, ConsoleError, Unit>, ordered as requirements, failure and success. The declaration spells those parts as -> for success, with for requirements and fails for failure."
+
+pub fn readerBridgeTwo -> String =
+  "Omitting with in the explicit form means the empty requirement {}. Omitting fails means Never, with no recoverable failure. A TypeScript try/catch does not itself impose this kind of failure-type contract; here the compiler checks the declared type against the body’s operations."
+
+pub fn readerInvalidCaption -> String = "Omit the required Console"
+
+pub fn readerMistake -> String =
+  "The rejected declaration returns println without declaring its Console requirement, producing SES-E0001. Add with Console. To infer everything from the body, use the compact inferred form rather than partially omitting its contract."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "announce takes message: String. -> Unit says that success has no useful payload; with Console requires output support, and fails ConsoleError permits an output error. println message is itself the Effect returned by the body."
+
+pub fn readerLegacyResult -> String =
+  "Calling announce constructs an Effect that prints the message. Output happens when that Effect executes. Omitting with declares no required services; omitting fails declares no recoverable failures. Write those clauses to match the operations in the body."

@@ -1,0 +1,80 @@
+pub fn title -> String = "最初のプログラムを実行する"
+pub fn summary -> String =
+  "Seseragiを導入し、自分で作ったmain.ssrgの型を確認して、端末に文字列を出力します。リポジトリの取得やRustの知識は必要ありません。"
+pub fn scopeTitle -> String = "この手順で確認した環境"
+pub fn scope -> String =
+  "2026年10月1日に、公開済みのSeseragi 0.61.19とBun 1.3.9を、Linux x64（Debian 13、glibc 2.41）の新しい作業ディレクトリで確認しました。空のホームディレクトリと明示したPATHを使い、RustやCargo、既存プロジェクトには依存していません。Seseragiは開発初期の言語で、今後の互換性は保証していません。"
+pub fn platformTitle -> String = "1. 自分のOSの導入手順を選ぶ"
+pub fn platform -> String =
+  "実行するOS・CPUに合う手順を一つ選んでください。導入後は、どのOSでも同じmain.ssrgを作り、同じlint・runコマンドを使います。公開済みアーカイブはコンパイル済みなので、RustやCargoは不要です。"
+pub fn prerequisites -> String =
+  "テキストエディターと、bun.com・GitHubへ接続できる環境を用意してください。以下の導入先は自分のホームディレクトリ内です。管理者権限やnpm installは使いません。"
+pub fn otherPlatformsTitle -> String = "検証範囲"
+pub fn otherPlatforms -> String =
+  "Linux x64は導入から実行まで確認済みです。macOSとWindowsのコマンドは、公開済みアーカイブと公式の導入手順に基づきますが、この検証では実行していません。OSのセキュリティ警告が出た場合は、警告を無視せず、公式の配布元とOSの案内を確認してください。"
+pub fn bunTitle -> String = "Linux x64で導入する（実行確認済み）"
+pub fn bun -> String =
+  "Bunは、Seseragiが生成したプログラムを実行するための道具です。ここでは検証した1.3.9を指定します。公式インストールスクリプトはホームディレクトリの.bunへ導入します。PATHは、端末がコマンドを探すディレクトリの一覧です。exportで、その一覧にBunを追加します。最後に1.3.9と表示されれば準備完了です。"
+pub fn cli -> String =
+  "GitHub ReleaseのLinux x64用アーカイブとチェックサムを取得します。sha256sumがOKを返した場合だけ、次のtarへ進んでください。展開先はホームディレクトリ内の.local/opt/seseragi/0.61.19です。コンパイル済みの配布物なのでRustは不要です。CLIと同梱ランタイムだけで、この後の1ファイルを実行できます。別のランタイムアーカイブを取得する必要はありません。"
+pub fn cliCaption -> String = "Linux x64用の導入コマンド"
+pub fn versionCaption -> String = "バージョンの表示結果"
+pub fn path -> String =
+  "PATHの設定は、今開いている端末にだけ適用されます。続きも同じ端末で実行してください。新しい端末で見つからなくなった場合は、下のPATHの直し方を使えます。以後も使う場合は、使っているシェルの設定ファイルへ保存します。"
+pub fn fileTitle -> String = "2. 自分のファイルを作る"
+pub fn directory -> String =
+  "リポジトリや既存のSeseragiプロジェクトの外に、hello-seseragiという新しいディレクトリを作ります。同名のディレクトリがある場合は別の名前を選んでください。この後のコマンドは、すべてその中で実行します。"
+pub fn file -> String =
+  "テキストエディターで、このディレクトリにmain.ssrgを作り、次の1行を保存してください。ファイル名の末尾は.ssrgです。.txtを付けません。package.jsonやseseragi.tomlは、この最小の例では不要です。"
+pub fn reading -> String =
+  "mainは実行を始める関数の名前です。pubは、その関数を実行の入口として公開します。effect fnは、出力などの操作を行う関数を宣言する書き方です。=の右側が実行する内容で、printlnに空白で文字列を渡すと、その文字列と改行を出力します。今はこの1行の役割が分かれば十分です。"
+pub fn checkTitle -> String = "3. 型を確認し、実行する"
+pub fn lint -> String =
+  "まずlintで、構文と型の誤りを確認します。成功すると何も表示せずに終わり、終了コードは0です。ここではプログラムを実行しないので、Hello, Seseragi!もまだ出ません。"
+pub fn lintCaption -> String = "型を確認する（成功時は表示なし）"
+pub fn run -> String =
+  "次にrunで実行します。CLIがソースをコンパイルし、Bunで起動します。Webサーバーを起動する手順ではなく、端末で結果を受け取るプログラムです。"
+pub fn runCaption -> String = "同じディレクトリで実行する"
+pub fn outputCaption -> String = "端末の出力（末尾に改行）"
+pub fn success -> String =
+  "この文字列が表示され、エラーなく終われば成功です。引用符の中の文字列を変えて保存し、同じrunコマンドをもう一度実行すると、出力も変わります。"
+pub fn recoveryTitle -> String = "うまく動かないとき"
+pub fn missingCommand -> String =
+  "seseragi: command not found、またはBun target adapterを起動できないというエラーなら、OSに合うコマンドでPATHを設定し直します。両方の実行ファイルの場所が表示されることを確認してください。表示されなければ、該当する導入手順へ戻ります。"
+pub fn pathCaption -> String = "この端末のPATHを設定し直す"
+pub fn wrongFile -> String =
+  "lint path does not existなら、main.ssrgを保存したディレクトリへcdで移動してください。.ssrg source fileというエラーなら、拡張子が.ssrg.txtになっていないか確認します。main must be publicなら、例の先頭のpubが抜けていないか確認してください。"
+pub fn badSource -> String =
+  "SES-T0101は型の不一致です。たとえばIntと注釈を付けた値に文字列を入れると発生します。診断のファイル名・行番号・expectedとactualを読み、値か型注釈を直します。最初は上の1行を正確に保存し直し、lintを通してからrunしてください。"
+pub fn badArchive -> String =
+  "チェックサムが一致しない場合は、展開や実行を中止し、同じリリースのアーカイブと.sha256を取得し直します。Exec format errorならOSやCPUの選択を確認してください。GLIBCのバージョンエラーなら、Linuxの必要条件を確認します。"
+pub fn nextTitle -> String = "次に、値と関数を書く"
+pub fn next -> String = "まず値に名前を付け、次に型を書いた関数を宣言して呼び出してみてください。各記事で必要な構文を説明します。"
+pub fn web -> String = "Webアプリを作りたい場合は、別の手順でプロジェクトの作成、VS Code、開発サーバー、ビルドへ進めます。"
+pub fn bunLink -> String = "Bunの公式導入手順"
+pub fn releaseLink -> String = "Seseragi 0.61.19の配布物"
+pub fn archiveLink -> String = "OS別のアーカイブ導入手順"
+pub fn webLink -> String = "ローカルWebアプリを作る"
+
+pub fn linuxRequirements -> String =
+  "Linux x64のbashで実行します。glibc 2.34以降が必要です。unameがLinux x86_64を、getconfがglibcのバージョンを示します。Alpineなどのmusl環境やLinux ARM64向けのアーカイブはありません。bash、curl、unzip、tar、sha256sumが必要です。足りない道具はOSのパッケージ管理機能で用意します。"
+
+pub fn macTitle -> String = "macOSで導入する（手順確認のみ・未実行）"
+
+pub fn macBody -> String =
+  "Bunの案内ではmacOS 13以降が必要です。端末でuname -mを実行し、arm64ならApple Silicon、x86_64ならIntel Macとして選びます。下のtargetはApple Silicon用です。Intel Macでは、実行する前にtarget=darwin-x64へ変更してください。curl、bash、unzip、tar、shasumを使います。"
+
+pub fn macCli -> String =
+  "先にBunを導入し、続いて同じ端末でSeseragiを導入します。チェックサムが一致した場合だけ展開します。最後の表示はseseragi 0.61.19で始まり、releaseを含むことを確認します。targetの表示はMacのCPUで異なります。"
+
+pub fn windowsTitle -> String = "Windows x64で導入する（手順確認のみ・未実行）"
+
+pub fn windowsBody -> String =
+  "Bunの案内ではWindows 10 version 1809以降が必要です。PowerShellで実行してください。Bunの導入に続き、Windows x64の配布物をユーザー用のLOCALAPPDATA内へ展開します。Windows ARM64向けのSeseragiアーカイブはありません。Linux・macOSのシェルコマンドと混ぜず、このブロックを使います。"
+
+pub fn windowsResult -> String =
+  "Bunは1.3.9、Seseragiはseseragi 0.61.19で始まりreleaseを含む表示を確認します。SHA-256 checksum mismatchなら処理を止め、取得したファイルを確認してください。"
+
+pub fn unixCaption -> String = "Linux・macOSの端末"
+
+pub fn windowsCaption -> String = "Windows PowerShell"

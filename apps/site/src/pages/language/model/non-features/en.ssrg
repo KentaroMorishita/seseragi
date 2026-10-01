@@ -5,11 +5,11 @@ pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Features the language does not have",
   summary: (explanation ()).summary,
   ruleTitle: "Replace operations familiar from another language",
-  ruleBody: "Seseragi represents a data update by constructing a new value. A function returns its body expression. This page compares familiar syntax from other languages with the corresponding Seseragi forms.",
+  ruleBody: "Returning a function result, updating a score and choosing a result with a condition are all possible in Seseragi. The example constructs a new score while retaining the original, without reassignment or a return statement.",
   consequencesTitle: "Three distinctions to keep clear",
-  consequenceOne: "Maybe represents presence or absence; Either represents a successful or failed result value. Effect describes an operation to execute and the failures it can produce. Choose according to whether you are inspecting a value or executing an operation.",
+  consequenceOne: "Maybe represents presence or absence: Just contains a value and Nothing does not. Either is a success or failure result: Right contains success and Left contains a reason for failure. Effect describes work to execute and the failures it can produce. Distinguish inspecting a returned value from executing work.",
   consequenceTwo: "An Effect type can list the services its operation requires. This combination rule applies to service requirements, not arbitrary union or intersection types for ordinary data. Seseragi has no perform or handle syntax for algebraic effects.",
-  consequenceThree: "deriving generates instances for supported traits. Template strings insert expression values into text. Both have fixed behavior; neither is a macro for introducing arbitrary syntax.",
+  consequenceThree: "A trait specifies operations a type provides; an instance implements them for a particular type. deriving generates instances for supported traits. Template strings insert expression values into text. Both have fixed behavior, rather than allowing arbitrary new syntax through a macro.",
   boundaryTitle: "An absent construct is not a missing application capability",
   boundaryBody: "Changing application state, recovering from errors, and stopping collection traversal early are still possible. Use explicit state APIs, typed results, and reduceUntil or forEachUntil respectively. Interop adapts foreign constructs without changing ordinary Seseragi rules."
 }
@@ -28,8 +28,30 @@ pub fn alternatives -> Array<String> = [
 ]
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What should I use instead of familiar missing keywords?",
-  summary: "Where another language uses assignment, null, or return, Seseragi uses new values, Maybe, and a function's body expression. This page compares the forms by the operation you want to perform.",
-  reading: "Write { ...old, field: newValue } to construct an updated record. Just contains a present value, and Nothing represents absence. A function returns its body expression; a block returns its last expression.",
-  result: "Use Either for a failed result represented as data and Effect for failure of an operation to execute. Use reduceUntil or forEachUntil to stop traversing a collection early."
+  question: "How do I write ordinary calculations without reassignment or return?",
+  summary: "Construct a new value for an update and use the body expression as a function result. Start with a small score calculation, then look up alternatives for absence, failure and other needs.",
+  reading: "nextScore returns the score plus one. updated holds the new score, and the if in label chooses pass or retry.",
+  result: "The output is 79, 80, pass. original remains 79, updated is 80, and the label for that score is pass."
 }
+
+pub fn title -> String = (copy ()).title
+
+pub fn caption -> String =
+  "Keep the original score and return an updated score and label"
+
+pub fn readingTitle -> String = "Read the example"
+
+pub fn alternativesTitle -> String = "Choose an alternative for the operation you need"
+
+pub fn reading -> Array<String> = [
+  "fn nextScore score: Int -> Int receives an integer and returns score + 1. The body expression supplies its result, so there is no return statement.",
+  "label receives an integer and returns String. If the Bool condition score >= 80 is true, it returns \"pass\"; otherwise it returns \"retry\". The whole if is the selected string value, so both branches have the same String type.",
+  "original is 79, and nextScore original constructs 80 for updated. A different name refers to the new value; the program does not assign into original.",
+  "main is the public entry returning an Effect describing output. println writes a value and a newline. ${...} inside backticks inserts the displayed original, updated and label updated values, producing 79, 80, pass.",
+]
+
+pub fn related -> Array<String> = [
+  "Handle absent values by distinguishing Just and Nothing.",
+  "Inspect constructing a new value while preserving the original.",
+  "Use names and pipelines to make processing order easier to follow.",
+]

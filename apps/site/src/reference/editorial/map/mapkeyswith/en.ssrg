@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Transform keys and decide how collisions combine",
+  purpose: "Use mapKeysWith when different keys may become the same key. Pass a value-combining function, then the key transformation, then the Map.",
+  reading: "category keeps the key keep and changes every other key to same. combine receives the current accumulated value before the next incoming value, joining them with /. The result is same=A/B/C, then keep=K.",
+  boundaries: "The unrelated keep entry does not split the same group. The source remains unchanged. Empty input produces an empty Map without calling either function.",
+  rules: "Keys are transformed in source order. A new output key keeps its first position. On each collision, resolve current incoming combines values; three matching keys call it twice, as A/B then A/B/C.",
+  mistake: "The TS loop implements the same collision rule explicitly. new Map of transformed pairs alone would merely overwrite earlier values, losing A and B. Use mapValues if the lookup keys should stay unchanged. In the presence-checked branch, the ! after get tells TypeScript that the value exists; it adds no runtime check. The preceding has call establishes presence.",
+}

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Read the final element if one exists",
+  purpose: "Use last when you want the final value without changing the List. It returns a Maybe because an empty List has no final value.",
+  reading: "match names the value inside Just and formats it. Nothing chooses the empty input message. List<Int> is a List of integers; Maybe<Int> holds either one integer or no value.",
+  boundaries: "The three-element input returns 30, the one-element input returns 10, and the empty input selects Nothing. An element whose value is 0 would still be Just 0, not absence.",
+  rules: "List last walks to the end; its work grows with the number of elements. It does not remove the value or change the input.",
+  mistake: "In TypeScript you can check length and read values[values.length - 1]. Here the result makes absence explicit. Array last has constant work, but List last does not: choose the collection for your access pattern.",
+}

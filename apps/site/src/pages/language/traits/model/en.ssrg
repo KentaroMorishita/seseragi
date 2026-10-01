@@ -5,36 +5,40 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Traits",
   summary: (explanation ()).summary,
   purpose: [
-    "Suppose different kinds of data should be displayed as labels. Writing one unrelated function for each type would make shared code depend on all their names. A trait gives the shared operation one name, label, while allowing a type-specific implementation.",
-    "There are three separate pieces: the trait declares what an operation accepts and returns; an instance defines how it works for a type; a call uses that operation on a value. The small example contains all three."
+    "The TypeScript interface Label<A> describes an object with a label function. The code chooses an implementation object, ticketLabel or personLabel, and calls its method. Both languages print the same two lines for these inputs.",
+    "A Seseragi instance is not an object value like those implementations. Instead of passing an implementation object, the compiler selects the implementation for the argument’s type. Ordinary TypeScript functions or callbacks can also do this job. The comparison is about where the operation’s contract and implementation live."
   ],
-  exampleTitle: "Give a ticket a label",
+  exampleTitle: "main.ssrg",
   reading: [
-    "struct Ticket { number: Int } defines a ticket holding one integer. Ticket { number: 42 } in main creates ticket number 42.",
-    "A in trait Label<A> is a type parameter for the type being labeled. fn label value: A -> String declares an operation taking A and returning String; it has no implementation body.",
-    "instance Label<Ticket> substitutes Ticket for A and supplies label's body. It converts value.number to text with show and prefixes it with \"ticket-\".",
-    "The compiler checks that ticket in label ticket has type Ticket and selects Label<Ticket>. Execution calls that label implementation and prints ticket-42."
+    "struct Ticket { number: Int } defines a type with one integer field, number. Ticket { number: 42 } creates a value. Person uses the same syntax with a String field named name.",
+    "A in trait Label<A> is a placeholder for the target type. fn label value: A -> String declares an operation with one A argument called value and a String result. That line has no implementation body.",
+    "instance Label<Ticket> replaces A with Ticket and supplies label’s body. show converts the integer to text, and + prefixes it with ticket-. The Label<Person> body simply returns name.",
+    "label (Ticket { number: 42 }) calls a function by putting its argument after a space. Parentheses group the expression that creates the Ticket. A ticket numbered 7 or 42 uses the same implementation because both have type Ticket."
   ],
   rules: [
     "Before execution, the compiler checks that each call has the required instance. A missing implementation is a type error.",
     "The argument type selects the instance. Ticket { number: 1 } and Ticket { number: 42 } both use Label<Ticket>.",
     "Declaring a trait adds no fields or dot methods to Ticket. label ticket is a function call requiring an instance for the argument type. This differs from object inheritance.",
-    "where Label<A> on labelOf<A> requires A to support label. Person has an instance, so labelOf (Person { name: \"Aki\" }) returns \"Aki\". Ticket has one too, so the same labelOf body also accepts Ticket."
+    "A condition such as where Label<A> states the operation required by a generic function. This example does not need one, but a function calling label on an unspecified type does."
   ],
   mistakes: [
-    "Declaring Label<A> alone does not supply a label implementation. Calling label with a type lacking an instance fails during type checking; it does not wait for runtime.",
-    "Do not write ticket.label merely because Label<Ticket> exists. Dot methods belong to impl blocks; trait functions use ordinary application or qualified names such as Label.label."
+    "The rejected file declares Label but has no instance for Ticket. The declaration alone supplies no display rule, so the call reports SES-T0201. Add instance Label<Ticket> from the first example to print ticket-42.",
+    "Implementing the trait does not add a ticket.label dot method. Dot methods are declared in impl blocks."
   ],
   related: [
-    "Check the exact declaration syntax and what is allowed in a trait body.",
-    "Check how to implement a declared operation for your type.",
-    "See how a generic function states that its argument type must support an operation."
-  ]
+    "Check how to declare the arguments and results an implementation must provide.",
+    "Check where to write the body for a particular type.",
+    "See how a shared function requires operations with where."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Keep declaration, implementation and call separate"
+pub fn mistakesTitle -> String = "An operation name does not supply its implementation"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How can different types share one named operation?",
-  summary: "A trait declares a shared operation; an instance supplies its implementation for a particular type. A generic caller can require that operation without knowing each type's representation.",
-  reading: "Label<A> declares label: A -> String. Ticket has an integer number; Person has a name. Each instance supplies label for its own type. labelOf<A> calls label without knowing either representation; where Label<A> requires that the supplied type supports this operation. personLabel is \"Aki\", and label ticket in main produces \"ticket-42\".",
-  result: "For Ticket, the label uses its number to produce \"ticket-42\". For Person, it returns the name \"Aki\". Types with a Label implementation can use the shared labelOf function. Implementation selection is determined during type checking before execution."
+  question: "How can different types use the same label operation?",
+  summary: "Define a display operation for each data type and call it by one name. A trait declares the operation’s type; an instance supplies a concrete implementation.",
+  reading: "Ticket holds a number; Person holds a name. To display both, Label declares the argument and result of label, and each type gets an instance. You can run this whole file as written.",
+  result: "The output is ticket-42 and Aki. Both calls use the function name label, but passing Ticket or Person selects a different implementation. You can add a display rule for another type while retaining the shared operation name."
 }

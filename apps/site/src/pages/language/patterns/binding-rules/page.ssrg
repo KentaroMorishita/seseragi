@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -6,16 +7,18 @@ import {
   CodeExample,
   InternalLink,
   PageDefinition,
-  Words
+  Words,
+  Paragraph,
+  Terminal
 } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.patterns.binding-rules" "/docs/language/patterns/binding-rules/" (en.copy ()) (ja.copy ()) [
     CodeExample
-      ("patterns-binding-rules", localized "Nested struct binding" "入れ子のstructから値を取り出す"),
+      ("patterns-binding-rules", localized "Unpack struct fields" "structのフィールドから値を取り出す"),
     BulletList [
       [Words (
         localized "let and effectful for require an irrefutable pattern."
@@ -46,5 +49,29 @@ fn content -> PageDefinition =
       "/docs/language/expressions/blocks-and-local-declarations/"
     )]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample
+          ("data-reader-binding", localized (en.readerCaption ()) (ja.readerCaption ())),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Paragraph ([Words (localized (en.readerExecution ()) (ja.readerExecution ()))]),
+        Terminal (localized "Output" "実行結果", "Aki: 42"),
+        CodeExample (
+          "data-reader-binding-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))])
+      ],
+      [Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))])],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

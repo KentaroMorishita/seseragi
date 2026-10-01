@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { collectionTypeEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  collectionTypeEditorial "std/map::Map" "type" "opaque-type" "map" "[(tea, 2), (coffee, 5)]\n[(tea, 3), (coffee, 5)]\n0\nnot listed\ntrue" "[[\"tea\",2],[\"coffee\",5]]\n[[\"tea\",3],[\"coffee\",5]]\n0\nnot listed\ntrue" (en.copy ()) (ja.copy ())

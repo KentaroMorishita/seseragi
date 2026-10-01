@@ -1,9 +1,6 @@
 fn nameOf person: { name: String } -> String = person.name
 
-pub effect fn main = do {
-  let original = { name: "Aki", score: 10 }
-  let updated = { ...original, score: 42 }
-  _ <- println original.score
-  _ <- println updated.score
-  println (nameOf updated)
-}
+let original = { name: "Aki", score: 10 }
+let updated = { ...original, score: 42 }
+
+pub effect fn main = println `${original.score}\n${updated.score}\n${nameOf updated}`

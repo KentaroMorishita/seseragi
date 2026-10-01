@@ -1,12 +1,21 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.variance" "/docs/language/types/variance/" (en.copy ()) (ja.copy ()) [CodeExample
       ("types-variance", localized "Variance and capability coercions" "変性と能力固有の型変換")] [CodeExample
       (
@@ -23,5 +32,52 @@ fn content -> PageDefinition =
           "/docs/language/types/type-identity-and-coercion/"
         )]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample
+          ("type-limits-variance", localized (en.readerCaption ()) (ja.readerCaption ())),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "Aki\n[Aki]"),
+        CodeExample (
+          "type-limits-variance-typescript",
+          localized "The same task in TypeScript" "TypeScriptで同じ仕事をする"
+        ),
+        Paragraph
+          ([Words (localized (en.readerComparison ()) (ja.readerComparison ()))]),
+        CodeExample (
+          "type-limits-variance-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Paragraph (
+          [
+            InternalLink (
+              localized "Nominal and structural types" "名前付き型と構造的な型",
+              "/docs/language/types/nominal-and-structural-types/"
+            ),
+            Words (localized (en.readerRelated ()) (ja.readerRelated ()))
+          ]
+        ),
+        Heading (
+          "declaration-example",
+          localized "Continue into the detailed rules" "詳しい規則と宣言例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

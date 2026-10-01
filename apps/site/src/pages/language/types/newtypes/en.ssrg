@@ -14,8 +14,36 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I prevent two integer IDs from being confused?",
-  summary: "A newtype makes a distinct type around one existing value type, even when its runtime representation is similar.",
-  reading: "UserId 42 and OrderId 42 contain the same integer but have different types. toInt accepts only UserId and extracts its integer with match. Passing an OrderId to it is a type error.",
-  result: "toInt (UserId 42) returns the Int value 42. Wrap the integer to use it as UserId; extract it to use it as Int. If inputs need validation, put that check in a construction function separately from the newtype declaration."
+  question: "How can user IDs and order IDs remain distinct when both contain integers?",
+  summary: "A plain integer parameter can accept either kind of ID. Declare different newtypes so calls can distinguish their intended uses.",
+  reading: "newtype UserId = Int declares a type distinct from Int. UserId 42 makes a UserId holding the integer 42. OrderId uses the same payload type, but its separate declaration does not make it a UserId.",
+  result: "userLabel accepts only UserId. Its match pattern UserId number extracts the integer as number and returns the string user: 42. main prints that one line.",
 }
+
+pub fn readerCaption -> String = "Define a function that accepts only UserId"
+
+pub fn readerBridgeOne -> String =
+  "alias UserId = Int would remain the same type as Int; newtype distinguishes it. Constructing UserId 42 does not validate that user 42 exists or that an ID is positive. Put any required validation in a separate construction function."
+
+pub fn readerBridgeTwo -> String =
+  "A UserId value always matches UserId number because there is only one constructor. pub effect fn main is the public output entry point, and println writes the string and a newline. Where an integer is required, use the extracted number in the same way."
+
+pub fn readerInvalidCaption -> String = "Pass an order ID to a user-ID parameter"
+
+pub fn readerMistake -> String =
+  "Passing OrderId 42 to userLabel produces SES-T0101, identifying UserId and OrderId. Construct a UserId from a number known to identify a user. Blindly rewrapping an order number to silence the error does not fix the mistaken purpose."
+
+pub fn readerDetailNote -> String =
+  "The detailed declaration example uses toInt to unpack UserId. Further rules cover generic newtypes, recursion restrictions and runtime representation. The declaration-only example has no execution entry point."
+
+pub fn readerComparison -> String =
+  "TypeScript can distinguish an object whose kind is \"user\" from one whose kind is \"order\". Each quoted string in the kind type permits only that string. These ordinary object types provide the same display and swapped-ID check without advanced type machinery."
+
+pub fn readerLegacyReading -> String =
+  "UserId 42 and OrderId 42 contain the same integer but have different types. toInt accepts only UserId and extracts its integer with match. Passing an OrderId to it is a type error."
+
+pub fn readerLegacyResult -> String =
+  "toInt (UserId 42) returns the Int value 42. Wrap the integer to use it as UserId; extract it to use it as Int. If inputs need validation, put that check in a construction function separately from the newtype declaration."
+
+pub fn readerRelated -> String =
+  " explains the conversions and unpacking required when passing values."

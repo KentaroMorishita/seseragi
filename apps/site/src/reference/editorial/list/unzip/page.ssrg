@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { sequenceEditorial } from "../../sequence-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  sequenceEditorial "std/list::unzip" "list" "sequence-list-unzip" "`[Aki, Mio]\n`[80, 95]\n(`[], `[])" (en.copy ()) (ja.copy ())

@@ -140,7 +140,10 @@ export function signatureReading(
       "この宣言は、同じモジュールの操作が使う型を示します。山括弧には、その型に渡す型引数を書きます。"
   }
   if (parameters.length) {
-    en += ` ${parameters.join(", ")} name type parameters. At each use they are resolved to types consistent with the arguments and result; use a type annotation when needed.`
+    en +=
+      parameters.length === 1
+        ? ` ${parameters[0]} names a type parameter. At each use it is resolved to a type consistent with the arguments and result; use a type annotation when needed.`
+        : ` ${parameters.join(", ")} name type parameters. At each use they are resolved to types consistent with the arguments and result; use a type annotation when needed.`
     ja += `型パラメーターは${parameters.join("、")}です。使用する式で、引数と戻り値に合う具体的な型に決まります。必要なら型注釈で指定してください。`
   }
   if (constraints.length) {

@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "一つのCharが文字・数字・記号などのどの分類に属するか調べる",
+  purpose: "Aが大文字なのか、٣が十進数字なのかを調べるときに使います。generalCategoryは一つのCharを受け取り、UppercaseLetterやDecimalNumberのような分類を返します。CharはUnicode scalarを一つだけ持つ値です。scalarはUnicodeの文字番号のうち、サロゲート用の番号を除いたものです。'A'のような単一引用符はCharを作り、二重引用符はStringを作ります。見た目の一文字が複数のscalarでできている場合もあります。",
+  reading: "letで入力の'A'をletter、その分類をcategoryと名付けます。UppercaseLetterは大文字という分類の値なので、最初の行はその名前を表示します。次の行では==でcategoryをunicode.UppercaseLetterと比較し、同じなのでTrueになります。unicode.UppercaseLetterは取り得る分類の一つを指定する名前です。結果の型UnicodeGeneralCategoryは、このような名前付きの29種類の値のどれか一つです。表示用の文字列を返す関数ではありません。",
+  boundaries: "٣はArabic-Indicの十進数字でDecimalNumber、U+0301は前の文字に付く結合アキュートアクセントでNonspacingMarkです。U+FEFFは書式制御に使うFormat、U+10FFFFはUnassignedになります。U+に続く数字は16進数の文字番号です。例の\\u{0301}などは、その番号のscalarを書くエスケープです。Unassignedは、受け取れるscalarであっても通常の文字として割り当てられていないことを示します。すべての有効なCharが表示可能とは限りません。",
+  rules: "分類の29種類は宣言順に、文字がUppercaseLetter (Lu)、LowercaseLetter (Ll)、TitlecaseLetter (Lt)、ModifierLetter (Lm)、OtherLetter (Lo)、付加する記号がNonspacingMark (Mn)、SpacingMark (Mc)、EnclosingMark (Me)、数がDecimalNumber (Nd)、LetterNumber (Nl)、OtherNumber (No)です。続いて句読点類がConnectorPunctuation (Pc)、DashPunctuation (Pd)、OpenPunctuation (Ps)、ClosePunctuation (Pe)、InitialPunctuation (Pi)、FinalPunctuation (Pf)、OtherPunctuation (Po)、記号がMathSymbol (Sm)、CurrencySymbol (Sc)、ModifierSymbol (Sk)、OtherSymbol (So)、区切りがSpaceSeparator (Zs)、LineSeparator (Zl)、ParagraphSeparator (Zp)、最後にControl (Cc)、Format (Cf)、PrivateUse (Co)、Unassigned (Cn)です。括弧内はUnicodeの略号です。Charにはサロゲートが入らないためSurrogateはありません。Eqは等値比較、Showは表示を支えます。Ordによる大小比較はこの宣言順であり、名前の辞書順や言語ごとの並び順ではありません。一回の呼び出しは固定されたUnicode 17.0.0表で一つのscalarを調べ、文字列全体を走査しません。",
+  mistake: "分類だけで見た目の一文字の構造を判断しないでください。'é'はLowercaseLetterですが、同じように見えるeと結合アクセントは二つのscalarです。'e\\u{0301}'をCharにしようとするとSES-P0202になります。二つのscalarをそのまま保ちたい場合はStringの\"e\\u{0301}\"を使い、見た目のまとまりを扱う場合はgraphemeの操作を選んでください。generalCategoryは分解や正規化を行いません。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptで『大文字の分類か』だけを知るなら、Unicodeプロパティを使う正規表現/\\p{Uppercase_Letter}/uが簡潔です。\\p{...}は指定したUnicodeの性質を調べ、uはUnicode対応の解釈を選びます。testは該当するかをbooleanで返します。ここではSeseragiと同じ、各一つのscalarを持つ五つの入力を使います。Aはtrueで、ほかはfalseです。"
+
+pub fn comparisonBoundary -> String =
+  "このTypeScript例は大文字かという問いを比較しています。generalCategoryが返す29種類の分類そのものを返すJavaScript標準関数はありません。falseだけでは、数字・付加記号・書式制御などのどれかは分かりません。全分類を返すには、分類ごとのプロパティ判定を組み合わせるか、Unicodeデータやライブラリーを使います。また、JavaScriptのstringは一つのscalarに限定されません。この正規表現を任意の文字列へ使うと、該当する文字を含むかという別の問いになります。プロパティのデータは実行エンジンによるため、選んだ入力の一致からすべてのUnicode値の一致までは主張できません。"

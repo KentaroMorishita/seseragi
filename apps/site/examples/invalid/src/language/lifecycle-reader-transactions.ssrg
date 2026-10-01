@@ -1,0 +1,5 @@
+import * as signals from "std/signal"
+pub effect fn main = do {
+  count <- signals.make 1
+  signals.transaction [signals.planSet "wrong" count]
+}

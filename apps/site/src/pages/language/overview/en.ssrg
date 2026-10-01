@@ -1,4 +1,11 @@
 pub fn title -> String = "Language Reference"
-
 pub fn summary -> String =
-  "Choose the concept you need, such as calling functions, organizing data, or handling failures and state. Each article explains how to read an example and gives the detailed rules."
+  "Look up how to name values, read functions, organize data and handle failures. Each article starts with a small example and explains its result and detailed rules."
+pub fn startTitle -> String = "Start with values and functions"
+pub fn valuesPurpose -> String = "let and creating updated values: "
+pub fn typesPurpose -> String = "Types for integers, strings and other values: "
+pub fn declarationsPurpose -> String =
+  "Declare a function and write its parameter and result types: "
+pub fn callsPurpose -> String = "Supply arguments to a function and get a result: "
+pub fn setupPurpose -> String = "If you do not have an environment yet: "
+pub fn groupsTitle -> String = "Find a concept"

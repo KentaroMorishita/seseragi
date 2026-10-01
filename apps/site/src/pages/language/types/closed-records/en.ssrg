@@ -14,8 +14,25 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How does the runner know which services to provide?",
-  summary: "At a program's execution boundary, the compiler must know every required service name and type. A closed requirement record is a record whose required fields are all determined.",
-  reading: "Timed<R, E, A> in the example adds a clock field to the services represented by R. While R is still a type parameter, this is a useful reusable description, but not yet a complete list that a runner can supply.",
-  result: "At the execution entry point, R must be a concrete record type of mandatory services. The supplied environment may contain extra services. Closed means that the list of fields required by the computation is determined."
+  question: "How are the external capabilities needed at execution determined?",
+  summary: "This page is a detail of entry-point types. A closed record does not mean an object that forbids extra fields. It means the names and types of required services can be fully determined.",
+  reading: "main is the entry point. with Console requires terminal output and corresponds to the requirement { console: Console }. console is the field name; Console is the capability type.",
+  result: "Running it prints one line, ready. The requirement is known to be Console, so the CLI can supply its output capability. Ordinary record operations do not require a closed keyword or annotation.",
 }
+
+pub fn readerCaption -> String = "State the capability needed for terminal output"
+
+pub fn readerBridgeOne -> String =
+  "effect fn describes work involving outside interaction. -> Unit means successful completion without a contents value; fails ConsoleError names the output-failure type. pub exposes the entry, and println writes ready and a newline."
+
+pub fn readerBridgeTwo -> String =
+  "The type has determined the requirement down to { console: Console }. The execution environment may still provide other capabilities. R and aliases in the later sections concern combining requirements; they are not prerequisites for ordinary record operations."
+
+pub fn readerInvalidCaption -> String =
+  "Omit the required Console from the entry contract"
+
+pub fn readerMistake -> String =
+  "Omitting with Console from this explicit declaration leaves the empty requirement {}, producing SES-E0001 here. Restore with Console because println requires console. Distinguish a missing runtime value from a requirement omitted in the type."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

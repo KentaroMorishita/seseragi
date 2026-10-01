@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Construct an Iterator from a function that computes an element and next state. Returning Nothing from step ends the sequence.",
+  taskTitle: "Generate a sequence with a stopping condition",
+  purpose: "When a function can determine the next value from a remaining count, unfold can build the sequence. This example decreases its state from 3 to zero, yielding 3, 2, 1 before it ends.",
+  setup: "The Maybe<(Int, Int)> result of fn countdown means either Just containing the current element and next state, or Nothing for the end. The if returns Just only while remaining > 0. iterator.unfold countdown 3 passes that function and the initial state 3.",
+  after: [
+    "[value | value <- ...] reads an Iterator in order into an Array. Starting at 3 gives 3, 2, 1; starting at zero gives an empty Array. Calling unfold alone does not execute step; reading requests values and executes it.",
+    "repeatValue returns Just (value, value): it yields the value and keeps the same state, so its Iterator repeats that value without ending. The example calls next only once and displays value from Just (value, _); _ discards the unused continuation. It obtains the first 10 without collecting the entire sequence.",
+    "import * as iterator gives the operations a prefix. The do in pub effect fn main runs println in order, and show converts results to text. match branches on the Just and Nothing forms."
+  ],
+  comparisonBefore: "TypeScript generator functions can produce the same sequences. A function* body progresses when requested and pauses at yield after supplying an element. Only the finite countdown is collected with Array.from; repeatValue receives one next call.",
+  comparisonAfter: "The displayed sequences and first value 10 agree. A JavaScript generator advances its internal execution position. Seseragi passes state explicitly to step and returns a remaining Iterator from next.",
+  details: [
+    "In unfold<S, A>, S is the state type and A is the yielded element type; they need not be the same. step takes an S and returns Just (an A, the next S) or Nothing. Both types happen to be Int in this example.",
+    "step is pure. It is not called during unfold and is called once for each next. Re-reading the same Iterator gives the same result, but caching is not guaranteed. Use the relevant Effect or Stream APIs for I/O or asynchronous processing.",
+    "Collecting an endless Iterator, or reading it to completion in an effectful for, will not terminate. Read only a bounded number of next steps or include a Nothing stopping condition as countdown does."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input, result and evaluation rules"
+}

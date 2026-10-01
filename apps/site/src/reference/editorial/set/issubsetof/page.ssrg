@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { setEditorial } from "../../set-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  setEditorial "std/set::isSubsetOf" "set-issubsetof" "true\nfalse\ntrue\nfalse\ntrue" (en.copy ()) (ja.copy ())

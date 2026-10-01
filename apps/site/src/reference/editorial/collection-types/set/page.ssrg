@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { collectionTypeEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  collectionTypeEditorial "std/set::Set" "type" "opaque-type" "set" "[work, home]\n[work, home, travel]\ntrue\n0" "[\"work\",\"home\"]\n[\"work\",\"home\",\"travel\"]\ntrue\n0" (en.copy ()) (ja.copy ())

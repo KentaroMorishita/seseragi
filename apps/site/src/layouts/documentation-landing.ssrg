@@ -39,17 +39,18 @@ pub fn documentationLandingLayout<Action> input: BuildInput
           },
           mobileOnThisPage messages locale
             (arrays.concat [
-              directoryHeadings (directoryGroups page areas),
-              page.blocks
+              page.blocks,
+              directoryHeadings (directoryGroups page areas)
             ]),
-          referenceDirectory locale (directoryGroups page areas),
-          article input messages locale page.blocks
+          article input messages locale page.blocks,
+          referenceDirectory locale (directoryGroups page areas) input.referenceModules
+            (page.id == "library.overview")
         ]
       },
       onThisPage messages locale
             (arrays.concat [
-              directoryHeadings (directoryGroups page areas),
-              page.blocks
+              page.blocks,
+              directoryHeadings (directoryGroups page areas)
             ])
     ]
   }

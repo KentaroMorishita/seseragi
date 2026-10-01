@@ -1,0 +1,8 @@
+import * as arrays from "std/array"
+
+pub effect fn main = do {
+  _ <- println (show (arrays.windows 2 [10, 20, 30, 40]))
+  _ <- println (show (arrays.windows 5 [10, 20]))
+  _ <- println (show (arrays.windows 1 (arrays.empty<Int> ())))
+  println (show (arrays.windows 0 [10]))
+}

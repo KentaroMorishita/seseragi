@@ -1,12 +1,21 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.derived-signals" "/docs/language/effects/derived-signals/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-derived-signals",
@@ -15,16 +24,43 @@ fn content -> PageDefinition =
         "effects-invalid-signal-distinct",
         localized "Rejected distinct without Eq" "値の比較に必要なEqがない場合"
       )] [
-        [InternalLink (
-          localized "Signals and transactions" "Signalとトランザクション",
-          "/docs/language/effects/signals-and-transactions/"
-        )],
-        [InternalLink
-      (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")],
-        [InternalLink (
-          localized "Subscriptions and lifetime" "Signalの購読と寿命",
-          "/docs/language/effects/subscriptions-and-lifetime/"
-        )]
+        [InternalLink (localized "Signals and transactions" "Signalとトランザクション", "/docs/language/effects/signals-and-transactions/"), Words (localized ": Publish several Signal updates together" "：複数のSignal更新を一緒に公開する")],
+        [InternalLink (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/"), Words (localized ": Understand the equality requirement used by distinct" "：distinctが必要とする値の比較条件を読む")],
+        [InternalLink (localized "Subscriptions and lifetime" "Signalの購読と寿命", "/docs/language/effects/subscriptions-and-lifetime/"), Words (localized ": Observe changes and release subscriptions" "：変更を受け取り、購読を解除する")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "lifecycle-reader-derived",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "22\n45"),
+        CodeExample (
+          "lifecycle-reader-derived-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

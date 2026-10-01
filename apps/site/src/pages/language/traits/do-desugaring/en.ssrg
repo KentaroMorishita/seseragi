@@ -1,21 +1,39 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "How do blocks desugar",
   summary: (explanation ()).summary,
-  ruleTitle: "Each bind introduces one nested continuation",
-  ruleBody: "x <- mx followed by rest corresponds to flatMap (\\x -> rest) mx. flatMap passes the payload of mx to the lambda parameter x and performs the remaining computation there. A discarded result uses a lambda that ignores its argument. let remains an ordinary local declaration, and the final expression supplies the do result.",
-  typingBody: "The lambda parameter has the payload type A from M<A>, not the monadic type. Pattern typing and irrefutability are checked at that parameter. Constraints required by flatMap remain attached to the expansion.",
-  evaluationBody: "The outer monadic expression runs before its continuation. Later items are not constructed or evaluated early. Backend optimization may avoid materializing lambdas only when it preserves this scope and ordering.",
-  invalidTitle: "Desugaring does not erase monad semantics",
-  invalidBody: "Rewriting do as flatMap preserves the chosen type's behavior. Maybe skips the continuation for Nothing; Effect executes work sequentially. Failure, state, waiting, and resource rules also continue to follow the Monad implementation.",
-  diagnosticsBody: "Source diagnostics map failures in generated flatMap structure back to the original bind or item. Users should not need to debug backend-generated dictionary or lambda names.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "flatMap takes a function describing the next calculation, followed by the source Maybe. For Just it passes the payload to the function; for Nothing it returns Nothing without calling it. The name does not refer only to flattening one level of an Array.",
+    "\\streetName -> ... is an unnamed function with argument streetName. The argument is String, not the whole Maybe<String>. The outer flatMap inspects street.",
+    "The inner flatMap inspects city. Only if both values are Just does it concatenate the strings and wrap them in Just. The final pure in withDo wraps the value the same way in this Maybe context.",
+    "When the street is absent, the function containing the inner flatMap is not called. This does not retroactively avoid evaluating arguments already computed before entering the function."
+  ], rules: [
+    "x <- mx followed by rest corresponds to flatMap (\\x -> rest) mx. A discarded result uses a function that ignores its argument. let remains an ordinary local declaration, and the last expression directly supplies the do result.",
+    "Expansion is constructed from the last line backwards, while preserving forward sequencing. A backend may avoid creating intermediate functions, but must preserve evaluation order and name scope.",
+    "No dedicated do runtime object is required. That does not remove branching, state, Effect scheduling or resource handling inherent in the selected computation. Whether later work proceeds after failure still follows that operation’s rules.",
+    "The required trait constraints and the requirement for irrefutable payload patterns remain. Read diagnostics at the original bind or final expression rather than looking for generated internal names."
+  ], mistakes: [
+    "The rejected lambda annotates streetName as Maybe<String>, but flatMap supplies its String payload. The diagnostic therefore says source argument street would need Maybe<Maybe<String>>.",
+    "Change the annotation to String and this file prints Just 1 River Road, Tokyo. Check which layer the function receives. Rewriting it as do does not change that type relationship."
+  ], related: [
+    "Return to the concrete example that stops when an address part is missing.",
+    "Distinguish payload types from the outer computation type.",
+    "See why operation results need tests beyond type checking."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String =
+  "Expansion rules and the execution meaning they preserve"
+pub fn mistakesTitle -> String = "The lambda receives the payload"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How is do related to flatMap?",
-  summary: "do is a readable syntax for nested flatMap calls. Each step's remaining work becomes a function receiving the preceding payload.",
-  reading: "value <- source followed by increment value corresponds to flatMap (\\value -> increment value) source. The lambda receives the Int inside the Maybe, not the Maybe itself. The two functions shown express the same operation.",
-  result: "For Just 41, both the do function and the flatMap function return Just 42. Both return Nothing for Nothing. Their comparison produces True. Using the shorter do syntax preserves Maybe's absence handling."
+  question: "What happens when you write do using functions alone?",
+  summary: "Read do as flatMap passing an earlier payload to the next function. Expansion preserves absence handling and the scope of names.",
+  reading: "The example writes the same address calculation twice. withDo names payloads with <-; withFlatMap explicitly supplies functions receiving them. Both return Nothing if either address part is absent.",
+  result: "Both comparisons are True. The two forms agree when both parts are present and when the street is missing. Reading the expanded functions shows when the later calculation is called."
 }

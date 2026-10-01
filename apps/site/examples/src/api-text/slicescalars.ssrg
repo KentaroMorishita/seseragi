@@ -1,0 +1,15 @@
+import * as text from "std/text"
+
+fn sliceLabel start: Int -> end: Int -> value: String -> String =
+  match text.sliceScalars start end value {
+    Right part -> "slice: [" + part + "]"
+    Left error -> "invalid: " + show error
+  }
+
+pub effect fn main = do {
+  _ <- println (sliceLabel 1 3 "Aé😀e\u{301}")
+  _ <- println (sliceLabel 2 2 "Aé😀")
+  _ <- println (sliceLabel 0 4 "Aé😀")
+  _ <- println (sliceLabel 2 1 "Aé😀")
+  println (sliceLabel 0 0 "")
+}

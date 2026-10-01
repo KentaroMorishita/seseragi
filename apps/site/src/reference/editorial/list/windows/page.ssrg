@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { listEditorial } from "../../list-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  listEditorial "std/list::windows" "list-windows" "windows: `[`[10, 20], `[20, 30], `[30, 40]]\nwindows: `[]\nwindows: `[`[10], `[20]]\nwindows: `[]\ninvalid: NonPositiveSize 0\ninvalid: NonPositiveSize -2" (en.copy ()) (ja.copy ())

@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+
+import * as maps from "std/map"
+
+fn parity value: Int -> Int = value % 2
+
+let groups = arrays.groupBy parity [3, 2, 5, 4, 7]
+
+pub effect fn main = do {
+  _ <- println (show (maps.keys groups))
+  _ <- println (show (maps.get 1 groups))
+  _ <- println (show (maps.get 0 groups))
+  println (show (maps.size (arrays.groupBy parity (arrays.empty<Int> ()))))
+}

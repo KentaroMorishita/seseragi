@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "型の順序でListを並べ替える",
+  purpose: "順序が定まっている値のListを並べるときにsortを使います。Intでは数値の小さい順になります。",
+  reading: "numbersには30、2、10、もう一つの2が入っています。sortの結果は2、2、10、30です。その後のnumbersの表示は30、2、10、2のままで、入力が変わっていないことを確認できます。",
+  boundaries: "空のListなら空のListを返します。同じ値は元の前後関係を保ち、重複した要素も残ります。",
+  rules: "Ord<A>は要素の型に比較の方法があるという条件です。並べ替えは同順位の順序を保ち、n要素に対してO(n log n)回の比較で処理します。結果のListをすべて作ってから返します。",
+  mistake: "この整数の例に対応するTypeScriptはvalues.slice().sort((a, b) => a - b)です。sliceで入力を保ち、callbackで数値順を指定します。レコードの特定の項目で並べるならsortByを使います。",
+}

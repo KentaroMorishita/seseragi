@@ -1,0 +1,11 @@
+fn checkedDivide dividend: Int -> divisor: Int -> Either<String, Int> =
+  if divisor == 0 then Left "cannot divide by zero" else Right (dividend / divisor)
+
+fn describe result: Either<String, Int> -> String = match result {
+  Right value -> show value
+  Left reason -> reason
+}
+
+let normal = describe (checkedDivide 7 2)
+let rejected = describe (checkedDivide 7 0)
+pub effect fn main = println `${normal}\n${rejected}`

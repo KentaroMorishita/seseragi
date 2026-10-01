@@ -1,0 +1,13 @@
+import * as lists from "std/list"
+
+fn subtract left: Int -> right: Int -> Int = left - right
+let left = `[10, 20, 30]
+let right = `[1, 2]
+let none: List<Int> = `[]
+
+pub effect fn main = do {
+  _ <- println (show (lists.zipWith subtract right left))
+  _ <- println (show (lists.zipWith subtract left right))
+  _ <- println (show (lists.zipWith subtract right none))
+  println (show (lists.zipWith subtract none left))
+}

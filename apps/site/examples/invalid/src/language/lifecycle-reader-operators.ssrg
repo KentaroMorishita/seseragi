@@ -1,0 +1,2 @@
+import * as signals from "std/signal"
+fn snapshot source: signals.Signal<Int> -> Int = *source

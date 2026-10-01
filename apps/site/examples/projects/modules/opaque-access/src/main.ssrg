@@ -1,0 +1,4 @@
+import { create } from "./domain"
+
+let counter = create 42
+pub effect fn main = println (show counter.value)

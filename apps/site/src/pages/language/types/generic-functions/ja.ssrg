@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "異なる型で使える関数を書くには",
-  summary: "関数名の後に型パラメーターを宣言し、引数や戻り値の型に使います。具体的な型は、呼び出しごとに決まります。",
-  reading: "identity<A>はAを受け取り、同じAを返します。identity 42ではIntを推論し、identity<String> \"hello\"ではStringを明示しています。empty<A>には要素がないため、呼び出し側でList<Int>という注釈か<Int>を補います。",
-  result: "identity 42の結果はInt、identity<String> \"hello\"の結果はStringです。identity<String> 42では、指定したStringと引数のIntが矛盾するためエラーになります。型引数は呼び出しごとに、実行前に決まります。"
+  question: "数にも文字列にも使えて、戻り値の型を保つ関数を書くには",
+  summary: "受け取った値を二つ並べる処理は、整数用と文字列用に分けて書く必要がありません。型パラメーターで入力と結果の関係を表します。",
+  reading: "duplicate<A>のAは型パラメーターです。value: Aは選んだ型の値を受け取り、戻り値の(A, A)は同じ型の二つの値を位置でまとめたタプルです。本体の(value, value)がそのタプルを作ります。",
+  result: "duplicate 21ではAがIntと分かり、duplicate<String> \"ready\"ではStringを明示しています。let (left, right)などで二つの位置から値を取り出すため、出力は21, 21とready, readyです。",
 }
+
+pub fn readerCaption -> String = "同じ値を二つ並べる関数を、整数と文字列で使う"
+
+pub fn readerBridgeOne -> String =
+  "型パラメーターは、具体的な型を選ぶための名前です。何でも同時に入れられる型ではありません。duplicateの一回の呼び出しでは、引数とタプルの両方の位置が同じAになります。型を選んでも、値を文字列や整数へ変換することはありません。"
+
+pub fn readerBridgeTwo -> String =
+  "型引数を省略した場合は、引数や必要な戻り値の型から決めます。決める情報がなければ注釈などを補います。pub effect fn mainは出力の入口で、バッククォート内の${...}が各値を埋め込み、\\nが二行を分けます。"
+
+pub fn readerInvalidCaption -> String = "Stringを選んだ呼び出しへ整数を渡す"
+
+pub fn readerMistake -> String =
+  "duplicate<String> 21はSES-T0101です。Stringを選んだのにIntを渡しているためです。数を二つにしたいならduplicate 21かduplicate<Int> 21、文字列を二つにしたいならduplicate<String> \"21\"に直します。"
+
+pub fn readerDetailNote -> String =
+  "詳細のidentityは値をそのまま返し、emptyは空のListを作ります。Listは同じ型の要素を並べるコレクションで、空だと要素から型を選べないため、結果の型注釈か明示的な型引数を使います。宣言だけの例にmainはありません。"
+
+pub fn readerComparison -> String =
+  "TypeScriptのgeneric関数でも、入力のAを戻り値の[A, A]に保てます。TypeScriptのタプルは角括弧、Seseragiでは丸括弧を使います。この二つの完全な例は同じ入力から同じ二行を出力し、明示した型と違う引数もそれぞれ拒否します。"
+
+pub fn readerLegacyReading -> String =
+  "identity<A>はAを受け取り、同じAを返します。identity 42ではIntを推論し、identity<String> \"hello\"ではStringを明示しています。empty<A>には要素がないため、呼び出し側でList<Int>という注釈か<Int>を補います。"
+
+pub fn readerLegacyResult -> String =
+  "identity 42の結果はInt、identity<String> \"hello\"の結果はStringです。identity<String> 42では、指定したStringと引数のIntが矛盾するためエラーになります。型引数は呼び出しごとに、実行前に決まります。"
+
+pub fn readerRelated -> String = "では、宣言したAを使える範囲を確認できます。"

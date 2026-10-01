@@ -1,21 +1,39 @@
 import { ExplanationCopy } from "../../explanation"
-import { TypeCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> TypeCopy = TypeCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Built-in types",
   summary: (explanation ()).summary,
-  ruleTitle: "Seven primitive value meanings",
-  ruleBody: "Int is an exact safe integer from -9007199254740991 through 9007199254740991. Float is IEEE 754 binary64. Bool contains True and False; Char is one Unicode scalar; String is an immutable scalar sequence; Unit contains only (); Never contains no values.",
-  identityBody: "Int has no negative zero; Float does. A computation with no payload can complete normally with the Unit value (). Never has no values, so it is not the result type of a computation that returns ().",
-  checkingBody: "Literal syntax determines Int or Float directly rather than through overloaded numeric literals. There is no implicit Int-to-Float, Float-to-Int, or Int-to-BigInt conversion. Never alone may coerce into a demanded type because no value crosses that boundary.",
-  invalidTitle: "Similar host representations do not merge types",
-  invalidBody: "A backend number representation does not make Int and Float interchangeable. A multi-scalar character is not Char, Unit is not an empty record or Never, and out-of-safe-range Int spelling is rejected rather than rounded or wrapped.",
-  diagnosticsBody: "Literal diagnostics validate spelling, scalar count, range, Float overflow, and escapes before later type checking. Arithmetic leaving the Int safe range is a runtime defect; tools display the Seseragi type rather than a backend storage type.",
+  purpose: [
+    "TypeScript normally uses number for both integers and decimal values. Seseragi treats Int and Float as separate types. A function expecting an integer quantity can reject a decimal value or a string by checking its type.",
+    "3 and 3.0 can describe the same quantity, but the former is Int and the latter Float. They are not converted automatically to suit a required type. Use an explicit standard-library conversion when an integer must take part in floating-point calculations."
+  ],
+  exampleTitle: "Name and display four kinds of value",
+  reading: [
+    "An integer spelling such as 3 is Int. A decimal point or exponent makes 2.5, 3.0, and 1e3 Float values. Bool’s True and False start with capital letters. These ways of writing values directly in source are called literals.",
+    "The final pub effect fn main is the entry point. pub exposes it; effect fn returns an Effect describing the output, which the runner executes. println writes text and a newline. Backticks create a string with inserted values; ${name} and the other placeholders insert each value’s display."
+  ],
+  rules: [
+    "Int represents exact integers from -9007199254740991 through 9007199254740991, the same range as TypeScript’s safe integers. It has no negative zero. An out-of-range integer literal is rejected rather than rounded or wrapped. Arithmetic that leaves this range during execution stops with a defect, not a recoverable failure.",
+    "Float is IEEE 754 binary64 floating point. It distinguishes positive and negative zero and cannot represent every decimal exactly. There are no implicit conversions between Int, Float, and the large-integer type BigInt. Similar storage representations in a runtime do not merge the language’s types.",
+    "Char uses single quotes, as in 'a', and holds one Unicode scalar value. A scalar is a Unicode unit for representing text; one visible character need not contain just one scalar. String is an immutable sequence of scalars. Reading literals also checks character count, escapes, numeric range, and Float overflow.",
+    "Unit represents normal completion without a payload; its only value is (). It is different from the empty record {}. Never has no values and describes a computation that cannot return normally. A computation returning () does not have result type Never.",
+    "A Never expression can appear where another type is required because it never returns a value. This is not a facility for converting numbers or other values. Tools display Seseragi types such as Int and Float rather than runtime storage types."
+  ],
+  mistakes: ["The : Float below is an annotation requiring Float. But 3 is Int, so SES-T0101 reports expected Float and actual Int. To write a Float directly, use 3.0. To convert an existing Int, write import { fromInt } from \"std/float\" at the start of the file. This imports the conversion function from the standard library; fromInt 3 returns the Float 3.0."],
+  related: [
+    "Look up the detailed spellings for numeric and text values.",
+    "Find how to include newlines and quotation marks in text.",
+    "Find where to write types on names and functions.",
+    "Read the broader rules of type checking."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Which type represents this value?",
-  summary: "Int represents integers and Float represents floating-point numbers. Bool represents truth values, Char one Unicode scalar, and String a sequence of scalars. Unit represents completion without a payload; Never represents a computation that cannot return normally.",
-  reading: "In the example, million is Int and avogadro is Float because of their written forms. newline and lambda are Char; quoted and template are String. A template inserts the displayed value of an expression into text.",
-  result: "Unit has one value, (), meaning completion with no useful payload. Never has no values: a computation that cannot return a result may have this type. Int and Float are not interchangeable, even when both represent a whole number."
+  question: "Which types describe quantity, price, and availability?",
+  summary: "A product has a quantity, a price, availability, and a name. Here Int represents an integer, Float a decimal value, Bool a truth value, and String text.",
+  reading: "let names the value on its right. quantity’s 3 is Int; price’s 2.5 is Float. inStock’s True is Bool, whose other value is False. \"Notebook\", enclosed in double quotes, is String.",
+  result: "The written values determine these types even without annotations. The final line inserts the four values into text and prints Notebook: 3, 2.5, True. Names such as quantity and price do not determine their types."
 }
+
+pub fn title -> String = (copy ()).title

@@ -1,0 +1,10 @@
+fn requireSeats seats: Int -> Either<String, Int> =
+  if seats > 0 then Right seats else Left "seats must be positive"
+fn describe result: Either<String, Int> -> String = match result {
+  Right seats -> "Seats: " + show seats
+  Left error -> "Cannot book: " + error
+}
+pub effect fn main = do {
+  println (describe (requireSeats 2))
+  println (describe (requireSeats 0))
+}

@@ -1,0 +1,12 @@
+import * as lists from "std/list"
+fn isLarge value: Int -> Bool = value >= 30
+fn describe result: Maybe<Int> -> String = match result {
+  Just index -> "found at " + show index
+  Nothing -> "not found"
+}
+pub effect fn main = do {
+  println (describe (lists.findIndex isLarge `[30, 40]))
+  println (describe (lists.findIndex isLarge `[10, 30, 40]))
+  println (describe (lists.findIndex isLarge `[10, 20]))
+  println (describe (lists.findIndex isLarge (lists.empty<Int> ())))
+}

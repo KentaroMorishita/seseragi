@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "一つのCharがUnicodeのMarkという分類に属するか調べる",
+  purpose: "文字に付くアクセントを個別に調べたいとき、isMarkでUnicodeのMarkという分類かを確認できます。最初の例は結合アキュートアクセントU+0301です。U+の後ろは16進数の文字番号で、'\\u{0301}'はその番号をエスケープで書いたCharです。CharはUnicode scalarを一つ持ちます。scalarはUnicodeの文字番号のうちサロゲート用の番号を除いたものです。単一引用符はChar、二重引用符はStringを作り、見た目の一文字は複数のscalarからなる場合もあります。",
+  reading: "letでアクセントをaccentと名付け、unicode.isMark accentへ渡します。結果のBoolにはTrueとFalseがあり、アクセントはTrueです。次のU+093Eはデーヴァナーガリー文字の母音記号AA、U+20DDは前の文字を囲む結合丸印で、どちらもTrueになります。Aとéは文字なのでFalseです。éからアクセントだけを取り出す処理は、この呼び出しには含まれません。",
+  boundaries: "Markは三つの一般分類をまとめた条件です。U+0301は独立した幅を持たないNonspacingMark (Mn)、U+093Eは幅を取るSpacingMark (Mc)、U+20DDは囲みを作るEnclosingMark (Me)です。肌の色を変える🏽はModifierSymbol、文字をつなぐU+200DはFormatなのでFalseになります。どちらも見た目のまとまりに関わりますが、Markには入りません。Falseも通常の結果です。",
+  rules: "Char -> Boolは、一つのCharを受け取り判定結果を返すという意味です。固定されたUnicode 17.0.0データでMn、Mc、Meのどれかを調べます。一回の呼び出しは一つのscalarを表で調べ、String全体を走査しません。入力を分解したり正規化したりせず、アクセントを削除する操作でもありません。記号を取り除くと綴りや意味が変わる場合があるため、Markだけを削除すればよいとは限りません。",
+  mistake: "unicode.isMark 'e\\u{0301}'は、Charの中にeとアクセントの二つのscalarがあるためSES-P0202になります。アクセント自体を調べるなら'\\u{0301}'へ直してください。二つのscalarからなる元の表記を保ちたいならStringの\"e\\u{0301}\"を使います。見た目のまとまりを分けたい場合はgraphemeの操作を選びます。isMarkがFalseの成分でも、そのまとまりの一部になることがあります。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptではUnicodeプロパティの正規表現/\\p{Mark}/uを使えます。\\p{Mark}が三つのMark分類を指定し、uがUnicode対応の解釈を選び、testがbooleanを返します。Seseragiと同じ七つの既知の一scalar入力で、trueとfalseはそれぞれTrueとFalseに対応します。TypeScriptの\\u{0301}も、16進数の文字番号で同じアクセントを書きます。"
+
+pub fn comparisonBoundary -> String =
+  "JavaScriptのstringはCharのように一つのscalarを保証しません。この正規表現を\"e\\u{0301}\"のような複数のscalarへ使うと、Markを含むかがtrueになりますが、その文字列全体が一つのMarkだという意味ではありません。任意の入力から見た目のまとまりを見つける処理は別に必要です。プロパティのデータは実行エンジンによるため、ここで選んだ入力の一致を全Unicode値の一致とは扱いません。"

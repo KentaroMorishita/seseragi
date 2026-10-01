@@ -1,0 +1,6 @@
+import * as signals from "std/signal"
+effect fn observe value: Int = println value
+pub effect fn main = do {
+  source <- signals.make 1
+  signals.subscribe observe source
+}

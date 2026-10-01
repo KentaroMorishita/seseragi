@@ -33,8 +33,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I change a field without changing the original value?",
-  summary: "A record groups named fields without declaring a type name. Read fields with a dot and construct an updated copy with a spread.",
-  reading: "original holds name \"Aki\" and score 10. ...original copies its fields into a new record, and score: 42 replaces the new record's score. nameOf requires only a String field named name, so updated may also contain score.",
-  result: "The outputs are 10, 42, and Aki. original.score stays 10; updated.score is 42. To use changed data, construct and use a new record rather than assigning to the old one."
+  question: "How do I group a name and score, like a TypeScript object?",
+  summary: "A record groups fields such as name and score. Read a field or create an updated copy while retaining the original value.",
+  reading: "original has name \"Aki\" and score 10. A dot reads a field. { ...original, score: 42 } copies the original fields and sets the new score to 42.",
+  result: "The output is 10, 42 and Aki. original stays unchanged; only updated has the new score. nameOf only uses a String field named name, so updated can also have score.",
 }
+
+pub fn readerCaption -> String = "Pass the fields a function needs"
+
+pub fn readerBridgeOne -> String =
+  "This resembles creating an object with TypeScript const, but Seseragi record fields are immutable too. Instead of assigning updated.score, construct a new value with the fields you need."
+
+pub fn readerBridgeTwo -> String =
+  "The parameter type { name: String } requires a name field; it needs no separately declared type name. main uses println for output. Inside the backticks, ${...} inserts a value and \\n starts a new line."
+
+pub fn readerInvalidCaption -> String = "Duplicate fields"
+
+pub fn readerMistake -> String =
+  "Writing the same field twice explicitly differs from replacing a copied field after a spread. In the later rejected example, remove one of the duplicate explicit fields."

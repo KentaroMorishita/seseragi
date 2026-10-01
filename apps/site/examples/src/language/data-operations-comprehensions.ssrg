@@ -1,0 +1,10 @@
+fn evenSquares limit: Int -> Array<Int> = [
+  value * value | value <- 1 ..= limit,
+  value % 2 == 0
+]
+
+let inclusive = evenSquares 8
+let exclusive = [value * value | value <- 1 .. 8, value % 2 == 0]
+let pairs = [(row, column) | row <- 1 ..= 2, column <- 1 ..= 2]
+
+pub effect fn main = println `${show inclusive}\n${show exclusive}\n${show pairs}`

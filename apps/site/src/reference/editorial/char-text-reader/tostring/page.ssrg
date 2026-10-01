@@ -1,0 +1,8 @@
+import { localized } from "../../../../model/locale"
+import { Editorial } from "../../model"
+import { charTextEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  charTextEditorial "std/char::toString" "char-text-tostring" "Status: 👍\nscalars: 1\nUTF-8 bytes: 4" "std/char" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "Status: 👍\nscalars: 1\nUTF-8 bytes: 4"

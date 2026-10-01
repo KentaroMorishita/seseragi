@@ -1,0 +1,27 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "NonEmptyListは、少なくとも一件の値がある一覧の型です。先頭を読む関数は、値がない場合を返す必要がありません。",
+  taskTitle: "先頭の得点が必ずある引数を表す",
+  purpose: "一覧の先頭を必ず使う処理には、NonEmptyListという型を使えます。NonEmptyList<Int>は、一件以上の整数を順に持つ一覧です。通常のList<Int>は空でもよいため、そのままでは先頭があると約束できません。",
+  setup: "import * as nonempty from \"std/non-empty-list\"は、この型と操作をnonemptyという名前で使う宣言です。let scores: nonempty.NonEmptyList<Int> = ...は値にscoresという名前を付け、コロンの右の型に合うかを確かめます。Intは整数、<Int>は要素の型の指定です。`[20, 30]はListの値で、[の前のバッククォートが必要です。[20, 30]だけならArrayという別の種類の一覧になります。",
+  codeTitle: "先頭がある一覧と、空かもしれない入力を読む",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "nonempty.cons 10 `[20, 30]は先頭の10と残りのListを渡して、10、20、30のNonEmptyListを作ります。呼び出しの引数は空白で区切ります。head scoresは先頭のIntを直接返すため、一行目は10です。先頭があることを型が保証しているので、headの結果には「ない場合」の分岐が要りません。",
+    "tail scoresは先頭を除く通常のListを返すため、二行目は`[20, 30]です。singleton 0は得点0だけのNonEmptyListを作ります。そのtailは空のList `[]になり、三行目に表示されます。NonEmptyListの先頭があることと、その後にも要素があることは別です。括弧は内側の呼び出しの結果を一つの引数にまとめています。",
+    "fn firstOrNone values: List<Int> -> String = ...は、通常のListを受けて文字列を返す関数です。fnの後が関数名、valuesが引数名、コロンの後が引数の型です。-> Stringは戻り値の型で、=の右の式がその値になります。呼び出し時に渡した一覧がvaluesです。",
+    "fromList valuesは入力を確かめ、先頭があればJust scores、空ならNothingを返します。JustはできたNonEmptyListを包む名前、Nothingは得られなかったことを表す名前です。この二つの形をまとめた型がMaybeです。matchは形に合う枝を選びます。Just scores -> show (nonempty.head scores)では一覧をscoresと名付け、先頭を文字列にします。Nothing -> \"no scores\"では空の場合の文言を返します。両方の枝が文字列を返します。",
+    "firstOrNone `[0, 20]ではfromListが成功し、先頭0を表示します。0も有効な得点なので、値がないこととは区別できます。続くfirstOrNone `[]ではNothingの枝に進み、no scoresを表示します。"
+  ],
+  comparisonTitle: "TypeScriptでも必須の先頭を型に書く",
+  comparisonBefore: "TypeScriptのreadonly [number, ...number[]]は「先頭に必須のnumberを一つ、その後にnumberを零個以上」という型です。[...]は位置ごとの型を指定し、...number[]は残りの要素を表します。この型をNonEmptyScoresと名付けます。一方、readonly number[]は要素数を決めないため空も許します。readonlyは、この型を通じた要素の書き換えを禁止します。",
+  comparisonAfter: "TypeScriptの変換関数はconst [first, ...rest] = valuesで先頭と残りを取り出します。first === undefinedならundefinedを返し、先頭がある場合だけ[first, ...rest]を作ります。...restは残りをその位置に並べる記法です。fromArrayの戻り値のNonEmptyScores | undefinedは、|の左右のどちらかを返すという意味です。scores[0]は保証された先頭を読み、slice(1)は先頭を除く新しい配列を作ります。先頭がない場合はundefinedを返し、呼び出し側がno scoresを選びます。型を強制する記述なしに、同じ10、残りの20と30、空の残り、先頭0、空入力を扱えます。配列をJSONで表示するのでListのバッククォートと空白は出ません。このTypeScriptの型は今回の「先頭がある」条件を表せますが、SeseragiのListの内部表現を再現したものではありません。readonly自体は実行時にオブジェクトを凍結せず、外部から来たデータの検証もしません。",
+  detailTitle: "先頭の保証を作る方法と、保証を失う操作",
+  details: [
+    "consとsingletonは必須の先頭を受け取ってNonEmptyListを作ります。fromListは通常のListを確かめ、成功した場合だけNonEmptyListを返します。tailの戻り値はListなので空になる可能性があります。reduce1は保証された先頭を集計の初期値にできます。どの操作がこの保証を保つかは、その戻り値の型で確認できます。",
+    "let emptyScores: List<Int> = `[]の後でlet scores: nonempty.NonEmptyList<Int> = emptyScoresと書くとSES-T0101になります。通常のListを型注釈だけでNonEmptyListにはできません。Listの値がたまたま非空でも、List<Int>という型自体は先頭を約束しません。すでに先頭が分かるならsingletonやconsを使い、一覧しかないならfromListの両方の結果を扱います。",
+    "fn first values: List<Int> -> Int = nonempty.head valuesもSES-T0101になります。引数のListには空が許されるのに、headはNonEmptyListを必要とするからです。先頭がある値だけを受けたい関数なら引数をNonEmptyList<Int>にし、呼び出す前にその値を作ります。空入力も受けたい関数なら、この例のfirstOrNoneのようにfromListを確かめます。",
+    "末尾の正確な宣言NonEmptyList<_>の_は、要素の型を選ぶ場所です。opaque-typeは内部の持ち方を公開しない型という意味です。要素数は一件以上であり、上限の数をこの型が示すわけではありません。IntとTypeScriptのnumberも型全体として同じではなく、この比較は表示した小さい整数に限っています。"
+  ]
+}

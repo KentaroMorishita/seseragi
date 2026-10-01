@@ -1,12 +1,15 @@
 import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
+import { PrincipleReaderCopy } from "../reader-principle"
+
+pub fn title -> String = "説明可能な振る舞い"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "説明可能な振る舞い",
   summary: (explanation ()).summary,
-  meaningTitle: "型を省略しても、適当に決めるわけではない",
-  meaningBody: "型推論は、引数、戻り値、型の注釈から型を決める仕組みです。すべての型を書き直す必要はありませんが、型を一つに決められるだけの情報は必要です。実行してから中身を調べたり、候補の中から適当に選んだりはしません。",
-  exampleTitle: "空のリストに、要素の型を指定する",
+  meaningTitle: "型の指定と、実際の値をそろえる",
+  meaningBody: "SES-T0101は、必要な型と実際の型が違うことを知らせます。expected: Intが必要な型、actual: Stringが\"3\"の型です。数量が3なら、引用符を外して整数の3に直します。表示用の文字列が必要な設計なら、型の指定をStringへ変える方法もあります。",
+  exampleTitle: "整数として直した例",
   reasonTitle: "なぜ既定の型を選ばないのか",
   reason: [
     "空の整数リストと空の文字列リストは、表示すると同じでも、後で使える操作が違います。実行時の見た目で型を決めると、コードを読んだ時点では意味を判断できなくなります。",
@@ -14,14 +17,25 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   ],
   boundaryTitle: "エラーの説明には、直し方も必要",
   boundary: [
-    "上の例なら、List<Int>と注釈するかempty<Int> ()と呼び出します。分岐の結果型が違うなら同じ型に揃え、名前が曖昧なら修飾します。エラーを無視するのではなく、どの意味で書いたのかをコードで明確にします。",
+    "空のリストなら、List<Int>と注釈するかempty<Int> ()と呼び出します。List<Int>をList<String>が必要な場所へそのまま渡すことはできません。分岐の結果型が違うなら同じ型に揃えます。名前が曖昧なら、属するモジュールやtraitの名前を付けて区別します。",
     "型が合っていても、計算式そのものを間違えることはあります。この原則は、コンパイラがアプリケーションの目的を理解するという意味ではありません。言語上の選択が、コードの情報から決まり、その理由を説明できるという意味です。"
   ],
 }
 
+pub fn reader -> PrincipleReaderCopy = PrincipleReaderCopy {
+  question: "「Intを期待したがStringだった」というエラーを、どう直すか",
+  before: ["最後のpub effect fn mainは実行用の入口です。pubは入口を公開し、effect fnは実行する処理を表すEffectを返します。実行機構がその処理を開始し、printlnが値と改行を出力します。"],
+  reading: ["quantity: Intと3の型が一致するので、修正後は実行でき、3を出力します。型注釈を外してlet quantity = 3と書いても、コンパイラはこの値からIntだと判断できます。このように型を決める仕組みを型推論と呼びます。"],
+  mistakes: ["エラーを消すためだけに型注釈を外すと、let quantity = \"3\"は文字列のままです。後で整数を必要とする計算へ渡せば、そこで再び型が合わなくなります。数量として計算するなら値を整数に直し、ユーザーが入力した文字列なら、別途数値への変換と変換失敗の処理が必要です。"],
+  details: [
+    "型を一つに決める情報が足りない場合もあります。次のempty<A>は、要素の型をAという仮の名前で受け取る関数です。これをジェネリック関数と呼びます。List<A>はA型の要素を並べるリストで、`[]は空のリストです。Arrayの[]とは別の型です。",
+    "fn empty<A> -> List<A>は、結果がList<A>になる関数の宣言です。空のリストにはAを決める要素がないため、values: List<Int>で整数のリストだと伝えます。引数を使わない関数の呼び出しにはempty ()と書きます。()はUnitという「中身のない値」です。empty<Int> ()のように、呼び出し側でAをIntと指定する方法もあります。表示結果は空のリストを表す`[]です。"
+  ],
+}
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "型を推論できないとき、何を補えばよいか",
-  summary: "コンパイラは、値や型注釈から式の型を決めます。空のコレクションなど、型を決める情報が足りない場合は、型注釈や明示的な型引数で補います。",
-  reading: "empty<A>は空のList<A>を作り、中の要素からAを判断できません。valuesのList<Int>という注釈が整数の要素型を伝えます。empty<Int> ()と呼ぶ方法でも指定できます。",
-  result: "出力は空のリストを表す`[]です。valuesの注釈によって、要素型はIntに決まります。List<String>を必要とする場所には、このList<Int>をそのまま渡せません。"
+  question: "「Intを期待したがStringだった」というエラーを、どう直すか",
+  summary: "型の指定と値の違いを、小さなエラーから確かめます。コンパイラが判断できる情報をコードに書き、暗黙の変換や推測に頼らず直します。",
+  reading: "数量を整数として扱いたいのに、\"3\"と引用符を付けてしまった例です。3は整数ですが、\"3\"は文字列です。下のコードは実行前の型検査で止まります。",
+  result: "letは値に再代入できない名前を付けます。quantity: Intの: Intは「quantityには整数が必要」という型の指定です。文字列を整数に変換する命令ではありません。show quantityは値を表示用の文字列にする呼び出しで、括弧がprintlnに渡す結果をまとめます。"
 }

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Start a Map with one key/value pair",
+  purpose: "Use singleton when one entry is already known. Pass the key first and its value second.",
+  reading: "maps.singleton \"tea\" 2 associates tea with 2. entries prints one pair and size prints 1. A second Map stores an empty string under empty.",
+  boundaries: "An empty string is a stored value, not an absent entry. singleton always makes a Map with one key. Use empty () for no entries.",
+  rules: "Key equality and hashing identify a key. The Eq<K> and Hash<K> constraints require compatible implementations; standard String keys already have them.",
+  mistake: "TypeScript new Map([[\"tea\", 2]]) expresses the same entry. A Map is a key/value lookup table, not a positional pair or an object with arbitrary named properties.",
+}

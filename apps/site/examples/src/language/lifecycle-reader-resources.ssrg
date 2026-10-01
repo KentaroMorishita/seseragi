@@ -1,0 +1,29 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+fn acquire name: String -> trace: refs.Ref<String> -> Task<String> =
+  effects.acquireRelease (effects.succeed name) (\released: String -> refs.update (\text: String -> text + released) trace)
+
+fn failWith reason: String -> Effect<{}, String, String> =
+  if reason == "" then effects.succeed "ok" else effects.fail reason
+
+pub effect fn main = do {
+  trace <- refs.make ""
+  answer <- effects.scoped $ do {
+    _ <- acquire "A" trace
+    _ <- acquire "B" trace
+    effects.succeed 42
+  }
+  afterSuccess <- refs.get trace
+  let failure = do {
+    _ <- acquire "C" trace
+    failWith "expected"
+  }
+  failed <- effects.scoped failure
+    |> effects.recover (\reason: String -> effects.succeed reason)
+  afterFailure <- refs.get trace
+  _ <- println answer
+  _ <- println afterSuccess
+  _ <- println failed
+  println afterFailure
+}

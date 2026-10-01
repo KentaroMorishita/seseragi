@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { correctionEditorial } from "../../../correction-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  correctionEditorial "std/web/storage::get" "effect-function" "api-correction-storage-get" "api-correction-storage-get-ts" "host: \"Aki\" -> found: [Aki]\nhost: \"\" -> found: []\nhost: null -> missing\nhost: SecurityError(\"denied by mock\") -> denied by mock" (en.copy ()) (ja.copy ())

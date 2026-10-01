@@ -1,0 +1,163 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn blocks specifier: String -> Array<Block> =
+  if specifier != "std/array" then
+    []
+  else
+    [
+      Heading
+        ("working-with-arrays", localized "Choose an Array operation" "Arrayの操作を選ぶ"),
+      Paragraph ([Words (localized (en.purpose ()) (ja.purpose ()))]),
+      Paragraph ([Words (localized (en.choose ()) (ja.choose ()))]),
+      BulletList (
+        [
+          [
+            InternalLink
+        (localized "takeWhile" "takeWhile", "/docs/library/array/function/takewhile/"),
+            Words (localized ": keep a prefix" "：先頭の一部を残す")
+          ],
+          [
+            InternalLink
+        (localized "dropWhile" "dropWhile", "/docs/library/array/function/dropwhile/"),
+            Words (localized ": skip a prefix" "：先頭の一部を飛ばす")
+          ],
+          [
+            InternalLink
+        (localized "findIndex" "findIndex", "/docs/library/array/function/findindex/"),
+            Words (localized ": locate a match" "：条件に合う位置を探す")
+          ],
+          [
+            InternalLink (localized "last" "last", "/docs/library/array/function/last/"),
+            Words (localized ": read the last item" "：末尾の値を読む")
+          ],
+          [
+            InternalLink (localized "init" "init", "/docs/library/array/function/init/"),
+            Words (localized ": remove the last item" "：末尾を除いた配列を得る")
+          ],
+          [
+            InternalLink (localized "sort" "sort", "/docs/library/array/function/sort/"),
+            Words (localized ": use the element order" "：値の順序で並べる")
+          ],
+          [
+            InternalLink
+        (localized "sortBy" "sortBy", "/docs/library/array/function/sortby/"),
+            Words (localized ": choose a sort key" "：基準を選んで並べる")
+          ],
+          [
+            InternalLink
+        (localized "groupBy" "groupBy", "/docs/library/array/function/groupby/"),
+            Words (localized ": collect equal keys" "：同じキーでまとめる")
+          ],
+          [
+            InternalLink (
+              localized "reduceRight" "reduceRight",
+              "/docs/library/array/function/reduceright/"
+            ),
+            Words (localized ": combine from the end" "：右からまとめる")
+          ],
+          [
+            InternalLink
+        (localized "chunksOf" "chunksOf", "/docs/library/array/function/chunksof/"),
+            Words (localized ": make separate batches" "：重ならないまとまりに分ける")
+          ],
+          [
+            InternalLink
+        (localized "windows" "windows", "/docs/library/array/function/windows/"),
+            Words (localized ": compare neighbors" "：隣り合う要素を比べる")
+          ]
+        ]
+      ),
+      Heading (
+        "construct-and-pair",
+        localized "Create arrays and combine positions" "配列を作り、同じ位置の値を組み合わせる"
+      ),
+      Paragraph ([Words (localized (en.construction ()) (ja.construction ()))]),
+      BulletList (
+        [
+          [
+            InternalLink
+        (localized "empty" "empty", "/docs/library/array/function/empty/"),
+            Words (localized ": Start with no elements" "：要素が0個の一覧を作る")
+          ],
+          [
+            InternalLink
+        (localized "singleton" "singleton", "/docs/library/array/function/singleton/"),
+            Words (localized ": Wrap one value" "：一つの値を一覧にする")
+          ],
+          [
+            InternalLink (
+              localized "fromIterable" "fromIterable",
+              "/docs/library/array/function/fromiterable/"
+            ),
+            Words (localized ": Convert a finite input" "：有限の入力から変換する")
+          ],
+          [
+            InternalLink (localized "zip" "zip", "/docs/library/array/function/zip/"),
+            Words (localized ": Keep corresponding values as pairs" "：同じ位置の値を組にする")
+          ],
+          [
+            InternalLink
+        (localized "zipWith" "zipWith", "/docs/library/array/function/zipwith/"),
+            Words (localized ": Calculate from corresponding values" "：同じ位置の値から計算する")
+          ],
+          [
+            InternalLink
+        (localized "unzip" "unzip", "/docs/library/array/function/unzip/"),
+            Words (localized ": Separate pairs into two collections" "：値の組を二つの一覧に分ける")
+          ]
+        ]
+      ),
+      Paragraph (
+        [InternalLink (
+          localized "Compare List and its corresponding operations" "Listの用途と同じ操作を比べる",
+          "/docs/library/list/"
+        )]
+      ),
+      Heading ("array-example", localized "Split five values into batches" "五つの値を区切る"),
+      Paragraph ([Words (localized (en.example ()) (ja.example ()))]),
+      CodeExample
+        ("array-chunksof", localized "Batches and invalid sizes" "まとまりとサイズの誤り"),
+      Paragraph (
+        [Words (
+          localized
+        "The import names std/array as arrays. The entry main executes the prints in do order. _ <- continues after a print; show creates display text and println writes it."
+        "importでstd/arrayにarraysという名前を付けます。実行入口mainではdoの順に出力します。_ <-は出力してから次へ進み、showは表示用の文字列を作り、printlnがその文字列を出力します。"
+        )]
+      ),
+      Terminal (
+        localized "Output" "実行結果",
+        "Right [[10, 20], [30, 40], [50]]\nRight []\nLeft NonPositiveSize 0\nLeft NonPositiveSize -2"
+      ),
+      Paragraph ([Words (localized (en.results ()) (ja.results ()))]),
+      Paragraph ([Words (localized (en.rules ()) (ja.rules ()))]),
+      Heading (
+        "consume-maybe",
+        localized "Use a present value or handle absence" "値がある場合とない場合を扱う"
+      ),
+      Paragraph ([Words (localized (en.maybePurpose ()) (ja.maybePurpose ()))]),
+      CodeExample
+        ("array-consume-maybe", localized "Handle both Maybe cases" "Maybeの両方の場合を処理する"),
+      Terminal (localized "Output" "実行結果", "last: 30\nempty"),
+      Paragraph ([Words (localized (en.maybeReading ()) (ja.maybeReading ()))]),
+      Heading
+        ("consume-either", localized "Use success or a failure reason" "成功した値と失敗理由を扱う"),
+      Paragraph ([Words (localized (en.eitherPurpose ()) (ja.eitherPurpose ()))]),
+      CodeExample
+        ("array-consume-either", localized "Handle both Either cases" "Eitherの両方の場合を処理する"),
+      Terminal
+        (localized "Output" "実行結果", "batches: [[10, 20], [30]]\ninvalid: NonPositiveSize 0"),
+      Paragraph ([Words (localized (en.eitherReading ()) (ja.eitherReading ()))]),
+      Heading ("array-api-index", localized "Browse the complete module" "モジュール全体を調べる")
+    ]

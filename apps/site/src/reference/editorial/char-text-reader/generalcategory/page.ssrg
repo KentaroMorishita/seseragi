@@ -1,0 +1,8 @@
+import { localized } from "../../../../model/locale"
+import { Editorial } from "../../model"
+import { charTextEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  charTextEditorial "std/text/unicode::generalCategory" "char-text-generalcategory" "A category: UppercaseLetter\nA uppercase: True\n٣ category: DecimalNumber\nU+0301 category: NonspacingMark\nU+FEFF category: Format\nU+10FFFF category: Unassigned" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "A uppercase: true\n٣ uppercase: false\nU+0301 uppercase: false\nU+FEFF uppercase: false\nU+10FFFF uppercase: false"

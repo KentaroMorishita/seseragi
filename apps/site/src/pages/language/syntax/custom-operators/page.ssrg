@@ -1,67 +1,39 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.custom-operators" "/docs/language/syntax/custom-operators/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-custom-operator",
-      localized "A declared and used custom operator" "自分の演算子を宣言して使う"
-    ),
-    BulletList [
-      [
-        InlineCode "infixl",
-        Words (
-          localized " groups equal-precedence uses from the left."
-            " は同じ優先順位の演算を、左から順にまとめます。"
-        )
-      ],
-      [
-        InlineCode "infixr",
-        Words (localized " groups them from the right." " は同じ優先順位の演算を、右から順にまとめます。")
-      ],
-      [
-        InlineCode "infix",
-        Words (
-          localized " rejects an unparenthesized repeated chain."
-            " は同じ優先順位の演算子を、括弧なしで繰り返すことを許しません。"
-        )
-      ],
-      [
-        InlineCode "(<+>) left",
-        Words (
-          localized " partially applies the curried operator value."
-            " は演算子を関数として扱い、一つ目の引数だけを渡します。"
-        )
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.custom-operators"
+    "/docs/language/syntax/custom-operators/" (en.copy ()) (ja.copy ())
+    "syntax-reader-custom-operators" "Seseragi docs" (
+      arrays.concat [
+        [CodeExample (
+          "syntax-reader-custom-operators-invalid",
+          localized "Rejected example" "受け付けられない例"
+        )],
+        details.rejected ()
       ]
+    ) [
+      (
+        localized "Operator precedence" "演算子の優先順位",
+        "/docs/language/syntax/operator-precedence/"
+      ),
+      (
+        localized "Reserved words and naming" "予約語と名前の規則",
+        "/docs/language/syntax/reserved-words-and-names/"
+      ),
+      (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      )
     ]
-  ] [CodeExample (
-    "syntax-invalid-custom-operator",
-    localized "Rejected symbol and arity forms" "使えない演算子の記号や引数の個数"
-  )] [
-    [InternalLink (
-      localized "Operator precedence" "演算子の優先順位",
-      "/docs/language/syntax/operator-precedence/"
-    )],
-    [InternalLink (
-      localized "Reserved words and naming" "予約語と名前の規則",
-      "/docs/language/syntax/reserved-words-and-names/"
-    )],
-    [InternalLink (
-      localized "Function application" "関数適用",
-      "/docs/language/syntax/function-application/"
-    )]
-  ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

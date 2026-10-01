@@ -1,0 +1,24 @@
+pub fn purpose -> String =
+  "List is an ordered collection whose elements link to the remaining list. It suits work that reads the first element and continues through the rest. Operations return values that you can combine without changing the input elements."
+pub fn choose -> String =
+  "[10, 20] writes an Array; `[10, 20] writes a List. The leading backtick changes the type. Both preserve order. Consider Array for repeated access by position and List for work with the first element and the rest. List head and tail take constant work; get and length require traversal depending on the number of elements."
+pub fn example -> String =
+  "Pair names and scores at corresponding positions in two Lists. (name, score) is a tuple, which distinguishes two values by position. Pass the right-side scores first and the left-side names last to zip."
+pub fn reading -> String =
+  "The import names std/list as lists. let names a value; List<String> and List<Int> annotate Lists of strings and integers. Even an empty `[] needs an element type, so the examples provide annotations. pub effect fn main is the entry function. do runs output in order; _ <- finishes one print before continuing, show produces display text, and println writes it."
+pub fn results -> String =
+  "The first call returns (Aki, 80), then (Mio, 95). Swapping the arguments gives (80, Aki), then (95, Mio). Three names with two scores make only two pairs, leaving Ren out. The last two examples have an empty side and return an empty List."
+pub fn limits -> String =
+  "Results contain all required elements before the operation returns. Inputs are unchanged. fromIterable also reads to the end, so an endless input never finishes. Converting between List and Array preserves order and requires reading all elements."
+
+pub fn maybePurpose -> String =
+  "A Maybe holds Just value when a value exists, or Nothing when it does not. This complete example reads the final List element and handles empty input. init similarly puts a remaining List inside Just; groupBy returns a Map whose get lookup uses the same two cases."
+
+pub fn maybeReading -> String =
+  "match examines the result of lists.last values. Just value chooses the first branch and names its integer value; Nothing chooses the empty input text. Both branches return String. This is ordinary branching over a value, not exception handling. The one-element input has a last value; the empty input does not."
+
+pub fn eitherPurpose -> String =
+  "An Either holds a successful result in Right or a failure reason in Left. chunksOf and windows use it to reject nonpositive sizes. A successful result is a List of Lists, including an empty outer List when there are no groups."
+
+pub fn eitherReading -> String =
+  "describe receives the size and List, then match selects Right groups or Left error. The selected branch returns text. show converts the groups or error into that text; returning Left does not throw. The rejected -2 size is still an error on empty input. import names the module; main and do execute the prints in order."

@@ -114,9 +114,25 @@ test("every conceptual article owns a bilingual example explanation", () => {
           expect(copy, directory).toMatch(new RegExp(`  ${field}: "[^"]`))
       }
       const id = guide.match(
-        /makeExplanation\s+\(ArticleExample "([^"]+)"\)/u
+        /makeExplanation\s+\(\s*ArticleExample\s+"([^"]+)"\s*\)/u
       )?.[1]
-      if (id) expect(source, directory).toContain(`"${id}"`)
+      const group = guide.match(
+        /makeExplanation\s+\(\s*ArticleExamples\s+\[([^\]]*)\]\s*\)/u
+      )?.[1]
+      if (group !== undefined) {
+        const ids = [...group.matchAll(/"([^"]+)"/gu)].map((match) => match[1])
+        expect(group.replace(/"[^"]+"|[\s,]/gu, ""), directory).toBe("")
+        expect(ids.length, directory).toBeGreaterThan(0)
+        expect(new Set(ids).size, directory).toBe(ids.length)
+        const panels = [
+          ...source.matchAll(/CodeExample\s*\(\s*"([^"]+)"/gu),
+        ].map((match) => match[1])
+        for (const selected of ids)
+          expect(
+            panels.filter((panel) => panel === selected),
+            directory
+          ).toHaveLength(1)
+      } else if (id) expect(source, directory).toContain(`"${id}"`)
       else expect(guide, directory).toContain("makeExplanation WithoutExample")
       count++
     }

@@ -1,21 +1,40 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Deriving instances",
   summary: (explanation ()).summary,
-  ruleTitle: "Generate comparison or display from the fields",
-  ruleBody: "Writing deriving Eq, Show and similar clauses on an ADT, struct, or newtype asks the compiler to generate instances for equality or display. Supported traits are Eq, Ord, Show, Debug, Hash, JsonEncode, and JsonDecode. Generated instances follow the rules for declaration location, visibility, and overlap.",
-  typingBody: "Comparing or displaying the outer type requires the corresponding trait for every field or constructor payload. Generic types add these conditions to their type parameters. Hash also requires Eq. JsonEncode and JsonDecode use the JSON format defined by the specification.",
-  evaluationBody: "Eq and Hash traverse declared fields or payloads in source order. Ord compares constructor order before payloads. Newtype equality and ordering delegate to the representation, while Show and Debug retain the wrapper name.",
-  invalidTitle: "Deriving is not a macro system",
-  invalidBody: "deriving cannot generate a user-defined trait. Providing both a hand-written and a generated instance for the same type is an overlap error. If a field lacks a required implementation, provide it for that type or write the outer instance yourself.",
-  diagnosticsBody: "Diagnostics identify an unsupported trait, missing nested evidence, Eq required by Hash, or duplicate generated evidence. They point back to the nominal declaration and affected field or payload.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "Eq is the equality trait; Show converts a value to text. first == second uses Eq, and show first uses Show. deriving supplies both instances.",
+    "This is not TypeScript object === comparison. Here the two Ticket field values are compared. TypeScript first.number === second.number can perform the same number comparison in this example.",
+    "Int, the field’s type, has Eq and Show. If a field’s type lacks a required operation, putting deriving on the outer Ticket alone cannot supply it."
+  ], rules: [
+    "Writing deriving Eq, Show and similar clauses on a type with named alternatives (an ADT), struct, or newtype asks the compiler to generate instances for equality or display. Supported traits are Eq, Ord, Show, Debug, Hash, JsonEncode, and JsonDecode. Generated instances follow the rules for declaration location, visibility, and overlap.",
+    "Comparing or displaying the outer type requires the corresponding trait for every field or constructor payload. Generic types add these conditions to their type parameters. Hash also requires Eq. JsonEncode and JsonDecode use the JSON format defined by the specification.",
+    "Eq and Hash traverse declared fields or payloads in source order. Ord compares constructor order before payloads. Newtype equality and ordering delegate to the representation, while Show and Debug retain the wrapper name.",
+    "deriving cannot generate a user-defined trait. Providing both a hand-written and a generated instance for the same type is an overlap error. If a field lacks a required implementation, provide it for that type or write the outer instance yourself.",
+    "Diagnostics identify unsupported traits, missing implementations for fields, the Eq requirement of Hash, or duplicate instances. Check the named type declaration and the affected field or alternative’s contents.",
+    "Place deriving after type parameters and before the declaration body. An opaque type can derive instances inside its defining module; using those instances does not expose its private representation.",
+    "Show includes constructor names and public field names in a source-like representation. Debug is a developer-oriented detailed view without string compatibility guarantees. Both preserve declaration order rather than sorting names."
+  ], mistakes: [
+    "Label in the rejected file is a user-defined trait and is not a deriving target. The current diagnostic is SES-N0001, saying deriving trait Label is not defined; this position does not perform general trait lookup.",
+    "Replace deriving Label with deriving Eq and this file prints ready. If you need the Label operation, remove deriving and write instance Label<Ticket> yourself."
+  ], related: [
+    "Check where to write the body for a particular type.",
+    "See why operation results need tests beyond type checking.",
+    "Check overlapping implementations and permitted declaration sites."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Supported traits, requirements and generated ordering"
+pub fn mistakesTitle -> String = "Write instances for your own traits"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can I generate equality and display for my data type?",
-  summary: "deriving asks the compiler to implement supported standard traits from the declared constructors and fields.",
-  reading: "Priority derives Eq, Ord, and Show: equality, ordering, and display. Task derives equality and display from its title and priority fields. task == task uses the generated equality operation, not object identity.",
-  result: "sameTask is True. Every stored field must support the trait needed to derive the outer type's operation. Deriving is limited to documented standard traits; it is not arbitrary code generation for any user-defined trait."
+  question: "How can the compiler provide equality and display for your data?",
+  summary: "deriving Eq, Show generates instances for equality and display using the type’s fields.",
+  reading: "Suppose you want to compare ticket numbers and inspect a ticket as text. Writing deriving Eq, Show after the struct name provides Eq comparison and Show display without hand-written implementations.",
+  result: "first and second are separately created values, but both numbers are 42, so the comparison is True. Display produces Ticket { number: 42 }. Deriving saves the implementation work when field-based comparison and display are appropriate."
 }

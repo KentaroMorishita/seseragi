@@ -29,6 +29,7 @@ import {
 } from "../model/page"
 import { page as homePage } from "../pages/home/page"
 import { page as docsOverviewPage } from "../pages/docs/overview/page"
+import { page as firstRunPage } from "../pages/docs/first-run/page"
 import { page as languageOverviewPage } from "../pages/language/overview/page"
 import { page as whatIsSeseragiPage } from "../pages/language/model/what-is-seseragi/page"
 import { page as designPrinciplesPage } from "../pages/language/model/design-principles/page"
@@ -495,7 +496,7 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
     home,
     areas,
     pages: arrays.concat [
-      [home, docsOverviewPage (), examplesPage (), releasesPage ()],
+      [home, docsOverviewPage (), firstRunPage (), examplesPage (), releasesPage ()],
       arrays.concat [areaPages area | area <- areas]
     ]
   }

@@ -1,0 +1,136 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn blocks specifier: String -> Array<Block> =
+  if specifier != "std/map" then
+    []
+  else
+    [
+      Heading ("working-with-maps", localized "Choose a Map operation" "Mapの操作を選ぶ"),
+      Paragraph ([Words (localized (en.purpose ()) (ja.purpose ()))]),
+      Paragraph ([Words (localized (en.choice ()) (ja.choice ()))]),
+      Heading ("create-map", localized "Start a table" "対応表を作る"),
+      BulletList (
+        [
+          [
+            InternalLink
+              (localized "empty" "empty", "/docs/library/map/function/empty/"),
+            Words (localized ": Start empty" "：空から始める")
+          ],
+          [
+            InternalLink
+              (localized "singleton" "singleton", "/docs/library/map/function/singleton/"),
+            Words (localized ": Start with one entry" "：1項目から始める")
+          ],
+          [
+            InternalLink (
+              localized "fromEntries" "fromEntries",
+              "/docs/library/map/function/fromentries/"
+            ),
+            Words (localized ": Use existing pairs" "：組から作る")
+          ]
+        ]
+      ),
+      Heading ("lookup-and-update", localized "Look up and update" "検索と更新"),
+      BulletList (
+        [
+          [
+            InternalLink (localized "get" "get", "/docs/library/map/function/get/"),
+            Words (localized ": Read a value or handle absence" "：値を読む・ない場合を扱う")
+          ],
+          [
+            InternalLink (
+              localized "containsKey" "containsKey",
+              "/docs/library/map/function/containskey/"
+            ),
+            Words (localized ": Check presence" "：有無を確認する")
+          ],
+          [
+            InternalLink
+              (localized "insert" "insert", "/docs/library/map/function/insert/"),
+            Words (localized ": Set a value" "：値を指定する")
+          ],
+          [
+            InternalLink
+              (localized "upsert" "upsert", "/docs/library/map/function/upsert/"),
+            Words (localized ": Compute the next value" "：次の値を計算する")
+          ],
+          [
+            InternalLink
+              (localized "remove" "remove", "/docs/library/map/function/remove/"),
+            Words (localized ": Omit a key" "：キーを除く")
+          ]
+        ]
+      ),
+      Heading ("map-views", localized "Read entries and counts" "内容と件数を読む"),
+      BulletList (
+        [
+          [
+            InternalLink (localized "keys" "keys", "/docs/library/map/function/keys/"),
+            Words (localized ": Read the keys" "：キーを読む")
+          ],
+          [
+            InternalLink
+              (localized "values" "values", "/docs/library/map/function/values/"),
+            Words (localized ": Read the values" "：値を読む")
+          ],
+          [
+            InternalLink
+              (localized "entries" "entries", "/docs/library/map/function/entries/"),
+            Words (localized ": Keep keys and values together" "：キーと値を組で読む")
+          ],
+          [
+            InternalLink (localized "size" "size", "/docs/library/map/function/size/"),
+            Words (localized ": Count keys" "：キーを数える")
+          ]
+        ]
+      ),
+      Heading ("transform-and-combine", localized "Transform and combine" "変換と結合"),
+      BulletList (
+        [
+          [
+            InternalLink
+              (localized "mapValues" "mapValues", "/docs/library/map/function/mapvalues/"),
+            Words (localized ": Change values" "：値を変える")
+          ],
+          [
+            InternalLink (
+              localized "mapKeysWith" "mapKeysWith",
+              "/docs/library/map/function/mapkeyswith/"
+            ),
+            Words (localized ": Change keys and resolve collisions" "：キーを変えて重複をまとめる")
+          ],
+          [
+            InternalLink
+              (localized "mergeWith" "mergeWith", "/docs/library/map/function/mergewith/"),
+            Words (localized ": Combine two tables" "：二つの表を合わせる")
+          ]
+        ]
+      ),
+      Heading
+              ("map-example", localized "Update without changing the original" "元の値を保って更新する"),
+      Paragraph ([Words (localized (en.example ()) (ja.example ()))]),
+      Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+      CodeExample
+              ("map-insert", localized "Replace, add, and keep the source" "置き換え・追加と元の値"),
+      Terminal (
+        localized "Output" "実行結果",
+        "[[\"b\",9],[\"a\",1]]\n[[\"b\",9],[\"a\",1],[\"c\",3]]\n[[\"b\",2],[\"a\",1]]\n[[\"first\",1]]"
+      ),
+      Paragraph ([Words (localized (en.outcomes ()) (ja.outcomes ()))]),
+      Paragraph ([Words (localized (en.comparison ()) (ja.comparison ()))]),
+      Paragraph ([Words (localized (en.absence ()) (ja.absence ()))]),
+      Paragraph ([Words (localized (en.order ()) (ja.order ()))]),
+      Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+      Heading ("map-api-index", localized "Browse the complete module" "モジュール全体を調べる")
+    ]

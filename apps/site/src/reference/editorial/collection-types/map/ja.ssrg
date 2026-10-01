@@ -1,0 +1,28 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Mapは、キーを使って値を探すための型です。キーと値の型を指定し、見つからない場合も戻り値で扱います。",
+  taskTitle: "商品名から価格を探し、以前の価格表も残す",
+  purpose: "商品名と価格を対応させたいときはMapを使います。Map<String, Int>は文字列をキー、整数を値とする価格表の型です。価格を更新しても元の表は変わらず、登録されていない商品と価格0の商品を区別できます。",
+  setup: "import * as maps from \"std/map\"は、Mapを扱うモジュールをmapsという名前で使う宣言です。maps.Mapはそのモジュールの型、maps.fromEntriesなどは操作の名前です。let prices: maps.Map<String, Int> = ...は値にpricesという名前を付け、コロンの右の型に合うかを確かめます。Stringは文字列、Intは整数です。<String, Int>でキーと値の型を順に選びます。",
+  codeTitle: "価格表を作り、更新前後と未登録の商品を読む",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "[(\"tea\", 0), (\"coffee\", 5), (\"tea\", 2)]は三組の値を持つArrayです。(\"tea\", 0)のような括弧とカンマの組は、先にキー、後に値を置いた二つ組です。fromEntriesがこの一覧からMapを作ります。teaが二度あるため最後の価格2を採用しますが、表示位置は最初のteaの位置のままです。entriesはMapを二つ組のArrayに戻すので、一行目でtea、coffeeの順と価格2、5を確認できます。",
+    "maps.insert \"tea\" 3 pricesは、キー、価格、元の表の順に三つの引数を渡す呼び出しです。引数は空白で区切ります。結果をupdatedと名付けると、updatedのteaだけが3になります。pricesはteaが2の表として引き続き使えます。ほかの呼び出しの中の括弧は、内側の計算を一つの引数としてまとめています。",
+    "fn priceLabel prices: maps.Map<String, Int> -> String = ...は関数の宣言です。fnの後が関数名、pricesが引数名で、コロンの後がその型です。-> Stringは文字列を返すことを示します。=の右の式が返す値になります。この引数のpricesには、呼び出し時に渡した表が入ります。",
+    "maps.get \"tea\" pricesは、価格があるとJust price、ないとNothingという形の値を返します。Justは見つかった値を包む名前、Nothingは値がないことを表す名前です。この二つの形をまとめた型がMaybeです。matchは返ってきた形に合う枝を選びます。Nothing -> \"not listed\"は未登録の文言を返し、Just price -> show priceは見つかった価格をpriceと名付けて文字列にします。どちらの枝も文字列を返すので、priceLabelの戻り値はStringです。",
+    "singleton \"tea\" 0は商品一件だけの表を作ります。その検索結果はJust 0なので、三行目は0です。empty ()は空の表を作り、検索するとNothingになるため四行目はnot listedです。()は追加の情報を持たないUnit型の値です。ここではpriceLabelの引数の型から、空の表もMap<String, Int>だと分かります。0を「見つからない」と扱う条件分岐は不要です。",
+    "最後の==は、同じキーに同じ値が対応しているかを比べます。coffee、teaの順で作り直しても対応は同じなのでtrueです。Mapは取り出すときには挿入順を保ちますが、等しいかの比較ではその順を使いません。"
+  ],
+  comparisonTitle: "TypeScriptのMapで同じ価格表を扱う",
+  comparisonBefore: "TypeScriptのMap<string, number>も、キーと値の型を順に指定します。new Mapで組の一覧から表を作り、getで価格を読みます。new Map(prices).set(\"tea\", 3)は先に表をコピーしてから更新するので、pricesを残せます。普通のMapで短く書ける処理です。[...prices]は表の組をArrayに並べ、JSON.stringifyが表示用の文字列にします。everyはすべての組が条件を満たすかを確かめ、([key, value])で各組をキーと価格に分けます。&&は、大きさと各価格の両方が等しい場合だけtrueにします。",
+  comparisonAfter: "TypeScriptのgetは未登録のキーにundefinedを返すため、価格はundefinedと比較します。これなら0も価格として残ります。constは名前の再代入を防ぎますが、Mapの内容の変更は防ぎません。Seseragiのinsertは元の表を変更せずに新しい表を返します。TypeScript例では二つの表の大きさと各キーの価格を比べています。JavaScriptのMap同士を===で比べても内容の比較にはなりません。両例は同じ文字列キーと小さい整数を使います。TypeScriptのnumber全体をSeseragiのIntと同一視はできません。組の表示はTypeScriptではJSON、Seseragiではshowなので記号と空白が異なります。",
+  detailTitle: "Mapが確かめることと、よくある型の取り違え",
+  details: [
+    "Map<String, Int>は、すべてのキーがString、すべての値がIntであることを表します。空でもこの型です。末尾の正確な宣言にあるMap<_, _>の二つの_は、二つの型を選ぶ場所を示しており、そのまま例に渡す引数ではありません。opaque-typeは内部の持ち方が公開されていない型という意味です。値は公開されたfromEntries、singleton、emptyなどで作れます。",
+    "let prices: maps.Map<String, Int> = { tea: 2 }と書くと、通常のレコードをMapとして使おうとしてSES-T0101になります。{ tea: 2 }はteaというフィールドを持つ別の種類の値です。型注釈では変換されません。maps.fromEntries [(\"tea\", 2)]またはmaps.singleton \"tea\" 2でMapを作ってください。TypeScriptでもMap<string, number>は普通の{ tea: 2 }というオブジェクトの型ではありません。",
+    "キーを探す操作には、同じキーかを判定するEqと、候補を探すための値を計算するHashという処理が必要です。Stringには両方があります。Map同士の内容を比べるときは、値も等しいかを比べられる必要があります。この例のIntは比較できます。型宣言に条件が表示されていなくても、個々の操作の条件がなくなるわけではありません。",
+    "この比較で扱うキーは文字列だけです。JavaScriptのオブジェクトをキーにしたときの同一性の規則を、そのままSeseragiの任意のキーに当てはめることはできません。また、Mapという名前だけでJavaScriptと同じ計算量になるとは限りません。検索や更新の費用は、使う操作とキーのEq、Hashの規則に従います。"
+  ]
+}

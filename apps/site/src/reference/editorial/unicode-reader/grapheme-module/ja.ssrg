@@ -1,0 +1,32 @@
+pub fn purpose -> String =
+  "ラベルを短く表示するとき、絵文字の肌の色や文字のアクセントだけを切り離したくないことがあります。std/text/graphemeは、利用者が一文字と見るまとまりで文字列を数えたり切り出したりするためのモジュールです。このまとまりをgrapheme cluster（書記素クラスタ）と呼びます。"
+
+pub fn units -> String =
+  "A👍🏽e\\u{0301}には、A、👍🏽、eと結合アクセントの三つのまとまりがあります。\\u{0301}はアクセントの番号による表記です。Unicodeの番号一個の単位をscalarと呼び、👍と肌の色、eとアクセントは別のscalarなので合計5個です。UTF-8で保存すると12バイトになります。"
+
+pub fn reading -> String =
+  "importはモジュールにgraphemesとtextという名前を付けます。letは文字列にlabelという名前を付ける宣言です。関数名の後ろに空白を置いてlabelを渡します。pub effect fn mainが出力の実行入口で、printlnはバッククォートで囲んだ文字列と改行を出力します。${...}には計算した値が入り、文字列内の改行もそのまま表示されます。"
+
+pub fn comparison -> String =
+  "TypeScriptでもIntl.Segmenterのgrapheme指定で同じまとまりを列挙できます。segmenter.segmentの各結果からsegmentを取り出した配列がpiecesです。Array.from(label)はscalar側の単位、TextEncoderはUTF-8のバイト列を返します。String.lengthの7はUTF-16の単位を数えた結果で、三つのまとまりと矛盾するものではありません。"
+
+pub fn host -> String =
+  "この入力の結果は両方で確認しています。ただし、SeseragiはUnicodeのデータ版を固定しており、Intl.Segmenterが使うホスト側の版とは別です。すべての文字列で将来も同じ境界になるとは、この例からは言えません。"
+
+pub fn choose -> String =
+  "個数だけならlength、各まとまりを順に使うならclustersです。atは指定した一個、sliceは範囲を取り出します。byteBoundariesはUTF-8の位置を使う処理との対応が必要なときに選びます。"
+
+pub fn checked -> String =
+  "atのMaybe<String>は、値のあるJustか位置がないNothingです。sliceのEitherは、文字列を持つRightか不正な範囲の理由を持つLeftです。どちらも例外を投げる代わりに返る普通の値です。次のpreview関数ではmatchでRightとLeftを分けて読み、取り出した値を表示に使います。"
+
+pub fn sliceReading -> String =
+  "fnはpreview関数の宣言です。startとendはIntの位置、labelはString、最後の-> Stringは返す説明文の型です。Right partは中身をpartという名前で使い、Left reasonは理由をshowで文字列にします。0から2はAと👍🏽、1から3は👍🏽とアクセント付きのeです。終了位置そのものは含みません。"
+
+pub fn repair -> String =
+  "2から2と、空文字列の0から0は成功する空範囲です。4という終了位置、開始と終了が逆の範囲、負の開始位置はLeftになります。length: 3は実際の個数です。最初の不正な範囲0から4を、例の0から2へ直すとpreview: [A👍🏽]を得られます。"
+
+pub fn limits -> String =
+  "これらの操作は入力のUTF-8バイト数に比例して処理します。見た目のまとまりの位置を読む場合も、配列のような定数時間の取り出しとは限りません。分割や切り出しは正規化を行わず、元の綴りを保ちます。表示幅や語・文の境界を求める操作でもありません。"
+
+pub fn targets -> String =
+  "processとbrowserの両方が対象で、外部サービスは必要ありません。文字列の綴りをそろえる正規化はstd/text/unicodeで明示的に選びます。scalar単位の操作やバイト数との違いはstd/textで確認できます。"

@@ -1,21 +1,45 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "モジュール指定の解決",
   summary: (explanation ()).summary,
-  ruleTitle: "先頭の形式で解決方法が決まる",
-  ruleBody: "./と../は、importを書いたファイルからの相対パスです。self/は現在のパッケージの通常のソース、std/は標準ライブラリ、gen/は生成されたモジュールを指します。それ以外の指定は、宣言した直接の依存先と、その公開パスを指します。これらを順番に試すのではなく、先頭の書き方で解決方法が決まります。",
-  typingBody: "./userは、importを書いたファイルと同じディレクトリのuser.ssrgを指します。./user.ssrgも同じ指定です。userというディレクトリのindex.ssrgや、別の拡張子のファイルは探しません。シェルでコマンドを実行したディレクトリも基準になりません。",
-  evaluationBody: "依存先がacme/httpなら、acme/http/clientは、そのパッケージで公開したclientというパスを指します。リポジトリーにファイルが存在するだけでは、外部から参照できません。また、相対importで通常のソースからテストや生成用のルートへ越えることもできません。",
-  invalidTitle: "ファイルの場所を知っていても公開APIを迂回できない",
-  invalidBody: "依存先を宣言していない場合、公開されていないパス、ファイルが見つからない指定はエラーです。./directoryが自動で./directory/index.ssrgを探すことはありません。ファイルを移したら、importも正しいパスへ更新してください。",
-  diagnosticsBody: "相対パスならimport元のファイルの位置、外部パッケージならマニフェストと公開パスの対応を確認してください。例の二つのimportは、拡張子の有無が違っても同じ兄弟モジュールを指します。複数ファイルを使う例なので、一つのファイルだけをPlaygroundへ貼っても動きません。",
+  purpose: ["ファイルがどこから読み込まれるかを、import元の場所と指定したパスで確認できます。TypeScriptのモジュール解決には設定や実行環境による違いがありますが、ここではその探索規則を推測して当てはめず、Seseragiの明示的な指定を使います。"],
+  exampleTitle: "ディレクトリー内のファイルを明示する",
+  reading: [
+    "importの文字列をモジュール指定子と呼びます。相対パスの基準はimportを書くソースファイルで、シェルの作業ディレクトリーではありません。実行する場所を変えても、同じimportが別のファイルへ勝手に切り替わるわけではありません。",
+    "pub fn greet name: String -> Stringは文字列を受け取って返す公開関数です。pub effect fn mainは出力処理を返す入口で、実行機構がprintlnを実行します。この例ではモジュール名をソース内に別途宣言しません。"
+  ],
+  rules: [
+    "./と../は、現在のモジュールからの相対パスです。./userなら同じディレクトリーのuser.ssrgを一件だけ探します。.ssrgを明示しても同じモジュールへ正規化します。ディレクトリーのindexや他の拡張子を順に試したり、作業ディレクトリーへ探し直したりはしません。",
+    "self/は現在のパッケージの通常のソースを指します。例えばself/words/indexはsrc/words/index.ssrgです。std/は標準ライブラリ、gen/は生成された連携コードを指します。これらは順番に試す候補ではなく、先頭の形式による分類です。",
+    "それ以外の名前は、マニフェストで宣言した直接の依存先と公開パスを使います。依存先がdocs/greetingsで、emailが公開されていれば、docs/greetings/emailからその公開先モジュールを使えます。相手のリポジトリー内のパスを知っているだけでは取り込めません。",
+    "依存先に別名を付けた場合は、宣言した依存名を先頭に使います。パッケージ自身の名前なら、そのexportsを通る公開パスを使い、自分を依存先へ追加する必要はありません。内部ソースを直接指すself/とは役割が異なります。相対importでは通常のソース、テスト、生成コードの起点を横断できません。",
+    "解決候補がなければエラーです。複数の候補がある場合も、一つを勝手に選びません。相対パスならimport元と実際のファイル、外部パッケージなら直接依存の宣言とexportsの対応を順に確認してください。"
+  ],
+  mistakes: [
+    "上の配置のままmain.ssrgを次の内容へ変えると、./wordsの参照先であるsrc/words.ssrgが存在しないためSES-K0001です。診断に表示されたパスを、実際に作ったsrc/words/index.ssrgと比べてください。",
+    "importを\"./words/index\"へ戻せばHello, Aki!を表示します。別の方法としてwords.ssrgへファイルを移すこともできますが、その場合は配置自体が変わります。外部の非公開パスや、未宣言の依存先によるエラーは、ファイル名の修正だけでは解消しません。"
+  ],
+  related: [
+    "パッケージの直接依存と公開パスの設定を確認します。",
+    "公開された関数や型を取り込む書き方を確認します。",
+    "異なるパスの綴りが同じモジュールを指す条件を調べます。"
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "./userは、どのファイルを指すか",
-  summary: "importの指定は、書いた形式によって解決します。相対パスの基準はimportを書くソースファイルであり、シェルの作業ディレクトリではありません。",
-  reading: "./modules-domainと./modules-domain.ssrgは、どちらも兄弟のmodules-domain.ssrgです。一方からUserIdを作り、もう一方の関数へ渡せるのは、同じモジュールを指しているためです。",
-  result: "./userならuser.ssrgを指定し、user/index.ssrgを使うなら./user/indexと書きます。self/は自分のパッケージ、std/は標準ライブラリ、gen/は生成されたモジュールの指定です。外部パッケージは、依存先の宣言と公開パスを確認してください。"
+  question: "importの文字列は、どのファイルを指すか",
+  summary: "wordsというディレクトリーのindex.ssrgにあいさつ関数を置き、main.ssrgから使います。Seseragiではファイルを明示して指定します。ディレクトリー名だけからindex.ssrgを自動で探しません。",
+  reading: "main.ssrgの\"./words/index\"は、同じsrcの中のwords/index.ssrgを指します。greetにはpubがあるため、利用側がimportできます。greet \"Aki\"で引数を渡し、printlnで返った文字列を表示します。",
+  result: "表示はHello, Aki!です。\"./words/index.ssrg\"と拡張子を付けても同じファイルを参照します。一方、\"./words\"はwords.ssrgを探す指定なので、この配置では解決できません。",
 }
+
+pub fn setup -> String =
+  "空のフォルダーへ三つのファイルを作ります。src/main.ssrgのほかにsrc/wordsディレクトリーを作り、その中へindex.ssrgを置いてください。seseragi.tomlのあるフォルダーで次のコマンドを実行します。"
+
+pub fn detailsTitle -> String = "先頭の書き方で参照先の種類を決める"
+
+pub fn mistakesTitle -> String = "./wordsはwords/index.ssrgを探す指定ではない"
+
+pub fn title -> String = (copy ()).title

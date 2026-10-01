@@ -1,0 +1,7 @@
+import * as effects from "std/effect"
+effect fn first -> Int fails String = effects.fail "missing"
+effect fn second -> Int fails Int = effects.fail 404
+pub effect fn main = do {
+  _ <- first ()
+  second ()
+}

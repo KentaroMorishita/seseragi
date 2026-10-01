@@ -1,21 +1,39 @@
 import { ExplanationCopy } from "../../explanation"
-import { TypeCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> TypeCopy = TypeCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "組み込み型",
   summary: (explanation ()).summary,
-  ruleTitle: "七つの型が表す値",
-  ruleBody: "Intは-9007199254740991から9007199254740991の整数、Floatは64ビットの浮動小数点数です。BoolはTrueとFalse、CharはUnicodeスカラー値一個、Stringはその列を表します。Unitの値は()だけです。Neverは値を一つも持たず、正常に値を返さない計算を表します。",
-  identityBody: "Intには負の0がありません。Floatには負の0があります。内容を返す必要がない処理は、Unitの値()で正常に完了できます。Neverには値がないため、()を返す処理の型には使いません。",
-  checkingBody: "整数と小数の書き方でIntかFloatが決まります。必要な型に合わせて自動でInt・Float・BigIntの間を変換することはありません。Neverの式は実際の値を返さないため、別の型の値を求める場所でも使えます。",
-  invalidTitle: "似た数値や文字でも型を区別する",
-  invalidBody: "IntとFloatは別の型です。複数のUnicodeスカラー値から成る文字列はCharではありません。Unitは空のレコード{}でもNeverでもありません。Intの範囲外の数値を、自動で丸めて受け付けることもありません。",
-  diagnosticsBody: "数値や文字リテラルの範囲、Charの中身の個数、エスケープの書き方を、実行前に検査します。ただし、実行中のIntの計算で範囲を超える場合は、回復可能な失敗ではなく欠陥として停止します。",
+  purpose: [
+    "TypeScriptでは整数も小数も通常はnumberです。SeseragiはIntとFloatを別の型として扱います。整数の個数を受け取る関数へ小数や文字列を渡すと、型の違いを検査できます。",
+    "3と3.0は同じ量を表せても、前者はInt、後者はFloatです。必要な型に合わせて自動では変換しません。整数を浮動小数点数として計算するときは、標準ライブラリの変換を明示して使います。"
+  ],
+  exampleTitle: "四種類の値に名前を付けて表示する",
+  reading: [
+    "3のような整数の表記はIntです。小数点か指数を持つ2.5、3.0、1e3はFloatです。BoolのTrueとFalseは先頭を大文字で書きます。値をソースへ直接書くこれらの表記を、リテラルと呼びます。",
+    "最後のpub effect fn mainは実行入口です。pubは入口を公開し、effect fnは出力処理を表すEffectを返します。実行機構がその処理を実行し、printlnが文字列と改行を出力します。バッククォートは値を埋め込める文字列を作り、${name}などの部分へ各値の表示が入ります。"
+  ],
+  rules: [
+    "Intは-9007199254740991から9007199254740991までを正確に表す整数です。TypeScriptの安全な整数の範囲と一致します。負のゼロはありません。範囲外の整数リテラルは、丸めたり折り返したりせず拒否します。実行中の計算で範囲を超える場合は、回復可能な失敗ではなく欠陥として停止します。",
+    "FloatはIEEE 754の64ビット浮動小数点数です。正と負のゼロを区別し、すべての小数を正確に表すわけではありません。Int、Float、大きな整数を扱うBigIntの間に暗黙の変換はありません。実行環境で似た格納形式を使っても、言語の型は別です。",
+    "Charは'a'のようにシングルクォートで書き、Unicodeスカラー値を一個持ちます。スカラー値はUnicodeで文字を表す単位で、見た目の一文字が必ず一個とは限りません。Stringはその不変の列です。文字の個数、エスケープ、数値の範囲やFloatのオーバーフローも、リテラルを読むときに検査します。",
+    "Unitは返す内容のない正常な完了を表し、値は()だけです。空のレコード{}とは別です。Neverは値を一つも持たず、正常に結果を返さない計算の型です。()を返す処理の型をNeverにはしません。",
+    "Neverの式は実際の値を返さないため、別の型を要求する場所でも使えます。これは数値などを別の値へ変換する機能ではありません。ツールは実行環境の格納型ではなく、IntやFloatなどSeseragiの型を表示します。"
+  ],
+  mistakes: ["次の: Floatは「Floatとして受け取る」という型注釈です。しかし3はIntなので、SES-T0101で期待するFloatと実際のIntの不一致が報告されます。最初からFloatを書くなら3.0に直してください。既存のIntを変換するには、ファイルの先頭にimport { fromInt } from \"std/float\"と書きます。これは標準ライブラリから変換関数を読み込む宣言で、fromInt 3はFloatの3.0を返します。"],
+  related: [
+    "数値や文字をソースへ書く詳しい形式を調べます。",
+    "改行や引用符などを文字列へ書く方法を調べます。",
+    "名前や関数に型を書く位置を調べます。",
+    "型検査全体の考え方を調べます。"
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "この値にはどの型を使うか",
-  summary: "Intは整数、Floatは浮動小数点数の型です。Boolは真偽値、CharはUnicodeスカラー値一個、Stringはその列を表します。Unitは内容を返さず完了した結果、Neverは正常に結果を返さない計算を表す型です。",
-  reading: "例のmillionはInt、avogadroはFloatです。newlineとlambdaはChar、quotedとtemplateはStringです。テンプレート文字列では、埋め込んだ式の値を表示用の文字列にして挿入します。",
-  result: "Unitには()という値が一つあり、「返す内容のない正常な完了」を表します。Neverには値がなく、「結果を返せないこと」を表します。整数に見える値でも、IntとFloatは自動では変換されません。"
+  question: "個数、価格、在庫の有無にはどの型を使うか",
+  summary: "商品には個数、価格、在庫の有無、名前があります。ここでは整数にInt、小数にFloat、真偽値にBool、文字列にStringを使います。",
+  reading: "letは右辺の値に名前を付けます。quantityの3はInt、priceの2.5はFloatです。inStockのTrueはBoolで、反対の値はFalseです。ダブルクォートで囲んだ\"Notebook\"はStringです。",
+  result: "型を書かなくても、値の書き方からそれぞれの型が決まります。最後の行は四つの値を文字列へ埋め込み、Notebook: 3, 2.5, Trueと表示します。変数名がquantityやpriceだから型が決まるわけではありません。"
 }
+
+pub fn title -> String = (copy ()).title

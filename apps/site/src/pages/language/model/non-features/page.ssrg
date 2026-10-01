@@ -1,12 +1,17 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
-import * as arrays from "std/array"
 import { localized } from "../../../../model/locale"
 import {
+  Block,
   BulletList,
+  CodeExample,
+  Heading,
   Inline,
   InternalLink,
   PageDefinition,
+  Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
 import { conceptPage } from "../concept"
@@ -17,19 +22,41 @@ fn alternative pair: (String, String) -> Array<Inline> = match pair {
   (english, japanese) -> [Words (localized english japanese)]
 }
 
-fn content -> PageDefinition =
-  conceptPage "language.model.non-features" "/docs/language/model/non-features/" (en.copy ()) (ja.copy ()) [BulletList
-      (map alternative (arrays.zip (ja.alternatives ()) (en.alternatives ())))] [
-        [InternalLink (
-          localized "No hidden danger" "危険を暗黙に隠さない",
-          "/docs/language/model/no-hidden-danger/"
-        )],
-        [InternalLink (
-          localized "Immutable by default" "デフォルトで不変",
-          "/docs/language/model/immutable-by-default/"
-        )],
-        [InternalLink
-      (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
-      ]
+fn paragraph pair: (String, String) -> Block = Paragraph (alternative pair)
+
+fn related pair: ((String, String, String), (String, String)) -> Array<Inline> =
+  match pair {
+    ((english, japanese, path), (purpose, purposeJa)) -> [
+      InternalLink (localized english japanese, path),
+      Words (localized (". " + purpose) ("。" + purposeJa))
+    ]
+  }
+
+fn content -> PageDefinition = {
+  let details: Array<Block> = arrays.concat [
+    [
+      CodeExample
+        ("model-reader-non-features", localized (en.caption ()) (ja.caption ())),
+      Terminal (localized "Output" "実行結果", "79, 80, pass"),
+      Heading
+        ("reading-the-example", localized (en.readingTitle ()) (ja.readingTitle ()))
+    ],
+    map paragraph (arrays.zip (ja.reading ()) (en.reading ())),
+    [
+      Heading
+        ("alternatives", localized (en.alternativesTitle ()) (ja.alternativesTitle ())),
+      BulletList
+        (map alternative (arrays.zip (ja.alternatives ()) (en.alternatives ())))
+    ]
+  ]
+  let links = [
+    ("No hidden danger", "危険を暗黙に隠さない", "/docs/language/model/no-hidden-danger/"),
+    ("Immutable by default", "デフォルトで不変", "/docs/language/model/immutable-by-default/"),
+    ("Readable density", "読みやすい密度", "/docs/language/model/readable-density/")
+  ]
+  let relatedBlocks =
+    map related (arrays.zip (arrays.zip (ja.related ()) (en.related ())) links)
+  conceptPage "language.model.non-features" "/docs/language/model/non-features/" (en.copy ()) (ja.copy ()) details relatedBlocks
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

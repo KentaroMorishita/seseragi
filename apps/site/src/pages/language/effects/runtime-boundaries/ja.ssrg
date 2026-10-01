@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "保存したEffectは、どこで実行を始めるか",
-  summary: "mainやテスト実行機構など、定められた実行入口がEffectを開始します。実行前に必要なサービスを用意し、終了時には後片付けも待ちます。",
-  reading: "programはsucceedで作ったTask<String>を返します。program ()を呼ぶと、成功値として文字列を返す処理ができます。この例自体は出力しません。実行環境との連携側が関数を呼び、そのTaskを実行する形を示しています。",
-  result: "Taskを実行したときの成功値は\"ready for the host boundary\"です。通常の補助関数からEffect<R, E, A>のAを直接取り出す操作はありません。補助関数でもEffectを組み合わせ、実行入口へ返してください。"
+  question: "どの処理が、プログラムを動かしたときに始まるのか",
+  summary: "実行機構は公開されたmainを呼び、そこから返ったEffectを開始します。ファイル内で作ったすべてのEffectを、自動で実行するわけではありません。",
+  reading: "unusedにはannounce \"not printed\"の処理を保存します。mainが返すのはannounce \"only main\"です。どちらも同じannounceで作っていますが、実行入口へ返したものが異なります。",
+  result: "表示されるのはonly mainだけです。unusedを作っただけでは出力しません。関数や値をファイルへ書くことと、実行する処理としてmainへつなぐことを分けて考えます。",
 }
+
+pub fn readerCaption -> String = "保存した処理と、入口へ返す処理"
+
+pub fn readerBridgeOne -> String =
+  "pubはmainを実行入口として外へ公開する指定です。effect fnは処理を表す値を返し、printlnが実際に出力するのはその処理が実行されたときです。CLIがConsoleの機能を用意して開始します。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptで定義した関数を呼ばなければ本体を実行しない場合が近い手掛かりです。Seseragiでは補助関数の途中で任意のEffectを実行する汎用runEffectを使わず、Effect同士を組み合わせてmainへ返します。"
+
+pub fn readerInvalidCaption -> String = "mainを公開しない"
+
+pub fn readerMistake -> String =
+  "pubを外した例はソースを解析できても、CLIが実行入口として使えません。実行準備でmain must be publicという理由を報告します。pub effect fn mainへ戻して、公開された入口を用意してください。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "programはsucceedで作ったTask<String>を返します。program ()を呼ぶと、成功値として文字列を返す処理ができます。この例自体は出力しません。実行環境との連携側が関数を呼び、そのTaskを実行する形を示しています。"
+
+pub fn readerLegacyResult -> String =
+  "Taskを実行したときの成功値は\"ready for the host boundary\"です。通常の補助関数からEffect<R, E, A>のAを直接取り出す操作はありません。補助関数でもEffectを組み合わせ、実行入口へ返してください。"

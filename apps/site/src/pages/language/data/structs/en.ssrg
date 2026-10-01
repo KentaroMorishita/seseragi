@@ -33,8 +33,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Why name a data shape instead of using an ordinary record?",
-  summary: "A struct gives a data shape a named identity, preventing unrelated declarations with the same fields from being confused.",
-  reading: "struct User declares id: Int and name: String. User before the braces constructs that specific type. User { ...original, name: \"Mio\" } builds another User with the copied id and the replacement name.",
-  result: "The outputs are Aki, Mio, and 1. original still holds the name Aki; only renamed holds Mio. Both have type User. User { ...original, name: \"Mio\" } constructs a new value of that same type."
+  question: "How do I distinguish User from Product even when their fields match?",
+  summary: "struct gives field-based data its own type. A User with a name and number remains distinct from other data with the same shape.",
+  reading: "struct User declares id and name. User { id: 1, name: \"Aki\" } creates a value of that type. User { ...original, name: \"Mio\" } creates another User that retains the id.",
+  result: "The output is Aki, Mio and 1. The original name stays unchanged. The declaration defines the data shape; User { ... } constructs an actual value.",
 }
+
+pub fn readerCaption -> String = "Declare a type, then create a value"
+
+pub fn readerBridgeOne -> String =
+  "Unlike merely naming a TypeScript type or interface, each Seseragi struct declaration creates a distinct type. A User and Product cannot be exchanged just because both have name."
+
+pub fn readerBridgeTwo -> String =
+  "User before the braces identifies the type being constructed. Without it, { id: 1, name: \"Aki\" } is a record. The final println inserts field values with ${...} and separates lines with \\n."
+
+pub fn readerInvalidCaption -> String = "A required field is missing"
+
+pub fn readerMistake -> String =
+  "The later User { id: 1 } example omits name. Add name: \"Aki\" so every declared field has a value."

@@ -1,0 +1,13 @@
+import * as text from "std/text"
+import * as json from "std/json"
+
+let sentence = "  hello,\u{2003}世界!  "
+let pieces = text.words sentence
+
+pub effect fn main =
+  println `pieces: ${json.encodeString pieces}
+joined: ${text.join " | " pieces}
+Japanese: ${json.encodeString (text.words "東京都渋谷区")}
+empty: ${json.encodeString (text.words "")}
+only whitespace: ${json.encodeString (text.words "\n\t\u{0085}")}
+FEFF preserved: ${text.words "A\u{FEFF} B" == ["A\u{FEFF}", "B"]}`

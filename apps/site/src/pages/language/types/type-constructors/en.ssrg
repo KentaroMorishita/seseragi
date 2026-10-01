@@ -14,8 +14,27 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What does the A inside Box<A> mean?",
-  summary: "A type constructor makes a complete type from one or more type arguments. Box<Int> and Box<String> choose different stored value types.",
-  reading: "Box<A> declares one field of type A. unwrap<A> takes a Box<A> and returns that field, so unwrap (Box<Int> { value: 42 }) returns an Int. The A is not the field's value; it tells the compiler the field's type.",
-  result: "unwrap (Box<Int> { value: 42 }) returns 42. Supplying Int to Box determines the value field's type. Types can also nest, as in Array<Maybe<Int>>. Supply the required number and shape of arguments for each constructor."
+  question: "What differs between Box<Int> and Box<String>?",
+  summary: "Choose the type stored inside a Box. A in <A> is a place for a type, not a value; selecting Int or String determines the type of the value field.",
+  reading: "struct Box<A> { value: A } declares a box whose contents type is chosen later. Box<Int> holds an integer; Box<String> holds a string. Int or String inside the angle brackets is a type argument.",
+  result: "The output is 42 and ready. count.value has type Int, while message.value has type String. After selecting the type, the braces supply an actual value that matches it.",
 }
+
+pub fn readerCaption -> String = "Choose a contents type, then construct a value"
+
+pub fn readerBridgeOne -> String =
+  "In TypeScript Array<number>, number describes the element type. Likewise, do not write a value such as 42 inside <Int>. Box, which accepts a type argument to form a type such as Box<Int>, is called a type constructor."
+
+pub fn readerBridgeTwo -> String =
+  "A value constructor and a type constructor have different jobs. Box<Int> selects a type; Box<Int> { value: 42 } constructs a value. println inserts both fields into a string and displays them on separate lines."
+
+pub fn readerInvalidCaption -> String = "Putting text in an integer box"
+
+pub fn readerMistake -> String =
+  "Box<Int> { value: \"ready\" } reports SES-T0101. Supply 42, or choose Box<String> if text is intended. The later detailed rules cover more advanced distinctions when you need them."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

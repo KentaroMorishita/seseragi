@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+import * as deferred from "std/deferred"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  released <- refs.make False
+  ready <- deferred.make<Never, Unit> ()
+  waitForever <- deferred.make<Never, Unit> ()
+  answer <- effects.scoped $ do {
+    _ <- effects.fork (do {
+        _ <- effects.acquireRelease (effects.succeed ()) (\_: Unit -> refs.set True released)
+        _ <- deferred.succeed () ready
+        deferred.await waitForever
+        }
+    )
+    _ <- deferred.await ready
+    effects.succeed 42
+  }
+  cleaned <- refs.get released
+  child <- effects.fork (effects.succeed 21)
+  joined <- effects.join child
+  _ <- println answer
+  _ <- println cleaned
+  println joined
+}

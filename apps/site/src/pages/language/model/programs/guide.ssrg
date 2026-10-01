@@ -1,10 +1,6 @@
-import {
-  Explanation,
-  makeExplanation,
-  ArticleExample
-} from "../../explanation"
+import { Explanation, makeExplanation, WithoutExample } from "../../explanation"
 import * as en from "./en"
 import * as ja from "./ja"
 
 pub fn explanation -> Explanation =
-  makeExplanation (ArticleExample "language-program-entry") (en.explanation ()) (ja.explanation ())
+  makeExplanation WithoutExample (en.explanation ()) (ja.explanation ())

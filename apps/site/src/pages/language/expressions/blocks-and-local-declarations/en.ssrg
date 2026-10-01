@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Blocks and local declarations",
   summary: (explanation ()).summary,
-  ruleTitle: "The final expression supplies the block's value",
-  ruleBody: "Write local declarations and expressions inside braces. The final expression becomes the result of the whole block. A block containing only declarations returns Unit. Names declared in a block cannot be used outside it.",
-  typingBody: "Local let, fn, effect fn, and rec declarations are allowed. A name is available from its declaration to the end of the block. It may shadow an outer name, but cannot refer to a local name declared later.",
-  evaluationBody: "Items are evaluated from top to bottom. Declaring a function does not run its body; calling it computes the body. When a function returns an Effect, executing that Effect is a separate step.",
-  invalidTitle: "{} is an empty record, not Unit",
-  invalidBody: "Write { () } for a block that does nothing. {} creates an empty record. Type, trait, impl, instance, operator, foreign, and public declarations belong directly in a module, not inside a block.",
-  diagnosticsBody: "Using a local name before its declaration causes an unresolved-name error. To make local functions mutually recursive, declare them in the same rec group.",
+  purpose: [
+    "Names for intermediate calculations make it easier to follow which amount is being computed. unitPrice and subtotal are needed only inside total, so their declarations belong in its block. A caller using the total does not need to manage these intermediate names.",
+    "Where a TypeScript function would normally write return subtotal + 5, Seseragi ends with the expression subtotal + 5."
+  ],
+  exampleTitle: "Calculate the unit price, subtotal, and total in order",
+  reading: [
+    "The parameter’s : Int requires an integer; -> Int specifies an integer result. * multiplies and + adds. The block computes values from top to bottom, so unitPrice is available when subtotal is created.",
+    "The outer let answer = total 3 names the return value. pub effect fn main is the public execution entry, returning an Effect describing the output for the runner to execute. show answer turns 65 into text; parentheses group that result for println, which writes it with a newline."
+  ],
+  rules: [
+    "The region in which a name is usable is its scope. A let name is available immediately after its declaration through the end of the block. An inner declaration may use the same name as an outer one, but this does not reassign the outer value. A local name declared later cannot be used earlier.",
+    "Blocks allow let, fn, effect fn, and rec declarations. A local function can use its parameters, names visible before its declaration, and its own name. It cannot use names declared later. Put mutually recursive functions, which call each other, into one rec group. All group function names are shared within the group, along with bindings available before it.",
+    "Declaring a function does not execute its body; calling it computes the body. If it returns Effect, executing that work is a separate step. Merely listing output operations in an ordinary block does not execute all of them in sequence. Use do to connect Effect operations in order.",
+    "A block has one or more local declarations with a final expression, a final expression alone, or declarations alone. Declarations alone return the Unit value (), representing a result with no payload. Write { () } for a block that does nothing. Completely empty {} is an empty record.",
+    "The public marker pub and type declarations such as type, aliases, and struct belong at module top level. So do trait declarations describing supported operations, their impl and instance implementations, operator declarations, and foreign declarations for another language’s boundary. They cannot be placed inside a block."
+  ],
+  mistakes: [
+    "subtotal below belongs only to total’s block. Using it outside causes SES-N0001, an unresolved-name error. If you need the total, call let answer = total 3. If you also need the subtotal outside, return it from a separate function or otherwise pass the needed value through a result.",
+    "Ending with only let subtotal = ... does not automatically return that subtotal. A declarations-only block returns Unit and therefore cannot satisfy an Int result. Finish with an expression such as subtotal for the value you want to return."
+  ],
+  related: [
+    "Check how to pass values to a function.",
+    "Find how to choose which value to return based on a condition.",
+    "Look up the precise order of expression and argument evaluation.",
+    "Find rules shared by constructs that introduce names.",
+    "Find how to declare local functions that call themselves or each other."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Which value does a block return?",
-  summary: "A block groups local declarations and expressions inside braces. Its final expression supplies its value.",
-  reading: "Inside label's block, normalized replaces a negative score with zero. Next, render is declared as a local function. The final render normalized is the result of the whole block, so no return statement is needed.",
-  result: "label 42 returns \"score=42\"; a negative score is normalized to zero. The local names cannot be referenced outside the block. A block of pure expressions is not the same as a do block sequencing Effect operations."
+  question: "How do several lines of calculation return one result?",
+  summary: "Buy three items at 20 each and add a fee of 5. A block groups multiple lines inside braces and uses its final expression as its result.",
+  reading: "fn total quantity: Int -> Int declares a function taking an integer quantity and returning an integer total. The braces after = form its body block. let names the unit price 20 as unitPrice, then names quantity * unitPrice as subtotal.",
+  result: "total 3 supplies quantity 3. The subtotal is 3 * 20, or 60; the final subtotal + 5 is 65. That last expression supplies the whole block’s value and therefore total’s return value. No return statement is needed."
 }
+
+pub fn title -> String = (copy ()).title

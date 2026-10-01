@@ -1,28 +1,67 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.cancellation-resources" "/docs/language/effects/cancellation-and-resources/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-cancellation-resources",
         localized "Scoped acquisition and release" "使い終わったリソースを必ず解放する"
       )] [CodeExample (
         "effects-invalid-finalizer",
-        localized "A finalizer with recoverable failures cannot be registered" "回復可能な失敗がある後片付けは登録できない"
+        localized "A finalizer with recoverable failures cannot be registered"
+      "回復可能な失敗がある後片付けは登録できない"
       )] [
-        [InternalLink
-      (localized "Defects" "想定外の不具合（defect）", "/docs/language/effects/defects/")],
-        [InternalLink (
-          localized "Scheduler fairness" "実行順と公平性",
-          "/docs/language/effects/scheduler-fairness/"
-        )],
-        [InternalLink
-      (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/")]
+        [InternalLink (localized "Defects" "想定外の不具合（defect）", "/docs/language/effects/defects/"), Words (localized ": Separate expected failure from a runtime defect" "：想定した失敗と実行時の不具合を区別する")],
+        [InternalLink (localized "Scheduler fairness" "実行順と公平性", "/docs/language/effects/scheduler-fairness/"), Words (localized ": Place checkpoints between pieces of work" "：小さな仕事の間に切り替え地点を置く")],
+        [InternalLink (localized "The Effect type" "Effect型", "/docs/language/effects/effect-type/"), Words (localized ": Distinguish an Effect value from its execution" "：Effectの値と実行を区別する")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "lifecycle-reader-resources",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "42\nBA\nexpected\nBAC"),
+        CodeExample (
+          "lifecycle-reader-resources-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

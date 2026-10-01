@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  setup: "import * as nonempty names std/non-empty-list. singleton 10 constructs a NonEmptyList containing only 10. cons 10 `[20, 30] attaches a required first element to an ordinary List. The backtick before [ marks a List literal; [20, 30] without it is an Array. Calls separate arguments with spaces.",
+  codeTitle: "Complete program: singleton and multiple elements",
+  outputTitle: "Output",
+  comparisonTitle: "Keep the guarantee in TypeScript",
+  comparisonBefore: "TypeScript can express a nonempty input as readonly [T, ...T[]]. slice(1) returns an ordinary array that may be empty. Seseragi makes the same change in the guarantee, from NonEmptyList<A> to List<A>; the collection representation differs.",
+  comparisonAfter: "The TypeScript examples print arrays as JSON. Seseragi show prints a List with its leading backtick. Those display formats describe different collection types, rather than different element values.",
+  detailTitle: "Input guarantee and result shape",
+  details: [
+    "There is no empty NonEmptyList input to test. The important boundary is a singleton: removing its first item leaves zero items, which an ordinary List can represent.",
+    "tail does not change the original NonEmptyList. It returns the remaining List, not a count and not an optional wrapper. Use head for the first item or toList to retain every item."
+  ],
+  summary: "Return the elements after the first as an ordinary List. A one-element input produces an empty List.",
+  taskTitle: "Keep the values after the first",
+  purpose: "After consuming the first item of a known nonempty collection, tail gives you the remaining items. Those remaining items may be empty even though the original collection was not.",
+  after: [
+    "The one-element input produces `[], an empty List. The longer input produces `[20, 30], keeping the remaining order. The result is List<Int> directly, not Maybe<List<Int>> and not NonEmptyList<Int>.",
+    "pub effect fn main is the entry function. do runs the println output steps in order. show converts each result to display text; the collection operations do not print or change their inputs."
+  ]
+}

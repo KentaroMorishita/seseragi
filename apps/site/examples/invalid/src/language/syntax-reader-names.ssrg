@@ -1,0 +1,2 @@
+let UserName = "Aki"
+pub effect fn main = println UserName

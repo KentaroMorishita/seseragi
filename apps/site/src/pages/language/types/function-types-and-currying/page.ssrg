@@ -1,60 +1,78 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
 import * as guide from "./guide"
-import { localized } from "../../../../model/locale"
+import { LocalizedText, localized } from "../../../../model/locale"
 import {
-  BulletList,
+  Article,
+  Block,
   CodeExample,
-  InlineCode,
+  Heading,
   InternalLink,
   PageDefinition,
+  Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
-import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  typePage "language.types.function-types" "/docs/language/types/function-types-and-currying/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "function-application",
-      localized "Curried declaration and partial application" "引数を一つずつ渡し、残りを待つ関数を作る"
-    ),
-    BulletList [
-      [
-        InlineCode "Int -> Int -> Int",
-        Words (localized " means Int -> (Int -> Int)." " はInt -> (Int -> Int)を意味します。")
-      ],
-      [InlineCode "add 1", Words (localized " has type Int -> Int." " はInt -> Int型です。")],
-      [
-        InlineCode "fn clock -> Instant",
-        Words (
-          localized " has type Unit -> Instant and is called as clock ()."
-            " は()を受け取りInstantを返す関数です。clock ()で呼びます。"
-        )
-      ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "(Int -> Int) -> Int",
-      Words (
-        localized " is a different explicitly grouped type."
-            " は括弧でまとめた関数を一つ受け取るため、括弧のない型とは異なります。"
-      )
-    ],
-    [
-      InlineCode "clock",
-      Words (localized " alone remains a function value." " 単体は関数値のままです。")
-    ]
-  ]] [
-    [InternalLink (
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (". " + english) ("。" + japanese))
+  ])
+}
+
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  let related = [
+    (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Annotations and inference" "型注釈と推論",
       "/docs/language/types/annotations-and-inference/"
-    )],
-    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")]
+    ),
+    (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")
   ]
+  PageDefinition {
+    id: "language.types.function-types",
+    path: "/docs/language/types/function-types-and-currying/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [CodeExample
+          ("pilot-currying", localized english.exampleTitle japanese.exampleTitle)],
+      [Heading
+          ("reading-the-example", localized "Read the remaining function" "残りの引数を待つ関数を読む")],
+      paragraphs english.reading japanese.reading,
+      [Terminal (localized "Output" "実行結果", "3, 3")],
+      [Heading
+          ("why", localized "Fix an input once and reuse the function" "一つの入力を固定して使い回す")],
+      paragraphs english.purpose japanese.purpose,
+      [Heading ("rules", localized "Arrow grouping and argument checks" "矢印のまとまりと引数の検査")],
+      paragraphs english.rules japanese.rules,
+      [Heading (
+        "mistakes",
+        localized "A function is not its eventual result" "関数そのものと、計算結果を区別する"
+      )],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample ("pilot-currying-invalid", localized "Rejected example" "受け付けられない例")],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

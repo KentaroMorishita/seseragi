@@ -1,0 +1,4 @@
+fn lineTotal price: Int -> quantity: Int -> Int = price * quantity
+
+let total = lineTotal 20 3
+pub effect fn main = println total

@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "二つの値に追従する合計を作るには",
-  summary: "派生Signalは、指定したSignalから現在値を計算します。元のSignalが更新されると、合計などの派生値も更新に合わせて再計算します。",
-  reading: "leftの初期値は1、rightは2です。combine add left rightは、二つの現在値をaddへ渡す読み取り専用のtotalを作ります。トランザクションでleftを10、rightを20にすると、その更新後の値からtotalを再計算します。",
-  result: "stableTotalは30を返します。二つの更新をまとめたため、片方だけ古い一時的な合計は通知しません。どの値から計算するかはcombineの引数に書いてあり、関数内の読み取りから依存先を自動で推測しません。"
+  question: "価格が変わるたびに、送料込みの合計も変わるようにするには",
+  summary: "元のSignalから計算する読み取り専用のSignalを作れます。計算に使う元の値を明示するので、値が変わるたびに自分で合計を書き直す必要はありません。",
+  reading: "priceとshippingは更新可能な価格と送料です。最初のsignals.mapは値をそのまま返す関数から、読み取り専用のpriceValuesとshippingValuesを作ります。doubledは価格を2倍にするSignal、totalはそれと送料を足すSignalです。",
+  result: "価格10と送料2から22を読み、まとめて価格20と送料5へ更新したあと45を読みます。beforeは22という読み取り時点の値なので、更新後もその整数自体は変わりません。変化に追従するtotalと、読んだ整数を区別してください。"
 }
+
+pub fn readerBridgeOne -> String =
+  "addは整数二つを受け取って足す通常の関数です。f <$> sourceは、sourceの値にfを適用するSignalを作ります。add <$> doubledは、価格を受け取ったaddの残りの関数を持つSignalです。<*> shippingValuesで送料のSignalを組み合わせ、合計のSignalにします。これがここでいうApplicativeの組み合わせです。"
+
+pub fn readerBridgeTwo -> String =
+  "\\value: Int -> valueは同じ値を返す関数、value * 2は整数の乗算です。派生Signalを作るmapや演算子は純粋な計算ですが、現在値を得るsignals.readはTaskを返すので、mainのdoで<-を使います。変更計画をtransactionへ渡すと、すべての元の値が揃ってから派生値を安定させ、通知します。"
+
+pub fn readerMistake -> String =
+  "Signalには>>=で次のSignalを選ぶMonadの実装はありません。この例はその制約で拒否されます。値によって参照先を切り替える場合はsignals.switchMapを明示してください。関数の中でたまたま読んだSignalが自動で依存先になる仕組みでもありません。"
+
+pub fn readerCaption -> String = "二倍した価格と送料をSignalのまま組み合わせる"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "leftの初期値は1、rightは2です。combine add left rightは、二つの現在値をaddへ渡す読み取り専用のtotalを作ります。トランザクションでleftを10、rightを20にすると、その更新後の値からtotalを再計算します。"
+
+pub fn readerLegacyResult -> String =
+  "stableTotalは30を返します。二つの更新をまとめたため、片方だけ古い一時的な合計は通知しません。どの値から計算するかはcombineの引数に書いてあり、関数内の読み取りから依存先を自動で推測しません。"

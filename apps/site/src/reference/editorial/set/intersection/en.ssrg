@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Keep members found in both Sets",
+  purpose: "Use intersection for values shared by two Sets. Pass right first, then left; the output follows the left order.",
+  reading: "The common members are 1 and 2. sets.intersection right left returns [1,2], while swapping the inputs returns [2,1], following the other source order.",
+  boundaries: "If either side is empty, the result is empty. Both original Sets remain unchanged.",
+  rules: "Only left members also present in right are kept, in left insertion order. Swapping operands preserves membership, not necessarily display order. Eq/Hash are used to test membership.",
+  mistake: "The TS counterpart filters [...left] with right.has, using the same source order. The helper accepts left then right; Seseragi accepts right then left. This comparison uses explicit existing Array/Set operations.",
+}

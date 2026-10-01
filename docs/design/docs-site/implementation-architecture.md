@@ -4,8 +4,11 @@
 
 `apps/site` is the only active official-site implementation. It owns the main
 language entrance, Language Reference, Standard Library, Examples and Releases.
-Playground remains an independent application, and its Tour is the sole ordered
-learning path.
+Playground remains an independent application, and its Tour owns the interactive
+course. The Docs also own the introduction, local concept explanations and
+practical first-run path defined in `site-architecture.md`; none requires a
+Tour visit. The #697 page map is a design input, not a claim that the first-run
+page is already implemented.
 
 The former `apps/docs` implementation is removed. The new application does not
 keep compatibility readers, copied CSS, a second renderer or a second content
@@ -176,11 +179,41 @@ canonical examples ── BuildInput ── compiler Reference
 
 The site must compile with the repository CLI, produce deterministic static
 routes, render at desktop and mobile widths without horizontal overflow, and
-contain no unresolved build sentinels before Vercel preview. The current output
-contains 3,938 English/Japanese routes: ninety-four authored site and
-documentation pages plus 63
-compiler-owned module pages and 1,812 compiler-owned symbol and instance pages
-per locale.
+contain no unresolved build sentinels before Vercel preview. The generated
+manifest records the complete bilingual route inventory, including every
+authored page and all compiler-owned modules, symbols and instances. Static
+generation is not a substitute for browser or reader acceptance.
+
+### Bounded process rendering
+
+The host sends a versioned `RenderRequest` envelope around the complete,
+unchanged `BuildInput`. A `plan` request returns the full ordered English-then-
+Japanese route inventory from the typed catalog, without producing HTML. The
+host then requests contiguous batches of at most 32 pages. Each fresh process
+reconstructs the same full catalog and supplies it to `renderDocument`; only
+the output selection changes. Sidebar entries, section-local previous/next,
+locale links and related destinations are never filtered to the batch.
+
+Each host invocation uses a unique temporary transport directory, including
+when two callers share the same compiled entry. It removes only its own
+transport files after success or failure.
+
+A response states its protocol version, mode, offset and full catalog count.
+The host rejects unsafe or duplicate planned routes, invalid ranges, changed
+catalog counts, missing or reordered results, and extra routes. The full
+inventory must be generated exactly once before the existing global link,
+fragment, translation and coverage checks run. Publication and atomic staging
+remain after successful whole-site validation; an interrupted batch cannot
+publish a partial site. A timeout applies to each render process; the complete regression build also
+has a deadline.
+
+This boundary prevents one Seseragi process from retaining and JSON-encoding
+every page's HTML at once. It does not change the compiler or runtime JSON
+implementation, or move page prose/navigation/HTML into TypeScript. All batches
+receive the same serialized external metadata. Direct `renderDocument` tests
+can continue constructing `BuildInput` without transport selection fields.
+The deterministic-build gate still builds the complete site twice and compares
+its manifest and file hashes.
 
 ## Style ownership
 

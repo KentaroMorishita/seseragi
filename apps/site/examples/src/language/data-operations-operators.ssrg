@@ -1,0 +1,13 @@
+newtype Score = Int
+
+fn points score: Score -> Int = match score {
+  Score value -> value
+}
+
+impl Score {
+  operator + self -> other: Score -> Score = Score (points self + points other)
+}
+
+let total = Score 20 + Score 22
+
+pub effect fn main = println (points total)

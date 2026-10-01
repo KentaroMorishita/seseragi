@@ -37,6 +37,7 @@ TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構
 
 - **[Playground](https://seseragi.vercel.app/)** — browser上で編集・型検査・実行・HTML Preview
 - **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello worldからEffect、Signal、Web UIまで順に試す
+- **[First program](https://seseragi-docs.vercel.app/ja/docs/first-run/)** — 公開済みCLIの導入から、自分のファイルの型検査・実行まで
 - **[Local Web Getting Started](./docs/GETTING_STARTED.md)** — project作成からVS Code、dev、production buildまで
 - **[Runnable samples](./examples/samples/README.md)** — 現行compilerで実行されるsample catalog
 - **[VS Code extension](./extensions/seseragi/README.md)** — syntax highlight、hover、completion、diagnostic、formatter
@@ -101,7 +102,17 @@ Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffect
 
 ## Quick start
 
-必要なtoolchainはRustとBunです。まずCLIをGitHubのmain branchからinstallします。
+初めて実行する場合は、[最初のプログラムを実行する](https://seseragi-docs.vercel.app/ja/docs/first-run/)
+へ進んでください。公開済みのCLIとBunを導入し、自分の`main.ssrg`を作成して型検査・実行する、
+repositoryのcheckoutが不要な手順です。検証したOS・versionと、未検証の配布先を区別しています。
+コンパイル済みのnative archiveを使う場合、Rustは不要です。
+
+Web appを作る場合は、別の[Local Web Getting Started](./docs/GETTING_STARTED.md)を使います。
+project作成、VS Code、development server、production buildを扱う手順です。
+OS別archive・checksum・release identityの詳細は[release contract](./docs/RELEASE.md)が正本です。
+
+main branchからcompilerをbuildして開発する場合に限り、RustとBunを用意してCLIをinstallします。
+これは公開済みreleaseを固定する導入方法ではありません。
 
 ```sh
 cargo install \
@@ -112,57 +123,7 @@ cargo install \
 seseragi --version
 ```
 
-tag releaseでは、platform別の1 archiveに`seseragi` CLIと`seseragi-lsp`を同梱します。
-macOS / Linuxの`tar.gz`は両binaryの実行権限を保持し、Windowsは`.zip`です。archiveと
-同名の`.sha256`を検証して展開する手順は[release contract](./docs/RELEASE.md)にあります。
-
-以後はrepository内でも`cargo run -p`を付けず、install済みの`seseragi`を直接使えます。
-
-最初のlocal Web appは、一操作でcanonical starterから作成できます。project内で追加の
-package installは不要です。
-
-```sh
-seseragi new web hello-web
-cd hello-web
-seseragi dev --open
-```
-
-編集後にdevelopment serverを`Ctrl-C`で停止し、同じmanifest targetからproduction
-outputを作ります。
-
-```sh
-seseragi build .
-```
-
-VS Code / LSPを含む手順は[Local Web Getting Started](./docs/GETTING_STARTED.md)にまとめています。
-
-```sh
-# canonical Hello worldをcompileして実行
-seseragi run examples/samples/hello-world/main.ssrg
-
-# TypeScript成果物をdist/へ生成して実行
-seseragi build examples/samples/hello-world/main.ssrg
-bun run dist/entry.ts
-
-# Web UIを自己完結した静的配信directoryへbundle
-seseragi build --target web \
-  crates/seseragi-cli/tests/fixtures/web-project
-python3 -m http.server --directory dist 8080
-
-# formatter
-seseragi format --check \
-  examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
-```
-
-`run`と`build`はsingle fileに加えて、`seseragi.toml`を持つlocal packageも受け取ります。
-`build --target web`はruntimeを`assets/app.js`へ内包し、`index.html`、source map、最小の
-baseline CSS、web専用build markerを生成します。`dist/`以外を使う場合は
-`--out-dir path/to/site`を指定します。生成directoryはrepositoryやPlaygroundを参照せず、
-任意のstatic serverでそのまま配信できます。Playground固有のutility CSSは含めず、
-`assets/app.css`はhost baselineだけを所有します。application固有styleはsource側で指定します。
-生成物の構成、project discovery、release identityは
-[implementation documentation](./docs/IMPLEMENTATION.md)と
-[release contract](./docs/RELEASE.md)を参照してください。
+repositoryの開発用commandは、以下のPlayground / Development節を参照してください。
 
 ## Playground
 

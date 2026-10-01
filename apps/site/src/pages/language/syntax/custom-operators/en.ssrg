@@ -1,21 +1,45 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Custom operators and fixity",
   summary: (explanation ()).summary,
-  formsTitle: "Declare the symbol, grouping, and operation",
-  formsBody: "operator declares an operator symbol and its function. In operator<A> infixr 5 <+> left: A -> right: A -> A where Semigroup<A> = append left right, <+> groups to the right at precedence 5. append combines left and right, returning an A value. where Semigroup<A> requires an append implementation for A. Import it from another module with import { operator <+> }.",
-  typingBody: "left <+> right is the same function call as (<+>) left right. You can supply only its first argument. Operator names and ordinary value names are separate. To use an existing operator for a particular type, use the corresponding trait or a struct/newtype operator declaration rather than declaring a new symbol.",
-  evaluationBody: "infixl groups left and infixr groups right. Repeated uses of an infix operator require parentheses to choose grouping. Precedence ranges from 0 to 8; larger numbers group more tightly. Function application and dot access group more tightly still. Within one module, an operator can be used before its declaration.",
-  invalidTitle: "Do not redefine reserved symbols",
-  invalidBody: "A symbol uses at least two permitted ASCII operator characters. Standard operators, ->, <-, range and comment symbols, ??, and := are reserved. A symbol made only of angle brackets is not allowed. Custom prefix and postfix operators are not supported. A single & combines requirements.",
-  diagnosticsBody: "Importing the same symbol from several sources makes it ambiguous. When combining equal-precedence operators with left and right grouping, add parentheses to state the grouping.",
+  exampleTitle: "Define a symbol joining two strings with a space",
+  purpose: [
+    "A custom operator lets you write a two-argument function as a symbol between its values, such as left <+> right.",
+    "Use this feature after ordinary calls and precedence are familiar. The string-joining example is a small demonstration. When introducing symbols, consider whether readers understand them, not only whether they are shorter.",
+  ],
+  reading: [
+    "operator declares the operation and <+> is its new symbol. left: String and right: String are the two parameters; the final String is the return type.",
+    "The body left + \" \" + right inserts one space between the strings. \"Seseragi\" <+> \"docs\" passes those two strings to that body.",
+    "infixr 4 specifies precedence 4 and right grouping. a <+> b <+> c means a <+> (b <+> c). It does not request right-to-left argument evaluation.",
+    "label is Seseragi docs and main prints it. Parenthesizing the symbol also makes an ordinary function call possible: (<+>) \"Seseragi\" \"docs\".",
+  ],
+  rules: [
+    "Declare the operator at top level. left <+> right is the call (<+>) left right. Supplying just the first argument can create a function waiting for the next value.",
+    "infixl groups left and infixr groups right. infix is non-associative, so repeated uses need parentheses. Precedence is an integer from 0 to 8; higher values bind more tightly. A custom operator cannot bind more tightly than application or dot/index access.",
+    "A symbol combines at least two permitted ASCII characters: ! $ % & * + - . / : < = > ? @ ^ | ~. Standard operators, ->, <-, .., ..., //, ??, and := are reserved. Symbols made only from < and > are also forbidden. Custom prefix and postfix operators are not supported.",
+    "A single & is a different contextual symbol for combining required services in Effect/Stream types. It is neither an ordinary value operator nor a general intersection type.",
+    "Operator names are separate from ordinary value names. Import one explicitly with a form such as import { operator <+> }. Bringing the same symbol in from several modules is ambiguous. Use parentheses when mixing equal-precedence operators with conflicting left/right grouping.",
+    "Declarations are collected from the module interface before bodies, so the operator can be used earlier in the same source. Implementing a standard operator such as + for a particular type is separate: use the corresponding trait implementation or a struct operator declaration.",
+    "In a more general declaration, A in operator<A> is a type parameter. where Semigroup<A> requires an append operation combining two A values into an A; append left right can then be the body. You do not need that constraint to understand the initial String-only example.",
+  ],
+  mistakes: [
+    "The ^ below is only one character, so it cannot name a custom operator and produces SES-P0001. Choose an unreserved symbol with at least two characters, and declare two parameters.",
+    "infixr means right grouping, not evaluating the right argument first. Indentation also cannot resolve an ambiguous imported symbol or a chain that requires parentheses.",
+  ],
+  related: [
+    "Check grouping between a custom symbol, standard operators, and function application.",
+    "Distinguish ordinary names, reserved words, and contextual names.",
+    "Review calling the operator as a function or supplying some arguments first.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I define a readable operator for my operation?",
-  summary: "A custom binary operator names a function used between two operands. Its declaration also states how expressions with that operator group.",
-  reading: "The example's <+> joins two String arguments, left and right, with append. infixr 4 selects right grouping at precedence 4. A chain a <+> b <+> c therefore means a <+> (b <+> c).",
-  result: "label is \"Seseragi docs\". infixr determines grouping; it does not change argument evaluation from left-to-right to right-to-left. Import a custom operator explicitly with operator when using it from another module."
+  question: "How do I give my operation an operator symbol?",
+  summary: "A custom operator is a function written between two values. Declare its symbol, precedence, and left/right grouping.",
+  reading: "This is an advanced spelling to consider after ordinary calls. Begin with two String inputs, without type parameters or traits.",
+  result: "\"Seseragi\" <+> \"docs\" calls the declared function, inserts a space, and returns Seseragi docs.",
 }

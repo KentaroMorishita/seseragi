@@ -1,30 +1,82 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  Inline,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import { conceptPage } from "../concept"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  conceptPage "language.model.programs" "/docs/language/model/programs/" (en.copy ()) (ja.copy ()) [CodeExample
-      (
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn related pair: ((String, String, String), (String, String)) -> Array<Inline> =
+  match pair {
+    ((english, japanese, path), (purpose, purposeJa)) -> [
+      InternalLink (localized english japanese, path),
+      Words (localized (". " + purpose) ("。" + purposeJa))
+    ]
+  }
+
+fn content -> PageDefinition = {
+  let details: Array<Block> = arrays.concat [
+    [
+      CodeExample ("model-reader-programs", localized (en.caption ()) (ja.caption ())),
+      Terminal (localized "Output" "実行結果", "Hello, Aki!"),
+      Heading
+        ("reading-the-example", localized (en.readingTitle ()) (ja.readingTitle ()))
+    ],
+    map paragraph (arrays.zip (ja.reading ()) (en.reading ())),
+    [
+      Paragraph ([Words (localized (en.moduleBoundary ()) (ja.moduleBoundary ()))]),
+      Heading ("run", localized (en.runTitle ()) (ja.runTitle ())),
+      Paragraph ([Words (localized (en.runNotice ()) (ja.runNotice ()))]),
+      Terminal (
+        localized "From the directory containing main.ssrg" "main.ssrgのあるフォルダーで実行",
+        "seseragi lint main.ssrg\nseseragi run main.ssrg"
+      ),
+      Heading ("mistakes", localized (en.invalidTitle ()) (ja.invalidTitle ())),
+      Paragraph ([Words (localized (en.invalid ()) (ja.invalid ()))]),
+      CodeExample (
+        "model-reader-entry-rejected",
+        localized (en.invalidCaption ()) (ja.invalidCaption ())
+      ),
+      Heading
+        ("explicit-contract", localized (en.contractTitle ()) (ja.contractTitle ())),
+      Paragraph ([Words (localized (en.contractNotice ()) (ja.contractNotice ()))]),
+      CodeExample (
         "language-program-entry",
-        localized "Declare the entry point and required console service"
-      "実行入口と必要なコンソールを宣言する"
-      )] [
-        [InternalLink (
-          localized "Function application" "関数適用",
-          "/docs/language/syntax/function-application/"
-        )],
-        [InternalLink (
-          localized "Backend-independent semantics" "生成先に依存しない意味",
-          "/docs/language/model/backend-independent-semantics/"
-        )],
-        [InternalLink (
-          localized "What Seseragi is" "Seseragiとは",
-          "/docs/language/model/what-is-seseragi/"
-        )]
-      ]
+        localized (en.contractCaption ()) (ja.contractCaption ())
+      ),
+      Terminal (
+        localized "Output of the explicit-contract example" "明示形式の例の出力",
+        "Hello, Seseragi!"
+      )
+    ]
+  ]
+  let links = [
+    ("Run your first program", "最初のプログラムを実行する", "/docs/first-run/"),
+    ("Executable entry points", "実行入口", "/docs/language/modules/entry-points/"),
+    (
+      "Effect runtime boundaries",
+      "Effectを実行する境界",
+      "/docs/language/effects/runtime-boundaries/"
+    )
+  ]
+  let relatedBlocks =
+    map related (arrays.zip (arrays.zip (ja.related ()) (en.related ())) links)
+  conceptPage "language.model.programs" "/docs/language/model/programs/" (en.copy ()) (ja.copy ()) details relatedBlocks
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

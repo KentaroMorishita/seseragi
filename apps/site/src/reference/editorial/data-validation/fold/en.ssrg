@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Call only the function for the selected Left or Right branch and return its result.",
+  taskTitle: "Turn either outcome into one display message",
+  purpose: "Convert a checked seat count or its failure reason into a String for the screen. The result of fold is not another Either.",
+  setup: "Use either. for the imported std/either operations. In Either<String, Int>, Left contains a String reason and Right contains an Int seat count. fn defines a function, : annotates its argument, and -> String states the result type. The if in requireSeats puts only positive counts in Right.",
+  after: [
+    "failureMessage accepts error; successMessage accepts seats. The expression after = is the returned value. Pass fold the failure function, the success function and then the result, separated by spaces.",
+    "For Right 2, only successMessage 2 runs. For Left, failureMessage receives the reason. The selected function body runs once; the unused function body does not run.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies which object shape was returned. When it is true, read the successful value; when false, read the error field. These functions return data rather than throwing exceptions.",
+  comparisonAfter: "The TypeScript conditional also calls only the selected function. Seseragi fold provides a reusable shape for obtaining one common result from the two outcomes. Ordinary branching in either language remains a readable choice for a small display function.",
+  details: [
+    "In fold<E, A, B>, E is the failure type, A the successful type, and B the common return type of both functions. Here they are String, Int and String. A String-returning callback and an Int-returning callback cannot be combined in this form.",
+    "Skipping the unused callback body does not delay the argument expressions themselves. All three argument expressions are evaluated before the fold call."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

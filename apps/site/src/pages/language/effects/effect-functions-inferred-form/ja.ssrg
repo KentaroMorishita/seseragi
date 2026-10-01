@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Effectの型を、本体から決めてもらうには",
-  summary: "effect fnの->、with、fails、whereをすべて省略すると、本体から必要なサービス・回復可能な失敗・成功値の型を推論します。",
-  reading: "announceInferredの本体はprintln messageです。printlnはConsoleを必要とし、ConsoleErrorで失敗する可能性があるため、Effect<Console, ConsoleError, Unit>を推論します。値を作るだけでは出力しません。",
-  result: "announceInferredの戻り値はEffect<Console, ConsoleError, Unit>です。短い宣言でも、必要なサービスと失敗型は型情報に記録されます。一部だけ型を指定したい場合は、->で始まる明示形式へ変更してください。"
+  question: "出力する関数の型を、本体から決めてもらうには",
+  summary: "引数の型は書き、->、with、fails、whereをすべて省くと、effect fnの本体から必要な機能・失敗・成功の型を決めます。",
+  reading: "announceの本体はprintln messageです。sendにはString -> Effect<{ console: Console }, ConsoleError, Unit>と型を書いてあり、推論されたannounceをその型の関数として使えることを確認しています。",
+  result: "mainを実行するとreadyが一行表示されます。短い宣言でも、必要なConsoleや起こり得るConsoleErrorが消えるわけではありません。mainもその型を使って実行します。",
 }
+
+pub fn readerCaption -> String = "推論した型を、明示した型と照合する"
+
+pub fn readerBridgeOne -> String =
+  "String ->は文字列を受け取る関数、その後のEffectは戻り値です。第一の型引数はConsoleそのものではなく、{ console: Console }という要求のレコードです。sendは別の処理を追加せず、announceへ付けた別の名前です。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptの関数で戻り値の型を省き、本体から推論する場合が手掛かりになります。Seseragiの短いeffect fnでは成功値だけでなく、必要な機能と回復可能な失敗も決まります。値を計算しただけで外部処理を実行する仕組みではありません。"
+
+pub fn readerInvalidCaption -> String = "推論形式の途中にwithだけを足す"
+
+pub fn readerMistake -> String =
+  "->を省いたままwith Consoleを書くとSES-P0001です。全部を推論するならwithも消します。明示したいなら-> Unit with Console fails ConsoleErrorのように成功時の型から書きます。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "announceInferredの本体はprintln messageです。printlnはConsoleを必要とし、ConsoleErrorで失敗する可能性があるため、Effect<{ console: Console }, ConsoleError, Unit>を推論します。値を作るだけでは出力しません。"
+
+pub fn readerLegacyResult -> String =
+  "announceInferredの戻り値はEffect<{ console: Console }, ConsoleError, Unit>です。短い宣言でも、必要なサービスと失敗型は型情報に記録されます。一部だけ型を指定したい場合は、->で始まる明示形式へ変更してください。"

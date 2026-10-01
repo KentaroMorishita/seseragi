@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { correctionEditorial } from "../../correction-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  correctionEditorial "std/non-empty-list::tail" "function" "api-correction-nonempty-tail" "api-correction-nonempty-tail-ts" "`[]\n`[20, 30]" (en.copy ()) (ja.copy ())

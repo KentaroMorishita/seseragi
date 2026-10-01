@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Turn one Char into a one-Char comparison form",
+  purpose: "Use simpleCaseFold to compare Greek capital sigma Σ with final lowercase sigma ς without their case-form distinction. It changes both to the comparison form σ; this transformation is called case folding. Input and output are Char. A Char holds one Unicode scalar: a Unicode code-point value excluding the numbers reserved for surrogates. Single quotes make a Char and double quotes make a String. One visible character can contain several scalars.",
+  reading: "let names 'Σ' as capital and 'ς' as finalForm. == tests equality; the original values are different scalars, so same scalar is False. Passing each to simpleCaseFold gives σ, so same simple fold is True. The capital fold and final fold lines display the returned Char as well as demonstrating the comparison. The original values capital and finalForm remain unchanged.",
+  boundaries: "Simple folding always maps one scalar to one scalar. ß stays ß, while ẞ becomes ß; the operation cannot expand ß into two s scalars. Dotted capital İ also stays İ, so its folded result differs from the folded result of i. The signature Char -> Char expresses this one-scalar input and output requirement.",
+  rules: "The operation follows Unicode’s default simple folding, using the C (common) and S (simple) mappings in CaseFolding data. It returns the original Char where no mapping exists. It excludes full-only expansions and the special Turkic T mappings. There is no locale argument and no normalization. Each call looks up one scalar in fixed Unicode 17.0.0 tables and produces one scalar. Since both Σ and ς produce σ, the result alone cannot recover the original spelling.",
+  mistake: "Lowercasing for display is a different task. For example, lowercasing ς leaves it as ς, whereas this function produces σ. Keep capital or finalForm when the original spelling is needed for display. Choose fullCaseFold for whole-String comparison or expansion such as ß to ss. Passing \"Σς\" to simpleCaseFold is a type error because String is not Char. Use the appropriate String operation instead of trying to fit several characters into one Char.",
+}
+
+pub fn comparison -> String =
+  "For the equality questions in this example, TypeScript can use a Unicode-aware case-insensitive regular expression. In /^Σ$/iu, i requests case-insensitive matching, u selects Unicode-aware interpretation, and ^ and $ mark the start and end. These are the same known one-scalar inputs, with no line terminators. Σ and ς match, as do ß and ẞ, while İ and i do not."
+
+pub fn comparisonBoundary -> String =
+  "The expression returns a boolean, not a transformed Char. No standard JavaScript string method directly returns the same scalar-to-scalar result as simpleCaseFold. toLowerCase is not a substitute: ς remains ς, while İ becomes i followed by a combining dot, two scalars. Producing the transformed value needs Unicode case-fold data or a library with an identifiable version. Regular-expression data depends on the engine, so these matching comparisons do not establish agreement for all Unicode values."

@@ -1,29 +1,63 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.fiber-supervision" "/docs/language/effects/fiber-supervision/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-fiber-supervision",
         localized "Forking and joining a scoped child" "子の処理を開始し、完了を待つ"
       )] [] [
-        [InternalLink (
-          localized "Scheduler fairness" "実行順と公平性",
-          "/docs/language/effects/scheduler-fairness/"
-        )],
-        [InternalLink (
-          localized "Cancellation and resources" "キャンセルとリソースの管理",
-          "/docs/language/effects/cancellation-and-resources/"
-        )],
-        [InternalLink (
-          localized "Effect runtime boundaries" "Effectを実行する境界",
-          "/docs/language/effects/runtime-boundaries/"
-        )]
+        [InternalLink (localized "Scheduler fairness" "実行順と公平性", "/docs/language/effects/scheduler-fairness/"), Words (localized ": Place checkpoints between pieces of work" "：小さな仕事の間に切り替え地点を置く")],
+        [InternalLink (localized "Cancellation and resources" "キャンセルとリソースの管理", "/docs/language/effects/cancellation-and-resources/"), Words (localized ": Register cleanup for success, failure and cancellation" "：成功・失敗・キャンセルに備えて後片付けを登録する")],
+        [InternalLink (localized "Effect runtime boundaries" "Effectを実行する境界", "/docs/language/effects/runtime-boundaries/"), Words (localized ": Find where the host executes an Effect" "：実行環境がEffectを動かす入口を確認する")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "lifecycle-reader-fibers",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "42\ntrue\n21"),
+        CodeExample (
+          "lifecycle-reader-fibers-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

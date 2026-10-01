@@ -1,0 +1,9 @@
+import * as text from "std/text"
+
+pub effect fn main = do {
+  _ <- println (text.replace "a" "X" "banana")
+  _ <- println (text.replace "a" "$&" "cat")
+  _ <- println (text.replace "" ":" "AB")
+  _ <- println (text.replace "x" "X" "cat")
+  println ("[" + text.replace "a" "X" "" + "]")
+}

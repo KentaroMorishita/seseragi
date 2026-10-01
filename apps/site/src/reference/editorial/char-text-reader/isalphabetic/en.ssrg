@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Test whether one Char has Unicode’s Alphabetic property",
+  purpose: "When inspecting the components of text, use isAlphabetic to ask whether A or 漢 has Unicode’s Alphabetic property. It returns True when the property holds and False otherwise; the type with those two values is Bool. Its input Char holds one Unicode scalar: a Unicode code-point value excluding the numbers reserved for surrogates. Single quotes in 'A' make a Char; double quotes make a String. One visible character can contain several scalars.",
+  reading: "let names 'A' as letter, which is passed to unicode.isAlphabetic letter. A and 漢 give True, while the digit 3 gives False. Alphabetic is the name of a Unicode property covering letters from many writing systems, not just English letters. False is an ordinary answer, rather than an input error or compiler diagnostic.",
+  boundaries: "U+0345 is a combining mark used with Greek letters. It gives True even though it is a mark attached to a letter. The combining acute accent U+0301 instead gives False. The number after U+ is a hexadecimal code point; escapes such as \\u{0345} write the scalar with that number. Alphabetic is broader than the general category Letter and includes some marks.",
+  rules: "The signature Char -> Bool means that isAlphabetic takes one Char and returns a Bool. It tests Alphabetic in the pinned Unicode 17.0.0 data without decomposing or normalizing its input. Each call looks up one scalar in a fixed table; it does not scan a whole String. A word, identifier, or allowed-character rule for an input field requires its own chosen conditions.",
+  mistake: "Passing a String with unicode.isAlphabetic \"A\" produces type error SES-T0101 because the argument must be Char. For the single letter in this example, repair it to 'A'. If the actual input is a String, obtain the Char you need through text operations and handle the case where it is absent; do not treat the entire input as one Char. If only A–Z and a–z are allowed, test those ranges explicitly. This property also accepts 漢, so it does not express that narrower condition.",
+}
+
+pub fn comparison -> String =
+  "TypeScript can test the same five inputs with the Unicode-property regular expression /\\p{Alphabetic}/u. \\p{Alphabetic} names the property, u selects Unicode-aware interpretation, and test returns a boolean. Here true and false correspond to Seseragi’s True and False. Substituting \\p{Letter} changes the condition for U+0345 and would not be the same comparison."
+
+pub fn comparisonBoundary -> String =
+  "The comparison uses only known strings containing exactly one valid scalar. JavaScript string itself also permits empty text, multiple scalars, or lone surrogates. On an arbitrary string, this regular expression asks whether any character has the property. Seseragi’s Char type expresses the one-scalar input requirement. Unicode-property data depends on the JavaScript engine; these matching results do not establish equality for every Unicode value."

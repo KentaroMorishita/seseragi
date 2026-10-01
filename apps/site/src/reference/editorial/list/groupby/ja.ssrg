@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "同じキーの値をグループに集める",
+  purpose: "分類ごとに値を整理するときにgroupByを使います。parityは2で割った余りを返します。この例の正の整数では、奇数はキー1、偶数はキー0になります。結果のMapは、各キーとその値のListを対応付けます。",
+  reading: "最初に現れるキーが1、次が0なので、maps.keysはArrayの[1, 0]を表示します。maps.get 1 groupsは奇数のListを持つJustを返します。describeのmatchは、そのListを表示するか、キーがないNothingを処理します。",
+  boundaries: "奇数は3、5、7、偶数は2、4の順です。キー9はありません。空の入力を分類するとMapのサイズは0です。空のグループを先に作る操作ではありません。",
+  rules: "キーは入力順に各要素で一度だけ求めます。キーは初出順、各グループの値は入力順を保ちます。Eq<K>とHash<K>は同じキーを識別するための条件です。適切なハッシュでは、処理量は平均的に要素数に比例します。",
+  mistake: "隣り合う同じ値の区切りではなく、選んだキーで分類します。TypeScriptでもforとMapの配列で同じ処理ができます。ここではMap<K, List<A>>がグループの型を明示し、キーがない場合は空のグループでなくMaybeのNothingになります。",
+}

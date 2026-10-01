@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Find the position of the first matching item",
+  purpose: "Use findIndex when you need the position of a matching item. Pass the predicate first and the array second. Positions start at zero.",
+  reading: "isLarge takes an integer and returns True for values at least 30. In [10, 30, 40], the first match is 30 at position 1. findIndex returns Maybe<Int>: either Just index containing a position or Nothing meaning no match.",
+  boundaries: "describe uses match to handle these two alternatives. The Just index branch gives the contained integer the name index, turns it into text with show, and joins the message. The Nothing branch returns not found. Both the unmatched and empty arrays produce Nothing, so the last two lines are not found.",
+  rules: "Predicates run from the start and stop at the first True. The whole array is visited only when no match is found; empty input calls no predicate. The input is unchanged and work is at most proportional to its length.",
+  mistake: "TypeScript Array.findIndex uses -1 for absence; this operation uses Nothing. Position zero is a valid result. Handle both alternatives with match rather than erasing the missing case into an ordinary number.",
+}

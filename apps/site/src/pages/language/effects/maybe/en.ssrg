@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I use a value that might be absent?",
-  summary: "Maybe<A> distinguishes Just containing a value from Nothing containing no value. Use it for normal absence, such as a search that finds no match.",
-  reading: "displayName checks cached first, then requested, then uses \"anonymous\". ?? unwraps Just's string; its right side is evaluated only for Nothing. Because the operator groups from the right, requested ?? \"anonymous\" supplies the fallback for cached.",
-  result: "With cached = Just \"Aki\", the result is \"Aki\". With both inputs Nothing, it is \"anonymous\". Use match when you need different processing for presence and absence, or Either when absence must carry an explanation."
+  question: "How do I use a fallback display name only when the name is missing?",
+  summary: "When no name is a normal result, represent a present value with Just and an absent one with Nothing. Maybe is the type containing those two alternatives.",
+  reading: "Maybe<String> is either Just carrying a string or Nothing. Just \"Aki\" holds a name. value ?? \"anonymous\" returns the contents of Just, using the fallback only for Nothing.",
+  result: "The output is Aki, anonymous and empty:. The last case puts an empty string in Just. It is still a present value, so it is not replaced by anonymous; only the display prefix empty: remains.",
 }
+
+pub fn readerCaption -> String = "Present, absent and empty-string names"
+
+pub fn readerBridgeOne -> String =
+  "This has a use similar to TypeScript ?? with undefined or null, but Seseragi ?? specifically accepts Maybe. It is not an operator for passing through foreign null values. If a reason for failure is needed, Either can carry it."
+
+pub fn readerBridgeTwo -> String =
+  "<String> specifies the type held by Just. Creating Maybe does not throw an exception. main uses println and \\n to display the three results on separate lines."
+
+pub fn readerInvalidCaption -> String = "A fallback of the wrong type"
+
+pub fn readerMistake -> String =
+  "Putting 0 on the right of Maybe<String> reports SES-T0101. The contents type is String, so use a String fallback such as \"anonymous\". Nothing itself has no place to store a failure reason."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "displayName checks cached first, then requested, then uses \"anonymous\". ?? unwraps Just's string; its right side is evaluated only for Nothing. Because the operator groups from the right, requested ?? \"anonymous\" supplies the fallback for cached."
+
+pub fn readerLegacyResult -> String =
+  "With cached = Just \"Aki\", the result is \"Aki\". With both inputs Nothing, it is \"anonymous\". Use match when you need different processing for presence and absence, or Either when absence must carry an explanation."

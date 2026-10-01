@@ -8,6 +8,8 @@ import {
 } from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
 import { plannedReferenceRoutes } from "../scripts/coverage"
+import { verifyExamplesAndReleases } from "./examples-releases-browser"
+import { verifyFirstRun } from "./first-run-browser"
 import { verifyLanguageMenu } from "./language-menu"
 import { verifyMobileNavigation } from "./mobile-navigation"
 import { verifyReaderArticles } from "./reader-articles"
@@ -119,6 +121,16 @@ try {
   try {
     const browser = await chromium.launch()
     try {
+      await verifyFirstRun(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
+      await verifyExamplesAndReleases(
+        browser,
+        `http://127.0.0.1:${server.port}`,
+        screenshots
+      )
       await verifyReferenceNavigation(
         browser,
         `http://127.0.0.1:${server.port}`,
@@ -784,7 +796,7 @@ try {
         await page.goto(`http://127.0.0.1:${server.port}/docs/`)
         assert.equal(
           await page.locator("h1").textContent(),
-          "Seseragi Reference"
+          "Seseragi Documentation"
         )
         assert.equal(await page.locator(".docs-sidebar").count(), 0)
         assert.equal(await page.locator(".mobile-docs-navigation").count(), 0)
@@ -797,10 +809,16 @@ try {
         assert.ok(documentationText.includes("Collections"))
         assert.ok(
           documentationText.includes(
-            "Use the Tour to learn in order while running code"
+            "The optional Tour lets you practise by running code"
           )
         )
         assert.ok(!documentationText.includes("Get Started"))
+        assert.equal(
+          await page
+            .locator('.article-content a[href="/docs/first-run/"]')
+            .count(),
+          1
+        )
         assert.equal(
           await page
             .locator('a[href="https://seseragi.vercel.app/tour/"]')

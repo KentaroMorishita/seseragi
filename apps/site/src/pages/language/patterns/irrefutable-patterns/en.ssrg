@@ -14,8 +14,28 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Why can I unpack a tuple in let but not demand a first array element?",
-  summary: "An irrefutable pattern matches every value of its input type. let requires one because it has no branch for a failed match.",
-  reading: "A UserId always has its wrapped integer, and a (String, Int) tuple always has two positions. The example can therefore extract rawId, name, and score with let without testing whether those parts exist.",
-  result: "identity is (42, \"Aki\", 100). The example's UserId and tuple patterns always extract their contents. An array has no such guarantee for its first element; use match and handle an empty array when writing [head, ...tail]."
+  question: "Why can let unpack a pair but not require an array’s first element?",
+  summary: "A let pattern must succeed for every value of the input type. This is called an irrefutable pattern. The question is which shapes the type permits, not whether today’s value happens to fit.",
+  reading: "A (String, Int) pair always has a string and an integer, so let (name, count) = pair can unpack both. Array<Int> also permits an empty array, so a first element is not guaranteed.",
+  result: "The output is Notebook: 2, 0 and 10. firstOrZero uses match to return 0 for [] or first for [first, ...rest]. rest receives the remaining elements, which this example does not use.",
 }
+
+pub fn readerCaption -> String = "Guaranteed positions and possibly missing positions"
+
+pub fn readerBridgeOne -> String =
+  "Syntax such as (name, count) that takes a value apart is a pattern. let has no branch for a failed extraction. A fixed pair guarantees both positions."
+
+pub fn readerBridgeTwo -> String =
+  "match can handle different input shapes. [] fits an empty array, while [first, ...rest] fits one or more elements. _ accepts a value without naming it; [...all] takes the entire array regardless of length."
+
+pub fn readerInvalidCaption -> String =
+  "Requiring a first element even from a nonempty literal"
+
+pub fn readerMistake -> String =
+  "let [first, ...rest] = [10, 20] still reports SES-T0101. Array<Int> permits empty values, so this is not a let pattern. Handle the empty case with match, as firstOrZero does above."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

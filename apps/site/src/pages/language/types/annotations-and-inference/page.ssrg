@@ -1,55 +1,83 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
 import * as guide from "./guide"
-import { localized } from "../../../../model/locale"
+import { LocalizedText, localized } from "../../../../model/locale"
 import {
-  BulletList,
+  Article,
+  Block,
   CodeExample,
-  InlineCode,
+  Heading,
   InternalLink,
   PageDefinition,
+  Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
-import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  typePage "language.types.annotations-and-inference" "/docs/language/types/annotations-and-inference/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "function-application",
-      localized "Annotations and inferred immutable values" "関数に型を書き、letの型は右辺から推論する"
-    ),
-    BulletList [
-      [
-        InlineCode "fn add left: Int -> right: Int -> Int",
-        Words
-          (localized " states every parameter and the return type." " はすべての引数と戻り値の型を明示します。")
-      ],
-      [
-        InlineCode "let base = 20",
-        Words (localized " infers a private Int binding." " は非公開のletの型を、右辺からIntと推論します。")
-      ],
-      [
-        InlineCode "let initial: Char",
-        Words (localized " checks the initializer against Char." " は初期値がCharか検査します。")
-      ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "fn add left -> Int",
-      Words (localized " omits the parameter type." " は通常のfnで必要な引数の型を省略しているため、エラーです。")
-    ],
-    [
-      InlineCode "fn add left: Int = left",
-      Words (localized " omits the required return type." " は必要な戻り値の型を省略しているため、エラーです。")
-    ]
-  ]] [
-    [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")],
-    [InternalLink (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
-    [InternalLink (
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (". " + english) ("。" + japanese))
+  ])
+}
+
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  let related = [
+    (
       localized "Function application" "関数適用",
       "/docs/language/syntax/function-application/"
-    )]
+    ),
+    (localized "Built-in types" "組み込み型", "/docs/language/types/built-in-types/"),
+    (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/"),
+    (
+      localized "Effect functions with an inferred contract" "Effect関数の型を推論する形式",
+      "/docs/language/effects/effect-functions-inferred-form/"
+    )
   ]
+  PageDefinition {
+    id: "language.types.annotations-and-inference",
+    path: "/docs/language/types/annotations-and-inference/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [CodeExample
+          ("pilot-annotations", localized english.exampleTitle japanese.exampleTitle)],
+      [Heading
+          ("reading-the-example", localized "Read the function declaration" "関数の宣言を読む")],
+      paragraphs english.reading japanese.reading,
+      [Terminal (localized "Output" "実行結果", "22")],
+      [Heading ("why", localized "State the inputs and result" "受け取る値と返す値を伝える")],
+      paragraphs english.purpose japanese.purpose,
+      [Heading (
+        "rules",
+        localized "Required annotations and the effect fn exception"
+          "注釈が必要な場所とeffect fnの例外"
+      )],
+      paragraphs english.rules japanese.rules,
+      [Heading (
+        "mistakes",
+        localized "Check the value, not just the annotation" "型の指定と実際の値を照らし合わせる"
+      )],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample
+          ("pilot-annotations-invalid", localized "Rejected example" "受け付けられない例")],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

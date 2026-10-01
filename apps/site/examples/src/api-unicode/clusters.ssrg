@@ -1,0 +1,9 @@
+import * as graphemes from "std/text/grapheme"
+import * as text from "std/text"
+
+let label = "A👍🏽e\u{0301}"
+let pieces = graphemes.clusters label
+pub effect fn main =
+  println `pieces: ${pieces}
+same text: ${text.concat pieces == label}
+empty: ${graphemes.clusters ""}`

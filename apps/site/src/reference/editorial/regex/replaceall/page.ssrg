@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::replaceAll" "replaceall" "a$1\\b$1\\\nno digits\n|a|👍|\n|" "a$1\\b$1\\\nno digits\n|a|👍|\n|\na12\\b3\\" (en.copy ()) (ja.copy ())

@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Prepend a required first element to a List to make a NonEmptyList, leaving the supplied List unchanged.",
+  taskTitle: "Join a first score to the remaining scores",
+  purpose: "Use cons when you have a first score and a List of the scores that follow it. The remainder may be empty: the required first argument makes the result nonempty.",
+  setup: "import * as nonempty names std/non-empty-list. `[20, 30] is a List literal; omitting the backtick before [ would make an Array. cons 10 remaining supplies the head 10 and the remaining List as two arguments.",
+  after: [
+    "Displaying the result with toList shows 10, 20, 30 in that order. The original remaining still holds 20, 30. The final cons 10 `[] supplies an empty remainder and constructs a one-element result.",
+    "let names a value. The do in pub effect fn main runs println in order, and show converts a collection to text. List display also carries the backtick prefix."
+  ],
+  comparisonBefore: "TypeScript can construct a new array with [10, ...remaining]. The ... spreads the remaining elements at that position. The readonly [T, ...T[]] annotation retains the required-first-element guarantee.",
+  comparisonAfter: "Both versions return a new sequence with a first element and leave remaining unchanged. TypeScript prints JSON and Seseragi prints List display text, so spacing and the backtick prefix differ.",
+  details: [
+    "cons<A> takes an A followed by a List<A>; the head and tail elements must have the same type. An Array is not a List argument: use List syntax or convert it to a List.",
+    "The result puts the new element first, then preserves the input List order. An empty remainder is valid. If no first value is known and all you have is a possibly empty List, check it with fromList."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input, result and evaluation rules"
+}

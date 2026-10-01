@@ -1,0 +1,2 @@
+import * as effects from "std/effect"
+let jobs = [effects.succeed 1, effects.succeed "two"]

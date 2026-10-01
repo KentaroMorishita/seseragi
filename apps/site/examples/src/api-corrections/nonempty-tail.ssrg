@@ -1,0 +1,7 @@
+import * as nonempty from "std/non-empty-list"
+pub effect fn main = do {
+  let single = nonempty.singleton 10
+  let several = nonempty.cons 10 `[20, 30]
+  println (show (nonempty.tail single))
+  println (show (nonempty.tail several))
+}

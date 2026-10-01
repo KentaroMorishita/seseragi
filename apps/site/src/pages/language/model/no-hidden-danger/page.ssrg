@@ -1,23 +1,51 @@
 import { explainPage } from "../../explanation"
-import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import {
+  Block,
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { readerPrinciplePage } from "../reader-principle"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as guide from "./guide"
+
+fn leading -> Array<Block> = []
+
+fn rejected -> Array<Block> = [
+  CodeExample ("model-reader-absence-invalid", localized "Rejected source" "エラーになるコード"),
+  Terminal (localized "Diagnostic excerpt" "診断の抜粋", "SES-T0301")
+]
+
+fn advanced -> Array<Block> = []
 
 fn content -> PageDefinition =
-  principlePage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) "principle-no-hidden-danger" "not found" [
-    [InternalLink
-        (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/")],
-    [InternalLink (
-      localized "Either and typed results" "Eitherによる成功と失敗",
-      "/docs/language/effects/either/"
-    )],
-    [InternalLink (
-      localized "Effect error channels" "Effectの回復可能な失敗",
-      "/docs/language/effects/error-channels/"
-    )]
+  readerPrinciplePage "language.model.no-hidden-danger" "/docs/language/model/no-hidden-danger/" (en.copy ()) (ja.copy ()) (en.reader ()) (ja.reader ()) "principle-no-hidden-danger" "not found" (leading ()) (rejected ()) (advanced ()) [
+    [
+      InternalLink
+        (localized "Maybe and absence" "Maybeと値の不在", "/docs/language/effects/maybe/"),
+      Words (localized ". How do I handle a missing value?" "。値がない場合をどう扱うか")
+    ],
+    [
+      InternalLink (
+        localized "Either and typed results" "Eitherによる成功と失敗",
+        "/docs/language/effects/either/"
+      ),
+      Words (localized ". How do I return a reason for failure?" "。失敗の理由をどう返すか")
+    ],
+    [
+      InternalLink (
+        localized "Effect error channels" "Effectの回復可能な失敗",
+        "/docs/language/effects/error-channels/"
+      ),
+      Words (
+        localized ". How do I handle failure while running an Effect?"
+        "。Effectの実行中の失敗をどう扱うか"
+      )
+    ]
   ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

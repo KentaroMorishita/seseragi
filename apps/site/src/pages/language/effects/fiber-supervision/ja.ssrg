@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "親の処理が終わったとき、子の処理はどうなるか",
-  summary: "forkは、現在のscopeで子のEffectを開始します。返されるFiberで完了を待ったり停止を要求したりできます。scopeの終了時には、実行機構が未完了の子の停止と後片付けを待ちます。",
-  reading: "forkで成功値21を返す子の処理を開始し、Fiberのハンドルを受け取ります。joinはその子が完了するまで待ち、成功値21を返します。親の処理は21を2倍にして、42で成功します。",
-  result: "この例はjoinで子の完了を待つので、親の成功値は42です。子が未完了のまま親のscopeが終わる場合は、実行機構が子へキャンセルを要求し、後片付けを待ちます。単に待機を止めることと、子へ停止を要求することは別の操作です。"
+  question: "子の処理がまだ動いているときに親の管理範囲を抜けたらどうなるか",
+  summary: "forkで始めた子の処理は、その場のscopeに属します。scopeを抜けると未完了の子へ停止を要求し、子の後片付けが終わるまで待ちます。",
+  reading: "readyとwaitForeverは、一度だけ結果を渡せるDeferredです。子は後片付けを登録してからreadyを完了し、waitForeverを待ちます。親はreadyを待つので、子の準備前にscopeを抜けることはありません。その後42でscopeを終了させます。",
+  result: "42、true、21と表示します。trueは、待機していた子がscope終了でキャンセルされ、releasedの更新まで終わったことを示します。最後は別の子をforkし、joinでその成功値21を受け取る例です。"
 }
+
+pub fn readerBridgeOne -> String =
+  "importのeffectsは実行の操作、deferredは完了を待つ合図、refsは値の保存先を提供します。Neverは型付きの失敗なし、Unitと()は情報を持たない値です。deferred.succeed () readyが合図を完了し、deferred.awaitが待ちます。waitForeverには合図を送らず、scopeによるキャンセルで待機を終えます。 effects.scoped $ do { ... }の$は、後ろのdo全体を一つの引数として渡す記号です。effects.scoped (do { ... })と同じで、このdoの範囲が子とリソースを管理します。"
+
+pub fn readerBridgeTwo -> String =
+  "Fiberは開始した子を指す値です。forkは成功値そのものではなくFiberを返し、joinが成功値を待ちます。mainの<-はその成功値を受け取ります。例の解放処理はrefs.set True releasedで記録を書き換えるだけなので、後片付け自身が外部サービスや待機を必要としません。"
+
+pub fn readerMistake -> String =
+  "拒否例のforkの結果はFiberなので、Task<Int>として整数を直接返せません。成功値を使うにはjoinします。joinする側のキャンセルは待機だけを解除します。子を明示的に止めるにはinterruptを使い、その操作は後片付けの完了まで待ちます。"
+
+pub fn readerCaption -> String = "子の準備を待ち、scope終了で後片付けを完了する"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "forkで成功値21を返す子の処理を開始し、Fiberのハンドルを受け取ります。joinはその子が完了するまで待ち、成功値21を返します。親の処理は21を2倍にして、42で成功します。"
+
+pub fn readerLegacyResult -> String =
+  "この例はjoinで子の完了を待つので、親の成功値は42です。子が未完了のまま親のscopeが終わる場合は、実行機構が子へキャンセルを要求し、後片付けを待ちます。単に待機を止めることと、子へ停止を要求することは別の操作です。"

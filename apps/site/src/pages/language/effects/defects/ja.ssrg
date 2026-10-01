@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "入力が不正なとき、実行を止める不具合として扱うべきか",
-  summary: "defectは、整数の0除算など、処理を停止する不具合です。呼び出し側が予測して扱う不正入力は、回復できる結果の型で返してください。",
-  reading: "checkedDivideは除算前にdivisorを調べます。0ならLeft ZeroDivisorを返すため、不正な除算をせずに、呼び出し側で理由を説明できます。それ以外なら商をRightに入れて返します。",
-  result: "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorを返します。0を除数にする可能性を先に確認し、理由を通常の値として返すので、呼び出し側で処理できます。recoverなどがすべての実行時の不具合を捕捉するわけではありません。"
+  question: "不正な入力を、扱える失敗として返すには",
+  summary: "0で割る可能性があるなら、計算前に確認して理由を返せます。defectは、そのような回復可能な失敗とは別の、処理を停止する不具合です。",
+  reading: "checkedDivideは除数が0ならLeftで理由を返し、0以外ならRightに整数の商を入れます。describeのmatchは、成功した整数か失敗理由の文字列を表示用に変えます。",
+  result: "出力は3とcannot divide by zeroです。このInt同士の例では7 / 2の整数の商は3です。0の場合は除算そのものを行わず、呼び出し側が読める通常の値を返しています。",
 }
+
+pub fn readerCaption -> String = "除算の前に入力を確認する"
+
+pub fn readerBridgeOne -> String =
+  "Either<String, Int>は、Leftに文字列の理由、Rightに整数の結果を持つ型です。Leftを作ってもthrowしません。pub effect fn mainが、二つの通常の結果をprintlnで表示します。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptのtry/catchと対応させる際は、数値の規則も区別してください。TypeScriptのnumberでは7 / 0はInfinity、7 / 2は3.5です。SeseragiのIntでは0除算はdefectで、recoverが受け取る失敗値Eにはなりません。"
+
+pub fn readerInvalidCaption -> String = "recoverでも整数の0除算は回復しない"
+
+pub fn readerMistake -> String =
+  "停止する例ではdeferへ渡した\\_ -> ...の関数が、実行時にdivide 0を行います。recoverに42を返す処理を置いても呼ばれず、stdoutは空、CLIはruntime defectで終了します。入力として予想できる0は、上のcheckedDivideのように先に検査して理由を返してください。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "checkedDivideは除算前にdivisorを調べます。0ならLeft ZeroDivisorを返すため、不正な除算をせずに、呼び出し側で理由を説明できます。それ以外なら商をRightに入れて返します。"
+
+pub fn readerLegacyResult -> String =
+  "checkedDivide 7 2はRight 3、checkedDivide 7 0はLeft ZeroDivisorを返します。0を除数にする可能性を先に確認し、理由を通常の値として返すので、呼び出し側で処理できます。recoverなどがすべての実行時の不具合を捕捉するわけではありません。"

@@ -1,21 +1,45 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Namespaces and name resolution",
   summary: (explanation ()).summary,
-  ruleTitle: "Names live in five separate namespaces",
-  ruleBody: "Seseragi separates type/trait/type-parameter names, value/function/constructor names, field/inherent-method names, module aliases and custom operators. A newtype can therefore have a type name and a constructor with the same spelling. UserId in an annotation selects the type; UserId 42 selects the constructor. A namespace-qualified name is resolved statically, not by inspecting an arbitrary runtime object.",
-  typingBody: "An unqualified name is looked up first among nearby local bindings and functions, then in the current module, explicit imports, and finally the standard prelude. A function's local let value, for example, takes precedence over the module's value. Several candidates at the same stage produce an ambiguity error.",
-  evaluationBody: "Names cannot be declared twice in the same namespace and scope. ADT/newtype constructors enter the value namespace; type parameters enter the type namespace of their declaration. Field and method resolution depends on the receiver's statically known nominal type. Module aliases qualify exported names rather than turning a module into a value.",
-  invalidTitle: "The same spelling is not permission for same-namespace duplicates",
-  invalidBody: "A type and its constructor can share a spelling because positions distinguish their namespaces. Two value declarations cannot use that reasoning to coexist in the same scope. To disambiguate imported values, use distinct aliases or qualified imports rather than hoping that declaration order chooses one.",
-  diagnosticsBody: "The example uses UserId in both a type annotation and a constructor expression and shadows a module value with a local binding. When a name is unresolved, check its position, scope and import spelling. When it is ambiguous, make the intended declaration explicit; the compiler will not inspect runtime values to decide.",
+  purpose: ["Using a short name in an inner scope does not assign to the outer value. TypeScript also distinguishes a function-local variable from one with the same name outside. In Seseragi, the reference position additionally distinguishes a type name from a value name."],
+  exampleTitle: "Distinguish a type, its constructor, and local names",
+  reading: [
+    "id: UserId in toInt accepts a wrapped value. The UserId number -> number branch of match id extracts the contents under the name number and returns it. This type has just one form.",
+    "Backticks in main construct an interpolated string. ${toInt user} displays 42 and ${value} displays 1; println writes that string and a newline. pub effect fn main is the public entry returning this output work to the runner."
+  ],
+  rules: [
+    "Types, traits and type parameters share one namespace. Values, functions and constructors share another. Fields and inherent methods, module aliases, and custom operators form three more: five categories in total. A name cannot be declared twice in the same namespace and scope.",
+    "Constructors of newtype and multi-alternative type declarations enter the value namespace. Type parameters such as A enter the type namespace within their declaration. A type and constructor sharing a spelling are distinguished by type-annotation versus value-expression position; that alone is not ambiguous.",
+    "Unqualified names are searched among nearby local bindings and functions, current-module declarations, explicit imports, and finally the standard prelude. The prelude supplies names such as Int and println without individual imports. Multiple candidates at the same stage produce an ambiguity error.",
+    "Fields and methods resolve from the receiver's statically known type. Module aliases are separate too. With import * as words, words.greet refers to a public declaration rather than looking up a field on a runtime object called words.",
+    "A named import of a public newtype introduces both its type and same-spelled constructor. An alias renames both, so the alias can appear in a type annotation and in value construction. Adding imports in a different order does not silently choose a new target for an ambiguous reference."
+  ],
+  mistakes: [
+    "Both let value declarations below introduce values at the module top level. Neither belongs to another namespace or an inner scope, so SES-N0002 reports a duplicate. The second line is not treated as assignment to the first.",
+    "Use distinct names, or move the inner declaration into a function as in the first example to give it a different scope. For colliding imported names, use as or namespace aliases. When a name is missing, check whether the reference is in a type or value position and whether it is within the declaration's scope as well as checking the spelling."
+  ],
+  related: [
+    "Review aliases and qualified access for imported names.",
+    "Check allowed identifier characters and reserved words.",
+    "Find the scope in which a type parameter name is available."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Why does UserId work as both a type name and a constructor?",
-  summary: "The spelling UserId denotes a type in an annotation and a constructor in a value expression. The compiler determines the reference from its position and scope. These separate groups of names for different purposes are called namespaces.",
-  reading: "In user: UserId, UserId denotes the type. In UserId (local ()), it denotes the constructor. local's let value = 42 is nearer than the module's value = 1 and is therefore the value read inside that function.",
-  result: "user becomes UserId 42; the outer value is still 1. Reusing a name in a permitted inner scope is not mutation. Ambiguous imports must be renamed or qualified rather than resolved by arbitrary import order."
+  question: "Why can UserId name both a type and a way to construct a value?",
+  summary: "A name is resolved by its position and scope as well as its spelling. The same spelling may have different roles in a type position and a value expression. These categories of names are called namespaces.",
+  reading: "newtype UserId = Int defines a distinct type wrapping an integer. UserId in let user: UserId is a type name. UserId (local ()) on the right is a constructor that makes a value of that type. local () calls the function with the Unit argument ().",
+  result: "Inside local, the nearer let value = 42 is read, and the final value in the block is returned. The outer value = 1 is unchanged. Displaying the integer inside user and then the outer value produces 42, 1.",
 }
+
+pub fn setup -> String =
+  "Create seseragi.toml and src/main.ssrg in an empty directory and run the commands there. All application names in this example are defined in main.ssrg, so no sibling source file is required."
+
+pub fn detailsTitle -> String = "Resolve a name by its purpose and scope"
+
+pub fn mistakesTitle -> String = "Do not define value twice in the same scope"
+
+pub fn title -> String = (copy ()).title

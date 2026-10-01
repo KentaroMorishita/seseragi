@@ -1,0 +1,4 @@
+struct Customer { name: String }
+struct Product { name: String }
+fn customerName customer: Customer -> String = customer.name
+let wrong = customerName (Product { name: "Notebook" })

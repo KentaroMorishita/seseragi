@@ -1,0 +1,40 @@
+import { ReferenceSymbol } from "../../model/build"
+import { Editorial } from "./model"
+import { editorial as emptyEditorial } from "./map/empty/page"
+import { editorial as singletonEditorial } from "./map/singleton/page"
+import { editorial as fromEntriesEditorial } from "./map/fromentries/page"
+import { editorial as containsKeyEditorial } from "./map/containskey/page"
+import { editorial as insertEditorial } from "./map/insert/page"
+import { editorial as upsertEditorial } from "./map/upsert/page"
+import { editorial as removeEditorial } from "./map/remove/page"
+import { editorial as keysEditorial } from "./map/keys/page"
+import { editorial as valuesEditorial } from "./map/values/page"
+import { editorial as entriesEditorial } from "./map/entries/page"
+import { editorial as sizeEditorial } from "./map/size/page"
+import { editorial as mapValuesEditorial } from "./map/mapvalues/page"
+import { editorial as mapKeysWithEditorial } from "./map/mapkeyswith/page"
+import { editorial as mergeWithEditorial } from "./map/mergewith/page"
+
+pub fn mapEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.module != "std/map"
+    || symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else
+    match symbol.identity {
+  "std/map::empty" -> Just (emptyEditorial ())
+  "std/map::singleton" -> Just (singletonEditorial ())
+  "std/map::fromEntries" -> Just (fromEntriesEditorial ())
+  "std/map::containsKey" -> Just (containsKeyEditorial ())
+  "std/map::insert" -> Just (insertEditorial ())
+  "std/map::upsert" -> Just (upsertEditorial ())
+  "std/map::remove" -> Just (removeEditorial ())
+  "std/map::keys" -> Just (keysEditorial ())
+  "std/map::values" -> Just (valuesEditorial ())
+  "std/map::entries" -> Just (entriesEditorial ())
+  "std/map::size" -> Just (sizeEditorial ())
+  "std/map::mapValues" -> Just (mapValuesEditorial ())
+  "std/map::mapKeysWith" -> Just (mapKeysWithEditorial ())
+  "std/map::mergeWith" -> Just (mergeWithEditorial ())
+  _ -> Nothing
+}

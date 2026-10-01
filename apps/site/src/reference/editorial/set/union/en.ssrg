@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Include members found in either Set",
+  purpose: "Use union for all members present on either side. The call order is right Set, then left Set.",
+  reading: "sets.union right left keeps the left order 3,1,2 and appends the right-only 4. Swapping the arguments starts with 2,4,1 and appends 3 instead.",
+  boundaries: "An empty right leaves the left members; an empty left yields the right members. Both originals remain unchanged. Shared members are present once.",
+  rules: "The left order is kept, then right-only members append in right order. Membership is the same when operands swap, but the observed order can differ. Eq/Hash identify shared members.",
+  mistake: "The TS comparison creates new Set([...left, ...right]). Its helper accepts left before right, unlike the Seseragi call. Neither version sorts the values; compare membership separately from order.",
+}

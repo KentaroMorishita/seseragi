@@ -1,21 +1,66 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Executable entry points",
   summary: (explanation ()).summary,
-  ruleTitle: "The manifest selects the entry module",
-  ruleBody: "An executable package resolves one public main from the module selected by its manifest. pub effect fn main -> Unit with AppEnv fails AppError declares a function of type Unit -> Effect<AppEnv, AppError, Unit>. The host passes (), supplies the environment to the returned Effect and runs it. Merely importing a module with main never invokes it.",
-  typingBody: "At the entry point, every type parameter and required service type must be determined. AppEnv is a record listing mandatory service names and types. The runner may provide extra fields but cannot omit required ones. For a custom service unavailable from the standard runner, return an Effect from main with that service supplied by provide.",
-  evaluationBody: "The failure type must also be concrete. If it is not Never, the entry module's transitive import closure must supply one coherent Show instance so the host can render an unhandled typed failure. Success must be Unit. A library need not expose an entry point and can be imported without running an application.",
-  invalidTitle: "main does not return an arbitrary process exit code",
-  invalidBody: "The runner derives exit status from success, recoverable failure, defects, cancellation, and other target-defined conditions. main cannot return an integer exit code. Cancellation and defects are handled separately from ordinary AppError and must not be converted into it.",
-  diagnosticsBody: "Entry checking validates the public binding, signature, concrete requirements and failure evidence before execution. If build rejects main, inspect those parts separately from ordinary function typing. The shown console example uses the official Console capability; an unsupported target cannot invent that service by a runtime name lookup.",
+  purpose: [
+    "Defining functions does not by itself decide which function starts the application. An executable package selects an entry module in seseragi.toml and uses its one public main.",
+    "Here greeting.ssrg holds a reusable function, while main.ssrg is the output entry point. Using a library function and starting an application remain separate steps.",
+  ],
+  exampleTitle: "Select main in the configuration and print a greeting",
+  reading: [
+    "The package section of seseragi.toml declares the project’s name, version and supported language versions. Under run, entry = \"main\" selects main.ssrg relative to the default src directory. Module paths in the configuration omit .ssrg. target = \"process\" selects a process application.",
+    "In greeting.ssrg, pub fn greet name: String -> String declares a public function taking a string parameter name and returning a string. The expression after = is its result. + joins \"Hello, \", name and \"!\", so greet \"Aki\" returns Hello, Aki!.",
+    "main.ssrg uses import { greet } from \"./greeting\" to bring in the public function from the same directory. greet \"Aki\" passes the argument after a space. The parentheses group that call’s result as the argument to println.",
+    "pub effect fn main exposes the function as an execution entry point. An Effect is a value describing work such as input or output to perform later. The compact effect fn form infers its success value, required services and failure type from the body. Here println describes printing the greeting and a newline.",
+    "After dependency initialization, the runner passes the Unit value () to the selected main once. It supplies the services needed by the returned Effect and executes it. When println succeeds, it completes with the Unit value (), which carries no additional result.",
+  ],
+  rules: [
+    "The entry module needs one public main. The explicit form pub effect fn main -> Unit with AppEnv fails AppError has the function type Unit -> Effect<AppEnv, AppError, Unit>. AppEnv describes required services, AppError describes ordinary failure, and the final Unit is the success value. AppEnv and AppError here are explanatory type names, not built-in service names.",
+    "A library package needs neither main nor a run section. Attempting to run a package without run as an application is an error. A package may also provide both exports and run to serve as a library and an application.",
+    "Importing another module never implicitly calls its main. In the initialization project below, summary.ssrg has a public main too, but the configuration selects only src/main.ssrg.",
+  ],
+  mistakes: [
+    "The entry-int project below is rejected because main succeeds with an integer. import * as effects from \"std/effect\" makes standard Effect-building functions available through the name effects. effects.succeed 42 constructs an Effect that succeeds with 42. All definitions are present, but an entry point must succeed with Unit.",
+    "This cannot be used to return 42 as a process exit code. To display a value, use println and return its Effect from main, as in the first complete project. println succeeds with Unit and therefore meets the entry-point requirement.",
+  ],
+  related: [
+    "Review how starting a program relates to defining its values and functions.",
+    "Explore the boundary that executes the returned Effect and manages cleanup.",
+    "Check the order in which imported values are prepared before main is called.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
+pub fn servicesTitle -> String =
+  "Determine required services and types before execution"
+
+pub fn services -> Array<String> = [
+  "A service is a capability an Effect requests from its environment, such as an output destination. A requirement such as AppEnv must be a record with all mandatory service names and types determined. This is called a closed structural record. A generic main, a free type variable or a requirement with an undetermined field set cannot be an entry point.",
+  "The host environment may have extra services. It cannot omit a required field or supply a service of the wrong type. If the selected target cannot provide the services, it reports a diagnostic before execution. It does not fill gaps by looking up service names at runtime.",
+  "If the standard runner does not supply an application-specific service, use provide to supply that service while constructing the Effect returned by main. This example uses the standard Console service, which the process target can provide.",
+]
+
+pub fn failuresTitle -> String = "The runner owns failure display and exit status"
+
+pub fn failures -> Array<String> = [
+  "The failure type must also be concrete. Never means there can be no ordinary typed failure. Every other failure type needs a Show implementation that turns its values into display text. The modules reachable by following imports from the entry module must provide one coherent implementation; otherwise the build fails.",
+  "The host uses Show only for these ordinary typed failures. Unexpected runtime defects and cancellation remain separate termination reasons; the host does not disguise them as AppError. Entry checking separately verifies the public binding, function type, concrete service and failure types, and the implementation needed to display failures.",
+  "main can only succeed with Unit. There is no application-level exit operation that directly terminates the process, and no entry-point overload that returns an arbitrary integer exit code. The runner derives exit status from success, ordinary failure, defects, cancellation, process signals and other host-defined conditions. This boundary prevents ordinary code from skipping cleanup by exiting directly.",
+]
+
+pub fn importedTitle -> String = "Another file may also define main"
+
+pub fn imported -> Array<String> = [
+  "In this separate project, double in summary.ssrg doubles an integer and initializes answer to 42. report () only stores an Effect describing output in pending. main in summary.ssrg is defined too, but is not automatically called: the configuration selects main.ssrg instead.",
+  "main.ssrg imports only answer, converts it to text with show and prints it with println. The output is only 42 and a newline. Neither stored Effect must not run nor imported main must not run is printed.",
+]
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What function does the runner execute first?",
-  summary: "An executable package selects an entry module with a public main function returning an Effect whose success value is Unit.",
-  reading: "pub makes main visible to the runner. effect fn returns an Effect; with Console and fails ConsoleError state the needed output service and possible output failure. println describes printing the message followed by a newline.",
-  result: "Execution prints Hello, Seseragi! and a newline, then completes with the Unit value (). The runner executes public main from the selected entry module. Importing it from another module does not call main. A library package need not have main."
+  question: "Which file and function does seseragi run execute?",
+  summary: "Execution starts from the public main in the module selected by the configuration. main returns an Effect to execute, with Unit as its success value.",
+  reading: "Save these three files: entry = \"main\" selects src/main.ssrg. greet in greeting.ssrg constructs the greeting, and println in main returns an Effect that will print it.",
+  result: "From the project root, run seseragi lock update . followed by seseragi run . to print Hello, Aki! and a newline. The runner calls the selected public main. Importing the definition of greet does not itself start output.",
 }

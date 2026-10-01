@@ -1,21 +1,45 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "演算子オーバーロード",
   summary: (explanation ()).summary,
-  ruleTitle: "標準の演算子に、自分の型の実装を与える",
-  ruleBody: "impl内のoperator宣言で、+などの標準演算子を自分の型に定義できます。最初の引数selfは、そのimplの型です。残りの引数と戻り値の型も宣言します。コンパイラは、この宣言を演算子に対応する標準traitの実装として扱います。",
-  typingBody: "どの実装を使うかは、演算する値の型で決まります。型パラメーターを使う演算には、必要なtraitの条件を付けられます。newtypeは中身の型の演算を引き継がないため、例えばScore同士の加算はScore用に定義します。",
-  evaluationBody: "左右の値を左から順に一度ずつ計算し、対応する実装を呼びます。実行中に候補を探すのではなく、型検査の段階で呼び出し先が決まります。",
-  invalidTitle: "演算子の意味を定義しても、優先順位は変わらない",
-  invalidBody: "この形式で定義できるのは、対応する標準演算子だけです。優先順位と結合方向は元のままです。新しい記号には、モジュール直下のoperator宣言を使います。同じ演算にoperator宣言とinstance宣言で二重に実装を与えることはできません。",
-  diagnosticsBody: "使える演算子か、引数と戻り値が対応するtraitの条件に合っているかを確認してください。==などの比較は要求された結果型を返す必要があります。候補が重複する場合も、実装がない場合もエラーになります。",
+  exampleTitle: "二つのScoreの整数を足し、結果をScoreとして返す",
+  purpose: [
+    "得点を普通のIntと区別して扱いながら、Score同士を+で加算できるようにします。まずScoreが整数を一つ持つ型であることと、その中身を取り出す関数を定義します。",
+    "演算子オーバーロードとは、同じ記号に型ごとの操作を用意することです。Scoreの加算では、元の二つの値を残し、新しいScoreを返します。",
+  ],
+  reading: [
+    "newtype Score = Intは、整数を一つ包むScore型です。Score 20で値を作ります。pointsのmatchにあるScore valueは、包まれた整数へvalueという名前を付け、その整数を返します。",
+    "impl Scoreの中のoperator +は、Score用の加算を宣言します。最初のselfは左の値、otherは右のScoreです。selfの型は囲んでいるScoreから決まります。最後の-> Scoreは加算の結果もScoreであるという指定です。",
+    "本体ではpoints selfとpoints otherで二つの整数を取り出します。ここでの+はInt同士の加算です。計算した整数をScore (...)で包み直し、宣言した戻り値の型を満たします。",
+    "totalのScore 20 + Score 22では、このScore用の処理が選ばれます。結果はScore 42です。mainはpoints totalで整数へ取り出して表示するため、出力は42になります。",
+  ],
+  rules: [
+    "traitは、ある型の組み合わせに必要な操作を定める仕組みです。この+はAdd<Score, Score, Score>という標準の契約に対応し、順に左の型、右の型、結果の型を表します。operator宣言からその実装が作られるため、この例で別のinstanceを書く必要はありません。",
+    "impl内のoperator宣言で、+などの標準演算子を自分の型に定義できます。最初の引数selfは、そのimplの型です。残りの引数と戻り値の型も宣言します。コンパイラは、この宣言を演算子に対応する標準traitの実装として扱います。",
+    "どの実装を使うかは、演算する値の型で決まります。型パラメーターを使う演算には、必要なtraitの条件を付けられます。newtypeは中身の型の演算を引き継がないため、例えばScore同士の加算はScore用に定義します。",
+    "左右の値を左から順に一度ずつ計算し、対応する実装を呼びます。実行中に候補を探すのではなく、型検査の段階で呼び出し先が決まります。",
+    "この形式で定義できるのは、対応する標準演算子だけです。優先順位と結合方向は元のままです。新しい記号には、モジュール直下のoperator宣言を使います。同じ演算にoperator宣言とinstance宣言で二重に実装を与えることはできません。",
+    "使える演算子か、引数と戻り値が対応するtraitの条件に合っているかを確認してください。==などの比較は要求された結果型を返す必要があります。候補が重複する場合も、実装がない場合もエラーになります。",
+    "この形式で定義できる二項演算子は+、-、*、/、%、**、==です。!=は==の否定から得られます。<などの順序比較は、個別のoperatorではなく、一貫した並び順を定めるOrdのinstanceで定義します。",
+  ],
+  mistakes: [
+    "下の宣言はScoreを返す型なのに、整数の加算結果をそのまま返すためSES-T0101になります。本体をScore (points self + points other)へ直し、結果を包むと42を出力できます。",
+    "newtypeは中身の型の演算を自動で引き継ぎません。また、このoperator宣言と同じ組み合わせへ別のinstanceを定義すると、実装の重複になります。一つの操作に一つの定義を与えてください。",
+  ],
+  related: [
+    "値を包むコンストラクターと、中身を取り出すパターンを確認できます。",
+    "+の意味を変える代わりに、新しい記号を定義する場合の規則を確認します。",
+    "通常のメソッドとoperatorを同じ型に定義する場所を確認できます。",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "自分の型に対して+の処理を定義するには",
-  summary: "演算子オーバーロードでは、対応する標準演算子に自分の型の処理を定義します。記号の優先順位や結合規則は変わりません。",
-  reading: "ScoreはIntを包む型です。+の実装では二つのScoreの中身を取り出し、整数を足して、結果をScoreで包みます。左の値がself、右の値がotherです。",
-  result: "totalはScore 42です。結果もScoreで包んでいるため、Intとは別の型を保ちます。Score用の+はこの宣言で定義します。新しい記号を使いたい場合は、モジュール直下にカスタム演算子を宣言してください。"
+  question: "自分の型の値同士を+で足すには",
+  summary: "impl内のoperator宣言で、標準の+などに自分の型の処理を与えます。入力と出力の型を決めても、記号の優先順位は変わりません。",
+  reading: "Scoreの中身をpointsで取り出し、Int同士を足してScoreへ包み直します。呼び出す処理は演算する値の型から決まります。",
+  result: "Score 20 + Score 22の結果はScore 42です。表示のためにpointsで取り出した整数42を出力します。",
 }

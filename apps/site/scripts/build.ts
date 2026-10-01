@@ -2,12 +2,10 @@ import assert from "node:assert/strict"
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import {
-  closeSync,
   copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
-  openSync,
   readFileSync,
   renameSync,
   rmSync,
@@ -15,10 +13,35 @@ import {
 } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
-import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
-import { playgroundUrlForSource } from "../../playground/src/workspace/source-link"
+import { apiCorrectionExamples } from "./api-corrections"
+import { arrayEditorialExamples } from "./array-editorial"
+import { canonicalExample } from "./canonical-example"
+import { charTextExamples } from "./char-text-reader"
+import { collectionTypeExamples } from "./collection-type-readers"
+import { comparisonExamples } from "./comparisons"
 import { referenceCoverage } from "./coverage"
+import { dataChoiceExamples } from "./data-choices"
+import { dataOperationExamples } from "./data-operations"
+import { dataValidationReaderExamples } from "./data-validation-readers"
+import { failureReaderExamples } from "./failure-readers"
+import { lifecycleReaderExamples } from "./lifecycle-readers"
+import { listEditorialExamples } from "./list-editorial"
+import { mapEditorialExamples } from "./map-editorial"
+import { modelConceptExamples } from "./model-concepts"
+import { newModelReaderExamples } from "./model-reader"
+import { moduleProjectExamples } from "./module-examples"
+import { nonemptyIteratorReaderExamples } from "./nonempty-iterator-readers"
 import { compilerReferenceModules } from "./reference"
+import { regexReaderExamples } from "./regex-readers"
+import { type RenderedPage, renderGenerator } from "./render-generator"
+import { sequenceEditorialExamples } from "./sequence-editorial"
+import { setEditorialExamples } from "./set-editorial"
+import { syntaxExamples } from "./syntax-examples"
+import { textEditorialExamples } from "./text-editorial"
+import { traitReaderExamples } from "./trait-readers"
+import { typeLimitExamples } from "./type-limits"
+import { typeReaderExamples } from "./type-readers"
+import { unicodeReaderExamples } from "./unicode-reader"
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
@@ -42,37 +65,10 @@ type BuildOptions = {
   profile?: "development" | "release"
 }
 
-type RenderedPage = {
-  route: string
-  html: string
-}
-
 const sha256 = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex")
 
-function canonicalExample(
-  id: string,
-  sourcePath: string,
-  playgroundUrl: string,
-  standalone = true
-) {
-  const source = readFileSync(join(root, sourcePath), "utf8")
-  return {
-    id,
-    sourcePath,
-    source,
-    sha256: sha256(source),
-    playgroundUrl: standalone
-      ? playgroundUrlForSource(playgroundUrl, source)
-      : "",
-    highlighted: highlightSeseragi(source).map(({ text, classes }) => ({
-      text,
-      className: classes,
-    })),
-  }
-}
-
-function generatorInput(playgroundUrl: string) {
+export function generatorInput(playgroundUrl: string) {
   return {
     schema: 1,
     origin: "",
@@ -83,6 +79,92 @@ function generatorInput(playgroundUrl: string) {
       .split("```")[0]
       .trimEnd(),
     examples: [
+      ...apiCorrectionExamples(playgroundUrl),
+      ...arrayEditorialExamples(playgroundUrl),
+      ...comparisonExamples(playgroundUrl),
+      ...dataChoiceExamples(playgroundUrl),
+      ...dataOperationExamples(playgroundUrl),
+      ...failureReaderExamples(playgroundUrl),
+      ...lifecycleReaderExamples(playgroundUrl),
+      ...listEditorialExamples(playgroundUrl),
+      ...mapEditorialExamples(playgroundUrl),
+      ...unicodeReaderExamples(playgroundUrl),
+      ...regexReaderExamples(playgroundUrl),
+      ...setEditorialExamples(playgroundUrl),
+      ...nonemptyIteratorReaderExamples(playgroundUrl),
+      ...charTextExamples(playgroundUrl),
+      ...collectionTypeExamples(playgroundUrl),
+      ...dataValidationReaderExamples(playgroundUrl),
+      ...moduleProjectExamples(playgroundUrl),
+      ...newModelReaderExamples(playgroundUrl),
+      ...modelConceptExamples(playgroundUrl),
+      ...textEditorialExamples(playgroundUrl),
+      ...syntaxExamples(playgroundUrl),
+      ...sequenceEditorialExamples(playgroundUrl),
+      ...typeReaderExamples(playgroundUrl),
+      ...typeLimitExamples(playgroundUrl),
+      ...traitReaderExamples(playgroundUrl),
+      canonicalExample(
+        "pilot-built-in-types",
+        "apps/site/examples/src/language/pilot-built-in-types.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "pilot-annotations",
+        "apps/site/examples/src/language/pilot-annotations.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "pilot-function-application",
+        "apps/site/examples/src/language/pilot-function-application.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "pilot-blocks",
+        "apps/site/examples/src/language/pilot-blocks.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "pilot-currying",
+        "apps/site/examples/src/language/pilot-currying.ssrg",
+        playgroundUrl
+      ),
+      canonicalExample(
+        "pilot-immutable-invalid",
+        "apps/site/examples/invalid/src/language/pilot-immutable.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "pilot-built-in-types-invalid",
+        "apps/site/examples/invalid/src/language/pilot-built-in-types.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "pilot-annotations-invalid",
+        "apps/site/examples/invalid/src/language/pilot-annotations.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "pilot-function-application-invalid",
+        "apps/site/examples/invalid/src/language/pilot-function-application.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "pilot-blocks-invalid",
+        "apps/site/examples/invalid/src/language/pilot-blocks.ssrg",
+        playgroundUrl,
+        false
+      ),
+      canonicalExample(
+        "pilot-currying-invalid",
+        "apps/site/examples/invalid/src/language/pilot-currying.ssrg",
+        playgroundUrl,
+        false
+      ),
       canonicalExample(
         "principle-expression-oriented",
         "apps/site/examples/src/language/principle-expression-oriented.ssrg",
@@ -172,57 +254,68 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "types-kinds",
         "apps/site/examples/src/language/types-kinds.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-scope",
         "apps/site/examples/src/language/types-scope.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-generic-functions",
         "apps/site/examples/src/language/types-generic-functions.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-let-rank",
         "apps/site/examples/src/language/types-let-rank.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-generic-adts",
         "apps/site/examples/src/language/types-generic-adts.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-generic-structs",
         "apps/site/examples/src/language/types-generic-structs.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-generic-methods",
         "apps/site/examples/src/language/types-generic-methods.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-generic-aliases",
         "apps/site/examples/src/language/types-generic-aliases.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-newtypes",
         "apps/site/examples/src/language/types-newtypes.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-variance",
         "apps/site/examples/src/language/types-variance.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-erasure",
         "apps/site/examples/src/language/types-erasure.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "modules-domain",
@@ -323,7 +416,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "syntax-optional-record-field",
         "apps/site/examples/src/language/optional-record-field.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "syntax-invalid-record-fields",
@@ -333,22 +427,26 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "types-system",
         "apps/site/examples/src/language/type-system.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-constructors",
         "apps/site/examples/src/language/type-constructors.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-polymorphism",
         "apps/site/examples/src/language/polymorphism.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-nominal-structural",
         "apps/site/examples/src/language/nominal-and-structural.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-invalid-structural",
@@ -358,7 +456,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "types-requirement-merge",
         "apps/site/examples/src/language/requirement-merge.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-invalid-requirement-merge",
@@ -373,7 +472,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "types-recursion",
         "apps/site/examples/src/language/recursion.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "types-invalid-recursion",
@@ -428,7 +528,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "expressions-conditionals",
         "apps/site/examples/src/language/expressions-conditionals.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "expressions-invalid-conditional",
@@ -448,7 +549,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "data-algebraic-data-types",
         "apps/site/examples/src/language/data-algebraic-data-types.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "data-structs",
@@ -503,7 +605,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "patterns-binding-rules",
         "apps/site/examples/src/language/patterns-binding-rules.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "patterns-invalid-binding",
@@ -513,7 +616,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "patterns-irrefutable",
         "apps/site/examples/src/language/patterns-irrefutable.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "patterns-invalid-irrefutable",
@@ -523,7 +627,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "patterns-match",
         "apps/site/examples/src/language/patterns-match.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "patterns-invalid-match",
@@ -533,12 +638,14 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-model",
         "apps/site/examples/src/language/traits-model.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-declarations",
         "apps/site/examples/src/language/traits-declarations.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-declaration",
@@ -548,7 +655,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-instances",
         "apps/site/examples/src/language/traits-instances.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-instance",
@@ -558,7 +666,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-constraints",
         "apps/site/examples/src/language/traits-constraints.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-constraint",
@@ -568,7 +677,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-method-calls",
         "apps/site/examples/src/language/traits-method-calls.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-method",
@@ -578,7 +688,8 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-coherence",
         "apps/site/examples/src/language/traits-coherence.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-coherence",
@@ -588,17 +699,20 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-standard-operators",
         "apps/site/examples/src/language/traits-standard-operators.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-laws",
         "apps/site/examples/src/language/traits-laws.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-deriving",
         "apps/site/examples/src/language/traits-deriving.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-deriving",
@@ -608,22 +722,26 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "traits-methods-versus-traits",
         "apps/site/examples/src/language/traits-methods-versus-traits.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-do-notation",
         "apps/site/examples/src/language/traits-do-notation.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-do-desugaring",
         "apps/site/examples/src/language/traits-do-desugaring.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-do-block-typing",
         "apps/site/examples/src/language/traits-do-block-typing.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "traits-invalid-do",
@@ -633,67 +751,80 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "effects-pure-expressions",
         "apps/site/examples/src/language/effects-pure-expressions.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-maybe",
         "apps/site/examples/src/language/effects-maybe.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-either",
         "apps/site/examples/src/language/effects-either.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-cold-value",
         "apps/site/examples/src/language/effects-cold-value.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-contract-form",
         "apps/site/examples/src/language/effects-contract-form.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-inferred-form",
         "apps/site/examples/src/language/effects-inferred-form.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-effectful-for",
         "apps/site/examples/src/language/effects-effectful-for.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-environment",
         "apps/site/examples/src/language/effects-environment.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-error-channels",
         "apps/site/examples/src/language/effects-error-channels.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-task",
         "apps/site/examples/src/language/effects-task.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-execution-order",
         "apps/site/examples/src/language/effects-execution-order.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-runtime-boundary",
         "apps/site/examples/src/language/effects-runtime-boundary.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-defects",
         "apps/site/examples/src/language/effects-defects.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-invalid-pure-body",
@@ -723,42 +854,50 @@ function generatorInput(playgroundUrl: string) {
       canonicalExample(
         "effects-cancellation-resources",
         "apps/site/examples/src/language/effects-cancellation-resources.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-scheduler-fairness",
         "apps/site/examples/src/language/effects-scheduler-fairness.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-fiber-supervision",
         "apps/site/examples/src/language/effects-fiber-supervision.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-signal-transactions",
         "apps/site/examples/src/language/effects-signal-transactions.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-derived-signals",
         "apps/site/examples/src/language/effects-derived-signals.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-signal-operators",
         "apps/site/examples/src/language/effects-signal-operators.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-signal-subscription",
         "apps/site/examples/src/language/effects-signal-subscription.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-foreign-failure",
         "apps/site/examples/src/language/effects-foreign-failure.ssrg",
-        playgroundUrl
+        playgroundUrl,
+        false
       ),
       canonicalExample(
         "effects-invalid-finalizer",
@@ -831,7 +970,7 @@ function validateInternalLinks(pages: RenderedPage[]) {
   }
 }
 
-function compileGenerator(
+export function compileGenerator(
   directory: string,
   profile: "development" | "release"
 ): string {
@@ -855,37 +994,6 @@ function compileGenerator(
   const entry = join(directory, profile === "release" ? "entry.js" : "entry.ts")
   assert.ok(existsSync(entry), `Missing ${profile} generator entry: ${entry}`)
   return entry
-}
-
-function renderGenerator(entry: string, input: object): RenderedPage[] {
-  const encodedInput = join(dirname(entry), "render-input.jsonl")
-  const output = join(dirname(entry), "rendered-pages.json")
-  writeFileSync(encodedInput, `${JSON.stringify(input)}\n`)
-  const inputDescriptor = openSync(encodedInput, "r")
-  const outputDescriptor = openSync(output, "wx")
-  let result: ReturnType<typeof spawnSync>
-  try {
-    result = spawnSync("bun", [entry], {
-      cwd: dirname(entry),
-      encoding: "utf8",
-      stdio: [inputDescriptor, outputDescriptor, "pipe"],
-    })
-  } finally {
-    closeSync(inputDescriptor)
-    closeSync(outputDescriptor)
-    rmSync(encodedInput)
-  }
-  assert.equal(
-    result.status,
-    0,
-    result.stderr?.toString() ||
-      result.error?.message ||
-      `Site generator failed (status ${result.status}, signal ${result.signal})`
-  )
-  const decoded: unknown = JSON.parse(readFileSync(output, "utf8"))
-  rmSync(output)
-  assert.ok(Array.isArray(decoded), "Site generator must return page records")
-  return decoded as RenderedPage[]
 }
 
 function publishAssets(output: string): string[] {
@@ -944,7 +1052,7 @@ export function buildSite(options: BuildOptions) {
     )
     assert.equal(
       pages.length,
-      2 * (112 + referencePageCount),
+      2 * (113 + referencePageCount),
       "Unexpected bilingual page count"
     )
     assert.equal(

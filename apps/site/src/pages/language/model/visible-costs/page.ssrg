@@ -1,25 +1,48 @@
 import { explainPage } from "../../explanation"
-import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import {
+  Block,
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { readerPrinciplePage } from "../reader-principle"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as guide from "./guide"
+
+fn leading -> Array<Block> = []
+
+fn rejected -> Array<Block> = []
+
+fn advanced -> Array<Block> = []
 
 fn content -> PageDefinition =
-  principlePage "language.model.visible-costs" "/docs/language/model/visible-costs/" (en.copy ()) (ja.copy ()) "principle-visible-costs" "[2, 4, 6]" [
-    [InternalLink (
-      localized "Tuples, arrays, and lists" "タプル・配列・リスト",
-      "/docs/language/data/tuples-arrays-and-lists/"
-    )],
-    [InternalLink (
-      localized "Erasure and runtime representation" "型消去と実行時表現",
-      "/docs/language/types/erasure-and-runtime-representation/"
-    )],
-    [InternalLink (
-      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
-      "/docs/language/syntax/pipelines-and-low-precedence-application/"
-    )]
+  readerPrinciplePage "language.model.visible-costs" "/docs/language/model/visible-costs/" (en.copy ()) (ja.copy ()) (en.reader ()) (ja.reader ()) "principle-visible-costs" "[2, 4, 6]" (leading ()) (rejected ()) (advanced ()) [
+    [
+      InternalLink (
+        localized "Tuples, arrays, and lists" "タプル・配列・リスト",
+        "/docs/language/data/tuples-arrays-and-lists/"
+      ),
+      Words (localized ". Which collection fits the operation?" "。操作に合うコレクションはどれか")
+    ],
+    [
+      InternalLink (
+        localized "Erasure and runtime representation" "型消去と実行時表現",
+        "/docs/language/types/erasure-and-runtime-representation/"
+      ),
+      Words (localized ". Which type information remains at runtime?" "。型の情報は実行時に何が残るか")
+    ],
+    [
+      InternalLink (
+        localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+        "/docs/language/syntax/pipelines-and-low-precedence-application/"
+      ),
+      Words
+        (localized ". What ordinary call does a pipeline mean?" "。パイプラインはどの呼び出しに対応するか")
+    ]
   ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,0 +1,2 @@
+fn keep<A> value: A -> A = value
+let outside: A = 42

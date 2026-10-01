@@ -1,0 +1,8 @@
+import { localized } from "../../../../model/locale"
+import { Editorial } from "../../model"
+import { charTextEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  charTextEditorial "std/text::words" "char-text-words" "pieces: [\"hello,\",\"世界!\"]\njoined: hello, | 世界!\nJapanese: [\"東京都渋谷区\"]\nempty: []\nonly whitespace: []\nFEFF preserved: True" "std/text" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "pieces: [\"hello,\",\"世界!\"]\njoined: hello, | 世界!\nJapanese: [\"東京都渋谷区\"]\nempty: []\nonly whitespace: []\nFEFF preserved: true\nJS \\s treats NEL as whitespace: false\nJS \\s treats FEFF as whitespace: true"

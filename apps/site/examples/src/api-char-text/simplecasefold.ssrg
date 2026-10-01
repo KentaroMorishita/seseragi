@@ -1,0 +1,13 @@
+import * as unicode from "std/text/unicode"
+
+let capital = 'Σ'
+let finalForm = 'ς'
+pub effect fn main =
+  println `same scalar: ${capital == finalForm}
+same simple fold: ${unicode.simpleCaseFold capital == unicode.simpleCaseFold finalForm}
+capital fold: ${unicode.simpleCaseFold capital}
+final fold: ${unicode.simpleCaseFold finalForm}
+sharp s: ${unicode.simpleCaseFold 'ß'}
+capital sharp s: ${unicode.simpleCaseFold 'ẞ'}
+dotted I: ${unicode.simpleCaseFold 'İ'}
+dotted I equals i: ${unicode.simpleCaseFold 'İ' == unicode.simpleCaseFold 'i'}`

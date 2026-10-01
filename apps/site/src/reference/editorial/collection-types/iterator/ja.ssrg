@@ -1,0 +1,28 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Iteratorは、次の値とその続きを順に取り出せる値の型です。取り出しても元のIteratorは進まず、続きは別のIteratorとして返ります。",
+  taskTitle: "元の位置を残しながら数列の続きを読む",
+  purpose: "3、2、1と進む数列を、一件ずつ必要になったときに読みたいとします。Iterator<Int>は次に整数を取り出すための値です。元の位置を残せるので、同じ値から先頭を二度読めます。先へ進むには、読み取りで返された続きのIteratorを使います。",
+  setup: "import * as iterator from \"std/iterator\"は、この型と操作をiteratorという名前で使う宣言です。let values: iterator.Iterator<Int> = ...は値にvaluesという名前を付け、コロンの右の型に合うかを確かめます。Intは整数、<Int>は取り出す要素の型です。関数の引数に使うIterator<Int>と、ここで使うiterator.Iterator<Int>は同じ型の二通りの名前です。",
+  codeTitle: "同じ位置を二度読み、返された続きへ進む",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "fn countdown remaining: Int -> Maybe<(Int, Int)> = ...は、一段分を計算する関数です。fnの後が関数名、remainingが引数名、コロンの後がその型、->の後が戻り値の型です。=の右の式が返す値になります。Maybeは「値があるJust」と「値がないNothing」のどちらかを返す型です。ここでJustが持つ(Int, Int)は、二つの整数を順に入れた二つ組です。",
+    "if remaining > 0 then ... else ...は、残りが正ならthen側、そうでなければelse側を選びます。Just (remaining, remaining - 1)の二つ組は、先に今回取り出す数、後に次回使う残りの数を置いています。残りが0ならNothingを返して終了を表します。iterator.unfold countdown 3は、この関数と開始値3からIteratorを作ります。引数は空白で区切って渡します。この時点ではcountdownは呼ばれません。",
+    "firstとsecondはIterator<Int>をvaluesという引数で受け取り、Stringという文字列の型を返す関数です。iterator.next valuesは、一件あればJust (value, rest)、終了ならNothingを返します。valueは今回の整数、restはその後を読む別のIteratorです。countdownの二つ目は次の計算に使う整数でしたが、nextの二つ目はすでに続きを表すIteratorになっています。",
+    "matchは返った形に合う枝を選びます。Nothing -> \"done\"では終了の文字列を返します。firstのJust (value, _) -> show valueは、一つ目をvalueと名付けて文字列にし、_で二つ目を使わないことを示します。secondのJust (_, rest) -> first restは、一つ目を使わず、続きrestの先頭を読みます。どの枝も文字列を返します。呼び出しを囲む括弧は、内側の結果を一つの引数にまとめています。",
+    "最初の二行が3、3なのは、first valuesを呼んでもvaluesを変更しないからです。second valuesは最初に返るrestへ進むので2です。開始値0で作ったIteratorは最初から終了し、最後の行はdoneになります。この例では末尾までを一括で作ったArrayやListを読むのではなく、要求した分を計算します。"
+  ],
+  comparisonTitle: "TypeScriptの進むIteratorと、位置を残す書き方",
+  comparisonBefore: "TypeScriptではfunction*で数列を作る関数を書き、yieldで一件ずつ返せます。戻り値のIterator<number>は.next()で次の値を読む型です。同じIteratorの.next()を二度呼ぶと位置が進むため3、2になります。Seseragiの3、3とは読み取りの規則が違います。下のプログラムではJavaScriptのIteratorを使わず、同じ3、3という結果を得るために位置を別の値として残します。",
+  comparisonAfter: "位置を残すTypeScript例は、remainingというフィールドに残りの数を持つオブジェクトをCountdownと名付けています。Pullは読み取り結果の型です。nextの戻り値Pull | undefinedは、|の左右のどちらかを返すという意味です。{ value, rest }は今回の数をvalue、続きの位置をrestというフィールドに入れた結果です。終了時はundefinedを返します。呼び出し側がundefinedを確かめれば、値がある場合だけ二つのフィールドを読めます。同じ元の位置から二度読めば3、3、restを読めば2、開始値0ならdoneです。readonlyはこの型を通じたフィールドの書き換えを禁止する指定で、実行時にオブジェクトを凍結するものではありません。この小さな例は今回のカウントダウン用で、汎用Iteratorライブラリを作る提案ではありません。",
+  detailTitle: "位置、終了、計算のタイミング",
+  details: [
+    "Iterator<Int>が約束するのは、取り出せる要素がIntであることです。最初から終了していてもこの型です。終了するまでの件数や、必ず有限であることは表しません。終わらないIteratorをすべてArrayなどに集めようとすると、計算も終わらない可能性があります。",
+    "同じIteratorからのnextは元の位置を消費せず、同じ結果を返します。ただし、一度計算した結果を保存して再利用する保証ではありません。このunfoldではnextを一回呼ぶたびにcountdownを一回呼びます。同じ元の値をもう一度読むと、関数ももう一度呼ばれます。",
+    "Iteratorの計算は純粋です。ここでいう純粋とは、読み取りの裏で入出力、throw、Promiseによる非同期処理を行わないことです。今回の計算は数を受け取って次の数を決めるだけです。画面への出力はmainのprintlnが担当します。",
+    "let values: iterator.Iterator<Int> = [1, 2]はSES-T0101になります。ArrayにIteratorの型を書いても変換されません。この例のようにunfoldで次の値の決め方を渡すか、対応する一覧のIteratorへの変換操作を使います。元の一覧と、続きの取り出し方を表すIteratorは別の値です。",
+    "末尾の正確な宣言Iterator<_>の_は、要素の型を選ぶ場所です。opaque-typeは内部の持ち方を公開しない型という意味です。型の正式な識別名はstd/prelude::Iteratorで、このページと操作の場所はstd/iteratorです。iterator.Iterator<Int>とIterator<Int>の間で変換は要りません。TypeScriptとの比較は小さい整数だけで、number全体とIntが同じという意味ではありません。"
+  ]
+}

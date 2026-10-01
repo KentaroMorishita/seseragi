@@ -1,21 +1,45 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Re-exports",
   summary: (explanation ()).summary,
-  ruleTitle: "A facade extends its public interface",
-  ruleBody: "pub import { UserId, toInt } from \"./modules-domain\" adds the named public declarations to this module's API. A consumer can import those names from the facade rather than their original file. A named re-export preserves the original declaration identity, so a UserId arriving through the facade is the same nominal UserId defined by the domain module.",
-  typingBody: "pub import * as domain exposes a public namespace. Consumers use qualified access through that namespace; it is not an unqualified wildcard. Re-exporting a namespace introduces a namespace in the public API rather than duplicating all its declarations. The facade's own private names remain private.",
-  evaluationBody: "pub import adds a dependency, so loading order and cycles are checked just as for ordinary import. Available trait instances follow the usual import rules. Re-exported functions and types refer to their original declarations; re-exporting creates no new implementation or type.",
-  invalidTitle: "Re-export does not manufacture visibility or identity",
-  invalidBody: "A private declaration cannot become accessible just because a facade names it. Export only names that the source module makes public. Renaming a public declaration changes its exposed spelling, not its nominal identity. Avoid facade cycles: a re-export graph has no special cycle exception.",
-  diagnosticsBody: "The example facade re-exports the domain's public type and operation and retains its opaque representation. Its source intentionally contains a relative import, so use it with the sibling domain module. A consumer should see a stable public interface, not depend on private files behind the facade.",
+  purpose: ["A public entry module separates callers from internal file organization. TypeScript also supports re-exporting names through another file. Seseragi uses pub import and preserves the original identity of named types passed through it."],
+  exampleTitle: "Create one public entry module",
+  reading: [
+    "pub on pub import makes the selected names public from this file too. An ordinary import only chooses names to use locally. Neither form silently duplicates the original declaration.",
+    "The public contract here is the name greet and its String-to-String function type. To use this entry module from another package, also make it reachable through the manifest's exports map."
+  ],
+  rules: [
+    "The next newtype UserId = Int defines a distinct named type wrapping an integer. UserId 42 constructs its value; a UserId annotation names its type. The match in toInt takes the contents of UserId value as value and returns that integer.",
+    "public.ssrg re-exports UserId and toInt by name and also re-exports a namespace with pub import * as domain. The caller's api.UserId and api.domain.UserId refer to the same defining type. main constructs through one spelling, stores the value under the other type spelling, and extracts 42 with api.toInt.",
+    "A namespace groups public names for qualified access such as domain.UserId. It is not an unqualified wildcard importing every name into the caller. Named and namespace re-exports may coexist. Renaming a public declaration does not change the original type identity.",
+    "pub import adds an ordinary import dependency. Re-export cycles have no exception, and initialization still follows dependencies first. Available trait instances, the implementations of operations for a type, follow the usual import-closure rules too.",
+    "Private declarations in the entry module or original module do not automatically become public. Re-exporting an opaque type preserves its hidden-representation restrictions. A re-export does not create a new type or implementation."
+  ],
+  mistakes: [
+    "The following greeting.ssrg publishes only greet and keeps punctuate private. A pub import that also names punctuate is rejected as PrivateExport. Keep main.ssrg and seseragi.toml as in the first project.",
+    "Remove private punctuate from public.ssrg and retain pub import { greet }. The caller can use public greet and print Hello, Aki! without exposing the implementation helper."
+  ],
+  related: [
+    "Check which declarations and representations pub and opaque expose at the source.",
+    "Review named imports and namespace-qualified access.",
+    "Find and repair cycles that pass through imports or re-exports."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can callers use a stable entry module instead of internal file paths?",
-  summary: "A re-export publishes another module's public declarations through a stable entry module without copying their definitions.",
-  reading: "pub import { UserId, toInt } makes these public names available from this module too. pub import * as domain additionally exposes a namespace, so callers can use domain.UserId and domain.toInt.",
-  result: "Importing UserId directly or through the re-exporting module uses the same UserId type. Use this example together with its sibling modules-domain.ssrg file. A declaration private in its original module cannot be re-exported."
+  question: "How do I publish a function without exposing its internal file location?",
+  summary: "Keep the implementation of greet in greeting.ssrg, but let callers import it from public.ssrg. pub import re-exports another file's public declarations through a shared entry module.",
+  reading: "pub fn greet in greeting.ssrg defines the function. pub import { greet } in public.ssrg also makes that public name available from this file. main.ssrg imports public rather than the defining greeting module.",
+  result: "greet \"Aki\" calls the same function and prints Hello, Aki!. The implementation was not copied into public.ssrg. When internal files move, callers can retain their imports if the entry module preserves its public names and types.",
 }
+
+pub fn setup -> String =
+  "Create seseragi.toml and the three files under src in an empty directory. greeting.ssrg, public.ssrg and main.ssrg are siblings. Run the commands from the directory containing seseragi.toml. Supply the entire project, including the imported files, rather than main alone."
+
+pub fn detailsTitle -> String = "Preserve type identity and re-export a namespace"
+
+pub fn mistakesTitle -> String = "Another file cannot re-export a private helper"
+
+pub fn title -> String = (copy ()).title

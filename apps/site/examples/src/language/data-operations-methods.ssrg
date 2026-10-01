@@ -1,0 +1,15 @@
+struct Progress { completed: Int }
+
+impl Progress {
+  fn advance self: Progress -> amount: Int -> Progress = Progress {
+    ...self,
+    completed: self.completed + amount
+  }
+
+  fn count self: Progress -> Int = self.completed
+}
+
+let original = Progress { completed: 2 }
+let updated = original.advance 1
+
+pub effect fn main = println `${original.count}\n${updated.count}`

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "指定したキーを除いたMapを返す",
+  purpose: "項目を一つ除くときにremoveを使います。キー、Mapの順に渡し、返された結果を使ってください。",
+  reading: "bを除くとaだけになります。そこからmissingを除いても変わりません。bを再び入れるとaの後ろに付きますが、originalではbがaの前のままです。",
+  boundaries: "空のMapを含め、キーがなければ同じ対応関係を返します。キーがないというエラーの処理は不要です。",
+  rules: "元の値は変えません。残ったキーの順序を保ち、削除してから挿入し直したキーは末尾に移ります。検索にはEqとHashを使います。",
+  mistake: "TSのdeleteは対象を変更し、新しいMapではなくbooleanを返します。比較例は先にコピーして、そのコピーをdeleteの後も使います。Seseragiのremoveは新しいMapを直接返します。",
+}

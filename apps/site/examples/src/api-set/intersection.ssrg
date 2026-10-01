@@ -1,0 +1,14 @@
+import * as sets from "std/set"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let left = sets.fromIterable [3, 1, 2]
+  let right = sets.fromIterable [2, 4, 1]
+  let empty = sets.empty<Int> ()
+  println (json.encodeString (sets.toArray (sets.intersection right left)))
+  println (json.encodeString (sets.toArray (sets.intersection left right)))
+  println (json.encodeString (sets.toArray (sets.intersection empty left)))
+  println (json.encodeString (sets.toArray (sets.intersection right empty)))
+  println (json.encodeString (sets.toArray left))
+  println (json.encodeString (sets.toArray right))
+}

@@ -1,0 +1,3 @@
+import * as iterator from "std/iterator"
+let values: iterator.Iterator<Int> = [1, 2]
+pub effect fn main = println "unreachable"

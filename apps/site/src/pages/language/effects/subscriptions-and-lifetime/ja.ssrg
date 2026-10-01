@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Signalの監視が不要になったら、どう止めるか",
-  summary: "購読は、Signalの変化を受け取る関数を登録する操作です。不要になった購読はunsubscribeで解除します。リソースのscopeへ登録した場合は、scopeの終了時に解除します。",
-  reading: "subscribeは最初にsourceの現在値を関数へ渡し、その関数がmirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeで購読を解除した後にsourceを3へ更新しても、その関数は呼ばれません。",
-  result: "observeThenReleaseは2を返します。mirrorは解除後の更新を受け取らないためです。通知の引数valueは、sourceの現在値であってSignalそのものではありません。必要な期間だけ通知を受け取るよう、購読を解除してください。"
+  question: "値が変わった通知を受け取り、使い終わったら止めるには",
+  summary: "subscribeへ通知を受け取る関数を渡すと、現在値とその後の更新が届きます。購読は使い終わりに解除します。scopeへ解除を登録すれば、途中で失敗やキャンセルが起きても後片付けできます。",
+  reading: "sourceは1で始まるSignal、seenは通知の記録です。subscribeへ渡す関数は、受け取った整数をseenの配列末尾へ追加します。acquireReleaseで購読を取得し、その解除関数unsubscribeを同じscopeへ登録します。",
+  result: "購読時の1と、二回の更新による2、2が届くため、記録は[1, 2, 2]です。scopeを出ると解除され、その後sourceを3に変えても記録は増えません。最後の現在値は3で、Signalの更新自体を止めたわけではありません。"
 }
+
+pub fn readerBridgeOne -> String =
+  "実行入口mainのdoで<-は成功値を受け取り、_ <-は完了だけを待ちます。refsは記録用の保存先、arrays.empty<Int> ()は空の整数配列、arrays.append [value] valuesは末尾への追加です。\\value: Int -> ...は通知ごとに呼ばれる関数で、その中の\\values: Array<Int> -> ...が記録を更新します。 effects.scoped $ do { ... }は、effects.scoped (do { ... })と同じくdo全体を管理範囲の処理として渡します。source := 2は書き込み可能なSignalを更新する処理です。*sourceは現在値を読み取る処理を表し、current <- *sourceで実行して整数を受け取ります。記号だけで通常の変数へ代入したり、現在値を純粋な式として読んだりするわけではありません。"
+
+pub fn readerBridgeTwo -> String =
+  "通知を受け取る関数をobserverと呼びます。例のobserverはrefs.updateなので型付きの失敗を持ちません。外部出力など失敗しうる処理を行うなら、observerの中でrecoverなどを使って扱ってください。同じSignalのobserverは登録順に呼ばれ、一つの実行へ次の通知を重ねません。"
+
+pub fn readerMistake -> String =
+  "拒否例のprintlnをそのまま使うobserverにはConsoleErrorの失敗が残るため、subscribeの条件を満たしません。失敗を処理してから登録してください。unsubscribeは重ねて呼んでも安全です。同じ値の通知を省くなら、値の等しさを比べるdistinctを明示します。"
+
+pub fn readerCaption -> String = "購読時・同じ値への更新・解除後を記録で比べる"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "subscribeは最初にsourceの現在値を関数へ渡し、その関数がmirrorへ書き込みます。sourceを2にするとmirrorも2になります。unsubscribeで購読を解除した後にsourceを3へ更新しても、その関数は呼ばれません。"
+
+pub fn readerLegacyResult -> String =
+  "observeThenReleaseは2を返します。mirrorは解除後の更新を受け取らないためです。通知の引数valueは、sourceの現在値であってSignalそのものではありません。必要な期間だけ通知を受け取るよう、購読を解除してください。"

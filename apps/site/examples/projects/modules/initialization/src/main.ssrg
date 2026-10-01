@@ -1,0 +1,3 @@
+import { answer } from "./summary"
+
+pub effect fn main = println (show answer)

@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { correctionEditorial } from "../../correction-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  correctionEditorial "std/non-empty-list::head" "function" "api-correction-nonempty-head" "api-correction-nonempty-head-ts" "10\n10" (en.copy ()) (ja.copy ())

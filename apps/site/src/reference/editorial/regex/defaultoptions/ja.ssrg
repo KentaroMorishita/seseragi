@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "caseInsensitive・multiline・dotMatchesNewlineがすべてFalseのRegexOptionsを返します。",
+  taskTitle: "初期設定を値として用意する",
+  purpose: "特別な一致規則を有効にせず、設定値を明示的に渡したい場合に使います。compileも内部では同じ初期設定を使います。",
+  setup: "defaultOptions ()は追加の入力を必要としないため、Unitの値である()を渡します。let optionsは返されたレコードに名前を付けます。options.caseInsensitiveのドットは、その項目を読む記法です。",
+  after: [
+    "最初の三行で、すべてFalseだと確認できます。最後は、その設定で大文字Aの中から小文字aを探すためFalseです。作ったRegexは繰り返し使えます。",
+    "compileWithは、正しいパターンならRight pattern、拒否する場合はLeft errorを返します。matchで成功時のRegexに名前を付け、拒否時はエラーを表示します。",
+    "pub effect fn mainが実行入口です。doの中でprintlnを順に実行します。呼び出しの引数は空白で区切ります。showは値を表示用の文字列にし、Seseragiの真偽値はTrueとFalseで表します。"
+  ],
+  comparisonBefore: "JavaScriptのRegExpでも、uを付け、i・m・sを付けなければ、ignoreCase・multiline・dotAllはfalseです。uはJavaScriptでの指定で、SeseragiではUnicodeのスカラー値単位で調べることが元から規則に含まれています。",
+  comparisonAfter: "表示した四つの結果は一致します。JavaScriptには、状態を持つgやyなど、RegexOptionsの項目とは対応しないフラグもあります。",
+  details: [
+    "戻り値はRegexOptionsです。この値を作るだけでは、パターンの作成や入力の検索はしません。compileWithへ渡すか、必要な項目を指定したRegexOptionsのレコードを作ってください。",
+    "初期設定では大文字小文字を区別し、^と$は入力全体の端を表し、.は改行を除きます。設定を明示しても、共通のパターン記法や型付きの拒否結果は変わりません。"
+  ],
+  codeTitle: "境界も確認する完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使うときに確かめたい規則"
+}

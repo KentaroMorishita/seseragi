@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Build a read for a String key in Local or Session storage. Execution returns Just text or Nothing; a storage access failure is a separate StorageError.",
+  taskTitle: "Read a saved name and handle missing data",
+  purpose: "Browser storage may contain a name, an empty string, or no entry. Access itself can also fail. readName handles these separately, returning display text that a calling application can use.",
+  setup: "This is a browser integration function, not a standalone visible demo. A Storage service is a value supplying the application’s storage operations. Calling readName () builds an Effect; a browser application must provide the Storage service, execute the Effect, and use its String result. This sample does not display anything or write storage. Local selects local storage; Session selects session storage.",
+  codeTitle: "Integration module: return text to a browser application",
+  outputTitle: "Mock-host cases checked in tests, not browser output",
+  after: [
+    "storage.get storage.Local \"name\" receives an area and then a String key. Maybe<String> separates presence from absence: match uses Just text to name a stored string and Nothing for a missing key. The backtick string substitutes ${text}; an empty stored string therefore stays present.",
+    "describe <$> storage.get ... applies describe to a successful read. |> passes that Effect into recover. The handler \\error: storage.StorageError -> ... names a typed storage failure; errorMessage gets its text and succeed makes that text a successful result. Access failure is not turned into Nothing.",
+    "Effect<{ storage: storage.Storage }, Never, String> states the required service, remaining typed error, and successful result. The requirement uses { name: Type } record notation. Never means this function handles its StorageError channel, not that runtime defects or cancellation are impossible. () supplies Unit, the no-additional-input argument."
+  ],
+  comparisonTitle: "The same presence check with a TypeScript storage reader",
+  comparisonBefore: "A browser Storage object supplies getItem. This integration function accepts that part of its interface, so an application can pass localStorage or sessionStorage and decide where to display the returned text. Tests supply a mock object instead.",
+  comparisonAfter: "The TypeScript call reads immediately and catches thrown values. The Seseragi call describes a later read and recover handles the declared StorageError channel. Both preserve an empty string using an explicit absence check. The TypeScript catch is broader than typed recovery; it also converts other thrown values to text.",
+  detailTitle: "Integration and verification limits",
+  details: [
+    "The Seseragi module is compiled for the web target with a caller. Isolated tests use the real storage provider adapter with a mock host to verify area/key routing, present text, empty text, absence, and SecurityError conversion. No real browser storage has been read, written, or cleared for this example.",
+    "The cases above describe the mock host, not output from the source by itself. The integration function deliberately has no Playground launch. Use the Storage provider configured by the browser application; missing keys and storage permission failures need different handling."
+  ]
+}

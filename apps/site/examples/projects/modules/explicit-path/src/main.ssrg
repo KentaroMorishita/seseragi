@@ -1,0 +1,3 @@
+import { greet } from "./words/index"
+
+pub effect fn main = println (greet "Aki")

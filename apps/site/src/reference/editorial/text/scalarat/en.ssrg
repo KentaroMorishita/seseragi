@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Read one Unicode scalar at a checked position",
+  purpose: "Call scalarAt with the index first and the string second. The index counts scalars starting at zero. A scalar is one Unicode code-point value; one visible character may contain several. Maybe<Char> means either Just containing one scalar or Nothing for an invalid position.",
+  reading: "In Aé😀e\\u{301}, position zero is A, one is é, and two is 😀. atLabel uses match: Just letter names the contained Char letter, then chars.toString converts it to a String for the message. chars names the std/char import.",
+  boundaries: "The Nothing branch returns out of range. Both a negative position and a position equal to the string length are invalid, so the final three calls, including empty input, take that branch. Both outcomes are handled rather than trying to read an absent character.",
+  rules: "Char is one Unicode scalar. Several scalars, such as e and a combining accent, may look like one character. Reading an index may scan from the start; constant-time access is not guaranteed.",
+  mistake: "Do not reuse TypeScript UTF-16 string indexes or lengthBytes byte counts as scalar positions. See std/text/grapheme at when you need a user-perceived unit.",
+}

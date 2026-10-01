@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Return a Map without one key",
+  purpose: "Use remove to omit an entry. Pass the key first and the Map second, then use the returned result.",
+  reading: "Removing b leaves only a. Removing missing from that result changes nothing. Reinserting b adds it after a, while original still keeps b before a.",
+  boundaries: "A missing key, including in an empty Map, leaves the same mapping. There is no missing-key error to handle.",
+  rules: "The source value is unchanged. Remaining keys retain their order; removal followed by insertion gives the key a new last position. Lookup uses Eq/Hash.",
+  mistake: "TS delete changes the receiver and returns a boolean, not the new Map. The example copies first and keeps that copy after delete. Seseragi remove directly returns the new Map.",
+}

@@ -1,0 +1,9 @@
+effect fn announce message: String = println message
+
+let planned = announce "run"
+
+pub effect fn main = do {
+  _ <- println "before"
+  _ <- planned
+  planned
+}

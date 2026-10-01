@@ -1,6 +1,7 @@
 import * as arrays from "std/array"
 import * as html from "std/web/html"
-import { Locale, localizedRoute, translate } from "../model/locale"
+import { ReferenceModule } from "../model/build"
+import { Locale, localized, localizedRoute, translate } from "../model/locale"
 import {
   Block,
   Heading,
@@ -22,24 +23,56 @@ pub fn directoryGroups page: PageDefinition
 pub fn directoryHeadings groups: Array<NavigationGroup> -> Array<Block> =
   [Heading ("directory-" + group.id, group.title) | group <- groups]
 
+fn moduleMatches id: String -> value: ReferenceModule -> Bool = id == value.specifier
+
 fn sectionLink<Action> locale: Locale
+  -> modules: Array<ReferenceModule>
+  -> details: Bool
   -> section: NavigationSection
   -> html.Html<Action> =
-  anchor (translate locale section.title) (localizedRoute locale section.overview.path) "directory-link"
+  {
+    let link =
+      anchor (translate locale section.title) (localizedRoute locale section.overview.path) "directory-link"
+    if ! details then link else match arrays.find (moduleMatches section.id) modules {
+      Nothing -> link
+      Just value -> html.div {
+        class: "directory-entry",
+        children: [
+          link,
+          html.p {
+            class: "directory-purpose",
+            children: translate locale section.overview.summary
+          },
+          html.p {
+            class: "directory-targets",
+            children: translate locale (localized "Targets: " "対象: ") + join ", " value.targets
+          }
+        ]
+      }
+    }
+  }
 
-fn groupCard<Action> locale: Locale -> group: NavigationGroup -> html.Html<Action> =
+fn groupCard<Action> locale: Locale
+  -> modules: Array<ReferenceModule>
+  -> details: Bool
+  -> group: NavigationGroup
+  -> html.Html<Action> =
   html.section {
     class: "directory-group",
     children: [
       html.h2 { id: "directory-" + group.id, children: translate locale group.title },
-      html.nav { children: [sectionLink locale section | section <- group.sections] }
+      html.nav {
+        children: [sectionLink locale modules details section | section <- group.sections]
+      }
     ]
   }
 
 pub fn referenceDirectory<Action> locale: Locale
   -> groups: Array<NavigationGroup>
+  -> modules: Array<ReferenceModule>
+  -> details: Bool
   -> html.Html<Action> =
   html.div {
     class: "reference-directory",
-    children: [groupCard locale group | group <- groups]
+    children: [groupCard locale modules details group | group <- groups]
   }

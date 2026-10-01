@@ -1,0 +1,2 @@
+let count: Int = "three"
+pub effect fn main = println count

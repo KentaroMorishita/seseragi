@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../correction-model"
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "最終結果を返し、reduceUntilに後の要素を処理しないよう伝えます。",
+  taskTitle: "最終結果を渡して集計を止める",
+  purpose: "Done valueは「この値を最終結果にする」という判断を作ります。点数の列で負の印を見つけたら、そこまでの合計をDoneで返します。その判断を読むreduceUntilが後の要素を処理せず結果を返します。Doneという値だけでmainが終了するわけではありません。",
+  setup: "import * as collectionsはstd/collectionをcollectionsという名前で使います。fnは関数を定義し、呼び出すときは引数を空白で区切ります。Intは整数、Stringは文字列です。Array<Int>は整数の配列を表し、[]が空配列です。",
+  codeTitle: "負の印が来るまで点数を合計する",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "stepのtotal: Intは現在の合計、score: Intは今読んだ点数です。-> collections.ReduceStep<Int>は、整数の合計を持つ「続けるか止めるか」の判断を返すことを示します。引数を区切る->は、ここではtotal、scoreの順に二つの値を渡す関数の宣言です。",
+    "if score < 0 thenの条件が真ならcollections.Done totalを返します。それ以外はcollections.Next (total + score)で更新した合計を返します。NextとDoneはReduceStepの二つの名前付きの値です。どちらも整数を一つ持ち、DoneやNext自体を結果の型として書くわけではありません。",
+    "collections.reduceUntil 0 step [10, 20, -1, 100]は、初期値0、判断する関数step、配列の順で渡します。10と20で合計30になり、-1でDone 30を受け取るので100は処理しません。負の印がない[10, 20]でも最後は30です。空配列ではstepを呼ばず初期値0を返します。",
+    "carriedはmatchで判断を調べます。collections.Next valueとcollections.Done valueの二つの分岐は、それぞれ中の整数をvalueと名付けて返します。Done 99から99を取り出した後もstill runningが出力されます。Doneを作っただけではプログラムもmainも終了しません。",
+  ],
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  comparisonBefore: "この処理だけならTypeScriptのfor...ofとbreakで簡潔に書けます。最初にその合計を出力します。続いて、別の関数から判断を返す場合を比べます。typeの|はkindがnextまたはdoneの二つのオブジェクト形を許し、どちらもvalueに合計を持ちます。reduceUntilはkindを調べて、続けるかvalueを返すかを決めます。",
+  comparisonAfter: "TypeScriptの最初の30は通常のループ、次の30は同じ入力を判断用関数で処理した結果です。以後の30、0、99、still runningはSeseragiと同じケースです。どちらでも、判断の値を作るだけでは外側のプログラムを止めません。Seseragiの利点はこのコールバックの返り値を標準の型と操作で表せることで、単純なループが必ず短くなるという比較ではありません。",
+  detailTitle: "型の保証と間違いやすい点",
+  details: [
+    "ReduceStep<Int>は通常の整数とは違う型です。stepの結果にtotal + scoreだけを返すとSES-T0101になります。続けるならNext (total + score)、止めるならDone totalのように、返したい判断を明示してください。型注釈を付けても整数が判断の値に変わるわけではありません。",
+    "一般のReduceStep<A>のAは、中に持つ結果の型です。ここではIntですが、入力の要素と結果の型がいつも同じである必要はありません。NextとDoneには同じ結果型を渡します。下の宣言のarg1は、その一つの値を受け取る引数名です。",
+    "Doneの意味を読み取って集計を止めるのはreduceUntilです。Doneを受け取った後は次の要素を取り出さず、stepも呼びません。ただし、最初に配列を作るために評価した式を後から取り消すわけではありません。全てNextなら最後の合計、空なら初期値を返します。",
+    "必要な処理は、止まるまでに訪れた要素の数に比例します。reduceUntilは有限とは限らないIteratorにも使えますが、Doneに到達せず入力も終わらなければ終了しません。この例は有限の配列なので、そのような無限の処理を実行しません。小さな整数に限った比較であり、TypeScriptのnumber全体をIntと同じとは扱いません。",
+  ],
+}

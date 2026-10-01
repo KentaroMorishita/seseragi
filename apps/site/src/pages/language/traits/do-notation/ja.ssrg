@@ -1,21 +1,39 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "do記法",
   summary: (explanation ()).summary,
-  ruleTitle: "取り出した結果を、次の計算で使う",
-  ruleBody: "pattern <- expressionと書くと、計算の結果から値を取り出し、次の行で使えます。letでは通常の値や関数を束縛できます。計算の結果を使わずに次へ進むこともできます。最後には、ブロック全体の結果となる計算の式が必要です。",
-  typingBody: "この例の各行はMaybeの計算です。MaybeのMonad実装は、Justの中身を次の行へ渡し、Nothingなら残りの行を実行しません。一般には、すべての取り出しと最後の式が同じ型構築子M<_>を使い、Monad<M>が必要です。pureにはその前提となるApplicativeを使います。取り出すパターンは、中の値に必ず一致する必要があります。",
-  evaluationBody: "各行はflatMapの規則に従って、ソースに書いた順に組み合わされます。letは通常の値の束縛であり、それだけでEffectなどの計算を実行したり、値を計算の型で包んだりはしません。最後の式がブロック全体の結果になります。",
-  invalidTitle: "doは、Effectだけの構文ではない",
-  invalidBody: "Maybe、Either、自分で定義した型、Effectのいずれも、Monadの実装があればdoを使えます。ただし、一つのブロックに異なる種類の計算を暗黙に混ぜることはできません。また、一致しない可能性のあるパターンを、自動で失敗処理に変換することもありません。",
-  diagnosticsBody: "最後の式がない場合、パターンが必ず一致しない場合、異なる型構築子を混ぜた場合、必要なMonad実装を決められない場合を、それぞれ報告します。どの行で計算の型が変わったかを確認してください。",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "streetName <- streetは、streetがJustなら中のStringにstreetNameと名前を付けます。Nothingなら残りの行を実行しません。cityNameの行も同じ規則です。",
+    "let addressは取り出した二つのStringを普通に連結します。pure addressは、このdoで使うMaybeに結果を包み、Just addressを返します。pureは「画面へ出す」操作ではありません。",
+    "displayのmatchは結果を場合分けします。Just addressなら中の文字列、Nothingなら代わりの表示を返すので、値がない場合も扱えています。",
+    "TypeScriptでも、streetやcityがundefinedなら早めにreturnする関数で同じ仕事ができます。doは同じ種類の計算のつなぎ方を共通の構文で書くもので、例外を自動で捕捉する構文ではありません。"
+  ], rules: [
+    "このつなぎ方を提供するtraitがMonadで、操作はflatMapです。Maybeの場合はJustの中身を渡し、Nothingなら止めます。doはこの操作を順に使う構文です。先にこの具体的な動作を理解すれば、名前の由来を知る必要はありません。",
+    "最後の式には、do全体の結果となる計算が必要です。途中の計算の結果を使わない行も書けます。letは通常の値や関数に名前を付けるだけで、それ自体がEffectを実行したりMaybeで値を包んだりはしません。",
+    "一般には同じ型構築子M<_>でそろえ、Monad<M>を要求します。型構築子とは、Maybeのように中身の型を受け取ってMaybe<String>などの型を作るものです。pureはMonadが前提とするApplicativeの操作で、値をその種類の計算へ包みます。",
+    "EitherやEffect、自分の型にも対応する実装があればdoを使えます。Eitherは失敗を表すLeftで後続を止めます。Effectでは作った処理を実行機構が実行する際に順に進め、失敗や必要な環境の規則も守ります。異なる種類を暗黙に変換しません。",
+    "取り出すパターンは、中身の型に必ず一致する必要があります。文字列リテラル、複数の選択肢がある型の一つの形、固定長の配列など、一致しない可能性がある形は使えません。必要なら名前で受け取り、すべての場合を扱うmatchを書きます。"
+  ], mistakes: [
+    "次の\"1 River Road\" <- streetは、その文字列以外に一致しないパターンです。<-の左は、受け取った中身に必ず一致する必要があるため、SES-T0101になります。streetNameで受け取り、必要ならその後で条件を調べてください。",
+    "修正は、最初の例と同じstreetName <- streetと、streetName + \", \" + cityNameに戻すことです。一致しなかった値を、自動でNothingへ変える仕組みではありません。"
+  ], related: [
+    "中の値の型と、外側の計算の型の違いを確認できます。",
+    "doをflatMapで書いた場合の順序と不在の扱いを確認できます。",
+    "共通の関数が必要な操作をwhereで要求する方法を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Maybeの具体例から、共通のMonad操作へ"
+pub fn mistakesTitle -> String = "取り出す名前と、値の条件を分ける"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "包まれた結果を取り出し、次の計算へ渡すには",
-  summary: "doは、結果を次へ渡す計算を順に書く構文です。<-で中の値に名前を付けても、MaybeやEffectなどの計算全体の型を失いません。",
-  reading: "この例ではnumber <- valueがMaybeのJustからIntを取り出します。let nextで普通の加算をし、pure nextで同じMaybeに包み直すため、戻り値はMaybe<Int>です。",
-  result: "increment (Just 41)はJust 42を返します。increment Nothingは加算せず、Nothingを返します。doの書き方は同じでも、Maybeでは不在の扱い、Effectでは処理の順次実行という、各Monad実装の規則に従います。"
+  question: "住所の一部が欠けていたら、組み立てを途中で止めるには",
+  summary: "doでは、値がある場合だけ次の計算へ渡す処理を順に書けます。Maybeを使うこの例では、一つでもNothingなら住所を作らずにNothingを返します。",
+  reading: "Maybe<String>は、文字列があるJustと、値がないNothingのどちらかです。通りと市の両方があるときだけ住所を作るdeliveryLabelを、doで書きます。",
+  result: "両方そろうと1 River Road, Tokyo、通りがないとaddress incompleteを出力します。後者では住所の連結まで進みません。不在の確認を各行で繰り返さず、取り出せた値を使う順番をそのまま読めます。"
 }

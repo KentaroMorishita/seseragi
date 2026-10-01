@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "条件に合う最初の要素の位置を探す",
+  purpose: "条件に合う要素の位置が欲しい場合はfindIndexを使います。最初の引数は要素を調べる関数、次は配列です。位置は先頭を0として数えます。",
+  reading: "isLargeは整数を受け取り、30以上ならTrueを返します。[10, 30, 40]では30が最初の該当要素で、その位置は1です。findIndexはMaybe<Int>を返します。これは位置を持つJust indexか、見つからなかったことを表すNothingのどちらかです。",
+  boundaries: "describeはその二つの場合をmatchで分けます。Just indexの分岐では中の整数にindexという名前を付け、showで文字列にしてつなぎます。Nothingの分岐はnot foundを返します。該当しない配列と空配列は両方ともNothingなので、後の2行はnot foundです。",
+  rules: "判定は先頭から行い、最初のTrueで停止します。見つからないときだけ全要素を調べます。空配列では判定を呼びません。入力は変更せず、最大で要素数に比例した処理を行います。",
+  mistake: "TypeScriptのArray.findIndexが使う-1ではなく、Nothingを返します。位置0も正しい検索結果です。全体を数値へ置き換えて見つからなかった場合を消さず、matchで両方を扱ってください。",
+}

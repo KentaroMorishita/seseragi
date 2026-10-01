@@ -33,8 +33,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "元の値を変えずに、フィールドを変えるには",
-  summary: "レコードは、型名を宣言せずに名前付きフィールドをまとめる値です。ドットで読み、スプレッドで変更したコピーを作ります。",
-  reading: "originalはnameの\"Aki\"とscoreの10を持ちます。...originalで新しいレコードへフィールドを取り込み、score: 42で新しい方の得点を指定します。nameOfはStringのnameだけを要求するため、scoreも持つupdatedを渡せます。",
-  result: "出力は10、42、Akiです。original.scoreは10のままで、updated.scoreだけが42になります。元の値を変更したい場合も、代入ではなく新しいレコードを作って使います。"
+  question: "TypeScriptのオブジェクトのように、名前と得点をまとめるには",
+  summary: "レコードは、nameやscoreのようなフィールドをまとめた値です。フィールドを読んだり、元の値を残して変更したコピーを作ったりできます。",
+  reading: "originalはnameが\"Aki\"、scoreが10です。ドットでフィールドを読みます。{ ...original, score: 42 }は元のフィールドを取り込み、新しい方の得点だけを42にします。",
+  result: "出力は10、42、Akiです。originalは変わらず、updatedだけが新しい得点を持ちます。nameOfはnameという文字列のフィールドだけを使うので、scoreも持つupdatedを渡せます。",
 }
+
+pub fn readerCaption -> String = "同じ形の値を渡す"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのconstでオブジェクトを作る場合に似ていますが、Seseragiのレコードはフィールドも不変です。updated.scoreへの代入で変更せず、必要なフィールドを持つ新しい値を作ります。"
+
+pub fn readerBridgeTwo -> String =
+  "nameOfの引数型{ name: String }は、必須のnameフィールドを表します。型名を別に宣言する必要はありません。mainのprintlnが結果を表示し、バッククォート内の${...}は値を埋め込み、\\nは改行します。"
+
+pub fn readerInvalidCaption -> String = "重複したフィールド"
+
+pub fn readerMistake -> String =
+  "同じフィールドを直接二度書くことと、スプレッドでコピーした後に置き換えることは別です。後半の失敗例では、重複した直接指定を一つに直します。"

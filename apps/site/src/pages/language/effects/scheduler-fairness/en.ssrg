@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can a long calculation prevent other Fibers from progressing?",
-  summary: "The runtime switches to another Fiber when work waits or executes yieldNow. It does not automatically interrupt a long pure calculation in the middle.",
-  reading: "cooperativeStep executes yieldNow before succeeding with 42. yieldNow temporarily pauses the current computation so other runnable Fibers can progress. It adds neither a service requirement nor a recoverable failure.",
-  result: "After resuming, cooperativeStep returns 42. yieldNow sets no response deadline and does not equalize execution time across computations. If long pure work delays other work, divide the calculation and insert yieldNow between parts."
+  question: "How do I keep long work from holding up other work?",
+  summary: "The runtime can switch work at waits and boundaries such as yieldNow. It does not automatically interrupt a long pure calculation, so divide that work into smaller parts with boundaries between them.",
+  reading: "step increases counter by one and executes yieldNow (). steps performs step for the three items [1, 2, 3]. main creates separate left and right counters and runs both steps procedures through parallel.",
+  result: "The output [3, 3] confirms three steps on each side. Neither this example nor the contract promises strict alternation or equal milliseconds of execution."
 }
+
+pub fn readerBridgeOne -> String =
+  "Ref<Int> is an integer cell. The function \\value: Int -> value + 1 passed to refs.update computes its next value. effect fn creates a procedure. iteration names the current for item; here the three items are only used to repeat step three times. In main’s do block, <- receives values, then show and println display the array."
+
+pub fn readerBridgeTwo -> String =
+  "A boundary allowing a switch is a checkpoint; the mechanism assigning execution is the scheduler, and each separately progressing procedure is a Fiber. Runnable Fibers enter a FIFO queue, handled in arrival order. A continuously runnable Fiber eventually runs again as long as others continue reaching checkpoints. This is weak fairness."
+
+pub fn readerMistake -> String =
+  "yieldNow () returns Task<Unit>, not Unit itself. The rejected ordinary Unit-returning function cannot contain that result. Put it in an executing procedure such as a do block. Adding it only after one long pure calculation does not prevent delays during that calculation."
+
+pub fn readerCaption -> String =
+  "Place checkpoints between small, finite pieces of work"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "cooperativeStep executes yieldNow before succeeding with 42. yieldNow temporarily pauses the current computation so other runnable Fibers can progress. It adds neither a service requirement nor a recoverable failure."
+
+pub fn readerLegacyResult -> String =
+  "After resuming, cooperativeStep returns 42. yieldNow sets no response deadline and does not equalize execution time across computations. If long pure work delays other work, divide the calculation and insert yieldNow between parts."

@@ -1,0 +1,26 @@
+pub fn purpose -> String =
+  "商品名などのキーで値を指定したいときにMapを使います。Map<String, Int>は文字列のキーから整数の値を引く対応表です。一つのキーが持つ値は一つですが、別のキーに同じ値が入っていても構いません。"
+
+pub fn choice -> String =
+  "位置や順番に沿った処理が中心ならArrayやList、必要な項目をキーで繰り返し指定するならMapを使います。標準のStringキーには等しさとハッシュが用意されています。宣言のEq<K>とHash<K>は、キーで探すために必要なこの条件です。"
+
+pub fn example -> String =
+  "元の価格表を保ったまま、一つの価格を置き換え、新しい商品を加えます。Seseragiの更新は新しいMapを返すので、original、replaced、addedに別の版を持てます。キーは挿入順に並び、置き換えでは位置を保ち、新規キーは最後に入ります。"
+
+pub fn reading -> String =
+  "importはstd/mapにmaps、std/jsonにjsonという名前を付けます。letは値に名前を付けます。(\"b\", 2)はキーと値を位置で区別する組で、外側の[]は組を集めるArrayです。maps.fromEntriesが対応表を作ります。引数は空白で区切り、括弧で内側の呼び出しをまとめます。pub effect fn mainとdoで出力を順に実行します。maps.entriesで組を読み、json.encodeStringでJSONの文字列にし、printlnで改行して表示します。"
+
+pub fn outcomes -> String =
+  "最初はbを9に置き換え、位置は変えません。次はaの後ろにcを追加します。originalはb=2とa=1のままです。最後は空のMapにfirstを挿入します。maps.empty<String, Int> ()はキーと値の型を明示し、追加の情報を持たないUnitの値()を渡します。"
+
+pub fn comparison -> String =
+  "TypeScriptのMapも対応表を扱う道具です。そのsetとdeleteは対象のMapを変更し、Seseragiのinsertとremoveは新しいMapを返します。TypeScriptで元のMapを保つならnew Map(original)から始めます。各操作のページには同じ入力と結果を持つ実行可能な比較例があります。"
+
+pub fn absence -> String =
+  "getのMaybe<V>は、キーがあればJust value、なければNothingを返します。保存された0や空文字列も、値がある場合です。getのページにはmatchで両方を扱う完全な例があります。upsertもこの有無の区別を使い、保存する値を計算します。"
+
+pub fn order -> String =
+  "fromEntriesでキーが重複すると、値は最後、位置は最初のものを採用します。一度削除してから同じキーを入れると末尾に移ります。keys、values、entriesは挿入順のArrayを返します。Mapの等しさはキーと値の対応を比べ、この順序は比べません。"
+
+pub fn limits -> String =
+  "fromEntriesは有限の入力を最後まで読み、無限の入力では終了しません。Mapを自動で並べ替えることもありません。キーの変換では同じキーができる場合があり、二つの表にも共通キーがあり得ます。mapKeysWithとmergeWithでは、その値をまとめる関数を明示します。"

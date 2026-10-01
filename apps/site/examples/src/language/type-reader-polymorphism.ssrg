@@ -1,0 +1,6 @@
+fn keepFirst<A> first: A -> second: A -> A = first
+
+let choose = keepFirst
+let number = choose 1 2
+let name = choose "Aki" "Mio"
+pub effect fn main = println `${number}\n${name}`

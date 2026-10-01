@@ -1,0 +1,2 @@
+let increment: Int -> Int = \value -> "one"
+pub effect fn main = println (increment 2)

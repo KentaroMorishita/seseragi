@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Check whether a value is a member",
+  purpose: "Use contains for a yes/no membership question. Pass the value to search for, then the Set.",
+  reading: "0 is present and returns true; 9 is absent and returns false. Searching an empty Set also returns false.",
+  boundaries: "A stored 0 is still present. Membership checks equality with stored values; it is not a truthiness test and does not retrieve a positional element.",
+  rules: "Eq<A> and Hash<A> define matching membership. Suitable hashing gives expected constant lookup work; heavy hash collisions can require scanning. The Set stays unchanged.",
+  mistake: "TypeScript Set.has is the direct counterpart. Use this operation for membership; converting to an Array and searching positions adds work and changes the question.",
+}

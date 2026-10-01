@@ -1,77 +1,95 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
 import * as guide from "./guide"
-import { localized } from "../../../../model/locale"
+import { LocalizedText, localized } from "../../../../model/locale"
 import {
-  BulletList,
+  Article,
+  Block,
   CodeExample,
-  InlineCode,
+  Heading,
   InternalLink,
   PageDefinition,
+  Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
-import { syntaxPage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.function-application" "/docs/language/syntax/function-application/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "function-application",
-      localized "Curried application in a complete program" "引数を一つずつ渡し、残りを待つ関数を作る"
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (". " + english) ("。" + japanese))
+  ])
+}
+
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  let related = [
+    (
+      localized "Function types and currying" "関数型とカリー化",
+      "/docs/language/types/function-types-and-currying/"
     ),
-    BulletList [
-      [
-        InlineCode "add 1 2",
-        Words
-          (localized " parses as (add 1) 2." " は(add 1) 2の意味です。先に1を渡し、その結果の関数へ2を渡します。")
-      ],
-      [
-        InlineCode "add 1",
-        Words (
-          localized
-          " has the remaining function type Int -> Int when add is Int -> Int -> Int."
-          " はaddがInt -> Int -> Intなら残りのInt -> Int型を持ちます。"
-        )
-      ],
-      [
-        InlineCode "fn clock -> Instant",
-        Words (
-          localized " declares an anonymous Unit parameter; invoke it as clock ()."
-          " は()を受け取り、Instant型の時刻を返す関数の宣言の形です。clock ()で呼びます。"
-        )
-      ],
-      [
-        InlineCode "identity<String> value",
-        Words (
-          localized " keeps the explicit type argument attached to the callee."
-          " はidentityの型引数にStringを指定してから、値valueを渡します。"
-        )
-      ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "add(1, 2)",
-      Words (
-        localized " is not Seseragi's multi-argument call syntax."
-          " は複数の引数を渡す形式ではありません。整数二つならadd 1 2と書きます。"
-      )
-    ],
-    [
-      InlineCode "identity < value",
-      Words
-          (localized " is comparison, not explicit type application." " は明示型適用ではなく比較です。")
-    ]
-  ]] [
-    [InternalLink
-          (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
-    [InternalLink (
+    (
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
+    ),
+    (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/"),
+    (
       localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
       "/docs/language/syntax/pipelines-and-low-precedence-application/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Operator precedence" "演算子の優先順位",
       "/docs/language/syntax/operator-precedence/"
-    )]
+    )
   ]
+  PageDefinition {
+    id: "language.syntax.function-application",
+    path: "/docs/language/syntax/function-application/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [CodeExample (
+        "pilot-function-application",
+        localized english.exampleTitle japanese.exampleTitle
+      )],
+      [Heading (
+        "reading-the-example",
+        localized "Read the call from the function’s definition" "宣言と呼び出しを対応させる"
+      )],
+      paragraphs english.reading japanese.reading,
+      [Terminal (localized "Output" "実行結果", "3")],
+      [Heading ("why", localized "Reuse the same calculation" "同じ計算へ違う値を渡せる")],
+      paragraphs english.purpose japanese.purpose,
+      [Heading (
+        "rules",
+        localized "Fewer arguments, grouping, and advanced call forms"
+          "引数の省略、括弧、さらに詳しい呼び方"
+      )],
+      paragraphs english.rules japanese.rules,
+      [Heading (
+        "mistakes",
+        localized "A TypeScript-style call passes a tuple"
+          "TypeScript式の括弧では、タプル一個を渡してしまう"
+      )],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample
+          ("pilot-function-application-invalid", localized "Rejected example" "受け付けられない例")],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

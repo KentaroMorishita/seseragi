@@ -1,0 +1,6 @@
+fn readLater -> Int = later
+
+let later = 42
+let answer = readLater ()
+
+pub effect fn main = println (show answer)

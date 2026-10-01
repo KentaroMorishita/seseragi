@@ -1,0 +1,3 @@
+import * as unicode from "std/text/unicode"
+
+pub effect fn main = println ("Unicode: " + unicode.version ())

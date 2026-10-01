@@ -1,0 +1,6 @@
+let quantity = 3
+let price = 2.5
+let inStock = True
+let name = "Notebook"
+
+pub effect fn main = println `${name}: ${quantity}, ${price}, ${inStock}`

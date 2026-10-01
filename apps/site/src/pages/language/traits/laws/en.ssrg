@@ -1,21 +1,41 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Trait laws",
   summary: (explanation ()).summary,
-  ruleTitle: "A valid signature is necessary but not sufficient",
-  ruleBody: "Eq requires a value to equal itself. With Functor's map, a function returning its input unchanged must preserve the original result. These requirements about related results, beyond parameter and result types, are called laws. Eq, Ord, Functor, Applicative, Monad, and other documented traits have their own laws.",
-  typingBody: "Laws do not add hidden type rules or change instance selection. They describe relationships among well-typed calls. Equality used by a law follows the documented observational equality for the values involved.",
-  evaluationBody: "The compiler does not run arbitrary proofs while type checking. Standard-library instances are checked by maintained law suites, and user instances can use reusable law helpers with representative generated values.",
-  invalidTitle: "Compilation is not a law certificate",
-  invalidBody: "An implementation can type-check and still violate reflexivity, ordering consistency, identity, or associativity. Such an instance is semantically invalid even when no compiler diagnostic is possible.",
-  diagnosticsBody: "Type diagnostics still catch malformed methods and missing evidence. Law failures belong to tests and should report the property, generated input, and smallest reproducible counterexample.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "eq in Eq<Ticket> takes two tickets and returns a Bool indicating whether their numbers match. == corresponds to this operation.",
+    "where Eq<A> in reflexive<A> requires a comparison for A. The property being checked is that value == value should be True.",
+    "symmetric compares the two Bool results (left == right) and (right == left). With ticket numbers 42 and 7, both are False, so the overall check is True.",
+    "The separate file below changes only eq’s body to False. Type checking and execution succeed, but the first output is False. Returning Bool and behaving as a correct comparison need separate checks."
+  ], rules: [
+    "Eq requires a value to equal itself. With Functor's map, a function returning its input unchanged must preserve the original result. These requirements about related results, beyond parameter and result types, are called laws. Eq, Ord, Functor, Applicative, Monad, and other documented traits have their own laws.",
+    "Laws do not add hidden type rules or change instance selection. They describe relationships among well-typed calls. Equality used by a law follows the documented observational equality for the values involved.",
+    "The compiler does not run arbitrary proofs while type checking. Standard-library instances are checked by maintained law suites, and user instances can use reusable law helpers with representative generated values.",
+    "An implementation can type-check and still violate reflexivity, ordering consistency, identity, or associativity. Such an instance is semantically invalid even when no compiler diagnostic is possible.",
+    "Type diagnostics still catch malformed methods and missing trait implementations. Law failures belong to tests and should report the property, generated input, and smallest reproducible counterexample.",
+    "Eq also requires transitivity: if a equals b and b equals c, then a equals c. Ord must give an ordering consistent with Eq.",
+    "Functor declares map for transforming payloads; Applicative supplies pure and application of wrapped functions; Monad supplies flatMap for passing a payload to a later computation. Their laws preserve observable results when operations are regrouped. Check the laws of the particular operation rather than judging correctness from these names alone."
+  ], mistakes: [
+    "A law violation need not produce a compiler diagnostic. Restore the broken eq body to left.number == right.number and both checks return True again.",
+    "In contrast, returning the String \"True\" from the Bool-returning reflexive is rejected with SES-T0101. Restore value == value in the type-error example below. Distinguish a type mismatch from a well-typed implementation with incorrect meaning."
+  ], related: [
+    "See a small example of operation declarations and type-specific implementations.",
+    "Check which standard trait corresponds to each operator.",
+    "Check when field-based comparison and display can be generated."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Relationships that operation results must preserve"
+pub fn mistakesTitle -> String = "Separate law violations from type errors"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can an implementation have the right types but wrong behavior?",
-  summary: "A trait law describes behavior an implementation must preserve, beyond the parameter and result types checked by the compiler.",
-  reading: "reflexive checks one equality property: a value should equal itself. Eq<A> lets the function compare its input. The integer and text calls show two types using that same check.",
-  result: "Both reflexive 42 and reflexive \"seseragi\" return True. An Eq implementation always returning False has the required Bool result type but violates reflexivity. When writing an instance, test these relationships with concrete values."
+  question: "Is a comparison correct just because its types match?",
+  summary: "Equality has requirements such as a value being equal to itself. These laws go beyond argument and result types, so test them with actual values.",
+  reading: "Implement Ticket equality by comparing its number, then check two properties. reflexive compares a value with itself; symmetric checks whether swapping the operands preserves the answer.",
+  result: "Both checks are True. Besides compiling, the implementation satisfies these properties for these inputs. Two concrete examples still do not prove correctness for every value."
 }

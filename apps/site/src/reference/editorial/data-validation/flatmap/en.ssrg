@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Continue with a computation that needs the successful value. Maybe, Either and collections each define how their results are combined.",
+  taskTitle: "Check the seat count before calculating a quote",
+  purpose: "First check that the seat count is positive, then calculate a price from the accepted count. The quote may also fail when the count exceeds a limit. Either<String, Int> returns either Left with a reason or Right with an integer.",
+  setup: "flatMap, Either, Left and Right are in Prelude and need no import. fn defines each function; seats: Int is its argument and -> Either<String, Int> its result type. The if after = returns the expression selected by its condition.",
+  after: [
+    "flatMap quote (requireSeats 2) takes the next function quote first and the checked result second. Right 2 passes its contained 2 to quote, which returns Right with the price 40. quote must itself return an Either.",
+    "requireSeats 0 returns Left, so the body of quote is not called. requireSeats 6 succeeds, but quote then returns Left. The match in describe displays a price for Right total or the reason for Left error.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies which object shape was returned. When it is true, read the successful value; when false, read the error field. These functions return data rather than throwing exceptions. The if in checkedQuote returns the first failure unchanged and calls quote only after success.",
+  comparisonAfter: "Both programs express a next step that needs the previous successful value. flatMap makes that connection reusable. The TypeScript early return is also direct. These examples use small integers and do not equate the full Int and number ranges.",
+  details: [
+    "In the exact declaration, M is the outer type and the operation connects M<A> to M<B>. Here the shape is Either<String, A>, with both A and B being Int. The Monad requirement means that this type must provide this connection operation.",
+    "With Maybe, Just supplies its value to the callback; Nothing skips it and stays Nothing. With Array or List, the collections produced for each element are concatenated in order. A collection-only “flatten” explanation does not describe Either or Maybe.",
+    "Validation has no Monad support, so flatMap is rejected with SES-T0201. Combine independent checks using Validation. To move to a check depending on the successful value, convert explicitly with toEither and use the Either flow."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -7,13 +8,15 @@ import {
   InlineCode,
   InternalLink,
   PageDefinition,
-  Words
+  Words,
+  Paragraph,
+  Terminal
 } from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.patterns.irrefutable-patterns" "/docs/language/patterns/irrefutable-patterns/" (en.copy ()) (ja.copy ()) [
     CodeExample
       ("patterns-irrefutable", localized "Bindings that cannot fail" "必ず一致するパターンで値を取り出す"),
@@ -46,5 +49,31 @@ fn content -> PageDefinition =
       "/docs/language/data/tuples-arrays-and-lists/"
     )]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "data-reader-irrefutable",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Paragraph ([Words (localized (en.readerExecution ()) (ja.readerExecution ()))]),
+        Terminal (localized "Output" "実行結果", "Notebook: 2\n0\n10"),
+        CodeExample (
+          "data-reader-irrefutable-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))])
+      ],
+      [Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))])],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

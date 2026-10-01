@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Compile a search pattern, check for a match, or extract and replace matching text. Regex uses a portable Seseragi engine with explicit compilation errors and UTF-8 byte spans.",
+  taskTitle: "Find an order code in a message",
+  purpose: "A message can contain an order reference such as ORD-42. Compile the pattern once for a search, then use the matched text directly. The first call finds a reference; the second has no matching text.",
+  setup: "import * as regex names std/regex. In ORD-[0-9]+, ORD- is literal text, [0-9] accepts an ASCII digit, and + requires one or more digits. fn defines orderCode; text: String names its input and -> String states its result.",
+  after: [
+    "compile returns Right pattern for a reusable Regex or Left error for an invalid pattern. match chooses a branch and names the value inside it. The backtick error message inserts error.offset at ${error.offset}; that offset counts UTF-8 bytes from zero.",
+    "find returns Just found when a match exists and Nothing otherwise. found is a RegexMatch record; found.text is the matched string. The text \"no order code\" handles the missing case. There is no need to slice the original string using offsets to extract this value.",
+    "pub effect fn main is the program entry. do runs the println output steps in order. Calls separate arguments with spaces. show converts a value to display text; True/False are the Seseragi Boolean spellings."
+  ],
+  comparisonBefore: "For the same simple pattern, JavaScript RegExp.exec returns a match array or null. Element 0 holds the whole match. The u flag enables Unicode-aware matching; no g or y flag is used, so repeated calls do not share a changing lastIndex.",
+  comparisonAfter: "Both programs print the same two results. JavaScript RegExp supports a different language of patterns and reports UTF-16 positions. The examples are task comparisons, not a definition of Seseragi Regex behavior.",
+  details: [
+    "Choose isMatch for a Boolean, find for the first match record, or findAll for all non-overlapping matches. split keeps the pieces between matches. replaceAll inserts literal text; replaceAllWith receives a match record to compute replacement text. escape makes user text a literal pattern fragment.",
+    "The portable syntax includes literals, ., character classes, alternatives |, groups (...), (?:...), (?<name>...), greedy *, +, ?, {m,n}, and anchors ^, $, \\A, \\z. The leftmost start wins; at the same start, the earlier alternative wins. Backreferences, look-around, inline flags, lazy/possessive quantifiers, atomic groups, conditionals and recursion are unsupported. Outside character classes, \\b and \\B word-boundary assertions are also unsupported.",
+    "Patterns operate on Unicode scalar values, not visible grapheme clusters. \\d means ASCII digits; \\w uses the specified Unicode alphabetic, mark, decimal-number and connector-punctuation categories. Spans and compile-error positions use UTF-8 bytes. No implicit String-to-Regex conversion occurs, and the runtime does not delegate semantics to the host JavaScript engine."
+  ],
+  codeTitle: "Complete program and boundary cases",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Matching rules to keep in view"
+}

@@ -1,0 +1,111 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn blocks specifier: String -> Array<Block> =
+  if specifier != "std/text/grapheme" then
+    []
+  else
+    [
+      Heading (
+        "working-with-graphemes",
+        localized "Keep a label’s visible pieces together" "ラベルの見た目のまとまりを保つ"
+      ),
+      Paragraph ([Words (localized (en.purpose ()) (ja.purpose ()))]),
+      Paragraph ([Words (localized (en.units ()) (ja.units ()))]),
+      CodeExample ("unicode-length", localized "Count the same label" "同じラベルを数える"),
+      Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+      Terminal (
+        localized "Output" "実行結果",
+        "visible pieces: 3\nscalars: 5\nUTF-8 bytes: 12\nempty: 0"
+      ),
+      Heading (
+        "grapheme-comparison",
+        localized "Compare the units in TypeScript" "TypeScriptでも単位を選ぶ"
+      ),
+      Paragraph ([Words (localized (en.comparison ()) (ja.comparison ()))]),
+      CodeExample (
+        "unicode-graphemes-typescript",
+        localized "TypeScript: choose the same unit" "TypeScriptで同じ単位を選ぶ"
+      ),
+      Terminal (
+        localized "Output" "実行結果",
+        "visible pieces: 3\nscalars: 5\nUTF-8 bytes: 12\nUTF-16 units: 7\nempty: 0"
+      ),
+      Paragraph ([Words (localized (en.host ()) (ja.host ()))]),
+      Heading
+        ("choose-grapheme-operation", localized "Choose a cluster operation" "必要な結果から操作を選ぶ"),
+      Paragraph ([Words (localized (en.choose ()) (ja.choose ()))]),
+      BulletList (
+        [
+          [
+            InternalLink
+        (localized "length" "length", "/docs/library/text/grapheme/function/length/"),
+            Words (localized ": count clusters." "で、まとまりを数える。")
+          ],
+          [
+            InternalLink (
+              localized "clusters" "clusters",
+              "/docs/library/text/grapheme/function/clusters/"
+            ),
+            Words (localized ": get the pieces in order." "で、各まとまりを順に使う。")
+          ],
+          [
+            InternalLink
+        (localized "at" "at", "/docs/library/text/grapheme/function/at/"),
+            Words (localized ": read one checked position." "で、指定した一個を取り出す。")
+          ],
+          [
+            InternalLink
+        (localized "slice" "slice", "/docs/library/text/grapheme/function/slice/"),
+            Words (localized ": extract a checked range." "で、範囲を確認して切り出す。")
+          ],
+          [
+            InternalLink (
+              localized "byteBoundaries" "byteBoundaries",
+              "/docs/library/text/grapheme/function/byteboundaries/"
+            ),
+            Words (localized ": get UTF-8 boundary offsets." "で、UTF-8の境界位置を得る。")
+          ],
+        ]
+      ),
+      Heading (
+        "checked-grapheme-ranges",
+        localized "Read a result or repair an invalid range" "結果を使い、不正な範囲を直す"
+      ),
+      Paragraph ([Words (localized (en.checked ()) (ja.checked ()))]),
+      CodeExample
+        ("unicode-slice", localized "Handle both slice outcomes" "切り出しの両方の結果を扱う"),
+      Paragraph ([Words (localized (en.sliceReading ()) (ja.sliceReading ()))]),
+      Terminal (
+        localized "Output" "実行結果",
+        "preview: [A👍🏽]\npreview: [👍🏽é]\npreview: []\ninvalid: InvalidGraphemeRange { start: 0, end: 4, length: 3 }\ninvalid: InvalidGraphemeRange { start: 2, end: 1, length: 3 }\ninvalid: InvalidGraphemeRange { start: -1, end: 2, length: 3 }\npreview: []"
+      ),
+      Paragraph ([Words (localized (en.repair ()) (ja.repair ()))]),
+      Heading
+        ("grapheme-boundaries", localized "Know the unit and its limits" "単位と制限を確認する"),
+      Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+      Paragraph ([Words (localized (en.targets ()) (ja.targets ()))]),
+      Paragraph (
+        [
+          InternalLink
+        (localized "std/text/unicode" "std/text/unicode", "/docs/library/text/unicode/"),
+          Words
+        (localized ": choose an explicit normalization policy. " "で、正規化の規則を選べます。 "),
+          InternalLink (localized "std/text" "std/text", "/docs/library/text/"),
+          Words
+        (localized ": compare scalar and byte operations." "で、scalarとバイトの操作を比べられます。")
+        ]
+      ),
+      Heading
+        ("grapheme-api-index", localized "Browse the complete module" "モジュール全体を調べる")
+    ]

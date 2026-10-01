@@ -1,0 +1,11 @@
+import * as either from "std/either"
+fn requireSeats seats: Int -> Either<String, Int> =
+  if seats > 0 then Right seats else Left "seats must be positive"
+fn failureMessage error: String -> String = "Cannot book: " + error
+fn successMessage seats: Int -> String = "Seats: " + show seats
+fn describe result: Either<String, Int> -> String =
+  either.fold failureMessage successMessage result
+pub effect fn main = do {
+  println (describe (requireSeats 2))
+  println (describe (requireSeats 0))
+}

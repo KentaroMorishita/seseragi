@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "一つのCharがUnicodeの十進数字か調べる",
+  purpose: "入力の文字が十進数字か確認したいときに使います。isDecimalDigitは3だけでなくArabic-Indicの٣や全角の３もTrueにします。入力はCharで、Unicode scalarを一つだけ持つ値です。scalarはUnicodeの文字番号のうちサロゲート用の番号を除いたものです。単一引用符の'3'はChar、二重引用符の\"3\"はStringです。数字の値3を計算する操作ではなく、その文字の分類を調べます。",
+  reading: "letで'3'をdigitと名付け、unicode.isDecimalDigit digitで調べます。戻り値のBoolはTrueかFalseのどちらかです。最初の三つはそれぞれ別のscalarですが、すべて十進数字なのでTrueです。上付きの²とローマ数字のⅣは数を表していても、十進数字の分類ではないためFalseになります。Falseは通常の判定結果です。",
+  boundaries: "ここでいう十進数字はUnicodeの一般分類DecimalNumber、略号Ndに属する文字です。数に関係する分類にはほかにLetterNumberやOtherNumberがあります。ⅣはLetterNumber、²はOtherNumberなので対象に入りません。Charは見た目の一文字という意味でも、複数桁の数という意味でもありません。一つのscalarだけを調べます。",
+  rules: "Char -> Boolは、一つのCharを受け取り判定結果を返すという型です。固定されたUnicode 17.0.0データのNdを調べ、入力をIntへ変換したり、全角を半角へそろえたりしません。一回の呼び出しは一つのscalarを表で調べ、文字列全体を走査しません。文字列から数値を読む処理には別の関数と入力規則が必要です。Seseragiの数値読み取りで使うASCIIの規則と、このUnicode全体の分類は区別してください。",
+  mistake: "٣がTrueになるからといって、数値を読み取る関数が文字列\"٣\"を受け取れるとは限りません。Intが必要なら、その読み取り関数の入力規則に従い、失敗する場合も処理してください。製品の入力規則が半角の0〜9だけなら、Charを'0'以上かつ'9'以下と明示して比べます。isDecimalDigitだけでは全角やほかの文字体系の十進数字も受け取ります。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptでは/\\p{Decimal_Number}/u.test(value)が、同じ五つの一scalar入力に対応します。\\p{Decimal_Number}はUnicodeの十進数字という分類、uはUnicode対応の解釈を指定します。testのbooleanはtrueかfalseです。通常の\\dはこのUnicode全体の分類を表さず、٣を受け取らないため、この比較ではプロパティを明記します。"
+
+pub fn comparisonBoundary -> String =
+  "JavaScriptのstringは一つのscalarという条件を型で保証しません。この例は既知の一scalar入力だけに限定し、任意の文字列への正規表現の適用を数字列の検証とは扱いません。Numberで数値へ変換することも別の処理で、Number(\"٣\")やNumber(\"３\")はNaNになります。実行エンジンのUnicodeデータにも依存するため、選んだ例の一致だけで全Unicode値の一致は保証できません。"

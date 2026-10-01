@@ -1,0 +1,15 @@
+import * as text from "std/text"
+
+import * as chars from "std/char"
+
+fn atLabel index: Int -> value: String -> String = match text.scalarAt index value {
+  Just letter -> "found: " + chars.toString letter
+  Nothing -> "out of range"
+}
+
+pub effect fn main = do {
+  _ <- println (atLabel 2 "Aé😀e\u{301}")
+  _ <- println (atLabel (-1) "Aé😀")
+  _ <- println (atLabel 3 "Aé😀")
+  println (atLabel 0 "")
+}

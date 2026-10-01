@@ -1,0 +1,3 @@
+fn punctuate text: String -> String = text + "!"
+
+pub fn greet name: String -> String = punctuate ("Hello, " + name)

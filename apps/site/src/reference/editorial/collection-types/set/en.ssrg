@@ -1,0 +1,26 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Set names a collection that keeps each distinct value once. Choose an element type and retain earlier values when updating it.",
+  taskTitle: "Keep unique tags and retain the earlier collection",
+  purpose: "Use Set when each kind of tag should appear once. Set<String> is the type of a collection of string tags. An Array may record the same tag at several positions; a Set keeps one member for that tag.",
+  setup: "import * as sets from \"std/set\" makes the Set type and operations available under the name sets. sets.Set names the type and sets.fromIterable names a construction operation. let tags: sets.Set<String> = ... names a value tags and checks it against the type after the colon. <String> chooses strings as its elements.",
+  codeTitle: "Build a Set from repeated tags",
+  outputTitle: "Seseragi output",
+  after: [
+    "[\"work\", \"home\", \"work\"] is an Array of three strings. fromIterable reads its elements in order, constructs a Set, and keeps work only once. It preserves the first occurrence's position, so converting the result to an Array with toArray gives work then home. The annotation does not remove duplicates; fromIterable constructs the Set.",
+    "sets.insert \"travel\" tags passes the new tag and the original Set as space-separated arguments. updated names the new result. tags still contains work and home; only updated adds travel at the end. Inserting an existing tag adds no duplicate and does not change its position. Parentheses around a call group its result as one argument to an outer call.",
+    "== compares Set membership. Constructing another Set in home, work order still gives the same two tags, so the third line is true. The order used to read the elements is separate from the rule used to compare contents.",
+    "sets.empty<String> () constructs a Set with no elements. <String> chooses the element type because there are no values to infer it from. () is the sole value of the Unit type and carries no additional information. sets.size returns the number of members, so the final line is 0."
+  ],
+  comparisonTitle: "Use TypeScript Set for the same tags",
+  comparisonBefore: "TypeScript also removes repeated tags with Set<string> and new Set([\"work\", \"home\", \"work\"]). Set<string> names a Set of strings; string[] names an array that can retain duplicates. new Set(tags).add(\"travel\") copies tags before adding to the new Set. [...tags] spreads its members into an array, and JSON.stringify creates display text. every checks all tags; reordered.has(tag) checks whether the other Set contains a tag. && requires both the size and membership checks to succeed.",
+  comparisonAfter: "Both examples retain the earlier tags and display the same two members, then the three-member update. TypeScript spreads the Set into an array and prints JSON, so quotes and spacing differ from Seseragi show. The TypeScript example uses size and has to compare membership; === between Set objects would not compare their contents. Ordinary JavaScript Set is already concise for this task. Seseragi changes the update and equality rules: insert itself leaves the earlier value unchanged, and == compares contents.",
+  detailTitle: "What Set checks, and a common type mix-up",
+  details: [
+    "Set<String> says the elements are strings and each distinct value appears once. It includes an empty Set. In the exact declaration Set<_>, _ marks the element type you choose. The label opaque-type means the internal representation is private, not that values cannot be constructed. Public operations include fromIterable, singleton, and empty.",
+    "let tags: sets.Set<String> = [\"work\", \"home\"] produces SES-T0101. The right-hand side is an Array; an annotation does not turn it into a Set. Construct it with sets.fromIterable [\"work\", \"home\"]. For one member, use sets.singleton \"work\"; for none, use sets.empty<String> ().",
+    "Finding or inserting members needs equality and hashing support, recorded as Eq and Hash requirements. Equality decides whether two members match; hashing calculates a value used to locate candidates. String supports both. Even if the type declaration shows no constraints, operations that find or insert elements still have requirements. The type's name alone does not establish operation costs or promise JavaScript's implementation.",
+    "TypeScript const tags prevents rebinding tags but does not prevent tags.add(...) from changing its contents. This example updates a copy to retain the original. The comparison uses string tags; JavaScript's identity rules for object members do not describe every possible Seseragi element type."
+  ]
+}

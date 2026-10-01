@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What happens to a child computation when its parent finishes?",
-  summary: "fork starts a child Effect in the current scope. The returned Fiber lets you wait for completion or request interruption. When the scope ends, the runner waits for unfinished children to stop and finish cleanup.",
-  reading: "fork starts a child computation succeeding with 21 and returns its Fiber handle. join waits for that child to finish and returns 21. The parent doubles the value and succeeds with 42.",
-  result: "The example waits through join, so the parent's successful result is 42. If the parent scope ends with a child unfinished, the runner requests cancellation and waits for child cleanup. Stopping a wait and requesting child interruption are distinct operations."
+  question: "What happens if a parent leaves its scope while a child is still running?",
+  summary: "A child started with fork belongs to the current scope. Leaving that scope requests cancellation of unfinished children and waits for their cleanup.",
+  reading: "ready and waitForever are Deferred values: each can receive one result that waiters can use. The child registers cleanup, completes ready and waits on waitForever. The parent waits for ready, so it cannot leave before the child is prepared. It then ends the scope with 42.",
+  result: "The output is 42, true, 21. true shows that scope exit cancelled the waiting child and completed the update to released. The final part forks another child and uses join to obtain its success value 21."
 }
+
+pub fn readerBridgeOne -> String =
+  "The imports provide execution operations through effects, completion signals through deferred and cells through refs. Never means no typed failure; Unit and () carry no information. deferred.succeed () ready completes the signal, and deferred.await waits for it. Nothing completes waitForever; scope cancellation ends that wait. In effects.scoped $ do { ... }, $ passes the whole following do block as one argument. This is equivalent to effects.scoped (do { ... }); that block defines the region managing its children and resources."
+
+pub fn readerBridgeTwo -> String =
+  "A Fiber value refers to a started child. fork returns that Fiber rather than its eventual success value; join waits for the success. main receives success values with <-. Cleanup only records refs.set True released, so cleanup itself needs neither external services nor a wait."
+
+pub fn readerMistake -> String =
+  "The rejected fork result is a Fiber and cannot be returned as an integer-success Task<Int>. Use join to obtain the success. Cancelling a join caller stops only its wait. Explicitly stop the child with interrupt, which waits for its cleanup to finish."
+
+pub fn readerCaption -> String =
+  "Wait for a prepared child and finish cleanup on scope exit"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "fork starts a child computation succeeding with 21 and returns its Fiber handle. join waits for that child to finish and returns 21. The parent doubles the value and succeeds with 42."
+
+pub fn readerLegacyResult -> String =
+  "The example waits through join, so the parent's successful result is 42. If the parent scope ends with a child unfinished, the runner requests cancellation and waits for child cleanup. Stopping a wait and requesting child interruption are distinct operations."

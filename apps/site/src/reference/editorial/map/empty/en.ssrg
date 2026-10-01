@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Start with no key/value entries",
+  purpose: "Use empty to start a lookup table before any entries are known. Map<String, Int> means String keys and Int values.",
+  reading: "values has an explicit Map<String, Int> annotation. maps.empty () takes Unit, the no-information value spelled (). Printing entries gives [], size gives 0, and looking for tea gives false.",
+  boundaries: "An empty Map still has key and value types. The explicit annotation supplies them here; later operations can sometimes supply that information instead.",
+  rules: "The call creates an empty mapping. Future insert calls return a new Map; they do not add entries to this value.",
+  mistake: "TypeScript new Map<string, number>() is the corresponding starting point. TS Map can later be mutated; Seseragi updates return new values. Neither form needs a dummy entry just to establish types.",
+}

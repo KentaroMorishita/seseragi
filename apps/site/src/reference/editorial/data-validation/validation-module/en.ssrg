@@ -1,0 +1,26 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Combine independent input checks and return every error in their defined order.",
+  taskTitle: "Display independent form errors together",
+  purpose: "Check a booking name and seat count separately. Even when one is wrong, show problems with the other field too. Validation is either Valid containing a successful value or Invalid containing at least one error.",
+  setup: "validation names the functions imported from std/validation. Validation, Valid and Invalid are imported separately. Validation<String, String> carries String errors or a successful String. fn defines a function and : annotates a name with its type. After the last argument, -> introduces the return type; the expression after = supplies the returned value. arrays and text are used to display errors.",
+  after: [
+    "validateName returns invalid for an empty string and valid otherwise. validateSeats separately checks the count. valid and invalid construct results; the actual conditions are written in each if.",
+    "In bookingLabel, name: String and seats: Int are its two arguments. The first -> separates arguments; the final -> String states the return type. bookingLabel \"Ada\" 2 returns Ada: 2. pure bookingLabel places that function in a successful Validation. The first <*> supplies the checked name, and the second <*> supplies the checked seat count.",
+    "If both inputs are Valid, the bookingLabel result goes in Valid. Any failures produce Invalid, preserving name errors before seat errors. The final call has two bad inputs, so both errors appear.",
+    "The match in describe chooses the result branch. In Valid value, value is the successful string. In Invalid errors, errors contains at least one error. arrays.fromIterable makes an Array of those errors; text.join \"; \" joins them for display in their existing order.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "TypeScript expresses this directly with two if statements and a local errors array. Both checks run before the final error or success message is chosen. Adding to that local array is a valid implementation of the task.",
+  comparisonAfter: "The direct TypeScript version is sufficient for a small form. Seseragi lets each reusable check return Validation; its combination keeps error order and the guarantee that a failed result contains at least one error.",
+  details: [
+    "In Validation<E, A>, E is one error’s type and A is the successful type. Both are String for the booking result. Invalid cannot contain an empty error group. When there are no errors, choose the appropriate result according to your application’s rule.",
+    "This combination is for independent checks. Use Either and flatMap when a later check needs an earlier successful value. Validation has no Monad support for flatMap, so that call is rejected with SES-T0201.",
+    "These examples cover empty names and small integer seat counts only. Whitespace-only names, number parsing and business limits need their own checks."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

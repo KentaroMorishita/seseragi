@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Return RegexOptions with caseInsensitive, multiline and dotMatchesNewline all False.",
+  taskTitle: "Start with explicit default search settings",
+  purpose: "Use defaultOptions when code needs an options value without enabling any special matching behavior. compile already uses the same defaults internally.",
+  setup: "defaultOptions () takes Unit, written (), because it needs no additional input. let options names the returned record. A dot reads a field, as in options.caseInsensitive.",
+  after: [
+    "The first three lines confirm all settings are False. The last line searches for lowercase a in uppercase A using those settings and returns False. The Regex itself remains reusable.",
+    "compileWith returns Right pattern when the pattern is valid or Left error when it is rejected. match names the Regex on success and prints the error on rejection.",
+    "pub effect fn main is the program entry. do runs the println output steps in order. Calls separate arguments with spaces. show converts a value to display text; True/False are the Seseragi Boolean spellings."
+  ],
+  comparisonBefore: "A JavaScript RegExp created with u but without i, m or s exposes false for ignoreCase, multiline and dotAll. u is an explicit JavaScript setting; Unicode scalar matching is part of Seseragi’s Regex contract.",
+  comparisonAfter: "The shown four results agree. JavaScript supports other flags, including stateful g and y, which do not correspond to extra fields in RegexOptions.",
+  details: [
+    "The returned value has type RegexOptions. It does not compile a pattern or search input by itself. Pass it to compileWith, or build a RegexOptions record with the fields you need.",
+    "With defaults, case matters, ^ and $ concern the whole input, and . excludes line terminators. The portable pattern syntax and typed rejection behavior do not change when defaults are explicit."
+  ],
+  codeTitle: "Complete program and boundary cases",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Matching rules to keep in view"
+}

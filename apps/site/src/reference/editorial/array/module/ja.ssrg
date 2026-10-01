@@ -1,0 +1,17 @@
+pub fn purpose -> String =
+  "Arrayは、同じ型の値を順に並べた配列です。[10, 20, 30]のように書きます。std/arrayは、その一部を取り出す、並べ替える、まとめるための操作を提供します。入力の配列を直接書き換えず、結果を新しい値で受け取ります。"
+pub fn choose -> String =
+  "先頭の連続した部分を扱うならtakeWhileとdropWhile、条件に合う位置を探すならfindIndex、末尾を読むならlast、末尾を除くならinitです。並べ替えはsortかsortBy、同じキーでまとめるならgroupBy、右から集約するならreduceRightを選びます。"
+pub fn example -> String =
+  "この例は2件ずつのまとまりと、その境界を確かめます。chunksOf 2 [10, 20, 30, 40, 50]では最後の[50]も残ります。空配列ならRight []、0以下のサイズならLeft NonPositiveSizeになります。Rightは成功した値、Leftは失敗理由を持つ場合の名前です。Eitherはこのどちらかを返す型で、使うときはmatchで両方の場合を扱います。"
+pub fn results -> String =
+  "last、init、findIndexなどは、空や見つからない場合をMaybeで返します。Justは中身がある場合、Nothingはない場合の名前です。0や空配列という普通の値とは区別します。chunksOfとwindowsは、サイズの誤りの理由も返すためEitherを使います。"
+pub fn rules -> String =
+  "各APIのページでは、引数の順序、具体例の結果、空入力や失敗の扱いを確認できます。空の配列を作るarrays.empty<Int> ()では、<Int>が要素の型、()がUnitという値の引数です。配列の変換は要素を実際に計算した結果を返します。大きな結果を作れば、その要素分の処理とメモリも必要です。"
+
+pub fn maybePurpose -> String = "最後の値が存在するときだけ、その整数を使う例です。lastLabelは整数の配列を受け取り、画面に出す文字列を返します。matchの後ろに調べる結果を書き、{ }の中に各場合の処理を書きます。"
+pub fn maybeReading -> String = "Just number ->の左側は、値がある場合を選び、中の整数にnumberという名前を付けます。右側はその整数から作る文字列です。Nothing ->の右側は空配列だった場合の文字列で、中の値はありません。これで二つの場合を両方扱えます。initやMap.getでも形は同じですが、Justの中が配列なら、その配列に付けた名前を分岐の右側で使います。"
+pub fn eitherPurpose -> String = "サイズを受け取って配列を区切り、成功したまとまりか、失敗した理由を使う例です。batchLabelはサイズと整数の配列を受け取り、文字列を返します。"
+pub fn eitherReading -> String = "Right batches ->は成功した場合を選び、中の配列の配列にbatchesという名前を付けます。Left error ->では失敗理由にerrorという名前を付けます。->の右側で、その名前を使って文字列を作ります。サイズ2は成功し、0ではNonPositiveSize 0という理由を使えます。windowsの結果にも同じ二つの分岐を使えます。"
+
+pub fn construction -> String = "要素を0個から始めるならempty ()、一つの値を包むならsingleton、有限の別の一覧を順に変換するならfromIterableを使います。zipは同じ位置の値を二つの組にし、zipWithはその二つから計算します。どちらも短い側で止まるため、長い側の余りは結果に入りません。unzipは値の組を二つの配列に分けます。"

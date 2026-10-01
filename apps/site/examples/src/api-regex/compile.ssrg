@@ -1,0 +1,11 @@
+import * as regex from "std/regex"
+fn check source: String -> String = match regex.compile source {
+  Left error -> `error at ${error.offset}: ${show error.kind}`
+  Right pattern -> `matches: ${regex.isMatch pattern "ORD-42"}`
+}
+pub effect fn main = do {
+  println (check "ORD-[0-9]+")
+  println (check "é[")
+  println (check "a(?=b)")
+  println (check "\\d+")
+}

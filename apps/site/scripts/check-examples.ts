@@ -10,6 +10,7 @@ import {
 } from "node:fs"
 import { tmpdir } from "node:os"
 import { basename, join, resolve } from "node:path"
+import { checkComparisons } from "./check-comparisons"
 
 const root = resolve(import.meta.dir, "../../..")
 const cli = process.env.SESERAGI_BIN ?? join(root, "target/debug/seseragi")
@@ -28,6 +29,7 @@ function build(packagePath: string, output: string) {
 
 const temporary = mkdtempSync(join(tmpdir(), "seseragi-site-examples-"))
 try {
+  checkComparisons(cli, root, temporary)
   const valid = build(examples, join(temporary, "valid"))
   assert.equal(
     valid.exitCode,
@@ -61,6 +63,11 @@ try {
     ["reader-structs", "Aki\nMio\n1"],
     ["reader-collections", "answer\n42\nJust 20\nNothing\n`[Ren, Aki, Mio]"],
     ["reader-trait", "ticket-42"],
+    ["pilot-built-in-types", "Notebook: 3, 2.5, True"],
+    ["pilot-annotations", "22"],
+    ["pilot-function-application", "3"],
+    ["pilot-blocks", "65"],
+    ["pilot-currying", "3, 3"],
   ]) {
     const source = join(examples, "src/language", `${slug}.ssrg`)
     // run <file> inside a package uses that package's declared entry point.

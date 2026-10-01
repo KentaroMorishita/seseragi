@@ -9,13 +9,36 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
   typingBody: "Seseragi has no throw, catch, or try syntax for throwing and catching exceptions. Nor does it have algebraic-effect syntax for requesting operations with perform and handling them with handle. Required services, recoverable failures, resources, and cancellation are handled through Effect.",
   evaluationBody: "A foreign adapter converts target-language exceptions to its declared result type. A value violating a safe adapter's promised type is treated as a computation defect, not as a normal recoverable failure.",
   invalidTitle: "Other languages' exception syntax is not supported",
-  invalidBody: "Writing another language's try or catch produces a syntax error in Seseragi. Express application failures in the return type. The interop adapter is responsible for catching foreign-language exceptions.",
-  diagnosticsBody: "The parser reports unsupported exception or handler forms at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
+  invalidBody: "Writing another language's try or catch does not create exception handling in Seseragi. This example reports those words as unresolved names. Express application failures in the return type. The interop adapter is responsible for catching foreign-language exceptions.",
+  diagnosticsBody: "Unsupported names or forms produce name-resolution or syntax diagnostics at their source range. Interop diagnostics retain the adapter operation and normalized ForeignError without exposing an arbitrary host stack as typed program data.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What replaces try and catch in ordinary Seseragi code?",
-  summary: "Use Either or Effect's E for anticipated failures. An interop adapter catches foreign-language exceptions and converts them into its declared error type.",
-  reading: "decodeForeign models an adapter result: success becomes Right 42 and rejection becomes Left with a ForeignError explanation. A real adapter must catch foreign-language exceptions at its boundary and return the declared result type.",
-  result: "decodeForeign False returns Left (ForeignError \"adapter rejected the value\"). The example shows the result shape returned to callers, not an implementation catching a foreign exception. Callers handle the declared ForeignError with match or another result operation."
+  question: "How do I handle an expected failure without try/catch?",
+  summary: "Keep an expected failure in an Effect’s error type and handle it with recover. This is distinct from syntax for catching a thrown exception: the operation’s type describes both success and failure.",
+  reading: "checkedMessage succeeds with an ok string for a positive integer and fails with the String reason must be positive otherwise. explain passes recover a failure function that turns the reason into display text beginning with error.",
+  result: "The output is ok: 2 for 2 and error: must be positive for 0. After handling the failure, explain has type Task<String>. recover handles only the declared String failure; it does not turn defects or cancellation into ordinary success."
 }
+
+pub fn readerBridgeOne -> String =
+  "In Effect<{}, String, String>, {} requires no extra services, the first String is the failure reason type and the second is the success type. succeed and fail build those procedures. \\reason: String -> ... is the failure function. main executes through <- and prints the results."
+
+pub fn readerBridgeTwo -> String =
+  "In TypeScript, try/catch passes a thrown exception to catch. Here, recover handles the typed failure created by effects.fail. Seseragi has no try/catch/throw syntax. To handle an external language’s exceptions, use an adapter that converts them to a declared Either or Effect result."
+
+pub fn readerMistake -> String =
+  "The example has no supported try/catch operation: try and catch are reported as unresolved names. Use an error type and recover for an expected failure as in the example. The alternative algebraic-effect mechanism that issues requests with perform and handles them with handle is also absent. Service requirements, resources and cancellation use the existing Effect contracts."
+
+pub fn readerCaption -> String =
+  "Turn success and an expected failure into display values"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "decodeForeign models an adapter result: success becomes Right 42 and rejection becomes Left with a ForeignError explanation. A real adapter must catch foreign-language exceptions at its boundary and return the declared result type."
+
+pub fn readerLegacyResult -> String =
+  "decodeForeign False returns Left (ForeignError \"adapter rejected the value\"). The example shows the result shape returned to callers, not an implementation catching a foreign exception. Callers handle the declared ForeignError with match or another result operation."

@@ -1,0 +1,10 @@
+import * as text from "std/text"
+
+import * as json from "std/json"
+
+pub effect fn main = do {
+  _ <- println (json.encodeString (text.lines "a\r\n\r\nb\n"))
+  _ <- println (json.encodeString (text.lines ""))
+  _ <- println (json.encodeString (text.lines "\n"))
+  println (json.encodeString (text.lines "a\u{2028}b"))
+}

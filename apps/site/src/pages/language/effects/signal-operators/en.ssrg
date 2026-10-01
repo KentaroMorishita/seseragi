@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What do * and := do with a Signal?",
-  summary: "Prefix * constructs a Task reading a Signal's current value. := is a Task representing a MutableSignal update. Both access state when executed.",
-  reading: "count starts at 0. Executing count := 1 changes its current value to 1. signals.update adds one to that current value, and * count reads the updated value. do links these Tasks in sequence.",
-  result: "readAndWrite returns 2. * count itself is Task<Int>, not an ordinary Int. := applies only to MutableSignal; it does not assign to a let variable or a struct field."
+  question: "How do the Signal read and write operators work?",
+  summary: "*count is a procedure reading the current value; count := 4 is a procedure updating it. Both are Effects, so ordinary expressions do not change implicitly.",
+  reading: "Create count with 0 and save that integer using snapshot <- *count. count := 4 changes the current value to 4, then update adds one to that current value. current <- *count reads the resulting integer 5.",
+  result: "The output is 0, 5, 10. The earlier snapshot remains 0. The final current * 2 is binary multiplication; it differs in position from the prefix *count Signal read."
 }
+
+pub fn readerBridgeOne -> String =
+  "The import names std/signal as signals. pub effect fn main is the entry point, and do runs its procedures in order. <- names a procedure’s success value. Int is the integer type; \\value: Int -> value + 1 calculates the next value from the current one."
+
+pub fn readerBridgeTwo -> String =
+  "*count has type Task<Int> and is shorthand for signals.read count. := abbreviates signals.set and only writes an updatable MutableSignal. It is not assignment to an ordinary let variable or record field. For an update based on the current value, use signals.update to keep the read and write together."
+
+pub fn readerMistake -> String =
+  "The rejected snapshot declares an ordinary Int result but its body produces Task<Int>. Return Task<Int> and execute it in the caller’s do block to obtain the integer. You also cannot use := on a read-only derived Signal."
+
+pub fn readerCaption -> String =
+  "Compare a captured integer with a Signal that changes afterward"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "count starts at 0. Executing count := 1 changes its current value to 1. signals.update adds one to that current value, and * count reads the updated value. do links these Tasks in sequence."
+
+pub fn readerLegacyResult -> String =
+  "readAndWrite returns 2. * count itself is Task<Int>, not an ordinary Int. := applies only to MutableSignal; it does not assign to a let variable or a struct field."

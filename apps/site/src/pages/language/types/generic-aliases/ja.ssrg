@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "繰り返す型に短い名前を付けるには",
-  summary: "型別名は、既存の型に別の名前を付ける仕組みです。型パラメーターを付ければ、中身の型を変えて同じ別名を使えます。",
-  reading: "Pair<A>は(A, A)の別名です。Pair<Int>は(Int, Int)なので、first (42, 7)には普通のタプルを渡します。(left, _)は先頭の42を取り出し、二つ目の値を使わないパターンです。",
-  result: "first (42, 7)はIntの42を返します。Pairという名前はタプルの型に付けた別名です。値を作るときは(42, 7)と書き、Pair 42 7とは書きません。用途ごとに別の型が必要ならnewtypeを使います。"
+  question: "中身の型だけ違うレコードに、共通の名前を付けるには",
+  summary: "ラベル付きの数や文字列を扱うとき、共通のフィールド構成を繰り返し書かずに済みます。aliasは既存の型に名前を付ける宣言です。",
+  reading: "Named<A>のAは、使うときに選ぶ型の置き場所です。このAを型パラメーターと呼びます。Named<Int>は{ label: String, value: Int }、Named<String>は{ label: String, value: String }と同じ型です。",
+  result: "readValueもAを宣言し、受け取ったNamed<A>のvalueを同じAとして返します。countからは整数の42、stateからは文字列のreadyが得られ、その順に表示されます。",
 }
+
+pub fn readerCaption -> String = "ラベル付きの数と文字列に同じ型別名を使う"
+
+pub fn readerBridgeOne -> String =
+  "値は普通の{ ... }で作ります。Namedという値のコンストラクターを呼んだり、別の値へ包み直したりはしません。aliasによって同じ形に短い名前を付けても、用途の違う二つのIDを別の型として区別できるわけではありません。"
+
+pub fn readerBridgeTwo -> String =
+  "mainは公開された出力の入口です。${readValue count}などは、空白で引数を渡した関数の結果を文字列へ埋め込みます。\\nで行を分け、printlnが末尾の改行も出力します。"
+
+pub fn readerInvalidCaption -> String = "Named<Int>のvalueへ文字列を入れる"
+
+pub fn readerMistake -> String =
+  "Named<Int>を展開するとvalueにはIntが必要です。\"42\"を入れるとSES-T0101になります。数として扱うなら42に直し、文字列を保存したいならNamed<String>を使います。別名にしても中のフィールドの型検査は変わりません。"
+
+pub fn readerDetailNote -> String =
+  "詳細のPair<A> = (A, A)は、同じ型の値を二つ並べたタプルの別名です。(42, 7)で値を作り、(left, _)で先頭を取り出します。_は二つ目を使わない指定です。この宣言だけの例と、最初のmain付きの例を区別してください。"
+
+pub fn readerComparison -> String =
+  "TypeScriptでも、type Named<A>のような型別名とgeneric関数で同じ仕事ができます。Aをnumberかstringへ置き換える考え方は共通です。この例は42という安全な整数を使い、両方で同じ二行を表示します。"
+
+pub fn readerLegacyReading -> String =
+  "Pair<A>は(A, A)の別名です。Pair<Int>は(Int, Int)なので、first (42, 7)には普通のタプルを渡します。(left, _)は先頭の42を取り出し、二つ目の値を使わないパターンです。"
+
+pub fn readerLegacyResult -> String =
+  "first (42, 7)はIntの42を返します。Pairという名前はタプルの型に付けた別名です。値を作るときは(42, 7)と書き、Pair 42 7とは書きません。用途ごとに別の型が必要ならnewtypeを使います。"
+
+pub fn readerRelated -> String = "では、別名ではなく用途の違うIDを区別する方法を確認できます。"

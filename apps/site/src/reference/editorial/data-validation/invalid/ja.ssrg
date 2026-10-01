@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "一つのエラーからInvalidを作ります。呼び出しても例外は投げません。",
+  taskTitle: "入力の問題を一つ返す",
+  purpose: "名前が空なら、呼び出し側が表示できるエラーを一つ返します。invalidはエラーを持つ結果を作り、呼び出し側の処理を停止しません。",
+  setup: "validationはstd/validationの関数名につける名前です。Validation、Valid、Invalidは別に読み込みます。Validation<String, String>は、StringのエラーかStringの成功値を返す型です。fnは関数を定義し、引数の後の:は型、->の後は戻り値の型を示します。",
+  after: [
+    "validateNameのifはname == \"\"を確認します。空ならvalidation.invalidに理由を渡し、それ以外はvalidation.validに名前を渡します。=の後のifで選んだ結果が戻り値です。",
+    "describeのmatchは結果の種類で処理を選びます。Valid valueならvalueが成功した文字列です。Invalid errorsならerrorsに一つ以上のエラーがあります。arrays.fromIterableはエラーをArrayにし、text.join \"; \"は順番を保って表示文につなぎます。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのokは、どちらのオブジェクトの形かを示す欄です。trueなら成功した値、falseならエラーの欄を読みます。これは返されたデータであり、例外を投げる処理ではありません。 TypeScriptの[string, ...string[]]は、先頭の文字列が必須で、その後に任意個の文字列が続く配列型です。空のエラー配列を受け入れない条件を、両方の例に保っています。",
+  comparisonAfter: "TypeScriptもエラーの配列を持つ失敗結果を返せます。invalidは単独の理由を、他の独立した確認のエラーと組み合わせられるValidationにします。",
+  details: [
+    "invalid<E, A>ではEが渡す一つのエラー、Aが成功した場合の型です。ここでは両方Stringです。invalidは一つのEを、一つ以上の要素を持つNonEmptyListに入れます。",
+    "複数のエラーをすでに持つならinvalidManyを使います。配列をinvalidに渡すと、配列全体が一つのエラーになります。例外を投げる操作ではないので、呼び出し側はInvalidを分岐で扱います。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

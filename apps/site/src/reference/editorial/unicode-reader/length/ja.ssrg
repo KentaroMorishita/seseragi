@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "見た目の文字のまとまりを数える",
+  purpose: "入力欄の文字数を数えるとき、絵文字と肌の色、eと結合アクセントを途中で分けたくないことがあります。lengthは、そのような見た目のまとまりを数えます。このまとまりをgrapheme cluster（書記素クラスタ）と呼びます。引数はString、結果は個数を表すIntです。",
+  reading: "labelはA、👍🏽、eと結合アクセントを並べた文字列です。\\u{0301}はアクセントの番号を使った書き方で、前のeと組み合わさって見えます。graphemesはstd/text/graphemeの別名です。最初の出力は、この三つのまとまりを数えた3です。",
+  boundaries: "Unicodeの番号一個を表すscalarで数えると、👍と肌の色、eとアクセントは別々なので5です。UTF-8で保存すると12バイトになります。空文字列のまとまりは0個です。同じlabelをTypeScriptのString.lengthで数えると、UTF-16の単位を数えるため7になります。",
+  rules: "分割にはSeseragiが固定したUnicode版のextended grapheme cluster規則を使います。処理量は入力のUTF-8バイト数に比例します。数えるだけで文字列を正規化したり書き換えたりしません。別のscalar列が同じように見えても、文字列そのものが等しくなるわけではありません。",
+  mistake: "画面の横幅やカーソルのピクセル位置は数えません。フォントや表示環境によって幅は変わります。保存量ならstd/text.lengthBytes、scalarの個数ならlengthScalarsを選んでください。TypeScriptでもIntl.Segmenterでまとまりを数えられますが、Unicodeの版が違う細かな境界まで同一とは限りません。",
+}

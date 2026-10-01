@@ -4,19 +4,51 @@ import { ConceptCopy } from "../concept"
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "What Seseragi is",
   summary: (explanation ()).summary,
-  ruleTitle: "Three ideas to start with",
-  ruleBody: "Expression-oriented means a decision such as if produces a value. Statically typed means the compiler checks types before the program runs. Immutable means an ordinary value cannot be changed after creation. The example's function chooses a String based on an Int score; each design-principle page explains a rule with its own example.",
-  consequencesTitle: "How this appears in code",
-  consequenceOne: "Functions take arguments in sequence. Supplying the first argument makes a function waiting for the next, so you can reuse a transformation with some inputs already supplied.",
-  consequenceTwo: "Data types list the different cases a value may have. Maybe distinguishes a present value from an absent one. match handles the cases, and the compiler checks that none is forgotten.",
-  consequenceThree: "Effect describes work such as file or console access. Its type states the required services, possible errors, and successful result. Creating this description is separate from executing it.",
-  boundaryTitle: "Reference or Tour?",
-  boundaryBody: "Use the reference to understand one concept and check its rules. The interactive Tour is the step-by-step learning path. You do not need to read every reference article in order; follow the links from the concept you are investigating."
+  ruleTitle: "The same task in Seseragi",
+  ruleBody: "In Seseragi, the same syntax used to supply all arguments can also create a function with some inputs fixed. The example below uses the same shipping rule and the same two orders as the TypeScript version.",
+  consequencesTitle: "Language ideas beyond this example",
+  consequenceOne: "if returns the selected value, which can be the function result directly. Ordinary values are immutable: instead of changing record fields or array contents in place, construct updated values. This differs from TypeScript const, which prevents rebinding a name but does not make an object’s contents immutable.",
+  consequenceTwo: "When a value can have different shapes, a data type can list those alternatives. For example, Maybe distinguishes a present value from a missing one. match chooses a branch for an alternative, and the compiler checks for forgotten cases. Separate articles introduce these ideas through small examples.",
+  consequenceThree: "Effect describes interactions such as output and file access. Its type records required capabilities, possible failures and the successful result. Describing work is separate from running it. To read this example, it is enough to understand that main prints the calculated amounts.",
+  boundaryTitle: "Check what is available while the language develops",
+  boundaryBody: "You can build terminal programs and web UIs, but not every feature described by the specification is necessarily available in the current implementation. The first-run page states the environments and steps that have been verified. To connect existing TypeScript code, check how values and calls cross that boundary.",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What will feel different when I write Seseragi?",
-  summary: "Seseragi is an expression-oriented language that checks value types before execution. Functions and calculations can use the result of if, and data updates construct new values. Effect describes operations to execute, such as output or file access.",
-  reading: "result accepts an integer score and returns a String chosen by if. if is a value-producing expression, so the function can use it directly as its body. main uses println to turn that result into an explicit output operation.",
-  result: "result 85 returns \"pass\", and main outputs pass followed by a newline. With a score of 60, the result and output become retry. In both cases the function returns String."
+  question: "How can one shipping policy serve many orders?",
+  summary: "Seseragi builds terminal programs and web UIs from small functions and immutable data, with types checked before execution. Compare function use through a shipping calculation familiar from everyday TypeScript.",
+  reading: "Orders of ¥5,000 or more ship free; smaller orders pay ¥500 for shipping. In TypeScript, standardTotal is an arrow function. It fixes the shipping conditions and takes only a subtotal for each order.",
+  result: "Orders with subtotals of ¥3,200 and ¥5,000 print 3700, 5000. In both examples, all three arguments are whole-yen amounts from 0 through 1,000,000; input validation is omitted.",
 }
+
+pub fn tsCaption -> String = "TypeScript: reuse the conditions with an arrow function"
+pub fn seseragiCaption -> String = "Seseragi: supply the first two arguments in advance"
+pub fn readTitle -> String = "Read a declaration and an ordinary call"
+pub fn declaration -> String =
+  "fn defines a function. totalWithShipping takes the free-shipping threshold freeFrom, shipping fee fee and order subtotal, in that order. Each : Int requires an integer. The earlier -> arrows lead to the next argument; the final -> Int specifies an integer result. The calculation is to the right of =."
+pub fn conditional -> String =
+  "if ... then ... else ... returns the selected value. Return the subtotal unchanged if it reaches the threshold; otherwise add the fee. Put arguments after the function name, separated by spaces: totalWithShipping 5000 500 3200 returns 3700."
+pub fn reuseTitle -> String = "Reuse the same conditions"
+pub fn reuse -> String =
+  "let standardTotal = totalWithShipping 5000 500 supplies just the first two arguments. The resulting function still waits for a subtotal; this line does not calculate an order total yet. standardTotal 3200 returns 3700 and standardTotal 5000 returns 5000. Creating a function by supplying some arguments is called partial application. A name introduced by let cannot later be reassigned."
+pub fn benefit -> String =
+  "TypeScript reuses the same conditions with the arrow function above. Both versions keep the shipping rule in one place. The Seseragi difference to try is adapting an ordinary function to your use with the same syntax as a call."
+pub fn outputTitle -> String = "Display the calculated result"
+pub fn output -> String =
+  "The final pub effect fn main declares the public entry used when the program runs. effect marks interaction with the outside world, here printing a string. println writes a string and a newline. Inside the backticks, ${smallOrder} and ${largeOrder} insert the calculated amounts. The ordinary fn above calculates; main displays the results."
+pub fn limitsTitle -> String =
+  "What the compiler checks, and the limits of this example"
+pub fn mistake -> String =
+  "standardTotal \"3200\" fails typechecking because the function needs an integer. TypeScript also rejects standardTotal(\"3200\"). Use the numeric value 3200 here. Validating and converting text from outside the program requires separate code."
+pub fn limits -> String =
+  "Int is not a money type and allows negative values. Fee and threshold share a type, so typechecking cannot detect swapped arguments. A missing argument can be valid because it leaves a function waiting for the rest. "
+pub fn numericLimits -> String =
+  "TypeScript number accepts decimals, while this Int parameter does not. Very large integer additions can stop at runtime in Seseragi while TypeScript returns a number. This comparison is limited to the small nonnegative integer range above; it is not a complete payment implementation."
+pub fn tryTitle -> String = "Try it and read what you need"
+pub fn firstPurpose -> String = "Typecheck and run your own file: "
+pub fn valuesPurpose -> String = "let and creating updated values: "
+pub fn functionsPurpose -> String =
+  "Declare a function with parameter and result types: "
+pub fn callsPurpose -> String = "Calls and supplying only some arguments: "
+
+pub fn title -> String = (copy ()).title

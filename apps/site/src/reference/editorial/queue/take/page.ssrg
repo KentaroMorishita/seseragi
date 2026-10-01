@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { correctionEditorial } from "../../correction-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  correctionEditorial "std/queue::take" "effect-function" "api-correction-queue-take" "api-correction-queue-take-ts" "10\n20\nclosed" (en.copy ()) (ja.copy ())

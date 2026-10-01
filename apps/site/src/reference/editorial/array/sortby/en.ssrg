@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Sort by a key extracted from each value",
+  purpose: "Use sortBy to order people by score. Pass the key function first and the array second. People with equal keys retain their original relative order.",
+  reading: "score takes a record with name and score fields and returns value.score. people contains Aki with 2, Mio with 1, and Ren with 2. sortBy score people puts Mio first and keeps Aki before Ren among the score-two entries.",
+  boundaries: "The second line prints the original people in Aki, Mio, Ren order, showing that the input was not changed. The annotation Array<{ name: String, score: Int }> declares nobody as an array of those records. Its value is [], so the final sorted result is also [].",
+  rules: "Key type K needs Ord, an implementation for comparing values. This example uses numeric Int order. The key function runs exactly once per element in input order, and its results are cached for comparison. Sorting uses O(n log n) comparisons.",
+  mistake: "The callback extracts a key from one person; it does not compare two people and return a number. If equal-score people also need ordering, design a key with the required order. Use sort for the element type’s standard order.",
+}

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Check a string’s prefix",
+  purpose: "Pass the expected prefix first and the input string second. startsWith checks only the beginning and returns Bool. An occurrence later in the string does not count.",
+  reading: "prefix begins with pre, giving True. It ends with fix but does not begin with it, so the second line is False.",
+  boundaries: "An empty prefix matches even an empty input, giving True. Pre differs in case from pre, so the final call returns False.",
+  rules: "Comparison uses literal text, without regular expressions or automatic case conversion. Inputs remain unchanged; work depends on input and search-text size.",
+  mistake: "Keep the argument order: expected prefix first, text to inspect last. Use contains when a match anywhere is sufficient.",
+}

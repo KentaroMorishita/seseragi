@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "処理がアプリケーションの設定を要求するには",
-  summary: "Effectの第一の型引数Rには、必要なサービスをレコードで書きます。実行環境からそのサービスを受け取るため、設定などを暗黙のグローバル変数にする必要はありません。",
-  reading: "SettingsはString型のlabelを持つ型です。{ settings: Settings }は、環境にsettingsフィールドが必要なことを表します。effects.serviceは実行時にenvironment.settingsを取り出します。mapに渡した関数は、そのSettingsからlabelを取り出してStringを返します。",
-  result: "実行するには、settingsフィールドにSettingsの値を持つ環境が必要です。計算を作る時点と、実行用の環境を渡す時点は分かれています。関数のコードを変えずに、実行する環境ごとに異なる設定を渡せます。"
+  question: "同じ処理へ、実行する場所の設定を渡すには",
+  summary: "必要な設定を、暗黙のグローバル変数ではなく処理の型で示します。ここではSettingsのlabelを読み、与えた文字列を表示します。",
+  reading: "SettingsはStringのlabelを持つ構造体です。selectSettingsは{ settings: Settings }というレコードからsettingsを選ぶ普通の関数です。effects.serviceは、実行時の環境へその関数を使う処理を作ります。",
+  result: "出力はHello, Akiです。mainのprovideが渡すSettingsに、そのlabelが入っています。applicationLabelのコードを変えずに、別の実行用の設定を与えられます。",
 }
+
+pub fn readerCaption -> String = "必要な設定を渡してから実行する"
+
+pub fn readerBridgeOne -> String =
+  "with Settingsは、正規の型では{ settings: Settings }という要求です。applicationLabelのdoでsettings <- ...と書くと、取得したSettingsを名前で使えます。succeedは、そのlabelを成功値として返す処理を作ります。"
+
+pub fn readerBridgeTwo -> String =
+  "effects.provideは、使う環境と対象のEffectを受け取り、その環境を指定したEffectを返します。provideを書いた場所で実行するのではありません。mainへ返った処理を実行すると、labelを受け取ってprintlnへ渡します。"
+
+pub fn readerInvalidCaption -> String = "必要なsettingsフィールドを渡さない"
+
+pub fn readerMistake -> String =
+  "effects.provide {}では必要なsettingsがなく、SES-T0101です。{ settings: Settings { label: \"Hello, Aki\" } }のように、宣言した型の値を用意します。フィールド名と、その中に入る型の両方を合わせます。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "SettingsはString型のlabelを持つ型です。{ settings: Settings }は、環境にsettingsフィールドが必要なことを表します。effects.serviceは実行時にenvironment.settingsを取り出します。mapに渡した関数は、そのSettingsからlabelを取り出してStringを返します。"
+
+pub fn readerLegacyResult -> String =
+  "実行するには、settingsフィールドにSettingsの値を持つ環境が必要です。計算を作る時点と、実行用の環境を渡す時点は分かれています。関数のコードを変えずに、実行する環境ごとに異なる設定を渡せます。"

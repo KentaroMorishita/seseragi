@@ -1,0 +1,11 @@
+fn positive value: Int -> Either<String, Int> =
+  if value > 0 then Right value else Left "must be positive"
+
+fn describe result: Either<String, Int> -> String = match result {
+  Right value -> `ok: ${value}`
+  Left reason -> `error: ${reason}`
+}
+
+let success = describe (positive 2)
+let failure = describe (positive 0)
+pub effect fn main = println `${success}\n${failure}`

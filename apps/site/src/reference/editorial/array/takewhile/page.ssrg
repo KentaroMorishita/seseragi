@@ -1,0 +1,6 @@
+import { Editorial, apiEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  apiEditorial "std/array::takeWhile" "array-takewhile" "[1, 2]\n[]\n[1, 2]\n[]" (en.copy ()) (ja.copy ())

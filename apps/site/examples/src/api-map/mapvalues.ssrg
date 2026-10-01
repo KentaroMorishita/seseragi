@@ -1,0 +1,11 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+fn cents euros: Int -> Int = euros * 100
+
+pub effect fn main = do {
+  let prices = maps.fromEntries [("tea", 2), ("cake", 5)]
+  println (json.encodeString (maps.entries (maps.mapValues cents prices)))
+  println (json.encodeString (maps.entries prices))
+  println (json.encodeString (maps.entries (maps.mapValues cents (maps.empty<String, Int> ()))))
+}

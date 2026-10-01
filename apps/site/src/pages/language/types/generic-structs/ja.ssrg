@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "中身の型を選べる構造体を作るには",
-  summary: "struct Box<A>のように型パラメーターを宣言すると、同じフィールド構成を整数や文字列などに使えます。Box<Int>とBox<String>は、中のvalueの型が異なる構造体です。",
-  reading: "Box<A>のvalueフィールドはA型です。Box { value: 42 }ならBox<Int>になります。unwrapは中身を取り出し、labelはshowで整数を文字列にして、別のBox<String>を作ります。",
-  result: "label numberの結果には文字列の\"42\"が入ります。既存のBox<Int>を更新するなら、値はIntのままです。中身の型を変える場合は、例のように新しいBoxを作ります。"
+  question: "中身の型を選べる名前付きの入れ物を作るには",
+  summary: "Boxの形は共通にしながら、整数を持つBoxと文字列を持つBoxを作れます。取り出した値には、それぞれの中身の型が残ります。",
+  reading: "struct Box<A>はvalue: Aというフィールドを持つ名前付きの型です。Box { value: 42 }ではAがIntと分かり、numberはBox<Int>になります。number.valueはIntなので1を足せます。",
+  result: "labelはBox<Int>を受け取り、showで整数を文字列にして、新しいBox<String>を作ります。text.valueには\"!\"をつなげられるので、出力は43、42!です。numberの中身は42のままです。",
 }
+
+pub fn readerCaption -> String = "Box<Int>を読み、別のBox<String>を作る"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのtype Box<A> = { value: A }でも、中身の型を選び、読み出す値の型を保てます。Seseragiのstructは名前付きの型なので、単なる{ value: 42 }レコードとは区別します。型の再利用と、型名による区別は別の性質です。"
+
+pub fn readerBridgeTwo -> String =
+  "labelは元のBoxを書き換えず、Box { ... }で別の値を作ります。pub effect fn mainが公開された出力の入口です。${...}の中の整数の足し算と文字列の連結は、その値の型に合う演算として検査されます。"
+
+pub fn readerInvalidCaption -> String = "Box<Int>の更新で中身をStringへ変える"
+
+pub fn readerMistake -> String =
+  "...numberからフィールドを引き継ぐ更新では、Box<Int>の型引数も保つ必要があります。valueへ\"ready\"を入れるとSES-T0101です。型を変えた新しいBoxが欲しいなら、labelのようにspreadを使わずBox { value: \"ready\" }として作ります。"
+
+pub fn readerDetailNote -> String =
+  "詳しい宣言例ではunwrapで中身を返し、labelで別のBoxを作ります。明示的な型引数、フィールドからの推論、更新時に保つ型についての規則も確認できます。宣言例にmainはありません。"
+
+pub fn readerLegacyReading -> String =
+  "Box<A>のvalueフィールドはA型です。Box { value: 42 }ならBox<Int>になります。unwrapは中身を取り出し、labelはshowで整数を文字列にして、別のBox<String>を作ります。"
+
+pub fn readerLegacyResult -> String =
+  "label numberの結果には文字列の\"42\"が入ります。既存のBox<Int>を更新するなら、値はIntのままです。中身の型を変える場合は、例のように新しいBoxを作ります。"
+
+pub fn readerRelated -> String = "では、名前付きの型を作り、フィールドを読む基本を確認できます。"

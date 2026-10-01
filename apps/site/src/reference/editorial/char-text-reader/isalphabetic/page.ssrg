@@ -1,0 +1,8 @@
+import { localized } from "../../../../model/locale"
+import { Editorial } from "../../model"
+import { charTextEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  charTextEditorial "std/text/unicode::isAlphabetic" "char-text-isalphabetic" "A alphabetic: True\n漢 alphabetic: True\n3 alphabetic: False\nU+0345 alphabetic: True\nU+0301 alphabetic: False" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "A alphabetic: true\n漢 alphabetic: true\n3 alphabetic: false\nU+0345 alphabetic: true\nU+0301 alphabetic: false"

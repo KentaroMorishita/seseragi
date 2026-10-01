@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Compile a portable pattern into Right Regex, or return Left RegexCompileError for a rejected pattern.",
+  taskTitle: "Check a pattern before searching",
+  purpose: "A pattern is data and may be invalid. compile lets the application handle that rejection as a value before using the reusable Regex. A valid pattern can still produce no match for a particular input.",
+  setup: "The example gives compile four pattern strings. [0-9]+ means one or more ASCII digits. The function check names its String input source; match handles both compilation outcomes.",
+  after: [
+    "compile returns Right pattern for a reusable Regex or Left error for an invalid pattern. match chooses a branch and names the value inside it. The backtick error message inserts error.offset at ${error.offset}; that offset counts UTF-8 bytes from zero.",
+    "The valid order pattern matches ORD-42. The unfinished é[ is rejected at byte 3: é uses two UTF-8 bytes and [ one. a(?=b) is rejected as unsupported look-around at byte 2. Here (?=b) is a look-ahead: it asks for a following b without consuming it. In the source string \"\\\\d+\", two backslashes encode one backslash for the regex pattern \\d+.",
+    "pub effect fn main is the program entry. do runs the println output steps in order. Calls separate arguments with spaces. show converts a value to display text; True/False are the Seseragi Boolean spellings."
+  ],
+  comparisonBefore: "new RegExp(source, \"u\") throws SyntaxError for invalid JavaScript syntax. A try/catch can turn that into an ordinary result for the caller. This code creates a fresh non-global expression for each check.",
+  comparisonAfter: "JavaScript accepts a(?=b), so that line reports a non-match rather than a compilation rejection. JavaScript error messages and position reporting are host-specific; they do not supply the Seseragi typed UTF-8 offset contract.",
+  details: [
+    "Left error contains kind and offset. A rejected pattern is a normal Either result, not a compiler diagnostic or an exception from compile. Match Right before calling an operation that requires Regex.",
+    "compile uses all-false defaultOptions. Use compileWith to select options and escape to quote literal input. Do not repair a rejected look-around, backreference or \\b by assuming every JavaScript pattern is portable. Choose a supported pattern and check the extracted text explicitly."
+  ],
+  codeTitle: "Complete program and boundary cases",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Matching rules to keep in view"
+}

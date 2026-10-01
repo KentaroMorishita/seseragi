@@ -1,8 +1,4 @@
-import {
-  Explanation,
-  makeExplanation,
-  ArticleExample
-} from "../../explanation"
+import { Explanation, makeExplanation, ArticleExample } from "../../explanation"
 import * as en from "./en"
 import * as ja from "./ja"
 

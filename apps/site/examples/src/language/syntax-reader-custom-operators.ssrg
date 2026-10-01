@@ -1,0 +1,7 @@
+operator infixr 4 <+>
+  left: String -> right: String -> String =
+  left + " " + right
+
+let label = "Seseragi" <+> "docs"
+
+pub effect fn main = println label

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { unicodeEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  unicodeEditorial "std/text/grapheme::length" "unicode-length" "visible pieces: 3\nscalars: 5\nUTF-8 bytes: 12\nempty: 0" "std/text/grapheme" (en.copy ()) (ja.copy ())

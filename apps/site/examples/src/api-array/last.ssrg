@@ -1,0 +1,7 @@
+import * as arrays from "std/array"
+
+pub effect fn main = do {
+  _ <- println (show (arrays.last [10, 20, 30]))
+  _ <- println (show (arrays.last [10]))
+  println (show (arrays.last (arrays.empty<Int> ())))
+}

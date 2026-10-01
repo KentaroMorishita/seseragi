@@ -1,21 +1,48 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Evaluation order",
   summary: (explanation ()).summary,
-  ruleTitle: "Ordinary expressions compute their inputs immediately",
-  ruleBody: "A function call computes its arguments before its body. Operator operands, record fields, and collection elements are also computed once each in source order. Whether the resulting value is used later does not change that order.",
-  typingBody: "Evaluation order specifies which computation runs first. It is separate from the rules determining whether types match. The complete program must pass type checking before execution.",
-  evaluationBody: "Effect is a value describing work to execute. Constructing a printing Effect does not print yet; executing that Effect does. Likewise, defining a function does not compute its body. These are rules for functions and Effects, not rules that delay ordinary arguments or field expressions.",
-  invalidTitle: "Ordinary expressions are not automatically delayed",
-  invalidBody: "To delay a calculation, place it in a function body and call that function when needed. To describe work such as I/O, return an Effect. An expression in an ordinary field or collection element is not a request to delay it.",
-  diagnosticsBody: "Type mismatches and undefined names are reported before execution. Comparing values also differs from comparing storage locations. Ordinary immutable values have no operator for checking storage identity.",
+  exampleTitle: "Compute arguments before making a two-digit value",
+  purpose: [
+    "Evaluation means computing an expression to obtain a value. A function call first evaluates its arguments, then uses those values to evaluate the body.",
+    "Here, increment two numbers and then combine them as tens and ones. Distinguish defining a function, calling it, and executing output.",
+  ],
+  reading: [
+    "place takes tens and ones, both Int integers. The final -> Int declares its return type. Its body forms a number with tens * 10 + ones.",
+    "next adds 1 to one integer. In place (next 1) (next 2), the left argument next 1 becomes 2 and the right argument next 2 becomes 3.",
+    "The body of place receives the computed 2 and 3 and calculates 2 * 10 + 3, producing 23. It does not repeat both next calculations inside its body.",
+    "let number names that result, and main prints 23. Writing the declarations of place and next does not itself execute their bodies.",
+  ],
+  rules: [
+    "Ordinary function arguments are evaluated left to right, once each, before being passed to the body. Computing arguments first is called strict evaluation.",
+    "Inputs to ordinary binary operations, record fields, and collection elements are also evaluated once each in source order. Whether a value is used later does not change the language-defined order.",
+    "The unnecessary right side of &&, ||, or ?? is skipped. False && condition, for example, skips condition. This is short-circuit evaluation; distinguish it from precedence, which determines expression grouping.",
+    "Defining a function does not evaluate its body. To defer a calculation, put it in an ordinary function body and call it when needed. Writing an expression in a normal field or array does not request deferred evaluation.",
+    "An Effect is a value describing work such as output. Constructing that value differs from executing its external work. An Effect made with println performs output when an execution boundary, such as running main, starts it. This does not automatically delay all ordinary value computations.",
+    "Type checking decides whether types fit; evaluation rules determine when computations happen. The rejected example shown here stops at type checking before execution.",
+  ],
+  mistakes: [
+    "place \"two\" 3 below passes String rather than Int as its first argument, producing SES-T0101. Replace \"two\" with 2 to print 23. Changing evaluation order cannot repair a type mismatch.",
+    "Distinguish a function definition or Effect construction from its executed result. If output is required, connect the constructed Effect to an entry point that executes it.",
+  ],
+  related: [
+    "Identify the function and arguments in an ordinary call.",
+    "Read a block that uses several declarations and returns its final value.",
+    "Compare what types check with conditions that can fail during execution.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "When are function arguments computed?",
-  summary: "Ordinary expressions evaluate their inputs before producing a result. Function arguments are evaluated left to right, once each.",
-  reading: "place receives a tens digit and a ones digit and computes tens * 10 + ones. In place (1 + 1) (2 + 1), the first argument becomes 2 and the second becomes 3 before the corresponding body calculation uses them.",
-  result: "result is 23. First compute 1 + 1 and 2 + 1, then use the resulting 2 and 3 in place's body. An expression constructing an Effect is evaluated normally, but the external work described by that Effect waits until execution."
+  question: "When are argument expressions computed?",
+  summary: "Function arguments are evaluated left to right once each, then their values are passed to the body. Defining a function does not execute it.",
+  reading: "Start with a small integer calculation to separate argument evaluation from body evaluation. Then distinguish Effect execution and short-circuiting.",
+  result: "next 1 produces 2 and next 2 produces 3. Passing those computed values to place produces 23.",
 }
+
+pub fn identityTitle -> String = "A separate boundary: values and storage identity"
+pub fn identityBody -> String =
+  "Whether values are equal is separate from whether they use the same storage. Ordinary immutable values have no operator for observing storage identity. This does not determine evaluation order. Use a comparison operation supported by the value's type when comparing values."

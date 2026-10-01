@@ -1,0 +1,38 @@
+import { editorial as case0 } from "./regex/module/page"
+import { editorial as case1 } from "./regex/compile/page"
+import { editorial as case2 } from "./regex/compilewith/page"
+import { editorial as case3 } from "./regex/defaultoptions/page"
+import { editorial as case4 } from "./regex/escape/page"
+import { editorial as case5 } from "./regex/ismatch/page"
+import { editorial as case6 } from "./regex/find/page"
+import { editorial as case7 } from "./regex/findall/page"
+import { editorial as case8 } from "./regex/split/page"
+import { editorial as case9 } from "./regex/replaceall/page"
+import { editorial as case10 } from "./regex/replaceallwith/page"
+import { ReferenceSymbol } from "../../model/build"
+import { Block } from "../../model/page"
+import { Editorial, editorialBlocks } from "./model"
+pub fn regexEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.module != "std/regex"
+    || symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else
+    match symbol.identity {
+  "std/regex::compile" -> Just (case1 ())
+  "std/regex::compileWith" -> Just (case2 ())
+  "std/regex::defaultOptions" -> Just (case3 ())
+  "std/regex::escape" -> Just (case4 ())
+  "std/regex::isMatch" -> Just (case5 ())
+  "std/regex::find" -> Just (case6 ())
+  "std/regex::findAll" -> Just (case7 ())
+  "std/regex::split" -> Just (case8 ())
+  "std/regex::replaceAll" -> Just (case9 ())
+  "std/regex::replaceAllWith" -> Just (case10 ())
+  _ -> Nothing
+}
+pub fn regexModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (if specifier == "std/regex" then
+    Just (case0 ())
+  else
+    Nothing)
