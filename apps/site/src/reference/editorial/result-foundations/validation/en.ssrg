@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "A result containing a successful Valid value or Invalid with one or more errors, for combining independent checks.",
+  taskTitle: "Read an accepted name or every form error",
+  purpose: "When a form has several problems, you may want to display them together. Validation<String, String> contains a successful string or one or more String errors.",
+  setup: "Import Validation, Valid and Invalid from std/validation. arrays and text name the functions used to display errors. In fn describe, result: Validation<String, String> is the argument and the final -> String is its return type. The match after = returns the display string. nonempty names the std/non-empty-list functions.",
+  after: [
+    "let names a value. accepted is Valid \"Ada\". nonempty.cons constructs errors from a required first error and a remaining List. The leading backtick in `[\"seats must be positive\"] is List literal syntax.",
+    "Invalid errors contains two errors in name-then-seat order. This example constructs and reads results; it does not itself perform the name or seat checks.",
+    "The match in describe displays the successful string name for Valid name. In Invalid errors, errors contains at least one error. arrays.fromIterable makes an Array, and text.join \"; \" joins it for display in its existing order.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces."
+  ],
+  comparisonBefore: "In TypeScript, ok selects name when true and errors when false. The TypeScript type [string, ...string[]] requires a first string followed by any number of additional strings. Both examples keep the requirement that an error group cannot be empty.",
+  comparisonAfter: "Both versions can type a result containing all errors. Seseragi Validation lets independent checks returning this shape combine through shared operations while retaining error order. Direct TS if statements and an array remain straightforward for a small form.",
+  details: [
+    "In Validation<E, A>, E is one error’s type and A the successful type; both are String here. The exact declaration Validation<_, _> shows two type positions, named E and A in the type-parameter panel.",
+    "The kind is opaque-type, meaning its internal representation is private. Its exported Valid and Invalid constructors still let you construct values and read their alternatives with match, without manipulating an internal record.",
+    "Combining independent checks with pure and <*> collects failing inputs’ errors in order. Merely constructing Invalid does not run checks. Use Either and flatMap for a later check that needs the successful value; Validation does not supply flatMap."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

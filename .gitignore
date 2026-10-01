@@ -89,3 +89,6 @@ tempCodeRunnerFile.*
 # Local settings
 .claude/settings.local.json
 .serena/
+
+# Local Python caches from documentation checks
+/apps/site/scripts/__pycache__/

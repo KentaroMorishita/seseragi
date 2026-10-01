@@ -383,11 +383,39 @@ test("all thirty production bodies retain exact copy, H1 link titles, declaratio
     dataValidationReaderCases.filter((x) => x.name).map((x) => x.identity)
   )
   const controls = [
-    "std/maybe::sequence",
-    "std/either::mapRight",
-    "std/validation::Validation",
+    "std/maybe::Show",
+    "std/either::Show",
+    "std/validation::Show",
     "std/collection::reduceUntil",
   ]
+  // These three former controls became authored in the result-foundation batch.
+  // Preserve their count with unchanged Show instance metadata; this is not a
+  // claim that the instance pages received independent reader review.
+  const expectedControls = [
+    ["std/maybe::Show", "instance<A> Show<Maybe<A>> where Show<A>"],
+    [
+      "std/either::Show",
+      "instance<A, B> Show<Either<A, B>> where Show<A>, Show<B>",
+    ],
+    [
+      "std/validation::Show",
+      "instance<A, B> Show<Validation<A, B>> where Show<A>, Show<B>",
+    ],
+  ] as const
+  for (const [identity, signature] of expectedControls) {
+    const symbol = all
+      .flatMap((x) => x.items)
+      .find((x) => x.identity === identity)!
+    expect(symbol.namespace).toBe("instance")
+    expect(symbol.itemKind).toBe("instance")
+    expect(symbol.signature).toBe(signature)
+    expect(symbol.reading.en).toContain(
+      "an instance is not itself a callable function"
+    )
+    expect(symbol.reading.ja).toContain(
+      "instance自体を関数として呼び出すことはできません"
+    )
+  }
   const modules = all
     .filter((x) =>
       [
@@ -405,6 +433,8 @@ test("all thirty production bodies retain exact copy, H1 link titles, declaratio
           selected.has(symbol.identity) || controls.includes(symbol.identity)
       ),
     }))
+  expect(modules).toHaveLength(5)
+  expect(modules.flatMap((x) => x.items)).toHaveLength(16)
   const input = {
     schema: 1,
     origin: "https://seseragi.example",
@@ -543,11 +573,19 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
     expect(titleChecks).toBeGreaterThanOrEqual(30)
     for (const prefix of ["", "/ja"])
       for (const control of [
-        "/docs/library/maybe/function/sequence/",
-        "/docs/library/either/function/mapright/",
+        "/docs/library/maybe/instance/show-maybe-a/",
+        "/docs/library/either/instance/show-either-a-b/",
+        "/docs/library/validation/instance/show-validation-a-b/",
       ]) {
-        expect(pages.get(prefix + control)).not.toContain(
-          'id="typescript-comparison"'
+        const controlHtml = pages.get(prefix + control)!
+        expect(controlHtml).not.toContain('id="typescript-comparison"')
+        const owner = control.split("/")[3]
+        const symbol = all
+          .flatMap((x) => x.items)
+          .find((x) => x.identity === `std/${owner}::Show`)!
+        expect(plain(controlHtml)).toContain(symbol.signature)
+        expect(plain(controlHtml)).toContain(
+          prefix ? symbol.reading.ja : symbol.reading.en
         )
       }
     if (process.env.DATA_VALIDATION_READER_RENDER_DIR)

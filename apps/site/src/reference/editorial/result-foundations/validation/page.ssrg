@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { resultFoundationEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  resultFoundationEditorial "std/validation::Validation" "type" "opaque-type" "validation" "validation" "Accepted: [Ada]\nErrors: name is required; seats must be positive" (en.copy ()) (ja.copy ())

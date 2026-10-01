@@ -1,0 +1,7 @@
+import { Editorial } from "../../../model"
+import { numericReaderEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  numericReaderEditorial "std/float::isFinite" "std/float" "float-isfinite" "finite\nfinite\nfinite\nfinite\nnon-finite\nnon-finite\nnon-finite" "finite\nfinite\nfinite\nfinite\nnon-finite\nnon-finite\nnon-finite" (en.copy ()) (ja.copy ())

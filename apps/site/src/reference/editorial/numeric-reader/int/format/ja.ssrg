@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Intを区切りや接頭辞のない十進文字列にします。ゼロの表記は常に0です。",
+  taskTitle: "個数をそのまま文字列にする",
+  purpose: "計算済みの個数をログやテキスト欄へ渡します。formatはIntからStringへ変換し、負数、ゼロ、正数を余分な装飾なしで表します。",
+  setup: "import * as intsはstd/intの操作にintsという接頭辞を付けます。ints.format 12は12を引数にした呼び出しです。(-12)の括弧は負の値を一つの引数としてまとめています。",
+  after: [
+    "Intは整数、Stringは文字列の型です。formatの結果は-12、0、12という十進表記です。元のIntは変わりません。",
+    "pub effect fn mainが実行入口です。fnは関数の宣言で、effectは表示のような処理を実行する指定です。do内のprintlnを上から順に実行し、文字列と改行を表示します。"
+  ],
+  comparisonBefore: "TypeScriptもString(value)だけで、ここで使う安全な整数を同じ文字列にできます。例の値はすでに整数で、Numberの安全な整数範囲に収まることを前提にしています。",
+  comparisonAfter: "この変換ではTypeScriptも短く書けます。Seseragiの違いは入力がIntに限定される点です。formatは数値の入力検査や、利用者向けの表示書式の選択までは行いません。",
+  details: [
+    "負数には-を付け、正数には+を付けません。桁区切り、先頭の桁合わせ、0xのような接頭辞はありません。Intに負のゼロはなく、ゼロは常に文字列0になります。",
+    "Intの範囲は-9007199254740991から9007199254740991までです。小数、NaN、無限大、負のゼロは入りません。負の整数は有効なので、個数を正数に限る条件は別に確かめます。",
+    "小数値を表示したい場合はstd/floatのformatを選びます。文字列をIntへ戻す操作はparseです。カンマ付きの表示や固定の桁幅を、このformatだけに期待しないでください。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、間違いやすい点"
+}

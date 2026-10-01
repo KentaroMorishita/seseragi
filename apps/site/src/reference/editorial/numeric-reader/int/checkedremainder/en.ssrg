@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Take the divisor first and return the integer remainder in Right, or Left IntDivisionByZero for a zero divisor.",
+  taskTitle: "Find what remains after grouping",
+  purpose: "Grouping ten items in threes leaves one item. checkedRemainder returns that remainder and also reports a group size of zero as a returned failure.",
+  setup: "import * as ints loads std/int. fn declares a function. In calculate, dividend: Int is the integer being divided, divisor: Int is the integer to divide by, and -> String declares display text. Call arguments are separated by spaces.",
+  after: [
+    "checkedRemainder takes the divisor first: checkedRemainder 3 10 divides ten by three. Our calculate function accepts the original amount first for readability and reverses the arguments at the library call.",
+    "Either<IntDivisionError, Int> is a result containing success or failure. Right result supplies the integer result; Left ints.IntDivisionByZero returns a message for a zero divisor. match chooses the branch and ints.format converts the result to text.",
+    "pub effect fn main is the entry point. fn declares a function; effect marks a function that runs operations such as printing. do runs the println calls in order, writing each string followed by a newline."
+  ],
+  comparisonBefore: "TypeScript % also calculates the remainder. Both arguments are assumed to be safe integers. Check the zero divisor first; result === 0 ? 0 : result normalizes JavaScript’s possible -0 to ordinary zero.",
+  comparisonAfter: "All four output lines agree. Seseragi has Int inputs and returns a named zero-divisor failure. This Left is a value for ordinary branching, rather than an exception for the caller to catch.",
+  details: [
+    "A nonzero remainder has the dividend’s sign. Dividing -10 by 3 leaves -1. Dividing -9 by 3 leaves 0; Int has no -0. Account for the sign rule separately if your task needs an always-positive wrapped index.",
+    "Watch argument order: checkedRemainder 10 3 divides three by ten, a different calculation. A zero divisor is the only returned failure, Left IntDivisionByZero. Int’s range is symmetric around zero, so this operation has no overflow alternative.",
+    "Int ranges from -9007199254740991 through 9007199254740991. It cannot contain a fraction, NaN, infinity or negative zero. Negative integers are valid; a requirement such as a positive count needs a separate application check."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Compare the TypeScript version",
+  detailTitle: "Inputs, results and common mistakes"
+}

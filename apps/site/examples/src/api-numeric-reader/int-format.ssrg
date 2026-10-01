@@ -1,0 +1,7 @@
+import * as ints from "std/int"
+
+pub effect fn main = do {
+  println (ints.format (-12))
+  println (ints.format 0)
+  println (ints.format 12)
+}

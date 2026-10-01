@@ -1,0 +1,26 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "小数を含む値を読み取り、文字列に戻し、Intから明示的に変換します。有限な測定値だけを使う場合は、変換や計算とは別にisFiniteで確かめます。",
+  taskTitle: "整数の個数から一袋あたりの量を求める",
+  purpose: "5個分の量を2袋に分けると、一袋あたりは2.5です。std/floatは、このような小数を含む計算に使うFloatの変換、文字列とのやり取り、値の判定を扱います。まず、整数の個数をFloatに変えて割る例を見ます。",
+  setup: "import * as floatsはstd/floatをfloatsという名前で使う指定です。letは値に変更できない名前を付けます。total: Intとpackages: Intの:は、整数を持つ型の指定です。perPackage: Floatは、小数も持てる型の指定です。この指定だけでIntがFloatに変わるわけではありません。",
+  after: [
+    "floats.fromInt totalは、totalを一つの引数として渡す呼び出しです。Seseragiでは関数名と引数を空白で区切ります。二つのfromIntで5と2をFloatに変えてから、/で割るので結果は2.5です。元のtotalとpackagesはIntのままです。",
+    "floats.format perPackageは結果をString、つまり文字列に変えます。+はここでは文字列をつなぎ、per package: 2.5という表示を作ります。袋数は例の中で2に固定しており、利用者から受け取る袋数の検査までは行っていません。",
+    "pub effect fn mainが、このプログラムの実行入口を宣言します。fnは関数の宣言、pubは外から使える指定、effectは表示のような処理を実行する指定です。doの中を順に実行し、printlnが文字列を一行表示します。fromInt、割り算、formatは値を計算する部分です。"
+  ],
+  comparisonBefore: "TypeScriptでは整数も小数もnumberなので、同じ5と2をそのまま割れます。両方の例は袋数を2とし、整数の入力がすでに決まっている同じ条件で、一袋あたりの量を計算します。末尾のexport {}は、この例を独立したモジュールとして扱う指定で、計算結果は変えません。",
+  comparisonAfter: "どちらもper package: 2.5を表示します。TypeScriptの式も簡潔です。Seseragiでは、個数として持つIntを小数の計算に移す場所がfromIntで明示され、二つの型を混ぜるとコンパイラが知らせます。Floatは64ビットの二進数で数値を表す型なので、多くの十進小数や計算結果には丸めが入ります。金額を常に十進数どおり正確に計算する保証ではありません。",
+  details: [
+    "文字列を読むときはparseを使います。結果のEither<FloatParseError, Float>は、失敗理由を入れたLeftか、Floatを入れたRightのどちらかです。matchで該当する枝を選びます。parseのページでは、この二つを受け取って表示を決める完全な例を示しています。",
+    "入力が読めても、測定値として使えるとは限りません。FloatにはNaNという数値計算が有効な数にならなかったことを表す値と、正負の無限大もあります。parseはNaNやInfinityという綴りも受け付けます。これらを除く必要がある場合は、isFiniteが返すBoolのTrueかFalseで判断します。",
+    "formatはFloatを再び読める表記にします。12.0は12.0、負のゼロは-0.0になります。元の入力の桁数、地域別の区切り、固定の小数点以下桁数は保存しません。表示を整える処理と、数値の保存用の表記は目的が異なります。",
+    "fromIntは、-9007199254740991から9007199254740991までのすべてのIntを正確にFloatへ変換します。その後のFloatの計算が常に正確とは限りません。Intの個数だけを計算したい場合は、std/intの範囲検査付き演算を使えます。",
+    "現在の丸め処理には確認済みの制限があります。CLI 0.61.19と確認したランタイムでは、HalfUpを選ぶと、0.5の直前の値や一部の大きな整数をroundIntegralが誤って丸めます。toIntも同じ影響を受け、範囲内の値を範囲外として返す場合があります。HalfUpは本来、ちょうど中間の値をゼロから遠い側へ丸める指定です。この制限を意図した丸め規則として扱わず、修正の確認前にHalfUpへ依存する処理は避けてください。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果の規則、間違いやすい点",
+}

@@ -31,9 +31,11 @@ import { modelConceptExamples } from "./model-concepts"
 import { newModelReaderExamples } from "./model-reader"
 import { moduleProjectExamples } from "./module-examples"
 import { nonemptyIteratorReaderExamples } from "./nonempty-iterator-readers"
+import { numericReaderExamples } from "./numeric-readers"
 import { compilerReferenceModules } from "./reference"
 import { regexReaderExamples } from "./regex-readers"
 import { type RenderedPage, renderGenerator } from "./render-generator"
+import { resultFoundationExamples } from "./result-foundation-readers"
 import { sequenceEditorialExamples } from "./sequence-editorial"
 import { setEditorialExamples } from "./set-editorial"
 import { syntaxExamples } from "./syntax-examples"
@@ -95,6 +97,8 @@ export function generatorInput(playgroundUrl: string) {
       ...charTextExamples(playgroundUrl),
       ...collectionTypeExamples(playgroundUrl),
       ...dataValidationReaderExamples(playgroundUrl),
+      ...numericReaderExamples(playgroundUrl),
+      ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),
       ...modelConceptExamples(playgroundUrl),

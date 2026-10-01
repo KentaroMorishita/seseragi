@@ -1,0 +1,3 @@
+fn increment count: Int -> Int = count + 1
+fn rejected count: Either<String, Int> -> Int = increment count
+pub effect fn main = println (show (rejected (Right 2)))

@@ -53,6 +53,32 @@ function code(html: string) {
   )
 }
 
+test("the home hero starts both columns without inherited article spacing", () => {
+  const home = readFileSync(join(root, "apps/site/styles/home.css"), "utf8")
+  const responsive = readFileSync(
+    join(root, "apps/site/styles/responsive.css"),
+    "utf8"
+  )
+  const hero = home.match(/\.home-hero\s*\{([^}]+)\}/u)?.[1] ?? ""
+  expect(hero).toMatch(/align-items:\s*start\s*;/u)
+  expect(hero).toMatch(/grid-template-columns:\s*minmax\([^;]+\)\s*;/u)
+  const article =
+    home.match(/\.home-hero-content \.article-content\s*\{([^}]+)\}/u)?.[1] ??
+    ""
+  expect(article).toMatch(/padding-top:\s*0\s*;/u)
+  const firstHeading =
+    home.match(
+      /\.home-hero-content \.article-content > h2:first-child\s*\{([^}]+)\}/u
+    )?.[1] ?? ""
+  expect(firstHeading).toMatch(/margin-top:\s*0\s*;/u)
+  expect(firstHeading).toMatch(/padding-top:\s*0\s*;/u)
+  expect(responsive).toMatch(
+    /@media \(max-width: 960px\)[\s\S]*?\.home-hero\s*\{[^}]*grid-template-columns:\s*1fr\s*;/u
+  )
+  for (const [, rule] of responsive.matchAll(/\.home-hero\s*\{([^}]+)\}/gu))
+    expect(rule).not.toMatch(/align-items:\s*center\s*;/u)
+})
+
 test("entrance pages render verified comparisons and a Docs-first starting path in both locales", () => {
   const temporary = mkdtempSync(join(tmpdir(), "seseragi-entrance-"))
   try {

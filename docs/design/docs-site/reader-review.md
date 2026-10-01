@@ -2328,3 +2328,272 @@ batches, and no public tracker status is changed.
 All prior ledger bytes/history, the 106 original checkbox rows and eight
 historical checked boxes are preserved. This appendix changes no acceptance
 checkbox and authorizes no publication, commit, push or deployment.
+
+## Checkpoint 8: numeric and result-foundation reader review (2026-10-01)
+
+This record adds bounded independent agent reading of **27 existing identities /
+54 complete localized bodies**: thirteen numeric identities / twenty-six EN/JA
+bodies and fourteen result-foundation identities / twenty-eight EN/JA bodies.
+The baseline is checkpoint 7, `15bd8858becffa32d19f55f66d630593ac90c603`, with
+intentional uncommitted documentation work. All fifty-four initial bodies were
+read by `/root/review_collection_text_docs`; no nested reviewer's reading is
+substituted for that coverage. The same reviewer fully reread every corrected
+body: four numeric bodies and ten result-foundation bodies. Those rereads do not
+increase the unique-body count.
+
+The reviewer used the ordinary TypeScript baseline in
+[reader-contract.md](reader-contract.md): familiar types/interfaces, functions,
+arrays, objects, conditions and exception handling, with no assumed ADT, match,
+FP, Rust or Haskell background. The full HTML main content was read in sequence,
+including native and TypeScript programs, separate outputs, all rules and
+mistakes, canonical declarations and generated declaration guidance, breadcrumbs,
+related choices and section navigation. Necessary explanation was assessed from
+the article itself rather than filled in from specification or implementation
+knowledge. Source/metadata checks after reading established exact ownership and
+display consistency, not comprehension by a human.
+
+### Numeric scope, reading result and corrections
+
+The exact thirteen identities, each with its `/ja` route, are:
+
+- `std/int`: `/docs/library/int/`
+- `std/int::{parse,format,checkedAdd,checkedSubtract,checkedMultiply,checkedDivide,checkedRemainder}`:
+  `/docs/library/int/function/{parse,format,checkedadd,checkedsubtract,checkedmultiply,checkeddivide,checkedremainder}/`
+- `std/float`: `/docs/library/float/`
+- `std/float::{parse,format,fromInt,isFinite}`:
+  `/docs/library/float/function/{parse,format,fromint,isfinite}/`
+
+The Int module starts with a settings count and an add-five calculation. The
+reader can follow whole-string parsing, returned failure alternatives, local
+match branches and the distinction between invalid input and an excessive
+sum. The parse page explains optional signs, extra leading zeroes, whitespace,
+range and negative-zero normalization. Its TS counterpart checks the complete
+matched string and safe-integer range; permissive prefix parsing is not presented
+as equivalent validation. Detailed diagnostic equivalence is explicitly not
+claimed.
+
+The arithmetic leaves state their own operand order, with subtraction amount
+first and division/remainder divisor first. Wrapper parameter order and the
+library order are distinguished. Just/Nothing and Left/Right are introduced
+locally as returned alternatives, with no implication that try/catch consumes
+them. Signed quotient truncation, signed remainder, zero-divisor handling,
+integer bounds, separate positivity requirements and the difference from
+clamping are clear. The TypeScript examples retain direct arithmetic under the
+same already-safe-integer precondition; division uses locally explained BigInt
+conversion to preserve the quotient at the range boundary. Int format honestly
+acknowledges that TS String is already concise.
+
+Float starts with splitting a count between packages and explicitly converting
+Int to Float. The pages distinguish type annotation from conversion, exact
+conversion from later rounded arithmetic, complete parsing from finite-value
+requirements, and canonical stored text from fixed-place or localized display.
+NaN, both infinities, signed zero, overflow and underflow have local explanations
+and observable consequences. Float format and fromInt retain their real TS
+spelling differences rather than adding a padded formatter solely for parity.
+The fromInt function explains both arguments, the final result arrow and the
+returned expression after `=`. Number.isFinite is a direct, fairly described TS
+counterpart, and finiteness is not mistaken for positivity, integrality, the Int
+range or exact decimal arithmetic.
+
+The reviewer requested two bounded corrections. Japanese Float format and
+isFinite called `()` a value named Unit; they now identify it as a value of the
+Unit type. The isFinite paragraph also identifies the infinity functions as
+returning those values. The TypeScript checkedDivide counterpart contained a
+redundant zero-normalizing branch after BigInt division, where negative zero
+cannot arise; it now interpolates the result directly. The checkedRemainder
+counterpart retains its actual JavaScript remainder normalization and explanation.
+Both corrected Japanese Float bodies and both checkedDivide bodies were fully
+reread. Independent byte comparison confirms the other twenty-two bodies were
+unchanged. No remaining bounded reader blocker was found.
+
+The Float module openly describes the current HalfUp implementation defect:
+incorrect rounding immediately below 0.5, changes to some large integral values,
+and erroneous out-of-range conversion results. It distinguishes those faulty
+results from the intended midpoint rule. **toInt and roundIntegral remain gated
+and are not accepted by this record.** Their links explicitly identify the
+limitation; no reviewed program depends on HalfUp. This is not a runtime fix or
+acceptance of those two APIs.
+
+Final numeric artifact:
+`target/numeric-reader-review/rendered/`. Its thirty-six HTML bodies contain the
+twenty-six edited bodies plus ten supporting/control bodies; the latter are not
+new coverage. Exact scope is in `apps/site/scripts/numeric-readers.ts` and
+`target/numeric-reader-review/body-manifest.json`. Independent final checks found
+zero errors: 74 authored exact-title links with adjacent purposes, 26 native
+panels and exact decoded Playground source seeds, 26 TS panels, 52 output panels,
+52 same-identity locale links, 22 exact callable declarations/owners, 260 local
+fragment occurrences and 222 available in-main library target occurrences. The
+last two are occurrence counts, not additional accepted pages. Generic links
+outside the reduced fixture are not full-site closure.
+
+Independent proofs and full per-identity report:
+`/tmp/numeric-independent-review-final.json`,
+`/tmp/numeric-independent-reread-diff.json`, and
+`/tmp/numeric-independent-reader-review.md`. The pre-repair snapshot is
+`/tmp/numeric-initial-reader-snapshot`.
+
+The author's separate execution evidence is
+[numeric-reader-verification.md](numeric-reader-verification.md): six tests /
+1,486 assertions for the frozen full suite and two tests / 1,244 assertions for
+the corrected native/strict-TS and production-render scope. The full run covers
+thirteen native programs, thirteen TS counterparts, exact committed-WASM seeds,
+bounded runtime rules and dispatcher controls. The correction rerun establishes
+the final counterpart and panel bytes. These overlapping runs are not summed,
+and the reviewer did not independently execute the programs. Untouched numeric
+operations, std/math and existing built-in-type pages remain outside the batch.
+
+### Result-foundation scope, reading result and corrections
+
+The exact fourteen identities, each with its `/ja` route, are:
+
+- `std/prelude::{Maybe,Either}`:
+  `/docs/library/prelude/type/{maybe,either}/`
+- `std/prelude::{Just,Nothing,Right,Left}`:
+  `/docs/library/prelude/constructor/{just,nothing,right,left}/`
+- `std/validation::Validation`:
+  `/docs/library/validation/opaque-type/validation/`
+- `std/validation::{Valid,Invalid}`:
+  `/docs/library/validation/constructor/{valid,invalid}/`
+- `std/maybe::sequence`: `/docs/library/maybe/function/sequence/`
+- `std/either::{mapRight,bimap,sequence,swap}`:
+  `/docs/library/either/function/{mapright,bimap,sequence,swap}/`
+
+Maybe, Just and Nothing begin with supplied or absent nicknames, retaining empty
+strings and zero as real values. Type positions, annotations, payload extraction,
+no-import Prelude ownership and complete match alternatives are local. Just does
+not validate contents or delay its argument. Nothing has no argument or reason,
+and the invalid Nothing () call is explained. The TypeScript versions use ordinary
+undefined checks without padding, and the benefit is shared present/missing
+operations rather than a claim of stronger application validation.
+
+Either and its constructors use accepted seat counts and rejection reasons.
+Local if/match consumers explain which payload is available. Right 0 demonstrates
+that constructing a successful shape does not validate positivity; Left returns
+data without printing, throwing or stopping the caller's later steps. Both TS
+object alternatives and their ok field are explained locally. The possible
+unoccupied side still has a type. The Either type article states that each API
+owns the meaning of its two sides, including uses other than success/failure.
+
+Validation and its constructors display an accepted name or existing ordered
+form errors. They explicitly separate constructing results from performing the
+checks. Invalid requires NonEmptyList rather than an ordinary List that happens
+to contain values; singleton/cons, the List backtick and ordered Array/text display
+are explained. The TS nonempty tuple condition is described locally and retained
+in both comparisons. Type placeholders, imported ownership, error-versus-success
+type positions and public constructors for the opaque type are accounted for.
+Advanced independent-check composition is mentioned only after the complete
+construction/consumption example and has an optional purpose-labelled destination.
+
+The two sequence articles distinguish already-obtained results from deferred
+lookups. They show ordered all-success results, missing/failed positions and empty
+success; Either preserves only the first error. Returning that failure is not
+claimed to prevent evaluation that already built the input Array. TS examines the
+same already-created values. mapRight and bimap explain selected callback bodies,
+argument order, unchanged branches, eager argument expressions and the retained
+intermediate Either. The TS examples use direct conditionals; the intermediate
+result difference is disclosed instead of treating more TS infrastructure as
+necessary.
+
+Swap uses a consumer with a reversed existing branch contract. Both the full
+article and its entire generated declaration-reading paragraph correctly state
+that original Right becomes new Left, original Left becomes new Right, and payload
+meaning is unchanged. A moved reason remains the original rejection reason;
+swapping does not validate, retry or recover the booking. The TS adapter preserves
+the same information using a locally explained kind field. The text explicitly
+chooses ordinary branching when no reversed contract needs adapting.
+
+Four bounded correction categories were resolved:
+
+- Remove the irrelevant show explanation from Maybe, Nothing, Validation, Valid
+  and Invalid in both locales, whose displayed programs do not use show
+- Identify the std/validation ownership of the valid, invalid and invalidMany
+  helper functions instead of using an unintroduced validation alias
+- Align Validation's Japanese generated opaque-type advice with its public
+  Valid/Invalid constructors and match, instead of directing readers only to
+  functions; the English advice already allowed constructors and operations
+- Remove Nothing's Japanese temporal wording that suggested a bound absence
+  would later change into a string; describe the absent value and alternative
+  type instead
+
+All ten changed complete EN/JA bodies were reread. Independent byte comparison
+confirms the other eighteen bodies unchanged, including both full swap bodies.
+No remaining bounded reader blocker was found. The declaration-reading overrides
+are selected by exact identity, owner module, namespace and kind: std/either::swap
+as a value/function, and std/validation::Validation as a type/opaque-type. They
+preserve canonical signatures and generic type-parameter guidance. Inspection of
+that selection after reading is a bounded implementation check, not acceptance
+of unrelated generated declarations.
+
+Final result-foundation artifact:
+`/tmp/seseragi-result-foundations-authored/rendered-revision2/`.
+The initial tree remains at `/tmp/seseragi-result-foundations-authored/rendered/`;
+the reader retained its own selected-file snapshot at
+`/tmp/result-foundation-initial-reader-snapshot`. The fixture has seventy HTML
+files, of which forty-two are older linked destinations or controls, excluded
+from new acceptance. All twenty-three supporting generated instance identities
+remain unreviewed. Transformer pages and the preserved StateT.get control are not
+new reader coverage.
+
+Independent final checks have zero errors: 76 authored exact-title links with
+adjacent purposes, 28 native panels and exact source-seeded Playground links,
+28 TS panels, 56 output panels, 56 same-identity locale links, 28 canonical
+declarations/owners/namespaces/kinds, 280 local-fragment occurrences and 216
+available in-main library target occurrences. Proofs and complete per-identity
+report are `/tmp/result-foundation-independent-review-final.json`,
+`/tmp/result-foundation-independent-reread-diff.json`, and
+`/tmp/result-foundation-independent-reader-review.md`.
+
+The author's separate evidence is
+[result-foundation-reader-verification.md](result-foundation-reader-verification.md).
+Its successful initial frozen suite passed seven tests / 1,600 assertions. The
+final repaired suite passed eight tests / 1,652 assertions, and six affected prior
+tests / 1,555 assertions also passed. These are separate overlapping execution
+runs, not a combined score. They cover fourteen native/strict-TS pairs, fourteen
+committed-WASM seeds, fifteen native boundary/rejection probes, callback counts,
+exact scoped-reading/dispatch guards and real rendered bodies. Earlier lock-update
+timeout attempts remain failed attempts, not accepted proof. Native and TS
+programs/output were unchanged by the reader corrections. The reviewer did not
+independently execute the programs.
+
+### Final manifests, integration boundary and remaining acceptance
+
+The two edited-only reviewer manifests use the checkpoint 6/7 checksum-line
+convention: sort artifact-relative selected HTML paths lexicographically; write
+lowercase SHA-256 of the complete HTML bytes, two ASCII spaces, the relative path
+and LF to a UTF-8 manifest. The aggregate hashes below are SHA-256 of those
+manifest bytes:
+
+- Numeric, twenty-six files:
+  `/tmp/numeric-independent-reviewed26-final.sha256`;
+  `621ea5a32193c1e46aad856732a8273c95db41401837d40f7a4e7ec774358923`
+- Result foundations, twenty-eight files:
+  `/tmp/result-foundation-independent-reviewed28-final.sha256`;
+  `30dc290299152b0b58b5d34a409143aa9c692cff57d27af048fd9b5df9ed1c6d`
+
+The result author's different JSON body manifest, `body-manifest-final.json`,
+hashes to `96cd106eb95877fe23269466cd6a61cf48bacfc79e4775ac34e0e338cf425854`.
+That encoding is not interchangeable with the reviewer's checksum manifest.
+Supporting/control files are excluded from both reviewer manifests.
+
+The parent separately refactored the shared editorial dispatcher into shallow,
+lazy fallback helpers to avoid the deep match-chain parsing cost, preserving
+exact selection order and fallbacks. That integration change is **not** counted
+as this reviewer's semantic or full-site acceptance. The parent/integrator owns
+its tests, full-site output matching, route/navigation closure and publication.
+A source-seeded link check or committed-WASM runtime harness is not browser UI
+verification. Advisory Japanese prose lint is also separate from reader judgment.
+
+The conclusion is a bounded agent assessment of understanding, concrete usefulness
+and fair comparison for the fifty-four bodies. Actual first-time human
+comprehension remains unverified. Browser access remained blocked; no bypass or
+alternate browser route was used. Desktop/mobile layout, clipping, overflow,
+keyboard use, actual locale switching and clicked navigation round trips remain
+unverified. Whole-site build/acceptance and live publication verification remain
+outside this record. Neither the HalfUp defect nor the gated rounding APIs,
+control/instance/transformer pages or the broader backlog are closed by this
+appendix.
+
+All earlier ledger bytes and history, the 106 original checkbox rows and eight
+historical checked boxes are preserved. This appendix changes no checkbox. No
+public comment, tracker update, commit, push or deployment was performed by this
+reviewer; the separately authorized publication has another owner.

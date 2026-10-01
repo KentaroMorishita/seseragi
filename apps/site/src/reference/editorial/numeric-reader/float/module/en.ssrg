@@ -1,0 +1,26 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Read and format decimal values, and explicitly convert Int values to Float. Use isFinite as a separate application check when only finite measurements are acceptable.",
+  taskTitle: "Calculate an amount per package from integer counts",
+  purpose: "Splitting an amount of 5 between 2 packages gives 2.5 per package. std/float provides conversions, text input and output, and value checks for Float calculations that can contain fractions. Start by converting integer counts before dividing.",
+  setup: "import * as floats makes std/float available under the name floats. let gives a value an immutable name. The : in total: Int and packages: Int declares an integer type. perPackage: Float declares a type that can also hold fractions. An annotation alone does not convert Int to Float.",
+  after: [
+    "floats.fromInt total is a call with total as its one argument. Seseragi separates a function name and its arguments with spaces. The two fromInt calls convert 5 and 2 to Float before / divides them, producing 2.5. The original total and packages remain Int values.",
+    "floats.format perPackage converts the result to String, the text type. Here + joins strings to make per package: 2.5. The example fixes the package count at 2; it does not validate a package count supplied by a user.",
+    "pub effect fn main declares the program entry point. fn declares a function, pub makes it available externally, and effect marks work such as displaying output. do runs the steps in order, and println prints one line of text. fromInt, division and format are the value-calculation parts."
+  ],
+  comparisonBefore: "TypeScript uses number for both integers and fractions, so the same 5 and 2 can be divided directly. Both examples use already-established integer inputs and fix the package count at 2 to calculate the same amount per package. The final export {} makes this example an independent module without changing the calculation.",
+  comparisonAfter: "Both print per package: 2.5. The TypeScript expression is already concise. Seseragi makes the transition from an Int count to a decimal calculation visible through fromInt, and the compiler reports an accidental mixture of the two types. Float stores numbers using a 64-bit binary representation, so many decimal fractions and calculation results are rounded. This does not guarantee exact decimal currency arithmetic.",
+  details: [
+    "Use parse to read a string. Its Either<FloatParseError, Float> result has one of two named alternatives: Left containing a failure reason, or Right containing a Float. match selects the corresponding branch. The parse page shows a complete example that receives these alternatives and chooses display text.",
+    "Successful parsing does not guarantee a usable measurement. Float includes NaN, a value indicating that a calculation did not produce a valid number, and positive and negative infinity. parse also accepts the spellings NaN and Infinity. When these are unsuitable, use isFinite and its Bool result, True or False, to decide.",
+    "format produces a spelling that can be read back as a Float. It formats 12.0 as 12.0 and negative zero as -0.0. It does not preserve the original input precision, add locale grouping, or choose a fixed number of decimal places. Presentation formatting and numeric storage have different requirements.",
+    "fromInt converts every Int from -9007199254740991 through 9007199254740991 to Float exactly. Later Float calculations are not necessarily exact. For calculations that should remain integer counts, std/int offers range-checked arithmetic.",
+    "The current rounding implementation has a verified limitation. In CLI 0.61.19 and the checked runtime, choosing HalfUp can make roundIntegral incorrectly round a value immediately below 0.5 or change certain large integers. toInt shares this behavior and can report an in-range value as out of range. HalfUp is intended to round an exact midpoint away from zero. Do not treat these faulty results as the intended rule; avoid depending on HalfUp until a fix has been verified."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input and result rules, and common mistakes",
+}

@@ -5,7 +5,7 @@
 .home-hero {
   display: grid;
   grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
-  align-items: center;
+  align-items: start;
   gap: clamp(48px, 5vw, 80px);
   width: min(calc(100% - 48px), var(--page-width));
   min-height: 590px;
@@ -70,6 +70,12 @@
 
 .home-hero-content .article-content {
   max-width: none;
+  padding-top: 0;
+}
+
+.home-hero-content .article-content > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .home-hero-content {

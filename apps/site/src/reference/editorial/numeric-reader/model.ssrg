@@ -1,0 +1,142 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { Editorial } from "../model"
+import { CorrectionCopy } from "../correction-model"
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  [Paragraph ([Words (localized en ja)]) | (en, ja) <- arrays.zip japanese english]
+fn link title: String -> path: String -> en: String -> ja: String -> Block =
+  Paragraph ([
+    InternalLink (localized title title, path),
+    Words (localized en ja)
+  ])
+pub fn numericReaderEditorial identity: String
+  -> owner: String
+  -> slug: String
+  -> output: String
+  -> typescriptOutput: String
+  -> english: CorrectionCopy
+  -> japanese: CorrectionCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Paragraph ([Words (localized english.setup japanese.setup)]),
+        CodeExample
+          ("numeric-reader-" + slug, localized english.codeTitle japanese.codeTitle),
+        Terminal (localized english.outputTitle japanese.outputTitle, output)
+      ],
+      paragraphs english.after japanese.after,
+      [
+        Heading (
+          "typescript-comparison",
+          localized english.comparisonTitle japanese.comparisonTitle
+        ),
+        Paragraph
+          ([Words (localized english.comparisonBefore japanese.comparisonBefore)]),
+        CodeExample
+          ("numeric-reader-" + slug + "-ts", localized "TypeScript" "TypeScript"),
+        Terminal (localized "TypeScript output" "TypeScriptの実行結果", typescriptOutput),
+        Paragraph ([Words (localized english.comparisonAfter japanese.comparisonAfter)]),
+        Heading ("operation-rules", localized english.detailTitle japanese.detailTitle)
+      ],
+      paragraphs english.details japanese.details,
+      related identity owner,
+      if identity == owner then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+  }
+fn related identity: String -> owner: String -> Array<Block> =
+  if identity == "std/int" then
+    [
+      link "parse" "/docs/library/int/function/parse/" ": read a complete count string."
+        "：個数の文字列を最後まで読みます。",
+      link "format" "/docs/library/int/function/format/"
+        ": turn an integer into plain text." "：整数を十進文字列にします。",
+      link "checkedAdd" "/docs/library/int/function/checkedadd/"
+        ": increase a count and handle overflow." "：個数を足し、範囲外も処理します。",
+      link "checkedSubtract" "/docs/library/int/function/checkedsubtract/"
+        ": subtract an amount in the correct argument order." "：引数の順序を確かめて差を求めます。",
+      link "checkedMultiply" "/docs/library/int/function/checkedmultiply/"
+        ": calculate a product with a range check." "：積が範囲に収まるか確かめます。",
+      link "checkedDivide" "/docs/library/int/function/checkeddivide/"
+        ": count complete groups and handle a zero divisor." "：整数の商を求め、0の除数も処理します。",
+      link "checkedRemainder" "/docs/library/int/function/checkedremainder/"
+        ": find the signed remainder after division." "：整数の割り算から符号付きの余りを求めます。",
+      link "std/float" "/docs/library/float/"
+        ": choose decimal parsing or explicit conversion." "：小数の読み取りや明示的な変換を選べます。"
+    ]
+  else if identity == "std/float" then
+    [
+      link "parse" "/docs/library/float/function/parse/"
+        ": read an entire decimal input, including its failure cases."
+        "：小数の文字列全体を読み、失敗も処理します。",
+      link "isFinite" "/docs/library/float/function/isfinite/"
+        ": exclude NaN and infinities from a measurement." "：測定値からNaNと無限大を除きます。",
+      link "format" "/docs/library/float/function/format/"
+        ": obtain canonical text rather than a display format." "：値を標準の文字列表記にします。",
+      link "fromInt" "/docs/library/float/function/fromint/"
+        ": use an integer count in Float arithmetic." "：整数の個数をFloatの計算に使います。",
+      link "toInt" "/docs/library/float/function/toint/"
+        ": inspect its declaration; the HalfUp limitation described above still applies."
+        "：宣言を確認できます。上で述べたHalfUpの制限が残っています。",
+      link "roundIntegral" "/docs/library/float/function/roundintegral/"
+        ": inspect its declaration; its HalfUp behavior has the same current limitation."
+        "：宣言を確認できます。HalfUpには同じ制限が残っています。",
+      link "std/int" "/docs/library/int/"
+        ": choose whole-number input and checked count calculations."
+        "：整数の読み取りや、範囲を確かめる個数の計算を選べます。"
+    ]
+  else if owner == "std/int" then
+    [
+      link "std/int" "/docs/library/int/"
+        ": choose parsing, formatting or checked integer arithmetic."
+        "：整数の読み取り、表示、checked演算を選べます。",
+      if identity == "std/int::parse" then
+        link "checkedAdd" "/docs/library/int/function/checkedadd/"
+        ": use the parsed count and handle an excessive total."
+        "：読み取った個数を足し、合計の範囲外も処理します。"
+      else if identity == "std/int::checkedDivide" then
+        link "fromInt" "/docs/library/float/function/fromint/"
+        ": obtain a decimal quotient after explicit conversion." "：明示的に変換して小数の商を求めます。"
+      else if identity == "std/int::checkedRemainder" then
+        link "checkedDivide" "/docs/library/int/function/checkeddivide/"
+        ": obtain the integer quotient instead of the remainder." "：余りではなく整数の商を求めます。"
+      else
+        link "parse" "/docs/library/int/function/parse/"
+        ": validate a complete integer string before calculating."
+        "：計算する前に整数の文字列全体を確かめます。"
+    ]
+  else
+    [
+      link "std/float" "/docs/library/float/"
+        ": choose input checks, display or explicit conversion."
+        "：入力の検査、表示、明示的な変換を選べます。",
+      if identity == "std/float::parse" then
+        link "isFinite" "/docs/library/float/function/isfinite/"
+        ": distinguish a finite measurement from NaN and infinity."
+        "：有限の測定値をNaNや無限大と分けます。"
+      else if identity == "std/float::isFinite" then
+        link "parse" "/docs/library/float/function/parse/"
+        ": read the complete measurement string before checking its value."
+        "：値を調べる前に測定値の文字列全体を読みます。"
+      else
+        link "format" "/docs/library/int/function/format/"
+        ": compare the plain text representation of an Int." "：Intの十進表記と比べられます。"
+    ]

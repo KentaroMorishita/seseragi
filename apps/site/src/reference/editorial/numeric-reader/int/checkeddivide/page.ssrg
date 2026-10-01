@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { numericReaderEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  numericReaderEditorial "std/int::checkedDivide" "std/int" "int-checkeddivide" "result: 3\nresult: -3\nresult: -3\nzero divisor" "result: 3\nresult: -3\nresult: -3\nzero divisor" (en.copy ()) (ja.copy ())

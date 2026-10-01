@@ -1,0 +1,6 @@
+import * as either from "std/either"
+fn broken n: Int -> Int = n / 0
+pub effect fn main = do {
+  let value: Either<String, Int> = Left "bad"
+  println (show (either.mapRight broken value))
+}

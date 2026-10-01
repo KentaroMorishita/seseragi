@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Read the complete decimal integer string. Return Right Int on success or Left IntParseError for invalid spelling or range.",
+  taskTitle: "Read all of a count input",
+  purpose: "Avoid accepting a settings value such as 12px as a count of 12. parse checks the entire string instead of returning a numeric prefix. This example turns every failure reason into one display message.",
+  setup: "import * as ints lets you call std/int operations as ints.parse. fn declares a function. In describeCount, text: String is the input string and -> String is the display-text result. Write call arguments after the function name, separated by spaces.",
+  after: [
+    "Either<IntParseError, Int> has two forms: Right containing a successful Int, and Left containing a failure reason. match chooses the branch; Right count names the enclosed integer count. Left _ ignores the reason and returns the same message.",
+    "+12 becomes 12 and -0 becomes 0. 012 and 12px fail, as does the input one above the maximum. ints.format converts the integer to text; + joins it to the label. pub effect fn main is the entry point. fn declares a function; effect marks a function that runs operations such as printing. do runs the println calls in order, writing each string followed by a newline."
+  ],
+  comparisonBefore: "TypeScript uses a regular expression for the same decimal spelling and Number.isSafeInteger for the range. number | undefined means a number or an absent value; undefined represents invalid input here.",
+  comparisonAfter: "The six displayed lines are identical. parseInt can read the prefix of 12px, so it is not a substitute for this validation. Seseragi parse supplies the checks and named failure reasons; this comparison does not claim identical detailed diagnostics.",
+  details: [
+    "Accepted text is an optional + or -, followed by 0 or an ASCII decimal digit from 1 to 9 and further decimal digits. Empty text, surrounding whitespace, 012, 12.0, 1_000 and 0x10 are rejected. If trimming is desired, choose that separate step before parsing.",
+    "Int ranges from -9007199254740991 through 9007199254740991. It cannot contain a fraction, NaN, infinity or negative zero. Negative integers are valid; a requirement such as a positive count needs a separate application check.",
+    "Empty text gives EmptyInt; an invalid character gives InvalidIntDigit; an out-of-range value gives IntOutsideRange. InvalidIntDigit carries offset, a UTF-8 byte position, and radix, the numeric base, fixed at 10 here. The shared IntParseError also includes InvalidIntRadix for APIs that accept a base.",
+    "Left is a returned value, not a thrown exception. Use match to choose a message or request new input. When one input contains both a syntax problem and an excessive magnitude, do not assume syntax is always reported first."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Compare the TypeScript version",
+  detailTitle: "Inputs, results and common mistakes"
+}

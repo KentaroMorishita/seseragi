@@ -1,0 +1,10 @@
+import * as floats from "std/float"
+
+fn perPackage total: Int -> packages: Int -> Float =
+  floats.fromInt total / floats.fromInt packages
+
+pub effect fn main = do {
+  println ("converted: " + floats.format (floats.fromInt 5))
+  println ("per package: " + floats.format (perPackage 5 2))
+  println ("maximum: " + floats.format (floats.fromInt 9007199254740991))
+}

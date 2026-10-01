@@ -1,0 +1,14 @@
+import * as floats from "std/float"
+
+fn finiteLabel value: Float -> String =
+  if floats.isFinite value then "finite" else "non-finite"
+
+pub effect fn main = do {
+  println (finiteLabel 12.5)
+  println (finiteLabel (-3.0))
+  println (finiteLabel (-0.0))
+  println (finiteLabel 1e100)
+  println (finiteLabel (floats.nan ()))
+  println (finiteLabel (floats.positiveInfinity ()))
+  println (finiteLabel (floats.negativeInfinity ()))
+}

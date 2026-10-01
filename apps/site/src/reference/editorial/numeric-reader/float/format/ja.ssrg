@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Floatを読み戻せる短い十進文字列にします。負のゼロや特殊値を表せますが、固定桁数や地域別の数値表示は選びません。",
+  taskTitle: "Floatを読み戻せる文字列にする",
+  purpose: "測定値を文字列として保存したいときはformatを使います。Floatを一つ受け取り、同じ値へ読み戻せるStringを返します。表示用に小数点以下を二桁へそろえる処理とは異なり、値を区別できる表記を選びます。",
+  setup: "import * as floatsはstd/floatにfloatsという名前を付けます。floats.format 12.5は、関数名と引数を空白で区切った呼び出しです。12.5や12.0はFloatの値です。pub effect fn mainは表示処理を実行する公開の入口で、fnは関数の宣言です。doの中でprintlnを順に実行し、formatが返した文字列を一行ずつ表示します。",
+  after: [
+    "最初の二行は12.5と12.0です。小数部分のないFloatも、指数を使わない表記では.0を付けます。三行目の-0.0は負のゼロです。Floatは正のゼロと負のゼロを区別でき、formatはその符号を残します。括弧は負の値を一つの引数としてまとめています。",
+    "1e21は1に10の21乗を掛けた大きさです。指数表記は小文字のeを使い、正の指数に+を付けず、指数の先頭に余分な0を付けません。formatは1e21をそのまま1e21と表示します。",
+    "floats.nan ()、floats.positiveInfinity ()、floats.negativeInfinity ()は、それぞれNaN、正の無限大、負の無限大を返します。()はUnit型の値で、具体的な入力データがないことを表します。NaNは計算が有効な数値にならなかったことを表す値です。最後の三行で、これらも文字列になることを確認できます。"
+  ],
+  comparisonBefore: "TypeScriptでnumberを普通の文字列にするならString(value)が簡潔です。同じ数値を並べ、標準の文字列変換を使います。Seseragiの表記を再現するための追加の変換関数は作っていません。末尾のexport {}は、この例を独立したモジュールとして扱う指定で、計算結果は変えません。",
+  comparisonAfter: "12.5、NaN、正負のInfinityは同じ表示です。TypeScriptのStringは12を12、負のゼロを0、1e21を1e+21と表示します。Seseragiのformatはそれぞれ12.0、-0.0、1e21です。数値が別の値になったのではなく、表記の規則が異なります。ただしTSのString(-0)からは負のゼロの符号を読み戻せません。",
+  details: [
+    "有限な値には、同じ64ビットの二進表現へ読み戻せる最短の十進表記を使います。指数のない整数形には.0を補います。ここでの読み戻しはFloatとして同じ値になるという意味で、計算前の十進小数が正確だったという保証ではありません。",
+    "parseで読んだ元の文字列は保存しません。たとえば001.5を読んでからformatすると1.5になります。-0.0の符号は残りますが、NaNの内部の異なる表現や符号はNaNという一つの出力にそろえられます。",
+    "formatは有限かどうかを検査して拒否する関数ではありません。NaNや無限大を測定値として保存したくない場合は、先にisFiniteで確認します。format自体はFloatからStringを直接返し、失敗を表す別の値は返しません。",
+    "12.5を渡して12.50になると期待するのは誤りです。固定の小数点以下桁数、桁区切り、通貨記号、地域別の小数点記号はこの関数の対象外です。TypeScriptのtoFixedやIntl.NumberFormatのような表示目的の処理と区別してください。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果の規則、間違いやすい点",
+}

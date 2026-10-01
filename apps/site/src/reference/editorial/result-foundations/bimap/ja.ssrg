@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "LeftとRightのそれぞれに変換関数を指定し、入っている側の関数だけを一度呼びます。結果の種類は保ちます。",
+  taskTitle: "理由を補足し、成功値を表示用に整える",
+  purpose: "失敗理由にはform:を付け、成功した座席数にはseats=を付けます。どちらの場合も、結果をEitherに残して次の処理へ渡します。",
+  setup: "std/eitherをeitherとして読み込みます。fn addFieldはreason: Stringを受け取り、fn seatLabelはcount: Intを受け取ります。それぞれ最後の-> Stringが戻り値の型で、=の後の式を返します。Either<String, Int>は左側に理由、右側に数を持ちます。",
+  after: [
+    "let acceptedとlet rejectedは成功と失敗の例です。either.bimapには、左側の関数addField、右側の関数seatLabel、元の結果の順に三つの引数を渡します。",
+    "Right 2ではseatLabel 2だけが一度呼ばれます。LeftではaddFieldが理由を受け取り、Leftのまま補足した理由を返します。describeのmatchでRight labelかLeft reasonの中身を読み、表示文を返します。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。showは数値を表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのokは返されたオブジェクトの形を区別する欄です。trueなら成功値の欄、falseなら理由の欄を読みます。通常の分岐で両方を扱えます。 TSの条件式も選んだ側の関数だけを呼びます。ここではその結果から直接表示文を返しています。",
+  comparisonAfter: "両方とも同じ二つの表示結果になります。bimapは左右の変換をまとめ、途中のEitherを保って再利用できる操作です。最初から表示文だけが必要なら、foldや通常の分岐も選べます。",
+  details: [
+    "bimap<E, F, A, B>のEとFは変換前後の左側、AとBは変換前後の右側の型です。ここではEとFがString、AがInt、BがStringです。左右の関数が同じ型を返す必要はありません。",
+    "bimapは両方の関数の本体を呼ぶ操作ではなく、失敗を成功へ変える操作でもありません。選ばれた側を保ちます。引数の式は先に計算されるため、不要な関数を作る式まで遅れるわけではありません。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

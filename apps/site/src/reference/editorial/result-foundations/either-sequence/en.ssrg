@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Combine existing Either results: retain every Right value, or return the first Left in input order.",
+  taskTitle: "Collect checked results and read the first error",
+  purpose: "Suppose results for several seat-count checks already exist. Use the number Array when all succeeded; otherwise display the first reason.",
+  setup: "Import std/either as either and std/text as text. In fn describe, result: Either<String, Array<Int>> contains a String reason or an Array of integers. The final -> String is its return type, supplied by the match after =.",
+  after: [
+    "The input annotation Array<Either<String, Int>> says each element is Left with a reason or Right with an integer. It specifies both sides even when the Array is empty or its first item is Left.",
+    "accepted gives Right [2, 1], preserving source order. Both firstFailed and twoFailed give Left \"first\". The later reason \"second\" in twoFailed is not retained in the result. empty gives Right [].",
+    "In describe, Right seats reads the integer Array and Left reason reads one reason. The function \\seat: Int -> show seat converts one integer to a string; map applies it to each count and text.join joins the display.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number to display text."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies the returned object shape. When true, read its successful-value field; when false, read its reason field. Ordinary branching handles both cases. The TS for loop reads already-created results and returns a display at the first failure. It does not perform the seat checks inside that loop.",
+  comparisonAfter: "Both versions choose the same values or first reason from results obtained earlier. sequence combines Array<Either<String, Int>> into Either<String, Array<Int>>, allowing the caller to branch once.",
+  details: [
+    "Here F is Array, E is String and A is Int. Traversable requires support for traversing the collection and reconstructing its result. Other collections such as List retain their own shape.",
+    "Returning the first Left does not stop later input computation; expressions constructing the Array have already run. Use Validation for every independent error, or a reduceUntil-driven flow when the next calculation must not run."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

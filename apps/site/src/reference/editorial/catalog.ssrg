@@ -1,3 +1,8 @@
+import { resultFoundationEditorialFor } from "./result-foundations/catalog"
+import {
+  numericReaderEditorialFor,
+  numericReaderModuleBlocks
+} from "./numeric-reader/catalog"
 import {
   dataValidationEditorialFor,
   dataValidationModuleBlocks
@@ -78,31 +83,70 @@ import { editorial as groupByEditorial } from "./array/groupby/page"
 pub fn editorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match correctionEditorialFor symbol {
     Just editorial -> Just editorial
-    Nothing -> match mapEditorialFor symbol {
-      Just editorial -> Just editorial
-      Nothing -> match unicodeReaderEditorialFor symbol {
-        Just editorial -> Just editorial
-        Nothing -> match regexEditorialFor symbol {
-          Just editorial -> Just editorial
-          Nothing -> match setEditorialFor symbol {
-            Just editorial -> Just editorial
-            Nothing -> match nonemptyIteratorEditorialFor symbol {
-              Just editorial -> Just editorial
-              Nothing -> match charTextEditorialFor symbol {
-                Just editorial -> Just editorial
-                Nothing -> match collectionTypeEditorialFor symbol {
-                  Just editorial -> Just editorial
-                  Nothing -> match dataValidationEditorialFor symbol {
-                    Just editorial -> Just editorial
-                    Nothing -> collectionEditorialFor symbol
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    Nothing -> editorialAfterCorrectionEditorialFor symbol
+  }
+
+fn editorialAfterCorrectionEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match mapEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterMapEditorialFor symbol
+  }
+
+fn editorialAfterMapEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match unicodeReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterUnicodeReaderEditorialFor symbol
+  }
+
+fn editorialAfterUnicodeReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match regexEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterRegexEditorialFor symbol
+  }
+
+fn editorialAfterRegexEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match setEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterSetEditorialFor symbol
+  }
+
+fn editorialAfterSetEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match nonemptyIteratorEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterNonemptyIteratorEditorialFor symbol
+  }
+
+fn editorialAfterNonemptyIteratorEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match charTextEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterCharTextEditorialFor symbol
+  }
+
+fn editorialAfterCharTextEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match collectionTypeEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterCollectionTypeEditorialFor symbol
+  }
+
+fn editorialAfterCollectionTypeEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match dataValidationEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterDataValidationEditorialFor symbol
+  }
+
+fn editorialAfterDataValidationEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match numericReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterNumericReaderEditorialFor symbol
+  }
+
+fn editorialAfterNumericReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match resultFoundationEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> collectionEditorialFor symbol
   }
 
 fn collectionEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
@@ -176,5 +220,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   setModuleBlocks specifier,
   nonemptyIteratorModuleBlocks specifier,
   charTextModuleBlocks specifier,
-  dataValidationModuleBlocks specifier
+  dataValidationModuleBlocks specifier,
+  numericReaderModuleBlocks specifier
 ]

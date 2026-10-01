@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { referenceDescription } from "./reference-copy"
+import { resultFoundationReading } from "./result-foundation-reading"
 import { signatureReading } from "./signature-reading"
 
 const root = resolve(import.meta.dir, "../../..")
@@ -339,11 +340,14 @@ export function compilerReferenceModules() {
           description: item.description,
           descriptionEn: description.en,
           descriptionJa: description.ja,
-          reading: signatureReading(
-            item.signature,
-            item.kind,
-            item.typeParameters,
-            item.constraints
+          reading: resultFoundationReading(
+            item,
+            signatureReading(
+              item.signature,
+              item.kind,
+              item.typeParameters,
+              item.constraints
+            )
           ),
           typeParameters: item.typeParameters,
           constraints: item.constraints,

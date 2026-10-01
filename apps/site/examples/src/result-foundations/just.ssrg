@@ -1,0 +1,13 @@
+fn describe nickname: Maybe<String> -> String = match nickname {
+  Just name -> "Nickname: [" + name + "]"
+  Nothing -> "Nickname is missing"
+}
+fn countLabel value: Maybe<Int> -> String = match value {
+  Just count -> "Count: " + show count
+  Nothing -> "Count is missing"
+}
+pub effect fn main = do {
+  println (describe (Just "Ada"))
+  println (describe (Just ""))
+  println (countLabel (Just 0))
+}

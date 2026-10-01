@@ -1,0 +1,27 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Read an entire string as a Float, returning either a value or a named parse failure. NaN and infinity spellings also succeed, so check finite measurements separately.",
+  taskTitle: "Read a complete measurement string",
+  purpose: "The input 12.5 is a readable measurement, but accepting only the numeric prefix of 12.5cm leaves the unit policy unclear. parse checks the whole string. This example also separates an unusable NaN or infinite measurement from a failure to read the text.",
+  setup: "import * as floats names std/float. fn declares a function. In describeMeasurement, text: String declares a string argument and -> String declares the returned text type. floats.parse text is a complete call with a space before its argument. The parse result, Either<FloatParseError, Float>, has two named alternatives: Left carrying a failure reason or Right carrying a value.",
+  after: [
+    "match chooses the branch for the returned alternative. Right value names the enclosed Float value. The _ in Left _ means this example does not use the failure reason. Every failure returns invalid measurement, keeping the input-field message simple. These are returned values, not exceptions that transfer control to try/catch.",
+    "The Right branch still calls floats.isFinite value. Its Bool result selects the then branch when True, displaying measurement: and the number. False selects else and returns non-finite measurement. Infinity and NaN successfully parse, but this check excludes them as measurements.",
+    "12.5cm, the empty string and the string with a leading space fail to parse. 1e309 means a magnitude of ten to the power 309; conversion would become infinity, so parsing also fails. This differs from explicitly writing Infinity.",
+    "pub effect fn main is the entry point. pub makes it available externally, and effect marks work such as displaying output. do runs the println steps in order. Parentheses group each describeMeasurement call as one argument to println. floats.format converts a number to text, and + joins it to the message."
+  ],
+  comparisonBefore: "TypeScript readFloat returns number | undefined, using undefined to distinguish failure from a parsed number. The regex checks decimal spellings with an optional sign, point and exponent. Comparing the input with trim rejects surrounding whitespace; it does not clean up and accept that input. The three special spellings are handled first, and a finite spelling that converts to infinity returns undefined. The final export {} makes this example an independent module without changing the calculation.",
+  comparisonAfter: "Both versions print the same messages for the seven displayed inputs. TypeScript can build this behavior with Number and Number.isFinite. Seseragi parse provides the spelling rules and named failure reasons. The comparison matches user-facing messages; it does not recreate each detailed error reason or byte position in TypeScript.",
+  details: [
+    "Ordinary input can use ASCII decimal digits, a leading + or -, a decimal point, and an exponent beginning with e or E. .5, 1. and 001.5 are accepted. Exponents require digits, so 1e fails. Surrounding whitespace, _ digit separators, prefixes such as 0x, and trailing units or other characters are rejected.",
+    "FloatParseError inside Left has three alternatives. EmptyFloat means an empty string, InvalidFloat { offset } reports invalid syntax, and FloatParseOverflow means a finite spelling is too large. offset counts UTF-8 bytes from zero, not displayed characters. For 12.5cm it is 4, the position of c; for 1e it is 2, the end where a digit was required.",
+    "The specially accepted spellings are case-sensitive NaN, Infinity and -Infinity. +Infinity and nan fail. Successful parsing does not ensure a finite value, so call isFinite when the measurement requires one. Finite values can still be negative or zero; a positive-only rule needs a further application check.",
+    "Float uses a 64-bit binary representation, so it cannot retain every decimal fraction exactly. A value with too small a magnitude can successfully round to zero. For example, -1e-999 becomes negative zero and format displays -0.0. Parsing does not preserve the original precision or spelling.",
+    "Expecting prefix parsing like parseFloat will make inputs such as 12.5cm unexpectedly return Left. If units are allowed, separate the numeric part and the unit according to your application rules before parsing. Decide whether surrounding whitespace is acceptable as a separate input policy."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input and result rules, and common mistakes",
+}

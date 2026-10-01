@@ -1,0 +1,27 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "文字列全体をFloatとして読み、成功した値か名前付きの失敗理由を返します。NaNや無限大の綴りも成功するため、有限な測定値かどうかは別に確かめます。",
+  taskTitle: "測定値の文字列を最後まで読む",
+  purpose: "入力欄の12.5は測定値として読めますが、12.5cmを途中まで読んで受け付けると単位の扱いが曖昧になります。parseは文字列全体を検査します。この例はさらに、測定値として使えないNaNと無限大を、文字列の読み取り失敗とは区別して表示します。",
+  setup: "import * as floatsでstd/floatに名前を付けます。fnは関数の宣言です。describeMeasurementのtext: Stringは文字列の引数、-> Stringは返す文字列の型です。floats.parse textは空白で引数を渡す完全な呼び出しです。parseの結果Either<FloatParseError, Float>は、失敗理由を持つLeftか、値を持つRightのどちらかです。",
+  after: [
+    "matchは返された形に対応する枝を選びます。Right valueでは中のFloatをvalueという名前で使えます。Left _の_は失敗理由をこの例では使わない指定です。どの失敗理由でもinvalid measurementを返すので、入力欄に出すメッセージを一つにまとめられます。例外を投げてtry/catchへ移る処理ではありません。",
+    "Rightの枝でもfloats.isFinite valueで有限か確かめます。返るBoolがTrueならifのthen側でmeasurement:と数値を表示し、Falseならelse側でnon-finite measurementを返します。InfinityとNaNはparseには成功しますが、この検査で測定値から除かれます。",
+    "12.5cm、空文字列、先頭に空白がある文字列は読み取りに失敗します。1e309は10の309乗という大きさの表記ですが、Floatにすると無限大まで大きくなるため、これも読み取り失敗です。Infinityという綴りを明示した場合とは区別されます。",
+    "pub effect fn mainが実行入口です。pubは外から使える指定、effectは表示のような処理を実行する指定です。doの中でprintlnを順に実行します。括弧はdescribeMeasurementの呼び出し全体をprintlnの一つの引数にまとめています。floats.formatは数値を文字列にし、+で表示文につなぎます。"
+  ],
+  comparisonBefore: "TypeScriptのreadFloatはnumber | undefinedを返します。undefinedを読み取り失敗として使い、成功した数値と区別します。正規表現は符号、小数点、指数のある十進表記を検査します。trim前後の違いも調べて周囲の空白を拒みますが、入力を整形して受け付けているわけではありません。三つの特殊な綴りは先に扱い、有限な綴りの変換が無限大になったらundefinedを返します。末尾のexport {}は、この例を独立したモジュールとして扱う指定で、計算結果は変えません。",
+  comparisonAfter: "例に示した七つの入力では、両方とも同じメッセージを表示します。TypeScriptでもNumberとNumber.isFiniteで処理を組み立てられます。Seseragiのparseには文字列の規則と名前付きの失敗理由が用意されています。この比較は利用者に出すメッセージを合わせており、TS側で個々の失敗理由や位置情報を再現してはいません。",
+  details: [
+    "通常の入力では、ASCIIの十進数字、先頭の+または-、小数点、eまたはEで始まる指数を使えます。.5、1.、001.5も受け付けます。指数には数字が必要なので1eは失敗します。前後の空白、数字の区切りの_、0xのような接頭辞、単位などの末尾文字は受け付けません。",
+    "Leftに入るFloatParseErrorには三つの形があります。EmptyFloatは空文字列、InvalidFloat { offset }は書式の誤り、FloatParseOverflowは有限な表記が大きすぎる場合です。offsetは文字列の先頭を0としたUTF-8バイト位置で、画面上の文字数ではありません。たとえば12.5cmではcの位置の4、1eでは数字が必要だった末尾の2になります。",
+    "特別に受け付ける綴りは、大文字と小文字を区別したNaN、Infinity、-Infinityです。+Infinityやnanは失敗します。成功しても有限とは限らないため、測定値の要件に応じてisFiniteを呼びます。有限でも負の値やゼロはあり、正の値だけという要件はさらに別の検査です。",
+    "Floatは64ビットの二進数で値を表すため、入力した十進小数を常に正確に保持できるわけではありません。絶対値が小さすぎる値はゼロに丸められても成功します。たとえば-1e-999は負のゼロになり、formatで-0.0と表示されます。元の文字列の桁や綴りを保存する関数ではありません。",
+    "parseFloatのように先頭の数値だけを読むつもりで使うと、12.5cmなどがLeftになります。単位を認める入力なら、数値部分と単位をアプリの規則で分けてから読んでください。空白を許すかどうかも入力の方針として決めます。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果の規則、間違いやすい点",
+}

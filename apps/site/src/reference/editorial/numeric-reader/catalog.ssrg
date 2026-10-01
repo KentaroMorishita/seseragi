@@ -1,0 +1,45 @@
+import { editorial as case0 } from "./int/module/page"
+import { editorial as case1 } from "./int/parse/page"
+import { editorial as case2 } from "./int/format/page"
+import { editorial as case3 } from "./int/checkedadd/page"
+import { editorial as case4 } from "./int/checkedsubtract/page"
+import { editorial as case5 } from "./int/checkedmultiply/page"
+import { editorial as case6 } from "./int/checkeddivide/page"
+import { editorial as case7 } from "./int/checkedremainder/page"
+import { editorial as case8 } from "./float/module/page"
+import { editorial as case9 } from "./float/parse/page"
+import { editorial as case10 } from "./float/format/page"
+import { editorial as case11 } from "./float/fromint/page"
+import { editorial as case12 } from "./float/isfinite/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Block } from "../../../model/page"
+import { Editorial, editorialBlocks } from "../model"
+pub fn numericReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else if symbol.module == "std/int" then
+    match symbol.identity {
+  "std/int::parse" -> Just (case1 ())
+  "std/int::format" -> Just (case2 ())
+  "std/int::checkedAdd" -> Just (case3 ())
+  "std/int::checkedSubtract" -> Just (case4 ())
+  "std/int::checkedMultiply" -> Just (case5 ())
+  "std/int::checkedDivide" -> Just (case6 ())
+  "std/int::checkedRemainder" -> Just (case7 ())
+  _ -> Nothing
+} else if symbol.module == "std/float" then match symbol.identity {
+  "std/float::parse" -> Just (case9 ())
+  "std/float::format" -> Just (case10 ())
+  "std/float::fromInt" -> Just (case11 ())
+  "std/float::isFinite" -> Just (case12 ())
+  _ -> Nothing
+} else Nothing
+pub fn numericReaderModuleBlocks specifier: String -> Array<Block> = editorialBlocks (
+  if specifier == "std/int" then
+    Just (case0 ())
+  else if specifier == "std/float" then
+    Just (case8 ())
+  else
+    Nothing
+)

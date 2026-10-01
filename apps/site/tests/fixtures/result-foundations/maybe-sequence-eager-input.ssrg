@@ -1,0 +1,5 @@
+import * as maybe from "std/maybe"
+pub effect fn main = do {
+  let values: Array<Maybe<Int>> = [Nothing, Just (1 / 0)]
+  println (show (maybe.sequence values))
+}

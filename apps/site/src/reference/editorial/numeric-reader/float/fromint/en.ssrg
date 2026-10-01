@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Convert an Int exactly to Float. Make the transition from integer counts to decimal calculations explicit, with the resulting value checked as Float.",
+  taskTitle: "Use an integer count in a decimal calculation",
+  purpose: "To split an amount of 5 between 2 packages and obtain 2.5, convert both Int values with fromInt before dividing. fromInt takes one Int and returns a Float directly. The conversion loses no integer precision.",
+  setup: "import * as floats makes std/float available. fn declares a function. In perPackage, total: Int and packages: Int declare two integer arguments, and the final -> Float declares the result type. The expression after = supplies the returned value. A call such as perPackage 5 2 separates the function name and all arguments with spaces.",
+  after: [
+    "floats.fromInt total and floats.fromInt packages convert the two integers to Float. The following / therefore divides Float values, so 5 divided by 2 gives 2.5. The package count is 2; this example function does not check for a zero package count.",
+    "The converted line converts integer 5 and uses floats.format to display 5.0. The maximum line shows that the largest Int, 9007199254740991, also converts exactly. The .0 is a Float display convention, not a sign that conversion rounded the value.",
+    "pub effect fn main is the entry point. pub makes it available externally, and effect marks work such as displaying output. Within do, println prints one line at a time in order. floats.format converts Float to text, and + joins strings here. Parentheses pass the result of an inner call as one argument to the outer function."
+  ],
+  comparisonBefore: "TypeScript uses number for both integers and fractions, so no type-conversion function is needed. The same preconditions apply here: both inputs are safe integers and the package count is nonzero. The number type alone does not express those integer and range requirements. The final export {} makes this example an independent module without changing the calculation.",
+  comparisonAfter: "Both versions produce 2.5 per package and retain the same numeric values for 5 and the maximum. Their text differs: TypeScript prints 5 and 9007199254740991, whereas Seseragi format prints 5.0 and 9007199254740991.0. TypeScript division is already concise. Seseragi separates integer counts from Float values that can contain fractions, with fromInt marking the transition.",
+  details: [
+    "Int ranges from -9007199254740991 through 9007199254740991. Every integer in that range is exactly representable in Float’s 64-bit binary representation. fromInt always returns a Float; there is no success-or-failure branch to handle.",
+    "An annotation is not a conversion. For example, fn measurement count: Int -> Float = count takes an integer count but tries to return it directly as Float. The checked CLI reports SES-T0101: the declared result is Float but the body produces Int. Replacing the expression after = with floats.fromInt count performs the conversion.",
+    "An exact conversion does not guarantee exact later division or addition. Float stores values in binary and rounds many decimal fractions or calculation results to nearby representable values. Arithmetic can also produce infinity or NaN, so check the result with isFinite when only finite values are acceptable.",
+    "fromInt takes a value that is already Int; it does not parse text. Use std/float parse to read a string directly as Float, or std/int parse to read it as Int first. A Float also does not automatically become Int just because its fractional part is zero, as in 2.0. Converting in the other direction requires a separate decision about rounding and range."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input and result rules, and common mistakes",
+}

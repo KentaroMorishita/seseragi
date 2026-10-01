@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { numericReaderEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  numericReaderEditorial "std/int::format" "std/int" "int-format" "-12\n0\n12" "-12\n0\n12" (en.copy ()) (ja.copy ())

@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Leftに入った値かRightに入った値の一方を持ちます。確認処理では、失敗理由と成功値を分けて返すために使います。",
+  taskTitle: "確認した座席数か、拒否した理由を返す",
+  purpose: "予約者に、使える座席数か直すべき理由を返します。このEither<String, Int>ではLeftが文字列の失敗理由、Rightが整数の成功値を持ちます。",
+  setup: "Either、Left、RightはPreludeにあり、importは不要です。fn requireSeatsのcount: Intは引数、最後の-> Either<String, Int>は戻り値の型です。=の後のifが、正の数ならRight count、それ以外ならLeftの理由を返します。",
+  after: [
+    "describeのmatchは、Right countなら中の整数をcount、Left reasonなら中の文字列をreasonと呼んで使います。どちらの行も文字列を返すので、printlnへ渡せます。",
+    "2は正なのでAccepted: 2、0は条件を満たさないためRejected: seats must be positiveです。Leftは返されたデータであり、throwではありません。try/catchだけではこの結果を調べられません。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。showは数値を表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのokは返されたオブジェクトの形を区別する欄です。trueなら成功値の欄、falseなら理由の欄を読みます。通常の分岐で両方を扱えます。",
+  comparisonAfter: "TypeScriptでも両方の結果を型で表せます。Eitherは異なる確認処理に同じ形を使い、mapRightやflatMapなどの操作でつなげられます。例は小さな整数に限定しています。",
+  details: [
+    "Either<E, A>ではEが左側、Aが右側に入る型です。この例のような確認ではEを失敗理由、Aを成功値として使います。Rightを作ったことだけで値の内容が正しいと証明されるわけではありません。",
+    "処理によってはLeftとRightで二種類のエラー元を区別します。各APIが示す意味を確認してください。片側に入れる値がない場合も、もう片側の型は文脈や注釈で決まります。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

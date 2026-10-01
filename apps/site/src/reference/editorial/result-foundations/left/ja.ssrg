@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "一つの値をEitherのLeft側に入れます。失敗理由をデータとして返すために使えます。",
+  taskTitle: "失敗理由を返し、呼び出し側で表示する",
+  purpose: "不正な座席数について、理由を返して呼び出し側に判断を任せます。Leftを返しても、例外を投げたり、その後の呼び出し側の処理を止めたりしません。",
+  setup: "Either、Left、RightはPreludeにあり、importは不要です。fn requireSeatsのcount: Intは引数、最後の-> Either<String, Int>は戻り値の型です。=の後のifは正の数をRightに、それ以外は理由をLeftに入れます。",
+  after: [
+    "Either<String, Int>では左側にString、右側にIntが入ります。Left \"seats must be positive\"は理由を一つ含む値です。自動でログを書いたり表示したりする操作ではありません。",
+    "describeのmatchはLeft reasonなら理由、Right countなら数を使って表示文を返します。最初に拒否理由を表示した後も、Caller continuesと次の成功結果が出ます。表示はmainのprintlnが行っています。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。showは数値を表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのokは返されたオブジェクトの形を区別する欄です。trueなら成功値の欄、falseなら理由の欄を読みます。通常の分岐で両方を扱えます。 この関数もthrowを使わず、結果のオブジェクトを返します。",
+  comparisonAfter: "両方とも失敗を戻り値として扱います。Leftを返す関数を共通のEither操作で扱える点がSeseragiの利点です。例外を投げるAPIを自動で取り込む機能ではありません。",
+  details: [
+    "宣言のE -> Either<E, A>は、一つのEを左側に入れるという意味です。ここではEがString、AがIntです。この値がLeftでも、将来のRightの型は必要に応じて注釈で指定します。",
+    "Leftの中身を成功値として計算することはできません。matchで理由を扱い、成功後にだけ次の確認をするならflatMapを使います。swapでRightへ移しても、元の入力が正しかったことにはなりません。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}
