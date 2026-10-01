@@ -1,0 +1,6 @@
+import { Validation, Invalid } from "std/validation"
+fn rejected -> Validation<String, Int> = {
+  let errors: List<String> = `[]
+  Invalid errors
+}
+pub effect fn main = println (show (rejected ()))

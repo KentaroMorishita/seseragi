@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Represent a Maybe with no contained value. Write Nothing without an argument.",
+  taskTitle: "Return absence without a sentinel string",
+  purpose: "Represent an unset nickname without mixing a special string such as \"missing\" into real nicknames. Nothing has no contained value; its caller chooses the display text.",
+  setup: "Maybe, Just and Nothing are in Prelude and need no import. fn describe defines a function. nickname: Maybe<String> is its argument; the final -> String states the return type. The match expression after = supplies the returned value.",
+  after: [
+    "let nickname: Maybe<String> = Nothing names an absent value in a place that could otherwise hold a string. The String annotation specifies what a Just of the same type would contain. Nothing itself does not contain a string.",
+    "match selects the line for the value’s alternative. In Just name, name contains the string; Nothing has no value to extract. Both lines return a string, giving the caller a display for either case.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces."
+  ],
+  comparisonBefore: "TypeScript uses undefined for the same unset state. describe selects the missing message for undefined and the nickname display otherwise.",
+  comparisonAfter: "Both versions let the application choose its message. Nothing is the shared absent value for operations returning Maybe. It avoids colliding with a real string and retains possible absence in the result type.",
+  details: [
+    "Nothing is a value, not a Nothing () call; that call is rejected with SES-T0101. The declaration Maybe<A> names its resulting type, not a value argument A.",
+    "When context cannot determine A, add an annotation such as Maybe<String> in this example. Nothing carries no absence reason and differs from Just \"\", which contains an empty string."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

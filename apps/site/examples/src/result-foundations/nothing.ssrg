@@ -1,0 +1,9 @@
+fn describe nickname: Maybe<String> -> String = match nickname {
+  Just name -> "Nickname: [" + name + "]"
+  Nothing -> "Nickname is missing"
+}
+pub effect fn main = do {
+  let nickname: Maybe<String> = Nothing
+  println (describe nickname)
+  println (describe (Just "Ada"))
+}

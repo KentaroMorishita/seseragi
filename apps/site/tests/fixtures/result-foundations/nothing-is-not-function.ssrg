@@ -1,0 +1,2 @@
+fn missing -> Maybe<String> = Nothing ()
+pub effect fn main = println (show (missing ()))

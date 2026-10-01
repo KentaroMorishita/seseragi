@@ -1,0 +1,3 @@
+import { Validation, Invalid } from "std/validation"
+fn rejected -> Validation<String, Int> = Invalid `["bad"]
+pub effect fn main = println (show (rejected ()))

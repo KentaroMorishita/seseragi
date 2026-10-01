@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "FloatがNaNでも正負の無限大でもなければTrueを返します。負の数やゼロも有限なので、正の値か、整数か、Intの範囲内かは別に検査します。",
+  taskTitle: "測定値からNaNと無限大を除く",
+  purpose: "文字列を読んだ後や計算した後に、測定値として扱える有限な数かを確かめます。isFiniteはFloatを一つ受け取り、BoolのTrueまたはFalseを返します。NaNと正負の無限大だけを除き、値の大きさや符号は変えません。",
+  setup: "import * as floatsでstd/floatに名前を付けます。fn finiteLabelのvalue: Floatは小数も持てる数値の引数、-> Stringは返す文字列の型です。fnは関数を宣言します。floats.isFinite valueは空白で一つの引数を渡す呼び出しです。ifは結果がTrueならthen側のfinite、Falseならelse側のnon-finiteを返します。",
+  after: [
+    "12.5、-3.0、-0.0、1e100はいずれもfiniteです。1e100は10の100乗という大きな値ですが、Floatにとっては有限です。-0.0は負のゼロで、正のゼロと同じくこの検査に通ります。したがって、有限という条件だけでは正の測定値かどうかを判断できません。",
+    "floats.nan ()は、数値計算が有効な数にならなかったことを表すNaNを返します。positiveInfinityとnegativeInfinityは正負の無限大を返します。これらの関数へ渡す()はUnit型の値で、具体的な入力データがないことを表します。最後の三行はすべてnon-finiteになります。",
+    "pub effect fn mainは実行入口です。pubは外から使える指定、effectは表示のような処理を実行する指定です。doがprintlnを順に実行し、finiteLabelの文字列を一行ずつ表示します。括弧は内側の関数の結果を、一つの引数として外側へ渡します。"
+  ],
+  comparisonBefore: "TypeScriptのNumber.isFinite(value)が同じ判定に対応します。こちらも数値を変換せず、有限ならtrue、NaNや無限大ならfalseを返します。例ではtrue/falseを同じfinite/non-finiteという文字列に変えて表示しています。末尾のexport {}は、この例を独立したモジュールとして扱う指定で、計算結果は変えません。",
+  comparisonAfter: "両方とも同じ七つの数値で同じ文字列を表示します。この判定では、両言語の式は同程度に簡潔です。Seseragiでは引数がFloatと型で決まります。TypeScriptではNumber.isFiniteが変換を行わないことが重要で、文字列も数値に変換するグローバル関数isFiniteとは区別します。",
+  details: [
+    "Trueになるのは、正負の有限な値と、正負のゼロです。FalseになるのはNaN、正の無限大、負の無限大です。例外や欠けた値は返さず、Boolを直接返します。値の修正や丸めも行いません。",
+    "isFiniteがTrueでも、Intに収まるとは限りません。12.5には小数部分があり、1e100はIntの最大値9007199254740991より大きい値です。整数の個数を読むならstd/intのparseを使い、小数を整数へ変える処理では丸め方と範囲を別に確認します。",
+    "Floatのparseは、明示されたNaN、Infinity、-Infinityも成功した値として返します。これらを禁止する入力欄では、読み取りに成功した後でisFiniteを使ってください。文字列の書式を検査するparseと、すでにあるFloatを判定するisFiniteは別の処理です。",
+    "有限な計算結果なら十進数として正確だと思うのも誤りです。Floatは64ビットの二進数で表すため、丸められた近似値でも有限です。有限かどうか、業務上の範囲に入るか、必要な精度を持つかは、それぞれ異なる条件です。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果の規則、間違いやすい点",
+}

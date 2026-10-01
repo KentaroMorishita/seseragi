@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "一つ以上のエラーを持つNonEmptyListをValidationのInvalid側に入れ、順序を保ちます。",
+  taskTitle: "一つ以上のエラーをそのまま返す",
+  purpose: "すでに得たエラーを、失敗した検証結果として返します。Invalidに渡すのは一つの文字列ではなく、必ず先頭要素があるNonEmptyListです。",
+  setup: "Validation、Valid、Invalidはstd/validationから読み込みます。arraysとtextはエラーの表示に使う関数を呼ぶ名前です。fn describeのresult: Validation<String, String>は引数、最後の-> Stringは戻り値の型です。=の後のmatchが表示文を返します。 nonemptyはstd/non-empty-listの関数を呼ぶ名前です。",
+  after: [
+    "nonempty.singletonは一つの理由からNonEmptyListを作ります。nonempty.consは先頭の理由と残りのListをつなぎます。`[\"seats must be positive\"]のバッククォートはListの記法です。",
+    "let oneとlet twoは、それぞれ一つと二つのエラーを持つValidationです。Invalidはエラーを検証したり並べ替えたりしません。最後のCaller continuesが示すように、失敗結果を返すことは例外を投げることと別です。",
+    "describeのmatchはValid nameなら成功した文字列nameを表示します。Invalid errorsではerrorsに一つ以上のエラーが入ります。arrays.fromIterableでArrayにし、text.join \"; \"で順番を保った表示文につなぎます。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。"
+  ],
+  comparisonBefore: "TypeScriptのokがfalseならerrorsを読みます。TypeScriptの[string, ...string[]]は先頭の文字列が必須で、その後に任意個の文字列が続く配列型です。空のエラー群を受け入れない条件を両方の例に保っています。",
+  comparisonAfter: "両方とも空ではないエラー群を返せます。SeseragiはNonEmptyListを持つInvalidを共通の検証結果として使い、他の独立した検証結果と組み合わせられます。",
+  details: [
+    "Invalid<E, A>のEはエラー一個、Aは成功した場合の型です。この例では両方Stringです。引数はNonEmptyList<E>であり、NonEmptyListそのものがEになるわけではありません。",
+    "Invalid \"bad\"や、空・非空を問わず通常のListを直接渡す呼び出しはSES-T0101になります。既知の先頭から作るか、nonempty.fromListで存在を確認します。std/validationが提供するinvalid関数には一つの理由、invalidMany関数にはInvalidと同じエラー群を渡せます。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

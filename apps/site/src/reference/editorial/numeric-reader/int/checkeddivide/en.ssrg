@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Take the divisor first and return the quotient truncated toward zero in Right, or Left for a zero divisor.",
+  taskTitle: "Count the complete groups",
+  purpose: "Grouping ten items in threes makes three complete groups. checkedDivide returns that integer quotient and also reports a group size of zero as a returned failure.",
+  setup: "import * as ints loads std/int. fn declares a function. In calculate, dividend: Int is the integer being divided, divisor: Int is the integer to divide by, and -> String declares display text. Call arguments are separated by spaces.",
+  after: [
+    "checkedDivide takes the divisor first: checkedDivide 3 10 divides ten by three. Our calculate function accepts the original amount first for readability and reverses the arguments at the library call.",
+    "Either<IntDivisionError, Int> is a result containing success or failure. Right result supplies the integer result; Left ints.IntDivisionByZero returns a message for a zero divisor. match chooses the branch and ints.format converts the result to text.",
+    "pub effect fn main is the entry point. fn declares a function; effect marks a function that runs operations such as printing. do runs the println calls in order, writing each string followed by a newline."
+  ],
+  comparisonBefore: "The TypeScript inputs are assumed to be safe integers. Check zero first, then use BigInt(value) for exact integer division and Number to convert back. BigInt division also truncates toward zero, so this gets the same quotient all the way to the safe-integer boundaries.",
+  comparisonAfter: "All four output lines agree. Seseragi has Int inputs and returns a named zero-divisor failure. This Left is a value for ordinary branching, rather than an exception for the caller to catch.",
+  details: [
+    "The quotient discards the fractional part toward zero. -10 divided by 3 gives -3, not -4 from rounding toward negative infinity. To obtain 2.5 from five divided by two, convert both inputs with fromInt and use Float division.",
+    "Watch argument order: checkedDivide 10 3 divides three by ten, a different calculation. A zero divisor is the only returned failure, Left IntDivisionByZero. Int’s range is symmetric around zero, so this operation has no overflow alternative.",
+    "Int ranges from -9007199254740991 through 9007199254740991. It cannot contain a fraction, NaN, infinity or negative zero. Negative integers are valid; a requirement such as a positive count needs a separate application check."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Compare the TypeScript version",
+  detailTitle: "Inputs, results and common mistakes"
+}

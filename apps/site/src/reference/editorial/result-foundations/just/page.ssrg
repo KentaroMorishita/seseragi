@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { resultFoundationEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  resultFoundationEditorial "std/prelude::Just" "value" "constructor" "maybe" "just" "Nickname: [Ada]\nNickname: []\nCount: 0" (en.copy ()) (ja.copy ())

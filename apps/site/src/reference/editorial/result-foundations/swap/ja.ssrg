@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "中の値を変えずにLeftとRightを入れ替えます。型の左右も交換されますが、元の確認結果を修正する操作ではありません。",
+  taskTitle: "左右が逆の受け取り方に結果を合わせる",
+  purpose: "ここでは通知先がEither<Int, String>を受け取り、Leftの数かRightの理由を表示する契約だとします。元のEither<String, Int>から、その左右の位置に合わせます。",
+  setup: "std/eitherをeitherとして読み込みます。fn notificationのresult: Either<Int, String>は引数、最後の-> Stringは戻り値の型です。=の後のmatchは、この通知先の契約に従ってLeft countかRight reasonを選びます。",
+  after: [
+    "let acceptedは元のRight 2、let rejectedは元のLeftの理由です。either.swapはRight 2をLeft 2へ、Leftの理由をRightの同じ理由へ移します。型はEither<String, Int>からEither<Int, String>に変わります。",
+    "notificationはLeft countの整数をshowで表示し、Right reasonの文字列を表示します。右側に移った理由も、元の入力が拒否された理由のままです。入れ替えたことは予約の成功や回復を意味しません。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。showは数値を表示用の文字列にします。"
+  ],
+  comparisonBefore: "TSのResultはokで数と理由を区別します。通知先のNotificationはkindの\"count\"か\"reason\"で受け取り方を決めます。adaptが元の情報をその形に移し、notificationが表示します。",
+  comparisonAfter: "どちらも同じ情報を別の受け取り方へ合わせる例です。TSにLeftとRightが組み込まれているという比較ではありません。左右が逆の既存の契約がなければ、普通にmatchやifで読む方が直接的です。",
+  details: [
+    "swap<E, A>のEは元の左側、Aは元の右側の型で、戻り値はEither<A, E>です。この例ではStringとIntの位置が交換されます。中の値を変換する関数は受け取りません。",
+    "swapを二回適用すると元の左右に戻ります。エラーを検証したり、Leftを出した処理をやり直したりしません。Leftが失敗、Rightが成功というよく使う意味は、入れ替え後の通知先に自動では引き継がれません。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

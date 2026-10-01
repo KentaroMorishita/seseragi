@@ -1,0 +1,10 @@
+fn describe result: Either<String, Int> -> String = match result {
+  Right count -> "Accepted: " + show count
+  Left reason -> "Rejected: " + reason
+}
+pub effect fn main = do {
+  let accepted: Either<String, Int> = Right 2
+  let unchecked: Either<String, Int> = Right 0
+  println (describe accepted)
+  println (describe unchecked)
+}

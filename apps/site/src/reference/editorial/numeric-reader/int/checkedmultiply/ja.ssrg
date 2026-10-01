@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "二つのIntを掛け、範囲内ならJustで積、範囲外ならNothingを返します。",
+  taskTitle: "個数と倍率から合計を求める",
+  purpose: "12箱に5個ずつ入るときの合計を求めます。計算結果がIntの範囲を超えたら、不正確な整数を使わず失敗の枝へ進めます。",
+  setup: "import * as intsでstd/intを読み込みます。fnは関数の宣言です。calculateのoriginal: Intとamount: Intは整数の引数で、-> Stringは表示文を返す指定です。呼び出しでは関数名の後ろに引数を空白で区切って書きます。",
+  after: [
+    "倍率が最初、元の値が二番目です。checkedMultiply 5 12は12 × 5を計算して60になります。",
+    "Maybe<Int>には、結果を持つJustと、結果を持たないNothingがあります。matchでこの二つを分けます。Just resultが中の整数をresultと名付け、ints.formatで文字列にします。Nothingならout of rangeを返します。",
+    "pub effect fn mainが実行入口です。fnは関数の宣言で、effectは表示のような処理を実行する指定です。do内のprintlnを上から順に実行し、文字列と改行を表示します。"
+  ],
+  comparisonBefore: "TypeScriptは同じ計算の後にNumber.isSafeIntegerを使います。二つの引数がすでに安全な整数であることが前提です。numberという型だけでは小数やNaNを除外できないので、外部入力なら先に検査します。",
+  comparisonAfter: "通常の計算結果と範囲外の表示は一致します。Seseragiでは引数がIntに限定され、失敗の可能性はMaybe<Int>に表れます。Nothingは例外ではないため、try/catchではなく戻り値を分けて扱います。",
+  details: [
+    "Intの範囲は-9007199254740991から9007199254740991までです。小数、NaN、無限大、負のゼロは入りません。負の整数は有効なので、個数を正数に限る条件は別に確かめます。",
+    "正確な計算結果がIntの範囲を超える場合だけNothingになります。自動で上限へ丸めたり、再試行したりはしません。通常の演算子で範囲を超える計算は実行時の不具合になるため、失敗が想定内ならこのchecked演算を使います。",
+    "1.5のようなFloatを渡すことはできません。整数の入力ならparseでIntを得てから計算します。小数の計算が目的ならFloatの演算を選び、checked演算を表示だけの型変換として使わないでください。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、間違いやすい点"
+}

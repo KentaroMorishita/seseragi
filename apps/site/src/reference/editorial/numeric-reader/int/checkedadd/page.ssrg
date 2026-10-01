@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { numericReaderEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  numericReaderEditorial "std/int::checkedAdd" "std/int" "int-checkedadd" "result: 17\nout of range" "result: 17\nout of range" (en.copy ()) (ja.copy ())

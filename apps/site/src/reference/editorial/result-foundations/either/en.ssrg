@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Hold either a Left value or a Right value. Checks commonly use these alternatives for a failure reason and a successful value.",
+  taskTitle: "Return a checked seat count or a rejection reason",
+  purpose: "Give a booking caller either a usable seat count or a reason to fix the input. In this Either<String, Int>, Left holds the String failure reason and Right the successful Int.",
+  setup: "Either, Left and Right are in Prelude and need no import. In fn requireSeats, count: Int is the argument and the final -> Either<String, Int> is its return type. The if after = returns Right count for a positive number, otherwise Left with a reason.",
+  after: [
+    "The match in describe uses the contained integer as count in Right count, or the string as reason in Left reason. Both lines return a string that can be passed to println.",
+    "The positive count 2 produces Accepted: 2; 0 fails the condition and produces Rejected: seats must be positive. Left is returned data, not a throw. try/catch alone does not inspect this result.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number to display text."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies the returned object shape. When true, read its successful-value field; when false, read its reason field. Ordinary branching handles both cases.",
+  comparisonAfter: "TypeScript can express both outcomes in a type too. Either shares one shape across different checks, allowing operations such as mapRight and flatMap to connect them. These examples use only small integers.",
+  details: [
+    "In Either<E, A>, E is the left-side type and A the right-side type. Checks such as this example use E for failure and A for success. Constructing Right alone does not prove that its contents satisfy an application rule.",
+    "Some operations use Left and Right to distinguish two different error sources. Read each API’s contract for their meaning. Even when a value occupies only one side, the other side’s type is determined by context or an annotation."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

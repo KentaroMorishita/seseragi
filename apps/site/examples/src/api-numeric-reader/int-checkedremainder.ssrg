@@ -1,0 +1,13 @@
+import * as ints from "std/int"
+
+fn calculate dividend: Int -> divisor: Int -> String =
+  match ints.checkedRemainder divisor dividend {
+    Left ints.IntDivisionByZero -> "zero divisor"
+    Right result -> "result: " + ints.format result
+  }
+pub effect fn main = do {
+  println (calculate 10 3)
+  println (calculate (-10) 3)
+  println (calculate (-9) 3)
+  println (calculate 10 0)
+}

@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "個数の文字列を読み、範囲を超える計算を戻り値で処理します。Intの解析、表示、checked演算を選べます。",
+  taskTitle: "入力した個数に5件を足す",
+  purpose: "設定欄から受け取った個数に5件を足します。parseで文字列全体を整数として読み、checkedAddで合計がIntの範囲に収まるか確かめます。入力の誤りと合計の上限を、それぞれ表示する文に変えます。",
+  setup: "import * as intsはstd/intをintsという名前で読み込みます。fnは関数の宣言です。addFiveのtext: Stringは文字列の引数、-> Stringは文字列の戻り値です。ints.checkedAdd 5 countのように、呼び出しの引数は空白で区切ります。",
+  after: [
+    "parseの結果はRight countなら整数、Leftなら読み取りの失敗です。matchがこの形で枝を選び、_は使わない失敗の内容を表します。checkedAddのJust totalには合計が入り、Nothingは範囲外を表します。",
+    "12は17になり、12pxは整数の入力として拒否されます。最大値に5を足す場合はcount too largeを返します。+はここでは文字列の連結、ints.formatは整数の文字列化です。pub effect fn mainが実行入口です。fnは関数の宣言で、effectは表示のような処理を実行する指定です。do内のprintlnを上から順に実行し、文字列と改行を表示します。"
+  ],
+  comparisonBefore: "TypeScriptのreadCountは、正規表現で文字列全体の形を確かめ、Numberで数値にし、Number.isSafeIntegerで整数と範囲を確かめます。undefinedは読み取れなかった場合です。addFiveは加算後にも範囲を調べます。",
+  comparisonAfter: "両方とも同じ三つの文を表示します。TypeScriptのnumberという型だけでは整数の入力を保証しません。Seseragiでは読み取れた値がIntになり、checkedAddの戻り値に範囲外の場合が含まれます。どちらも呼び出し側が失敗時の表示を決めています。",
+  details: [
+    "Intの範囲は-9007199254740991から9007199254740991までです。小数、NaN、無限大、負のゼロは入りません。負の整数は有効なので、個数を正数に限る条件は別に確かめます。",
+    "parseは前後の空白や12pxのような接尾辞、012のような先頭の余分な0を受け入れません。formatは区切りや桁合わせのない十進表記を返します。",
+    "通常のInt演算で範囲を超える計算は実行時の不具合として扱われます。上限に届くことを想定する処理ではchecked演算を使い、NothingやLeftの枝を処理してください。これはtry/catchへ投げる例外ではなく、計算から返る値です。",
+    "checkedDivideとcheckedRemainderは除数を先に渡します。整数の商は0に向かって切り捨てます。小数の結果が必要ならstd/floatのfromIntで明示的に変換します。saturating演算は上限・下限で止めたい場合の別の選択です。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、間違いやすい点"
+}

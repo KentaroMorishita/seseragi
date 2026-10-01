@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "すでに得たMaybeの結果を一つにまとめます。すべてJustなら値を保ち、一つでもNothingならNothingです。",
+  taskTitle: "すでに検索した席の結果をまとめる",
+  purpose: "席の検索結果を個別に持っているとき、すべて見つかった場合だけ番号のArrayを得ます。sequenceはArray<Maybe<Int>>をMaybe<Array<Int>>にまとめます。",
+  setup: "std/maybeをmaybe、std/textをtextとして読み込みます。fn describeのresult: Maybe<Array<Int>>は整数の配列があるかないかを表す引数です。最後の-> Stringは戻り値の型で、=の後のmatchの結果を返します。",
+  after: [
+    "letで名付けた入力は、すでにJustかNothingになっている結果のArrayです。型注釈Array<Maybe<Int>>は、先頭がNothingの場合や空の入力でも、中の数がIntであることを指定します。",
+    "maybe.sequence presentはJust [2, 1]となります。firstMissingとmiddleMissingはどちらもNothing、emptyはJust []です。describeのJust seatsは中のArrayを取り出し、Nothingの行はMissing seatを返します。",
+    "mapの\\seat: Int -> show seatは、一つの整数seatを文字列にする関数です。text.join \",\"がその文字列を順につなぎ、角括弧を加えて表示します。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数の引数は空白で区切る記法です。showは数値を表示用の文字列にします。"
+  ],
+  comparisonBefore: "TSも、先に作ったnumber | undefinedの配列から表示を決めます。someで不在があるかを調べています。どちらの配列にも、未実行の検索関数を入れているわけではありません。",
+  comparisonAfter: "TypeScriptでも直接まとめられます。sequenceは個別のMaybeを、呼び出し側が一度だけ分岐するMaybeへ変える共通の操作です。検索関数も渡したい場合はtraverseを選びます。",
+  details: [
+    "宣言のFはここではArray、AはIntです。F<Maybe<A>>が入力、Maybe<F<A>>が結果です。Traversableはコレクションが走査と結果の組み立てに対応するという条件で、ListならListの形を保ちます。",
+    "sequenceは入力の計算を遅らせません。配列を作る途中に不具合があれば、前にNothingがあっても発生します。後の検索を実行せずに止めたいなら、検索しながら終了を選べるreduceUntilなどの流れを使います。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

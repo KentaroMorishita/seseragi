@@ -1,0 +1,5 @@
+import * as either from "std/either"
+pub effect fn main = do {
+  let values: Array<Either<String, Int>> = [Left "first", Right (1 / 0)]
+  println (show (either.sequence values))
+}

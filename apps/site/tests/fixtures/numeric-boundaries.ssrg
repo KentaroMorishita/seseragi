@@ -1,0 +1,74 @@
+import * as ints from "std/int"
+import * as floats from "std/float"
+
+fn renderInt value: Either<ints.IntParseError, Int> -> String = match value {
+  Right value -> "Right " + ints.format value
+  Left error -> match error {
+    ints.EmptyInt -> "EmptyInt"
+    ints.InvalidIntRadix radix -> "InvalidIntRadix " + show radix
+    ints.InvalidIntDigit detail -> "InvalidIntDigit offset=" + show detail.offset + " radix=" + show detail.radix
+    ints.IntOutsideRange -> "IntOutsideRange"
+  }
+}
+fn renderDivision value: Either<ints.IntDivisionError, Int> -> String = match value {
+  Right value -> "Right " + ints.format value
+  Left ints.IntDivisionByZero -> "IntDivisionByZero"
+}
+fn renderFloat value: Either<floats.FloatParseError, Float> -> String = match value {
+  Right value -> "Right " + floats.format value
+  Left error -> match error {
+    floats.EmptyFloat -> "EmptyFloat"
+    floats.InvalidFloat detail -> "InvalidFloat offset=" + show detail.offset
+    floats.FloatParseOverflow -> "FloatParseOverflow"
+  }
+}
+
+pub effect fn main = do {
+  println ("int valid: " + renderInt (ints.parse "+12"))
+  println ("int zero: " + renderInt (ints.parse "-0"))
+  println ("int empty: " + renderInt (ints.parse ""))
+  println ("int whitespace: " + renderInt (ints.parse " 12"))
+  println ("int leading zero: " + renderInt (ints.parse "012"))
+  println ("int suffix: " + renderInt (ints.parse "12px"))
+  println ("int Unicode: " + renderInt (ints.parse "12é"))
+  println ("int maximum: " + renderInt (ints.parse "9007199254740991"))
+  println ("int overflow: " + renderInt (ints.parse "9007199254740992"))
+  println ("int overflow suffix: " + renderInt (ints.parse "9007199254740992x"))
+  println ("int format: " + ints.format (-12))
+  println ("int add: " + show (ints.checkedAdd 5 12))
+  println ("int add overflow: " + show (ints.checkedAdd 1 (ints.maxValue ())))
+  println ("int subtract: " + show (ints.checkedSubtract 5 12))
+  println ("int subtract overflow: " + show (ints.checkedSubtract 1 (ints.minValue ())))
+  println ("int multiply: " + show (ints.checkedMultiply 5 12))
+  println ("int multiply overflow: " + show (ints.checkedMultiply 2 (ints.maxValue ())))
+  println ("int divide: " + renderDivision (ints.checkedDivide 3 10))
+  println ("int divide negative: " + renderDivision (ints.checkedDivide 3 (-10)))
+  println ("int divide zero: " + renderDivision (ints.checkedDivide 0 10))
+  println ("int remainder: " + renderDivision (ints.checkedRemainder 3 10))
+  println ("int remainder negative: " + renderDivision (ints.checkedRemainder 3 (-10)))
+  println ("int remainder negative divisor: " + renderDivision (ints.checkedRemainder (-3) 10))
+  println ("int remainder zero: " + renderDivision (ints.checkedRemainder 0 10))
+  println ("int remainder normalized zero: " + renderDivision (ints.checkedRemainder 3 (-9)))
+  println ("float valid: " + renderFloat (floats.parse "12.5"))
+  println ("float leading dot: " + renderFloat (floats.parse ".5"))
+  println ("float trailing dot: " + renderFloat (floats.parse "1."))
+  println ("float leading zeros: " + renderFloat (floats.parse "001.5"))
+  println ("float empty: " + renderFloat (floats.parse ""))
+  println ("float whitespace: " + renderFloat (floats.parse " 12.5"))
+  println ("float incomplete exponent: " + renderFloat (floats.parse "1e"))
+  println ("float NaN spelling: " + renderFloat (floats.parse "NaN"))
+  println ("float infinity spelling: " + renderFloat (floats.parse "Infinity"))
+  println ("float plus infinity: " + renderFloat (floats.parse "+Infinity"))
+  println ("float overflow: " + renderFloat (floats.parse "1e309"))
+  println ("float underflow: " + renderFloat (floats.parse "-1e-999"))
+  println ("float integer format: " + floats.format 12.0)
+  println ("float negative zero format: " + floats.format (-0.0))
+  println ("float exponent format: " + floats.format 1e21)
+  println ("from int exact: " + floats.format (floats.fromInt (ints.maxValue ())))
+  println ("finite: " + show (floats.isFinite 12.5))
+  println ("finite infinity: " + show (floats.isFinite (floats.positiveInfinity ())))
+  println ("finite NaN: " + show (floats.isFinite (floats.nan ())))
+  println ("int newline: " + renderInt (ints.parse "12\n"))
+  println ("float newline: " + renderFloat (floats.parse "12.5\n"))
+  println ("int large quotient: " + renderDivision (ints.checkedDivide 3 9007199254740991))
+}

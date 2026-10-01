@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { numericReaderEditorial } from "../../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  numericReaderEditorial "std/int::parse" "std/int" "int-parse" "count: 12\ncount: 0\ninvalid count\ninvalid count\ncount: 9007199254740991\ninvalid count" "count: 12\ncount: 0\ninvalid count\ninvalid count\ncount: 9007199254740991\ninvalid count" (en.copy ()) (ja.copy ())

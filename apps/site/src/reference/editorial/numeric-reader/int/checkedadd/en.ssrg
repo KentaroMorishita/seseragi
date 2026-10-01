@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Add two Int values, returning Just the sum within range or Nothing on overflow.",
+  taskTitle: "Increase a count and handle its limit",
+  purpose: "Add five to a count of twelve. Treat an excessive total as a returned result when growth is an expected possibility.",
+  setup: "import * as ints loads std/int. fn declares a function. In calculate, original: Int and amount: Int are integer arguments, and -> String declares a display-text result. Supply call arguments after the function name, separated by spaces.",
+  after: [
+    "The added amount comes first, then the original value. checkedAdd 5 12 computes 12 + 5.",
+    "Maybe<Int> has two forms: Just containing a result, and Nothing without one. match chooses between them. Just result names the enclosed integer result, then ints.format converts it to text. Nothing produces out of range.",
+    "pub effect fn main is the entry point. fn declares a function; effect marks a function that runs operations such as printing. do runs the println calls in order, writing each string followed by a newline."
+  ],
+  comparisonBefore: "TypeScript performs the same calculation and checks Number.isSafeInteger. Both arguments are assumed to be safe integers already. The number type alone does not exclude fractions or NaN, so external input needs validation first.",
+  comparisonAfter: "The ordinary result and out-of-range message agree. Seseragi restricts the inputs to Int and exposes possible failure in Maybe<Int>. Nothing is not an exception: handle the returned alternatives rather than catching it with try/catch.",
+  details: [
+    "Int ranges from -9007199254740991 through 9007199254740991. It cannot contain a fraction, NaN, infinity or negative zero. Negative integers are valid; a requirement such as a positive count needs a separate application check.",
+    "Nothing means the exact mathematical result is outside Int’s range. This operation does not automatically clamp or retry. An out-of-range result from an ordinary Int operator is a runtime defect, so use this checked operation when failure is an expected case.",
+    "A Float such as 1.5 cannot be passed here. For integer input, obtain an Int with parse before calculating. For decimal calculations, choose Float arithmetic instead of treating a checked operation as a display-only type conversion."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Compare the TypeScript version",
+  detailTitle: "Inputs, results and common mistakes"
+}

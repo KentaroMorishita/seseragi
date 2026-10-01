@@ -1,0 +1,90 @@
+import { editorial as case0 } from "./maybe/page"
+import { editorial as case1 } from "./just/page"
+import { editorial as case2 } from "./nothing/page"
+import { editorial as case3 } from "./either/page"
+import { editorial as case4 } from "./right/page"
+import { editorial as case5 } from "./left/page"
+import { editorial as case6 } from "./validation/page"
+import { editorial as case7 } from "./valid/page"
+import { editorial as case8 } from "./invalid/page"
+import { editorial as case9 } from "./maybe-sequence/page"
+import { editorial as case10 } from "./mapright/page"
+import { editorial as case11 } from "./bimap/page"
+import { editorial as case12 } from "./either-sequence/page"
+import { editorial as case13 } from "./swap/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Editorial } from "../model"
+// Every branch uses the full canonical identity, actual owner, namespace and kind.
+pub fn resultFoundationEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.identity == "std/prelude::Maybe"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "type"
+    && symbol.itemKind == "type" then
+    Just (case0 ())
+  else if symbol.identity == "std/prelude::Just"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case1 ())
+  else if symbol.identity == "std/prelude::Nothing"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case2 ())
+  else if symbol.identity == "std/prelude::Either"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "type"
+    && symbol.itemKind == "type" then
+    Just (case3 ())
+  else if symbol.identity == "std/prelude::Right"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case4 ())
+  else if symbol.identity == "std/prelude::Left"
+    && symbol.module == "std/prelude"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case5 ())
+  else if symbol.identity == "std/validation::Validation"
+    && symbol.module == "std/validation"
+    && symbol.namespace == "type"
+    && symbol.itemKind == "opaque-type" then
+    Just (case6 ())
+  else if symbol.identity == "std/validation::Valid"
+    && symbol.module == "std/validation"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case7 ())
+  else if symbol.identity == "std/validation::Invalid"
+    && symbol.module == "std/validation"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "constructor" then
+    Just (case8 ())
+  else if symbol.identity == "std/maybe::sequence"
+    && symbol.module == "std/maybe"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "function" then
+    Just (case9 ())
+  else if symbol.identity == "std/either::mapRight"
+    && symbol.module == "std/either"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "function" then
+    Just (case10 ())
+  else if symbol.identity == "std/either::bimap"
+    && symbol.module == "std/either"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "function" then
+    Just (case11 ())
+  else if symbol.identity == "std/either::sequence"
+    && symbol.module == "std/either"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "function" then
+    Just (case12 ())
+  else if symbol.identity == "std/either::swap"
+    && symbol.module == "std/either"
+    && symbol.namespace == "value"
+    && symbol.itemKind == "function" then
+    Just (case13 ())
+  else
+    Nothing

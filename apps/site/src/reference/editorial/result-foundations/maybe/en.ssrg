@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "A type for either Just containing a value or Nothing containing none.",
+  taskTitle: "Represent a nickname that may be missing",
+  purpose: "A profile may have no nickname. Maybe<String> communicates that possibility to its caller: Just holds one string, while Nothing holds no value.",
+  setup: "Maybe, Just and Nothing are in Prelude and need no import. fn describe defines a function. nickname: Maybe<String> is its argument; the final -> String states the return type. The match expression after = supplies the returned value.",
+  after: [
+    "let gives a value a name. present contains Just \"Ada\" and missing contains Nothing. The : Maybe<String> annotation checks the type; it does not convert the string or validate its contents.",
+    "match selects the line for the value’s alternative. In Just name, name contains the string; Nothing has no value to extract. Both lines return a string, giving the caller a display for either case.",
+    "An empty string is also present inside Just. The final call prints Nickname: [], distinct from the missing Nothing case.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces."
+  ],
+  comparisonBefore: "TypeScript can express possible absence with string | undefined. The === undefined check keeps an empty string separate from an unset value.",
+  comparisonAfter: "This small task is already concise in TypeScript. Seseragi Maybe supplies a shared type and operations for present or missing results returned by different lookups and input-handling functions.",
+  details: [
+    "A in Maybe<A> is the contained type, String here. A Maybe value represents an already-obtained result; it is not an instruction that runs a lookup or calculation.",
+    "Handling only Just and omitting Nothing makes match fail with SES-T0301. Choose Either when the caller also needs a reason why there is no successful value."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

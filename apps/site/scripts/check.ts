@@ -61,6 +61,8 @@ for (const command of [
     "apps/site/tests/char-text-reader.test.ts",
     "apps/site/tests/collection-type-readers.test.ts",
     "apps/site/tests/data-validation-readers.test.ts",
+    "apps/site/tests/numeric-readers.test.ts",
+    "apps/site/tests/result-foundation-readers.test.ts",
   ],
   ["python3", "-B", "apps/site/tests/prose.test.py"],
   ["cargo", "build", "-p", "seseragi-cli"],
@@ -134,6 +136,8 @@ const test = Bun.spawnSync(
     "apps/site/tests/char-text-reader.test.ts",
     "apps/site/tests/collection-type-readers.test.ts",
     "apps/site/tests/data-validation-readers.test.ts",
+    "apps/site/tests/numeric-readers.test.ts",
+    "apps/site/tests/result-foundation-readers.test.ts",
   ],
   {
     cwd: root,

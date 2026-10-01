@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { resultFoundationEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  resultFoundationEditorial "std/prelude::Maybe" "type" "type" "maybe" "maybe" "Nickname: [Ada]\nNickname is missing\nNickname: []" (en.copy ()) (ja.copy ())

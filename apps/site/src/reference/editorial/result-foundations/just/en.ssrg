@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Construct a Maybe containing one value. Empty strings and zero still count as present.",
+  taskTitle: "Return empty strings and zero as present values",
+  purpose: "You may need to preserve the fact that a nickname was supplied even when empty, or that a count was supplied as zero. Just constructs a Maybe containing that value; it does not validate its contents.",
+  setup: "Maybe, Just and Nothing are in Prelude and need no import. fn describe defines a function. nickname: Maybe<String> is its argument; the final -> String states the return type. The match expression after = supplies the returned value. countLabel has the same function shape, with value: Maybe<Int> as its argument. Int is an integer type.",
+  after: [
+    "match selects the line for the value’s alternative. In Just name, name contains the string; Nothing has no value to extract. Both lines return a string, giving the caller a display for either case.",
+    "Just \"Ada\" and Just \"\" have type Maybe<String>; Just 0 has type Maybe<Int>. In countLabel, Just count binds the integer to count and show formats it. Constructing Just takes one argument: the value to put inside.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number to display text."
+  ],
+  comparisonBefore: "TypeScript represents present values by supplying strings or numbers where string | undefined or number | undefined is expected. Checking only for undefined preserves empty strings and zero.",
+  comparisonAfter: "Both versions distinguish absence from empty strings and zero. In Seseragi, the name Just makes placement inside Maybe explicit. This example does not establish shorter code or stronger input validation.",
+  details: [
+    "The declaration A -> Maybe<A> takes one A and constructs Maybe<A>. A is String in the first two examples and Int in the last. Use match or another Maybe operation to obtain the contained value.",
+    "Just does not delay evaluation of its argument. Just (1 / 0) encounters a runtime defect while trying to construct the value. To reject an empty string, check your condition before constructing Just."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}
