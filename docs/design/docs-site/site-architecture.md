@@ -2,27 +2,42 @@
 
 Status: design source for the public Seseragi reference site. This document
 defines how readers navigate the language. `docs/spec/` remains normative.
+The #697 revision makes the everyday TypeScript reader in
+[reader-contract.md](reader-contract.md) explicit. It is a design input for
+#698–#702; the page changes below are not yet implemented or reader-accepted.
 
 ## 1. Product boundaries
 
-Seseragi has three different reading experiences. They must not be collapsed
-into one giant documentation tree.
+The Docs themselves must let a practical TypeScript developer understand what
+Seseragi is for, see a fair same-task comparison, try a small program, and find
+both approachable explanations and exact rules. The Tour is optional.
 
-| Surface | Reader question | Organization |
+| Surface | Reader question | Responsibility and next destinations |
 | --- | --- | --- |
-| Tour | How do I learn Seseragi in order? | One interactive sequence |
-| Language Reference | What does this language concept mean and what are its exact rules? | Concepts and semantic relationships |
-| Standard Library | Which module or symbol provides this operation? | Modules and compiler-owned symbols |
+| Home | What is this language, and why might I try it? | A concrete use, a verified small TS/Seseragi comparison and current limits; link to the introduction, first run and Docs |
+| Docs index | Where do I start, or find an answer? | Brief purpose/benefit context, an obvious practical starting path, and the existing Language/Library navigation hub |
+| Introduction | How would this change familiar code? | Explain the comparison and new notation, uses and limitations; link to first run, basic concepts and deeper rules |
+| First run | How do I run my own first program? | A bounded install/check/run task with files, commands, result and recovery; finish at values/functions |
+| Concept article | What does this mean and how do I use it? | Explain the simple case locally before detailed rules, even when reached directly |
+| Detailed Language Reference / Standard Library | What are the exact rules, limits or APIs? | Preserve addressable concepts and compiler-owned symbols, with prerequisites summarized where needed |
+| Tour | Can I learn by working through exercises in order? | The interactive course, linked as an optional practice path |
 
-The Tour at `https://seseragi.vercel.app/tour/` is the only ordered learning
-course. The reference site links to it but does not recreate a Get Started or
-Learn track.
+Concept explanations and detailed rules normally share the existing article
+identity. “Approachable” and “detailed” are reading needs, not two duplicated
+language trees. Headings and ordering may improve without changing route IDs.
 
-Examples, releases, and the Playground are global destinations. Tooling,
-package, interop, Web, and runtime-provider material may gain their own
-reference surfaces when the content exists. They must not be inserted into the
-Language Reference or Standard Library sidebars merely to make a complete
-looking site.
+#668 correctly removed a duplicated linear course and separated the reference
+trees; #675 made `/docs/` a useful navigation hub. Preserve those results, but
+replace the earlier prohibition on any Docs introduction or practical setup
+with the responsibilities above. The #697 pilot needs one first-run task page,
+not the old `/docs/get-started/` sequence. This does not ban other independently
+useful task guides when their scope is justified.
+
+Examples, releases, and the Playground remain global destinations. Tooling,
+package, interop, Web, and runtime-provider references retain their separately
+mapped responsibilities; do not fill the Language or Library trees with them
+merely to make a complete-looking site. Root-domain cutover (#631) and Tour
+redesign are outside this change.
 
 There is no Community or package-registry destination until a real product
 exists for it.
@@ -36,8 +51,10 @@ exists for it.
   examples. Prose and code panels do not copy Tour lessons.
 - Compiler metadata owns Standard Library module, symbol, signature, instance,
   and availability data.
-- English is canonical. Japanese has the same page identity and hierarchy under
-  `/ja/`; incomplete translations are identified explicitly.
+- English keeps unprefixed canonical URLs. Japanese has the same page identity
+  and hierarchy under `/ja/`. Public copy is authored Japanese-first, then
+  English with the same examples, conditions, limits and results; URL ownership
+  does not set the drafting language.
 
 ## 3. Human-centred page boundaries
 
@@ -94,7 +111,7 @@ a substitute for an explanation.
 
 The public site uses a small stable header:
 
-1. Documentation — opens the reference index;
+1. Documentation — opens the Docs index and its start/reference choices;
 2. Playground — edits and runs Seseragi;
 3. Tour — the ordered learning path;
 4. Examples — verified complete programs;
@@ -103,15 +120,18 @@ The public site uses a small stable header:
 
 ## 6. Reference index
 
-`/docs/` is the entrance to reference material, not a compressed tutorial. It
-contains three calm routes:
+`/docs/` serves both a first-time visitor and someone looking up a rule. Retain
+#675's visible Language Reference and Standard Library groups and its absence
+of an article sidebar. Precede those groups with concise context: what the
+language is for, a concrete benefit backed by the selected comparison, and
+purpose-labelled routes to the introduction and first run. A reader arriving
+here must not have to choose between a wall of unfamiliar concepts and Tour.
 
-- Language Reference;
-- Standard Library;
-- the external Tour link for readers who want a sequence.
-
-It does not render the article sidebar. It does not explain Effect, types, Web,
-or tooling on the landing page.
+Keep this a navigable entrance rather than a compressed course: the introduction
+owns the comparison walkthrough, the first-run page owns commands, and concept
+articles own explanations. Offer the Tour as optional exercises. Do not replace
+the current useful groups with a long tutorial or hide reference lookup behind
+onboarding. Only link to a new destination once its page exists in both locales.
 
 ## 7. Navigation shell
 
@@ -136,8 +156,10 @@ active group and section remain expanded.
 
 Previous/next links stay within the current concept cluster or library module.
 They must not flatten the full sidebar into a supposedly ordered reading course.
-Show the current cluster and an overview link; related destinations explain what
-the reader can find there.
+Show the current cluster and an overview link. A prerequisite relationship across
+clusters is a purpose-labelled related link, never a misleading Next button.
+Section ordering and labels may change to put the simple case first; keep page
+identities and verify breadcrumb, localized title and link text together.
 
 The navigation levels are:
 
@@ -150,7 +172,11 @@ The navigation levels are:
 
 The sitemap below is the target information architecture. Routes may be filled
 incrementally, but completed pages must be placed in this reader model rather
-than in a temporary Learn or miscellaneous group.
+than in a temporary Learn or miscellaneous group. This sitemap describes
+reference responsibilities, not a required order of study. The first-run task
+sits outside the language/library trees; the concrete pilot map in section 12
+uses implemented identities rather than creating every illustrative label below
+as a new page.
 
 ```text
 Language Reference
@@ -311,3 +337,99 @@ A documentation change is complete only after these reviews:
    whitespace, code readability, overflow, and locale behavior.
 6. **Dead-content audit** — replaced pages, routes, samples, styles, and tests
    are removed instead of left as a second architecture.
+7. **Reader understanding** — apply the TS-reader contract and record remaining
+   questions separately from technical checks; self-review does not establish
+   actual first-time-reader acceptance.
+
+## 12. Entrance and pilot page map
+
+Inspected against `ab42da841d76d322584fac096c249d586ae539ec`. Existing source
+paths below are relative to `apps/site/src/pages/`; each owns `page.ssrg`,
+`ja.ssrg` and `en.ssrg` (and `guide.ssrg` where present). Preserve its `id` and
+route. These are implementation assignments, not additional accepted pages.
+
+### Entrance and practical setup
+
+| Route / page source | Work owner and page job | Useful onward links |
+| --- | --- | --- |
+| `/` — `home/` | #700: purpose, a small verified #698 comparison, current limitations | Introduction; first run; Docs |
+| `/docs/` — `docs/overview/` | #700: short purpose/benefit context and start choices before the retained #675 reference groups | Introduction; first run; Language; Library; optional Tour |
+| `/docs/language/model/what-is-seseragi/` — `language/model/what-is-seseragi/` | #700: explain the same-task comparison without assuming ADT/match/Effect; describe supported uses and limits | First run; values; function calls; relevant detailed rules |
+| `/docs/first-run/` — proposed `docs/first-run/`, `id: docs.first-run` | #699: new bounded task page; install/verify, create a file, check, run, inspect output, fix representative failures | Values and names; declaring/calling a function; existing release information |
+| `/docs/language/` — `language/overview/` | #700: keep the concept index; make the basic value/function destinations recognizable, without a second lesson sequence | The existing concept groups and selected pilot pages |
+
+`/docs/first-run/` and its `/ja/` mirror are planned, not live. #699 adds them to
+the typed catalog outside the two reference trees, using the existing standalone
+landing/block components, and updates the build/navigation checks. In particular,
+revise the current fixed output count and Tour-only entrance assertions, and add
+first-run coverage in both locales at desktop/mobile sizes and without
+JavaScript. Do not add fake specification coverage to count a practical procedure
+among the 351 mapped reference leaves. The page does not require readers to study modules, package
+graphs or Effect before running the program. Explain each wrapper line and the
+chosen execution target in place. Existing function/block samples are currently
+verified with an injected entry harness; they are not yet standalone programs
+with visible output. #699 must verify the exact complete program the reader
+copies, not count that existing harness as a clean first run.
+
+#699 verifies the currently published installation route, supported OS/CPU and
+version, actual prerequisites, PATH, working directory, filenames and output in
+a clean user environment. Do not prescribe an unverified installer here.
+`README.md` remains the repository's short orientation and quick links;
+`docs/GETTING_STARTED.md` currently owns the **local Web app** walkthrough, not
+the minimal first process run. Keep that distinct task and link it after first
+success when useful. Release documentation owns version-specific distribution
+facts. The first-run page owns its complete minimal procedure, reusing verified
+commands/sources rather than maintaining competing quick starts. #699 must
+reconcile overlapping README steps with this ownership when implementing it.
+Existing Projects/Tooling coverage in #629 remains open; do not implement or
+claim acceptance of those full surfaces to deliver one first run.
+
+### Values and functions pilot (#701)
+
+Six existing articles form the bounded pilot. Their opening examples use only
+the local prerequisites in the reader contract; advanced sections stay available
+on the same pages. No new “values course” or function-declaration leaf is needed
+for this pilot.
+
+| Route (under `/docs/language/`) / matching `language/` source | Opening question and local explanation | Details to retain after the basic case |
+| --- | --- | --- |
+| `model/immutable-by-default/` | How do I name a value and make an updated value? Start with plain `let` and familiar TS values; distinguish binding from object immutability | Collection behavior and explicit state APIs |
+| `types/built-in-types/` | Which type describes this value? Introduce the numbers, strings and booleans the examples actually use | Char, numeric bounds/conversion, Unit/Never and runtime restrictions |
+| `types/annotations-and-inference/` | Where do I write a type? Own the first ordinary `fn` declaration: name, parameters, each arrow, return type and expression body, plus a simple annotated `let` | Public declarations, inference limits and the separately explained `effect fn` exception |
+| `syntax/function-application/` | How do I call that function? Restate a fully defined small declaration, supply all arguments, read the result and fix a TS-style call | Partial application, Unit calls, explicit type arguments, precedence and special forms |
+| `expressions/blocks-and-local-declarations/` | How do several lines produce a result? Explain local names, scope and the final expression | Recursive/local declarations, constraints and distinction from `do` |
+| `types/function-types-and-currying/` | What happens when I supply only some arguments? Start after an ordinary two-argument call, define the remaining function and then name currying | Association, type rules and anonymous Unit-parameter behavior |
+
+Keep the existing `language.types.function-types` page ID for the
+`types/function-types-and-currying/` route; do not derive a replacement ID from
+the URL. The other pilot IDs likewise remain those in their page modules.
+
+The introduction and first run can point directly to the value and function
+articles. Between clusters, labels should answer a purpose such as “Write a
+function and its types” or “Call a function”; include the destination's localized
+page title rather than inventing a second title. Within a page, headings should
+separate the task/example/result from exact rules and uncommon cases. A table of
+contents lets experienced readers jump to those rules. No fixed heading count
+or forced template is required.
+
+Supporting pages such as `syntax/literals/`, `patterns/binding-rules/`,
+`data/records/` and `expressions/conditionals/` retain their identities and are
+linked for their specific questions; they are not silently added to the pilot.
+Summarize any piece needed by a pilot example locally. Prefer a simpler example
+if it would otherwise require rewriting those topics first. In particular,
+plain `let` does not require the nested-pattern lesson currently on binding rules.
+
+### After the pilot
+
+#702 first checks the entrance, first run and these six articles against the
+reader questions. Only then choose the next implementation scope from existing
+`data/algebraic-data-types/`, `patterns/match/`, `effects/maybe/`,
+`effects/either/` and, when needed, the separate Effect/failure articles. Introduce
+data alternatives before matching and begin failure explanations from the
+reader's `try` / `catch` experience. These are dependency candidates, not approval
+to rewrite them or a claim that the remainder of #628/#630/#629 is accepted.
+
+#698 can now choose and verify everyday comparison candidates; #699 can verify
+the minimal installation/run path in parallel. Their evidence feeds #700's
+entrance, then #701's pilot and #702's reading review. No comparison, OS support
+or setup success is claimed by this design-only change.

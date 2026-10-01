@@ -1,0 +1,7 @@
+trait Label<A> {
+  fn label value: A -> String
+}
+
+struct Ticket deriving Label { number: Int }
+
+pub effect fn main = println "ready"

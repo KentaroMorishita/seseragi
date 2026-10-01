@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "既存のサービスに時計も追加で要求するには",
-  summary: "EffectやStreamの要求に&を書くと、必要なサービスを組み合わせられます。実行時のレコードを結合する操作ではありません。",
-  reading: "Timed<R, E, A>は、Rに加えてClock型のclockを必要とするEffectの別名です。Eは回復可能な失敗、Aは成功値の型のままで、時計を追加しても変更されません。",
-  result: "Timedが要求するclockとRのclockは、同じ型でなければなりません。型が違えば、名前の衝突としてエラーになります。R & {}ならサービスを追加せず、Rだけの場合と同じ要求です。実行入口では、要求するフィールドをすべて確定させます。"
+  question: "処理が必要とする二種類の設定を、一つの要求へまとめるには",
+  summary: "ラベルを読むSettingsと、末尾の文字を読むThemeを必要とする処理を作ります。Effectの型では、必要なサービスのレコードを&で組み合わせられます。",
+  reading: "SettingsとThemeは、外から渡す設定の型です。settingsOfとthemeOfは環境の対応するフィールドを読みます。greetingはwith Settings, Themeで両方を要求し、serviceで受け取った設定から文字列を作ります。",
+  result: "Configured<R, A>は、Rにsettings: Settingsを足して要求するEffectの別名です。configuredの注釈ではRが{ theme: Theme }、AがStringなので、必要な環境は{ theme: Theme, settings: Settings }、失敗型はNever（通常の失敗がないことを表す型）、成功値はStringです。provideで両方を渡して実行するとHello!を表示します。",
 }
+
+pub fn readerCaption -> String = "二つのサービスを要求し、環境を渡して実行する"
+
+pub fn readerBridgeOne -> String =
+  "Effectは実行する処理を表す値です。doの<-は処理の成功値を次の行で使い、succeedは文字列を成功結果にします。Unit ->という注釈は、()を渡すとそのEffectを返す関数です。configured = greetingは関数に別名を付けるだけで、ここでは実行しません。"
+
+pub fn readerBridgeTwo -> String =
+  "provideは、この処理へ渡す環境の値を指定します。&は値を結合する操作ではなく、型の要求をまとめる指定です。TypeScriptのA & Bを普通のオブジェクト型へ使う場合とは、使える位置が異なります。ここではmainが設定を渡した処理を実行し、残るConsoleの出力機能はCLIが提供します。"
+
+pub fn readerInvalidCaption -> String = "同じsettingsフィールドへ異なる型を要求する"
+
+pub fn readerMistake -> String =
+  "settingsにSettingsとThemeを同時に要求すると、同じフィールドの型が衝突してSES-E0001になります。二つの役割なら、最初の例のsettingsとthemeのように異なるフィールド名で要求してください。同じ名前と同じ型を二度要求する場合は、一つにまとまります。"
+
+pub fn readerDetailNote -> String =
+  "詳細のTimedは、既存の要求Rへclockを足す同じ考え方の宣言例です。その例だけでは時計を読みません。Eは失敗型、Aは成功値の型です。&をEffectやStreamの要求以外へ書いたときのSES-T0501や、空の要求との関係も確認できます。"
+
+pub fn readerLegacyReading -> String =
+  "Timed<R, E, A>は、Rに加えてClock型のclockを必要とするEffectの別名です。Eは回復可能な失敗、Aは成功値の型のままで、時計を追加しても変更されません。"
+
+pub fn readerLegacyResult -> String =
+  "Timedが要求するclockとRのclockは、同じ型でなければなりません。型が違えば、名前の衝突としてエラーになります。R & {}ならサービスを追加せず、Rだけの場合と同じ要求です。実行入口では、要求するフィールドをすべて確定させます。"
+
+pub fn readerRelated -> String = "では、一つのサービスを要求して環境を渡す基本を確認できます。"

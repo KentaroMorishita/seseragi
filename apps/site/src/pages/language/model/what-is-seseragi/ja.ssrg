@@ -4,19 +4,49 @@ import { ConceptCopy } from "../concept"
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Seseragiとは",
   summary: (explanation ()).summary,
-  ruleTitle: "まず押さえる三つの考え方",
-  ruleBody: "式指向とは、ifのような分岐も値を返すことです。静的型付きとは、実行前にコンパイラが型を検査することです。不変とは、一度作った通常の値を書き換えられないことです。この例は、整数の点数に応じて文字列を返す関数です。各設計原則のページで、こうした規則の理由と具体例を説明します。",
-  consequencesTitle: "普段のコードでは、どう表れるか",
-  consequenceOne: "関数には引数を順に渡します。最初の引数だけを渡すと、次の引数を待つ関数ができます。よく使う変換に値をあらかじめ渡して、別の処理でも使えます。",
-  consequenceTwo: "データ型では、値が取り得る場合を列挙できます。例えばMaybeは、値がある場合とない場合を区別します。matchでそれぞれの場合を扱い、扱い忘れがないかをコンパイラが検査します。",
-  consequenceThree: "コンソールやファイルに働きかける処理はEffectで表します。その型には、必要なサービス、起こり得るエラー、成功時の結果が表れます。処理を表す値を作ることと、その処理を実行することは別です。",
-  boundaryTitle: "リファレンスとTourの使い分け",
-  boundaryBody: "このリファレンスは、一つの概念を理解し、詳しい規則を調べるためのサイトです。順を追ってコードを動かしながら学ぶ場合は、既存のTourを使います。すべての記事を先頭から読む必要はありません。調べたい概念から関連ページへ進んでください。"
+  ruleTitle: "同じ処理をSeseragiで書く",
+  ruleBody: "Seseragiでは、引数を全部渡す呼び出しと同じ書き方で、一部を先に決めた関数も作れます。下の例はTypeScript版と同じ送料の規則で、同じ二つの注文を計算します。",
+  consequencesTitle: "この例の先にある、言語の考え方",
+  consequenceOne: "ifは条件に合う方の値を返し、関数の結果にそのまま使えます。通常の値は不変です。レコードや配列の中身を直接書き換えるのではなく、更新した値を作ります。TypeScriptのconstは名前の再代入を防ぎますが、オブジェクトの中身まで不変にはしない点が異なります。",
+  consequenceTwo: "値に複数の形があるときは、その選択肢をデータ型に列挙できます。たとえばMaybeは、値がある場合とない場合を区別します。matchは選択肢ごとに処理を分ける構文で、コンパイラは扱い忘れを検査します。これらは別の記事で小さな例から説明します。",
+  consequenceThree: "出力やファイル操作などの外部とのやり取りはEffectで表します。型には必要な機能、起こり得る失敗、成功時の結果が表れます。処理を表す値を作ることと実行することは別です。今回の例では、mainが計算結果を出力することが分かれば読み進められます。",
+  boundaryTitle: "開発中の言語として、使える範囲を確かめる",
+  boundaryBody: "端末で実行するプログラムやWeb UIを作れますが、仕様に書かれた機能がすべて現在の実装で使えるとは限りません。最初の実行ページで確認済みの環境と手順を示しています。既存のTypeScriptコードと接続する場合は、値や呼び出しをどう受け渡すかを確認してください。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "他の言語から来たとき、何が違って見えるか",
-  summary: "Seseragiは、実行前に値の型を検査する式指向の言語です。ifなどの結果を関数や計算に使い、データの更新では新しい値を作ります。出力やファイル操作は、実行する処理を表すEffectで記述します。",
-  reading: "resultは整数の点数を受け取り、ifで選んだStringを返します。if自体が値を返す式なので、関数の本体に直接使えます。mainのprintlnは、その結果を表示する外部処理です。",
-  result: "result 85は\"pass\"を返し、mainがpassと改行を出力します。点数を60にすると、戻り値も出力もretryになります。どちらの場合も、関数の戻り値はStringです。"
+  question: "送料の条件を一度決めて、注文ごとに使うには",
+  summary: "Seseragiは、端末で動くプログラムやWeb UIを、小さな関数と不変のデータで組み立てる言語です。実行前に型を検査します。TypeScriptで見慣れた送料の計算を使って、関数の使い方を比べます。",
+  reading: "5,000円以上の注文は送料無料、それ未満は送料500円とします。TypeScript版のstandardTotalは矢印関数です。送料の条件を固定し、注文ごとには小計だけを受け取ります。",
+  result: "小計3,200円と5,000円の注文は、3700, 5000と表示されます。両方の例で、三つの引数はすべて0〜1,000,000円の整数とし、入力の検証は省いています。",
 }
+
+pub fn tsCaption -> String = "TypeScript：矢印関数で同じ条件を使う"
+pub fn seseragiCaption -> String = "Seseragi：最初の二つの引数を渡しておく"
+pub fn readTitle -> String = "宣言と、普通の呼び出しを読む"
+pub fn declaration -> String =
+  "fnは関数を定義します。totalWithShippingは、送料無料になる金額freeFrom、送料fee、小計subtotalを順番に受け取ります。各引数の: Intは整数を受け取る指定です。途中の->は次の引数へ続き、最後の-> Intは整数を返す指定です。=の右側が計算です。"
+pub fn conditional -> String =
+  "if ... then ... else ...は、条件に合う方の値を返します。小計が送料無料の金額以上ならそのまま返し、それ未満なら送料を加えます。関数名の後ろに空白で引数を並べたtotalWithShipping 5000 500 3200は、3700を返します。"
+pub fn reuseTitle -> String = "同じ条件を使い回す"
+pub fn reuse -> String =
+  "let standardTotal = totalWithShipping 5000 500は、最初の二つの引数だけを渡します。できた関数は小計をまだ待っており、この行では注文の金額を計算しません。standardTotal 3200は3700、standardTotal 5000は5000です。引数の一部を渡して関数を作ることを、部分適用と呼びます。letで付けた名前を後から別の値へ代入し直すことはできません。"
+pub fn benefit -> String =
+  "TypeScriptでも、上の矢印関数で同じように条件を使い回せます。どちらも送料の規則を一か所にまとめています。Seseragiで試してほしいのは、普通の関数を呼び出す書き方のまま、自分の用途に合わせた関数を作れる点です。"
+pub fn outputTitle -> String = "計算した結果を表示する"
+pub fn output -> String =
+  "最後のpub effect fn mainは、実行するときに使う公開された入口です。effectは、ここで文字列を表示するような外部とのやり取りを行うことを示します。printlnは文字列と改行を出力します。バッククォート内の${smallOrder}と${largeOrder}には計算済みの金額が入ります。上の普通のfnが計算を、mainが表示を担当します。"
+pub fn limitsTitle -> String = "コンパイラが確かめることと、この例の制限"
+pub fn mistake -> String =
+  "standardTotal \"3200\"と文字列を渡すと、整数が必要なため型検査に失敗します。TypeScriptのstandardTotal(\"3200\")も同じ理由で失敗します。この例では数値の3200に直します。外部から届く文字列を検証して数値に変換する処理は別に必要です。"
+pub fn limits -> String =
+  "Intは金額専用の型ではなく、負数も受け取れます。送料と送料無料の金額は同じ型なので、順番を取り違えても型検査では分かりません。引数を渡し忘れても、残りを待つ関数として有効な場合があります。"
+pub fn numericLimits -> String =
+  "TypeScriptのnumberは小数も扱えますが、このIntの引数は扱えません。非常に大きい整数の加算では、Seseragiが停止してもTypeScriptは数値を返すことがあります。上で示した小さな非負整数の範囲で比べており、完成した決済処理ではありません。"
+pub fn tryTitle -> String = "自分で試して、必要なところを読む"
+pub fn firstPurpose -> String = "自分のファイルを型検査して実行する："
+pub fn valuesPurpose -> String = "letと、値を更新する考え方："
+pub fn functionsPurpose -> String = "引数・戻り値の型を書いて関数を定義する："
+pub fn callsPurpose -> String = "呼び出しと、引数を一部だけ渡す使い方："
+
+pub fn title -> String = (copy ()).title

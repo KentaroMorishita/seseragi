@@ -1,21 +1,41 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "traitの法則",
   summary: (explanation ()).summary,
-  ruleTitle: "型が合うだけでなく、操作同士の関係も守る",
-  ruleBody: "Eqでは、同じ値を自分自身と比較すると等しい必要があります。Functorのmapでは、値をそのまま返す関数を使うと元と同じ結果になる必要があります。操作の引数や戻り値の型に加え、こうした結果の関係を守る約束を法則と呼びます。Eq、Ord、Functor、Applicative、Monadなどに、それぞれ法則があります。",
-  typingBody: "法則は操作を組み合わせたときの結果の関係です。追加の隠れた型検査や、別のinstanceを選ぶ規則ではありません。比較に使う等しさは、その型で観測できる結果に基づきます。",
-  evaluationBody: "コンパイラは任意の関数の法則を証明しません。標準実装は法則のテストで検証します。自分のinstanceにも、代表的な値や生成した入力でテストを用意してください。",
-  invalidTitle: "コンパイル成功は法則の証明ではない",
-  invalidBody: "型検査に通っても、常にFalseを返す等価比較など、法則に反する実装を作れてしまいます。コンパイル成功は意味上の正しさの証明ではありません。",
-  diagnosticsBody: "型の間違いはコンパイラ、法則違反はテストで確認します。期待する関係、入力、再現できる最小の例をテストへ残してください。",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "Eq<Ticket>のeqは二つのTicketを受け取り、numberが等しいかをBoolで返します。==はこの操作に対応します。",
+    "reflexive<A>のwhere Eq<A>は、Aを比較できることを要求します。value == valueがTrueであるべき、というのがここで調べる性質です。",
+    "symmetricは(left == right)と(right == left)という二つのBoolを比較します。チケット番号42と7では両方Falseなので、この検査全体はTrueです。",
+    "次の別ファイルではeqの本体だけをFalseに変えています。型検査と実行は成功しても、最初の出力はFalseです。戻り値がBoolであることと、比較として正しいことは別々に確かめる必要があります。"
+  ], rules: [
+    "Eqでは、同じ値を自分自身と比較すると等しい必要があります。Functorのmapでは、値をそのまま返す関数を使うと元と同じ結果になる必要があります。操作の引数や戻り値の型に加え、こうした結果の関係を守る約束を法則と呼びます。Eq、Ord、Functor、Applicative、Monadなどに、それぞれ法則があります。",
+    "法則は操作を組み合わせたときの結果の関係です。追加の隠れた型検査や、別のinstanceを選ぶ規則ではありません。比較に使う等しさは、その型で観測できる結果に基づきます。",
+    "コンパイラは任意の関数の法則を証明しません。標準実装は法則のテストで検証します。自分のinstanceにも、代表的な値や生成した入力でテストを用意してください。",
+    "型検査に通っても、常にFalseを返す等価比較など、法則に反する実装を作れてしまいます。コンパイル成功は意味上の正しさの証明ではありません。",
+    "型の間違いはコンパイラ、法則違反はテストで確認します。期待する関係、入力、再現できる最小の例をテストへ残してください。",
+    "Eqには対称性に加え、aとbが等しくbとcが等しいならaとcも等しい、という推移性も必要です。Ordは比較が作る順序とEqの結果が矛盾しないようにします。",
+    "Functorは中の値に関数を適用するmap、Applicativeはpureや包まれた関数の適用、Monadは前の結果を次の計算へ渡すflatMapを宣言するtraitです。それぞれ、処理をまとめ直しても観測できる結果を保つための法則があります。用語だけで実装の正しさを判断せず、対象の操作の法則を確認してください。"
+  ], mistakes: [
+    "法則に反する実装ではコンパイラの診断が出るとは限りません。壊したeqの本体をleft.number == right.numberへ戻すと、二つの検査はまたTrueになります。",
+    "一方、Boolを返すreflexiveに文字列\"True\"を書くと、SES-T0101で拒否されます。下の型エラー例では本体をvalue == valueに戻してください。型の不一致と、型は合うが意味が間違う場合を分けて調べます。"
+  ], related: [
+    "操作の宣言と型ごとの実装を、小さな例で確認できます。",
+    "演算子の記号と標準traitの対応を確認できます。",
+    "比較や表示をフィールドから生成できる条件を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "操作の結果同士が守るべき関係"
+pub fn mistakesTitle -> String = "法則違反と型エラーを区別する"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "型は合っていても、実装の意味が間違っていることはあるか",
-  summary: "traitの法則は、引数と戻り値の型だけでは検査できない、実装が守るべき振る舞いを表します。",
-  reading: "reflexiveは、等しさの性質の一つである「値は自分自身と等しい」を確認します。Eq<A>があるため引数を比較でき、整数と文字列で同じ検査を使えます。",
-  result: "reflexive 42もreflexive \"seseragi\"もTrueです。常にFalseを返すEqの実装は、戻り値の型Boolには合いますが、自分自身と等しいという法則に違反します。自分でinstanceを書く場合は、こうした関係を具体的な値でテストしてください。"
+  question: "比較の実装は、型が合っていれば正しいか",
+  summary: "等価比較には「自分自身と等しい」などの約束があります。こうした法則は、引数と戻り値の型だけでは確かめられないため、値を使ってテストします。",
+  reading: "TicketのEqを番号の比較として実装し、二つの性質を確認します。reflexiveは自分自身との比較、symmetricは左右を入れ替えても結果が同じかの検査です。",
+  result: "二つの検査はTrueです。コンパイルが成功しただけでなく、この入力で法則が成り立つことを確認できました。ただし二つの具体例だけで、すべての値について正しいと証明したことにはなりません。"
 }

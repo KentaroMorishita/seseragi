@@ -19,10 +19,14 @@ Outlined.
 ## Scope boundary
 
 This ledger covers the Language Reference and its related reference surfaces.
-The interactive Tour is the sole ordered learning path and is intentionally not
-duplicated as Get Started or Learn routes. CLI, project, Web, and tooling topics
-enter this map only as independently useful reference contracts, not as steps
-in a course.
+The Tour owns the interactive course; the Docs also explain purpose, appeal,
+basic concepts and a practical first run without requiring that course. See
+[site architecture](site-architecture.md#12-entrance-and-pilot-page-map) for the
+#697 entrance/pilot assignments. Introductory and first-run task pages do not
+create additional normative coverage rows here. CLI, project, Web, and tooling
+topics enter this map as independently useful reference contracts, not steps in
+a duplicated course. Keep each existing route and its full semantic obligations
+when moving its simpler explanation ahead of advanced rules.
 
 ## Language Reference / Language model
 

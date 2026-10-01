@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "成功した値か、失敗の理由を返すには",
-  summary: "Either<E, A>は、成功値Aを持つRightか、失敗理由Eを持つLeftを返す型です。呼び出し側は、どちらの結果になったかを調べて処理できます。",
-  reading: "positiveは正の整数ならRight value、それ以外ならLeft (NotPositive value)を返します。incrementのmapRightは成功値だけに1を足し、失敗の理由はそのまま残します。",
-  result: "increment (positive 2)の結果はRight 3です。入力が0なら、Left (NotPositive 0)のまま返します。呼び出し側でmatchを使えば、成功値の表示と失敗理由に応じた処理を分けられます。Eitherは通常の値なので、Effectのように実行開始を待つ必要はありません。"
+  question: "失敗した理由を、呼び出し側へ返すには",
+  summary: "正の整数なら成功値を、0以下なら理由を返す例です。Eitherは、成功のRightと、理由を持つLeftをまとめた通常の値です。",
+  reading: "Either<String, Int>のStringは失敗理由、Intは成功値の型です。positive 2はRight 2、positive 0はLeft \"must be positive\"です。describeのmatchでどちらかを調べ、中身にvalueやreasonと名前を付けます。",
+  result: "出力はok: 2とerror: must be positiveです。Leftを作っても、呼び出し元の処理へ例外が飛ぶわけではありません。呼び出し側が戻り値を調べ、表示や次の処理を選びます。",
 }
+
+pub fn readerCaption -> String = "成功値と失敗理由を返す"
+
+pub fn readerBridgeOne -> String =
+  "このTypeScript例は、正でない値をthrowし、呼び出し側のtry/catchで表示します。Seseragi版はLeftを返してmatchで読むため、制御の流れは同じではありません。比べる入力は整数の2と0で、表示結果を揃えています。外部入力の解析や任意のnumber全体の検証は含めません。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptでも、成功と失敗を表すオブジェクトのunionを戻す書き方を選べます。ここでは見慣れたtry/catchから、理由を値として返す違いを確認します。Seseragiのpub effect fn mainは表示の入口で、printlnが二つの結果を改行して出力します。"
+
+pub fn readerInvalidCaption -> String = "成功側へ文字列を入れる"
+
+pub fn readerMistake -> String =
+  "Either<String, Int>のRight \"2\"はSES-T0101です。Rightには成功値のIntを入れるのでRight 2に直します。StringはLeftに入る失敗理由の型です。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "positiveは正の整数ならRight value、それ以外ならLeft (NotPositive value)を返します。incrementのmapRightは成功値だけに1を足し、失敗の理由はそのまま残します。"
+
+pub fn readerLegacyResult -> String =
+  "increment (positive 2)の結果はRight 3です。入力が0なら、Left (NotPositive 0)のまま返します。呼び出し側でmatchを使えば、成功値の表示と失敗理由に応じた処理を分けられます。Eitherは通常の値なので、Effectのように実行開始を待つ必要はありません。"

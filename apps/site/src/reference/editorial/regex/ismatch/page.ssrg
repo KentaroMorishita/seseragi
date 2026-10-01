@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::isMatch" "ismatch" "True\nFalse\nTrue\nFalse\nTrue" "true\nfalse\ntrue\nfalse\nfalse" (en.copy ()) (ja.copy ())

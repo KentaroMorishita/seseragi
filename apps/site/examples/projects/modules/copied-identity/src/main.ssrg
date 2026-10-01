@@ -1,0 +1,6 @@
+import { UserId } from "./copied-domain"
+import { toInt } from "./domain"
+
+let id: UserId = UserId 42
+let number: Int = toInt id
+pub effect fn main = println (show number)

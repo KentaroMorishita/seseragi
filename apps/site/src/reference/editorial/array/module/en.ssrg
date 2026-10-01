@@ -1,0 +1,17 @@
+pub fn purpose -> String =
+  "Array is an ordered sequence of values of one type, written like [10, 20, 30]. std/array provides operations to select, sort, and group those values. Operations return new values rather than directly rewriting the source array."
+pub fn choose -> String =
+  "Use takeWhile and dropWhile for a consecutive prefix, findIndex for a matching position, last to read the final element, and init to remove it. Choose sort or sortBy to order items, groupBy to collect equal keys, and reduceRight to combine from the end."
+pub fn example -> String =
+  "This example checks batches of two and their boundaries. chunksOf 2 [10, 20, 30, 40, 50] keeps the final [50]. Empty input gives Right []; a nonpositive size gives Left NonPositiveSize. Right names success with a value; Left names failure with a reason. Either is the type that returns one of those alternatives; use match to handle both cases."
+pub fn results -> String =
+  "Operations such as last, init, and findIndex return Maybe for empty or missing results. Just names the case containing a value; Nothing names absence. These differ from ordinary values such as zero or an empty array. chunksOf and windows use Either because they also report the reason for an invalid size."
+pub fn rules -> String =
+  "Each API page explains argument order, example results, and empty-input or failure behavior. In arrays.empty<Int> (), <Int> specifies the element type and () is an argument called Unit. Array transformations compute their results eagerly. A large result requires work and memory for its elements."
+
+pub fn maybePurpose -> String = "This example uses the final integer only when one exists. lastLabel takes an integer array and returns display text. Write the result to inspect after match, then put the cases inside { }."
+pub fn maybeReading -> String = "Just number -> selects the case with a value and gives its integer the name number. The right side creates text using that number. The right side of Nothing -> gives the text for an empty array; there is no contained value. Both possible cases are handled. init and Map.get use the same pattern, but when Just contains an array, its chosen name refers to that array in the branch."
+pub fn eitherPurpose -> String = "This example splits an array using an input size, then uses either the successful batches or the failure reason. batchLabel takes a size and an integer array and returns text."
+pub fn eitherReading -> String = "Right batches -> selects success and names the contained array of arrays batches. Left error -> names the failure reason error. On the right of ->, each branch uses that name to construct text. Size two succeeds; zero gives the reason NonPositiveSize 0. The same two branches handle a windows result."
+
+pub fn construction -> String = "Use empty () to start with zero elements, singleton to wrap one value, and fromIterable to convert a finite input in order. zip pairs corresponding positions; zipWith calculates from those two values. Both stop at the shorter side and discard the longer-side remainder. unzip separates pairs into two arrays."

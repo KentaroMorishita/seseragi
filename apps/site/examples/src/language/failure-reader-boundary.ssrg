@@ -1,0 +1,5 @@
+effect fn announce message: String = println message
+
+let unused = announce "not printed"
+
+pub effect fn main = announce "only main"

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Make display text lowercase using Unicode default casing",
+  purpose: "Use toLower to display a label or another string in lowercase. It applies Unicode’s default lowercase conversion and returns the resulting String. Hello becomes hello. It does not select a locale or change the original input.",
+  reading: "The import names std/text as text. Write the input string after text.toLower. The Greek input contains ΟΣ, ΟΣΑ, and Σ, producing ος, οσα, and σ. In ΟΣ, Σ is at the end of the cased sequence and becomes ς. In ΟΣΑ, the following Α makes it σ instead. Σ on its own also becomes σ.",
+  boundaries: "İ becomes i followed by combining dot U+0307, increasing the number of Unicode character-code values from one to two. Lowercasing does not guarantee the same string length. The final [] means the empty string stays empty.",
+  rules: "Default full lowercase conversion examines the characters around Greek Σ. It becomes final ς when a cased character precedes it and no cased character follows it. This context check skips characters Unicode defines as case-ignorable. Turkish, Lithuanian, and other locale-specific rules do not apply. Work is proportional to input and output byte counts.",
+  mistake: "Lowercasing does not make Straße and STRASSE equal. Consider caseFold’s rules for that comparison task. This operation also does not implement the Turkish request to turn İ into just i. TypeScript’s toLowerCase corresponds to these examples; toLocaleLowerCase expresses a different, locale-selected request.",
+}

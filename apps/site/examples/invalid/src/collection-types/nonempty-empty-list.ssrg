@@ -1,0 +1,4 @@
+import * as nonempty from "std/non-empty-list"
+let emptyScores: List<Int> = `[]
+let scores: nonempty.NonEmptyList<Int> = emptyScores
+pub effect fn main = println "unreachable"

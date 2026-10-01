@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "型検査は、どんな取り違えを防ぐか",
-  summary: "すべての式の型を実行前に検査します。型は、関数や操作に渡せる値と、返される値を表します。",
-  reading: "例のPlayerは、名前、Score、Rankをまとめます。ScoreはIntと区別する型で、RankはBronze・Silver・Goldのいずれかです。値の構築では、対応するフィールドへ文字列、Score 42、Goldを渡します。",
-  result: "PlayerのscoreにはScore 42、rankにはGoldを渡せます。scoreへ整数の42を直接渡したり、rankへ任意の文字列を渡したりすると型エラーになります。名前付きの型で用途を区別するため、形が似ていても値を取り違えられません。"
+  question: "関数へ渡す値の取り違えは、いつ分かるか",
+  summary: "個数を整数として受け取る関数へ文字列を渡すと、実行前に型エラーになります。まず、普通の計算の入力と結果から型検査の役割を確認します。",
+  reading: "lineTotalは単価unitPriceと個数quantityをIntとして受け取り、掛けた結果もIntとして返します。->は次の引数や戻り値の型へ続く記号です。lineTotal 400 3は、引数を空白で渡す呼び出しで、結果は1200です。",
+  result: "let totalは結果に名前を付けます。mainを実行すると1200が一行表示されます。型検査では、この関数に渡す二つの値と、返す値の型が合うかを確認します。",
 }
+
+pub fn readerCaption -> String = "整数の単価と個数から合計を求める"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptでも、引数にnumberと書いた関数へstringを渡すと型エラーになります。SeseragiのIntは整数を表し、小数のFloatとは別の型です。型注釈は値を変換する指示ではありません。"
+
+pub fn readerBridgeTwo -> String =
+  "pub effect fn mainは公開された実行入口です。printlnは文字列と改行を出力し、show totalは整数を表示用の文字列にします。実行前の検査に通っても、合計の式そのものが業務上正しいかまでは保証されないため、具体的な入力と結果をテストします。"
+
+pub fn readerInvalidCaption -> String = "整数の代わりに文字列の単価を渡す"
+
+pub fn readerMistake -> String =
+  "\"400\"は数字を含むStringです。SES-T0101は必要なIntと渡したStringの違いを示します。ここでは引用符を外して400に直します。外から文字列として受け取った値なら、整数へ読み取る処理と、その失敗の扱いが別に必要です。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則のPlayerでは、Scoreという整数と区別する型と、Bronze・Silver・Goldという三つの選択肢を使います。この宣言だけの例にはmainがないため、実行には最初の完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "例のPlayerは、名前、Score、Rankをまとめます。ScoreはIntと区別する型で、RankはBronze・Silver・Goldのいずれかです。値の構築では、対応するフィールドへ文字列、Score 42、Goldを渡します。"
+
+pub fn readerLegacyResult -> String =
+  "PlayerのscoreにはScore 42、rankにはGoldを渡せます。scoreへ整数の42を直接渡したり、rankへ任意の文字列を渡したりすると型エラーになります。名前付きの型で用途を区別するため、形が似ていても値を取り違えられません。"
+
+pub fn readerRelated -> String = "では、関数や値のどこに型を書くかを確認できます。"

@@ -4,37 +4,39 @@ import { ReaderCopy } from "../../reader-article"
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Tuples, arrays, and lists",
   summary: (explanation ()).summary,
+  exampleTitle: "Read a tuple, handle missing array elements, and prepend a name",
   purpose: [
-    "A tuple groups values with different roles, such as a label and a number. (\"answer\", 42) has two positions: the first is String and the second Int.",
-    "Use Array to read elements at integer positions. Use List when adding elements at the front or taking them in order from the front. Both are immutable, so a changed result is a new value. Array and List are different types."
+    "Use a tuple to return a label and number together; use Array or List for a sequence of values of one type. TypeScript also has arrays and tuples, but Seseragi Array and List are distinct immutable types.",
+    "The example extracts a tuple, reads array positions, and adds a name to a list. A missing array element is represented in the returned value too.",
   ],
-  exampleTitle: "Choose a shape and read its values",
   reading: [
-    "pair contains a String in its first position and an Int in its second. let (label, number) = pair extracts them and gives them names, so the first outputs are answer and 42.",
-    "[10, 20, 30] has type Array<Int>. Positions start at zero, so numbers[1] refers to 20. Indexed access returns Maybe<Int>.",
-    "Just 20 means an element exists at that position with value 20; Nothing means none exists. numbers[9] is outside the array, so it returns Nothing. selected uses match to extract an integer from Just, or uses 0 for Nothing.",
-    "A backtick before the brackets makes a List: `[\"Aki\", \"Mio\"]. \"Ren\" : names creates a new list with Ren at the front. names is unchanged. The final output, converted to text with show, also has a backtick identifying the list."
+    "pair holds (\"answer\", 42), a tuple with String followed by Int. let (label, number) = pair names each position, so the first two output lines are answer and 42.",
+    "numbers is an Array<Int> containing [10, 20, 30]. Positions start at zero, so numbers[1] selects the second element, 20. Its Maybe<Int> result is Just 20 when present or Nothing when absent. The third and fourth lines display those two cases.",
+    "The match in selected inspects the result. Just value names the contained integer and returns it; Nothing returns 0. selected is therefore the Int 20 printed on the fifth line. Handling absence is what lets the program use the result as an integer.",
+    "The backtick before the brackets in names marks a List. \"Ren\" : names constructs a new List with Ren at the front, preserving names. show converts a value to a display string. In main, ${...} inserts each value into a template and \\n separates output lines.",
   ],
   rules: [
     "A tuple has a fixed length and a type for each position. There is no one-element tuple. Array and List elements must all have one common type; an Array<Int> cannot contain a String.",
     "An empty collection supplies no element from which to infer its type. Declare it explicitly, for example let empty: Array<Int> = [] or let empty: List<String> = `[ ]. Spaces inside the brackets do not change the list syntax.",
     "Array indices are Int values. Negative and out-of-range indices produce Nothing. Write the index brackets immediately after the receiver: numbers[1]. f [1] instead passes an array to f. List has no index syntax.",
-    "Array-to-List and List-to-Array conversion is explicit, using std/array.toList and std/list.toArray. A list can share its unchanged tail when prepending; repeatedly copying the rest of an array during recursive traversal can instead make a large traversal expensive."
+    "Convert explicitly with toList in std/array and toArray in std/list. In [head, ...tail], head is the first element and tail is the remaining Array. Recursing through an entire Array this way repeatedly constructs the remainder, giving work proportional to the square of its size. A List can share its unchanged tail when prepending or taking the remainder, so the same traversal is linear. For large Array traversals, use operations such as reduce.",
   ],
   mistakes: [
-    "Without the backtick, [\"Aki\", \"Mio\"] is an Array, not a List. An expected List type does not silently convert that literal.",
-    "numbers[1] has type Maybe<Int>. Handle Just and Nothing before treating the result as an Int. If you destructure a collection with a fixed number of positions, it may not match; tuple destructuring is different because the tuple's length is fixed in its type."
+    "The array below declares Array<Int> but contains the String \"20\", producing SES-T0101. Remove the quotes to use 20 and print [10, 20, 30].",
+    "Without the backtick, [\"Aki\", \"Mio\"] is an Array and does not implicitly become a List. An Array or List pattern requiring a fixed number of elements can fail to match its length; distinguish this from destructuring a tuple whose positions are fixed by its type.",
   ],
   related: [
-    "Generate collections from ranges or another collection.",
-    "Check when destructuring is guaranteed to match and when match is required.",
-    "Look up the basic element types and Maybe constructors used in results."
-  ]
+    "Build new Arrays or Lists by traversing a range or collection.",
+    "Distinguish destructuring that always succeeds from matching that must handle failure.",
+    "Check element types and the Maybe result used by indexed access.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Which collection should I use, and how do I read an element?",
-  summary: "A tuple has fixed positions, possibly of different types. An Array or List has any number of elements of one type, with different access and construction operations.",
-  reading: "(label, number) unpacks the tuple. Array indexes start at zero, so numbers[1] is Just 20 and numbers[9] is Nothing. The match for selected extracts value from Just, or chooses 0 for Nothing. selected is therefore an Int with value 20, ready for arithmetic.",
-  result: "selected is the Int 20. After extracting the indexed result with match, it can be used in integer calculations. \"Ren\" : names creates a list with a new first element, leaving names unchanged. Use library conversion functions to convert between Array and List."
+  question: "How do I group different roles or a sequence of like values?",
+  summary: "A tuple fixes the role and type of each position. An Array supports indexed access; a List supports adding at the front. These data values are immutable.",
+  reading: "Read the two tuple positions, the zero-based Array positions, and the List prepend separately. Just and Nothing represent a present or absent element.",
+  result: "The output shows the two tuple values, Just 20, Nothing, the extracted 20, and the list with Ren added. The original numbers and names remain unchanged.",
 }

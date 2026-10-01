@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Split a string into an array using a literal separator",
+  purpose: "Pass the separator first and the input string second. The separator is literal text, not a regular expression. The result contains the string pieces around each separator.",
+  reading: "text.split \",\" \"a,,b,\" has an empty field between commas and another at the end. [\"a\",\"\",\"b\",\"\"] preserves both. json.encodeString prints the array as JSON so the quotes around empty strings are visible.",
+  boundaries: "Splitting an empty input on a comma gives one empty entry, [\"\"]. An empty separator instead splits into Unicode scalars: A😀 becomes A and 😀, while empty input becomes [].",
+  rules: "A Unicode scalar is one Unicode code-point value. A visible character can contain multiple scalars, so splitting on an empty separator is not necessarily splitting user-perceived characters. Empty fields are retained and input is unchanged.",
+  mistake: "The separator \".\" matches a literal dot. This is not the regular-expression form of TypeScript split. Use lines to handle line-ending conventions or words to split on whitespace while removing empty fields.",
+}

@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+
+fn isLarge value: Int -> Bool = value >= 30
+
+fn describe result: Maybe<Int> -> String = match result {
+  Just index -> "found at " + show index
+  Nothing -> "not found"
+}
+
+pub effect fn main = do {
+  _ <- println (describe (arrays.findIndex isLarge [10, 30, 40]))
+  _ <- println (describe (arrays.findIndex isLarge [10, 20]))
+  println (describe (arrays.findIndex isLarge (arrays.empty<Int> ())))
+}

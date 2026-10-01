@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Inherent impls and methods",
   summary: (explanation ()).summary,
-  ruleTitle: "Define methods in the module defining their type",
-  ruleBody: "Write a type's methods inside impl T. The first parameter is named self and has type T. Calling value.method passes value to self. Supply later arguments in order, separated by spaces as for ordinary functions.",
-  typingBody: "The type of the value passed to self determines which method is called. Generic parameters are replaced with concrete types before checking. Several impl blocks can target one type, but the same method name cannot be defined twice.",
-  evaluationBody: "A method call passes the value before the dot as self to the function selected by its type. You cannot assign to self's fields. A method that changes a value returns a new value. With no parameters other than self, write value.get; do not pass () unless get requires a Unit argument.",
-  invalidTitle: "Adding a method and implementing a trait use different declarations",
-  invalidBody: "impl T belongs only in the module defining T. Use instance Trait<T> to implement a trait's operations. impl Trait<T> does not implement that trait.",
-  diagnosticsBody: "Check the defining module of the type, the name and type of self, and duplicate method names. A method called from another module needs pub.",
+  exampleTitle: "Define an operation that advances learning progress",
+  purpose: [
+    "Keep operations with the type of data they handle. Calling a method resembles a TypeScript object method, but Seseragi writes self as a parameter and does not assign into the original fields.",
+    "Progress has an integer field completed for completed items. advance returns a new Progress with a larger count; count returns the current number.",
+  ],
+  reading: [
+    "struct Progress { completed: Int } declares a named data type. impl Progress is where its methods are defined. The type and impl belong in the same module.",
+    "The first parameter of advance, self: Progress, is the value being operated on; amount: Int is how much to add. The final -> Progress gives the result type. Progress { ...self, completed: ... } carries the fields into a new value with completed replaced.",
+    "In original.advance 1, original becomes self and 1 becomes amount. original has completed equal to 2, so updated contains 3. This does not assign into original.",
+    "count takes only self and returns completed, so original.count and updated.count need no additional (). They produce 2 and 3. Backticks enclose the template; ${...} inserts each value and \\n separates the output lines.",
+  ],
+  rules: [
+    "Write a type's methods inside impl T. The first parameter is named self and has type T. Calling value.method passes value to self. Supply later arguments in order, separated by spaces as for ordinary functions.",
+    "The type of the value passed to self determines which method is called. Generic parameters are replaced with concrete types before checking. Several impl blocks can target one type, but the same method name cannot be defined twice.",
+    "A method call passes the value before the dot as self to the function selected by its type. You cannot assign to self's fields. A method that changes a value returns a new value. With no parameters other than self, write value.count; do not pass () unless count requires a Unit argument.",
+    "impl T belongs only in the module defining T. A trait specifies shared operations that different types can provide. Use instance Trait<T> to implement those operations. impl Trait<T> does not implement that trait.",
+    "Check the defining module of the type, the name and type of self, and duplicate method names. A method called from another module needs pub.",
+  ],
+  mistakes: [
+    "count below names its first parameter progress, producing SES-T0503. A method requires that parameter to be named self. Change progress in the declaration and progress.completed in the body to self to print 2.",
+    "A dot call does not imply an in-place update. Receive the new value returned by advance and pass that value to subsequent operations.",
+  ],
+  related: [
+    "Check the correspondence between a dot call and an ordinary function call.",
+    "Later, define methods for types such as Box<A> with different contained types.",
+    "Review constructing a struct, reading its fields and making updated copies.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Where do I put operations belonging to my type?",
-  summary: "An impl groups methods for a named type. Define it in the module that owns the type and give each method its receiver as the first self parameter.",
-  reading: "Box<A> contains a field value of type A. get, defined in impl<A> Box<A>, receives the Box before the dot through self: Box<A>. It returns self.value, so its result type is also A.",
-  result: "Box<Int> { value: 42 }.get returns the Int 42. get reads the contained value without changing the Box. An impl method and an instance trait implementation are separate declarations."
+  question: "How do I define methods that operate on my own type?",
+  summary: "An impl defines methods, functions belonging to a type. self receives the value before the dot; an update can return a new value.",
+  reading: "advance in impl Progress constructs a new Progress from the self input. count only reads the number without changing the value.",
+  result: "The original progress is 2 and the new progress is 3. Keeping the returned value lets you use the next state while retaining the original.",
 }

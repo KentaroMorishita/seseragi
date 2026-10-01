@@ -1,0 +1,1 @@
+effect fn announce message: String with Console = println message

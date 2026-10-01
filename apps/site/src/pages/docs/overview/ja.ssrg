@@ -1,6 +1,14 @@
-pub fn title -> String = "Seseragi リファレンス"
+pub fn title -> String = "Seseragi ドキュメント"
 pub fn summary -> String =
-  "関数の呼び方や型の書き方を調べ、コードがどう動くかを確認できます。言語の規則は言語リファレンス、関数や型の使い方は標準ライブラリから探してください。"
-pub fn tourTitle -> String = "順番に学ぶ"
-pub fn tourBody -> String =
-  "コードを動かしながら順番に学ぶにはTourを使ってください。このリファレンスでは、知りたい概念や操作を選び、小さな例の読み方と詳しい規則を確認できます。"
+  "Seseragiは、端末で動くプログラムやWeb UIを作る、実行前に型を検査する言語です。たとえば送料の条件を先に渡して、注文の小計だけを受け取る関数を作れます。身近なTypeScriptとの比較から、書き心地を確かめてください。"
+pub fn startTitle -> String = "知る・試す・読み方を調べる"
+pub fn introPurpose -> String = "用途と、同じ処理をTypeScriptで書いた場合との違いを知る："
+pub fn firstRunTitle -> String = "自分のプログラムを動かす"
+pub fn firstRunBody -> String = "公開済みのCLIを導入し、ファイルを作って型を確認し、端末へ文字列を出力します。"
+pub fn valuesPurpose -> String = "letで値に名前を付け、更新した値を作る："
+pub fn functionsPurpose -> String = "関数の引数と戻り値に型を書く："
+pub fn referenceTitle -> String = "詳しい規則や使える関数を探す"
+pub fn referenceBody -> String =
+  "下の言語リファレンスでは概念とその規則を、標準ライブラリではモジュールや関数を探せます。記事は必要なところから読めます。"
+pub fn tourTitle -> String = "演習を順番に試したいとき"
+pub fn tourBody -> String = "Tourではコードを動かしながら練習できます。紹介や最初の実行手順、各記事の説明は、このドキュメントだけで読めます。"

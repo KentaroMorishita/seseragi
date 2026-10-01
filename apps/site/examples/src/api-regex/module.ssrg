@@ -1,0 +1,12 @@
+import * as regex from "std/regex"
+fn orderCode text: String -> String = match regex.compile "ORD-[0-9]+" {
+  Left error -> `invalid pattern at byte ${error.offset}`
+  Right pattern -> match regex.find pattern text {
+    Just found -> `order: ${found.text}`
+    Nothing -> "no order code"
+  }
+}
+pub effect fn main = do {
+  println (orderCode "memo ORD-42 ready")
+  println (orderCode "no reference yet")
+}

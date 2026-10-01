@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "RightをValidに、Leftを一個のエラーを持つInvalidに変換します。",
+  taskTitle: "既存の確認処理を独立した検証に加える",
+  purpose: "既存のrequireNameは、成功か一つの失敗理由をEitherで返します。その結果を、他の独立した確認と組み合わせられるValidationへ変換します。",
+  setup: "validationはstd/validationの関数名につける名前です。Validation、Valid、Invalidは別に読み込みます。Validation<String, String>は、StringのエラーかStringの成功値を返す型です。fnは関数を定義し、引数の後の:は型、->の後は戻り値の型を示します。 Either、Left、RightはPreludeにあり、importなしで使えます。",
+  after: [
+    "requireNameはname: Stringを受け取り、空ならLeftに理由、それ以外ならRightに名前を入れます。=の後のifの結果が戻り値です。Either<String, String>の前のStringが理由、後のStringが成功値の型です。",
+    "validation.fromEitherはRightの値をValidに移します。Leftの理由は、一つのエラーを持つInvalidになります。変換自体は名前を再確認しません。",
+    "describeのmatchは結果の種類で処理を選びます。Valid valueならvalueが成功した文字列です。Invalid errorsならerrorsに一つ以上のエラーがあります。arrays.fromIterableはエラーをArrayにし、text.join \"; \"は順番を保って表示文につなぎます。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptのokは、どちらのオブジェクトの形かを示す欄です。trueなら成功した値、falseならエラーの欄を読みます。これは返されたデータであり、例外を投げる処理ではありません。 fromResultは一つのerrorをerrors配列の一要素に移します。TypeScriptの[string, ...string[]]は、先頭の文字列が必須で、その後に任意個の文字列が続く配列型です。空のエラー配列を受け入れない条件を、両方の例に保っています。",
+  comparisonAfter: "両方とも既存の結果を別の形へ明示的に変換しています。SeseragiのfromEitherなら、変換後の値をValidationの共通操作で組み合わせられます。",
+  details: [
+    "fromEither<E, A>のEとAは変換前後で変わりません。ここでは両方Stringです。Leftが持つE自体がArray<String>なら、配列全体が一個のエラーになり、要素ごとのエラーには展開されません。",
+    "Eitherの処理が最初の失敗だけを残した場合、fromEitherは捨てられたエラーを回復できません。すべての独立したエラーが必要なら、それぞれの確認結果を変換してからValidationで組み合わせます。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

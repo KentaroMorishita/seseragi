@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Signalに対する*と:=は何をするか",
-  summary: "接頭辞の*は、Signalの現在値を読むTaskを作ります。:=はMutableSignalの更新を表すTaskです。どちらも実行したときに状態へアクセスする操作です。",
-  reading: "countの初期値は0です。count := 1を実行すると現在値が1になります。signals.updateはその現在値に1を足し、最後の* countが更新後の値を読みます。これらのTaskをdoで順につないでいます。",
-  result: "readAndWriteは2を返します。* count自体はTask<Int>で、通常のIntとして使えません。また、:=はMutableSignalに限った操作で、letの変数やstructのフィールドへの代入には使えません。"
+  question: "Signalの現在値を読み、値を更新する記号はどう使うか",
+  summary: "*countは現在値を読む処理、count := 4は更新する処理です。どちらもEffectなので、通常の式が勝手に変化する仕組みにはなりません。",
+  reading: "countを0で作り、snapshot <- *countで整数0を保存します。count := 4で現在値を4へ変え、updateで今の値に1を足します。current <- *countが更新後の整数5を読みます。",
+  result: "出力は0、5、10です。先に読んだsnapshotは0のままです。最後のcurrent * 2は二項の乗算で、先頭に書く*countというSignal読取とは位置が異なります。"
 }
+
+pub fn readerBridgeOne -> String =
+  "importはstd/signalをsignalsとして読み込みます。pub effect fn mainが実行入口で、doでは処理を順に実行します。<-は処理の成功値に名前を付ける記号です。Intは整数、\\value: Int -> value + 1は現在値から次の値を計算する関数です。"
+
+pub fn readerBridgeTwo -> String =
+  "*countの型はTask<Int>で、signals.read countの短い表記です。:=はsignals.setの短い表記で、書き込み可能なMutableSignalにだけ使えます。普通のlet変数やレコードのフィールドへ代入する記号ではありません。現在値に基づく更新は、読み取りと書き込みを別にせずsignals.updateでまとめてください。"
+
+pub fn readerMistake -> String =
+  "拒否例のsnapshotは普通のIntを返す宣言なのに、本文はTask<Int>です。戻り値をTask<Int>にし、呼び出し側のdoで実行して値を受け取ります。読み取り専用の派生Signalへ:=を書くこともできません。"
+
+pub fn readerCaption -> String = "読み取った整数と、その後に変わるSignalを比べる"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "countの初期値は0です。count := 1を実行すると現在値が1になります。signals.updateはその現在値に1を足し、最後の* countが更新後の値を読みます。これらのTaskをdoで順につないでいます。"
+
+pub fn readerLegacyResult -> String =
+  "readAndWriteは2を返します。* count自体はTask<Int>で、通常のIntとして使えません。また、:=はMutableSignalに限った操作で、letの変数やstructのフィールドへの代入には使えません。"

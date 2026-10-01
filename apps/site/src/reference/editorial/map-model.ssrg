@@ -1,0 +1,72 @@
+import { ApiCopy, Editorial } from "./model"
+import { localized } from "../../model/locale"
+import {
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../model/page"
+
+pub fn mapEditorial identity: String
+  -> exampleId: String
+  -> output: String
+  -> english: ApiCopy
+  -> japanese: ApiCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: [
+      Heading ("using-this-operation", localized "Use this operation" "この操作を使う"),
+      Paragraph ([Words (localized english.purpose japanese.purpose)]),
+      Paragraph (
+        [Words (
+          localized
+            "import * as maps names std/map as maps. A Map associates keys with values: Map<String, Int> uses text keys and whole-number values. let names a value. Calls separate arguments with spaces; parentheses group a nested call. A pair (key, value) keeps its two parts by position, and [] encloses an Array of such pairs. In these function declarations, : gives each parameter its type. Arrows separate multiple typed parameters; the final -> gives the result type, and = begins the expression that returns it."
+            "import * as mapsはstd/mapをmapsという名前で読み込みます。Mapはキーと値の対応表で、Map<String, Int>なら文字列のキーと整数の値を持ちます。letは値に名前を付けます。呼び出しの引数は空白で区切り、括弧で内側の呼び出しをまとめます。(key, value)は位置で区別する二つの値の組で、[]はその組を入れるArrayです。この関数の宣言では、引数ごとに:の後へ型を書きます。引数が複数あれば->で区切り、最後の->の後が結果の型、=の後が結果を返す式です。"
+        )]
+      ),
+      CodeExample
+            (exampleId, localized "Seseragi: a complete program" "Seseragiの完全なプログラム"),
+      Paragraph (
+        [Words (
+          localized
+            "pub effect fn main is the entry function; do runs these prints in order. println displays a value and adds a newline. The json import supplies json.encodeString, which formats Arrays and pairs as JSON text for comparison. maps.entries reads key/value pairs; JSON writes each pair as [key,value]. The key/value types of an empty Map can come from explicit <...> arguments on the call or from a surrounding type annotation, as on the empty page. () supplies the Unit argument, meaning no additional input. These examples use String keys; the value type is Int or String as shown in each call or annotation. Integer-valued examples use small whole numbers."
+            "pub effect fn mainは実行入口で、doの中は出力を行う順に並びます。printlnは値を表示して改行します。jsonのimportはjson.encodeStringを読み込み、Arrayや値の組を比較しやすいJSONの文字列にします。maps.entriesはキーと値の組を読み、JSONでは各組を[key,value]と表示します。空のMapのキーと値の型は、呼び出しの<...>や、emptyのページで示すような型注釈から決められます。()は追加の情報を持たないUnitの引数です。キーはStringで、値の型は各呼び出しや型注釈にあるIntまたはStringです。整数を使う例では小さな値を選んでいます。"
+        )]
+      ),
+      Terminal (localized "Output" "実行結果", output),
+      Heading ("reading-the-example", localized "Read the result" "結果を読む"),
+      Paragraph ([Words (localized english.reading japanese.reading)]),
+      Paragraph ([Words (localized english.boundaries japanese.boundaries)]),
+      Heading (
+        "typescript-comparison",
+        localized "The same task in TypeScript" "TypeScriptで同じ処理を表す"
+      ),
+      Paragraph ([Words (localized english.mistake japanese.mistake)]),
+      CodeExample (
+        exampleId + "-ts",
+        localized "TypeScript: matching input and output" "TypeScriptで同じ入力と出力を確かめる"
+      ),
+      Paragraph (
+        [Words (
+          localized
+            "This TypeScript program produces the same output above. Spreading ... inside [] collects Map entries, keys or values into an array; JSON.stringify formats it. new Map(source) copies entries when this example needs to preserve the original. The final export {} only keeps this standalone TypeScript file's names local to its module. Keys are Strings throughout. Integer-valued examples stay within the exact-integer range of both languages; string-valued examples work with text. These examples do not establish equivalent behavior for custom key equality or out-of-range arithmetic."
+            "このTypeScriptのプログラムも、先ほどと同じ出力になります。[]の中の...はMapの項目やキー、値を配列に集め、JSON.stringifyが文字列にします。元のMapを保つ必要がある例ではnew Map(source)で項目をコピーします。最後のexport {}は、この独立したTypeScriptファイルの名前をモジュール内にとどめるためのものです。キーはすべてStringです。整数の例は両言語で正確に表せる範囲に収め、文字列の値を持つ例では文字列を扱います。独自のキーの等しさや、範囲を超える計算が同じ動作になるとは示していません。"
+        )]
+      ),
+      Heading ("operation-rules", localized "Rules and cost" "規則と処理量"),
+      Paragraph ([Words (localized english.rules japanese.rules)]),
+      Paragraph (
+        [
+          InternalLink (localized "std/map" "std/map", "/docs/library/map/"),
+          Words (localized ": choose by the task you need." "：必要な処理から操作を選べます。")
+        ]
+      ),
+      Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")
+    ]
+  }

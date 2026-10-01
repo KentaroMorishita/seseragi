@@ -14,8 +14,33 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Where can I use a declared type parameter?",
-  summary: "A type parameter belongs to its declaration. It is visible in that declaration's signature and body, not in unrelated declarations.",
-  reading: "The A after identity is the same A in value: A, the result type, and let unchanged: A. If a call chooses Int, every one of these positions means Int for that call.",
-  result: "number is the Int value 42 and text the String value \"hello\". The A declared by identity does not carry over to another function. Declare a parameter on that function if needed. In nested declarations, use a different name from any enclosing type parameter."
+  question: "Where does a declared A refer to the same type?",
+  summary: "A type parameter is a name used within its declaration. Repeated A references there denote the same type; another function’s declared A is independent.",
+  reading: "A in keep<A> is shared by the parameter value, the return type and let saved: A. In keep 42 all three mean Int. saved gives the received value another name without changing its type.",
+  result: "pair<A> declares its own A, so it can select String independently of the call to keep. (A, A) is a tuple with two positions. let (first, second) unpacks it, and the program prints 42 followed by ready, ready.",
 }
+
+pub fn readerCaption -> String =
+  "Use independently declared type parameters in two functions"
+
+pub fn readerBridgeOne -> String =
+  "In a TypeScript generic function, A in function keep<A> also belongs to that declaration. Seseragi does not share a single A across the whole program either. The region where a declared type parameter is available is its scope."
+
+pub fn readerBridgeTwo -> String =
+  "A is a name in type positions, not a value to print or add. value and saved are the actual values. pub effect fn main performs output and ${...} inserts values into text. A nested declaration also cannot redeclare an already-scoped type parameter with the same name."
+
+pub fn readerInvalidCaption -> String = "Use a function’s A outside its declaration"
+
+pub fn readerMistake -> String =
+  "After keep ends, let outside: A cannot resolve A and reports SES-N0001, followed by a type mismatch. Write Int for 42 here, or omit the annotation. A new generic function must declare its own <A> after its name."
+
+pub fn readerDetailNote -> String =
+  "The detailed declaration example uses one A in parameter, result and local annotations too. Further rules specify its scope boundaries, duplicate and shadowing restrictions, and precedence over module type names."
+
+pub fn readerLegacyReading -> String =
+  "The A after identity is the same A in value: A, the result type, and let unchanged: A. If a call chooses Int, every one of these positions means Int for that call."
+
+pub fn readerLegacyResult -> String =
+  "number is the Int value 42 and text the String value \"hello\". The A declared by identity does not carry over to another function. Declare a parameter on that function if needed. In nested declarations, use a different name from any enclosing type parameter."
+
+pub fn readerRelated -> String = " explains how a caller selects type arguments."

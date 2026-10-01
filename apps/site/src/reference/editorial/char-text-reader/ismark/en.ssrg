@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Test whether one Char belongs to Unicode’s Mark categories",
+  purpose: "When inspecting an accent separately from its letter, use isMark to test Unicode’s Mark category. The first example is the combining acute accent U+0301. The number after U+ is a hexadecimal code point; '\\u{0301}' writes that number as an escaped Char. A Char holds one Unicode scalar: a Unicode code-point value excluding the numbers reserved for surrogates. Single quotes make a Char and double quotes make a String. One visible character can contain several scalars.",
+  reading: "let names the accent as accent and passes it to unicode.isMark accent. The result type Bool has values True and False; the accent gives True. U+093E, Devanagari vowel sign AA, and U+20DD, a combining enclosing circle, also give True. A and é are letters and give False. The call does not extract an accent from é.",
+  boundaries: "Mark groups three general categories. U+0301 is NonspacingMark (Mn), a mark without its own spacing width; U+093E is SpacingMark (Mc), which takes space; U+20DD is EnclosingMark (Me), which encloses its base. The skin-tone modifier 🏽 is ModifierSymbol, and the zero-width joiner U+200D is Format, so both give False. They can participate in visible groups without being Marks. False is an ordinary answer.",
+  rules: "Char -> Bool means that the function takes one Char and returns the test result. It checks membership in Mn, Mc, or Me using the pinned Unicode 17.0.0 data. Each call looks up one scalar in a fixed table; it does not scan an entire String. It does not decompose, normalize, or remove accents. Removing marks can change spelling or meaning, so deleting every Mark is not a universally safe text transformation.",
+  mistake: "unicode.isMark 'e\\u{0301}' produces SES-P0202 because the Char literal contains two scalars: e and the accent. To test the accent itself, repair it to '\\u{0301}'. To preserve the original two-scalar spelling, use the String \"e\\u{0301}\". Choose grapheme operations when you need to split visible groups. A component returning False from isMark may still belong to such a group.",
+}
+
+pub fn comparison -> String =
+  "TypeScript can use the Unicode-property regular expression /\\p{Mark}/u. \\p{Mark} names the three Mark categories, u selects Unicode-aware interpretation, and test returns a boolean. For the same seven known one-scalar inputs, true and false correspond to Seseragi’s True and False. TypeScript’s \\u{0301} also writes the same accent using its hexadecimal code point."
+
+pub fn comparisonBoundary -> String =
+  "JavaScript string does not guarantee one scalar as Char does. Applying this expression to multiple scalars such as \"e\\u{0301}\" gives true because the string contains a Mark, not because the whole string is one Mark. Finding visible groups in arbitrary text is a separate task. Property data depends on the engine; agreement on these selected inputs does not establish equality for all Unicode values."

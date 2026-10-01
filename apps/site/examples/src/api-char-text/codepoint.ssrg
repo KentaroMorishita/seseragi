@@ -1,0 +1,8 @@
+import * as char from "std/char"
+
+let symbol = '👍'
+
+pub effect fn main =
+  println `symbol: ${char.codePoint symbol}
+letter: ${char.codePoint 'A'}
+null: ${char.codePoint '\0'}`

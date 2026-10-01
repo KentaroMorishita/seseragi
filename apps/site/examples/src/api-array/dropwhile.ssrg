@@ -1,0 +1,10 @@
+import * as arrays from "std/array"
+
+fn isSmall value: Int -> Bool = value < 3
+
+pub effect fn main = do {
+  _ <- println (show (arrays.dropWhile isSmall [1, 2, 4, 1]))
+  _ <- println (show (arrays.dropWhile isSmall [4, 1]))
+  _ <- println (show (arrays.dropWhile isSmall [1, 2]))
+  println (show (arrays.dropWhile isSmall (arrays.empty<Int> ())))
+}

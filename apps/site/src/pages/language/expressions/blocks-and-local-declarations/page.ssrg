@@ -1,54 +1,86 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
 import * as guide from "./guide"
-import { localized } from "../../../../model/locale"
+import { LocalizedText, localized } from "../../../../model/locale"
 import {
+  Article,
+  Block,
   CodeExample,
-  InlineCode,
+  Heading,
   InternalLink,
   PageDefinition,
-  BulletList,
+  Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.expressions.blocks-and-local-declarations" "/docs/language/expressions/blocks-and-local-declarations/" (en.copy ()) (ja.copy ()) [
-    CodeExample
-      ("expressions-blocks", localized "A block with a local function" "ブロックの中で関数を定義する"),
-    BulletList [
-      [
-        InlineCode "let",
-        Words (
-          localized " binds from the following item onward."
-      " で付けた名前は、次の宣言や式からブロックの末尾まで使えます。"
-        )
-      ],
-      [
-        InlineCode "fn",
-        Words (
-          localized " captures earlier lexical bindings and itself."
-      " は、宣言した位置で見えている先の名前と、自分自身の名前を参照できます。"
-        )
-      ],
-      [
-        InlineCode "rec",
-        Words (
-          localized " gives every member the complete group scope."
-      " にまとめた関数は、互いの名前を本体から参照できます。"
-        )
-      ]
-    ]
-  ] [] [
-    [InternalLink
-      (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
-    [InternalLink
-      (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/")],
-    [InternalLink (
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (". " + english) ("。" + japanese))
+  ])
+}
+
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  let related = [
+    (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    ),
+    (
+      localized "Conditional expressions" "条件式",
+      "/docs/language/expressions/conditionals/"
+    ),
+    (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/"),
+    (localized "Binding rules" "束縛の共通規則", "/docs/language/patterns/binding-rules/"),
+    (
       localized "Recursive declarations" "再帰宣言",
       "/docs/language/types/recursive-declarations/"
-    )]
+    )
   ]
+  PageDefinition {
+    id: "language.expressions.blocks-and-local-declarations",
+    path: "/docs/language/expressions/blocks-and-local-declarations/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [CodeExample
+          ("pilot-blocks", localized english.exampleTitle japanese.exampleTitle)],
+      [Heading (
+        "reading-the-example",
+        localized "Follow the subtotal to the result" "小計から合計までを読む"
+      )],
+      paragraphs english.reading japanese.reading,
+      [Terminal (localized "Output" "実行結果", "65")],
+      [Heading
+          ("why", localized "Give intermediate results useful names" "途中の計算に名前を付ける")],
+      paragraphs english.purpose japanese.purpose,
+      [Heading (
+        "rules",
+        localized "Local scope, functions, and empty blocks" "名前の有効範囲、関数、空のブロック"
+      )],
+      paragraphs english.rules japanese.rules,
+      [Heading
+          ("mistakes", localized "Keep local names inside their block" "ローカルの名前を外から使わない")],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample ("pilot-blocks-invalid", localized "Rejected example" "受け付けられない例")],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

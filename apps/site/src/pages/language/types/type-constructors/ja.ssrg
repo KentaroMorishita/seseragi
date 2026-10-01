@@ -14,8 +14,27 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Box<A>のAには何を書くのか",
-  summary: "型構築子は、型引数を受け取って完成した型を作ります。Box<Int>とBox<String>では、中身の型が違います。",
-  reading: "Box<A>はA型のフィールドを持ちます。unwrap<A>はBox<A>からその値を返すため、unwrap (Box<Int> { value: 42 })の結果はIntです。Aはフィールドの値ではなく、その型を指定します。",
-  result: "unwrap (Box<Int> { value: 42 })は42を返します。BoxにIntを渡すとvalueの型が決まります。Array<Maybe<Int>>のように型を入れ子にもできます。各型構築子には必要な数と形の型引数を指定してください。"
+  question: "Box<Int>とBox<String>は、何が違うのか",
+  summary: "Boxの中に入れる値の型を選ぶ例です。<A>のAは値ではなく型を入れる場所で、IntかStringかによってvalueフィールドの型が決まります。",
+  reading: "struct Box<A> { value: A }は、中身の型を後で選べる宣言です。Box<Int>ではvalueは整数、Box<String>では文字列です。山括弧のIntやStringを型引数と呼びます。",
+  result: "出力は42とreadyです。count.valueはInt、message.valueはStringです。型を選んだ後に、波括弧でその型に合う実際の値を指定します。",
 }
+
+pub fn readerCaption -> String = "中身の型を選んでから値を作る"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptで配列をArray<number>と書く場合も、numberは配列の要素の型です。ここでも<Int>に42などの値は書きません。型引数を受け取ってBox<Int>のような型を作るBoxを、型構築子と呼びます。"
+
+pub fn readerBridgeTwo -> String =
+  "値を作るコンストラクターと、型を組み立てる型構築子は役割が違います。Box<Int>は型を選ぶ部分、Box<Int> { value: 42 }は値を作る式です。printlnは二つのフィールドを文字列へ入れ、改行して表示します。"
+
+pub fn readerInvalidCaption -> String = "Intを選んだ箱に文字列を入れる"
+
+pub fn readerMistake -> String =
+  "Box<Int> { value: \"ready\" }はSES-T0101です。整数42を入れるか、文字列を入れる意図ならBox<String>を使います。高度な型の種類については、後半の詳しい規則を必要なときに確認できます。"
+
+pub fn readerExecution -> String =
+  "pub effect fn mainは、外部へ出力する公開された実行入口です。実行するとmainが開始され、printlnが文字列と改行を出力します。計算やデータの組み立ては、その前の通常の関数やletで行っています。"
+
+pub fn readerDetailNote -> String =
+  "ここからの宣言例は、詳しい規則を調べるための断片です。単独では実行入口を持ちません。動かす場合は、上に載せたmain付きの完全な例を使ってください。"

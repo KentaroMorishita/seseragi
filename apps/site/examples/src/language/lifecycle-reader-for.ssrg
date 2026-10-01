@@ -1,0 +1,11 @@
+import * as effects from "std/effect"
+
+effect fn announce names: Array<String> = for name <- names {
+  if name == "" then effects.succeed () else println name
+}
+
+pub effect fn main = do {
+  _ <- announce ["Aki", "", "Mio"]
+  _ <- announce []
+  println "done"
+}

@@ -1,36 +1,88 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
+import { paragraphs, related } from "../blocks"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
+  Article,
+  CodeExample,
   Heading,
-  InternalLink,
   PageDefinition,
   Paragraph,
   Terminal,
   Words
 } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.modules.packages" "/docs/language/modules/packages/" (en.copy ()) (ja.copy ()) [
-    Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
-    Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
-    Heading ("example", localized (en.exampleTitle ()) (ja.exampleTitle ())),
-    Paragraph [Words (localized (en.exampleBody ()) (ja.exampleBody ()))],
-    Terminal (
-      localized "seseragi.toml" "seseragi.toml",
-      "[package]\nname = \"acme/validation\"\nversion = \"1.2.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[exports]\n\".\" = \"lib\"\n\"email\" = \"email\""
-    )
-  ] [] [
-    [InternalLink
-        (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/")],
-    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")],
-    [InternalLink (
-      localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
-      "/docs/language/modules/visibility/"
-    )]
-  ]
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "language.modules.packages",
+    path: "/docs/language/modules/packages/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "modules-project-package-public-app-manifest",
+          localized "app/seseragi.toml" "app/seseragi.toml"
+        ),
+        CodeExample (
+          "modules-project-package-public-library-manifest",
+          localized "greetings-library/seseragi.toml" "greetings-library/seseragi.toml"
+        ),
+        CodeExample (
+          "modules-project-package-public-greeting",
+          localized "greetings-library/src/lib.ssrg" "greetings-library/src/lib.ssrg"
+        ),
+        CodeExample (
+          "modules-project-package-public-secret",
+          localized "greetings-library/src/internal/secret.ssrg"
+            "greetings-library/src/internal/secret.ssrg"
+        ),
+        CodeExample (
+          "modules-project-package-public-main",
+          localized "app/src/main.ssrg" "app/src/main.ssrg"
+        ),
+        Paragraph ([Words (localized (en.setup ()) (ja.setup ()))]),
+        Terminal (
+          localized "Run the complete project" "一式を実行する",
+          "seseragi lock update app\nseseragi run app"
+        ),
+        Terminal (localized "Output" "実行結果", "Hello, Aki!")
+      ],
+      paragraphs english.reading japanese.reading,
+      paragraphs english.purpose japanese.purpose,
+      [Heading ("rules", localized (en.detailsTitle ()) (ja.detailsTitle ()))],
+      paragraphs english.rules japanese.rules,
+      [Heading ("mistakes", localized (en.mistakesTitle ()) (ja.mistakesTitle ()))],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample (
+        "modules-project-package-private-main",
+        localized "app/src/main.ssrg" "app/src/main.ssrg"
+      )],
+      [Terminal (
+        localized "Diagnostic to check" "確認する診断",
+        "SES-N0104: package `docs/greetings` does not export `internal/secret`"
+      )],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      related english.related japanese.related [
+        (localized "Module identity" "モジュールの識別", "/docs/language/modules/identity/"),
+        (
+          localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
+          "/docs/language/modules/visibility/"
+        ),
+        (
+          localized "Module specifier resolution" "モジュール指定の解決",
+          "/docs/language/modules/specifier-resolution/"
+        )
+      ]
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

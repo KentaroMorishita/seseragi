@@ -1,0 +1,5 @@
+import { UserId } from "./domain"
+import { toInt } from "./domain.ssrg"
+
+let id: UserId = UserId 42
+pub effect fn main = println (show (toInt id))

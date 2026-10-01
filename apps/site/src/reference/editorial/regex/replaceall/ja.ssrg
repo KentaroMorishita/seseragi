@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "重ならない一致を、指定したStringそのもので置き換えます。グループ参照やバックスラッシュの展開はしません。",
+  taskTitle: "渡された置換文字列をそのまま挿入する",
+  purpose: "呼び出し元が選んだラベルなど、置換文字列をデータとして扱う場合に使います。グループ参照のように見える文字も、そのまま挿入します。",
+  setup: "replaceでパターンをcompileし、replaceAllにはRegex、置換String、入力Stringの順に渡します。([0-9]+)は数字の並びをグループにしますが、この置換文字列はそのグループを参照しません。",
+  after: [
+    "compileは、再利用できるRegexをRight patternに、正しくないパターンの情報をLeft errorに入れて返します。matchは形に合う分岐を選び、中の値に名前を付けます。バッククォートのエラー文では${error.offset}に位置が入り、0から数えたUTF-8のバイト数で表します。",
+    "最初の置換値は$1とバックスラッシュです。ソースでは\"$1\\\\\"と書き、一つのバックスラッシュを関数へ渡します。二つの一致は、どちらもその値そのものになります。数字がなければ入力はそのままです。空のパターンは両端を含むスカラー値の境界に|を入れ、空の入力には|を一つ入れます。",
+    "pub effect fn mainが実行入口です。doの中でprintlnを順に実行します。呼び出しの引数は空白で区切ります。showは値を表示用の文字列にし、Seseragiの真偽値はTrueとFalseで表します。"
+  ],
+  comparisonBefore: "JavaScriptの置換文字列は$1などを展開します。同じ「そのまま挿入する」処理には、置換用の関数から文字列を返します。新しいgu付きパターンで、すべての一致と、Unicodeを考慮した空の一致の進み方を扱います。",
+  comparisonAfter: "最初の四つの結果は一致します。最後のTypeScriptの行だけは、関数を使わず\"$1\\\\\"を置換文字列として渡しています。JavaScriptでは$1が取り出した数字に展開され、a12\\b3\\になります。ここに規則の違いがあります。",
+  details: [
+    "SeseragiのreplaceAllは、置換値の$1・$&・バックスラッシュを展開しません。グループの値や一致位置に応じて結果を変える場合は、replaceAllWithを使います。",
+    "一致は重ならず、入力順に処理します。置換した文字列をもう一度検索することはありません。入力もRegexも変更しません。"
+  ],
+  codeTitle: "境界も確認する完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使うときに確かめたい規則"
+}

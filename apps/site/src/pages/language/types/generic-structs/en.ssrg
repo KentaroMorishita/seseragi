@@ -14,8 +14,34 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How can a struct hold a value of a chosen type?",
-  summary: "A declaration such as struct Box<A> lets the same field structure hold integers, text, or other types. Box<Int> and Box<String> are structs with different types for their value field.",
-  reading: "Box<A> has one field, value, whose type is A. Box { value: 42 } is Box<Int>. unwrap reads that field. label converts the integer to text with show and constructs a different Box<String>.",
-  result: "The result of label number contains the string \"42\". Updating an existing Box<Int> must still supply an Int; changing the stored type requires constructing a new Box, as label does."
+  question: "How can a named container support different payload types?",
+  summary: "Reuse the Box layout for an integer or a string while preserving each payload’s type when reading it.",
+  reading: "struct Box<A> declares a named type with a value: A field. Box { value: 42 } infers Int for A, making number a Box<Int>. Its number.value field is an Int, so it can be added to 1.",
+  result: "label receives Box<Int>, uses show to turn its integer into text, and constructs a new Box<String>. text.value can therefore be joined with \"!\". The output is 43 followed by 42!, while number still contains 42.",
 }
+
+pub fn readerCaption -> String = "Read Box<Int> and construct a separate Box<String>"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript’s type Box<A> = { value: A } can also choose and preserve the payload type. A Seseragi struct has a named identity, so it differs from an ordinary { value: 42 } record. Reusing a layout and distinguishing a type by its declaration are separate properties."
+
+pub fn readerBridgeTwo -> String =
+  "label creates another value with Box { ... } rather than modifying the original. pub effect fn main is the public output entry point. The integer addition and string concatenation inside ${...} are checked against their respective value types."
+
+pub fn readerInvalidCaption -> String =
+  "Change the payload to String during a Box<Int> update"
+
+pub fn readerMistake -> String =
+  "An update inheriting fields with ...number must preserve Box<Int> and its type argument. Replacing value with \"ready\" produces SES-T0101. To create a new Box at another type, construct Box { value: \"ready\" } without spreading the old value, as label does."
+
+pub fn readerDetailNote -> String =
+  "The detailed declaration example uses unwrap to return the payload and label to construct another Box. It also covers explicit type arguments, field-based inference and the exact types preserved by updates. The declaration example has no main."
+
+pub fn readerLegacyReading -> String =
+  "Box<A> has one field, value, whose type is A. Box { value: 42 } is Box<Int>. unwrap reads that field. label converts the integer to text with show and constructs a different Box<String>."
+
+pub fn readerLegacyResult -> String =
+  "The result of label number contains the string \"42\". Updating an existing Box<Int> must still supply an Int; changing the stored type requires constructing a new Box, as label does."
+
+pub fn readerRelated -> String =
+  " reviews creating named values and reading their fields."

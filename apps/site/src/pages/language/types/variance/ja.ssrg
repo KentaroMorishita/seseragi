@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "レコードは渡せるのに、その配列は渡せないのはなぜか",
-  summary: "nameを持つレコードなら追加のidがあっても渡せますが、そのレコードを含む配列には同じ規則が適用されません。ArrayやListなどの型引数は、通常、完全に一致する必要があります。",
-  reading: "usersの要素にはnameとidがあります。nameOnlyはnameだけを持つ新しいレコードを作り、mapが各要素にその処理を適用します。その結果、Array<{ name: String }>の配列ができます。",
-  result: "結果には{name: \"Aki\"}が入ります。配列の型を代入だけで変更したのではなく、要素ごとに変換しています。後述のEffectやSignalの変換は限定的な例外です。"
+  question: "名前を読めるレコードでも、その配列を同じようには渡せないのはなぜか",
+  summary: "一つのレコードに余分なidがあっても、nameを読む関数へ渡せます。一方、配列全体の要素型を変えるには、要素ごとの変換を明示します。",
+  reading: "nameOfはnameだけを必要とするため、idも持つuserを受け取れます。labelsが受け取るのはArray<{ name: String }>です。nameOnlyは一つのuserからnameだけの新しいレコードを作り、mapがその変換を各要素へ行います。",
+  result: "namesの型はArray<{ name: String }>なのでlabelsへ渡せます。labelsのmapは各nameを文字列として取り出します。出力はAkiと[Aki]です。元のusersにあるidフィールドを書き換えたり削除したりした結果ではありません。",
 }
+
+pub fn readerCaption -> String = "レコードは直接渡し、配列の要素はmapで変換する"
+
+pub fn readerBridgeOne -> String =
+  "Arrayの型引数が違う場合に、要素同士の互換性だけで配列全体を互換にしない規則を不変性と呼びます。ここでは「不変の値だから更新できない」という意味の不変とは、別の型検査の規則です。必要な変換の意図をmapで示します。"
+
+pub fn readerBridgeTwo -> String =
+  "TypeScriptでは、余分なidを持つ要素の配列を、nameだけが必要な配列の型として扱える場合があります。SeseragiのArrayには同じ規則を持ち込みません。pub effect fn mainが実行入口で、showが文字列の配列を[Aki]という表示へ変換します。"
+
+pub fn readerInvalidCaption -> String = "要素を変換せず、配列の型だけを変える"
+
+pub fn readerMistake -> String =
+  "usersをそのままArray<{ name: String }>へ代入すると、要素型にidがあることがSES-T0101で報告されます。最初の例のmap nameOnly usersのように必要な形を作るか、受け取る側が本当にidも扱うならその型を宣言します。注釈だけで暗黙の配列走査は行いません。"
+
+pub fn readerDetailNote -> String =
+  "詳細では、この規則がListや自分で定義した型にも適用されることと、Effect/Streamの要求やNever、Signalの読み取り権限に限った例外を確認できます。これらの例外も、中身の成功値の型を自由に変える規則ではありません。"
+
+pub fn readerComparison -> String =
+  "このTypeScript例もmapでnameだけを持つ新しいオブジェクトを作り、同じ二行を出力します。一方、TypeScriptではconst view: Named[] = usersという代入だけでも型検査を通ります。その代入は要素のidを消す処理ではありません。Seseragiで同じ配列代入が拒否されるという違いを分けて確認してください。"
+
+pub fn readerLegacyReading -> String =
+  "usersの要素にはnameとidがあります。nameOnlyはnameだけを持つ新しいレコードを作り、mapが各要素にその処理を適用します。その結果、Array<{ name: String }>の配列ができます。"
+
+pub fn readerLegacyResult -> String =
+  "結果には{name: \"Aki\"}が入ります。配列の型を代入だけで変更したのではなく、要素ごとに変換しています。後述のEffectやSignalの変換は限定的な例外です。"
+
+pub fn readerRelated -> String = "では、配列全体ではなく、一つのレコードを渡せる条件を確認できます。"

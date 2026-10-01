@@ -1,0 +1,5 @@
+let arithmetic = 1 + 2 * 3
+let grouped = (1 + 2) * 3
+let inRange = 0 < arithmetic && arithmetic < 10
+
+pub effect fn main = println `${arithmetic}, ${grouped}, ${inRange}`

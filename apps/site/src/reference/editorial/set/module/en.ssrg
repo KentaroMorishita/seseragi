@@ -1,0 +1,23 @@
+pub fn purpose -> String =
+  "Use a Set when the question is whether a value belongs, and repeated equal values should appear once. Set<Int> is a collection of distinct integers. Use Array or List when repeated occurrences and positions are part of the data."
+
+pub fn order -> String =
+  "Members can be read in insertion order. Repeated insertion keeps the first position; removal followed by insertion moves the member to the end. Set equality compares membership, not that order. Eq<A> and Hash<A> in signatures specify compatible equality and hashing; standard Int already supplies them."
+
+pub fn example -> String =
+  "Start with members 3, 1 and 2. Ensure that 1 is present, add a new 4 in another result, and retain the original. The returned Set is the update: the old value does not change."
+
+pub fn reading -> String =
+  "import names std/set as sets and std/json as json. let binds a name. [] is an Array, and sets.fromIterable collects its distinct values. Calls use spaces between arguments and parentheses around nested calls. sets.toArray reads insertion order; json.encodeString formats it as JSON. pub effect fn main and do execute the prints in order, and println adds a newline."
+
+pub fn outcomes -> String =
+  "Inserting 1 keeps [3,1,2]. Inserting 4 returns [3,1,2,4]. original remains [3,1,2]. The final example inserts 0 into an empty Set. <Int> explicitly gives that empty Set its element type; a surrounding annotation could provide it instead. () is Unit, not an element to store."
+
+pub fn comparison -> String =
+  "TypeScript Set already provides membership, uniqueness and insertion order. add/delete mutate its receiver, so copying new Set(original) first preserves the original when the task requires it. Seseragi insert/remove return a new Set. The insert and remove pages show executable counterparts with identical small-integer inputs and output."
+
+pub fn combining -> String =
+  "union and intersection take right first, then left. They preserve left order; union appends right-only members. difference removed values excludes members named by the first input. isSubsetOf superset values checks every member of the second input. Read each page’s directional examples before swapping arguments."
+
+pub fn limits -> String =
+  "fromIterable fully reads finite inputs; endless input does not finish. sets.map may reduce the member count when different inputs become equal results. Converting with toArray or toList preserves insertion order. A Set is not automatically sorted."

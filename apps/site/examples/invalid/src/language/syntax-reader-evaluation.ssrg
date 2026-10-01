@@ -1,0 +1,3 @@
+fn place tens: Int -> ones: Int -> Int = tens * 10 + ones
+let number = place "two" 3
+pub effect fn main = println number

@@ -1,0 +1,11 @@
+struct Ticket { number: Int }
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Ticket> {
+  fn label value: Ticket -> Int = value.number
+}
+
+pub effect fn main = println "ready"

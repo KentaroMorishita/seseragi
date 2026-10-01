@@ -1,0 +1,9 @@
+import * as sets from "std/set"
+pub effect fn main = do {
+  let values = sets.insert 2 (sets.insert 1 (sets.singleton 2))
+  let moved = sets.insert 2 (sets.remove 2 values)
+  println (show (sets.toList values))
+  println (show (sets.toList moved))
+  println (show (sets.toList (sets.empty<Int> ())))
+  println (show (sets.toList values))
+}

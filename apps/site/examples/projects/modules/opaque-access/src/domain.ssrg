@@ -1,0 +1,4 @@
+pub opaque struct Counter { value: Int }
+
+pub fn create value: Int -> Counter = Counter { value }
+pub fn read counter: Counter -> Int = counter.value

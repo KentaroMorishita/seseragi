@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "各要素について、処理を一つずつ実行するには",
-  summary: "Effectを実行するforは、コレクションの要素ごとに処理を順に行う式です。各回の処理は、成功値がUnitのEffectを返します。",
-  reading: "announceAllはArray<String>を受け取ります。for message <- messagesで各要素をmessageとして使い、その回のprintln messageを組み立てます。内包表記とは違い、結果を配列に集める処理ではありません。",
-  result: "announceAll [\"Aki\", \"Mio\"]を実行すると、Aki、Mioの順に一行ずつ出力します。一回の処理が失敗すれば、その後の要素は実行しません。空の入力なら何も出力せず完了します。"
+  question: "一覧の各項目に、出力などの処理を順番に行うには",
+  summary: "Effectを実行するforは、入力の先頭から一件ずつ処理します。前の項目が終わってから次へ進み、空の一覧なら何もせず終了します。",
+  reading: "announceは文字列の配列namesを受け取る処理です。for name <- namesで一件ずつnameという名前を付けます。空文字列ならsucceed ()で何もせず成功し、それ以外ならprintlnで名前を出力します。",
+  result: "最初の呼び出しはAkiとMioをこの順に出力します。二つ目の空配列では出力せず、mainの最後でdoneを出します。空文字列の項目だけを飛ばしても、後ろのMioは処理します。"
 }
+
+pub fn readerBridgeOne -> String =
+  "importでstd/effectをeffectsとして読み込みます。Array<String>は文字列の配列、effect fnは実行する処理を作る関数です。pub effect fn mainが実行入口で、doの_ <-はannounceの完了を待って次へ進むという意味です。"
+
+pub fn readerBridgeTwo -> String =
+  "forの本体は、意味のある成功値を持たないUnitを返すEffectにします。()がUnitの値です。値を集める配列の内包表記とは用途が異なり、ここでは各項目への出力が目的です。処理中に型付きの失敗が起きたら、その時点で後続の項目を止めます。"
+
+pub fn readerMistake -> String =
+  "拒否例のvalue + 1は整数を計算するだけなので、forの本体が必要とするEffectではありません。値を並べたいなら内包表記、出力したいならprintlnを使ってください。breakやcontinueはなく、全体を途中で正常終了する場合はforEachUntilでContinue/Breakという結果を返します。"
+
+pub fn readerCaption -> String = "空の項目と空の配列を含め、名前を順番に出力する"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "announceAllはArray<String>を受け取ります。for message <- messagesで各要素をmessageとして使い、その回のprintln messageを組み立てます。内包表記とは違い、結果を配列に集める処理ではありません。"
+
+pub fn readerLegacyResult -> String =
+  "announceAll [\"Aki\", \"Mio\"]を実行すると、Aki、Mioの順に一行ずつ出力します。一回の処理が失敗すれば、その後の要素は実行しません。空の入力なら何も出力せず完了します。"

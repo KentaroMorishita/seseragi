@@ -1,0 +1,6 @@
+fn joinAddress street: Maybe<String> -> city: Maybe<String> -> Maybe<String> = flatMap (
+  \streetName: Maybe<String> -> flatMap
+    (\cityName -> Just (streetName + ", " + cityName)) city
+) street
+
+pub effect fn main = println (show (joinAddress (Just "1 River Road") (Just "Tokyo")))

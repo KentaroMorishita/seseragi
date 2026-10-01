@@ -1,0 +1,10 @@
+import * as arrays from "std/array"
+
+let noNumbers: Array<Int> = arrays.empty ()
+let noNames: Array<String> = []
+
+pub effect fn main = do {
+  _ <- println (show noNumbers)
+  _ <- println (show noNames)
+  println (show (arrays.empty<Int> ()))
+}

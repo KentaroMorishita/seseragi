@@ -1,28 +1,68 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
+import { paragraphs, related } from "../blocks"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import {
+  Article,
+  CodeExample,
+  Heading,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.traits.constraints" "/docs/language/traits/constraints/" (en.copy ()) (ja.copy ()) [CodeExample
-      (
-        "traits-constraints",
-        localized "A constrained generic function" "必要なtraitを条件にした、型を共通化する関数"
-      )] [CodeExample (
-        "traits-invalid-constraint",
-        localized "A required trait implementation is missing" "必要なtraitの実装がない場合"
-      )] [
-        [InternalLink
-      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")],
-        [InternalLink (
-          localized "Calling trait methods" "traitメソッドの呼び出し",
-          "/docs/language/traits/method-calls/"
-        )],
-        [InternalLink
-      (localized "Instances" "インスタンス", "/docs/language/traits/instances/")]
-      ]
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "language.traits.constraints",
+    path: "/docs/language/traits/constraints/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [[
+      CodeExample (
+        "trait-reader-constraints",
+        localized "main.ssrg — complete program" "main.ssrgの全体"
+      ),
+      Paragraph (
+        [Words (
+          localized
+            "Save this complete file as main.ssrg and run seseragi run main.ssrg. pub makes main an entry point; effect fn returns work that the runner executes. println writes the resulting text and a newline."
+            "このファイル全体をmain.ssrgとして保存し、seseragi run main.ssrgで実行できます。pubでmainを入口として公開し、effect fnで返す処理を実行機構が開始します。printlnは結果の文字列と改行を出力します。"
+        )]
+      ),
+      Terminal (localized "Output" "実行結果", "value: ticket-42\nvalue: [ticket-42]")
+    ], paragraphs english.reading japanese.reading,
+
+      paragraphs english.purpose japanese.purpose, [Heading
+          ("rules", localized (en.detailsTitle ()) (ja.detailsTitle ()))], paragraphs english.rules japanese.rules, [Heading
+          ("mistakes", localized (en.mistakesTitle ()) (ja.mistakesTitle ()))], paragraphs english.mistakes japanese.mistakes, [
+            CodeExample (
+              "trait-reader-constraints-invalid",
+              localized "Rejected main.ssrg — replace the entire file"
+          "ファイル全体を置き換える、拒否されるmain.ssrg"
+            ),
+            Terminal (
+              localized "Diagnostic to check" "確認する診断",
+              "SES-T0201: A required trait instance is not available"
+            ),
+            Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")
+          ], related english.related japanese.related [
+            (localized "Traits" "traitとは", "/docs/language/traits/model/"),
+            (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
+            (
+              localized "Calling trait methods" "traitメソッドの呼び出し",
+              "/docs/language/traits/method-calls/"
+            )
+          ]
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

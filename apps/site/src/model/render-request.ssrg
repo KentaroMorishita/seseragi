@@ -1,0 +1,26 @@
+import * as json from "std/json"
+import { BuildInput } from "./build"
+
+// Transport selection is separate from the complete, unchanged page input.
+pub struct RenderRequest deriving JsonDecode {
+  schema: Int,
+  mode: String,
+  offset: Int,
+  count: Int,
+  input: BuildInput
+}
+
+pub struct RenderedPage deriving JsonEncode { route: String, html: String }
+
+pub struct RenderResponse deriving JsonEncode {
+  schema: Int,
+  mode: String,
+  offset: Int,
+  total: Int,
+  routes: Array<String>,
+  pages: Array<RenderedPage>
+}
+
+pub fn decodeRenderRequest encoded: String
+  -> Either<json.JsonReadError, RenderRequest> =
+  json.decodeString encoded

@@ -1,26 +1,36 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import { CodeExample, PageDefinition } from "../../../../model/page"
 import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  readerPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/" (en.copy ()) (ja.copy ()) "reader-method-calls" "10\n15" [CodeExample
-      ("syntax-invalid-methods", localized "Invalid method declarations" "誤ったメソッド宣言")] [
-        (
-          localized "Function application" "関数適用",
-          "/docs/language/syntax/function-application/"
-        ),
-        (
-          localized "Inherent impls and methods" "固有implとメソッド",
-          "/docs/language/data/impls-and-methods/"
-        ),
-        (
-          localized "Operator precedence" "演算子の優先順位",
-          "/docs/language/syntax/operator-precedence/"
-        )
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.method-calls" "/docs/language/syntax/method-calls/"
+    (en.copy ()) (ja.copy ()) "syntax-reader-methods" "10\n15" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-methods-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
       ]
+    ) [
+      (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      ),
+      (
+        localized "Inherent impls and methods" "固有implとメソッド",
+        "/docs/language/data/impls-and-methods/"
+      ),
+      (
+        localized "Operator precedence" "演算子の優先順位",
+        "/docs/language/syntax/operator-precedence/"
+      )
+    ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

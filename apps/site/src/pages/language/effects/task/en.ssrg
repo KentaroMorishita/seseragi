@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "When can I shorten an Effect type to Task?",
-  summary: "Task<A> is an alias for an Effect with no required services and no recoverable failures. It lets you write only the success type A without changing Effect's execution model.",
-  reading: "cached uses succeed to construct work returning its integer input successfully. It needs no services and has no recoverable failures, so Task<Int> is appropriate. fallible can fail with a String, requiring a declaration that includes the error type: Effect<{}, String, Int>.",
-  result: "Executing cached 42 succeeds with 42. Never means no recoverable failure; it does not guarantee that cancellation or computation defects cannot stop execution."
+  question: "Does creating a Task run it, and what happens when I reuse it?",
+  summary: "Task<A> is a short name for an Effect requiring no external services and carrying no typed failure. Creating it does not run it; each execution performs the procedure again.",
+  reading: "counter is an integer cell made by refs.make 0. next creates a Task<Int> that increases that cell and reads it. let work = next counter has not increased anything yet. before reads 0, then two executions of work produce first and second.",
+  result: "The output is [0, 1, 2]. Storing a Task in a variable does not automatically cache its success value. These two executions update the same counter."
 }
+
+pub fn readerBridgeOne -> String =
+  "The import names std/ref as refs. Ref<Int> describes an integer cell. The small function \\value: Int -> value + 1 passed to refs.update receives the current value and returns the next one. refs.get also returns a Task because reading accesses state."
+
+pub fn readerBridgeTwo -> String =
+  "The Int in next’s result Task<Int> is its success type. The full name is Effect<{}, Never, Int>: {} requires no extra services and Never admits no typed failure. In main’s do block, <- executes a procedure and names its success value. println and show display the final array."
+
+pub fn readerMistake -> String =
+  "The rejected effects.fail \"missing\" carries a String failure, so it cannot be Task<Int>. Keep that failure in a type such as Effect<{}, String, Int>. A Task can still stop through a defect or cancellation. Unlike a JavaScript Promise, the Task value is not the result of one execution already started."
+
+pub fn readerCaption -> String = "Create one procedure and execute it twice"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "cached uses succeed to construct work returning its integer input successfully. It needs no services and has no recoverable failures, so Task<Int> is appropriate. fallible can fail with a String, requiring a declaration that includes the error type: Effect<{}, String, Int>."
+
+pub fn readerLegacyResult -> String =
+  "Executing cached 42 succeeds with 42. Never means no recoverable failure; it does not guarantee that cancellation or computation defects cannot stop execution."

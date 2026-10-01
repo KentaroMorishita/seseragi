@@ -1,31 +1,47 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "パッケージ",
   summary: (explanation ()).summary,
-  ruleTitle: "seseragi.tomlでパッケージの範囲を決める",
-  ruleBody: "パッケージのルートにseseragi.tomlを一つ置きます。名前、バージョン、対応する言語のバージョンを宣言し、必要に応じてソースの配置、直接の依存先、公開するモジュールを指定します。ディレクトリーを分けるだけでは、別のパッケージにはなりません。package.jsonから設定を推測したり、親ディレクトリーの設定を自動で混ぜたりもしません。",
-  typingBody: "パッケージは、名前、正確なバージョン、取得元で区別します。同じ名前とバージョンでも取得元が異なるものを一つの依存関係に混ぜるとエラーになります。別のパッケージで定義した型は、その定義元の型として扱います。型名が同じという理由で同一の型にはなりません。",
-  evaluationBody: "外部パッケージをimportするには、seseragi.tomlの直接の依存先に宣言します。例えば、使っているライブラリが別のライブラリへ依存していても、自分のコードからその別のライブラリを自動では使えません。必要なら、自分の依存先にも追加してください。import先のモジュールは、そのパッケージがexportsで公開したパスから決まります。",
-  invalidTitle: "宣言の公開と、モジュールの公開は別の設定",
-  invalidBody: "pubは、そのモジュールの宣言を他モジュールへ公開します。マニフェストのexportsは、外部パッケージから参照できるモジュールのパスを定めます。pubだけでは内部のすべてのファイルを外部から参照できず、exportsだけでは非公開の宣言を使えるようにはなりません。",
-  diagnosticsBody: "名前は小文字ASCIIの区分を/でつなぎます。std、self、genで始まる名前は予約されています。依存先や公開パスが見つからないときは、マニフェストと実際のファイルを確認してください。seseragi.lockは解決済みの依存関係を記録するため、パッケージやソースを変更したらseseragi lock updateで更新します。",
+  purpose: ["複数ファイルを一つの単位として渡し、利用側には決めた名前から使ってもらえます。ディレクトリーを分けただけではパッケージは増えません。設定ファイルと公開パスを明示することで、内部のファイル配置を利用側の契約から切り離せます。"],
+  exampleTitle: "隣のライブラリを使うアプリ",
+  reading: [
+    "各[package]のnameはパッケージ名、versionはそのパッケージの版、languageは対応する言語仕様の版の範囲です。languageをCLIの製品バージョン番号と混同しないでください。どちらのパッケージにも一つずつseseragi.tomlがあります。",
+    "pub fn greetは文字列を受け取り、文字列を返す公開関数です。[exports]が外部から到達できるモジュールを決め、その中のpubが使える宣言を決めます。pubだけでパッケージ内のすべてのファイルが公開されるわけではありません。",
+    "lock updateは解決した依存先や入力をseseragi.lockへ記録します。その後のrunはappの[run]が選ぶsrc/main.ssrgを実行します。mainはprintlnの処理を返し、実行機構が文字列と改行を表示します。"
+  ],
+  rules: [
+    "パッケージのルートにはseseragi.tomlを一つ置きます。package.jsonから境界を推測したり、複数の親フォルダーの設定を混ぜたりはしません。外部の依存先は、自分の[dependencies]へ直接宣言したものだけをimportできます。ライブラリが使っている別の依存先まで、自動でアプリから参照できるわけではありません。",
+    "パッケージは名前、正確なバージョン、取得元で識別します。別バージョンは別の識別情報を持てます。同じ名前と同じバージョンなのに取得元が異なるものを一つの依存関係へ混ぜると、どちらかを勝手に選ばずエラーにします。取り込んだ名前付き型も、そのパッケージで定義された型として扱います。",
+    "名前には小文字ASCIIの区分を/でつないだ形式を使います。std、self、genで始まる名前は予約されています。言語仕様の対応範囲が合わない場合は、ソースの型検査より前に拒否します。依存先やソースを変更したら、lock updateを明示して解決情報を更新します。",
+    "通常のソース、テスト、ベンチマーク、生成コードの起点は、既定でsrc、tests、benchmarks、.seseragi/generatedです。起点を重複させたり、シンボリックリンクでパッケージの外へ出したりできません。テストとベンチマークは対応するコマンドで使い、生成コードは別の識別区分を持ちます。相対importは同じ起点の中にとどまります。",
+    "self/は自分のパッケージの通常のソース、gen/は生成された連携コードを参照します。外部パッケージから使うパスはexportsで選びます。例えば\"email\" = \"email\"を追加すれば、docs/greetings/emailからsrc/email.ssrgへ到達できます。そのファイルを実際に用意し、使わせる宣言にpubも付ける必要があります。",
+    "pathで参照する依存先のpackage名は、相手のマニフェストと一致させます。これはローカル開発用の指定で、公開するパッケージのマニフェストには残せません。取得方法が変わっても、直接依存や公開パス、宣言の公開範囲の規則は同じです。"
+  ],
+  mistakes: [
+    "internal/secret.ssrgにはpub let secretがあります。それでもアプリからdocs/greetings/internal/secretをimportすると、exportsにそのパスがないためSES-N0104です。ファイルが存在することと、外部から参照できることは別です。",
+    "下のmain.ssrgを元のgreetを使う内容へ戻せば、同じプロジェクトでHello, Aki!を表示できます。内部値を外部へ見せる必要が本当にある場合は、ライブラリの公開APIとexportsを意図して設計し直します。利用側の相対パスで境界を迂回しないでください。"
+  ],
+  related: [
+    "ファイルのパスとパッケージを合わせたモジュールの識別を確認します。",
+    "関数や型のpubとopaqueの役割を確認します。",
+    "importの先頭形式から解決方法を選ぶ規則を調べます。"
+  ],
 }
-
-pub fn layoutTitle -> String = "通常のソースと、テスト・生成コードの配置を区別する"
-
-pub fn layoutBody -> String =
-  "ソースを探す起点は、既定ではsrc、tests、benchmarks、.seseragi/generatedです。通常のコード、テスト、ベンチマーク、生成されたコードをそれぞれ分けて置きます。これらのディレクトリは重複できず、シンボリックリンクを使ってもパッケージの外へ出られません。testsとbenchmarksは対応するコマンドで使い、通常のコードとは別に識別します。相対importは同じ起点の中で使います。self/はこのパッケージの通常のソース、gen/は生成された連携コードを参照する指定です。"
-
-pub fn exampleTitle -> String = "ライブラリで公開するモジュールを選ぶ"
-
-pub fn exampleBody -> String =
-  "この設定では、外部からacme/validationをimportするとsrc/lib.ssrgを、acme/validation/emailならsrc/email.ssrgを使います。exportsに載せていないファイルは、パッケージ内部だけで使います。ライブラリにはmainは不要です。実行するパッケージにする場合は、[run]に実行入口のモジュールと実行環境を指定します。"
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "複数のファイルを、一つのパッケージにするものは何か",
-  summary: "パッケージは、seseragi.tomlを持つ単位です。このファイルに名前、バージョン、ソースの配置、依存先、外部へ公開するモジュールを書きます。一つのパッケージ内でディレクトリを分けても、別のパッケージにはなりません。",
-  reading: "このマニフェストではacme/validationからsrc/lib.ssrg、acme/validation/emailからsrc/email.ssrgを使えます。補助のファイルを内部に置いても、自動で外部の公開パスにはなりません。",
-  result: "宣言のpubとパッケージのexportsは役割が違います。exportsは外部からモジュールへ到達できるか、pubはそのモジュールの宣言を使えるかを決めます。ライブラリにはmainが不要です。"
+  question: "別のプロジェクトで作った関数を使うには",
+  summary: "あいさつのライブラリと、それを使うアプリを別々のパッケージにします。パッケージはseseragi.tomlで名前や依存先を決める単位です。ここではネットワークから取得せず、隣のフォルダーを直接参照します。",
+  reading: "greetings-libraryの[exports]にある\".\" = \"lib\"は、パッケージ名docs/greetingsを指定したimportをsrc/lib.ssrgへ対応させます。appの[dependencies]はそのパッケージを../greetings-libraryで探す指定です。pathの基準はapp/seseragi.tomlのあるフォルダーです。",
+  result: "アプリのimport { greet } from \"docs/greetings\"は、ライブラリで公開したgreetを使います。greet \"Aki\"が返す文字列をmainで出力し、Hello, Aki!と表示します。ライブラリ側にmainは不要です。",
 }
+
+pub fn setup -> String =
+  "同じ親フォルダーの中にappとgreetings-libraryを作り、次の五つのファイルをパネルのパスどおり置きます。appに入口を置き、greetings-libraryには公開する関数と内部用のファイルを置きます。下のコマンドは両方のフォルダーが見える親フォルダーで実行してください。"
+
+pub fn detailsTitle -> String = "公開する宣言と、公開するモジュールを分けて決める"
+
+pub fn mistakesTitle -> String = "pubな宣言でも、非公開のパッケージパスからは使えない"
+
+pub fn title -> String = (copy ()).title

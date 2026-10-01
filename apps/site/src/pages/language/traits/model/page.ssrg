@@ -1,16 +1,81 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
+import { paragraphs, related } from "../blocks"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { PageDefinition } from "../../../../model/page"
-import { readerPage } from "../../reader-article"
+import {
+  Article,
+  CodeExample,
+  Heading,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  readerPage "language.traits.model" "/docs/language/traits/model/" (en.copy ()) (ja.copy ()) "reader-trait" "ticket-42" [] [
-    (localized "Trait declarations" "trait宣言", "/docs/language/traits/declarations/"),
-    (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
-    (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")
-  ]
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "language.traits.model",
+    path: "/docs/language/traits/model/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        CodeExample
+          ("trait-reader-model", localized "main.ssrg — complete program" "main.ssrgの全体"),
+        Paragraph (
+          [Words (
+            localized
+          "Save this complete file as main.ssrg and run seseragi run main.ssrg. pub makes main an entry point; effect fn returns work that the runner executes. println writes the resulting text and a newline."
+          "このファイル全体をmain.ssrgとして保存し、seseragi run main.ssrgで実行できます。pubでmainを入口として公開し、effect fnで返す処理を実行機構が開始します。printlnは結果の文字列と改行を出力します。"
+          )]
+        ),
+        Terminal (localized "Output" "実行結果", "ticket-42\nAki")
+      ],
+      paragraphs english.reading japanese.reading,
+      [
+        Heading (
+          "typescript",
+          localized "The same operation contract in TypeScript" "同じ操作の約束をTypeScriptで書く"
+        ),
+        CodeExample (
+          "trait-reader-model-typescript",
+          localized "typescript.ts — the same inputs and output" "同じ入力と出力のtypescript.ts"
+        )
+      ],
+      paragraphs english.purpose japanese.purpose,
+      [Heading ("rules", localized (en.detailsTitle ()) (ja.detailsTitle ()))],
+      paragraphs english.rules japanese.rules,
+      [Heading ("mistakes", localized (en.mistakesTitle ()) (ja.mistakesTitle ()))],
+      paragraphs english.mistakes japanese.mistakes,
+      [
+        CodeExample (
+          "trait-reader-model-invalid",
+          localized "Rejected main.ssrg — replace the entire file"
+          "ファイル全体を置き換える、拒否されるmain.ssrg"
+        ),
+        Terminal (
+          localized "Diagnostic to check" "確認する診断",
+          "SES-T0201: A required trait instance is not available"
+        ),
+        Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")
+      ],
+      related english.related japanese.related [
+        (
+          localized "Trait declarations" "trait宣言",
+          "/docs/language/traits/declarations/"
+        ),
+        (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
+        (localized "Trait constraints" "trait制約", "/docs/language/traits/constraints/")
+      ]
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

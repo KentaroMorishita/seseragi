@@ -1,0 +1,3 @@
+import { Order } from "./order"
+
+pub struct User { name: String }

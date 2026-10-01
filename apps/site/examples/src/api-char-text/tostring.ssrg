@@ -1,0 +1,11 @@
+import * as char from "std/char"
+import * as text from "std/text"
+
+let symbol = '👍'
+let value = char.toString symbol
+let label = "Status: " + value
+
+pub effect fn main =
+  println `${label}
+scalars: ${text.lengthScalars value}
+UTF-8 bytes: ${text.lengthBytes value}`

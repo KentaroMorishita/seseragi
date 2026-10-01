@@ -1,0 +1,4 @@
+struct Ticket { number: Int }
+fn describe<A> value: A -> String where Show<A> = "value: " + show value
+let tickets: Array<Ticket> = []
+pub effect fn main = println (describe tickets)

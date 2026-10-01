@@ -1,0 +1,2 @@
+import * as effects from "std/effect"
+let resource = effects.acquireRelease (effects.succeed ()) (\_: Unit -> effects.fail "close failed")

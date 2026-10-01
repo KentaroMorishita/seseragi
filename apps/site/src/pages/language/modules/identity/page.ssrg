@@ -1,35 +1,98 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
+import { paragraphs, related } from "../blocks"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
 import {
+  Article,
   CodeExample,
   Heading,
-  InternalLink,
   PageDefinition,
   Paragraph,
+  Terminal,
   Words
 } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.modules.identity" "/docs/language/modules/identity/" (en.copy ()) (ja.copy ()) [
-    Heading ("boundaries", localized (en.layoutTitle ()) (ja.layoutTitle ())),
-    Paragraph [Words (localized (en.layoutBody ()) (ja.layoutBody ()))],
-    Heading ("example", localized (en.exampleTitle ()) (ja.exampleTitle ())),
-    Paragraph [Words (localized (en.exampleBody ()) (ja.exampleBody ()))],
-    CodeExample
-      ("modules-domain", localized "modules-domain.ssrg" "modules-domain.ssrg"),
-    CodeExample
-      ("modules-identity", localized "modules-identity.ssrg" "modules-identity.ssrg")
-  ] [] [
-    [InternalLink (localized "Packages" "パッケージ", "/docs/language/modules/packages/")],
-    [InternalLink (
-      localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
-      "/docs/language/modules/visibility/"
-    )],
-    [InternalLink (localized "Imports" "import", "/docs/language/modules/imports/")]
-  ]
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "language.modules.identity",
+    path: "/docs/language/modules/identity/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "modules-project-identity-greeting-manifest",
+          localized "seseragi.toml" "seseragi.toml"
+        ),
+        CodeExample (
+          "modules-project-identity-greeting-greeting",
+          localized "src/greeting.ssrg" "src/greeting.ssrg"
+        ),
+        CodeExample (
+          "modules-project-identity-greeting-main",
+          localized "src/main.ssrg" "src/main.ssrg"
+        ),
+        Paragraph ([Words (localized (en.setup ()) (ja.setup ()))]),
+        Terminal (
+          localized "Run the complete project" "一式を実行する",
+          "seseragi lock update .\nseseragi run ."
+        ),
+        Terminal (localized "Output" "実行結果", "Hello, Aki!\nHello, Aki!")
+      ],
+      paragraphs english.reading japanese.reading,
+      paragraphs english.purpose japanese.purpose,
+      [Heading ("rules", localized (en.detailsTitle ()) (ja.detailsTitle ()))],
+      paragraphs english.rules japanese.rules,
+      [
+        Heading (
+          "same-type",
+          localized "A separate project shares one declared UserId"
+            "別のプロジェクトで、一つのUserId型を共有する"
+        ),
+        CodeExample
+            ("modules-project-identity-manifest", localized "seseragi.toml" "seseragi.toml"),
+        CodeExample (
+          "modules-project-identity-domain",
+          localized "src/domain.ssrg" "src/domain.ssrg"
+        ),
+        CodeExample
+            ("modules-project-identity-main", localized "src/main.ssrg" "src/main.ssrg"),
+        Terminal (localized "Output" "実行結果", "42")
+      ],
+      [Heading ("mistakes", localized (en.mistakesTitle ()) (ja.mistakesTitle ()))],
+      paragraphs english.mistakes japanese.mistakes,
+      [
+        CodeExample (
+          "modules-project-copied-identity-copied-domain",
+          localized "src/copied-domain.ssrg" "src/copied-domain.ssrg"
+        ),
+        CodeExample (
+          "modules-project-copied-identity-main",
+          localized "src/main.ssrg" "src/main.ssrg"
+        )
+      ],
+      [Terminal (
+        localized "Diagnostic to check" "確認する診断",
+        "SES-T0101: argument 1 expected UserId, received UserId"
+      )],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      related english.related japanese.related [
+        (localized "Packages" "パッケージ", "/docs/language/modules/packages/"),
+        (
+          localized "Visibility and opaque representations" "公開範囲とopaqueな表現",
+          "/docs/language/modules/visibility/"
+        ),
+        (localized "Imports" "import", "/docs/language/modules/imports/")
+      ]
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,77 +1,37 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.operator-precedence" "/docs/language/syntax/operator-precedence/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-operator-precedence",
-      localized "Combining standard operators" "標準の演算子を組み合わせる"
-    ),
-    BulletList [
-      [
-        InlineCode "9",
-        Words (localized ". Field and method access with . and indexing with []." "。ドットによるフィールド・メソッドの参照と、[]による要素の参照です。")
-      ],
-      [InlineCode "8", Words (localized ". Function application." "。空白で引数を渡す関数適用です。")],
-      [
-        InlineCode "7..4",
-        Words (
-          localized ". Prefix operations, powers, multiplication and division, then addition, subtraction and list cons."
-            "。単項演算、累乗、乗除、加減、リストの先頭追加の順です。"
-        )
-      ],
-      [
-        InlineCode "3..0",
-        Words (localized ". Comparisons, &&, ||, then ??." "。比較、&&、||、??の順です。")
-      ],
-      [
-        InlineCode "-1..-3",
-        Words (
-          localized ". The >>=, <$>, <*>, and pipeline operators, then $, then :=."
-            "。>>=、<$>、<*>、パイプラインの演算子、$、:=の順です。"
-        )
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.operator-precedence"
+    "/docs/language/syntax/operator-precedence/" (en.copy ()) (ja.copy ())
+    "syntax-reader-precedence" "7, 9, True" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-precedence-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
       ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "a < b < c",
-      Words (
-        localized " is a rejected comparison chain."
-            " は比較を二つつないでいるため、エラーになります。二つのBool式に分けて&&でつなぎます。"
-      )
-    ],
-    [
-      InlineCode "(&&)",
-      Words (
-        localized " cannot be referenced as a function because it short-circuits."
-            " は短絡評価するため関数値として参照できません。"
+    ) [
+      (
+        localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+        "/docs/language/syntax/pipelines-and-low-precedence-application/"
+      ),
+      (
+        localized "Custom operators and fixity" "カスタム演算子と結合規則",
+        "/docs/language/syntax/custom-operators/"
+      ),
+      (
+        localized "Optional record field syntax" "省略可能なレコードフィールドの構文",
+        "/docs/language/syntax/optional-record-fields/"
       )
     ]
-  ]] [
-    [InternalLink (
-      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
-      "/docs/language/syntax/pipelines-and-low-precedence-application/"
-    )],
-    [InternalLink (
-      localized "Custom operators and fixity" "カスタム演算子と結合規則",
-      "/docs/language/syntax/custom-operators/"
-    )],
-    [InternalLink (
-      localized "Optional record field syntax" "省略可能なレコードフィールドの構文",
-      "/docs/language/syntax/optional-record-fields/"
-    )]
-  ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

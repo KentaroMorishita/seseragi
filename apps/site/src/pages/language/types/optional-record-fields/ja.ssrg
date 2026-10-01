@@ -14,8 +14,32 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "フィールドを省略できるレコードを受け取るには",
-  summary: "id?: Stringの?は、レコードのidフィールドを省略できるという指定です。props.idで読むとMaybe<String>が返るため、フィールドがある場合とない場合を処理します。",
-  reading: "Propsのchildrenは必須で、idは省略できます。minimalにはchildrenだけがあり、namedにはidもあります。props.idはnamedならJust \"hero\"、minimalならNothingです。??で、値があるときは取り出し、ないときは\"anonymous\"を使います。",
-  result: "label minimalは\"anonymous\"、label namedは\"hero\"を返します。必須のid: Maybe<String>とは異なり、この場合はidフィールドそのものを省略できます。"
+  question: "ニックネームを省略できる引数を受け取るには",
+  summary: "nameは必須、nicknameはあれば使う、という入力を型で表します。フィールドがない場合の表示も、関数の中で決めます。",
+  reading: "alias Personはレコードの型に付けた別名です。name: Stringは必須、nickname?: Stringは省略可能なフィールドです。ordinaryにはnameだけ、nicknamedには両方があります。どちらもdisplayNameへ渡せます。",
+  result: "person.nicknameを読む結果はMaybe<String>です。値があればJustで包まれ、なければNothingになります。??は値があるときはその中身、ないときは右側のperson.nameを選ぶので、出力はAki、Aの順です。",
 }
+
+pub fn readerCaption -> String = "省略したニックネームの代わりに名前を使う"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのnickname?: stringとperson.nickname ?? person.nameでも、同じ表示の選び方を書けます。TypeScript側のundefinedと、Seseragi側のNothingは別の表現です。ここでは、フィールドを省略する場合と文字列を渡す場合だけを比べています。"
+
+pub fn readerBridgeTwo -> String =
+  "必要なのは「渡してよい」という条件の違いです。nicknameが必須の関数には、Personのように省略可能な型をそのまま渡せません。pub effect fn mainが表示を行い、バッククォート内の${...}へ結果を埋め込み、\\nで行を分けます。"
+
+pub fn readerInvalidCaption -> String = "省略可能なフィールドを必須として渡す"
+
+pub fn readerMistake -> String =
+  "requireNicknameには必須のnickname: Stringが必要ですが、ordinaryの型では省略可能です。SES-T0101を直すには、最初のdisplayNameのように省略も受け付けて代わりの値を決めるか、nicknameを必須として持つ値を渡します。型注釈だけで欠けた値が補われることはありません。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則ではPropsのidとchildrenを使い、必須・省略可能・不在の組み合わせを確認します。フィールド自体がない場合と、必須フィールドにNothingを入れる場合の違いも残しています。"
+
+pub fn readerLegacyReading -> String =
+  "Propsのchildrenは必須で、idは省略できます。minimalにはchildrenだけがあり、namedにはidもあります。props.idはnamedならJust \"hero\"、minimalならNothingです。??で、値があるときは取り出し、ないときは\"anonymous\"を使います。"
+
+pub fn readerLegacyResult -> String =
+  "label minimalは\"anonymous\"、label namedは\"hero\"を返します。必須のid: Maybe<String>とは異なり、この場合はidフィールドそのものを省略できます。"
+
+pub fn readerRelated -> String = "では、読み出したJustとNothingを別々に扱う方法を確認できます。"

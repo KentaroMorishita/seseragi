@@ -1,22 +1,82 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
 import * as guide from "./guide"
-import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import { LocalizedText, localized } from "../../../../model/locale"
+import {
+  Article,
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  principlePage "language.model.immutable-by-default" "/docs/language/model/immutable-by-default/" (en.copy ()) (ja.copy ()) "principle-immutable-by-default" "10 -> 11" [
-    [InternalLink (localized "Records" "レコード", "/docs/language/data/records/")],
-    [InternalLink (
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
+  ((title, path), (english, japanese)) -> Paragraph ([
+    InternalLink (title, path),
+    Words (localized (". " + english) ("。" + japanese))
+  ])
+}
+
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  let related = [
+    (
+      localized "Annotations and inference" "型注釈と推論",
+      "/docs/language/types/annotations-and-inference/"
+    ),
+    (localized "Records" "レコード", "/docs/language/data/records/"),
+    (
       localized "Tuples, arrays, and lists" "タプル・配列・リスト",
       "/docs/language/data/tuples-arrays-and-lists/"
-    )],
-    [InternalLink (
+    ),
+    (
       localized "Signals and transactions" "Signalとトランザクション",
       "/docs/language/effects/signals-and-transactions/"
-    )]
+    )
   ]
+  PageDefinition {
+    id: "language.model.immutable-by-default",
+    path: "/docs/language/model/immutable-by-default/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [CodeExample (
+        "principle-immutable-by-default",
+        localized english.exampleTitle japanese.exampleTitle
+      )],
+      [Heading ("reading-the-example", localized "Names and fields" "名前とフィールドを読む")],
+      paragraphs english.reading japanese.reading,
+      [Terminal (localized "Output" "実行結果", "10 -> 11")],
+      [Heading ("why", localized "Keep both versions of the score" "更新前と更新後を見比べる")],
+      paragraphs english.purpose japanese.purpose,
+      [Heading ("rules", localized "Collections and changing state" "コレクションと、変化する状態")],
+      paragraphs english.rules japanese.rules,
+      [Heading (
+        "mistakes",
+        localized "Create a record instead of assigning to a field" "フィールドへ代入せず、新しい値を作る"
+      )],
+      paragraphs english.mistakes japanese.mistakes,
+      [CodeExample ("pilot-immutable-invalid", localized "Rejected example" "受け付けられない例")],
+      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
+      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

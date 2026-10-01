@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "文字列の末尾だけから空白を取り除く",
+  purpose: "先頭の字下げを残し、末尾の余分な空白だけを取りたいときはtrimEndを使います。引数も結果もStringです。空白の判定にはUnicodeのWhite_Spaceという集合を使い、半角スペースのほか改行や一部の幅のある空白も含みます。",
+  reading: "labelは前後に二個ずつ半角スペースを持つ文字列です。text.trimEnd labelの結果は[  Aki]になります。出力の角括弧は残った空白を見やすくするために付けたものです。original行では元のlabelが変わっていないことを確認できます。",
+  boundaries: "NEL removed行の\\u{0085}はNEXT LINEという文字を番号で書いた表記です。White_Spaceに含まれるためtrimEndで取り除かれます。一方、\\u{FEFF}は含まれず、withBomはそのまま残ります。emptyとonly whitespaceの結果は、どちらも空のStringです。",
+  rules: "末尾から連続するWhite_Spaceだけを除き、途中や反対側の文字は変更しません。UnicodeのデータはSeseragiの版に固定されます。空白除去は入力と出力のUTF-8バイト数に対して線形の処理です。正規化、単語分割、大文字・小文字の変換はしません。",
+  mistake: "見えない文字ならすべて消えると思わないでください。FEFFやゼロ幅スペースはWhite_Spaceではありません。両端を取り除きたいならtrimを選び、先頭の字下げが必要な処理ではtrimEndを使います。用途が決まらないまま、残った文字を一律に削除する必要はありません。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptの.trimEnd()でも半角スペースの例は同じ結果です。ただしJSの空白の集合は異なり、NELは残り、FEFFは取り除かれます。trimUnicodeEndは正規表現の\\p{White_Space}でUnicodeの該当集合を指定する例です。+は一個以上、$は末尾に限る指定で、uはUnicodeに対応した解釈を選びます。"
+
+pub fn comparisonBoundary -> String =
+  "出力ではJS組み込みの結果とWhite_Space指定の結果を分けて示しています。TSのtrueとSeseragiのTrueは同じ真偽値の表示上の違いです。これらの入力は確認していますが、ホストが使うUnicodeデータは処理系によります。ICUなどの版の表示だけから、すべてのJS操作が同じUnicode版を使うとは判断できません。"

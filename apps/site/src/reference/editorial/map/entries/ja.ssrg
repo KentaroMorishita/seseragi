@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "キーと値の組をArrayで読む",
+  purpose: "Mapを順番に処理しつつキーと値を一緒に保つときにentriesを使います。結果のArray<(K, V)>は、位置で区別する二つの値の組を入れたArrayです。",
+  reading: "挿入順に、bと2、aと2、cと3が組になります。(key, value)は役割の違う二つの値を同じ組に置く書き方です。",
+  boundaries: "空の入力なら空のArrayです。値が重複してもキーが違うため、組はそれぞれ残ります。",
+  rules: "各項目を挿入順に一度ずつ返します。元のMapは変えず、処理量は項目数に応じます。この出力ではJSONが各組を2要素の配列で表示します。",
+  mistake: "TypeScriptの[...map.entries()]が配列としての対応例です。Seseragiはiteratorでなく完全なArrayを返します。各組が一つの要素であり、外側の配列にキーと値を交互に並べるわけではありません。",
+}

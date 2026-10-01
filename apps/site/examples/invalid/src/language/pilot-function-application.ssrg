@@ -1,0 +1,2 @@
+fn add left: Int -> right: Int -> Int = left + right
+let answer = add(1, 2)

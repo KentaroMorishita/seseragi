@@ -1,27 +1,37 @@
 import { ExplanationCopy } from "../../explanation"
-import { PrincipleCopy } from "../principle"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> PrincipleCopy = PrincipleCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "デフォルトで不変",
   summary: (explanation ()).summary,
-  meaningTitle: "更新は、別の値を作ること",
-  meaningBody: "letは値に名前を付けます。一度宣言した名前に、別の値を再代入する構文はありません。レコード、構造体、代数的データ型、配列、リストの値も不変です。得点を増やすなどの更新では、元の値を残して新しい値を作ります。",
-  exampleTitle: "元の点数を残して、新しい点数を作る",
-  reasonTitle: "なぜ元の値を残すのか",
-  reason: [
-    "関数へ渡した値は、別の関数が使っていても変わりません。関数の入力と結果を確認すれば、データがどう変換されたかを追えます。更新前と更新後の値を比較することもできます。",
-    "配列やリストの変換も、新しいコレクションを返します。元のコレクションは変わりません。ただし、実装が毎回全要素をコピーするとは限りません。変更されない部分の保存領域を共有する場合もあります。"
+  purpose: [
+    "TypeScriptのconstも名前への再代入を禁止します。ただし、constで宣言した普通のオブジェクトは、そのフィールドを変更できます。Seseragiでは名前だけでなく、通常のデータの中身も書き換えません。",
+    "そのため、ある関数へoriginalを渡しても、別の関数がoriginal.scoreを書き換えることはありません。更新前後を比較したり、どの計算がupdatedを作ったかを追ったりできます。"
   ],
-  boundaryTitle: "変化するアプリケーションは作れる",
-  boundary: [
-    "カウンターや入力フォームの値を変えるには、状態を扱うAPIを使います。Refでは、専用の操作で保存した値を読み書きします。Signalでは、時間とともに変わる値を扱い、その変更に応じて計算し直せます。",
-    "ファイルへの書き込みなど、プログラムの外部に作用する処理はEffectで表します。RefやSignalを使っても、通常のletやレコードのフィールドに代入できるようにはなりません。データの変換には新しい値の構築、状態の変更には対応するAPIを使い分けます。"
+  exampleTitle: "元のレコードを残し、点数が1多いレコードを作る",
+  reading: [
+    "letは=の右側を計算し、その結果に名前を付けます。以後はその名前で値を使えます。型を書く場合はlet score: Int = 10のように、名前の後へ: 型名を加えます。Intは整数の型です。",
+    "最後のpub effect fn mainはプログラムの実行入口です。pubは入口を公開し、effect fnは画面出力などの処理を表すEffectを返します。実行機構がその処理を実行します。printlnは文字列と改行を出力します。バッククォート内の${original.score}と${updated.score}には、それぞれの値の表示が入ります。"
+  ],
+  rules: [
+    "レコードのほか、独自に定義したデータ型や構造体、Array（配列）、List（リスト）の値も不変です。配列やリストの変換は新しいコレクションを返し、元のコレクションを変えません。実装が毎回全要素をコピーするとは限らず、変わらない部分の保存領域を共有する場合があります。",
+    "カウンターや入力フォームのように変わる状態には、専用のAPIを使います。Refは保存した値を操作で読み書きします。Signalは時間とともに変わる値を表し、それに依存する計算を更新できます。",
+    "ファイルへの書き込みなど、外部に作用する処理はEffectで表します。RefやSignalを使っても、普通のletやレコードのフィールドへ代入できるようにはなりません。データの更新では新しい値を作り、状態の変更では対応する操作を使います。"
+  ],
+  mistakes: ["次の例はフィールドへ代入しようとしています。Seseragiの代入構文ではないため、現在のコンパイラはSES-P0001（式を読み取れないという構文エラー）を返します。位置が閉じ波括弧を指すこともあります。original.score = 11を取り除き、最初の例のようにlet updated = { ...original, score: 11 }と書いてください。更新後の値を表示するなら、printlnに渡すフィールドもupdated.scoreへ変えます。"],
+  related: [
+    "値に型を書く位置や、関数の宣言を調べます。",
+    "レコードの項目を読み、追加し、更新する書き方を調べます。",
+    "配列やリストの変換と値の扱いを調べます。",
+    "カウンターなど、時間とともに変わる値を扱う仕組みを調べます。"
   ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "不変な値を、どう更新するのか",
-  summary: "letで付けた名前や、通常のデータの中身は後から書き換えられません。得点を増やす場合も、元の値を残して新しい値を作ります。",
-  reading: "originalのscoreは10です。...originalは、元のフィールドを新しいレコードへ取り込みます。score: original.score + 1で、updatedのscoreを11にします。nameは元と同じです。",
-  result: "出力は10 -> 11です。original.scoreは10のままで、updated.scoreは11です。カウンターなどの状態を変えるには、SignalやRefの操作を使います。"
+  question: "点数に名前を付け、元の点数を残して更新するには",
+  summary: "得点を10から11へ増やし、更新前の得点も残します。letで値に名前を付け、更新するときは別の値を作ります。",
+  reading: "let original = ...は、右辺の値にoriginalという名前を付けます。波括弧で囲んだ全体がレコードで、nameとscoreはその中の名前付きの項目です。TypeScriptのオブジェクトに似た形で、original.scoreはそのscoreの値10を取り出します。",
+  result: "...originalは元の項目を新しいレコードへ取り込み、続くscore: original.score + 1が新しい得点を11にします。updatedのnameは\"Aki\"のままです。元のoriginal.scoreは10なので、表示は10 -> 11になります。"
 }
+
+pub fn title -> String = (copy ()).title

@@ -1,0 +1,14 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  InlineCode,
+  Words
+} from "../../../../model/page"
+
+pub fn forms -> Array<Block> = []
+
+pub fn rejected -> Array<Block> =
+  [CodeExample
+      ("syntax-invalid-methods", localized "Invalid method declarations" "誤ったメソッド宣言")]

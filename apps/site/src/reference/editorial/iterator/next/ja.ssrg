@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "元のIteratorを変更せず、次の値と続きのIteratorをJustで返します。終了したらNothingを返します。",
+  taskTitle: "一件を読み、続きへ進む",
+  purpose: "3から数えるIteratorから、先頭とその次を読みます。nextの結果には値だけでなく続きも含まれます。続きへ進むには、この返されたIteratorを使います。",
+  setup: "countdownは、正の数ならJust (今回の数, 次の数)、0以下ならNothingを返す関数です。iterator.unfold countdown 3でIterator<Int>を作ります。fn firstの-> Stringは表示する文字列を返すという指定です。",
+  after: [
+    "nextは、値があるJust (value, rest)か、終了のNothingを返します。matchでこの形を選び、二つ組から名前を取り出します。_は使わない部分を表します。firstは値だけ、secondはrestをfirstへ渡して次の値を読みます。",
+    "同じvaluesへのfirstは二回とも3です。元のIteratorを消費しないためです。secondは返されたrestを読むので2になります。最初から終了する状態0のIteratorではdoneを表示します。",
+    "import * as iteratorは操作の接頭辞です。pub effect fn mainのdoはprintlnを順に実行します。showが整数を文字列にします。nextそのものは表示も入力の変更もしません。"
+  ],
+  comparisonBefore: "JavaScriptのgenerator.next()は、valueとdoneを持つ結果を返します。doneがtrueなら終了です。この例のfunction*とyieldは一件を渡して一時停止するgeneratorを作ります。",
+  comparisonAfter: "TypeScript側は同じgeneratorを呼ぶたびに進むため、3、2、1になります。Seseragi側は元のIteratorを二度読むと3、3で、返されたrestを読んだときだけ2へ進みます。両方とも終了を通常の結果で表しますが、進め方は異なります。",
+  details: [
+    "next<A>の結果はMaybe<(A, Iterator<A>)>です。Justの二つ組は要素Aが先、続きのIteratorが後です。Nothingには続きも要素もありません。順番に読むループではrestを次の対象として保持します。",
+    "同じIteratorへの読み取りは同じ結果を返すという契約です。ただし計算済みの結果を保存する保証はなく、unfoldで作ったものはnextのたびにstepを一度呼びます。stepに外部状態の変更を隠すことはできません。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、計算の規則"
+}

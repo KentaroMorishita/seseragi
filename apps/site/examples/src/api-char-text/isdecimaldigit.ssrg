@@ -1,0 +1,9 @@
+import * as unicode from "std/text/unicode"
+
+let digit = '3'
+pub effect fn main =
+  println `3 decimal: ${unicode.isDecimalDigit digit}
+٣ decimal: ${unicode.isDecimalDigit '٣'}
+３ decimal: ${unicode.isDecimalDigit '３'}
+² decimal: ${unicode.isDecimalDigit '²'}
+Ⅳ decimal: ${unicode.isDecimalDigit 'Ⅳ'}`

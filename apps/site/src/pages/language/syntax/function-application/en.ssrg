@@ -1,21 +1,44 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Function application",
   summary: (explanation ()).summary,
-  formsTitle: "Pass one argument at a time, separated by spaces",
-  formsBody: "Write add 1 2 to pass two arguments. It groups as (add 1) 2, applying one argument at a time. Parentheses group an expression or write a tuple such as (1, 2), or the Unit value ().",
-  typingBody: "The type A -> B -> C means A -> (B -> C). Supplying an A argument returns a function waiting for a B argument, with type B -> C. To choose a concrete type, attach type arguments without spaces: identity<String> value. With spaces, as in identity < value, < is comparison.",
-  evaluationBody: "The function and its arguments are computed once, left to right, before the function body runs. When the function returns an Effect, the result describes work to execute later. That call alone does not start the described I/O.",
-  invalidTitle: "Check argument types and expression grouping",
-  invalidBody: "A value that is not a function cannot be called. An argument of the wrong type also causes a type error. Use parentheses when an entire if, match, do, or lambda expression must be one argument. Custom binary operators require surrounding spaces; an operator written as a function, such as (<+>), has no spaces inside.",
-  diagnosticsBody: "For a type error, first check how many arguments the function takes and their types. add (1, 2) passes one tuple, whereas add 1 2 passes two integers. They are different calls.",
+  purpose: [
+    "Declare the calculation once, then reuse it with different inputs, as in add 20 2. The declaration shows the order and types of its arguments. Both arguments here are Int, so their types cannot detect swapped values.",
+    "You can also supply only some arguments and create a function waiting for the rest. Establish the complete call first; the partial-application details below explain that additional use."
+  ],
+  exampleTitle: "Define a function and supply all its arguments",
+  reading: [
+    "Int is the integer type. Arrows separate the parameters and result while you read a declaration from left to right. At the call, write values without types or arrows: add 1 2. Writing add alone refers to the function itself rather than a computed sum.",
+    "println (show answer) handles display. show answer converts the integer to text; parentheses make that whole calculation one argument. println writes the text and a newline. pub effect fn main is the public entry point; the runner executes the returned Effect, a value describing work to perform."
+  ],
+  rules: [
+    "add 1 2 groups as (add 1) 2. Supplying just 1 with add 1 creates a function waiting for the remaining integer. Name it with let addOne = add 1, then call addOne 2 to obtain 3. Supplying only some arguments is called partial application.",
+    "Int -> Int -> Int means Int -> (Int -> Int). After one integer, the remaining type is Int -> Int: a function taking an integer and returning an integer. In the general notation A -> B -> C, A, B, and C are explanatory names for arbitrary types; it means A -> (B -> C).",
+    "A declaration with no named parameter, fn answer -> Int = 42, still accepts one value () of type Unit. Call answer () to obtain 42. Unit represents an input with no payload and has only that value. answer alone remains a function.",
+    "A call can also select a concrete type. fn identity<A> value: A -> A = value accepts and returns a value of the same type. A names the type chosen for a call; identity<String> \"ready\" chooses String. Attach <String> to the function name without spaces. In identity < value, < is parsed as comparison, not a type argument.",
+    "The function and arguments are computed once, from left to right. Calling a function returning Effect produces a value describing work to execute later. The call alone does not start the described I/O.",
+    "Use parentheses to make a whole multi-part expression one argument. This applies to if (choosing by a condition), match (choosing by data shape), do (connecting operations in order), and lambdas (functions created in place). A custom binary operator requires surrounding spaces, as in left <+> right. As a function value, write (<+>) without spaces inside. Here <+> illustrates an operator that must be defined separately."
+  ],
+  mistakes: [
+    "(1, 2) is one tuple containing two values. The add(1, 2) below attempts to pass that tuple to the first Int parameter, causing SES-T0101: expected Int, actual (Int, Int). Correct it to add 1 2.",
+    "A type error may mean the argument has the wrong type or that you tried to call a value that is not a function. Compare the call with the declaration and check what is being passed as one argument."
+  ],
+  related: [
+    "Look up the remaining function and its type after partial application.",
+    "Find where to annotate a function’s types.",
+    "Look up calls written with a dot after a value.",
+    "Find ways to lay out nested calls more readably.",
+    "Find how an expression groups when parentheses are omitted."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I pass arguments to a function?",
-  summary: "Write the function name followed by space-separated arguments. Supplying only some arguments creates a function that accepts the rest.",
-  reading: "The declaration names left and right as Int parameters; the final Int is the result type. add 1 supplies left and returns a function. addOne 2 supplies right to that function, which computes 1 + 2.",
-  result: "answer is 3. add 1 2 also computes 3, because it means (add 1) 2. add (1, 2) instead passes one tuple; that tuple does not match add's first Int parameter."
+  question: "How do I pass two integers to an addition function?",
+  summary: "Put the arguments after the function name, separated by spaces. Call add 1 2 to add 1 and 2. Passing a value to a function is also called function application.",
+  reading: "fn declares a function named add. left: Int and right: Int are integer parameters. The intermediate -> continues to the next parameter, and the final -> Int states that it returns an integer. The body after = returns left + right.",
+  result: "add 1 2 gives left the value 1 and right the value 2, so its result is 3. let answer = ... names that result answer. The ordinary two-argument call that TypeScript would write add(1, 2) uses spaces here."
 }
+
+pub fn title -> String = (copy ()).title

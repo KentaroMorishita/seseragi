@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I turn library errors into application errors?",
-  summary: "An Effect's E names the failures that callers can handle with recovery operations. To compose operations using different error types, convert them to a common type with mapError or a similar explicit operation.",
-  reading: "rawLoad constructs an Effect succeeding with 1 when its key is \"present\". Other keys fail with the key String. load uses mapError MissingRecord to convert that String into the MissingRecord case of AppError. The successful Int remains unchanged.",
-  result: "Executing load \"missing\" fails with MissingRecord \"missing\". recover can receive that AppError and return another computation. Cancellation and defects are not AppError values and are not caught by this recovery operation."
+  question: "How do I receive a failure reason and use a fallback result?",
+  summary: "An Effect has a failure type that its caller can handle. recover receives that reason and returns replacement work.",
+  reading: "readName constructs work that succeeds with Aki for present, or fails with the String missing otherwise. effects.succeed constructs success and effects.fail constructs failure; neither means throwing at its call site.",
+  result: "The output is Aki and fallback: missing. Success keeps the name; only failure passes its reason to recover. The replacement string is returned as work using succeed, then its result is printed.",
 }
+
+pub fn readerCaption -> String = "Construct a fallback from the reason"
+
+pub fn readerBridgeOne -> String =
+  "\\reason -> ... is a small function receiving the reason, similar to TypeScript reason => .... In do, name <- names an operation’s successful value before continuing. _ <- executes an operation without using its returned contents."
+
+pub fn readerBridgeTwo -> String =
+  "Unlike a try/catch that can receive arbitrary thrown values, recover handles the Effect’s declared E failure. It does not catch defects or cancellation. readName’s E is String here; it is recovered before combining with println and its ConsoleError."
+
+pub fn readerInvalidCaption -> String = "Compose two different failure types unchanged"
+
+pub fn readerMistake -> String =
+  "Sequencing a String-failing operation and an Int-failing operation in do without aligning their failure types reports SES-E0001. The compiler does not invent String | Int. Handle the failure with recover or use the later mapError example to convert both to a common type."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "rawLoad constructs an Effect succeeding with 1 when its key is \"present\". Other keys fail with the key String. load uses mapError MissingRecord to convert that String into the MissingRecord case of AppError. The successful Int remains unchanged."
+
+pub fn readerLegacyResult -> String =
+  "Executing load \"missing\" fails with MissingRecord \"missing\". recover can receive that AppError and return another computation. Cancellation and defects are not AppError values and are not caught by this recovery operation."

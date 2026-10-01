@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "検索パターンを作り、一致の確認・抽出・置換を行います。RegexはSeseragi共通の実行基盤を使い、パターンのエラーとUTF-8のバイト位置を明示します。",
+  taskTitle: "メッセージから注文番号を探す",
+  purpose: "メッセージにORD-42のような注文番号が含まれているか調べます。検索用のパターンを作り、一致した文字列をそのまま使います。一度目は番号が見つかり、二度目は見つかりません。",
+  setup: "import * as regexでstd/regexに名前を付けます。ORD-[0-9]+のORD-はそのままの文字列、[0-9]はASCIIの数字、+は一回以上の繰り返しです。fnは関数の定義で、text: Stringは入力、-> Stringは戻り値の型です。",
+  after: [
+    "compileは、再利用できるRegexをRight patternに、正しくないパターンの情報をLeft errorに入れて返します。matchは形に合う分岐を選び、中の値に名前を付けます。バッククォートのエラー文では${error.offset}に位置が入り、0から数えたUTF-8のバイト数で表します。",
+    "findは、一致があればJust found、なければNothingを返します。foundはRegexMatchというレコードで、found.textが一致した文字列です。見つからない場合は\"no order code\"を返します。取り出すだけなら、位置を使って元の文字列を切り出す必要はありません。",
+    "pub effect fn mainが実行入口です。doの中でprintlnを順に実行します。呼び出しの引数は空白で区切ります。showは値を表示用の文字列にし、Seseragiの真偽値はTrueとFalseで表します。"
+  ],
+  comparisonBefore: "JavaScriptのRegExp.execも、この単純なパターンを検索できます。結果は一致の配列かnullで、配列の0番目が一致全体です。uはUnicodeを考慮する指定です。gとyを付けていないため、繰り返し呼んでもlastIndexの変化を共有しません。",
+  comparisonAfter: "どちらも同じ二つの結果を表示します。ただし、JavaScriptのRegExpでは使えるパターンが異なり、位置はUTF-16の単位で数えます。同じ作業の書き方を比べる例で、Seseragiの規則をJavaScriptに合わせるものではありません。",
+  details: [
+    "真偽値だけならisMatch、最初の一致の情報ならfind、重ならないすべての一致ならfindAllを使います。splitは一致の間の文字列を残します。replaceAllは指定した文字列をそのまま挿入し、replaceAllWithは一致の情報から置換文字列を計算します。利用者が入力した文字列をそのまま探す場合はescapeを使います。",
+    "共通の記法には、文字、.、文字クラス、|による選択、(...)・(?:...)・(?<name>...)のグループ、できるだけ長く一致する*・+・?・{m,n}、位置を指定する^・$・\\A・\\zがあります。最も左の開始位置を選び、同じ位置では先に書いた選択肢を優先します。後方参照、先読み・後読み、パターン内のフラグ、短い一致を優先する量指定子、独占的量指定子、アトミックグループ、条件分岐、再帰は使えません。文字クラスの外の\\bと\\Bによる単語境界の指定も未対応です。",
+    "パターンはUnicodeのスカラー値単位で調べます。見た目の一文字とは限りません。\\dはASCIIの数字、\\wは規定の文字・結合文字・十進数字・接続用句読点の分類を使います。一致やエラーの位置はUTF-8のバイト数です。StringからRegexへの暗黙の変換はなく、JavaScriptの正規表現エンジンに規則を任せることもありません。"
+  ],
+  codeTitle: "境界も確認する完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使うときに確かめたい規則"
+}

@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "各要素を確認し、すべてRightなら値をまとめます。失敗時は最初のLeftを保ちますが、後の関数呼び出しは続きます。",
+  taskTitle: "座席数をすべて確認し、最初のエラーを返す",
+  purpose: "複数の予約の座席数を確認します。すべて正なら数のArray、失敗があれば元の順で最初の理由を受け取ります。",
+  setup: "eitherとtextは読み込んだ関数を呼ぶ名前です。fn requireSeatsのseats: Intは整数の引数、-> Either<String, Int>は結果の型です。ifは正の数をRightに、そうでなければ理由をLeftに入れます。=の後の式が戻り値です。",
+  after: [
+    "either.traverse requireSeats [2, 1]は、関数、入力の順です。成功した値は[2, 1]の順でRightに入ります。[2, 0, -1]では0と-1が失敗しますが、結果には先に出た0の理由だけが残ります。",
+    "describeのmatchでRight seatsなら番号のArray、Left errorなら一つの理由を読みます。mapの\\seat: Int -> show seatは一つの整数を文字列にする関数で、text.joinがそれらをつなぎます。空の入力はRight []となりSeats: []です。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptは最初にmapですべての確認を実行します。その後のforは、すでに得た結果から最初のエラーを選びます。forの途中でrequireSeatsを呼んで終了する実装とは評価のタイミングが違います。",
+  comparisonAfter: "両方ともすべての確認を行い、同じ最初のエラーを返します。traverseはArray<Either<String, Int>>をEither<String, Array<Int>>にまとめる共通の操作です。例は小さな整数だけを使っています。",
+  details: [
+    "宣言のFはここではArray、EはString、AとBはIntです。Traversableは要素をたどって結果を組み立てる操作への対応を要求します。Listなどでは、そのコレクションの形と規則に従います。",
+    "Leftを得ても後の確認関数は呼ばれます。後の計算の不具合を避ける短絡処理ではありません。後の呼び出しを止めたい場合はreduceUntilを使います。すべての独立したエラーを集めるならValidationを使います。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

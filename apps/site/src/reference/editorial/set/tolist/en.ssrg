@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Convert a Set to a List in insertion order without changing the Set.",
+  taskTitle: "Use set members as an ordered List",
+  purpose: "A Set keeps each equal element once. Convert its members to List when the next calculation needs that collection type. The conversion preserves the Set’s insertion order.",
+  setup: "import * as sets names std/set. singleton 2 starts a Set; insert 1 adds a different element. Inserting 2 again leaves its existing position unchanged. Duplicate handling happens while constructing the Set, before conversion. insert and remove return new Set values.",
+  codeTitle: "Complete program: duplicates, reinsertion, and an empty Set",
+  outputTitle: "Output",
+  after: [
+    "The first result is 2 then 1. moved removes 2 and reinserts it, so that result is 1 then 2. sets.empty<Int> () makes an empty integer Set: <Int> chooses its element type and () is Unit, the no-additional-input argument. A List literal and its show output have a leading backtick, as in `[2, 1]. An Array uses square brackets without that marker.",
+    "The last line converts the original values again and still returns 2 then 1. Neither the updates used to construct moved nor the conversion changes values. pub effect fn main is the entry; do sequences println calls, and show makes display text."
+  ],
+  comparisonTitle: "The same insertion order with JavaScript Set",
+  comparisonBefore: "JavaScript Set also keeps insertion order. Here a copied Set is updated so that the original remains available for the last check. Array.from copies its members to an array.",
+  comparisonAfter: "JavaScript has no built-in Seseragi List, so this comparison uses an array for the same ordered members. JavaScript delete and add mutate the copied Set; Seseragi remove and insert return new Set values.",
+  detailTitle: "Order, equality, and conversion cost",
+  details: [
+    "toList accepts Set<A> and returns List<A>. It does not remove duplicates itself: the input is already a Set. Eq supplies equality and Hash supplies compatible key hashes for the construction and update operations; this conversion does not require a new comparison.",
+    "Insertion order is part of the Set contract. Reinserting an existing member keeps its position; removing it before reinsertion puts it at the end. An empty Set produces an empty result. Conversion takes work proportional to the number of members under the documented collection cost model."
+  ]
+}

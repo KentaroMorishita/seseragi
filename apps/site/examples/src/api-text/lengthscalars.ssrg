@@ -1,0 +1,7 @@
+import * as text from "std/text"
+
+pub effect fn main = do {
+  _ <- println (show (text.lengthScalars "Aé😀e\u{301}"))
+  _ <- println (show (text.lengthScalars "e\u{301}"))
+  println (show (text.lengthScalars ""))
+}

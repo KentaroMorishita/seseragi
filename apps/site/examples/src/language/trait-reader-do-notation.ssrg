@@ -1,0 +1,15 @@
+fn deliveryLabel street: Maybe<String> -> city: Maybe<String> -> Maybe<String> = do {
+  streetName <- street
+  cityName <- city
+  let address = streetName + ", " + cityName
+  pure address
+}
+
+fn display value: Maybe<String> -> String = match value {
+  Just address -> address
+  Nothing -> "address incomplete"
+}
+
+let complete = deliveryLabel (Just "1 River Road") (Just "Tokyo")
+let missing = deliveryLabel Nothing (Just "Tokyo")
+pub effect fn main = println (display complete + "\n" + display missing)

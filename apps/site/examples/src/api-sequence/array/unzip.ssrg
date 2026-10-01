@@ -1,0 +1,11 @@
+import * as arrays from "std/array"
+
+let pairs = [("Aki", 80), ("Mio", 95)]
+let noPairs: Array<(String, Int)> = []
+
+pub effect fn main = do {
+  let (names, scores) = arrays.unzip pairs
+  _ <- println (show names)
+  _ <- println (show scores)
+  println (show (arrays.unzip noPairs))
+}

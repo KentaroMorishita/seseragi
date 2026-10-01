@@ -1,40 +1,19 @@
-import * as arrays from "std/array"
 import * as effects from "std/effect"
 import * as inputs from "std/stdin"
 import * as json from "std/json"
-import { BuildInput, decodeBuildInput } from "./model/build"
-import { En, Ja, Locale, localizedRoute } from "./model/locale"
-import { PageDefinition, SiteCatalog } from "./model/page"
+import { RenderRequest, decodeRenderRequest } from "./model/render-request"
 import { catalog } from "./navigation/catalog"
-import { renderDocument } from "./render/document"
-
-struct Output deriving JsonEncode { route: String, html: String }
+import { renderBatch } from "./render/batch"
 
 type GeneratorError deriving Show =
   | InputFailure
   | DecodeFailure
+  | RequestFailure String
   | ConsoleFailure ConsoleError
 
 fn requireInput value: Maybe<String> -> Either<GeneratorError, String> = match value {
   Nothing -> Left InputFailure
   Just encoded -> Right encoded
-}
-
-fn requireSchema input: BuildInput -> Either<GeneratorError, BuildInput> =
-  if input.schema == 1 then Right input else Left DecodeFailure
-
-fn renderLocale input: BuildInput
-  -> site: SiteCatalog
-  -> locale: Locale
-  -> Array<Output> =
-  [Output {
-    route: localizedRoute locale page.path,
-    html: renderDocument input site locale page
-  } | page <- site.pages]
-
-fn render input: BuildInput -> Array<Output> = {
-  let site = catalog input
-  arrays.concat [renderLocale input site En, renderLocale input site Ja]
 }
 
 pub effect fn main -> Unit with Console, Stdin fails GeneratorError = do {
@@ -43,9 +22,11 @@ pub effect fn main -> Unit with Console, Stdin fails GeneratorError = do {
     |> effects.mapError (\_ -> InputFailure)
   line <- inputs.readLineWith limit |> effects.mapError (\_ -> InputFailure)
   encoded <- requireInput line |> effects.fromEither
-  decoded <- decodeBuildInput encoded
+  request <- decodeRenderRequest encoded
     |> effects.fromEither
     |> effects.mapError (\_ -> DecodeFailure)
-  input <- requireSchema decoded |> effects.fromEither
-  println (json.encodeString (render input)) |> effects.mapError ConsoleFailure
+  response <- renderBatch request (catalog request.input)
+    |> effects.fromEither
+    |> effects.mapError RequestFailure
+  println (json.encodeString response) |> effects.mapError ConsoleFailure
 }

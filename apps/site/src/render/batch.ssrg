@@ -1,0 +1,74 @@
+import * as arrays from "std/array"
+import { BuildInput } from "../model/build"
+import { En, Ja, Locale, localizedRoute } from "../model/locale"
+import { PageDefinition, SiteCatalog } from "../model/page"
+import { RenderedPage, RenderRequest, RenderResponse } from "../model/render-request"
+import { renderDocument } from "./document"
+
+struct Target { locale: Locale, page: PageDefinition }
+
+fn targets site: SiteCatalog -> Array<Target> = arrays.concat [
+  [Target { locale: En, page } | page <- site.pages],
+  [Target { locale: Ja, page } | page <- site.pages]
+]
+
+fn route target: Target -> String = localizedRoute target.locale target.page.path
+
+fn renderTarget input: BuildInput
+  -> site: SiteCatalog
+  -> target: Target
+  -> RenderedPage =
+  RenderedPage {
+    route: route target,
+    html: renderDocument input site target.locale target.page
+  }
+
+// Every document receives the complete catalog, including pages outside its
+// output batch. The limit bounds encoded HTML, never navigation or metadata.
+pub fn renderBatch request: RenderRequest
+  -> site: SiteCatalog
+  -> Either<String, RenderResponse> =
+  {
+    let all = targets site
+    let total = arrays.length all
+    if request.schema != 1
+      || request.input.schema != 1 then
+      Left "Unsupported render request schema"
+    else if request.mode == "plan" then
+      if request.offset != 0
+      || request.count != 0 then
+        Left "A plan request requires offset and count zero"
+      else
+        Right (
+          RenderResponse {
+            schema: 1,
+            mode: "plan",
+            offset: 0,
+            total,
+            routes: [route target | target <- all],
+            pages: []
+          }
+        )
+    else if request.mode == "render" then
+      if request.offset < 0
+      || request.count < 1
+      || request.count > 32 then
+        Left "A render request requires a nonnegative offset and 1 to 32 pages"
+      else if request.offset > total
+      || request.count > total - request.offset then
+        Left "The requested page range is outside the catalog"
+      else
+        {
+      let selected = arrays.take request.count (arrays.drop request.offset all)
+      Right (
+        RenderResponse {
+          schema: 1,
+          mode: "render",
+          offset: request.offset,
+          total,
+          routes: [],
+          pages: [renderTarget request.input site target | target <- selected]
+        }
+      )
+    } else Left "Unknown render request mode"
+  }

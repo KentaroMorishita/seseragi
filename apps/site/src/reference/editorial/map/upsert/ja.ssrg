@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "キーの有無に応じて値を決める",
+  purpose: "キーが既にあるかどうかで次の値を決めるときにupsertを使います。キー、更新用の関数、Mapの順に渡します。",
+  reading: "updateはMaybe<String>を受け取ります。Just valueはキーがあり、値が空文字列の場合も含みます。Nothingはキーがない場合です。matchで分岐を選び、保存するStringを返します。",
+  boundaries: "emptyの値はexisting:、nameはexisting:Akiになり、missingはnewで追加されます。それぞれoriginalから別の結果を作り、originalは変わりません。",
+  rules: "更新関数は必ず一度だけ呼びます。既存キーは位置を保ち、新しいキーは最後に入ります。返した値を保存するので、この例ではNothingを返して削除することはできません。戻り値の型はStringです。",
+  mistake: "TSの比較例はgetの前にhasで確認し、存在する空文字列と値がない場合を区別します。Mapをコピーしてから計算した値をsetします。削除にはremove、古い値が不要な更新にはinsertを使います。 getの後の!は、その分岐では値があるとTypeScriptに伝える記号で、実行時の確認は追加しません。直前のhasで存在を確かめています。",
+}

@@ -1,10 +1,12 @@
-import {
-  Explanation,
-  makeExplanation,
-  ArticleExample
-} from "../../explanation"
+import { Explanation, makeExplanation, ArticleExamples } from "../../explanation"
 import * as en from "./en"
 import * as ja from "./ja"
 
-pub fn explanation -> Explanation =
-  makeExplanation (ArticleExample "modules-re-exports") (en.explanation ()) (ja.explanation ())
+pub fn explanation -> Explanation = makeExplanation (
+  ArticleExamples [
+    "modules-project-re-export-greeting-manifest",
+    "modules-project-re-export-greeting-greeting",
+    "modules-project-re-export-greeting-public",
+    "modules-project-re-export-greeting-main"
+  ]
+) (en.explanation ()) (ja.explanation ())

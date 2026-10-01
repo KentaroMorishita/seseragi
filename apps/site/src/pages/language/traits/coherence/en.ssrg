@@ -1,21 +1,40 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Coherence and ownership",
   summary: (explanation ()).summary,
-  ruleTitle: "Do not provide two implementations for the same type",
-  ruleBody: "A call that matches two instances is an error. The overlap check expands aliases and includes generic instances. An instance may be declared in the module defining its trait or the outermost named type it targets.",
-  typingBody: "Candidate instances come from the current module's imports and their further imports. Compiler-provided instances for structural types cannot be replaced. For a trait whose inputs determine its result type, instances assigning different results to the same input are also rejected.",
-  evaluationBody: "Coherence makes instance choice independent of runtime values and import order. Adding an unrelated import cannot silently change which implementation existing well-typed code executes.",
-  invalidTitle: "Aliases and specificity do not escape overlap",
-  invalidBody: "An alias expands before identity checks, and a more specific head does not outrank a generic one. Conflicting evidence must be removed or expressed through distinct nominal types.",
-  diagnosticsBody: "For an overlap error, compare the two reported instances. For a declaration-location error, check where the trait and target type are defined. For a trait with an input-determined result, compare the input types and the result type declared by each instance.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "Ticket and LogTicket are different types from separate struct declarations. LogTicket { ticket } places the existing ticket value in that field.",
+    "The Label<LogTicket> body passes value.ticket to label. That inner call selects the Ticket implementation, and the outer body adds log:.",
+    "This uniqueness rule is called coherence. There is no rule preferring a more specific instance, nor a runtime registration order that chooses an implementation again."
+  ], rules: [
+    "A call that matches two instances is an error. The overlap check expands aliases and includes generic instances. An instance may be declared in the module defining its trait or the outermost named type it targets.",
+    "Candidate instances include the current module’s declarations, its imports and their further imports. Compiler-provided instances for structural types cannot be replaced. For a trait whose inputs determine its result type, instances assigning different results to the same input are also rejected.",
+    "Coherence makes instance choice independent of runtime values and import order. Adding an unrelated import cannot silently change which implementation existing well-typed code executes.",
+    "An alias expands before identity checks, and a more specific head does not outrank a generic one. Remove overlapping implementations or represent the uses with distinct named types.",
+    "For an overlap error, compare the two reported instances. For a declaration-location error, check where the trait and target type are defined. For a trait with an input-determined result, compare the input types and the result type declared by each instance.",
+    "The declaration-site restriction is called the orphan rule. A third module does not gain permission to add an instance merely by importing both names. Function-local instances are not supported either.",
+    "For Iterable<C, A> and Reducible<C, A>, C determines A. For arithmetic traits, the operand types determine the result. These relationships are called functional dependencies and are fixed by the standard traits; there is no syntax for declaring your own dependencies."
+  ], mistakes: [
+    "The two instance Label<Ticket> declarations in the rejected file apply to the same type and produce SES-T0202. Remove the second instance to print ticket-42. If both formats are needed, introduce LogTicket as in the first example.",
+    "The specification expands type aliases when checking overlap, so an alias for Ticket cannot evade the rule. The tested 0.61.19 compiler nevertheless accepted an alias-hidden duplicate. Acceptance does not make it a valid alternative implementation under the specification; do not depend on it."
+  ], related: [
+    "Check where to write the body for a particular type.",
+    "Check which standard trait corresponds to each operator.",
+    "Check when field-based comparison and display can be generated."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Overlapping implementations and permitted modules"
+pub fn mistakesTitle -> String = "Do not define the same instance twice"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What prevents a new import from changing which implementation runs?",
-  summary: "Each trait application must have one unambiguous implementation. Ownership rules limit where an instance can be declared.",
-  reading: "Title<Stage> is implemented once and handles both Draft and Published. title Published can therefore select a single known implementation from the static Stage type; the constructor only affects the branch inside that implementation.",
-  result: "title Published returns \"published\". Adding another Title<Stage> produces an overlap error. A type alias does not create a different type from Stage, so it does not resolve the overlap. A newtype can distinguish a different use requiring different behavior."
+  question: "What if the same Ticket needs another display format?",
+  summary: "A type cannot have two implementations of the same trait. Representing a different use with a distinct named type lets the compiler select each implementation clearly.",
+  reading: "Suppose tickets need a different log format. Instead of defining another Label<Ticket>, create LogTicket with a Ticket field and implement Label<LogTicket>.",
+  result: "Ticket produces ticket-42; LogTicket produces log: ticket-42. The argument’s type identifies the implementation without inspecting its contents or relying on declaration order."
 }

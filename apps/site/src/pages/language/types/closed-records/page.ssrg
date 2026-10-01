@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -7,13 +8,15 @@ import {
   InlineCode,
   InternalLink,
   PageDefinition,
-  Words
+  Words,
+  Paragraph,
+  Terminal
 } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.closed-records" "/docs/language/types/closed-records/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-requirement-merge",
@@ -65,5 +68,30 @@ fn content -> PageDefinition =
       "/docs/language/types/nominal-and-structural-types/"
     )]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "data-reader-closed-records",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "ready"),
+        CodeExample (
+          "data-reader-closed-records-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))])
+      ],
+      [Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))])],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

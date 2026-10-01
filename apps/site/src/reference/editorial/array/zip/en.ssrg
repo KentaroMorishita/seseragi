@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Pair values at corresponding positions in two Arrays.",
+  purpose: "Combine a names list and a scores list into (name, score) pairs. Two comma-separated values in parentheses form a tuple: position gives each value its role, with the name first and score second.",
+  reading: "In arrays.zip scores names, the first argument scores supplies the right side of each pair, while the later names supplies the left. The first results are (Aki, 80) and (Mio, 95). Swapping the call to arrays.zip names scores gives (80, Aki) first.",
+  boundaries: "names has three elements and scores two. Both argument orders stop at the shorter length of two; no pair is made for Ren. The last two examples have an empty side and return []. The noNames and noScores annotations specify the types of those empty values.",
+  rules: "It pairs from the start and stops as soon as either side ends. A shorter length of k produces k pairs, requiring work and result storage proportional to k. Inputs are unchanged.",
+  mistake: "There is no padding or length-mismatch error. Compare both lengths first if every item needs a partner. Use zipWith to calculate a value from each pair, or unzip to separate pairs into two collections."
+}

@@ -1,0 +1,8 @@
+import * as arrays from "std/array"
+
+fn subtract value: Int -> total: Int -> Int = value - total
+
+pub effect fn main = do {
+  _ <- println (show (arrays.reduceRight 0 subtract [1, 2, 3]))
+  println (show (arrays.reduceRight 10 subtract (arrays.empty<Int> ())))
+}

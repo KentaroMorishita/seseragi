@@ -5,11 +5,11 @@ pub fn copy -> ConceptCopy = ConceptCopy {
   title: "中核に存在しない機能",
   summary: (explanation ()).summary,
   ruleTitle: "他の言語で使っていた操作を置き換える",
-  ruleBody: "Seseragiでは、データの更新は新しい値の構築で表します。関数の戻り値は、本体の式が返す値です。このページでは、他の言語にある構文と、それに対応するSeseragiの書き方を比較します。",
+  ruleBody: "関数から値を返す、点数を更新する、条件で結果を選ぶという目的は、Seseragiでも実現できます。次の例では、再代入やreturn文を使わず、元の点数を残して新しい点数を作ります。",
   consequencesTitle: "混同しやすい三つの違い",
-  consequenceOne: "Maybeは値の有無を表し、Eitherは成功か失敗の値を表します。Effectは、これから実行する処理と、その処理で起こり得る失敗を表します。値を調べる場合と、処理を実行する場合で使い分けます。",
+  consequenceOne: "Maybeは値の有無を表し、Justは中身のある場合、Nothingはない場合です。Eitherは成功か失敗の結果で、Rightは成功値、Leftは失敗の理由を持ちます。Effectはこれから実行する処理と、その処理で起こり得る失敗を表します。値を調べることと、処理を実行することを区別します。",
   consequenceTwo: "Effectに必要なサービスは、要求として型に列挙できます。この規則はサービスの指定に使います。一般の値の型に、任意の共用体型や交差型を書けるという意味ではありません。performやhandleを使う代数的エフェクトの構文もありません。",
-  consequenceThree: "derivingは、対応するtraitのinstanceを生成します。テンプレート文字列は、式の値を文字列に埋め込みます。この二つは動作が決まった機能で、任意の構文を追加するマクロではありません。",
+  consequenceThree: "traitは型が提供する操作を定め、instanceは特定の型に対する実装を与えます。derivingは対応するtraitのinstanceを生成します。テンプレート文字列は式の値を文字列へ埋め込みます。この二つは動作の決まった機能で、任意の構文を追加するマクロではありません。",
   boundaryTitle: "構文がなくても、同じ目的は実現できる",
   boundaryBody: "状態が変わるアプリケーション、エラーからの回復、コレクション走査の途中終了は実現できます。それぞれ、明示的な状態のAPI、型で表した結果、reduceUntilやforEachUntilを使います。外部コードが別の仕組みを提供する場合も、外部連携で変換し、通常のSeseragiの規則は変えません。"
 }
@@ -28,8 +28,29 @@ pub fn alternatives -> Array<String> = [
 ]
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "他の言語の構文がない場合、代わりに何を使うか",
-  summary: "他の言語で代入、null、returnを使っていた処理は、Seseragiでは新しい値の構築、Maybe、関数本体の式で表します。このページでは、目的ごとに書き方を比較します。",
-  reading: "レコードの更新は{ ...old, field: newValue }と書きます。値の有無は、値を持つJustと、値を持たないNothingで表します。関数は本体の式を結果とし、ブロックでは最後の式を結果にします。",
-  result: "失敗した結果を値として扱う場合はEither、実行する処理の失敗を扱う場合はEffectを使います。コレクションの走査を途中で止める場合は、reduceUntilやforEachUntilを使います。"
+  question: "再代入やreturnがないとき、普通の計算をどう書くか",
+  summary: "更新には新しい値を作り、関数の結果には本体の式を使います。まず小さな点数計算で確認し、その後で値の不在や失敗などの代替を調べます。",
+  reading: "nextScoreは点数に1を足した値を返します。updatedへ新しい点数を保存し、labelのifで合格か再試行かを選びます。",
+  result: "出力は79, 80, passです。originalは79のままで、updatedが80になり、その点数に対応する文字列がpassになります。"
 }
+
+pub fn title -> String = (copy ()).title
+
+pub fn caption -> String = "元の点数を残して、新しい点数と結果を返す"
+
+pub fn readingTitle -> String = "例を順に読む"
+
+pub fn alternativesTitle -> String = "目的に合う代わりの書き方を選ぶ"
+
+pub fn reading -> Array<String> = [
+  "fn nextScore score: Int -> Intは整数を受け取り、score + 1の結果を返す関数です。関数本体の式が戻り値になるため、return文は書きません。",
+  "labelも整数を受け取り、Stringを返す関数です。score >= 80というBoolの条件が真なら\"pass\"、そうでなければ\"retry\"を返します。if全体が選んだ文字列の値になるので、両側は同じString型です。",
+  "originalは79、updatedはnextScore originalで作った80です。updatedという別の名前で新しい値を使い、originalへ代入して書き換えません。",
+  "mainは出力を表すEffectを返す公開入口です。printlnが値と改行を出力します。バッククォートの中の${...}へoriginal、updated、label updatedの表示を埋め込むので、79, 80, passとなります。",
+]
+
+pub fn related -> Array<String> = [
+  "取得できなかった値を、JustとNothingに分けて扱う方法を確認します。",
+  "新しい値を作ることと、元の値を保つことを詳しく確認します。",
+  "処理の順序を追いやすくする名前やパイプラインの使い方を確認します。",
+]

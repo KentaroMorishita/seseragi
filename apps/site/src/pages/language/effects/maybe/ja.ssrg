@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "値がない場合も扱いながら、中身を使うには",
-  summary: "Maybe<A>は、値を持つJustと、値のないNothingを区別する型です。検索で見つからない場合など、値の不在を正常な結果として扱うときに使います。",
-  reading: "displayNameはcachedを先に調べ、なければrequested、それもなければ\"anonymous\"を使います。??はJustの文字列を取り出し、Nothingのときだけ右側を評価します。右からまとまるため、cachedの代替値はrequested ?? \"anonymous\"です。",
-  result: "cachedがJust \"Aki\"なら結果は\"Aki\"です。両方がNothingなら\"anonymous\"になります。有無で処理を分けたい場合はmatchを使い、不在の理由が必要ならEitherを使います。"
+  question: "名前がないときだけ、代わりの表示名を使うには",
+  summary: "名前が見つからないことも正常な結果なら、値があるJustと、値がないNothingで表します。この二つをまとめた型がMaybeです。",
+  reading: "Maybe<String>は、文字列を持つJustかNothingです。Just \"Aki\"は名前を持つ値です。value ?? \"anonymous\"は、Justの中身を返し、Nothingのときだけ代わりの文字列を使います。",
+  result: "出力はAki、anonymous、empty:です。最後は空文字列をJustに入れた例です。空文字列も存在する値なので、anonymousへ置き換わらず、表示用のempty:だけが残ります。",
 }
+
+pub fn readerCaption -> String = "名前がある場合・ない場合・空文字列"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのundefinedやnullに対する??に似た用途ですが、Seseragiの??はMaybe専用です。nullなどをそのまま渡す演算子ではありません。値がない理由も必要なら、次のEitherで理由を返せます。"
+
+pub fn readerBridgeTwo -> String =
+  "<String>はJustに入る中身の型です。Maybeの値を作っても例外をthrowすることはありません。mainのprintlnが三つの結果を文字列へ入れ、\\nで行を分けて表示します。"
+
+pub fn readerInvalidCaption -> String = "代わりの値に別の型を使う"
+
+pub fn readerMistake -> String =
+  "Maybe<String>の右側に0を置くとSES-T0101です。取り出す中身がStringなので、代わりも\"anonymous\"などのStringにします。Nothingは失敗理由を持たない点にも注意してください。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "displayNameはcachedを先に調べ、なければrequested、それもなければ\"anonymous\"を使います。??はJustの文字列を取り出し、Nothingのときだけ右側を評価します。右からまとまるため、cachedの代替値はrequested ?? \"anonymous\"です。"
+
+pub fn readerLegacyResult -> String =
+  "cachedがJust \"Aki\"なら結果は\"Aki\"です。両方がNothingなら\"anonymous\"になります。有無で処理を分けたい場合はmatchを使い、不在の理由が必要ならEitherを使います。"

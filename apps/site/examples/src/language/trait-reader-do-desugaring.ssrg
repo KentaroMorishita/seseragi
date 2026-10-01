@@ -1,0 +1,13 @@
+fn withDo street: Maybe<String> -> city: Maybe<String> -> Maybe<String> = do {
+  streetName <- street
+  cityName <- city
+  pure (streetName + ", " + cityName)
+}
+
+fn withFlatMap street: Maybe<String> -> city: Maybe<String> -> Maybe<String> =
+  flatMap (\streetName -> flatMap (\cityName -> Just (streetName + ", " + cityName)) city) street
+
+let samePresent =
+  withDo (Just "1 River Road") (Just "Tokyo") == withFlatMap (Just "1 River Road") (Just "Tokyo")
+let sameMissing = withDo Nothing (Just "Tokyo") == withFlatMap Nothing (Just "Tokyo")
+pub effect fn main = println (show samePresent + "\n" + show sameMissing)

@@ -5,17 +5,41 @@ pub fn copy -> TypeCopy = TypeCopy {
   title: "型の同一性と型変換",
   summary: (explanation ()).summary,
   ruleTitle: "異なる型へ渡すときは、必要な変換を書く",
-  ruleBody: "IntをFloatとして使うには、toFloatのような変換関数を呼びます。IntをMaybe<Int>にするにはJustで包みます。同じフィールドを持つstructとレコードも、別々の型です。newtypeを包む・取り出す操作や、外部のJs.Nullable<A>からMaybe<A>への変換も明示してください。",
+  ruleBody: "IntをFloatとして使うには、std/floatのfromIntのような変換関数を呼びます。IntをMaybe<Int>にするにはJustで包みます。同じフィールドを持つstructとレコードも、別々の型です。newtypeを包む・取り出す操作や、外部のJs.Nullable<A>からMaybe<A>への変換も明示してください。",
   identityBody: "一般に暗黙で許されるのは、値を返さないNeverを要求された型として扱う規則と、レコードに余分なフィールドがあっても必要なフィールドを持つ場所へ渡せる規則です。Effect・Stream・Signal・MutableSignalには、それぞれの用途に応じた例外があります。それらは任意の型を自動変換する規則ではありません。",
   checkingBody: "コンパイラは、元の値の型と、その場所で要求される型を比較し、定められた変換だけを許します。複数の変換を推測してつなげたり、実行時の値を調べて決めたりはしません。明示的な変換関数にも型があり、変換に失敗する可能性があれば、その失敗も型で表します。",
   invalidTitle: "実行時の表現が同じでも、そのまま渡せるとは限らない",
-  invalidBody: "Floatが必要な場所へIntを、Intが必要な場所へnewtypeの値を、そのまま渡すことはできません。structをレコードへ、外部のnullableな値をMaybeへ直接渡すこともできません。toFloatを呼ぶ、Justで包む、newtypeをパターンで取り出すなど、意図した操作を示します。",
+  invalidBody: "Floatが必要な場所へIntを、Intが必要な場所へnewtypeの値を、そのまま渡すことはできません。structをレコードへ、外部のnullableな値をMaybeへ直接渡すこともできません。std/floatのfromIntを呼ぶ、Justで包む、newtypeをパターンで取り出すなど、意図した操作を示します。",
   diagnosticsBody: "型が合わない場合は、元の型と要求される型を見比べ、対応する変換関数やコンストラクターを確認してください。生成先のTypeScriptなどで同じ形として扱えても、それを理由にSeseragiの型検査を通すことはありません。",
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "似た値なら自動で型を変えてくれるか",
-  summary: "Seseragiでは、多くの型変換をコードで明示します。実行時の形が似ているだけでは、同じ型として扱えません。",
-  reading: "42というIntは自動でFloatにはなりません。Just 42はIntではなくMaybe<Int>です。UserIdで包んだ42も、そのまま整数としては使えません。値の不在を見落としたり、IDを取り違えたりするのを防ぐ区別です。",
-  result: "42をFloatにするならtoFloatを呼び、値のあるMaybeを作るならJust 42と書きます。UserIdの中身を使うなら、matchでIntを取り出します。型エラーが出たら、渡す値の型と受け取り側の型を比べ、どの変換が必要か確認してください。"
+  question: "整数を小数の計算へ渡すには、何を変えるか",
+  summary: "型注釈を書き換えるだけでは、Intの値はFloatになりません。必要な変換を関数呼び出しとして書き、どこで値を変えるか示します。",
+  reading: "importは標準ライブラリstd/floatからfromIntを読み込みます。countは整数42です。fromInt countでFloatへ変換してからhalfへ渡します。halfの引数も戻り値もFloatで、2.0もFloatです。",
+  result: "計算結果はFloatの21.0です。showが表示用の文字列にし、mainのprintlnが21.0を一行表示します。count自体はIntの42のままです。",
 }
+
+pub fn readerCaption -> String = "整数からFloatへ明示的に変換して半分にする"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのnumberでは、42と21.0をこのような別々の数値型として区別しません。Seseragiでは個数などのIntと小数計算のFloatを分けます。この比較は型の違いを説明するもので、TypeScriptで同じ割り算ができないという意味ではありません。"
+
+pub fn readerBridgeTwo -> String =
+  "half (fromInt count)の括弧は、内側の変換結果をhalfへ渡すためのまとまりです。IntをMaybe<Int>にするJust 42や、UserIdを取り出すパターンも明示的な操作です。それぞれ目的が違い、必要な操作をコンパイラが勝手につなぐことはありません。"
+
+pub fn readerInvalidCaption -> String = "Floatの引数へIntをそのまま渡す"
+
+pub fn readerMistake -> String =
+  "half 42は必要なFloatと実際のIntが違うためSES-T0101です。最初からFloatを書くなら42.0、既存のcountを変換するならfromInt countを渡します。let count: Float = 42と注釈だけを変えても、この不一致は解消しません。"
+
+pub fn readerDetailNote -> String =
+  "詳しい規則では、明示的な変換が必要な組み合わせと、余分なレコードフィールドなど暗黙に許される限定的な場合を分けます。続く拒否例はnewtypeの中身が自動で取り出されないことを示します。"
+
+pub fn readerLegacyReading -> String =
+  "42というIntは自動でFloatにはなりません。Just 42はIntではなくMaybe<Int>です。UserIdで包んだ42も、そのまま整数としては使えません。値の不在を見落としたり、IDを取り違えたりするのを防ぐ区別です。"
+
+pub fn readerLegacyResult -> String =
+  "42をFloatにするならstd/floatのfromIntを呼び、値のあるMaybeを作るならJust 42と書きます。UserIdの中身を使うなら、matchでIntを取り出します。型エラーが出たら、渡す値の型と受け取り側の型を比べ、どの変換が必要か確認してください。"
+
+pub fn readerRelated -> String = "では、IntやFloatなどの値の範囲と違いを確認できます。"

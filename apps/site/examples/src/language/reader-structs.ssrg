@@ -1,9 +1,6 @@
 struct User { id: Int, name: String }
 
-pub effect fn main = do {
-  let original = User { id: 1, name: "Aki" }
-  let renamed = User { ...original, name: "Mio" }
-  _ <- println original.name
-  _ <- println renamed.name
-  println renamed.id
-}
+let original = User { id: 1, name: "Aki" }
+let renamed = User { ...original, name: "Mio" }
+
+pub effect fn main = println `${original.name}\n${renamed.name}\n${renamed.id}`

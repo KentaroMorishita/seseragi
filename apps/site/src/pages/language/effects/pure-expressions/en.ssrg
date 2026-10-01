@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can a normal function print or read the clock?",
-  summary: "A pure expression calculates a value without reading or changing external state. External operations such as output are returned as Effect values representing work to execute.",
-  reading: "lineTotal multiplies two integers and returns the calculated Int. plannedTotal passes the same calculation to succeed and returns Task<Int>. Task is an alias for Effect and here represents work whose successful result is an Int. Calling plannedTotal does not execute that work.",
-  result: "lineTotal 20 3 returns 60. plannedTotal 20 3 returns a description of work; executing it succeeds with 60. Passing that Task<Int> directly where an ordinary Int is required produces a type mismatch."
+  question: "How do I separate calculating a value from printing it?",
+  summary: "Use an ordinary function to calculate a value, and return output work as an Effect. Start by separating a total calculation from displaying its result.",
+  reading: "lineTotal multiplies the price and quantity and returns Int. lineTotal 20 3 is 60. let total names that calculated result.",
+  result: "The output is 60. lineTotal does not write to the screen; the entry point main uses println to display the result on one line.",
 }
+
+pub fn readerCaption -> String = "Separate the calculation from output"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript can use a calculation-only function in the same way. In Seseragi, output and file operations have Effect types, so their distinction from functions returning ordinary Int values is also visible in the type."
+
+pub fn readerBridgeTwo -> String =
+  "pub effect fn main is the public entry point for outside work, here output. Constructing an Effect value differs from starting its work. The later example also covers an ordinary function returning the work itself."
+
+pub fn readerInvalidCaption -> String = "Return an ordinary integer from effect fn"
+
+pub fn readerMistake -> String =
+  "effect fn total -> Int = 20 * 3 reports SES-T0101. An Effect-returning body needs more than a plain Int. Use fn for just the calculation, or effects.succeed to construct work that succeeds with a value."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "lineTotal multiplies two integers and returns the calculated Int. plannedTotal passes the same calculation to succeed and returns Task<Int>. Task is an alias for Effect and here represents work whose successful result is an Int. Calling plannedTotal does not execute that work."
+
+pub fn readerLegacyResult -> String =
+  "lineTotal 20 3 returns 60. plannedTotal 20 3 returns a description of work; executing it succeeds with 60. Passing that Task<Int> directly where an ordinary Int is required produces a type mismatch."

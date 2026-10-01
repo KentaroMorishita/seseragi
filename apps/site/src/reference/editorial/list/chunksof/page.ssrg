@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { listEditorial } from "../../list-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  listEditorial "std/list::chunksOf" "list-chunksof" "batches: `[`[10, 20], `[30, 40], `[50]]\nbatches: `[`[10, 20]]\nbatches: `[`[10], `[20]]\nbatches: `[]\ninvalid: NonPositiveSize 0\ninvalid: NonPositiveSize -2" (en.copy ()) (ja.copy ())

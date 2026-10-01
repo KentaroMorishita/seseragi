@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Transform values while keeping their keys",
+  purpose: "Use mapValues to change every stored value while keeping the lookup keys. cents receives an Int price in whole euros and returns euros * 100.",
+  reading: "The prices for tea and cake become 200 and 500. The second print confirms the source still contains 2 and 5.",
+  boundaries: "An empty Map produces an empty Map and never calls cents. The output value type may differ from the input value type.",
+  rules: "The function receives only the value, once per entry in insertion order. Keys and their order are preserved. Work grows with the number of entries.",
+  mistake: "The TS example maps entry pairs into a new Map and explicitly carries each key along. The Seseragi callback needs only the value. These examples use small whole integers, not fractional currency or a rounding policy.",
+}

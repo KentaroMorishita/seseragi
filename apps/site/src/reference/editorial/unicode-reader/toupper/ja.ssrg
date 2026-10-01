@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "表示する文字列をUnicodeの既定規則で大文字にする",
+  purpose: "ラベルや見出しを大文字で表示したいときに使います。toUpperはUnicodeの既定の大文字変換を行い、結果のStringを返します。HelloはHELLOになります。言語設定を指定する引数はなく、元の入力は変更しません。",
+  reading: "importでstd/textをtextという名前で読み込み、text.toUpperの後ろに対象の文字列を書きます。StraßeはSTRASSEとなり、ßがSSに広がります。ﬃはFFI、éはÉです。アクセントを消す処理ではないため、Éにもアクセントが残ります。",
+  boundaries: "ßからSS、ﬃからFFIのように、一つのUnicodeの文字番号が複数になることがあります。大文字にする前の長さを、そのまま結果の長さとして使わないでください。最後の[]は空文字列を大文字にしても空のままという意味です。",
+  rules: "Unicodeの既定の完全な大文字変換を使い、トルコ語やリトアニア語などの言語固有の規則は適用しません。変換後の文字列は元の表記を記録していないため、toLowerを続けても必ず元に戻るわけではありません。処理量は入力と出力のバイト数に比例します。",
+  mistake: "大文字化を元に戻せる保存形式として使わないでください。Straßeを大文字にしたSTRASSEから小文字を作るとstrasseになり、ßは戻りません。表示に元のつづりも必要なら元の値を残します。比較用にはcaseFold、表記の正規化にはnormalizeを選んでください。TypeScriptのtoUpperCaseはこの例の対応する操作です。",
+}

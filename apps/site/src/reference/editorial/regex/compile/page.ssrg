@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::compile" "compile" "matches: True\nerror at 3: UnexpectedRegexEnd\nerror at 2: UnsupportedRegexFeature look-around\nmatches: True" "matches: true\nrejected pattern\nmatches: false\nmatches: true" (en.copy ()) (ja.copy ())

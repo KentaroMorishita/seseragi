@@ -1,0 +1,12 @@
+struct Counter { value: Int }
+
+impl Counter {
+  fn add self: Counter -> amount: Int -> Counter = Counter {
+    value: self.value + amount
+  }
+}
+
+let original = Counter { value: 10 }
+let updated = original.add 5
+
+pub effect fn main = println `${original.value}\n${updated.value}`

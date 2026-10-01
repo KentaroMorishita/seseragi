@@ -1,0 +1,127 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn blocks specifier: String -> Array<Block> =
+  if specifier != "std/char" then
+    []
+  else
+    [
+      Heading (
+        "working-with-char",
+        localized "Inspect a symbol’s Unicode number" "記号のUnicode番号を調べる"
+      ),
+      Paragraph ([Words (localized (en.purpose ()) (ja.purpose ()))]),
+      CodeExample
+        ("char-text-codepoint", localized "Read a symbol’s number" "記号の番号を読み取る"),
+      Paragraph ([Words (localized (en.reading ()) (ja.reading ()))]),
+      Terminal (localized "Output" "実行結果", "symbol: 128077\nletter: 65\nnull: 0"),
+      Heading
+        ("choose-char-operation", localized "Choose the conversion direction" "変換したい方向から選ぶ"),
+      Paragraph ([Words (localized (en.choose ()) (ja.choose ()))]),
+      BulletList (
+        [
+          [
+            InternalLink
+        (localized "codePoint" "codePoint", "/docs/library/char/function/codepoint/"),
+            Words
+        (localized ": inspect a Char’s Unicode number." "：CharのUnicode番号を調べる。")
+          ],
+          [
+            InternalLink (
+              localized "fromCodePoint" "fromCodePoint",
+              "/docs/library/char/function/fromcodepoint/"
+            ),
+            Words (
+              localized ": check a number and handle an absent Char."
+        "：番号を確かめ、Charを作れない場合も扱う。"
+            )
+          ],
+          [
+            InternalLink
+        (localized "toString" "toString", "/docs/library/char/function/tostring/"),
+            Words (localized ": use a Char in a String label." "：CharをStringのラベルに使う。")
+          ]
+        ]
+      ),
+      Heading (
+        "checked-char-construction",
+        localized "Handle a number that cannot form a Char" "Charにできない番号も扱う"
+      ),
+      Paragraph ([Words (localized (en.checked ()) (ja.checked ()))]),
+      CodeExample (
+        "char-text-fromcodepoint",
+        localized "Handle Just and Nothing" "JustとNothingの両方を扱う"
+      ),
+      Terminal (
+        localized "Output" "実行結果",
+        "found: 👍\nnot a scalar\nnot a scalar\nnot a scalar\nnot a scalar\nzero accepted: True\nlast accepted: True"
+      ),
+      Paragraph ([Words (localized (en.checkedReading ()) (ja.checkedReading ()))]),
+      Heading (
+        "typescript-comparison",
+        localized "Compare the TypeScript boundary" "TypeScriptとの境界の違いを確認する"
+      ),
+      Paragraph ([Words (localized (en.comparison ()) (ja.comparison ()))]),
+      CodeExample (
+        "char-text-fromcodepoint-typescript",
+        localized "Check scalar values explicitly" "scalarの条件を明示して確かめる"
+      ),
+      Terminal (
+        localized "TypeScript output" "TypeScriptの実行結果",
+        "found: 👍\nnot a scalar\nnot a scalar\nnot a scalar\nnot a scalar\nzero accepted: true\nlast accepted: true\nJS accepts surrogate: 55296"
+      ),
+      Paragraph
+        ([Words (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ()))]),
+      Heading (
+        "char-boundaries",
+        localized "Keep scalar, String, and visible character distinct"
+        "scalarとString、見た目のまとまりを使い分ける"
+      ),
+      Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+      Paragraph ([Words (localized (en.literals ()) (ja.literals ()))]),
+      BulletList (
+        [
+          [
+            InternalLink (localized "std/text" "std/text", "/docs/library/text/"),
+            Words (
+              localized ": select and count scalars within a String."
+        "：Stringの中のscalarを選び、数える。"
+            )
+          ],
+          [
+            InternalLink (
+              localized "std/text/grapheme" "std/text/grapheme",
+              "/docs/library/text/grapheme/"
+            ),
+            Words (
+              localized
+        ": work with user-perceived pieces containing one or more scalars."
+        "：一個以上のscalarでできた、見た目のまとまりを扱う。"
+            )
+          ],
+          [
+            InternalLink (
+              localized "std/text/unicode" "std/text/unicode",
+              "/docs/library/text/unicode/"
+            ),
+            Words (
+              localized
+        ": inspect properties or choose normalization and case-folding rules."
+        "：性質を調べ、正規化や比較用の変換の規則を選ぶ。"
+            )
+          ]
+        ]
+      ),
+      Heading ("char-api-index", localized "Browse the complete module" "モジュール全体を調べる")
+    ]

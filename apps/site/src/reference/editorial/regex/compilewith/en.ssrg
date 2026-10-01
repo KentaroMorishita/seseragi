@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Compile a pattern with explicit case-insensitive, multiline and dot-newline options, returning Either for success or rejection.",
+  taskTitle: "Choose what counts as a match",
+  purpose: "Use compileWith when letter case, line boundaries or newline matching changes the intended search. The three settings are separate; selecting one does not enable the others.",
+  setup: "The named import brings the RegexOptions record constructor into scope. RegexOptions { ... } creates a value with three Boolean fields. compileWith takes that options value first and the pattern String second.",
+  after: [
+    "The five results show case-insensitive café matching; no expansion of ß into SS; ^id$ matching an inner line; dot matching a newline when enabled; and the same newline case failing with defaults.",
+    "compileWith returns Right pattern for a reusable Regex or Left error for an invalid pattern. match chooses a branch and names the value inside it. The backtick error message inserts error.offset at ${error.offset}; that offset counts UTF-8 bytes from zero.",
+    "pub effect fn main is the program entry. do runs the println output steps in order. Calls separate arguments with spaces. show converts a value to display text; True/False are the Seseragi Boolean spellings."
+  ],
+  comparisonBefore: "For these examples, JavaScript flags i, m and s express the corresponding requests. Each new RegExp also receives u for Unicode-aware matching. No global or sticky flag is used.",
+  comparisonAfter: "The shown Booleans agree, with lowercase true/false in JavaScript. Agreement on these inputs does not equate the engines: Seseragi case-insensitive matching uses its pinned Unicode simple case folding and has a deliberately smaller pattern syntax.",
+  details: [
+    "caseInsensitive is locale-independent simple folding; it does not expand ß into the two scalars ss. Full case folding is a separate text operation that maps Straße to strasse. multiline lets ^ and $ match line boundaries. \\A and \\z always refer to the whole input.",
+    "dotMatchesNewline permits . to match a line terminator. A dot still matches one Unicode scalar, not a complete grapheme such as an emoji plus modifier. compileWith returns Left for invalid or unsupported patterns just as compile does."
+  ],
+  codeTitle: "Complete program and boundary cases",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Matching rules to keep in view"
+}

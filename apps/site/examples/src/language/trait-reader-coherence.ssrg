@@ -1,0 +1,18 @@
+struct Ticket { number: Int }
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Ticket> {
+  fn label value: Ticket -> String = "ticket-" + show value.number
+}
+
+struct LogTicket { ticket: Ticket }
+
+instance Label<LogTicket> {
+  fn label value: LogTicket -> String = "log: " + label value.ticket
+}
+
+let ticket = Ticket { number: 42 }
+pub effect fn main = println (label ticket + "\n" + label (LogTicket { ticket }))

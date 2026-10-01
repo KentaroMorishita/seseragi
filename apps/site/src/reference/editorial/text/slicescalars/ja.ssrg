@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "scalar単位の範囲を確認して文字列を切り出す",
+  purpose: "sliceScalarsには開始位置、終了位置、文字列の順で渡します。scalarはUnicodeの番号一つの単位です。位置は0から数え、終了位置のscalarは含めません。結果は成功したRightか、範囲の誤りを持つLeftです。",
+  reading: "Aé😀e\\u{301}の1から3の手前まではéと😀なので、最初はslice: [é😀]です。matchのRight partは中の文字列にpartという名前を付け、表示用の[と]で囲みます。",
+  boundaries: "開始と終了がともに2なら、長さ0の正しい範囲なのでslice: []です。長さ3の入力で終了4を指定した場合や、開始2が終了1より後の場合はLeftです。Left errorの分岐はInvalidScalarRangeが持つstart、end、実際のlengthを表示します。最後は空文字列の0から0なので、正しい空の切り出し結果です。",
+  rules: "正しい範囲は0 <= start <= end <= scalar数です。位置を自動で有効範囲に丸めません。元の文字列を変えず、scalarを数えて範囲を調べるため、一定時間の切り出しは保証しません。",
+  mistake: "UTF-8バイト数やTypeScriptのUTF-16添字ではなくscalar位置を使います。また結合アクセントを別々に切り出す可能性があるため、画面上の文字を保ちたい場合はgrapheme単位のsliceを検討してください。",
+}

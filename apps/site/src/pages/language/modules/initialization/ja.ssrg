@@ -1,21 +1,51 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "モジュールの初期化",
   summary: (explanation ()).summary,
-  ruleTitle: "依存先を一度だけ初期化し、letをソース順に評価する",
-  ruleBody: "まず依存先を初期化してから、それを使うモジュールを初期化します。各モジュールは一度だけ初期化します。同じファイル内のモジュール直下のletは、ソースに書いた順に計算します。関数や型の名前はその前から参照できますが、関数同士を相互再帰させる場合はrecにまとめる必要があります。",
-  typingBody: "モジュールの関数は、letを計算する前に呼び出せる状態になります。letの右辺から、先のletと関数を参照できますが、後のletを直接参照することはできません。関数の本体から後のletを参照することはできます。ただし、その値の初期化が済んでから関数を呼ぶ必要があります。ローカル関数は宣言した位置から使えるため、別の規則です。",
-  evaluationBody: "letの初期化中に関数を呼び、その関数が未初期化のletを読むと、SES-N0201で拒否されます。例では後のletを読む関数を定義していますが、呼ぶのはそのletの初期化が済んでからです。Effectを作っただけでは、記述した入出力は実行しません。",
-  invalidTitle: "後の値を読む関数は、その値の初期化後に呼ぶ",
-  invalidBody: "letの初期値から関数を呼ぶ場合、その関数が読むletも初期化済みである必要があります。参照を関数の中へ移すだけでは、呼ぶ順序の問題は解消しません。同じモジュールを複数箇所からimportしても、初期化は一度です。importはEffectを実行する操作でもありません。",
-  diagnosticsBody: "初期化前の参照では、どのletの計算からどの関数を呼び、どの未初期化の値を読んだかを確認してください。foreignでpure-loadを指定した外部モジュールは初期化時に読み込みますが、task-loadなら最初のTask実行時まで待ちます。コンパイラやエディターが調べるだけで、外部コードを実行することはありません。",
+  purpose: [
+    "別ファイルから読み込んだ値を、いつ使えるようになるのかを考えます。初期化とは、モジュール直下のletを評価して、その名前に対応する値を用意することです。",
+    "この例のmain.ssrgはsummary.ssrgのanswerを必要とします。依存先のsummary.ssrgを先に初期化してから、main.ssrgの初期化と入口の実行へ進みます。計算結果は共有でき、入出力を開始する場所は入口に残せます。",
+  ],
+  exampleTitle: "依存先の値を用意してから入口で出力する",
+  reading: [
+    "seseragi.tomlのpackageは名前、バージョン、対応する言語バージョンです。runのentry = \"main\"は標準のsrcフォルダー内のmain.ssrgを選び、target = \"process\"はプロセスとして実行する指定です。mainという名前の関数が別ファイルにもあることでは、この選択は変わりません。",
+    "summary.ssrgのfn double value: Int -> Intは、整数valueを受け取りvalue * 2を返します。pub let answer: Int = double 21は、その関数を21で呼んだ結果の42を保存します。pubにより別のモジュールからanswerを使えます。",
+    "Effectは、後で実行する入出力などを表す値です。effect fn reportはprintlnによる出力を含むEffectを返します。pendingの右辺のreport ()は関数を呼んでその値を作りますが、出力は実行しません。()は、ここで引数として使うUnitの値です。",
+    "main.ssrgのimportはanswerという公開名だけを取り込みます。pub effect fn mainは実行入口として公開され、出力を表すEffectを返します。show answerで42を文字列へ変え、printlnがその文字列と改行を出力します。実行機構が開始するのは、このmainの返したEffectです。",
+  ],
+  rules: [
+    "依存先から利用側へ進む順序で、各モジュールを一度だけ初期化します。この順序を依存関係のトポロジカル順と呼びます。同じモジュールを複数のファイルからimportしても、そのトップレベルの値を作り直しません。",
+    "同じモジュール内のletはソース順に評価します。右辺では先のletと関数宣言を使えますが、後のletを直接読むことはできません。関数の実行時の定義は、モジュールのletを評価し始める前にすべて用意します。",
+    "関数、type、newtype、alias、struct、traitの名前はletの評価前から解決できます。ただし、関数同士を互いに呼び出すには同じrecグループが必要です。ブロック内だけで定義するローカル関数は宣言位置から使う規則であり、この先行準備の規則は適用しません。",
+    "関数の本体から後のletを参照することはできます。関数を初期化の後まで呼ばなければ、その参照は後の処理として残ります。一方、初期化中に関数を呼ぶときは、その呼び出し先をさらにたどった先でも、読む値がすべて初期化済みである必要があります。",
+    "importは必要な純粋な初期化の計算を行いますが、保存したEffectやimport先のmainを自動実行する操作ではありません。例のdouble 21は計算され、pendingの出力とsummary.ssrgのmainは実行されません。",
+  ],
+  mistakes: [
+    "次のearly-readプロジェクトでは、answerの初期化からreadLater ()を呼びます。その時点ではlater = 42をまだ評価していません。コンパイラはSES-N0201を報告し、アプリケーションの実行前に拒否します。実行を開始してから起きる例外ではありません。",
+    "診断を読むときは、初期化するlet、そこから呼ぶ関数、その先で読むletの順に確認します。自分自身の初期化中のletを読む場合も禁止です。下のordered-readプロジェクトではlaterを先に用意してからreadLaterを呼ぶので、42を表示できます。",
+  ],
+  related: [
+    "関数の引数と本体をどの順番で計算するか確認できます。",
+    "関数内のletやローカル関数を、どの位置から参照できるか確認できます。",
+    "初期化後に、どのmainをどの環境で実行するか確認できます。",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
+pub fn loaderTitle -> String = "外部コードを読み込む時期と、開発ツールの制限"
+
+pub fn loader -> Array<String> = [
+  "foreignはJavaScriptなどの外部コードをSeseragiから使うための宣言です。外部モジュールの読み込み方にも二種類あります。pure-loadは、読み込み時の評価について所定の純粋性の保証を持つモジュールです。その保証の下で、実行時にSeseragiモジュールを初期化するとき、一度だけ外部モジュールを評価できます。",
+  "task-loadでは、Seseragiモジュールをimportしただけでは外部モジュールを評価しません。最初のforeign Taskの実行まで読み込みを遅らせます。Taskは、必要なサービスと回復可能な失敗がないEffectの別名です。Effectを保存しただけで、この実行が始まることはありません。",
+  "パーサー、型検査器、フォーマッター、言語サーバー、ドキュメント生成器は、foreignの外部実行コードを評価してはいけません。pure-loadも開発ツールに実行許可を与える指定ではありません。初期化順の診断を直すために、実行時の名前検索で不足するサービスや値を補うこともありません。",
+]
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "後で宣言する値を、関数から読んでもよいか",
-  summary: "モジュールの値はソース順に初期化します。関数が後の値を参照していても、呼び出した時点でその値が初期化済みである必要があります。",
-  reading: "readLaterはlaterを参照しています。firstが1、次にlaterが2になり、その後でresultがreadLaterを呼びます。呼ぶ時点ではlaterが準備済みなので、有効です。",
-  result: "readLaterを呼んだ結果は2です。この呼び出しをlaterの初期化前へ移すと、まだ値がないlaterを読むためエラーになります。関数を宣言する位置ではなく、その関数を実際に呼ぶ位置を確認してください。"
+  question: "importした値はいつ計算され、出力はいつ始まるのか",
+  summary: "依存先のモジュールから一度ずつ初期化し、各ファイルのletを上から計算します。Effectを作ることと、その入出力を実行することは別です。",
+  reading: "main.ssrgはsummary.ssrgのanswerをimportします。先にsummary.ssrgでdouble 21を計算して42を用意し、report ()が作るEffectをpendingに保存します。その後、設定で選んだmain.ssrgの入口を実行します。",
+  result: "出力は42と改行だけです。summary.ssrgにあるmainのメッセージも、pendingに保存したメッセージも出ません。純粋な関数の呼び出しは初期化時に行われますが、Effectの実行は入口が開始するまで待ちます。",
 }

@@ -1,26 +1,36 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../../syntax/reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.expressions.evaluation" "/docs/language/expressions/evaluation/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("expressions-evaluation", localized "Ordered application" "順序付きの関数適用")] [] [
-        [InternalLink (
-          localized "Function application" "関数適用",
-          "/docs/language/syntax/function-application/"
-        )],
-        [InternalLink (
-          localized "Blocks and local declarations" "ブロックとローカル宣言",
-          "/docs/language/expressions/blocks-and-local-declarations/"
-        )],
-        [InternalLink (
-          localized "No hidden danger" "危険を暗黙に隠さない",
-          "/docs/language/model/no-hidden-danger/"
-        )]
+fn content -> PageDefinition = withDetails (
+  readerPage "language.expressions.evaluation" "/docs/language/expressions/evaluation/"
+    (en.copy ()) (ja.copy ()) "syntax-reader-evaluation" "23" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-evaluation-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
       ]
+    ) [
+      (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      ),
+      (
+        localized "Blocks and local declarations" "ブロックとローカル宣言",
+        "/docs/language/expressions/blocks-and-local-declarations/"
+      ),
+      (
+        localized "No hidden danger" "危険を暗黙に隠さない",
+        "/docs/language/model/no-hidden-danger/"
+      )
+    ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

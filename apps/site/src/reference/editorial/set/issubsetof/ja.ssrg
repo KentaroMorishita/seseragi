@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "必要な要素がすべて許可されているかを調べる",
+  purpose: "一方のSetの全要素がもう一方にあるかを調べるときにisSubsetOfを使います。許可された要素を持つsupersetを先、確認するvaluesを後に渡します。",
+  reading: "必要な2と1は両方allowedにあるので、sets.isSubsetOf allowed requiredはtrueです。交換するとrequiredには3がないためfalseになります。",
+  boundaries: "必要な要素が空なら、相手が空の場合も含めて常に部分集合です。必要な要素が一つでもあれば、空のSetの部分集合にはなれません。出力でこの三つの場合を確かめます。",
+  rules: "要素の有無を調べるので、順序は問いません。必要な要素が一つ見つからなければ止め、全部あれば成功します。入力は変えません。",
+  mistake: "TSの関数はevery(value => superset.has(value))を使い、valuesを先に受け取ります。Seseragiはsupersetが先です。部分集合は等しい場合も含み、必ず小さくなければならないという意味ではありません。",
+}

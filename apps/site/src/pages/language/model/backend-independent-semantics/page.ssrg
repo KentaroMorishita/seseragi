@@ -1,20 +1,45 @@
 import { explainPage } from "../../explanation"
-import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import {
+  Block,
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { readerPrinciplePage } from "../reader-principle"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as guide from "./guide"
+
+fn leading -> Array<Block> = []
+
+fn rejected -> Array<Block> = [
+  CodeExample ("model-reader-backend-invalid", localized "Rejected source" "エラーになるコード"),
+  Terminal (localized "Diagnostic excerpt" "診断の抜粋", "SES-T0201")
+]
+
+fn advanced -> Array<Block> = []
 
 fn content -> PageDefinition =
-  principlePage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) "principle-backend-independent-semantics" "-3, 3.5" [
-    [InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/")],
-    [InternalLink
-        (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/")],
-    [InternalLink (
-      localized "Erasure and runtime representation" "型消去と実行時表現",
-      "/docs/language/types/erasure-and-runtime-representation/"
-    )]
+  readerPrinciplePage "language.model.backend-independent-semantics" "/docs/language/model/backend-independent-semantics/" (en.copy ()) (ja.copy ()) (en.reader ()) (ja.reader ()) "model-reader-backend" "-3, -3.5" (leading ()) (rejected ()) (advanced ()) [
+    [
+      InternalLink (localized "Literals" "リテラル", "/docs/language/syntax/literals/"),
+      Words (localized ". Which literal selects which numeric type?" "。数値の書き方で型はどう決まるか")
+    ],
+    [
+      InternalLink
+        (localized "Evaluation order" "評価順序", "/docs/language/expressions/evaluation/"),
+      Words (localized ". In what order do calculations run?" "。計算はどの順番で行われるか")
+    ],
+    [
+      InternalLink (
+        localized "Erasure and runtime representation" "型消去と実行時表現",
+        "/docs/language/types/erasure-and-runtime-representation/"
+      ),
+      Words (localized ". How are values represented at runtime?" "。実行時には値をどう表すか")
+    ]
   ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,0 +1,6 @@
+import { Editorial } from "../../../model"
+import { correctionEditorial } from "../../../correction-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  correctionEditorial "std/transformer/state::get" "function" "api-correction-state-get" "api-correction-state-get-ts" "value=7, state=7\nvalue=0, state=0" (en.copy ()) (ja.copy ())

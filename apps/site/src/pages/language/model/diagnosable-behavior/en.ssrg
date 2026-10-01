@@ -1,12 +1,15 @@
 import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
+import { PrincipleReaderCopy } from "../reader-principle"
+
+pub fn title -> String = "Diagnosable behavior"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Diagnosable behavior",
   summary: (explanation ()).summary,
-  meaningTitle: "Omitting a type does not mean choosing an arbitrary type",
-  meaningBody: "Type inference works out types from arguments, results, and annotations. You do not have to repeat every type, but the program still needs enough information for a definite answer. The compiler does not use runtime values or an arbitrary priority to settle an unclear choice.",
-  exampleTitle: "Tell the compiler what an empty list contains",
+  meaningTitle: "Make the declared type agree with the actual value",
+  meaningBody: "SES-T0101 reports a mismatch between the required and actual types. expected: Int is the required type; actual: String is the type of \"3\". If the quantity is three, remove the quotes to use the integer 3. If the design instead requires display text, changing the annotation to String is another option.",
+  exampleTitle: "The repaired integer value",
   reasonTitle: "Why stop instead of picking a default?",
   reason: [
     "An empty integer list and an empty string list look identical when printed, but later operations can require different types. Guessing from that runtime shape would move a type decision into execution and make the meaning harder to predict.",
@@ -14,14 +17,25 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   ],
   boundaryTitle: "A diagnostic still needs a concrete repair",
   boundary: [
-    "For this example, supply List<Int> or call empty<Int> (). For conflicting branch types, change the branches to return the same type. For an unclear name, qualify it. Each repair makes the intended choice part of the program rather than suppressing the error.",
+    "For an empty list, supply List<Int> or call empty<Int> (). A List<Int> cannot be passed directly where List<String> is required. Make conflicting branches return the same type. For an ambiguous name, add its module or trait name to identify it.",
     "Inference is not a proof that the program meets your business requirements. A well-typed formula can still be the wrong formula. This principle concerns whether language choices can be determined and explained, not whether the compiler understands the application's intent."
   ],
 }
 
+pub fn reader -> PrincipleReaderCopy = PrincipleReaderCopy {
+  question: "How do I fix “expected Int, actual String”?",
+  before: ["The final pub effect fn main is the executable entry point. pub exposes that entry; effect fn returns an Effect describing work to run. The runner starts that work, and println writes a value followed by a newline."],
+  reading: ["quantity: Int now agrees with 3, so the repaired program runs and prints 3. With let quantity = 3, the compiler can also work out Int from the value without an annotation. Working out a type from this information is called type inference."],
+  mistakes: ["Removing the annotation just to silence the error leaves let quantity = \"3\" as a string. Passing it to an integer calculation later causes another mismatch. Use an integer for a quantity you calculate with; for a string entered by a user, explicitly parse it and handle the possibility that parsing fails."],
+  details: [
+    "Sometimes the code lacks enough information to settle on a type. The next function, empty<A>, uses A as a placeholder for an element type. Such a function is called generic. List<A> is a list of elements of type A; `[] is an empty list. It is a different collection type from the Array spelled [].",
+    "fn empty<A> -> List<A> declares a function returning List<A>. An empty list has no element from which to determine A, so values: List<Int> specifies integer elements. Call a function with no useful input as empty (): () is the empty value of type Unit. Calling empty<Int> () is another way to choose Int for A. Its printed result is `[], the empty list."
+  ],
+}
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What should I add when the compiler cannot infer a type?",
-  summary: "The compiler determines expression types from values and annotations. When that information is insufficient, as with an empty collection, supply an annotation or explicit type argument.",
-  reading: "empty<A> creates an empty List<A> and has no element that could reveal A. List<Int> on values tells the call to choose integer elements. empty<Int> () is another way to supply the same information.",
-  result: "The output is `[], an empty List. The annotation on values fixes its element type to Int. This List<Int> cannot be passed directly where List<String> is required."
+  question: "How do I fix “expected Int, actual String”?",
+  summary: "Start with a small mismatch between a declared type and a value. Make the intended choice explicit rather than relying on conversion or guessing.",
+  reading: "This example accidentally puts quotes around \"3\" while trying to store an integer quantity. 3 is an integer; \"3\" is a string. The code below stops during type checking, before execution.",
+  result: "let gives a value a name that cannot be reassigned. The : Int in quantity: Int says that quantity requires an integer. It is not an instruction to convert a string. show quantity calls a function that produces display text; parentheses group that result for println."
 }

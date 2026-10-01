@@ -1,0 +1,6 @@
+fn description person: { name: String, score: Int } -> String = {
+  let { name, score: points } = person
+  `${name}: ${points}`
+}
+
+pub effect fn main = println (description { name: "Aki", score: 42 })

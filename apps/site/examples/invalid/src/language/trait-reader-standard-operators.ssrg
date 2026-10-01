@@ -1,0 +1,2 @@
+let total = 20 + 22.0
+pub effect fn main = println total

@@ -4,19 +4,62 @@ import { ConceptCopy } from "../concept"
 pub fn copy -> ConceptCopy = ConceptCopy {
   title: "Programs and entry points",
   summary: (explanation ()).summary,
-  ruleTitle: "Files define code; main starts the program",
-  ruleBody: "Modules contain declarations, such as functions and types, and imports of other modules. Importing makes definitions available; it is not a place to write application actions. An executable package selects its entry module in seseragi.toml, and that module exports main.",
-  consequencesTitle: "Read the entry point in the example",
-  consequenceOne: "pub makes main available outside its module. effect fn declares a function returning an Effect. Unit means successful completion has no further result to return.",
-  consequenceTwo: "with Console says the work needs a console service. fails ConsoleError names the possible console error type. println writes Hello, Seseragi! followed by a newline.",
-  consequenceThree: "The runtime supplies the declared services and executes main's Effect. If main can report errors, they need a Show implementation so the host can display an unhandled failure.",
+  ruleTitle: "Separate calculating a greeting from starting output",
+  ruleBody: "Constructing a string and displaying it in a terminal are separate operations. greeting returns a string; main returns work that prints it. Running the file asks the runner to execute the work returned by main.",
+  consequencesTitle: "Read explicit success, service and failure information",
+  consequenceOne: "In the explicit form, pub still exposes main and effect fn declares a function returning an Effect, a description of work. -> Unit means successful completion has no further result to use. The Unit value is ().",
+  consequenceTwo: "with Console requests the Console service that supplies an output destination. fails ConsoleError says the output operation can return a failure of type ConsoleError. The compact form infers these details from its body.",
+  consequenceThree: "The runner supplies required services and executes the Effect. If main can return an ordinary failure, that failure needs a Show implementation so it can be displayed. Show specifies the operation that converts a value into display text.",
   boundaryTitle: "Libraries do not need main",
-  boundaryBody: "A library exports definitions for other code and needs no executable entry point. A package may offer both a library and an executable. The selected execution target, such as a process or browser, must provide the services the executable needs."
+  boundaryBody: "A library exports definitions for other code and needs no executable main. One package may provide both a library and an executable. A package selects its entry module in seseragi.toml, and that module exports main. The selected execution environment must also supply the required services.",
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How does a file become an executable program?",
-  summary: "A source file is a module declaring functions and types. To run a package, select a module with a public main. The Effect returned by main describes operations such as console output.",
-  reading: "pub makes main public. -> Unit means there is no result data to use after success. with Console requires the Console service for output. fails ConsoleError states that the operation may fail with a ConsoleError.",
-  result: "The runner supplies the service and executes the returned operation, printing Hello, Seseragi! followed by a newline. Importing a module only makes its definitions available; it is not the program's execution command."
+  question: "How do I turn a calculation into a program that displays its result?",
+  summary: "An ordinary function calculates a value. A public main returns work such as output, and the runner executes that work to display the result.",
+  reading: "Pass Aki to greeting, store its returned string in message, and display it with println in main. Distinguish the function result from the work that prints it.",
+  result: "Saving and running this as main.ssrg prints Hello, Aki! and a newline. Merely defining greeting does not display anything.",
 }
+
+pub fn caption -> String = "Construct a greeting and display it through main"
+
+pub fn readingTitle -> String = "Read the example"
+
+pub fn runTitle -> String = "Check and run this single file"
+
+pub fn runNotice -> String =
+  "Save it as main.ssrg in a new working directory. lint checks names and types; run also checks the execution-entry requirements before starting. If the CLI is not ready, follow Run your first program below."
+
+pub fn invalidTitle -> String = "A main returning a string is not an execution entry"
+
+pub fn invalidCaption -> String =
+  "A valid function declaration with an invalid execution entry"
+
+pub fn invalid -> String =
+  "pub fn main below is an ordinary function returning String. lint succeeds, but run rejects it as an invalid entry point. To display the greeting, change it to pub effect fn main = println (greeting \"Aki\"). It then returns an Effect to execute and prints Hello, Aki!."
+
+pub fn contractTitle -> String = "Write the required information explicitly"
+
+pub fn contractCaption -> String =
+  "A separate complete program with an explicit entry contract"
+
+pub fn contractNotice -> String =
+  "This separate example prints Hello, Seseragi!. It uses the same execution model as the compact form, but states success, service and failure information in the declaration."
+
+pub fn reading -> Array<String> = [
+  "fn greeting name: String -> String takes a string named name and returns a string. Its expression after = joins strings with +. greeting \"Aki\" returns Hello, Aki!.",
+  "let message = greeting \"Aki\" makes that result available as message. This top-level calculation runs during initialization before the entry point is called. It does not perform input or output.",
+  "pub effect fn main exposes the execution entry. println message constructs an Effect that describes printing message and a newline. An Effect is a value describing work to execute later; constructing it does not start output.",
+  "The runner calls main, supplies the services needed by its returned Effect, and executes it. That is when println produces output. Instead of a TypeScript-style top-level console.log call, the work to execute is returned from main.",
+]
+
+pub fn related -> Array<String> = [
+  "Set up the CLI and check where to save, typecheck and run a program.",
+  "Choose the entry main when a package contains several files.",
+  "Inspect the boundary that executes Effects, reports failure and manages cleanup.",
+]
+
+pub fn moduleBoundary -> String =
+  "A source file is a module containing declarations such as functions and types, plus imports of other modules. Imported modules can perform pure initialization calculations, but importing does not call their main or automatically execute stored Effects."

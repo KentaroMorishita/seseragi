@@ -1,0 +1,17 @@
+import * as arrays from "std/array"
+import * as text from "std/text"
+import * as validation from "std/validation"
+import { Validation, Valid, Invalid } from "std/validation"
+import { NonEmptyList } from "std/non-empty-list"
+import * as nonempty from "std/non-empty-list"
+fn describe result: Either<NonEmptyList<String>, String> -> String = match result {
+  Right value -> "OK: " + value
+  Left errors -> "Errors: " + text.join "; " (arrays.fromIterable errors)
+}
+pub effect fn main = do {
+  let accepted: Validation<String, String> = validation.valid "Ada: 2"
+  let rejected: Validation<String, String> =
+    validation.invalidMany (nonempty.cons "name is required" `["seats must be positive"])
+  println (describe (validation.toEither accepted))
+  println (describe (validation.toEither rejected))
+}

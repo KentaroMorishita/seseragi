@@ -1,75 +1,34 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.reserved-words" "/docs/language/syntax/reserved-words-and-names/" (en.copy ()) (ja.copy ()) [
-    CodeExample (
-      "syntax-reserved-words",
-      localized "Reserved words and names with a meaning in specific contexts"
-        "予約語と、特定の構文で特別になる名前"
-    ),
-    BulletList [
-      [
-        InlineCode "Session",
-        Words (localized " is classified as a type-level name." " は型の名前です。")
-      ],
-      [
-        InlineCode "sessionName",
-        Words (localized " is classified as a value-level name." " は値の名前です。")
-      ],
-      [
-        InlineCode "method",
-        Words
-        (localized " becomes a keyword inside a foreign block." " はforeign宣言の中ではキーワードです。")
-      ],
-      [
-        InlineCode "self",
-        Words (
-          localized " is special only as an impl method's first parameter."
-        " はimplのメソッドの最初の引数を指す名前です。 "
-        )
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.reserved-words"
+    "/docs/language/syntax/reserved-words-and-names/" (en.copy ()) (ja.copy ())
+    "syntax-reader-names" "Hello, Aki" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-names-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
       ]
-    ]
-  ] [BulletList [
-    [
-      InlineCode "let match = 1",
-      Words
-        (localized " attempts to bind a reserved word." " は予約語に名前を付けようとしているため、使えません。")
-    ],
-    [
-      InlineCode "let Value = 1",
-      Words (localized " violates value-name casing." " は値の名前の大文字・小文字の規則に合いません。")
-    ],
-    [
-      InlineCode "let _ = value",
-      Words (
-        localized " may discard value, but _ can never be read later."
-        " は値に名前を付けずに捨てます。_を後から参照することはできません。"
+    ) [
+      (
+        localized "Source text and comments" "ソーステキストとコメント",
+        "/docs/language/syntax/source-text/"
+      ),
+      (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/"),
+      (
+        localized "Custom operators and fixity" "カスタム演算子と結合規則",
+        "/docs/language/syntax/custom-operators/"
       )
     ]
-  ]] [
-    [InternalLink (
-      localized "Source text and comments" "ソーステキストとコメント",
-      "/docs/language/syntax/source-text/"
-    )],
-    [InternalLink
-        (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
-    [InternalLink (
-      localized "Custom operators and fixity" "カスタム演算子と結合規則",
-      "/docs/language/syntax/custom-operators/"
-    )]
-  ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

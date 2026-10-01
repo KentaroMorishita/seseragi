@@ -1,0 +1,13 @@
+import * as lists from "std/list"
+fn score value: { name: String, score: Int } -> Int = value.score
+let people = `[
+  { name: "Aki", score: 2 },
+  { name: "Mio", score: 1 },
+  { name: "Ren", score: 2 }
+]
+let nobody: List<{ name: String, score: Int }> = `[]
+pub effect fn main = do {
+  println (show (lists.sortBy score people))
+  println (show people)
+  println (show (lists.sortBy score nobody))
+}

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Unicodeの番号の単位で文字列を数える",
+  purpose: "lengthScalarsは文字列に含まれるUnicode scalarの数を返します。scalarは一つのUnicodeの番号に対応する単位です。見た目の一文字が複数のscalarからできる場合があります。",
+  reading: "Aé😀e\\u{301}はA、é、😀、e、結合アクセントU+0301の五つなので、最初は5です。\\u{301}はアクセントの番号を書いた表記で、直前のeと組み合わさって見えます。",
+  boundaries: "eと結合アクセントだけの2行目は、見た目が一文字でも2です。空文字列は0です。同じ最初の文字列でもUTF-8では10バイト、TypeScriptのString.lengthではUTF-16単位で6、graphemeでは4と数えます。",
+  rules: "scalar数はバイト数でも、見た目の文字数でもありません。文字列全体を数えるため、UTF-8バイト数に対して線形の処理を許す契約です。一定時間で得られるとは保証しません。",
+  mistake: "文字数制限やカーソル移動に使うなら、必要な単位を先に決めてください。利用者が一文字と感じるまとまりが必要ならstd/text/graphemeを検討し、送信量ならlengthBytesを使います。",
+}

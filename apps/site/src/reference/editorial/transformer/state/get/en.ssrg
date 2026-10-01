@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Build a computation that reads its carried state without changing it. run supplies the initial state and returns both the result and the final state inside the chosen outer computation.",
+  taskTitle: "Read the state passed through a calculation",
+  purpose: "A sequence of calculations may carry a value, such as a counter, from one step to the next. get reads that carried value without updating it. Here the counter starts at 7, and both the value read and the final counter are 7.",
+  setup: "import * as state names the std/transformer/state module. get () has no key or index: () is Unit, the argument used when there is no additional input. The explicit annotation StateT<Int, Maybe, Int> chooses integer state, a Maybe result wrapper, and an integer result.",
+  codeTitle: "Complete program: read two different initial states",
+  outputTitle: "Output",
+  after: [
+    "state.run 7 readState supplies the initial state to readState. It returns Just (7, 7): the tuple contains the returned value first and the final state second. The second run starts independently at 0. Neither call changes readState or a hidden global counter.",
+    "Maybe can contain Just with a value or Nothing without one. match opens Just (value, finalState) and names both tuple elements. The backtick string inserts them at ${value} and ${finalState}. pub effect fn main, do, and println run the two output steps in order."
+  ],
+  comparisonTitle: "A state-reading function in TypeScript",
+  comparisonBefore: "The same small task can be written as a function that receives a number and returns it twice. This TypeScript version defines a familiar tagged union to retain the same optional-result shape.",
+  comparisonAfter: "StateT packages this state-passing pattern so that multiple steps can share it. A plain function is enough for the small example; StateT becomes useful when combining state changes with another kind of result.",
+  detailTitle: "What run removes",
+  details: [
+    "In StateT<S, M, A>, S is the carried state, M is the outer computation, and A is the returned value. Here M is Maybe. The declaration writes M<_> because M takes one type argument; Maybe<Int> is one such completed type.",
+    "The Monad<M<_>> requirement means M supports producing a result and sequencing dependent steps. get places (state, state) into that chosen computation without changing the state. run removes only the StateT layer: this example still returns Maybe<(Int, Int)>. If M is an Effect, run returns that Effect rather than executing it.",
+    "Use put or modify to change the carried state. A Map lookup and a mutable reference read are different operations in different modules."
+  ]
+}

@@ -1,0 +1,27 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  InlineCode,
+  Words
+} from "../../../../model/page"
+
+pub fn forms -> Array<Block> =
+  [BulletList [
+    [InlineCode "0b1010_0110", Words (localized " is binary Int." " は2進数の整数です。")],
+    [InlineCode "0o755", Words (localized " is octal Int." " は8進数の整数です。")],
+    [InlineCode "0xFF_00", Words (localized " is hexadecimal Int." " は16進数の整数です。")],
+    [InlineCode "6.022e23", Words (localized " is decimal Float." " は10進表記の浮動小数点数です。")],
+    [
+      InlineCode "`[1, 2]",
+      Words (
+        localized " starts a List literal; other backticks start a template."
+          " はListの値を表します。バッククォートが[の直前でない場合は、テンプレート文字列の始まりです。"
+      )
+    ]
+  ]]
+
+pub fn rejected -> Array<Block> =
+  [CodeExample
+      ("syntax-invalid-numeric", localized "Rejected with SES-P0203" "SES-P0203で拒否")]

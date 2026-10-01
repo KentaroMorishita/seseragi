@@ -1,0 +1,16 @@
+pub fn purpose -> String =
+  "std/text provides String operations for searching, splitting, joining, and extracting parts. Operations return values without rewriting the input string. Each API page shows the argument order in an executable example."
+pub fn choose -> String =
+  "Use concat or join to combine text, and split or lines to divide it. contains checks occurrence; startsWith and endsWith check the boundaries. replace changes the first match, replaceAll changes all non-overlapping matches, and trim removes whitespace at both ends."
+pub fn units -> String =
+  "The same string has different lengths depending on the unit. Aé😀e\\u{301} contains five Unicode scalars: A, é, 😀, e, and combining acute accent U+0301. A scalar is one Unicode code value. The final e and accent visually combine, giving four user-perceived grapheme clusters."
+pub fn bytes -> String =
+  "UTF-8 uses one, two, four, one, and two bytes respectively, totaling ten. TypeScript String.length counts UTF-16 code units and gives six because 😀 occupies two units. Both languages let you choose a unit suited to the task. This is a difference between API contracts, not a claim of language superiority."
+pub fn seseragi -> String =
+  "graphemes names the std/text/grapheme import; graphemes.length counts user-perceived clusters. text.lengthScalars counts scalars and text.lengthBytes counts UTF-8 bytes. \\u{301} denotes the combining accent. main is the entry, do orders output, _ <- continues after each print, and show turns numbers into text."
+pub fn typescript -> String =
+  "TypeScript can also enumerate scalars with Array.from(value), encode UTF-8 with TextEncoder, and enumerate graphemes with Intl.Segmenter. The four outputs explicitly count their respective units. This single example does not guarantee identical segmentation at every boundary across implementations using different Unicode versions."
+pub fn maybe -> String =
+  "scalarAt returns Just with a scalar when the index exists, or Nothing when it does not. Maybe is the type containing those two cases. Write the result after match and handle both cases inside { }. Just letter names the contained Char letter, usable on the right of ->. chars.toString turns that Char into a String."
+pub fn either -> String =
+  "sliceScalars returns Right with a string for a valid range, or Left with a reason otherwise. Either contains these success and failure cases. Right part and Left error name their contained values, used on the right of ->. The end index is excluded, and indexes are never silently clamped."

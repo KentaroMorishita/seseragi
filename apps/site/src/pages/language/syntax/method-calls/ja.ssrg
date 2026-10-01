@@ -4,37 +4,39 @@ import { ReaderCopy } from "../../reader-article"
 pub fn copy -> ReaderCopy = ReaderCopy {
   title: "メソッド呼び出し",
   summary: (explanation ()).summary,
+  exampleTitle: "元のカウンターを残して5を加える",
   purpose: [
-    "メソッドは、特定の型に対して定義した関数です。original.add 5ではCounterのaddを呼びます。最初の引数にoriginal、次の引数に5を渡します。",
-    "例のCounterは、valueという整数のフィールドを持つ型です。implは、その型のメソッドをまとめて宣言するために使います。addでは、元のCounterに値を代入せず、加算後のCounterを返します。"
+    "メソッドは、特定の型に結び付けて定義する関数です。TypeScriptでも見慣れたドットを使い、original.add 5のように呼び出します。",
+    "この例ではCounterという型にaddを定義します。addは元の値を変更せず、計算した得点を持つ新しいCounterを返します。",
   ],
-  exampleTitle: "元の値を変えずにカウンターへ加算する",
   reading: [
-    "struct Counter { value: Int }で型とフィールドを宣言します。Counter { value: 10 }が値を作り、let originalでその値に名前を付けています。",
-    "fn addが加算する関数です。最初の引数selfにはドットの前の値が入り、次の引数amountには加算する整数が入ります。型の記述の最後にあるCounterは、返す値の型です。",
-    "関数の本体は、self.value + amountを持つ新しいCounterを作ります。original.add 5の結果はCounter { value: 15 }です。整数の15そのものではなく、original.valueへの代入でもありません。最初の出力が10なのはそのためです。",
-    "二つの出力で、元の値は変わらず、新しい値だけが増えていることを確認できます。ドットの前の値をレシーバーと呼びます。この例ではoriginalがレシーバーで、最初の引数selfがその値を受け取っています。"
+    "struct Counter { value: Int }は、valueという整数フィールドを持つ型を宣言します。Counter { value: 10 }で値を作り、originalと名前を付けます。",
+    "impl Counterの中に、この型のメソッドを書きます。fn addの最初の引数self: Counterには、呼び出しのドットより前のoriginalが渡ります。amount: Intには5が渡ります。最後のCounterは戻り値の型です。",
+    "メソッド本体のself.value + amountは10 + 5です。その値を使って新しいCounterを作るので、updated.valueは15になります。original.valueへ代入しているのではありません。",
+    "mainの文字列は、元の値と更新後の値を改行で分けて出力します。結果は10と15です。ドットの前に置く値をレシーバーと呼び、この例ではoriginalがそれに当たります。",
   ],
   rules: [
-    "どのメソッドを呼ぶかは、コンパイル時に分かる型で決まります。original.addならCounterのimplからaddを探します。実行中に値の中身を見て選び直す仕組みではありません。これを静的なメソッド解決と呼びます。",
-    "型に属するメソッドは、最初の引数をselfとし、その型を指定します。残りの引数は通常の関数と同じく、空白で渡します。一部の引数だけを渡して、残りを受け取る関数を作ることもできます。",
-    "ドットの前の式は一度だけ評価されます。フィールドやメソッドの選択は通常の関数適用より先にまとまるため、original.add 5はaddを選んでから5を渡す呼び出しです。",
-    "traitの関数は別の仕組みです。複数の型で使う操作を宣言し、instanceで型ごとの実装を指定します。traitに関数名を書いただけで、その名前をドットで呼べるようになるわけではありません。"
+    "どのメソッドを使うかは、コンパイル時に分かる型から決まります。original.addではCounterのimplにあるaddを探します。実行時の値の中身から別のメソッドを選び直す仕組みではありません。",
+    "この形式のメソッドの最初の引数はselfと書き、型はそのimplが属する型にします。後続の引数は普通の関数と同じように空白で渡します。引数の一部を渡したり、関数を返すメソッドを使ったりする場合も、残りの関数型に従います。",
+    "レシーバーの式は一度だけ評価します。フィールド参照とメソッド参照は、通常の関数呼び出しより強くまとまります。original.add 5では、original.addで選んだメソッドへ5を渡します。",
+    "traitは、複数の型で使える操作の約束を定義する別の仕組みです。その実装はinstance宣言などで選びます。traitに関数を宣言しただけで、このimpl形式のドットメソッドになるわけではありません。",
   ],
   mistakes: [
-    "original add 5では、originalを関数として呼び出す意味になります。メソッドを呼ぶ場合はoriginal.add 5と書いてください。add (original, 5)は一つのタプルを渡す書き方で、二つの引数を渡す呼び出しとは異なります。",
-    "メソッドの最初の引数はselfで、型はそのメソッドが属する型でなければなりません。次の不正な宣言のようにselfを省略したり別の型にしたりすると、コンパイル時にエラーになります。診断が指す引数の名前と型を確認してください。"
+    "original add 5は、originalを関数として呼ぼうとする別の式です。メソッドにはoriginal.add 5と書きます。add (original, 5)も、二つの引数ではなく一つのタプルを渡しています。",
+    "下の宣言は最初の引数をcounterと書いているため、SES-T0503になります。引数名をselfに直し、本体のcounter.valueもself.valueへ変えます。selfの型も、そのメソッドが属するCounterでなければなりません。",
   ],
   related: [
-    "引数の渡し方や、一部の引数だけを渡す書き方を確認できます。",
-    "implを宣言できる場所や、メソッドの公開方法を確認できます。",
-    "ドットを使った呼び出しと演算子を組み合わせるときの読み方を確認できます。"
-  ]
+    "メソッドに追加の引数を渡す前提となる、通常の関数呼び出しを確認できます。",
+    "implを置ける場所や、メソッドの公開範囲を調べられます。",
+    "ドット、空白の呼び出し、算術演算を混ぜたときのまとまり方を確認できます。",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "ドットの前の値は、どの引数に渡されるか",
-  summary: "メソッドは、名前付きの型に属する関数です。ドットで呼ぶと、ドットの前の値が最初の引数に渡されます。",
-  reading: "Counterは整数のvalueを持ちます。original.add 5では、selfにoriginal、amountに5を渡します。addはself.value + amountを持つ新しいCounterを作り、元のフィールドを書き換えません。",
-  result: "updatedはCounter { value: 15 }です。original.valueは10のままで、updated.valueは15になります。整数の結果だけが欲しい場合は、updated.valueのようにフィールドを読めます。"
+  question: "ドットの前の値は、どこへ渡るか",
+  summary: "メソッドは特定の型のための関数です。ドットの前の値を、最初の引数selfとして受け取ります。",
+  reading: "original.add 5では、originalをselfへ、5をamountへ渡します。例のメソッドは新しいCounterを返します。",
+  result: "元のvalueは10のままで、新しいCounterのvalueは15になります。",
 }

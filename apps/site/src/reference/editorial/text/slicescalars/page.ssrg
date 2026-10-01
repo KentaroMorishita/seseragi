@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { textEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  textEditorial "std/text::sliceScalars" "text-slicescalars" "slice: [é😀]\nslice: []\ninvalid: InvalidScalarRange { start: 0, end: 4, length: 3 }\ninvalid: InvalidScalarRange { start: 2, end: 1, length: 3 }\nslice: []" (en.copy ()) (ja.copy ())

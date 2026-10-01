@@ -1,21 +1,38 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "doブロックの構文展開",
   summary: (explanation ()).summary,
-  ruleTitle: "doはflatMapを重ねた処理として読める",
-  ruleBody: "x <- mxの後にrestが続く形は、flatMap (\\x -> rest) mxに対応します。flatMapはmxの中身をラムダの引数xへ渡し、その中で残りの処理を行います。結果を使わない行も、引数を使わないラムダでつなぎます。letは通常のローカル宣言のままで、最後の式がdoの結果です。",
-  typingBody: "結果を受け取る関数の引数はM<A>全体ではなく、中のAです。パターンもAに合い、必ず一致する必要があります。flatMapに必要なtraitの条件は、doでも残ります。",
-  evaluationBody: "先の処理が結果を返してから後へ進みます。後の行を先に計算することはありません。コンパイラが関数の生成を省いても、この順番と変数の使える範囲は保たれます。",
-  invalidTitle: "短い構文にしても、処理の規則は残る",
-  invalidBody: "doをflatMapへ書き換えても、選んだ型の動作は変わりません。例えば、MaybeがNothingなら後続の処理を行わず、Effectなら処理を順に実行します。失敗、状態、待機、リソースに関する規則も、そのMonad実装に従います。",
-  diagnosticsBody: "診断は元のdoの行を指します。生成コードの内部名ではなく、該当する取り出しや最後の式を確認してください。",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "flatMapには、次の計算を表す関数と、元のMaybeを順に渡します。元がJustなら中身を関数へ渡し、Nothingなら関数を呼ばずNothingを返します。Arrayの要素を一段平らにする操作だけを意味する名前ではありません。",
+    "\\streetName -> ...は、streetNameを引数に取る名前のない関数です。この引数はStringであり、Maybe<String>全体ではありません。外側のflatMapがstreetを調べます。",
+    "内側のflatMapがcityを調べます。両方がJustのときだけ、二つの文字列を連結してJustで包みます。withDoの最後のpureは、このMaybeの文脈では同じ包み方をします。",
+    "街路名がない場合、内側のflatMapを含む関数は呼びません。ただし関数へ渡す前に計算済みの引数を、遡って計算しなかったことにするわけではありません。"
+  ], rules: [
+    "x <- mxの後にrestが続く形はflatMap (\\x -> rest) mxです。結果を捨てる行も、引数を使わない関数で次につなぎます。letは普通のローカル宣言のままで、最後の式はそのままdoの結果です。",
+    "展開は後ろの行から組み立てますが、前の行からつなぐ実行の意味は変わりません。バックエンドが関数の生成を省いても、評価順序と名前の使える範囲を保つ必要があります。",
+    "do専用の実行時オブジェクトは必要ありません。それでも選んだ計算に必要な分岐、状態、Effectの待機やリソース処理が消えるわけではありません。失敗時に後へ進めるかも、その操作の規則に従います。",
+    "flatMapに必要なtraitの条件と、取り出すパターンが必ず一致する条件は残ります。診断は生成コードの内部名ではなく、元の取り出しや最後の式を確認してください。"
+  ], mistakes: [
+    "次のラムダはstreetNameをMaybe<String>と注釈しています。しかしflatMapが渡すのは中身のStringです。診断では元の引数streetにMaybe<Maybe<String>>が必要だと表示されます。",
+    "注釈をStringへ直すと、このファイルはJust 1 River Road, Tokyoを出力します。どの層を受け取る関数かを確かめてください。doへ書き換えても、この型の関係は変わりません。"
+  ], related: [
+    "住所の一部がないときに処理を止める具体例へ戻れます。",
+    "中の値の型と、外側の計算の型の違いを確認できます。",
+    "型検査だけでなく、操作の結果をテストする理由を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "展開の規則と、保持される実行上の意味"
+pub fn mistakesTitle -> String = "ラムダが受け取るのは中の値"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "doとflatMapは、どう対応するか",
-  summary: "doは、入れ子のflatMapを読みやすく書く構文です。前の結果を受け取る関数の中へ、残りの計算をまとめます。",
-  reading: "value <- sourceの後にincrement valueと書く形は、flatMap (\\value -> increment value) sourceに対応します。ラムダのvalueはMaybe自体ではなく、中のIntです。二つの関数は同じ処理を表します。",
-  result: "Just 41では、doの関数もflatMapの関数もJust 42を返します。NothingではどちらもNothingです。この二つを比較した結果はTrueになります。短いdoへ書き換えても、Maybeの不在の扱いは同じです。"
+  question: "doを関数だけで書くと、何が起きるか",
+  summary: "doは、前の計算から取り出した値を次の関数へ渡すflatMapとして読めます。展開しても、不在の扱いと値の使える範囲は同じです。",
+  reading: "住所を組み立てる同じ処理を二つ書きます。withDoは<-で名前を付け、withFlatMapは結果を受け取る関数を明示します。どちらも通りか市が欠けていればNothingです。",
+  result: "二つの比較はTrueになります。両方の住所要素がある場合も、通りがない場合も、二つの書き方は同じ結果です。展開後の関数を読むと、後の計算がいつ呼ばれるかを確認できます。"
 }

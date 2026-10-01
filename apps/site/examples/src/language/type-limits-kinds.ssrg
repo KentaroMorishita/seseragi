@@ -1,0 +1,8 @@
+alias Wrapped<M<_>, A> = M<A>
+
+fn keep value: Wrapped<Maybe, Int> -> Maybe<Int> = value
+
+let present = keep (Just 42)
+let absent = keep Nothing
+let numbers: Wrapped<Array, Int> = [1, 2]
+pub effect fn main = println `${show present}\n${show absent}\n${show numbers}`

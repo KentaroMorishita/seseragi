@@ -1,0 +1,8 @@
+import { localized } from "../../../../model/locale"
+import { Editorial } from "../../model"
+import { charTextEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  charTextEditorial "std/text/unicode::isWhitespace" "char-text-iswhitespace" "space whitespace: True\ntab whitespace: True\nNEL whitespace: True\nEM SPACE whitespace: True\nU+FEFF whitespace: False\nU+200B whitespace: False" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "space whitespace: true\ntab whitespace: true\nNEL whitespace: true\nEM SPACE whitespace: true\nU+FEFF whitespace: false\nU+200B whitespace: false"

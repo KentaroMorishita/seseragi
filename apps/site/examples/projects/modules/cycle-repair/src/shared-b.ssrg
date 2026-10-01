@@ -1,0 +1,3 @@
+import { base } from "./common"
+
+pub let b: Int = base + 2

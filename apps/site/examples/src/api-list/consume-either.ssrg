@@ -1,0 +1,14 @@
+import * as lists from "std/list"
+fn describe size: Int -> values: List<Int> -> String =
+  match lists.chunksOf size values {
+    Right groups -> "batches: " + show groups
+    Left error -> "invalid: " + show error
+  }
+pub effect fn main = do {
+  println (describe 2 `[10, 20, 30, 40, 50])
+  println (describe 8 `[10, 20])
+  println (describe 1 `[10, 20])
+  println (describe 2 (lists.empty<Int> ()))
+  println (describe 0 `[10])
+  println (describe (-2) (lists.empty<Int> ()))
+}

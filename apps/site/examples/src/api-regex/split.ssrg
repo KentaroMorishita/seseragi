@@ -1,0 +1,12 @@
+import * as regex from "std/regex"
+import * as json from "std/json"
+fn pieces source: String -> text: String -> String = match regex.compile source {
+  Left error -> `invalid pattern at byte ${error.offset}`
+  Right pattern -> json.encodeString (regex.split pattern text)
+}
+pub effect fn main = do {
+  println (pieces "," "a,,b,")
+  println (pieces "(,)" ",a,")
+  println (pieces "" "a👍")
+  println (pieces "," "")
+}

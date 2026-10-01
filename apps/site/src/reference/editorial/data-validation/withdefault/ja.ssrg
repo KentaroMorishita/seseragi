@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Nothingなら既定値、Justなら中の値を返します。既定値の式は呼び出す前に計算されます。",
+  taskTitle: "ニックネームから表示する文字列を得る",
+  purpose: "ニックネームの有無によらず、挨拶を表示します。withDefaultはMaybeを返さず、選んだ文字列そのものを返します。",
+  setup: "importでstd/maybeをmaybeという名前で読み込みます。fn greetは関数を定義します。nickname: Maybe<String>は文字列が入ったJustか値のないNothingを受け取り、-> Stringは戻り値の型です。=の後で文字列をつないで返します。",
+  after: [
+    "maybe.withDefault \"guest\" nicknameは、既定値、確認するMaybeの順です。Just \"Ada\"ではAda、Nothingではguestを使います。Just \"\"は空文字列のままです。角括弧はその違いを見えるようにしています。",
+    "最後の呼び出しも同じ規則です。Just 0にはIntの0があるため、既定値9ではなく0を返します。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptの??は、undefinedかnullの場合だけ右側の値を選びます。この比較の入力はstring | undefinedで、nullは使っていません。",
+  comparisonAfter: "定数の既定値なら両方とも同じ表示になります。TypeScriptの??は右側を必要な場合だけ計算しますが、withDefaultの引数は先に計算されます。Seseragiにも同じ目的で使う??があります。",
+  details: [
+    "withDefault<A>のAは既定値と中の値と戻り値に共通する型です。greetではString、最後の例ではIntです。Stringの既定値をMaybe<Int>に渡すと型が合いません。",
+    "高価な計算や実行時の不具合がある式を既定値に渡すと、Justでもその式が実行されます。遅らせるならnickname ?? fallbackの形にします。Maybeのまま次へ渡すならorElseを使います。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

@@ -1,0 +1,10 @@
+import * as sets from "std/set"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let values = sets.singleton 0
+  println (json.encodeString (sets.toArray values))
+  println (sets.size values)
+  println (sets.contains 0 values)
+  println (json.encodeString (sets.toArray (sets.insert 0 values)))
+}

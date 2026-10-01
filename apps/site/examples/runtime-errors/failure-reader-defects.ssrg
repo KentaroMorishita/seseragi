@@ -1,0 +1,9 @@
+import * as effects from "std/effect"
+
+fn divide divisor: Int -> Int = 7 / divisor
+fn risky -> Effect<{}, String, Int> = effects.defer (\_ -> effects.succeed (divide 0))
+
+pub effect fn main = do {
+  value <- effects.recover (\_ -> effects.succeed 42) (risky ())
+  println value
+}

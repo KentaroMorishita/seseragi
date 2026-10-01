@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How does a computation request application settings?",
-  summary: "Effect's first type argument R is a record of required services. The execution environment supplies them, so settings do not need to be implicit global variables.",
-  reading: "Settings has a label of type String. { settings: Settings } requires a settings field in the environment. effects.service retrieves environment.settings during execution. The function passed to map selects that Settings value's label and returns a String.",
-  result: "Execution requires an environment whose settings field contains a Settings value. Constructing the computation and supplying its environment are separate stages. Different execution environments can supply different settings without changing the function."
+  question: "How do I supply settings for the place where work runs?",
+  summary: "State required settings in the work’s type instead of reading an implicit global variable. This example reads Settings.label and displays the supplied text.",
+  reading: "Settings is a struct with a String label. selectSettings is an ordinary function selecting settings from a { settings: Settings } record. effects.service constructs work that applies that selector to the execution environment.",
+  result: "The output is Hello, Aki, the label in the Settings supplied by main’s provide. A different execution can supply different settings without changing applicationLabel.",
 }
+
+pub fn readerCaption -> String = "Supply the required settings before execution"
+
+pub fn readerBridgeOne -> String =
+  "with Settings normalizes to the requirement { settings: Settings }. settings <- ... in applicationLabel’s do makes the retrieved Settings available by name. succeed constructs work returning its label as the success value."
+
+pub fn readerBridgeTwo -> String =
+  "effects.provide takes an environment and an Effect, returning an Effect with that environment supplied. It does not execute it at that call site. When the work returned by main runs, the label is received and passed to println."
+
+pub fn readerInvalidCaption -> String = "Do not supply the settings field"
+
+pub fn readerMistake -> String =
+  "effects.provide {} lacks the required settings and reports SES-T0101. Supply the declared value, such as { settings: Settings { label: \"Hello, Aki\" } }. Both the field name and its contents type must match."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "Settings has a label of type String. { settings: Settings } requires a settings field in the environment. effects.service retrieves environment.settings during execution. The function passed to map selects that Settings value's label and returns a String."
+
+pub fn readerLegacyResult -> String =
+  "Execution requires an environment whose settings field contains a Settings value. Constructing the computation and supplying its environment are separate stages. Different execution environments can supply different settings without changing the function."

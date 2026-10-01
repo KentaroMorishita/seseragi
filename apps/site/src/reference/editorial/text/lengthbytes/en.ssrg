@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Count bytes in the UTF-8 encoding",
+  purpose: "lengthBytes returns the number of bytes needed to encode a string as UTF-8. It is not a character count or display width. Use it when reasoning about encoded storage or transmission size.",
+  reading: "For Aé😀e\\u{301}, A uses one byte, é two, 😀 four, e one, and the combining accent two, totaling ten. \\u{301} denotes combining acute accent U+0301.",
+  boundaries: "é alone uses two bytes; empty input uses zero. The first string has five scalars and four graphemes. TypeScript String.length counts UTF-16 units and gives six, while TextEncoder obtains the same ten UTF-8 bytes.",
+  rules: "The result describes UTF-8 only. Other encodings or file-format headers are not included. Work is linear in UTF-8 byte length.",
+  mistake: "Do not use this count as an index for scalarAt or sliceScalars: those use scalars. Keep it separate from visible-character counts and display width.",
+}

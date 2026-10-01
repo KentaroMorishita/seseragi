@@ -1,0 +1,10 @@
+import * as text from "std/text"
+import * as unicode from "std/text/unicode"
+
+let stored = "Straße"
+let entered = "STRASSE"
+pub effect fn main =
+  println `lowercase equal: ${text.toLower stored == text.toLower entered}
+folded equal: ${text.caseFold stored == text.caseFold entered}
+folded text: ${text.caseFold stored}
+same API result: ${text.caseFold stored == unicode.fullCaseFold stored}`

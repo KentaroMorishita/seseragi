@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Transform members and remove duplicate results",
+  purpose: "Use sets.map when each member should become a new value and equal results should be stored once. Pass the function, then the Set.",
+  reading: "parity receives an Int and returns its remainder after division by 2. For these positive integers, odd values become 1 and even values 0. The first results are 1 then 0, so the output is [1,0].",
+  boundaries: "3 and 5 produce the same 1; 2 and 4 produce the same 0. Four input members become two output members. Empty input returns an empty Set without calling parity.",
+  rules: "The function runs once per source member in insertion order. Equal outputs keep the first result position. Eq<B> and Hash<B> are required for the output type; the input Set is unchanged.",
+  mistake: "The TS counterpart maps an Array of members then constructs a Set to deduplicate. Use the explicit sets.map operation in Seseragi: this is not a promise that generic map preserves the number of Set members.",
+}

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Count the keys in a Map",
+  purpose: "Use size for the number of key/value entries. It counts keys, not the number of distinct stored values or the number of past insertions.",
+  reading: "The source lists b twice but only b and a remain as keys, so size is 2. Replacing b still gives 2; adding c gives 3.",
+  boundaries: "An empty Map has size 0. Duplicate values under different keys each contribute one entry.",
+  rules: "size reads the entry count with constant work. It does not traverse all entries or change the Map.",
+  mistake: "TypeScript uses the map.size property; Seseragi calls maps.size values. Use isEmpty for a boolean emptiness check rather than a count when that is all you need.",
+}

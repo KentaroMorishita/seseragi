@@ -1,0 +1,3 @@
+alias Profile = { name: String, nickname?: String }
+fn display profile: Profile -> String = profile.nickname
+pub effect fn main = println (display { name: "Aki" })

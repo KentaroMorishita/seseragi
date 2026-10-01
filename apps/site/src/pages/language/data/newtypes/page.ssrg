@@ -1,26 +1,29 @@
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 fn content -> PageDefinition =
-  referencePage "language.data.newtypes" "/docs/language/data/newtypes/" (en.copy ()) (ja.copy ()) [CodeExample
-      ("data-newtypes", localized "Explicit wrap and extraction" "値を包み、パターンで取り出す")] [] [
-        [InternalLink (
-          localized "Nominal and structural types" "名前付き型と構造的な型",
-          "/docs/language/types/nominal-and-structural-types/"
-        )],
-        [InternalLink (
-          localized "Type identity and coercion" "型の同一性と型変換",
-          "/docs/language/types/type-identity-and-coercion/"
-        )],
-        [InternalLink (
+  readerPage "language.data.newtypes" "/docs/language/data/newtypes/" (en.copy ()) (ja.copy ()) "data-operations-newtypes" "42\n43" [CodeExample
+      (
+        "data-operations-newtypes-invalid",
+        localized "A rejected example and its correction" "エラーになる例と直し方"
+      )] [
+        (
+          localized "Newtype identity and representation" "newtypeによる型の区別",
+          "/docs/language/types/newtypes/"
+        ),
+        (
+          localized "Inherent impls and methods" "固有implとメソッド",
+          "/docs/language/data/impls-and-methods/"
+        ),
+        (
           localized "Operator overloads" "演算子オーバーロード",
           "/docs/language/data/operator-overloads/"
-        )]
+        )
       ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

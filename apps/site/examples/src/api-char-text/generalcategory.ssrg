@@ -1,0 +1,11 @@
+import * as unicode from "std/text/unicode"
+
+let letter = 'A'
+let category = unicode.generalCategory letter
+pub effect fn main =
+  println `A category: ${category}
+A uppercase: ${category == unicode.UppercaseLetter}
+٣ category: ${unicode.generalCategory '٣'}
+U+0301 category: ${unicode.generalCategory '\u{0301}'}
+U+FEFF category: ${unicode.generalCategory '\u{FEFF}'}
+U+10FFFF category: ${unicode.generalCategory '\u{10FFFF}'}`

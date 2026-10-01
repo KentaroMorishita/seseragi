@@ -1,16 +1,19 @@
 import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
+import { PrincipleReaderCopy } from "../reader-principle"
+
+pub fn title -> String = "Backend-independent semantics"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "Backend-independent semantics",
   summary: (explanation ()).summary,
   meaningTitle: "The generated language does not define the rules",
-  meaningBody: "The compiler backend turns Seseragi into executable code. The current backend generates TypeScript. The generated code still follows Seseragi's rules for integer division and evaluation order.",
+  meaningBody: "Int division discards the fractional part toward zero. -7 / 2 is -3, not -4. Float division -7.0 / 2.0 is -3.5. Seseragi’s rules determine that difference.",
   exampleTitle: "Integer division is different from floating-point division",
   reasonTitle: "What you can rely on",
   reason: [
-    "You read an integer calculation using the integer rules, regardless of how generated code represents the value. The same requirement applies to left-to-right, once-only argument evaluation and immutable records.",
-    "Effects must also remain delayed until execution. A compiler cannot run an Effect early, change the order of visible operations, or skip resource cleanup just because that would be convenient in its output language. These are language guarantees, not accidental behavior of one host."
+    "You read an integer calculation using the integer rules, regardless of how generated code represents the value. The same requirement applies to computing arguments once each, from left to right, and preserving the structure of records, which are values with named fields that cannot be changed after construction.",
+    "An Effect is a value describing work to run; that work must remain delayed until execution. A compiler cannot run an Effect early, change the order of visible operations, or skip resource cleanup just because that would be convenient in its output language. These are language guarantees, not accidental behavior of one host."
   ],
   boundaryTitle: "Equal meaning does not promise equal speed or available services",
   boundary: [
@@ -19,9 +22,25 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   ],
 }
 
+pub fn reader -> PrincipleReaderCopy = PrincipleReaderCopy {
+  question: "How does dividing the same negative numbers differ for integers and floats?",
+  before: [
+    "The backtick-delimited string passed to println inserts each result at ${integerResult} and ${decimalResult}, separating them with a comma and a space.",
+    "The final pub effect fn main is the executable entry point. pub exposes that entry; effect fn returns an Effect describing work to run. The runner starts that work, and println writes a value followed by a newline."
+  ],
+  reading: [
+    "integerResult is the Int -3 and decimalResult is the Float -3.5. With TypeScript number, -7 / 2 would be -3.5, but Seseragi’s Int / does not give that result. Float cannot represent every decimal exactly; the -3.5 used here is exactly representable.",
+    "The compiler backend is the part that generates executable code. It currently generates TypeScript, but does not delegate rules such as integer division to that language."
+  ],
+  mistakes: ["Mixing Int and Float as -7 / 2.0 does not automatically convert to Float. The example below produces SES-T0201. Div in that diagnostic names the operation used by /; it is unavailable for this combination of types. Use -7.0 / 2.0 for the fractional result -3.5, or -7 / 2 for the integer result -3."],
+  details: [
+
+  ],
+}
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Should I use the generated language's arithmetic rules?",
-  summary: "Although the compiler generates TypeScript, integer calculations and evaluation order follow Seseragi's rules. Do not infer their result solely from the target language's rules.",
-  reading: "integerResult uses integer division -7 / 2, which truncates toward zero. decimalResult uses Float operands and produces the fractional quotient. The two source forms deliberately choose different arithmetic types.",
-  result: "The output is -3, 3.5. Dividing Int values returns an integer; dividing Float values returns a floating-point quotient. Storage, speed, and memory use depend on the implementation and execution environment."
+  question: "How does dividing the same negative numbers differ for integers and floats?",
+  summary: "Dividing -7 by 2 gives -3 with Int and -3.5 with Float. Do not infer Seseragi results solely from the generated TypeScript’s number rules.",
+  reading: "Divide -7 by 2 using integers and floating-point numbers. Keep the sign and magnitude of both inputs the same so that only the numeric type changes.",
+  result: "let gives a value a name that cannot be reassigned. -7 and 2 are Int integers. -7.0 and 2.0 are Float values, whose decimal points select floating-point arithmetic. Float represents numbers that can include fractional parts. / means division. These literal spellings determine the types even without annotations."
 }

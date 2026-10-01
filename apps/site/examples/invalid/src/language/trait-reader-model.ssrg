@@ -1,0 +1,7 @@
+struct Ticket { number: Int }
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+pub effect fn main = println (label (Ticket { number: 42 }))

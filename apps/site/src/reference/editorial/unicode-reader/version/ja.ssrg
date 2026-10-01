@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Unicodeの規則に使うデータの版を確認する",
+  purpose: "別のツールで文字の分類や変換結果が違ったときは、使っているUnicodeデータの版を比べると原因を調べやすくなります。versionはSeseragiが使うUnicodeデータの版を文字列で返します。Seseragi本体やブラウザーの製品バージョンではありません。",
+  reading: "importでstd/text/unicodeをunicodeという名前で読み込みます。unicode.version ()の()は、追加の情報を持たないUnitの値です。これを渡して現在の版を問い合わせます。+でUnicode:という文字列と戻り値をつなぎ、printlnで出力します。この例の17.0.0は、現在固定されているUnicodeデータの版です。",
+  boundaries: "戻り値はmajor.minor.patch形式のStringで、数値ではありません。入力する文字列や形式の引数はなく、呼び出しによってUnicodeの版を切り替えることもありません。結果を記録しておくと、別の環境で得た結果と比べる際の手掛かりになります。",
+  rules: "コンパイラー、実行時の処理、formatter、LSPは、生成物に記録された同じUnicodeデータの版を使います。LSPはエディターに診断などを提供する仕組みです。生成されたモジュールには必要な版の検査があり、違うUnicodeデータを持つ実行時環境では、ソースの初期化を始める前に不一致として拒否します。versionを呼んでこの検査を回避することはできません。",
+  mistake: "17.0.0という結果だけで、TypeScriptを動かす環境のUnicodeやICUも同じ版だとは判断できません。ICUは環境によって使われるUnicode処理のライブラリーです。結果が違う場合は、データの版に加え、正規化形式や言語設定、数えている文字の単位も確認してください。",
+}

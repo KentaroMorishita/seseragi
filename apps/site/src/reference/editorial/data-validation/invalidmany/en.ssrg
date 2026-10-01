@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Construct Invalid from a NonEmptyList of errors, preserving their order.",
+  taskTitle: "Return an existing group of errors in order",
+  purpose: "When name and seat errors are already available, return them together in one Invalid. invalidMany does not recheck or reorder them.",
+  setup: "validation names the functions imported from std/validation. Validation, Valid and Invalid are imported separately. Validation<String, String> carries String errors or a successful String. fn defines a function; : after an argument names its type, and the type after -> is the return type. nonempty names the std/non-empty-list functions.",
+  after: [
+    "nonempty.cons constructs a NonEmptyList from a required first element and a remaining List. The name error goes first; `[\"seats must be positive\"] is a one-element List. The leading backtick is the List literal syntax.",
+    "let names a value. errors holds two errors, and checked: Validation<String, String> specifies the result type. validation.invalidMany errors constructs Invalid without changing their order.",
+    "The match in describe chooses the result branch. In Valid value, value is the successful string. In Invalid errors, errors contains at least one error. arrays.fromIterable makes an Array of those errors; text.join \"; \" joins them for display in their existing order.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies which object shape was returned. When it is true, read the successful value; when false, read the error field. These functions return data rather than throwing exceptions. The TypeScript type [string, ...string[]] requires a first string followed by any number of further strings. Both examples therefore keep the rule that an error group cannot be empty.",
+  comparisonAfter: "Both examples exclude empty error groups in their types. Seseragi reuses the NonEmptyList-taking operation for error groups produced by different checks. TypeScript can express the same condition with the array type shown here.",
+  details: [
+    "In invalidMany<E, A>, E is one error’s type and A the successful type. Both are String here. The argument must be NonEmptyList<E>, not an ordinary List<E>.",
+    "An ordinary List is rejected with SES-T0101 even when it currently has elements, not just when empty. Supply a guaranteed first element with nonempty.cons, or check an ordinary List with nonempty.fromList and handle its Nothing case."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

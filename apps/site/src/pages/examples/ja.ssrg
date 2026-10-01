@@ -1,6 +1,45 @@
 pub fn title -> String = "例"
-pub fn summary -> String =
-  "課題ごとに整理した、実行できるSeseragiプログラムです。"
-pub fn heading -> String = "ソースを読んで、動かして確認する"
+pub fn summary -> String = "送料の計算、レコードの更新、関数のつなぎ方を、動く短いプログラムで確かめます。"
+pub fn heading -> String = "一つ選んで、結果を変えてみる"
 pub fn body -> String =
-  "掲載する例は、リポジトリのソースから取得し、コンパイルして検証しています。コードをコピーして動かし、示した実行結果と比較してください。"
+  "TypeScriptの変数・関数・オブジェクトを使ったことがある人向けの例です。各パネルの「Playgroundで開く」は、表示中のソースをそのまま読み込みます。端末で試す場合は、導入手順を済ませてから、リポジトリの外に作ったmain.ssrgへ例を一つだけ保存してください。"
+pub fn runCaption -> String = "保存したmain.ssrgを型検査・実行する"
+pub fn shippingTitle -> String = "最初の例：注文金額に応じて送料を加える"
+pub fn shippingTask -> String =
+  "小計が5,000円以上なら送料無料、それ未満なら500円を加えます。整数の金額、関数、ifによる条件分岐が分かれば読み始められます。例では小計3,200円と5,000円を入力します。"
+pub fn shippingReading -> String =
+  "totalWithShippingは、送料無料の境目、送料、小計の順に三つの整数を受け取って、合計を返します。let standardTotal = totalWithShipping 5000 500は、最初の二つを決め、小計だけを後で受け取る関数を作ります。standardTotal 3200とstandardTotal 5000が、それぞれの注文の計算です。"
+pub fn shippingResult -> String =
+  "結果は3,700円と5,000円です。小計がちょうど5,000円のときも送料無料になります。最初の小計を4999へ変えると、その注文の結果は5499になります。"
+pub fn shippingLimit -> String =
+  "この例の金額は整数の円です。TypeScriptのnumberと同じ小数計算を約束するものではありません。最初は0〜1,000,000の整数で試してください。同じ課題のTypeScript版と数値の注意点は、言語の紹介で比較できます。"
+pub fn recordsTitle -> String = "基本の次に：元の値を残して得点を更新する"
+pub fn recordsTask -> String =
+  "名前と得点をまとめた値を使います。レコードは、TypeScriptのオブジェクトのようにフィールド名で値を取り出せるデータです。ここではAkiの得点10から、新しい得点42の値を作ります。"
+pub fn recordsReading -> String =
+  "original.scoreで元の得点を読みます。{ ...original, score: 42 }は、元のフィールドを含む新しいレコードを作り、その得点を42にします。nameOfはString型のnameだけを必要とする関数なので、scoreもあるupdatedを渡せます。"
+pub fn recordsEffect -> String =
+  "pub effect fn mainが実行の入口です。printlnは一つの文字列を出力します。${...}でそれぞれの値を文字列へ埋め込み、\\nで三行に分けています。"
+pub fn recordsResult -> String =
+  "出力は10、42、Akiです。originalは変更されていません。新しい得点を99へ変えると、二行目だけが99になります。元のレコードへ代入するのではなく、新しく作った値を使います。"
+pub fn pipelinesTitle -> String = "関数に慣れたら：同じ計算を三つの書き方で読む"
+pub fn pipelinesTask -> String =
+  "3を二倍し、その結果に1を加えて7にします。まずdouble 3やaddOne 6のような普通の関数呼び出しを理解してから、処理をつなぐ記号を比較してください。"
+pub fn pipelinesReading -> String =
+  "3 |> double |> addOneは、左側の結果を次の関数へ渡します。addOne (double 3)は、括弧の中の結果を渡します。addOne $ double 3の$も、ここでは右側のdouble 3をまとめて引数にします。この例の三つの書き方は同じ結果です。doと_ <-は、三つの結果を順に出力するために使っています。"
+pub fn pipelinesResult -> String =
+  "7が三行出ます。入力を4で比較する場合は、三つの式にある3をすべて4へ変えると、9が三行出ます。書き方が違っても、どの関数へ何を渡すかを追ってください。"
+pub fn outputCaption -> String = "確認できる出力"
+pub fn sourceLabel -> String = "この例のソース"
+pub fn firstRunLabel -> String = "最初のプログラムを実行する"
+pub fn introLabel -> String = "Seseragiとは"
+pub fn functionsLabel -> String = "関数適用"
+pub fn recordsLabel -> String = "レコード"
+pub fn pipelinesLabel -> String = "パイプラインと低優先順位の適用"
+pub fn moreTitle -> String = "Webアプリや、より大きな例へ進む"
+pub fn moreBody -> String =
+  "上の例は、コンソールへ結果を出す一つのファイルです。Webアプリでは、複数ファイルのプロジェクト、画面の状態、ブラウザーのイベントも扱います。最初のプログラムを実行できてから、専用の手順へ進んでください。"
+pub fn webLabel -> String = "ローカルWebアプリを作る"
+pub fn catalogLabel -> String = "目的別の公式サンプル一覧"
+pub fn verification -> String =
+  "掲載した三つのソースは、CLIの型検査・実行と、Playground用のコンパイラ・実行処理で結果を照合します。リンクは同じソースを埋め込んでいます。この確認と、実ブラウザーでの表示・操作確認は別の検証です。"

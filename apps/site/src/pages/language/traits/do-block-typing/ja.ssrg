@@ -1,21 +1,37 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "doブロックの型付け",
   summary: (explanation ()).summary,
-  ruleTitle: "取り出す処理を、一種類の型で揃える",
-  ruleBody: "最初の取り出し、最後の式、または周囲が要求する型から、処理の種類Mを決めます。x <- mxでmxがM<A>ならxはAです。最後の式がM<R>ならdo全体もM<R>です。",
-  typingBody: "一つのdoでは、Maybe、Either、Effectなどの種類を揃え、対応するMonad実装を使います。型構築子は型を一つ受け取る形でなければなりません。普通のletには通常の値や関数を置けますが、letだけではdoの種類は決まりません。決める情報が足りなければ、ブロックの結果に型注釈を補います。",
-  evaluationBody: "取り出した値はその行より後で使えます。MaybeでNothing、EitherでLeftなど、後続を進めない結果では、そのMonadの規則で後の行を実行しません。",
-  invalidTitle: "異なる種類の処理は明示的に変換する",
-  invalidBody: "MaybeとEither、通常の値とEffectをそのまま混ぜることはできません。fromEitherなどの変換を使い、一種類の処理に揃えてください。",
-  diagnosticsBody: "取り出す行の型、ブロック全体の型、Monad、最後の式を確認します。M<A>のAの違いは許されますが、外側のMは同じでなければなりません。",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "customer <- nameのcustomerはStringです。quantity <- countのquantityはIntです。<-はMaybe全体に名前を付けるのではなく、値がある場合の中身を渡します。",
+    "show quantityで整数を文字列にしてから連結します。pureで文字列を包んだ最後の式はMaybe<String>なので、do全体もMaybe<String>になります。",
+    "M<A>という一般的な書き方では、ここでMがMaybe、Aがその行の中身の型です。Aは行ごとに変わっても、同じdoのMはそろえる必要があります。"
+  ], rules: [
+    "最初の取り出し、最後の式、または周囲が要求する型から、外側のMを決めます。x <- mxでmxがM<A>ならxはAです。最後がM<R>なら全体もM<R>になります。通常のletだけではMは決まらず、情報が足りない場合は結果に型注釈を補います。",
+    "取り出した名前は、その行より後からdoの末尾まで使えます。中の型が変わっても、選ばれたMonadのつなぎ方は同じです。",
+    "Effectのdoも利用でき、環境の条件と回復可能な失敗の型を合わせます。Task<A>はEffect<{}, Never, A>の別名ですが、do全体がTaskだけに限定されるわけではありません。サービスを必要とする処理や失敗を返す処理もEffectで表せます。",
+    "Effectへ移すときはstd/effectのfromEitherなどを明示します。異なる失敗の型はmapErrorなどで共通の型へ合わせます。Neverは回復可能な失敗を作れない型で、仕様ではEffectの失敗型を広げられる場合を定めています。検証した現行版では、doの最後の式でこの拡張が通らない場合があるため、式の型を明示してそろえてください。"
+  ], mistakes: [
+    "最後のpureをRightに替えると、Eitherという別の型になります。EitherはLeftで失敗、Rightで成功を表す型で、MaybeのJust/Nothingとは違います。SES-T0101のDo monad constructor mismatchを確認し、pureへ戻してください。",
+    "通常のletを挟んでもMaybeがEitherやEffectへ変わることはありません。変換するなら、不在をどの失敗にするかなどの方針を決め、対応する変換関数を明示してから同じ種類でつなぎます。"
+  ], related: [
+    "住所の一部がないときに処理を止める具体例へ戻れます。",
+    "doをflatMapで書いた場合の順序と不在の扱いを確認できます。",
+    "共通の関数が必要な操作をwhereで要求する方法を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "外側の型、最後の式、Effectの条件"
+pub fn mistakesTitle -> String = "RightとJustを同じ種類として混ぜない"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "一つのdoにMaybeとEffectを混ぜてよいか",
-  summary: "Maybeのdoから取り出す式も最後の式も、Maybeで揃えます。途中ではIntなどの通常の値を使えますが、Maybeの取り出しとEffectの取り出しをそのまま混ぜることはできません。",
-  reading: "pairでは、leftとrightのMaybe<Int>からfirstとsecondを取り出します。pure (first, second)はMaybe<(Int, Int)>です。最後の中身はタプルになりますが、外側のMaybeは変わりません。",
-  result: "presentはJust (20, 22)、absentはNothingです。途中のletで普通の値を計算しても、EitherやEffectをMaybeへ変換したことにはなりません。種類を変えるなら明示的な操作が必要です。"
+  question: "文字列と整数を、同じdoで取り出してよいか",
+  summary: "中の値はStringとIntで異なっていても構いません。この例でそろえるのは、値の有無を表す外側のMaybeです。",
+  reading: "配送ラベルに名前と個数を使います。nameはMaybe<String>、countはMaybe<Int>です。両方から値を取り出し、最後にMaybe<String>のラベルを返します。",
+  result: "名前がAki、個数が2ならJust Aki: 2と表示され、個数がなければNothingです。途中の値の型を一つに固定せずに、それぞれの値の有無を同じ規則で扱えます。"
 }

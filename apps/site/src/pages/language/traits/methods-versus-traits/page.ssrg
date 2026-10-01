@@ -1,28 +1,68 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
+import { ReaderCopy } from "../../reader-article"
+import { paragraphs, related } from "../blocks"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import {
+  Article,
+  CodeExample,
+  Heading,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  referencePage "language.traits.methods-versus-traits" "/docs/language/traits/methods-versus-traits/" (en.copy ()) (ja.copy ()) [CodeExample
-      (
-        "traits-methods-versus-traits",
-        localized "Two distinct lookup paths" "固有メソッドとtraitの関数を区別する"
-      )] [CodeExample
-      ("traits-invalid-method", localized "Ambiguous trait method" "同名のtraitの関数を区別できない場合")] [
-        [InternalLink (
-          localized "Inherent impls and methods" "固有implとメソッド",
-          "/docs/language/data/impls-and-methods/"
-        )],
-        [InternalLink
-      (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/")],
-        [InternalLink (
-          localized "Calling trait methods" "traitメソッドの呼び出し",
-          "/docs/language/traits/method-calls/"
+fn content -> PageDefinition = {
+  let english = en.copy ()
+  let japanese = ja.copy ()
+  PageDefinition {
+    id: "language.traits.methods-versus-traits",
+    path: "/docs/language/traits/methods-versus-traits/",
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [[
+      CodeExample (
+        "trait-reader-methods-versus-traits",
+        localized "main.ssrg — complete program" "main.ssrgの全体"
+      ),
+      Paragraph (
+        [Words (
+          localized
+            "Save this complete file as main.ssrg and run seseragi run main.ssrg. pub makes main an entry point; effect fn returns work that the runner executes. println writes the resulting text and a newline."
+            "このファイル全体をmain.ssrgとして保存し、seseragi run main.ssrgで実行できます。pubでmainを入口として公開し、effect fnで返す処理を実行機構が開始します。printlnは結果の文字列と改行を出力します。"
         )]
-      ]
+      ),
+      Terminal (localized "Output" "実行結果", "Aki\nUser(Aki)")
+    ], paragraphs english.reading japanese.reading,
+
+      paragraphs english.purpose japanese.purpose, [Heading
+          ("rules", localized (en.detailsTitle ()) (ja.detailsTitle ()))], paragraphs english.rules japanese.rules, [Heading
+          ("mistakes", localized (en.mistakesTitle ()) (ja.mistakesTitle ()))], paragraphs english.mistakes japanese.mistakes, [
+            CodeExample (
+              "trait-reader-methods-versus-traits-invalid",
+              localized "Rejected main.ssrg — replace the entire file"
+          "ファイル全体を置き換える、拒否されるmain.ssrg"
+            ),
+            Terminal (
+              localized "Diagnostic to check" "確認する診断",
+              "SES-T0101: This record has no such field"
+            ),
+            Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")
+          ], related english.related japanese.related [
+            (localized "Traits" "traitとは", "/docs/language/traits/model/"),
+            (localized "Instances" "インスタンス", "/docs/language/traits/instances/"),
+            (
+              localized "Calling trait methods" "traitメソッドの呼び出し",
+              "/docs/language/traits/method-calls/"
+            )
+          ]
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

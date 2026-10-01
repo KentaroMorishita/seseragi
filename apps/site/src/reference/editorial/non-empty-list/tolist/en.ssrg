@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  setup: "import * as nonempty names std/non-empty-list. singleton 10 constructs a NonEmptyList containing only 10. cons 10 `[20, 30] attaches a required first element to an ordinary List. The backtick before [ marks a List literal; [20, 30] without it is an Array. Calls separate arguments with spaces.",
+  codeTitle: "Complete program: singleton and multiple elements",
+  outputTitle: "Output",
+  comparisonTitle: "Keep the guarantee in TypeScript",
+  comparisonBefore: "In TypeScript, a readonly [T, ...T[]] tuple can be copied with slice() to produce an ordinary array. The copied values remain nonempty, while the array type no longer states that guarantee. JavaScript has no built-in Seseragi List; this comparison uses an array for the same values.",
+  comparisonAfter: "The TypeScript examples print arrays as JSON. Seseragi show prints a List with its leading backtick. Those display formats describe different collection types, rather than different element values.",
+  detailTitle: "Input guarantee and result shape",
+  details: [
+    "An ordinary List may be empty, but this particular conversion always starts with at least one element and keeps it. The returned value is therefore nonempty even though its List<Int> type also permits empty values.",
+    "The parameter is NonEmptyList<A>, not Array<A>. To convert an Array to List, use std/array.toList instead. A names the element type and stays the same in the result; conversion does not mutate the input."
+  ],
+  summary: "Convert a NonEmptyList to an ordinary List, keeping every element in order.",
+  taskTitle: "Pass a nonempty collection to ordinary List code",
+  purpose: "Use toList when a later function accepts List<A>. It preserves all values, while the result type no longer records the nonempty guarantee.",
+  after: [
+    "The singleton becomes `[10], and the longer input becomes `[10, 20, 30]. Reading head from the original several afterward still returns 10. Converting the value has not removed or reordered its elements.",
+    "pub effect fn main is the entry function. do runs the println output steps in order. show converts each result to display text; the collection operations do not print or change their inputs."
+  ]
+}

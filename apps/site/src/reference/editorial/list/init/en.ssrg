@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Keep every element except the last",
+  purpose: "Use init to remove the final element from a List while keeping the rest in order. The input itself is unchanged.",
+  reading: "match handles the returned Maybe<List<Int>>. Just remaining names the resulting List, and Nothing means the input had no element to remove. show turns that List into display text.",
+  boundaries: "Three values leave the first two. One value succeeds with Just containing an empty List, printed as remaining: `[]. Empty input returns Nothing and prints empty input. These are different outcomes.",
+  rules: "List init walks the input, so its work grows with the input length. A successful result contains all elements before the last, in their original order.",
+  mistake: "TypeScript slice(0, -1) returns an empty array for both empty and one-element inputs. If you need the distinction exposed by Maybe, check the input length too. init means all but the last; tail means all but the first.",
+}

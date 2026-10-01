@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Build an Iterator that computes a next value on demand. Reading does not consume the original; the continuation is returned as another value.",
+  taskTitle: "Produce a countdown as values are requested",
+  purpose: "Produce 3, 2, 1 from a function that calculates the next number. Iterator<Int> is a value from which integers can be requested one at a time. It need not store a complete Array in advance.",
+  setup: "fn countdown takes remaining: Int, the remaining count. A positive count returns Just (remaining, remaining - 1); zero or a negative count returns Nothing. The pair inside Just holds the current value followed by the next state. Maybe is the type with the alternatives Just and Nothing.",
+  after: [
+    "iterator.unfold countdown 3 constructs an Iterator starting at state 3 without running countdown yet. [value | value <- values] reads values in order into an Array; this collection step requests the next values.",
+    "Reading the same values again produces 3, 2, 1 again. Observation does not advance or change the original Iterator. An Iterator starting at state zero ends immediately, producing an empty Array.",
+    "import * as iterator names std/iterator. The do in pub effect fn main runs println in order, and show converts an Array to display text. Constructing the Iterator and performing the output are separate operations."
+  ],
+  comparisonBefore: "A TypeScript generator can also yield values one at a time. function* defines a generator function; yield supplies a value and pauses execution there. Array.from reads it to its end.",
+  comparisonAfter: "To obtain the same two complete results, TypeScript calls countdown(3) each time to create a fresh generator. JavaScript generators advance on next, while the same Seseragi Iterator value can be reused. The displayed sequences agree apart from JSON spacing.",
+  details: [
+    "next returns Just (value, rest) or Nothing. value is the current element and rest is the remaining Iterator. Read rest, rather than the original, to advance. Nothing means the sequence has ended; it is not an exception.",
+    "unfold does not run the first step eagerly, and each next call executes step once. Reusing a previously computed result is not guaranteed. step is a pure function, not a place to hide I/O, exceptions or Promises.",
+    "The Iterator type does not guarantee a finite sequence. Collecting an endless Iterator into an Array or reading it to completion in an effectful for will not terminate. Request only a bounded number of elements or put a stopping condition in step."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input, result and evaluation rules"
+}

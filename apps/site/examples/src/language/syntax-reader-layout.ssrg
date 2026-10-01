@@ -1,0 +1,16 @@
+fn double value: Int -> Int = value * 2
+fn addOne value: Int -> Int = {
+  let incremented = value + 1
+  incremented
+}
+
+let result =
+  3
+    |> double
+    |> addOne
+
+let grouped = addOne (
+  double 3
+)
+
+pub effect fn main = println `${result}, ${grouped}`

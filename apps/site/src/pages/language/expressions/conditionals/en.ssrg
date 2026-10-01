@@ -14,8 +14,27 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can I assign the result of an if directly?",
-  summary: "An if expression returns the value of one branch. Its condition must be Bool and its branch results must have compatible types.",
-  reading: "accessLabel takes allowed: Bool. True returns \"allowed\" and False returns \"denied\"; both are String. let label = accessLabel True names the string computed by that call.",
-  result: "label is \"allowed\". The selected then branch is evaluated and the else branch is skipped. To use a number as a condition, first write a comparison that produces Bool."
+  question: "How do I choose the amount a function returns?",
+  summary: "if chooses between two values according to a condition. Like TypeScript’s conditional operator, the selected value can become a calculation or function result.",
+  reading: "subtotal >= 5000 produces a Bool value. The expression after then is used when the condition is True, and the one after else when it is False. shipping returns 0 for free shipping and 500 otherwise.",
+  result: "The output is 500 and 0. The condition is False for ¥3,200 and True for ¥5,000. Both branches return Int, which matches shipping’s result annotation.",
 }
+
+pub fn readerCaption -> String = "Choose the fee at the free-shipping threshold"
+
+pub fn readerBridgeOne -> String =
+  "This corresponds to subtotal >= 5000 ? 0 : 500 in TypeScript. Seseragi spells the choice if ... then ... else .... The expression itself is the function result, with no separate return statement."
+
+pub fn readerBridgeTwo -> String =
+  "The Int subtotal alone cannot be a condition. A nonzero number is not automatically treated as true; compare it to produce Bool. main prints both results on separate lines."
+
+pub fn readerInvalidCaption -> String = "Using an integer as the condition"
+
+pub fn readerMistake -> String =
+  "if subtotal reports SES-T0101. Write the condition you mean, such as subtotal >= 5000, to produce the required Bool."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

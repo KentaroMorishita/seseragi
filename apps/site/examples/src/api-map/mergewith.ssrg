@@ -1,0 +1,16 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+fn combine left: String -> right: String -> String = left + "/" + right
+
+pub effect fn main = do {
+  let left = maps.fromEntries [("b", "L-b"), ("a", "L-a")]
+  let right = maps.fromEntries [("a", "R-a"), ("c", "R-c")]
+  let empty = maps.empty<String, String> ()
+  println (json.encodeString (maps.entries (maps.mergeWith combine right left)))
+  println (json.encodeString (maps.entries (maps.mergeWith combine left right)))
+  println (json.encodeString (maps.entries (maps.mergeWith combine empty left)))
+  println (json.encodeString (maps.entries (maps.mergeWith combine right empty)))
+  println (json.encodeString (maps.entries left))
+  println (json.encodeString (maps.entries right))
+}

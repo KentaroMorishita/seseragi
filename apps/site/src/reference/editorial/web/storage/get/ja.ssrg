@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "LocalまたはSessionストレージから、Stringのキーで値を読む処理を作ります。実行するとJustに文字列が入り、キーがなければNothingになります。アクセス自体の失敗はStorageErrorです。",
+  taskTitle: "保存した名前を読み、データがない場合も扱う",
+  purpose: "ブラウザーのストレージには、名前、空文字列、何もない状態があります。アクセス自体が失敗する場合もあります。readNameはそれぞれを扱い、呼び出し元のアプリが使える表示用の文字列を返します。",
+  setup: "これはブラウザーのアプリに組み込む関数で、単体で画面に結果を出すデモではありません。Storageサービスは、アプリに保存先を読む操作などを提供する値です。readName ()はEffectを作ります。アプリ側でStorageサービスを用意して実行し、返されたStringを使ってください。この例には画面表示も保存処理もありません。Localはローカルストレージ、Sessionはセッションストレージを選びます。",
+  codeTitle: "ブラウザーのアプリへ文字列を返す組み込み用モジュール",
+  outputTitle: "模擬した保存先で確認した結果。ブラウザーの出力ではありません",
+  after: [
+    "storage.get storage.Local \"name\"には、保存先の種類、Stringのキーの順に渡します。Maybe<String>は有無を分ける型です。matchのJust textで保存された文字列に名前を付け、Nothingでキーがない場合を扱います。バッククォートの文字列では${text}に値が入るため、空文字列も「存在する値」のままです。",
+    "describe <$> storage.get ...は、読み取りが成功した結果にdescribeを適用します。|>はそのEffectをrecoverへ渡します。\\error: storage.StorageError -> ...は型付きの失敗をerrorと名付ける関数です。errorMessageで説明を取り出し、succeedで成功した文字列に変えます。アクセスの失敗をNothingに変える処理ではありません。",
+    "Effect<{ storage: storage.Storage }, Never, String>は、必要なサービス、残る型付きの失敗、成功時の値を順に表します。サービスの欄は{ 名前: 型 }というレコードの記法です。NeverはStorageErrorを処理したという意味で、実行時の不具合やキャンセルまで不可能になるわけではありません。()は追加の入力がないことを表すUnitです。"
+  ],
+  comparisonTitle: "TypeScriptでストレージの値の有無を調べる",
+  comparisonBefore: "ブラウザーのStorageオブジェクトはgetItemを持ちます。次の関数はその部分だけを要求するので、アプリ側でlocalStorageやsessionStorageを渡し、返された文字列をどこに表示するか決められます。テストでは模擬したオブジェクトを渡します。",
+  comparisonAfter: "TypeScriptの呼び出しはその場で読み取り、投げられた値をcatchで扱います。Seseragiの呼び出しは後で読む処理を作り、recoverで宣言されたStorageErrorを扱います。どちらも欠如を明示的に判定し、空文字列を残します。TypeScriptのcatchは型付きの失敗処理より広く、ほかの投げられた値も文字列に変えます。",
+  detailTitle: "アプリへの組み込みと検証の範囲",
+  details: [
+    "Seseragiのモジュールは呼び出し元とともにweb向けにコンパイルしています。個別のテストでは、実際のストレージ用アダプターに模擬した保存先を渡し、保存先とキー、文字列、空文字列、欠如、SecurityErrorの変換を確認しました。この例のために、実際のブラウザーの保存内容を読んだり、書き換えたり、消したりはしていません。",
+    "上の結果は模擬した保存先に対する確認内容で、このソース単体の出力ではありません。そのため、Playgroundの起動リンクは付けていません。アプリに設定したStorageの実装を使い、キーがない場合と保存先へのアクセスが拒否された場合を分けて扱ってください。"
+  ]
+}

@@ -1,21 +1,40 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "インスタンスの一意性と所有権",
   summary: (explanation ()).summary,
-  ruleTitle: "同じ型に当てはまる実装を二つ置かない",
-  ruleBody: "一つの呼び出しに二つのinstanceが当てはまるとエラーになります。型別名は展開し、ジェネリックなinstanceも含めて重複を調べます。instanceを置けるのは、traitの定義元か、対象のいちばん外側の名前付き型の定義元のモジュールです。",
-  typingBody: "instanceの候補は、現在のモジュールがimportする先と、その先からさらにimportする先から集まります。コンパイラが提供する構造的な型のinstanceは置き換えられません。入力型で結果型が決まるtraitでは、同じ入力に異なる結果型を割り当てるinstanceもエラーになります。",
-  evaluationBody: "型から実装が一つに決まるため、値の中身やimportの順番で処理が変わりません。無関係なimportを追加して、既存の呼び出しが別の実装へ切り替わることもありません。",
-  invalidTitle: "型別名や具体的な型でも重複は回避できない",
-  invalidBody: "型別名を付けても元の型と同じです。具体的な型向けの実装を、ジェネリックな実装より優先する規則もありません。重複を除くか、newtypeなどで別の型を作ってください。",
-  diagnosticsBody: "重複のエラーでは、表示された二つのinstanceを見比べてください。宣言場所のエラーなら、traitと対象型の定義元を確認します。入力で結果型を決めるtraitのエラーなら、入力の型と各instanceが返す型を確認してください。",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "TicketとLogTicketは、別々のstruct宣言からできた異なる型です。LogTicket { ticket }は、すでにあるticketをその項目へ入れる書き方です。",
+    "Label<LogTicket>の本体はvalue.ticketを取り出してlabelへ渡します。その内側の呼び出しではTicket用の実装が選ばれ、外側でlog:を付けます。",
+    "この一意性の規則をcoherenceと呼びます。より具体的な実装を優先するルールや、実行中に選び直す登録順はありません。"
+  ], rules: [
+    "一つの呼び出しに二つのinstanceが当てはまるとエラーになります。型別名は展開し、ジェネリックなinstanceも含めて重複を調べます。instanceを置けるのは、traitの定義元か、対象のいちばん外側の名前付き型の定義元のモジュールです。",
+    "instanceの候補には、現在のモジュールの宣言と、importする先、その先からさらにimportする先が含まれます。コンパイラが提供する構造的な型のinstanceは置き換えられません。入力型で結果型が決まるtraitでは、同じ入力に異なる結果型を割り当てるinstanceもエラーになります。",
+    "型から実装が一つに決まるため、値の中身やimportの順番で処理が変わりません。無関係なimportを追加して、既存の呼び出しが別の実装へ切り替わることもありません。",
+    "型別名を付けても元の型と同じです。具体的な型向けの実装を、ジェネリックな実装より優先する規則もありません。重複を除くか、newtypeなどで別の型を作ってください。",
+    "重複のエラーでは、表示された二つのinstanceを見比べてください。宣言場所のエラーなら、traitと対象型の定義元を確認します。入力で結果型を決めるtraitのエラーなら、入力の型と各instanceが返す型を確認してください。",
+    "この宣言場所の制限をorphan ruleと呼びます。両方をimportしただけの第三のモジュールには、新しい実装を宣言する権限はありません。関数内だけで有効なinstanceもありません。",
+    "Iterable<C, A>とReducible<C, A>ではCからAが決まります。算術traitでは左右の型から出力型が決まります。この関係を関数従属性と呼び、標準traitで定めています。利用者が独自の関数従属性を宣言する構文はありません。"
+  ], mistakes: [
+    "次の二つのinstance Label<Ticket>は同じ型に当てはまり、SES-T0202になります。二つ目のinstanceを削除するとticket-42を出力します。両方の用途が必要なら、最初の例のようにLogTicketを作ります。",
+    "仕様では型別名を展開して重複を調べるため、aliasでTicketの別名を作っても回避できません。ただし検証した0.61.19は別名を使った重複を受理しました。受理されても仕様上有効な別実装にはならず、この方法には依存しないでください。"
+  ], related: [
+    "型ごとの本体をどこに書くか確認できます。",
+    "演算子の記号と標準traitの対応を確認できます。",
+    "比較や表示をフィールドから生成できる条件を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "実装の重なりと、宣言を置けるモジュール"
+pub fn mistakesTitle -> String = "同じ型の実装を二重に定義しない"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "importを増やしても、既存の実装が勝手に変わらないのはなぜか",
-  summary: "一つの型に対するtrait実装は、一つに決まる必要があります。宣言できる場所も、traitか対象の型の定義元に制限します。",
-  reading: "例のTitle<Stage>は一度だけ実装し、DraftとPublishedをその本体で扱います。title Publishedでは、Stageという型から一つの実装を選べます。選択肢によって変わるのは、その本体の分岐です。",
-  result: "title Publishedは\"published\"を返します。Title<Stage>をもう一つ追加すると、実装の重複としてエラーになります。型別名を付けてもStageとは別の型にならないため、重複は解消しません。別の処理が必要なら、newtypeで用途を区別できます。"
+  question: "同じTicketに別の表示を追加したいときは",
+  summary: "同じ型に同じtraitの実装を二つ置くことはできません。別の用途を別の名前付き型で表すと、それぞれの実装を明確に選べます。",
+  reading: "Ticketのラベルをログでは別の形式にしたいとします。Label<Ticket>をもう一つ定義する代わりに、Ticketを項目に持つLogTicketを作り、Label<LogTicket>を実装します。",
+  result: "Ticketならticket-42、LogTicketならlog: ticket-42です。コンパイラは値の中身や宣言順で選ぶ必要がなく、引数の型からどちらの実装か決められます。"
 }

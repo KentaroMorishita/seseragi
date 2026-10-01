@@ -1,21 +1,35 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Inherent methods versus trait operations",
   summary: (explanation ()).summary,
-  ruleTitle: "Two forms solve different lookup problems",
-  ruleBody: "Defining displayName in impl User lets a User value call user.displayName. instance DebugName<User> instead implements the trait's declared debugName for User. Call it as debugName user; other types can implement the same trait for use by shared code.",
-  typingBody: "Dot-method lookup uses the type before the dot and visible impl methods. Trait lookup uses the operation's trait, argument types, where constraints, and available instances. Having displayName on User, for example, does not satisfy DebugName<User>.",
-  evaluationBody: "Both eventually call statically known code, but neither performs dynamic object dispatch by default. The surface spelling does not merge their namespaces or ownership rules.",
-  invalidTitle: "Do not use instance as an extension-method namespace",
-  invalidBody: "A trait instance does not make every trait operation available as value.method. An impl cannot satisfy a trait requirement unless it also defines the required coherent instance.",
-  diagnosticsBody: "Member diagnostics name the receiver and visible impl candidates. Trait diagnostics name the owning trait, evidence requirement, and ambiguity or missing instance. Keeping them separate makes fixes local.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "User { name: \"Aki\" } creates a value with a String field called name. self: User in impl User receives user, the value before the dot. With no additional arguments, the method is called user.displayName.",
+    "Show<A> is the standard display trait. show in instance Show<User> takes User and returns String. The argument’s type selects that implementation in show user.",
+    "If you know TypeScript object methods, do not assume a trait uses the same mechanism. A trait requires a separately declared operation; a same-named method on a value does not satisfy that requirement."
+  ], rules: [
+    "Dot methods are found using the receiver’s type and visible impl declarations. A trait call uses the owning trait, argument types, where requirements and available instances.",
+    "Both call the selected implementation rather than searching runtime classes to select again. Adding a method to a type’s namespace is distinct from supplying an implementation of a shared operation."
+  ], mistakes: [
+    "Changing the call to user.show produces SES-T0101 because there is no field named show. Show<User> does not create a dot method. Restore show user to print the two display forms.",
+    "Conversely, adding a method named show to impl does not implement Show<User>. A shared function requiring where Show<A> needs an instance."
+  ], related: [
+    "See a small example of operation declarations and type-specific implementations.",
+    "Check where to write the body for a particular type.",
+    "Check trait calls and supplying arguments in stages."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "Dot lookup and trait selection follow separate rules"
+pub fn mistakesTitle -> String = "Match the call to its declaration"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Should this operation be a method or a trait?",
-  summary: "Use an impl for operations specific to one named type. Use a trait when multiple types should satisfy a shared operation required by common code.",
-  reading: "User's displayName is a dot method defined in impl User. DebugName<User> supplies the separate debugName operation. Both read the same user's name but offer different interfaces and output formats.",
-  result: "user.displayName returns \"Aki\"; debugName user returns \"User(Aki)\". The example separates ordinary display from diagnostic display. impl and instance are separate declarations, so provide the implementation appropriate to the intended interface."
+  question: "When do you use user.displayName or show user?",
+  summary: "impl defines dot methods for one type. instance implements a shared trait operation for that type. A type can have both.",
+  reading: "Suppose a screen should display just the name, while diagnostic text should include User. Put displayName in impl User and show in an instance of Show<User>.",
+  result: "user.displayName returns Aki; show user returns User(Aki). This example separates two display formats. Either mechanism could return the same text, but operation lookup and call syntax differ."
 }

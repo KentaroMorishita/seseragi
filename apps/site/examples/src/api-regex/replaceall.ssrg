@@ -1,0 +1,12 @@
+import * as regex from "std/regex"
+fn replace source: String -> replacement: String -> text: String -> String =
+  match regex.compile source {
+    Left error -> `invalid pattern at byte ${error.offset}`
+    Right pattern -> regex.replaceAll pattern replacement text
+  }
+pub effect fn main = do {
+  println (replace "([0-9]+)" "$1\\" "a12b3")
+  println (replace "[0-9]+" "#" "no digits")
+  println (replace "" "|" "a👍")
+  println (replace "" "|" "")
+}

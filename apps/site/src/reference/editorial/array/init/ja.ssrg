@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "最後の一要素を除いた配列を得る",
+  purpose: "末尾だけを外したいときにinitを使います。渡す引数は配列一つです。結果はMaybe<Array<A>>で、末尾を外せた場合のJustと、入力に要素がなかった場合のNothingを区別します。",
+  reading: "[10, 20, 30]から30を除くので、最初の結果はJust [10, 20]です。Justは成功した配列を包む名前で、配列そのものとは区別されます。次の処理で使うならmatchでJust remainingとNothingを分け、remainingを取り出します。",
+  boundaries: "一要素の[10]には除く末尾があるためJust []です。もともと空のarrays.empty<Int> ()には除く要素がなく、Nothingです。「処理した結果が空」と「処理する要素がなかった」は別の結果になります。",
+  rules: "元の配列は変更しません。結果は先頭から末尾の直前までの順序を保つ新しい配列で、その要素数に応じたコピーが必要です。残した配列のためだけに除いた要素を保持することはありません。",
+  mistake: "initは初期値を作る関数ではありません。空配列を作るにはarrays.empty<Int> ()などを使います。最後の要素自体が欲しいならlastです。",
+}

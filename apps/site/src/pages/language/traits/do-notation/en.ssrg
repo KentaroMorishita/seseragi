@@ -1,21 +1,40 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Do notation",
   summary: (explanation ()).summary,
-  ruleTitle: "Use an extracted result in the next computation",
-  ruleBody: "A block may bind a monadic payload with pattern <- expression, introduce a pure local with let, discard a monadic result, and finish with a monadic expression. The final expression is required.",
-  typingBody: "Each computation in this example uses Maybe. Its Monad implementation passes a Just payload to the next step and skips the remaining steps for Nothing. In general, every bind and the final expression must use one type constructor M<_>, with a Monad<M> instance. pure uses its required Applicative implementation. A bind pattern must always match the payload.",
-  evaluationBody: "Items execute in source order according to flatMap. A local let evaluates as an ordinary pure binding and does not run or lift a computation. The final expression supplies the block result.",
-  invalidTitle: "Do does not mean Effect",
-  invalidBody: "Maybe, Either, user monads, and Effect may all use do when they provide Monad evidence. Different monads are never mixed or lifted implicitly, and a failing pattern is not converted through MonadFail.",
-  diagnosticsBody: "Diagnostics identify a missing final expression, refutable bind pattern, mixed constructor, unresolved Monad evidence, or an item whose type is not the selected M<_>.",
+  purpose: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "streetName <- street names the inner String when street is Just. If it is Nothing, the remaining lines are skipped. The cityName line follows the same rule.",
+    "let address concatenates the two ordinary String values. pure address wraps the result in this block’s Maybe, returning Just address. pure does not print anything.",
+    "display uses match to handle each alternative. Just address returns its inner string; Nothing returns fallback text, so the missing case is handled too.",
+    "TypeScript can do the same job with early returns when street or city is undefined. do provides common syntax for sequencing one kind of computation; it does not automatically catch exceptions."
+  ], rules: [
+    "Monad is the trait providing this sequencing operation, flatMap. For Maybe, it passes the Just payload onward or stops at Nothing. do uses that operation in sequence. Understanding this concrete behavior does not require knowing the name’s theoretical origin.",
+    "The last expression must be a computation providing the whole block’s result. Intermediate computation results may be discarded. let only names an ordinary value or function; it does not itself execute an Effect or wrap a value in Maybe.",
+    "In general, expressions use one type constructor M<_> and require Monad<M>. A type constructor such as Maybe takes a payload type to form Maybe<String>, for example. pure belongs to Applicative, which Monad requires, and wraps a value in that kind of computation.",
+    "Either, Effect and custom types can also use do with the corresponding implementation. Either stops later work at Left, its failure alternative. Effect proceeds in order when the execution machinery runs the constructed work, preserving failure and environment rules. Different kinds are not converted implicitly.",
+    "A bind pattern must accept every possible value of the payload type. String literals, one alternative of a multi-alternative type, and fixed-length Array patterns can fail and are not permitted. Bind a name and use a match handling all alternatives when needed."
+  ], mistakes: [
+    "The rejected \"1 River Road\" <- street is a pattern that cannot accept any other string. The left side of <- must accept every possible payload, so this reports SES-T0101. Bind streetName and check any condition afterwards.",
+    "Restore streetName <- street and streetName + \", \" + cityName from the first example. A nonmatching payload is not automatically converted to Nothing."
+  ], related: [
+    "Distinguish payload types from the outer computation type.",
+    "Check ordering and absence handling when do is written with flatMap.",
+    "See how a shared function requires operations with where."
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String =
+  "From the concrete Maybe example to the shared Monad operation"
+pub fn mistakesTitle -> String = "Separate naming a payload from checking its value"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I use a wrapped result in the next calculation?",
-  summary: "do writes successive dependent computations in order. The <- form names the successful or present value without forgetting the surrounding computation type.",
-  reading: "number <- value extracts Int from Just in this Maybe computation. let next performs ordinary arithmetic. pure next wraps the result back into the same kind of computation, so this function returns Maybe<Int>.",
-  result: "increment (Just 41) returns Just 42. increment Nothing skips the addition and returns Nothing. The same do syntax follows each Monad implementation's rules: absence handling for Maybe and sequential execution for Effect."
+  question: "How do you stop building an address when one part is missing?",
+  summary: "do can pass a present value to the next calculation. With Maybe in this example, any Nothing stops address construction and returns Nothing.",
+  reading: "Maybe<String> is either Just with a String or Nothing with no value. deliveryLabel uses do to build an address only when both the street and city are present.",
+  result: "With both parts present, output is 1 River Road, Tokyo. With no street, it is address incomplete, and address concatenation is skipped. The order of using available values stays visible without repeating the absence check on every line."
 }

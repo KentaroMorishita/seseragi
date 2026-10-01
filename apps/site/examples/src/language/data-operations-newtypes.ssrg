@@ -1,0 +1,12 @@
+newtype UserId = Int
+
+fn raw identifier: UserId -> Int = match identifier {
+  UserId number -> number
+}
+
+fn nextId identifier: UserId -> UserId = UserId (raw identifier + 1)
+
+let original = UserId 42
+let following = nextId original
+
+pub effect fn main = println `${raw original}\n${raw following}`

@@ -1,14 +1,19 @@
 import { expect, setDefaultTimeout, test } from "bun:test"
 import { spawnSync } from "node:child_process"
-import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
+import {
+  assertAuthoredLibraryTitles,
+  authoredLibraryPages,
+} from "./library-titles"
 import { assertReferenceLinkTitles, pageTitle } from "./reference-titles"
 
 const root = resolve(import.meta.dir, "../../..")
-// This test builds all 3974 routes twice to verify deterministic output.
-// Keep each build bounded, and allow both builds within the test budget.
-const buildTimeout = 180_000
+// This test builds all 3976 routes twice to verify deterministic output.
+// Complete-metadata 32-page batches measured about 1.6s each (125 batches).
+// Include compilation and retain a finite deadline for each complete build.
+const buildTimeout = 420_000
 setDefaultTimeout(2 * buildTimeout + 60_000)
 
 type SiteManifest = {
@@ -36,7 +41,10 @@ function build(output: string): SiteManifest {
       timeout: buildTimeout,
       env: {
         ...process.env,
-        SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
+        SESERAGI_BIN: resolve(
+          root,
+          process.env.SESERAGI_BIN ?? "target/debug/seseragi"
+        ),
       },
     }
   )
@@ -69,7 +77,28 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const repeatedOutput = join(directory, "site-repeated")
   try {
     const manifest = build(output)
-    expect(manifest.pages).toHaveLength(3974)
+    expect(manifest.pages).toHaveLength(3976)
+    const retainedOutput = process.env.SESERAGI_SITE_TEST_RETAIN_OUTPUT
+    if (retainedOutput) {
+      const destination = resolve(retainedOutput)
+      expect(
+        existsSync(destination),
+        "Retained output must use a fresh path"
+      ).toBe(false)
+      // Only the complete generated HTML/assets tree is copied. Default CI
+      // cleanup and every assertion remain unchanged when this is unset.
+      cpSync(output, destination, {
+        recursive: true,
+        force: false,
+        errorOnExist: true,
+      })
+      expect(
+        readFileSync(join(destination, "site-manifest.json"), "utf8")
+      ).toBe(readFileSync(join(output, "site-manifest.json"), "utf8"))
+      console.info(
+        `Retained complete generated site: ${destination} (${manifest.pages.length} routes)`
+      )
+    }
     const languagePages = new Map(
       manifest.pages
         .filter((route) => /^(?:\/ja)?\/docs\/language\//u.test(route))
@@ -116,6 +145,37 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     }
     expect(checkedSequences).toBeGreaterThan(100)
     console.info(`Verified ${checkedReferenceLinks} bilingual page-name links`)
+    const completeTitles = new Map(
+      manifest.pages.map((route) => [
+        route,
+        pageTitle(
+          readFileSync(join(output, route.slice(1), "index.html"), "utf8")
+        ),
+      ])
+    )
+    const authoredLibrary = authoredLibraryPages()
+    let checkedLibraryBodies = 0
+    let checkedLibraryLinks = 0
+    for (const entry of authoredLibrary)
+      for (const prefix of ["", "/ja"]) {
+        const route = prefix + entry.route
+        const html = readFileSync(
+          join(output, route.slice(1), "index.html"),
+          "utf8"
+        )
+        checkedLibraryLinks += assertAuthoredLibraryTitles(
+          html,
+          completeTitles,
+          { ...entry, route }
+        )
+        checkedLibraryBodies++
+      }
+    expect(checkedLibraryBodies).toBeGreaterThanOrEqual(200)
+    expect(checkedLibraryLinks).toBeGreaterThanOrEqual(283)
+    console.info(
+      `Verified ${checkedLibraryLinks} authored Library page-name links across ${checkedLibraryBodies} localized bodies`
+    )
+
     const mobileArticle = readFileSync(
       join(output, "ja/docs/language/syntax/function-application/index.html"),
       "utf8"
@@ -170,6 +230,8 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     for (const route of [
       "/",
       "/docs/",
+      "/docs/first-run/",
+      "/ja/docs/first-run/",
       "/docs/language/model/what-is-seseragi/",
       "/docs/language/model/design-principles/",
       "/docs/language/model/expression-oriented/",
@@ -320,11 +382,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(textContent(moduleIdentity)).toContain(
-      "Two imports, one defining module"
+      "A type name alone does not identify its declaration"
     )
-    expect(textContent(moduleIdentity)).toContain(
-      'from "./modules-domain.ssrg"'
-    )
+    expect(textContent(moduleIdentity)).toContain('from "./domain.ssrg"')
     expect(moduleIdentity).toContain('href="/docs/language/modules/packages/"')
     expect(moduleIdentity).not.toContain('href=""')
     for (const slug of [
@@ -346,26 +406,30 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       join(output, "docs/language/modules/visibility/index.html"),
       "utf8"
     )
-    expect(textContent(visibility)).toContain("pub opaque newtype UserId")
+    expect(textContent(visibility)).toContain("pub opaque struct Counter")
     expect(textContent(visibility)).toContain("PrivateExport")
     expect(textContent(visibility)).toContain(
-      'import { internal } from "./domain"'
+      "record type has no field `value`"
+    )
+    expect(textContent(visibility)).toContain(
+      'import { punctuate } from "./greeting"'
     )
     expect(home).toContain('<html lang="en">')
     expect(home).toContain("THE SESERAGI PROGRAMMING LANGUAGE")
     expect(textContent(home)).toContain("pub effect fn main")
     expect(home).toContain('href="https://seseragi.vercel.app/tour/"')
     const documentation = readFileSync(join(output, "docs/index.html"), "utf8")
-    expect(textContent(documentation)).toContain("Seseragi Reference")
+    expect(textContent(documentation)).toContain("Seseragi Documentation")
     expect(textContent(documentation)).toContain("Language Reference")
     expect(textContent(documentation)).toContain("Standard Library")
     expect(textContent(documentation)).toContain("Functions and operators")
     expect(textContent(documentation)).toContain("Collections")
     expect(textContent(documentation)).toContain(
-      "Use the Tour to learn in order"
+      "The optional Tour lets you practise by running code"
     )
     expect(textContent(documentation)).not.toContain("Get Started")
     expect(documentation).not.toContain("docs-sidebar")
+    expect(documentation).toContain('href="/docs/first-run/"')
     expect(documentation.match(/reference-area-card/g)).toHaveLength(2)
     const languageModel = readFileSync(
       join(output, "docs/language/model/non-features/index.html"),
@@ -395,7 +459,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(textContent(japanese)).toContain("空白で引数を一つずつ渡す")
+    expect(textContent(japanese)).toContain(
+      "関数名の後に、引数を空白で区切って書きます"
+    )
     expect(textContent(japanese)).not.toMatch(/準備中|整備中|#[0-9]+/u)
     expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
     expect(japanese).toContain("言語リファレンス")
@@ -423,7 +489,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     )
     expect(textContent(optionalFields)).toContain("id?: String")
     expect(textContent(optionalFields)).toContain(
-      "required field of type Maybe"
+      "nickname: Maybe<String> is different: the field is required, even when its stored value is Nothing."
     )
     const typeSystem = readFileSync(
       join(output, "docs/language/types/type-system/index.html"),
@@ -460,8 +526,14 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
         "現在の実装にはこの制約が残っています",
       ],
       ["modules/imports", "非公開の名前は、名前を知っていてもimportできません"],
-      ["modules/identity", "importの別名と、モジュールそのものを混同しない"],
-      ["modules/re-exports", "利用側が参照する窓口をまとめる"],
+      [
+        "modules/identity",
+        "importの綴りや別名を変えても、関数を複製したり、新しいモジュールを作ったりはしません",
+      ],
+      [
+        "modules/re-exports",
+        "pub importで別ファイルの公開宣言を再公開すると、利用側が指定する窓口をまとめられます",
+      ],
       ["patterns/match", "ガード条件が偽ならその分岐を使いません"],
       [
         "expressions/conditionals",
@@ -493,7 +565,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(textContent(builtInTypes)).toContain("-9007199254740991")
-    expect(textContent(builtInTypes)).toContain("Unit / Never")
+    expect(textContent(builtInTypes)).toContain(
+      "Unit represents normal completion without a payload"
+    )
+    expect(textContent(builtInTypes)).toContain("Never has no values")
+    expect(textContent(builtInTypes)).toContain(
+      "fromInt 3 returns the Float 3.0"
+    )
     const constructors = readFileSync(
       join(output, "docs/language/types/type-constructors/index.html"),
       "utf8"
@@ -552,8 +630,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
         ),
         "utf8"
       )
-      expect(principle).not.toContain('id="reading-the-example"')
-      expect(principle.match(/seseragi-highlight/g)).toHaveLength(1)
+      expect(principle).toContain('id="reading-the-example"')
+      expect(principle.match(/seseragi-highlight/g)).toHaveLength(2)
+      expect(textContent(principle)).toContain("SES-P0001")
+      expect(textContent(principle)).toContain("original.score = 11")
+      expect(textContent(principle)).toContain(
+        "let updated = { ...original, score: 11 }"
+      )
       expect(textContent(principle)).toContain("10 -> 11")
     }
     const repeatedManifest = build(repeatedOutput)

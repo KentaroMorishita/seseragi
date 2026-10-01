@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "値の組を持つListを二つのListに分けます。",
+  purpose: "(名前, 点数)の組を持つ一覧から、名前だけ、点数だけの一覧が欲しいときに使います。この組をtupleと呼び、一つ目と二つ目の位置で値の役割が決まります。unzipの戻り値も二つの一覧を持つtupleです。",
+  reading: "pairsの各要素は(String, Int)、つまり文字列と整数の組です。let (names, scores) = lists.unzip pairsは戻り値の一つ目にnames、二つ目にscoresという名前を付けます。続く二つのprintlnでそれぞれを実際に使い、名前と点数が元の順番で表示されます。",
+  boundaries: "noPairs: List<(String, Int)>は、同じ種類の組を持つ空の一覧です。unzipは空の一覧を二つ含むtupleを返します。戻り値がなくなったり、どちらか一方だけになったりはしません。",
+  rules: "入力の各組を先頭から読み、一つ目同士と二つ目同士を集めます。入力がn組なら両方の結果はn個ずつです。処理量と結果の保存領域はnに比例し、入力は変更しません。",
+  mistake: "単なる整数の一覧は渡せません。各要素が二つの値を持つtupleである必要があります。二つの一覧を組へ合わせる逆向きの操作はzipですが、zipで捨てた長い側の余りはunzipでは復元できません。"
+}

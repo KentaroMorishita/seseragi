@@ -1,0 +1,5 @@
+type Delivery =
+  | Pending
+  | Shipped String
+
+let delivery = Shipped 42

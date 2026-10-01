@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Read the keys as an Array",
+  purpose: "Use keys when you need the names in a Map without their values. The result is Array<K>.",
+  reading: "The Map was built with b, a and c in that order. keys returns [\"b\",\"a\",\"c\"], not alphabetical order.",
+  boundaries: "An empty Map returns []. Equal stored values do not affect the keys: b and a are separate keys even though both hold 2.",
+  rules: "Keys follow insertion order. Reading the array takes work proportional to the number of entries and leaves the Map unchanged.",
+  mistake: "TypeScript map.keys() returns an iterator; [...map.keys()] collects it into an array as shown. Seseragi keys already returns a complete Array. Use entries when key/value pairs must stay together.",
+}

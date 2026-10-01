@@ -1,0 +1,26 @@
+pub fn purpose -> String =
+  "記号のUnicode番号を調べたり、受け取った番号から文字を作ったりするときはstd/charを使います。Charは許されたUnicode番号一個に対応するscalarを表します。単一引用符の'👍'はChar、二重引用符の\"👍\"はStringです。見た目の一文字に複数のscalarが入ることもあるため、まず扱う単位を決めます。"
+
+pub fn reading -> String =
+  "importはstd/charをcharという名前で読み込み、letはCharにsymbolという名前を付けます。char.codePoint symbolは記号の番号128077を返します。Aは65、\\0で書いたnull文字は0です。関数の引数は空白で区切ります。pub effect fn mainは実行入口、printlnは結果と改行を出力する操作です。バッククォート内の${...}には計算した値が入り、記述した改行もそのまま表示されます。"
+
+pub fn choose -> String =
+  "codePointはCharからIntの番号へ、fromCodePointはIntから作れるかもしれないCharへ変換します。toStringはCharを同じscalar一個を含むStringへ変え、文字列のラベルなどに使えるようにします。どの操作も元の値を書き換えません。"
+
+pub fn checked -> String =
+  "数値を受け取る方向では、すべてのIntが文字になれるわけではありません。fromCodePointのMaybe<Char>は、Charを持つJustか、使えない番号を表すNothingです。describe関数は、その二つをmatchで分けて表示文にします。"
+
+pub fn checkedReading -> String =
+  "fn describeのpoint: Intは整数の引数、最後の-> Stringは返す表示文の型です。Just valueならCharをvalueとして使い、char.toStringで表示用のStringへ変えます。Nothingにも分岐があるため、無効な番号を黙って落としません。128077は👍になり、次の四つは範囲外かsurrogateです。最後の二行は、0と最大番号が使えることをTrueで確かめています。"
+
+pub fn comparison -> String =
+  "TypeScriptにもString.fromCodePointがありますが、UTF-16の組み合わせ用の番号であるsurrogateまで受け入れます。この例のfromScalarは、整数と範囲を確認してsurrogateを除き、失敗にはundefinedを返します。describeがundefinedを扱う点はNothingの分岐と対応します。"
+
+pub fn comparisonBoundary -> String =
+  "同じ入力の成功・失敗を確認しています。trueとTrueは表示上の綴りの違いです。最後の行は、JS組み込みだけなら55296のsurrogateを作れることを示します。JSにはChar型がなく、空や複数文字のStringもあるため、文字列なら何でも一個のscalarだとは考えないでください。"
+
+pub fn limits -> String =
+  "scalarの範囲は0から0x10FFFFまでで、0xD800から0xDFFFを除きます。0xは十六進数の表記です。受け入れられる番号でも、表示用の字形が割り当てられているとは限りません。processとbrowserの両方で使え、外部サービスは必要ありません。"
+
+pub fn literals -> String =
+  "'e\\u{0301}'は、eと結合アクセントの二つのscalarなのでCharリテラルとしてSES-P0202になります。この綴りを保つには\"e\\u{0301}\"というStringで扱います。'\\u{D800}'のsurrogate escapeはSES-P0201です。見た目のまとまりを取りたい場合と、個々のscalarを調べたい場合で、使うAPIを分けます。"

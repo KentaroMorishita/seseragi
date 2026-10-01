@@ -1,0 +1,8 @@
+fn nameOf value: { name: String } -> String = value.name
+fn nameOnly value: { name: String, id: Int } -> { name: String } = { name: value.name }
+fn labels values: Array<{ name: String }> -> Array<String> = map nameOf values
+
+let user = { name: "Aki", id: 1 }
+let users = [user]
+let names: Array<{ name: String }> = map nameOnly users
+pub effect fn main = println `${nameOf user}\n${show (labels names)}`

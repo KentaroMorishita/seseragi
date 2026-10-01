@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Setを挿入順のListに変換します。元のSetは変更しません。",
+  taskTitle: "Setの要素を順序のあるListで使う",
+  purpose: "Setは、等しい要素を一つだけ持つ一覧です。後の計算がListを受け取る場合、この変換を使います。要素はSetへの挿入順に並びます。",
+  setup: "import * as setsでstd/setに名前を付けます。singleton 2でSetを作り、insert 1で異なる要素を加えます。もう一度2を挿入しても、元の位置は変わりません。重複をまとめるのは変換時ではなく、Setを作るときです。insertとremoveは新しいSetを返します。",
+  codeTitle: "重複・入れ直し・空のSetを確認する完全なプログラム",
+  outputTitle: "実行結果",
+  after: [
+    "最初の結果は2、1の順です。movedでは2を削除してから挿入し直すため、1、2の順になります。sets.empty<Int> ()は空の整数のSetです。<Int>で要素の型を指定し、()は追加の入力がないことを表すUnitです。Listの値やshowの結果には、`[2, 1]のように先頭にバッククォートが付きます。Arrayは付けずに角括弧で書きます。",
+    "最後に元のvaluesをもう一度変換すると、2、1の順のままです。movedを作るための更新も変換も、valuesを変更していません。pub effect fn mainが実行入口で、doの中でprintlnを順に実行します。showは表示用の文字列を作ります。"
+  ],
+  comparisonTitle: "JavaScriptのSetでも挿入順を使う",
+  comparisonBefore: "JavaScriptのSetも挿入順を保ちます。この例ではコピーしたSetを更新し、最後の確認用に元のSetを残しています。Array.fromは要素を配列にコピーします。",
+  comparisonAfter: "JavaScriptにはSeseragiのListが組み込まれていないため、同じ順序の要素を配列で扱っています。JavaScriptのdeleteとaddはコピーしたSetを書き換え、Seseragiのremoveとinsertは新しいSetを返します。",
+  detailTitle: "順序・等しさ・変換の処理量",
+  details: [
+    "toListはSet<A>を受け取り、List<A>を返します。この操作で重複を除くわけではなく、入力がすでにSetです。作成や更新には、等しさを判定するEqと、それに整合するハッシュを計算するHashが必要です。この変換自体は新たな比較を要求しません。",
+    "挿入順はSetの規則で保証されています。すでにある要素を挿入しても位置は変わらず、削除してから挿入すると末尾に入ります。空のSetからは空の結果が返ります。文書化された一覧の処理量の規則では、変換の作業は要素数に比例します。"
+  ]
+}

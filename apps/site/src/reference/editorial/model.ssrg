@@ -1,0 +1,154 @@
+import * as arrays from "std/array"
+import { LocalizedText, localized } from "../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../model/page"
+
+pub struct ApiCopy {
+  summary: String,
+  purpose: String,
+  reading: String,
+  boundaries: String,
+  rules: String,
+  mistake: String
+}
+
+pub struct Editorial {
+  identity: String,
+  namespace: String,
+  itemKind: String,
+  summary: LocalizedText,
+  blocks: Array<Block>
+}
+
+pub fn apiEditorial identity: String
+  -> exampleId: String
+  -> output: String
+  -> english: ApiCopy
+  -> japanese: ApiCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized "Use this operation" "この操作を使う"),
+        Paragraph ([Words (localized english.purpose japanese.purpose)])
+      ],
+      consumerHelp identity,
+      [
+        Paragraph ([Words (setupCopy identity)]),
+        CodeExample
+          (exampleId, localized "A normal case and its boundaries" "通常の入力と境界の例"),
+        Paragraph (
+          [Words (
+            localized
+          "pub effect fn main is the program entry. do lists the output operations in order; _ <- runs a print operation before continuing without naming its Unit result. println writes a value and a newline; show turns a value into display text. The array calculations themselves do not print or change their inputs."
+          "pub effect fn mainはプログラムの実行入口です。doの中は出力を行う順番に並び、_ <-は出力してから次へ進み、意味のある値を持たないUnitの結果には名前を付けません。printlnは値と改行を出力し、showは値を表示用の文字列にします。配列を計算する操作そのものは出力も入力の変更もしません。"
+          )]
+        ),
+        Terminal (localized "Output" "実行結果", output),
+        Heading ("reading-the-example", localized "Read the example" "例を順に読む"),
+        Paragraph ([Words (localized english.reading japanese.reading)]),
+        Paragraph ([Words (localized english.boundaries japanese.boundaries)]),
+        Heading ("operation-rules", localized "Rules and cost" "規則と処理量"),
+        Paragraph ([Words (localized english.rules japanese.rules)]),
+        Heading
+          ("operation-mistakes", localized "Choose the right operation" "使い分けと間違いやすい点"),
+        Paragraph ([Words (localized english.mistake japanese.mistake)]),
+        Paragraph (
+          [
+            InternalLink (localized "std/array" "std/array", "/docs/library/array/"),
+            Words (
+              localized ": compare Array operations and choose by the result you need."
+          "：Arrayの操作を比べ、必要な結果から選べます。"
+            )
+          ]
+        ),
+        Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")
+      ]
+    ]
+  }
+
+pub fn editorialBlocks value: Maybe<Editorial> -> Array<Block> = match value {
+  Just editorial -> editorial.blocks
+  Nothing -> []
+}
+
+fn setupCopy identity: String -> LocalizedText =
+  if identity == "std/array::sortBy" then
+    localized "import * as arrays gives std/array the name arrays. Arguments are separated by spaces. The name nobody is explicitly annotated as an array of records with name: String and score: Int; [] is its empty value." "import * as arraysはstd/arrayをarraysという名前で読み込みます。引数は空白で区切ります。nobodyの型注釈は、nameがString、scoreがIntのレコードの配列という意味で、[]がその空の値です。"
+  else
+    localized "import * as arrays gives the std/array module the local name arrays. Call an operation with arguments separated by spaces. The examples use Int for whole numbers; <Int> specifies the element type when creating an empty array." "import * as arraysはstd/arrayをarraysという名前で読み込みます。操作名の後ろには、空白で区切って引数を書いてください。Intは整数の型です。空配列を作る<Int>は要素の型を指定しています。"
+
+fn consumerHelp identity: String -> Array<Block> =
+  if identity == "std/array::chunksOf"
+    || identity == "std/array::windows" then
+    [Paragraph (
+      [
+        Words (
+          localized
+            "Right contains the resulting groups; Left contains the invalid-size reason. "
+            "Rightの中には結果のまとまり、Leftの中にはサイズが正しくない理由が入ります。"
+        ),
+        InternalLink (
+          localized "See a complete example that uses both outcomes"
+            "二つの結果を受け取って使う完全な例を見る",
+          "/docs/library/array/#consume-either"
+        )
+      ]
+    )]
+  else if identity == "std/array::last" then
+    [Paragraph (
+      [
+        Words (
+          localized "Just contains the final element; Nothing means there was none. "
+            "Justの中には末尾の要素が入り、Nothingは要素がなかった場合です。"
+        ),
+        InternalLink (
+          localized "Use the contained value and handle empty input"
+            "中の値を使い、空の場合も処理する例を見る",
+          "/docs/library/array/#consume-maybe"
+        )
+      ]
+    )]
+  else if identity == "std/array::init" then
+    [Paragraph (
+      [
+        Words (
+          localized
+            "Just contains the remaining array; Nothing means the input was empty. "
+            "Justの中には末尾を除いた配列が入り、Nothingは入力が空だった場合です。"
+        ),
+        InternalLink (
+          localized "Learn how to name and use the value inside Just"
+            "Justの中に名前を付けて使う例を見る",
+          "/docs/library/array/#consume-maybe"
+        )
+      ]
+    )]
+  else if identity == "std/array::groupBy" then
+    [Paragraph (
+      [
+        Words (
+          localized
+            "groupBy returns a Map. When maps.get looks up a group, Just contains its array and Nothing means the key was absent. "
+            "groupByはMapを返します。maps.getでグループを探すと、Justの中にはその配列が入り、Nothingはキーがなかった場合です。"
+        ),
+        InternalLink (
+          localized "Learn how to use a Just value and handle Nothing"
+            "Justの中を使い、Nothingも処理する例を見る",
+          "/docs/library/array/#consume-maybe"
+        )
+      ]
+    )]
+  else
+    []

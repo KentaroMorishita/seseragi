@@ -1,21 +1,46 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Literals",
   summary: (explanation ()).summary,
-  formsTitle: "A literal's spelling determines its type",
-  formsBody: "Integers have type Int; numbers with a decimal point or exponent have type Float. True and False are Bool values. Single quotes enclose a Char and double quotes enclose a String. A backtick immediately followed by [ begins a List; otherwise it begins a template String. () is the Unit value.",
-  typingBody: "A number's spelling determines its type without conversion to another numeric type from context. Int accepts decimal, binary, octal, and hexadecimal forms, with values from -9007199254740991 through 9007199254740991. Minus is an operator on the number, not part of the numeric token. Float is a 64-bit floating-point number.",
-  evaluationBody: "Expressions in a template are evaluated once each, left to right. Show converts each value to text, which is inserted into the template. Constructing the template does not print it. Float rounds to the nearest representation, using ties to even. Finite spelling that becomes infinity is rejected; a very small value may become signed zero.",
-  invalidTitle: "Check digit separators and decimal points",
-  invalidBody: "An underscore may occur once between two digits of the same base. Extra leading decimal zeroes, missing digits after a base prefix, hexadecimal fractions, type suffixes, incomplete exponents, 1., and .5 are rejected. Write decimal fractions as 1.0 or 0.5.",
-  diagnosticsBody: "Invalid numeric spelling or an out-of-range literal reports SES-P0203. Even with valid literals, later integer arithmetic stops execution if it leaves the supported range. Such a runtime problem is called a defect, rather than a recoverable failure. The value does not wrap around to a smaller number.",
+  purpose: [
+    "Use literals to put values such as a count, price, or display name directly in code. A literal is a written value such as 3 or \"Seseragi\", rather than an instruction to calculate or load that value.",
+    "Seseragi distinguishes the integer type Int from the floating-point type Float. Instead of treating both as one type like TypeScript number, start with how the value is written. This example names and displays five basic values."
+  ],
+  exampleTitle: "Display an integer, a decimal, a boolean, a character, and a string",
+  reading: [
+    "let count: Int = 3 gives the value 3 the name count. The : Int after the name is a type annotation: it checks that the value has the integer type Int. It does not convert a value to another type. The value 2.5 assigned to price has a decimal point, so its type is Float.",
+    "The True assigned to active is a Bool value representing true; use False for false. The 'S' assigned to initial is a single-character Char value, while \"Seseragi\" assigned to label is a String. Single and double quotes select different value types.",
+    "The backticks in main enclose a string template. Each ${count}-style position inserts the displayed value, leaving the commas and spaces between values. Quotes enclose the literal and are not printed. The resulting line is 3, 2.5, True, S, Seseragi."
+  ],
+  rules: [
+    "The integer spelling 42 has type Int. Spellings with a decimal point or exponent, such as 42.0 or 4.2e1, have type Float. All three represent the number 42, but their spelling determines their type. They do not automatically become another numeric type to suit the surrounding code.",
+    "Besides decimal, Int accepts binary with a 0b or 0B prefix, octal with 0o or 0O, and hexadecimal with 0x or 0X. For example, 0b1010 is decimal 10. Underscore digit separators do not change a value: 1_000 is the same integer as 1000.",
+    "Float uses decimal notation. An exponent has e or E, an optional + or -, and at least one digit. For example, 6.022e23 is 6.022 times 10 to the power of 23; 1.0e-9 is 1.0 divided by 10 to the power of 9. NaN and infinities are named values provided by std/number, not literals.",
+    "Int values range from -9007199254740991 through 9007199254740991. Minus is an operator that negates a value, rather than part of the numeric literal. The literal without the minus must be from 0 through 9007199254740991, so a larger magnitude is invalid even after a minus. Int has no negative zero; integer arithmetic normalizes such a result to 0.",
+    "Float is a 64-bit floating-point number and cannot represent every decimal exactly. It rounds to the nearest representation; at an exact halfway point, it chooses the representation with an even final binary digit. A finite spelling too large to fit, which would become infinity, is rejected. A very small value can become zero with its sign preserved, and -0.0 is negative zero.",
+    "Expressions inside ${...} in a template are evaluated once each, left to right. Each value becomes text using Show, the display operation defined for its type. A type without that operation causes a compile error. Building a template does not print it; this example prints the string by passing it to println.",
+    "A backtick immediately followed by [ creates a List value instead of a string. For example, `[1, 2] is an ordered List of integers. Other backticks begin a template string. () is the only value of the Unit type, used when there is no content to pass or return."
+  ],
+  mistakes: [
+    "An underscore separator can appear only once between digits allowed in that numeric base. It cannot start or end the number, immediately follow a prefix such as 0x, or appear consecutively. The 1__0 below reports SES-P0203; change it to 1_0 or 10. Although the current diagnostic wording describes a range error, this example fails because of underscore placement, not the size of the value.",
+    "Except for 0 itself, a decimal integer cannot start with extra zeroes. Both 00 and 01 are invalid, and a prefix such as 0b needs at least one following digit. Digits outside that base, hexadecimal fractions, and type suffixes are also rejected.",
+    "A decimal point needs digits on both sides. Write 1.0 and 0.5 instead of 1. and .5. An unfinished exponent such as 1e is invalid too. Invalid numeric spelling or an out-of-range literal reports SES-P0203. The compiler does not accept only the valid initial portion of a malformed number.",
+    "Even when literals are in range, later integer arithmetic stops execution if it leaves the Int range. Such a runtime problem is called a defect: it is not treated as a recoverable failure returned in the usual way. The value does not wrap around to a smaller number."
+  ],
+  related: [
+    "Find out how to write quotes, newlines, and Unicode characters in Char and String values.",
+    "Find out how to name values, save UTF-8 source files, and write comments.",
+    "Find numeric operations and named values such as NaN and infinities."
+  ],
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I write a value directly in source?",
-  summary: "A literal is a value written directly, such as 42, True, or \"hello\". Its written form determines its initial type.",
-  reading: "million uses underscores between digits and is still Int. avogadro includes an exponent and is Float. Single quotes enclose a Char, double quotes a String, and backticks a template that can insert an expression's displayed value.",
-  result: "42 has type Int; 42.0 has type Float. Underscore digit separators do not change the numeric value. Invalid literal spelling or an out-of-range value causes an error before execution."
+  question: "How do I write numbers and strings directly in source?",
+  summary: "A literal is a value written directly, such as 3, True, or \"Seseragi\". Its spelling determines its type: an integer is Int, while a number with a decimal point or exponent is Float.",
+  reading: "count, price, active, initial, and label name an integer, a decimal, a boolean, a character, and a string. The annotation after each colon checks its type, and main displays all five values.",
+  result: "The output is 3, 2.5, True, S, Seseragi followed by a newline. Literal quotes and type annotations are not printed; the commas and spaces written in the template are."
 }
+
+pub fn title -> String = (copy ()).title

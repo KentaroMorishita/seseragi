@@ -14,8 +14,36 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I write one function that accepts different types?",
-  summary: "Declare a type parameter after the function name and use it in the parameter and result types. Each call chooses a concrete type.",
-  reading: "identity<A> accepts an A and returns the same A. identity 42 infers Int; identity<String> \"hello\" explicitly selects String. empty<A> has no element from which to infer A, so its caller supplies List<Int> or an explicit <Int>.",
-  result: "identity 42 returns Int, and identity<String> \"hello\" returns String. identity<String> 42 is an error because the selected String conflicts with the Int argument. Type arguments are determined for each call before execution."
+  question: "How can one function accept numbers and strings while preserving their types?",
+  summary: "Duplicating a value does not require separate functions for integers and strings. A type parameter describes the relationship between input and result.",
+  reading: "A in duplicate<A> is a type parameter. value: A accepts the chosen type; the result (A, A) is a tuple containing two positions of that same type. The body (value, value) constructs the tuple.",
+  result: "duplicate 21 infers Int for A, while duplicate<String> \"ready\" explicitly selects String. let (left, right) and the other tuple pattern extract the two positions, producing the lines 21, 21 and ready, ready.",
 }
+
+pub fn readerCaption -> String =
+  "Duplicate an integer and a string with the same function"
+
+pub fn readerBridgeOne -> String =
+  "A type parameter names a type to choose; it is not a type that simultaneously accepts everything. Within one call to duplicate, its argument and both tuple positions share the same A. Selecting a type does not convert a value into text or a number."
+
+pub fn readerBridgeTwo -> String =
+  "Omitted type arguments are determined from the supplied arguments and the required result type. Add an annotation if that information is insufficient. pub effect fn main is the output entry point; ${...} inserts values into the backtick string and \\n separates the lines."
+
+pub fn readerInvalidCaption -> String = "Pass an integer after selecting String"
+
+pub fn readerMistake -> String =
+  "duplicate<String> 21 produces SES-T0101 because it selects String but supplies Int. For a duplicated number, use duplicate 21 or duplicate<Int> 21. For text, use duplicate<String> \"21\"."
+
+pub fn readerDetailNote -> String =
+  "The detailed identity function returns its input unchanged; empty constructs an empty List, a collection of same-typed elements. With no elements to infer from, choose its type through an expected result annotation or explicit type arguments. The declaration-only example has no main."
+
+pub fn readerComparison -> String =
+  "A TypeScript generic function also preserves the input’s A in its [A, A] result. TypeScript uses square brackets for tuples; Seseragi uses parentheses. These complete examples print the same two lines from the same inputs and both reject an argument conflicting with an explicit type choice."
+
+pub fn readerLegacyReading -> String =
+  "identity<A> accepts an A and returns the same A. identity 42 infers Int; identity<String> \"hello\" explicitly selects String. empty<A> has no element from which to infer A, so its caller supplies List<Int> or an explicit <Int>."
+
+pub fn readerLegacyResult -> String =
+  "identity 42 returns Int, and identity<String> \"hello\" returns String. identity<String> 42 is an error because the selected String conflicts with the Int argument. Type arguments are determined for each call before execution."
+
+pub fn readerRelated -> String = " explains where a declared A can be used."

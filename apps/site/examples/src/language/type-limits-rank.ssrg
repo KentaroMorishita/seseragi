@@ -1,0 +1,7 @@
+fn unchanged<A> value: A -> A = value
+fn apply<A> operation: (A -> A) -> value: A -> A = operation value
+fn wrap<A> value: A -> Maybe<A> = Just value
+
+let identity = unchanged
+let fixed = wrap 42
+pub effect fn main = println `${identity 42}\n${apply identity "ready"}\n${show fixed}`

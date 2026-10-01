@@ -1,0 +1,7 @@
+import * as text from "std/text"
+
+pub effect fn main = do {
+  _ <- println (show (text.lengthBytes "Aé😀e\u{301}"))
+  _ <- println (show (text.lengthBytes "é"))
+  println (show (text.lengthBytes ""))
+}

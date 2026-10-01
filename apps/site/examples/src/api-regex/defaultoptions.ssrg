@@ -1,0 +1,11 @@
+import * as regex from "std/regex"
+pub effect fn main = do {
+  let options = regex.defaultOptions ()
+  println (show options.caseInsensitive)
+  println (show options.multiline)
+  println (show options.dotMatchesNewline)
+  match regex.compileWith options "a" {
+    Left error -> println (show error)
+    Right pattern -> println (show (regex.isMatch pattern "A"))
+  }
+}

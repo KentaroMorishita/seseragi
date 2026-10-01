@@ -1,0 +1,26 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Setは、同じ値を重複して持たない集まりの型です。要素の型を指定し、更新前の集まりも残せます。",
+  taskTitle: "重複しないタグを作り、追加前の一覧も残す",
+  purpose: "タグを一種類につき一件だけ持ちたいときはSetを使います。Set<String>は文字列のタグの集まりです。Arrayでは同じタグが複数の位置にあっても構いませんが、Setでは同じタグを一件にまとめます。",
+  setup: "import * as sets from \"std/set\"は、Setの型と操作をsetsという名前で使う宣言です。sets.Setは型、sets.fromIterableは作成の操作です。let tags: sets.Set<String> = ...は値にtagsという名前を付け、コロンの右の型に合うかを確かめます。<String>で要素を文字列に決めています。",
+  codeTitle: "重複するタグからSetを作る",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "[\"work\", \"home\", \"work\"]は三件の文字列を持つArrayです。fromIterableは要素を順に読んでSetを作り、重複するworkを一件にします。最初に登場した位置を保つため、toArrayで表示用のArrayにするとwork、homeの順になります。型注釈が重複を取り除くのではなく、fromIterableがSetを作っています。",
+    "sets.insert \"travel\" tagsは、追加するタグと元のSetを空白で区切って渡す呼び出しです。新しい結果をupdatedと名付けます。tagsはwork、homeのままで、updatedだけにtravelが末尾に加わります。すでにあるタグをinsertしても、重複する要素は作られず位置も変わりません。呼び出しを囲む括弧は、内側の結果を一つの引数として渡すためのものです。",
+    "==はSetの要素が同じかを比べます。home、workの順で作ったSetも同じ二つのタグを持つため、三行目はtrueです。取り出すときの順序と、等しいかを比べるときの規則は別です。",
+    "sets.empty<String> ()は要素がないSetを作ります。値から要素の型を推測できないので、<String>で指定します。()は追加の情報を持たないUnit型の値です。sets.sizeが要素数を返すので、最後の行は0になります。"
+  ],
+  comparisonTitle: "TypeScriptのSetで同じタグを扱う",
+  comparisonBefore: "TypeScriptでもSet<string>とnew Set([\"work\", \"home\", \"work\"])で同じタグを一件にまとめられます。Set<string>は文字列のSet、string[]は重複も持てる配列の型です。new Set(tags).add(\"travel\")では、tagsをコピーしてから新しいSetに追加します。[...tags]は要素を配列に並べ、JSON.stringifyが表示用の文字列にします。everyはすべてのタグが条件を満たすか、reordered.has(tag)はもう一方のSetにそのタグがあるかを確かめます。&&で、要素数も各タグも同じ場合だけtrueにしています。",
+  comparisonAfter: "両例とも元のタグを残し、同じ二件と追加後の三件を表示します。TypeScriptはSetを配列に広げてJSONで表示するため、Seseragiのshowと引用符や空白が異なります。TypeScript例はsizeとhasで要素が同じかを比べます。Set同士の===は内容の比較にはなりません。普通のJavaScriptのSetでもこの処理は簡潔です。Seseragiではinsert自体が元の値を変更せず、==で内容を比べられる点が変わります。",
+  detailTitle: "Setが確かめることと、よくある型の取り違え",
+  details: [
+    "Set<String>は、各要素がStringであり同じ値を重複して持たないことを表します。空のSetも含みます。末尾の正確な宣言のSet<_>では、_が要素の型を選ぶ場所です。opaque-typeは内部の持ち方を公開しない型という意味で、作れない型という意味ではありません。fromIterable、singleton、emptyなどが公開されています。",
+    "let tags: sets.Set<String> = [\"work\", \"home\"]はSES-T0101になります。右側はArrayであり、型注釈を書いてもSetには変換されません。sets.fromIterable [\"work\", \"home\"]で作ってください。一件ならsets.singleton \"work\"、空ならsets.empty<String> ()を使えます。",
+    "要素を探したり追加したりするには、同じ要素かを判定する処理と、候補を探すための値を計算する処理が必要です。その条件をEq、Hashと書きます。Stringには両方があります。Setの型宣言そのものに条件が表示されていなくても、要素を探したり追加したりする操作には条件があります。型の名前だけで処理の費用やJavaScriptと同じ実装が保証されるわけではありません。",
+    "TypeScriptのconst tagsはtagsという名前の再代入を防ぐだけで、tags.add(...)による内容の変更は防ぎません。元のSetを残すこの例では、コピーを更新しています。比較対象は文字列のタグです。JavaScriptのオブジェクト要素の同一性の規則を、Seseragiの任意の要素に広げて考えないでください。"
+  ]
+}

@@ -1,0 +1,8 @@
+import * as text from "std/text"
+
+pub effect fn main = do {
+  _ <- println (show (text.startsWith "pre" "prefix"))
+  _ <- println (show (text.startsWith "fix" "prefix"))
+  _ <- println (show (text.startsWith "" ""))
+  println (show (text.startsWith "Pre" "prefix"))
+}

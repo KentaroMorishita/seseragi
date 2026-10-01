@@ -1,0 +1,52 @@
+import { localized } from "../../../../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  InlineCode,
+  Words
+} from "../../../../model/page"
+
+pub fn forms -> Array<Block> =
+  [BulletList [
+    [
+      InlineCode "Session",
+      Words (localized " is classified as a type-level name." " は型の名前です。")
+    ],
+    [
+      InlineCode "sessionName",
+      Words (localized " is classified as a value-level name." " は値の名前です。")
+    ],
+    [
+      InlineCode "method",
+      Words
+        (localized " becomes a keyword inside a foreign block." " はforeign宣言の中ではキーワードです。")
+    ],
+    [
+      InlineCode "self",
+      Words (
+        localized " is special only as an impl method's first parameter."
+        " はimplのメソッドの最初の引数を指す名前です。 "
+      )
+    ]
+  ]]
+
+pub fn rejected -> Array<Block> =
+  [BulletList [
+    [
+      InlineCode "let match = 1",
+      Words
+        (localized " attempts to bind a reserved word." " は予約語に名前を付けようとしているため、使えません。")
+    ],
+    [
+      InlineCode "let Value = 1",
+      Words (localized " violates value-name casing." " は値の名前の大文字・小文字の規則に合いません。")
+    ],
+    [
+      InlineCode "let _ = value",
+      Words (
+        localized " may discard value, but _ can never be read later."
+        " は値に名前を付けずに捨てます。_を後から参照することはできません。"
+      )
+    ]
+  ]]

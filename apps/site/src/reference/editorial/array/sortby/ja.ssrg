@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "値から取り出した基準で並べ替える",
+  purpose: "名前と得点を持つ人を得点順に並べるならsortByを使います。最初の引数は比較する基準を取り出す関数、次は配列です。基準が同じ人は元の順番を保ちます。",
+  reading: "score関数はnameとscoreを持つレコードを受け取り、value.scoreを返します。peopleの得点はAkiが2、Mioが1、Renが2です。sortBy score peopleではMioが先になり、得点2のAkiとRenはその順のままです。",
+  boundaries: "2行目は元のpeopleを表示します。順番はAki、Mio、Renのままで、入力を変更していません。nobodyの型注釈Array<{ name: String, score: Int }>は、このレコード型の配列という意味です。値は空の[]なので、最後の行で並べた結果も[]です。",
+  rules: "基準の型KにはOrdという順序比較の実装が必要です。この例の基準はIntなので数の大小で比較できます。基準を取り出す関数は入力順に各要素一度だけ呼び、その結果を保存して比較します。比較回数はO(n log n)です。",
+  mistake: "callbackは二人を比較して数値を返す関数ではなく、一人から基準を返す関数です。等しい基準の人の並びも変えたい場合は、必要な順序を持つ基準を設計してください。要素自体の標準順序でよければsortを使います。",
+}

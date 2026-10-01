@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "キーを変え、重なった値のまとめ方を決める",
+  purpose: "違うキーを同じキーに変える可能性があるときにmapKeysWithを使います。値をまとめる関数、キーを変える関数、Mapの順に渡します。",
+  reading: "categoryはkeepというキーを保ち、それ以外をsameに変えます。combineには現在までの値、次に来た値の順に渡し、/でつなぎます。結果はsame=A/B/C、その次がkeep=Kです。",
+  boundaries: "途中のkeep項目によってsameの分類が分かれることはありません。元のMapは変えず、空の入力ならどちらの関数も呼ばずに空のMapを返します。",
+  rules: "キーを入力順に変換し、出力キーの最初の位置を保ちます。重なるたびにresolve current incomingの順で値をまとめます。三つのキーが重なる例では二度呼び、A/B、A/B/Cと計算します。",
+  mistake: "TSのforも同じまとめ方を明示しています。変換した組をnew Mapに渡すだけだと、先の値を上書きしてAとBが失われます。キーを変えずに値だけ変えるならmapValuesを使います。 getの後の!は、その分岐では値があるとTypeScriptに伝える記号で、実行時の確認は追加しません。直前のhasで存在を確かめています。",
+}

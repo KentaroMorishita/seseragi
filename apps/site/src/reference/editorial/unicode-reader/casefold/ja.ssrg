@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "std/textからUnicodeの比較用変換を使う",
+  purpose: "std/textを使っているコードで、大文字・小文字の違いをそろえて文字列を比較するための操作です。caseFoldはstd/text/unicodeのfullCaseFoldと同じ結果を返します。たとえばStraßeとSTRASSEは、どちらもstrasseになります。",
+  reading: "letでstoredにStraße、enteredにSTRASSEを付けます。最初の比較ではtoLowerを使い、straßeとstrasseが違うためFalseです。次の比較では両方にcaseFoldを適用し、==で比べるのでTrueになります。folded textの行で、比較した文字列がstrasseだと確認できます。",
+  boundaries: "same API resultは、同じstoredにcaseFoldとunicode.fullCaseFoldをそれぞれ適用した比較です。二つの名前で同じ変換を使えるためTrueになります。元のstoredとenteredは変化せず、画面には元の表記を使えます。",
+  rules: "case foldingは、Unicodeが定めた大文字・小文字を区別しない比較用の変換です。言語設定によらず、ßからssのように長さが増える場合があります。処理量は入力と出力のバイト数に比例します。正規化は別の操作なので、必要な場合は採用する形式もアプリ側で決めてください。",
+  mistake: "表示するラベルを小文字にしたい場合はtoLowerを選びます。caseFoldの結果は比較用で、元のつづりへ戻せるとは限りません。fullCaseFoldの説明では、アクセントやギリシャ文字も含めて境界を確認できます。TypeScriptのtoLowerCaseを、この比較規則と同じ操作として置き換えないでください。",
+}

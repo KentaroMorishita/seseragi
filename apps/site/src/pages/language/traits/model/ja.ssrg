@@ -5,36 +5,40 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "traitとは",
   summary: (explanation ()).summary,
   purpose: [
-    "いろいろな種類のデータを、表示用のラベルにしたいとします。型ごとに無関係な関数名を付けると、共通の処理を書く側も、その名前をすべて知る必要があります。traitを使うと、labelという一つの操作名のまま、型ごとに違う処理を定義できます。",
-    "区別するものは三つです。traitは操作の引数と戻り値を宣言します。instanceは、ある型でその操作をどう実行するか定義します。呼び出しでは、その操作に値を渡します。この例には、この三つをすべて含めています。"
+    "TypeScript側のLabel<A>は、label関数を持つオブジェクトの形をinterfaceで指定しています。ticketLabelとpersonLabelという実装オブジェクトを選び、メソッドを呼びます。どちらの言語でも、例の入力から同じ二行を出力します。",
+    "Seseragiのinstanceは、そのようなオブジェクトの値ではありません。呼び出しへ実装オブジェクトを渡す代わりに、コンパイラが引数の型に合う実装を選びます。TypeScriptでも普通の関数やコールバックでこの仕事はできます。ここで比べるのは、操作の約束と実装をどこに置くかです。"
   ],
-  exampleTitle: "チケットを表示用のラベルにする",
+  exampleTitle: "main.ssrg",
   reading: [
-    "struct Ticket { number: Int }は、整数を一つ持つチケット型です。mainのTicket { number: 42 }で、番号42のチケットを作ります。",
-    "trait Label<A>のAは、ラベルにする対象の型を表す型パラメーターです。fn label value: A -> Stringは、A型の値を受け取ってStringを返す操作の宣言で、処理の本体はありません。",
-    "instance Label<Ticket>では、AをTicketに置き換えてlabelの本体を書きます。value.numberをshowで文字列にし、先頭に\"ticket-\"を付けます。",
-    "コンパイラは、label ticketのticketがTicket型であることを確認し、Label<Ticket>の実装を選びます。実行するとそのlabelが呼ばれ、ticket-42が出力されます。"
+    "struct Ticket { number: Int }は、numberという整数の項目を持つ型です。Ticket { number: 42 }で値を作ります。Personも同じ書き方で、文字列のnameを持ちます。",
+    "trait Label<A>のAは、対象の型を表す仮の名前です。fn label value: A -> Stringは、A型の引数valueを一つ受け取り、文字列を返す操作を宣言します。この行に処理の本体はありません。",
+    "instance Label<Ticket>ではAをTicketに置き換え、labelの本体を書きます。showは整数を文字列にし、+はその前にticket-を付けます。Label<Person>の本体はnameをそのまま返します。",
+    "label (Ticket { number: 42 })は、関数名の後に空白で引数を渡す呼び出しです。括弧はTicketを作る式をまとめています。番号が7でも42でも、Ticket型なら同じ実装を使います。"
   ],
   rules: [
     "呼び出しに必要なinstanceがあるか、コンパイラは実行前に検査します。実装がなければ型エラーになります。",
     "instanceは引数の型で選びます。Ticket { number: 1 }もTicket { number: 42 }も、同じLabel<Ticket>を使います。",
     "traitを宣言しても、Ticketにフィールドやドットのメソッドは増えません。label ticketは、引数の型に対応するinstanceを必要とする関数呼び出しです。オブジェクトの継承とは異なります。",
-    "labelOf<A>のwhere Label<A>は、Aにlabelの実装が必要という条件です。Personに実装があるので、labelOf (Person { name: \"Aki\" })は\"Aki\"を返します。Ticketにも実装があるため、labelOfの本体を変えずにTicketも渡せます。"
+    "where Label<A>のような条件は、型を決めずに書く関数へ必要な操作を指定します。この例には必要ありませんが、任意の型にlabelを呼ぶ関数を作る場合に使います。"
   ],
   mistakes: [
-    "Label<A>を宣言しただけでは、処理の実装はできていません。instanceがない型でlabelを呼ぶと、実行前の型検査でエラーになります。",
-    "Label<Ticket>があるだけではticket.labelとは書けません。ドットで呼ぶメソッドはimplで定義します。traitの関数は通常の関数適用や、Label.labelのような名前で呼びます。"
+    "次のファイルにはLabelの宣言がありますが、Ticket用のinstanceがありません。宣言だけでは表示方法は決まらず、呼び出しにSES-T0201が出ます。最初の例にあるinstance Label<Ticket>を追加するとticket-42を出力できます。",
+    "traitを実装してもticket.labelというドットのメソッドは増えません。ドットのメソッドにはimplを使います。"
   ],
   related: [
-    "traitの宣言の書き方と、その本体に書ける内容を確認できます。",
-    "宣言された操作を、自分の型に対して実装する方法を確認できます。",
-    "型を決めずに書く関数が、必要な操作を条件として指定する方法を確認できます。"
-  ]
+    "操作の引数と戻り値を約束として宣言する方法を確認できます。",
+    "型ごとの本体をどこに書くか確認できます。",
+    "共通の関数が必要な操作をwhereで要求する方法を確認できます。"
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "宣言、型ごとの実装、呼び出しを分ける"
+pub fn mistakesTitle -> String = "操作の名前だけでは実装にならない"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "異なる型から、共通の名前で操作を呼ぶには",
-  summary: "traitは共通の操作を宣言し、instanceは特定の型の処理を定義します。共通の呼び出し側は、その型の内部表現を知らずに操作を要求できます。",
-  reading: "Label<A>はAからStringを返すlabelを宣言します。Ticketは番号、Personは名前を持ち、各instanceがそれぞれのlabelを定義します。labelOf<A>は内部の形を知らずにlabelを呼びます。where Label<A>は、渡す型にこの操作の実装が必要という条件です。personLabelは\"Aki\"、mainのlabel ticketは\"ticket-42\"になります。",
-  result: "Ticketを渡すと、番号を使って\"ticket-42\"を作ります。Personを渡すと、名前の\"Aki\"を返します。Labelの実装がある型なら、共通のlabelOfへ渡せます。実装の選択は実行前の型検査で決まります。"
+  question: "異なる型を、同じlabelで表示するには",
+  summary: "データの型ごとに表示方法を定義し、共通の名前で呼びます。traitが操作の型を宣言し、instanceが具体的な処理を実装します。",
+  reading: "Ticketは番号、Personは名前を持つデータです。二つを表示するために、Labelというtraitでlabelの引数と戻り値を決め、それぞれの型にinstanceを用意します。まず、このファイルをそのまま実行してみてください。",
+  result: "出力はticket-42とAkiです。labelという同じ関数名でも、Ticketを渡した呼び出しとPersonを渡した呼び出しでは、使う実装が異なります。共通の操作名を保ったまま、型ごとの表示方法を追加できます。"
 }

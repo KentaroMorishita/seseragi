@@ -14,8 +14,27 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "値が取り得る場合を、漏れなく扱うには",
-  summary: "matchは最初に一致した分岐を選び、その結果を返します。入力にあり得る場合を扱い忘れていないか、コンパイラが検査します。",
-  reading: "StatusにはWaitingと、Intを持つCompleteがあります。Complete count when count > 0は、取り出したcountが正の場合だけ一致します。その後のComplete _は、0以下のcountも扱います。_は中の値を使わない指定です。",
-  result: "message (Complete 3)は\"3 complete\"を返します。Complete 0なら条件付きの分岐には一致せず、次の分岐が\"complete\"を返します。どの分岐を選んでも、戻り値の型はStringです。"
+  question: "発送状態ごとに処理を分け、扱い忘れを見つけるには",
+  summary: "matchは値に合う分岐を選び、その分岐の結果を返します。まず二つの発送状態を用意し、それぞれが表示する文を確認します。",
+  reading: "DeliveryにはPendingとShipped Stringの二つの選択肢があります。Shipped \"JP42\"は追跡番号を持つ値です。match deliveryの中で、左側に選択肢、->の右側に返す値を書きます。",
+  result: "Pendingの結果はnot shipped、Shipped \"JP42\"の結果はtracking: JP42です。Shipped trackingは中の文字列にtrackingと名前を付けます。両方の分岐がStringを返すため、labelもStringを返します。",
 }
+
+pub fn readerCaption -> String = "二つの状態を漏れなく表示する"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptでは、オブジェクトにkindのような識別用フィールドを置き、switchで値を調べる書き方ができます。Seseragiのこの例は、PendingとShippedという選択肢の名前を直接調べます。型名Deliveryは値ではなく、その二つをまとめる型です。"
+
+pub fn readerBridgeTwo -> String =
+  "分岐の左側で値の形を調べたり中身へ名前を付けたりする書き方を、パターンと呼びます。ここではShipped trackingが一例です。mainは二つの入力をlabelへ渡した結果をprintlnで表示します。複雑な条件付き分岐は後半で扱います。"
+
+pub fn readerInvalidCaption -> String = "Pendingの分岐を忘れる"
+
+pub fn readerMistake -> String =
+  "Shippedだけを扱う例は、Pendingのときに返す値がなく、SES-T0301で拒否されます。Pending -> \"not shipped\"を追加してください。最初から_で残りを隠すより、この二つの選択肢を明示すると扱い忘れを見つけやすくなります。"
+
+pub fn readerExecution -> String =
+  "pub effect fn mainは、外部へ出力する公開された実行入口です。実行するとmainが開始され、printlnが文字列と改行を出力します。計算やデータの組み立ては、その前の通常の関数やletで行っています。"
+
+pub fn readerDetailNote -> String =
+  "ここからの宣言例は、詳しい規則を調べるための断片です。単独では実行入口を持ちません。動かす場合は、上に載せたmain付きの完全な例を使ってください。"

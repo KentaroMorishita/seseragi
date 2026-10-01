@@ -1,0 +1,180 @@
+import {
+  dataValidationEditorialFor,
+  dataValidationModuleBlocks
+} from "./data-validation-catalog"
+import { collectionTypeEditorialFor } from "./collection-types/catalog"
+import { charTextEditorialFor, charTextModuleBlocks } from "./char-text-reader/catalog"
+import {
+  nonemptyIteratorEditorialFor,
+  nonemptyIteratorModuleBlocks
+} from "./nonempty-iterator-catalog"
+import { setEditorialFor } from "./set-catalog"
+import { blocks as setModuleBlocks } from "./set/module/page"
+import { regexEditorialFor, regexModuleBlocks } from "./regex-catalog"
+import {
+  unicodeReaderEditorialFor,
+  unicodeReaderModuleBlocks
+} from "./unicode-reader/catalog"
+import { mapEditorialFor } from "./map-catalog"
+import { blocks as mapModuleBlocks } from "./map/module/page"
+import { correctionEditorialFor } from "./correction-catalog"
+import { editorial as listchunksOfEditorial } from "./list/chunksof/page"
+import { editorial as listwindowsEditorial } from "./list/windows/page"
+import { editorial as listdropWhileEditorial } from "./list/dropwhile/page"
+import { editorial as listtakeWhileEditorial } from "./list/takewhile/page"
+import { editorial as listfindIndexEditorial } from "./list/findindex/page"
+import { editorial as listinitEditorial } from "./list/init/page"
+import { editorial as listlastEditorial } from "./list/last/page"
+import { editorial as listreduceRightEditorial } from "./list/reduceright/page"
+import { editorial as listsortEditorial } from "./list/sort/page"
+import { editorial as listsortByEditorial } from "./list/sortby/page"
+import { editorial as listgroupByEditorial } from "./list/groupby/page"
+import { editorial as arrayemptySequenceEditorial } from "./array/empty/page"
+import { editorial as arraysingletonSequenceEditorial } from "./array/singleton/page"
+import { editorial as arrayfromIterableSequenceEditorial } from "./array/fromiterable/page"
+import { editorial as arrayzipSequenceEditorial } from "./array/zip/page"
+import { editorial as arrayzipWithSequenceEditorial } from "./array/zipwith/page"
+import { editorial as arrayunzipSequenceEditorial } from "./array/unzip/page"
+import { editorial as listemptySequenceEditorial } from "./list/empty/page"
+import { editorial as listsingletonSequenceEditorial } from "./list/singleton/page"
+import { editorial as listfromIterableSequenceEditorial } from "./list/fromiterable/page"
+import { editorial as listzipSequenceEditorial } from "./list/zip/page"
+import { editorial as listzipWithSequenceEditorial } from "./list/zipwith/page"
+import { editorial as listunzipSequenceEditorial } from "./list/unzip/page"
+import { blocks as listModuleBlocks } from "./list/module/page"
+import { editorial as textsliceScalarsEditorial } from "./text/slicescalars/page"
+import { editorial as textscalarAtEditorial } from "./text/scalarat/page"
+import { editorial as textlengthBytesEditorial } from "./text/lengthbytes/page"
+import { editorial as textlengthScalarsEditorial } from "./text/lengthscalars/page"
+import { editorial as textlinesEditorial } from "./text/lines/page"
+import { editorial as texttrimEditorial } from "./text/trim/page"
+import { editorial as textreplaceAllEditorial } from "./text/replaceall/page"
+import { editorial as textreplaceEditorial } from "./text/replace/page"
+import { editorial as textendsWithEditorial } from "./text/endswith/page"
+import { editorial as textstartsWithEditorial } from "./text/startswith/page"
+import { editorial as textcontainsEditorial } from "./text/contains/page"
+import { editorial as textsplitEditorial } from "./text/split/page"
+import { editorial as textjoinEditorial } from "./text/join/page"
+import { editorial as textconcatEditorial } from "./text/concat/page"
+import * as arrays from "std/array"
+import { ReferenceSymbol } from "../../model/build"
+import { Block } from "../../model/page"
+import { Editorial } from "./model"
+import { blocks as textModuleBlocks } from "./text/module/page"
+import { blocks as arrayModuleBlocks } from "./array/module/page"
+import { editorial as chunksOfEditorial } from "./array/chunksof/page"
+import { editorial as windowsEditorial } from "./array/windows/page"
+import { editorial as dropWhileEditorial } from "./array/dropwhile/page"
+import { editorial as takeWhileEditorial } from "./array/takewhile/page"
+import { editorial as findIndexEditorial } from "./array/findindex/page"
+import { editorial as initEditorial } from "./array/init/page"
+import { editorial as lastEditorial } from "./array/last/page"
+import { editorial as reduceRightEditorial } from "./array/reduceright/page"
+import { editorial as sortEditorial } from "./array/sort/page"
+import { editorial as sortByEditorial } from "./array/sortby/page"
+import { editorial as groupByEditorial } from "./array/groupby/page"
+
+// Only exact compiler identities receive copy; shared description strings are untouched.
+pub fn editorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match correctionEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> match mapEditorialFor symbol {
+      Just editorial -> Just editorial
+      Nothing -> match unicodeReaderEditorialFor symbol {
+        Just editorial -> Just editorial
+        Nothing -> match regexEditorialFor symbol {
+          Just editorial -> Just editorial
+          Nothing -> match setEditorialFor symbol {
+            Just editorial -> Just editorial
+            Nothing -> match nonemptyIteratorEditorialFor symbol {
+              Just editorial -> Just editorial
+              Nothing -> match charTextEditorialFor symbol {
+                Just editorial -> Just editorial
+                Nothing -> match collectionTypeEditorialFor symbol {
+                  Just editorial -> Just editorial
+                  Nothing -> match dataValidationEditorialFor symbol {
+                    Just editorial -> Just editorial
+                    Nothing -> collectionEditorialFor symbol
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+fn collectionEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else if symbol.module == "std/array" then
+    match symbol.identity {
+  "std/array::empty" -> Just (arrayemptySequenceEditorial ())
+  "std/array::singleton" -> Just (arraysingletonSequenceEditorial ())
+  "std/array::fromIterable" -> Just (arrayfromIterableSequenceEditorial ())
+  "std/array::zip" -> Just (arrayzipSequenceEditorial ())
+  "std/array::zipWith" -> Just (arrayzipWithSequenceEditorial ())
+  "std/array::unzip" -> Just (arrayunzipSequenceEditorial ())
+  "std/array::chunksOf" -> Just (chunksOfEditorial ())
+  "std/array::windows" -> Just (windowsEditorial ())
+  "std/array::dropWhile" -> Just (dropWhileEditorial ())
+  "std/array::takeWhile" -> Just (takeWhileEditorial ())
+  "std/array::findIndex" -> Just (findIndexEditorial ())
+  "std/array::init" -> Just (initEditorial ())
+  "std/array::last" -> Just (lastEditorial ())
+  "std/array::reduceRight" -> Just (reduceRightEditorial ())
+  "std/array::sort" -> Just (sortEditorial ())
+  "std/array::sortBy" -> Just (sortByEditorial ())
+  "std/array::groupBy" -> Just (groupByEditorial ())
+  _ -> Nothing
+} else if symbol.module == "std/list" then match symbol.identity {
+  "std/list::empty" -> Just (listemptySequenceEditorial ())
+  "std/list::singleton" -> Just (listsingletonSequenceEditorial ())
+  "std/list::fromIterable" -> Just (listfromIterableSequenceEditorial ())
+  "std/list::zip" -> Just (listzipSequenceEditorial ())
+  "std/list::zipWith" -> Just (listzipWithSequenceEditorial ())
+  "std/list::unzip" -> Just (listunzipSequenceEditorial ())
+  "std/list::chunksOf" -> Just (listchunksOfEditorial ())
+  "std/list::windows" -> Just (listwindowsEditorial ())
+  "std/list::dropWhile" -> Just (listdropWhileEditorial ())
+  "std/list::takeWhile" -> Just (listtakeWhileEditorial ())
+  "std/list::findIndex" -> Just (listfindIndexEditorial ())
+  "std/list::init" -> Just (listinitEditorial ())
+  "std/list::last" -> Just (listlastEditorial ())
+  "std/list::reduceRight" -> Just (listreduceRightEditorial ())
+  "std/list::sort" -> Just (listsortEditorial ())
+  "std/list::sortBy" -> Just (listsortByEditorial ())
+  "std/list::groupBy" -> Just (listgroupByEditorial ())
+  _ -> Nothing
+} else if symbol.module == "std/text" then match symbol.identity {
+  "std/text::concat" -> Just (textconcatEditorial ())
+  "std/text::join" -> Just (textjoinEditorial ())
+  "std/text::split" -> Just (textsplitEditorial ())
+  "std/text::contains" -> Just (textcontainsEditorial ())
+  "std/text::startsWith" -> Just (textstartsWithEditorial ())
+  "std/text::endsWith" -> Just (textendsWithEditorial ())
+  "std/text::replace" -> Just (textreplaceEditorial ())
+  "std/text::replaceAll" -> Just (textreplaceAllEditorial ())
+  "std/text::trim" -> Just (texttrimEditorial ())
+  "std/text::lines" -> Just (textlinesEditorial ())
+  "std/text::lengthScalars" -> Just (textlengthScalarsEditorial ())
+  "std/text::lengthBytes" -> Just (textlengthBytesEditorial ())
+  "std/text::scalarAt" -> Just (textscalarAtEditorial ())
+  "std/text::sliceScalars" -> Just (textsliceScalarsEditorial ())
+  _ -> Nothing
+} else Nothing
+
+pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
+  arrayModuleBlocks specifier,
+  textModuleBlocks specifier,
+  listModuleBlocks specifier,
+  mapModuleBlocks specifier,
+  unicodeReaderModuleBlocks specifier,
+  regexModuleBlocks specifier,
+  setModuleBlocks specifier,
+  nonemptyIteratorModuleBlocks specifier,
+  charTextModuleBlocks specifier,
+  dataValidationModuleBlocks specifier
+]

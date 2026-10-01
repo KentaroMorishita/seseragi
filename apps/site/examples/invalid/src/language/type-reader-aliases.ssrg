@@ -1,0 +1,2 @@
+alias Named<A> = { label: String, value: A }
+let count: Named<Int> = { label: "count", value: "42" }

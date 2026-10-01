@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Reserved words and naming",
   summary: (explanation ()).summary,
-  formsTitle: "Reserved, contextual, and ordinary names",
-  formsBody: "The reserved words are as, alias, deprecated, deriving, do, effect, else, fails, False, fn, for, foreign, from, if, impl, import, infix, infixl, infixr, instance, let, match, newtype, opaque, operator, pub, rec, struct, then, trait, True, type, when, where, and with. They are used in syntax and cannot name declarations.",
-  typingBody: "Types, constructors that create values, and traits start with uppercase letters. Values, functions, fields, and import aliases start with lowercase letters. For example, the type name User and the value name user are different names.",
-  evaluationBody: "constructor, method, property, value, pure, task, and namespace have special meanings only inside foreign declarations. since is special only in a deprecated clause. Words used specially in a particular syntax are called contextual keywords. self names the first parameter of an impl method.",
-  invalidTitle: "A value discarded with _ cannot be read later",
-  invalidBody: "_ discards a value without giving it a name. Reading _ later cannot recover that value. A reserved word used as a name, an uppercase value name, or a lowercase type name also causes an error.",
-  diagnosticsBody: "For a naming error, check the declaration identified by the diagnostic and whether its first letter is uppercase or lowercase. Names such as User and user are different names.",
+  exampleTitle: "Distinguish type names from value names",
+  purpose: [
+    "Names distinguish types from values and functions. For letters with case, such as English letters, type names start uppercase and value or function names start lowercase. Uncased Japanese characters can also start value and function names, as in 次の値.",
+    "In this example, UserName is an alias for String and userName names a value of that type. Think of the familiar distinction between a TypeScript type name and a variable name.",
+  ],
+  reading: [
+    "alias UserName = String lets you refer to String by the name UserName. It does not change a string into a different runtime representation.",
+    "In fn greeting name: UserName -> String, greeting is the function name and name is its parameter. Both start lowercase. UserName and String are type names and start uppercase.",
+    "let userName: UserName = \"Aki\" supplies a value. greeting userName in main passes it to the function and receives a string.",
+    "The output is Hello, Aki. UserName and userName are distinct because names are case-sensitive; similar spelling does not make them interchangeable.",
+  ],
+  rules: [
+    "Types, constructors that create values, and traits that declare operations shared by types require an uppercase initial character. For values, functions, fields, and import aliases, a cased initial letter must be lowercase. Uncased characters such as 次 in 次の値 are also allowed when they satisfy the identifier-character rules.",
+    "Reserved words belong to language syntax and cannot name ordinary declarations: as, alias, deprecated, deriving, do, effect, else, fails, False, fn, for, foreign, from, if, impl, import, infix, infixl, infixr, instance, let, match, newtype, opaque, operator, pub, rec, struct, then, trait, True, type, when, where, and with.",
+    "constructor, method, property, value, pure, task, and namespace are special only inside foreign declarations. since is special only inside a deprecated clause. A word with a special role in a particular syntax is called a contextual keyword.",
+    "self has a special role as the first parameter of an impl method: it receives the value before the dot at a call. Distinguish an ordinary value name from a name required by that syntax.",
+    "_ discards a value without naming it for later use. Reading _ cannot recover the discarded value.",
+  ],
+  mistakes: [
+    "The let UserName below incorrectly uses an uppercase name for a value. The current diagnostic is SES-N0001. Change both its declaration and its use to userName to print Aki.",
+    "Version 0.61.19 can miss an invalid unused declaration such as let match. Passing checking does not authorize a reserved word as a name; follow the language's naming rules.",
+  ],
+  related: [
+    "Check Unicode characters and apostrophes allowed in names, beyond casing.",
+    "See which value self receives in a concrete dot-method call.",
+    "Check operator names, which are managed separately from ordinary names.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Which names can I use for values and types?",
-  summary: "Type and constructor names start uppercase; value and function names start lowercase. Reserved syntax words such as type and fn cannot be used as names.",
-  reading: "Reading is a type name; Sample is a constructor that holds an Int. describe and value are value names. type, fn, and match introduce language constructs and cannot be used as ordinary names in their places.",
-  result: "describe (Sample 42) returns the string \"42\". Reading and Sample start uppercase; describe and value start lowercase. A type parameter must appear in the declaration's parameter list, such as <A>."
+  question: "How do I name types, values, and functions?",
+  summary: "Type names start uppercase. Value and function names can start with a lowercase letter or an uncased character such as 次. Reserved syntax words cannot name declarations.",
+  reading: "UserName and userName are different names. The example uses a type alias and a value of that type to make the distinction visible.",
+  result: "Calling the function with correctly named values prints Hello, Aki. Repair an uppercase value name in both the declaration and its use.",
 }

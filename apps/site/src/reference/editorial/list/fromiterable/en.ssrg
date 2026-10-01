@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Build a List from a finite input read in order.",
+  purpose: "Use it, for example, to pass values received as an Array to List operations. Iterable is the condition meaning that elements can be obtained in order. The example Array meets it and can be passed directly.",
+  reading: "source is an Array containing 30, 10, 20 in that order. lists.fromIterable source builds a List in the same order. The next print shows the original source. Array uses square brackets; List adds a backtick before them.",
+  boundaries: "noNumbers is an empty Array<Int>, so its result is an empty List. The Int annotation specifies integer elements. Conversion preserves order and leaves the input unchanged.",
+  rules: "The operation reads to the end and constructs all elements before returning. It continues until the input signals that there is no next value; an endless input will not finish. For n finite elements, construction and result storage grow in proportion to n, in addition to the cost of reading each input element.",
+  mistake: "This does not defer reading the remaining items. Limit a large or endless input to a finite part first. If you already have just one value, wrap it with singleton."
+}

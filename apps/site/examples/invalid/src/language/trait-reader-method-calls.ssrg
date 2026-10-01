@@ -1,0 +1,14 @@
+struct Ticket { number: Int }
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Ticket> {
+  fn label value: Ticket -> String = "ticket-" + show value.number
+}
+
+fn withPrefix prefix: String -> ticket: Ticket -> String = prefix + label ticket
+let ticket = Ticket { number: 42 }
+let logTicket: Ticket -> String = withPrefix "log: "
+pub effect fn main = println (label 42 + "\n" + logTicket ticket)

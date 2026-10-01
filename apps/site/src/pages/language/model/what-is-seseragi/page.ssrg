@@ -1,27 +1,89 @@
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words
+} from "../../../../model/page"
 import { conceptPage } from "../concept"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as firstEn from "../../../docs/first-run/en"
+import * as firstJa from "../../../docs/first-run/ja"
+import * as valuesEn from "../immutable-by-default/en"
+import * as valuesJa from "../immutable-by-default/ja"
+import * as functionsEn from "../../types/annotations-and-inference/en"
+import * as functionsJa from "../../types/annotations-and-inference/ja"
+import * as callsEn from "../../syntax/function-application/en"
+import * as callsJa from "../../syntax/function-application/ja"
 
 fn content -> PageDefinition =
-  conceptPage "language.model.what-is-seseragi" "/docs/language/model/what-is-seseragi/" (en.copy ()) (ja.copy ()) [CodeExample
-      (
-        "principle-expression-oriented",
-        localized "A decision produces the function's result" "分岐の結果を返す関数"
-      )] [
-        [InternalLink
-      (localized "Design principles" "設計原則", "/docs/language/model/design-principles/")],
-        [InternalLink (
-          localized "Programs and entry points" "プログラムと実行入口",
-          "/docs/language/model/programs/"
-        )],
-        [InternalLink (
-          localized "Features the language does not have" "中核に存在しない機能",
-          "/docs/language/model/non-features/"
-        )]
+  conceptPage "language.model.what-is-seseragi" "/docs/language/model/what-is-seseragi/" (en.copy ()) (ja.copy ()) [
+    CodeExample (
+      "comparison-shipping-total-typescript",
+      localized (en.tsCaption ()) (ja.tsCaption ())
+    ),
+    CodeExample (
+      "comparison-shipping-total-seseragi",
+      localized (en.seseragiCaption ()) (ja.seseragiCaption ())
+    ),
+    Heading ("read-function", localized (en.readTitle ()) (ja.readTitle ())),
+    Paragraph ([Words (localized (en.declaration ()) (ja.declaration ()))]),
+    Paragraph ([Words (localized (en.conditional ()) (ja.conditional ()))]),
+    Heading ("reuse-conditions", localized (en.reuseTitle ()) (ja.reuseTitle ())),
+    Paragraph ([Words (localized (en.reuse ()) (ja.reuse ()))]),
+    Paragraph ([Words (localized (en.benefit ()) (ja.benefit ()))]),
+    Heading ("display-result", localized (en.outputTitle ()) (ja.outputTitle ())),
+    Paragraph ([Words (localized (en.output ()) (ja.output ()))]),
+    Heading ("comparison-limits", localized (en.limitsTitle ()) (ja.limitsTitle ())),
+    Paragraph ([Words (localized (en.mistake ()) (ja.mistake ()))]),
+    Paragraph ([Words (localized (en.limits ()) (ja.limits ()))]),
+    Paragraph ([Words (localized (en.numericLimits ()) (ja.numericLimits ()))]),
+    Heading ("try-it", localized (en.tryTitle ()) (ja.tryTitle ())),
+    BulletList [
+      [
+        Words (localized (en.firstPurpose ()) (ja.firstPurpose ())),
+        InternalLink
+          (localized (firstEn.title ()) (firstJa.title ()), "/docs/first-run/")
+      ],
+      [
+        Words (localized (en.valuesPurpose ()) (ja.valuesPurpose ())),
+        InternalLink (
+          localized (valuesEn.title ()) (valuesJa.title ()),
+          "/docs/language/model/immutable-by-default/"
+        )
+      ],
+      [
+        Words (localized (en.functionsPurpose ()) (ja.functionsPurpose ())),
+        InternalLink (
+          localized (functionsEn.title ()) (functionsJa.title ()),
+          "/docs/language/types/annotations-and-inference/"
+        )
+      ],
+      [
+        Words (localized (en.callsPurpose ()) (ja.callsPurpose ())),
+        InternalLink (
+          localized (callsEn.title ()) (callsJa.title ()),
+          "/docs/language/syntax/function-application/"
+        )
       ]
+    ]
+  ] [
+    [InternalLink
+          (localized "Design principles" "設計原則", "/docs/language/model/design-principles/")],
+    [InternalLink (
+      localized "Programs and entry points" "プログラムと実行入口",
+      "/docs/language/model/programs/"
+    )],
+    [InternalLink (
+      localized "Features the language does not have" "中核に存在しない機能",
+      "/docs/language/model/non-features/"
+    )]
+  ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -1,32 +1,26 @@
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
-import { referencePage } from "../../reference-article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
 fn content -> PageDefinition =
-  referencePage "language.data.operator-overloads" "/docs/language/data/operator-overloads/" (en.copy ()) (ja.copy ()) [CodeExample
+  readerPage "language.data.operator-overloads" "/docs/language/data/operator-overloads/" (en.copy ()) (ja.copy ()) "data-operations-operators" "42" [CodeExample
       (
-        "data-operator-overloads",
-        localized "A newtype addition contract" "newtype同士の加算を定義する"
-      )] [CodeExample (
-        "data-invalid-operator-overload",
-        localized "Defining the same operation twice is an error" "同じ演算の実装を二重に定義するとエラー"
+        "data-operations-operators-invalid",
+        localized "A rejected example and its correction" "エラーになる例と直し方"
       )] [
-        [InternalLink (
+        (localized "Newtype values" "newtypeの値", "/docs/language/data/newtypes/"),
+        (
           localized "Custom operators and fixity" "カスタム演算子と結合規則",
           "/docs/language/syntax/custom-operators/"
-        )],
-        [InternalLink (
-          localized "Operator precedence" "演算子の優先順位",
-          "/docs/language/syntax/operator-precedence/"
-        )],
-        [InternalLink (
+        ),
+        (
           localized "Inherent impls and methods" "固有implとメソッド",
           "/docs/language/data/impls-and-methods/"
-        )]
+        )
       ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

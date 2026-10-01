@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Unicode番号からCharを作れるか確かめる",
+  purpose: "数値の文字コードを受け取ったら、fromCodePointでCharを作れるか確かめられます。CharはUnicodeのscalar一個、つまり許されたUnicode番号一個を表します。戻り値のMaybe<Char>は、Charを持つJustか、その番号を使えないNothingのどちらかです。",
+  reading: "describeは番号pointをIntとして受け取り、表示文のStringを返す関数です。fnが関数を定義し、最後の-> Stringが戻り値の型です。matchで結果を分け、Just valueなら中のCharをvalueとして使い、toStringで文字列へ変えます。Nothingならnot a scalarを返します。",
+  boundaries: "128077は👍なのでfound: 👍になります。負の-1、surrogateの始まり55296と終わり57343、最大番号を超える1114112はNothingです。括弧の(-1)は負の数を引数としてまとめています。最後の二行は0と1114111が受け入れられることを確かめます。Justの中の\\0と\\u{10FFFF}は、番号を指定して書いたCharです。",
+  rules: "受け入れる番号は0から0x10FFFFまでで、0xD800から0xDFFFを除きます。0xは十六進数の表記です。除かれるsurrogateはUTF-16の組み合わせ用の値で、単独のUnicode scalarではありません。受け入れられることと、名前や表示用の字形が割り当てられていることは別です。失敗は例外ではなくNothingという通常の値です。",
+  mistake: "返り値を必ずCharだと思って使わず、この例のようにNothingの場合も決めます。失敗を空文字列へ置き換える必要はありません。入力が使えないことを利用者へ伝えるなど、用途に合う処理を選べます。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptのString.fromCodePointは近い操作ですが、surrogateの55296も受け入れます。そこでfromScalarは整数、範囲、surrogateの除外を確認し、使えない値にはundefinedを返します。describeがundefinedを処理する点は、SeseragiのNothingの分岐と対応します。"
+
+pub fn comparisonBoundary -> String =
+  "同じ番号に対する成功と失敗を比較しています。TSのtrueとSeseragiのTrueは表示上の綴りが違います。最後の行は、JSの組み込み関数だけではsurrogateを除外しないことの確認です。JSで作れるString全体が、SeseragiのCharやStringの許すscalar列とは限りません。"

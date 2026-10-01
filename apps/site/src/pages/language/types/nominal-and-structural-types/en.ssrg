@@ -14,8 +14,27 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "When are two similarly shaped values interchangeable?",
-  summary: "Separately declared structs and newtypes are different types even if their shapes match. An ordinary record is accepted when it contains the fields, with their required names and types, that the receiving interface needs.",
-  reading: "playerName takes Player, so it accepts the explicitly constructed Player value. recordName takes { name: String }, so the ordinary summary record is accepted even though it also has active. The two functions both return a name but accept different interfaces.",
-  result: "The resulting names are \"Aki\" and \"Mio\". A Player does not automatically become a record merely because it has name. Construct { name: player.name } explicitly if the record interface is what you need."
+  question: "Does a shared name field let values go to the same function?",
+  summary: "An ordinary record is accepted when its required fields match. A struct is also distinguished by its declaration. Whether similarly shaped data is interchangeable depends on which representation you chose.",
+  reading: "customerName requires Customer. recordName requires only the fields { name: String }. The record with Mio and score can go to recordName because it has the required name.",
+  result: "The output is Aki, Mio and Notebook. The example does not pass Product directly to recordName; it explicitly builds { name: product.name }. The conversion is visible in the code.",
 }
+
+pub fn readerCaption -> String = "Compare declaration identity with field shape"
+
+pub fn readerBridgeOne -> String =
+  "Deciding compatibility from field names and types is called structural typing. Ordinary TypeScript type and interface declarations use this idea too. Seseragi Customer and Product are separate struct declarations, so they remain distinct even though both have name: String."
+
+pub fn readerBridgeTwo -> String =
+  "Distinguishing types by their declarations is called nominal typing. Reading customer.name does not automatically turn a Customer into an ordinary record. main prints the three results on separate lines."
+
+pub fn readerInvalidCaption -> String = "Passing another struct with the same shape"
+
+pub fn readerMistake -> String =
+  "customerName (Product { name: \"Notebook\" }) reports SES-T0101 because it needs Customer. If a product should not be treated as a customer, choose the appropriate function; if only name is needed, pass an explicit record to recordName."
+
+pub fn readerExecution -> String =
+  "pub effect fn main is the public entry point for work that interacts with the outside world. The runner starts main, and println writes a string and newline. The ordinary functions and let bindings above perform the calculation or construct the data."
+
+pub fn readerDetailNote -> String =
+  "The declarations below illustrate the detailed rules. They are fragments without their own entry point. To run this page’s example, use the complete program with main above."

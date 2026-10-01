@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Remove whitespace only at both ends",
+  purpose: "Use trim to remove whitespace around an input-field value. Its one argument is a string. It removes characters in Unicode White_Space from both ends while preserving spaces inside.",
+  reading: "The first input contains two leading spaces, A B, and a final newline. \\n represents that newline, so the output is [A B]. The example adds outer brackets to make empty results visible.",
+  boundaries: "\\u{3000} is an ideographic space, so the second output is [A]. Spaces and a tab alone produce an empty string, shown as []. In contrast, \\u{FEFF} is retained. The input containing U+FEFF remains U+FEFF, A, U+FEFF, so its scalar length is three. A scalar is one Unicode code-point value.",
+  rules: "The rule uses the defined Unicode White_Space set; it does not erase everything that looks blank. Inputs are unchanged, and work depends on input and output byte counts.",
+  mistake: "Do not assume identical behavior to TypeScript String.trim for every character. Check inputs such as U+FEFF when relevant. Use trimStart or trimEnd for only one end.",
+}

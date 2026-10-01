@@ -1,16 +1,19 @@
 import { ExplanationCopy } from "../../explanation"
 import { PrincipleCopy } from "../principle"
+import { PrincipleReaderCopy } from "../reader-principle"
+
+pub fn title -> String = "危険を暗黙に隠さない"
 
 pub fn copy -> PrincipleCopy = PrincipleCopy {
   title: "危険を暗黙に隠さない",
   summary: (explanation ()).summary,
   meaningTitle: "「見つからない」を、扱うべき場合として表す",
-  meaningBody: "Seseragiの通常の値にはnullやundefinedがありません。値が見つからない可能性のある操作はMaybe<A>を返します。JustはA型の値が見つかった場合、Nothingは見つからなかった場合です。結果がない可能性を、実行前に型から確認できます。",
+  meaningBody: "valuesにある位置は0と1です。位置5ではNothingが返り、matchは\"not found\"を選びます。通常のSeseragiの値にnullやundefinedはなく、取得できない可能性はMaybeという型に表れます。",
   exampleTitle: "存在しない配列の要素を取り出そうとする",
   reasonTitle: "なぜnullや例外にしないのか",
   reason: [
     "Intを受け取る関数へ、Maybe<Int>をそのまま渡すことはできません。まずJustから整数を取り出すか、Nothingのときの既定値を選びます。値がなければエラーを表示するなど、別の対応も選べます。",
-    "失敗の理由も必要ならEither<E, A>を使います。LeftはE型のエラー、RightはA型の成功結果を持ちます。Effect<R, E, A>は、実行する処理を表します。Rは必要なサービス、Eは回復可能な失敗、Aは成功時の結果です。Effectを作っただけでは処理は始まりません。サービスの要求と回復可能な失敗がない場合はTask<A>と書けます。"
+    "失敗の理由も必要ならEither<E, A>を使います。LeftはE型のエラー、RightはA型の成功結果を持ちます。Effect<R, E, A>は、実行する処理を表します。Rはファイル操作などの必要なサービス、Eは呼ぶ側が対応できる失敗、Aは成功時の結果の型です。Effectを作っただけでは処理は始まりません。サービスの要求と回復可能な失敗がない場合はTask<A>と書けます。"
   ],
   boundaryTitle: "どんな入力でも安全、という意味ではない",
   boundary: [
@@ -19,9 +22,27 @@ pub fn copy -> PrincipleCopy = PrincipleCopy {
   ],
 }
 
+pub fn reader -> PrincipleReaderCopy = PrincipleReaderCopy {
+  question: "配列の指定した位置に値がない場合、どう扱うか",
+  before: [
+    "取得結果の型Maybe<Int>は「整数がある場合とない場合」を表します。<Int>は中身が整数という指定です。Just valueなら中の整数をvalueと呼び、Nothingなら値はありません。matchの{ }内に場合を並べ、->の右側にその場合の結果を書きます。",
+    "\"not found\"は文字列です。`found: ${value}`はバッククォートで囲む文字列で、${value}の位置に見つかった値を入れます。JustとNothingはこの型に用意された名前なので、この例で定義し直す必要はありません。",
+    "最後のpub effect fn mainは実行用の入口です。pubは入口を公開し、effect fnは実行する処理を表すEffectを返します。実行機構がその処理を開始し、printlnが値と改行を出力します。"
+  ],
+  reading: ["Just valueの分岐もNothingの分岐も文字列を返し、その結果にmessageという名前を付けています。println messageは、今回選ばれたnot foundを出力します。"],
+  mistakes: [
+    "取得結果をすぐ整数として扱おうとすると、Intという型の指定と合わずSES-T0101になります。取得結果はIntではなくMaybe<Int>だからです。最初の例のようにmatchでJustとNothingの両方を処理します。整数が必要なら、Just value -> value、Nothing -> 0のように整数の既定値を選ぶ方法もあります。",
+    "下のfn describeは、整数の配列values: Array<Int>を受け取り、-> Stringで文字列を返すと指定した関数です。Nothingの分岐がなく、SES-T0301で拒否されます。matchの中へNothing -> \"not found\"を足すと直り、この呼び出しはnot foundを出力します。",
+    "すべての場合を扱うのが言語の規則です。ただし確認したCLI 0.61.19では、同じ不完全なmatchを関数の外のletに置くとlintが通り、範囲外を実行した時点で停止しました。これは現在の検査の不足です。置く場所によらずJustとNothingの両方を書いてください。"
+  ],
+  details: [
+
+  ],
+}
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "配列の指定した位置に値がない場合、どう分かるか",
-  summary: "配列の範囲外など、値が得られない場合はMaybeで表します。呼び出した側は、値がある場合とない場合を分けて処理します。",
-  reading: "valuesには位置0と1しかないため、arrays.get 5 valuesはNothingです。matchで、Just valueなら見つかった値を表示し、Nothingなら\"not found\"を返します。どちらもStringです。",
-  result: "出力はnot foundです。取得結果はMaybe<Int>なので、整数として使う前にJustとNothingを分けます。Nothingの分岐を省くと、matchがすべての場合を扱っていないためエラーになります。"
+  question: "配列の指定した位置に値がない場合、どう扱うか",
+  summary: "「値がない」「理由のある失敗」「プログラムの誤り」を分けます。まず配列の範囲外を、値がない場合として処理します。",
+  reading: "2個の数値が入った配列から、存在しない位置の要素を探します。値がない場合も想定内なので、画面に出す文字列を呼ぶ側で選びます。",
+  result: "import * as arrays from \"std/array\"は、配列の標準機能をarraysという名前で使う指定です。letは値に再代入できない名前を付け、[10, 20]は配列を作ります。arrays.get 5 valuesは、位置5と配列valuesを空白で区切って渡す呼び出しです。位置は0から数えます。"
 }

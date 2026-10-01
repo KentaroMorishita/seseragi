@@ -1,0 +1,1 @@
+pub effect fn main -> Unit fails ConsoleError = println "ready"

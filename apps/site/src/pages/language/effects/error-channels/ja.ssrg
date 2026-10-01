@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "ライブラリの失敗を、アプリケーションの失敗にまとめるには",
-  summary: "EffectのEは、呼び出し側が回復処理で扱える失敗の型です。異なる失敗型を返す処理をつなぐには、mapErrorなどで共通の型へ変換します。",
-  reading: "rawLoadは、キーが\"present\"なら成功値1を返すEffectを作ります。他のキーでは、そのStringで失敗します。loadはmapError MissingRecordを使い、失敗のStringをAppErrorのケースMissingRecordへ変換します。成功値Intは変えません。",
-  result: "load \"missing\"を実行すると、MissingRecord \"missing\"で失敗します。recoverを使えば、このAppErrorを受け取って別の処理を返せます。キャンセルやdefectはAppErrorではないので、この回復処理では捕捉しません。"
+  question: "処理が返した失敗理由を受け取り、別の結果を使うには",
+  summary: "Effectには、呼び出し側が扱える失敗の型があります。recoverでその理由を受け取り、代わりに行う処理を返せます。",
+  reading: "readNameはpresentならAkiで成功し、それ以外ならStringのmissingで失敗する処理を作ります。effects.succeedは成功する処理、effects.failは失敗する処理です。どちらも、呼んだ場所でthrowする関数ではありません。",
+  result: "出力はAkiとfallback: missingです。成功したときはその名前を使い、失敗したときだけrecoverへ理由を渡します。代わりの文字列もsucceedで処理として返し、その結果をprintlnで表示します。",
 }
+
+pub fn readerCaption -> String = "失敗理由から代わりの結果を作る"
+
+pub fn readerBridgeOne -> String =
+  "\\reason -> ...は、理由を受け取る小さい関数です。TypeScriptのreason => ...が手掛かりになります。doのname <-は、処理が成功した値へ名前を付けて次へ進みます。_ <-は結果の中身を使わず、その処理を実行する指定です。"
+
+pub fn readerBridgeTwo -> String =
+  "try/catchが任意のthrowを受け取る場合と異なり、recoverが扱うのはEffectの失敗型Eです。defectやキャンセルをまとめて捕捉する操作ではありません。今回のreadNameのEはStringで、printlnのConsoleErrorと組み合わせる前に回復させています。"
+
+pub fn readerInvalidCaption -> String = "異なる失敗型をそのままつなぐ"
+
+pub fn readerMistake -> String =
+  "Stringで失敗する処理とIntで失敗する処理を、型を揃えずdoでつなぐとSES-E0001です。コンパイラが勝手にString | Intを作るわけではありません。recoverで扱うか、後半のmapErrorで共通の失敗型へ変換します。"
+
+pub fn readerDetailNote -> String =
+  "以下の詳しい規則では、宣言だけの例も示します。単独の実行入口はないため、実行する場合は上のmain付きの完全な例を使ってください。"
+
+pub fn readerLegacyReading -> String =
+  "rawLoadは、キーが\"present\"なら成功値1を返すEffectを作ります。他のキーでは、そのStringで失敗します。loadはmapError MissingRecordを使い、失敗のStringをAppErrorのケースMissingRecordへ変換します。成功値Intは変えません。"
+
+pub fn readerLegacyResult -> String =
+  "load \"missing\"を実行すると、MissingRecord \"missing\"で失敗します。recoverを使えば、このAppErrorを受け取って別の処理を返せます。キャンセルやdefectはAppErrorではないので、この回復処理では捕捉しません。"

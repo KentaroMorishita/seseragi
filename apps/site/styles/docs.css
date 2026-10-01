@@ -178,6 +178,30 @@
   color: var(--accent-strong);
 }
 
+.directory-entry .directory-link {
+  color: var(--text);
+  font-weight: 620;
+  overflow-wrap: anywhere;
+}
+
+.directory-entry .directory-link:hover {
+  color: var(--accent-strong);
+}
+
+.directory-purpose {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.directory-targets {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .reference-area-card {
   min-width: 0;
   border: 1px solid var(--border);

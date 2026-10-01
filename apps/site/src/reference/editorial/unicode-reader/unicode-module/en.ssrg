@@ -1,0 +1,25 @@
+pub fn purpose -> String =
+  "When storing or comparing text from a form, choose whether to preserve its spelling or transform it under explicit rules. std/text/unicode provides normalization, which aligns spellings such as é and e plus an accent, and case folding for case-insensitive comparisons. Receiving a string does not apply either transformation automatically."
+pub fn choose -> String =
+  "Use normalize to align equivalent spellings, or isNormalized to check whether text already has the chosen form. Use fullCaseFold to compare case-related spellings such as Straße and STRASSE. For lowercase or uppercase display text, choose std/text.toLower or toUpper. Decide which distinctions to ignore according to your application’s task."
+pub fn normalization -> String =
+  "You can write é as one Unicode character-code value or as two: e and combining acute accent U+0301. These code values are called scalars. NFC aligns spellings that Unicode treats as the same character, combining characters where possible. NFD aligns them in decomposed form. NFKC and NFKD also remove compatibility distinctions such as ﬃ versus ffi and ① versus 1."
+pub fn normalizationReading -> String =
+  "The imports name std/text/unicode as unicode and std/text as text. let names a value: original holds e plus the accent, and composed holds the NFC result é. The escape \\u{0301} writes the accent by its code. Function arguments are separated by spaces, with parentheses around a nested call. text.lengthScalars counts scalars, so é in NFD has 2. Applying NFC again gives the same result, making the equality True, while original still has length 2."
+pub fn wrapper -> String =
+  "pub effect fn main is the output entry. println writes a string and a newline. Backtick strings insert the values inside ${...} and preserve their line breaks. == checks whether two values are equal, returning True or False. The text operations themselves do not print or change their inputs."
+pub fn normalizationBoundary -> String =
+  "After NFKC changes ﬃ① into ffi1, the result no longer records the circled digit or single-character ligature. Keep the input when its original spelling matters for display or records. Normalization does not strip accents or remove case distinctions."
+pub fn folding -> String =
+  "fullCaseFold creates a string for comparisons that ignore case distinctions. This process is called case folding. Straße and STRASSE both become strasse. Lowercasing alone turns Straße into straße, so it does not give the same result."
+pub fn foldingReading -> String =
+  "let names original as the source string and folded as the result. Comparing it with the folded value of STRASSE using == gives True. ß expands to ss, and İ becomes i plus combining dot U+0307. Σ and ς both become σ. The e and accent remain two scalars; folding does not perform normalization. The final result enclosed in [] is empty."
+pub fn comparison -> String =
+  "TypeScript also provides String.normalize with a selected form, and toLowerCase and toUpperCase for locale-independent display conversion. The next example uses the same normalization inputs as above and also shows lowercase and uppercase conversion of Straße. JavaScript has no built-in string method directly equivalent to fullCaseFold."
+pub fn version -> String =
+  "This module uses Seseragi’s pinned Unicode data rather than the host locale or ICU version. version reports the current data version, 17.0.0. TypeScript uses its host’s Unicode implementation, so matching results here do not guarantee identical behavior for every character or future data version. The examples use well-formed Unicode text in both languages. JavaScript strings can also contain an isolated half of a two-unit UTF-16 encoding, called a lone surrogate. Seseragi String and Char cannot contain these values."
+pub fn policy -> String =
+  "Normalization, case folding, display casing, and splitting visible characters are separate operations. Keeping the comparison result separate from the original display value makes the chosen rule visible in your code. These transformations alone do not provide language-specific sorting or detect impersonation through lookalike characters."
+
+pub fn comparisonReading -> String =
+  "TypeScript’s original also holds e plus the accent, and composed holds the NFC spelling é. Array.from enumerates scalars for this well-formed input, giving length 2 for both NFD and the original. normalize takes a string form name. The lowercase result straße and uppercase result STRASSE show why choosing lowercasing alone does not reproduce fullCaseFold’s strasse."

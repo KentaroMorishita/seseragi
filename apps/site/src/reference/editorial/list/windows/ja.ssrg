@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "隣り合う要素を重ねながら取り出す",
+  purpose: "連続する2要素を比較するなど、近くの値を一緒に調べるときにwindowsを使います。幅、Listの順に渡し、開始位置を1要素ずつ進めます。",
+  reading: "describeのmatchは、完全な幅のまとまりが入るRight groupsか、不正なサイズを持つLeft errorを選びます。幅2では、途中の要素は二つのまとまりに現れます。Leftは通常の値であり、例外を投げる操作ではありません。",
+  boundaries: "2要素に幅5を指定すると、まとまり0個として成功します。幅1なら各要素が一つのまとまりになります。正の幅で空の入力も成功です。幅0や-2は、入力が空でも不正になります。",
+  rules: "Either<SizeError, List<List<Int>>>は、サイズの誤りか、Listを要素に持つListという結果です。指定の幅に満たないまとまりは残しません。順序を保ち、入力を変更しません。処理量は入力と出力の要素数に応じます。",
+  mistake: "chunksOfはまとまりを重ねず、最後が短くても残します。windowsとはこの二点が違います。TypeScriptのforとsliceでも書けます。その場合も、最後の短い部分を残すか、不正な幅をどう扱うかを明示してください。",
+}

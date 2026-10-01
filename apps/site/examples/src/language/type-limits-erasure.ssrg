@@ -1,0 +1,5 @@
+fn keep<A> value: A -> A = value
+
+let number = keep 42
+let text = keep "ready"
+pub effect fn main = println `${number + 1}\n${text + "!"}`

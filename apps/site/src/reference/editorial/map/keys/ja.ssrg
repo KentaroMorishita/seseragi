@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "キーをArrayで読む",
+  purpose: "Mapの値は不要で、キーの一覧が欲しいときにkeysを使います。結果はArray<K>です。",
+  reading: "このMapはb、a、cの順に作っています。keysの結果は[\"b\",\"a\",\"c\"]であり、アルファベット順には並べ替えません。",
+  boundaries: "空のMapなら[]です。bとaは同じ値2を持ちますが、別のキーなので両方残ります。",
+  rules: "キーは挿入順に並びます。Arrayを読む処理量は項目数に比例し、Map自体は変えません。",
+  mistake: "TypeScriptのmap.keys()はiteratorを返すため、例では[...map.keys()]で配列に集めています。Seseragiのkeysは最初から完全なArrayを返します。キーと値を一緒に扱うならentriesを使います。",
+}

@@ -1,0 +1,79 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Article,
+  Block,
+  BulletList,
+  CodeExample,
+  Heading,
+  Inline,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { PrincipleCopy } from "./principle"
+
+// Page-owned explanations composed with the existing semantic article blocks.
+pub struct PrincipleReaderCopy {
+  question: String,
+  before: Array<String>,
+  reading: Array<String>,
+  mistakes: Array<String>,
+  details: Array<String>
+}
+
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+
+pub fn readerParagraphs english: Array<String>
+  -> japanese: Array<String>
+  -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+
+pub fn readerPrinciplePage id: String
+  -> path: String
+  -> english: PrincipleCopy
+  -> japanese: PrincipleCopy
+  -> englishReader: PrincipleReaderCopy
+  -> japaneseReader: PrincipleReaderCopy
+  -> exampleId: String
+  -> output: String
+  -> leading: Array<Block>
+  -> rejected: Array<Block>
+  -> advanced: Array<Block>
+  -> related: Array<Array<Inline>>
+  -> PageDefinition =
+  PageDefinition {
+    id,
+    path,
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      readerParagraphs englishReader.before japaneseReader.before,
+      leading,
+      [
+        Heading ("meaning", localized english.meaningTitle japanese.meaningTitle),
+        Paragraph ([Words (localized english.meaningBody japanese.meaningBody)]),
+        CodeExample (exampleId, localized english.exampleTitle japanese.exampleTitle)
+      ],
+      readerParagraphs englishReader.reading japaneseReader.reading,
+      [Terminal (localized "Output" "実行結果", output)],
+      [Heading ("why", localized english.reasonTitle japanese.reasonTitle)],
+      readerParagraphs english.reason japanese.reason,
+      readerParagraphs englishReader.details japaneseReader.details,
+      advanced,
+      [Heading ("limits", localized english.boundaryTitle japanese.boundaryTitle)],
+      readerParagraphs english.boundary japanese.boundary,
+      [Heading ("mistakes", localized "A mistake and its repair" "間違いやすい点と直し方")],
+      readerParagraphs englishReader.mistakes japaneseReader.mistakes,
+      rejected,
+      [
+        Heading
+          ("related-rules", localized "Look up a specific question" "必要なことを詳しく調べる"),
+        BulletList related
+      ]
+    ]
+  }

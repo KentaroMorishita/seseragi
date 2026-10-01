@@ -1,0 +1,11 @@
+import * as unicode from "std/text/unicode"
+
+let accent = '\u{0301}'
+pub effect fn main =
+  println `acute accent: ${unicode.isMark accent}
+U+093E mark: ${unicode.isMark '\u{093E}'}
+U+20DD mark: ${unicode.isMark '\u{20DD}'}
+A mark: ${unicode.isMark 'A'}
+é mark: ${unicode.isMark 'é'}
+🏽 mark: ${unicode.isMark '🏽'}
+U+200D mark: ${unicode.isMark '\u{200D}'}`

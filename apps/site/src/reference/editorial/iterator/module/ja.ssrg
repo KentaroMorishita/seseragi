@@ -1,0 +1,24 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "必要なときに次の値を求めるIteratorを作り、一件ずつ読みます。元のIteratorは消費されず、続きは別の値として受け取ります。",
+  taskTitle: "カウントダウンを必要な順に作る",
+  purpose: "3、2、1という値を、次の数を求める関数から作ります。Iterator<Int>は、整数を一件ずつ取り出せる値です。最初から全件をArrayに入れておく必要はありません。",
+  setup: "fn countdownのremaining: Intは残りの数です。正ならJust (remaining, remaining - 1)、0以下ならNothingを返します。Justの括弧内は、今回の値と次回の状態を順に持つ二つ組です。MaybeはJustとNothingのどちらかを表す型です。",
+  after: [
+    "iterator.unfold countdown 3は、状態3から始まるIteratorを作ります。この時点ではcountdownを実行しません。[value | value <- values]はvaluesから順に値を取り出してArrayにする記法で、この処理が次の値を求めます。",
+    "同じvaluesをもう一度読むと、再び3、2、1になります。読み取りで元のIteratorは進まず、変更もされません。状態0で作ったものは最初から終了なので、結果は空のArrayです。",
+    "import * as iteratorはstd/iteratorに名前を付けます。pub effect fn mainのdoでprintlnを順に実行し、showがArrayを表示用の文字列にします。Iteratorを作る計算と、表示する処理は別です。"
+  ],
+  comparisonBefore: "TypeScriptのgeneratorも、yieldで値を一件ずつ渡せます。function*はgenerator関数、yieldは次の値を渡して一時停止する位置です。Array.fromが最後まで読みます。",
+  comparisonAfter: "同じ二回分の結果を得るため、TypeScriptではcountdown(3)を毎回呼び、新しいgeneratorを作っています。JavaScriptのgeneratorはnextで進みますが、SeseragiのIteratorは同じ値を再利用できます。JSONの空白以外は表示する数列が一致します。",
+  details: [
+    "nextはJust (value, rest)かNothingを返します。valueが今回の値で、restは続きのIteratorです。先へ進むには元の値ではなくrestを読みます。Nothingは終了を表し、例外ではありません。",
+    "unfoldは最初のstepを先に実行せず、nextを呼ぶたびにstepを一度実行します。結果を保存して再利用することは保証しません。stepは純粋な関数で、I/Oや例外、Promiseを隠して実行するものではありません。",
+    "Iteratorという型だけでは有限かどうかは分かりません。終了しないものをArrayへ全件変換したり、effectful forで最後まで処理したりすると、その処理は終わりません。必要な件数だけ読むか、stepに終了条件を設けます。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、計算の規則"
+}

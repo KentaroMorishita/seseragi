@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { setEditorial } from "../../set-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  setEditorial "std/set::remove" "set-remove" "[3,2]\n[3,2,1]\n[3,1,2]\n[3,1,2]\n[]" (en.copy ()) (ja.copy ())

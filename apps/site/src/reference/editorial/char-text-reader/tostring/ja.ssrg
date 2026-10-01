@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Charを文字列のラベルに使う",
+  purpose: "Charとして持っている記号を文字列のラベルへ入れるには、toStringでStringへ変えます。Charは許されたUnicode番号一個を表すscalarの型です。単一引用符の'👍'はChar、二重引用符の\"Status: \"はStringなので、必要な型をそろえてつなぎます。",
+  reading: "symbolが持つCharをchar.toString symbolへ渡し、できたStringをvalueと名付けます。labelは\"Status: \"とvalueを+でつないだ値です。結果のStatus: 👍に続けて、valueだけのscalar数とUTF-8のバイト数を表示しています。",
+  boundaries: "valueは元の👍一個をそのまま含むため、scalar数は1です。同じ値をUTF-8で表すには4バイト必要なので、二つの数は異なります。見た目の一文字が複数scalarの場合はCharにまとめて入らず、初めからStringで扱います。",
+  rules: "結果は元のCharと同じscalar一個を含むStringです。文字を番号の数字へ変える操作ではありません。番号が必要ならcodePoint、数値からCharを作りたいならfromCodePointを選びます。正規化や大文字・小文字の変換は行いません。",
+  mistake: "'e\\u{0301}'はeと結合アクセントの二つのscalarなので、Charのリテラルとして拒否されます。その表記を保ちたいときは\"e\\u{0301}\"というStringを使います。別の綴りの'é'へ書き換えることを、元のデータを保つ変換と混同しないでください。",
+}
+
+pub fn comparison -> String =
+  "TypeScriptでは、同じ記号も最初からStringです。この入力に特別な型変換は必要なく、そのままテンプレート文字列へ入れられます。Array.fromはこの正しいUnicode文字列のscalar側の単位を数え、TextEncoderはUTF-8のバイト列を作ります。"
+
+pub fn comparisonBoundary -> String =
+  "両方ともStatus: 👍、scalar数1、UTF-8バイト数4を出力します。ただし、任意のJS Stringが必ず一個のscalarを含むという意味ではありません。Seseragiのこの関数では、入力型Charが一個であることを表しています。"

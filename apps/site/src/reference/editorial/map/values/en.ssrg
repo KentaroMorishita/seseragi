@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Read the stored values as an Array",
+  purpose: "Use values when you need every stored value without its key. The result is Array<V>.",
+  reading: "b and a both store 2 and c stores 3, so the result is [2,2,3]. It follows key insertion order and keeps repeated values.",
+  boundaries: "An empty Map returns []. This is not a set of distinct values: equal values under different keys remain separate elements.",
+  rules: "The Array is produced in insertion order without modifying the Map. Work grows with the number of entries.",
+  mistake: "TypeScript [...map.values()] collects the iterator into an array. Seseragi values returns the Array directly. Use entries if you will still need to identify which key owned each value.",
+}

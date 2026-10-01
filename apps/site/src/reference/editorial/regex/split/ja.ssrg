@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "重ならない一致の間の文字列を返します。空の部分を残し、取り出した区切り文字のグループは結果に加えません。",
+  taskTitle: "空欄を残して一行を分ける",
+  purpose: "カンマで区切った行には、連続した区切りや末尾の区切りがあることもあります。splitは、その間や端の空文字列を残します。区切りで分ける操作で、引用符付きの欄まで扱うCSVパーサーではありません。",
+  setup: "piecesで区切りのパターンをcompileし、Regex、入力Stringの順にsplitへ渡します。json.encodeStringで結果のArrayをJSONにするため、空文字列と空のArrayを区別して確認できます。",
+  after: [
+    "compileは、再利用できるRegexをRight patternに、正しくないパターンの情報をLeft errorに入れて返します。matchは形に合う分岐を選び、中の値に名前を付けます。バッククォートのエラー文では${error.offset}に位置が入り、0から数えたUTF-8のバイト数で表します。",
+    "a,,b,からは途中と末尾の空文字列を含む四つの部分が返ります。(,)でカンマをグループにしても、結果には追加しません。空のパターンでa👍を分けると、両端に空文字列が入り、その間に各スカラー値が残ります。空の入力をカンマで分けた場合は、空文字列が一つです。",
+    "pub effect fn mainが実行入口です。doの中でprintlnを順に実行します。呼び出しの引数は空白で区切ります。showは値を表示用の文字列にし、Seseragiの真偽値はTrueとFalseで表します。"
+  ],
+  comparisonBefore: "JavaScriptのString.splitもRegExpを受け取れます。普通のカンマでは同じ結果ですが、グループを取り出す場合と空のパターンでは規則が異なります。空文字列を隠さないよう、JSONで表示しています。",
+  comparisonAfter: "JavaScriptで(,)を使うと、取り出したカンマも結果に入ります。空のUnicodeパターンでは、両端に空文字列がない[\"a\",\"👍\"]です。Seseragiは[\"\",\"a\",\"👍\",\"\"]を返し、グループを区切りの間に挿入しません。",
+  details: [
+    "区切りは左から順に、重ならない範囲で探します。空の一致の後はスカラー値一つ分進み、末尾の空の一致も含めます。そのため、連続した一致や端での一致から空の部分ができます。",
+    "利用者の入力を記号ではなく文字どおりの区切りにする場合は、escapeを使います。引用符やエスケープを持つファイル形式には専用のパーサーを使ってください。splitだけでは、その形式が正しいかを検証しません。"
+  ],
+  codeTitle: "境界も確認する完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使うときに確かめたい規則"
+}

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { sequenceEditorial } from "../../sequence-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  sequenceEditorial "std/array::fromIterable" "array" "sequence-array-fromiterable" "[30, 10, 20]\n`[30, 10, 20]\n[]" (en.copy ()) (ja.copy ())

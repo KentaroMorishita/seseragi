@@ -5,36 +5,33 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   title: "trait宣言",
   summary: (explanation ()).summary,
   purpose: [
-    "traitには、複数の型で共通に使う操作の名前と型を書きます。Label<A>なら、A型の値を受け取り、Stringのラベルを返す操作を宣言します。",
-    "処理の本体はinstanceへ書きます。例にはTicketとPersonの実装もありますが、まずtraitから始まる宣言を読むと、両方の実装が満たす引数と戻り値の型を確認できます。"
-  ],
-  exampleTitle: "ラベルにする操作を宣言し、一つの実装で使う",
-  reading: [
-    "Labelはtraitの名前です。<A>で、このtraitが使う型のパラメーターを宣言しています。Aは値でも組み込み型でもなく、ラベルにする対象の型を表す仮の名前です。",
-    "括弧の中のfn labelが、必要な操作の宣言です。value: Aで引数の名前と型を指定し、-> Stringで戻り値の型を指定します。",
-    "traitのfnの行には、イコールや処理の本体がありません。この引数と戻り値の型に合う本体を、実装側に用意してもらうという意味です。",
-    "instance Label<Ticket>ではAをTicketに置き換えるので、fn labelはTicketを受け取ってStringを返します。mainがその処理を呼び、ticket-42を出力します。traitの宣言そのものが出力するわけではありません。"
-  ],
-  rules: [
+
+  ], exampleTitle: "main.ssrg", reading: [
+    "<A>は、ラベルを付ける型のパラメーターを宣言します。Aは値ではなく型を表します。value: Aのコロンは引数の型、-> Stringは戻り値の型です。",
+    "trait内のfnの行には=がありません。処理は約束の一部にせず、instance内に書きます。Ticketのinstanceでは、二つの操作がどちらもTicketを受け取りStringを返します。",
+    "let ticketは番号42の値に名前を付けます。label ticketとshortLabel ticketが、それぞれの操作を呼びます。traitの宣言自体は実行も出力もしません。"
+  ], rules: [
     "traitには複数の操作を宣言できます。instanceは必要な操作をすべて実装します。各操作の型には、traitの型パラメーターや、その操作自身が宣言した型パラメーターを使えます。",
     "型パラメーターは、使う前に宣言が必要です。型名があるか、パラメーターの形が合うかはコンパイル時に検査されます。instanceを初めて呼ぶまで検査を待つわけではありません。",
     "F<_>というパラメーターは、Intのような完成した型ではなく、Arrayのように要素型を受け取る型構築子を表します。FにAを渡すとF<A>という型になります。要素型の違う入れ物を共通に扱う操作が必要な場合に使う形です。",
     "traitのwhereは、ほかのtraitも必要だという条件です。たとえばEq<A>を要求する宣言は、Aの等しさを比較できることを前提にできます。実装側が満たすべき条件であり、オブジェクトの継承ではありません。"
+  ], mistakes: [
+    "次のMissingTypeは宣言した型でも型パラメーターでもありません。SES-N0001の場所でMissingTypeをAに直すと、最初の例と同じ二行を出力します。名前を書くだけで新しい型パラメーターにはなりません。",
+    "traitの操作に既定の処理を付けることはできません。本体はinstanceへ書き、必要な操作を省略しないでください。"
+  ], related: [
+    "操作の宣言と型ごとの実装を、小さな例で確認できます。",
+    "型ごとの本体をどこに書くか確認できます。",
+    "共通の関数が必要な操作をwhereで要求する方法を確認できます。"
   ],
-  mistakes: [
-    "trait宣言に、標準の処理として関数の本体を書くことはできません。traitには関数の型を書き、処理の本体はinstanceへ書きます。",
-    "MissingTypeのような名前を引数の型に書いても、それだけで型を宣言したことにはなりません。次の例はそのためエラーになります。型や型パラメーターの宣言を確認してください。instanceの選択で未宣言の型が定義されることはありません。"
-  ],
-  related: [
-    "操作の宣言、型ごとの実装、呼び出しの違いを確認できます。",
-    "必要な操作の本体を書き、型パラメーターを置き換えた署名と照合する方法を確認できます。",
-    "Intのような完成した型と、F<_>のような型パラメーターの違いを確認できます。"
-  ]
 }
 
+pub fn title -> String = (copy ()).title
+pub fn detailsTitle -> String = "型パラメーターと、ほかの操作を必要とする宣言"
+pub fn mistakesTitle -> String = "未宣言の型名を使わない"
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "traitの宣言は、何を約束するか",
-  summary: "traitには、必要な操作の名前と、引数・戻り値の型を書きます。処理の本体は、別にinstanceへ書きます。",
-  reading: "TicketとPersonは異なるデータ型です。Label<A>はAを受け取りStringを返すlabelを宣言し、二つのinstanceがその処理を定義します。labelOf<A>はwhere Label<A>を条件にして、どちらの型にも使えます。personLabelはPersonを渡した結果です。",
-  result: "Label<A>の宣言は、labelがAを受け取りStringを返すと定めます。TicketとPersonのinstanceは、そのAを自分の型に置き換えて本体を書きます。mainはTicketの実装を呼び、ticket-42を出力します。"
+  question: "二つの表示操作を、実装側の約束として宣言するには",
+  summary: "traitには操作の名前、引数、戻り値を書きます。複数の操作を宣言すると、各instanceはそのすべてを実装します。",
+  reading: "チケットに通常のラベルと短いラベルを用意します。Label<A>の二つのfnは必要な操作の宣言です。その下のinstance Label<Ticket>が、Ticket用の本体を両方定義します。",
+  result: "同じチケットからticket-42と#42を作れます。traitを読むだけで、実装が用意すべき二つの関数の引数と戻り値が分かります。"
 }

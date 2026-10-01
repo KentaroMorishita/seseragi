@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Replace all non-overlapping literal matches",
+  purpose: "Pass the search string, replacement, and input in that order. replaceAll processes matches from left to right without overlapping them.",
+  reading: "Replacing a in banana with X gives bXnXnX. Replacing aa in aaa gives Xa: the first match consumes two characters, so the overlapping aa is not counted again.",
+  boundaries: "An empty search string matches the start, between Unicode scalars, and the end. Inserting : into A😀 gives :A:😀: without splitting the emoji. The fourth replacement, $&, is inserted literally, giving c$&t. The final empty input returns an empty string, shown as [].",
+  rules: "A Unicode scalar is one Unicode code-point value, not always a complete visible character. Replacement text is not searched again; processing follows the original input from left to right. Inputs remain unchanged, and work depends on input and output byte counts.",
+  mistake: "This does not accept regular expressions or $ substitution syntax. The search string is literal text. Use replace for the first occurrence only.",
+}

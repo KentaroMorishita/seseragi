@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Check whether a Unicode number can form a Char",
+  purpose: "When receiving a numeric character code, use fromCodePoint to check whether it can form a Char. Char represents one Unicode scalar, a permitted Unicode code point. The result Maybe<Char> is either Just containing a Char or Nothing when the number is outside that domain.",
+  reading: "describe takes the Int parameter point and returns a String message. fn defines the function, and the final -> String states its result type. match selects a result branch. Just value gives the contained Char the name value; toString converts it to text. Nothing returns not a scalar.",
+  boundaries: "128077 identifies 👍, giving found: 👍. Negative -1, the surrogate endpoints 55296 and 57343, and above-maximum 1114112 all give Nothing. Parentheses in (-1) group the negative argument. The final two lines check that 0 and 1114111 are accepted; \\0 and \\u{10FFFF} spell the corresponding Char values inside Just.",
+  rules: "Accepted numbers range from 0 through 0x10FFFF, excluding 0xD800 through 0xDFFF. The 0x prefix denotes hexadecimal. The excluded surrogates are UTF-16 encoding values, not individual Unicode scalars. Acceptance does not imply that a name or display glyph is assigned to that scalar. Failure is the ordinary value Nothing rather than a thrown exception.",
+  mistake: "Do not assume every result contains a Char. Decide how to handle Nothing, as this example does. There is no need to replace failure with an empty String; the application can instead report that the input number is unusable.",
+}
+
+pub fn comparison -> String =
+  "TypeScript’s String.fromCodePoint is nearby, but also accepts the surrogate 55296. The fromScalar helper checks integer, range, and surrogate exclusion, returning undefined when invalid. describe handles undefined, corresponding to the Nothing branch in Seseragi."
+
+pub fn comparisonBoundary -> String =
+  "The same numbers exercise success and failure in both versions. TypeScript prints true where Seseragi prints True. The final line demonstrates that the JS built-in alone does not exclude surrogates. Not every String JavaScript can construct is a scalar sequence allowed by Seseragi Char or String."

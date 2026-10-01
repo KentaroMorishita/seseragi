@@ -1,0 +1,72 @@
+import * as arrays from "std/array"
+import { localized } from "../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../model/page"
+import { Editorial } from "./model"
+import { CorrectionCopy } from "./correction-model"
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+pub fn regexEditorial identity: String
+  -> slug: String
+  -> output: String
+  -> typescriptOutput: String
+  -> english: CorrectionCopy
+  -> japanese: CorrectionCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Paragraph ([Words (localized english.setup japanese.setup)]),
+        CodeExample
+          ("regex-reader-" + slug, localized english.codeTitle japanese.codeTitle),
+        Terminal (localized english.outputTitle japanese.outputTitle, output)
+      ],
+      paragraphs english.after japanese.after,
+      [
+        Heading (
+          "typescript-comparison",
+          localized english.comparisonTitle japanese.comparisonTitle
+        ),
+        Paragraph
+          ([Words (localized english.comparisonBefore japanese.comparisonBefore)]),
+        CodeExample
+          ("regex-reader-" + slug + "-ts", localized "TypeScript" "TypeScript"),
+        Terminal (localized "TypeScript output" "TypeScriptの実行結果", typescriptOutput),
+        Paragraph ([Words (localized english.comparisonAfter japanese.comparisonAfter)]),
+        Heading ("operation-rules", localized english.detailTitle japanese.detailTitle)
+      ],
+      paragraphs english.details japanese.details,
+      if identity == "std/regex" then
+        []
+      else
+        [Paragraph (
+          [
+            InternalLink (localized "std/regex" "std/regex", "/docs/library/regex/"),
+            Words (
+              localized ": choose an operation and review the portable pattern syntax."
+          "：操作の選び方と共通のパターン記法を確認できます。"
+            )
+          ]
+        )],
+      if identity == "std/regex" then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+  }

@@ -1,0 +1,9 @@
+fn shippingLabel name: Maybe<String> -> count: Maybe<Int> -> Maybe<String> = do {
+  customer <- name
+  quantity <- count
+  Right (customer + ": " + show quantity)
+}
+
+let ready = shippingLabel (Just "Aki") (Just 2)
+let missing = shippingLabel (Just "Aki") Nothing
+pub effect fn main = println (show ready + "\n" + show missing)

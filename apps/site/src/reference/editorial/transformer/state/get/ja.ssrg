@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "処理の間で受け渡す状態を、そのまま読み取る処理を作ります。runで初期状態を渡すと、選んだ外側の計算の中に、戻り値と処理後の状態が返ります。",
+  taskTitle: "計算に受け渡す状態を読む",
+  purpose: "複数の計算で、カウンターなどの値を次の処理へ渡したいことがあります。getは、その状態を変更せずに読み取ります。この例では7から始めるため、読み取った値も最後のカウンターも7です。",
+  setup: "import * as stateはstd/transformer/stateをstateという名前で読み込みます。get ()にはキーや添字を渡しません。()は追加の入力がないことを表すUnitです。StateT<Int, Maybe, Int>という型注釈で、整数の状態、Maybeで包む結果、整数の戻り値を選んでいます。",
+  codeTitle: "異なる初期状態から読む完全なプログラム",
+  outputTitle: "実行結果",
+  after: [
+    "state.run 7 readStateは、readStateに初期状態7を渡します。返るJust (7, 7)のタプルは、先が戻り値、後が処理後の状態です。二度目は独立して0から始めます。readStateや、隠れた共有カウンターを書き換えているわけではありません。",
+    "Maybeは値を持つJustか、値を持たないNothingです。matchのJust (value, finalState)でタプルの二つの値に名前を付けます。バッククォートで囲む文字列の${value}と${finalState}に、その値が入ります。pub effect fn mainが実行入口で、doの中でprintlnを順に実行します。"
+  ],
+  comparisonTitle: "TypeScriptで状態を受け取る関数を書く",
+  comparisonBefore: "同じ小さな処理は、数値を受け取って二度返す関数でも書けます。次のTypeScriptでは、結果を持つ場合と持たない場合を分ける、タグ付きのユニオン型を定義しています。",
+  comparisonAfter: "StateTは、この状態の受け渡しを複数の処理で共通に使うための型です。小さな例なら普通の関数で十分です。状態の更新と、別の形の結果を組み合わせるときにStateTを使えます。",
+  detailTitle: "runの後にも残るもの",
+  details: [
+    "StateT<S, M, A>のSは受け渡す状態、Mは外側の計算、Aは戻り値の型です。ここではMにMaybeを選んでいます。宣言のM<_>は、Mが型引数を一つ受け取ることを表します。Maybe<Int>は、その引数を埋めた型です。",
+    "Monad<M<_>>は、Mが結果を作り、結果に依存する次の処理へ進めることを要求します。getは状態を変更せず、選んだ計算の中に(state, state)を入れます。runが外すのはStateTの一層だけなので、この例の結果はMaybe<(Int, Int)>のままです。MにEffectを選んだ場合、runはそのEffectを返し、実行まではしません。",
+    "状態を変更したい場合はputやmodifyを使います。Mapのキー検索や、書き換え可能な参照を読む操作は、別のモジュールにあります。"
+  ]
+}

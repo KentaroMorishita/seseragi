@@ -4,24 +4,26 @@ import { OverviewCopy } from "../principle"
 pub fn copy -> OverviewCopy = OverviewCopy {
   title: "Design principles",
   summary: (explanation ()).summary,
-  introduction: "These pages explain decisions you make when writing Seseragi: how to return a value, update data, and handle a failure. Each principle includes code and its result.",
-  section: "What each principle explains",
+  introduction: "Choose a principle from a question that arises while writing code: using a branch result in the next calculation, updating while retaining an original value, or handling an absent result. You do not need to read every page in order.",
+  section: "Choose a principle for your current question",
   closingTitle: "Several principles apply to the same code",
-  closing: "Reading an Array element returns Maybe: Just when the element exists, Nothing otherwise. A match handles both cases. The Array is immutable, so passing it to another function does not change its elements. Types and immutability let you determine what this code does.",
+  closing: "Several principles can apply to one calculation. Passing the value chosen by a condition to another function involves expression-oriented code; retaining values before and after an update involves immutability. Check the relevant article through its concrete example and result.",
   descriptions: [
-    ". Use the result of if or match as a function result or another calculation's input.",
-    ". Keep the previous value and construct a changed value.",
-    ". Check types for missing values and possible failures.",
-    ". Preserve Seseragi's calculation rules in generated code.",
-    ". Use a diagnostic to identify missing type information and supply it.",
-    ". Check work that grows with element count and the data an operation creates.",
-    ". Choose code that makes values and processing order clear, rather than merely short."
+    ". Use a value chosen by if or match as a function result or the next input.",
+    ". Use an updated value while retaining the original data.",
+    ". Check for absent results and operations that can fail.",
+    ". Check Seseragi’s numeric and evaluation rules even when code is generated as TypeScript.",
+    ". Read a type error or identify missing inference information and repair the code.",
+    ". Consider how input size changes required work and stored results.",
+    ". Decide whether to name intermediate values or continue a transformation pipeline.",
   ]
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What guides the way you write Seseragi code?",
-  summary: "Seseragi combines expressions through their results. Ordinary data is immutable, and types represent missing values and failures. Each principle explains how those choices affect the code you write.",
-  reading: "An Array may have no element at a requested index. Matching its Maybe result distinguishes Just, which contains an element, from Nothing, which does not. Reading the element leaves the immutable Array unchanged.",
-  result: "Read Expression-oriented for using a branch's result, or Immutable by default for updating data. No hidden danger explains why types represent missing values and failed operations."
+  question: "When should I consult each design principle?",
+  summary: "Start from everyday coding decisions to explore Seseragi’s design principles. Choose a question about branches, updates, absence, type errors or the work a calculation needs.",
+  reading: "Each link says what its article explains. Those articles introduce unfamiliar terms through concrete examples; this overview assumes no type-theory knowledge.",
+  result: "Each article uses a concrete example to establish what the code calculates, what its types tell you and which limits apply. Use that evidence to choose an approach suited to your task."
 }
+
+pub fn title -> String = (copy ()).title

@@ -1,0 +1,25 @@
+import { CorrectionCopy } from "../../correction-model"
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "サイズの失敗理由に指定した整数を持たせます。",
+  taskTitle: "失敗理由の中のサイズをどう読むか",
+  purpose: "NonPositiveSizeは、指定した整数をSizeErrorの値に包むコンストラクターです。コンストラクターとは値を作る名前です。chunksOfが不正なサイズを返したとき、この名前を使って中の数を取り出し、説明できます。",
+  setup: "importはstd/arrayとstd/collectionにarrays、collectionsという名前を付けます。fn batches size: Int -> values: Array<Int> -> String = ...では、fnの次のbatchesが関数名です。size、valuesの順に二つの引数を受け取り、最初の矢印が引数を区切り、最後の-> Stringが返す文字列の型を示します。Intは整数、<Int>はArrayの要素型の指定です。=の後ろの式が返す値になります。呼び出しでは引数を空白で区切り、内側の呼び出しの結果を一つの引数として渡すときは括弧でまとめます。",
+  codeTitle: "分割の結果とサイズの失敗理由を読む",
+  outputTitle: "Seseragiの実行結果",
+  after: [
+    "batchesのsize: Intは整数のサイズ、values: Array<Int>は整数の配列です。-> Stringは文字列を返すという型注釈です。arrays.chunksOf size valuesへサイズ、配列の順で渡すと、成功したまとまりか失敗理由のどちらかが返ります。",
+    "返る型はEither<SizeError, Array<Array<Int>>>です。Left problemは失敗した場合を選び、中のSizeErrorにproblemという名前を付けます。Right groupsは成功した場合を選び、中の配列の配列をgroupsと呼びます。matchはこの名前付きの二つの場合を調べ、->の右側を結果にします。例外を投げているわけではありません。",
+    "describeはSizeErrorを受け取ります。collections.NonPositiveSize sizeの分岐は、この理由が持つ整数をsizeと名付けます。SizeErrorには現在この一種類の理由があり、ここで全ての場合を扱えます。show sizeで整数を文字列にし、+で説明に結びます。",
+    "サイズ2の[10, 20, 30]は[[10, 20], [30]]になり、最後の短いまとまりも残ります。同じサイズの空配列なら[]です。0と-2では、それぞれ指定した数を持つ失敗理由になります。0の例は空配列でも失敗するので、空ならサイズ確認が省略されるわけではありません。",
+    "最後のcollections.NonPositiveSize 2は、正の整数でも値を作れてNonPositiveSize 2と表示されます。このコンストラクターは整数を包むだけで、正負を検査しません。サイズを検査するのはchunksOfやwindowsです。",
+  ],
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  comparisonBefore: "TypeScriptでも、成功したまとまりと失敗理由を返す小さな型を定義できます。|は二つのオブジェクトのどちらかを許し、kindというフィールドの文字列がどちらの形かを示します。成功側だけにgroups、失敗側だけにproblemがあり、kindを調べて対応する値を使います。SizeErrorは理由とsizeという整数値を持つ形です。",
+  comparisonAfter: "TypeScriptのforとsliceでも同じ分割ができます。両方ともサイズ0以下を返り値の失敗として扱い、最後の短いまとまりを残します。TypeScriptの配列はJSONで表示するため、数値の間の空白がSeseragiの表示と異なります。TypeScriptの最後の行は理由のオブジェクトをJSONで表示し、SeseragiはNonPositiveSize 2と表示します。正のsizeを持つ理由も両方で作れます。理由の型を定義することと入力の検査は別です。",
+  detailTitle: "型の保証と間違いやすい点",
+  details: [
+    "SizeErrorは失敗理由の型名で、NonPositiveSizeはその型の値を作る名前です。型注釈は変換ではありません。例えばlet problem: collections.SizeError = 0はSES-T0101になります。理由を直接作る意図ならcollections.NonPositiveSize 0と書き、通常の処理ではchunksOfが返すLeftを扱ってください。",
+    "NonPositiveSize arg1: Int -> SizeErrorという宣言で、arg1: Intは整数を一つ受け取ること、-> SizeErrorはその理由の値を返すことを示します。宣言の型には「0以下」という制約がありません。内部表現が非公開の型という分類でも、公開されたNonPositiveSizeで作成し、matchで中の整数を読めます。",
+    "この例は小さな整数だけを扱います。TypeScriptのnumberには小数も入りますが、ここではその場合を比較していません。成功した分割は全要素を処理して結果を作るため、要素数に比例した処理と保存領域が必要です。不正なサイズは分割より先に返されます。",
+  ],
+}

@@ -1,0 +1,95 @@
+import * as arrays from "std/array"
+import { localized, LocalizedText } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { ApiCopy, Editorial } from "../model"
+
+fn setup identity: String -> LocalizedText =
+  if identity == "std/text::split"
+    || identity == "std/text::lines" then
+    localized "The import names std/text as text and std/json as json. Functions take arguments separated by spaces. json.encodeString converts the result array to JSON text, preserving visible quotes around empty strings." "importでstd/textにtext、std/jsonにjsonという名前を付けます。関数の引数は空白で区切ります。json.encodeStringは結果の配列をJSONの文字列にし、空文字列の引用符も見えるようにします。"
+  else
+    localized "import * as text names the std/text module text. Pass arguments separated by spaces; String is the string type and Int is the integer type. show creates display text for a value when the example needs it." "import * as textはstd/textをtextという名前で読み込みます。引数は空白で区切ります。Stringは文字列、Intは整数の型です。showを使う行では、値を表示用の文字列に変えています。"
+
+fn unitHelp identity: String -> Array<Block> =
+  if identity == "std/text::lengthScalars"
+    || identity == "std/text::lengthBytes"
+    || identity == "std/text::scalarAt"
+    || identity == "std/text::sliceScalars"
+    || identity == "std/text::split"
+    || identity == "std/text::replaceAll" then
+    [Paragraph (
+      [
+        Words (
+          localized
+            "Unicode scalars, UTF-8 bytes, and user-perceived characters can give different counts. "
+            "Unicode scalar、UTF-8のバイト、見た目の文字では数が変わることがあります。"
+        ),
+        InternalLink (
+          localized "Compare these units on the same text in Seseragi and TypeScript"
+            "同じ文字列をSeseragiとTypeScriptで数えて単位を比べる",
+          "/docs/library/text/#text-units"
+        )
+      ]
+    )]
+  else
+    []
+
+pub fn textEditorial identity: String
+  -> exampleId: String
+  -> output: String
+  -> english: ApiCopy
+  -> japanese: ApiCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized "Use this operation" "この操作を使う"),
+        Paragraph ([Words (localized english.purpose japanese.purpose)])
+      ],
+      unitHelp identity,
+      [
+        Paragraph ([Words (setup identity)]),
+        CodeExample
+          (exampleId, localized "A normal case and its boundaries" "通常の入力と境界の例"),
+        Paragraph (
+          [Words (
+            localized
+          "pub effect fn main is the entry function. do runs the output steps in order. _ <- completes a print before continuing; println writes the resulting value and a newline. The text operations compute values without changing their inputs."
+          "pub effect fn mainは実行入口です。doの中は出力の順に並び、_ <-は出力を終えて次へ進みます。printlnは結果と改行を出力します。文字列の操作そのものは、入力を変更せずに値を計算します。"
+          )]
+        ),
+        Terminal (localized "Output" "実行結果", output),
+        Heading ("reading-the-example", localized "Read the example" "例を順に読む"),
+        Paragraph ([Words (localized english.reading japanese.reading)]),
+        Paragraph ([Words (localized english.boundaries japanese.boundaries)]),
+        Heading ("operation-rules", localized "Rules and cost" "規則と処理量"),
+        Paragraph ([Words (localized english.rules japanese.rules)]),
+        Heading
+          ("operation-mistakes", localized "Choose the right operation" "使い分けと間違いやすい点"),
+        Paragraph ([Words (localized english.mistake japanese.mistake)]),
+        Paragraph (
+          [
+            InternalLink (localized "std/text" "std/text", "/docs/library/text/"),
+            Words (
+              localized
+          ": Choose another text operation. Find the operation for the result you need."
+          "：ほかの文字列操作を選ぶ。必要な結果から操作を探せます。"
+            )
+          ]
+        ),
+        Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")
+      ]
+    ]
+  }

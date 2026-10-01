@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -7,13 +8,16 @@ import {
   InlineCode,
   InternalLink,
   PageDefinition,
-  Words
+  Words,
+  Paragraph,
+  Terminal,
+  Heading
 } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.optional-record-fields" "/docs/language/types/optional-record-fields/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "syntax-optional-record-field",
@@ -50,5 +54,34 @@ fn content -> PageDefinition =
       "/docs/language/types/closed-records/"
     )]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [[CodeExample
+        ("type-reader-optional", localized (en.readerCaption ()) (ja.readerCaption ())), Paragraph
+        ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]), Paragraph
+        ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]), Terminal
+        (localized "Output" "実行結果", "Aki\nA"),
+
+        CodeExample (
+          "type-reader-optional-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ), Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]), Paragraph (
+          [
+            InternalLink (
+              localized "Maybe and absence" "Maybeと値の不在",
+              "/docs/language/effects/maybe/"
+            ),
+            Words (localized (en.readerRelated ()) (ja.readerRelated ()))
+          ]
+        ), Heading (
+          "declaration-example",
+          localized "Continue into the detailed rules" "詳しい規則と宣言例を読む"
+        ), Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]), Paragraph ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]), Paragraph ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])], page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

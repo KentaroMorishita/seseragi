@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Separate a List of pairs into two Lists.",
+  purpose: "Use it to obtain names and scores separately from a collection of (name, score) pairs. Such a pair is a tuple: first and second positions determine the roles. unzip also returns a tuple, containing the two result collections.",
+  reading: "Each element of pairs has type (String, Int), a string and integer pair. let (names, scores) = lists.unzip pairs names the first returned collection names and the second scores. The following println calls use both, displaying values in their original order.",
+  boundaries: "noPairs: List<(String, Int)> is an empty collection of the same pair type. unzip returns a tuple containing two empty collections. Neither result is missing.",
+  rules: "It reads each pair from the start, collecting first values together and second values together. For n input pairs both results contain n elements. Work and result storage are proportional to n, and the input is unchanged.",
+  mistake: "A plain collection of integers cannot be passed: each element must be a two-value tuple. zip combines two collections in the opposite direction, but unzip cannot restore the longer-side remainder discarded by zip."
+}

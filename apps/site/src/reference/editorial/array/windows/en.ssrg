@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Read overlapping groups of neighboring elements",
+  purpose: "Use windows 2 values to compare neighboring measurements in pairs. The first argument is the window width; the second is the array. Moving one element at a time means neighboring windows share elements.",
+  reading: "A width of two over [10, 20, 30, 40] produces [10, 20], [20, 30], and [30, 40]. Right wraps a successful value. The return type Either means either Right with success or Left with a failure reason.",
+  boundaries: "The second call requests width five from two elements and returns Right []. It cannot form a full window and does not keep a shorter one. arrays.empty<Int> () in the third call creates an empty integer array. Width zero returns Left NonPositiveSize 0. To use the result, match Right groups and Left error separately.",
+  rules: "Width one wraps each element separately; width equal to the input length produces one window. A nonpositive width fails even with empty input. The source is unchanged. Work includes all elements in all produced windows, not only the number of windows.",
+  mistake: "Use chunksOf for non-overlapping batches. windows never returns a shorter leftover window. Restrict an input width to positive integers or handle Left.",
+}

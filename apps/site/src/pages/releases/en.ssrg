@@ -1,7 +1,44 @@
 pub fn title -> String = "Releases"
 pub fn summary -> String =
-  "Find changes to the language, compiler, runtime, Playground, and development tools for each release."
-pub fn heading -> String =
-  "Check the changes and update instructions"
+  "Find the verified published version, its changes, downloads for each platform, and update cautions."
+pub fn heading -> String = "Verified published release: 0.61.19"
 pub fn body -> String =
-  "Read the release notes for changes and fixes that affect your code. They also identify the relevant version and any steps needed to update."
+  "As checked on October 1, 2026, the latest GitHub Release was v0.61.19, published September 30, 2026, from commit a8641b5a81a4. This page records that verification date; it does not automatically track later releases."
+pub fn releaseLabel -> String = "Open the official v0.61.19 release"
+pub fn allLabel -> String = "All published releases"
+pub fn changesTitle -> String = "What this version fixes"
+pub fn typesChange -> String =
+  "Type-argument compatibility was corrected for collections such as arrays and for named types. The fix also covers record fields and Effect/Stream payloads. Some assignments that previously passed may now correctly produce a type error."
+pub fn exportsChange -> String =
+  "Re-exporting a module's values through another module was corrected. Qualified namespace re-exports are preserved without duplicate generated TypeScript exports or collisions with underscore-containing names."
+pub fn docsChange -> String =
+  "The corresponding English and Japanese reference limitations were replaced with verified examples and a rejected assignment example. Twenty-four Japanese articles and their related-link wording were also revised. See the changelog fixed to this release for the exact scope."
+pub fn changelogLabel -> String = "Changelog included in 0.61.19"
+pub fn downloadsTitle -> String = "Choose the archive for your OS and CPU"
+pub fn downloadsBody -> String =
+  "A native archive contains the CLI and LSP, the program that supplies type information to your editor. Running CLI programs also uses Bun. The first-run guide owns installation and PATH setup. Check each archive against its SHA-256 file before extracting it."
+pub fn checksumLabel -> String = "SHA-256"
+pub fn nativeLabel -> String = "CLI / LSP"
+pub fn vsixLabel -> String = "VS Code extension"
+pub fn macArm -> String = "macOS Apple Silicon"
+pub fn macIntel -> String = "macOS Intel"
+pub fn linux -> String = "Linux x64"
+pub fn windows -> String = "Windows x64"
+pub fn platformLimits -> String =
+  "Linux x64 requires glibc 2.34 or later. First-run execution was tested on Debian 13 with glibc 2.41. The macOS and Windows artifacts and procedures were source-checked, but not executed in this verification. This release has no native archive for Linux ARM64, Windows ARM64, or musl."
+pub fn extensionBody -> String =
+  "Choose the VSIX matching your OS and CPU, then use Extensions: Install from VSIX... in VS Code. The official extension ID is seseragi-dev.seseragi. Choosing the 0.61.19 CLI and extension together avoids mixing toolchain versions. The VSIX includes its LSP."
+pub fn extensionLabel -> String = "VS Code installation instructions"
+pub fn updateTitle -> String = "Before and after updating"
+pub fn updateBody -> String =
+  "Before updating an existing project, check its current version and this release's changelog. Seseragi is experimental and does not guarantee compatibility with future versions. After updating, run your project's type checks and tests and inspect new diagnostics."
+pub fn versionCaption -> String = "Check the CLI you are using"
+pub fn versionBody -> String =
+  "Check for release in the output as well as the number 0.61.19. A development build made from Git main may display the same number with development instead. Distinguish it from the published artifact."
+pub fn lockBody -> String =
+  "If an existing seseragi.toml project reports SES-K0102 after updating, review what changed, explicitly run seseragi lock update, and inspect the lockfile diff. Normal run and build commands do not update it automatically. The local web-app guide covers the project workflow."
+pub fn siteBody -> String =
+  "This site may contain documentation edits that reached main after the official release. New site wording does not itself mean a new CLI release exists. Check artifacts against the GitHub Release tag and its commit."
+pub fn firstRunLabel -> String = "Run your first program"
+pub fn webLabel -> String = "Local web-app workflow"
+pub fn contractLabel -> String = "Artifact and version rules"

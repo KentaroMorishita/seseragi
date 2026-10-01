@@ -1,0 +1,15 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let original = maps.fromEntries [("b", 2), ("a", 1)]
+  let replaced = maps.insert "b" 9 original
+  let added = maps.insert "c" 3 replaced
+  println (json.encodeString (maps.entries replaced))
+  println (json.encodeString (maps.entries added))
+  println (json.encodeString (maps.entries original))
+  println (
+    json.encodeString
+      (maps.entries (maps.insert "first" 1 (maps.empty<String, Int> ())))
+  )
+}

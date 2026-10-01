@@ -1,0 +1,16 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Test whether one Char is a Unicode decimal digit",
+  purpose: "Use isDecimalDigit to inspect whether a character is a decimal digit. It accepts not only 3, but also Arabic-Indic ٣ and fullwidth ３. The input is a Char, a value containing one Unicode scalar: a Unicode code-point value excluding the numbers reserved for surrogates. Single-quoted '3' is a Char; double-quoted \"3\" is a String. This operation tests the character’s category rather than calculating the numeric value 3.",
+  reading: "let names '3' as digit, and unicode.isDecimalDigit digit inspects it. The result type Bool has two values, True and False. The first three inputs are different scalars, but all are decimal digits and give True. Superscript ² and Roman numeral Ⅳ represent numbers yet give False because they are not in the decimal-digit category. False is an ordinary result.",
+  boundaries: "Decimal digit here means membership in Unicode’s general category DecimalNumber, abbreviated Nd. Other number categories include LetterNumber and OtherNumber. Ⅳ is LetterNumber and ² is OtherNumber, so neither qualifies. A Char does not mean a whole visible character or a number with several digits; the operation inspects exactly one scalar.",
+  rules: "Char -> Bool means that the function takes one Char and returns the test result. It looks up Nd in the pinned Unicode 17.0.0 data without converting the input to Int or replacing fullwidth forms with ASCII forms. Each call looks up one scalar in a fixed table; it does not scan a whole String. Reading a number from text is a separate operation with its own input grammar. Seseragi’s ASCII numeric parsing rules are distinct from this Unicode-wide category.",
+  mistake: "A True result for ٣ does not mean a numeric parser accepts the String \"٣\". If you need an Int, follow the parser’s input grammar and handle failure. If the product rule permits only ASCII 0–9, explicitly compare the Char with '0' and '9' as inclusive bounds. isDecimalDigit alone also accepts fullwidth digits and decimal digits from other writing systems.",
+}
+
+pub fn comparison -> String =
+  "In TypeScript, /\\p{Decimal_Number}/u.test(value) is the counterpart for these same five one-scalar inputs. \\p{Decimal_Number} names Unicode’s decimal-digit category, u selects Unicode-aware interpretation, and test returns true or false. The familiar \\d does not express that Unicode-wide category and rejects ٣, so this comparison names the property explicitly."
+
+pub fn comparisonBoundary -> String =
+  "JavaScript string does not enforce the one-scalar condition in its type. These examples use known one-scalar inputs; applying the expression to arbitrary text is not validation of an entire digit sequence. Number conversion is also separate: Number(\"٣\") and Number(\"３\") give NaN. Property behavior depends on the engine’s Unicode data, so matching these examples does not guarantee equality for all Unicode values."

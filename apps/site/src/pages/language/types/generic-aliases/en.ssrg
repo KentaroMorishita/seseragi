@@ -14,8 +14,36 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can I give a repeated type expression a shorter name?",
-  summary: "A type alias abbreviates an existing type. Adding parameters lets the same abbreviation work for different element types.",
-  reading: "Pair<A> means (A, A). Pair<Int> therefore means (Int, Int), and first (42, 7) passes an ordinary tuple. The pattern (left, _) extracts 42 and ignores the second element.",
-  result: "first (42, 7) returns the Int value 42. Pair is another name for the tuple type. Construct a value as (42, 7), not Pair 42 7. Use newtype if different uses require distinct types."
+  question: "How can one name describe records with different payload types?",
+  summary: "A labelled number and a labelled string can share a field layout without repeating its definition. alias gives an existing type a name.",
+  reading: "A in Named<A> is a place for a type chosen when the alias is used, called a type parameter. Named<Int> is the same type as { label: String, value: Int }; Named<String> is the same as { label: String, value: String }.",
+  result: "readValue declares its own A and returns the value field of Named<A> as that same A. It obtains the integer 42 from count and the string ready from state, then prints them in that order.",
 }
+
+pub fn readerCaption -> String = "Use one alias for labelled numbers and strings"
+
+pub fn readerBridgeOne -> String =
+  "Create values with ordinary { ... } records. Named does not introduce a value constructor or wrap the record. Giving a shape a short alias also does not make two kinds of ID distinct types."
+
+pub fn readerBridgeTwo -> String =
+  "main is the public output entry point. ${readValue count} inserts the result of a space-separated function call into the string. \\n separates the lines, and println adds the final newline."
+
+pub fn readerInvalidCaption -> String = "Put text in the value field of Named<Int>"
+
+pub fn readerMistake -> String =
+  "Expanding Named<Int> requires an Int value. Supplying \"42\" produces SES-T0101. Use 42 for a number, or Named<String> if the field should store text. Naming the type does not change its field checks."
+
+pub fn readerDetailNote -> String =
+  "The detailed Pair<A> = (A, A) alias names a tuple with two positions of the same type. (42, 7) creates it; (left, _) extracts its first position and ignores the second. This is a declaration-only example, unlike the first example with main."
+
+pub fn readerComparison -> String =
+  "TypeScript can perform the same task with a type Named<A> alias and a generic function. Choosing number or string for A follows the same idea. Both examples use the safe integer 42 and print the same two lines."
+
+pub fn readerLegacyReading -> String =
+  "Pair<A> means (A, A). Pair<Int> therefore means (Int, Int), and first (42, 7) passes an ordinary tuple. The pattern (left, _) extracts 42 and ignores the second element."
+
+pub fn readerLegacyResult -> String =
+  "first (42, 7) returns the Int value 42. Pair is another name for the tuple type. Construct a value as (42, 7), not Pair 42 7. Use newtype if different uses require distinct types."
+
+pub fn readerRelated -> String =
+  " explains how to distinguish IDs by purpose instead of merely naming their types."

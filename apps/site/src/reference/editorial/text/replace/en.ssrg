@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Replace only the first literal occurrence",
+  purpose: "Pass the search string, replacement string, and input string in that order. replace returns a new string with only the first left-to-right match replaced.",
+  reading: "Replacing the first a in banana with X gives bXnana. The other a characters stay unchanged. Use replaceAll to replace every occurrence.",
+  boundaries: "The replacement $& is inserted literally, producing c$&t. An empty search string inserts once at the beginning, producing :AB. The unmatched fourth input stays cat. The final empty input returns an empty string, displayed as [].",
+  rules: "Both search and replacement are literal text. The original input is unchanged; the operation returns the result. Work depends on input and output byte counts.",
+  mistake: "Do not assume the regular expressions or $& match substitution available in TypeScript String.replace. Here $& is ordinary replacement text.",
+}

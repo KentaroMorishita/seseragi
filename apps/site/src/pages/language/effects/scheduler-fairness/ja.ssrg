@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "長い計算で、他の処理を待たせてしまうことはあるか",
-  summary: "実行機構は、処理が待機したりyieldNowを実行したりする地点で、別のFiberへ切り替えます。長い純粋な計算を途中で自動的に中断する仕組みではありません。",
-  reading: "cooperativeStepは、42で成功する前にyieldNowを実行します。yieldNowは現在の処理を一時停止し、実行できる他のFiberを進めるための操作です。サービスや回復可能な失敗は追加しません。",
-  result: "cooperativeStepは再開後に42を返します。yieldNowは応答時間を指定したり、全処理の実行時間を均等にしたりする操作ではありません。長い純粋な計算で他の処理を待たせるなら、計算を分けてyieldNowを挟んでください。"
+  question: "長い処理が、ほかの処理を待たせ続けないようにするには",
+  summary: "実行機構は、処理が待機やyieldNowなどの区切りへ来たときにほかの処理へ切り替えられます。長い純粋計算を自動で中断する仕組みではないので、仕事を小さく分けて区切りを置きます。",
+  reading: "stepはcounterを1増やしてからyieldNow ()を実行します。stepsは[1, 2, 3]の三項目についてstepを行います。mainでは別々のカウンターleftとrightを作り、二つのstepsをparallelで進めます。",
+  result: "出力は[3, 3]です。それぞれが三回進んだことを確認しています。一回ずつ交互に進むことや、同じミリ秒数を使うことは、この例も仕様も保証しません。"
 }
+
+pub fn readerBridgeOne -> String =
+  "Ref<Int>は整数を保存する入れ物です。refs.updateに渡す\\value: Int -> value + 1が次の値を計算します。effect fnは処理を作る関数です。forのiterationは現在の項目に付けた名前で、例では三回実行するためだけに使っています。mainのdoでは<-で値を受け取り、showとprintlnで配列を表示します。"
+
+pub fn readerBridgeTwo -> String =
+  "切り替えを許す区切りをcheckpoint、実行を割り当てる仕組みをscheduler、個々に進む処理をFiberと呼びます。実行可能なFiberはFIFO、つまり待ち列へ入った順に扱います。ほかの処理も区切りへ到達し続けるなら、待ち続けるFiberにもいずれ実行が回ります。これが弱い公平性です。"
+
+pub fn readerMistake -> String =
+  "yieldNow ()はUnitそのものではなくTask<Unit>を返します。拒否例のような通常のUnitを返す関数へは入れられません。doなどの実行中の処理に置いてください。一つの長い純粋計算の末尾にだけ置いても、その計算中の待たせ過ぎは防げません。"
+
+pub fn readerCaption -> String = "有限の小さな仕事の間に切り替え地点を置く"
+
+pub fn readerInvalidCaption -> String = "直すべき宣言・呼び出し"
+
+pub fn readerDetailNote -> String =
+  "以下の例は宣言だけを示す補足です。上の実行例で使った考え方を、より小さい断片でも確認できます。実行入口や出力は含みません。"
+
+pub fn readerLegacyReading -> String =
+  "cooperativeStepは、42で成功する前にyieldNowを実行します。yieldNowは現在の処理を一時停止し、実行できる他のFiberを進めるための操作です。サービスや回復可能な失敗は追加しません。"
+
+pub fn readerLegacyResult -> String =
+  "cooperativeStepは再開後に42を返します。yieldNowは応答時間を指定したり、全処理の実行時間を均等にしたりする操作ではありません。長い純粋な計算で他の処理を待たせるなら、計算を分けてyieldNowを挟んでください。"

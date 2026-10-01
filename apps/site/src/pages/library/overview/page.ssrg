@@ -20,12 +20,109 @@ pub fn page -> PageDefinition = PageDefinition {
   title: text (en.title ()) (ja.title ()),
   summary: text (en.summary ()) (ja.summary ()),
   blocks: [
+    Heading ("choose-by-task", text (en.chooseTitle ()) (ja.chooseTitle ())),
+    Paragraph ([Words (text (en.chooseBody ()) (ja.chooseBody ()))]),
     Heading ("collections", text (en.collectionsTitle ()) (ja.collectionsTitle ())),
+    Paragraph ([Words (text (en.collectionsBody ()) (ja.collectionsBody ()))]),
     Paragraph (
       [
-        Words (text (en.collectionsBody ()) (ja.collectionsBody ())),
+        Words (text (en.collectionsLinks ()) (ja.collectionsLinks ())),
         InternalLink
-          (text " Array.get" " Array.get", "/docs/library/array/function/get/")
+          (text "Collections" "コレクション", "/docs/library/#directory-collections"),
+        Words (text (en.collectionsCore ()) (ja.collectionsCore ())),
+        InternalLink (
+          text "Tuples, arrays, and lists" "タプル・配列・リスト",
+          "/docs/language/data/tuples-arrays-and-lists/"
+        ),
+        Words (text (en.collectionsGet ()) (ja.collectionsGet ())),
+        InternalLink (text "Array.get" "Array.get", "/docs/library/array/function/get/")
+      ]
+    ),
+    Heading ("text-and-json", text (en.textTitle ()) (ja.textTitle ())),
+    Paragraph ([Words (text (en.textBody ()) (ja.textBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.textLinks ()) (ja.textLinks ())),
+        InternalLink (text "Text" "文字列", "/docs/library/#directory-text"),
+        Words (text (en.jsonLinks ()) (ja.jsonLinks ())),
+        InternalLink
+          (text "Data formats" "データ形式", "/docs/library/#directory-data-formats"),
+        Words (text (en.textCore ()) (ja.textCore ())),
+        InternalLink (
+          text "Either and typed results" "Eitherによる成功と失敗",
+          "/docs/language/effects/either/"
+        )
+      ]
+    ),
+    Heading ("numbers-and-bytes", text (en.numbersTitle ()) (ja.numbersTitle ())),
+    Paragraph ([Words (text (en.numbersBody ()) (ja.numbersBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.numbersLinks ()) (ja.numbersLinks ())),
+        InternalLink
+          (text "Numbers and bytes" "数値とバイト", "/docs/library/#directory-numbers-bytes"),
+        Words (text (en.numbersCore ()) (ja.numbersCore ())),
+        InternalLink
+          (text "Built-in types" "組み込み型", "/docs/language/types/built-in-types/")
+      ]
+    ),
+    Heading ("state-and-concurrency", text (en.stateTitle ()) (ja.stateTitle ())),
+    Paragraph ([Words (text (en.stateBody ()) (ja.stateBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.stateLinks ()) (ja.stateLinks ())),
+        InternalLink (
+          text "Effects and concurrency" "Effectと並行処理",
+          "/docs/library/#directory-effects-concurrency"
+        ),
+        Words (text (en.stateCore ()) (ja.stateCore ())),
+        InternalLink
+          (text "The Effect type" "Effect型", "/docs/language/effects/effect-type/")
+      ]
+    ),
+    Heading ("files-and-processes", text (en.filesTitle ()) (ja.filesTitle ())),
+    Paragraph ([Words (text (en.filesBody ()) (ja.filesBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.filesLinks ()) (ja.filesLinks ())),
+        InternalLink
+          (text "System capabilities" "システムの能力", "/docs/library/#directory-system"),
+        Words (text (en.filesCore ()) (ja.filesCore ())),
+        InternalLink (
+          text "Effect environment requirements" "Effectが必要とするサービス",
+          "/docs/language/effects/environment-requirements/"
+        )
+      ]
+    ),
+    Heading ("web-and-network", text (en.webTitle ()) (ja.webTitle ())),
+    Paragraph ([Words (text (en.webBody ()) (ja.webBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.webLinks ()) (ja.webLinks ())),
+        InternalLink (
+          text "Networking and browser" "ネットワークとブラウザー",
+          "/docs/library/#directory-network-browser"
+        ),
+        Words (text (en.webCore ()) (ja.webCore ())),
+        InternalLink (
+          text "Effect runtime boundaries" "Effectを実行する境界",
+          "/docs/language/effects/runtime-boundaries/"
+        )
+      ]
+    ),
+    Heading
+          ("targets-and-prerequisites", text (en.targetsTitle ()) (ja.targetsTitle ())),
+    Paragraph ([Words (text (en.targetsBody ()) (ja.targetsBody ()))]),
+    Paragraph ([Words (text (en.prereqBody ()) (ja.prereqBody ()))]),
+    Paragraph (
+      [
+        Words (text (en.runLink ()) (ja.runLink ())),
+        InternalLink (text "Run your first program" "最初のプログラムを実行する", "/docs/first-run/"),
+        Words (text (en.callLink ()) (ja.callLink ())),
+        InternalLink (
+          text "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        )
       ]
     )
   ]

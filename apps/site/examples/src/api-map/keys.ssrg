@@ -1,0 +1,8 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let values = maps.fromEntries [("b", 2), ("a", 2), ("c", 3)]
+  println (json.encodeString (maps.keys values))
+  println (json.encodeString (maps.keys (maps.empty<String, Int> ())))
+}

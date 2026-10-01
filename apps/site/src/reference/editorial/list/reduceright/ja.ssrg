@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "末尾から順に一つの結果へまとめる",
+  purpose: "まとめる順序が結果に関わるときにreduceRightを使います。初期値、計算する関数、Listの順に渡します。subtractは今回の要素を先に、これまでの計算結果を後に受け取ります。",
+  reading: "初期値0から、3 - 0 = 3、2 - 3 = -1、1 - (-1) = 2と計算します。次の呼び出しは空の入力なので、その初期値10をそのまま返します。",
+  boundaries: "空の入力ではsubtractを一度も呼びません。初期値は必須なので、要素がなくても結果が定まります。",
+  rules: "最後から先頭へ、各要素につき一度計算します。型Aは要素の型、Bは計算結果の型です。初期値と各ステップの結果は、どちらもBにそろえます。この例では両方Intです。処理量はListの長さに応じます。",
+  mistake: "TypeScriptのreduceRightは計算結果を先、要素を後に渡します。この例に相当するcallbackは(total, value) => value - totalです。その引数順をSeseragiへそのまま写さないでください。Seseragiはstep element accumulatorの順です。",
+}

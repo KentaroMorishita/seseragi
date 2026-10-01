@@ -1,0 +1,162 @@
+import * as arrays from "std/array"
+import { localized } from "../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../model/page"
+import { Editorial } from "./model"
+import { CorrectionCopy } from "./correction-model"
+fn paragraph pair: (String, String) -> Block = match pair {
+  (english, japanese) -> Paragraph ([Words (localized english japanese)])
+}
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  map paragraph (arrays.zip japanese english)
+pub fn sequenceReaderEditorial identity: String
+  -> owner: String
+  -> slug: String
+  -> output: String
+  -> typescriptOutput: String
+  -> english: CorrectionCopy
+  -> japanese: CorrectionCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace: "value",
+    itemKind: "function",
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Paragraph ([Words (localized english.setup japanese.setup)]),
+        CodeExample
+          ("sequence-reader-" + slug, localized english.codeTitle japanese.codeTitle),
+        Terminal (localized english.outputTitle japanese.outputTitle, output)
+      ],
+      paragraphs english.after japanese.after,
+      [
+        Heading (
+          "typescript-comparison",
+          localized english.comparisonTitle japanese.comparisonTitle
+        ),
+        Paragraph
+          ([Words (localized english.comparisonBefore japanese.comparisonBefore)]),
+        CodeExample
+          ("sequence-reader-" + slug + "-ts", localized "TypeScript" "TypeScript"),
+        Terminal (localized "TypeScript output" "TypeScriptの実行結果", typescriptOutput),
+        Paragraph ([Words (localized english.comparisonAfter japanese.comparisonAfter)]),
+        Heading ("operation-rules", localized english.detailTitle japanese.detailTitle)
+      ],
+      paragraphs english.details japanese.details,
+      moduleChoices identity owner,
+      if identity == owner then
+        []
+      else
+        [Paragraph (
+          [
+            InternalLink (
+              localized owner owner,
+              if owner == "std/iterator" then
+                "/docs/library/iterator/"
+              else
+                "/docs/library/non-empty-list/"
+            ),
+            Words (
+              localized
+          ": choose the operation for constructing or reading this sequence."
+          "：この一覧を作る・読む操作を選べます。"
+            )
+          ]
+        )],
+      if identity == owner then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+  }
+
+fn moduleChoices identity: String -> owner: String -> Array<Block> =
+  if identity != owner then
+    []
+  else if owner == "std/non-empty-list" then
+    [
+      Paragraph (
+        [
+          InternalLink (
+            localized "singleton" "singleton",
+            "/docs/library/non-empty-list/function/singleton/"
+          ),
+          Words (localized ": construct one element." "：一件から作る。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink
+            (localized "cons" "cons", "/docs/library/non-empty-list/function/cons/"),
+          Words (localized ": join a head to a List tail." "：先頭と残りをつなぐ。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink (
+            localized "fromList" "fromList",
+            "/docs/library/non-empty-list/function/fromlist/"
+          ),
+          Words (localized ": check a possibly empty input." "：空かもしれない入力を確かめる。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink
+            (localized "head" "head", "/docs/library/non-empty-list/function/head/"),
+          Words (localized ": read the guaranteed head." "：必ず存在する先頭を読む。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink
+            (localized "tail" "tail", "/docs/library/non-empty-list/function/tail/"),
+          Words (localized ": read the remaining List." "：先頭以外のListを得る。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink
+            (localized "toList" "toList", "/docs/library/non-empty-list/function/tolist/"),
+          Words (localized ": convert to an ordinary List." "：通常のListへ変換する。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink (
+            localized "reduce1" "reduce1",
+            "/docs/library/non-empty-list/function/reduce1/"
+          ),
+          Words
+            (localized ": combine using the head as the initial value." "：先頭を初期値にまとめる。")
+        ]
+      )
+    ]
+  else
+    [
+      Paragraph (
+        [
+          InternalLink
+            (localized "unfold" "unfold", "/docs/library/iterator/function/unfold/"),
+          Words (localized ": construct a sequence from state." "：状態を使って数列を作る。")
+        ]
+      ),
+      Paragraph (
+        [
+          InternalLink
+            (localized "next" "next", "/docs/library/iterator/function/next/"),
+          Words
+            (localized ": read an element and its continuation." "：一件と続きのIteratorを読む。")
+        ]
+      )
+    ]

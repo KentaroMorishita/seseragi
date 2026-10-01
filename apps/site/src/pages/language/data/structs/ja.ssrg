@@ -33,8 +33,21 @@ pub fn copy -> ReaderCopy = ReaderCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "普通のレコードではなく、構造体に型名を付けるのはなぜか",
-  summary: "構造体は、フィールドの形に型名を付けます。同じフィールドを持つ別の宣言と取り違えないようにできます。",
-  reading: "struct Userでid: Intとname: Stringを宣言します。波括弧の前のUserは、その型の値を作る指定です。User { ...original, name: \"Mio\" }は、元のidを引き継ぎ、名前を変えた別のUserを作ります。",
-  result: "出力はAki、Mio、1です。originalの名前はAkiのまま、renamedの名前だけがMioになります。どちらもUser型です。User { ...original, name: \"Mio\" }で、同じ型の新しい値を作っています。"
+  question: "同じフィールドでも、UserとProductを区別するには",
+  summary: "structは、フィールドを持つデータに専用の型を与えます。たとえば名前と番号を持つUserを、同じ形の別のデータと取り違えずに使えます。",
+  reading: "struct Userでidとnameを宣言します。User { id: 1, name: \"Aki\" }で、その型の値を作ります。User { ...original, name: \"Mio\" }はidを引き継いだ別のUserです。",
+  result: "出力はAki、Mio、1です。元の名前は変わりません。型の宣言はデータの形を決め、User { ... }は実際の値を作ります。",
 }
+
+pub fn readerCaption -> String = "型を宣言してから値を作る"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptのtypeやinterfaceに名前を付けるだけの場合と異なり、Seseragiのstructは宣言ごとに別の型になります。UserとProductがどちらもnameを持っていても、そのまま交換できません。"
+
+pub fn readerBridgeTwo -> String =
+  "波括弧の前のUserがどの型の値を作るかを指定します。型名のない{ id: 1, name: \"Aki\" }はレコードです。最後のprintlnは、${...}で各フィールドを文字列へ入れ、\\nで行を分けて表示します。"
+
+pub fn readerInvalidCaption -> String = "必須フィールドの不足"
+
+pub fn readerMistake -> String =
+  "後半のUser { id: 1 }はnameが足りません。name: \"Aki\"も指定して、宣言した全フィールドを用意します。"

@@ -1,26 +1,63 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.scheduler-fairness" "/docs/language/effects/scheduler-fairness/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-scheduler-fairness",
         localized "An explicit cooperative checkpoint" "ほかの処理へ実行を譲る地点を置く"
       )] [] [
-        [InternalLink (
-          localized "Cancellation and resources" "キャンセルとリソースの管理",
-          "/docs/language/effects/cancellation-and-resources/"
-        )],
-        [InternalLink (
-          localized "Fiber supervision" "Fiberの所有と監督",
-          "/docs/language/effects/fiber-supervision/"
-        )],
-        [InternalLink (localized "Task" "Task", "/docs/language/effects/task/")]
+        [InternalLink (localized "Cancellation and resources" "キャンセルとリソースの管理", "/docs/language/effects/cancellation-and-resources/"), Words (localized ": Register cleanup for success, failure and cancellation" "：成功・失敗・キャンセルに備えて後片付けを登録する")],
+        [InternalLink (localized "Fiber supervision" "Fiberの所有と監督", "/docs/language/effects/fiber-supervision/"), Words (localized ": See how a scope stops and cleans up children" "：scopeが子を停止し片付ける流れを見る")],
+        [InternalLink (localized "Task" "Task", "/docs/language/effects/task/"), Words (localized ": Check when a procedure can be called Task" "：Taskと書ける処理の条件を確認する")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "lifecycle-reader-fairness",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "[3, 3]"),
+        CodeExample (
+          "lifecycle-reader-fairness-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

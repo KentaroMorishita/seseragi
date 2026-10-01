@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Do independent-looking Effects run together automatically?",
-  summary: "Linking Effects with flatMap or do executes them in sequence. Use an explicit parallel operation to allow independent computations to progress concurrently.",
-  reading: "twice describes a computation returning twice its input. sequential obtains the result of twice 2 before obtaining twice 3 and then adds them. parallel explicitly passes both computations to effects.parallel.",
-  result: "sequential succeeds with 10. parallel returns [4, 6] in input order rather than their sum. Parallel execution changes when work starts and how other work is cancelled on failure; it is not another notation for do's behavior."
+  question: "How do I distinguish waiting in sequence from progressing concurrently?",
+  summary: "Procedures listed in do run in sequence. To progress together when neither needs the other’s success value, explicitly pass an array to effects.parallel.",
+  reading: "job creates a Task returning an integer. yieldNow () provides a point where other work can run. main finishes first <- job 10 before beginning second <- job 20. together instead passes both jobs to parallel.",
+  result: "Both versions produce [10, 20]. parallel keeps input order in its result array, not completion order. The empty noJobs produces []. These printed values alone establish neither detailed scheduling order nor speed."
 }
+
+pub fn readerBridgeOne -> String =
+  "fn job value: Int -> Task<Int> creates an integer-success procedure from an integer value. succeed creates a successful procedure, and () is Unit. In pub effect fn main, <- names success values. show creates display text and println outputs it."
+
+pub fn readerBridgeTwo -> String =
+  "Array<Task<Int>> is an array of procedures sharing a success type. Putting them in an array does not run them; executing parallel starts them. On the first observed failure it starts no remaining inputs, requests cancellation of running siblings and waits for cleanup. Failures in the same scheduler turn choose the smaller input index."
+
+pub fn readerMistake -> String =
+  "The rejected array mixes integer-success and string-success procedures. Give them a common result type. Use do when the next operation needs the previous result. parallel does not guarantee a CPU core count or the order of external actions."
+
+pub fn readerCaption -> String =
+  "Compare sequential, parallel, and empty collections of procedures"
+
+pub fn readerInvalidCaption -> String = "A declaration or call to correct"
+
+pub fn readerDetailNote -> String =
+  "The following declaration-only fragment is a smaller view of the same topic. It has no entry point or output."
+
+pub fn readerLegacyReading -> String =
+  "twice describes a computation returning twice its input. sequential obtains the result of twice 2 before obtaining twice 3 and then adds them. parallel explicitly passes both computations to effects.parallel."
+
+pub fn readerLegacyResult -> String =
+  "sequential succeeds with 10. parallel returns [4, 6] in input order rather than their sum. Parallel execution changes when work starts and how other work is cancelled on failure; it is not another notation for do's behavior."

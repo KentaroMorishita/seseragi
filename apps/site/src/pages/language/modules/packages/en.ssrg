@@ -1,31 +1,49 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Packages",
   summary: (explanation ()).summary,
-  ruleTitle: "The manifest defines the boundary",
-  ruleBody: "A package has one seseragi.toml at its root. It declares the package name, version and supported language range, and may specify layout, direct dependencies and public entry modules. The compiler does not infer this boundary from package.json or merge several parent manifests. Organizing files into directories inside a source root does not create additional packages.",
-  typingBody: "A module's identity incorporates the package's identity: name, exact version and source identity. Two versions of the same dependency can have distinct internal identities. Two sources claiming the same name and exact version in one dependency graph cause a dependency-confusion error; the compiler does not silently pick one. Types imported from different package identities retain their declaring identities.",
-  evaluationBody: "Declare an external package as a direct dependency in seseragi.toml before importing it. If a library you use depends on another library, that further dependency does not automatically become available to your source. Add it to your own dependencies if needed. The imported module is selected through the dependency's public exports paths.",
-  invalidTitle: "pub and the export map answer different questions",
-  invalidBody: "A pub declaration is visible to another module that can resolve its defining module. The package export map controls which source modules an external package may resolve. Publishing a declaration does not expose every private package path, and listing a module in exports does not make all its declarations public.",
-  diagnosticsBody: "The package name uses lowercase ASCII segments separated by /. The std, self and gen prefixes are reserved. An incompatible language range, missing direct dependency, unavailable export subpath, conflicting source identity or a path escaping the package is diagnosed before application execution. A lockfile records the resolved graph; explicitly update it when package or source inputs change.",
+  purpose: ["A package groups files into a unit callers can use through chosen public names. Creating another directory does not itself create another package. Explicit configuration and exported paths separate internal file organization from the caller's contract."],
+  exampleTitle: "An application uses a neighboring library",
+  reading: [
+    "Each [package] declares a name, a package version, and a supported language-version range. The language range is not the CLI product version number. Each package has its own seseragi.toml.",
+    "pub fn greet is a public function from String to String. [exports] chooses which modules an external package can reach; pub chooses which declarations it can use once there. pub alone does not expose every file in the package.",
+    "lock update records the resolved dependencies and inputs in seseragi.lock. run then executes src/main.ssrg selected by the application's [run] table. main returns the println operation, and the runner prints the string and a newline."
+  ],
+  rules: [
+    "One seseragi.toml defines the package root. The compiler neither infers it from package.json nor merges several parent configurations. Import external packages only when declared directly in your own [dependencies]. A library's further dependencies do not automatically become importable by your application.",
+    "Package identity includes name, exact version and source identity. Different versions can have distinct identities. Two sources claiming the same name and exact version in one dependency graph cause an error rather than an arbitrary choice. Imported named types retain their defining package identity.",
+    "Package names use lowercase ASCII segments separated by /. The std, self and gen prefixes are reserved. An incompatible language range is rejected before source typechecking. Explicitly run lock update after changing dependency or source inputs.",
+    "The default roots for ordinary source, tests, benchmarks and generated bindings are src, tests, benchmarks and .seseragi/generated. They cannot overlap or escape the package, even through symlinks. Tests and benchmarks use their corresponding commands; generated modules carry a distinct identity tag. Relative imports stay within one root.",
+    "self/ selects ordinary source in the current package, and gen/ selects generated bindings. An external consumer uses the paths chosen by exports. Adding \"email\" = \"email\", for example, makes docs/greetings/email resolve to src/email.ssrg. That file must exist, and its usable declarations still need pub.",
+    "A path dependency's package name must match the target manifest. The path form is for local development and cannot remain in a published package manifest. The rules for direct dependencies, exported paths and declaration visibility do not change with the acquisition method."
+  ],
+  mistakes: [
+    "internal/secret.ssrg contains pub let secret. Nevertheless, importing docs/greetings/internal/secret from the application produces SES-N0104 because the path is absent from exports. A file existing is different from it being externally reachable.",
+    "Restore main.ssrg to the original greet-based source to print Hello, Aki! in the same project. If an internal value genuinely belongs in the public API, deliberately redesign the library's declarations and exports. A caller's relative path is not a way around the boundary."
+  ],
+  related: [
+    "See how package identity and file path identify a module.",
+    "Review pub and opaque on functions and types.",
+    "Check how the start of an import path determines its resolver."
+  ],
 }
-
-pub fn layoutTitle -> String = "Ordinary source and auxiliary roots"
-
-pub fn layoutBody -> String =
-  "The default roots are src, tests, benchmarks and .seseragi/generated. They cannot overlap or escape the package, including through symlinks. Tests and benchmarks are command-specific roots, and generated modules carry their own identity tag. Relative imports stay in one root. self/ refers to the current package's ordinary source; gen/ refers to its generated bindings."
-
-pub fn exampleTitle -> String = "A library exposes chosen modules"
-
-pub fn exampleBody -> String =
-  "In this manifest, an external import of acme/validation resolves to src/lib.ssrg; acme/validation/email resolves to src/email.ssrg. Other source files remain internal to the package. A library does not need a main entry point. An executable package adds a run table naming the entry module and host target."
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "What makes a group of files one package?",
-  summary: "A package is a unit with a seseragi.toml manifest. That file declares its name, version, source layout, dependencies, and modules available to external consumers. Splitting directories within one package does not create another package.",
-  reading: "In the example manifest, the public path acme/validation points to src/lib.ssrg and acme/validation/email points to src/email.ssrg. Other files can support those modules internally without becoming public package paths.",
-  result: "pub on a declaration and the package's exports have different jobs: exports makes a module reachable from another package, while pub makes a declaration usable once that module is reached. A library need not have main."
+  question: "How do I use a function from another project?",
+  summary: "Make a greeting library and its application separate packages. A package uses seseragi.toml to declare its name and dependencies. This example points to a neighboring directory rather than downloading anything.",
+  reading: "In the library, \".\" = \"lib\" under [exports] maps an import of docs/greetings to src/lib.ssrg. The application's [dependencies] table locates that package at ../greetings-library. That path is relative to the directory containing app/seseragi.toml.",
+  result: "import { greet } from \"docs/greetings\" uses the library's public greet. The application prints the string returned by greet \"Aki\", producing Hello, Aki!. The library does not need main.",
 }
+
+pub fn setup -> String =
+  "Create sibling app and greetings-library directories and all five files at the displayed paths. app contains the entry point; greetings-library contains the public function and an internal file. Run the commands below from the parent directory containing both packages."
+
+pub fn detailsTitle -> String =
+  "Expose a declaration and expose a module as separate decisions"
+
+pub fn mistakesTitle -> String =
+  "A public declaration can still sit behind a private package path"
+
+pub fn title -> String = (copy ()).title

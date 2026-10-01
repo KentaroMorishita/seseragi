@@ -1,0 +1,8 @@
+import * as nonempty from "std/non-empty-list"
+fn subtract accumulated: Int -> value: Int -> Int = accumulated - value
+pub effect fn main = do {
+  let amounts = nonempty.cons 20 `[3, 2]
+  println (show (nonempty.reduce1 subtract amounts))
+  println (show (nonempty.reduce1 subtract (nonempty.singleton 20)))
+  println (show (nonempty.toList amounts))
+}

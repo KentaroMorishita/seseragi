@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::escape" "escape" "a\\+b\\.txt\nTrue\nFalse\nTrue" "true\nfalse\ntrue" (en.copy ()) (ja.copy ())

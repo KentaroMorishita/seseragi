@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Newtype values",
   summary: (explanation ()).summary,
-  ruleTitle: "Wrap and unpack values explicitly",
-  ruleBody: "With newtype UserId = Int, UserId 42 creates a UserId containing an Int. Use the pattern UserId value to extract the contained value. You can also define methods or operators specifically for UserId.",
-  typingBody: "UserId and Int are different types. An Int cannot be passed directly to a function requiring UserId. This also applies to parameterized newtypes. pub opaque allows other modules to use the type name, but hides its constructor and unpacking pattern.",
-  evaluationBody: "The contained expression is evaluated once. A compilation target may implement UserId without extra storage for its wrapper. The compiler still checks UserId and Int as different types. Users construct it with UserId 42 and unpack it with the UserId number pattern.",
-  invalidTitle: "Operations of the contained type are not inherited automatically",
-  invalidBody: "Wrapping Int does not automatically provide Int's operators or trait implementations. A newtype also has no record-style field access or update. Define the required operations for the newtype, or extract its contents explicitly.",
-  diagnosticsBody: "Check whether a contained value and its newtype have been confused. Construct the wrapper when needed and unpack it with a pattern on the receiving side.",
+  exampleTitle: "Construct a UserId and use its contents to build another value",
+  purpose: [
+    "Use a newtype when a value should be explicitly handled as a user ID rather than passed around as an ordinary integer. Pass a wrapped UserId to a function expecting UserId, then extract its contents where integer operations are needed.",
+    "The example constructs UserId 42, adds one to its contained integer, and constructs another UserId. It demonstrates wrapping; it does not guarantee unique IDs or validate an input.",
+  ],
+  reading: [
+    "newtype UserId = Int declares UserId with an Int inside. In UserId 42, UserId is the constructor: a name that creates a value of this type, here accepting one integer.",
+    "fn raw identifier: UserId -> Int receives a UserId and returns its Int. In match identifier, the pattern UserId number uses the constructor shape to give the contained integer the name number.",
+    "nextId receives a UserId, extracts the integer with raw, adds one, and wraps it with UserId (...). Integer addition and UserId construction are explicit separate operations. The returned value is a UserId too.",
+    "original contains 42 and following contains 43. main uses raw to extract each integer and inserts them with ${...} into a backtick-delimited template. \\n separates the two output lines. original remains unchanged.",
+  ],
+  rules: [
+    "With newtype UserId = Int, UserId 42 creates a UserId containing an Int. Use the pattern UserId value to extract the contained value. You can also define methods or operators specifically for UserId.",
+    "UserId and Int are different types. An Int cannot be passed directly to a function requiring UserId. This also applies to parameterized newtypes. pub opaque allows other modules to use the type name, but hides its constructor and unpacking pattern.",
+    "The contained expression is evaluated once. A compilation target may implement UserId without extra storage for its wrapper. The compiler still checks UserId and Int as different types. Users construct it with UserId 42 and unpack it with the UserId number pattern.",
+    "Wrapping Int does not automatically provide Int's operators or its implementations of trait-defined shared operations. A newtype also has no record-style field access or update. Define the required operations for the newtype, or extract its contents explicitly.",
+    "Check whether a contained value and its newtype have been confused. Construct the wrapper when needed and unpack it with a pattern on the receiving side.",
+  ],
+  mistakes: [
+    "raw 42 below supplies Int where UserId is required, producing SES-T0101. Change it to raw (UserId 42) to extract 42 from an explicitly constructed value.",
+    "A newtype declaration alone does not restrict the range of its contents. To reject negative user IDs, for example, separately write validation and a failure result in the function that constructs the value.",
+  ],
+  related: [
+    "Compare UserId and OrderId identity, and distinguish a newtype from an alias.",
+    "Define methods belonging to the dedicated value type.",
+    "Define + or another supported operation for wrapped values.",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I construct and unpack a newtype value?",
-  summary: "A newtype gives one existing value type a distinct name and identity. Its constructor wraps a value; a matching pattern unwraps it.",
-  reading: "UserId 42 constructs a UserId, not an ordinary Int. raw matches UserId number and returns number. The same UserId name is used in a type position, a construction expression, and an unpacking pattern.",
-  result: "number is the Int 42. To pass UserId to a function taking Int, extract its contents with raw first. To use an integer as UserId, wrap it with the constructor, such as UserId 42."
+  question: "How do I wrap an integer and perform a deliberate operation on it?",
+  summary: "A newtype is a distinct type containing one value. Wrap it with the same-named constructor and extract it with the same-named pattern.",
+  reading: "UserId 42 constructs a value; a UserId number pattern reads its contents. Distinguish the type position, construction position and extraction position.",
+  result: "The program extracts and prints 42 from the original value and 43 from the new value. Neither conversion between UserId and Int is implicit.",
 }

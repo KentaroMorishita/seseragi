@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Does storing a function in let fix its argument type?",
-  summary: "An unchanged generic function can remain reusable at different types. A value produced by a particular call already has that call's type.",
-  reading: "let identity = unchanged stores the function, so identity 42 and identity \"hello\" use Int and String separately. let fixed = wrap 42 instead stores Just 42, a Maybe<Int>; it is not the function wrap.",
-  result: "identity can be called with Int or String, but fixed is a value of one type, Maybe<Int>. A parameter of type A -> A also has one A chosen for that call. The function body cannot independently call that parameter once at Int and once at String."
+  question: "Is storing a function in let the same as receiving it as an argument?",
+  summary: "An alias for a generic function can be called at different types. A parameter written (A -> A), however, operates on the A selected for that enclosing function call.",
+  reading: "unchanged<A> returns its input. let identity = unchanged stores the function, and identity 42 selects Int. operation: (A -> A) in apply is a function from A to the same A; apply identity \"ready\" selects String.",
+  result: "The output is 42, ready and Just 42. wrap 42 is an already-computed Maybe<Int> value, with Just identifying a present payload. Storing it as fixed does not let that payload become String later.",
 }
+
+pub fn readerCaption -> String =
+  "Distinguish a function alias, a function parameter and a computed result"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript also lets you name a function again or pass it as a callback. Here one A is declared by apply itself. Its contract does not let operation choose a fresh A independently each time it is called inside that body."
+
+pub fn readerBridgeTwo -> String =
+  "The restriction that a received function cannot independently choose new types is called rank-1. Before learning the term, check that apply’s value and operation use the same A. main is the public output entry point; show fixed converts the Maybe<Int> value to display text."
+
+pub fn readerInvalidCaption -> String =
+  "Assume the parameter’s A is Int or String inside the function"
+
+pub fn readerMistake -> String =
+  "A in useTwice<A> is selected by the caller. operation 42 in its body reports SES-T0101 because an arbitrary A need not be Int. Instead of using operation at unrelated types, receive a value of the same A and pass it, as the first apply example does."
+
+pub fn readerDetailNote -> String =
+  "The current implementation still cannot infer the parameter in the short function let identity = \\value -> value when no surrounding type supplies it. The first example uses a named fn with explicit type parameters. Distinguish this implementation gap from the specified let-generalization rule. Further rules cover types already fixed by the surrounding environment and recursive declarations."
+
+pub fn readerLegacyReading -> String =
+  "let identity = unchanged stores the function, so identity 42 and identity \"hello\" use Int and String separately. let fixed = wrap 42 instead stores Just 42, a Maybe<Int>; it is not the function wrap."
+
+pub fn readerLegacyResult -> String =
+  "identity can be called with Int or String, but fixed is a value of one type, Maybe<Int>. A parameter of type A -> A also has one A chosen for that call. The function body cannot independently call that parameter once at Int and once at String."
+
+pub fn readerRelated -> String =
+  " reviews choosing A within one call and independently at other calls."

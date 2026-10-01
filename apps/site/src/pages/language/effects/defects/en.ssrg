@@ -14,8 +14,31 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Should invalid user input stop the runtime?",
-  summary: "A defect is a computation problem that stops work, such as integer division by zero. Return anticipated invalid input in a result type that permits caller handling.",
-  reading: "checkedDivide tests the divisor before division. For zero it returns Left ZeroDivisor, so the caller can explain the problem instead of performing invalid integer division. Otherwise it returns Right with the quotient.",
-  result: "checkedDivide 7 2 returns Right 3, while checkedDivide 7 0 returns Left ZeroDivisor. Checking for a zero divisor first lets the function return a reason as ordinary data the caller can handle. Operations such as recover do not catch every runtime defect."
+  question: "How do I return invalid input as a failure the caller can handle?",
+  summary: "If division by zero is possible, check before calculating and return a reason. A defect is a separate kind of termination, rather than a recoverable failure value.",
+  reading: "checkedDivide returns a Left reason when the divisor is zero, or the integer quotient in Right otherwise. describe uses match to format either the successful integer or the failure string.",
+  result: "The output is 3 and cannot divide by zero. In this Int example, the integer quotient of 7 / 2 is 3. The zero case never performs division; it returns an ordinary value the caller can inspect.",
 }
+
+pub fn readerCaption -> String = "Check input before dividing"
+
+pub fn readerBridgeOne -> String =
+  "Either<String, Int> carries a String reason in Left or an Int result in Right. Constructing Left does not throw. The public effect entry main prints the two ordinary results."
+
+pub fn readerBridgeTwo -> String =
+  "Keep numeric rules separate when relating this to TypeScript try/catch: TypeScript number division gives Infinity for 7 / 0 and 3.5 for 7 / 2. Seseragi Int division by zero is a defect, not an E failure value delivered to recover."
+
+pub fn readerInvalidCaption -> String =
+  "recover does not recover integer division by zero"
+
+pub fn readerMistake -> String =
+  "In the terminating example, defer calls its \\_ -> ... function during execution, which performs divide 0. The recovery returning 42 is not called: stdout stays empty and the CLI terminates with runtime defect. Check an anticipated zero input first and return a reason, as checkedDivide does above."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "checkedDivide tests the divisor before division. For zero it returns Left ZeroDivisor, so the caller can explain the problem instead of performing invalid integer division. Otherwise it returns Right with the quotient."
+
+pub fn readerLegacyResult -> String =
+  "checkedDivide 7 2 returns Right 3, while checkedDivide 7 0 returns Left ZeroDivisor. Checking for a zero divisor first lets the function return a reason as ordinary data the caller can handle. Operations such as recover do not catch every runtime defect."

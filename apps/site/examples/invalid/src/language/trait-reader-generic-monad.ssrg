@@ -1,0 +1,6 @@
+fn duplicate<M<_>, A> source: M<A> -> M<(A, A)> where Monad<M> = do {
+  value <- source
+  pure (value, value)
+}
+let result = duplicate 42
+pub effect fn main = println (show result)

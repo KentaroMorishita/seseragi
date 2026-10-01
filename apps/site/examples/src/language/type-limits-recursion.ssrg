@@ -1,0 +1,10 @@
+fn isEven value: Int -> Bool = {
+  rec {
+    fn even current: Int -> Bool = if current == 0 then True else odd (current - 1)
+    fn odd current: Int -> Bool = if current == 0 then False else even (current - 1)
+  }
+  let magnitude = if value < 0 then -value else value
+  even magnitude
+}
+
+pub effect fn main = println `${isEven 4}\n${isEven 5}\n${isEven (-4)}`

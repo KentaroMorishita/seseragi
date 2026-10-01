@@ -1,0 +1,52 @@
+import { editorial as case0 } from "./data-validation/maybe-module/page"
+import { editorial as case1 } from "./data-validation/withdefault/page"
+import { editorial as case2 } from "./data-validation/orelse/page"
+import { editorial as case3 } from "./data-validation/either-module/page"
+import { editorial as case4 } from "./data-validation/fold/page"
+import { editorial as case5 } from "./data-validation/mapleft/page"
+import { editorial as case6 } from "./data-validation/flatmap/page"
+import { editorial as case7 } from "./data-validation/validation-module/page"
+import { editorial as case8 } from "./data-validation/valid/page"
+import { editorial as case9 } from "./data-validation/invalid/page"
+import { editorial as case10 } from "./data-validation/invalidmany/page"
+import { editorial as case11 } from "./data-validation/fromeither/page"
+import { editorial as case12 } from "./data-validation/toeither/page"
+import { editorial as case13 } from "./data-validation/maybe-traverse/page"
+import { editorial as case14 } from "./data-validation/either-traverse/page"
+import { ReferenceSymbol } from "../../model/build"
+import { Block } from "../../model/page"
+import { Editorial, editorialBlocks } from "./model"
+pub fn dataValidationEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else if symbol.module == "std/maybe" then
+    match symbol.identity {
+  "std/maybe::withDefault" -> Just (case1 ())
+  "std/maybe::orElse" -> Just (case2 ())
+  "std/maybe::traverse" -> Just (case13 ())
+  _ -> Nothing
+} else if symbol.module == "std/either" then match symbol.identity {
+  "std/either::fold" -> Just (case4 ())
+  "std/either::mapLeft" -> Just (case5 ())
+  "std/either::traverse" -> Just (case14 ())
+  _ -> Nothing
+} else if symbol.module == "std/validation" then match symbol.identity {
+  "std/validation::valid" -> Just (case8 ())
+  "std/validation::invalid" -> Just (case9 ())
+  "std/validation::invalidMany" -> Just (case10 ())
+  "std/validation::fromEither" -> Just (case11 ())
+  "std/validation::toEither" -> Just (case12 ())
+  _ -> Nothing
+} else if symbol.module == "std/prelude" then match symbol.identity {
+  "std/prelude::Monad::flatMap" -> Just (case6 ())
+  _ -> Nothing
+} else Nothing
+pub fn dataValidationModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (match specifier {
+    "std/maybe" -> Just (case0 ())
+    "std/either" -> Just (case3 ())
+    "std/validation" -> Just (case7 ())
+    _ -> Nothing
+  }
+)

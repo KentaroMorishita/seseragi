@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "値が取り得る場合を、型として列挙するには",
-  summary: "代数的データ型は、値が取り得る選択肢を列挙する型です。選択肢ごとに、必要な中身を持たせられます。",
-  reading: "LoadState<A>には、値を持たないIdleと、A型の値を持つLoadedがあります。Loaded \"ready\"ではAにStringが当てはまります。describeはIdleなら\"idle\"を返し、Loadedなら中の文字列を返します。",
-  result: "messageは\"ready\"です。LoadStateの選択肢はIdleとLoadedに決まっているため、matchでLoadedなどを扱い忘れるとコンパイル時にエラーになります。"
+  question: "未発送と発送済みで、必要なデータを分けるには",
+  summary: "発送状態をPendingかShippedのどちらかで表します。追跡番号が必要なのはShippedだけです。値の選択肢と、その選択肢に必要な中身を一緒に宣言できます。",
+  reading: "type Deliveryの下の|は選択肢の区切りです。Pendingは中身のない値、Shipped Stringは文字列を一つ持つ選択肢です。Shipped \"JP42\"で発送済みの値を作ります。この値を作る名前をコンストラクターと呼びます。",
+  result: "出力はnot shippedとtracking: JP42です。label内のmatchは、Pendingなら未発送の文、Shippedなら中の追跡番号を使った文を返します。成功・失敗の話を先に学ばなくても、選択肢の使い分けを確認できます。",
 }
+
+pub fn readerCaption -> String = "未発送と発送済みの値を作る"
+
+pub fn readerBridgeOne -> String =
+  "TypeScriptでも、kindという普通のフィールドでオブジェクトの形を区別できます。このTypeScript例の|は、二つの形のどちらかを許す指定です。kindが\"shipped\"の場合だけtrackingがあります。switchでkindを調べると、使えるフィールドが分かります。"
+
+pub fn readerBridgeTwo -> String =
+  "Seseragiでは、PendingとShippedという名前で選択肢を区別します。matchのShipped trackingは、その選択肢の中身にtrackingという名前を付けます。printlnが二つの結果を表示し、文字列内の\\nで改行します。こうした選択肢を持つ型を代数的データ型、略してADTと呼びます。"
+
+pub fn readerInvalidCaption -> String = "追跡番号に整数を渡す"
+
+pub fn readerMistake -> String =
+  "Shipped 42は、Stringの追跡番号が必要なのにIntを渡しているためSES-T0101です。例ではShipped \"JP42\"のように文字列を渡してください。"
+
+pub fn readerExecution -> String =
+  "pub effect fn mainは、外部へ出力する公開された実行入口です。実行するとmainが開始され、printlnが文字列と改行を出力します。計算やデータの組み立ては、その前の通常の関数やletで行っています。"
+
+pub fn readerDetailNote -> String =
+  "ここからの宣言例は、詳しい規則を調べるための断片です。単独では実行入口を持ちません。動かす場合は、上に載せたmain付きの完全な例を使ってください。"
+
+pub fn readerComparisonScope -> String =
+  "TS例でもstrictな型検査と明示した戻り値の型により、未発送の分岐を消すとエラーになります。二つの言語で同じ状態と結果を表し、その書き方を比べています。"

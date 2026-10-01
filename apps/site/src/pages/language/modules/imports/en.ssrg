@@ -1,31 +1,50 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "Imports",
   summary: (explanation ()).summary,
-  ruleTitle: "Imports state where names come from",
-  ruleBody: "Imports appear at the beginning of a module. A named import introduces the selected public declarations; as changes their local spelling. A namespace import introduces an alias and keeps access qualified, such as text.trim. The example gives array length the local name arrayLength and uses trim through text. Neither form imports every exported name into unqualified scope.",
-  typingBody: "Renaming an import does not change its type or defining module. Importing a public, non-opaque newtype makes both its type name and value constructor available. With an as alias, use that alias in both type annotations and value construction.",
-  evaluationBody: "Importing links the module into the dependency graph; it does not call its functions or execute its Effects. Namespaces are resolved by the compiler, not by inspecting a runtime object. A namespace alias can qualify public values, functions, types, traits, constructors and nested foreign namespaces. It cannot provide a qualified infix spelling for a custom operator.",
-  invalidTitle: "Namespace import is not an unqualified wildcard",
-  invalidBody: "import * as text from \"std/text\" supplies text.trim, not bare trim. There is no syntax that introduces every export unqualified. Imports also cannot introduce the same local name twice in one scope. Use distinct aliases or keep one namespace-qualified. Import only public names: knowing a private function's spelling does not make it accessible.",
-  diagnosticsBody: "A missing exported name is rejected as MissingExport and an existing private name as PrivateExport. Unused imports produce warnings without changing program semantics. An import that supplies a trait instance selected during type checking counts as used even if its alias or named value never appears in source; organize-imports must retain it.",
+  purpose: [
+    "In TypeScript, the same two files use export function and import. This version also passes \"Aki\" and prints Hello, Aki!. Both versions use the original definition rather than copying the function.",
+    "This comparison concerns publishing and using a function. TypeScript already expresses that concisely. In Seseragi, read pub as the visibility marker and the space in greet \"Aki\" as function application."
+  ],
+  exampleTitle: "Call a function from another file",
+  reading: [
+    "\"./greeting\" is relative to the file containing the import, main.ssrg. It selects greeting.ssrg in the same directory; the .ssrg extension can be omitted. The shell working directory is not the base.",
+    "pub and import answer different questions. pub marks which declarations other modules may use. import selects the names this caller will use. Function-call arguments do not belong in the import declaration."
+  ],
+  rules: [
+    "import { greet } introduces greet; import { greet as welcome } introduces welcome. as changes only the caller's spelling, not the function type or implementation. import * as words requires words.greet. words is an alias for resolving public names, not a runtime object.",
+    "The next three calls all use the same function. do in main runs the output operations from top to bottom, printing Hello, Aki! on three lines. There is no wildcard form that introduces every public name without qualification. Put imports before other declarations and do not introduce the same name twice in one scope.",
+    "A module alias can qualify types, traits, value constructors and nested public namespaces as well as values and functions. A namespace declared inside a foreign block, which describes a connection to another language, enters the module-alias namespace and uses the same qualified access. If a public newtype has a type and constructor with the same spelling, one named import introduces both. as renames both together; a type annotation or value-expression position determines which is used.",
+    "Import a custom operator explicitly, as in import { operator <^> }. In the example, infixr 4 declares precedence 4 and right association. Its body subtracts, so 10 <^> 3 <^> 2 means 10 - (3 - 2) and prints 9. The import carries the type, association and precedence from the public interface. There is no namespace-qualified infix form such as words.<^>.",
+    "Importing initializes dependency modules; their pure top-level let calculations can call functions. It does not automatically call an imported function, run a stored Effect, or invoke the imported module's main. The compiler and language server do not execute imported function bodies to parse an operator expression.",
+    "A trait groups operations available for a type; an instance implements those operations for a particular type. If typechecking selects an instance supplied through an import, that import is used even when its alias never appears in an expression. Do not remove it merely for that reason. An import unused by names, operators, re-exports or selected instances receives a warning."
+  ],
+  mistakes: [
+    "Return to the first greeting project and replace only main.ssrg with the following source. It imports a namespace as words but then calls bare greet. No local name greet was introduced, so the compiler reports SES-N0001. Keep greeting.ssrg exactly as in the first project.",
+    "Change the call to words.greet \"Aki\" to print Hello, Aki!. Alternatively, use import { greet } to keep the bare call. Knowing a private name does not make it importable. A missing exported name and an existing declaration that is private produce different diagnostics."
+  ],
+  related: [
+    "Look up pub for publishing declarations and opaque for hiding representations.",
+    "Check how relative paths and package names select a source file.",
+    "Read the full custom-operator association and precedence rules."
+  ],
 }
-
-pub fn layoutTitle -> String = "Operators bring their parsing contract"
-
-pub fn layoutBody -> String =
-  "A custom operator is imported explicitly, for example import { operator <+> } from \"./semigroup\". Its interface supplies fixity, precedence and type scheme as well as the symbol. The compiler and language server can therefore parse an operator chain from the public interface without executing or parsing the imported function body. Operators remain distinct from ordinary value names."
-
-pub fn exampleTitle -> String = "Use a local alias and a qualified namespace"
-
-pub fn exampleBody -> String =
-  "The arrayLength binding refers to std/array's length function. text is a module alias, so text.trim refers to an exported function rather than a field lookup on a text value. The standard-library modules are available to the standalone Playground example; relative imports require their sibling source files."
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I use a function from another module without a name collision?",
-  summary: "A named import brings selected public declarations into scope. A namespace import lets you qualify public names with a module alias.",
-  reading: "length as arrayLength brings std/array's function in under a different local name. import * as text lets normalize call text.trim. The imported signatures stay unchanged; an alias does not wrap or duplicate the function.",
-  result: "itemCount [1, 2, 3] returns 3 and normalize \"  Aki  \" returns \"Aki\". arrayLength and text.trim refer to the original standard functions under these names. Only public declarations can be imported. Importing does not call the functions or execute their returned Effects."
+  question: "How do I call a function defined in another file?",
+  summary: "Put a greeting function in greeting.ssrg and call it from main.ssrg. Each .ssrg file is a module. The defining file publishes a declaration with pub; the caller selects it with import.",
+  reading: "pub fn greet in greeting.ssrg declares a public function from String to String. name: String gives the parameter type, and -> String gives the result type. + joins the strings. import { greet } in main.ssrg makes that public function available in the caller.",
+  result: "greet \"Aki\" returns \"Hello, Aki!\". pub effect fn main is a public entry function that returns output work; the runner starts that work. println writes the string and a newline. Splitting the definition into another file does not change the call or its result.",
 }
+
+pub fn setup -> String =
+  "Create all three files in an empty directory at the paths shown in their panel labels. src holds ordinary source files. The [run] table in seseragi.toml selects src/main.ssrg as the entry module. Run the commands below from that directory. This project uses a relative import; pasting main.ssrg alone into a single-file Playground is insufficient."
+
+pub fn detailsTitle -> String =
+  "Use a name directly, rename it, or qualify it with a module alias"
+
+pub fn mistakesTitle -> String = "Leaving off words asks for a different name"
+
+pub fn title -> String = (copy ()).title

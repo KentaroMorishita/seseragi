@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Transform the failure reason inside Left while preserving a successful Right value.",
+  taskTitle: "Add a field name to a failure reason",
+  purpose: "Add “seats field” to the reason returned by a check so the display identifies which input needs fixing. Keep a successful seat count unchanged.",
+  setup: "Import std/either as either. Either<String, Int> is Left with a String reason or Right with an Int seat count. In fn addField, error: String is the argument and -> String is the result type; the string after = is returned. requireSeats accepts only positive counts into Right.",
+  after: [
+    "either.mapLeft addField result takes the function first and the result second. For Left, addField receives the reason and supplies a new Left reason. For Right, addField is not called and the successful value is preserved.",
+    "The match in describe displays the reason for Left error and the count for Right seats. After mapLeft, a failure is still Left; it has not become a successful result.",
+    "pub effect fn main is the program entry. do runs the println steps from top to bottom to display strings. Function calls separate arguments with spaces. show converts a number or another printable value to a string."
+  ],
+  comparisonBefore: "In TypeScript, ok identifies which object shape was returned. When it is true, read the successful value; when false, read the error field. These functions return data rather than throwing exceptions.",
+  comparisonAfter: "TypeScript can likewise keep the successful object and rebuild only the error field. mapLeft expresses that choice as one shared operation. It does not revalidate the input or recover from a failure.",
+  details: [
+    "In mapLeft<E, F, A>, E is the old failure type, F the new failure type, and A the successful type. Here E and F are String and A is Int. A callback may also change the failure type.",
+    "A callback intended to transform success will never run for Right through mapLeft. Choose mapRight for that task. The argument expressions to mapLeft are still evaluated before the call."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Rules and common mistakes"
+}

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { listEditorial } from "../../list-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  listEditorial "std/list::reduceRight" "list-reduceright" "2\n10" (en.copy ()) (ja.copy ())

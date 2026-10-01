@@ -1,0 +1,2 @@
+fn lineTotal unitPrice: Int -> quantity: Int -> Int = unitPrice * quantity
+let total = lineTotal "400" 3

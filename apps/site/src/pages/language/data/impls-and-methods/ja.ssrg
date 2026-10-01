@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { ReferenceCopy } from "../../reference-article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> ReferenceCopy = ReferenceCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "固有implとメソッド",
   summary: (explanation ()).summary,
-  ruleTitle: "型と同じモジュールにメソッドを定義する",
-  ruleBody: "impl Tの中に、型Tのメソッドを書きます。最初の引数はselfという名前で、型はTです。value.methodと呼ぶと、valueがselfに渡されます。残りの引数は、通常の関数と同じく空白で順番に渡します。",
-  typingBody: "呼び出し先は、selfに渡す値の型から決まります。型パラメーターがあれば具体的な型を当てはめて検査します。一つの型に複数のimplを書けますが、同じ名前のメソッドを二重に定義することはできません。",
-  evaluationBody: "メソッド呼び出しでは、型から決まる関数へドットの前の値をselfとして渡します。selfのフィールドに代入することはできません。値を変えたいメソッドでは、新しい値を返します。self以外に引数がない場合はvalue.getと書きます。getがUnit引数を要求していなければ、()は渡しません。",
-  invalidTitle: "メソッドの追加とtraitの実装は別の宣言",
-  invalidBody: "impl Tは、Tを定義したモジュールにだけ書けます。traitの条件を満たす実装にはinstance Trait<T>を使います。impl Trait<T>を書いてもtraitの実装にはなりません。",
-  diagnosticsBody: "定義する型の所属、selfの名前と型、メソッド名の重複を確認してください。他モジュールから呼ぶメソッドにはpubが必要です。",
+  exampleTitle: "学習の進み具合を表す値に、進める操作を定義する",
+  purpose: [
+    "進み具合のデータと、それを扱う操作を同じ型にまとめます。TypeScriptのオブジェクトのメソッドに似た呼び出し方ですが、Seseragiではselfを引数に書き、元の値のフィールドへ代入しません。",
+    "Progressは完了した項目数をcompletedという整数フィールドに持ちます。advanceは項目数を増やした新しいProgressを返し、countは現在の数を返します。",
+  ],
+  reading: [
+    "struct Progress { completed: Int }で名前付きのデータ型を宣言します。impl Progressは、その型に属するメソッドを定義する場所です。型とimplは同じモジュールに置きます。",
+    "advanceの最初の引数self: Progressは操作する値、amount: Intは増やす数です。最後の-> Progressは戻り値の型です。Progress { ...self, completed: ... }は元のフィールドを引き継ぎ、completedを変えた新しい値を作ります。",
+    "original.advance 1では、originalがself、1がamountへ渡ります。originalのcompletedは2なので、updatedには3が入ります。originalへ代入して書き換えているわけではありません。",
+    "countはselfだけを受け取り、completedを返します。そのためoriginal.countとupdated.countに追加の()は要りません。結果は2と3です。バッククォートでテンプレートを囲み、${...}で値を埋め込み、\\nで出力の行を分けます。",
+  ],
+  rules: [
+    "impl Tの中に、型Tのメソッドを書きます。最初の引数はselfという名前で、型はTです。value.methodと呼ぶと、valueがselfに渡されます。残りの引数は、通常の関数と同じく空白で順番に渡します。",
+    "呼び出し先は、selfに渡す値の型から決まります。型パラメーターがあれば具体的な型を当てはめて検査します。一つの型に複数のimplを書けますが、同じ名前のメソッドを二重に定義することはできません。",
+    "メソッド呼び出しでは、型から決まる関数へドットの前の値をselfとして渡します。selfのフィールドに代入することはできません。値を変えたいメソッドでは、新しい値を返します。self以外に引数がない場合はvalue.countと書きます。countがUnit引数を要求していなければ、()は渡しません。",
+    "impl Tは、Tを定義したモジュールにだけ書けます。traitは、複数の型が提供できる共通の操作を定める仕組みです。その操作の実装にはinstance Trait<T>を使います。impl Trait<T>を書いてもtraitの実装にはなりません。",
+    "定義する型の所属、selfの名前と型、メソッド名の重複を確認してください。他モジュールから呼ぶメソッドにはpubが必要です。",
+  ],
+  mistakes: [
+    "下のcountは最初の引数をprogressと名付けているため、SES-T0503になります。メソッドの最初の引数はselfという名前が必要です。宣言のprogressと本体のprogress.completedをselfへ直すと2を出力できます。",
+    "メソッドの呼び出し方がドットでも、フィールドの更新は自動ではありません。advanceが返した新しい値を受け取り、その値を次の処理へ渡してください。",
+  ],
+  related: [
+    "value.methodと通常の関数呼び出しの対応を確認できます。",
+    "Box<A>など複数の中身の型に共通するメソッドは、後からこちらで確認できます。",
+    "structの値を作り、フィールドを読んで更新したコピーを作る規則を確認します。",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "自分の型に属する操作は、どこに書くか",
-  summary: "implには、名前付きの型に属するメソッドをまとめます。型の定義元のモジュールに書き、最初のself引数で操作する値を受け取ります。",
-  reading: "Box<A>のvalueはA型のフィールドです。impl<A> Box<A>に定義したgetは、ドットの前のBoxをself: Box<A>で受け取ります。self.valueを返すので、戻り値もA型です。",
-  result: "Box<Int> { value: 42 }.getの結果はIntの42です。getはselfの中身を読み、Boxの値を変更しません。implによるメソッドの追加と、instanceによるtraitの実装は別の宣言です。"
+  question: "自分の型を操作するメソッドを定義するには",
+  summary: "implには、型に属する関数であるメソッドを定義します。ドットの前の値をselfで受け取り、必要なら変更後の新しい値を返します。",
+  reading: "impl Progressのadvanceは、selfとして受け取った値から新しいProgressを作ります。countは値を変更せず、数だけを読みます。",
+  result: "元の進み具合は2、新しい進み具合は3です。戻り値を受け取ることで、元の値を保ったまま次の状態を扱えます。",
 }

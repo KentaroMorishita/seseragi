@@ -1,7 +1,9 @@
+import * as firstEn from "../pages/docs/first-run/en"
+import * as firstJa from "../pages/docs/first-run/ja"
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
-import { Locale, localizedRoute, translate } from "../model/locale"
+import { Locale, localized, localizedRoute, translate } from "../model/locale"
 import { NavigationArea, PageDefinition } from "../model/page"
 import { article } from "../components/article"
 import { anchor } from "../components/primitives"
@@ -41,8 +43,9 @@ pub fn homeLayout<Action> input: BuildInput
               html.div {
                 class: "hero-actions",
                 children: [
-                  anchor messages.documentation (localizedRoute locale "/docs/")
-                    "primary-action",
+                  anchor
+                    (translate locale (localized (firstEn.title ()) (firstJa.title ())))
+                    (localizedRoute locale "/docs/first-run/") "primary-action",
                   anchor messages.playground input.playgroundUrl "secondary-action"
                 ]
               }

@@ -1,0 +1,12 @@
+import * as signals from "std/signal"
+
+pub effect fn main = do {
+  count <- signals.make 0
+  snapshot <- *count
+  count := 4
+  signals.update (\value: Int -> value + 1) count
+  current <- *count
+  _ <- println snapshot
+  _ <- println current
+  println (current * 2)
+}

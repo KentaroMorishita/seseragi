@@ -1,0 +1,22 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "先頭を初期値にして、残りの要素を左から順にまとめます。一件だけなら、その値をそのまま返します。",
+  taskTitle: "最初の金額から順に差し引く",
+  purpose: "20から3、続けて2を引くと15になります。reduce1は先頭20を最初の計算結果に使うため、別の初期値を渡しません。入力がNonEmptyListなので先頭は必ずあります。",
+  setup: "cons 20 `[3, 2]は先頭20とListの残りをつなげます。[の前のバッククォートがListの印です。fn subtractの二つの引数はIntで、-> Intが結果の型です。reduce1 subtract amountsは、その関数と一覧を渡します。",
+  after: [
+    "計算順は(20 - 3) - 2です。20 - (3 - 2)ではありません。一件のsingleton 20では、subtractを呼ばず20を返します。最後の表示で、元のamountsが20、3、2のままだと確認できます。",
+    "pub effect fn mainのdoはprintlnを順に実行します。showで整数やListを文字列にします。toListは表示のために通常のListへ変換し、元の値を書き換えません。"
+  ],
+  comparisonBefore: "TypeScriptのArray.reduceも、初期値を省略すると先頭から始めます。例ではreadonly [T, ...T[]]で空の入力を除いており、同じ減算と一件の場合を確かめます。",
+  comparisonAfter: "整数の結果は両方とも15と20です。TypeScriptのreduceは空の通常配列に初期値なしで使うと例外になりますが、この非空タプルの入力にはその場合がありません。Seseragiではreduce1の引数の型に非空の条件があります。",
+  details: [
+    "step: (A -> A -> A)は、途中の結果Aと次の要素Aから新しい結果Aを作る関数です。元の順番を変えず、先頭以外の各要素につき一度呼びます。減算のように順序で結果が変わる関数にも使えます。",
+    "結果も要素と同じAです。別の型に集計する場合や0などの初期値を指定する場合は、明示した初期値を取るreduceを使います。空かもしれないListはfromListで確かめてからreduce1へ渡します。"
+  ],
+  codeTitle: "完全なプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptの例と比べる",
+  detailTitle: "入力と結果、計算の規則"
+}

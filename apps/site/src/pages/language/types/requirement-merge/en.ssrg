@@ -14,8 +14,35 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I require both an existing environment and a clock?",
-  summary: "The & notation combines service requirements in an Effect or Stream type. It describes what execution needs, not how to merge runtime records.",
-  reading: "Timed<R, E, A> abbreviates an Effect that needs everything in R plus a clock field of type Clock. E still describes recoverable failures and A the success value; adding the service does not change either.",
-  result: "A clock required by Timed and a clock already required by R must have the same type; different types produce a field conflict. R & {} adds no service and has the same requirement as R. Every required field must be determined at the execution entry point."
+  question: "How can a computation combine two required configuration services?",
+  summary: "Build a computation that needs Settings for a label and Theme for its suffix. In an Effect type, & can combine the records describing required services.",
+  reading: "Settings and Theme describe externally supplied configuration. settingsOf and themeOf select their respective environment fields. greeting declares both with Settings, Theme, obtains them through service, and builds a string.",
+  result: "Configured<R, A> aliases an Effect requiring settings: Settings in addition to R. The configured annotation chooses { theme: Theme } for R and String for A, so its environment is { theme: Theme, settings: Settings }, failure is Never (no recoverable failure) and success is String. Supplying both with provide and running it prints Hello!.",
 }
+
+pub fn readerCaption -> String =
+  "Require two services, then supply the environment and run"
+
+pub fn readerBridgeOne -> String =
+  "Effect is a value describing work to run. <- in do makes a successful result available to subsequent lines; succeed constructs a successful string result. Unit -> annotates a function that takes () and returns that Effect. configured = greeting names the function without executing it."
+
+pub fn readerBridgeTwo -> String =
+  "provide specifies the environment value for this computation. & combines type requirements, not runtime values. Unlike TypeScript’s A & B on ordinary object types, it is restricted to particular type positions. main runs the provided computation here, and the CLI supplies its remaining Console output service."
+
+pub fn readerInvalidCaption -> String =
+  "Require incompatible types for the same settings field"
+
+pub fn readerMistake -> String =
+  "Requiring both Settings and Theme at settings conflicts and reports SES-E0001. For two roles, use separate field names such as settings and theme in the first example. Requiring the same name and the same type twice instead normalizes to one field."
+
+pub fn readerDetailNote -> String =
+  "The detailed Timed declaration applies the same idea to adding clock to existing requirements R; it does not itself read a clock. E is the failure type and A the success type. Further rules cover SES-T0501 outside Effect/Stream requirement positions and merging with an empty requirement."
+
+pub fn readerLegacyReading -> String =
+  "Timed<R, E, A> abbreviates an Effect that needs everything in R plus a clock field of type Clock. E still describes recoverable failures and A the success value; adding the service does not change either."
+
+pub fn readerLegacyResult -> String =
+  "A clock required by Timed and a clock already required by R must have the same type; different types produce a field conflict. R & {} adds no service and has the same requirement as R. Every required field must be determined at the execution entry point."
+
+pub fn readerRelated -> String =
+  " reviews requiring one service and supplying its environment."

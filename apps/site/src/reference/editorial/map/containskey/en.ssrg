@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Check whether a key is present",
+  purpose: "Use containsKey for a yes/no presence check when you do not need the stored value. Pass the key, then the Map.",
+  reading: "zero is present even though its value is 0, so the first result is true. missing is absent and returns false. Looking in an empty Map also returns false.",
+  boundaries: "Presence does not depend on whether a value is zero, false or empty text. A missing key is a different situation.",
+  rules: "Eq<K> and Hash<K> determine which keys match. With suitable hashing this is expected constant lookup work; complete hash collisions can require a scan. The Map is unchanged.",
+  mistake: "TypeScript Map.has is the direct counterpart. Do not use Boolean(map.get(key)) as a substitute: that would treat a stored zero as missing. Use get when you also need the value.",
+}

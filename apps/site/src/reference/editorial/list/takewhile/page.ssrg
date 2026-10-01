@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { listEditorial } from "../../list-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  listEditorial "std/list::takeWhile" "list-takewhile" "`[1, 2]\n`[]\n`[1, 2]\n`[]" (en.copy ()) (ja.copy ())

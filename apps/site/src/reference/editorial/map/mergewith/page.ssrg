@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { mapEditorial } from "../../map-model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  mapEditorial "std/map::mergeWith" "map-mergewith" "[[\"b\",\"L-b\"],[\"a\",\"L-a/R-a\"],[\"c\",\"R-c\"]]\n[[\"a\",\"R-a/L-a\"],[\"c\",\"R-c\"],[\"b\",\"L-b\"]]\n[[\"b\",\"L-b\"],[\"a\",\"L-a\"]]\n[[\"a\",\"R-a\"],[\"c\",\"R-c\"]]\n[[\"b\",\"L-b\"],[\"a\",\"L-a\"]]\n[[\"a\",\"R-a\"],[\"c\",\"R-c\"]]" (en.copy ()) (ja.copy ())

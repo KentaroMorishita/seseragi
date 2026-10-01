@@ -14,8 +14,30 @@ pub fn copy -> ReferenceCopy = ReferenceCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Where does a stored Effect actually start?",
-  summary: "Designated boundaries such as main and the test runner start Effects. They provide required services before execution and wait for cleanup at the end.",
-  reading: "program returns a Task<String> constructed with succeed. Calling program () describes work returning a string successfully; the example does not print anything. It demonstrates the shape of a function that host integration can call before executing its returned Task.",
-  result: "The Task's successful result is \"ready for the host boundary\". Ordinary helper code has no operation to extract A directly from Effect<R, E, A>. Compose Effects in helpers and return them to the execution boundary."
+  question: "Which work starts when I run the program?",
+  summary: "The runner calls the public main and starts the Effect it returns. It does not automatically execute every Effect constructed in the file.",
+  reading: "unused stores the work from announce \"not printed\". main returns announce \"only main\". Both use the same function, but only one is returned from the entry point.",
+  result: "Only only main is printed. Constructing unused does not print. Distinguish writing functions and values in a file from connecting their work to main.",
 }
+
+pub fn readerCaption -> String = "Stored work and work returned from the entry"
+
+pub fn readerBridgeOne -> String =
+  "pub exposes main as an entry point. effect fn returns work; println produces output when that work is executed. The CLI supplies Console and starts it."
+
+pub fn readerBridgeTwo -> String =
+  "A TypeScript function whose body is not run until called provides a starting analogy. Seseragi helpers compose Effects and return them toward main instead of invoking a general runEffect operation in the middle of ordinary application code."
+
+pub fn readerInvalidCaption -> String = "Do not expose main"
+
+pub fn readerMistake -> String =
+  "The example without pub can be parsed, but the CLI refuses it as an entry and reports that main must be public during execution preparation. Restore pub effect fn main to expose the entry."
+
+pub fn readerDetailNote -> String =
+  "The detailed rules below also use declaration-only examples. They have no standalone entry point; use the complete program with main above when you want to run an example."
+
+pub fn readerLegacyReading -> String =
+  "program returns a Task<String> constructed with succeed. Calling program () describes work returning a string successfully; the example does not print anything. It demonstrates the shape of a function that host integration can call before executing its returned Task."
+
+pub fn readerLegacyResult -> String =
+  "The Task's successful result is \"ready for the host boundary\". Ordinary helper code has no operation to extract A directly from Effect<R, E, A>. Compose Effects in helpers and return them to the execution boundary."

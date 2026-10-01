@@ -1,0 +1,6 @@
+import { Editorial } from "../../model"
+import { regexEditorial } from "../../regex-model"
+import * as en from "./en"
+import * as ja from "./ja"
+pub fn editorial -> Editorial =
+  regexEditorial "std/regex::split" "split" "[\"a\",\"\",\"b\",\"\"]\n[\"\",\"a\",\"\"]\n[\"\",\"a\",\"👍\",\"\"]\n[\"\"]" "[\"a\",\"\",\"b\",\"\"]\n[\"\",\",\",\"a\",\",\",\"\"]\n[\"a\",\"👍\"]\n[\"\"]" (en.copy ()) (ja.copy ())

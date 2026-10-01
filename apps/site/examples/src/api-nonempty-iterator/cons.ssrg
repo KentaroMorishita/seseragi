@@ -1,0 +1,8 @@
+import * as nonempty from "std/non-empty-list"
+pub effect fn main = do {
+  let remaining = `[20, 30]
+  let scores = nonempty.cons 10 remaining
+  println (show (nonempty.toList scores))
+  println (show remaining)
+  println (show (nonempty.toList (nonempty.cons 10 `[])))
+}

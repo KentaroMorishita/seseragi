@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Observe a next element and remaining Iterator inside Just without changing the original. Return Nothing at the end.",
+  taskTitle: "Read an element, then move to its continuation",
+  purpose: "Read the first and second values of an Iterator counting down from 3. The next result contains a continuation as well as an element. Use that returned Iterator to advance.",
+  setup: "countdown returns Just (current number, next number) for a positive count or Nothing at zero and below. iterator.unfold countdown 3 constructs an Iterator<Int>. The -> String on fn first declares a display-text result.",
+  after: [
+    "next returns Just (value, rest) for an element or Nothing for the end. match selects that form and names the pair’s parts; _ marks an unused part. first reads only the element, while second passes rest to first to read the following element.",
+    "Calling first on the same values twice gives 3 twice because the original Iterator is not consumed. second reads the returned rest and therefore gives 2. An Iterator starting at state zero ends immediately and displays done.",
+    "import * as iterator defines the operation prefix. The do in pub effect fn main runs println in order, and show converts an integer to text. next itself neither prints nor changes its input."
+  ],
+  comparisonBefore: "A JavaScript generator.next() returns a result with value and done; done is true at the end. The function* and yield in this example create a generator that supplies one element and pauses.",
+  comparisonAfter: "The TypeScript version advances the same generator on every call, producing 3, 2, 1. Seseragi produces 3, 3 when the original Iterator is read twice; reading the returned rest produces 2. Both represent the end as an ordinary result, but advancement works differently.",
+  details: [
+    "The result of next<A> is Maybe<(A, Iterator<A>)>. The Just pair puts the element A first and the remaining Iterator second. Nothing contains neither. In a sequential loop, retain rest as the next Iterator to read.",
+    "Reading the same Iterator has a contract of returning the same result. That does not guarantee cached computation: an Iterator built with unfold calls step once on every next. Its step cannot hide changes to external state."
+  ],
+  codeTitle: "Complete program",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "Read the TypeScript counterpart",
+  detailTitle: "Input, result and evaluation rules"
+}

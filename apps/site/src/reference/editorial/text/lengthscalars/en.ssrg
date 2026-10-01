@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Count Unicode scalar values",
+  purpose: "lengthScalars returns the number of Unicode scalars in a string. A scalar is one Unicode character-code value. A single visible character can be made from several scalars.",
+  reading: "Aé😀e\\u{301} contains A, é, 😀, e, and combining acute accent U+0301: five scalars. \\u{301} writes the accent’s code value; it visually combines with the preceding e.",
+  boundaries: "The second string has e plus the accent, so it counts as two despite looking like one character. Empty input is zero. The first string also has ten UTF-8 bytes, six UTF-16 units in TypeScript String.length, and four graphemes.",
+  rules: "Scalar count is neither byte count nor necessarily visible-character count. Counting may take work linear in UTF-8 byte length; constant-time access is not guaranteed.",
+  mistake: "Choose the unit required by a character limit or cursor operation. Consider std/text/grapheme for user-perceived units, or lengthBytes for encoded size.",
+}

@@ -1,0 +1,14 @@
+import * as either from "std/either"
+import * as text from "std/text"
+fn requireSeats seats: Int -> Either<String, Int> =
+  if seats > 0 then Right seats else Left ("seats must be positive: " + show seats)
+fn describe result: Either<String, Array<Int>> -> String = match result {
+  Right seats -> "Seats: [" + text.join "," (map (\seat: Int -> show seat) seats) + "]"
+  Left error -> "Error: " + error
+}
+pub effect fn main = do {
+  println (describe (either.traverse requireSeats [2, 1]))
+  println (describe (either.traverse requireSeats [0, 2]))
+  println (describe (either.traverse requireSeats [2, 0, -1]))
+  println (describe (either.traverse requireSeats []))
+}

@@ -1,0 +1,3 @@
+import * as sets from "std/set"
+let tags: sets.Set<String> = ["work", "home"]
+pub effect fn main = println "unreachable"

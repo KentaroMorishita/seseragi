@@ -1,63 +1,34 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import {
-  BulletList,
-  CodeExample,
-  InlineCode,
-  InternalLink,
-  PageDefinition,
-  Words
-} from "../../../../model/page"
-import { syntaxPage } from "../article"
+import { CodeExample, PageDefinition } from "../../../../model/page"
+import { readerPage } from "../../reader-article"
+import { withDetails } from "../reader-details"
+import * as details from "./details"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
-  syntaxPage "language.syntax.layout-and-line-continuation" "/docs/language/syntax/layout-and-line-continuation/" (en.copy ()) (ja.copy ()) [
-    CodeExample ("syntax-layout", localized "A pipeline across lines" "複数行に分けたパイプライン"),
-    BulletList [
-      [
-        InlineCode "value +",
-        Words (
-          localized " continues because + still needs a right operand."
-            " は+の右側がまだないため、次の行へ続きます。"
-        )
-      ],
-      [
-        InlineCode "|> transform",
-        Words (
-          localized
-            " continues the previous expression because the next token is a continuation operator."
-            " は次の行が継続できる演算子で始まるため、前の式の続きになります。"
-        )
-      ],
-      [InlineCode ";", Words (localized " always separates forms." " は宣言や式の区切りを明示します。")]
+fn content -> PageDefinition = withDetails (
+  readerPage "language.syntax.layout-and-line-continuation"
+    "/docs/language/syntax/layout-and-line-continuation/" (en.copy ()) (ja.copy ())
+    "syntax-reader-layout" "7, 7" (
+      arrays.concat [
+        [CodeExample
+    ("syntax-reader-layout-invalid", localized "Rejected example" "受け付けられない例")],
+        details.rejected ()
+      ]
+    ) [
+      (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      ),
+      (
+        localized "Source text and comments" "ソーステキストとコメント",
+        "/docs/language/syntax/source-text/"
+      ),
+      (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")
     ]
-  ] [BulletList [
-    [Words (
-      localized "Indenting a complete second expression does not join it to the first."
-            "二つの完成した式は、二つ目を字下げしても一つにはなりません。"
-    )],
-    [Words (
-      localized "A closing brace cannot be inferred from indentation."
-            "字下げを戻しても、閉じる}を省略することはできません。"
-    )],
-    [Words (
-      localized "Use parentheses when neither explicit continuation condition applies."
-            "行を続ける条件に合わない場合は、括弧で式を囲みます。"
-    )]
-  ]] [
-    [InternalLink (
-      localized "Function application" "関数適用",
-      "/docs/language/syntax/function-application/"
-    )],
-    [InternalLink (
-      localized "Source text and comments" "ソーステキストとコメント",
-      "/docs/language/syntax/source-text/"
-    )],
-    [InternalLink
-            (localized "Readable density" "読みやすい密度", "/docs/language/model/readable-density/")]
-  ]
+) (details.forms ())
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

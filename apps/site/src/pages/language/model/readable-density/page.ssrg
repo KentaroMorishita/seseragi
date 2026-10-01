@@ -1,25 +1,48 @@
 import { explainPage } from "../../explanation"
-import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { InternalLink, PageDefinition } from "../../../../model/page"
-import { principlePage } from "../principle"
+import {
+  Block,
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Terminal,
+  Words
+} from "../../../../model/page"
+import { readerPrinciplePage } from "../reader-principle"
 import * as en from "./en"
 import * as ja from "./ja"
+import * as guide from "./guide"
+
+fn leading -> Array<Block> = []
+
+fn rejected -> Array<Block> = []
+
+fn advanced -> Array<Block> = []
 
 fn content -> PageDefinition =
-  principlePage "language.model.readable-density" "/docs/language/model/readable-density/" (en.copy ()) (ja.copy ()) "principle-readable-density" "7" [
-    [InternalLink (
-      localized "Function application" "関数適用",
-      "/docs/language/syntax/function-application/"
-    )],
-    [InternalLink (
-      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
-      "/docs/language/syntax/pipelines-and-low-precedence-application/"
-    )],
-    [InternalLink (
-      localized "Ranges and comprehensions" "範囲と内包表記",
-      "/docs/language/expressions/ranges-and-comprehensions/"
-    )]
+  readerPrinciplePage "language.model.readable-density" "/docs/language/model/readable-density/" (en.copy ()) (ja.copy ()) (en.reader ()) (ja.reader ()) "model-reader-density" "7" (leading ()) (rejected ()) (advanced ()) [
+    [
+      InternalLink (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      ),
+      Words (localized ". How are arguments passed to a function?" "。関数に引数をどう渡すか")
+    ],
+    [
+      InternalLink (
+        localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+        "/docs/language/syntax/pipelines-and-low-precedence-application/"
+      ),
+      Words (localized ". How do pipeline steps group together?" "。パイプラインの段階をどうまとめるか")
+    ],
+    [
+      InternalLink (
+        localized "Ranges and comprehensions" "範囲と内包表記",
+        "/docs/language/expressions/ranges-and-comprehensions/"
+      ),
+      Words
+        (localized ". How do I describe a collection transformation?" "。コレクションの作り方をどう表すか")
+    ]
   ]
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

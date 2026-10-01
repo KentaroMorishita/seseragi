@@ -1,25 +1,63 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, InternalLink, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal,
+  Heading
+} from "../../../../model/page"
 import { referencePage } from "../../reference-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   referencePage "language.effects.sequential-and-parallel" "/docs/language/effects/sequential-and-parallel/" (en.copy ()) (ja.copy ()) [CodeExample
       (
         "effects-execution-order",
         localized "Explicit sequential and parallel composition" "明示的な逐次・並列合成"
       )] [] [
-        [InternalLink
-      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/")],
-        [InternalLink (
-          localized "Effectful for" "Effectを実行するfor",
-          "/docs/language/effects/effectful-for/"
-        )],
-        [InternalLink
-      (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/")]
+        [InternalLink (localized "Do notation" "do記法", "/docs/language/traits/do-notation/"), Words (localized ": Read success-value binding in a do block" "：doの成功値の受け渡しを読む")],
+        [InternalLink (localized "Effectful for" "Effectを実行するfor", "/docs/language/effects/effectful-for/"), Words (localized ": Run an operation for each item in order" "：各項目の処理を順番に実行する")],
+        [InternalLink (localized "Visible costs" "コストを見えるようにする", "/docs/language/model/visible-costs/"), Words (localized ": Check which work an operation performs" "：操作がどの処理を行うかを確認する")]
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "lifecycle-reader-parallel",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Terminal (localized "Output" "実行結果", "[10, 20]\n[10, 20]\n[]"),
+        CodeExample (
+          "lifecycle-reader-parallel-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))]),
+        Heading (
+          "declaration-example",
+          localized "Read the declaration-only example" "宣言だけの例を読む"
+        ),
+        Paragraph
+          ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyReading ()) (ja.readerLegacyReading ()))]),
+        Paragraph
+          ([Words (localized (en.readerLegacyResult ()) (ja.readerLegacyResult ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

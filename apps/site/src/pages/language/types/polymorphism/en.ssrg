@@ -14,8 +14,38 @@ pub fn copy -> TypeCopy = TypeCopy {
 }
 
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "Can the same function work with both integers and booleans?",
-  summary: "Polymorphism lets one declaration be used at different types while each individual use remains statically typed.",
-  reading: "identity<A> receives and returns the same type A. identity True produces Bool with value True; identity 42 produces Int with value 42. A is a placeholder selected independently for these calls.",
-  result: "The same A denotes the same type within one call to identity. It cannot accept an integer and return text. The specification notation forall A. A -> A describes choosing A for each call. forall is not written in Seseragi source."
+  question: "Can a function accept text after it has already been used with integers?",
+  summary: "Using one function at different types is called polymorphism. Separate choosing types for different calls from keeping them consistent within a single call.",
+  reading: "keepFirst<A> accepts two values of A and returns the first. let choose = keepFirst names the function without calling it. choose 1 2 selects Int for A; choose \"Aki\" \"Mio\" selects String.",
+  result: "The output is 1 followed by Aki. The first call does not fix later calls to Int. Within one call, however, the two arguments to choose must have the same type.",
 }
+
+pub fn readerCaption -> String =
+  "Name a generic function and choose types independently at each call"
+
+pub fn readerBridgeOne -> String =
+  "TypeScript can also declare a generic function such as function keepFirst<A>(first: A, second: A): A. The relationship here is using one function at different types. Supporting those types does not require branching on the runtime kind of each value."
+
+pub fn readerBridgeTwo -> String =
+  "let choose = keepFirst stores a function, while let number = choose 1 2 stores an Int returned by a call. number cannot later be used as a String. pub effect fn main is the public output entry point, and println displays the two results on separate lines."
+
+pub fn readerInvalidCaption -> String =
+  "Supply Int and String for the same A within one call"
+
+pub fn readerMistake -> String =
+  "In keepFirst 1 \"Aki\", the first argument fixes A to Int and the second String causes SES-T0101. Pass two values of the same type. If accepting different types is the goal, declare separate A and B parameters in the function."
+
+pub fn readerDetailNote -> String =
+  "The detailed identity function also chooses types independently at its calls. forall A. A -> A is specification notation describing that property, not source syntax for a forall declaration."
+
+pub fn readerLegacyReading -> String =
+  "identity<A> receives and returns the same type A. identity True produces Bool with value True; identity 42 produces Int with value 42. A is a placeholder selected independently for these calls."
+
+pub fn readerLegacyResult -> String =
+  "The same A denotes the same type within one call to identity. It cannot accept an integer and return text. The specification notation forall A. A -> A describes choosing A for each call. forall is not written in Seseragi source."
+
+pub fn readerLimitation -> String =
+  "The current compiler may fail to infer the parameter of a short function such as let identity = \\value -> value with no parameter annotation. Use a named fn with explicit type parameters, as the first example does. This is an implementation limitation, not a change to the specified let-generalization rule."
+
+pub fn readerRelated -> String =
+  " details the difference between naming a function and receiving one as a parameter."

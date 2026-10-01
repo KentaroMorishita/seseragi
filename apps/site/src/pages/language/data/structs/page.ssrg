@@ -1,12 +1,19 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
-import { CodeExample, PageDefinition } from "../../../../model/page"
+import {
+  CodeExample,
+  PageDefinition,
+  Paragraph,
+  Words,
+  Terminal
+} from "../../../../model/page"
 import { readerPage } from "../../reader-article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   readerPage "language.data.structs" "/docs/language/data/structs/" (en.copy ()) (ja.copy ()) "reader-structs" "Aki\nMio\n1" [CodeExample
       ("data-invalid-struct", localized "A missing field is rejected" "必須フィールドの指定漏れはエラー")] [
         (localized "Records" "レコード", "/docs/language/data/records/"),
@@ -16,5 +23,20 @@ fn content -> PageDefinition =
           "/docs/language/data/impls-and-methods/"
         )
       ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))])
+      ],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

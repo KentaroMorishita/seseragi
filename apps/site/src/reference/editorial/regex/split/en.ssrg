@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "Return the text pieces between non-overlapping matches, preserving empty pieces and excluding captured separators.",
+  taskTitle: "Keep blank fields while splitting a line",
+  purpose: "A comma-separated line can contain adjacent separators or a trailing separator. split preserves the empty pieces between and beside them. This is delimiter splitting, not a complete CSV parser with quoted fields.",
+  setup: "pieces compiles its separator pattern and passes the Regex before the input String. json.encodeString displays the resulting Array as JSON, so an empty string is visibly different from an empty Array.",
+  after: [
+    "compile returns Right pattern for a reusable Regex or Left error for an invalid pattern. match chooses a branch and names the value inside it. The backtick error message inserts error.offset at ${error.offset}; that offset counts UTF-8 bytes from zero.",
+    "a,,b, yields four pieces, including the middle and trailing empty strings. Capturing (,) does not insert the comma into the result. An empty pattern on a👍 yields an empty piece at both edges and keeps each scalar between them. Empty input with a comma separator yields one empty string.",
+    "pub effect fn main is the program entry. do runs the println output steps in order. Calls separate arguments with spaces. show converts a value to display text; True/False are the Seseragi Boolean spellings."
+  ],
+  comparisonBefore: "JavaScript String.split can also take a RegExp. The ordinary comma case agrees, but its capturing-group and empty-pattern rules differ. JSON output makes those differences visible rather than hiding empty strings.",
+  comparisonAfter: "With (,), JavaScript inserts captured commas into the pieces. With an empty Unicode pattern, it gives [\"a\",\"👍\"] without the edge empty strings. Seseragi gives [\"\",\"a\",\"👍\",\"\"] and never inserts capture groups.",
+  details: [
+    "Separators are found left to right without overlapping. After an empty match, matching advances one scalar, and a terminal empty match is included. Consecutive or edge matches can therefore create empty pieces.",
+    "Use literal escaping if the separator comes from user text rather than regex syntax. Keep a dedicated parser for quoting, escaping or a structured file format; split alone does not validate that format."
+  ],
+  codeTitle: "Complete program and boundary cases",
+  outputTitle: "Seseragi output",
+  comparisonTitle: "The same task in TypeScript",
+  detailTitle: "Matching rules to keep in view"
+}

@@ -1,0 +1,7 @@
+let base: Int = 20
+
+fn add left: Int -> right: Int -> Int = left + right
+
+let answer = add base 2
+
+pub effect fn main = println (show answer)

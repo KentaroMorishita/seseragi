@@ -1,0 +1,23 @@
+import { CorrectionCopy } from "../../correction-model"
+
+pub fn copy -> CorrectionCopy = CorrectionCopy {
+  summary: "各要素を検索し、すべてJustなら値をまとめ、Nothingがあれば全体をNothingにします。後の要素でも検索関数を呼びます。",
+  taskTitle: "要求された席をすべて見つける",
+  purpose: "複数の席のコードを座席番号に変換します。全部が見つかった場合だけ、番号のArrayを受け取ります。一つでも見つからなければNothingです。",
+  setup: "maybeとtextは読み込んだモジュールの関数名につけます。fn findSeatのcode: Stringは引数、-> Maybe<Int>は結果の型です。ifでコードAをJust 1、BをJust 2、それ以外をNothingにします。=の後の式を返します。",
+  after: [
+    "maybe.traverse findSeat [\"B\", \"A\"]は関数、入力の順に渡します。各コードをfindSeatに渡して得た値を、元の順序の[2, 1]としてJustに入れます。先頭か途中にunknownがあれば全体がNothingです。",
+    "describeのmatchはJust seatsなら番号を表示し、NothingならMissing seatを返します。mapの\\seat: Int -> show seatは、一つの番号seatを文字列にする小さな関数です。text.join \",\"がそれらをつなぎます。空の入力ではJust []なのでSeats: []です。",
+    "pub effect fn mainは実行開始点です。doの中のprintlnを上から順に実行し、文字列を表示します。関数には空白で区切って引数を渡します。showは数値などを表示用の文字列にします。"
+  ],
+  comparisonBefore: "TypeScriptでもまずmapで全コードを検索し、その結果にundefinedがあるか確認します。最初の不在で検索そのものを打ち切るforループとは、関数を呼ぶ回数が違います。",
+  comparisonAfter: "両方とも検索関数を先に全要素に適用します。traverseはArray<Maybe<Int>>の個別結果を、呼び出し側が一度だけ分岐できるMaybe<Array<Int>>へまとめます。TypeScriptも例のように直接書けます。",
+  details: [
+    "このArrayの例では、宣言のFがArray、AがString、BがIntです。Traversableという条件は、コレクションが要素をたどって結果を組み立てる操作に対応することです。Listなどでは、その型の形と規則に従います。",
+    "Nothingが見つかっても後の関数呼び出しは続きます。後の計算に不具合があれば、その影響も受けます。ネットワーク処理の並列実行や遅延処理を意味しません。後の呼び出しを止めたいならreduceUntilを使う流れにします。"
+  ],
+  codeTitle: "実行できるプログラム",
+  outputTitle: "Seseragiの実行結果",
+  comparisonTitle: "TypeScriptで同じ処理を表す",
+  detailTitle: "使う前に確認する規則"
+}

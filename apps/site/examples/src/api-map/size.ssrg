@@ -1,0 +1,10 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+
+pub effect fn main = do {
+  let values = maps.fromEntries [("b", 2), ("a", 2), ("b", 9)]
+  println (maps.size values)
+  println (maps.size (maps.insert "b" 5 values))
+  println (maps.size (maps.insert "c" 3 values))
+  println (maps.size (maps.empty<String, Int> ()))
+}

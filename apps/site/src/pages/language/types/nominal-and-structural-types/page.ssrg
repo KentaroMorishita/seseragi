@@ -1,3 +1,4 @@
+import * as arrays from "std/array"
 import { explainPage } from "../../explanation"
 import * as guide from "./guide"
 import { localized } from "../../../../model/locale"
@@ -7,36 +8,41 @@ import {
   InlineCode,
   InternalLink,
   PageDefinition,
-  Words
+  Words,
+  Paragraph,
+  Terminal
 } from "../../../../model/page"
 import { typePage } from "../article"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition =
+fn detailed -> PageDefinition =
   typePage "language.types.nominal-structural" "/docs/language/types/nominal-and-structural-types/" (en.copy ()) (ja.copy ()) [
     CodeExample (
       "types-nominal-structural",
-      localized "Nominal recursive data and structural records"
-        "名前で区別する再帰データ型と、フィールドで区別するレコード"
+      localized "Nominal data and structural records" "名前で区別するデータ型と、フィールドで区別するレコード"
     ),
     BulletList [
       [
         InlineCode "ADT / struct / newtype",
         Words (
-          localized ". Separate declarations define separate types even when their fields match."
-        "。別々の宣言なら、フィールドが同じでも別の型です。"
+          localized
+            ". Separate declarations define separate types even when their fields match."
+            "。別々の宣言なら、フィールドが同じでも別の型です。"
         )
       ],
       [
         InlineCode "{ id: Int, name: String }",
-        Words
-        (localized ". Can also be passed to a function requiring only { name: String }." "。nameだけを要求する関数にも渡せます。")
+        Words (
+          localized
+            ". Can also be passed to a function requiring only { name: String }."
+            "。nameだけを要求する関数にも渡せます。"
+        )
       ],
       [Words (
         localized
-        "A shared field type must match exactly; width does not recurse through fields."
-        "同じ名前のフィールドの型は完全に一致する必要があります。外側に余分なフィールドがあってよいことと、フィールド内の型を変更できることは別です。"
+            "A shared field type must match exactly; width does not recurse through fields."
+            "同じ名前のフィールドの型は完全に一致する必要があります。外側に余分なフィールドがあってよいことと、フィールド内の型を変更できることは別です。"
       )]
     ]
   ] [CodeExample (
@@ -53,5 +59,31 @@ fn content -> PageDefinition =
     )],
     [InternalLink (localized "Type system" "型システム", "/docs/language/types/type-system/")]
   ]
+
+fn content -> PageDefinition = {
+  let page = detailed ()
+  PageDefinition {
+    ...page,
+    blocks: arrays.concat [
+      [
+        CodeExample (
+          "data-reader-nominal-structural",
+          localized (en.readerCaption ()) (ja.readerCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerBridgeOne ()) (ja.readerBridgeOne ()))]),
+        Paragraph ([Words (localized (en.readerBridgeTwo ()) (ja.readerBridgeTwo ()))]),
+        Paragraph ([Words (localized (en.readerExecution ()) (ja.readerExecution ()))]),
+        Terminal (localized "Output" "実行結果", "Aki\nMio\nNotebook"),
+        CodeExample (
+          "data-reader-nominal-structural-invalid",
+          localized (en.readerInvalidCaption ()) (ja.readerInvalidCaption ())
+        ),
+        Paragraph ([Words (localized (en.readerMistake ()) (ja.readerMistake ()))])
+      ],
+      [Paragraph ([Words (localized (en.readerDetailNote ()) (ja.readerDetailNote ()))])],
+      page.blocks
+    ]
+  }
+}
 
 pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

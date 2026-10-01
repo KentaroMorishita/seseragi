@@ -1,21 +1,43 @@
 import { ExplanationCopy } from "../../explanation"
-import { SyntaxCopy } from "../article"
+import { ReaderCopy } from "../../reader-article"
 
-pub fn copy -> SyntaxCopy = SyntaxCopy {
+pub fn copy -> ReaderCopy = ReaderCopy {
   title: "省略可能なレコードフィールドの構文",
   summary: (explanation ()).summary,
-  formsTitle: "フィールド名の直後に?を付ける",
-  formsBody: "id?: Stringのように、フィールド名の直後に?を付けます。この?はレコードの型とレコードのパターンに使う記号です。通常の式や関数の引数に付ける演算子ではありません。",
-  typingBody: "id?: Stringはid自体を省略できるという意味です。id: Maybe<String>はidが必ずあり、その中身がJustまたはNothingという意味です。省略可能なフィールドを読むとMaybe<String>が返ります。id: Stringという必須フィールドを持つ値も、id?: Stringを要求する関数へ渡せます。",
-  evaluationBody: "フィールドを省略したレコードには、そのフィールド自体がありません。必須のMaybe型フィールドにNothingを格納する場合とは異なります。レコードのパターンでは、省略可能なフィールドの有無を調べられます。指定したフィールドの値を作る式は、一度だけ計算します。",
-  invalidTitle: "?を付けられる場所を確認する",
-  invalidBody: "この形式は構造的レコードに使います。structのフィールド、関数の引数、ADTが保持する値には直接?を付けられません。省略可能なフィールドを、必ずあるものとして読むパターンも使えません。",
-  diagnosticsBody: "?の位置が誤っている場合は構文エラーです。存在しないフィールドの参照や必須フィールドの不足は型エラーです。省略可能なフィールドと、必須のMaybe型フィールドを取り違えていないか確認してください。",
+  exampleTitle: "ニックネームがなければ本名を使う",
+  purpose: [
+    "プロフィールのニックネームのように、存在しないことがあるフィールドを表します。TypeScriptのoptional propertyに近い目的ですが、参照した結果はundefinedではなくMaybeという型で受け取ります。",
+    "Maybeは、値があるJustと、値がないNothingを区別する型です。この例では??を使い、ニックネームがないときだけnameを代わりに使います。",
+  ],
+  reading: [
+    "alias Profileはレコードの形に名前を付けます。name: Stringは必要なフィールドで、nickname?: Stringは省略できるフィールドです。?はフィールド名の直後に置きます。",
+    "displayの引数profileはProfile型です。profile.nicknameの型はMaybe<String>なので、そのまま文字列として返すのではなく、??で値のない場合を処理します。",
+    "absentにはnameだけがあり、display absentはAkiを返します。presentにはnickname: \"A\"もあるため、display presentはAを返します。",
+    "出力はAki, Aです。??の右側は、左側がNothingのときだけ計算します。値のある場合はJustの中の文字列を使います。",
+  ],
+  rules: [
+    "field?: Typeは構造的なレコード型に書く形式です。field?とコロンの間や、fieldと?の間へ空白を挟んだ別の形式を選ぶのではなく、field?: Typeの表記を使います。フォーマッターもこの形へ揃えます。",
+    "nickname?: Stringは、フィールドそのものの不在を許します。nickname: Maybe<String>は別の宣言で、フィールドは必須です。その必須フィールドにNothingが入っていても、フィールドが存在する点は変わりません。",
+    "nickname: Stringを必ず持つ値も、nickname?: Stringを受け取る関数へ渡せます。省略可能なフィールドを参照するときの結果は、引数に定めた型に従ってMaybe<String>になります。",
+    "実際に書いた各フィールドの式は一度ずつ計算します。省略したフィールドは、Nothingを保存した必須フィールドではありません。値の部品を取り出すレコードパターンには、フィールドがあるかを確認する形もあります。",
+  ],
+  mistakes: [
+    "下のdisplayは、Maybe<String>をStringとして返そうとしているためSES-T0101になります。profile.nickname ?? profile.nameのように代わりの値を決めるか、値がある場合とない場合を両方扱ってください。",
+    "?をstructのフィールド、関数の引数、typeで宣言する選択肢の中身へ直接付ける構文はありません。また、レコードの分解で省略可能なフィールドの存在を無条件に要求することはできません。",
+    "知らないフィールドを参照することと、許可されたoptionalフィールドがないことは違います。前者は型の誤りです。まずレコード型の宣言と、フィールド名を確認してください。",
+  ],
+  related: [
+    "??がほかの演算子と混ざった場合に、どこまでが代わりの値かを確認できます。",
+    "フィールド名と型名に使える名前の規則を確認できます。",
+    "Stringなど、フィールドに入れる値の書き方を確認できます。",
+  ],
 }
 
+pub fn title -> String = (copy ()).title
+
 pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "省略可能なフィールドの?は、どこに書くか",
-  summary: "構造的なレコードの型で、フィールド名の後に?を書きます。field?: Typeは、そのフィールド自体を省略できるという意味です。",
-  reading: "Propsのid?: Stringは省略可能、children: Stringは必須です。minimalとnamedはどちらもPropsの条件を満たします。props.idの結果はMaybe<String>で、Justなら文字列を取り出し、Nothingなら??の右側の\"anonymous\"を使います。",
-  result: "label minimalは\"anonymous\"、label namedは指定した\"hero\"を返します。idを省略した場合と、文字列を指定した場合の違いです。必須のid: Maybe<String>では、値がNothingでもidフィールド自体は必要です。"
+  question: "ないかもしれないフィールドは、どう読むか",
+  summary: "レコード型でfield?: Typeと書くと、そのフィールドを省略できます。参照した結果は値の有無を表すMaybeになります。",
+  reading: "例では、nicknameがないときにnameを使います。値の有無を??で処理するため、最初からmatchの知識は必要ありません。",
+  result: "ニックネームのないプロフィールはAki、あるプロフィールはAと表示できます。",
 }

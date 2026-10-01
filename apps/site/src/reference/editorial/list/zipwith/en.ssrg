@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Calculate from corresponding values in two Lists.",
+  purpose: "Use it to calculate a difference, for example, from values at the same position. While zip keeps the two values as a pair, zipWith collects the results of the function you supply.",
+  reading: "fn subtract left: Int -> right: Int -> Int = left - right declares a function taking two integers and returning their difference. fn starts the declaration; arrows separate argument and result types. lists.zipWith subtract right left takes the function, right collection, then left collection. subtract receives left then right values: 10 - 1 and 20 - 2 produce 9 and 18.",
+  boundaries: "The second call swaps the collections, producing 1 - 10 and 2 - 20, or -9 and -18. The extra 30 is unused. none: List<Int> names an empty integer collection. In the final two calls one side is empty, so subtract is never called and the result is `[].",
+  rules: "It moves from the start, calling the function once per position up to the shorter length. For k pairs, it performs k function calls plus construction and result storage proportional to k. The supplied function computes a value; it is not an Effect operation such as printing.",
+  mistake: "Keep the order of collection arguments distinct from the order passed to the function. Addition can hide a reversal, so this example uses subtraction. Use zip if you want to keep both values as pairs."
+}

@@ -1,0 +1,10 @@
+import { ApiCopy } from "../../model"
+
+pub fn copy -> ApiCopy = ApiCopy {
+  summary: "Create a Set with one member",
+  purpose: "Use singleton when one member is already known. Pass that value directly, such as the integer 0.",
+  reading: "The set contains 0, so toArray gives [0], size is 1 and contains 0 is true. Inserting 0 again still gives [0].",
+  boundaries: "Zero is an ordinary member, not an empty set or a missing value. The result always contains one distinct element.",
+  rules: "Eq<A> and Hash<A> mean that the element type supports compatible equality and hashing. They determine whether a later insertion is the same member; Int already provides them.",
+  mistake: "TypeScript new Set([0]) constructs the same membership. Repeated insertion does not create a second copy. Use empty () when the collection should initially have no member.",
+}
