@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { terminalReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  terminalReaderEditorial "std/prelude::println" "value" "function" "println-status" (en.copy ()) (ja.copy ())

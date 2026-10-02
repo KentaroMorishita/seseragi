@@ -1,0 +1,4 @@
+pub effect fn main = do {
+  print "Status: "
+  println "saved"
+}

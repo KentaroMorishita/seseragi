@@ -60,6 +60,22 @@ test("TypeScript classification preserves source and nested lexical contexts", (
   ).toBe(incomplete)
 })
 
+test("keyword-free TypeScript calls classify identifiers, punctuation and strings without inventing keywords", () => {
+  const source = 'console.log("Saved 3 files")\n'
+  const parts = highlightTypeScript(source)
+  expect(parts).toEqual([
+    { text: "console", className: "tok-variableName" },
+    { text: ".", className: "tok-punctuation" },
+    { text: "log", className: "tok-variableName" },
+    { text: "(", className: "tok-punctuation" },
+    { text: '"Saved 3 files"', className: "tok-string" },
+    { text: ")", className: "tok-punctuation" },
+    { text: "\n", className: "" },
+  ])
+  expect(parts.map((part) => part.text).join("")).toBe(source)
+  expect(parts.some((part) => part.className === "tok-keyword")).toBe(false)
+})
+
 test("every registered source uses its own grammar without changing bytes or hashes", () => {
   expect(typescript.length).toBeGreaterThan(0)
   for (const example of input.examples) {
@@ -76,10 +92,6 @@ test("every registered source uses its own grammar without changing bytes or has
       expect(example.highlighted, example.id).toEqual(
         highlightTypeScript(source)
       )
-      expect(
-        example.highlighted.some((part) => part.className === "tok-keyword"),
-        example.id
-      ).toBe(true)
       expect(example.playgroundUrl, example.id).toBe("")
     } else if (example.sourcePath.endsWith(".ssrg")) {
       expect(example.highlighted, example.id).toEqual(

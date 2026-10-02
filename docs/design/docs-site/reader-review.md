@@ -3432,3 +3432,99 @@ No compiler/runtime repair or unselected source correction is included.
 The entire prior 209413-byte ledger prefix is preserved, SHA-256
 `72408ea5d92df1b00d933b8f42765fde8760b65cee007d8d18c13496f8ef7f2a`. All 106 historical checkbox rows and their states remain
 byte-identical; this appendix adds no checkbox or changes an earlier verdict.
+
+
+## 2026-10-02: Terminal9 output and startup inputs
+
+This bounded tranche authors nine existing destinations: Prelude println, print,
+printValue, plus std/process, Process, ProcessError, environment, arguments and
+currentDirectory. The scope is eighteen EN/JA bodies, Japanese authored first for
+ordinary TypeScript application developers. Seven complete source pairs teach
+short output, optional synthetic settings, application arguments, a controlled
+working directory and one local attempt/match failure boundary. No advanced
+functional-programming prerequisite or new language/runtime behavior is added.
+
+### Complete-body reading and corrections
+
+Independent readers completed all eighteen initial whole-body reads and all
+eighteen corrected full-body rereads, nine per language on each pass. Each read
+binds to its exact body/text/HTML hashes and includes code, output, shell launch
+commands, generated declaration tails and related/navigation content. No required
+reader issue remains. These are simulated reader judgments, not first-time human
+usability feedback.
+
+Two precisely guarded type-reading explanations replace misleading generic
+opaque-type guidance: Process is supplied by the process-target runner and has no
+public constructor; ProcessError retains public alternatives that can be matched,
+including InvalidEnvironmentName. Exactly these two reading records changed among
+1,812 canonical reference records. All 1,810 others, every declaration and all type
+classifications remain unchanged. The TypeScript comparisons were repository-
+formatted and rerun. The illustrative cwd uses a neutral synthetic directory,
+/tmp/seseragi-process-demo, rather than an internal batch label.
+
+### Exact-source and host evidence
+
+The final focused run passes ten tests and 3,401 assertions. Seventy-five recorded
+subprocess commands cover the supplied official Seseragi v0.61.19 release CLI,
+strict TypeScript 5.8.3, Node 24.19.0 and Bun 1.3.9. All seven exact Seseragi
+programs pass formatting/lint, release build and separate stdout/stderr checks;
+all seven exact TypeScript comparisons produce the tested task outputs on both
+runtimes. A real Maybe-as-String rejection has a complete successful repair.
+Synthetic settings distinguish present-empty from absent, argv preserves spaces
+and empty values, and empty/NUL names exercise actual ProcessError matching.
+No real environment dump, secret or arbitrary file content is read by the tests.
+
+The supported argument recipe builds for process and runs manifest-declared
+entry.js. The CLI run command does not forward application arguments or accept
+a -- separator. All four Process source programs declare their services and
+remain process-only; every one of the twelve Process locale bodies has no
+source-seeded browser launch link. Browser compilation alone is not host support.
+
+The three exact portable Prelude sources pass committed-WASM/current production
+browser-execution checking under Bun. Supplemental current-browser-host callbacks
+preserve raw chunks to prove newline behavior; the normal output display trims
+trailing whitespace. One earlier coordinated public Playground observation passed
+the exact combined Prelude output program. That single observation is limited
+public-host evidence, not a public run of every page, a deployed-version parity
+claim, site-layout acceptance or proof of separate browser stderr.
+
+Production rendering checks all eighteen actual bodies, source/output hashes,
+locale pairing, exact titles and return links. Six directly rendered unselected
+article controls match checkpoint15 byte-for-byte. This focused control set is
+not a whole-site regression claim. Owned helpers/tests pass the existing site
+TypeScript flags and Biome; all twenty-nine family modules pass formatting.
+
+### Preserved backlog and boundaries
+
+The original seventeen-destination plan is retained. Eight std/console-owned
+destinations remain explicitly gated: its entrance, Console, ConsoleError,
+println, print, printValue, error and errorLine. Prelude identities on the two
+exported types do not change their std/console ownership. Qualified ConsoleError
+compatibility, explicit provider requirements, beginner-facing error handling
+and separate browser proof need a later decision; none is silently accepted by
+this tranche. Stdin and process signals remain outside scope.
+
+Final evidence fingerprints (the manifests contain exact per-file, source/output
+and per-route body/text hashes):
+
+- `final-owned-source-manifest.json`: `60808e917db06063763a4a68945fd092609c12363c8e91e9c5164d6f26319f7d`
+- `final-source-output-manifest.json`: `cc3637ca790f3219c51e261ff50aa3a86bf564faf290228f0a9fc996e5c3fbe8`
+- `final-body-manifest.json`: `5e08c2c9d8705a9c1340081101bc3ce34ac9646ee9ff8dad12109b06a6e8c580`
+- `reviewed-final-body-parity.json`: `afe9dbeaf365337b7e8d8412fe12c3f7e6e56f71752603ac0a86a9691d55e273`
+- `final-tests.log`: `2c17516446cb2062fb67d0ff41739b5d548a7e799487f54ae024639a12163c8f`
+- `reading-change-audit.json`: `776b67746183875f8b1151819ecaddbf11bb3f9d04690f732b2fcc3dc67f3a28`
+- `english-reader-review.json`: `a582cf96703b6d501dd534a7e6d98a1baff0e95eb1789d9abd6962283aa45103`
+- `japanese-reader-review.json`: `081a5e0bbed348af1ca54d347c980dba11d024894eb866068419db58e56c11f6`
+- `english-reader-rereview.json`: `47227f390ccd51e7f218e3c71839f1dd9df5518768af46ccf9f3ca031c7c626b`
+- `japanese-reader-rereview.json`: `6f98b62493a5941a25f6767b311f9859efa31811a8a24efaaf99f08f24ef4e2d`
+- `final-unselected-controls.json`: `c3c67380c5399e9ff28ce1fa63f616d7d6d79e9331517cce218d8c510003351e`
+
+See [the bounded work item](terminal-reader-work-item.md) and
+[verification record](terminal-reader-verification.md). Parent-owned whole-site
+integration, actual documentation layout/browser checks, commit and publication
+remain separate. No compiler/runtime repair or public issue is included.
+
+The entire prior 212904-byte ledger prefix is preserved, SHA-256
+`455849f485ba5d6b287ce9094dc766063775ff30fa570ec34b45feb428a77e00`. All 106 historical checkbox rows and their
+states remain byte-identical. This appendix adds no checkbox and changes no
+earlier verdict.
