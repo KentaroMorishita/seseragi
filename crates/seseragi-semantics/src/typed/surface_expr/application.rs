@@ -506,7 +506,10 @@ pub(crate) fn type_known_application_with_explicit(
             &instantiated_application_result_type(&application, arguments.len()),
         );
     }
-    if issue.is_none() {
+    // An invalid argument cannot supply reliable type-parameter evidence.
+    // Preserve its primary diagnostic instead of cascading into an unresolved
+    // callable-result diagnostic during recovery.
+    if issue.is_none() && child_analyses.iter().all(|child| !child.has_issues()) {
         let callable_result = instantiated_application_result_type(&application, arguments.len());
         if matches!(callable_result, TypedType::Function { .. })
             && contains_unresolved_type_parameter(

@@ -532,6 +532,16 @@ impl SurfaceExpressionAnalysis {
         }
     }
 
+    pub(super) fn has_issues(&self) -> bool {
+        self.conditional_issue.is_some()
+            || self.array_issue.is_some()
+            || self.record_issue.is_some()
+            || self.range_issue.is_some()
+            || self.pure_call_issue.is_some()
+            || self.monad_do_issue.is_some()
+            || !self.match_issues.is_empty()
+    }
+
     pub(super) fn merge_issues_from(&mut self, child: Self) {
         self.conditional_issue = self.conditional_issue.take().or(child.conditional_issue);
         self.array_issue = self.array_issue.take().or(child.array_issue);
@@ -579,14 +589,7 @@ pub(crate) fn analyze_resolved_expression(
 }
 
 pub(crate) fn ensure_recovery_hole_issue(analysis: &mut SurfaceExpressionAnalysis) {
-    if analysis.conditional_issue.is_none()
-        && analysis.array_issue.is_none()
-        && analysis.record_issue.is_none()
-        && analysis.range_issue.is_none()
-        && analysis.pure_call_issue.is_none()
-        && analysis.monad_do_issue.is_none()
-        && analysis.match_issues.is_empty()
-    {
+    if !analysis.has_issues() {
         if let Some(expression) = recovery_hole_origin(&analysis.value) {
             analysis.pure_call_issue = Some(PureCallIssue::InvalidExpression { expression });
             analysis.semantic_type = SemanticTypeKey::Invalid;

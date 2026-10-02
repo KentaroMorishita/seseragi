@@ -93,3 +93,25 @@ fn rejects_unresolved_callable_storage_from_partial_application() {
         "keep 42"
     );
 }
+
+#[test]
+fn invalid_arguments_do_not_cascade_into_unresolved_callable_results() {
+    let source = r#"
+import * as json from "std/json"
+let stringDecoder: json.Decoder<String> = decodeJson
+let intDecoder: json.Decoder<Int> = decodeJson
+let mixed = json.record [("name", stringDecoder), ("retries", intDecoder)]
+"#;
+    let input = CompileInput::new("main.ssrg", "regression/storage", source);
+    let diagnostics = compile_module(input).expect_err(source);
+    assert_eq!(analyze_module(input).diagnostics, diagnostics);
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:?}");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "array.element-type-mismatch"
+    );
+    assert_eq!(
+        &source[diagnostics.diagnostics[0].primary.start..diagnostics.diagnostics[0].primary.end],
+        "(\"retries\", intDecoder)"
+    );
+}
