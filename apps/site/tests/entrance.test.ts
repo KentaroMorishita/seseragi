@@ -65,6 +65,42 @@ test("documentation titles wrap long identifiers without truncation", () => {
   expect(heading).not.toMatch(/overflow(?:-x)?:\s*(?:hidden|clip)\s*;/u)
 })
 
+test("article prose wraps long identifiers without changing code blocks", () => {
+  const article = readFileSync(
+    join(root, "apps/site/styles/article.css"),
+    "utf8"
+  )
+  const prose =
+    article.match(
+      /\.article-content p,\s*\.article-content li\s*\{([^}]+)\}/u
+    )?.[1] ?? ""
+  // The Japanese Bytes Node note is plain <p><span> prose, not <code>.
+  // Its Buffer.from(content).toString("hex") run overflowed at 500px.
+  // Inline code also inherits this emergency wrapping from its paragraph.
+  expect(prose).toMatch(/overflow-wrap:\s*anywhere\s*;/u)
+  for (const rule of [prose, article]) {
+    expect(rule).not.toMatch(/word-break:\s*break-all\s*;/u)
+    expect(rule).not.toMatch(/white-space:\s*nowrap\s*;/u)
+    expect(rule).not.toMatch(/text-overflow:\s*ellipsis\s*;/u)
+    expect(rule).not.toMatch(/overflow(?:-x)?:\s*(?:hidden|clip)\s*;/u)
+  }
+  const code = readFileSync(join(root, "apps/site/styles/code.css"), "utf8")
+  const pre =
+    code.match(/\.code-panel pre,\s*\.api-reference pre\s*\{([^}]+)\}/u)?.[1] ??
+    ""
+  const block =
+    code.match(
+      /\.code-panel pre > code,\s*\.api-reference pre > code\s*\{([^}]+)\}/u
+    )?.[1] ?? ""
+  expect(pre).toMatch(/overflow:\s*auto\s*;/u)
+  expect(block).toMatch(/min-width:\s*max-content\s*;/u)
+  for (const rule of [pre, block]) {
+    expect(rule).not.toMatch(/overflow-wrap:\s*(?:anywhere|break-word)\s*;/u)
+    expect(rule).not.toMatch(/white-space:\s*(?:normal|pre-wrap|pre-line)\s*;/u)
+    expect(rule).not.toMatch(/word-break:\s*break-all\s*;/u)
+  }
+})
+
 test("the home hero starts both columns without inherited article spacing", () => {
   const home = readFileSync(join(root, "apps/site/styles/home.css"), "utf8")
   const responsive = readFileSync(
