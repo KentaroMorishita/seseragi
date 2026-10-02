@@ -21,7 +21,7 @@ fn retains_generic_schemes_for_module_local_and_operator_aliases() {
     check(
         r#"
 fn identity<A> value: A -> A = value
-pub let forward = identity
+let forward = identity
 fn local unit: Unit -> Int = {
   let keep = forward
   let text = keep "ok"

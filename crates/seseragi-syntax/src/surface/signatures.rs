@@ -23,9 +23,10 @@ impl SurfaceParser<'_> {
         loop {
             let name_index = self.next_significant_token(cursor, end)?;
             let name = self.identifier_name_at(name_index)?;
-            let colon = self.find_significant_token(name_index + 1, end, |kind| {
-                kind == TokenKind::PunctuationColon
-            })?;
+            let colon = self.next_significant_token(name_index + 1, end)?;
+            if self.kind_at(colon) != Some(TokenKind::PunctuationColon) {
+                return None;
+            }
             let (type_ref, after_type) = self.parse_type_atom(colon + 1, end)?;
             let arrow = self.next_significant_token(after_type, end)?;
             if self.kind_at(arrow) != Some(TokenKind::OperatorArrow) {

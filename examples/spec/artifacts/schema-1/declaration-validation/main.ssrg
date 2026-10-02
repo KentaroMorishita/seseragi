@@ -1,0 +1,7 @@
+println "not a declaration"
+fn missingParameter value -> Int = value
+fn missingResult value: Int = value
+pub let count = 3
+let 1value = 1
+let match = 1
+pub effect fn main = println "must not execute"

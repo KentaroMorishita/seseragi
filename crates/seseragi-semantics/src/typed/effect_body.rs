@@ -334,10 +334,13 @@ fn type_do_block(
     issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
     let mut locals = BTreeMap::new();
+    let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
 
     for item in items {
-        let context = base_context.with_locals(locals.clone());
+        let context = base_context
+            .with_locals(locals.clone())
+            .with_inferred_callables(inferred_callables.clone());
         match item {
             SurfaceDoItem::Expression { value, .. } => {
                 statements.push(TypedDoStatement::Effect {
@@ -408,16 +411,33 @@ fn type_do_block(
                         surface: "do let",
                     });
                 }
+                if let Some((symbol, callable)) = &binding.inferred_callable {
+                    inferred_callables.insert(*symbol, callable.clone());
+                }
                 locals.extend(binding.pattern.locals.clone());
                 issues.patterns.extend(binding.pattern.issues);
                 statements.push(TypedDoStatement::PureLet {
+                    constraints: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraints.clone())
+                        .unwrap_or_default(),
+                    constraint_identities: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraint_identities.clone())
+                        .unwrap_or_default(),
                     type_parameters: binding
                         .pattern
                         .locals
                         .keys()
                         .next()
                         .filter(|_| binding.pattern.locals.len() == 1)
-                        .and_then(|symbol| context.callable(*symbol))
+                        .and_then(|symbol| {
+                            inferred_callables
+                                .get(symbol)
+                                .or_else(|| context.callable(*symbol))
+                        })
                         .map(|signature| signature.type_parameters.clone())
                         .unwrap_or_default(),
                     pattern: binding.pattern.typed,
@@ -428,7 +448,9 @@ fn type_do_block(
         }
     }
 
-    let context = base_context.with_locals(locals);
+    let context = base_context
+        .with_locals(locals)
+        .with_inferred_callables(inferred_callables);
     let result = result
         .map(|result| type_effect_expression(result, &context, resolution, issues))
         .unwrap_or_else(|| TypedExpr::Unit {

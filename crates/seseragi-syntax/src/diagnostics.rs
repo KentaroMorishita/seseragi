@@ -87,6 +87,9 @@ impl Diagnostic {
             "call.argument-type-mismatch" => {
                 "Argument type does not match the parameter type".to_owned()
             }
+            "call.value-type-unresolved" => {
+                "Generic callable value type could not be inferred".to_owned()
+            }
             "literal.invalid-escape" => {
                 "Literal contains an invalid or unsupported escape sequence".to_owned()
             }
@@ -122,6 +125,18 @@ impl Diagnostic {
             }
             "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
             "parser.expected-expression" => "Expected an expression here".to_owned(),
+            "parser.module-expression-statement" => {
+                "Module top level only permits declarations".to_owned()
+            }
+            "parser.invalid-declaration-name" => {
+                "Declaration contains an invalid or reserved name".to_owned()
+            }
+            "parser.function-annotations-required" => {
+                "Ordinary functions require parameter and result type annotations".to_owned()
+            }
+            "parser.public-let-annotation-required" => {
+                "Public let declarations require a type annotation".to_owned()
+            }
             "parser.error" => "Could not parse this syntax".to_owned(),
             "alias.arity-mismatch" => {
                 "Type alias was used with the wrong number of arguments".to_owned()
@@ -195,6 +210,9 @@ impl Diagnostic {
             "call.arity-mismatch" => {
                 "Add or remove arguments so the call matches the function signature."
             }
+            "call.value-type-unresolved" => {
+                "Annotate the containing value with a function type, or supply explicit type arguments."
+            }
             "module.standard-unavailable" => {
                 "Use an available standard module or wait for this contract to be implemented."
             }
@@ -266,6 +284,18 @@ impl Diagnostic {
             }
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
+            }
+            "parser.module-expression-statement" => {
+                "Bind a pure value with let, or put the expression in a function body."
+            }
+            "parser.invalid-declaration-name" => {
+                "Use a non-reserved identifier with the letter case required by this declaration."
+            }
+            "parser.function-annotations-required" => {
+                "Write each parameter as name: Type and end the signature with -> ResultType."
+            }
+            "parser.public-let-annotation-required" => {
+                "Add : Type before =, or make the let declaration private."
             }
             "literal.invalid-escape" => {
                 "Use a supported escape such as \\n, \\r, \\t, \\\\, a delimiter escape, or \\u{...}."
@@ -442,6 +472,16 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     let nested_surface_diagnostics =
         surface_errors::diagnostics(&surface.declarations, &surface_error_context);
     append_diagnostics(&mut artifact, nested_surface_diagnostics);
+    let declaration_diagnostics = crate::surface::declaration_diagnostics(&source_tokens, &surface)
+        .into_iter()
+        .filter(|diagnostic| {
+            !artifact
+                .diagnostics
+                .iter()
+                .any(|existing| existing.primary == diagnostic.primary)
+        })
+        .collect();
+    append_diagnostics(&mut artifact, declaration_diagnostics);
     append_diagnostics(&mut artifact, template_diagnostics);
     append_diagnostics(&mut artifact, literal_diagnostics);
     artifact
@@ -1038,7 +1078,7 @@ mod tests {
 
     #[test]
     fn reports_malformed_tuple_expressions_instead_of_silently_dropping_the_body() {
-        for source in ["pub let singleton = (1,)\n", "pub let trailing = (1, 2,)\n"] {
+        for source in ["let singleton = (1,)\n", "let trailing = (1, 2,)\n"] {
             let diagnostics = parse_diagnostics("main.ssrg", source);
 
             assert_eq!(diagnostics.diagnostics.len(), 1);
@@ -1051,7 +1091,7 @@ mod tests {
 
     #[test]
     fn reports_a_malformed_lambda_instead_of_dropping_the_body() {
-        let source = "pub let broken = \\ -> 42\n";
+        let source = "let broken = \\ -> 42\n";
         let diagnostics = parse_diagnostics("main.ssrg", source);
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
@@ -1062,7 +1102,7 @@ mod tests {
         );
         assert_eq!(
             diagnostics.diagnostics[0].primary,
-            ByteRange { start: 17, end: 24 }
+            ByteRange { start: 13, end: 20 }
         );
     }
 
@@ -1108,7 +1148,7 @@ pub fn text parts: Array<String> -> String =
     #[test]
     fn reports_operator_sections_that_cannot_be_function_values() {
         for operator in ["&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", "^"] {
-            let source = format!("pub let operation = ({operator})\n");
+            let source = format!("let operation = ({operator})\n");
             let diagnostics = parse_diagnostics("main.ssrg", &source);
             let start = source.find(operator).unwrap();
 

@@ -49,7 +49,7 @@ fn missing_ord_and_mismatched_operands_stop_before_lowering() {
         "1.0 >= 2.0",
         "1 < True",
     ] {
-        let source = format!("pub let invalid = {expression}\n");
+        let source = format!("let invalid = {expression}\n");
         let diagnostics =
             compile_module(CompileInput::new("main.ssrg", "test/ord-negative", &source))
                 .expect_err("comparison must require same-type Ord evidence");
@@ -110,7 +110,7 @@ fn analysis_and_reference_expose_comparisons_with_ord_identity() {
             Some(format!("{operator} via Ord.compare").as_str())
         );
     }
-    let negative = "pub let invalid = 1.0 < 2.0\n";
+    let negative = "let invalid = 1.0 < 2.0\n";
     let analyzed = seseragi_driver::analyze_module(CompileInput::new(
         "main.ssrg",
         "test/ord-analysis",

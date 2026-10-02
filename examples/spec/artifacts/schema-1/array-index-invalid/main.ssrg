@@ -1,4 +1,4 @@
-pub let wrongReceiver = 1[0]
-pub let wrongIndex = [1][True]
-pub let list = `[1][0]
-pub let tuple = (1, 2)[0]
+pub let wrongReceiver: Maybe<Int> = 1[0]
+pub let wrongIndex: Maybe<Int> = [1][True]
+pub let list: Maybe<Int> = `[1][0]
+pub let tuple: Maybe<Int> = (1, 2)[0]

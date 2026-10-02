@@ -230,7 +230,7 @@ mod range_tests {
     }
     #[test]
     fn range_preserves_custom_fixity_and_document_layout() {
-        let source = "operator infixr 4 <+> left: Int -> right: Int -> Int = left + right\npub let result=1<+>2<+>3\n";
+        let source = "operator infixr 4 <+> left: Int -> right: Int -> Int = left + right\npub let result: Int=1<+>2<+>3\n";
         let start = source.find("1<+>").unwrap();
         let edits = format_module_range(
             "main.ssrg",

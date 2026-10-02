@@ -503,7 +503,14 @@
           "end": 348
         }
       },
-      "typeRef": null,
+      "typeRef": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 350,
+          "end": 356
+        }
+      },
       "body": {
         "kind": "template",
         "parts": [
@@ -513,21 +520,21 @@
               "kind": "name",
               "name": "tuple",
               "span": {
-                "start": 354,
-                "end": 359
+                "start": 362,
+                "end": 367
               }
             },
             "span": {
-              "start": 352,
-              "end": 360
+              "start": 360,
+              "end": 368
             }
           },
           {
             "kind": "text",
             "value": ", ",
             "span": {
-              "start": 360,
-              "end": 362
+              "start": 368,
+              "end": 370
             }
           },
           {
@@ -536,21 +543,21 @@
               "kind": "name",
               "name": "nested",
               "span": {
-                "start": 364,
-                "end": 370
+                "start": 372,
+                "end": 378
               }
             },
             "span": {
-              "start": 362,
-              "end": 371
+              "start": 370,
+              "end": 379
             }
           },
           {
             "kind": "text",
             "value": ", ",
             "span": {
-              "start": 371,
-              "end": 373
+              "start": 379,
+              "end": 381
             }
           },
           {
@@ -559,24 +566,24 @@
               "kind": "char",
               "raw": "'λ'",
               "span": {
-                "start": 375,
-                "end": 379
+                "start": 383,
+                "end": 387
               }
             },
             "span": {
-              "start": 373,
-              "end": 380
+              "start": 381,
+              "end": 388
             }
           }
         ],
         "span": {
-          "start": 351,
-          "end": 381
+          "start": 359,
+          "end": 389
         }
       },
       "span": {
         "start": 334,
-        "end": 381
+        "end": 389
       }
     }
   ],
@@ -586,7 +593,7 @@
       "kind": "module",
       "origin": {
         "start": 1,
-        "end": 381
+        "end": 389
       }
     },
     {
@@ -877,6 +884,18 @@
         "start": 0,
         "end": 0
       }
+    },
+    {
+      "id": 19,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "references": [
@@ -1070,12 +1089,21 @@
       }
     },
     {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 350,
+        "end": 356
+      }
+    },
+    {
       "spelling": "tuple",
       "namespace": "value",
       "target": 6,
       "origin": {
-        "start": 354,
-        "end": 359
+        "start": 362,
+        "end": 367
       }
     },
     {
@@ -1083,8 +1111,8 @@
       "namespace": "value",
       "target": 5,
       "origin": {
-        "start": 364,
-        "end": 370
+        "start": 372,
+        "end": 378
       }
     }
   ],

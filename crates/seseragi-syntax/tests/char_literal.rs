@@ -13,7 +13,7 @@ fn decodes_exact_scalar_and_preserves_raw_tokens() {
         (r"'\u{10FFFF}'", "\u{10ffff}"),
     ] {
         assert_eq!(decode_char_literal(literal).unwrap(), expected);
-        let source = format!("pub let value = {literal}\n");
+        let source = format!("pub let value: Char = {literal}\n");
         let tokens = lex("char.ssrg", &source);
         assert_eq!(tokens.reconstructed_text(), source);
         assert!(tokens

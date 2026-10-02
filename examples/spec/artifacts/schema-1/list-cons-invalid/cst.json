@@ -5,12 +5,12 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 30,
+    "endToken": 42,
     "children": [
       {
         "kind": "top-decl",
         "startToken": 0,
-        "endToken": 14,
+        "endToken": 20,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -21,35 +21,35 @@
           {
             "kind": "let-decl",
             "startToken": 2,
-            "endToken": 14,
+            "endToken": 20,
             "children": []
           },
           {
             "kind": "complete-declaration",
             "startToken": 0,
-            "endToken": 13,
+            "endToken": 19,
             "children": [
               {
                 "kind": "complete-signature",
                 "startToken": 0,
-                "endToken": 8,
+                "endToken": 14,
                 "children": []
               },
               {
                 "kind": "complete-expression",
-                "startToken": 8,
-                "endToken": 13,
+                "startToken": 14,
+                "endToken": 19,
                 "children": [
                   {
                     "kind": "complete-expression",
-                    "startToken": 8,
-                    "endToken": 9,
+                    "startToken": 14,
+                    "endToken": 15,
                     "children": []
                   },
                   {
                     "kind": "complete-expression",
-                    "startToken": 12,
-                    "endToken": 13,
+                    "startToken": 18,
+                    "endToken": 19,
                     "children": []
                   }
                 ]
@@ -60,57 +60,57 @@
       },
       {
         "kind": "top-decl",
-        "startToken": 14,
-        "endToken": 30,
+        "startToken": 20,
+        "endToken": 42,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 14,
-            "endToken": 15,
+            "startToken": 20,
+            "endToken": 21,
             "children": []
           },
           {
             "kind": "let-decl",
-            "startToken": 16,
-            "endToken": 30,
+            "startToken": 22,
+            "endToken": 42,
             "children": []
           },
           {
             "kind": "complete-declaration",
-            "startToken": 14,
-            "endToken": 29,
+            "startToken": 20,
+            "endToken": 41,
             "children": [
               {
                 "kind": "complete-signature",
-                "startToken": 14,
-                "endToken": 22,
+                "startToken": 20,
+                "endToken": 34,
                 "children": []
               },
               {
                 "kind": "complete-expression",
-                "startToken": 22,
-                "endToken": 29,
+                "startToken": 34,
+                "endToken": 41,
                 "children": [
                   {
                     "kind": "complete-expression",
-                    "startToken": 22,
-                    "endToken": 23,
+                    "startToken": 34,
+                    "endToken": 35,
                     "children": []
                   },
                   {
                     "kind": "complete-expression",
-                    "startToken": 26,
-                    "endToken": 29,
+                    "startToken": 38,
+                    "endToken": 41,
                     "children": [
                       {
                         "kind": "complete-item",
-                        "startToken": 27,
-                        "endToken": 28,
+                        "startToken": 39,
+                        "endToken": 40,
                         "children": [
                           {
                             "kind": "complete-expression",
-                            "startToken": 27,
-                            "endToken": 28,
+                            "startToken": 39,
+                            "endToken": 40,
                             "children": []
                           }
                         ]

@@ -84,11 +84,21 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
 fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<CoreStatement> {
     match statement {
         TypedBlockStatement::Let {
+            constraints,
+            constraint_identities,
             type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
+        } => lower_let_pattern_statements(
+            source,
+            pattern,
+            value,
+            origin,
+            type_parameters,
+            constraints,
+            constraint_identities,
+        ),
         TypedBlockStatement::Function {
             effect: _,
             rec_group,
@@ -657,6 +667,55 @@ fn lower_exprs(source: &str, expressions: Vec<TypedExpr>) -> Vec<CoreExpr> {
         .collect()
 }
 
+pub(super) fn peel_lambdas(mut value: TypedExpr) -> (Vec<TypedParameter>, TypedExpr) {
+    let mut parameters = Vec::new();
+    while let TypedExpr::Lambda {
+        parameter, body, ..
+    } = value
+    {
+        parameters.push(parameter);
+        value = *body;
+    }
+    (parameters, value)
+}
+
+fn lower_let_pattern_statements(
+    source: &str,
+    pattern: TypedPattern,
+    value: TypedExpr,
+    origin: ByteSpan,
+    type_parameters: Vec<seseragi_syntax::TypeParameter>,
+    constraints: Vec<seseragi_semantics::TypedConstraint>,
+    constraint_identities: Vec<Option<String>>,
+) -> Vec<CoreStatement> {
+    if constraints.is_empty() {
+        return lower_pure_pattern_statements(source, pattern, value, origin, type_parameters);
+    }
+    let TypedPattern::Binding { name, .. } = pattern else {
+        unreachable!("generalized lambda must have one binding")
+    };
+    let (parameters, body) = peel_lambdas(value);
+    vec![CoreStatement::LocalFunction {
+        rec_group: None,
+        return_type: None,
+        name,
+        type_parameters,
+        constraints: constraints
+            .into_iter()
+            .enumerate()
+            .map(|(index, constraint)| {
+                super::instances::lower_constraint_with_identity(
+                    constraint,
+                    constraint_identities.get(index).cloned().flatten(),
+                )
+            })
+            .collect(),
+        parameters: parameters.iter().map(lower_parameter).collect(),
+        body: lower_expr(source, body),
+        origin: source_span(source, origin),
+    }]
+}
+
 fn lower_pure_pattern_statements(
     source: &str,
     pattern: TypedPattern,
@@ -760,6 +819,8 @@ fn lower_monad_pattern_statements(
             }
         } else {
             CoreMonadDoStatement::PureLet {
+                type_parameters: Vec::new(),
+                constraints: Vec::new(),
                 name: binding.name.clone(),
                 type_ref: binding.type_ref.clone(),
                 value,
@@ -778,6 +839,8 @@ fn lower_monad_pattern_statements(
         }
     } else {
         CoreMonadDoStatement::PureLet {
+            type_parameters: Vec::new(),
+            constraints: Vec::new(),
             name: temporary.clone(),
             type_ref: plan.input_type.clone(),
             value,
@@ -788,6 +851,8 @@ fn lower_monad_pattern_statements(
         plan.bindings
             .iter()
             .map(|binding| CoreMonadDoStatement::PureLet {
+                type_parameters: Vec::new(),
+                constraints: Vec::new(),
                 name: binding.name.clone(),
                 type_ref: binding.type_ref.clone(),
                 value: projection_expression(&temporary, &plan, binding),
@@ -859,11 +924,21 @@ fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> Vec<Core
             value: lower_effect_body(source, value),
         }],
         TypedDoStatement::PureLet {
+            constraints,
+            constraint_identities,
             type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
+        } => lower_let_pattern_statements(
+            source,
+            pattern,
+            value,
+            origin,
+            type_parameters,
+            constraints,
+            constraint_identities,
+        ),
         TypedDoStatement::Bind {
             pattern,
             value,
@@ -880,11 +955,21 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreSt
             value: lower_expr(source, value),
         }],
         TypedDoStatement::PureLet {
+            constraints,
+            constraint_identities,
             type_parameters,
             pattern,
             value,
             origin,
-        } => lower_pure_pattern_statements(source, pattern, value, origin, type_parameters),
+        } => lower_let_pattern_statements(
+            source,
+            pattern,
+            value,
+            origin,
+            type_parameters,
+            constraints,
+            constraint_identities,
+        ),
         TypedDoStatement::Bind {
             pattern,
             value,
@@ -902,10 +987,35 @@ fn lower_monad_do_statement(
             value: lower_expr(source, value),
         }],
         TypedMonadDoStatement::PureLet {
+            type_parameters,
+            constraints,
+            constraint_identities,
             pattern,
             value,
             origin,
-        } => lower_monad_pattern_statements(source, pattern, value, origin, false),
+        } => {
+            let mut statements =
+                lower_monad_pattern_statements(source, pattern, value, origin, false);
+            if let [CoreMonadDoStatement::PureLet {
+                type_parameters: parameters,
+                constraints: required,
+                ..
+            }] = statements.as_mut_slice()
+            {
+                *parameters = type_parameters;
+                *required = constraints
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, constraint)| {
+                        super::instances::lower_constraint_with_identity(
+                            constraint,
+                            constraint_identities.get(index).cloned().flatten(),
+                        )
+                    })
+                    .collect();
+            }
+            statements
+        }
         TypedMonadDoStatement::Bind {
             pattern,
             value,

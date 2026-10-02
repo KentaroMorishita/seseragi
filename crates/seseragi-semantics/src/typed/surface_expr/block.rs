@@ -34,6 +34,7 @@ pub(crate) fn type_block_with(
     mut type_body: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let mut locals = BTreeMap::<SymbolId, SemanticValueType>::new();
+    let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
     let mut merged = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Unit {
@@ -135,7 +136,9 @@ pub(crate) fn type_block_with(
                 value,
                 span,
             } => {
-                let context = base_context.with_locals(locals.clone());
+                let context = base_context
+                    .with_locals(locals.clone())
+                    .with_inferred_callables(inferred_callables.clone());
                 let binding = type_pattern_binding(
                     pattern,
                     type_ref.as_ref(),
@@ -152,15 +155,32 @@ pub(crate) fn type_block_with(
                         },
                     ));
                 }
+                if let Some((symbol, callable)) = &binding.inferred_callable {
+                    inferred_callables.insert(*symbol, callable.clone());
+                }
                 locals.extend(binding.pattern.locals.clone());
                 statements.push(TypedBlockStatement::Let {
+                    constraints: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraints.clone())
+                        .unwrap_or_default(),
+                    constraint_identities: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraint_identities.clone())
+                        .unwrap_or_default(),
                     type_parameters: binding
                         .pattern
                         .locals
                         .keys()
                         .next()
                         .filter(|_| binding.pattern.locals.len() == 1)
-                        .and_then(|symbol| context.resolution.callable(*symbol))
+                        .and_then(|symbol| {
+                            inferred_callables
+                                .get(symbol)
+                                .or_else(|| context.callable(*symbol))
+                        })
                         .map(|signature| signature.type_parameters.clone())
                         .unwrap_or_default(),
                     pattern: binding.pattern.typed,
@@ -241,6 +261,7 @@ pub(crate) fn type_block_with(
                     crate::typed::scoped_call_evidence(constraints, base_context.resolution);
                 let mut context = base_context
                     .with_locals(function_locals)
+                    .with_inferred_callables(inferred_callables.clone())
                     .with_expected(Some(expected.clone()));
                 if rec_group.is_some() {
                     if let (Some(group), Some(symbol)) = (
@@ -365,6 +386,7 @@ pub(crate) fn type_block_with(
         result,
         &base_context
             .with_locals(locals)
+            .with_inferred_callables(inferred_callables)
             .with_expected(base_context.expected().cloned()),
     );
     let type_ref = application_argument_type_from_expr(&result_analysis.value);

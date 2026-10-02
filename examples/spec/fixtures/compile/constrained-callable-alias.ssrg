@@ -1,0 +1,38 @@
+fn render<A> value: A -> String where Show<A> = show value
+fn renderLater<A> value: A -> (Int -> String) where Show<A> = \_ -> show value
+fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn apply<A, B> callback: (A -> B) -> value: A -> B = callback value
+
+let aliasValue = render
+let again = aliasValue
+let later = renderLater
+let equal = same
+let method = show
+let transform = map
+
+fn captured<A> value: A -> String where Show<A> = {
+  let renderCaptured = \_ -> show value
+  let aliasCaptured = renderCaptured
+  aliasCaptured 42
+}
+
+fn monadic -> Maybe<String> = do {
+  let local = render
+  let number = local 42
+  Just (local "monadic")
+}
+
+pub effect fn main = do {
+  println (again 42)
+  println (aliasValue "hello")
+  println (apply aliasValue 7)
+  println (later "later" 0)
+  println (show (equal 42 42))
+  println (method "method")
+  println (show (transform (\x: Int -> x + 1) (Just 41)))
+  println (captured "captured")
+  let local = render
+  println (local 8)
+  println (local "local")
+  println (show (monadic ()))
+}

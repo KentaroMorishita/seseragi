@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn stops_non_referenceable_operator_sections_before_lowering() {
-        let source = "pub let invalid = (&&)\n";
+        let source = "let invalid = (&&)\n";
         let diagnostics = compile_module(CompileInput::new(
             "main.ssrg",
             "artifact/operator-section-forbidden",
@@ -195,8 +195,8 @@ mod tests {
             diagnostics.diagnostics[0].message_key,
             "parser.expected-expression"
         );
-        assert_eq!(diagnostics.diagnostics[0].primary.start, 19);
-        assert_eq!(diagnostics.diagnostics[0].primary.end, 21);
+        assert_eq!(diagnostics.diagnostics[0].primary.start, 15);
+        assert_eq!(diagnostics.diagnostics[0].primary.end, 17);
     }
 
     #[test]

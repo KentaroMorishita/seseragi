@@ -6,8 +6,8 @@ fn numeric_wrappers_use_conditional_canonical_evidence() {
 fn total<C, A> values: C -> A where Reducible<C, A>, Monoid<A> = combine values
 fn unwrapSum<A> value: Sum<A> -> A = match value { Sum n -> n }
 fn unwrapProduct<A> value: Product<A> -> A = match value { Product n -> n }
-pub let added = unwrapSum $ total [Sum 1, Sum 2, Sum 3]
-pub let multiplied = unwrapProduct $ combine [Product 2, Product 3, Product 4]
+let added = unwrapSum $ total [Sum 1, Sum 2, Sum 3]
+let multiplied = unwrapProduct $ combine [Product 2, Product 3, Product 4]
 let empty: Array<Sum<Int>> = []
 pub let none: Sum<Int> = combine empty
 "#;
@@ -45,7 +45,7 @@ fn local_wrappers_do_not_inherit_the_prelude_instance() {
         "fixture/shadow",
         r#"
 type Sum<A> = | Sum A
-pub let invalid = combine [Sum 1, Sum 2]
+let invalid = combine [Sum 1, Sum 2]
 "#,
     ));
     assert!(

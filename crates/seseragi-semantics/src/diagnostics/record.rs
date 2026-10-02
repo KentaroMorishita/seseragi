@@ -269,7 +269,7 @@ mod tests {
             "struct-box.ssrg",
             concat!(
                 "pub struct Box<A> { value: A }\n",
-                "pub let inferred = Box { value: 42 }\n",
+                "let inferred = Box { value: 42 }\n",
                 "fn replace<A> value: A -> box: Box<A> -> Box<A> = Box { ...box, value }\n",
                 "fn unwrap<A> box: Box<A> -> A = box.value\n",
                 "pub fn answer -> Int = inferred |> replace 42 |> unwrap\n",
@@ -285,9 +285,9 @@ mod tests {
             "struct-marker.ssrg",
             concat!(
                 "pub struct Marker<A> { label: String }\n",
-                "pub let marker = Marker<Int> { label: \"ready\" }\n",
+                "let marker = Marker<Int> { label: \"ready\" }\n",
                 "fn keep value: Marker<Int> -> Marker<Int> = value\n",
-                "pub let kept = keep marker\n",
+                "let kept = keep marker\n",
             ),
         );
 
@@ -300,28 +300,28 @@ mod tests {
             (
                 concat!(
                     "pub struct Box<A> { value: A }\n",
-                    "pub let bad = Box<String> { value: 42 }\n",
+                    "let bad = Box<String> { value: 42 }\n",
                 ),
                 "struct.field-type-mismatch",
             ),
             (
                 concat!(
                     "pub struct Box<A> { value: A }\n",
-                    "pub let bad = Box<> { value: 42 }\n",
+                    "let bad = Box<> { value: 42 }\n",
                 ),
                 "struct.type-argument-arity-mismatch",
             ),
             (
                 concat!(
                     "pub struct Box<A> { value: A }\n",
-                    "pub let bad = Box<Int, String> { value: 42 }\n",
+                    "let bad = Box<Int, String> { value: 42 }\n",
                 ),
                 "struct.type-argument-arity-mismatch",
             ),
             (
                 concat!(
                     "pub struct Box<A> { value: A }\n",
-                    "pub let bad = Box<_> { value: 42 }\n",
+                    "let bad = Box<_> { value: 42 }\n",
                 ),
                 "struct.type-arguments-unresolved",
             ),
@@ -339,14 +339,14 @@ mod tests {
             (
                 concat!(
                     "pub struct Pair<A> { left: A, right: A }\n",
-                    "pub let bad = Pair { left: 1, right: \"two\" }\n",
+                    "let bad = Pair { left: 1, right: \"two\" }\n",
                 ),
                 "struct.field-type-mismatch",
             ),
             (
                 concat!(
                     "pub struct Marker<A> { label: String }\n",
-                    "pub let bad = Marker { label: \"unknown\" }\n",
+                    "let bad = Marker { label: \"unknown\" }\n",
                 ),
                 "struct.type-arguments-unresolved",
             ),

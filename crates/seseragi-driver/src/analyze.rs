@@ -185,7 +185,7 @@ mod tests {
     #[test]
     fn analysis_exposes_concrete_unannotated_top_level_call_results() {
         let source = "fn wrap<A> value: A -> Maybe<A> = Just value\n\
-                      pub let wrapped = wrap 42\n\
+                      let wrapped = wrap 42\n\
                       pub effect fn main = debug wrapped |> println\n";
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
@@ -319,7 +319,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/html-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
 
         for name in [
@@ -396,7 +396,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/numeric-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
 
@@ -450,7 +450,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/bytes-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
 
@@ -487,7 +487,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/validation-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
         for name in [
@@ -515,7 +515,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/regex-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
         for name in [
@@ -547,7 +547,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/process-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
 
@@ -576,7 +576,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/json-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
         let catalog = analysis.standard_library_catalog();
 
@@ -608,7 +608,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/html-custom-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
 
         for name in [
@@ -637,7 +637,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/html-keyboard-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
 
         let keyboard = analysis
@@ -654,7 +654,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/html-pointer-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
 
         for name in [
@@ -683,7 +683,7 @@ let result = configure { host: "localhost" } { secure: true }
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/html-props-reference",
-            "pub let value = 1\n",
+            "pub let value: Int = 1\n",
         ));
 
         for name in [

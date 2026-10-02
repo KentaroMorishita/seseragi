@@ -1680,7 +1680,7 @@ fails ConsoleError =
 
     #[test]
     fn lowers_unary_values_through_formal_ir_and_checked_int_negation() {
-        let source = "pub struct Snapshot {\n  number: Int,\n  ratio: Float,\n  flag: Bool,\n}\n\npub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let snapshot: Snapshot = Snapshot { number: -2, ratio: -0.0, flag: !True }\n";
+        let source = "pub struct Snapshot {\n  number: Int,\n  ratio: Float,\n  flag: Bool,\n}\n\npub let negative: Int = -2\npub let negativeZero: Float = -0.0\npub let inverted: Bool = !True\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let snapshot: Snapshot = Snapshot { number: -2, ratio: -0.0, flag: !True }\n";
         let typed = type_module("artifact/unary-values/main.ssrg", source);
         let core = lower_typed_module(typed);
 

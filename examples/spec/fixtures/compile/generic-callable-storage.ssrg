@@ -1,0 +1,26 @@
+fn identity<A> value: A -> A = value
+fn increment value: Int -> Int = value + 1
+let inferred = \value -> value
+let aliasValue = inferred
+let functions: Array<Int -> Int> = [identity, inferred]
+let record: { apply: String -> String } = { apply: inferred }
+let pair: (Int -> Int, String -> String) = (identity, inferred)
+let explicitFunctions = [identity<Int>]
+let concreteFunctions = [increment, identity, inferred]
+fn keep<A, B> first: A -> second: B -> A = first
+let partial: { apply: String -> Int } = { apply: keep 42 }
+
+fn contextual<A> value: A -> A = {
+  let stored: { apply: A -> A } = { apply: identity }
+  let apply = stored.apply
+  apply value
+}
+
+fn callback<A> f: (A -> A) -> value: A -> A = f value
+
+pub effect fn main = do {
+  let apply = record.apply
+  println (apply (aliasValue "stored"))
+  println (show (callback inferred 42))
+  println (contextual "lexical")
+}

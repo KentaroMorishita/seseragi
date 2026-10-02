@@ -80,8 +80,8 @@
       "name": "negativeZero",
       "visibility": "public",
       "declaration": {
-        "start": 207,
-        "end": 219
+        "start": 212,
+        "end": 224
       },
       "scheme": {
         "typeParameters": [],
@@ -99,8 +99,8 @@
       "name": "inverted",
       "visibility": "public",
       "declaration": {
-        "start": 235,
-        "end": 243
+        "start": 247,
+        "end": 255
       },
       "scheme": {
         "typeParameters": [],
@@ -118,8 +118,8 @@
       "name": "minimum",
       "visibility": "public",
       "declaration": {
-        "start": 260,
-        "end": 267
+        "start": 278,
+        "end": 285
       },
       "scheme": {
         "typeParameters": [],
@@ -137,8 +137,8 @@
       "name": "values",
       "visibility": "public",
       "declaration": {
-        "start": 302,
-        "end": 308
+        "start": 320,
+        "end": 326
       },
       "scheme": {
         "typeParameters": [],
@@ -162,8 +162,8 @@
       "name": "floats",
       "visibility": "public",
       "declaration": {
-        "start": 344,
-        "end": 350
+        "start": 362,
+        "end": 368
       },
       "scheme": {
         "typeParameters": [],
@@ -187,8 +187,8 @@
       "name": "flags",
       "visibility": "public",
       "declaration": {
-        "start": 399,
-        "end": 404
+        "start": 417,
+        "end": 422
       },
       "scheme": {
         "typeParameters": [],
@@ -212,8 +212,8 @@
       "name": "tuple",
       "visibility": "public",
       "declaration": {
-        "start": 444,
-        "end": 449
+        "start": 462,
+        "end": 467
       },
       "scheme": {
         "typeParameters": [],
@@ -246,8 +246,8 @@
       "name": "record",
       "visibility": "public",
       "declaration": {
-        "start": 499,
-        "end": 505
+        "start": 517,
+        "end": 523
       },
       "scheme": {
         "typeParameters": [],
@@ -257,18 +257,18 @@
           "closed": true,
           "fields": [
             {
-              "name": "inverted",
-              "type": {
-                "kind": "named",
-                "name": "Bool",
-                "arguments": []
-              }
-            },
-            {
               "name": "negative",
               "type": {
                 "kind": "named",
                 "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "name": "inverted",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
                 "arguments": []
               }
             }
@@ -282,8 +282,8 @@
       "name": "snapshot",
       "visibility": "public",
       "declaration": {
-        "start": 550,
-        "end": 558
+        "start": 603,
+        "end": 611
       },
       "scheme": {
         "typeParameters": [],
@@ -302,8 +302,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 653,
-        "end": 696
+        "start": 706,
+        "end": 749
       },
       "scheme": {
         "typeParameters": [],
@@ -330,8 +330,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 697,
-        "end": 746
+        "start": 750,
+        "end": 799
       },
       "scheme": {
         "typeParameters": [],
@@ -358,8 +358,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 747,
-        "end": 789
+        "start": 800,
+        "end": 842
       },
       "scheme": {
         "typeParameters": [],
@@ -386,8 +386,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 1026,
-        "end": 1367
+        "start": 1079,
+        "end": 1420
       },
       "scheme": {
         "typeParameters": [],
@@ -457,8 +457,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 843,
-        "end": 913
+        "start": 896,
+        "end": 966
       }
     }
   ]

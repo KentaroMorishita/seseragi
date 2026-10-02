@@ -27,7 +27,7 @@ fn reports_explicit_call_site_type_argument_arity() {
     let diagnostics = semantic_diagnostics(
         "artifact/explicit-call-type-argument-arity/main.ssrg",
         "fn identity<A> value: A -> A = value\n\
-         pub let answer = identity<Int, String> 42\n",
+         let answer = identity<Int, String> 42\n",
     );
 
     assert_eq!(diagnostics.diagnostics.len(), 1);

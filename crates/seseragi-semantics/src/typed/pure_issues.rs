@@ -48,6 +48,9 @@ pub(crate) enum PureCallIssue {
     LambdaParameterTypeUnresolved {
         parameter: ByteSpan,
     },
+    CallableTypeUnresolved {
+        callee: ByteSpan,
+    },
     LambdaParameterTypeMismatch {
         parameter: ByteSpan,
         expected: TypedType,

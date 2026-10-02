@@ -281,7 +281,7 @@ mod tests {
         ));
         fs::create_dir_all(&root).unwrap();
         let source = root.join("domain.ssrg");
-        fs::write(&source, "pub let value = 1\n").unwrap();
+        fs::write(&source, "pub let value: Int = 1\n").unwrap();
         let uri = Url::from_file_path(&source).unwrap().to_string();
         fs::remove_file(&source).unwrap();
 

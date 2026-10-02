@@ -1827,8 +1827,8 @@ mod tests {
 
         let cycle = request(
             json!([
-                { "path": "a.ssrg", "source": "import { b } from \"./b\"\npub let a = b\n" },
-                { "path": "b.ssrg", "source": "import { a } from \"./a\"\npub let b = a\n" }
+                { "path": "a.ssrg", "source": "import { b } from \"./b\"\npub let a: Int = b\n" },
+                { "path": "b.ssrg", "source": "import { a } from \"./a\"\npub let b: Int = a\n" }
             ]),
             "a.ssrg",
         );
@@ -1837,8 +1837,8 @@ mod tests {
 
         let duplicate = request(
             json!([
-                { "path": "main.ssrg", "source": "pub let first = 1\n" },
-                { "path": "main.ssrg", "source": "pub let second = 2\n" }
+                { "path": "main.ssrg", "source": "pub let first: Int = 1\n" },
+                { "path": "main.ssrg", "source": "pub let second: Int = 2\n" }
             ]),
             "main.ssrg",
         );
@@ -1861,7 +1861,7 @@ mod tests {
     #[test]
     fn rejects_noncanonical_and_empty_browser_source_module_paths() {
         let decomposed = request(
-            json!([{ "path": "cafe\u{301}.ssrg", "source": "pub let answer = 42\n" }]),
+            json!([{ "path": "cafe\u{301}.ssrg", "source": "pub let answer: Int = 42\n" }]),
             "cafe\u{301}.ssrg",
         );
         let decomposed: Value = serde_json::from_str(&compile_project(&decomposed)).unwrap();
@@ -1874,7 +1874,7 @@ mod tests {
         );
 
         let empty_module = request(
-            json!([{ "path": ".ssrg", "source": "pub let answer = 42\n" }]),
+            json!([{ "path": ".ssrg", "source": "pub let answer: Int = 42\n" }]),
             ".ssrg",
         );
         let empty_module: Value = serde_json::from_str(&compile_project(&empty_module)).unwrap();
@@ -1951,7 +1951,7 @@ mod tests {
                 },
                 {
                     "path": "main.ssrg",
-                    "source": "import { wrong } from \"./domain\"\n\npub let value = wrong ()\n"
+                    "source": "import { wrong } from \"./domain\"\n\npub let value: Int = wrong ()\n"
                 }
             ]),
             "main.ssrg",

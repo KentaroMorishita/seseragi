@@ -10,6 +10,7 @@ mod match_expression;
 mod parenthesized;
 mod record;
 mod template;
+pub(super) use do_block::split_segments;
 #[cfg(test)]
 mod tests;
 

@@ -1,6 +1,6 @@
 import * as math from "std/math"
 import { pi as circleConstant, sin, atan2 } from "std/math"
-pub let constants = (math.pi, math.e, math.tau, circleConstant)
+pub let constants: (Float, Float, Float, Float) = (math.pi, math.e, math.tau, circleConstant)
 pub let functions: Array<Float -> Float> = [
   sin,
   math.cos,
@@ -19,5 +19,5 @@ pub let functions: Array<Float -> Float> = [
   math.tanh
 ]
 pub let partial: Float -> Float = atan2 1.0
-pub let length = math.hypot 3.0 4.0
-pub let result = partial 1.0
+pub let length: Float = math.hypot 3.0 4.0
+pub let result: Float = partial 1.0

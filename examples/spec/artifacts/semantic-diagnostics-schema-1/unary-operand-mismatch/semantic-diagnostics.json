@@ -10,15 +10,15 @@
       "messageKey": "unary.operand-type-mismatch",
       "message": "Unary operand type mismatch",
       "primary": {
-        "start": 24,
-        "end": 28
+        "start": 29,
+        "end": 33
       },
       "related": [
         {
           "message": "unary `-` expects Int or Float, received Bool",
           "primary": {
             "start": 0,
-            "end": 28
+            "end": 33
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "unary `-` expects Int or Float, received Bool",
           "primary": {
             "start": 0,
-            "end": 28
+            "end": 33
           }
         }
       ],
@@ -44,15 +44,15 @@
       "messageKey": "unary.operand-type-mismatch",
       "message": "Unary operand type mismatch",
       "primary": {
-        "start": 52,
-        "end": 53
+        "start": 63,
+        "end": 64
       },
       "related": [
         {
           "message": "unary `!` expects Bool, received Int",
           "primary": {
-            "start": 29,
-            "end": 53
+            "start": 34,
+            "end": 64
           }
         }
       ],
@@ -60,8 +60,8 @@
         {
           "message": "unary `!` expects Bool, received Int",
           "primary": {
-            "start": 29,
-            "end": 53
+            "start": 34,
+            "end": 64
           }
         }
       ],

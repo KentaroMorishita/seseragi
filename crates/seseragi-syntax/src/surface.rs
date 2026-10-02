@@ -33,6 +33,9 @@ mod signatures;
 mod traits;
 mod type_refs;
 mod types;
+mod validation;
+
+pub(crate) use validation::declaration_diagnostics;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
     let stream = lex(source_name, source);

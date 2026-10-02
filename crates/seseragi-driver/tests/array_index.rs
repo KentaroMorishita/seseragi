@@ -14,7 +14,7 @@ let nested: Maybe<Int> = [[7]][0] >>= first
 struct Item { value: Int }
 let selected = [Item { value: 7 }][0]
 let field = match selected { Just item -> item.value; Nothing -> 0 }
-pub let output = (values[0], values[-1], values[3], grouped, applied, passed, empty, nested, field)
+let output = (values[0], values[-1], values[3], grouped, applied, passed, empty, nested, field)
 "#;
     let result = compile_module(CompileInput::new("index.ssrg", "fixture/index", source));
     assert!(result.is_ok(), "{result:#?}");
@@ -40,13 +40,10 @@ fn index_result_does_not_adopt_a_user_defined_maybe_identity() {
 #[test]
 fn invalid_index_operands_have_specific_diagnostics() {
     for (source, key) in [
-        ("pub let value = 1[0]", "array.index-receiver-not-array"),
-        ("pub let value = `[1][0]", "array.index-receiver-not-array"),
-        (
-            "pub let value = (1, 2)[0]",
-            "array.index-receiver-not-array",
-        ),
-        ("pub let value = [1][True]", "array.index-not-int"),
+        ("let value = 1[0]", "array.index-receiver-not-array"),
+        ("let value = `[1][0]", "array.index-receiver-not-array"),
+        ("let value = (1, 2)[0]", "array.index-receiver-not-array"),
+        ("let value = [1][True]", "array.index-not-int"),
     ] {
         let diagnostics = seseragi_semantics::semantic_diagnostics("bad-index.ssrg", source);
         assert!(

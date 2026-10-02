@@ -300,6 +300,18 @@
         "end": 0
       },
       "description": "Constructs a present Maybe value."
+    },
+    {
+      "id": 19,
+      "identity": "std/prelude::String",
+      "name": "String",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "symbolOccurrences": [
@@ -536,15 +548,22 @@
     },
     {
       "range": {
-        "start": 354,
-        "end": 359
+        "start": 350,
+        "end": 356
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 362,
+        "end": 367
       },
       "symbol": 6
     },
     {
       "range": {
-        "start": 364,
-        "end": 370
+        "start": 372,
+        "end": 378
       },
       "symbol": 5
     }
@@ -797,29 +816,29 @@
     },
     {
       "range": {
-        "start": 351,
-        "end": 381
+        "start": 359,
+        "end": 389
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 354,
-        "end": 359
+        "start": 362,
+        "end": 367
       },
       "type": "(Char, Char)"
     },
     {
       "range": {
-        "start": 364,
-        "end": 370
+        "start": 372,
+        "end": 378
       },
       "type": "Array<Maybe<Char>>"
     },
     {
       "range": {
-        "start": 375,
-        "end": 379
+        "start": 383,
+        "end": 387
       },
       "type": "Char"
     }

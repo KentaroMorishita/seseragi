@@ -57,12 +57,16 @@ pub(super) fn type_monad_do(
     };
 
     let mut locals = BTreeMap::new();
+    let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
     let mut merged =
         SurfaceExpressionAnalysis::valid_with_semantic_type(hole(origin), expected.key.clone());
 
     for item in items {
-        let context = base_context.with_locals(locals.clone()).without_expected();
+        let context = base_context
+            .with_locals(locals.clone())
+            .with_inferred_callables(inferred_callables.clone())
+            .without_expected();
         match item {
             SurfaceDoItem::Expression { value, .. } => {
                 let analysis = type_surface_expression(value, &context);
@@ -135,9 +139,27 @@ pub(super) fn type_monad_do(
                                 pattern: pattern.span(),
                             }));
                 }
+                if let Some((symbol, callable)) = &binding.inferred_callable {
+                    inferred_callables.insert(*symbol, callable.clone());
+                }
                 locals.extend(binding.pattern.locals.clone());
                 merged.match_issues.extend(binding.pattern.issues);
                 statements.push(TypedMonadDoStatement::PureLet {
+                    type_parameters: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.type_parameters.clone())
+                        .unwrap_or_default(),
+                    constraints: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraints.clone())
+                        .unwrap_or_default(),
+                    constraint_identities: binding
+                        .inferred_callable
+                        .as_ref()
+                        .map(|(_, callable)| callable.constraint_identities.clone())
+                        .unwrap_or_default(),
                     pattern: binding.pattern.typed,
                     value: binding.expression.value.clone(),
                     origin: *span,
@@ -159,6 +181,7 @@ pub(super) fn type_monad_do(
     };
     let result_context = base_context
         .with_locals(locals)
+        .with_inferred_callables(inferred_callables)
         .with_expected(Some(expected.clone()));
     let result_analysis = type_surface_expression(result, &result_context);
     let result_type = inferred_type_from_expr(&result_analysis.value);

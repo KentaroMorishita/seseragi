@@ -449,6 +449,22 @@ do {
 ありません。したがって、通常のpure式でSignalの現在値が暗黙に変化することはありません。
 二項の`*`は乗算のままで、prefix位置の`*`だけがSignal readです。
 
+一回のreadは、実行時点で公開済みの値を返します。複数のreadを同じ`do`に
+並べても、処理全体のsnapshotは固定されません。Effectのbindで処理を再開する
+間に別のtransactionがcommitすると、後のreadは新しい値を読みます。
+明示的なI/Oやsleepがなくても、複数readのatomicityを仮定してはなりません。
+
+複数Signalの同じread時点で公開済みの値を組として使う場合は、`combine`またはApplicativeで
+recordを返すderived Signalを構成し、そのSignalを一度だけ読みます。
+取得した不変recordは後の更新で変わりません。新しい値が必要な時点で再度読みます。
+一度取得したsnapshotは、後続の非同期処理や更新が終わるまでの排他制御にはなりません。
+
+derived Signalの構成やreadだけで購読は始まりません。購読は5.15の`subscribe`で
+明示します。同じ組を繰り返し読む処理では、derived Signalを再利用できます。
+一度だけ読む場合も一時的に構成でき、購読していなければunsubscribeは不要です。
+5.12のtransactionは複数の更新を一度にcommitする操作であり、任意のEffectを
+包む読取り用transactionではありません。
+
 `target := value` はMutableSignalだけに使える固定operatorです。
 
 ```seseragi

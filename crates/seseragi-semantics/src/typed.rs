@@ -22,6 +22,8 @@ mod functions;
 pub(crate) mod instances;
 mod interface;
 #[cfg(test)]
+mod let_inference_tests;
+#[cfg(test)]
 mod match_tests;
 #[cfg(test)]
 mod pattern_binding_tests;
@@ -2020,7 +2022,7 @@ pub effect fn main =
     fn types_unannotated_and_direct_unary_expressions_without_recovery_holes() {
         let typed = type_module(
             "artifact/unary-expressions/main.ssrg",
-            "pub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\n",
+            "let negative = -2\nlet negativeZero = -0.0\nlet inverted = !True\n",
         );
 
         let [TypedDecl::Let {
@@ -2093,11 +2095,12 @@ pub effect fn main =
     }
 
     #[test]
-    fn exports_a_concrete_unannotated_top_level_call_result() {
+    fn exports_an_annotated_binding_from_an_inferred_top_level_call() {
         let interface = type_module_public_interface(
             "artifact/top-level-call-inference/main.ssrg",
             "fn wrap<A> value: A -> Maybe<A> = Just value\n\
-             pub let wrapped = wrap 42\n",
+             let inferred = wrap 42\n\
+             pub let wrapped: Maybe<Int> = inferred\n",
         );
         let wrapped = interface
             .exports

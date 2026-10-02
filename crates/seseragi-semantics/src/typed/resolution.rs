@@ -164,7 +164,46 @@ impl<'a> TypedResolution<'a> {
                         continue;
                     };
                     let context = PureExpressionContext::new(&[], self);
-                    let analysis = analyze_resolved_expression(body, &context);
+                    let inferred = context.infer_let(body);
+                    let analysis =
+                        analyze_resolved_expression(body, &context.with_let_expectation(body));
+                    let inferred_callable = inferred.as_ref().and_then(|inferred| {
+                        let seseragi_syntax::SurfacePattern::Name { name_span, .. } = pattern
+                        else {
+                            return None;
+                        };
+                        if analysis.pure_call_issue.is_some()
+                            || analysis.array_issue.is_some()
+                            || analysis.conditional_issue.is_some()
+                            || analysis.record_issue.is_some()
+                            || !analysis.match_issues.is_empty()
+                        {
+                            return None;
+                        }
+                        let symbol = self
+                            .declaration_symbol(*name_span, SymbolKind::Let)
+                            .or_else(|| {
+                                self.declaration_symbol(*name_span, SymbolKind::PatternBinding)
+                            })?
+                            .id;
+                        let declaration = self.symbol(symbol)?;
+                        Some((
+                            symbol,
+                            inferred.callable(
+                                declaration
+                                    .canonical
+                                    .clone()
+                                    .unwrap_or_else(|| declaration.spelling.clone()),
+                                &context,
+                            ),
+                        ))
+                    });
+                    if let Some((symbol, callable)) = inferred_callable {
+                        if self.callables.get(&symbol) != Some(&callable) {
+                            self.callables.insert(symbol, callable);
+                            changed = true;
+                        }
+                    }
                     let type_ref = inferred_type_from_expr(&analysis.value);
                     if typed_type_contains_hole(&type_ref) {
                         continue;

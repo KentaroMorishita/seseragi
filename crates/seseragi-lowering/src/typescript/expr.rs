@@ -1853,17 +1853,43 @@ fn lower_monad_do_statement(
             value: lower_core_expr_to_typescript(value, imported_values, imported_types),
         },
         CoreMonadDoStatement::PureLet {
+            type_parameters,
+            constraints,
             name,
             type_ref,
-            value,
+            mut value,
             origin,
-        } => TypeScriptStatement::PureLet {
-            type_parameters: Vec::new(),
-            name: safe_identifier(&name),
-            type_ref: type_ref_from_core_type(&type_ref, imported_types),
-            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
-            origin,
-        },
+        } => {
+            let statement = if constraints.is_empty() {
+                CoreStatement::PureLet {
+                    type_parameters,
+                    name,
+                    type_ref,
+                    value,
+                    origin,
+                }
+            } else {
+                let mut parameters = Vec::new();
+                while let CoreExpr::Lambda {
+                    parameter, body, ..
+                } = value
+                {
+                    parameters.push(parameter);
+                    value = *body;
+                }
+                CoreStatement::LocalFunction {
+                    rec_group: None,
+                    return_type: None,
+                    name,
+                    type_parameters,
+                    constraints,
+                    parameters,
+                    body: value,
+                    origin,
+                }
+            };
+            lower_core_statement_to_typescript(statement, imported_values, imported_types)
+        }
         CoreMonadDoStatement::Bind {
             name,
             type_ref,

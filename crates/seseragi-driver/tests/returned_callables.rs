@@ -37,9 +37,9 @@ pub effect fn main = do {
 #[test]
 fn rejects_extra_arguments_and_does_not_generalize_captured_values() {
     for source in [
-        "fn f x: Int -> Int = x\npub let bad = f 1 2",
+        "fn f x: Int -> Int = x\nlet bad = f 1 2",
         "fn f<A> x: A -> A = { let keep = x; let wrong: Int = keep; x }",
-        "fn f x: Int -> Int = x\nlet keep = f\npub let bad = keep True",
+        "fn f x: Int -> Int = x\nlet keep = f\nlet bad = keep True",
     ] {
         assert!(
             compile_module(CompileInput::new("invalid.ssrg", "fixture/invalid", source)).is_err()

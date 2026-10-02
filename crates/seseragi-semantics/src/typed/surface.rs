@@ -103,7 +103,9 @@ pub(crate) fn typed_decl_from_surface(
             );
             let value = body
                 .as_ref()
-                .map(|body| analyze_resolved_expression(body, &context).value)
+                .map(|body| {
+                    analyze_resolved_expression(body, &context.with_let_expectation(body)).value
+                })
                 .unwrap_or_else(|| hole_expression(span));
             let actual = inferred_type_from_expr(&value);
             let input = type_ref

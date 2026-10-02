@@ -7,21 +7,21 @@ import * as iterator from "std/iterator"
 fn advance n: Int -> Maybe<(Int, Int)> =
   if n < 4 then Just (n, n + 1) else Nothing
 pub let values: iterator.Iterator<Int> = iterator.unfold advance 1
-pub let first = iterator.next values
-pub let repeated = iterator.next values
-pub let mapped = [n + 1 | n <- values]
+let first = iterator.next values
+let repeated = iterator.next values
+let mapped = [n + 1 | n <- values]
 fn head<C> values: C -> Maybe<(Int, iterator.Iterator<Int>)>
 where Iterable<C, Int> = iterator.next (iterate values)
-pub let arrayHead = head [1, 2]
-pub let listHead = head `[1, 2]
-pub let rangeHead = head (1..=2)
-pub let iteratorHead = head values
+let arrayHead = head [1, 2]
+let listHead = head `[1, 2]
+let rangeHead = head (1..=2)
+let iteratorHead = head values
 fn headValue<C> values: C -> Maybe<Int> where Iterable<C, Int> =
   match iterator.next (iterate values) {
     Nothing -> Nothing
     Just (value, _) -> Just value
   }
-pub let inferred = headValue values
+let inferred = headValue values
 "#;
     let analysis = analyze_module(CompileInput::new(
         "iterator.ssrg",
@@ -64,7 +64,7 @@ fn public_iterator_has_no_reducible_instance() {
     let source = r#"
 import * as iterator from "std/iterator"
 fn advance n: Int -> Maybe<(Int, Int)> = Just (n, n + 1)
-pub let invalid = sum (iterator.unfold advance 0)
+let invalid = sum (iterator.unfold advance 0)
 "#;
     let diagnostics = compile_module(CompileInput::new("invalid.ssrg", "fixture/invalid", source))
         .expect_err("potentially infinite Iterator is not Reducible");
@@ -90,8 +90,8 @@ pub fn countdown n: Int -> iterator.Iterator<Int> = iterator.unfold advance n
 import { countdown } from "./domain"
 import { next, Iterator as Cursor } from "std/iterator"
 pub let cursor: Cursor<Int> = countdown 2
-pub let first = next cursor
-pub let values = [n | n <- cursor]
+let first = next cursor
+let values = [n | n <- cursor]
 "#;
     let mut graph = ModuleGraph::new();
     graph

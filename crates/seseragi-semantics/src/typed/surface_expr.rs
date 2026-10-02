@@ -26,6 +26,7 @@ pub(crate) mod effectful_for;
 mod expected;
 mod fallback;
 pub(crate) mod lambda;
+pub(crate) mod let_inference;
 pub(crate) mod match_expression;
 mod monad_do;
 pub(super) mod pattern;
@@ -36,6 +37,7 @@ mod struct_value;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
+    inferred_callables: BTreeMap<SymbolId, TopLevelPureFunction>,
     recursive_groups: Vec<recursion::RecursiveContext>,
     lexical_type_parameters: BTreeMap<String, SymbolId>,
     parameters: BTreeMap<SymbolId, SemanticValueType>,
@@ -47,6 +49,7 @@ pub(crate) struct PureExpressionContext<'a> {
 impl<'a> PureExpressionContext<'a> {
     pub(crate) fn new(parameters: &[TypedParameter], resolution: &'a TypedResolution<'a>) -> Self {
         Self {
+            inferred_callables: BTreeMap::new(),
             recursive_groups: Vec::new(),
             lexical_type_parameters: BTreeMap::new(),
             parameters: resolution.parameter_types(parameters),
@@ -59,6 +62,7 @@ impl<'a> PureExpressionContext<'a> {
     pub(crate) fn with_expected(&self, expected: Option<SemanticValueType>) -> Self {
         Self {
             parameters: self.parameters.clone(),
+            inferred_callables: self.inferred_callables.clone(),
             recursive_groups: self.recursive_groups.clone(),
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
@@ -134,7 +138,9 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn callable(&self, target: SymbolId) -> Option<&TopLevelPureFunction> {
-        self.resolution.callable(target)
+        self.inferred_callables
+            .get(&target)
+            .or_else(|| self.resolution.callable(target))
     }
 
     pub(super) fn inherent_method(
@@ -414,11 +420,56 @@ impl<'a> PureExpressionContext<'a> {
             .then_some(identity)
     }
 
+    pub(crate) fn with_inferred_callables(
+        &self,
+        callables: BTreeMap<SymbolId, TopLevelPureFunction>,
+    ) -> Self {
+        let mut context = self.with_expected(self.expected.clone());
+        context.inferred_callables.extend(callables);
+        context
+    }
+
+    pub(crate) fn infer_let(&self, value: &SurfaceExpr) -> Option<let_inference::InferredLambda> {
+        let_inference::infer(value, self)
+    }
+
+    pub(crate) fn with_let_expectation(&self, value: &SurfaceExpr) -> Self {
+        if self.expected.is_some() {
+            return self.with_expected(self.expected.clone());
+        }
+        let Some(inferred) = self.infer_let(value) else {
+            return self.with_expected(None);
+        };
+        let context =
+            self.with_expected(Some(self.semantic_value_from_typed_type(&inferred.value)));
+        if inferred.constraints.is_empty() {
+            return context;
+        }
+        let constraints = inferred
+            .constraints
+            .into_iter()
+            .zip(inferred.identities)
+            .map(
+                |(constraint, identity)| super::call_evidence::ResolvedCallConstraint {
+                    trait_identity: identity
+                        .unwrap_or_else(|| format!("std/prelude::{}", constraint.name)),
+                    constraint,
+                },
+            )
+            .collect::<Vec<_>>();
+        context.with_evidence_parameters(super::call_evidence::scoped_resolved_call_evidence(
+            &constraints,
+            self.resolution,
+            0,
+        ))
+    }
+
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
         let mut parameters = self.parameters.clone();
         parameters.extend(locals);
         Self {
             parameters,
+            inferred_callables: self.inferred_callables.clone(),
             recursive_groups: self.recursive_groups.clone(),
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
@@ -547,6 +598,20 @@ pub(super) fn type_surface_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    if let Some(arguments) = application::explicit_type_arguments(expression) {
+        if let Some(signature) = context
+            .target(expression.span())
+            .or_else(|| context.operator_target(expression.span()))
+            .and_then(|target| context.callable_value(target))
+        {
+            return application::type_explicit_callable_value(
+                signature,
+                arguments,
+                expression.span(),
+                context,
+            );
+        }
+    }
     match expression {
         SurfaceExpr::Unit { span } => SurfaceExpressionAnalysis::valid(TypedExpr::Unit {
             type_ref: named_type("Unit"),
@@ -971,7 +1036,7 @@ fn type_name(
         );
     };
     if let Some(signature) = context.callable_value(target).filter(|signature| {
-        !signature.type_parameters.is_empty() && signature.constraints.is_empty()
+        !signature.type_parameters.is_empty() || !signature.constraints.is_empty()
     }) {
         return application::type_callable_value(&signature, span, context);
     }

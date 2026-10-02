@@ -55,13 +55,70 @@
       }
     },
     {
+      "symbol": "artifact/unary-operators::negative",
+      "namespace": "value",
+      "name": "negative",
+      "visibility": "public",
+      "declaration": {
+        "start": 177,
+        "end": 203
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negativeZero",
+      "namespace": "value",
+      "name": "negativeZero",
+      "visibility": "public",
+      "declaration": {
+        "start": 204,
+        "end": 238
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::inverted",
+      "namespace": "value",
+      "name": "inverted",
+      "visibility": "public",
+      "declaration": {
+        "start": 239,
+        "end": 269
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      }
+    },
+    {
       "symbol": "artifact/unary-operators::minimum",
       "namespace": "value",
       "name": "minimum",
       "visibility": "public",
       "declaration": {
-        "start": 252,
-        "end": 292
+        "start": 270,
+        "end": 310
       },
       "scheme": {
         "typeParameters": [],
@@ -79,8 +136,8 @@
       "name": "values",
       "visibility": "public",
       "declaration": {
-        "start": 294,
-        "end": 335
+        "start": 312,
+        "end": 353
       },
       "scheme": {
         "typeParameters": [],
@@ -104,8 +161,8 @@
       "name": "floats",
       "visibility": "public",
       "declaration": {
-        "start": 336,
-        "end": 390
+        "start": 354,
+        "end": 408
       },
       "scheme": {
         "typeParameters": [],
@@ -129,8 +186,8 @@
       "name": "flags",
       "visibility": "public",
       "declaration": {
-        "start": 391,
-        "end": 435
+        "start": 409,
+        "end": 453
       },
       "scheme": {
         "typeParameters": [],
@@ -154,8 +211,8 @@
       "name": "tuple",
       "visibility": "public",
       "declaration": {
-        "start": 436,
-        "end": 490
+        "start": 454,
+        "end": 508
       },
       "scheme": {
         "typeParameters": [],
@@ -183,13 +240,49 @@
       }
     },
     {
+      "symbol": "artifact/unary-operators::record",
+      "namespace": "value",
+      "name": "record",
+      "visibility": "public",
+      "declaration": {
+        "start": 509,
+        "end": 594
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "negative",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "name": "inverted",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "symbol": "artifact/unary-operators::snapshot",
       "namespace": "value",
       "name": "snapshot",
       "visibility": "public",
       "declaration": {
-        "start": 542,
-        "end": 651
+        "start": 595,
+        "end": 704
       },
       "scheme": {
         "typeParameters": [],
@@ -208,8 +301,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 653,
-        "end": 696
+        "start": 706,
+        "end": 749
       },
       "scheme": {
         "typeParameters": [],
@@ -236,8 +329,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 697,
-        "end": 746
+        "start": 750,
+        "end": 799
       },
       "scheme": {
         "typeParameters": [],
@@ -264,8 +357,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 747,
-        "end": 789
+        "start": 800,
+        "end": 842
       },
       "scheme": {
         "typeParameters": [],
@@ -304,8 +397,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 843,
-        "end": 913
+        "start": 896,
+        "end": 966
       }
     }
   ]

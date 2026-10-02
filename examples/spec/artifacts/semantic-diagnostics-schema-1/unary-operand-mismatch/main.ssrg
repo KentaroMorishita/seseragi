@@ -1,2 +1,2 @@
-pub let negativeBool = -True
-pub let invertedInt = !1
+pub let negativeBool: Int = -True
+pub let invertedInt: Bool = !1

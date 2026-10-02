@@ -142,6 +142,14 @@ pub(super) fn call_diagnostic(
                 .to_owned(),
             None,
         ),
+        PureCallIssue::CallableTypeUnresolved { callee } => (
+            "SES-T0101",
+            "call.value-type-unresolved",
+            callee,
+            "this generic callable needs a contextual function type or explicit type arguments"
+                .to_owned(),
+            None,
+        ),
         PureCallIssue::LambdaParameterTypeMismatch {
             parameter,
             expected,
@@ -309,17 +317,13 @@ mod tests {
     use crate::semantic_diagnostics;
 
     #[test]
-    fn reports_a_lambda_parameter_without_annotation_or_function_context() {
-        let artifact = semantic_diagnostics(
-            "lambda-unresolved.ssrg",
-            "pub let identity = \\value -> value\n",
-        );
-
-        assert_eq!(artifact.diagnostics.len(), 1);
-        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
-        assert_eq!(
-            artifact.diagnostics[0].message_key,
-            "lambda.parameter-type-unresolved"
+    fn accepts_an_unconstrained_let_lambda() {
+        let artifact =
+            semantic_diagnostics("lambda-inferred.ssrg", "let identity = \\value -> value\n");
+        assert!(
+            artifact.diagnostics.is_empty(),
+            "{:#?}",
+            artifact.diagnostics
         );
     }
 
@@ -337,7 +341,7 @@ mod tests {
 
     #[test]
     fn reports_concrete_unary_operand_type_mismatches() {
-        let negative_bool = semantic_diagnostics("negative-bool.ssrg", "pub let broken = -True\n");
+        let negative_bool = semantic_diagnostics("negative-bool.ssrg", "let broken = -True\n");
         assert_eq!(negative_bool.diagnostics.len(), 1);
         assert_eq!(negative_bool.diagnostics[0].code, "SES-T0101");
         assert_eq!(
@@ -349,7 +353,7 @@ mod tests {
             "unary `-` expects Int or Float, received Bool"
         );
 
-        let not_int = semantic_diagnostics("not-int.ssrg", "pub let broken = !1\n");
+        let not_int = semantic_diagnostics("not-int.ssrg", "let broken = !1\n");
         assert_eq!(not_int.diagnostics.len(), 1);
         assert_eq!(not_int.diagnostics[0].code, "SES-T0101");
         assert_eq!(

@@ -108,7 +108,7 @@ fn generates_and_validates_a_path_dependency_graph() {
     );
     project.write(
         "src/main.ssrg",
-        "import { value } from \"dep\"\npub let main = value\n",
+        "import { value } from \"dep\"\npub let main: Int = value\n",
     );
     project.write("vendor/dep/seseragi.toml", &manifest("acme/dep", "", false));
     project.write("vendor/dep/src/lib.ssrg", "pub let value: Int = 42\n");
@@ -138,7 +138,7 @@ fn generates_and_validates_a_path_dependency_graph() {
 fn missing_lock_is_a_stale_lock_diagnostic() {
     let project = TempProject::new();
     project.write("seseragi.toml", &manifest("acme/app", "", true));
-    project.write("src/main.ssrg", "pub let main = ()\n");
+    project.write("src/main.ssrg", "pub let main: Unit = ()\n");
     let error = read_and_validate_lockfile(project.path()).unwrap_err();
     assert_eq!(error.code(), "SES-K0102");
     assert!(error.to_string().contains("lock update"));

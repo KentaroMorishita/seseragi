@@ -469,7 +469,7 @@ mod tests {
             "domain.ssrg",
             "pub fn increment value: Int -> Int = value + 1\n",
         );
-        project.write("unrelated.ssrg", "pub let ignored = missing\n");
+        project.write("unrelated.ssrg", "pub let ignored: Int = missing\n");
 
         let loaded = load_workspace_project(
             project.path(),

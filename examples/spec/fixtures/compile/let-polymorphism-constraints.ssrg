@@ -1,0 +1,32 @@
+let render = \value -> show value
+let double = \value -> value + value
+let compose = \f -> \g -> \value -> f (g value)
+let identity = \value -> value
+let keep = \value -> { let rendered = show value; value }
+
+fn captured<A> value: A -> String where Show<A> = {
+  let renderBoth = \other -> (show value, show other)
+  let (first, second) = renderBoth 42
+  first
+}
+
+fn monadic -> Maybe<String> = do {
+  let identity = \x -> x
+  let number = identity 42
+  let render = \x -> show x
+  Just (render (identity "monadic"))
+}
+
+pub effect fn main = do {
+  println (render 42)
+  println (render "hello")
+  println (show (double 21))
+  println (double "hello")
+  println (compose identity identity "composed")
+  println (captured "captured")
+  let local = \value -> show value
+  println (local 7)
+  println (local "local")
+  println (show (monadic ()))
+  println (show (keep 42))
+}
