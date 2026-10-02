@@ -1,3 +1,4 @@
+import { jsonReaderEditorialFor, jsonReaderModuleBlocks } from "./json-reader/catalog"
 import {
   effectSequencingEditorialFor,
   effectSequencingModuleBlocks
@@ -175,6 +176,13 @@ fn editorialAfterFilesystemReaderEditorialFor symbol: ReferenceSymbol
   -> Maybe<Editorial> =
   match effectSequencingEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterEffectSequencingEditorialFor symbol
+  }
+
+fn editorialAfterEffectSequencingEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match jsonReaderEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -253,5 +261,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   numericReaderModuleBlocks specifier,
   webReaderModuleBlocks specifier,
   filesystemReaderModuleBlocks specifier,
-  effectSequencingModuleBlocks specifier
+  effectSequencingModuleBlocks specifier,
+  jsonReaderModuleBlocks specifier
 ]

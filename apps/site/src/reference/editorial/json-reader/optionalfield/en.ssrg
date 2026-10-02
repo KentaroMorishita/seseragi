@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Use optionalField when omitting name is allowed. It distinguishes absence from a supplied value, including an empty string, and checks each present value with your function.",
+  taskTitle: "Distinguish an absent name from empty text",
+  purpose: "Read settings with an optional name. Print Name is missing for an absent field, or Present: followed by a supplied string. Empty text is still supplied, and a present null must still pass the string check.",
+  typescriptBefore: "The TypeScript version treats JSON.parse's result as unknown and first checks for an object. It checks absence with Object.hasOwn, then checks for a string. Avoiding a truthiness test keeps an empty string distinct from absence. All four supplied inputs are syntactically valid JSON.",
+  benefit: "optionalField makes absence a successful result without skipping validation of present values. Its Maybe<String> success value lets the caller distinguish no name from an available, checked string.",
+  setup: "json is the alias for std/json. The annotation in let stringDecoder: json.Decoder<String> = decodeJson selects the string-reading function. json.optionalField \"name\" stringDecoder passes a field name and checker separated by spaces, producing a function that will receive Json later.",
+  after: [
+    "optionalName has type json.Decoder<Maybe<String>>. A Decoder checks Json and returns Left with a failure reason or Right with its successful value. That value is Maybe<String>: Nothing means absent, while Just value contains a string.",
+    "fn report source: String -> String is an ordinary function accepting source as text and returning text. The colon gives the input type; -> gives the return type. match chooses a branch for the result, and the underscore in Left _ ignores detailed failure information for this message.",
+    "Only parse's Right value reaches optionalName. A Left there produces Name must be text. For Right name, another match prints Name is missing for Nothing or combines Present: with the value inside Just.",
+    "The inputs run in order: absent, empty string, Mio, and null. The empty string is inside Just, so it prints Present: with nothing after it. null is not a String and is rejected. main's do runs println calls in order, and _ <- discards earlier print results. Unit means there is no useful return value; with Console fails ConsoleError declares console access and possible printing failure.",
+  ],
+  details: [
+    "optionalField returns Nothing directly only when the field is absent. Every present value, including null, goes to the supplied checker. A String checker rejects null, but you can supply a checker that accepts it.",
+    "For example, a checker reading Maybe<String> produces a Maybe<Maybe<String>> success value here. An absent field is Nothing; a present null is Just Nothing. The outer value describes field presence and the inner value describes its contents, so they remain distinct.",
+    "A non-object input fails. A present value that fails its check also remains a failure rather than being treated as absence. This example allows unrelated fields.",
+  ],
+}

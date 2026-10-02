@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "When reading settings fails, JsonReadError distinguishes broken JSON text from a value that does not fit Settings. Use the checked Settings only when reading succeeds.",
+  taskTitle: "Distinguish two settings-read failures",
+  purpose: "Settings requires a string name and integer retries. Display the name for valid settings, report a shape problem for name: false, and report a JSON-text problem for a lone {. The same loading screen can explain which kind of correction is needed.",
+  typescriptBefore: "The TypeScript version first wraps JSON.parse in try/catch and returns JSON text rejected for a syntax failure. It treats the parsed value as unknown, then checks for an object, rejects extra fields, and checks the string name and safe-integer retries. A failed check returns Settings shape rejected.",
+  benefit: "decodeString performs text parsing and the Settings check in one call while preserving the failed stage in JsonReadError. From one result, the caller can use checked settings or choose between the two explanations.",
+  setup: "json is the alias for std/json. struct Settings defines a type with name: String and retries: Int fields. deriving JsonDecode asks the compiler to supply the checker that reads this type from JSON.",
+  after: [
+    "fn readSettings source: String -> Either<json.JsonReadError, Settings> is an ordinary function. The colon gives the input type, and -> gives the return type. Writing Settings in that result selects the type json.decodeString source should read. Calls separate the function and its argument with a space.",
+    "Here Either is a result containing a read failure in Left or Settings in Right. describe first uses match to distinguish those outcomes. In Right settings, settings.name can supply the Ready: Mio message.",
+    "The inner match under Left error distinguishes the failed stage. JsonSyntaxFailure comes from parsing JSON; JsonDecodeFailure means the parsed value did not fit Settings. Each _ ignores the detailed reason in this example. The output shows success, shape failure, then syntax failure.",
+    "main's do runs println calls in order, and _ <- discards each earlier print result before continuing. effect and with Console fails ConsoleError declare the console needed for printing and its possible failure. Unit means there is no useful return value; readSettings and describe remain ordinary functions.",
+  ],
+  details: [
+    "This Settings checker rejects missing required fields, wrong types, and extra fields. An integer retries value does not by itself satisfy an application rule requiring a non-negative count. Check the successfully read Settings separately if that rule is needed.",
+    "For a more detailed explanation, receive the JsonParseError inside JsonSyntaxFailure or the DecodeError inside JsonDecodeFailure. There is no show operation for the whole error; extract the relevant reason or fields and build your message.",
+    "The comparison matches the read outcomes of the three displayed inputs. Checking a number after JSON.parse is not equivalent to checking Seseragi's exact JSON number for every numeric input. If retaining numeric digits matters, also review parse's number representation.",
+  ],
+}

@@ -1,0 +1,23 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Decoder<A> names a function that takes one Json and returns either a checked A or DecodeError. Store a string checker in a variable and reuse it to read a required name field.",
+  taskTitle: "Name a function that checks a name",
+  purpose: "Read just the required name from an API response. Other fields are allowed, but display separate messages when name is missing or is not text. Start with a function that checks String, then combine it with looking up name.",
+  typescriptBefore: "TypeScript report wraps JSON.parse in try/catch and checks that its unknown result is an object. Object.hasOwn checks whether name exists, then typeof checks it is a string before use. Unrelated fields such as active are allowed.",
+  benefit: "The Decoder alias makes the input and result of a JSON-checking function explicit. Combining a string check with looking up an object's name still produces an ordinary function with the same shape.",
+  setup: "json is the alias for std/json. Expanded, json.Decoder<String> means json.Json -> Either<json.DecodeError, String>. The -> describes a function taking Json and returning a result; Either means a Left error or a Right string. Json is parsed JSON, not yet established to be a String.",
+  after: [
+    "let stringDecoder: json.Decoder<String> = decodeJson gives the String-checking function the name stringDecoder. The type after the colon selects String as the target for decodeJson, which is available from std/prelude. This stores the function; it does not run a check yet.",
+    "Given an input Json called value, the fully supplied call is json.field \"name\" stringDecoder value. Arguments follow the function name, separated by spaces. field looks for name and passes its value to stringDecoder when present.",
+    "In let nameDecoder: json.Decoder<String> = json.field \"name\" stringDecoder, the example leaves out the final value. This creates a function waiting for Json, called later as nameDecoder value. It is not syntax for constructing a new Decoder object.",
+    "fn report source: String -> String defines an ordinary function taking text and returning a message. The outer match separates Left and Right from json.parse source. For Right value, the inner match examines nameDecoder value. Right name -> uses + to join the name to the message.",
+    "Left error -> examines error.kind. json.MissingJsonField _ identifies an absent field; _ ignores the field name carried inside that reason. The final _ -> groups the other reasons. The parse branch Left _ also ignores its detailed error. Each -> inside match leads to the expression for that case.",
+    "The results are Name: Mio, Name is missing, and Name must be text. pub effect fn main is the output entry point; Unit means no useful return value, and with Console fails ConsoleError declares console use and possible output failure. do sequences println calls; _ <- discards their results. Parentheses in println (report ...) group the inner call, and \\\" inside a string writes a double quote.",
+  ],
+  details: [
+    "Decoder is a function type alias. No constructor call or execution service is needed. Its input is Json, not String. For raw text, parse first or use decodeString with the selected result type.",
+    "This nameDecoder checks only the required name and permits extra fields such as active. With its String checker, present null or false fails. An empty string succeeds as text.",
+    "Failure returns DecodeError, whose path and kind can be read. This example turns just the reason into a short message. A missing field and a field containing an invalid value also differ in error location. Continue to the DecodeError example to display those locations.",
+  ],
+}

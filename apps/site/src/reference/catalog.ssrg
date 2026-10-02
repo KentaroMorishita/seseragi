@@ -3,7 +3,7 @@ import * as text from "std/text"
 import { ReferenceModule, ReferenceSymbol } from "../model/build"
 import { LocalizedText, localized } from "../model/locale"
 import { modulePurpose } from "./module-copy"
-import { itemKindLabel } from "./labels"
+import { referenceKindLabel } from "./labels"
 import { instanceSummary } from "./instance-copy"
 import { editorialFor, moduleEditorial } from "./editorial/catalog"
 import { Editorial, editorialBlocks } from "./editorial/model"
@@ -77,7 +77,7 @@ pub fn referenceRoute symbol: ReferenceSymbol -> String =
   moduleRoute symbol.module + symbol.itemKind + "/" + referenceSlug symbol + "/"
 
 fn referenceLabel symbol: ReferenceSymbol -> LocalizedText = {
-  let kind = itemKindLabel symbol.itemKind
+  let kind = referenceKindLabel symbol
   localized (symbol.name + " · " + kind.en) (symbol.name + " · " + kind.ja)
 }
 

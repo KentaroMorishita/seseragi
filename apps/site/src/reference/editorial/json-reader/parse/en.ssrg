@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Use parse to check whether a supplied string can be read as JSON. Its result lets you handle either the parsed Json or a JsonParseError explaining the failure.",
+  taskTitle: "Read and normalize pasted JSON",
+  purpose: "Display JSON pasted into a settings field without unnecessary whitespace. Accept an object or an array. At this stage, do not require application-specific fields; just establish that the text can be read as JSON.",
+  typescriptBefore: "The TypeScript version reads text with JSON.parse and turns it back into normalized text with JSON.stringify. catch returns Invalid JSON text when reading fails. The three inputs are a padded object, an array, and an unclosed {.",
+  benefit: "parse includes a parsing failure in its return value. match places the failure message alongside the successful continuation, making it clear that only a successfully read Json reaches stringify.",
+  setup: "json is the alias for std/json. fn normalize source: String -> String defines an ordinary function: the colon gives source's type and -> gives the return type. Calls put spaces between the function and its arguments, as in json.parse source.",
+  after: [
+    "parse returns Either<json.JsonParseError, json.Json>. Left contains the reason parsing failed, and Right contains the parsed Json. Json represents a JSON value; it is not yet your application's Settings.",
+    "match selects the branch for that outcome. Left _ ignores the reason and returns Invalid JSON text. Right value returns json.stringify value. The underscore means a received value is not used here.",
+    "The first two results are the compact strings {\"name\":\"Mio\",\"retries\":2} and [true,null,\"ready\"]. The final { cannot be read, so it produces Invalid JSON text without calling stringify in the success branch.",
+    "Only pub effect fn main performs printing. do runs println calls in order, and _ <- discards each earlier print result. Unit means there is no useful return value; with Console fails ConsoleError declares console access and possible printing failure. parse itself does not require Console.",
+  ],
+  details: [
+    "parse reads text as JSON without checking whether name exists or has the right type. To obtain Settings, use decodeString for both stages, or pass parse's success value to decodeJson. There is no parse type argument that selects a Settings shape.",
+    "parse rejects repeated field names in the same object. Ordinary JSON.parse keeps the last value, so this example does not establish matching behavior for every input. Inspect JsonParseError when you need the specific parsing reason.",
+    "Json retains numbers as exact Decimal values. Large integers or precise fractions can be rounded by JavaScript's number representation, which matters when those digits are significant. Original whitespace and spellings such as 1.00 are still not preserved by parsing and stringifying.",
+  ],
+}

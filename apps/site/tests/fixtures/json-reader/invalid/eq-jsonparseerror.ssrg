@@ -1,0 +1,3 @@
+import * as json from "std/json"
+pub fn same left: json.JsonParseError -> right: json.JsonParseError -> Bool =
+  left == right

@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JSONオブジェクトから必須のnameを読み取るにはfieldを使います。フィールドがなければ不足を報告し、存在すれば指定した関数でその値を確認します。",
+  taskTitle: "APIデータから必須の名前を取り出す",
+  purpose: "APIが返したオブジェクトから、文字列のnameを表示します。activeなど使わないフィールドがあっても構いません。nameがない場合と、nameが文字列ではない場合には、それぞれ短い説明を返します。",
+  typescriptBefore: "TypeScript版はJSON.parseの結果をunknownに置き、nullでも配列でもないオブジェクトかを調べます。Object.hasOwnでnameの有無を確認し、typeofで文字列と分かってから表示します。余分なactiveを拒否する確認は入れていません。",
+  benefit: "fieldは、オブジェクトの確認、必須フィールドの取り出し、その値の確認を一つの関数にまとめます。文字列の確認はstringDecoderとして再利用でき、呼び出し側には確認済みの名前かDecodeErrorが返ります。",
+  setup: "jsonはstd/jsonの別名です。let stringDecoder: json.Decoder<String> = decodeJsonのコロンの後は型注釈で、文字列を読み取るdecodeJsonを選びます。Decoder<String>は、Jsonを受け取り、Leftの失敗理由かRightのStringを返す関数です。",
+  after: [
+    "すでにJsonのvalueがあるなら、json.field \"name\" stringDecoder valueで取り出せます。関数と引数は空白で並べます。例では最後のvalueをまだ渡さず、json.field \"name\" stringDecoderをnameDecoderという再利用できる関数として保存しています。",
+    "fn report source: String -> Stringは通常の関数で、コロンは引数の型、-> は戻り値の型を示します。最初のmatchはparseのLeftを構文の失敗、Rightを読めたJsonとして分けます。Left _の_は詳しい理由を使わないことを表します。",
+    "次にnameDecoder valueを呼び、Right nameならName: Mioを返します。Left errorならerror.kindをmatchで調べ、MissingJsonFieldならName is missing、それ以外の_ならName must be textを返します。最初の入力のactiveは名前の取り出しを妨げません。",
+    "mainのdoはprintlnを順に実行し、_ <- は先の表示の戻り値を使わず次へ進みます。Unitは使う戻り値がないこと、effectとwith Console fails ConsoleErrorはコンソールの利用と表示の失敗可能性を示します。nameDecoder自体は通常の関数です。",
+  ],
+  details: [
+    "fieldは指定したフィールドだけを取り出すので、ほかのフィールドも含む入力を受け入れます。許可したフィールドだけに制限したい場合はrecordや、JsonDecodeをderivingした名前付き構造体の確認を使います。",
+    "nameがない場合、理由はMissingJsonFieldで、エラーのpathは親オブジェクトで終わります。nameが存在して文字列の確認に失敗した場合は、pathにnameが加わります。どちらの失敗でも必ずnameまでのpathになるわけではありません。",
+    "空文字列もStringなので受け入れます。nullやfalseはこのstringDecoderでは拒否されます。名前に一文字以上必要というアプリのルールは、文字列として読み取れた後に別途確認してください。",
+  ],
+}

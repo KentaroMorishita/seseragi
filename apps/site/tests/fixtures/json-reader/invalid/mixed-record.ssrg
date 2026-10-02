@@ -1,0 +1,4 @@
+import * as json from "std/json"
+let stringDecoder: json.Decoder<String> = decodeJson
+let intDecoder: json.Decoder<Int> = decodeJson
+pub let mixed = json.record [("name", stringDecoder), ("retries", intDecoder)]

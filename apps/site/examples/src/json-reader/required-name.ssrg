@@ -1,0 +1,19 @@
+import * as json from "std/json"
+let stringDecoder: json.Decoder<String> = decodeJson
+
+let nameDecoder: json.Decoder<String> = json.field "name" stringDecoder
+fn report source: String -> String = match json.parse source {
+  Left _ -> "Invalid JSON text"
+  Right value -> match nameDecoder value {
+    Right name -> "Name: " + name
+    Left error -> match error.kind {
+      json.MissingJsonField _ -> "Name is missing"
+      _ -> "Name must be text"
+    }
+  }
+}
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  _ <- println (report "{\"name\":\"Mio\",\"active\":true}")
+  _ <- println (report "{}")
+  println (report "{\"name\":false}")
+}

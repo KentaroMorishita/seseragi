@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JSONの文字列を読めなかった理由を調べるにはJsonParseErrorを使います。構文が正しくない場合と、同じオブジェクト内でフィールド名が重複する場合を分けられます。",
+  taskTitle: "読み込めないJSONに説明を付ける",
+  purpose: "貼り付けられたJSONを受け取り、読めたら整えた文字列を表示し、読めなければ理由を表示します。まず普通のオブジェクトと、nameの値が抜けた文字列を試します。アプリで必要なnameの型の確認は、ここでの構文確認とは別です。",
+  typescriptBefore: "TypeScript版はJSON.parseとJSON.stringifyをtryの中で呼び、catchではInvalid JSON syntaxを返します。比較するのは正常な文字列と構文が壊れた文字列の二つです。例外のメッセージや位置がSeseragiと同じだとは扱っていません。",
+  benefit: "parseは失敗を戻り値に含めるため、explainにJsonParseErrorを渡して理由ごとの表示を選べます。成功時には解析済みのJsonを使い、失敗時にはJSONの値が得られたかのように処理を進めずに済みます。",
+  setup: "jsonはstd/jsonの別名です。fn inspect source: String -> Stringは、文字列を受け取り文字列を返す通常の関数です。コロンは引数の型、-> は戻り値の型を示します。json.parse sourceのように関数と引数を空白で並べて呼び出します。",
+  after: [
+    "json.parse sourceの結果はEither<json.JsonParseError, json.Json>です。Leftには読めなかった理由、Rightには読めた値が入ります。inspectのmatchは、Left errorならexplain errorへ、Right valueならstringifyによる表示へ進みます。",
+    "explainもmatchで理由を分けます。InvalidJsonSyntax _は構文の問題で、_はその詳しい情報をこの表示では使わないことを表します。DuplicateJsonField detailは重複した名前の問題で、detail.fieldを文章に加えます。",
+    "この二つの入力からはValid JSON: {\"name\":\"Mio\"}とInvalid JSON syntaxが表示されます。重複フィールド用の分岐も関数にはありますが、この短い実行例には重複した入力は含めていません。",
+    "pub effect fn mainが表示を担当します。doでprintlnを順に実行し、_ <- は最初の表示の戻り値を使わず次へ進みます。Unitは使う戻り値がないこと、with Console fails ConsoleErrorはコンソールの利用と表示の失敗可能性を示します。parseとexplainは通常の関数です。",
+  ],
+  details: [
+    "構文エラーのoffsetを表示する場合、位置は先頭を0とするUTF-8のバイト数です。画面上の文字数やJavaScriptの文字列添字とは限りません。この例は位置を無視し、アプリ用の短い説明にしています。",
+    "DuplicateJsonFieldの情報には、重複が起きたオブジェクトまでのpathと、重複したfield名があります。Seseragiは重複を拒否しますが、通常のJSON.parseは最後の値を残します。この違いは二つの実行結果の一致とは別の制約です。",
+    "JsonParseError全体をshowで文字列にする機能はありません。例のようにmatchで理由を取り出して表示します。解析に成功しても、nameが文字列であることなどアプリのデータの形はまだ確認されていません。",
+  ],
+}

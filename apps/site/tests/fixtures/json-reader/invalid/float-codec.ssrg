@@ -1,0 +1,2 @@
+import * as json from "std/json"
+pub fn encode value: Float -> String = json.encodeString value

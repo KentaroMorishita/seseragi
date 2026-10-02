@@ -1,0 +1,13 @@
+import * as json from "std/json"
+fn explain error: json.JsonParseError -> String = match error {
+  json.InvalidJsonSyntax _ -> "Invalid JSON syntax"
+  json.DuplicateJsonField detail -> "Repeated field: " + detail.field
+}
+fn inspect source: String -> String = match json.parse source {
+  Left error -> explain error
+  Right value -> "Valid JSON: " + json.stringify value
+}
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  _ <- println (inspect "{\"name\":\"Mio\"}")
+  println (inspect "{\"name\":}")
+}

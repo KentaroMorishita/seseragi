@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { jsonReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  jsonReaderEditorial "std/json::encodeString" "value" "function" "settings-write" "{\"name\":\"Mio\",\"retries\":2}\n{\"name\":\"Line\\n\\\"two\\\"\",\"retries\":0}\n" (en.copy ()) (ja.copy ())

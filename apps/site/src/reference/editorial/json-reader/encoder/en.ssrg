@@ -1,0 +1,23 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Encoder<A> is an alias for a function taking A and producing Json. It lets you separate converting settings to a JSON value from writing that value as text.",
+  taskTitle: "Store a function that turns settings into Json",
+  purpose: "Separate conversion to a JSON value from immediately writing settings as text. Store the Settings conversion as encodeSettings, then display its Json with stringify. The second half shows the reverse direction: checking parsed Json as Settings.",
+  typescriptBefore: "TypeScript encodeSettings returns an object containing the chosen output fields; JSON.stringify is called afterward. In the other direction, decodeSettings genuinely checks unknown data and returns value with ok: true or reason with ok: false. JSON.parse here receives a fixed, valid string written in the program.",
+  benefit: "The Encoder alias lets you treat conversion from settings to Json as a function independent of text output. Pass that Json to another operation, or call stringify when text is needed.",
+  setup: "json is the alias for std/json. struct Settings declares a type with name: String and retries: Int. deriving JsonEncode, JsonDecode asks the compiler to supply both conversion to JSON and checking from JSON. Both are included because this example shows both directions.",
+  after: [
+    "json.Encoder<Settings> is an alias for the function type Settings -> json.Json. The -> means taking a value on the left and returning the type on the right. Json represents a JSON value; it is not String. let encodeSettings: json.Encoder<Settings> = encodeJson stores a function selected for Settings by the annotation after the colon. encodeJson is available from std/prelude.",
+    "Settings { name: \"Mio\", retries: 2 } constructs a settings value. Placing it after encodeSettings calls the function; the resulting Json goes to json.stringify. Arguments are separated by spaces, with parentheses grouping inner calls. The result is JSON text with name followed by retries.",
+    "let decodeSettings: json.Decoder<Settings> = decodeJson stores the checking function in the reverse direction. Decoder<Settings> means Json -> Either<DecodeError, Settings>, with failure in Left or checked Settings in Right.",
+    "fn readParsed source: String -> String is an ordinary function: the colon introduces the argument type and -> introduces the return type. The outer match examines json.parse source. For Right value, the inner match examines decodeSettings value. Right settings -> uses settings.name and + to build the message; Left _ -> chooses a failure message without using the detailed reason. Each -> in match leads to its case's expression.",
+    "pub effect fn main is the output entry point. Unit means no useful return value; with Console fails ConsoleError declares console use and possible output failure. do sequences println calls, and _ <- discards the first print result. The second line is Ready: Mio. Inside a string, \\\" writes a JSON double quote.",
+  ],
+  details: [
+    "Encoder is a function alias; there is no need to construct an Encoder value. Both encodeJson using Settings' JsonEncode support and your own function with the same input and output types fit this alias. Conversion itself does not use the console or network.",
+    "encodeSettings alone does not return text. Use its result when you need Json; use json.encodeString to combine conversion and writing when you only need text.",
+    "This named Settings writes name and retries in declaration order. Deriving JsonEncode requires JSON conversion support for each field type. Converting to JSON does not itself check whether names or retry counts meet your application's business rules.",
+    "If you replace TypeScript's fixed literal with external input, handle JSON.parse failure with try/catch or an equivalent guard too. Seseragi readParsed handles parsing failure and Settings-checking failure in separate match expressions. The matching output concerns the strings and small integers in this example.",
+  ],
+}

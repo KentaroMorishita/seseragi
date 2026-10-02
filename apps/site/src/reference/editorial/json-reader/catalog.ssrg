@@ -1,0 +1,97 @@
+import { editorial as case0 } from "./module/page"
+import { editorial as case1 } from "./json/page"
+import { editorial as case2 } from "./decoder/page"
+import { editorial as case3 } from "./encoder/page"
+import { editorial as case4 } from "./decodeerror/page"
+import { editorial as case5 } from "./jsonparseerror/page"
+import { editorial as case6 } from "./jsonreaderror/page"
+import { editorial as case7 } from "./parse/page"
+import { editorial as case8 } from "./stringify/page"
+import { editorial as case9 } from "./encodestring/page"
+import { editorial as case10 } from "./decodestring/page"
+import { editorial as case11 } from "./field/page"
+import { editorial as case12 } from "./optionalfield/page"
+import { editorial as case13 } from "./array/page"
+import { editorial as case14 } from "./record/page"
+import { editorial as case15 } from "./map/page"
+import { editorial as case16 } from "./jsonencode/page"
+import { editorial as case17 } from "./jsondecode/page"
+import { editorial as case18 } from "./encodejson/page"
+import { editorial as case19 } from "./decodejson/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Block } from "../../../model/page"
+import { Editorial, editorialBlocks } from "../model"
+
+// Each shallow branch guards owner, namespace, kind, then exact identity.
+pub fn jsonReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match symbol.module {
+    "std/json" -> jsonModuleEditorial symbol
+    "std/prelude" -> preludeEditorial symbol
+    _ -> Nothing
+  }
+
+fn jsonModuleEditorial symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("type", "opaque-type") -> jsonModuleEditorial0 symbol.identity
+    ("type", "alias") -> jsonModuleEditorial1 symbol.identity
+    ("type", "opaque-struct") -> jsonModuleEditorial2 symbol.identity
+    ("value", "function") -> jsonModuleEditorial3 symbol.identity
+    _ -> Nothing
+  }
+
+fn jsonModuleEditorial0 identity: String -> Maybe<Editorial> = match identity {
+  "std/json::Json" -> Just (case1 ())
+  "std/json::JsonParseError" -> Just (case5 ())
+  "std/json::JsonReadError" -> Just (case6 ())
+  _ -> Nothing
+}
+
+fn jsonModuleEditorial1 identity: String -> Maybe<Editorial> = match identity {
+  "std/json::Decoder" -> Just (case2 ())
+  "std/json::Encoder" -> Just (case3 ())
+  _ -> Nothing
+}
+
+fn jsonModuleEditorial2 identity: String -> Maybe<Editorial> = match identity {
+  "std/json::DecodeError" -> Just (case4 ())
+  _ -> Nothing
+}
+
+fn jsonModuleEditorial3 identity: String -> Maybe<Editorial> = match identity {
+  "std/json::parse" -> Just (case7 ())
+  "std/json::stringify" -> Just (case8 ())
+  "std/json::encodeString" -> Just (case9 ())
+  "std/json::decodeString" -> Just (case10 ())
+  "std/json::field" -> Just (case11 ())
+  "std/json::optionalField" -> Just (case12 ())
+  "std/json::array" -> Just (case13 ())
+  "std/json::record" -> Just (case14 ())
+  "std/json::map" -> Just (case15 ())
+  _ -> Nothing
+}
+
+fn preludeEditorial symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("trait", "trait") -> preludeEditorial0 symbol.identity
+    ("value", "function") -> preludeEditorial1 symbol.identity
+    _ -> Nothing
+  }
+
+fn preludeEditorial0 identity: String -> Maybe<Editorial> = match identity {
+  "std/prelude::JsonEncode" -> Just (case16 ())
+  "std/prelude::JsonDecode" -> Just (case17 ())
+  _ -> Nothing
+}
+
+fn preludeEditorial1 identity: String -> Maybe<Editorial> = match identity {
+  "std/prelude::JsonEncode::encodeJson" -> Just (case18 ())
+  "std/prelude::JsonDecode::decodeJson" -> Just (case19 ())
+  _ -> Nothing
+}
+
+pub fn jsonReaderModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (match specifier {
+    "std/json" -> Just (case0 ())
+    _ -> Nothing
+  }
+)

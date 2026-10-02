@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Use stringify to turn an existing Json into compact text. This example reads pasted JSON with parse, then normalizes and displays only the successfully parsed values.",
+  taskTitle: "Turn a JSON value into display text",
+  purpose: "Display a settings object or array as one line of JSON. Instead of removing spaces directly from the input string, read it as JSON and write text from that value. Return a short explanation for unreadable input.",
+  typescriptBefore: "The TypeScript version tries the same three inputs with JSON.stringify(JSON.parse(source)). The object and array become single-line strings, while catch returns Invalid JSON text for the unclosed {. Success returns a string, not the JSON value itself.",
+  benefit: "stringify is the conversion from Json to String. It gives parsed-value-to-text conversion a separate step without checking application fields again or manually editing the input string.",
+  setup: "json is the alias for std/json. fn normalize source: String -> String defines an ordinary function accepting source as text and returning text. The colon gives the parameter type; -> gives the return type. Calls pass arguments with spaces, as in json.stringify value.",
+  after: [
+    "normalize first calls json.parse source. Left means parsing failed; Right contains the parsed Json. match selects between them, and the underscore in Left _ means this message does not use the detailed reason.",
+    "In Right value, json.stringify value returns a String directly. Its result does not need another Left-or-Right check. The first displayed string is {\"name\":\"Mio\",\"retries\":2}.",
+    "The second array becomes [true,null,\"ready\"] with its element order intact. For the final {, parse fails before stringify is called, so the output is Invalid JSON text.",
+    "main's do runs println calls in order; _ <- discards each earlier print result before continuing. Unit means there is no useful return value. effect and with Console fails ConsoleError declare console access and possible printing failure. normalize and stringify are ordinary functions.",
+  ],
+  details: [
+    "stringify receives Json. Use encodeString to turn an application value such as Settings directly into text, or encodeJson to obtain Json first. Keep that operation separate from trying to pass a JSON text string to stringify.",
+    "Whitespace and original number spellings are not preserved. For example, 1.00 becomes 1 and -0 becomes 0. Keep the original string too if retaining its exact presentation is important.",
+    "The same ordered Json value produces the same text. Object fields follow the order held by the value; stringify does not sort their names. It is not an order-insensitive equality check or a shared hashing format for objects with different field orders.",
+  ],
+}

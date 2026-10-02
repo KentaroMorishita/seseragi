@@ -1,0 +1,23 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Read JSON text and return the result of checking it against a selected type. Use the value on success, or choose a different message when syntax or field checks fail.",
+  taskTitle: "Get usable Settings from JSON text",
+  purpose: "Read name and retries from saved settings text, then build a ready message using the checked name. If the name is not a string or the JSON is malformed, reject the input instead of using that value.",
+  typescriptBefore: "TypeScript wraps JSON.parse in try/catch and treats its result as unknown. readSettings checks the object shape, allowed fields, string name, and integer retries, then returns Settings or null. describe checks for null before using the name. This example validates external data rather than trusting a type annotation.",
+  benefit: "decodeString connects reading text and checking a requested type in one call. It uses the checks supplied from the Settings declaration, while the caller chooses how to handle either checked Settings or a reading failure.",
+  setup: "json is the alias for std/json. struct Settings defines a named type with name: String and retries: Int; the type of each field follows its colon. deriving JsonDecode asks the compiler to supply the checks for reading this type from JSON.",
+  after: [
+    "fn readSettings source: String -> Either<json.JsonReadError, Settings> is an ordinary function taking a string. The type after -> is its return type. The first type inside Either describes the failure carried by Left; the second describes the success value carried by Right. Writing Settings selects what decodeString should read.",
+    "json.decodeString source calls the function with its argument after a space. describe also takes and returns a string, using match readSettings source to choose a message according to the reading result.",
+    "Only the Right settings -> branch uses settings.name. + joins strings. Left _ -> chooses the failure message, and _ discards the detailed reason. Each -> inside match leads to the expression returned for that case.",
+    "The first of the three inputs prints Ready: Mio; the others print Settings rejected. A name of false is valid JSON but invalid Settings. The final { is invalid JSON syntax. In the source, \\\" puts a JSON double quote inside the string.",
+    "pub effect fn main is the output entry point. Unit means no useful return value; with Console fails ConsoleError declares console use and possible display failure. do runs the println calls in order, and _ <- ignores a print result. decodeString itself does not display anything.",
+  ],
+  details: [
+    "The condition where JsonDecode<A> means the target type A needs JSON checking support. Here, deriving JsonDecode supplies it for Settings. Declaring a named struct alone does not supply those checks.",
+    "For this Settings, both fields are required. Extra fields, wrong types, and numbers that cannot be read as Int are rejected. The declared types alone still allow an empty name or negative integer retries. Check any required business conditions after success.",
+    "The failure type JsonReadError distinguishes syntax failure, JsonSyntaxFailure, from failure to check a parsed value, JsonDecodeFailure. This example gives both the same rejection message. ConsoleError is an output failure, separate from the JSON reading result.",
+    "decodeString takes a String. If you already have a Json from json.parse, use decodeJson instead. Conversely, a successful json.parse alone does not establish that you have Settings.",
+  ],
+}

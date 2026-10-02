@@ -71,6 +71,8 @@ for (const command of [
     "apps/site/tests/filesystem-reader-editorial.test.ts",
     "apps/site/tests/effect-sequencing-reader.test.ts",
     "apps/site/tests/effect-sequencing-editorial.test.ts",
+    "apps/site/tests/json-reader.test.ts",
+    "apps/site/tests/json-reader-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   ["python3", "-B", "apps/site/tests/prose.test.py"],
@@ -154,6 +156,8 @@ const test = Bun.spawnSync(
     "apps/site/tests/filesystem-reader-editorial.test.ts",
     "apps/site/tests/effect-sequencing-reader.test.ts",
     "apps/site/tests/effect-sequencing-editorial.test.ts",
+    "apps/site/tests/json-reader.test.ts",
+    "apps/site/tests/json-reader-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   {

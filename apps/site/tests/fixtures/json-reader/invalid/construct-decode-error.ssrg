@@ -1,0 +1,7 @@
+import * as json from "std/json"
+import { DecodeError } from "std/json"
+let emptyPath: Array<json.JsonPathSegment> = []
+pub fn makeError -> DecodeError = DecodeError {
+  path: emptyPath,
+  kind: json.InvalidJsonValue "bad setting"
+}
