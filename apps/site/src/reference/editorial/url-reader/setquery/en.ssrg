@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "setQuery replaces all entries for a name with one new value. It preserves the other conditions and returns a new Query without changing its input.",
+  taskTitle: "Replace selected tags with one choice",
+  purpose: "Change a link containing the books and music tags to select only sale. Keep q and page, and display both the changed query and the original selection.",
+  typescriptBefore: "URLSearchParams.set(name, value) also collapses matching entries to one. It uses the first matching entry's position without sorting the other names. The TypeScript version copies the parameters because this example keeps both versions.",
+  benefit: "setQuery performs the replacement and returns a new Query. The earlier selection remains available, so you can compare it with the sale-only selection without a separate copy step.",
+  setup: "navigation is the import alias for std/web/navigation. setQuery takes the name, new value, and original Query, separated by spaces. let names the result. In replaceTag, : String declares the input type and -> String the return type.",
+  after: [
+    "parseQuery reads the supplied conditions. match handles Right original as the parsed Query and Left _ as a rejection; the underscore ignores the detailed reason. Only the successful Query reaches setQuery.",
+    "Both existing tag entries become one tag=sale entry. Its position is where tag=books first appeared, so the output order is q, tag, page. The later tag=music entry is removed.",
+    "Setting a name that does not exist adds its pair at the end. This operation does not sort the query as a whole.",
+    "The expression renders changed first and original second; println prints the combined string. The second line still has both books and music, showing that the old Query was not rewritten.",
+  ],
+  details: [
+    "To add one more tag to a multi-select filter, use appendQuery. setQuery deliberately replaces all the earlier values of that name.",
+    "Names are case-sensitive. Setting tag does not change a separate Tag entry. Use the exact name that the form and destination expect.",
+    "Pass decoded text as the new value. If it contains &, pass that character directly rather than pre-encoding it as %26 and having the percent sign encoded again.",
+  ],
+}

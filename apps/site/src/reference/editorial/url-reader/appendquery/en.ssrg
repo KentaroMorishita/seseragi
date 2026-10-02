@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "appendQuery adds one name/value pair at the end of a Query. Existing entries with the same name remain, making it useful for another selection in a multi-select filter.",
+  taskTitle: "Add another selected tag",
+  purpose: "Keep the search term and each earlier tag while adding another selection. Reusing the name tag must add a value rather than replace the previous one.",
+  typescriptBefore: "URLSearchParams.append(name, value) already adds at the end and preserves matching names. Its serializer handles escaping. Here the TypeScript version keeps a copy of the search-only conditions so both stages can be displayed.",
+  benefit: "appendQuery returns the added-to Query while leaving its input unchanged. You can build another selection from the same earlier conditions without losing that starting point.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.appendQuery \"tag\" \"books\" search passes the name, value, and original Query in that order. Spaces separate the arguments; let names the returned Query.",
+  after: [
+    "search holds only the search term. books adds the first tag, and selected adds music. Both tag entries remain in their selection order.",
+    "An append always adds another pair at the end. It does not remove duplicates, even if the same name and value are already present.",
+    "Pass the actual characters in the value, including spaces, +, or &. renderQuery encodes them so text inside a value cannot be mistaken for a query separator.",
+    "The first output still contains only q, while the second also contains both tags. To continue with the added conditions, use appendQuery's return value; the input Query is unchanged.",
+  ],
+  details: [
+    "Repeated appends to a single-valued condition such as q create repeated q entries. Use setQuery when you want exactly one replacement value.",
+    "Passing the pre-encoded text %20 produces %2520 because the percent sign is itself data. Pass an actual space when a space is intended.",
+    "A new Query does not automatically update an existing Url. Pass it and the original Url to withQuery, then render the resulting Url when you need link text.",
+  ],
+}

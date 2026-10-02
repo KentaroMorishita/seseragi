@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "Url distinguishes a checked URL from an arbitrary string. Obtain one through operations such as parseUrl, then use the public URL operations to read it or create an edited version.",
+  taskTitle: "Keep a checked link while changing its filters",
+  purpose: "Check a pasted search link once, then change its search term, selected tags, and section. Keep the original Url available and turn the finished link into text for sharing.",
+  typescriptBefore: "TypeScript's URL is also a standard way to work with parsed link text. This example constructs one URL, edits its searchParams and hash, and reads href. Local mutation is sufficient because this task starts with a newly created URL.",
+  benefit: "Seseragi's renderUrl and editing operations require a Url rather than a String. The editing operations return new Url values, so retaining the original link does not require an extra copy step.",
+  setup: "navigation is the import alias for std/web/navigation. In shareLink, input: String declares the input type and -> String declares the return type. Calls use spaces between arguments; let names each intermediate result.",
+  after: [
+    "parseUrl returns Either<UrlBuildError, Url>. Right original contains the checked Url. Left _ handles a rejected input without using its detailed reason. match keeps that rejected input out of the successful editing branch.",
+    "original is a Url, while urlQuery original is a Query. Edit the conditions first, then use withQuery to obtain a new Url. withFragment also returns a new Url; original is unchanged.",
+    "renderUrl is the final step back to String, ready to display or copy. While working with Url, use the component operations instead of searching and cutting up link text yourself.",
+    "The parsing operations accept absolute HTTP(S) URLs and reject nonempty usernames or passwords. Url is not a record you can replace with your own similarly shaped object; construct it through the public operations.",
+  ],
+  details: [
+    "If you have passed a raw string to renderUrl, call parseUrl first and handle its result. Pass the Url from Right to renderUrl. Use public operations such as urlQuery rather than attempting to read private fields.",
+    "Url does not promise to preserve the input's spelling. Hostnames, default ports, and other parts can be normalized. Keep the original String separately when you must show exactly what someone entered.",
+    "Parsing does not contact the destination or decide whether navigation is permitted. Checking percent-escape spelling also does not guarantee that every later decoding operation succeeds; see urlFragment for its malformed UTF-8 boundary.",
+  ],
+}

@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "Build a shareable search link by checking a URL, editing its query, and turning it back into text. std/web/navigation provides URL and query operations that return new values while leaving their inputs unchanged.",
+  taskTitle: "Share a search with the selected tags",
+  purpose: "Take an existing search link, change its search term to tea & cake, and keep the books and music tags. Remove the page number, add a sale tag, and point the new link at the results section. The result is text someone can copy.",
+  typescriptBefore: "The TypeScript version creates a URL from the input, edits searchParams with set, delete, and append, sets hash, and reads href. These standard APIs already make the task concise. Editing this newly created URL is fine; there is no need for another copy in this example.",
+  benefit: "Seseragi puts a rejected input and a usable URL in different branches of the return value. Each query or URL edit returns a new value, so the intermediate values and original link remain available.",
+  setup: "navigation is the import alias for std/web/navigation. fn shareLink input: String -> String defines a function from text to text. Calls separate arguments with spaces, and let gives a name to an intermediate value.",
+  after: [
+    "parseUrl returns Either<UrlBuildError, Url>. match selects a branch: Right original contains the usable Url; Left _ returns Link rejected. The underscore means this example does not use the detailed error.",
+    "urlQuery reads the existing conditions. setQuery replaces q, removeQuery removes every page entry, and appendQuery adds tag=sale at the end. The two existing tag entries keep their order.",
+    "withQuery attaches the edited conditions, withFragment sets results, and renderUrl returns the complete link. The space in the search term becomes + and its ampersand becomes %26. The example does not manually escape either character.",
+    "The program produces a string. It does not open the link, scroll to an element named results, or change browser history. Those actions are separate from building a URL.",
+  ],
+  details: [
+    "Use parseUrl to check an absolute URL, or resolveUrl to interpret a relative reference against a known base. To read a full URL's conditions, use urlQuery on its Url; do not pass the full link to parseQuery.",
+    "Use setQuery for one replacement value, appendQuery for another selection, and removeQuery to clear a condition. withQuery replaces the whole query, so include every condition you want to keep.",
+    "A usable Url does not establish that the destination exists or that your application should allow a visit to it. Actual location and history operations use Navigation and are a separate task.",
+  ],
+}

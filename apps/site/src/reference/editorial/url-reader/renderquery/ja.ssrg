@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "renderQueryは、QueryをURLのクエリに使える文字列へ変換します。名前と値をエンコードし、元の項目順を保ちます。先頭の?は付きません。",
+  taskTitle: "検索条件をエンコードした文字列にする",
+  purpose: "空白や+、/、空の値を含む条件を、共有リンクに使えるクエリの表記にします。綴りが異なる二つの入力を読み、同じ表記に整えます。",
+  typescriptBefore: "TypeScriptではURLSearchParams.toString()が、名前と値をエンコードしたクエリを返します。先頭の?は付かず、空白は+になります。手作業でjoinする必要はありません。",
+  benefit: "Queryのまま条件を編集してからrenderQueryを呼べば、各操作の途中でエンコードを気にせずに済みます。最後に名前と値をクエリ用の表記へ変換できます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.renderQuery queryのように引数を空白で続けます。例ではparseQueryで文字列を読み、その成功値のQueryを再び文字列に戻します。 fnの: Stringは引数の型、-> Stringは戻り値の型です。",
+  after: [
+    "parseQueryはEither<UrlBuildError, Query>を返します。matchのRightが読めたQuery、Leftが失敗の理由です。renderQueryはRightから取り出したQueryを受け取ります。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "読み取り時に+だった空白は、書き出すとまた+になります。文字としての+は%2Bになります。&は%26、/は%2Fなので、値の内容がクエリの区切りと混ざりません。",
+    "例の2行はどちらもq=tea+cake&literal=%2B&path=%2F&empty=になります。emptyという値なしの項目も、空の値としてempty=と書き出されます。項目の順番や同じ名前の繰り返しは保たれます。",
+    "空のQueryの出力は空文字列です。完全なURLへ取り付けたい場合は、?を足す処理を自分で書く代わりにwithQueryを使えます。",
+  ],
+  details: [
+    "値をあらかじめ%20のようにエンコードしないでください。%も普通の文字として扱われるため、%2520になります。Queryには空白そのものを渡し、最後の変換を任せます。",
+    "parseQueryしてrenderQueryしても、元のバイト列の綴りは保存されません。たとえば空白の%20は+になることがあります。元の入力をそのまま必要とする場合は、その文字列を別に持ちます。",
+    "これはクエリ専用の表記です。フラグメントの空白や+の扱いとは異なります。URL全体ならrenderUrl、フラグメントを設定するならwithFragmentを選びます。",
+  ],
+}

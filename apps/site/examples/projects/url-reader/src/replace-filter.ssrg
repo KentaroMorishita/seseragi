@@ -1,0 +1,11 @@
+import * as navigation from "std/web/navigation"
+
+fn replaceTag input: String -> String = match navigation.parseQuery input {
+  Left _ -> "Query rejected"
+  Right original -> {
+    let changed = navigation.setQuery "tag" "sale" original
+    navigation.renderQuery changed + "\n" + navigation.renderQuery original
+  }
+}
+
+pub effect fn main = println (replaceTag "q=tea&tag=books&page=3&tag=music")

@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "queryEntries returns all names and values as an ordered array of pairs. Repeated names remain separate, so you can inspect every condition in a shared link.",
+  taskTitle: "List every condition in a search link",
+  purpose: "Display all the conditions in supplied query text, in order. Include both tag entries and the empty value instead of reducing the data to one value per name.",
+  typescriptBefore: "The TypeScript version spreads URLSearchParams into an array of name/value pairs and formats each pair. Object.fromEntries would collapse repeated names, so an array is the better representation for this list.",
+  benefit: "queryEntries exposes a readable snapshot without requiring access to Query's private representation. The returned array and pairs are for reading; they are not mutable handles into the original Query.",
+  setup: "navigation, arrays, and text name the three imported modules. Calls use spaces between arguments; let names a result. pairText's pair: (String, String) is one pair of strings, and -> String declares the text it returns.",
+  after: [
+    "parseQuery is matched into Right query or Left _. Right contains usable conditions; Left returns the rejection message without using the reason. queryEntries returns Array<(String, String)>, an array whose pairs contain a name followed by its value.",
+    "pairText uses match to unpack one pair as (name, value). [pairText pair | pair <- pairs] calls pairText for each pair in order and collects the resulting strings. text.join then places | between those display strings.",
+    "The final line is tag=books | q=tea cake | tag=music | empty=. Both tags and their positions remain. The q value has a decoded space rather than +. This display format is not encoded query text.",
+    "The earlier lines use queryValues for selected names. text.join combines the tags into one display string, arrays.length counts missing and empty values, and show turns each count into text. A missing name has count 0; a name with an empty value has count 1.",
+  ],
+  details: [
+    "Use queryEntries rather than trying to access an entries field on Query. Editing an extracted array or pair is not how Query is updated.",
+    "Converting these pairs to a one-value-per-name dictionary loses repeated selections. Keep the pair array whenever those entries or their order matter.",
+    "Do not paste the formatted display line into a URL as its query. Use renderQuery on the Query to produce properly encoded query text.",
+  ],
+}

@@ -47,6 +47,7 @@ import { traitReaderExamples } from "./trait-readers"
 import { typeLimitExamples } from "./type-limits"
 import { typeReaderExamples } from "./type-readers"
 import { unicodeReaderExamples } from "./unicode-reader"
+import { urlReaderExamples } from "./url-reader"
 import { webReaderExamples } from "./web-reader"
 
 const app = resolve(import.meta.dir, "..")
@@ -106,6 +107,7 @@ export function generatorInput(playgroundUrl: string) {
       ...filesystemReaderExamples(playgroundUrl),
       ...effectSequencingReaderExamples(playgroundUrl),
       ...jsonReaderExamples(playgroundUrl),
+      ...urlReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

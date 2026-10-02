@@ -1,0 +1,11 @@
+import * as navigation from "std/web/navigation"
+
+fn readFragment -> String = match navigation.parseUrl "https://example.test/#%FF" {
+  Left _ -> "parse rejected"
+  Right url -> match navigation.urlFragment url {
+    Nothing -> "missing fragment"
+    Just fragment -> fragment
+  }
+}
+
+pub effect fn main = println (readFragment ())

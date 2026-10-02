@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "renderUrlは、確認済みのUrlから完全なURLの文字列を取り出します。クエリやフラグメントも含まれ、表示やコピーに使えます。",
+  taskTitle: "共有用のURLを文字列にする",
+  purpose: "読み取ったURLを、共有欄へ表示できる文字列に戻します。ホスト名や既定ポートの正規化と、クエリを編集した後の表記の違いを確認します。",
+  typescriptBefore: "TypeScriptではnew URL(input).hrefで整えた完全なURLを得られます。searchParamsを使ってクエリを書き戻すときには、そのクエリ用のエンコードが適用されます。",
+  benefit: "renderUrlはUrlからStringへ戻す出口になります。解析や編集はUrlのまま進め、最後に一度文字列へ戻せば、URLの部品を自分で連結せずに済みます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.renderUrl urlのように、関数名の後へ引数を空白で続けます。letは途中の値の名前で、normalizedの: Stringと-> Stringは引数と戻り値の型を示します。",
+  after: [
+    "parseUrlの結果をmatchで分けます。Rightには読めたUrl、Leftには読めなかった理由が入ります。renderUrlへ渡すのはRightの中のUrlで、入力のStringや分岐前の結果ではありません。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "ホスト名の大文字や既定のポート番号などは、解析時に正規化されます。renderUrlはそのUrlが持つ完全な表記を返し、元の入力の綴りを再現するわけではありません。",
+    "URLをそのまま表示したときの%20や~と、urlQueryで取り出してwithQueryで戻した後の+や%7Eは、見た目が違っても同じクエリの値を表せます。クエリの書き戻しは、その値から表記を作り直します。",
+    "返り値は普通のStringです。これを得るだけではネットワークへ送信されず、ブラウザーの現在地や履歴も変わりません。",
+  ],
+  details: [
+    "元の入力をそのまま見せる必要があるなら、そのStringを別に保存します。parseUrlとrenderUrlを、空白やエンコードの綴りまで保存する往復変換とは考えません。",
+    "renderQueryが返すのは?なしのクエリだけです。ホスト、パス、クエリ、フラグメントを含む共有リンクが必要ならrenderUrlを使います。",
+    "Urlの中身のフィールドへ直接アクセスしたり、URLの部品を文字列でつなぎ直したりする代わりに、公開された編集操作の結果をrenderUrlへ渡します。",
+  ],
+}

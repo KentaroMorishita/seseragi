@@ -3148,3 +3148,131 @@ This appendix preserves the entire prior 188,125-byte ledger prefix,
 SHA-256 `72e99001dae5ebddba8d45fa6372dca4d91db171bd2b1ae22a1c7b2253983e97`. All 106 original checkbox rows,
 including eight historical checked states, remain byte-identical. No previous
 conclusion, checklist state or historical review is replaced.
+
+
+## Shareable search-link library reader review
+
+This bounded addition authors twenty existing std/web/navigation identities and
+forty complete English/Japanese bodies. The practical task is to create a
+shareable search link: change the search term, retain repeated selected tags,
+reset pagination, and choose a results section. Native URL and URLSearchParams
+are shown as ordinary capable TypeScript APIs. The Seseragi comparison explains
+checked parse results and value-returning edits without claiming universal
+brevity or safety.
+
+### Exact existing identity scope
+
+- `std/web/navigation`
+- `std/web/navigation::{Url, Query, UrlBuildError}`
+- `std/web/navigation::{parseUrl, resolveUrl, renderUrl}`
+- `std/web/navigation::{emptyQuery, parseQuery, appendQuery, setQuery, removeQuery,
+  queryValues, queryEntries, renderQuery}`
+- `std/web/navigation::{urlQuery, withQuery}`
+- `std/web/navigation::{urlFragment, withFragment, withoutFragment}`
+
+This is one module, three types, fifteen functions and one value. emptyQuery is
+not counted as a function. The twenty existing identities add to the preceding
+249 for 269 in the running authored Library inventory. The 106 core routes and
+historical checkbox states are unchanged; these numbers do not mean 269 genuine
+first-time-reader acceptances. No new route or canonical signature is introduced.
+Constructor leaves, path/origin/HTML bridge operations, history/provider pages and
+Show/Debug instance leaves remain outside the added count.
+
+### Complete-body reading and corrections
+
+All forty initial production bodies were independently read in full, including
+both complete source panels, output, generated declarations/readings, target
+instructions and title-labelled related links. Japanese was authored first;
+English was written for the same ordinary TypeScript audience without assuming
+functional-programming or match/Either/Maybe knowledge.
+
+The review found two English phrases that attributed printing to pure value
+functions, and twelve Japanese deep links without a local explanation of the
+match wildcard in Left _. The English wording now distinguishes returned text
+from println, and those Japanese pages explain that the wildcard ignores the
+failure reason. The same English clarification was applied to urlFragment;
+Japanese queryValues also distinguishes the comprehension's string-array result
+from literal separators in the printed output.
+
+Exactly three English and thirteen Japanese bodies changed. All sixteen changed
+bodies were independently reread in full after production rendering. The other
+twenty-four bodies remain byte-identical. All forty corrected bodies pass this
+bounded model-reader review; genuine first-time-human feedback remains
+unverified. The final exact-source render preserves every reviewed corrected
+article and complete HTML hash.
+
+### Executable and target evidence
+
+The focused suite passes ten tests, zero failures and 2,782 assertions using
+official Seseragi 0.61.19, Bun 1.3.9 and TypeScript 5.8.3. Thirteen canonical
+Seseragi sources and thirteen strict TypeScript counterparts have thirty-three
+matching printed observations. Each Seseragi source has an isolated official
+web-package build and exact-source committed-WASM execution. Every entry requires
+Console only, with no Navigation, DOM, Storage or provider entry.
+
+The canonical module is browser-only. The separate checked-in web-target package
+builds for web, preserves its lock, and rejects process with SES-K0203 /
+provider.target-mismatch. Its sources are never imported into the process-target
+aggregate example main. A standalone-file process invocation happened to work
+through a different compilation path; that bounded observation is not documented
+as supported process availability. Building URL values never changes live browser
+location or history.
+
+Seven invalid fixtures each produce one intended diagnostic and refer to working
+canonical repairs. Fifty-two strict-checked runtime assertions cover duplicate
+order, returned new values, form encoding, absent versus empty values, relative
+bases, offsets and decode failures. Exact WASM probes preserve the UTF-16 query
+offset and the malformed-UTF8 fragment boundary. A parsed #%FF fragment can throw
+URIError when decoded, outside Left/Nothing; this observed limitation is explained
+where relevant without a runtime/compiler change or public defect report.
+
+All forty rendered bodies retain their exact source/output panels and Playground
+payloads. Identity/owner/namespace/kind guards preserve deferred pages; canonical
+signatures and declaration readings are unchanged. All 84 owned Seseragi source
+and fixture files pass canonical formatting. Site-mode host typechecking, strict
+comparison/runtime checks, Biome and diff checks pass. Execution and structural
+tests remain distinct from reading evidence.
+
+### Bounded actual public execution
+
+Actual public Playground runs cover only three exact canonical sources:
+share-search-link, read-selected-tags and url-build-errors. Each source payload
+and actual editor text matched its canonical SHA-256; Run completed with the
+expected output, the page URL stayed unchanged, and no site console warning or
+error was observed. The observed asset was playground-CcCLbc7e.js; an exact
+public deployed commit or compiler/runtime version was not independently exposed
+or verified. Screenshots were emitted, but no saved screenshot file is claimed.
+
+This does not establish public execution for the other ten sources, documentation
+page layout, live Navigation/history behavior, all browser engines or deployment
+correspondence. The malformed-UTF8 probes were in-process runtime/WASM checks,
+not public Playground runs.
+
+### Retained exact fingerprints
+
+The source/body snapshot covers 105 owned files, three narrow registration files
+and all forty final article/full-HTML hashes. Exact SHA-256 records are retained:
+
+- `source-body-fingerprints.json`: `446a2f2c8eeaaa1d101ccdb26e41a75365b5b81a1b366746e3b55ee8fa237152`
+- `initial-body-manifest.json`: `a6cd5208700ece8517b5fad6433c57dcfe23b3a9480cb957ddbfd28d4f436688`
+- `final-body-manifest.json`: `f04917ca33811daa90ccc812183b51c2fe2997554bc1dd07e5f4fe8479eef054`
+- `english-reader-review.md`: `f94175aa831d4741ec8af1732641a463c36a8b4a668ae207c22a5146c74a196b`
+- `japanese-reader-review.md`: `85461eef125f10dce778c78c93925415f1291a42ef353f66113430d4deed9b7c`
+- `corrected-body-diff.json`: `da8d2193d281790bbcb832b82d8242f601e87024b0d1330aa66e91aee10803c8`
+- `final-exact-focused.log`: `1914423ebb165a8b890a2bbaa653dcf5c72754729f8b26f8f273c38c2d223e6c`
+
+The detailed scope and verification boundaries are in
+[url-reader-work-item.md](url-reader-work-item.md) and
+[url-reader-verification.md](url-reader-verification.md).
+
+### Remaining gates and ledger preservation
+
+Whole-site integration, full-catalog ordering, documentation-page desktop/mobile
+layout, publication and genuine first-time TypeScript-reader feedback remain
+separate. This appendix makes no commit, push, deployment or whole-site
+integration claim.
+
+The entire prior 195,737-byte ledger prefix is preserved, SHA-256
+`907409efb66b5192c72761430863f239f86c8987af0dc24375cafbae7ed8a1dc`. All 106 original checkbox rows,
+including eight historical checked states, remain byte-identical. No previous
+conclusion, checklist state or historical review is replaced.

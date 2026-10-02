@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "withoutFragment removes # and the section after it, returning a new Url. The original link, path, and query conditions remain unchanged.",
+  taskTitle: "Share a search without its section anchor",
+  purpose: "Keep a search link's conditions while removing #results. Produce a link without a specific page-section target, then confirm that removing the section again has the same visible result.",
+  typescriptBefore: "The TypeScript version sets hash to an empty string on a newly created URL. Repeating the assignment leaves the same href. It does not retain an earlier URL object because the task does not need one.",
+  benefit: "withoutFragment expresses the removal directly and returns a new Url. It needs no preliminary check for a fragment and keeps the original Url available.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.withoutFragment original passes one Url after a space. let names the new Url; renderUrl returns its text. : String and -> String declare wholePage's input and output types.",
+  after: [
+    "match handles parseUrl's result. Right original contains a checked Url, while Left _ returns Link rejected without using the reason. Removal happens only on the successful Url.",
+    "withoutFragment removes the # marker and everything in that component. The q=tea query, host, and path remain in the rendered link.",
+    "Calling it again does not return an error or Nothing. Both output lines are https://example.test/search?q=tea because there is no section left to remove.",
+    "original itself is unchanged. Continue with the Url returned by withoutFragment when rendering or performing the next edit.",
+  ],
+  details: [
+    "This does not remove query conditions. To clear page, read the conditions with urlQuery, edit with removeQuery, and apply them with withQuery.",
+    "Use this operation on a checked Url instead of splitting link text at # yourself. If you have only a String, obtain the success value from parseUrl first.",
+    "The result is a link value. It does not change the section currently visible in the browser or modify its history.",
+  ],
+}

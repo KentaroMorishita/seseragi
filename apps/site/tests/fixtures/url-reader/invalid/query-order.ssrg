@@ -1,0 +1,4 @@
+import * as navigation from "std/web/navigation"
+
+fn bad url: navigation.Url -> navigation.Url =
+  navigation.withQuery url navigation.emptyQuery

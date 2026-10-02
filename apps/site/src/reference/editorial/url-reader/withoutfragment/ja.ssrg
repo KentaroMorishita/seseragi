@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "withoutFragmentは、Urlから#とその後ろの位置指定を取り除きます。パスや検索条件を残した新しいUrlを返し、元のUrlは変えません。",
+  taskTitle: "位置指定を外して検索リンクを共有する",
+  purpose: "検索語や選んだタグはそのままにして、特定の見出しを指す#resultsだけを外します。ページの途中への指定を含まない、共有用のURLを作ります。",
+  typescriptBefore: "TypeScript版は新しく作ったURLのhashへ空文字列を設定します。もう一度同じ設定をしても、表示するURLは同じです。この例は編集前のURLを使わないため、保存用のコピーは要りません。",
+  benefit: "withoutFragmentは、位置指定を外した新しいUrlを返す専用の操作です。#があるかどうかを先に調べずに呼べ、元のリンクを残せます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.withoutFragment originalのようにUrlを空白で続けます。letで削除後のUrlに名前を付け、renderUrlで共有用のStringを得ます。 fnの: Stringは引数の型、-> Stringは戻り値の型です。",
+  after: [
+    "parseUrlをmatchで分けます。Rightには確認済みのUrl、Leftには読めなかった理由が入るため、成功した場合だけ位置指定を外します。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "withoutFragmentは#とその後ろをまとめて取り除きます。検索語や繰り返しのタグを含むクエリ、ホスト、パスは残ります。",
+    "すでにフラグメントがなくても、失敗やNothingは返りません。もう一度取り除いてrenderUrlで表示しても、URLの文字列は同じです。",
+    "元のUrlは変更されません。結果を使うときは、withoutFragmentが返したUrlをrenderUrlや次の操作へ渡します。",
+  ],
+  details: [
+    "クエリの条件を消す操作ではありません。pageなどの条件を取り除くなら、urlQueryで読み、removeQueryで編集してwithQueryへ渡します。",
+    "文字列を#で分割して後半を捨てる代わりに、確認済みのUrlにこの操作を使います。生のStringしかない場合は、まずparseUrlの成功値を取り出します。",
+    "結果は新しいリンクの値だけです。現在開いているページの表示位置やブラウザーの履歴は変わりません。",
+  ],
+}

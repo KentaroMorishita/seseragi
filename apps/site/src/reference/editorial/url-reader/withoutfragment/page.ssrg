@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::withoutFragment" "value" "function" "remove-section" "https://example.test/search?q=tea\nhttps://example.test/search?q=tea\n" (en.copy ()) (ja.copy ())

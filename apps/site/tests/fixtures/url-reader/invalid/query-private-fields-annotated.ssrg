@@ -1,0 +1,3 @@
+import * as navigation from "std/web/navigation"
+
+fn bad query: navigation.Query -> String = query.entries

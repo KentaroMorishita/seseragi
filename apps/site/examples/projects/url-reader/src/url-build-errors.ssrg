@@ -1,0 +1,21 @@
+import * as navigation from "std/web/navigation"
+
+fn reason error: navigation.UrlBuildError -> String = match error {
+  navigation.InvalidUrl detail -> "Invalid URL at " + show detail.offset
+  navigation.UnsupportedUrlScheme scheme -> "Unsupported scheme: " + scheme
+  navigation.UrlContainsUserInfo -> "Remove login details"
+  navigation.InvalidPercentEncoding detail -> "Invalid percent escape at " + show detail.offset
+}
+
+fn checkLink input: String -> String = match navigation.parseUrl input {
+  Left error -> reason error
+  Right url -> navigation.renderUrl url
+}
+
+pub effect fn main = do {
+  _ <- println (checkLink "https://example.test/search")
+  _ <- println (checkLink "/search")
+  _ <- println (checkLink "ftp://example.test/")
+  _ <- println (checkLink "https://user:pass@example.test/")
+  println (checkLink "https://example.test/%ZZ")
+}

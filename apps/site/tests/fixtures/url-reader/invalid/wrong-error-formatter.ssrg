@@ -1,0 +1,3 @@
+import * as navigation from "std/web/navigation"
+
+fn bad error: navigation.UrlBuildError -> String = navigation.errorMessage error

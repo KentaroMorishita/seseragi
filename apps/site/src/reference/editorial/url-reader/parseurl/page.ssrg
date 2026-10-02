@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::parseUrl" "value" "function" "check-absolute-link" "https://example.test/search\nAbsolute link rejected\n" (en.copy ()) (ja.copy ())
