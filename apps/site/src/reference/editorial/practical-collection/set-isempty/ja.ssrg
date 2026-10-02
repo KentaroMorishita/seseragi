@@ -1,0 +1,22 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "Setに要素が一つもないか調べます。0、False、空文字列も一つの要素です。",
+  taskTitle: "選択された値がない場合を見分ける",
+  purpose: "選択した識別番号の集合が空なら案内を表示し、一つでもあれば次の処理へ進みます。番号0や空のラベルを「選択なし」と取り違えないようにします。",
+  typescriptBefore: "TypeScriptのSetではsize === 0を使います。new Set([0])、new Set([false])、new Set([\"\"])はどれも一要素を持ち、空ではありません。",
+  benefit: "sets.isEmptyは要素の有無をBoolで返します。TypeScriptのsizeによる判定も短く、どちらも値の真偽らしさに頼る必要はありません。返ったBoolをifへ渡して表示を分けられます。",
+  setup: "setsはstd/setのimportの別名です。sets.empty<Int> ()は整数の空のSetを作ります。sets.fromIterableは角括弧で書いた配列からSetを作り、重複する値があればまとめます。",
+  after: [
+    "最初のSetには要素がないため、sets.isEmptyの結果はTrueです。次の[0]から作ったSetには整数0があるためFalseになります。",
+    "[False]と[\"\"]から作る二つのSetも、どちらも一要素を持ちます。要素の型はそれぞれBoolとStringですが、isEmptyの使い方は変わりません。",
+    "json.encodeStringで真偽値をJSONの文字列にしてから表示します。そのため出力は小文字のtrue、false、false、falseです。ソース内のTrueとFalseはBoolの値を表します。",
+    "isEmptyへ渡す引数はSet一つです。確認する値や条件の関数は不要です。特定の番号が含まれるかを調べる場合はcontainsを選びます。",
+  ],
+  details: [
+    "isEmptyはSetが保持する個数で判定します。要素を配列に変換したり、一つずつ検査したりする必要はありません。",
+    "重複がある入力でも、異なる値が一つ残れば空ではありません。たとえば[0, 0]から作ったSetには0が一つ残ります。",
+    "filterがすべての要素を除いた結果は空です。その結果へisEmptyを使っても、元のSetに変更はありません。",
+    "個数を表示したいときはsets.sizeを使います。「要素がない」という条件だけを表すならisEmptyを選びます。",
+  ],
+}

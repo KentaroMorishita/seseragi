@@ -1,3 +1,4 @@
+import { practicalCollectionEditorialFor } from "./practical-collection/catalog"
 import {
   bytesReaderEditorialFor,
   bytesReaderModuleBlocks
@@ -199,6 +200,12 @@ fn editorialAfterJsonReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editori
 
 fn editorialAfterUrlReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match bytesReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterBytesReaderEditorialFor symbol
+  }
+
+fn editorialAfterBytesReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match practicalCollectionEditorialFor symbol {
     Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }

@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.dropは、Listの先頭から指定した個数を飛ばし、残りを返します。個数が0以下なら全要素、全件以上なら空のListです。",
+  taskTitle: "表示済みの項目を飛ばして次のページへ進む",
+  purpose: "一覧の先頭はもう表示したので、その次から続きを表示します。Readを一件飛ばし、ReviewとShipを最大二件取るページを作ります。飛ばす件数が負、0、全件以上の場合も確認します。",
+  typescriptBefore: "通常の配列のslice(1, 3)で、先頭を一件飛ばしたあとの二件を取り出せます。開始位置1は含み、終了位置3は含めません。境界の確認はslice(Math.max(0, count))で負の件数を0に合わせています。slice(-1)は末尾の一件を返すため、dropの負数の扱いとは違います。配列は同じ作業の比較用で、Listと同じ内部表現という意味ではありません。",
+  benefit: "dropは「何件飛ばすか」、takeは「最大何件表示するか」を受け取ります。二つを組み合わせるとページの範囲を件数で表せます。元のデータを変えずに書けることは、TypeScriptのsliceでも同じです。",
+  setup: "itemsはstd/listの別名です。`[\"Read\", \"Review\", \"Ship\"]は[の前のバッククォートでListを作ります。バッククォートなしは別の型のArrayです。items.drop 1 labelsは、Intの件数、Listの順に引数を渡します。",
+  after: [
+    "最初の式の括弧内にあるitems.drop 1 labelsがReadを飛ばします。その結果をitems.take 2へ渡すので、表示されるページは[\"Review\",\"Ship\"]です。dropだけなら、指定件数を飛ばした残りをすべて返します。",
+    "describeの引数はList<String>です。[value | value <- values]はListから値を一件ずつ受け取ってArrayに並べる内包表記で、JSON表示のために使っています。この角括弧にはバッククォートがありません。dropの結果そのものはListです。",
+    "四つのtakeの境界例のあとに、件数-1、0、3、4のdropが並びます。-1と0では全三件、3と4では[]です。(0 - 1)は整数の-1を作ります。続く空の入力へのtakeとdropは両方[]で、最後には元のlabelsの三件がそのまま表示されます。",
+  ],
+  details: [
+    "負の件数と0は、何も飛ばさない指定です。全件以上を飛ばすと空のListになります。空の入力も空のままで、範囲外を理由にNothingや例外を返す操作ではありません。",
+    "件数にはIntを渡します。1.5のようなFloatは使えません。また0、False、空文字列も一件として飛ばす対象になります。dropは値を条件で選ぶfilterとは違い、先頭からの個数だけを使います。",
+    "Listのdropは、指定した件数をたどって残りの部分を返します。残りは元のListと共有できるので、常に全要素をコピーするという意味ではありません。共有していても、dropが元のListを削ったり書き換えたりすることはありません。",
+    "全体のlengthを先に数えなくても、dropは末尾に達すれば空のListを返します。残りの先頭だけが必要ならhead、ページの件数を絞るならtakeを組み合わせます。",
+  ],
+}

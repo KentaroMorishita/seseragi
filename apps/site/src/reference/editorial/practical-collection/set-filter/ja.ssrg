@@ -1,0 +1,22 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "Setの要素を条件で選び、残した要素の順序と重複のない性質を保ちます。",
+  taskTitle: "条件を満たす識別番号だけを残す",
+  purpose: "重複をまとめた識別番号の一覧から、3以上の番号だけを取り出します。元のSetは残し、条件に合う番号を持つ別のSetを受け取ります。",
+  typescriptBefore: "TypeScriptでは[...ids]でSetの要素を配列へ取り出し、filterで選んでからnew Setで包めます。元のSetは変わりません。Setを作った時点で重複する4は一つにまとまっています。",
+  benefit: "Seseragiではsets.filterがSetを直接受け取り、Setを返します。配列へ取り出して戻す処理を挟まず、条件の関数と入力を並べて書けます。",
+  setup: "setsはstd/set、jsonは表示用のstd/jsonの別名です。sets.fromIterable [4, 1, 4, 3, 0]は配列からSetを作り、重複する4をまとめます。Intは整数の型です。",
+  after: [
+    "fn eligible value: Int -> Boolは一つの番号を受け取り、value >= 3かどうかを返します。sets.filter eligible idsは、eligibleがTrueを返した番号だけを残します。",
+    "sets.toArrayは結果を表示用の配列へ取り出します。最初に現れた順を保つため、残る番号は4、3の順です。これは小さい順へ並べ替える処理ではありません。",
+    "二つ目の表示は元のidsです。4、1、3、0が残っており、絞り込みで元の要素が消えていないことを確認できます。入力配列に二度あった4はSetの段階ですでに一個です。",
+    "sets.empty<Int> ()はIntの空のSetを作ります。<Int>は要素の型、()はUnitの引数です。空のSetを絞り込んでも空のSetになります。",
+  ],
+  details: [
+    "条件はSetに存在する各要素へ一度ずつ、挿入順に適用されます。入力配列の重複した値を毎回調べるのではありません。残す要素の順序も変わりません。",
+    "0、False、空文字列を自動的に除く操作ではありません。条件がTrueなら、それらも残ります。この例で0が残らないのは0 >= 3がFalseだからです。",
+    "条件はBoolを返す必要があります。表示文を返したり、数値をそのまま真偽値として扱ったりはできません。関数を呼んだ結果ではなく、関数そのものをfilterへ渡します。",
+    "この比較は整数の要素を使います。オブジェクトなど別の種類の値で、JavaScriptとSeseragiの重複の判定が同じだと示すものではありません。",
+  ],
+}

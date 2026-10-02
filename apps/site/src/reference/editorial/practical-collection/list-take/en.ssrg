@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.take returns at most the requested number of leading List elements. A count of zero or less returns empty; a shorter List supplies only the elements available.",
+  taskTitle: "Display one page of items",
+  purpose: "Skip one item already displayed, then show the next two as a page. The example skips Read and takes Review and Ship. It also checks negative, zero, and at-or-beyond-length counts.",
+  typescriptBefore: "A normal array produces the same page with slice(1, 3): include position 1 and stop before position 3. The boundary checks use Math.max(0, count) to treat a negative count as zero. Raw slice interprets a negative position relative to the end, so its policy would differ. The array compares the task without reproducing List’s representation or performance.",
+  benefit: "take accepts a maximum item count rather than an end position. Separating the skipped count in drop from the displayed count in take expresses the page directly. TypeScript’s slice also leaves its original array unchanged.",
+  setup: "items is the alias for std/list. The backtick immediately before labels’ opening bracket creates a List; without it, brackets create an Array. items.take 2 values takes the Int count first and the List second.",
+  after: [
+    "items.take 2 (items.drop 1 labels) first evaluates the parentheses to skip Read, then takes at most two of the remaining items. The first output is [\"Review\",\"Ship\"]. drop supplies the starting point and take limits the page size.",
+    "describe accepts List<String> and uses the comprehension [value | value <- values] to make an Array of its elements for JSON display. These brackets have no backtick. The result of take itself remains a List.",
+    "The next four take calls use counts -1, 0, 3, and 4. The first two produce []; the other two contain all three elements. (0 - 1) produces the integer -1. Later lines check drop boundaries and empty input, then display the unchanged original labels.",
+  ],
+  details: [
+    "A negative or zero count produces an empty List. At or beyond the List’s length, take returns all available elements without padding or failing. An empty input always produces an empty result.",
+    "The count must be Int; a Float such as 1.5 does not fit. 0, False, and an empty string each occupy one position too. take does not skip elements based on their contents.",
+    "List take walks the required leading elements and builds a List for the taken portion. It does not change the input’s contents. The final JSON output also shows the original labels intact.",
+    "Taking the first two items differs from skipping the first two. Use drop for skipping. To create a page, apply take to the remainder returned by drop, as in this example.",
+  ],
+}

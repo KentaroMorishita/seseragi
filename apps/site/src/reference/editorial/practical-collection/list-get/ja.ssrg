@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.getは、Listの0始まりの位置にある要素をMaybeで返します。範囲外ならNothing、空文字列などの値が実際にあればJustです。",
+  taskTitle: "指定した位置のラベルを、ない場合も含めて読む",
+  purpose: "選んだ位置のラベルを表示し、そこに要素がなければmissingと表示します。先頭に空文字列を置き、「ラベルが空」と「要素がない」を区別します。",
+  typescriptBefore: "通常の配列をlabels[index]で読み、undefinedかどうかを明示的に調べます。空文字列も有効な値なので、if (label)のような真偽値への変換では判定しません。この配列は同じ作業の比較用で、Listの内部表現や速度を再現するものではありません。",
+  benefit: "TypeScriptの添字アクセスも短く書けます。Seseragiでは戻り値のMaybe<String>に「ある／ない」が現れるため、取り出したStringを使う前に二つの場合を扱えます。",
+  setup: "itemsはstd/listのimportの別名です。items.get 1 labelsは、位置、Listの順に引数を渡します。`[\"\", \"Review\"]のように[の直前へバッククォートを付けるとListです。バッククォートのない[\"\", \"Review\"]は別の型のArrayになります。",
+  after: [
+    "位置0では空文字列、位置1ではReviewが見つかります。describeはMaybe<String>を受け取る関数で、matchがJust labelとNothingを分けます。Just labelは中の文字列にlabelという名前を付け、Nothingならmissingを返します。",
+    "json.encodeString labelは文字列を引用符付きのJSONにするので、最初のpresent: \"\"が空文字列の存在を示します。続く負の位置、位置2、空のListへのアクセスは、どれもmissingです。",
+    "items.empty<String> ()は、要素の型をStringと指定した空のListを作ります。最後の二行はheadで先頭を読む場合です。同じlabelsではpresent: \"\"、空のListではmissingになり、getと同じMaybeの扱いを使えます。",
+  ],
+  details: [
+    "位置は0始まりです。要素数が2なら有効なのは0と1だけで、2や負の位置はNothingです。負の位置を末尾から数えるJavaScriptのatとは違います。例の(0 - 1)は整数の-1を作る式です。",
+    "引数の位置はIntです。1.5のようなFloatは渡せません。戻り値もStringそのものではなくMaybe<String>なので、文字列を必要とする処理へ渡す前にJustの中身を取り出します。",
+    "0、False、空文字列は、いずれも実際の要素です。それぞれの型のListで取得すればJustに入り、値が空に見えることを理由にNothingにはなりません。",
+    "Listのgetは先頭から目的の位置までたどります。配列の添字アクセスと同じ一定時間の操作ではありません。先頭だけが必要ならheadを使い、全体のlengthを先に数える必要はありません。",
+  ],
+}

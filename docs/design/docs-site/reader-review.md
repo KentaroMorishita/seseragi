@@ -3378,3 +3378,57 @@ The entire previous 203079-byte ledger prefix is preserved, SHA-256
 `67a0eb1961f8a2f848895765b7d86ad8179ae35f1bd9d2af62d62bfeb5950287`. All 106 original
 checkbox rows, including their historical checked states, remain byte-identical.
 No earlier conclusion or checklist state is replaced.
+
+
+## 2026-10-02: Collection20 everyday operations
+
+This bounded batch authors twenty existing value/function identities:
+Array and List get/head/isEmpty/length/filter/find/take/drop, plus Map and Set
+filter/isEmpty. Existing module entrances, canonical declarations and runtime
+behavior are preserved. The scope is forty EN/JA article bodies.
+
+Independent reading covers all forty initial complete bodies and all forty
+corrected complete bodies, twenty per language in each pass. Each review binds
+to the exact whole-body and text hashes. No required correction remains.
+These are independent simulated novice reads, not first-time human feedback
+or actual browser-host acceptance.
+
+Corrections align the TypeScript filter's empty-input case, use native
+slice(1, 3) with its exclusive endpoint, define Unit and () correctly, explain
+show only where it is used, and distinguish direct console.log Boolean output
+from JSON.stringify. Negative-count clamping and the distinction between a
+present zero/False/empty string and absence remain explicit. List costs are
+supported by implementation reading, not timing. Map/Set equality limits use
+plain language.
+
+The final focused gate passes eight tests and 3,132 assertions. Fourteen visible
+source pairs and three supplementary pairs pass official-CLI process checks,
+strict TS and Bun/Node output checks, and committed-WASM/current-runtime checks.
+Seven isolated type rejections have complete successful repairs. The final
+JSON-fixture formatting-only adjustment is separate from those teaching-source
+and wording corrections: its data is unchanged, a fresh full focused run passes,
+and all forty rendered body hashes match the corrected bodies the readers read.
+All 248 unselected article bodies in the four owning modules match checkpoint14.
+
+Final evidence fingerprints (the manifests contain the exact per-file,
+per-source/output and per-route body/text hashes):
+
+- `final-owned-source-manifest.json`: `48451a0f1ddc22fe3306d38b3af403fe6e3b85e03a3fe796905abeaf822b73d7`
+- `final-source-output-manifest.json`: `22c759fe499b715bcc8b120307a7ad0737953f84bf9f4dca8b3f2442c6bc337d`
+- `final-body-manifest.json`: `c419b159a27357973d6963c8677cf34e7a16744eff18c983b72c83525cfa21cb`
+- `reviewed-final-body-parity.json`: `31b0e6545895c781c691bed0b2c4741fce8268eb71c35487b9f93c4043277bfb`
+- `english-reader-review.json`: `5cfde2e2183c89edb3261f688c81131a993de802b7c09b244ea9b06ecf268314`
+- `japanese-reader-review.json`: `9b9d234d0dd828288cd2bd65f03ce7c908e4753b0ec333a3083c03b25a8d8f78`
+- `english-reader-rereview.json`: `cf9cdafbd7ffa45645cf576e48034c4fd7aa945372604812e0c3ce58e12c56f8`
+- `japanese-reader-rereview.json`: `5b683143e6c987d4783641ea043af8aabe2c4031a3d4ea4d5a252a7c9c230bf2`
+- `frozen-exact-focused.log`: `2353717b628c825c9325a6ae25163e5a587b074eef6fe16358ed6df6fcdcb53f`
+- `final-unselected-body-audit.json`: `5c8181a62d1b67066875476fbad668bf5a47251ef6dbfbc36319f7c9730974d9`
+
+See [the bounded work item](practical-collection-work-item.md) and
+[verification record](practical-collection-verification.md). Whole-site
+integration, real-browser display/host checks and publication remain separate.
+No compiler/runtime repair or unselected source correction is included.
+
+The entire prior 209413-byte ledger prefix is preserved, SHA-256
+`72408ea5d92df1b00d933b8f42765fde8760b65cee007d8d18c13496f8ef7f2a`. All 106 historical checkbox rows and their states remain
+byte-identical; this appendix adds no checkbox or changes an earlier verdict.

@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "isEmptyは配列に要素が1個もないかをBoolで返します。0、False、空文字列だけの配列も、1個の要素があるため空ではありません。",
+  taskTitle: "0や空欄を含む一覧で、空の表示を選ぶ",
+  purpose: "結果一覧に「結果がありません」と表示すべきかを判断します。確認したいのは要素の有無です。0という集計値、Falseという選択状態、空欄のラベルも、それぞれ1件の結果として数えます。",
+  typescriptBefore: "TypeScriptのvalues.length === 0は、配列が空かを調べる簡潔で十分な書き方です。配列自体や先頭の値を真偽値として判定するのではなく、要素数を0と比べます。例では空の配列と、0、false、空文字列を1個ずつ持つ配列を比べます。",
+  benefit: "Seseragiではitems.isEmpty valuesと書くことで、件数そのものではなく空かどうかを知りたい意図が名前に表れます。戻り値はBoolです。TypeScriptより短くなることではなく、目的に合う操作を選べる点が利点です。",
+  setup: "itemsはstd/array、jsonはstd/jsonのimportの別名です。let none: Array<Int> = []は整数用の空の配列を定義します。空の[]だけでは中身から型を決められないため、この変数ではArray<Int>と書いています。",
+  after: [
+    "items.isEmpty noneはTrueです。[0]、[False]、[\"\"]はそれぞれ要素が1個あるため、結果はすべてFalseです。TrueとFalseはSeseragiのBoolの値で、JSONで表示するとtrueとfalseになります。",
+    "例の最初の4行が空かどうかの結果です。最初だけtrue、残りはfalseになります。括弧はisEmptyの結果を先に計算してjson.encodeStringへ渡すために使っています。",
+    "後半のlengthは要素数を比べるための表示です。空のnoneは0、[0]のoneは1、[0, 2, 0]のseveralは3です。要素の値が0かどうかは、件数にも空かどうかにも影響しません。",
+  ],
+  details: [
+    "isEmptyは「有効な値が含まれるか」や「すべての値が空欄か」を調べません。[\"\"]は空ではありません。ラベルが空欄の行を除いてから判断したいなら、まず条件を決めてfilterし、その結果をisEmptyへ渡します。",
+    "Boolが必要ならisEmpty、件数の表示が必要ならlengthを使います。isEmptyは要素を取り出さないため、先頭の内容も必要な場面ではheadのMaybeを扱うほうが目的に合います。",
+    "要素型にかかわらずArrayを受け取ります。ただしArrayとListは別の型です。Listの空判定にはstd/listのisEmptyを使います。",
+  ],
+}

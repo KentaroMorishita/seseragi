@@ -1,0 +1,5 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+fn keep sku: String -> quantity: Int -> Bool = quantity > 0 && sku != "hold"
+pub effect fn main =
+  println (json.encodeString (maps.entries (maps.filter keep (maps.fromEntries [("tea", 2)]))))

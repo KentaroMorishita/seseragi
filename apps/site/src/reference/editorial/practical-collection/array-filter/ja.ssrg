@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "filterは条件がTrueになる配列の要素をすべて残します。元の順序を保ち、元の配列は変更せず、該当がなければ空の配列を返します。",
+  taskTitle: "急ぎのタスクだけを一覧に残す",
+  purpose: "Read、Review、Shipのタスク一覧から、急ぎのReviewとShipを取り出します。結果だけでなく元の一覧も表示し、絞り込み後も元の3件が使えることを確認します。",
+  typescriptBefore: "TypeScriptではtasks.filter(task => task.urgent)がそのまま使えます。filterは元の配列を変更しません。続くmapはタイトルだけを表示するための処理です。最後は空の配列にも同じ条件を使い、結果が[]になることを確かめます。",
+  benefit: "Seseragiではitems.filter urgent tasksと書きます。条件の関数、対象の配列の順に渡し、結果もArray<Task>として受け取ります。条件の関数がTaskを受け取りBoolを返すことが、型に表れます。",
+  setup: "itemsはstd/array、jsonはstd/jsonのimportの別名です。struct Taskはtitle: Stringとurgent: Boolを持つタスクの型です。Task { ... }でその値を作り、角括弧で配列に並べています。Trueは急ぎ、Falseは急ぎではない状態です。",
+  after: [
+    "fn urgent task: Task -> Bool = task.urgentは、タスク1件を受け取り、そのurgent欄を返す関数です。items.filter urgent tasksは各タスクにこの関数を使い、Trueになったタスクをselectedへ残します。",
+    "[task.title | task <- selected]は配列内包表記です。selectedの要素を順番にtaskと呼び、それぞれのtitleから表示用の配列を作ります。filter自体がタイトルだけに変換するわけではありません。",
+    "最初の表示は[\"Review\",\"Ship\"]です。次の表示は元のtasksなので、Readを含む3件のままです。最後はitems.empty<Task> ()で作った空の配列を絞り込み、[]になります。",
+  ],
+  details: [
+    "filterは条件に合う要素をすべて、元の順序で残します。最初の1件だけ必要ならfindを使います。findの結果はMaybe<Task>ですが、filterの結果は0件以上のArray<Task>です。",
+    "残すかどうかを決めるのは条件のBoolです。要素の値が0、False、空文字列という理由だけで除かれることはありません。それらを受け入れる条件なら、そのまま結果に残ります。",
+    "条件がすべてFalseでも、入力が空でも、結果は空の配列です。条件の関数は要素を1個受け取りBoolを返す必要があります。説明文などのStringを返す関数を条件として渡すことはできません。",
+  ],
+}

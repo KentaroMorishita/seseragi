@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "findは条件に合う最初の配列要素をMaybeで返します。見つかればJust、該当がない場合や空の配列ならNothingです。",
+  taskTitle: "最初の急ぎのタスクを1件だけ読む",
+  purpose: "タスク一覧の先頭から探し、急ぎのタスクを1件だけ表示します。ReviewとShipの両方が急ぎですが、必要なのは先に現れるReviewです。見つからない場合はnot foundと表示します。",
+  typescriptBefore: "TypeScriptのtasks.find(task => task.urgent)も最初の一致を返すので、この用途にそのまま合います。describeは結果がundefinedかを明示的に調べます。例では一致するタスク、存在しないタイトル、空の配列を比べています。",
+  benefit: "Seseragiのitems.find urgent tasksはMaybe<Task>を返します。Justから取り出したタスクのtitleを使い、Nothingなら別の表示にします。全件の配列を作ってから先頭を読む必要がなく、見つからない場合も戻り値に表れます。",
+  setup: "itemsはstd/array、jsonはstd/jsonのimportの別名です。struct Taskは文字列のtitleと真偽値のurgentを持つ型です。fn urgent task: Task -> Bool = task.urgentはタスク1件を受け取り、急ぎかどうかを返します。",
+  after: [
+    "items.find urgent tasksは、条件の関数urgent、配列tasksの順で呼びます。ReadはFalse、ReviewはTrueなので、最初の一致であるReviewがJustに入ります。その後のShipを返す処理ではありません。",
+    "describeの引数はMaybe<Task>です。matchのJust taskで見つかったTaskを取り出してtitleを返し、Nothingではnot foundを返します。Maybe<Task>自体にtitleを読みに行くのではありません。",
+    "\\task -> task.title == \"Missing\"は、その場で書く関数です。taskを1個受け取り、タイトルがMissingと等しいかをBoolで返します。この条件に合うタスクはないため、2行目はnot foundです。",
+    "3行目はitems.empty<Task> ()という空の配列なのでnot foundです。最後の[task.title | task <- tasks]は、元の配列からタイトルを順に並べる内包表記です。表示は元のRead、Review、Shipのままです。",
+  ],
+  details: [
+    "findは配列の順序で調べ、最初の一致を返します。該当するすべてのタスクが必要ならfilterを使います。複数の一致があるこの例で、findはReview、filterならReviewとShipになります。",
+    "見つかった値が0、False、空文字列でもJustになります。Nothingは値が偽に見えるという意味ではなく、条件に合う要素がないという意味です。このタスク例ではTaskを探しています。",
+    "条件はTaskを受け取りBoolを返す関数です。空の配列では調べる要素がなく、条件の関数は呼ばれません。入力の配列は変更されません。",
+  ],
+}

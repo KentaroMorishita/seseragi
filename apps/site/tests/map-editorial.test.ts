@@ -75,15 +75,26 @@ test("identity overlay renders fifteen Map pages in both locales and preserves d
     const module = {
       ...sourceModule,
       items: sourceModule.items.filter(
-        (x) =>
-          identities.has(x.identity) ||
-          ["std/map::filter", "std/map::isEmpty", "std/map::get"].includes(
-            x.identity
-          )
+        (x) => identities.has(x.identity) || x.identity === "std/map::get"
       ),
     }
-    expect(module.items).toHaveLength(17)
+    expect(module.items).toHaveLength(15)
     for (const item of module.items) {
+      expect(item.namespace).toBe("value")
+      expect(item.itemKind).toBe("function")
+    }
+    // Every canonical function in this family is now authored. Keep the
+    // global no-editorial check on real, still-unclaimed Stream functions.
+    const stream = allModules.find((x) => x.specifier === "std/stream")!
+    const fallbackModule = {
+      ...stream,
+      items: stream.items.filter((x) =>
+        ["std/stream::filterMap", "std/stream::empty"].includes(x.identity)
+      ),
+    }
+    expect(fallbackModule.items).toHaveLength(2)
+    for (const item of fallbackModule.items) {
+      expect(item.module).toBe("std/stream")
       expect(item.namespace).toBe("value")
       expect(item.itemKind).toBe("function")
     }
@@ -94,7 +105,7 @@ test("identity overlay renders fifteen Map pages in both locales and preserves d
       tourUrl: "https://seseragi.vercel.app/tour/",
       grammar: "",
       examples,
-      referenceModules: [module],
+      referenceModules: [module, fallbackModule],
     }
     const output = renderPageClosure<Array<{ route: string; html: string }>>({
       directory,
@@ -123,7 +134,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
   }
 }`,
     })
-    expect(output).toHaveLength(36) // Fifteen edited identities and three controls, each in EN/JA.
+    expect(output).toHaveLength(38) // Map articles plus two generic Stream controls, each in EN/JA.
     const pages = new Map(output.map((x) => [x.route, x.html]))
     for (const prefix of ["", "/ja"]) {
       const moduleHtml = pages.get(`${prefix}/docs/library/map/`)!
@@ -201,14 +212,16 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      for (const name of ["filter", "isEmpty"]) {
-        const control = module.items.find(
-          (x) => x.identity === `std/map::${name}`
+      for (const name of ["filterMap", "empty"]) {
+        const control = fallbackModule.items.find(
+          (x) => x.identity === `std/stream::${name}`
         )!
         const html = pages.get(
-          `${prefix}/docs/library/map/function/${name.toLowerCase()}/`
+          `${prefix}/docs/library/stream/function/${name.toLowerCase()}/`
         )!
         expect(html).not.toContain('id="using-this-operation"')
+        expect(html).not.toContain("Missing canonical example")
+        expect(plain(html)).toContain(control.signature)
         expect(plain(html)).toContain(
           prefix ? control.descriptionJa : control.descriptionEn
         )

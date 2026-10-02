@@ -1,0 +1,72 @@
+import { editorial as case0 } from "./array-get/page"
+import { editorial as case1 } from "./array-head/page"
+import { editorial as case2 } from "./array-isempty/page"
+import { editorial as case3 } from "./array-length/page"
+import { editorial as case4 } from "./array-filter/page"
+import { editorial as case5 } from "./array-find/page"
+import { editorial as case6 } from "./array-take/page"
+import { editorial as case7 } from "./array-drop/page"
+import { editorial as case8 } from "./list-get/page"
+import { editorial as case9 } from "./list-head/page"
+import { editorial as case10 } from "./list-isempty/page"
+import { editorial as case11 } from "./list-length/page"
+import { editorial as case12 } from "./list-filter/page"
+import { editorial as case13 } from "./list-find/page"
+import { editorial as case14 } from "./list-take/page"
+import { editorial as case15 } from "./list-drop/page"
+import { editorial as case16 } from "./map-filter/page"
+import { editorial as case17 } from "./map-isempty/page"
+import { editorial as case18 } from "./set-filter/page"
+import { editorial as case19 } from "./set-isempty/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Editorial } from "../model"
+
+// Exact owner, namespace, kind and identity; no module entrances are added.
+pub fn practicalCollectionEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else
+    match symbol.module {
+  "std/array" -> arrayEditorial symbol.identity
+  "std/list" -> listEditorial symbol.identity
+  "std/map" -> mapEditorial symbol.identity
+  "std/set" -> setEditorial symbol.identity
+  _ -> Nothing
+}
+
+fn arrayEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/array::get" -> Just (case0 ())
+  "std/array::head" -> Just (case1 ())
+  "std/array::isEmpty" -> Just (case2 ())
+  "std/array::length" -> Just (case3 ())
+  "std/array::filter" -> Just (case4 ())
+  "std/array::find" -> Just (case5 ())
+  "std/array::take" -> Just (case6 ())
+  "std/array::drop" -> Just (case7 ())
+  _ -> Nothing
+}
+
+fn listEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/list::get" -> Just (case8 ())
+  "std/list::head" -> Just (case9 ())
+  "std/list::isEmpty" -> Just (case10 ())
+  "std/list::length" -> Just (case11 ())
+  "std/list::filter" -> Just (case12 ())
+  "std/list::find" -> Just (case13 ())
+  "std/list::take" -> Just (case14 ())
+  "std/list::drop" -> Just (case15 ())
+  _ -> Nothing
+}
+
+fn mapEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/map::filter" -> Just (case16 ())
+  "std/map::isEmpty" -> Just (case17 ())
+  _ -> Nothing
+}
+
+fn setEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/set::filter" -> Just (case18 ())
+  "std/set::isEmpty" -> Just (case19 ())
+  _ -> Nothing
+}

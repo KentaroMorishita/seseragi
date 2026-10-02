@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "get returns the array element at a zero-based position as Maybe. Negative or out-of-range positions return Nothing, keeping absence distinct from values such as an empty string.",
+  taskTitle: "Read a selected label, including the missing case",
+  purpose: "Read the label at a selected position in a list. The example has two labels: an empty string and Review. Treat the blank label as an existing entry, and display missing only when the position has no element.",
+  typescriptBefore: "In TypeScript, read labels[index] and check === undefined for absence. This is already a concise solution. A test such as if (label) would also reject the existing empty string. The example uses an ordinary dense array and checks that negative and out-of-range positions produce undefined.",
+  benefit: "Seseragi returns Maybe<String>, separating a label inside Just from the absence represented by Nothing. Before using the result as a String, handle the missing case explicitly and choose what to display.",
+  setup: "items is the import alias for std/array; json is the alias for std/json. [\"\", \"Review\"] is an array of String values. The call items.get 1 labels passes the integer position first, then the array, with spaces between arguments.",
+  after: [
+    "fn describe value: Maybe<String> -> String defines a function that turns a possibly present value into display text. match chooses a branch: Just label extracts the string as label, while Nothing returns missing. The expression after each branch’s -> is its result.",
+    "The first two lines read the empty string at position 0 and Review at position 1. json.encodeString label displays the string with quotation marks, making present: \"\" visibly different from a missing entry.",
+    "The next three lines read a negative position, position 2, and position 0 in an empty array. All display missing. (0 - 1) produces the negative integer -1, and items.empty<String> () creates an empty array with String as its element type.",
+    "The final two lines use head to read the first element. With the same describe function, the first label displays present: \"\", and an empty array displays missing. Use head when you only need the first element and do not need to pass a position.",
+  ],
+  details: [
+    "Positions start at 0. An array with two elements has valid positions 0 and 1. A negative position, or one at or beyond the length, returns Nothing; it does not count backward from the end. JavaScript labels.at(-1) returns the last label, Review, so its negative-position policy differs from get.",
+    "An existing 0, False, or empty string is returned inside Just. This example displays the empty-string case. Just versus Nothing tells you whether the position contains an element, not whether that value looks empty.",
+    "The position must be Int. A Float such as 1.5 is a type mismatch. The collection argument must be Array<A>; for List<A>, use get from std/list. A stands for the element type, which is also the type inside the result.",
+  ],
+}

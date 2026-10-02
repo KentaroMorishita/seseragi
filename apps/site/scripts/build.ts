@@ -36,6 +36,7 @@ import { newModelReaderExamples } from "./model-reader"
 import { moduleProjectExamples } from "./module-examples"
 import { nonemptyIteratorReaderExamples } from "./nonempty-iterator-readers"
 import { numericReaderExamples } from "./numeric-readers"
+import { practicalCollectionExamples } from "./practical-collection"
 import { compilerReferenceModules } from "./reference"
 import { regexReaderExamples } from "./regex-readers"
 import { type RenderedPage, renderGenerator } from "./render-generator"
@@ -110,6 +111,7 @@ export function generatorInput(playgroundUrl: string) {
       ...jsonReaderExamples(playgroundUrl),
       ...urlReaderExamples(playgroundUrl),
       ...bytesReaderExamples(playgroundUrl),
+      ...practicalCollectionExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

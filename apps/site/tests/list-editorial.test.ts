@@ -69,7 +69,7 @@ test("identity overlay renders twelve List pages in both locales and preserves d
       items: sourceModule.items.filter(
         (x) =>
           identities.has(x.identity) ||
-          ["std/list::length", "std/list::empty", "std/list::zip"].includes(
+          ["std/list::reverse", "std/list::empty", "std/list::zip"].includes(
             x.identity
           )
       ),
@@ -203,15 +203,15 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      const lengthHtml = pages.get(
-        `${prefix}/docs/library/list/function/length/`
+      const reverseHtml = pages.get(
+        `${prefix}/docs/library/list/function/reverse/`
       )!
-      const lengthItem = module.items.find(
-        (x) => x.identity === "std/list::length"
+      const reverseItem = module.items.find(
+        (x) => x.identity === "std/list::reverse"
       )!
-      expect(lengthHtml).not.toContain('id="using-this-operation"')
-      expect(plain(lengthHtml)).toContain(
-        prefix === "/ja" ? lengthItem.descriptionJa : lengthItem.descriptionEn
+      expect(reverseHtml).not.toContain('id="using-this-operation"')
+      expect(plain(reverseHtml)).toContain(
+        prefix === "/ja" ? reverseItem.descriptionJa : reverseItem.descriptionEn
       )
       expect(
         plain(pages.get(`${prefix}/docs/library/list/function/findindex/`)!)
@@ -272,7 +272,7 @@ test("overlay identity inventory stays valid and ignores unrelated namespace, ki
     const first = items[0]
     const probes = [
       ...items,
-      { ...first, identity: "std/list::length" },
+      { ...first, identity: "std/list::reverse" },
       { ...first, namespace: "type" },
       { ...first, itemKind: "constructor" },
       { ...first, module: "std/array" },
