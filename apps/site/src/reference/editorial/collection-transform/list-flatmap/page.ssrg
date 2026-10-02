@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { collectionTransformEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  collectionTransformEditorial "std/list::flatMap" "list-flatmap" (en.copy ()) (ja.copy ())

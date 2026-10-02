@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.concat joins the Arrays inside an Array, removing one level of nesting. It preserves outer and inner order, and an empty Array contributes no elements.",
+  taskTitle: "Combine separate task batches into one list",
+  purpose: "Join the batch containing Read, an empty batch, and the batch containing Review and Ship. Turn those three groups into one Array ordered Read, Review, Ship.",
+  typescriptBefore: "batches.flat() flattens one level of nested arrays. The empty middle array contributes no elements, and the other elements keep their order. This task already takes a short, idiomatic line in TypeScript.",
+  benefit: "Seseragi concat also combines several Arrays that are already grouped together. The input is Array<Array<String>> and the result is Array<String>, making the single removed level visible in the types.",
+  setup: "items is the alias for std/array, and let batches names the grouped tasks. Each element of the outer [ ... ] is itself an Array. The middle [] is an empty Array between the other two batches.",
+  after: [
+    "items.concat batches calls the function by placing its argument after the name, separated by a space. It takes elements from [\"Read\"], then [], then [\"Review\", \"Ship\"], producing [\"Read\",\"Review\",\"Ship\"].",
+    "The comprehension [value | value <- ...] takes each element of the concat result as value and creates a display Array. The values and their order stay the same when that Array is displayed as JSON.",
+    "concat changes neither batches nor the Arrays it contains. Receive the combined list as its return value and use it for display or further processing.",
+  ],
+  details: [
+    "Only one nesting level is removed. For example, [[[1], [2]], [], [[3]]] becomes [[1], [2], [3]]. The inner [1], [2], and [3] are still Arrays rather than being flattened all the way to integers.",
+    "An empty outer Array gives an empty result. A collection containing only empty Arrays also gives an empty result. A value appearing in several batches is kept each time.",
+    "concat requires an Array whose elements are Arrays. An Array of integers such as [1, 2, 3] cannot be passed. If the types do not match, check whether the input is already a single list of elements.",
+    "Use append to join just two Arrays, or flatMap to extract an Array from each record before joining. concat itself takes no function to choose what to extract.",
+  ],
+}

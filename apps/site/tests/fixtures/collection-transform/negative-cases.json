@@ -1,0 +1,158 @@
+[
+  {
+    "slug": "array-append-list",
+    "output": "[1,2]\n",
+    "code": "SES-T0101",
+    "messageKey": "call.argument-type-mismatch",
+    "actualType": "List<Int>",
+    "expectedType": "Array<Int>",
+    "primary": {
+      "end": 83,
+      "start": 79
+    },
+    "sourceSha256": "3409f2735bd59199c2e67e35e9a68d75fd5906125e349a1361de3d75b3ee4dc5"
+  },
+  {
+    "slug": "array-concat-recursive",
+    "output": "[[1]]\n",
+    "code": "SES-T0101",
+    "messageKey": "array.element-type-mismatch",
+    "actualType": "Array<Int>",
+    "expectedType": "Int",
+    "primary": {
+      "end": 84,
+      "start": 81
+    },
+    "sourceSha256": "106e4f3e6802575ecc8e274b206e73005c53cc736eb1ae4c5669007221958dcd"
+  },
+  {
+    "slug": "array-filtermap-bare",
+    "output": "[2,3]\n",
+    "code": "SES-T0101",
+    "messageKey": "lambda.body-type-mismatch",
+    "actualType": "Int",
+    "expectedType": "Maybe<Int>",
+    "primary": {
+      "end": 94,
+      "start": 89
+    },
+    "sourceSha256": "687153369246a56a092f5c3866121723a47e7da47feece4c34a5996326615f2d"
+  },
+  {
+    "slug": "array-flatmap-scalar",
+    "output": "[2,3]\n",
+    "code": "SES-T0101",
+    "messageKey": "lambda.body-type-mismatch",
+    "actualType": "Int",
+    "expectedType": "Array<Int>",
+    "primary": {
+      "end": 92,
+      "start": 87
+    },
+    "sourceSha256": "7d3fa50ea28a025f8ad8f63bf60d928c81ac4938cd052f974988ebc45bc4dd43"
+  },
+  {
+    "slug": "array-tail-unwrapped",
+    "output": "present: [2]\n",
+    "code": "SES-T0101",
+    "messageKey": "function.return-type-mismatch",
+    "actualType": "Maybe<Array<Int>>",
+    "expectedType": "Array<Int>",
+    "primary": {
+      "end": 83,
+      "start": 66
+    },
+    "sourceSha256": "4cb9487a16a69626f30f35f753543b61d43c94273d3a53912a1b93778c99f53b"
+  },
+  {
+    "slug": "array-tolist-still-array",
+    "output": "[1]\n",
+    "code": "SES-T0101",
+    "messageKey": "function.return-type-mismatch",
+    "actualType": "List<Int>",
+    "expectedType": "Array<Int>",
+    "primary": {
+      "end": 82,
+      "start": 66
+    },
+    "sourceSha256": "6967b8baed8bbec9d3785f9bd10139892693e19062d93b4aba14e1ec8dc0bc77"
+  },
+  {
+    "slug": "list-append-array",
+    "output": "[1,2]\n",
+    "code": "SES-T0101",
+    "messageKey": "call.argument-type-mismatch",
+    "actualType": "Array<Int>",
+    "expectedType": "List<Int>",
+    "primary": {
+      "end": 80,
+      "start": 77
+    },
+    "sourceSha256": "c036ae076dbcd3ba766e413f4e11640c7c85c80a469cc21cf4b63dd3640682f0"
+  },
+  {
+    "slug": "list-concat-recursive",
+    "output": "[[1]]\n",
+    "code": "SES-T0101",
+    "messageKey": "list.element-type-mismatch",
+    "actualType": "List<Int>",
+    "expectedType": "Int",
+    "primary": {
+      "end": 85,
+      "start": 81
+    },
+    "sourceSha256": "a8ac442609ea40792655e30c1def8a815d679c1ed20fa24f3ea0657cffc447eb"
+  },
+  {
+    "slug": "list-filtermap-either",
+    "output": "[2]\n",
+    "code": "SES-T0101",
+    "messageKey": "call.argument-type-mismatch",
+    "actualType": "String -> Either<IntParseError, Int>",
+    "expectedType": "String -> Maybe<Int>",
+    "primary": {
+      "end": 122,
+      "start": 112
+    },
+    "sourceSha256": "9a8733b520f28842f250340e94b2302dd3474a35da80aefd13a18e42a763317e"
+  },
+  {
+    "slug": "list-flatmap-array",
+    "output": "[1,2]\n",
+    "code": "SES-T0101",
+    "messageKey": "lambda.body-type-mismatch",
+    "actualType": "Array<Int>",
+    "expectedType": "List<Int>",
+    "primary": {
+      "end": 88,
+      "start": 85
+    },
+    "sourceSha256": "4729f6f762b4d5d028a6484b31c3e4366432d7737230032fd50338709b28e756"
+  },
+  {
+    "slug": "list-tail-unwrapped",
+    "output": "present: [2]\n",
+    "code": "SES-T0101",
+    "messageKey": "function.return-type-mismatch",
+    "actualType": "Maybe<List<Int>>",
+    "expectedType": "List<Int>",
+    "primary": {
+      "end": 82,
+      "start": 64
+    },
+    "sourceSha256": "577d294efefba122ee4a34464a13804ddeaec46a2b7642ea81bd40472306f608"
+  },
+  {
+    "slug": "list-toarray-still-list",
+    "output": "[1]\n",
+    "code": "SES-T0101",
+    "messageKey": "function.return-type-mismatch",
+    "actualType": "Array<Int>",
+    "expectedType": "List<Int>",
+    "primary": {
+      "end": 82,
+      "start": 64
+    },
+    "sourceSha256": "4405170244561f0da5e652e022e26a59dbff8d3817f37a4ac15a85be687463c9"
+  }
+]

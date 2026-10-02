@@ -1,0 +1,12 @@
+import * as items from "std/list"
+import * as json from "std/json"
+
+let firstBatch = `["Read", "Review"]
+let nextBatch = `["Ship"]
+
+pub effect fn main = do {
+  _ <- println (json.encodeString [value | value <- (items.append nextBatch firstBatch)])
+  _ <- println (json.encodeString [value | value <- (firstBatch |> items.append nextBatch)])
+  _ <- println (json.encodeString [value | value <- firstBatch])
+  println (json.encodeString [value | value <- nextBatch])
+}

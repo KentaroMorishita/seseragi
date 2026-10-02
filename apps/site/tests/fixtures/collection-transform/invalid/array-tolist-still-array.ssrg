@@ -1,0 +1,2 @@
+import * as items from "std/array"
+pub fn invalid -> Array<Int> = items.toList [1]

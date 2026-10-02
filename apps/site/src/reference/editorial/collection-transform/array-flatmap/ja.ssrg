@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.flatMapは各要素からArrayを作り、そのArrayを一段だけつなぎます。入力の順序と、各Arrayの中の順序を保ちます。",
+  taskTitle: "グループのタスクを一つの一覧に集める",
+  purpose: "Today、Waiting、Tomorrowの各グループからtasksを取り出します。Waitingにはタスクがありません。ほかのタスクを順につなぎ、Read、Review、Shipを表示します。",
+  typescriptBefore: "groups.flatMap(group => group.tasks)は、各オブジェクトからtasksを取り出して一段つなぎます。空のtasksからは何も増えません。mapしてからflatする作業を、TypeScriptでは一つの呼び出しで書けます。",
+  benefit: "Seseragiでも、取り出し方を一つの関数として渡せます。関数が返すArray<String>の要素をつなぐため、結果はArray<Array<String>>ではなく、一つのArray<String>です。",
+  setup: "itemsはstd/arrayの別名です。struct Groupはtitle: Stringとtasks: Array<String>を持つレコードの型を定義し、Group { ... }で値を作ります。let groupsは三つのGroupを並べたArrayに名前を付けます。",
+  after: [
+    "\\group -> group.tasksは、groupを一件受け取り、そのtasksフィールドを返す名前のない関数です。\\が引数の始まり、->の右側が返す値を表します。items.flatMapには、この関数、groupsの順で渡します。",
+    "Todayから[\"Read\", \"Review\"]、Waitingから[]、Tomorrowから[\"Ship\"]を受け取り、順につなぎます。Waitingも関数へ渡されますが、返ったArrayが空なので結果に要素は増えません。",
+    "[value | value <- ...]は、flatMapの結果を一件ずつvalueとして読み、表示用のArrayを作る内包表記です。表示は[\"Read\",\"Review\",\"Ship\"]となり、グループのtitleは含みません。",
+  ],
+  details: [
+    "関数は先頭から各Groupに一回ずつ適用されます。各結果の要素は元の順に並び、groupsや各tasksの内容は変わりません。空のgroupsでは関数を呼ばず、空のArrayを返します。この例の関数はフィールドを読むだけで、外部の処理は行いません。",
+    "つなぐのは関数が返したArrayの一段です。二つの入力からそれぞれ[[1], [11]]と[[2], [12]]が返る場合、結果は[[1], [11], [2], [12]]です。さらに内側のArrayはそのまま残ります。",
+    "関数はArrayを返す必要があります。group.titleのStringだけを返すと型が合いません。一つのタイトルを加えたいなら[group.title]を返し、Listを返す関数とは区別します。",
+    "すでにArray<Array<String>>を持っていて、各要素を変換する必要がなければconcatを使えます。一件から最大一つの値を採用し、欠けた結果をNothingで表したい場合はfilterMapを選びます。",
+  ],
+}

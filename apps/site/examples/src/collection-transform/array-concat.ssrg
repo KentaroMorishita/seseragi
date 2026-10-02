@@ -1,0 +1,7 @@
+import * as items from "std/array"
+import * as json from "std/json"
+
+let batches = [["Read"], [], ["Review", "Ship"]]
+
+pub effect fn main =
+  println (json.encodeString [value | value <- (items.concat batches)])

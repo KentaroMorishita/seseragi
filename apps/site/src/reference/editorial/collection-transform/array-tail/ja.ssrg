@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.tailは先頭を除いたArrayをJustで返します。入力が空ならNothing、一要素なら空のArrayを持つJustです。",
+  taskTitle: "先頭のタスクを除き、最初から空だった場合も分ける",
+  purpose: "一件処理した後の残りを読みます。「もともと一件もなかった」と「最後の一件を除いて空になった」を区別し、空、一要素、三要素の入力で確認します。",
+  typescriptBefore: "TypeScriptのtailは、入力が空ならundefined、それ以外ならslice(1)を返します。Tは要素の型を表し、readonly T[] | undefinedは配列か値なしのどちらかです。slice(1)だけでは、空の入力も一要素の入力も[]になり、今回必要な区別が残りません。",
+  benefit: "Seseragiのtailは、先頭を除けた結果と、入力が空で先頭を除けなかった結果をMaybe<Array<String>>で分けます。残りが空でもJustとして受け取るため、入力に先頭があったことが分かります。",
+  setup: "itemsはstd/arrayの別名です。fn describe value: Maybe<Array<String>> -> Stringは、tailの結果をvalueで受け取り、表示用のStringを返す関数です。Maybeは値を持つJustか、値のないNothingを表します。",
+  after: [
+    "match valueは結果に合う枝を選びます。Nothing -> \"missing\"は入力が空だった場合の文字列です。Just restの枝では、中にあるArrayをrestと名付け、\"present: \"の後に残りの内容をつなぎます。",
+    "items.empty<String> ()は空のArray<String>を作ります。<String>は要素の型、()はemptyへ渡すUnitの値です。そのtailはNothingなのでmissingになります。[\"Read\"]のtailはJust []なのでpresent: []です。",
+    "[\"Read\", \"Review\", \"Ship\"]のtailはJust [\"Review\", \"Ship\"]です。[value | value <- rest]はrestの各要素を順に並べた表示用Arrayを作る内包表記なので、最後はpresent: [\"Review\",\"Ship\"]と表示されます。",
+  ],
+  details: [
+    "tailの結果はMaybe<Array<String>>で、そのままArray<String>としては使えません。matchでNothingの場合を決め、Justの枝で残りのArrayを使ってください。",
+    "Just []は「先頭はあったが、残りは空」という結果です。Nothingは「入力が空で、除く先頭がなかった」という結果なので、二つを同じ状態と決めつけないようにします。",
+    "tailは先頭を一件だけ除いた結果を返し、入力を変更しません。残った要素の値と順序を保ち、最後の要素だけを読む操作でもありません。",
+    "入力が空だったかを分けず、指定した件数を飛ばしたArrayだけが必要ならdropを使えます。先頭の値そのものを読みたい場合はheadを選びます。",
+  ],
+}

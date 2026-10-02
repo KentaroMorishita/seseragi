@@ -18,6 +18,7 @@ import { arrayEditorialExamples } from "./array-editorial"
 import { bytesReaderExamples } from "./bytes-reader"
 import { canonicalExample } from "./canonical-example"
 import { charTextExamples } from "./char-text-reader"
+import { collectionTransformExamples } from "./collection-transform"
 import { collectionTypeExamples } from "./collection-type-readers"
 import { comparisonExamples } from "./comparisons"
 import { referenceCoverage } from "./coverage"
@@ -116,6 +117,7 @@ export function generatorInput(playgroundUrl: string) {
       ...practicalCollectionExamples(playgroundUrl),
       ...terminalReaderExamples(playgroundUrl),
       ...stdinReaderExamples(playgroundUrl),
+      ...collectionTransformExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

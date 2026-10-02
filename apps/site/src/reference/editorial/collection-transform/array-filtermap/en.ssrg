@@ -1,0 +1,22 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.filterMap transforms each element and collects the values inside Just in order. Nothing contributes no result; the zero in Just 0 is retained.",
+  taskTitle: "Keep only successfully converted counts",
+  purpose: "From the strings 2, oops, 0, and 3, collect the integers 2, 0, and 3. Skip an input that cannot be converted, while keeping a count of zero as a valid result.",
+  typescriptBefore: "TypeScript converts with Number and uses flatMap to return [count] when Number.isInteger is true, or [] otherwise. This compares collecting successful conversions for these four inputs. The spellings and numeric ranges accepted by Number differ from Seseragi’s Int parsing rules.",
+  benefit: "In Seseragi, the conversion function returns Maybe<Int> to say “keep one value” or “keep none.” filterMap collects the Just contents into Array<Int>, so zero is not accidentally discarded by a truth-value check.",
+  setup: "items is the alias for std/array; ints is the alias for std/int. let inputs names an Array of Strings. fn parseCount value: String -> Maybe<Int> declares a function taking the string value and returning Just with an integer, or Nothing without one.",
+  after: [
+    "ints.parse value returns Either. Success is Right count containing an integer; failure is Left containing error information. match selects the matching branch: Right count -> Just count keeps the integer, and Left _ -> Nothing omits the failed input. The _ means the error information is unused.",
+    "items.filterMap parseCount inputs passes the conversion function first and the input Array second. parseCount is supplied as a function to apply to each string, rather than called just once at this point.",
+    "The Nothing from \"oops\" is omitted. The later \"0\" becomes Just 0 and is retained, and conversion continues with \"3\". The first output is [2,0,3]; the second shows the four original strings unchanged.",
+    "The comprehension [value | value <- ...] reads each element as value and creates a display Array in the same order. The filterMap result is an Array of integers, not an Array containing Just and Nothing values.",
+  ],
+  details: [
+    "The conversion function is applied once to each input from the beginning, and accepted values keep that order. Empty input calls no function and returns an empty Array. All Nothing results also give an empty Array. The example’s function only returns values; it performs no printing or external operations.",
+    "The function passed to filterMap must return Maybe. A function returning a bare Int, or ints.parse returning Either, cannot be passed directly. The example uses parseCount to change Right into Just and Left into Nothing.",
+    "This example discards parse-error details. To report which input failed and why, choose a flow that keeps the input and its Either result. Omitting Nothing does not automatically catch exceptions or Effect failures.",
+    "Just values containing zero, an empty string, or False are retained. Just versus Nothing determines inclusion; the contents are not converted to a truth value to make that decision.",
+  ],
+}

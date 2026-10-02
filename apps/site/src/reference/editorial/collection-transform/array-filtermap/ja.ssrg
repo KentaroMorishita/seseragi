@@ -1,0 +1,22 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.filterMapは各要素を変換し、Justの中の値を順に集めます。Nothingは結果に加えず、Just 0の0は残します。",
+  taskTitle: "件数に変換できた値だけを残す",
+  purpose: "文字列の2、oops、0、3から、整数に変換できた2、0、3を集めます。変換できない入力は飛ばしますが、件数0は有効な結果として残します。",
+  typescriptBefore: "TypeScriptではNumberで変換し、Number.isIntegerがtrueなら[count]、それ以外なら[]をflatMapから返します。ここで比べるのは、この四つの入力から成功した変換だけを集める作業です。Numberが受け付ける表記や数値範囲は、SeseragiのIntの解析規則と同じではありません。",
+  benefit: "Seseragiでは、変換の関数が「一つ残す」か「残さない」かをMaybe<Int>で返します。filterMapがJustの中身だけをArray<Int>に集めるので、0を真偽値として誤って落とさずに扱えます。",
+  setup: "itemsはstd/array、intsはstd/intの別名です。let inputsはStringのArrayに名前を付けます。fn parseCount value: String -> Maybe<Int>は、文字列valueを受け取り、整数があればJust、なければNothingを返す関数の宣言です。",
+  after: [
+    "ints.parse valueの結果はEitherです。成功は整数を持つRight count、失敗はエラー情報を持つLeftです。matchは結果に合う枝を選び、Right count -> Just countで整数を残し、Left _ -> Nothingで失敗した入力を外します。_はエラー情報を使わない印です。",
+    "items.filterMap parseCount inputsは、変換の関数、入力Arrayの順で渡します。parseCountは各文字列に使う関数として渡しており、この位置で一回だけ呼ぶわけではありません。",
+    "\"oops\"からのNothingは結果に入りません。その後の\"0\"はJust 0になるため残り、\"3\"の変換も続きます。最初の表示が[2,0,3]、次の表示が変わっていない元の四つの文字列です。",
+    "[value | value <- ...]は、各要素をvalueとして読み、同じ順序の表示用Arrayを作る内包表記です。filterMapの結果は整数のArrayで、JustやNothingを要素として並べたArrayではありません。",
+  ],
+  details: [
+    "変換の関数は先頭から各入力に一回ずつ適用され、採用された値もその順に並びます。入力が空なら関数を呼ばず、空のArrayを返します。すべてNothingでも結果は空です。この例の関数は値を返すだけで、表示や外部の処理は行いません。",
+    "filterMapに渡す関数の戻り値はMaybeです。Intをそのまま返す関数や、Eitherを返すints.parseは直接渡せません。例のparseCountでRightをJustへ、LeftをNothingへ変えています。",
+    "この例では解析エラーの詳細を捨てています。どの入力がなぜ失敗したかも表示したい場合は、入力とEitherの結果を残す処理を選んでください。Nothingを省く規則は、例外やEffectの失敗を自動的に捕まえる規則ではありません。",
+    "Justの値なら0も空文字列もFalseも残ります。採用するかどうかはJustとNothingで決まり、中身を真偽値へ変換して判断しません。",
+  ],
+}

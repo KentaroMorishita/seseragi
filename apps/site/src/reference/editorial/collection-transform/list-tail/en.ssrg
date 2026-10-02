@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.tail returns Just containing a List without its first element. Empty input gives Nothing; one-element input gives Just containing an empty List.",
+  taskTitle: "Remove the first task and distinguish an already-empty input",
+  purpose: "Read what remains after processing one task. Distinguish “there were no tasks” from “removing the last task left none,” using empty, one-element, and three-element inputs.",
+  typescriptBefore: "Define tail for normal arrays to return undefined when empty, or slice(1) otherwise. T stands for the element type; readonly T[] | undefined means either an array or no value. slice(1) alone cannot distinguish empty and one-element inputs. The array compares this task and differs from Seseragi List’s representation.",
+  benefit: "Seseragi tail uses Maybe<List<String>> to distinguish a remainder from having no first element to remove. Even an empty remainder is returned in Just, recording that the input had a first element.",
+  setup: "items is the alias for std/list. A backtick before [ in `[\"Read\"] creates a List; without it, the brackets create an Array. fn describe value: Maybe<List<String>> -> String declares a function receiving the tail result as value and returning a display String.",
+  after: [
+    "Maybe means either Just containing a value or Nothing without one. match value selects the matching branch. The Nothing branch returns \"missing\". The Just rest branch names the contained List rest and puts its displayed contents after \"present: \".",
+    "items.empty<String> () creates an empty List<String>. <String> specifies the element type, and () is the Unit value passed to empty. Its tail is Nothing, displayed as missing. The tail of `[\"Read\"] is Just `[], displayed as present: [].",
+    "The tail of `[\"Read\", \"Review\", \"Ship\"] is Just `[\"Review\", \"Ship\"]. The comprehension [value | value <- rest] puts each element in order into a display Array because its brackets have no backtick. The remaining List’s final JSON display is present: [\"Review\",\"Ship\"].",
+  ],
+  details: [
+    "This tail result is Maybe<List<String>> and cannot be used directly as List<String>. Use match to decide what happens for Nothing and work with the remaining List in the Just branch.",
+    "Just `[] means there was a first element but the remainder is empty. Nothing means the input was empty, so there was no first element to remove. Keep these separate when the application needs that distinction.",
+    "The [] in the output is JSON display, not a change of the Just contents to Array. For nonempty input, tail returns Just containing the List with its first element removed; empty input returns Nothing. It leaves the input unchanged and preserves the remaining values and their order.",
+    "Use drop when you only need a List after skipping a specified count, without distinguishing an originally empty input. Use head to read the first value itself.",
+  ],
+}
