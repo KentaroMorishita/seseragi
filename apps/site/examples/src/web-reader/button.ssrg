@@ -1,0 +1,13 @@
+import * as html from "std/web/html"
+
+fn control disabled: Bool -> html.Html<Unit> = html.button {
+  onClick: (),
+  disabled,
+  ariaExpanded: False,
+  children: "Show details"
+}
+
+pub effect fn main = do {
+  println (html.renderToString (control False))
+  println (html.renderToString (control True))
+}

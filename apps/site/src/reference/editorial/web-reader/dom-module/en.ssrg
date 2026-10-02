@@ -1,0 +1,22 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Connect a constructed view to real browser elements and events.",
+  taskTitle: "Make a real button toggle release details",
+  purpose: "Build a card where “Show details” reveals the release description and “Hide details” hides it again. Keep HTML construction in pure functions and put browser execution at main.",
+  setup: "The imports provide dom and html. The host page must already contain <div id=\"app\"></div>. target: \"#app\" is the CSS selector for that mounting element. This is a browser-target program; process-target SSR alone cannot run it.",
+  after: [
+    "ToggleDetails is the name of the action value sent by the button. type Action = | ToggleDetails defines this one possible action. update receives action and the current expanded state. Bool is True or False; match selects the line for the action, and if returns the opposite Bool.",
+    "view returns Html<Action> from expanded. -> states the return type and the final expression supplies the return value. The paragraph’s hidden field, the button’s ariaExpanded and its label come from the same state. Neither view nor update changes the browser.",
+    "dom.app returns work to perform in the browser. pub effect fn main executes that work using the DOM service. initial: False supplies the starting state; update and view abbreviate fields passing the same-named functions. Creating the work value by calling app is separate from executing it.",
+    "The separate program below checks the same update and view without a browser. It serializes False, True after one ToggleDetails, then False after another. The hidden paragraph still contains its text; the hidden attribute describes its visibility."
+  ],
+  details: [
+    "The string from renderToString omits event payloads. Run the browser entry point rather than expecting serialized markup alone to activate the button. If #app is missing, looking up the mount target fails.",
+    "app internally combines a Signal holding state, the view projection, target lookup, event updates, mounting and cleanup. You do not need to write Signal operations for this small application.",
+    "Not every DOM-module function changes live elements. content, bind and textTarget build descriptions of content or bindings; initialHtml retrieves the initial Html. query, app, run and mount return work requiring the DOM service, which uses the browser when executed.",
+    "The printed snapshots above test the view function. Separately, this exact source ran in the public Playground, where four clicks alternated the label, detail visibility and expanded state. Browser-target compilation and provider mocks remain separate evidence; focus and browser cleanup are not established by that click check."
+  ],
+  comparisonBefore: "TS can safely insert text with createElement and textContent, keep one boolean state and toggle it in a click handler. This TS version uses the same #app, initial state, labels, hidden value and aria-expanded.",
+  comparisonAfter: "The TS event handler calls a render function; the Seseragi version passes update and view to app. Both are small implementations. The TS DOM program is typechecked; the Seseragi example is browser-compiled and separately exercised in the public Playground. The TS DOM program has not been run in a real browser for this comparison."
+}

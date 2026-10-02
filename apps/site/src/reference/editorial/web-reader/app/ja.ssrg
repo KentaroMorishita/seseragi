@@ -1,0 +1,23 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "初期状態・更新関数・表示関数を、指定したブラウザ要素へ接続する処理を返します。",
+  taskTitle: "initial・update・view・targetをつなぐ",
+  purpose: "一つのBoolでリリースの説明文を表示したり隠したりします。appに四つの項目を渡すと、状態を持ち、ボタンからの操作で表示を更新する処理をまとめられます。",
+  setup: "ブラウザのページに<div id=\"app\"></div>を用意します。domとhtmlはimportで付けた名前です。target: \"#app\"は配置先を探すCSSセレクター、initial: Falseは説明文を隠した初期状態です。",
+  after: [
+    "Actionはボタンから届く操作の型です。type Action = | ToggleDetailsはToggleDetailsという一種類の値を定義します。onClickにはこの値を渡します。updateのaction: Actionとexpanded: Boolは二つの引数で、-> Boolは次の状態の型です。",
+    "match actionは操作に合う行を選びます。この例の操作は一種類なので、ToggleDetailsの行で全部を扱います。if expanded then False else TrueはBoolを反転します。引数を空白で区切って渡し、計算した次の値を返す普通の関数です。",
+    "viewのexpandedはその時点の状態です。-> html.Html<Action>は表示の戻り値の型で、sectionがその値を作ります。段落のhidden、ボタンのariaExpanded、ラベルを同じexpandedから決めます。updateもviewもそれだけではDOMを変更しません。",
+    "pub effect fn main = dom.app { ... }が、返された処理を実行する入口です。updateとviewだけを書く欄はupdate: update、view: viewの省略です。appはDOMサービスを必要とし、失敗時はString、成功時は有用な値のないUnitを返す処理を作ります。",
+    "次のプロセス向けプログラムでは、同じ関数へToggleDetailsを二回渡します。FalseからTrueへ変わり、再びFalseへ戻ることを、文字列化した三つの表示で確認できます。これはDOMイベントを送った結果ではなく、関数を直接呼んだ結果です。"
+  ],
+  details: [
+    "#appがない、またはセレクターが不正なら配置先の検索は失敗します。既存の要素と正しいセレクターを用意してください。appは検索や実行の失敗理由をStringへまとめます。",
+    "appは内部で状態用のSignalを一つ作り、viewから表示を導き、標準の設定で配置します。表示の値を作るだけのcardやviewと、実行するDOMの処理を区別してください。返るUnitは、後から操作できるマウントのハンドルではありません。",
+    "updateの型はAction -> State -> Stateです。この関数内で通信などのEffectを返す形にはできません。実行を伴う操作、配置の設定、個別の終了処理が必要になったら、query・run・mountなどを検討します。",
+    "このコードは公開Playgroundでも実行し、四回のクリックでラベル、説明文の表示、展開状態が交互に変わることを確認しています。上の文字列は関数を直接呼んだ結果であり、サービスを置き換えたテストも別の検証です。フォーカスや実ブラウザでのイベントの解除は、このクリックの確認には含みません。"
+  ],
+  comparisonBefore: "TSではexpandedというbooleanの値を持ち、textContent、hidden、aria-expandedを設定する関数をクリック時に呼べます。同じ初期状態と表示になる小さな例です。",
+  comparisonAfter: "Seseragiでは状態の更新と表示の関数をappへ渡すため、イベントの受け取りと表示への反映を自分でつなぎません。TSでも同じ処理を簡潔に書けます。両者の型検査や純粋な表示の一致は、実ブラウザでの動作確認を代替しません。"
+}

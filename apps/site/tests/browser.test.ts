@@ -7,7 +7,9 @@ import {
   type Locator,
 } from "../../playground/node_modules/@playwright/test"
 import { buildSite } from "../scripts/build"
+import { entranceComparison } from "../scripts/comparisons"
 import { plannedReferenceRoutes } from "../scripts/coverage"
+import { staticSiteHandler } from "../scripts/static-site-handler"
 import { verifyExamplesAndReleases } from "./examples-releases-browser"
 import { verifyFirstRun } from "./first-run-browser"
 import { verifyLanguageMenu } from "./language-menu"
@@ -98,25 +100,13 @@ if (screenshots) mkdirSync(screenshots, { recursive: true })
 
 try {
   buildSite({ output, origin: "https://seseragi.example" })
-  const configuredHeaders = JSON.parse(
+  const configuration = JSON.parse(
     readFileSync(resolve(import.meta.dir, "../vercel.json"), "utf8")
-  ).headers[0].headers as Array<{ name: string; value: string }>
-  const securityHeaders = Object.fromEntries(
-    configuredHeaders.map(({ name, value }) => [name, value])
   )
   const server = Bun.serve({
     port: 0,
     hostname: "127.0.0.1",
-    fetch(request) {
-      const url = new URL(request.url)
-      const relative = url.pathname.endsWith("/")
-        ? `${url.pathname.slice(1)}index.html`
-        : url.pathname.slice(1)
-      const path = resolve(output, relative || "index.html")
-      if (!path.startsWith(`${output}/`))
-        return new Response("Not found", { status: 404 })
-      return new Response(Bun.file(path), { headers: securityHeaders })
-    },
+    fetch: staticSiteHandler(output, configuration),
   })
   try {
     const browser = await chromium.launch()
@@ -174,6 +164,59 @@ try {
             path: join(screenshots, `home-${width}.png`),
             fullPage: true,
           })
+
+        for (const prefix of ["", "/ja"]) {
+          await page.goto(
+            `http://127.0.0.1:${server.port}${prefix}/docs/language/model/what-is-seseragi/`
+          )
+          const typescript = page
+            .locator(".code-panel .seseragi-highlight")
+            .first()
+          assert.equal(
+            await typescript.textContent(),
+            readFileSync(
+              resolve(
+                import.meta.dir,
+                "../../..",
+                entranceComparison.typescript
+              ),
+              "utf8"
+            )
+          )
+          const presentation = await syntaxPresentation(typescript, [
+            "keyword",
+            "standardType",
+            "variableName",
+            "number",
+            "string",
+            "operator",
+            "punctuation",
+          ])
+          for (const [token, colors] of Object.entries(presentation.colors))
+            assert.equal(
+              colors.actual,
+              colors.expected,
+              `TypeScript ${prefix || "en"} ${width}px ${token}`
+            )
+          assert.ok(
+            new Set(
+              Object.values(presentation.colors).map(({ actual }) => actual)
+            ).size >= 4,
+            "TypeScript tokens must not collapse to monochrome"
+          )
+          assert.ok(
+            (await page.evaluate(() => document.documentElement.scrollWidth)) <=
+              width
+          )
+          if (screenshots)
+            await page.screenshot({
+              path: join(
+                screenshots,
+                `typescript-${prefix ? "ja" : "en"}-${width}.png`
+              ),
+              fullPage: true,
+            })
+        }
 
         await page.goto(
           `http://127.0.0.1:${server.port}/docs/language/syntax/function-application/`

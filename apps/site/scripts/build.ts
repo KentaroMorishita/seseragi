@@ -44,6 +44,7 @@ import { traitReaderExamples } from "./trait-readers"
 import { typeLimitExamples } from "./type-limits"
 import { typeReaderExamples } from "./type-readers"
 import { unicodeReaderExamples } from "./unicode-reader"
+import { webReaderExamples } from "./web-reader"
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
@@ -98,6 +99,7 @@ export function generatorInput(playgroundUrl: string) {
       ...collectionTypeExamples(playgroundUrl),
       ...dataValidationReaderExamples(playgroundUrl),
       ...numericReaderExamples(playgroundUrl),
+      ...webReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),
@@ -948,18 +950,35 @@ function routeFile(output: string, route: string): string {
   return join(output, route.slice(1), "index.html")
 }
 
-function validateInternalLinks(pages: RenderedPage[]) {
-  const byRoute = new Map(pages.map((page) => [page.route, page.html]))
+export function validateInternalLinks(pages: RenderedPage[]) {
+  const byRoute = new Map<string, { ids: Set<string>; links: string[] }>()
   for (const page of pages) {
-    const ids = [...page.html.matchAll(/\sid="([^"]+)"/gu)].map(([, id]) => id)
+    const ids: string[] = []
+    const links: string[] = []
+    // Read elements, not escaped example output, comments or script text.
+    new HTMLRewriter()
+      .on("[id]", {
+        element(element) {
+          const id = element.getAttribute("id")
+          if (id !== null) ids.push(id)
+        },
+      })
+      .on("a[href]", {
+        element(element) {
+          const href = element.getAttribute("href")
+          if (href !== null) links.push(href)
+        },
+      })
+      .transform(page.html)
     assert.equal(
       new Set(ids).size,
       ids.length,
       `Duplicate HTML id in ${page.route}`
     )
-    const links = page.html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/gu)
-    for (const match of links) {
-      const href = match[1]
+    byRoute.set(page.route, { ids: new Set(ids), links })
+  }
+  for (const page of pages) {
+    for (const href of byRoute.get(page.route)?.links ?? []) {
       if (href.startsWith("http://") || href.startsWith("https://")) continue
       const [path, fragment] = href.split("#", 2)
       const route = path || page.route
@@ -967,7 +986,7 @@ function validateInternalLinks(pages: RenderedPage[]) {
       assert.ok(target, `Unresolved internal link from ${page.route}: ${href}`)
       if (fragment)
         assert.ok(
-          target.includes(`id="${fragment}"`),
+          target.ids.has(fragment),
           `Unresolved fragment from ${page.route}: ${href}`
         )
     }

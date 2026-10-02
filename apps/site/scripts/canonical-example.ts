@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { playgroundUrlForSource } from "../../playground/src/workspace/source-link"
+import { highlightTypeScript } from "./typescript-highlight"
 
 const root = resolve(import.meta.dir, "../../..")
 
@@ -29,6 +30,6 @@ export function canonicalExample(
             text,
             className: classes,
           }))
-        : [{ text: source, className: "" }],
+        : highlightTypeScript(source),
   }
 }

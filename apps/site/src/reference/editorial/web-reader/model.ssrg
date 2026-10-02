@@ -1,0 +1,225 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { Editorial } from "../model"
+
+pub struct WebReaderCopy {
+  summary: String,
+  taskTitle: String,
+  purpose: String,
+  setup: String,
+  after: Array<String>,
+  details: Array<String>,
+  comparisonBefore: String,
+  comparisonAfter: String
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  [Paragraph ([Words (localized en ja)]) | (en, ja) <- arrays.zip japanese english]
+
+fn link title: String -> route: String -> en: String -> ja: String -> Block =
+  Paragraph (
+    [
+      InternalLink (localized title title, route),
+      Words (localized (": " + en) ("：" + ja))
+    ]
+  )
+
+pub fn webReaderEditorial identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> source: String
+  -> output: String
+  -> continuation: String
+  -> continuationOutput: String
+  -> comparison: String
+  -> comparisonOutput: String
+  -> english: WebReaderCopy
+  -> japanese: WebReaderCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace,
+    itemKind,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Paragraph ([Words (localized english.setup japanese.setup)]),
+        CodeExample ("web-reader-" + source, localized "Complete program" "実行できるプログラム")
+      ],
+      if source == "release-card-app" then
+        [
+          Paragraph (
+            [Words (
+              localized
+                "Open this example in Playground, choose Run, then inspect Preview for the card. This exact source has been exercised there. Alternatively, save it as release-card-app.ssrg and build browser files with the command below. The generated host supplies #app; serve its directory through your usual web host."
+                "Playgroundでこの例を開き、Runを選んでPreviewのカードを確認します。このコードでの動作を確認しています。別の実行方法として、release-card-app.ssrgに保存し、次のコマンドでブラウザ向けファイルを作れます。生成されたページには#appがあります。生成先のディレクトリーを通常のWebホストで配信してください。"
+            )]
+          ),
+          Terminal (
+            localized "Build browser files" "ブラウザ向けファイルを作る",
+            "seseragi build release-card-app.ssrg --target web --out-dir release-card-app-web"
+          )
+        ]
+      else
+        [Paragraph (
+          [Words (
+            localized
+                "Choose Open in Playground, then Run. In Output, select Text to compare the printed HTML with the result below. These examples print HTML text; they do not mount a browser view."
+                "「Playgroundで開く」からRunを選びます。OutputのTextで、出力されたHTMLを下の実行結果と比べてください。この例はHTML文字列を出力し、ブラウザの表示へ配置する処理は行いません。"
+          )]
+        )],
+      if output == "" then
+        []
+      else
+        [Terminal (localized "Seseragi output" "Seseragiの実行結果", output)],
+      paragraphs english.after japanese.after,
+      if continuation == "" then
+        []
+      else
+        [
+          Heading (
+            "continue-the-example",
+            if continuation == "cards" then
+              localized "Reuse the card twice" "同じカードを二回使う"
+            else
+              localized "Check the view without a browser" "ブラウザなしで表示を確かめる"
+          ),
+          CodeExample (
+            "web-reader-" + continuation,
+            if continuation == "cards" then
+              localized "Two reusable cards" "再利用する二枚のカード"
+            else
+              localized "Direct update and view calls" "updateとviewを直接呼ぶ"
+          ),
+          Terminal (
+            if continuation == "cards" then
+              localized "Two-card output" "二枚のカードの実行結果"
+            else
+              localized "Pure view snapshots, not browser events"
+                "表示関数の出力（ブラウザのイベントではありません）",
+            continuationOutput
+          )
+        ],
+      [
+        Heading (
+          "typescript-comparison",
+          localized "The same task in TypeScript" "TypeScriptで同じ処理を表す"
+        ),
+        Paragraph
+                ([Words (localized english.comparisonBefore japanese.comparisonBefore)])
+      ],
+      if comparison == "" then
+        []
+      else
+        [CodeExample
+                ("web-reader-" + comparison + "-ts", localized "TypeScript" "TypeScript")],
+      if comparisonOutput == "" then
+        []
+      else
+        [Terminal (localized "TypeScript output" "TypeScriptの実行結果", comparisonOutput)],
+      [
+        Paragraph ([Words (localized english.comparisonAfter japanese.comparisonAfter)]),
+        Heading ("operation-rules", localized "Rules and common mistakes" "使う前に確認する規則")
+      ],
+      paragraphs english.details japanese.details,
+      [Heading ("choose-next", localized "Choose what you need next" "必要な操作を選ぶ")],
+      related identity,
+      if itemKind == "module" then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+}
+
+fn related identity: String -> Array<Block> =
+  if identity == "std/web/dom"
+    || identity == "std/web/dom::app" then
+    browserChoices identity
+  else if identity == "std/web/html::renderDocument" then
+    [
+      link "html" "/docs/library/web/html/function/html/"
+        "construct the outer document element yourself." "文書全体を囲む要素を作ります。",
+      link "head" "/docs/library/web/html/function/head/"
+        "supply the document metadata container." "文書の情報を入れる要素を作ります。",
+      link "body" "/docs/library/web/html/function/body/"
+        "supply the visible document content." "表示する内容を入れる要素を作ります。",
+      link "renderToString" "/docs/library/web/html/function/rendertostring/"
+        "serialize without the doctype." "doctypeなしで文字列化します。"
+    ]
+  else if identity == "std/web/html::attribute"
+    || identity == "std/web/html::ElementProps" then
+    [
+      link "ElementProps" "/docs/library/web/html/alias/elementprops/"
+        "read required children and optional typed fields."
+        "必須のchildrenと省略可能な項目を確認できます。",
+      link "attribute" "/docs/library/web/html/function/attribute/"
+        "add a checked data or ARIA attribute and handle rejection."
+        "data属性やARIA属性を検査して追加し、拒否も処理します。",
+      link "renderToString" "/docs/library/web/html/function/rendertostring/"
+        "inspect escaping in the output string." "出力時のエスケープを確認できます。"
+    ]
+  else if identity == "std/web/html::trait(IntoChildren)"
+    || identity == "std/web/html::text" then
+    [
+      link "IntoChildren" "/docs/library/web/html/trait/intochildren/"
+        "compare the five accepted children forms." "childrenに使える五種類を比べられます。",
+      link "text" "/docs/library/web/html/function/text/"
+        "put text beside elements in a typed array." "文字列を要素と同じ型の配列へ入れます。",
+      link "fragment" "/docs/library/web/html/function/fragment/"
+        "combine children without an enclosing tag." "外側のタグなしで子要素をまとめます。"
+    ]
+  else if identity == "std/web/html::button" then
+    [
+      link "app" "/docs/library/web/dom/function/app/"
+        "connect the button action to a real browser view." "ボタンの操作をブラウザの表示へ接続します。",
+      link "renderToString" "/docs/library/web/html/function/rendertostring/"
+        "see why serialized output contains no event payload."
+        "文字列化するとイベントの値が出力されないことを確認できます。"
+    ]
+  else
+    [
+      link "std/web/html" "/docs/library/web/html/"
+        "build the complete reusable two-card example." "二枚のカードを再利用する完全な例を確認できます。",
+      link "Html" "/docs/library/web/html/opaque-type/html/"
+        "distinguish the view value from a string or live element."
+        "表示の値と文字列、実際の要素を区別できます。",
+      link "IntoChildren" "/docs/library/web/html/trait/intochildren/"
+        "choose the input for children and fix mixed arrays."
+        "childrenの入力を選び、型が混在する配列を直せます。",
+      link "app" "/docs/library/web/dom/function/app/"
+        "add the optional Show details interaction." "必要ならShow detailsで説明文を切り替えられます。"
+    ]
+
+fn browserChoices identity: String -> Array<Block> = [
+  if identity == "std/web/dom" then
+    link "app" "/docs/library/web/dom/function/app/"
+    "keep a pure state/update/view application small." "純粋な状態の更新と表示を小さく組み合わせます。"
+  else
+    link "std/web/dom" "/docs/library/web/dom/"
+    "choose between simple applications and lower-level DOM work."
+    "小さなアプリと、細かく指定するDOMの処理を選べます。",
+  link "std/web/html" "/docs/library/web/html/"
+    "build reusable views and serialize them without a browser."
+    "再利用する表示を組み立て、ブラウザなしで文字列化します。",
+  link "query" "/docs/library/web/dom/function/query/"
+    "look up a live target when you need direct control." "配置先を直接扱う場合に実要素を検索します。",
+  link "run" "/docs/library/web/dom/function/run/"
+    "supply custom options or effectful event handling." "独自の設定や、実行を伴うイベント処理を渡します。",
+  link "mount" "/docs/library/web/dom/function/mount/"
+    "obtain a handle when you need to control the mounted lifetime."
+    "配置後の寿命を管理するためのハンドルを得ます。",
+  link "std/signal" "/docs/library/signal/"
+    "work directly with changing values when your application needs it."
+    "必要になったら、変化する値を直接扱えます。"
+]

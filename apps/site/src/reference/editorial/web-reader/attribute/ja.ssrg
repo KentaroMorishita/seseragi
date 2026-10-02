@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "追加の属性名を検査し、使えるAttributeか拒否理由を返します。",
+  taskTitle: "data-release属性を安全に追加する",
+  purpose: "カードにdata-releaseという識別用の属性を付けます。attributeは名前を検査してからAttributeを返します。値に引用符や&があっても、HTML文字列へ出力するときにエスケープされます。",
+  setup: "fn withTrackingのvalue: Stringは属性の値、-> Stringは最終的な表示結果の型です。attributeには名前と値を空白で区切って渡します。結果は二種類で、Rightに使える属性、Leftに拒否理由が入ります。",
+  after: [
+    "matchは結果に合う行を選びます。Right trackingのtrackingは取り出した属性の名前です。attributes: [tracking]としてsectionへ渡し、renderToStringで出力します。Left errorでは理由をshowでStringへ変換します。両方を書くと失敗も処理できます。",
+    "二回目はonclickという予約された名前を渡すので、ReservedAttributeName onclickが返ります。Right _の_は値を使わないことを示します。mainのdoが各printlnを順に実行します。"
+  ],
+  details: [
+    "classやtitleなどの予約された属性名は、class: ...やtitle: ...という型付きの項目で指定します。イベントはonClickなどを使います。attributeで予約名の制限を回避することはできません。",
+    "一般的な文字列への変換に使うshowでは、Attributeそのものを表示できません。この対応を表すShowがAttributeにはありません。結果全体をshowで出そうとせず、Rightの属性を要素へ渡すか、Leftの理由を表示してください。",
+    "属性名の検査は、任意のCSSやURLの安全性の検査とは別です。attributeは生のHTMLを無検査で挿入する入口でもありません。元の値はそのまま渡し、出力時のエスケープに任せます。"
+  ],
+  comparisonBefore: "TSのDOMでもsetAttributeでdata-releaseを付けられます。文字列テンプレートで属性を作る場合は、本文だけでなく引用符のエスケープも必要です。",
+  comparisonAfter: "このAPIは名前を使えるかどうかをRightとLeftで返し、出力のエスケープを標準のシリアライザーへ任せます。失敗したときにどう表示するかは呼び出し側で決めます。"
+}

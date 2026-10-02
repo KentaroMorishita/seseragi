@@ -11,6 +11,7 @@ import {
 } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join, relative, resolve } from "node:path"
+import { validateInternalLinks } from "../scripts/build"
 import {
   collectRenderedPages,
   type RenderSelection,
@@ -31,6 +32,66 @@ const input = {
   referenceModules: [],
 }
 const routes = ["/", "/docs/", "/ja/", "/ja/docs/"]
+
+test("site validation ignores IDs in escaped snapshots and non-element text", () => {
+  const snapshot =
+    '&lt;button id="toggle-details"&gt;Show details&lt;/button&gt;'
+  expect(() =>
+    validateInternalLinks([
+      {
+        route: "/",
+        html: `<main id="content"><pre><code>${snapshot.repeat(3)}</code></pre>
+          <!-- <div id="content"></div> -->
+          <script>const markup = '<div id="content"></div>'</script>
+          <style>p::after { content: '<div id="content"></div>'; }</style>
+          <textarea><div id="content"></div></textarea>
+          <div data-example='<div id="content"></div>'></div></main>`,
+      },
+    ])
+  ).not.toThrow()
+})
+
+test("site validation still rejects duplicate real element IDs", () => {
+  for (const html of [
+    '<h2 id="same">First</h2><h3 id="same">Second</h3>',
+    "<h2 id='same'>First</h2><h3 ID=same>Second</h3>",
+    '<h2 id="a>b">First</h2><h3 id="a>b">Second</h3>',
+  ])
+    expect(() => validateInternalLinks([{ route: "/", html }])).toThrow(
+      "Duplicate HTML id in /"
+    )
+})
+
+test("site validation follows only real anchors and real fragment targets", () => {
+  expect(() =>
+    validateInternalLinks([
+      {
+        route: "/",
+        html: `<pre>&lt;a href="/absent/"&gt;example&lt;/a&gt;</pre>
+          <!-- <a href="/absent/">comment</a> -->
+          <script>const example = '<a href="/absent/">script</a>'</script>
+          <a href='/docs/#a&amp;b'>Read the actual section</a>`,
+      },
+      { route: "/docs/", html: '<h2 id="a&amp;b">Section</h2>' },
+    ])
+  ).not.toThrow()
+  for (const html of [
+    '<pre>&lt;h2 id="example"&gt;Text&lt;/h2&gt;</pre>',
+    '<!-- <h2 id="example">Text</h2> -->',
+    `<script>const example = '<h2 id="example">Text</h2>'</script>`,
+  ])
+    expect(() =>
+      validateInternalLinks([
+        { route: "/", html: '<a href="/docs/#example">Missing section</a>' },
+        { route: "/docs/", html },
+      ])
+    ).toThrow("Unresolved fragment from /: /docs/#example")
+  expect(() =>
+    validateInternalLinks([
+      { route: "/", html: "<a href='/absent/'>Missing page</a>" },
+    ])
+  ).toThrow("Unresolved internal link from /: /absent/")
+})
 
 function fake(selection: RenderSelection) {
   return {

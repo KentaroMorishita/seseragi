@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Construct a paragraph containing text or child values.",
+  taskTitle: "Turn release details into a paragraph",
+  purpose: "Put “Search & navigation improvements” in a p element. The function takes content and returns Html, so the same operation works inside a card or another view function.",
+  setup: "The import provides the name html. fn description defines a no-argument function; -> html.Html<Unit> states its return type as HTML without a useful event payload. Pass html.p the record { children: ... }, whose named fields are like a TS object, to supply the content. description () calls the function whose result is the expression after =.",
+  after: [
+    "The constructed paragraph is Html. renderToString turns it into a String containing <p> and </p>. println executed by main prints that string with a newline. & becomes &amp; during serialization.",
+    "A String used as children is one text child and can be passed directly. For an intentionally empty paragraph, specify children: ()."
+  ],
+  details: [
+    "In the declaration, Action is the type of value a later event may send; C is the children input type. where IntoChildren<C, Action> requires that input to be convertible to ordered children. Here Action is Unit and C is String.",
+    "Omitting children is different from supplying no children: p requires the field. For text beside an Html child in an array, first name the text with let label: html.Html<Unit> = html.text \"Release\", then use label as an array item. Keep that typed local: the tested CLI 0.61.19 rejects the directly nested text call in this mixed shape. A String used as the entire children value can be passed directly.",
+    "The accepted argument types and the browser’s HTML nesting rules are separate. Do not assume the compiler rejects every unsuitable structure, such as a p or section inside a paragraph."
+  ],
+  comparisonBefore: "TS can set a p element’s textContent to the same detail string. With templates, use a mechanism that correctly escapes text content.",
+  comparisonAfter: "Here standard p and renderToString separate the structural value from serialization. The source String does not need to be rewritten."
+}

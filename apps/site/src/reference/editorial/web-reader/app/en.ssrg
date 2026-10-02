@@ -1,0 +1,23 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Return browser work that connects an initial state, update and view to a selected element.",
+  taskTitle: "Connect initial, update, view and target",
+  purpose: "Use one Bool to show or hide the release description. The four app fields connect state, button actions and the resulting view.",
+  setup: "Provide <div id=\"app\"></div> in the browser page. dom and html are import aliases. target: \"#app\" is the CSS selector for the existing mounting element; initial: False starts with details hidden.",
+  after: [
+    "Action is the type of an action sent by the button. type Action = | ToggleDetails defines one possible value, ToggleDetails, which is passed to onClick. update takes action: Action and expanded: Bool; -> Bool is the type of the next state.",
+    "match action chooses the line for the received action. There is one possible action here, so the ToggleDetails line handles them all. if expanded then False else True flips the Bool. This is an ordinary function: arguments are supplied with spaces and the computed next value is returned.",
+    "view receives the current expanded state. -> html.Html<Action> states the view’s return type, and section constructs that value. The paragraph’s hidden field, the button’s ariaExpanded and its label all use expanded. Calling update or view alone does not change the DOM.",
+    "pub effect fn main = dom.app { ... } is the entry that executes the returned work. The update and view fields abbreviate update: update and view: view. app creates work requiring the DOM service, with String failures and a Unit success result carrying no useful value.",
+    "The separate process program below passes ToggleDetails to the same functions twice. Three serialized views show False becoming True, then returning to False. These are direct function calls rather than dispatched DOM events."
+  ],
+  details: [
+    "If #app is absent or the selector is invalid, target lookup fails. Supply an existing element and a valid selector. app converts lookup and runtime failure reasons to String.",
+    "app internally creates one state Signal, derives the view and mounts with default options. Distinguish card or view, which only construct values, from DOM work that must be executed. The returned Unit is not a mount handle you can later operate on.",
+    "update has type Action -> State -> State. It cannot return an Effect for network requests or other external work in this position. Consider query, run or mount when you need effectful actions, custom mounting options or direct lifetime control.",
+    "This exact example also ran in the public Playground: four clicks alternated the label, detail visibility and expanded state. The snapshots remain direct function-call evidence, and the provider mock remains a separate test. Focus and actual browser listener cleanup have not been verified by those clicks."
+  ],
+  comparisonBefore: "TS can keep an expanded boolean and call a function that sets textContent, hidden and aria-expanded from a click handler. This is also a small implementation with the same starting state and display.",
+  comparisonAfter: "Seseragi passes the update and view functions to app, so you do not wire event reception to rendering yourself. TS can express the same task concisely. Typechecks and matching pure snapshots do not replace exercising either program in a real browser."
+}

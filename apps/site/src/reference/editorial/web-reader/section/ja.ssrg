@@ -1,0 +1,20 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "関連する本文と見出しを一つのsectionにまとめます。",
+  taskTitle: "見出しのあるカードを一つの区画にする",
+  purpose: "リリースのタイトルと説明文を、一枚のカードとしてまとめます。sectionはその区画を表すHtmlを作ります。classは付けますが、この例にCSSや見た目の指定は含みません。",
+  setup: "fn cardのtitleとdetailはStringの引数です。-> html.Html<Unit>は戻り値の型注釈です。Unitの値()は追加の情報を持ちません。この例ではイベントの処理を指定していません。letでh2とpに名前と型を付け、sectionのchildrenへ配列として渡します。 sectionへ渡す{ ... }はレコードで、TSのオブジェクトのように名前付きの項目を持ちます。",
+  after: [
+    "children: [heading, description]の順が、出力のh2、pの順になります。sectionがブロックの最後の式なので、その値をcardが返します。同じ関数を二度呼ぶと別々の入力のカードを作れます。",
+    "pageのfragmentは二枚を並べるだけで、さらに外側のタグを加えません。pub effect fn mainでprintlnを実行し、renderToStringで作った文字列を出力しています。"
+  ],
+  details: [
+    "宣言のActionは後でイベントから送る値の型、Cはchildrenに渡す入力の型です。where IntoChildren<C, Action>は、その入力を順序付きの子要素へ変換できる必要があることを示します。この例のActionはUnit、CはArray<Html<Unit>>です。",
+    "sectionだけでは見出しは作られません。タイトルが必要なら、例のようにh2などの見出し要素をchildrenへ入れます。class: \"release-card\"も、それだけでカードの見た目を定めません。",
+    "確認したCLI 0.61.19では、h2とpを直接配列へ入れるより、例のHtml<Unit>注釈を付けたローカル値にする必要があります。省くとこの形ではSES-T0201になります。",
+    "sectionの作成は純粋な値の構築です。画面へ挿入する処理や、全HTMLの構造が妥当か調べる処理ではありません。"
+  ],
+  comparisonBefore: "TSでも、引数から文字列やDOM要素を返すcard関数を再利用できます。部品ごとにクラスを定義する必要はありません。",
+  comparisonAfter: "ここではsection、h2、pが標準のHtml値を返し、最後に一度文字列へ変換します。再利用する単位は普通の関数のままです。"
+}

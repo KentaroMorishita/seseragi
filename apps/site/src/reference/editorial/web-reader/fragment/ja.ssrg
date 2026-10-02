@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "複数の子要素を、外側のタグを追加せずに一つのHtmlへまとめます。",
+  taskTitle: "二枚のカードを余分な要素なしで返す",
+  purpose: "再利用できるcard関数で作った二枚を、一つの戻り値にまとめます。fragmentは渡された子要素を順に並べるHtmlを返し、自分自身のHTMLタグは出力しません。",
+  setup: "fn cardはtitleとdetailをStringで受け取り、Html<Unit>を返します。letの型注釈は、イベントのない見出しと段落の型を確定します。sectionへ渡す{ ... }はpropsのレコードで、TSのオブジェクトのように名前付きの入力項目を持ちます。fragmentにはそのレコードを渡さず、子要素の配列を直接渡します。",
+  after: [
+    "pageの戻り値もHtml<Unit>です。page ()で関数を呼ぶと、二つのsectionを持つ値が得られます。最初のカード、次のカードの順で出力され、間にfragmentタグやdivは入りません。",
+    "renderToStringがHtmlをStringに変換し、pub effect fn mainでprintlnが出力します。fragmentの構築そのものは表示を行いません。"
+  ],
+  details: [
+    "宣言のActionは後でイベントから送る値の型、Cはchildrenに渡す入力の型です。where IntoChildren<C, Action>は、その入力を順序付きの子要素へ変換できる必要があることを示します。この例のActionはUnit、CはArray<Html<Unit>>です。",
+    "二枚をdivで囲めば、出力にはdiv要素も増えます。見出しや属性を持つ外側の要素が必要ならsectionなどを選び、並べるだけならfragmentを使います。fragment自体にclassを付けるpropsはありません。",
+    "fragmentもIntoChildrenの条件を使います。String、Html、Htmlの配列やリスト、()を受け取れます。文字列をHtmlの子要素と配列に並べる場合は、先にlet label: html.Html<Unit> = html.text \"Release\"と定義し、配列の項目にlabelを使います。この型注釈付きの値を残してください。確認したCLI 0.61.19では、textの呼び出しを直接配列に入れる形は拒否されます。children全体がStringなら、そのまま渡せます。"
+  ],
+  comparisonBefore: "TSの文字列ならcards.map(card).join(\"\")で、外側のタグを足さずに並べられます。ブラウザDOMではDocumentFragmentも使えます。",
+  comparisonAfter: "このfragmentはDocumentFragmentそのものではなく、純粋なHtmlの値です。結果を文字列化するか、後でDOMへ渡すかを分けられます。"
+}

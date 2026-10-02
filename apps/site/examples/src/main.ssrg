@@ -339,4 +339,17 @@ import * as resultFoundationSwap from "./result-foundations/swap"
 import * as resultFoundationValid from "./result-foundations/valid"
 import * as resultFoundationValidation from "./result-foundations/validation"
 
+import * as webReaderHtmlModule from "./web-reader/html-module"
+import * as webReaderCards from "./web-reader/cards"
+import * as webReaderElementprops from "./web-reader/elementprops"
+import * as webReaderIntochildren from "./web-reader/intochildren"
+import * as webReaderH2 from "./web-reader/h2"
+import * as webReaderP from "./web-reader/p"
+import * as webReaderText from "./web-reader/text"
+import * as webReaderButton from "./web-reader/button"
+import * as webReaderAttribute from "./web-reader/attribute"
+import * as webReaderRendertostring from "./web-reader/rendertostring"
+import * as webReaderRenderdocument from "./web-reader/renderdocument"
+import * as webReaderReleaseCardView from "./web-reader/release-card-view"
+
 pub effect fn main -> Unit = effects.succeed ()
