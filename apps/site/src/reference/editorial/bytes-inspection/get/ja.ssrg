@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "getは0始まりの位置からByteを取り出します。位置が有効ならJustにByteが入り、範囲外ならNothingになります。",
+  taskTitle: "指定した位置のバイトを、ない場合も含めて調べる",
+  purpose: "3バイトの列から先頭と末尾を読み、末尾の次と負の位置では値がないことを表示します。値が0でも見つかったバイトとして扱い、位置が無効な場合と区別します。",
+  typescriptBefore: "TypeScriptではcontent[index]で読み、undefinedかどうかを調べます。0も有効なバイトなので、単純な真偽判定ではなくundefinedとの比較を使います。この比較例はnoUncheckedIndexedAccessも有効にして型検査しており、値がない場合を処理します。",
+  benefit: "Seseragiでは戻り値のMaybe<Byte>が、バイトを取得できない可能性を表します。JustとNothingを分けると、見つかったByteだけをtoIntに渡せます。範囲外の位置を有効な値の0と取り違えません。",
+  setup: "import * as bytesでstd/bytesをbytesという別名から使います。fn at index: Int -> content: bytes.Bytes -> Stringは、整数の位置とBytesを受けて文字列を返します。bytes.get index contentのように引数を空白で順番に渡します。",
+  after: [
+    "bytes.fromInts [0, 15, 255]は整数の配列を検証してBytesにします。戻り値はEither<ByteError, Bytes>です。matchで失敗のLeft errorを表示し、成功のRight contentでBytesにcontentという名前を付けます。",
+    "atのbytes.get index contentはMaybe<Byte>を返します。Maybeは値がないNothingか、値があるJustです。Nothingの枝には取り出すByteがなく、Just valueの枝では見つかったByteにvalueという名前を付けます。",
+    "Justの枝のbytes.toInt valueがByteをIntへ変えます。バッククォート文字列の${index}や${bytes.toInt value}は、位置や数値を表示へ埋め込みます。各枝の->の右側がatの返す文字列です。",
+    "for index <- [0, 2, 3, -1]は、配列に書いた整数0、2、3、-1を順番にindexへ結び付けます。配列自体の添字0、1、2、3を受け取る書き方ではありません。at index contentへ位置と元のBytesを渡し、それぞれの結果を表示します。",
+    "0番目には0、2番目には255があります。3バイトなので3番目はなく、-1も末尾を意味しません。後ろ2行はどちらもmissingになります。",
+  ],
+  details: [
+    "有効な位置は0以上で、Bytesの長さより小さい整数です。長さと同じ位置は範囲外です。空のBytesには有効な位置がないため、どの位置でもNothingになります。",
+    "getは位置の不在をNothingで表し、この結果はbyteやfromIntsのEitherとは異なります。数値0のByteはJustに入ります。Nothingを0で置き換えると、その区別が失われます。",
+    "位置の型はIntです。小数のFloatを渡すことはできません。Justから受け取るのはByteなので、数値として使うにはtoIntを呼びます。Byteの公開コンストラクターや内部パターンは使いません。",
+  ],
+}

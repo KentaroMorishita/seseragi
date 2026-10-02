@@ -1,0 +1,12 @@
+import * as bytes from "std/bytes"
+
+pub effect fn main = match (bytes.fromInts [10, 20], bytes.fromInts [30, 40]) {
+  (Right content, Right suffix) -> do {
+    println (show (bytes.toInts (bytes.append suffix content)))
+    println (show (bytes.toInts (content |> bytes.append suffix)))
+    println (show (bytes.toInts (bytes.append content suffix)))
+    println (show (bytes.toInts content))
+    println (show (bytes.toInts suffix))
+  }
+  _ -> println "Invalid byte input"
+}

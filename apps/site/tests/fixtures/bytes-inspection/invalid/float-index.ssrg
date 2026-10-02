@@ -1,0 +1,3 @@
+import * as bytes from "std/bytes"
+let value = bytes.get 1.5 (bytes.empty ())
+pub effect fn main = println "unreachable"

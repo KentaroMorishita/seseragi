@@ -8,22 +8,15 @@ import {
   writeFileSync,
 } from "node:fs"
 import { join, resolve } from "node:path"
-import { apiCorrectionExamples } from "../scripts/api-corrections"
 import {
+  bytesInspectionCases,
   bytesInspectionExamples,
   bytesInspectionRoutes,
 } from "../scripts/bytes-inspection"
-import {
-  bytesReaderCases,
-  bytesReaderExamples,
-  bytesReaderRoutes,
-} from "../scripts/bytes-reader"
-import { bytesReaderReading } from "../scripts/bytes-reader-reading"
-import { charTextExamples } from "../scripts/char-text-reader"
+import { bytesInspectionReading } from "../scripts/bytes-inspection-reading"
+import { bytesReaderExamples } from "../scripts/bytes-reader"
 import { compilerReferenceModules } from "../scripts/reference"
 import { signatureReading } from "../scripts/signature-reading"
-import { textEditorialExamples } from "../scripts/text-editorial"
-import { unicodeReaderExamples } from "../scripts/unicode-reader"
 import {
   assertAuthoredLibraryTitles,
   authoredLibraryArticle,
@@ -33,10 +26,11 @@ import { renderPageClosure } from "./render-page-closure"
 
 setDefaultTimeout(600_000)
 const root = resolve(import.meta.dir, "../../..")
-const examples = bytesReaderExamples("https://seseragi.vercel.app/")
+const playground = "https://seseragi.vercel.app/"
+const examples = bytesInspectionExamples(playground)
 const evidence = resolve(
-  process.env.BYTES_READER_EVIDENCE_DIR ??
-    join(root, "target/bytes-reader-evidence")
+  process.env.BYTES_INSPECTION_EVIDENCE_DIR ??
+    join(root, "target/bytes-inspection-evidence")
 )
 mkdirSync(evidence, { recursive: true })
 function plain(html: string) {
@@ -52,115 +46,113 @@ function input(referenceModules: ReturnType<typeof compilerReferenceModules>) {
   return {
     schema: 1,
     origin: "https://seseragi.example",
-    playgroundUrl: "https://seseragi.vercel.app/",
+    playgroundUrl: playground,
     tourUrl: "",
     grammar: "",
-    examples: [
-      ...examples,
-      ...bytesInspectionExamples("https://seseragi.vercel.app/"),
-      ...textEditorialExamples("https://seseragi.vercel.app/"),
-      ...charTextExamples("https://seseragi.vercel.app/"),
-      ...apiCorrectionExamples("https://seseragi.vercel.app/"),
-      ...unicodeReaderExamples("https://seseragi.vercel.app/"),
-    ],
+    examples: [...examples, ...bytesReaderExamples(playground)],
     referenceModules,
   }
 }
 
-test("Bytes20 guards exact identity, owner, namespace and kind while preserving prior text content", () => {
-  const all = compilerReferenceModules()
-  const owners = ["std/bytes", "std/text", "std/bytes/hex", "std/bytes/base64"]
-  const modules = all.filter((m) => owners.includes(m.specifier))
-  const leaves = bytesReaderRoutes.filter((x) => x.kind !== "module")
-  expect(leaves).toHaveLength(17)
-  const symbols = leaves.map((item) => {
-    const matches = modules
-      .flatMap((m) => m.items)
-      .filter(
-        (s) =>
-          s.identity === item.identity &&
-          s.namespace === item.namespace &&
-          s.itemKind === item.kind
-      )
-    expect(matches).toHaveLength(1)
-    return matches[0]
-  })
+test("Bytes inspection11 guards exact owner, namespace, kind and identity and retains same-owner controls", () => {
+  const modules = compilerReferenceModules().filter((m) =>
+    ["std/bytes"].includes(m.specifier)
+  )
+  const symbols = bytesInspectionRoutes.map(
+    (route) =>
+      modules
+        .flatMap((m) => m.items)
+        .find(
+          (symbol) =>
+            symbol.module === route.module &&
+            symbol.identity === route.identity &&
+            symbol.namespace === route.namespace &&
+            symbol.itemKind === route.kind
+        )!
+  )
+  expect(symbols).toHaveLength(11)
   const probes = symbols.flatMap((symbol) => [
     symbol,
     { ...symbol, module: "std/http" },
+    {
+      ...symbol,
+      module: "std/text",
+    },
     { ...symbol, namespace: "wrong" },
     { ...symbol, itemKind: "wrong" },
     { ...symbol, identity: `${symbol.identity}-wrong` },
   ])
   const controls = modules
     .flatMap((m) => m.items)
-    .filter((s) => !symbols.some((x) => x.identity === s.identity))
+    .filter(
+      (symbol) =>
+        !symbols.some((selected) => selected.identity === symbol.identity)
+    )
   const data = input([{ ...modules[0], items: [...probes, ...controls] }])
-  const directory = mkdtempSync(join(evidence, "seseragi-bytes20-guards-"))
+  const directory = mkdtempSync(
+    join(evidence, "seseragi-bytes-inspection11-guards-")
+  )
   try {
     const result = renderPageClosure<Array<[boolean, boolean]>>({
       directory,
       modules: [
         "reference/editorial/catalog",
-        "reference/editorial/bytes-reader/catalog",
+        "reference/editorial/bytes-inspection/catalog",
       ],
       timeoutMs: 240_000,
       entry: `import * as json from "std/json"
 import * as arrays from "std/array"
 import { decodeBuildInput } from "./model/build"
 import { Editorial } from "./reference/editorial/model"
-import { editorialFor, moduleEditorial } from "./reference/editorial/catalog"
-import { bytesReaderEditorialFor, bytesReaderModuleBlocks } from "./reference/editorial/bytes-reader/catalog"
+import { editorialFor } from "./reference/editorial/catalog"
+import { bytesInspectionEditorialFor } from "./reference/editorial/bytes-inspection/catalog"
 fn present value: Maybe<Editorial> -> Bool = match value { Just _ -> True; Nothing -> False }
 pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data))} {
   Left _ -> println "[]"
-  Right input -> println (json.encodeString (arrays.concat [
-    arrays.concat [[(present (bytesReaderEditorialFor symbol), present (editorialFor symbol)) | symbol <- module.items] | module <- input.referenceModules],
-    [(arrays.length (bytesReaderModuleBlocks name) > 0, arrays.length (moduleEditorial name) > 0) | name <- ["std/bytes", "std/bytes/hex", "std/bytes/base64", "std/text", "std/bytes-extra", "std/bytes::Bytes"]]
-  ]))
+  Right input -> println (json.encodeString (arrays.concat [[(present (bytesInspectionEditorialFor symbol), present (editorialFor symbol)) | symbol <- module.items] | module <- input.referenceModules]))
 }`,
     })
-    expect(result).toHaveLength(probes.length + controls.length + 6)
+    expect(result).toHaveLength(probes.length + controls.length)
     for (let i = 0; i < probes.length; i++)
-      expect(result[i]).toEqual(i % 5 === 0 ? [true, true] : [false, false])
-    for (let i = 0; i < controls.length; i++) {
-      const row = result[probes.length + i]
-      expect(row[0]).toBe(false)
-      if (controls[i].module !== "std/text") {
-        const newlyAuthored = bytesInspectionRoutes.some(
-          (item) =>
-            item.identity === controls[i].identity &&
-            item.module === controls[i].module &&
-            item.namespace === controls[i].namespace &&
-            item.kind === controls[i].itemKind
-        )
-        expect(row[1]).toBe(newlyAuthored)
-      }
-      if (controls[i].identity === "std/text::contains")
-        expect(row[1]).toBe(true)
+      expect(result[i]).toEqual(i % 6 === 0 ? [true, true] : [false, false])
+    for (let i = 0; i < controls.length; i++)
+      expect(result[probes.length + i][0]).toBe(false)
+    for (const identity of ["std/bytes::ByteError", "std/bytes::fromInts"]) {
+      const index = controls.findIndex((symbol) => symbol.identity === identity)
+      expect(index).toBeGreaterThanOrEqual(0)
+      expect(result[probes.length + index][1]).toBe(true)
     }
-    expect(result.slice(-6)).toEqual([
-      [true, true],
-      [true, true],
-      [true, true],
-      [false, true],
-      [false, false],
-      [false, false],
-    ])
+    writeFileSync(
+      join(evidence, "identity-guards.json"),
+      JSON.stringify(
+        {
+          probes: probes.map((p) => ({
+            identity: p.identity,
+            module: p.module,
+            namespace: p.namespace,
+            itemKind: p.itemKind,
+          })),
+          controls: controls.map((p) => p.identity),
+          result,
+        },
+        null,
+        2
+      )
+    )
   } finally {
-    if (!process.env.BYTES_READER_EVIDENCE_DIR)
+    if (!process.env.BYTES_INSPECTION_EVIDENCE_DIR)
       rmSync(directory, { recursive: true, force: true })
   }
 })
 
-test("all forty bilingual bodies keep the task, exact runtime-labelled sources, outputs and navigation", () => {
+test("all twenty-two bilingual bodies keep the task, exact runtime-labelled sources, outputs and navigation", () => {
   const modules = compilerReferenceModules().filter((m) =>
-    ["std/bytes", "std/bytes/hex", "std/bytes/base64", "std/text"].includes(
-      m.specifier
-    )
+    ["std/bytes"].includes(m.specifier)
   )
   const data = input(modules)
-  const directory = mkdtempSync(join(evidence, "seseragi-bytes20-render-"))
+  const directory = mkdtempSync(
+    join(evidence, "seseragi-bytes-inspection11-render-")
+  )
   try {
     const result = renderPageClosure<Array<{ route: string; html: string }>>({
       directory,
@@ -186,7 +178,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
   }
 }`,
     })
-    const earlyOutput = process.env.BYTES_READER_RENDER_DIR
+    const earlyOutput = process.env.BYTES_INSPECTION_RENDER_DIR
     if (earlyOutput) {
       mkdirSync(earlyOutput, { recursive: true })
       writeFileSync(
@@ -195,7 +187,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
       )
       const selected = result
         .filter((page) =>
-          bytesReaderRoutes.some(
+          bytesInspectionRoutes.some(
             (item) =>
               page.route === item.route || page.route === `/ja${item.route}`
           )
@@ -219,7 +211,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
       sha256: string
     }> = []
     let titleLinks = 0
-    for (const item of bytesReaderRoutes)
+    for (const item of bytesInspectionRoutes)
       for (const locale of ["en", "ja"] as const) {
         const prefix = locale === "en" ? "" : "/ja"
         const route = prefix + item.route
@@ -254,7 +246,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           readFileSync(
             join(
               root,
-              `apps/site/src/reference/editorial/bytes-reader/${item.slug}/${lang}.ssrg`
+              `apps/site/src/reference/editorial/bytes-inspection/${item.slug}/${lang}.ssrg`
             ),
             "utf8"
           )
@@ -264,16 +256,6 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           )
         const own = copy(locale),
           other = copy(locale === "en" ? "ja" : "en")
-        // The narrow-layout regression is a prose run, not an inline code
-        // chip. Preserve the complete authored note in paragraph markup.
-        const nodeNote = JSON.parse(
-          own.match(/^ {2}nodeNote: ("(?:[^"\\]|\\.)*")/mu)![1]
-        ) as string
-        const nodeParagraph = body.match(
-          /<h2 id="node-alternative">[^<]*<\/h2><p><span>([^<]*)<\/span><\/p>/u
-        )
-        expect(nodeParagraph, `${route}: Node prose structure`).not.toBeNull()
-        expect(plain(nodeParagraph![1])).toBe(nodeNote)
         expect(paragraphs(own)).toHaveLength(paragraphs(other).length)
         for (const p of paragraphs(own))
           expect(text, `${route}: own paragraph`).toContain(p)
@@ -282,7 +264,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
         for (const [, field, value] of own.matchAll(
           /^ {2}(\w+): ("(?:[^"\\]|\\.)*")/gmu
         )) {
-          if (field !== "summary" || item.kind !== "module")
+          if (field)
             expect(plain(html), `${route}: ${field}`).toContain(
               JSON.parse(value)
             )
@@ -293,38 +275,26 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           ),
         ].map((m) => plain(m[1]))
         const native = examples.find(
-          (e) => e.id === `bytes-reader-${item.example}`
+          (e) => e.id === `bytes-inspection-${item.example}`
         )!
         const ts = examples.find(
-          (e) => e.id === `bytes-reader-${item.example}-ts`
+          (e) => e.id === `bytes-inspection-${item.example}-ts`
         )!
         expect(panels[0]).toBe(ts.source)
         expect(panels[1]).toBe(native.source)
-        const hasNode = ![
-          "validate-byte-input",
-          "inspect-binary-payload",
-          "explain-utf8-failure",
-          "preview-damaged-text",
-        ].includes(item.example)
-        if (hasNode) {
-          const node = examples.find(
-            (e) => e.id === `bytes-reader-${item.example}-node-ts`
-          )!
-          expect(panels[2]).toBe(node.source)
-          expect(text).toContain("Node 24.19.0")
-        }
-        expect(panels).toHaveLength(
-          2 + (hasNode ? 1 : 0) + (item.kind === "module" ? 0 : 1)
-        )
+        expect(panels).toHaveLength(3)
+        expect(text).toContain("Node 24.19.0")
         expect(text).toContain("Bun 1.3.9")
-        const sample = bytesReaderCases.find((c) => c.slug === item.example)!
+        const sample = bytesInspectionCases.find(
+          (c) => c.slug === item.example
+        )!
         const terminals = [
           ...body.matchAll(
             /<section class="code-panel terminal-panel">[\s\S]*?<pre><code>([\s\S]*?)<\/code><\/pre><\/section>/gu
           ),
         ].map((m) => plain(m[1]))
         expect(terminals).toEqual([
-          sample.typescriptOutput,
+          sample.output,
           sample.output,
           `seseragi run ${item.example}.ssrg --target process`,
         ])
@@ -337,7 +307,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           )
           .map((u) => u.searchParams.get("source"))
         expect(seeds).toEqual([native.source])
-        if (item.kind !== "module") {
+        {
           const symbol = modules
             .flatMap((m) => m.items)
             .find((s) => s.identity === item.identity)!
@@ -358,7 +328,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
         }
         const entry = {
           route,
-          kind: item.kind === "module" ? ("module" as const) : ("api" as const),
+          kind: "api" as const,
         }
         titleLinks += assertAuthoredLibraryTitles(html, titles, entry)
         const authored = authoredLibraryArticle(html, entry)
@@ -384,27 +354,41 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           sha256: createHash("sha256").update(html).digest("hex"),
         })
       }
-    expect(bodies).toHaveLength(40)
-    expect(titleLinks).toBeGreaterThanOrEqual(120)
-    const copyControl = modules
-      .find((module) => module.specifier === "std/bytes")!
-      .items.find(
-        (item) =>
-          item.identity === "std/bytes::copy" &&
-          item.namespace === "value" &&
-          item.itemKind === "function"
+    expect(bodies).toHaveLength(22)
+    expect(titleLinks).toBeGreaterThanOrEqual(66)
+    const preservation = JSON.parse(
+      readFileSync(
+        join(
+          root,
+          "apps/site/tests/fixtures/bytes-inspection/unselected-controls.json"
+        ),
+        "utf8"
       )
-    expect(copyControl).toBeDefined()
-    expect(copyControl!.signature).toBe("copy arg1: Bytes -> Bytes")
-    expect(copyControl!.reading.en.length).toBeGreaterThan(0)
-    expect(copyControl!.reading.ja.length).toBeGreaterThan(0)
-    for (const prefix of ["", "/ja"]) {
-      const generic = pages.get(`${prefix}/docs/library/bytes/function/copy/`)
-      expect(generic).toBeDefined()
-      expect(plain(generic!)).toContain(copyControl!.signature)
-      expect(generic).not.toContain('id="typescript-comparison"')
-    }
-    const output = process.env.BYTES_READER_RENDER_DIR
+    ) as Array<{ route: string; kind: "api" | "module"; articleSha256: string }>
+    expect(preservation).toHaveLength(30)
+    const checkedControls = preservation.map((control) => {
+      expect(
+        bytesInspectionRoutes.some(
+          (item) =>
+            control.route === item.route || control.route === `/ja${item.route}`
+        )
+      ).toBe(false)
+      const html = pages.get(control.route)
+      expect(html, control.route).toBeDefined()
+      const article = authoredLibraryArticle(html!, {
+        route: control.route,
+        kind: control.kind,
+      })
+      expect(article, control.route).toBeDefined()
+      const articleSha256 = createHash("sha256").update(article!).digest("hex")
+      expect(articleSha256, control.route).toBe(control.articleSha256)
+      return { ...control, currentArticleSha256: articleSha256 }
+    })
+    writeFileSync(
+      join(evidence, "unselected-article-preservation.json"),
+      JSON.stringify(checkedControls, null, 2)
+    )
+    const output = process.env.BYTES_INSPECTION_RENDER_DIR
     if (output) {
       mkdirSync(output, { recursive: true })
       writeFileSync(
@@ -422,14 +406,14 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
       }
     }
   } finally {
-    if (!process.env.BYTES_READER_EVIDENCE_DIR)
+    if (!process.env.BYTES_INSPECTION_EVIDENCE_DIR)
       rmSync(directory, { recursive: true, force: true })
   }
 })
 
-test("Bytes20 preserves canonical signatures and limits declaration reading to four exact error types", () => {
+test("Bytes inspection11 retains canonical signatures and targets and narrows only the BytesSliceError reading", () => {
   const modules = compilerReferenceModules()
-  const artifact = JSON.parse(
+  const canonical = JSON.parse(
     readFileSync(
       join(
         root,
@@ -438,65 +422,106 @@ test("Bytes20 preserves canonical signatures and limits declaration reading to f
       "utf8"
     )
   )
-  for (const route of bytesReaderRoutes) {
+  for (const route of bytesInspectionRoutes) {
     const module = modules.find((m) => m.specifier === route.module)!
-    expect(module.targets).toEqual(["process", "browser"])
-    if (route.kind === "module") continue
-    const canonical = artifact.modules
+    const symbol = module.items.find(
+      (item) => item.identity === route.identity
+    )!
+    const original = canonical.modules
       .find((m: { specifier: string }) => m.specifier === route.module)
-      .items.find((x: { identity: string }) => x.identity === route.identity)
-    const symbol = module.items.find((x) => x.identity === route.identity)!
-    expect(symbol.signature).toBe(canonical.signature)
-    expect(symbol.namespace).toBe(canonical.namespace)
-    expect(symbol.itemKind).toBe(canonical.kind)
-  }
-  const selected = [
-    "std/bytes::ByteError",
-    "std/text::Utf8DecodeError",
-    "std/bytes/hex::HexDecodeError",
-    "std/bytes/base64::Base64DecodeError",
-  ]
-  for (const identity of selected) {
-    const item = modules
-      .flatMap((m) => m.items)
-      .find((x) => x.identity === identity)!
-    const key = {
-      identity,
-      module: item.module,
-      namespace: item.namespace,
-      kind: item.itemKind,
-    }
-    const fallback = signatureReading(
-      item.signature,
-      item.itemKind,
-      item.typeParameters,
-      item.constraints
-    )
-    const updated = bytesReaderReading(key, fallback)
-    expect(updated).not.toEqual(fallback)
-    expect(item.reading).toEqual(updated)
-    for (const bad of [
-      { ...key, module: "std/http" },
-      { ...key, namespace: "value" },
-      { ...key, kind: "function" },
-      { ...key, identity: identity + "-wrong" },
-    ])
-      expect(bytesReaderReading(bad, fallback)).toBe(fallback)
-  }
-  for (const item of modules
-    .flatMap((m) => m.items)
-    .filter((x) => !selected.includes(x.identity))) {
-    const fallback = { en: "unchanged", ja: "変更なし" }
-    expect(
-      bytesReaderReading(
-        {
-          identity: item.identity,
-          module: item.module,
-          namespace: item.namespace,
-          kind: item.itemKind,
-        },
-        fallback
+      .items.find(
+        (item: { identity: string }) => item.identity === route.identity
       )
-    ).toBe(fallback)
+    expect(module.targets).toEqual(["process", "browser"])
+    expect(symbol.signature).toBe(original.signature)
+    expect(symbol.namespace).toBe(original.namespace)
+    expect(symbol.itemKind).toBe(original.kind)
+  }
+})
+
+test("only the exact BytesSliceError identity/owner/type/kind receives the new public-pattern reading", () => {
+  const modules = compilerReferenceModules()
+  const all = modules.flatMap((module) => module.items)
+  const item = all.find(
+    (symbol) => symbol.identity === "std/bytes::BytesSliceError"
+  )!
+  expect(item).toBeDefined()
+  expect(item.itemKind).toBe("opaque-type")
+  const key = {
+    identity: item.identity,
+    module: item.module,
+    namespace: item.namespace,
+    kind: item.itemKind,
+  }
+  const fallback = signatureReading(
+    item.signature,
+    item.itemKind,
+    item.typeParameters,
+    item.constraints
+  )
+  const updated = bytesInspectionReading(key, fallback)
+  expect(updated).not.toEqual(fallback)
+  expect(item.reading).toEqual(updated)
+  for (const token of ["InvalidByteRange", "start", "end", "length"]) {
+    expect(updated.en).toContain(token)
+    expect(updated.ja).toContain(token)
+  }
+  for (const bad of [
+    { ...key, module: "std/text" },
+    { ...key, namespace: "value" },
+    { ...key, kind: "constructor" },
+    { ...key, identity: `${key.identity}-wrong` },
+  ])
+    expect(bytesInspectionReading(bad, fallback)).toBe(fallback)
+  for (const symbol of all.filter(
+    (symbol) => symbol.identity !== item.identity
+  )) {
+    const unchanged = { en: "unchanged", ja: "変更なし" }
+    expect(
+      bytesInspectionReading(
+        {
+          identity: symbol.identity,
+          module: symbol.module,
+          namespace: symbol.namespace,
+          kind: symbol.itemKind,
+        },
+        unchanged
+      )
+    ).toBe(unchanged)
+  }
+})
+
+test("all pre-existing declaration readings except the approved BytesSliceError explanation remain byte-identical", () => {
+  const baseline = JSON.parse(
+    readFileSync(
+      join(
+        root,
+        "apps/site/tests/fixtures/bytes-inspection/unchanged-reading-hashes.json"
+      ),
+      "utf8"
+    )
+  ) as Array<{
+    identity: string
+    module: string
+    namespace: string
+    kind: string
+    readingSha256: string
+  }>
+  const all = compilerReferenceModules()
+    .flatMap((module) => module.items)
+    .filter((item) => item.identity !== "std/bytes::BytesSliceError")
+  expect(baseline).toHaveLength(all.length)
+  for (const item of all) {
+    const expected = baseline.find(
+      (old) =>
+        old.identity === item.identity &&
+        old.module === item.module &&
+        old.namespace === item.namespace &&
+        old.kind === item.itemKind
+    )
+    expect(expected).toBeDefined()
+    expect(
+      createHash("sha256").update(JSON.stringify(item.reading)).digest("hex")
+    ).toBe(expected!.readingSha256)
   }
 })

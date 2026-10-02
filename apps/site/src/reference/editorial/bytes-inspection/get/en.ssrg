@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "get reads a Byte at a zero-based position. A valid position returns the Byte in Just; an out-of-range position returns Nothing.",
+  taskTitle: "Look up a byte and handle a missing position",
+  purpose: "Read the first and last bytes of a three-byte sequence, then report missing values for the position after the end and a negative position. Treat 0 as a found byte, distinct from an invalid position.",
+  typescriptBefore: "TypeScript reads content[index] and checks for undefined. Since 0 is also a valid byte, use an undefined comparison instead of a simple truthiness check. This comparison is typechecked with noUncheckedIndexedAccess enabled too, and handles the missing-value case.",
+  benefit: "Seseragi’s Maybe<Byte> result makes the possibly missing byte explicit. Separate Just from Nothing to pass only a found Byte to toInt. An invalid position is not confused with the valid value 0.",
+  setup: "import * as bytes makes std/bytes available through the alias bytes. fn at index: Int -> content: bytes.Bytes -> String takes an integer position and Bytes, then returns a string. A call such as bytes.get index content passes the arguments in order, separated by spaces.",
+  after: [
+    "bytes.fromInts [0, 15, 255] validates an integer array and produces Bytes. It returns Either<ByteError, Bytes>. match displays a failure in Left error, or gives the successful Bytes the name content in Right content.",
+    "The bytes.get index content call in at returns Maybe<Byte>. Maybe is either Nothing for no value or Just for a present value. The Nothing branch has no Byte to extract; Just value gives the found Byte the name value.",
+    "In the Just branch, bytes.toInt value converts Byte to Int. The ${index} and ${bytes.toInt value} in the backtick string insert the position and the numeric value into the message. The expression after each branch’s -> is the string returned by at.",
+    "for index <- [0, 2, 3, -1] binds each listed integer value, 0, 2, 3, then -1, to index. It does not enumerate the array’s own indices 0, 1, 2, and 3. at index content receives the position and the original Bytes, and its result is displayed each time.",
+    "Position 0 contains 0, and position 2 contains 255. A three-byte sequence has no position 3, and -1 does not mean the last byte. Both of the final two lines therefore say missing.",
+  ],
+  details: [
+    "A valid position is an integer that is at least 0 and less than the length of the Bytes. A position equal to the length is out of range. Empty Bytes has no valid positions, so every lookup returns Nothing.",
+    "get represents an absent position with Nothing. This result is different from the Either returned by byte or fromInts. A Byte whose value is 0 goes inside Just. Replacing Nothing with 0 would lose that distinction.",
+    "The position must be an Int; a fractional Float is not accepted. The value received from Just is a Byte, so call toInt to use its number. No public Byte constructor or internal Byte pattern is involved.",
+  ],
+}

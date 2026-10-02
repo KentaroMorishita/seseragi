@@ -1,0 +1,152 @@
+[
+  {
+    "route": "/docs/library/bytes/opaque-type/byteerror/",
+    "kind": "api",
+    "articleSha256": "83617bd14f2dadca396d60ffe40c749a82431fec1c572d75c1b3723af15ed07a"
+  },
+  {
+    "route": "/ja/docs/library/bytes/opaque-type/byteerror/",
+    "kind": "api",
+    "articleSha256": "3885d11e31603f57e410ee267cab450af3d9d284dd653380bf99f13a2c5e25c2"
+  },
+  {
+    "route": "/docs/library/bytes/constructor/byteoutofrange/",
+    "kind": "api",
+    "articleSha256": "44aa03df521167a91d74533d58333f783b8cc2233a5ed7ab69953d7705914490"
+  },
+  {
+    "route": "/ja/docs/library/bytes/constructor/byteoutofrange/",
+    "kind": "api",
+    "articleSha256": "c757d3979ed0c4312c0b64182b5d627fff2333057a9c967cf545d6d02788773f"
+  },
+  {
+    "route": "/docs/library/bytes/opaque-type/bytes/",
+    "kind": "api",
+    "articleSha256": "4e0ed2a8a8d7e3592828dea62c39c4e878c02152d25b973f52e2d5d42f0471f4"
+  },
+  {
+    "route": "/ja/docs/library/bytes/opaque-type/bytes/",
+    "kind": "api",
+    "articleSha256": "54ae3aa0adb88fbf150c0bb975f6de7deeb360bba7a4b1d0f3a3f7e00437c380"
+  },
+  {
+    "route": "/docs/library/bytes/function/copy/",
+    "kind": "api",
+    "articleSha256": "a5e94934e225ffb3c08a7d9310a3bdb6940444cd750847fb988d04f7e0f0d6d0"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/copy/",
+    "kind": "api",
+    "articleSha256": "56297d241a88fdd4be379246ba34f15caa30000e71e2d980030b25d96966e2ed"
+  },
+  {
+    "route": "/docs/library/bytes/function/fromarray/",
+    "kind": "api",
+    "articleSha256": "8089212250c129325cc6f72adb78734ff19047e53991284d0110556be50041f5"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/fromarray/",
+    "kind": "api",
+    "articleSha256": "574c1cb257a87fb2f1e2aa47d1eb81a67aa2cb07bdeba7216e74dc4932044694"
+  },
+  {
+    "route": "/docs/library/bytes/function/fromints/",
+    "kind": "api",
+    "articleSha256": "d08ea51e79947d092f82d0483416cb562b6f8b3a190b542b46edc57febffec1d"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/fromints/",
+    "kind": "api",
+    "articleSha256": "bc11651520f2498da70fb34b255b7b9cc045cdbc99bdb785bc1049b645380c40"
+  },
+  {
+    "route": "/docs/library/bytes/constructor/invalidbyterange/",
+    "kind": "api",
+    "articleSha256": "919333b4863e32eb5218516a75c6cdf00b1a7c5258bfde884158c5c1fc870ce8"
+  },
+  {
+    "route": "/ja/docs/library/bytes/constructor/invalidbyterange/",
+    "kind": "api",
+    "articleSha256": "a01464248647bc0d91a8853fafc11dcb0497b29f516137207388fe345c4902db"
+  },
+  {
+    "route": "/docs/library/bytes/function/length/",
+    "kind": "api",
+    "articleSha256": "4b95ef92c59d29f0d0b25d4ae4cda23e69e2c1cfd3fbb4055738cf6890cfb0a4"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/length/",
+    "kind": "api",
+    "articleSha256": "cbf70a71e659c966ec0c56f22547a4c38c192ff0aba630f820ab269761e2e865"
+  },
+  {
+    "route": "/docs/library/bytes/function/toarray/",
+    "kind": "api",
+    "articleSha256": "2c3c294fcd3fa3dd4f5d5c6761bb59dd897325efeeaa71349a0af3ed747a77c2"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/toarray/",
+    "kind": "api",
+    "articleSha256": "6c6af160f7f6ad6e468d6cf8af4da3c4d4a6a4a12cf9b23601b5cd435e50e77c"
+  },
+  {
+    "route": "/docs/library/bytes/function/toints/",
+    "kind": "api",
+    "articleSha256": "96c78dc492a7b8a829fe597fcd80ad33877fa64ff621e19896c4a9c373e9ca11"
+  },
+  {
+    "route": "/ja/docs/library/bytes/function/toints/",
+    "kind": "api",
+    "articleSha256": "e1e27287279bf7030b1023e5e7a19d6dfee8308a900a73beee3cf8529746d8ee"
+  },
+  {
+    "route": "/docs/library/bytes/instance/debug-byteerror/",
+    "kind": "api",
+    "articleSha256": "38fc8a6a758499cbc4f86fa126dc54d2269da2be1af013eb4e6d5dde8078ccdc"
+  },
+  {
+    "route": "/ja/docs/library/bytes/instance/debug-byteerror/",
+    "kind": "api",
+    "articleSha256": "9e29bac9e03eba3b2d72f358556f2e9bf03f90fa3a50b9235fa8171e3b6ec6c3"
+  },
+  {
+    "route": "/docs/library/bytes/instance/debug-bytessliceerror/",
+    "kind": "api",
+    "articleSha256": "e1ddc5c5561b25c75669d3bf0dba7d255466e7e7957e984fe78183e89d53d80a"
+  },
+  {
+    "route": "/ja/docs/library/bytes/instance/debug-bytessliceerror/",
+    "kind": "api",
+    "articleSha256": "b762747221cb4983570bfbbbdcc595e9ae44a0b2b68f9b3239a2c1791986c004"
+  },
+  {
+    "route": "/docs/library/bytes/instance/show-byteerror/",
+    "kind": "api",
+    "articleSha256": "2102afc3555c77023d6556a692e419b42be0f8e38b2a67589487adb250381636"
+  },
+  {
+    "route": "/ja/docs/library/bytes/instance/show-byteerror/",
+    "kind": "api",
+    "articleSha256": "589fd58c21fb3fdeb4c959479739efe6f58b4e39790bfc92a8c069f837f76a41"
+  },
+  {
+    "route": "/docs/library/bytes/instance/show-bytessliceerror/",
+    "kind": "api",
+    "articleSha256": "7449952982a0f21616e205c598e8ccaca63e2275c1d20aa1ddd70dedaaa1ea89"
+  },
+  {
+    "route": "/ja/docs/library/bytes/instance/show-bytessliceerror/",
+    "kind": "api",
+    "articleSha256": "bd942a592081a7e1f46e2d06dc339f295f17d45b7f3ac6c91e0ce49d641fd2c4"
+  },
+  {
+    "route": "/docs/library/bytes/",
+    "kind": "module",
+    "articleSha256": "b4de1271d39336496b6abe9361bfd57e66cc99307b3a630e2b3cf82f50d34331"
+  },
+  {
+    "route": "/ja/docs/library/bytes/",
+    "kind": "module",
+    "articleSha256": "4eb0c7e7d6063ecdb370f6f79c3c1fa5206e76a6512c4a119b7029ed1eea17ba"
+  }
+]

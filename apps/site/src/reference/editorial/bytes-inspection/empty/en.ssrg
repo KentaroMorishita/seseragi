@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "empty creates Bytes containing no bytes. Call it as bytes.empty (), where () is the value of the Unit type.",
+  taskTitle: "Create an empty byte sequence and compare it with one byte",
+  purpose: "Keep using Bytes even when there is no content. The same function displays Empty for an empty sequence and Bytes: [65] for a sequence containing the single byte 65.",
+  typescriptBefore: "In TypeScript, new Uint8Array() creates an empty byte sequence, and length === 0 detects it. The one-byte case validates 65 before passing it to Uint8Array.of(value). Constructing a typed array is not itself a check that rejects out-of-range numbers.",
+  benefit: "The empty and nonempty cases use the same Bytes type. Check for emptiness with isEmpty. empty creates an ordinary Bytes value with zero elements, rather than a failure or a missing value.",
+  setup: "import * as bytes makes std/bytes available through the alias bytes. fn describe content: bytes.Bytes -> String accepts Bytes named content and returns a string. Calls pass arguments after spaces, as in describe content.",
+  after: [
+    "bytes.empty () passes the Unit value () to empty and creates empty Bytes. In describe (bytes.empty ()), the parentheses obtain that Bytes value first and then pass it to describe.",
+    "The if bytes.isEmpty content then ... else ... in describe returns the first string for empty content and the second otherwise. isEmpty returns Bool. Here, the empty sequence produces Empty.",
+    "The do { ... } in main runs its steps from top to bottom. After displaying the empty sequence, it validates bytes.byte 65. That returns Either<ByteError, Byte>, with Left for failure and Right for success.",
+    "The match branch Left error gives the failure the name error and turns it into a string with show. Right checked names the successful Byte checked, then bytes.singleton checked makes one-byte Bytes. It does not pass the Int literal 65 straight to singleton.",
+    "In the nonempty branch, bytes.toInts content returns an array of integers and show makes a display String. The ${...} in the backtick string inserts that result, so the second line is Bytes: [65].",
+  ],
+  details: [
+    "empty takes Unit and returns Bytes. Just pass (); no source array or validation result is needed. There is no Either or Maybe to unpack to obtain the empty result.",
+    "Empty Bytes is different from Bytes containing a single byte whose value is 0. isEmpty returns True for the former and False for the latter. It checks whether there are zero elements, rather than checking their values.",
+    "You can also use the result of empty as an empty sequence in append or concat. Joining an empty sequence contributes no new elements.",
+  ],
+}
