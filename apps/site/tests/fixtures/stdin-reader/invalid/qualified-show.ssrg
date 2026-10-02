@@ -1,0 +1,9 @@
+import * as effects from "std/effect"
+import * as stdin from "std/stdin"
+pub effect fn main -> Unit with Console, stdin: stdin.Stdin fails ConsoleError = do {
+  result <- effects.attempt (stdin.readLine ())
+  match result {
+    Left reason -> println (show reason)
+    Right _ -> println "Input accepted"
+  }
+}

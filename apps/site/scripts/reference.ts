@@ -9,6 +9,7 @@ import { jsonReaderReading } from "./json-reader-reading"
 import { referenceDescription } from "./reference-copy"
 import { resultFoundationReading } from "./result-foundation-reading"
 import { signatureReading } from "./signature-reading"
+import { stdinReaderReading } from "./stdin-reader-reading"
 import { terminalReaderReading } from "./terminal-reader-reading"
 
 const root = resolve(import.meta.dir, "../../..")
@@ -345,23 +346,26 @@ export function compilerReferenceModules() {
           description: item.description,
           descriptionEn: description.en,
           descriptionJa: description.ja,
-          reading: terminalReaderReading(
+          reading: stdinReaderReading(
             item,
-            bytesReaderReading(
+            terminalReaderReading(
               item,
-              jsonReaderReading(
+              bytesReaderReading(
                 item,
-                effectSequencingReading(
+                jsonReaderReading(
                   item,
-                  filesystemReaderReading(
+                  effectSequencingReading(
                     item,
-                    resultFoundationReading(
+                    filesystemReaderReading(
                       item,
-                      signatureReading(
-                        item.signature,
-                        item.kind,
-                        item.typeParameters,
-                        item.constraints
+                      resultFoundationReading(
+                        item,
+                        signatureReading(
+                          item.signature,
+                          item.kind,
+                          item.typeParameters,
+                          item.constraints
+                        )
                       )
                     )
                   )

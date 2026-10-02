@@ -1,4 +1,8 @@
 import {
+  stdinReaderEditorialFor,
+  stdinReaderModuleBlocks
+} from "./stdin-reader/catalog"
+import {
   terminalReaderEditorialFor,
   terminalReaderModuleBlocks
 } from "./terminal-reader/catalog"
@@ -218,6 +222,13 @@ fn editorialAfterPracticalCollectionEditorialFor symbol: ReferenceSymbol
   -> Maybe<Editorial> =
   match terminalReaderEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterTerminalReaderEditorialFor symbol
+  }
+
+fn editorialAfterTerminalReaderEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match stdinReaderEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -300,5 +311,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   jsonReaderModuleBlocks specifier,
   urlReaderModuleBlocks specifier,
   bytesReaderModuleBlocks specifier,
-  terminalReaderModuleBlocks specifier
+  terminalReaderModuleBlocks specifier,
+  stdinReaderModuleBlocks specifier
 ]

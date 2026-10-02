@@ -43,6 +43,7 @@ import { type RenderedPage, renderGenerator } from "./render-generator"
 import { resultFoundationExamples } from "./result-foundation-readers"
 import { sequenceEditorialExamples } from "./sequence-editorial"
 import { setEditorialExamples } from "./set-editorial"
+import { stdinReaderExamples } from "./stdin-reader"
 import { syntaxExamples } from "./syntax-examples"
 import { terminalReaderExamples } from "./terminal-reader"
 import { textEditorialExamples } from "./text-editorial"
@@ -114,6 +115,7 @@ export function generatorInput(playgroundUrl: string) {
       ...bytesReaderExamples(playgroundUrl),
       ...practicalCollectionExamples(playgroundUrl),
       ...terminalReaderExamples(playgroundUrl),
+      ...stdinReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

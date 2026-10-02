@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "標準入力から一行を読み、空行、入力の終わり、読み取りの失敗を分けて扱うためのモジュールです。一行のバイト数の上限も指定できます。",
+  taskTitle: "パイプで渡したラベルを一つ読む",
+  purpose: "parcelとignoredを別々の行で渡し、最初のparcelだけを表示します。まず一行だけを読む例を動かし、必要に応じて入力の上限や失敗時の表示を選びます。",
+  typescriptBefore: "Node.jsやBunではnode:readlineを使い、最初の行を受け取ったところでループを抜けられます。標準入力を非同期のループで最後まで集める処理とは目的が異なり、全入力の終わりを待ってから一行目を探す必要はありません。",
+  benefit: "Seseragiでは、一行があったかどうかと、読み取りに失敗したかどうかを別々の値で扱えます。標準の上限で読むreadLineと、確認済みの上限を渡すreadLineWithを同じ入力サービスで使えます。",
+  reading: [
+    "import * as stdinはstd/stdinの名前をstdinという別名で使う宣言です。stdin.readLine ()が入力を読む処理で、printlnは結果を出す処理です。",
+    "このmainは読み取りを一回だけ実行します。parcelの後に改行とignoredがあっても、表示はLine: parcelだけです。後続の行を表示する繰り返しは書いていません。",
+    "一行があればJust text、空行ならJust \"\"、もう行がなければNothingです。読み取りの失敗はLeft側に入り、空行や入力の終わりとは別に扱います。"
+  ],
+  details: [
+    "readLineの既定の上限は一行あたり1,048,576バイトです。短いラベルだけを受け付けたいなら、lineLimitで小さい上限を確認し、readLineWithへ渡します。",
+    "この比較の通常のLF・CRLF入力では同じ表示になります。ただしnode:readlineは単独のCRも区切りとして扱い、壊れたUTF-8を置換します。Seseragiは単独のCRを内容に残し、壊れたUTF-8を失敗として返します。",
+    "std/stdinを使うこの例はprocessターゲット用です。実行環境が入力サービスを用意するので、アプリケーションでStdinの内部を作る必要はありません。"
+  ]
+}

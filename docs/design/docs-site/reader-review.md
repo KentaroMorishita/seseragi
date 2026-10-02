@@ -3528,3 +3528,104 @@ The entire prior 212904-byte ledger prefix is preserved, SHA-256
 `455849f485ba5d6b287ce9094dc766063775ff30fa570ec34b45feb428a77e00`. All 106 historical checkbox rows and their
 states remain byte-identical. This appendix adds no checkbox and changes no
 earlier verdict.
+
+
+## 2026-10-02: Stdin12 one-line input and checked byte limits
+
+This bounded addition covers twelve existing destinations and 24 EN/JA bodies:
+std/stdin; its Stdin, StdinError, readLine, LineLimit, lineLimit, defaultLineLimit,
+readLineWith, StdinConfigError, InvalidStdinUtf8 and StdinLineTooLong pages; and
+Prelude readLine. Canonical Stdin/StdinError identities still belong to the
+std/stdin catalog owner. Exact identity/owner/namespace/kind guards preserve
+all other destinations and their classification.
+
+The reader path starts with ordinary standalone Node/Bun TypeScript, a short
+pipe input and a complete Seseragi program. It distinguishes the first line
+from whole-input collection, blank from EOF and failure, checked UTF-8 byte
+limits from character counts, absolute malformed-byte offsets, and moving to
+the next line after a rejected line has been consumed. Native readline's
+malformed-byte replacement and bare-CR splitting are explicitly different;
+the proof-only strict byte helper is not a displayed teaching program.
+
+All 24 initial complete bodies were independently read, then all 24 final
+complete bodies were independently reread after corrections. No final reader
+findings remain. The host-supplied Stdin explanation and the two error tails
+received separately approved exact reading corrections; public constructors
+can be matched while internal representation stays private. Exactly three
+reading records change in each locale; 1,809 others and every canonical
+signature/kind remain unchanged. Configuration headings no longer imply stdin
+consumption, and the standalone TS validator accurately distinguishes an
+unsafe/fractional number from a nonpositive byte count.
+
+The final owned run passed 14 tests and 4,485 assertions. Its 209 subprocess
+records preserve actual argv, synthetic input/environment, exit status and
+separate output bytes/hashes, including expected negative observations. Six
+exact source pairs ran under Node/Bun after strict TS checking. Byte-policy
+recovery, the actual POSIX octal printf pipeline, declared release entry.js,
+package target rejection, focused diagnostics/repairs and six bounded open-pipe
+observations are retained. All 38 family modules format; owned TypeScript,
+Biome and diff checks pass. Six unselected locale article bodies match
+checkpoint16 exactly. This is bounded batch acceptance, not whole-site reader
+acceptance or a new publication claim.
+
+All 22 std/stdin-owned locale bodies suppress browser launch links. Qualified
+package web rejection remains separate from successful standalone bundling;
+bundling does not prove stdin host availability. Only the unchanged Prelude
+readLine source has portable evidence: seven finite-text committed-WASM/current
+browser-path cases and the retained public Playground parcel/newline/empty
+observations. Its source link does not prefill Input. No new public browser
+session, deployed version, arbitrary malformed browser bytes, interactive OS
+stdin or browser stderr separation is claimed. Qualified StdinError Show
+remains unavailable in the verified release observation; examples use public
+patterns and a plain fallback. The eight qualified Console destinations stay
+in gated backlog. Streams, chunks, concurrent input, cancellation and
+compiler/runtime changes are outside this acceptance.
+
+The complete prior ledger prefix and its historical checkbox states are
+preserved. Existing unchecked areas are not promoted by this append.
+
+### Exact displayed source and output fingerprints
+
+| Sample | Seseragi SHA-256 | TypeScript SHA-256 | Demonstration stdout SHA-256 |
+| --- | --- | --- | --- |
+| qualified-one-line | `ba72aed7df35d013d3c626b3e54275b2bf77ddd6083a6fd6152c3704bc088482` | `3bb3cd93b398b349643eb3a5fba6ec5070a69788edd9cbe342ff0ab32d875910` | `bcb8919d5c90e6dcdf1c7d76471e292e91bac412d17d08ff973bd4d9303561bb` |
+| three-lines | `71511a3fea683c5069333ab1c8f23c5299bccfed25506758c35c9ff6671e2822` | `4283d4d0c69489d4b4b4d2c8f4e8b380f397afbb5afa17d682ef2f4da9732313` | `227c5970a1089e1d79fe3294b662c71f7b65cac175eb0e5667c0278f160ac022` |
+| limited-lines | `3f50678a27f0d5a371f205f1c83ca9d377a0b2d13446169e91c6331d58958aad` | `63fb45b70953df6605b6641562f10b467c7596afd40f89766f20edfd50f90050` | `563dc8c1210f4eb189a716e9152bf921f7346e428c7c6935507905f952de3e0f` |
+| limit-config | `8161f10419085caff9438d531cbb8c0d0181a9a1df60fb86a3c799a4bdea62ad` | `cdb38473ba179913ab8d0dfb83bbfd0e4f25923b40ac2ea786b34be246b2afc9` | `15774a2ecba0b6df43cbb926e7f155383870dfd325b51d7034cefee7f0c375fd` |
+| default-limit | `d71ea0a134804ff8abe947cc6f257cb8d6a57ac24053310229ef5726c9adb7d1` | `bfa8814efcca4bcfadf31c81aba5b099238f1006bd174f219ce273f44d3325f2` | `99bedcb01a260d7bbaa507f2f1be2754abadd385edd98257477b8c68d3abd801` |
+| one-line | `3da2a0a10804c02c391cee2ec589983dcb4370168566c8f5b175a1111a5dcd15` | `3bb3cd93b398b349643eb3a5fba6ec5070a69788edd9cbe342ff0ab32d875910` | `bcb8919d5c90e6dcdf1c7d76471e292e91bac412d17d08ff973bd4d9303561bb` |
+
+### Complete final article body fingerprints
+
+| English route (Japanese adds /ja) | EN body SHA-256 | JA body SHA-256 |
+| --- | --- | --- |
+| /docs/library/stdin/ | `245e16fa11dba6218ebd64c8672e5f02baf27f0a1a09b7fd4bcaad0abe32c5aa` | `70bff6596b7f4bf3adcb87459dc9f6ea6f5f496bbb7f28a73cefc9570a47d6a0` |
+| /docs/library/stdin/opaque-type/stdin/ | `9347a9a7de550caa8e8f1ec4c6cca20004520aabca2052ab596438a1ed6a8dce` | `64b682711f4d3f986aeb20012256f786d1b0a9756ee30c668166eac117d2fb84` |
+| /docs/library/stdin/opaque-type/stdinerror/ | `afcceeccbf18b7703eb13f3a618a9581b3a8b89fb1941988becca8f55274fcb0` | `518da2b19500c050739a145c00f1890d57c92888e0644bd0a0145762357dd8aa` |
+| /docs/library/stdin/effect-function/readline/ | `ae7774110c70c6afec9e032d0ebee47e13b9f1610113bc67841cebc462e26373` | `9da87f2404bffde99186572aeabaefe36e24b64c4fbbe0d91ba6bcead6ee4d64` |
+| /docs/library/stdin/opaque-type/linelimit/ | `da0b121d8d7eef077365e4a8f5674a69740b412b4dd2f567605e497d265829c6` | `482300f2c59d8247a1e5917c7cb45a9243d454b215c85ceb4ff411e2a6589bd2` |
+| /docs/library/stdin/function/linelimit/ | `b4edcffd7e3225a72d8c31fcedeaaac2e59ae5c96a9f5ea2eb1e79f46b4a7fe6` | `0ec798ae4c6128be087ec65305f93bc5cf812ea056f7f80b84c1606419ae7ae6` |
+| /docs/library/stdin/function/defaultlinelimit/ | `263ba1fa849af29753fcfd9d44c46ea416c107e61e49ea83403e1fee3b46ae65` | `931fe78289055218be828eb314dcca5280d0ffdbca87d37b120d85d4d7ed435c` |
+| /docs/library/stdin/effect-function/readlinewith/ | `153588373beae2b9ba5c39e8284390476694257c49c9d9f92209b9f1be8c10fb` | `93acaa3c2cd4e5b66e4cb207e02f1878f4c76072376f5a32d2b84ddec2d5a9fd` |
+| /docs/library/stdin/opaque-type/stdinconfigerror/ | `5ed26b9a03f292a271b1c1800a9c92d40204d19263272842a351d7bd6bc53947` | `0c608580ec14a96547e419040633795b8c1e9e602435ba371142e5edf0b99466` |
+| /docs/library/stdin/constructor/invalidstdinutf8/ | `657bb95317bf46808279f9881852e985e9ae636c5636b524ed10f00d95c912dd` | `6c8aed87db48a4f750190dae20042f6b1036c84bbe50d8d2d5499372b1851493` |
+| /docs/library/stdin/constructor/stdinlinetoolong/ | `4fbd33685d1b6227b44bd95aacce044ed76522f4475d6037ca9d909520e73ae4` | `c1cb76617edbe81220d75cc57d1632643303529806891d35963443f342ecce73` |
+| /docs/library/prelude/function/readline/ | `f043e921146d591677dbecffbc026491582a7ce25e13b446877a0ca3a429d387` | `979be2d1e5eddc15439277cb027521eb6320c521f9db284e6b7bc71687168153` |
+
+### Evidence bindings
+
+Evidence root: `/workspace/shared/seseragi-stdin12-authoring-20261002`.
+Retained feasibility: `/workspace/shared/seseragi-stdin12-plan-20261002`.
+
+- `final-owned-source-manifest.json`: `aaba0926a4f0a801c2d2b98cdc129d1d1a5b15a036b131ee7c760bccaba7ca8e`
+- `final-source-output-manifest.json`: `9fa3b48deac3a5d6a5b0d5eb5e18029b5791a74c9690ab08063e7fcaffbc5590`
+- `initial-body-manifest.json`: `45e9d10c3562ee4ba7af1893602919bafcc4caf8933d8b2175994c6f9890cb81`
+- `final-body-manifest.json`: `3ce42143806fa7ddb8c697c3dd23922abcd5e228789c334ea0e5d0da191f1105`
+- `english-reader-review.json`: `caaaf73c1dc1120863164525341ac22c6b97d377a120515e35e75f6f6569076d`
+- `japanese-reader-review.json`: `cdd1036b2d4928c2942b613056b15547abf6dd979804f5c8e26830f2423d9884`
+- `english-reader-rereview.json`: `7a3d6cd05c2ce8abe602276a6155994ec1aefad3353001b226cb782938626f18`
+- `japanese-reader-rereview.json`: `ec06ef596a42d8045c784a63b0151be6e037c6edcb9b822eba403584ee36cd26`
+- `reading-change-audit-final.json`: `211666452c7ccf8696857e5a5eeb5e8f5dbc7592e5f0acf59eb2541fe32bf7ba`
+- `final-test-summary.json`: `cb844c8343e5f0c6b9a7390770395e723b708ec86a5e2a46de73d259a474fd05`
+- `final-unselected-controls.json`: `eb57c30fb8626e7289c40d6f5f75cb76fc25881e15f2170aa923c587bb3adac2`
+- `prior-public-playground-observation.json`: `e7fcecfa5c2a68a19b5b222ab8f5af123073c98599f60e3cbd080d6ac4243927`

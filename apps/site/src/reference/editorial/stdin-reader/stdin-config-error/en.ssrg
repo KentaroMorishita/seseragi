@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "StdinConfigError describes an invalid input configuration. With lineLimit, you can distinguish a nonpositive value from one that is too large.",
+  taskTitle: "Explain how to correct an unusable limit",
+  purpose: "Check five candidate settings. Explain the minimum for 0 and -1, the maximum for 67,108,865, and display Accepted for both valid endpoints.",
+  typescriptBefore: "TypeScript can check integer values and their range before returning a message for each condition. This comparison covers configuration checks only; it does not yet read input or count the bytes in a string.",
+  benefit: "Match NonPositiveLineLimit and LineLimitTooLarge without parsing error text. Both carry the supplied integer, so the message can identify the setting that needs to change.",
+  reading: [
+    "The bytes in Left (stdin.NonPositiveLineLimit bytes) is the supplied setting, such as 0 or -1. It is not the length of a line that was read. The message includes it alongside the one-byte minimum.",
+    "Left (stdin.LineLimitTooLarge bytes) handles a setting above 67,108,864. The candidate 67,108,865 enters this branch and displays the supported maximum.",
+    "Right _ means the configuration was accepted. The Left reason branch remains available to display other configuration errors."
+  ],
+  details: [
+    "The public constructors of StdinConfigError can be matched even though the type is listed as opaque-type. This lineLimit example handles its two limit errors without using other input-configuration operations.",
+    "A configuration problem is separate from a StdinError during reading. lineLimit consumes no input and does not check for malformed UTF-8 or an actual line exceeding the limit.",
+    "Pass the LineLimit from a valid configuration to readLineWith to create a read using that maximum. Merely constructing an error value does not read input or cause a failure."
+  ]
+}

@@ -424,4 +424,11 @@ import * as terminalReaderPrintlnStatus from "./terminal-reader/println-status"
 import * as terminalReaderPrintvalueCount from "./terminal-reader/printvalue-count"
 import * as terminalReaderProcessFailure from "./terminal-reader/process-failure"
 
+import * as stdinReaderQualifiedOneLine from "./stdin-reader/qualified-one-line"
+import * as stdinReaderThreeLines from "./stdin-reader/three-lines"
+import * as stdinReaderLimitedLines from "./stdin-reader/limited-lines"
+import * as stdinReaderLimitConfig from "./stdin-reader/limit-config"
+import * as stdinReaderDefaultLimit from "./stdin-reader/default-limit"
+import * as stdinReaderOneLine from "./stdin-reader/one-line"
+
 pub effect fn main -> Unit = effects.succeed ()
