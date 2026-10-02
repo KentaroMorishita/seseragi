@@ -1,0 +1,8 @@
+import * as sets from "std/set"
+import * as json from "std/json"
+pub effect fn main = do {
+  _ <- println (json.encodeString (sets.isEmpty (sets.empty<Int> ())))
+  _ <- println (json.encodeString (sets.isEmpty (sets.fromIterable [0])))
+  _ <- println (json.encodeString (sets.isEmpty (sets.fromIterable [False])))
+  println (json.encodeString (sets.isEmpty (sets.fromIterable [""])))
+}

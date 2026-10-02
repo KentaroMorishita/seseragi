@@ -71,7 +71,7 @@ test("identity overlay renders twelve real pages in both locales and preserves d
     const module = {
       ...sourceModule,
       items: sourceModule.items.filter(
-        (x) => identities.has(x.identity) || x.identity === "std/array::length"
+        (x) => identities.has(x.identity) || x.identity === "std/array::reverse"
       ),
     }
     expect(module.items).toHaveLength(18)
@@ -115,7 +115,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
   }
 }`,
     })
-    expect(output).toHaveLength(38) // Full Array overlay inventory, module and untouched length control.
+    expect(output).toHaveLength(38) // Full Array overlay inventory, module and untouched reverse control.
     const pages = new Map(output.map((x) => [x.route, x.html]))
     const titles = new Map(output.map((x) => [x.route, pageTitle(x.html)]))
     for (const prefix of ["", "/ja"]) {
@@ -191,15 +191,15 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      const lengthHtml = pages.get(
-        `${prefix}/docs/library/array/function/length/`
+      const reverseHtml = pages.get(
+        `${prefix}/docs/library/array/function/reverse/`
       )!
-      const lengthItem = module.items.find(
-        (x) => x.identity === "std/array::length"
+      const reverseItem = module.items.find(
+        (x) => x.identity === "std/array::reverse"
       )!
-      expect(lengthHtml).not.toContain('id="using-this-operation"')
-      expect(plain(lengthHtml)).toContain(
-        prefix === "/ja" ? lengthItem.descriptionJa : lengthItem.descriptionEn
+      expect(reverseHtml).not.toContain('id="using-this-operation"')
+      expect(plain(reverseHtml)).toContain(
+        prefix === "/ja" ? reverseItem.descriptionJa : reverseItem.descriptionEn
       )
       expect(
         plain(pages.get(`${prefix}/docs/library/array/function/findindex/`)!)
@@ -260,7 +260,7 @@ test("overlay identity inventory stays valid and ignores unrelated namespace, ki
     const first = items[0]
     const probes = [
       ...items,
-      { ...first, identity: "std/array::length" },
+      { ...first, identity: "std/array::reverse" },
       { ...first, namespace: "type" },
       { ...first, itemKind: "constructor" },
       { ...first, module: "std/list" },

@@ -401,4 +401,19 @@ import * as bytesReaderTextToPortablePayload from "./bytes-reader/text-to-portab
 import * as bytesReaderUrlSafeBase64Payload from "./bytes-reader/url-safe-base64-payload"
 import * as bytesReaderValidateByteInput from "./bytes-reader/validate-byte-input"
 
+import * as practicalCollectionArrayFilterTasks from "./practical-collection/array-filter-tasks"
+import * as practicalCollectionArrayFindTask from "./practical-collection/array-find-task"
+import * as practicalCollectionArrayOptionalAccess from "./practical-collection/array-optional-access"
+import * as practicalCollectionArrayPageRecords from "./practical-collection/array-page-records"
+import * as practicalCollectionArrayResultState from "./practical-collection/array-result-state"
+import * as practicalCollectionListFilterTasks from "./practical-collection/list-filter-tasks"
+import * as practicalCollectionListFindTask from "./practical-collection/list-find-task"
+import * as practicalCollectionListOptionalAccess from "./practical-collection/list-optional-access"
+import * as practicalCollectionListPageRecords from "./practical-collection/list-page-records"
+import * as practicalCollectionListResultState from "./practical-collection/list-result-state"
+import * as practicalCollectionMapEmptyState from "./practical-collection/map-empty-state"
+import * as practicalCollectionMapFilterStock from "./practical-collection/map-filter-stock"
+import * as practicalCollectionSetEmptyState from "./practical-collection/set-empty-state"
+import * as practicalCollectionSetFilterIds from "./practical-collection/set-filter-ids"
+
 pub effect fn main -> Unit = effects.succeed ()

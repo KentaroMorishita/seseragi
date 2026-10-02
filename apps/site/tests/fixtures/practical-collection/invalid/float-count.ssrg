@@ -1,0 +1,2 @@
+import * as lists from "std/list"
+pub fn rejected unit: Unit -> List<Int> = lists.take 1.5 `[10, 20]

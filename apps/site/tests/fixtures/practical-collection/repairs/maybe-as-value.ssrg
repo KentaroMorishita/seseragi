@@ -1,0 +1,6 @@
+import * as arrays from "std/array"
+fn label value: Maybe<String> -> String = match value {
+  Just text -> text
+  Nothing -> "missing"
+}
+pub effect fn main = println (label (arrays.head ["ready"]))

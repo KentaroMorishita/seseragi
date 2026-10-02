@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "filter keeps every array element whose condition returns True. It preserves source order, leaves the original array unchanged, and returns an empty array when nothing matches.",
+  taskTitle: "Keep only urgent tasks in a list",
+  purpose: "From the tasks Read, Review, and Ship, select the urgent tasks Review and Ship. Display both the selection and the original list to check that the three original tasks remain available afterward.",
+  typescriptBefore: "TypeScript tasks.filter(task => task.urgent) already does this directly without changing the original array. The following map only selects titles for display. The final call applies the same condition to an empty array and confirms that the result is [].",
+  benefit: "Seseragi writes the call as items.filter urgent tasks: the condition function first, then the array. The result remains Array<Task>. The condition’s type makes explicit that it takes a Task and returns Bool.",
+  setup: "items and json are import aliases for std/array and std/json. struct Task defines a task with title: String and urgent: Bool fields. Task { ... } constructs each value, and square brackets collect them into an array. True means urgent; False means not urgent.",
+  after: [
+    "fn urgent task: Task -> Bool = task.urgent defines a function taking one task and returning its urgent field. items.filter urgent tasks applies that function to each task and keeps the ones returning True in selected.",
+    "[task.title | task <- selected] is an array comprehension. It names each selected element task in order and builds a display array from its title. filter itself does not turn tasks into titles.",
+    "The first output is [\"Review\",\"Ship\"]. The next output uses the original tasks, which still contains all three entries including Read. The final call filters an empty array created by items.empty<Task> () and returns [].",
+  ],
+  details: [
+    "filter retains every match in source order. Use find when you only need the first matching task. find returns Maybe<Task>, while filter returns Array<Task> with zero or more elements.",
+    "The condition’s Bool decides what to keep. An element is not discarded merely because its value is 0, False, or an empty string. If the condition accepts it, that value remains in the result.",
+    "An all-False condition and an empty input both produce an empty array. The condition must accept one element and return Bool. A function returning a String such as an explanation is not a valid condition.",
+  ],
+}

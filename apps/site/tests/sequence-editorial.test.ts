@@ -72,7 +72,7 @@ test("fourteen editorial pages render exact canonical declarations and samples i
         items: module.items.filter(
           (x) =>
             identities.has(x.identity) ||
-            x.identity === `${module.specifier}::length`
+            x.identity === `${module.specifier}::reverse`
         ),
       }))
     expect(modules).toHaveLength(2)
@@ -134,11 +134,11 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           )
         } else expect(html).toContain(`href="${prefix}/docs/library/list/"`)
         const control = pages.get(
-          `${prefix}/docs/library/${module}/function/length/`
+          `${prefix}/docs/library/${module}/function/reverse/`
         )!
         const item = modules
           .find((x) => x.specifier === `std/${module}`)!
-          .items.find((x) => x.identity === `std/${module}::length`)!
+          .items.find((x) => x.identity === `std/${module}::reverse`)!
         expect(control).not.toContain('id="using-this-operation"')
         expect(plain(control)).toContain(
           prefix === "/ja" ? item.descriptionJa : item.descriptionEn
@@ -231,7 +231,7 @@ test("each selected identity exists once and wrong module, namespace, kind and s
         ...module,
         items: [
           ...items,
-          { ...first, identity: `std/${name}::length` },
+          { ...first, identity: `std/${name}::reverse` },
           { ...first, namespace: "type" },
           { ...first, itemKind: "constructor" },
           { ...first, module: "std/text" },

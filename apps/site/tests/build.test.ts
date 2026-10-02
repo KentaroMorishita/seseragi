@@ -221,7 +221,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japaneseApi).not.toContain("APIの詳細説明（英語原文）")
-    expect(textContent(japaneseApi)).toContain("指定した添字の要素を返します")
+    expect(textContent(japaneseApi)).toContain(
+      "getは、0から数える位置にある配列の要素をMaybeで返します。"
+    )
     expect(textContent(japaneseApi)).toContain("この宣言の読み方")
     expect(textContent(japaneseApi)).toContain("引数は2個です")
     expect(textContent(japaneseApi)).not.toMatch(/準備中|整備中/u)

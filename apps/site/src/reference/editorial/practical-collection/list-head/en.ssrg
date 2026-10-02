@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.head returns a List’s first element in Just, or Nothing for an empty List. A first element that is an empty string is still a present result.",
+  taskTitle: "Read the first label, including when the list is empty",
+  purpose: "Display the first label while allowing for a list with no entries yet. The example’s first label is an empty string, so having no text to display stays distinct from having no element.",
+  typescriptBefore: "For a normal array, labels[0] reads the first value and an explicit undefined check handles absence. This is already concise, idiomatic TypeScript. The comparison is the task of reading the first item; JavaScript arrays and Seseragi Lists are different data structures.",
+  benefit: "head returns “use the first item if present” as Maybe<String>. Handle that one result with match instead of separating a length check from a second operation to retrieve the item.",
+  setup: "items is the alias for std/list, and items.head labels passes one List argument. The backtick before [ in `[\"\", \"Review\"] creates a List. Ordinary [\"\", \"Review\"] creates an Array and cannot be passed directly to a std/list function.",
+  after: [
+    "The final two lines call head. labels has an empty string at its beginning, so it prints present: \"\"; the empty List made by items.empty<String> () prints missing. <String> specifies the empty List’s element type, and () is the Unit value supplied to empty; it carries no meaningful information.",
+    "describe accepts Maybe<String>, either Just containing a String or Nothing without a value. Its match uses the contained value in Just label and returns missing for Nothing. json.encodeString puts quotes around even an empty string so its presence is visible.",
+    "The earlier five lines use get to read the same data by position. Positions 0 and 1 exist; a negative position, the position just past the end at 2, and an empty List produce missing. head itself takes no position argument.",
+  ],
+  details: [
+    "head only checks whether there is a first element. An empty List gives Nothing; otherwise it puts the first element in Just. It does not walk the whole List, and the work does not grow with its length.",
+    "A first element of 0 or False gives Just 0 or Just False. An empty string is treated the same way. The element’s truth value or character count does not determine whether the List is empty.",
+    "Maybe<String> is not String. Provide a branch that uses the Just value and a branch for absence. This example displays missing; an application can choose its own empty-state message there.",
+    "Use get for a position other than the first. List get and length walk through elements, so reading just the first item does not require counting everything with length before calling get 0.",
+  ],
+}

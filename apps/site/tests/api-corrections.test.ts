@@ -341,8 +341,8 @@ test("exact identity, module, namespace and kind choose only the nine correction
     .flatMap((module) => module.items)
     .filter((x) =>
       [
-        "std/array::get",
-        "std/list::take",
+        "std/array::reverse",
+        "std/list::reverse",
         "std/array::toList",
         "std/ref::get",
       ].includes(x.identity)
@@ -410,14 +410,14 @@ test("eighteen current production bodies correct summaries, preserve signatures,
   const all = compilerReferenceModules()
   const wanted = new Set<string>(apiCorrectionCases.map((x) => x.identity))
   const controls = new Set([
-    "std/map::filter",
+    "std/stream::filterMap",
     "std/web/storage::keys",
     "std/transformer/state::put",
     "std/queue::offer",
     // The NonEmptyList type now has authored copy too. Its Hash instance
     // remains a separate, unreviewed no-overlay control in the same module.
     "std/non-empty-list::Hash",
-    "std/set::filter",
+    "std/stream::empty",
   ])
   const modules = all
     .map((module) => ({
@@ -427,7 +427,7 @@ test("eighteen current production bodies correct summaries, preserve signatures,
       ),
     }))
     .filter((module) => module.items.length > 0)
-  expect(modules).toHaveLength(6)
+  expect(modules).toHaveLength(7)
   expect(modules.flatMap((module) => module.items)).toHaveLength(15)
   const input = {
     schema: 1,
@@ -466,7 +466,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
   }
 }`,
     })
-    expect(output).toHaveLength(42)
+    expect(output).toHaveLength(44)
     const pages = new Map(output.map((item) => [item.route, item.html]))
     for (const item of apiCorrectionCases) {
       const symbol = modules

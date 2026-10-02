@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.headはListの先頭をJustで返し、空ならNothingを返します。先頭の値が空文字列でも、要素があれば見つかった結果です。",
+  taskTitle: "先頭のラベルを、空の一覧にも対応して読む",
+  purpose: "一覧の先頭を表示したいとき、まだ一件もない場合にも対応します。例の先頭は空文字列です。表示する文字がない場合と、一覧そのものが空の場合を分けます。",
+  typescriptBefore: "通常の配列ならlabels[0]で先頭を読み、undefinedかを調べます。これは簡潔で自然な書き方です。比較しているのは先頭を読む作業で、JavaScriptの配列とSeseragiのListが同じデータ構造だという意味ではありません。",
+  benefit: "headは「先頭があれば使う」をMaybe<String>として返します。先に長さを調べてからもう一度取り出す処理を分けず、一つの結果をmatchで扱えます。",
+  setup: "itemsはstd/listの別名で、items.head labelsはListを一つ渡す呼び出しです。`[\"\", \"Review\"]は[の前のバッククォートでListを作ります。通常の[\"\", \"Review\"]はArrayなので、そのままstd/listの関数へは渡せません。",
+  after: [
+    "headを呼ぶのはプログラムの最後の二行です。labelsには先頭の空文字列があるのでpresent: \"\"、items.empty<String> ()で作った空のListではmissingが表示されます。<String>は空のListの要素の型、()は意味のある情報を持たないUnitの値で、emptyの引数として渡します。",
+    "describeのMaybe<String>は、Stringを持つJustか、値のないNothingです。matchのJust labelでは中身をlabelとして使い、Nothingではmissingを返します。json.encodeStringは空文字列にも引用符を付け、存在していることを表示で確認できるようにします。",
+    "その前の五行は、同じ一覧を位置で読むgetの例です。位置0と1は存在し、負の位置、末尾の次の位置2、空のListではmissingになります。head自体には位置を渡しません。",
+  ],
+  details: [
+    "headは、Listが空か、先頭の要素と残りを持つかだけを確認します。空ならNothing、先頭があればその値をJustに入れます。全体をたどらないため、要素数にかかわらず一定の手順で先頭を読めます。",
+    "先頭が0やFalseでも、それぞれJust 0、Just Falseです。空文字列も同じで、値の真偽や文字数を見て空のListと判断することはありません。",
+    "Maybe<String>はStringではありません。Justの中身を使う枝と、Nothingの場合の表示や処理を用意します。例はmissingを表示しますが、アプリに合う空状態の文言をここで選べます。",
+    "先頭以外の位置にはgetを使います。Listのgetとlengthは要素をたどる操作なので、先頭を読むだけならlengthで件数を数えてからget 0を呼ぶ必要はありません。",
+  ],
+}

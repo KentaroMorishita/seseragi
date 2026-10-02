@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "isEmpty returns a Bool indicating whether an array has no elements. Arrays containing just 0, False, or an empty string each have one element and are not empty.",
+  taskTitle: "Choose an empty state without losing zero or blank results",
+  purpose: "Decide whether a results list should display “No results.” The question is whether any elements exist. A total of 0, a False selection state, and a blank label each still count as one result.",
+  typescriptBefore: "TypeScript values.length === 0 is a concise and sufficient emptiness check. Compare the element count with zero rather than testing the array or its first value for truthiness. The example compares an empty array with single-element arrays containing 0, false, and an empty string.",
+  benefit: "Seseragi’s items.isEmpty values names the question directly: whether the array is empty, rather than what its count is. It returns Bool. The benefit is choosing an operation that expresses the purpose, rather than making an already short TypeScript expression shorter.",
+  setup: "items and json are import aliases for std/array and std/json. let none: Array<Int> = [] defines an empty integer array. With no elements from which to infer its type, this variable explicitly names Array<Int>.",
+  after: [
+    "items.isEmpty none returns True. [0], [False], and [\"\"] each contain one element, so all return False. True and False are Seseragi Bool values; JSON displays them as lowercase true and false.",
+    "The first four output lines are the emptiness checks. Only the first is true; the rest are false. Parentheses evaluate the isEmpty call before passing its result to json.encodeString.",
+    "The later length calls compare element counts. Empty none has 0 elements, one containing [0] has 1, and several containing [0, 2, 0] has 3. Whether an element’s value is zero affects neither the count nor emptiness.",
+  ],
+  details: [
+    "isEmpty does not test whether the array contains a “valid” value or whether every label is blank. [\"\"] is not empty. To ignore blank-label rows, first define that condition and filter the array, then pass the result to isEmpty.",
+    "Use isEmpty when you need Bool and length when you need a count to display. isEmpty does not retrieve an element. When you also need the first value, handling the Maybe returned by head better matches the task.",
+    "The element type does not affect the check, but the input must be an Array. Array and List are distinct types. Use isEmpty from std/list for a List.",
+  ],
+}

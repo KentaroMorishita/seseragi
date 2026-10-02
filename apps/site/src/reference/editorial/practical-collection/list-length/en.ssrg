@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.length returns the number of List elements as Int. Zero counts as an element, and repeated values each count separately.",
+  taskTitle: "Display how many items are in a list",
+  purpose: "After collecting numeric results, display their count. Compare empty, one-element, and three-element Lists to see that counting does not depend on whether values are zero or repeated.",
+  typescriptBefore: "For a normal array, the length property gives its element count. Here one is [0] but has length 1, while several is [0, 2, 0] and has length 3. This compares the same task; List does not obtain its length in the same way or with the same cost as an array.",
+  benefit: "TypeScript’s length is already brief. Seseragi’s items.length is a function for counting List elements, returning Int. The call and its type make clear which collection is being counted.",
+  setup: "items is the alias for std/list. A backtick immediately before [, as in `[0, 2, 0], creates a List. [0, 2, 0] without it creates an Array. Empty none has the annotation List<Int> to specify an integer List.",
+  after: [
+    "The counts appear in the final three lines. items.length none is 0, items.length one is 1, and items.length several is 3. show converts the resulting Int into a String for display.",
+    "The first four lines check isEmpty. Only the empty List gives true; the Lists containing one 0, False, or empty string give false. These Bool values are displayed as lowercase JSON.",
+    "A call such as items.length several puts the List after the function name. A in List<A> is its element type, which is Int for the three Lists being counted here. The resulting Int is the number of elements, not a value taken from the List.",
+  ],
+  details: [
+    "List length walks all the elements from beginning to end and counts them. It is not a constant-time property lookup like the length of a JavaScript array.",
+    "If only emptiness matters, isEmpty checks whether the List has a first element without counting everything. If only the first element is needed, use head; that task does not need a full length calculation either.",
+    "Zeros and repeated values count separately. A List containing only False or only an empty string also has one element. length does not inspect truthiness or count characters.",
+    "The argument is List and the result is a nonnegative Int. Use std/array’s length for an Array. Counting a List<String> returns the number of strings, not the number of characters within them.",
+  ],
+}

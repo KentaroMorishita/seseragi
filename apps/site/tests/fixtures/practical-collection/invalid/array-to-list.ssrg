@@ -1,0 +1,2 @@
+import * as lists from "std/list"
+pub fn rejected unit: Unit -> Maybe<Int> = lists.head [10]

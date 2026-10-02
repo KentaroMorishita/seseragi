@@ -1193,7 +1193,7 @@ try {
             )
             assert.ok(
               (await page.locator(".api-reference").innerText()).includes(
-                "指定した添字の要素を返します"
+                "getは、0から数える位置にある配列の要素をMaybeで返します。"
               )
             )
             assert.ok(

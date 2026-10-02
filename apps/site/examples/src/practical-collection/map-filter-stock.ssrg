@@ -1,0 +1,13 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+fn available sku: String -> quantity: Int -> Bool = sku != "hold" && quantity > 0
+pub effect fn main = do {
+  let stock = maps.fromEntries [("tea", 2), ("hold", 5), ("coffee", 3), ("empty", 0)]
+  let selected = maps.filter available stock
+  _ <- println (json.encodeString (maps.entries selected))
+  _ <- println (json.encodeString (maps.entries stock))
+  println (
+    json.encodeString
+      (maps.entries (maps.filter available (maps.empty<String, Int> ())))
+  )
+}
