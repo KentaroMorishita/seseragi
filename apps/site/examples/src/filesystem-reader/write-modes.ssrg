@@ -1,0 +1,37 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type ReportError deriving Show =
+  | PathFailure paths.PathError
+  | WriteFailure fs.FileSystemError
+  | ReadFailure fs.FileTextError
+
+effect fn report directory: paths.Path -> String with FileSystem fails ReportError =
+  do {
+    file <- paths.child "report.txt" directory
+      |> effects.fromEither
+      |> effects.mapError PathFailure
+    let planned = fs.writeTextUtf8 fs.CreateNew "original" file
+    before <- fs.exists file |> effects.mapError WriteFailure
+    _ <- planned |> effects.mapError WriteFailure
+    duplicate <- effects.attempt planned
+    original <- fs.readTextUtf8 file |> effects.mapError ReadFailure
+    _ <- fs.writeTextUtf8 fs.Replace "OK" file |> effects.mapError WriteFailure
+    _ <- fs.writeTextUtf8 fs.Append "!" file |> effects.mapError WriteFailure
+    updated <- fs.readTextUtf8 file |> effects.mapError ReadFailure
+    let duplicateLabel = match duplicate {
+      Left error -> show error.kind
+      Right _ -> "unexpected success"
+    }
+    effects.succeed `before: ${show before}\nduplicate: ${duplicateLabel}\noriginal: ${original}\nupdated: ${updated}`
+  }
+
+pub effect fn main = do {
+  result <- effects.attempt (fs.withTemporaryDirectory "fs16-modes-" report)
+  let message = match result {
+    Right text -> text
+    Left problem -> show problem
+  }
+  println message
+}

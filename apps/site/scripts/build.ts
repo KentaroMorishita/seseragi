@@ -24,6 +24,7 @@ import { dataChoiceExamples } from "./data-choices"
 import { dataOperationExamples } from "./data-operations"
 import { dataValidationReaderExamples } from "./data-validation-readers"
 import { failureReaderExamples } from "./failure-readers"
+import { filesystemReaderExamples } from "./filesystem-reader"
 import { lifecycleReaderExamples } from "./lifecycle-readers"
 import { listEditorialExamples } from "./list-editorial"
 import { mapEditorialExamples } from "./map-editorial"
@@ -100,6 +101,7 @@ export function generatorInput(playgroundUrl: string) {
       ...dataValidationReaderExamples(playgroundUrl),
       ...numericReaderExamples(playgroundUrl),
       ...webReaderExamples(playgroundUrl),
+      ...filesystemReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

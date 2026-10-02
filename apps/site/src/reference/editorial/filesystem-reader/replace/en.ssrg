@@ -1,0 +1,20 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "The mode that truncates existing content before writing, or creates a file when absent.",
+  taskTitle: "Replace a long report with shorter content",
+  purpose: "Write A longer report to report.txt, then write only OK. Reading back gives exactly OK, showing that the previous report’s suffix does not remain after the shorter content.",
+  setup: "effects, fs, and paths are imported modules. effect fn report directory: paths.Path -> String defines work taking a Path called directory and producing a String when run. with FileSystem is the service requirement; fails ReportError names ordinary failures. do runs operations in order, <- receives a result, and _ <- waits for completion without retaining one.",
+  after: [
+    "paths.child \"report.txt\" directory returns Left with a problem or Right with a Path. |> passes it to effects.fromEither to make executable work, and file <- receives the Path. ReportError’s PathFailure, WriteFailure, and ReadFailure hold problems from each stage, wrapped with effects.mapError. deriving Show enables display with show.",
+    "The first writeTextUtf8 receives fs.Replace, \"A longer report\", and file, in that order. The temporary directory has no such file yet, so Replace creates it. The second write also uses Replace, writing \"OK\" and truncating the previous content.",
+    "The final readTextUtf8 returns the String OK as report’s successful result. main uses withTemporaryDirectory to create a dedicated workspace and remove it afterward. effects.attempt turns an ordinary failure into Left problem or success into Right text. let names an immutable value. match chooses message for println."
+  ],
+  details: [
+    "Replace is a named choice of WriteMode and takes no arguments. Write fs.Replace without (). Choose CreateNew to protect existing content, or Append to add after it.",
+    "The name Replace does not promise that the entire file changes at once. A failure or cancellation partway through writing can leave only the content written so far. Do not treat ordinary Replace as a safe all-or-nothing replacement when retaining the old content matters.",
+    "The content is written as UTF-8, and success waits for flush and close. Flushing sends out pending output; closing closes the file. This still does not guarantee survival after power loss. If you need all-or-nothing file replacement, examine the conditions of the separate writeAtomic operation."
+  ],
+  comparisonBefore: "In Node-based TS, writeFile with flag: \"w\" truncates existing content or creates a file. It already handles replacing a report with shorter text.",
+  comparisonAfter: "Seseragi makes the same choice explicit with fs.Replace. Neither ordinary write alone promises all-or-nothing replacement or power-loss durability."
+}

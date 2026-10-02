@@ -1,0 +1,20 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "Return the spelling stored in a Path as a String for display or logging.",
+  taskTitle: "Include a destination in a message",
+  purpose: "Build the message Saving reports/report.txt from a checked destination. render converts a Path to text. It does not save a file or inspect where the path leads.",
+  setup: "The import names std/path as paths. paths.parse \"reports/report.txt\" checks the input and returns Left reason for a problem or Right file for a Path. match selects the branch for that shape. Within Right, the space-separated call paths.render file passes file to render.",
+  after: [
+    "paths.render file returns the String reports/report.txt. ${...} inside the backtick string inserts it after Saving, and println displays the result followed by a newline. This does not modify the Path value.",
+    "pub effect fn main is the execution entry point. Printing uses an effect, but parse and render themselves perform no file operations. The Left branch displays the problem using show reason, so invalid input never reaches render.",
+    "Changing the input to reports/./report.txt also makes render return reports/./report.txt. render returns the stored spelling; it does not remove a seemingly redundant . segment."
+  ],
+  details: [
+    "In the declaration, arg1: Path is the input and -> String is the return type. There is no reason to pass an existing String such as \"report.txt\" to render. Use parse where you need a Path, and render where display needs a String.",
+    "The output keeps the Path separator /. It does not translate to Windows backslashes, fold case, or normalize Unicode.",
+    "Even when rendered text is unchanged, the files or permissions encountered by a later operation may change. Do not treat successful rendering as an existence check or evidence that a save completed."
+  ],
+  comparisonBefore: "If TS already stores a path as a string, it can insert it directly into a template string. This display operation needs no extra conversion.",
+  comparisonAfter: "Seseragi passes a Path to file operations and uses render to obtain a String for display. This is an explicit conversion between distinct types, not an example of shorter display code."
+}

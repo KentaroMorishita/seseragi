@@ -1,0 +1,60 @@
+import { editorial as case0 } from "./path-module/page"
+import { editorial as case1 } from "./path/page"
+import { editorial as case2 } from "./parse/page"
+import { editorial as case3 } from "./render/page"
+import { editorial as case4 } from "./child/page"
+import { editorial as case5 } from "./fs-module/page"
+import { editorial as case6 } from "./filesystem/page"
+import { editorial as case7 } from "./filesystemerror/page"
+import { editorial as case8 } from "./filetexterror/page"
+import { editorial as case9 } from "./writemode/page"
+import { editorial as case10 } from "./createnew/page"
+import { editorial as case11 } from "./replace/page"
+import { editorial as case12 } from "./append/page"
+import { editorial as case13 } from "./readtextutf8/page"
+import { editorial as case14 } from "./writetextutf8/page"
+import { editorial as case15 } from "./withtemporarydirectory/page"
+
+import { ReferenceSymbol } from "../../../model/build"
+import { Block } from "../../../model/page"
+import { Editorial, editorialBlocks } from "../model"
+
+fn guarded symbol: ReferenceSymbol
+  -> owner: String
+  -> namespace: String
+  -> kind: String
+  -> value: Editorial
+  -> Maybe<Editorial> =
+  if symbol.module == owner
+    && symbol.namespace == namespace
+    && symbol.itemKind == kind then
+    Just value
+  else
+    Nothing
+
+pub fn filesystemReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match symbol.identity {
+    "std/path::Path" -> guarded symbol "std/path" "type" "opaque-type" (case1 ())
+    "std/path::parse" -> guarded symbol "std/path" "value" "function" (case2 ())
+    "std/path::render" -> guarded symbol "std/path" "value" "function" (case3 ())
+    "std/path::child" -> guarded symbol "std/path" "value" "function" (case4 ())
+    "std/fs::FileSystem" -> guarded symbol "std/fs" "type" "opaque-type" (case6 ())
+    "std/fs::FileSystemError" -> guarded symbol "std/fs" "type" "struct" (case7 ())
+    "std/fs::FileTextError" -> guarded symbol "std/fs" "type" "opaque-type" (case8 ())
+    "std/fs::WriteMode" -> guarded symbol "std/fs" "type" "opaque-type" (case9 ())
+    "std/fs::CreateNew" -> guarded symbol "std/fs" "value" "constructor" (case10 ())
+    "std/fs::Replace" -> guarded symbol "std/fs" "value" "constructor" (case11 ())
+    "std/fs::Append" -> guarded symbol "std/fs" "value" "constructor" (case12 ())
+    "std/fs::readTextUtf8" -> guarded symbol "std/fs" "value" "effect-function" (case13 ())
+    "std/fs::writeTextUtf8" -> guarded symbol "std/fs" "value" "effect-function" (case14 ())
+    "std/fs::withTemporaryDirectory" -> guarded symbol "std/fs" "value" "effect-function" (case15 ())
+    _ -> Nothing
+  }
+
+pub fn filesystemReaderModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (match specifier {
+    "std/path" -> Just (case0 ())
+    "std/fs" -> Just (case5 ())
+    _ -> Nothing
+  }
+)

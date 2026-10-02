@@ -1,0 +1,21 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "The mode that writes at the end, creating a file if absent. Include any desired newline in the content.",
+  taskTitle: "Add report lines and a final text fragment",
+  purpose: "Append first, second, and tail to report.txt in order. Only the first two inputs include a newline, demonstrating that Append adds no line break and writes exactly the supplied content at the end.",
+  setup: "fs, paths, and effects are imported modules. effect fn report directory: paths.Path -> String takes directory and produces a String when executed. with FileSystem is its service requirement; fails ReportError is its ordinary failure type. do runs work in order, <- receives a result, and _ <- waits without keeping one.",
+  after: [
+    "paths.child \"report.txt\" directory returns Left with a problem or Right with a Path. |> passes it onward; effects.fromEither turns it into work; file <- receives the Path. ReportError’s PathFailure, WriteFailure, and ReadFailure retain original problems, wrapped by effects.mapError. deriving Show enables display using show.",
+    "The arguments to writeTextUtf8 are fs.Append, content, and file. The first call creates the absent file, writing first and the newline represented by \\n. The second adds second and a newline. The third adds only tail. fs.Append is a value, so it has no ().",
+    "The final readTextUtf8 returns exactly first\\nsecond\\ntail. main’s println adds a newline at the end of the display, but that newline is not at the end of the file. Distinguish file content from the newline used for printing.",
+    "main uses withTemporaryDirectory to supply a dedicated workspace and removes it after report finishes. effects.attempt receives success as Right text or ordinary failure as Left problem. let names an immutable value. match chooses message, and println displays it."
+  ],
+  details: [
+    "Append is one of WriteMode’s three choices. Choose Replace to discard existing content, or CreateNew to fail if a file with that name exists. The caller explicitly chooses the mode alongside the string content.",
+    "For line-by-line output, include \\n in each relevant string. Writing only \"first\" and \"second\" consecutively produces firstsecond. Append does not interpret records or lines.",
+    "Here do executes the three writes in order. The mode does not guarantee order relative to independent concurrent writers or all-or-nothing completion of a sequence of appends. Content written before failure or cancellation can remain."
+  ],
+  comparisonBefore: "Node-based TS can also append using writeFile with flag: \"a\" or appendFile. TS must include desired newlines in the content too.",
+  comparisonAfter: "Seseragi makes the choice explicit by passing fs.Append to the same write function. In either case, this mode alone provides neither ordering among concurrent writers nor all-or-nothing completion of multiple writes."
+}

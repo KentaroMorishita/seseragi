@@ -1,0 +1,21 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "新規作成、内容の置き換え、末尾への追記から、書き込み時の扱いを選ぶ型です。",
+  taskTitle: "既存のレポートをどう扱うか選ぶ",
+  purpose: "新しいreport.txtへoriginalを書き、同じ作成を再実行して拒否されることを確かめます。その後、内容をOKに置き換え、!を追記してOK!を得ます。一つの保存先で三つのモードの違いを見ます。",
+  setup: "fs、paths、effectsはimportしたモジュールの別名です。effect fn report directory: paths.Path -> Stringは、directoryを受け取り、実行時に説明文を返す処理です。with FileSystemがファイルサービスの要件、fails ReportErrorが通常の失敗の型です。doは処理を順に実行し、<-で結果を受け取り、_ <-で結果を使わず完了を待ちます。",
+  after: [
+    "paths.childでreport.txtのPathを得ます。結果は問題のLeftかPathのRightで、|>が次の関数へ値を渡します。effects.fromEitherはその結果を処理に変え、effects.mapError PathFailureは失敗に名前を付けます。ReportErrorのWriteFailureとReadFailureも、それぞれ元の書き込みや読み込みの問題を保持します。deriving Showはshowでの表示を可能にします。",
+    "let plannedはCreateNewでoriginalを書く処理を保存した名前です。まだ実行していないため、fs.existsの結果beforeはFalseです。_ <- plannedで初めて書き込み、effects.attempt plannedで同じ処理を再実行すると、既存ファイルのため失敗します。",
+    "attemptは通常の失敗をLeft error、成功をRightで受け取る値に変えます。matchでerror.kindを表示するとFileAlreadyExistsです。originalには最初の本文が残ります。ReplaceでOKに切り詰め、Appendで!を足した後のupdatedはOK!です。",
+    "letは変更しない値に名前を付け、バッククォート内の${...}は値を文字列に入れます。effects.succeedはその説明文で成功する処理を返します。mainのwithTemporaryDirectoryは専用の作業場所を用意して後で削除し、attemptとmatchで選んだ結果をprintlnで表示します。"
+  ],
+  details: [
+    "WriteModeにはCreateNew、Replace、Appendという三つの名前付きの選択肢があります。どれも引数のない値なので、fs.CreateNewのように書き、()は付けません。writeTextUtf8の第一引数で必ず選びます。",
+    "CreateNewは既存の保存先ならFileAlreadyExistsで失敗します。Replaceは既存の内容を切り詰めるか、新しくファイルを作ります。Appendは末尾へ書き、ファイルがなければ作ります。Appendは改行を自動で加えません。",
+    "存在確認はモードの代わりになりません。この例のbeforeは、処理の構築だけでは書かないことを見るための確認です。新規作成の保護はCreateNewが書き込み時に行います。ReplaceやAppendは処理全体の一括成功を保証せず、失敗までに書けた内容が残る場合があります。"
+  ],
+  comparisonBefore: "TSのwriteFileも、wxで新規作成、wで置き換え、aで追記を簡潔に指定できます。awaitは各ファイル操作の完了を待ち、try/catchは重複作成のEEXISTを扱います。例の存在確認は、用意した一時ディレクトリー内の初期状態を見るためだけです。",
+  comparisonAfter: "両方とも最初の内容を保護し、最後にOK!を得ます。Falseとfalse、FileAlreadyExistsとEEXISTは各APIの表示を残しています。Seseragiはモードを名前付きの型の値として渡し、保存したEffectを実行し直せます。TSのasync関数は呼び出すと処理が始まり、Promiseを保存するだけでは同じ「未実行の処理」にはなりません。"
+}

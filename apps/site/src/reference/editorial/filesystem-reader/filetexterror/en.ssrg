@@ -1,0 +1,23 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "The failure type distinguishing file access problems from content that cannot be decoded as UTF-8.",
+  taskTitle: "Explain why a report could not be read",
+  purpose: "Read an absent report.txt, then write malformed UTF-8 bytes to that file and read it again. Neither attempt produces content, but the appropriate response differs. Finally, check that a leading BOM, an encoding marker, is retained.",
+  setup: "The imports provide bytes, effects, fs, and paths. fn describe result: Either<fs.FileTextError, String> -> String turns a read result into a description. Either is a value with two possible shapes: here Right text carries successful content and Left error carries failure. match selects a shape, and a second match inside the failed branch distinguishes access from decoding problems.",
+  after: [
+    "fs.FileAccessFailure detail carries a FileSystemError. Converting detail.kind to text with show gives access: FileNotFound for the first read. This explains a failure to access the file; fixing the content’s encoding would not solve it.",
+    "fs.FileUtf8Failure detail carries a Utf8DecodeError. [65, 195, 40, 66] lists four byte values. After bytes.fromInts constructs Bytes and writeBytes stores them, reading produces decode: InvalidUtf8 { offset: 1 }. The offset is a zero-based byte position: valid UTF-8 cannot be decoded starting at the second byte.",
+    "effect fn inspect directory: paths.Path -> String defines work using directory and producing a description when executed. with FileSystem is the service requirement; fails FixtureError names setup failures. FixtureError’s PathFailure, ByteFailure, and WriteFailure retain problems with paths, byte construction, and writes respectively. deriving Show enables display.",
+    "paths.child constructs a Path, and bytes.fromInts converts integers from 0 through 255 into bytes. Both return Left or Right, so |> passes their results into effects.fromEither to make work. mapError wraps setup failures in the appropriate FixtureError shape. Within do, <- receives a result and _ <- waits for a write without keeping one.",
+    "The reads run through effects.attempt, storing success or ordinary failure as values named missing, invalid, and bom. \\u{FEFF} spells the U+FEFF character used for the BOM. The final write stores that character followed by A. match compares successful content using ==, giving True as preserved’s value. let names that immutable value.",
+    "effects.succeed makes the description assembled with ${...} a successful result. In main, withTemporaryDirectory supplies a dedicated workspace and removes it afterward. The outer attempt and match choose message for println. The intentionally malformed bytes are created only within that workspace."
+  ],
+  details: [
+    "FileTextError is a failure value with named shapes, not a JS exception class. FileAccessFailure gives access to operation, path, and reason. FileUtf8Failure exposes decoding details; it does not necessarily have the same fields as the FileSystemError that carries a file Path.",
+    "readTextUtf8 does not replace invalid bytes with a replacement character. Handle failure when the content cannot be used and correct the input file if appropriate. An empty file succeeds with an empty String, and a leading BOM remains as U+FEFF.",
+    "This read holds the entire file in memory. FileTextError is not a setting for choosing a decoder. Supplying a file in a different encoding does not make the function automatically detect and decode that encoding."
+  ],
+  comparisonBefore: "TS reads bytes using readFile, then uses TextDecoder with fatal: true and ignoreBOM: true. fatal rejects malformed UTF-8; ignoreBOM: true retains the BOM as a character for this comparison. await in the async function waits for the read, and two try/catch blocks separate access and decoding failures.",
+  comparisonAfter: "Both distinguish a missing file from malformed UTF-8 and retain the BOM. Each keeps its native labels: TS ENOENT corresponds here to FileNotFound, and TextDecoder’s TypeError to FileUtf8Failure. TextDecoder does not return the invalid byte position. Node’s readFile(file, \"utf8\") alone replaces malformed bytes, so it would not implement this example’s contract."
+}

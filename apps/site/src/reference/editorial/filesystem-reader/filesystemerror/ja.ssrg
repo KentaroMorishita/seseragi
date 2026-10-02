@@ -1,0 +1,22 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "失敗したファイル操作、対象のPath、理由などを持つ値です。各フィールドを使って具体的な説明を作れます。",
+  taskTitle: "保存に失敗した理由を表示する",
+  purpose: "レポートを新規作成した後、同じ名前で再び新規作成を試します。単に「保存失敗」と表示するのではなく、どの操作が、どのパスで、どの理由によって失敗したかをFileSystemErrorから読み取ります。",
+  setup: "importしたfsがファイル操作、pathsがパス、effectsが処理の組み立てを担当します。fn describe error: fs.FileSystemError -> file: paths.Path -> Stringはerrorとfileを受け取りStringを返します。error.kindのような.による参照でフィールドを読みます。ブロック内のletは変更しない値の名前を作り、最後の文字列が戻り値になります。",
+  after: [
+    "FileSystemErrorのoperationは失敗した操作、pathは対象、kindは理由です。この例ではWriteFile、report.txtを表すPath、FileAlreadyExistsを得ます。実際の一時ディレクトリー名は毎回変わるため、paths.renderでfileとerror.pathを文字列へ戻して==で比べ、Trueを表示します。",
+    "otherPathは移動先など二つ目のパスを持つ場合のフィールドです。その型Maybe<Path>には、値がないNothingと、値を持つJust otherという二つの形があります。matchが該当する行を選び、この書き込みではNothingなのでnoneを返します。showは操作名や理由を文字列にし、${...}が説明文へ埋め込みます。",
+    "effect fn reportはdirectoryというPathを受け取り、実行後にStringを返す処理です。with FileSystemが必要なサービス、fails ReportErrorが失敗の型です。paths.childのLeftかRightを|>でeffects.fromEitherへ渡して処理に変え、file <-でPathを得ます。doは順に実行し、_ <-は書き込みの完了だけを待ちます。",
+    "二度目の書き込みはeffects.attemptで実行します。通常の失敗はLeft error、成功はRightになり、matchの失敗側からdescribe error fileを呼びます。ReportErrorのPathFailure、WriteFailure、ReadFailureはその他の各段階の問題を保持し、mapErrorが対応する形に包みます。deriving Showは表示の指定です。",
+    "読み戻したoriginalを説明文に加え、effects.succeedで成功値として返します。mainはwithTemporaryDirectoryで専用の作業場所を用意して終了後に削除します。外側のattemptとmatchが表示するmessageを選び、printlnが出力します。"
+  ],
+  details: [
+    "この値は、呼び出し元がフィールドを読んで扱う通常の失敗です。JSの例外クラスと同じものではありません。effects.attemptはその失敗を値にしますが、予期しない実行時の問題やキャンセルをすべてFileSystemErrorへ変える操作ではありません。",
+    "kindにはFileNotFound、PermissionDeniedなど他の理由もあります。今回の重複作成だけを見て、すべての失敗をFileAlreadyExistsと決めつけないでください。operationとkindを分けて読むことで、同じ理由でも読み込みと書き込みを区別できます。",
+    "パスの文字列が不正な場合は、ファイル操作の前のPathErrorです。readTextUtf8はアクセスの問題をFileAccessFailureの中に包み、不正なUTF-8をFileUtf8Failureとして分けます。FileSystemError単体は文字コードの問題を表しません。"
+  ],
+  comparisonBefore: "TSではtry/catchで受けた値を調べ、Nodeのcodeやpathなどを読みます。catchした値が必ずそのフィールドを持つとは限らないため、用途に応じた確認が必要です。",
+  comparisonAfter: "ここではFileSystemErrorのフィールド名と型が決まっているので、対象の操作、パス、理由をそのまま読み取れます。OSごとの文字列だけに頼らず説明を作れますが、エラーを受けた後の判断は呼び出し側に残ります。"
+}

@@ -2776,3 +2776,112 @@ coordination labels were replaced with neutral review attribution. This
 metadata-only edit preserves the recorded review scopes, results, artifact
 hashes and checkbox states. The byte-prefix preservation claim above describes
 the original append operation, before this attribution cleanup.
+
+
+## Checkpoint 10: bounded filesystem and path reader evidence
+
+Date: 2026-10-02. This appendix records completed local authoring, focused
+verification and independent automated reading for sixteen existing Library
+identities. It does not close whole-site integration, publication, actual browser
+layout or first-time-human reader acceptance. The 196 absent future-roadmap
+routes are outside this batch.
+
+### Exact scope and practical task
+
+The paired EN/JA pages are std/path, Path, parse, render and child; std/fs,
+FileSystem, FileSystemError, FileTextError, WriteMode, CreateNew, Replace, Append,
+readTextUtf8, writeTextUtf8 and withTemporaryDirectory. These are two module
+entrances and fourteen existing leaves, with canonical ownership, namespace,
+kind and declarations preserved. The authoritative exact route map is
+`apps/site/scripts/filesystem-reader.ts`.
+
+The everyday TypeScript reader names a report, creates it without overwriting
+existing content, reads strict UTF-8, chooses replacement or append deliberately,
+and uses a temporary workspace for intermediate files. Necessary function,
+match, named-alternative, Effect, callback and error-provenance syntax is explained
+locally. A Tour, functional-programming background, Rust/Haskell or prior
+TypeScript discriminated-union knowledge is not assumed.
+
+### Full-body reading and corrections
+
+Independent automated reading covered all 32 complete initial locale bodies,
+including displayed programs, four complete TypeScript comparison panels,
+outputs, generated declaration/reading tails, optional links and module API
+sections. This was sequential full-body reading, not a changed-paragraph sample.
+All fourteen corrected complete bodies were then reread. Two final small
+revisions received another complete-body reread; the remaining thirty bodies
+were independently verified unchanged at that stage.
+
+Nine findings were resolved: a missing parameter arrow in prose, the actual
+canonical argument name, Path-versus-file construction wording, two inaccurate
+generated reading tails, an above/below reference, local flush/close definitions,
+a concrete Path offset explanation and Japanese wording that separated whole
+rejected names from forbidden characters. No substantive reader finding remains
+within this bounded review. First-time-human feedback is still outstanding.
+
+Exactly fourteen final bodies differ from the initial render and eighteen remain
+byte-identical. All 140 preformatted panels and 382 article-link occurrences
+remain byte-identical throughout corrections. A final format-only rerun preserved
+all 32 complete HTML and article bodies unchanged. The reviewer independently
+verified the complete final body hashes and all 66 final source-manifest entries.
+
+The only generated-reading corrections are exact guarded overrides for
+std/fs::FileSystem (type/opaque-type) and std/fs::FileSystemError (type/struct).
+The first directs readers to declare the runtime service requirement; the second
+names the verified fields and states that the declaration has no type parameters.
+Wrong owner, namespace, kind and nearby-type controls preserve their original
+reading. Unselected zero-parameter struct wording remains a separate audit item,
+not acceptance inferred from those controls.
+
+### Separate execution and rendering evidence
+
+The final exact-source focused run passes twelve tests, zero failures and 1,920
+assertions. It executes ten complete process examples with release CLI 0.61.19,
+checks two real rejection/repair fixtures, runs four strict TypeScript comparisons
+on Node 24.19.0 and Bun 1.3.9, and compiles/executes three pure Path seeds with
+committed WASM. The production-render closure verifies all 32 bodies, exact
+source/output/declaration panels, localized paragraph pairing, title-labelled
+links, same-identity locale destinations and section-local navigation. An earlier
+10-test/1,895-assertion run remains history and is not added to the final count.
+
+Real-host provider scenarios remain separate from injected FileSystemHost
+write/flush/close tests. Filesystem examples are process-scoped and have no
+unproved browser launch link. Browser compilation alone does not supply the
+FileSystem service. These checks are not actual browser/layout evidence.
+
+Advanced cleanup prose retains the precise implementation boundary. Under a
+deliberate temporary-resource identity replacement, combined typed callback and
+cleanup failure preserves the direct callback error but can produce a separate
+later provider shutdown defect. No attached cleanup diagnostic was observed on
+the inspected surfaces. This does not establish universal diagnostic behavior,
+successful official-process completion under that fault, cancellation cleanup,
+unexpected-defect cleanup, atomic writes or power-loss durability. No runtime,
+compiler or normative-specification repair belongs to this change.
+
+### Final artifact integrity and remaining acceptance
+
+Exact SHA-256 fingerprints of retained final artifact bytes:
+
+- `body-manifest.json`: `7126914be27762288eb179241fbe3afbaa808d679d313a18742a105c6d117c92`
+- `source-manifest.json`: `e618b2a89a21cd5bf54200508e14555820429983b9c1dec19f44c61503ae6c92`
+- `correction-integrity.json`: `34d6d613d3e5c8e02c02ec8e3ad4ecf7d3574f0d56aca8f234e4ce29c9f5960c`
+- `format-integrity.json`: `85b54399d23c503062dbc0e5f3a9ca60f7b62ba00ced1a3e7c1a361c6f5b0d32`
+- `checks.log`: `d877cafbae1498a3ee44dc44935f6f18264b21184b8b4e65bfbc1b7b46426b28`
+
+The final advisory Japanese lint inspected sixteen rendered pages with code
+excluded. Its 87 repeated-ending, six negative-parallelism and two generated-API
+list-ratio notes are documented in filesystem-reader-verification.md; none is a
+reader acceptance score. Scoped TypeScript/Biome and 63 owned Seseragi format
+checks pass. No lint server or background browser was launched.
+
+Actual desktop/mobile layout, clicked navigation round trips, first-time human
+feedback, normal site integration gates and publication need separate evidence.
+The authoring and review changes make no commit, push, public issue/comment or
+deployment claim.
+
+### Historical preservation
+
+This appendix was added after the existing ledger's complete 173,692-byte
+prefix, SHA-256 `cea398cb74821ca4d243f31e114fee59e80887e1a2688a64f45b83fb5e474f6f`. The prefix and every existing checkbox state
+were verified unchanged after the append. No historical checkbox or earlier
+review conclusion was replaced or bulk-marked complete.

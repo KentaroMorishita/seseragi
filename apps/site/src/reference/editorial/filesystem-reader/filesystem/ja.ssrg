@@ -1,0 +1,21 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "実行時にファイル操作を提供するサービスの型です。必要な処理にはwith FileSystemと記します。",
+  taskTitle: "レポート処理に必要なファイル操作を宣言する",
+  purpose: "レポートを書いて読む関数は、文字列を計算するだけの関数とは違い、実行環境にファイル操作を頼みます。with FileSystemでその必要性を示します。Pathが保存先を表すのに対して、FileSystemは操作を受け持つサービスです。",
+  setup: "effects、fs、pathsはimportで付けたモジュール名です。effect fn report directory: paths.Path -> Stringは、directoryというPathを受け取る処理を定義します。-> Stringは成功時に得る本文の型です。with FileSystemがサービスの要件、fails ReportErrorが通常の失敗の型を表します。サービス自体をこの関数の引数として組み立てる必要はありません。",
+  after: [
+    "paths.childがdirectoryの下のreport.txtを指すPathを作り、成功時にfileを得ます。結果のLeftはパスの問題、RightはPathです。|>で結果を次の関数へ渡し、effects.fromEitherで成功か失敗を実行する処理に変えます。<-が処理を実行してfileを受け取ります。",
+    "let textは変更しない本文の値の名前で、\\nは改行です。writeTextUtf8へCreateNew、本文、fileの順に渡し、_ <-で書き終わるまで待ちます。最後のreadTextUtf8が返す本文がreportの結果になります。どちらも同じFileSystemサービスを必要とします。",
+    "ReportErrorはパス、書き込み、読み込みの問題をPathFailure、WriteFailure、ReadFailureに分けた、この例の型です。effects.mapErrorは失敗にその名前を付けます。deriving Showはshowによる表示を使えるようにする指定です。",
+    "mainからwithTemporaryDirectoryを実行すると、サービスが一時ディレクトリーを用意し、reportへ渡して、終了後に片付けます。effects.attemptとmatchは成功のRight textか通常の失敗のLeft problemを受け取り、printlnで表示する文字列を選びます。"
+  ],
+  details: [
+    "with FileSystemはwith fileSystem: FileSystemの短い書き方です。宣言のEffect<{ fileSystem: FileSystem }, ...>にあるfileSystemが、このサービスを受け取る名前です。FileSystemの内部表現は公開されず、Pathや設定用の文字列をサービスとして渡すことはできません。",
+    "importは公開された名前を使えるようにするだけで、サービスを作りません。この例はFileSystemを供給するCLIのプロセス実行を使います。ブラウザ向けにコンパイルできることと、実際のブラウザの実行環境がファイルサービスを持つことは別です。",
+    "Effectは実行する処理の値です。reportを呼んだだけでは書き込みは始まらず、必要なサービスを持つ実行環境で実行したときに始まります。サービスがある場合でも、ファイルの存在や権限などの理由で通常の失敗は起こります。"
+  ],
+  comparisonBefore: "TSではnode:fs/promisesを読み込んで直接使うほか、テスト用にファイル操作のオブジェクトを引数へ渡す設計もできます。",
+  comparisonAfter: "Seseragiでは必要なサービスをwith FileSystemとして関数に示します。型が要件を見えるようにしますが、実行環境によるサービスの用意も必要です。"
+}

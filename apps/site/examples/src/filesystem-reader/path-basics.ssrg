@@ -1,0 +1,6 @@
+import * as paths from "std/path"
+
+pub effect fn main = match paths.parse "reports/report.txt" {
+  Left reason -> println `Invalid path: ${show reason}`
+  Right file -> println `Saving ${paths.render file}`
+}

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { filesystemReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  filesystemReaderEditorial "std/fs::WriteMode" "type" "opaque-type" "write-modes" "before: False\nduplicate: FileAlreadyExists\noriginal: original\nupdated: OK!" "write-modes" "before: false\nduplicate: EEXIST\noriginal: original\nupdated: OK!" (en.copy ()) (ja.copy ())
