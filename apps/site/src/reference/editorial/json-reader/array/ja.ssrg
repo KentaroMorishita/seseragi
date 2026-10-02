@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JSONの配列を要素順に確認するにはarrayを使います。すべて成功すれば確認済みの配列を返し、最初の失敗で止まってその要素の添字を理由に添えます。",
+  taskTitle: "APIから届いた件数の配列を確認する",
+  purpose: "APIデータの[2, 0, 5]を整数の配列として使えるようにします。零件も空の配列も有効です。要素にfalseが混ざる場合は配列全体を拒否し、確認できた部分だけを成功結果として返すことはしません。",
+  typescriptBefore: "TypeScript版はJSON.parseの結果をunknownとし、Array.isArrayで配列を確認します。forループでは各要素がnumberかつNumber.isSafeIntegerであることを調べ、最初の失敗で戻ります。三つの入力は構文が正しく、小さな整数とfalseでこの動きを比較しています。",
+  benefit: "arrayへ要素一つを確認するintDecoderを渡すと、配列の確認と要素順の繰り返しをまとめられます。成功時にはArray<Int>が得られ、失敗時にはその添字を持つDecodeErrorが返るため、要素ごとのループを呼び出し側へ繰り返し書かずに済みます。",
+  setup: "jsonはstd/jsonの別名です。let intDecoder: json.Decoder<Int> = decodeJsonの型注釈で、整数を読み取る関数を選びます。json.array intDecoderは関数と引数を空白で並べる呼び出しで、あとでJsonを受け取るcountsDecoderを作ります。",
+  after: [
+    "countsDecoderの型はjson.Decoder<Array<Int>>です。Jsonを受け取り、失敗のLeftか、確認済みの整数配列を入れたRightを返す関数と読めます。要素のIntを選ぶのはintDecoderで、arrayはその確認を配列に適用します。",
+    "fn report source: String -> Stringは、文字列を受け取り文字列を返す通常の関数です。コロンは引数の型、-> は戻り値の型を示します。matchはparseの結果から分岐を選び、Right valueのときだけcountsDecoder valueへ進みます。",
+    "確認が成功したRight countsではencodeStringで整数の配列をJSON文字列に戻します。Left _では理由を使わずCounts rejectedを返します。表示は[2,0,5]、[]、Counts rejectedの順で、空の配列では要素の確認は一度も呼ばれません。",
+    "mainだけが表示のためのeffect関数です。doはprintlnを順に実行し、_ <- は先の表示の戻り値を使いません。Unitは使う戻り値がないこと、with Console fails ConsoleErrorはコンソールの利用と表示の失敗可能性を示します。",
+  ],
+  details: [
+    "最初の要素が成功しても、次のfalseで失敗すればそこで止まります。それ以降の要素には確認関数を呼びません。すべての問題を集める検証ではなく、最初の失敗を返す処理です。",
+    "詳しく表示する場合、要素の失敗のpathにはJsonIndexの添字が加わります。入力自体が配列でない場合も失敗しますが、その場合はまだ要素を確認していません。DecodeErrorの例では、フィールド名と添字を組み合わせた場所の表示を扱っています。",
+    "Intの確認は整数として表せる値の確認で、件数が零以上という業務ルールまでは加えません。またJSON.parse後のNumber.isSafeIntegerとの比較はこの例の入力に限ります。正確な小数がJavaScriptで整数へ丸められる場合もあるため、すべての数値文字列で同じ検証にはなりません。",
+  ],
+}

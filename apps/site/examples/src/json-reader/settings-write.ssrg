@@ -1,0 +1,8 @@
+import * as json from "std/json"
+
+struct Settings deriving JsonEncode { name: String, retries: Int, }
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  _ <- println (json.encodeString (Settings { name: "Mio", retries: 2 }))
+  println (json.encodeString (Settings { name: "Line\n\"two\"", retries: 0 }))
+}

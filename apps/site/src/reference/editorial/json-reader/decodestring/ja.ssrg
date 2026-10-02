@@ -1,0 +1,23 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JSON文字列を読み、指定した型として確認した結果を返します。成功時はその値を使い、文法や項目の確認に失敗したら別の表示を選べます。",
+  taskTitle: "設定文字列から使えるSettingsを受け取る",
+  purpose: "保存しておいた設定文字列からnameとretriesを読み、確認できた名前で準備完了のメッセージを作ります。名前が文字列でない場合やJSONが壊れている場合には、その値を使わず拒否のメッセージにします。",
+  typescriptBefore: "TypeScriptではJSON.parseをtry/catchで囲み、結果をunknownとして扱います。readSettingsはオブジェクトの形、許す項目、文字列のname、整数のretriesを確認してSettingsかnullを返します。describeはnullを調べてから名前を使います。型注釈だけで外部データを信用する例ではありません。",
+  benefit: "decodeStringは「文字列を読む」と「必要な型かを確認する」を一つの呼び出しにつなぎます。Settingsの宣言から用意した確認処理を使い、呼び出し側は成功したSettingsか読み取りの失敗かを選んで扱えます。",
+  setup: "jsonはstd/jsonの別名です。struct Settingsはname: Stringとretries: Intを持つ名前付きの型で、コロンの後ろが各項目の型です。deriving JsonDecodeは、この型をJSONから読み取る確認処理をコンパイラに用意してもらう指定です。",
+  after: [
+    "fn readSettings source: String -> Either<json.JsonReadError, Settings>は文字列を受け取る通常の関数です。-> の後ろが戻り値の型です。Eitherの一つ目の型はLeftに入る失敗、二つ目はRightに入る成功値を表します。Settingsという指定がdecodeStringの読み取り先を決めます。",
+    "json.decodeString sourceは、関数名の後ろに引数を空白で区切って書く呼び出しです。describeも文字列を受け取って文字列を返し、match readSettings sourceで読み取り結果に応じた文章を選びます。",
+    "Right settings -> の場合だけsettings.nameを使えます。+ は文字列を連結します。Left _ -> は失敗時の文章を選び、_ は詳しい理由を使わないことを表します。matchの各 -> は、その場合に返す式へ続きます。",
+    "三つの入力のうち、最初はReady: Mio、残りはSettings rejectedです。nameがfalseの設定はJSONとして読めてもSettingsとしては不正です。最後の { はJSONの文法が不正です。ソースの\\\"はJSONの引用符を文字列に入れるための表記です。",
+    "pub effect fn mainは結果を表示する実行入口です。Unitは使う戻り値がないこと、with Console fails ConsoleErrorは表示にコンソールを使い失敗の可能性があることを示します。doはprintlnを順に実行し、_ <- は表示の戻り値を無視します。decodeString自体は表示を行いません。",
+  ],
+  details: [
+    "where JsonDecode<A>という条件は、読み取り先の型AにJSONの確認処理が必要という意味です。この例ではSettingsにderiving JsonDecodeを付けています。名前付きのstructを宣言しただけでは、その確認処理は付きません。",
+    "このSettingsでは両方の項目が必須で、余分な項目、型の違い、Intにできない数も拒否されます。空のnameや負の整数のretriesは、ここで宣言した型だけでは拒否されません。必要な業務上の条件は成功後に確認してください。",
+    "失敗の型JsonReadErrorは、文法の失敗JsonSyntaxFailureと、読めた値の確認失敗JsonDecodeFailureを区別できます。ここではどちらも同じ拒否メッセージにしています。ConsoleErrorは表示の失敗なので、このJSONの読み取り結果とは別です。",
+    "decodeStringに渡すのはStringです。すでにjson.parseで得たJsonがある場合はdecodeJsonを使います。逆に、json.parseの結果だけではSettingsを確認したことになりません。",
+  ],
+}

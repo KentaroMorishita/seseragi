@@ -1,0 +1,143 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { Editorial } from "../model"
+
+pub struct JsonReaderCopy {
+  summary: String,
+  taskTitle: String,
+  purpose: String,
+  typescriptBefore: String,
+  benefit: String,
+  setup: String,
+  after: Array<String>,
+  details: Array<String>
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  [Paragraph ([Words (localized en ja)]) | (en, ja) <- arrays.zip japanese english]
+
+fn link title: String -> route: String -> english: String -> japanese: String -> Block =
+  Paragraph (
+    [
+      InternalLink (localized title title, route),
+      Words (localized (": " + english) ("：" + japanese))
+    ]
+  )
+
+pub fn jsonReaderEditorial identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> source: String
+  -> output: String
+  -> english: JsonReaderCopy
+  -> japanese: JsonReaderCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace,
+    itemKind,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Heading (
+          "typescript-comparison",
+          localized "Start with familiar TypeScript" "TypeScriptの処理から考える"
+        ),
+        Paragraph
+          ([Words (localized english.typescriptBefore japanese.typescriptBefore)]),
+        CodeExample
+          ("json-reader-" + source + "-ts", localized "TypeScript" "TypeScript"),
+        Terminal (localized "TypeScript output" "TypeScriptの実行結果", output),
+        Heading (
+          "seseragi-example",
+          localized "Write the same task in Seseragi" "Seseragiで同じ処理を書く"
+        ),
+        CodeExample (
+          "json-reader-" + source,
+          localized "Complete Seseragi program" "Seseragiの完全なプログラム"
+        ),
+        Terminal (localized "Seseragi output" "Seseragiの実行結果", output),
+        Paragraph ([Words (localized english.benefit japanese.benefit)]),
+        Heading ("reading-the-example", localized "Read the important lines" "大事な行を読む"),
+        Paragraph ([Words (localized english.setup japanese.setup)])
+      ],
+      paragraphs english.after japanese.after,
+      [
+        Paragraph (
+          [Words (
+            localized
+          "Save the complete program using the filename below and run it with the CLI, or open its Playground link. The JSON checks use in-memory strings and need no file, network or storage service. The program entry uses Console to print the results."
+          "完全なプログラムを下のファイル名で保存し、CLIで実行できます。Playgroundのリンクからも試せます。JSONの確認はプログラム内の文字列を使い、ファイル・ネットワーク・保存先のサービスを必要としません。実行入口はConsoleを使って結果を表示します。"
+          )]
+        ),
+        Terminal (
+          localized "Run locally" "ローカルで実行する",
+          "seseragi run " + source + ".ssrg --target process"
+        ),
+        Heading ("operation-rules", localized "Rules and common mistakes" "規則と間違いやすい点")
+      ],
+      paragraphs english.details japanese.details,
+      [Heading ("choose-next", localized "Choose the next operation" "次に必要な操作を選ぶ")],
+      related identity,
+      if itemKind == "module" then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+}
+
+fn related identity: String -> Array<Block> =
+  if identity == "std/json::encodeString"
+    || identity == "std/prelude::JsonEncode"
+    || identity == "std/prelude::JsonEncode::encodeJson"
+    || identity == "std/json::Encoder" then
+    [
+      link "JsonEncode" "/docs/library/prelude/trait/jsonencode/"
+        "choose how a typed value becomes Json." "型のある値をJsonに変換する方法を確認できます。",
+      link "stringify" "/docs/library/json/function/stringify/"
+        "write an existing Json value as text." "手元のJsonを文字列にします。",
+      link "decodeString" "/docs/library/json/function/decodestring/"
+        "check JSON text before using it as application data."
+        "JSONの文字列を確認してからアプリの値として使います。"
+    ]
+  else if identity == "std/json::DecodeError"
+    || identity == "std/json::JsonParseError"
+    || identity == "std/json::JsonReadError"
+    || identity == "std/json::parse"
+    || identity == "std/json::stringify"
+    || identity == "std/json::Json" then
+    [
+      link "parse" "/docs/library/json/function/parse/"
+        "read JSON text without choosing an application type yet."
+        "アプリの型を決める前にJSONの文字列を読み取ります。",
+      link "decodeString" "/docs/library/json/function/decodestring/"
+        "read text and check the expected application type together."
+        "文字列の読み取りと、期待するアプリの型の確認をまとめて行います。",
+      link "DecodeError" "/docs/library/json/opaque-struct/decodeerror/"
+        "inspect the field or array position where a value check failed."
+        "値の確認に失敗したフィールドや配列の位置を調べます。"
+    ]
+  else
+    [
+      link "decodeString" "/docs/library/json/function/decodestring/"
+        "start from JSON text and obtain a checked value." "JSONの文字列から、確認済みの値を得ます。",
+      link "field" "/docs/library/json/function/field/"
+        "check one required property in a parsed object."
+        "解析済みのオブジェクトから、必須のプロパティを確認します。",
+      link "optionalField" "/docs/library/json/function/optionalfield/"
+        "allow a missing property while still checking present values."
+        "プロパティの省略を認めながら、存在する値は確認します。",
+      link "encodeString" "/docs/library/json/function/encodestring/"
+        "write typed application data back to JSON text." "型のあるアプリの値をJSONの文字列にします。"
+    ]

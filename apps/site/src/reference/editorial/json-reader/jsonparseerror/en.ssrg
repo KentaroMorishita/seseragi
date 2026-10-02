@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Use JsonParseError to explain why JSON text could not be read. It distinguishes invalid syntax from a repeated field name within the same object.",
+  taskTitle: "Explain unreadable JSON text",
+  purpose: "Accept pasted JSON, display normalized text when it can be read, and explain a failure otherwise. Start with an ordinary object and text with a missing name value. Checking the application's required name type is separate from checking this syntax.",
+  typescriptBefore: "The TypeScript version calls JSON.parse and JSON.stringify inside try, then returns Invalid JSON syntax from catch. The comparison covers one valid string and one malformed string. It does not treat JavaScript's exception messages or positions as identical to Seseragi's.",
+  benefit: "parse includes failure in its return value, so explain can receive a JsonParseError and choose a message for the reason. On success you have a parsed Json; on failure you can respond without proceeding as though a JSON value had been obtained.",
+  setup: "json is the alias for std/json. fn inspect source: String -> String defines an ordinary function receiving and returning text. The colon gives the parameter type; -> gives the return type. Calls put spaces between a function and its arguments, as in json.parse source.",
+  after: [
+    "json.parse source returns Either<json.JsonParseError, json.Json>. Left contains the reason parsing failed, and Right contains the value it read. inspect uses match to send Left error to explain error, or Right value to stringify for display.",
+    "explain also uses match to distinguish reasons. InvalidJsonSyntax _ means a syntax problem; _ says this message does not use its details. DuplicateJsonField detail means a repeated name, and detail.field supplies that name for the message.",
+    "The two inputs print Valid JSON: {\"name\":\"Mio\"} and Invalid JSON syntax. The function also handles the duplicate-field alternative, but this short runnable example does not supply a duplicate-field input.",
+    "pub effect fn main handles printing. do runs the println calls in order; _ <- discards the first print result before continuing. Unit means there is no useful return value, and with Console fails ConsoleError declares console access and possible printing failure. parse and explain are ordinary functions.",
+  ],
+  details: [
+    "If you display a syntax error's offset, it is a zero-based UTF-8 byte offset. It is not necessarily a visible character count or JavaScript string index. This example ignores that position and uses a short application message.",
+    "DuplicateJsonField includes the path to the containing object and the repeated field name. Seseragi rejects duplicates, whereas ordinary JSON.parse keeps the last value. That difference is separate from the matching output for these two fixtures.",
+    "There is no show operation for a whole JsonParseError. Match its alternatives to build a message, as above. Even successful parsing has not yet checked application requirements such as name being a string.",
+  ],
+}

@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "Use array to check JSON array elements in order. It returns a checked array if they all succeed, or stops at the first failure and adds that element's index to the error path.",
+  taskTitle: "Check an array of API counts",
+  purpose: "Make the API data [2, 0, 5] available as an integer array. Zero and an empty array are valid. If an element is false, reject the array rather than returning the checked prefix as a successful result.",
+  typescriptBefore: "The TypeScript version treats JSON.parse's result as unknown and uses Array.isArray to check the container. Its for loop requires each element to be a number satisfying Number.isSafeInteger and returns at the first failure. The three inputs use valid JSON with small integers and false to compare this behavior.",
+  benefit: "Passing the one-element intDecoder to array combines the container check and ordered iteration. Success provides Array<Int>; failure provides a DecodeError carrying the index. Callers do not have to repeat the element-checking loop.",
+  setup: "json is the alias for std/json. The annotation in let intDecoder: json.Decoder<Int> = decodeJson selects the integer-reading function. json.array intDecoder is a call with a space between function and argument; it creates countsDecoder, which receives Json later.",
+  after: [
+    "countsDecoder has type json.Decoder<Array<Int>>. Read that as a function receiving Json and returning a failure in Left or a checked integer array in Right. intDecoder selects Int for each element; array applies that check to the array.",
+    "fn report source: String -> String is an ordinary text-to-text function. The colon gives the parameter type and -> gives the return type. match selects a branch for parse's result, reaching countsDecoder value only for Right value.",
+    "For Right counts, encodeString turns the integer array back into JSON text. Left _ ignores the reason and returns Counts rejected. The output is [2,0,5], then [], then Counts rejected. An empty array invokes the element checker zero times.",
+    "Only main is an effect function for printing. do runs println calls in order, and _ <- discards earlier print results. Unit means there is no useful return value; with Console fails ConsoleError declares console access and possible printing failure.",
+  ],
+  details: [
+    "Even after the first element succeeds, the following false stops checking. Later elements do not invoke the checker. This returns the first failure rather than collecting every problem.",
+    "For detailed reporting, an element failure's path includes its JsonIndex position. A non-array input also fails, before checking any elements. The DecodeError example shows how to display locations containing both field names and indices.",
+    "Int checks for a representable integer; it does not add a business rule that counts must be non-negative. The Number.isSafeInteger comparison also applies only to these fixtures. An exact fraction may already have rounded to an integer in JavaScript, so the checks are not equivalent for every numeric string.",
+  ],
+}

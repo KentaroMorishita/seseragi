@@ -373,4 +373,17 @@ import * as effectSequencingRecover from "./effect-sequencing/recover"
 import * as effectSequencingSucceedFail from "./effect-sequencing/succeed-fail"
 import * as effectSequencingValidatePreview from "./effect-sequencing/validate-preview"
 
+import * as jsonReaderArrayCounts from "./json-reader/array-counts"
+import * as jsonReaderCodecStages from "./json-reader/codec-stages"
+import * as jsonReaderGreeting from "./json-reader/greeting"
+import * as jsonReaderOptionalName from "./json-reader/optional-name"
+import * as jsonReaderParseErrors from "./json-reader/parse-errors"
+import * as jsonReaderParseNormalize from "./json-reader/parse-normalize"
+import * as jsonReaderPeopleNames from "./json-reader/people-names"
+import * as jsonReaderReadErrors from "./json-reader/read-errors"
+import * as jsonReaderRequiredName from "./json-reader/required-name"
+import * as jsonReaderSettingsFirstLook from "./json-reader/settings-first-look"
+import * as jsonReaderSettingsWrite from "./json-reader/settings-write"
+import * as jsonReaderTwoLabels from "./json-reader/two-labels"
+
 pub effect fn main -> Unit = effects.succeed ()

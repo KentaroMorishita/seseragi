@@ -1,0 +1,23 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JsonDecode supplies type-specific checks for reading a value from JSON. Add deriving JsonDecode to Settings to receive Settings only after its fields and their types have been checked.",
+  taskTitle: "Supply JSON checks from the settings declaration",
+  purpose: "Your application needs name as text and retries as an integer. Use that Settings declaration to read saved JSON text, then build a ready message only from a successfully checked name.",
+  typescriptBefore: "The TypeScript Settings type describes data used inside the application. For incoming data, readSettings separately wraps JSON.parse in try/catch and checks an unknown value. It returns null for extra fields or invalid values, or Settings after checking the required fields. describe handles those two outcomes separately.",
+  benefit: "deriving JsonDecode asks the compiler to supply the basic checks corresponding to this Settings declaration. The same checking support works through decodeString and through decodeJson after parsing. Wherever you read the data, the rules of the selected type apply.",
+  setup: "The JsonDecode on this page is a trait in std/prelude. Here, a trait is a common agreement that each supported type supplies a way to read that type from JSON. struct Settings defines a named type; name: String and retries: Int specify its fields. deriving JsonDecode supplies checks that follow this agreement. This example can use JsonDecode without importing it.",
+  after: [
+    "import * as json from \"std/json\" assigns the alias used by json.decodeString. fn readSettings source: String -> Either<json.JsonReadError, Settings> defines an ordinary function taking a string, with its return type after ->. The Settings annotation selects which type's checking support to use.",
+    "Either carries one of two outcomes. Here, Left carries a reading error and Right carries checked Settings. json.decodeString source places its argument after a space: it first reads JSON, then uses the Settings checks.",
+    "fn describe also maps a String input to a String result. match readSettings source examines the outcome. Right settings -> names the successful value settings, and settings.name reads its name; + joins strings. Left _ -> selects failure and discards the detailed reason. Each -> leads to the expression returned for that case.",
+    "The results are Ready: Mio and two Settings rejected lines. The second input has the wrong type for name; the third is malformed JSON. In the source, \\\" writes a JSON double quote inside a string.",
+    "pub effect fn main is the output entry point. Unit means no useful return value; with Console fails ConsoleError declares console use and possible output failure. do runs println calls in order, and _ <- discards a print result. Displaying output is separate from checking a value through JsonDecode.",
+  ],
+  details: [
+    "JsonDecode<A> means that type A can be read from JSON. For example, JsonDecode<Settings> means checking support exists for Settings. The declaration heading displays trait JsonDecode; the A explained here is the target type. A function's where JsonDecode<A> expresses this same requirement.",
+    "The function provided by this trait, decodeJson, takes Json and returns Either<DecodeError, A>. It does not take raw text. The example's decodeString combines text parsing with this checking step.",
+    "Derivation for this named Settings requires both fields and rejects extra fields. String and Int have the needed checking support. A field type without that support prevents this derivation. Deriving only JsonEncode does not enable reading.",
+    "The derived checks cover fields and types. They include Int's integral-value and range checks, but do not invent rules rejecting empty names or negative retry counts. Apply such application-specific conditions separately to the decoded Settings.",
+  ],
+}

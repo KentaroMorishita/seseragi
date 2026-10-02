@@ -1,0 +1,2 @@
+import * as json from "std/json"
+pub fn object -> json.Json = json.JsonObject [("name", json.JsonString "Mio")]

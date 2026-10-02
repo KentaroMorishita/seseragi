@@ -4,7 +4,7 @@ import { Messages } from "../i18n/model"
 import { BuildInput, ExampleSource, ReferenceSymbol } from "../model/build"
 import { Locale, LocalizedText, localized, translate } from "../model/locale"
 import { referenceSummary } from "../reference/catalog"
-import { itemKindLabel } from "../reference/labels"
+import { referenceKindLabel } from "../reference/labels"
 import { anchor } from "./primitives"
 
 fn exampleMatches id: String -> example: ExampleSource -> Bool = example.id == id
@@ -88,7 +88,7 @@ fn renderReference<Action> locale: Locale
           children: [
             html.p {
               class: "api-reference-kind",
-              children: translate locale (itemKindLabel reference.itemKind)
+              children: translate locale (referenceKindLabel reference)
             },
             html.h2 { children: reference.name }
           ]

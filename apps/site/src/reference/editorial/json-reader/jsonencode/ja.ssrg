@@ -1,0 +1,22 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "型ごとに、値をJSONへ変換する処理を提供する仕組みです。Settingsにderiving JsonEncodeを付けると、その項目からJSONを作り、encodeStringで文字列として書き出せます。",
+  taskTitle: "設定の宣言からJSONへの変換処理を用意する",
+  purpose: "アプリ内のSettingsを、名前と再試行回数を持つJSONとして書き出したいとします。どの項目を出力するかをSettingsの宣言で示し、二種類の設定をJSON文字列として表示します。",
+  typescriptBefore: "TypeScriptのwriteSettingsは出力したいnameとretriesを順に並べたオブジェクトを作り、JSON.stringifyで文字列にします。二つ目の名前にある改行と引用符もJSON.stringifyが処理します。すでにアプリ内で作った値を書き出す例です。",
+  benefit: "deriving JsonEncodeにより、Settingsの宣言からJSONへの変換処理を用意できます。出力する項目の一覧を別の関数へ書き直す代わりに、この型の変換規則として再利用します。文字列が必要な場所ではencodeStringがその規則を使います。",
+  setup: "このページのJsonEncodeはstd/preludeのtraitです。ここでtraitとは、対応する型が「この型をJSONへ変える」処理を提供する共通の約束です。struct Settingsが名前付きの型を作り、deriving JsonEncodeがその約束に沿う変換処理を作る指定です。この例ではJsonEncodeをimportせず使えます。",
+  after: [
+    "name: Stringとretries: Intは項目名と型です。Settings { name: \"Mio\", retries: 2 }はその型の値を作ります。StringとIntにはJSONへの変換処理があり、それらを使ってSettings全体を変換できます。",
+    "import * as json from \"std/json\" はモジュールにjsonという別名を付けます。json.encodeString (Settings { ... })は設定からJSON文字列を作る呼び出しです。引数は関数名の後ろに空白で区切って置き、括弧で内側の式や呼び出しをまとめます。",
+    "出力はどちらもname、retriesの順です。二つ目の名前の改行と引用符は、JSONの文字列として正しく読めるように書き換えられます。ソース内の\\nは改行、\\\"は二重引用符です。出力中ではJSON用のエスケープとして表示され、名前の改行が表示の途中で改行されることはありません。",
+    "pub effect fn mainは表示の入口です。-> Unitは使う戻り値がないこと、with Console fails ConsoleErrorはコンソール利用と表示の失敗可能性を示します。doが二つのprintlnを順に実行し、最初の_ <- は表示の戻り値を使わず次へ進みます。JSONへの変換そのものはコンソールを使いません。",
+  ],
+  details: [
+    "JsonEncode<A>は、Aという型をJSONへ変えられるという条件です。たとえばJsonEncode<Settings>はSettings用の変換処理があることを示します。ページの宣言見出しはtrait JsonEncodeと表示されていますが、ここでのAは変換元の型です。where JsonEncode<A>と書かれた関数も、この条件を要求します。",
+    "このtraitが提供する関数encodeJsonはAからJsonを作ります。JsonはJSONを表す値で、まだ文字列ではありません。例のencodeStringは、この変換とJsonから文字列への書き出しをまとめます。",
+    "この名前付きSettingsの導出は、宣言した順に項目を出力します。各項目の型にもJsonEncodeが必要です。JsonDecodeだけを導出しても書き出し用にはなりません。JSONから読む必要がある場合には、JsonDecodeも選びます。",
+    "書き出す前からSettingsの値であることが前提です。外部から来た文字列の検証や、名前が空でないことなどの業務条件は別の処理です。ここでTypeScriptと一致するのは、示した文字列と小さい整数の出力です。",
+  ],
+}

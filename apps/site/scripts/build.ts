@@ -26,6 +26,7 @@ import { dataValidationReaderExamples } from "./data-validation-readers"
 import { effectSequencingReaderExamples } from "./effect-sequencing-reader"
 import { failureReaderExamples } from "./failure-readers"
 import { filesystemReaderExamples } from "./filesystem-reader"
+import { jsonReaderExamples } from "./json-reader"
 import { lifecycleReaderExamples } from "./lifecycle-readers"
 import { listEditorialExamples } from "./list-editorial"
 import { mapEditorialExamples } from "./map-editorial"
@@ -104,6 +105,7 @@ export function generatorInput(playgroundUrl: string) {
       ...webReaderExamples(playgroundUrl),
       ...filesystemReaderExamples(playgroundUrl),
       ...effectSequencingReaderExamples(playgroundUrl),
+      ...jsonReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

@@ -1,0 +1,2 @@
+import * as json from "std/json"
+pub fn decode source: String -> Either<json.DecodeError, String> = decodeJson source

@@ -4,6 +4,7 @@ import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
 import { effectSequencingReading } from "./effect-sequencing-reading"
 import { filesystemReaderReading } from "./filesystem-reader-reading"
+import { jsonReaderReading } from "./json-reader-reading"
 import { referenceDescription } from "./reference-copy"
 import { resultFoundationReading } from "./result-foundation-reading"
 import { signatureReading } from "./signature-reading"
@@ -342,17 +343,20 @@ export function compilerReferenceModules() {
           description: item.description,
           descriptionEn: description.en,
           descriptionJa: description.ja,
-          reading: effectSequencingReading(
+          reading: jsonReaderReading(
             item,
-            filesystemReaderReading(
+            effectSequencingReading(
               item,
-              resultFoundationReading(
+              filesystemReaderReading(
                 item,
-                signatureReading(
-                  item.signature,
-                  item.kind,
-                  item.typeParameters,
-                  item.constraints
+                resultFoundationReading(
+                  item,
+                  signatureReading(
+                    item.signature,
+                    item.kind,
+                    item.typeParameters,
+                    item.constraints
+                  )
                 )
               )
             )

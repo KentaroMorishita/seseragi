@@ -1,0 +1,18 @@
+import * as json from "std/json"
+let stringDecoder: json.Decoder<String> = decodeJson
+
+let nameDecoder: json.Decoder<String> = json.field "name" stringDecoder
+fn greet name: String -> String = "Hello, " + name
+let greetingDecoder: json.Decoder<String> = json.map greet nameDecoder
+fn report source: String -> String = match json.parse source {
+  Left _ -> "Invalid JSON text"
+  Right value -> match greetingDecoder value {
+    Left _ -> "Name rejected"
+    Right greeting -> greeting
+  }
+}
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  _ <- println (report "{\"name\":\"Mio\"}")
+  _ <- println (report "{\"name\":\"\"}")
+  println (report "{\"name\":false}")
+}

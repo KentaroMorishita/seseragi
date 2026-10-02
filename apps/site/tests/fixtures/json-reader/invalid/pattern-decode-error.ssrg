@@ -1,0 +1,6 @@
+import * as json from "std/json"
+import { DecodeError } from "std/json"
+pub fn explain error: DecodeError -> String = match error {
+  DecodeError { kind: json.InvalidJsonValue message } -> message
+  _ -> "other"
+}

@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "JSONから確認できた名前を挨拶文へ変えるにはmapを使います。確認が成功した値だけを通常の関数へ渡し、失敗した場合は元の理由をそのまま返します。",
+  taskTitle: "確認済みの名前から挨拶を作る",
+  purpose: "APIが返したnameを文字列として確認してから、Hello, Mioのような文章を作ります。nameがfalseなら文章を作らずに拒否します。空文字列は文字列として有効なので、Hello, という結果になります。",
+  typescriptBefore: "TypeScript版はJSON.parseの結果をunknownとし、オブジェクトとnameの文字列を確認します。失敗したらName rejectedで戻り、確認を通った場合だけ普通のgreet関数を呼びます。三つの入力はいずれもJSONとして構文が正しいものです。",
+  benefit: "mapを使うと、名前を読むnameDecoderと、文章を作るgreetをそれぞれ保ったまま、挨拶文を読むgreetingDecoderにまとめられます。名前の確認をほかでも使い、ここでは成功時の加工だけを足せます。",
+  setup: "jsonはstd/jsonの別名です。let stringDecoder: json.Decoder<String> = decodeJsonの型注釈で、文字列の確認関数を選びます。json.field \"name\" stringDecoderで、nameを必須の文字列として読み取るnameDecoderを作ります。呼び出しでは関数と引数を空白で並べます。",
+  after: [
+    "fn greet name: String -> Stringは通常の関数です。コロンの後は入力の型、-> の後は戻り値の型で、ここでは名前にHello, を付けた文字列を返します。JSONや失敗理由を受け取る関数ではありません。",
+    "json.map greet nameDecoderは、先に成功値を加工する関数、次に確認関数を受け取ります。作られるgreetingDecoderもJsonを受け取る関数ですが、成功時のStringは元の名前ではなく挨拶文になります。",
+    "reportのmatchは、parseのLeftを解析の失敗、Right valueを読めたJsonとして分けます。greetingDecoder valueのRight greetingなら完成した文章を返し、Left _ならName rejectedを返します。_はこの表示では詳しい理由を使わないことを示します。",
+    "表示はHello, Mio、空の名前からのHello, 、Name rejectedの順です。mainのdoがprintlnを順に実行し、_ <- は先の表示の戻り値を使いません。Unitは使う戻り値がないこと、effectとwith Console fails ConsoleErrorは表示用のコンソールとその失敗可能性を示します。",
+  ],
+  details: [
+    "nameDecoderが失敗するとgreetは呼ばれず、同じDecodeErrorが返ります。mapは失敗理由を変更したり、失敗した値を代わりの名前で受け入れたりする操作ではありません。",
+    "mapへ渡す関数の型はA -> Bです。確認済みのAからBを作りますが、その戻り値で新しいDecodeErrorの失敗を加えることはできません。空の名前を拒否するなど、新しい検証が必要なら別の確認として設計します。",
+    "加工する関数のプログラム上の不具合をDecodeErrorに変える機能もありません。この例のgreetは単に文字列を連結します。mapを使ったことで、任意の処理の失敗が自動的にJSONの検証エラーになるわけではありません。",
+  ],
+}

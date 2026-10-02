@@ -3013,3 +3013,138 @@ The entire prefix and all 106 original checkbox rows, including the eight
 historical checked states, were verified unchanged. This append changes no
 checkbox, prior conclusion or source body. The append itself makes no commit,
 push, public issue/comment or deployment claim.
+
+
+## JSON20: settings and JSON boundary readers (2026-10-02)
+
+### Existing scope and reader contract
+
+This bounded batch authors twenty existing Library identities, forty complete
+English/Japanese bodies, for an everyday TypeScript application developer.
+The reader uses objects, functions, arrays and try/catch; functional-programming
+terminology, algebraic data types, match and trait knowledge are not prerequisites.
+The first useful example reads notification settings and displays only a checked
+name. More detailed errors and JSON boundaries appear when relevant to the task.
+
+Exact identities and existing routes are recorded by
+`apps/site/scripts/json-reader.ts`:
+
+- `std/json`, the existing module entrance
+- `std/json::{Json,Decoder,Encoder,DecodeError,JsonParseError,JsonReadError}`
+- `std/json::{parse,stringify,encodeString,decodeString,field,optionalField,array,record,map}`
+- `std/prelude::{JsonEncode,JsonDecode}`
+- `std/prelude::JsonEncode::encodeJson`
+- `std/prelude::JsonDecode::decodeJson`
+
+These add twenty authored identities after the preceding 229, for 249 in the
+running authored Library inventory. The 106 core routes and their historical
+checkbox states are unchanged. Neither that inventory nor the new copy implies
+249 first-time-reader acceptances. Remaining JSON constructors, combinators and
+twenty-eight codec instances are not accepted by association.
+
+### Independent full-body reading and corrections
+
+Independent model-reader reviews covered all twenty initial English bodies and
+all twenty initial Japanese bodies in full: TS/Seseragi code, results, local
+syntax explanations, restrictions, exact declaration readings and optional links.
+They did not infer comprehension from heading counts or compilation, and did not
+fill missing explanations from compiler/runtime source.
+
+Two necessary contradictions were corrected:
+
+1. DecodeError's generic Japanese opaque-struct label claimed its fields were
+   private. Its path and kind are readable. A symbol-aware wrapper now uses
+   「直接の構築が非公開のstruct」 only for the exact std/json::DecodeError,
+   std/json owner, type namespace and opaque-struct kind. Both module inventory
+   and API panel use it; English and all unrelated labels retain their fallback
+2. record's generated declaration reading described an array of field-name/checker
+   pairs as a single function argument. The exact record function override now
+   explains the array and its checker positions in both languages
+
+The DecodeError reading was additionally clarified: traverse path elements and
+match each JsonField/JsonIndex, then separately match kind for the reason.
+
+Exactly five article bodies changed: English record and DecodeError; Japanese
+record, DecodeError and std/json. Both English bodies and all three Japanese
+bodies were independently reread in full after the corrected production render.
+The other thirty-five bodies remain byte-identical. All forty final bodies clear
+this bounded model-reader review; actual first-time-human feedback remains
+unverified. The final exact-source rerun produced the same complete HTML and
+article bodies as the reviewed corrected snapshot.
+
+### Exact overlays and preserved declarations
+
+Five reading identities are guarded by canonical identity, module, namespace and
+kind, with stale-baseline rejection and wrong-identity/owner/namespace/kind
+controls:
+
+- `std/json::Json`, `std/json::JsonParseError` and `std/json::JsonReadError`:
+  Japanese-only public-constructor guidance; English is preserved verbatim
+- `std/json::DecodeError`: readable fields and private construction/patterns in
+  English and Japanese
+- `std/json::record`: array-of-pairs/checker guidance in English and Japanese
+
+All 1,812 reference symbols are checked for overlay scope: two English readings
+and five Japanese readings change. Canonical signatures are untouched. The label
+wrapper's collision controls also preserve unrelated labels. No global rename of
+opaque structs, compiler metadata edit or runtime behavior change is included.
+
+### Separate execution and rendering evidence
+
+The final focused suite passes eleven tests, zero failures and 4,623 assertions.
+It uses official Seseragi 0.61.19, Bun 1.3.9 and TypeScript 5.8.3 to verify twelve
+canonical native programs and twelve strict TS counterparts. The same exact
+source seeds compile and execute through committed WASM. Their entry contracts
+need only Console and no installed file/network/storage provider.
+
+Twenty-four invalid sources each yield one intended diagnostic; three repair
+programs execute. A strict runtime harness adds thirty-four assertions for
+missing versus invalid paths, optional/null, callback selection, first failure,
+homogeneous record order, defects and bounded JSON differences. A separate input
+variation exercises repeated-field reporting. These execution checks remain
+distinct from the independent readers' conclusions.
+
+TS comparisons perform genuine unknown-value validation. They do not pretend
+annotations validate data, or claim that TS cannot handle errors safely. Shared
+examples are bounded to their displayed inputs. Exact decimals, duplicate-key
+policy, UTF-8 offsets and integer-looking object keys have separate evidence and
+relevant limitations; they are not hidden under a universal equivalence claim.
+
+Production-component checks cover all forty bodies, exact sources/outputs,
+canonical declarations, title-labelled related links, source payloads, locale
+identity and bounded section navigation. Final formatting covers 104 Seseragi
+source files. Site-mode host typechecking, strict comparison/runtime checks,
+Biome and diff checks pass. Two advisory prose passes preserve technically
+necessary distinctions and generated API inventories; their scores do not confer
+reader acceptance.
+
+The detailed scope, commands and boundaries are in
+[json-reader-work-item.md](json-reader-work-item.md) and
+[json-reader-verification.md](json-reader-verification.md).
+
+### Retained exact fingerprints
+
+The source/body fingerprint artifact covers 120 owned source files, the three
+narrow label-wiring files, and all forty final article/full-HTML hashes. SHA-256
+values identify exact retained bytes:
+
+- `source-body-fingerprints.json`: `69b1ad7f5460f85dc7b92363af7c11ca9f39a1e10fa9ebb86d34353d8fc66748`
+- `initial-body-manifest.json`: `3f9574b1d3d3ce75ef94534463c88463d8ea118b3d55f841df1481be1741e731`
+- `final-body-manifest.json`: `1966be40f6f4104054a418eda2ee9e7bfe413ebda001a77114c7913d42222858`
+- `english-reader-review.md`: `a3789f2447d62711cf687fecfcdcb7dfefb616f386d52a2f86f85ff2a4520680`
+- `japanese-reader-review.md`: `a2ac730a4f0b594323b84f8c23dba406c1b1e7f6228047216e4f0585d2690df1`
+- `final-exact-focused.log`: `f0696ac9fda9c8ab68f512dc1c149529a1471604e915d04638007c8d8db8d7cd`
+- `corrected-body-diff.json`: `33a02a1305c0320adcb111ddabc6ebca165cd95e728df9244f1a6c2ad4ed751c`
+
+### Remaining gates and ledger preservation
+
+Whole-site integration, full-catalog ordering, actual desktop/mobile display,
+clicked Playground/locale/related-link behavior, publication and genuine
+first-time TypeScript-reader feedback require their own evidence. Native or
+in-process WASM success is not a public-browser execution claim. This append
+makes no commit, push, public issue/comment or deployment claim.
+
+This appendix preserves the entire prior 188,125-byte ledger prefix,
+SHA-256 `72e99001dae5ebddba8d45fa6372dca4d91db171bd2b1ae22a1c7b2253983e97`. All 106 original checkbox rows,
+including eight historical checked states, remain byte-identical. No previous
+conclusion, checklist state or historical review is replaced.

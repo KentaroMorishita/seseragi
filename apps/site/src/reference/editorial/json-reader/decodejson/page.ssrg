@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { jsonReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  jsonReaderEditorial "std/prelude::JsonDecode::decodeJson" "value" "function" "codec-stages" "{\"name\":\"Mio\",\"retries\":2}\nReady: Mio\n" (en.copy ()) (ja.copy ())

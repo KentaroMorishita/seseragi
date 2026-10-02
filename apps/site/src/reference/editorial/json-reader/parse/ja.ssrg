@@ -1,0 +1,21 @@
+import { JsonReaderCopy } from "../model"
+
+pub fn copy -> JsonReaderCopy = JsonReaderCopy {
+  summary: "受け取った文字列がJSONとして読めるかを確認するにはparseを使います。読めたJsonか、読めなかった理由のJsonParseErrorを戻り値から選んで扱います。",
+  taskTitle: "貼り付けたJSONを読んで整える",
+  purpose: "設定欄に貼り付けたJSONを、余分な空白のない文字列にして表示します。オブジェクトでも配列でも構いません。この段階では設定に必要なフィールドを決めず、JSONとして読めることだけを確かめます。",
+  typescriptBefore: "TypeScript版はJSON.parseで文字列を読み、JSON.stringifyで整えた文字列に戻します。読めない場合はcatchでInvalid JSON textを返します。三つの入力は、空白付きのオブジェクト、配列、閉じられていない{です。",
+  benefit: "parseでは解析の失敗が戻り値に含まれます。matchで失敗時の表示と成功後の処理を並べて書けるため、読めた場合だけJsonをstringifyへ渡す流れが明確になります。",
+  setup: "jsonはstd/jsonの別名です。fn normalize source: String -> Stringは通常の関数で、sourceの型をコロンの後、戻り値の型を -> の後に書きます。json.parse sourceのように関数と引数を空白で並べて呼び出します。",
+  after: [
+    "parseの結果はEither<json.JsonParseError, json.Json>です。Leftには読めなかった理由、Rightには読めたJsonが入ります。JsonはまだアプリのSettingsではなく、JSONの値を表す型です。",
+    "matchは結果に合った分岐を選びます。Left _では理由を使わずInvalid JSON textを返し、Right valueではjson.stringify valueを返します。_は値を受け取ってもここでは使わないことを示します。",
+    "最初の二つは、空白のない{\"name\":\"Mio\",\"retries\":2}と[true,null,\"ready\"]になります。最後の{は読めないため、成功側のstringifyは呼ばれず、Invalid JSON textになります。",
+    "pub effect fn mainだけが表示を行います。doはprintlnを順に実行し、_ <- は先の表示の戻り値を使わない書き方です。Unitは使う戻り値がないこと、with Console fails ConsoleErrorはコンソールの利用と表示の失敗可能性を示します。parse自体にConsoleは必要ありません。",
+  ],
+  details: [
+    "parseは文字列をJSONとして読みますが、nameの有無や型は確認しません。Settingsとして使うならdecodeStringでまとめて確認するか、parseの成功値をdecodeJsonへ渡します。parseにSettingsの型引数を付けて形を指定するAPIではありません。",
+    "同じオブジェクト内でフィールド名が重複するとparseは拒否します。通常のJSON.parseは最後の値を残すため、この比較例からすべての入力の結果が一致するとは言えません。詳しい失敗理由はJsonParseErrorで調べられます。",
+    "Jsonの数値は正確なDecimalで保持されます。JavaScriptのnumberでは丸められる大きな整数や細かい小数もあるため、数値の桁が重要ならこの違いを考慮します。一方、元の空白や1.00のような表記はparseとstringifyで保存されません。",
+  ],
+}

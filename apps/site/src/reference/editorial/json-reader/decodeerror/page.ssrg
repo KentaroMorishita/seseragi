@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { jsonReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  jsonReaderEditorial "std/json::DecodeError" "type" "opaque-struct" "people-names" "[\"Mio\",\"Aki\"]\n[]\n$.people[1].name | expected JsonString\n$.people[1] | missing name\n$.people[0] | expected object\n$.people | expected array\n$ | missing people\n" (en.copy ()) (ja.copy ())
