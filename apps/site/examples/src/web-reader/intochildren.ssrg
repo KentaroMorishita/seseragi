@@ -1,0 +1,19 @@
+import * as html from "std/web/html"
+
+pub effect fn main = do {
+  let heading: html.Html<Unit> = html.h2 { children: "Release" }
+  let detail: html.Html<Unit> = html.p { children: "Details" }
+  let words: html.Html<Unit> = html.section { children: "Release" }
+  let empty: html.Html<Unit> = html.section { children: () }
+  let single: html.Html<Unit> = html.section { children: detail }
+  let array: html.Html<Unit> = html.section { children: [heading, detail] }
+  let list: html.Html<Unit> = html.section { children: `[heading, detail] }
+  let label: html.Html<Unit> = html.text "Release"
+  let mixed: html.Html<Unit> = html.section { children: [label, detail] }
+  println (html.renderToString words)
+  println (html.renderToString empty)
+  println (html.renderToString single)
+  println (html.renderToString array)
+  println (html.renderToString list)
+  println (html.renderToString mixed)
+}

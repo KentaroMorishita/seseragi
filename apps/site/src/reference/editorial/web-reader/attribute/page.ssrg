@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { webReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  webReaderEditorial "std/web/html::attribute" "value" "function" "attribute" "<section title=\"Read &quot;release notes&quot;\" data-release=\"v1&quot;&amp;\">&lt;script&gt; &amp; café</section>\nReservedAttributeName onclick" "" "" "" "" (en.copy ()) (ja.copy ())

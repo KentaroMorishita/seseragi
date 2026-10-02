@@ -1,0 +1,20 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "ラベル・無効状態・イベントで送る値を持つbuttonを作ります。",
+  taskTitle: "ボタンのHTMLとクリックの動作を分ける",
+  purpose: "まず「Show details」というbuttonのHTMLを出力します。この例は有効な場合と無効な場合を比べる静的な例です。出力された文字列だけでは、クリックしても説明文は切り替わりません。",
+  setup: "fn controlはdisabled: Boolを受け取り、Html<Unit>を返します。BoolはFalseかTrueです。レコードのdisabledだけを書く形はdisabled: disabledの省略です。onClick: ()はイベントで送るUnitの値を指定しています。 buttonへ渡す{ ... }はレコードで、TSのオブジェクトのように名前付きの項目を持ちます。",
+  after: [
+    "childrenはボタンのラベルです。ariaExpanded: Falseはaria-expanded=\"false\"になり、disabled: Falseはdisabled属性を出力しません。control Trueではdisabled属性が増えます。buttonTypeを省略するとtype=\"button\"が出力されます。",
+    "pub effect fn mainのdoは上から順にprintlnを実行します。renderToStringはonClickを出力から除くため、どちらのHTMLにもイベントの値やJavaScriptは入りません。"
+  ],
+  details: [
+    "宣言のActionは後でイベントから送る値の型、Cはchildrenに渡す入力の型です。where IntoChildren<C, Action>は、その入力を順序付きの子要素へ変換できる必要があることを示します。この例のActionはUnit、CはStringです。",
+    "onClickはこの例では()という値であり、その場で呼ぶ関数ではありません。ブラウザで動かす例ではToggleDetailsという値を使い、appがイベントをupdateへ渡します。静的なHTMLの出力だけで動作を追加したつもりにならないようにしてください。",
+    "ariaExpandedは展開状態を伝える属性です。それ自体で段落を隠しません。appの例では同じBoolからariaExpanded、段落のhidden、ボタンのラベルを決め、表示をそろえます。",
+    "ボタンには操作が分かるラベルを付けます。型が正しくても、ラベルや画面全体の操作性が適切かどうかは別に確認します。"
+  ],
+  comparisonBefore: "TSでもbutton要素のdisabledやaria-expandedを設定できます。addEventListenerでクリックの処理を登録することと、HTML文字列を作ることは別の操作です。",
+  comparisonAfter: "Seseragiも、純粋なbuttonの構築とブラウザでのイベント処理を分けます。説明文を切り替える完全な例は、下のappにあります。"
+}

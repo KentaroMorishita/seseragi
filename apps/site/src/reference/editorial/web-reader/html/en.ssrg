@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Represent elements and text as an HTML description without touching a browser.",
+  taskTitle: "Choose the value a view function returns",
+  purpose: "card returns Html<Unit>, an HTML description rather than an HTML string or live DOM element. Give it a title and detail string to obtain one card as a value.",
+  setup: "The import provides the name html. fn defines a function; title: String and detail: String annotate its arguments; -> html.Html<Unit> states the return type. Unit means this static card has no useful event payload.",
+  after: [
+    "heading and description are Html values made by h2 and p. let names them, and the annotations determine their child types. The final section expression is the function result. card does not change its inputs.",
+    "page () combines two cards into one Html. Before renderToString the value is an Html description; afterward it is a String. Only println, executed by pub effect fn main, writes that string to the output."
+  ],
+  details: [
+    "In Html<Action>, Action is the type of a value a later event may send. Unit here is neither a browser element type nor a state type. Html hides its representation, so you cannot change its properties as you would an HTMLElement.",
+    "The generic show conversion cannot print an Html value; in declaration terminology, Html has no Show instance. Use renderToString for HTML text. Rendering the same Html more than once does not specify shared live DOM nodes.",
+    "The tested CLI 0.61.19 has an inference limitation for event-free nested h2 and p calls placed directly in this array. Keep the shown Html<Unit> annotations to use the working form."
+  ],
+  comparisonBefore: "In TS you can write a function returning a string or one returning an HTMLElement. That choice determines which operations are available afterward.",
+  comparisonAfter: "Here Html is the structural value and String is the serialized result. Operations such as dom.app handle placement in a real browser."
+}

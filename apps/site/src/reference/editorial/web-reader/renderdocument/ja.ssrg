@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "渡したHtmlを文字列化し、その前にdoctypeを一つ付けます。",
+  taskTitle: "文書の先頭宣言が何を追加するか",
+  purpose: "renderDocumentはrenderToStringと同じHTMLの変換を行い、前に<!doctype html>を付けます。html・head・body要素を自動で組み立てる関数ではありません。",
+  setup: "importでhtmlを読み込みます。fn paragraphは引数を取らず、イベントを使わないHtml<Unit>を返します。paragraph ()の結果をrenderDocumentへ渡し、mainのprintlnで表示します。",
+  after: [
+    "出力は<!doctype html><p>Release</p>です。追加されるのはdoctype一つで、渡したpはそのまま続きます。この出力を見ると、完全な文書構造を自分で渡す必要があることが分かります。",
+    "文書全体が必要なら、html・head・bodyなどの関数で必要な構造を作ってからrenderDocumentへ渡します。タイトルなども自分で指定します。"
+  ],
+  details: [
+    "paragraphだけを渡してもhtml・head・bodyは補われません。ブラウザが読み取り時に要素を補うことと、この関数の戻り値は別です。出力文字列を確認してください。",
+    "引数はHtmlであり、すでに生成したStringではありません。doctypeを付けた文字列を何度も連結する代わりに、元のHtmlを一度渡します。本文や属性のエスケープ、イベント情報の除外はrenderToStringと同じです。",
+    "この関数は文字列を返すだけです。Webサーバーの起動、DOMへの配置、クリック処理の登録は行いません。"
+  ],
+  comparisonBefore: "TSで<!doctype html>と、正しく文字列化したHTMLを連結する場合と同じ出力を得られます。文字列化の処理そのものは別に必要です。",
+  comparisonAfter: "SeseragiのrenderDocumentは、この先頭宣言と標準のエスケープをまとめます。文書にどの要素を含めるかは呼び出し側が決めます。"
+}

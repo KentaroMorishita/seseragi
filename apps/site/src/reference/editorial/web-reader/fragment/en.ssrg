@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Combine children into one Html without adding an enclosing element.",
+  taskTitle: "Return two cards without an extra wrapper",
+  purpose: "Combine two calls to a reusable card function into one return value. fragment returns Html with the supplied children in order and emits no tag of its own.",
+  setup: "fn card takes String arguments title and detail and returns Html<Unit>. Its let annotations fix the event-free heading and paragraph types. Pass fragment the children array directly. The { ... } passed to section is a props record: named input fields, like a TS object. fragment does not take that record.",
+  after: [
+    "page also returns Html<Unit>. Calling page () produces a value with two sections. The first card precedes the next, with no fragment tag or div between them.",
+    "renderToString converts the Html to a String, and println in pub effect fn main prints it. Building a fragment does not display it."
+  ],
+  details: [
+    "In the declaration, Action is the type of value a later event may send; C is the children input type. where IntoChildren<C, Action> requires that input to be convertible to ordered children. Here Action is Unit and C is Array<Html<Unit>>.",
+    "Wrapping both cards in div would add a div element to the output. Choose section or another element when you need a wrapper with a heading or attributes, and fragment when you only need ordered siblings. fragment has no props record for a class of its own.",
+    "fragment uses the IntoChildren requirement too. It accepts a String, one Html, an array or list of Html, or (). For text beside an Html child in an array, first name the text with let label: html.Html<Unit> = html.text \"Release\", then use label as an array item. Keep that typed local: the tested CLI 0.61.19 rejects the directly nested text call in this mixed shape. A String used as the entire children value can be passed directly."
+  ],
+  comparisonBefore: "TS strings can use cards.map(card).join(\"\") without adding a wrapper. Browser DOM code can also use DocumentFragment.",
+  comparisonAfter: "This fragment is an immutable Html description, not a browser DocumentFragment. Serialization and later DOM placement remain separate choices."
+}

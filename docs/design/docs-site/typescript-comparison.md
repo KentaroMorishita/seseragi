@@ -53,8 +53,10 @@ path. The build registers `comparison-shipping-total-seseragi` and
 Seseragi / TypeScript captions; do not paste strings into locale modules.
 `canonical-example.ts` is the existing source loader extracted for shared use,
 not a second renderer. It reads, hashes and highlights the same source bytes
-that the verification runs. TypeScript is rendered as plain code and has no
-Seseragi Playground link. The Seseragi source, including its output entry, is
+that the verification runs. TypeScript uses the installed TypeScript compiler's
+syntactic classifier and the shared code-panel palette, with no Seseragi
+Playground link. Its template expressions, comments and source bytes are
+preserved. The Seseragi source, including its output entry, is
 passed unchanged to the existing Playground source-link helper.
 
 Both examples use integers in yen. The agreed comparison input domain is

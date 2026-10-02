@@ -1,0 +1,19 @@
+import * as html from "std/web/html"
+
+fn withTracking value: String -> String = match html.attribute "data-release" value {
+  Right tracking -> html.renderToString (html.section {
+    attributes: [tracking],
+    title: "Read \"release notes\"",
+    hidden: False,
+    children: "<script> & café"
+  })
+  Left error -> show error
+}
+
+pub effect fn main = do {
+  println (withTracking "v1\"&")
+  match html.attribute "onclick" "alert(1)" {
+    Left error -> println (show error)
+    Right _ -> println "unexpected accepted attribute"
+  }
+}

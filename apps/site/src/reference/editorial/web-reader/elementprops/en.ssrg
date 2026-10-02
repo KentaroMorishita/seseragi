@@ -1,0 +1,19 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Describe children and optional attributes in the record passed to an element.",
+  taskTitle: "Pass text and attributes as named fields",
+  purpose: "Give a paragraph a class and title, then compare omitted, False and True hidden values. ElementProps is a type alias for the record of common element fields.",
+  setup: "The import provides html. fn defines the three no-argument functions; -> html.Html<Unit> is their return type, an HTML description without a useful event payload. Pass html.p a record written as { ... }. String means text; Bool is True or False.",
+  after: [
+    "children is required and supplies the paragraph content. class and title become attributes when supplied. For example, the field shape hidden?: Bool illustrates an optional boolean; children: C illustrates a required field whose type is C. The Exact declaration below displays the alias name rather than expanding its fields. Omitting a field is different from supplying an empty string.",
+    "Both omitted hidden and hidden: False produce no hidden attribute; True emits it. Use the Bool False rather than the String \"false\". println in main prints the renderToString results in order. omitted (), visible () and hidden () call the functions; do runs the print steps in order."
+  ],
+  details: [
+    "hidden: \"false\" passes a String where Bool is required and is rejected with SES-T0101. Change it to hidden: False. The browser applies the hiding behavior when it reads the attribute; constructing Html does not change a screen.",
+    "In ElementProps<Action, C>, Action is the event payload type and C is the type supplied to children. A String or an array of Html values can be children. Even an empty element supplies children: ().",
+    "Tag-specific fields such as a button’s disabled belong to that function’s declaration. The common record does not allow every possible attribute on every tag."
+  ],
+  comparisonBefore: "A TS interface can also have required fields and optional fields marked with ?. The way to read those fields is familiar.",
+  comparisonAfter: "Here the record goes to a standard HTML function, and the shared serializer handles boolean attributes and escaping instead of requiring handwritten attribute strings."
+}

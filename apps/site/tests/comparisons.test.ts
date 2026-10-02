@@ -28,11 +28,16 @@ test("comparison panels and Playground preserve the verified source bytes", () =
   expect(sourceFromPlaygroundUrl(examples[0].playgroundUrl)).toBe(
     examples[0].source
   )
-  // TS is readable as plain code, never sent to the Seseragi Playground.
+  // TS is highlighted with its own grammar, never sent to the Seseragi Playground.
   expect(examples[1].playgroundUrl).toBe("")
-  expect(examples[1].highlighted).toEqual([
-    { text: examples[1].source, className: "" },
-  ])
+  expect(examples[1].highlighted).toContainEqual({
+    text: "function",
+    className: "tok-keyword",
+  })
+  expect(examples[1].highlighted).toContainEqual({
+    text: "number",
+    className: "tok-standardType",
+  })
   const builder = readFileSync(
     resolve(root, "apps/site/scripts/build.ts"),
     "utf8"

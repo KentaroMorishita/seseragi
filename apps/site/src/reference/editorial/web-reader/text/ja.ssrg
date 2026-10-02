@@ -1,0 +1,18 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Stringを、要素と同じ配列に置けるHtmlの本文へ変換します。",
+  taskTitle: "本文と要素を一つの並びにする",
+  purpose: "本文と要素を同じchildren配列に並べたいときは、文字列をtextで包みます。textはタグを加えずに、StringをHtmlへ変換します。",
+  setup: "htmlはimportしたモジュールです。html.textの後ろにStringを空白で区切って渡します。Html<Unit>の注釈でHtmlの型を確定します。Unitの値()は追加の情報を持ちません。この例ではイベントの処理を指定していません。",
+  after: [
+    "textで包んだprefixと、要素を作ったversionを、同じchildren配列へ入れられます。pは順序を保ち、renderToStringが文字列化します。prefixはタグなしの本文、versionはspan要素になります。fn sentenceは最後のpの式を返し、sentence ()でこの引数なしの関数を呼びます。",
+    "textは元のStringをHTMLとして解析しません。<や&は、renderToStringで出力する際に変換されます。mainのprintlnがその結果を表示します。"
+  ],
+  details: [
+    "生のStringとHtmlを同じ配列へ入れるとSES-T0101になります。文字列をhtml.textで包み、例のようにHtml<Unit>の注釈を付けたローカル値にしてください。確認したCLIでは、この形の型を確定するために必要です。children全体がStringならtextは不要です。",
+    "先に文字列を&lt;などへ置き換えないでください。&も出力時にエスケープされるため、元の<とは違う本文になります。表示したい元の文字列を渡します。"
+  ],
+  comparisonBefore: "TSのDOMではcreateTextNodeやtextContentで本文を扱えます。HTML文字列として解釈させず、文字のまま表示する目的は同じです。",
+  comparisonAfter: "Seseragiのtextはライブのテキストノードを作る関数ではなく、Htmlの値を返します。文字列化もDOMへの配置も後から選べます。"
+}

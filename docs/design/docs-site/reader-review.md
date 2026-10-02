@@ -1202,7 +1202,7 @@ Effect signature. The final paired render includes that clarification.
 [type-limits-verification.md](type-limits-verification.md) owns the author's
 separate evidence: three tests/449 assertions, seven native outputs and seven
 rejected programs, two strict TypeScript comparisons and mutations, a separate
-array-view witness and fourteen locale renders. The parent reran the same
+array-view witness and fourteen locale renders. Integration verification reran the same
 focused suite after adding the Never definition. These are reported technical
 checks, not executions by the independent reading reviewer.
 
@@ -1920,7 +1920,7 @@ Final selected-file hashes, using the same relative-path/NUL/bytes/NUL method:
 The Array and Text hashes supersede their earlier artifact hashes, without
 changing what those historical readings covered. The authors separately
 reported 362 assertions for the final Array render and four tests/600
-assertions for Text. The reviewer also read the integrator's
+assertions for Text. The reviewer also read the integration report's
 `all-overlay-title-mismatches.json`: 100 authored identities, 200 locale bodies,
 283 checked references and no mismatches. That is evidence for title consistency
 across that inventory, not 100 body acceptances inferred from a link audit.
@@ -2089,7 +2089,7 @@ proof of a person's comprehension.
 Thirty extra locale control files across the three focused fixtures are excluded.
 Selected-module production rendering does not establish full-site generation,
 complete cross-module inventories, route/navigation closure or interaction.
-Full-site integration and retention comparison remain parent/integrator-owned
+Full-site integration and retention comparison remain separate integration checks
 and were unverified when this record was appended. Browser access remains
 blocked; desktop/mobile layout, clipping/overflow, keyboard behavior and live
 browser execution have not been reviewed here. Actual novice comprehension and
@@ -2113,22 +2113,21 @@ supporting destinations, prior callable/module explanations or instance pages.
 
 ### Reviewer attribution and evidence boundary
 
-The collection author's separate independent reader,
-`/root/finish_collection_type_plan/review_collection_type_bodies`, read all
+The independent automated collection review covered all
 eighteen collection bodies, then reread all ten bodies affected by its requested
 copy corrections and all six bodies affected by final source formatting. Its
 complete report is retained at
 `target/collection-type-reader-review/reader-review.md` and
 `/tmp/collection-types-reader-review.md`.
 
-The coordinating independent reader, `/root/review_collection_text_docs`, read
+A separate independent automated review covered
 all thirty data/validation bodies and reread the two corrected Validation module
 bodies. It also initially read fourteen overlapping collection bodies (Map,
 Set, NonEmptyList, Iterator, SizeError, NonPositiveSize and ReduceStep, each in
 both locales), before duplicate reading was stopped. That overlapping partial
 read is **not** the authority for the complete eighteen-body collection review
-or its later repair/formatting rereads; those belong to the named separate
-reader. The coordinating reader read and consolidated that final report.
+or its later repair/formatting rereads; those belong to the complete collection
+review. The final report was read and consolidated separately.
 
 Both are agent-simulated reviews against the ordinary TypeScript reader contract,
 not actual first-time human feedback. They read full rendered prose, native and
@@ -2318,7 +2317,7 @@ inflate the 24-identity / 48-body count.
 
 All conclusions are bounded agent explanation/readability/appeal judgments.
 Complete-site integration, retained full-site matching and route/navigation
-closure remain parent/integrator-owned and unverified by this record. Browser
+closure remain separate integration checks and unverified by this record. Browser
 access remains blocked; no alternate browser route was used. Desktop/mobile
 layout, clipping/overflow, keyboard behavior, live execution and real locale
 switching remain unverified. Actual first-time human comprehension is still
@@ -2336,8 +2335,8 @@ This record adds bounded independent agent reading of **27 existing identities /
 bodies and fourteen result-foundation identities / twenty-eight EN/JA bodies.
 The baseline is checkpoint 7, `15bd8858becffa32d19f55f66d630593ac90c603`, with
 intentional uncommitted documentation work. All fifty-four initial bodies were
-read by `/root/review_collection_text_docs`; no nested reviewer's reading is
-substituted for that coverage. The same reviewer fully reread every corrected
+read in one independent automated review; the coverage is not inferred from
+other reports. The same reviewer fully reread every corrected
 body: four numeric bodies and ten result-foundation bodies. Those rereads do not
 increase the unique-body count.
 
@@ -2575,11 +2574,11 @@ hashes to `96cd106eb95877fe23269466cd6a61cf48bacfc79e4775ac34e0e338cf425854`.
 That encoding is not interchangeable with the reviewer's checksum manifest.
 Supporting/control files are excluded from both reviewer manifests.
 
-The parent separately refactored the shared editorial dispatcher into shallow,
+A separate integration change refactored the shared editorial dispatcher into shallow,
 lazy fallback helpers to avoid the deep match-chain parsing cost, preserving
 exact selection order and fallbacks. That integration change is **not** counted
-as this reviewer's semantic or full-site acceptance. The parent/integrator owns
-its tests, full-site output matching, route/navigation closure and publication.
+as this reviewer's semantic or full-site acceptance. Its tests, full-site output matching, route/navigation closure and publication
+require separate integration verification.
 A source-seeded link check or committed-WASM runtime harness is not browser UI
 verification. Advisory Japanese prose lint is also separate from reader judgment.
 
@@ -2597,3 +2596,183 @@ All earlier ledger bytes and history, the 106 original checkbox rows and eight
 historical checked boxes are preserved. This appendix changes no checkbox. No
 public comment, tracker update, commit, push or deployment was performed by this
 reviewer; the separately authorized publication has another owner.
+
+## Checkpoint 9: Web reader review (2026-10-01)
+
+### Reviewer, exact scope and reading result
+
+This is an independent agent full-body review against the everyday TypeScript
+reader contract, not author self-review or actual first-time-human feedback.
+The reviewer read the reader contract, Web work item and verification record,
+then all fifteen selected identities in both languages: thirty complete
+production-renderer article bodies, including examples, results, rules, related
+links and retained declarations. Missing explanations were not supplied from
+prior Seseragi knowledge. The reviewed HTML was read as complete extracted text;
+this reviewer did not open the documentation in a browser.
+
+The exact scope, each with its matching `/ja` route, is:
+
+- `std/web/html`, module: `/docs/library/web/html/`
+- `std/web/html::Html`, type / opaque-type:
+  `/docs/library/web/html/opaque-type/html/`
+- `std/web/html::ElementProps`, type / alias:
+  `/docs/library/web/html/alias/elementprops/`
+- `std/web/html::trait(IntoChildren)`, trait / trait:
+  `/docs/library/web/html/trait/intochildren/`
+- `std/web/html::{section,h2,p,text,fragment,button,attribute}`, value / function:
+  `/docs/library/web/html/function/{section,h2,p,text,fragment,button,attribute}/`
+- `std/web/html::{renderToString,renderDocument}`, value / function:
+  `/docs/library/web/html/function/{rendertostring,renderdocument}/`
+- `std/web/dom`, module: `/docs/library/web/dom/`
+- `std/web/dom::app`, value / function: `/docs/library/web/dom/function/app/`
+
+These are two modules and thirteen leaves, not fifteen additional core-language
+checkbox rows. The exact identity/module/namespace/kind mapping is
+`webReaderRoutes` in `apps/site/scripts/web-reader.ts`. Other HTML/DOM/Signal
+leaves and generated/control destinations are not new reader coverage. No
+`/docs/applications/web/...` page is created, linked or accepted by this batch.
+
+The task begins with one paragraph, reuses an ordinary release-card function
+twice, obtains escaped HTML text and optionally adds Show/Hide details with
+`dom.app`. It presents a concrete reason to try the library: reusable typed
+view values, standard serialization and small pure update/view functions. TS
+comparisons use ordinary interfaces, functions, escaping, `createElement` and
+`textContent`; they credit TS libraries and do not require a component class or
+claim whole-language or framework superiority.
+
+The bodies distinguish pure `Html` construction, serialized `String`, returned
+DOM work and execution through the entry point. They distinguish escaping from
+URL/CSS validation and broader HTML/accessibility correctness. Required and
+optional fields, boolean attributes, `Action`, `Unit`, local records, functions,
+accepted children, the current-release type-inference workaround and optional
+next destinations are explained locally. Browser descriptions retain explicit
+`target`, `initial`, `update`, `view` and missing-target behavior. There is no
+mandatory Tour sequence. No remaining bounded reader blocker was found after
+the corrections below.
+
+### Reader corrections and complete rereads
+
+The first complete thirty-body read found these bounded corrections:
+
+- The HTML module, p and fragment mixed-array advice now supplies an
+  `Html<Unit>`-annotated text local and states the tested CLI 0.61.19 limitation;
+  it no longer invites the rejected directly nested text call
+- ElementProps explains an illustrative optional/required field shape without
+  claiming its abbreviated alias declaration visibly expands those fields
+- IntoChildren attributes the `where IntoChildren<C, Action>` clause to element
+  function declarations rather than its own abbreviated trait declaration
+- section, h2, p, button and fragment locally explain record fields and the
+  declaration's `Action`, `C` and IntoChildren requirement
+- h2 tells readers to pass the result of `heading ()`, not the function name
+- Static examples now explain Open in Playground, Run, Output and Text; those
+  UI labels were checked in the Playground source, not through a new browser run
+- The DOM module correctly refers to the snapshots above, and Japanese TS
+  comparisons use `boolean` rather than Seseragi's `Bool`
+- section and text distinguish `Unit` carrying no extra information from the
+  examples' choice to bind no event handlers; `Html<Unit>` is not an assertion
+  that events cannot exist, as button's `onClick: ()` example also demonstrates
+- Html and attribute explain the generic show conversion before Show terminology
+
+After repair, the reviewer freshly reread all twenty-nine changed complete
+bodies: all twenty-six HTML EN/JA bodies, both DOM module bodies and Japanese
+app. This was not a changed-paragraph-only or sampled reread. English app was
+already read in full and independently proved byte-identical to the reviewer's
+saved initial hash snapshot. Its unchanged complete HTML SHA-256 is
+`cca28c4e238cdc59320aad26b34589a273fef62f74666d557bafd5d31aa4d91c`;
+its unchanged extracted-body SHA-256 is
+`64e529e44f091d1ecfcbe5fc8c12c06d4b99e8c4eebd7237d1e2930140762cd6`.
+
+### Exact artifacts and independent preservation checks
+
+All files below are under `target/web-reader-review/`. These are SHA-256 hashes
+of the named JSON files' exact bytes, not interchangeable checksum-line
+manifests. The body manifests contain the per-route complete HTML hashes;
+the correction inventory additionally contains extracted-body hashes.
+
+- Original `before-independent-corrections/body-manifest.json`:
+  `5a2e88762cf6aec3507d500e27a97af550a6eddbcb5b9f00550083d265b85260`
+- Final `body-manifest.json`:
+  `a263439cfa04c6d3ce7d11f0eb1f020d245c81b96a9a202bb2ee5eb42237f709`
+- `reader-correction-body-diff.json`:
+  `893e5b660d71f57acc0265d870a454e4d94a068fb97c206ea53e18ee4be508d8`
+- `reader-correction-example-integrity.json`:
+  `1631f60e00dc9a93534779f5a017f90435b6e7d17c460041acfddbf580059687`
+
+The complete original HTML/body tree and frozen source checksums are preserved
+under `before-independent-corrections/`; final HTML and extracted bodies are
+under `rendered/` and `bodies/`. The reviewer independently recomputed every
+before/after HTML and body hash and compared the original hashes with its own
+saved initial snapshot. There were zero discrepancies: twenty-nine changed
+bodies and one unchanged body, exactly as inventoried.
+
+Independent initial checks verified forty-two exact source panels, thirty-six
+exact decoded Playground source seeds, thirty-eight exact output/build panels,
+twenty-six canonical declarations, 116 exact destination-title links with
+adjacent purpose and thirty same-identity locale counterpart links. Independent
+final checks confirmed that all 106 preformatted panels (source, output/build
+and declaration) and all 244 article-link destination occurrences were
+byte-identical before and after correction. All sixteen canonical program files
+(thirteen Seseragi, three TS) matched the original frozen source hashes. The
+final 116 title/purpose links and thirty locale counterpart links were checked
+again. These are bounded integrity counts, not additional page acceptances or
+full-site navigation closure.
+
+### Separate execution and browser evidence
+
+The author's execution evidence remains in
+[web-reader-verification.md](web-reader-verification.md). The final corrected
+run in `target/web-reader-review/post-reader-tests.log` records forty-four
+passing tests, zero failures and 2,066 assertions. The reviewer read that log
+but did not independently rerun the native/WASM/runtime suite. It covers the
+bounded native programs, strict TS comparisons, committed-WASM sources,
+rejection/correction fixtures, web build and provider mocks described in that
+verification record. Earlier forty-four-test / 1,974-assertion evidence remains
+historical and is not summed with the correction run. Scoped typecheck and
+formatting results are separate author checks, not reader or full-site proof.
+
+Actual browser execution has a different owner and a much narrower scope.
+A separate public Playground browser verification exercised exactly
+`apps/site/examples/src/web-reader/release-card-app.ssrg`, SHA-256
+`66a926fbb2d3a76f6fafccf9409521b4482a173c480957b7fecc526947c2559b`.
+Run switched to Interactive and Preview. Four Show/Hide clicks alternated the
+label, detail visibility and accessibility expanded/collapsed state. The
+browser verification reported no site/runtime console errors. The author and this
+reviewer independently established that this source remained unchanged through
+the prose corrections. This browser evidence belongs only to that exact app
+source, not the other examples or documentation routes. Retained screenshots
+are `../seseragi-web-probe-expanded.jpg` and
+`../seseragi-web-probe-collapsed.jpg` relative to the repository root.
+
+Printed False/True/False snapshots are direct function-call evidence. Provider
+mock dispatch, failure and cleanup checks remain mock evidence. The TS DOM
+counterpart was typechecked, not executed in a real browser for this comparison.
+Focus behavior, actual browser listener cleanup, mobile app behavior and other
+Web programs are not established by the four-click check.
+
+### Checkpoint boundary and preserved history
+
+This conclusion is a bounded independent agent assessment of comprehension,
+concrete usefulness and fair comparison for these thirty bodies. Actual
+first-time TypeScript-reader feedback remains outstanding. The reviewer did not
+perform documentation desktop/mobile layout checks, actual clicked locale or
+navigation round trips, or production-page visual QA. Whole-site integration
+gates, route/navigation closure, publication and deployment verification require
+separate evidence and are not established by this review. The separately
+published numeric/hero work is not evidence that this Web batch is published.
+
+The reviewer changed only this ledger through an authorized append. All earlier
+ledger bytes and history, 106 original checkbox rows and eight historical
+checked boxes are preserved; this appendix changes no checkbox. The pre-append
+ledger was 163,019 bytes with SHA-256
+`ba16eaa5980706408f99979fadc3955a4ee64f06598c3024073e6f7a5d1f0039`.
+The append was verified against that complete byte prefix, then frozen for the
+integration checkpoint. No public comment, issue update, commit, push or deployment
+was performed by this reviewer.
+
+### Verification attribution cleanup
+
+After the checkpoint 9 append, execution-specific reviewer identifiers and
+coordination labels were replaced with neutral review attribution. This
+metadata-only edit preserves the recorded review scopes, results, artifact
+hashes and checkbox states. The byte-prefix preservation claim above describes
+the original append operation, before this attribution cleanup.

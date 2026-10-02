@@ -1,3 +1,4 @@
+import { webReaderEditorialFor, webReaderModuleBlocks } from "./web-reader/catalog"
 import { resultFoundationEditorialFor } from "./result-foundations/catalog"
 import {
   numericReaderEditorialFor,
@@ -146,6 +147,13 @@ fn editorialAfterDataValidationEditorialFor symbol: ReferenceSymbol
 fn editorialAfterNumericReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match resultFoundationEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterResultFoundationEditorialFor symbol
+  }
+
+fn editorialAfterResultFoundationEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match webReaderEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -221,5 +229,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   nonemptyIteratorModuleBlocks specifier,
   charTextModuleBlocks specifier,
   dataValidationModuleBlocks specifier,
-  numericReaderModuleBlocks specifier
+  numericReaderModuleBlocks specifier,
+  webReaderModuleBlocks specifier
 ]

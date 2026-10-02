@@ -1,0 +1,18 @@
+import { WebReaderCopy } from "../model"
+
+pub fn copy -> WebReaderCopy = WebReaderCopy {
+  summary: "Convert a String to an Html text child that can sit beside elements in an array.",
+  taskTitle: "Put text and elements in one ordered collection",
+  purpose: "Wrap a String with text when it needs to sit in a children array beside elements. text converts the String to Html without adding a tag.",
+  setup: "html is the imported module. Supply a String after html.text, separated by a space. The Html<Unit> annotations determine the Html types. The Unit value () carries no extra information. This example binds no event handlers.",
+  after: [
+    "After wrapping, prefix and version can occupy the same children array. p preserves their order and renderToString serializes them. prefix emits text without a tag; version emits a span element. fn sentence returns the block’s final p expression; sentence () calls this no-argument function.",
+    "Text is not parsed as HTML. Characters such as < and & are escaped when renderToString writes the output. println in main displays that result."
+  ],
+  details: [
+    "A raw String and an Html in one array have mismatched element types and produce SES-T0101. Wrap the String with html.text and give the result an Html<Unit>-annotated local as shown; the tested CLI needs that type anchor for this shape. When the entire children value is one String, text is unnecessary.",
+    "Do not replace < with &lt; yourself first. The serializer also escapes &, producing different text from the original <. Supply the original string you want to display."
+  ],
+  comparisonBefore: "TS browser code can use createTextNode or textContent for text that should not be interpreted as markup. The purpose is familiar.",
+  comparisonAfter: "Seseragi text returns an Html description rather than a live text node. Serialization or browser placement can be chosen afterward."
+}

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { webReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  webReaderEditorial "std/web/dom" "module" "module" "release-card-app" "" "release-card-view" "<section class=\"release-card\"><h2>Release &lt;notes&gt;</h2><p hidden>Search &amp; navigation improvements</p><button id=\"toggle-details\" aria-expanded=\"false\" type=\"button\">Show details</button></section>\n<section class=\"release-card\"><h2>Release &lt;notes&gt;</h2><p>Search &amp; navigation improvements</p><button id=\"toggle-details\" aria-expanded=\"true\" type=\"button\">Hide details</button></section>\n<section class=\"release-card\"><h2>Release &lt;notes&gt;</h2><p hidden>Search &amp; navigation improvements</p><button id=\"toggle-details\" aria-expanded=\"false\" type=\"button\">Show details</button></section>" "release-card-app" "" (en.copy ()) (ja.copy ())

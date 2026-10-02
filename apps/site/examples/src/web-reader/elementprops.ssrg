@@ -1,0 +1,18 @@
+import * as html from "std/web/html"
+
+fn omitted -> html.Html<Unit> = html.p { children: "Release details" }
+
+fn visible -> html.Html<Unit> = html.p {
+  class: "release-detail",
+  title: "Read release notes",
+  hidden: False,
+  children: "Release details"
+}
+
+fn hidden -> html.Html<Unit> = html.p { hidden: True, children: "Release details" }
+
+pub effect fn main = do {
+  println (html.renderToString (omitted ()))
+  println (html.renderToString (visible ()))
+  println (html.renderToString (hidden ()))
+}
