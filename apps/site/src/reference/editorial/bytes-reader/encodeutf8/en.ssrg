@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "encodeUtf8 converts a string into UTF-8 Bytes. Prepare bytes for storage or transport and inspect their actual size.",
+  taskTitle: "Encode text as UTF-8 and check its size",
+  purpose: "Convert A, café, 🌊, and the empty string into bytes for storage or sending. UTF-8 represents a character with one or more bytes. Display the resulting content in hexadecimal alongside its byte count.",
+  typescriptBefore: "new TextEncoder().encode(label) returns a UTF-8 Uint8Array in TypeScript. Bun’s toHex writes two hexadecimal digits per byte, and length reads its size. There is no need to infer a byte count from string length.",
+  benefit: "Both versions use a single dedicated conversion function. Seseragi’s result is immutable Bytes, distinct from String, ready to pass to byte-counting or Base64 operations.",
+  setup: "text, bytes, and hex are import aliases for std/text, std/bytes, and std/bytes/hex. text.encodeUtf8 label calls a function with label after a space. It returns Bytes directly, so no match separating success and failure is needed.",
+  after: [
+    "for label <- [...] names each string in the array label in turn and performs the printing inside { } for that string.",
+    "hex.encode (text.encodeUtf8 label) first makes UTF-8 Bytes inside the parentheses, then gives them to hex.encode for a hexadecimal string. bytes.length also accepts Bytes and returns their count as Int, the integer type.",
+    "The backtick string inserts expression results at ${...}. The colon between them is just an output separator. In the output, 41:1 means A occupies one byte; 636166c3a9:5 means café occupies five.",
+    "🌊 becomes the four bytes f09f8c8a. The empty string produces empty Bytes, so :0 has no hexadecimal content before the colon. Visible text length and storage byte count are different measurements.",
+  ],
+  details: [
+    "encodeUtf8 creates new Bytes without changing its input string. This example encodes the same label twice for display and counting. For a larger input, name the result once and use it in both places to avoid repeating the conversion.",
+    "To go from bytes back to a string, use decodeUtf8. Passing Bytes to encodeUtf8 is a type mismatch. Keep track of whether your input is text or is already a byte sequence.",
+    "encodeUtf8 does not add a leading U+FEFF marker, often called a BOM. If the input contains U+FEFF, that character is encoded too. NUL (the zero-valued character) and combining characters such as attached accents are preserved, with no normalization of the text’s spelling.",
+    "Seseragi String contains Unicode scalar values: Unicode code points other than the surrogate values reserved for UTF-16 pairs. JavaScript strings can also contain unpaired surrogates, which TextEncoder replaces. The normal Seseragi foreign String boundary rejects those inputs, so this example does not establish identical treatment for every possible JavaScript string.",
+  ],
+  nodeNote: "Node 24.19.0 provides TextEncoder too. For hexadecimal display, add import { Buffer } from \"node:buffer\" and replace content.toHex() with Buffer.from(content).toString(\"hex\"). Buffer is a Uint8Array subclass with encoding methods.",
+}

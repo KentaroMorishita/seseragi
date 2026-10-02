@@ -1,0 +1,5 @@
+import * as bytes from "std/bytes"
+fn count -> String =
+  match bytes.fromInts [1] { Left error -> show error;
+    Right content -> show (bytes.length content) }
+pub effect fn main = println (count ())

@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.decodeは標準のBase64だけを厳密に読みます。必要な=、使える文字、末尾のビットまで調べ、成功したBytesか失敗理由を返します。",
+  taskTitle: "標準のBase64だけを受け入れる",
+  purpose: "外部のテキスト欄からZg==を受け取り、元のバイト列に戻します。同じバイト列でも別の綴りや壊れた入力を混ぜたくないため、標準のencodeが出す一つの表記だけを受け入れます。",
+  typescriptBefore: "TypeScriptはUint8Array.fromBase64をlastChunkHandling: \"strict\"で呼び、末尾の不足や余分なビットを調べます。それでも空白は受け入れるため、toBase64()で書き直した文字列とinputが完全一致するかを追加で確認します。失敗の例外はtry/catchでRejectedにします。",
+  benefit: "Seseragiのdecodeには、この標準形式の受け入れ規則が含まれています。戻り値Either<Base64DecodeError, Bytes>はLeftの失敗理由かRightのバイト列なので、呼び出す側はその二つを分けて扱えます。TypeScript版は同じ入力の受け入れを確認しますが、失敗の分類までは再現しません。",
+  setup: "base64はstd/bytes/base64、hexはstd/bytes/hexの別名です。decodeに成功したとき、Rightに入るBytesは書き換えられないバイト列です。hex.encodeは成功したバイトを確認できるよう、1バイトを小文字の十六進数字2桁にします。",
+  after: [
+    "fn read input: String -> Stringは、文字列inputを受け取って表示用の文字列を返す関数です。fnが関数を定義し、: Stringが引数の型、-> Stringが戻り値の型です。base64.decode inputでは空白で引数を渡します。",
+    "matchはLeftとRightで処理を分けます。Left _の_は詳しい失敗理由をこの例では使わない印です。Right contentは成功した値をcontentと呼び、+でAccepted:  とhex.encode contentをつなぎます。",
+    "Zg==は1バイトを十六進表記で示した66（十進数では102）となり、Accepted: 66が表示されます。空文字列も受け入れます。Zm9vは3バイトを十六進表記で示した666f6fで、末尾の=なしで正しい標準形式です。println (read input)は、readが作った表示用の文字列を出します。",
+    "Zgは必要な=がないため拒否されます。AA AやZ g==の空白、AA=Aの途中の=、AB==の余分な末尾ビット、URL向けの-_8も拒否されます。AB==を読めるよう末尾のビットを無視すると、AA==と同じバイト列になってしまいます。",
+  ],
+  details: [
+    "標準形式はA–Z、a–z、0–9、+、/と必要な末尾の=を使います。空白や改行を除去せず、入力全体を確認します。必要な=を省くことも、不要な=を足すことも許しません。",
+    "Base64DecodeErrorには、入力のUTF-8バイト長を持つInvalidBase64Lengthと、位置を持つInvalidBase64Digit、InvalidBase64Padding、NonCanonicalBase64Bitsがあります。offsetは入力のバイトを0から数える位置です。長さは位置ではありません。",
+    "長さの検査は数字の検査より先です。また、複数の不正を含む入力で必ず一番左の不正を返すとは限りません。たとえばAA=?は位置3のInvalidBase64Digitになります。結果をすべての不正箇所の一覧として扱わないでください。",
+    "成功しても得られるのは文章ではなくBytesです。文章へ戻すときはstd/textのdecodeUtf8を別に呼び、UTF-8として読めるかを確認します。Base64の読み取りは署名やトークンの有効性を確認しません。",
+  ],
+  nodeNote: "検証したNode 24にはfromBase64()/toBase64()がありません。Node/Bunではimport { Buffer } from \"node:buffer\"を使います。Buffer.from(input, \"base64\")は寛容なので、得た値をtoString(\"base64\")で書き直し、元のinputとの完全一致を確認します。これで受け入れる入力は合わせられますが、Seseragiのエラー分類や検査順序は再現しません。",
+}

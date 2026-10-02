@@ -1,0 +1,25 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "std/bytes/base64はバイト列をテキスト欄で渡せるBase64文字列にします。標準形式とURL向け形式を選び、それぞれの形式に合う読み取り関数を使います。",
+  taskTitle: "文章のバイト列をテキスト欄で受け渡す",
+  purpose: "caféというラベルをUTF-8のバイト列にし、テキストだけを受け付ける欄へ入れたいとします。UTF-8は文字列をバイト値へ変換する方式です。Base64はそのバイト列を英数字などの限られた文字で表す方式で、標準形式とURL向け形式があります。",
+  typescriptBefore: "TypeScriptではTextEncoderがcaféをUint8Arrayのバイト列にします。lengthでバイト数、toHex()で内容を確認し、toBase64()で標準形式を書き出します。alphabet: \"base64url\"はURL向けの文字を選び、omitPadding: trueは末尾の=を省きます。最後のTextDecoderは元のバイト列をUTF-8の文章へ戻します。",
+  benefit: "どちらの言語も既存の変換操作を組み合わせています。SeseragiではStringと書き換えられないBytesを型で区別し、文章からバイト列、バイト列から文字列への変換を明示します。読み取り時の失敗はLeft、成功はRightとして戻り値に現れます。",
+  setup: "import * asの後ろのbytes、text、hex、base64は、それぞれstd/bytes、std/text、std/bytes/hex、std/bytes/base64の別名です。text.encodeUtf8が文章をバイト列にし、base64.encodeとbase64.encodeUrlがその同じバイト列を別々の形式で表します。",
+  after: [
+    "let content = text.encodeUtf8 \"café\"は、変換結果にcontentという名前を付けます。letの名前は再代入できません。呼び出しは関数名と引数を空白で並べます。1バイトは0から255の値で、caféは5バイトです。",
+    "標準形式はY2Fmw6k=、URL向け形式はY2Fmw6kです。末尾の=は、標準形式の長さを4の倍数にそろえるための埋め合わせです。このラベルでは使われませんが、標準形式の+と/はURL向け形式では-と_になります。",
+    "fn decoded -> Stringは文字列を返す引数なしの関数を定義し、decoded ()で呼び出します。fnは関数の定義、-> Stringは戻り値の型です。text.decodeUtf8 contentが返すEitherは、失敗理由を持つLeftか、文章を持つRightです。",
+    "matchはその二つの結果で枝を分けます。Left _はここでは理由を使わずRejectedを返し、Right valueは取り出した文字列をvalueとして返します。この例のcontentは正しいUTF-8なので、最後の行はcaféです。",
+    "バッククォートで囲む文字列では${...}の式の結果を埋め込みます。例はバイト数、十六進表記、二つのBase64表記、元の文章を順に一つの文字列へ入れ、printlnで表示しています。",
+    "fatal: trueは不正なUTF-8を例外にします。BOMは文章の先頭の印に使われるU+FEFFという文字です。ignoreBOM: trueはこの文字を取り除かず、Seseragiと同じように残す指定です。",
+  ],
+  details: [
+    "encode/decodeは標準形式、encodeUrl/decodeUrlはURL向け形式の組です。標準形式は必要な=を付け、URL向け形式は=を付けません。受け取り先の仕様に合わせて組を選びます。",
+    "読み取りは、各encoderがそのバイト列から作る一つの綴りだけを受け入れます。空白、別形式の文字、誤った埋め合わせ、同じバイトを表す余分な末尾ビットは拒否されます。Base64DecodeErrorで理由を区別できます。",
+    "Base64を読み取って得るのはBytesです。文章として表示したいなら、その後にdecodeUtf8でUTF-8としての確認が必要です。例のdecodedは元のcontentを直接読み直しており、Base64文字列の読み取りではありません。",
+    "Base64は暗号化、圧縮、署名の検証を行いません。URL向けという名前も、リンク先やトークンの安全性を保証しません。変換は入力全体から新しい値を作るため、大きなデータを少しずつ処理する例ではありません。",
+  ],
+  nodeNote: "検証したNode 24にはUint8ArrayのtoHex()/toBase64()などがありません。Node/Bunではimport { Buffer } from \"node:buffer\"を使い、Buffer.from(content).toString(\"base64\")またはtoString(\"base64url\")で書き出せます。Bufferは変換用の操作を持つUint8Arrayの一種です。Bufferの読み取りは寛容なので、厳密に受け入れるには、読んだ値を指定形式で書き直して元の入力と一致するか確かめます。",
+}

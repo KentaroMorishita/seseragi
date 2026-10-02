@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.encodeUrl turns Bytes into URL-safe Base64. It uses - and _ instead of standard + and /, and adds no trailing = padding.",
+  taskTitle: "Write URL-safe Base64 without padding",
+  purpose: "Put the two byte values 251 and 255 into a field requiring URL-safe Base64. Base64 represents bytes with a limited set of characters. Here you produce -_8 and check that decodeUrl can read it back using the same format.",
+  typescriptBefore: "TypeScript puts the two fixed bytes in a Uint8Array and writes them with toBase64({ alphabet: \"base64url\", omitPadding: true }). alphabet selects the character set containing - and _, while omitPadding leaves off trailing =. The decoder re-encodes in the same format and compares with its input to reject alternate spellings a permissive decoder could read.",
+  benefit: "TypeScript’s standard API can produce the same representation. Seseragi puts the URL-safe alphabet and no-padding choice together in the name encodeUrl, converting Bytes to String. The matching decodeUrl returns success and failure as distinct values.",
+  setup: "bytes, base64, and hex alias std/bytes, std/bytes/base64, and std/bytes/hex respectively. Bytes is an immutable sequence of values from 0 through 255. hex is used to inspect successfully decoded byte values as hexadecimal.",
+  after: [
+    "fn encoded -> String defines a no-argument function returning a string; encoded () calls it. fn introduces the definition and -> String gives its result type. bytes.fromInts [251, 255] checks the integer array and returns Left error on failure or Right content on success. Either is the type for these two possible results.",
+    "match chooses the branch for the result received. Left error uses show error to turn the reason into a string; Right content passes the successful Bytes to base64.encodeUrl content. Calls separate the function name and argument with a space.",
+    "fn read input: String -> String turns a string named input into a display string. : String gives the argument type. For decodeUrl, Left _ ignores the reason and returns Rejected, while Right content uses hex.encode content to show the bytes. + joins strings.",
+    "The initial -_8 represents [251, 255], and fbff on the decoded line represents the same two bytes. The empty string is also accepted. AA=, +A, AB, and A are rejected for padding, a character from the other alphabet, unused trailing bits, and length, respectively. The for array contains strings returned by calls such as encoded () and read \"-_8\"; it prints them in order.",
+  ],
+  details: [
+    "encodeUrl takes one Bytes value and returns a new String. It uses A–Z, a–z, 0–9, -, and _, with no =, whitespace, or line breaks. Empty Bytes becomes an empty string.",
+    "Both the alphabet and padding differ from standard encode. Use encode if the receiver requires standard Base64. URL-safe does not mean that this operation builds an entire URL or URL-escapes an arbitrary string.",
+    "encodeUrl itself does not return a failure result. The example’s Left/Right branches handle fromInts, which constructs Bytes from numbers, and decodeUrl, which reads bytes from text. To send text, first create Bytes with encodeUtf8 from std/text.",
+    "URL-safe Base64 is neither encryption nor a signature. Giving a token this representation does not keep its contents secret or verify its authenticity. Conversion creates a value from the entire input.",
+  ],
+  nodeNote: "The inspected Node 24 runtime has no toBase64()/fromBase64(). With Node/Bun, import { Buffer } from \"node:buffer\" and write Buffer.from(content).toString(\"base64url\"). Buffer.from(input, \"base64url\") is permissive, so also require an exact match between the input and the result re-encoded as base64url.",
+}

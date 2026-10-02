@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { bytesReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  bytesReaderEditorial "std/bytes/base64::Base64DecodeError" "type" "opaque-type" "base64-decode-errors" (en.copy ()) (ja.copy ())

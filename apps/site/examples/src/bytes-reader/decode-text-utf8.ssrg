@@ -1,0 +1,13 @@
+import * as text from "std/text"
+import * as hex from "std/bytes/hex"
+
+fn read input: String -> String = match hex.decode input {
+  Left _ -> "Invalid hex"
+  Right content -> match text.decodeUtf8 content {
+    Left _ -> "Invalid UTF-8"
+    Right value -> `Text: ${value}`
+  }
+}
+pub effect fn main = for input <- ["636166c3a9", "f09f8c8a", "", "ff"] {
+  println (read input)
+}

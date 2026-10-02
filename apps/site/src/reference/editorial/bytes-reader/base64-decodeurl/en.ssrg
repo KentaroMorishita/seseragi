@@ -1,0 +1,24 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.decodeUrl reads only Base64 using - and _ with no trailing = padding. It returns successful Bytes separately from the reason an input violates the format.",
+  taskTitle: "Validate the spelling of URL-safe Base64",
+  purpose: "Recover two bytes from the text -_8, accepting only the one spelling the URL-safe encoder would produce. Reject additional = padding and characters from the standard + and / alphabet rather than accepting alternate forms.",
+  typescriptBefore: "TypeScript’s fromBase64 uses alphabet: \"base64url\" to read URL-safe characters. It does not set lastChunkHandling: \"strict\", because valid unpadded endings must be accepted. Instead, it writes the bytes again with the URL-safe alphabet and no padding, then requires an exact match with the original input. try/catch rejects thrown errors.",
+  benefit: "Seseragi’s decodeUrl applies the same strict acceptance policy in a single call. Either<Base64DecodeError, Bytes> contains a failure reason in Left or successful Bytes in Right. match separates those outcomes before the successful bytes are used.",
+  setup: "bytes, base64, and hex alias std/bytes, std/bytes/base64, and std/bytes/hex respectively. The example first creates one input with encodeUrl, then tests valid and invalid inputs with decodeUrl. hex.encode displays successful Bytes as hexadecimal.",
+  after: [
+    "fn encoded -> String defines a no-argument function returning a string; encoded () calls it. fn introduces the definition and -> String gives its result type. bytes.fromInts [251, 255] checks the integer array and returns Left error on failure or Right content on success. Either is the type for these two possible results.",
+    "match chooses the branch for the result received. Left error uses show error to turn the reason into a string; Right content passes the successful Bytes to base64.encodeUrl content. Calls separate the function name and argument with a space.",
+    "fn read input: String -> String turns a string named input into a display string. : String gives the argument type. For decodeUrl, Left _ ignores the reason and returns Rejected, while Right content uses hex.encode content to show the bytes. + joins strings.",
+    "The initial -_8 represents [251, 255], and fbff on the decoded line represents the same two bytes. The empty string is also accepted. AA=, +A, AB, and A are rejected for padding, a character from the other alphabet, unused trailing bits, and length, respectively. The for array contains strings returned by calls such as encoded () and read \"-_8\"; it prints them in order.",
+  ],
+  details: [
+    "The URL-safe alphabet is A–Z, a–z, 0–9, -, and _. The decoder rejects =, +, /, whitespace, and line breaks. An input whose UTF-8 byte length leaves a remainder of one when divided by four cannot form a complete byte and is rejected. Empty input succeeds.",
+    "A permissive reading of AB would give the same byte as AA, so decodeUrl rejects its nonzero unused trailing bits. It accepts only the one spelling encodeUrl would produce for those Bytes.",
+    "Base64DecodeError distinguishes length, invalid characters, padding, and unused trailing bits. InvalidBase64Length carries the input’s UTF-8 byte length. Other reasons carry an offset counting input bytes from zero, rather than visible characters.",
+    "Length checking comes first. With multiple defects, do not interpret the reason as necessarily the leftmost defect or as a list of every defect. If the input contract requires standard Base64, choose decode instead of guessing how to repair the input.",
+    "Success does not mean that the contents are text or a valid token. Text requires a separate check with decodeUtf8 from std/text. This operation also does not parse a complete URL, encrypt data, or verify signatures.",
+  ],
+  nodeNote: "The inspected Node 24 runtime has no fromBase64()/toBase64(). With Node/Bun, import { Buffer } from \"node:buffer\", read with Buffer.from(input, \"base64url\"), and encode the result with toString(\"base64url\"). Requiring exact equality with input rejects alternate forms accepted by the permissive decoder. This does not reproduce Seseragi’s error categories or check order.",
+}

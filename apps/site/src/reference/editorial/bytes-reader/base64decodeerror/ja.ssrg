@@ -1,0 +1,26 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "Base64DecodeErrorは、長さ、不正な文字、=の位置、余分な末尾ビットを区別します。標準形式とURL向け形式の読み取りが、同じ型で失敗理由を返します。",
+  taskTitle: "Base64を拒否した理由を読み分ける",
+  purpose: "Base64の入力を拒否したときに、長さを見直すのか、文字や=の位置を調べるのかを伝えます。標準のbase64.decodeを例に、成功したバイト列と四つの失敗理由を表示します。",
+  typescriptBefore: "TypeScriptはfromBase64のstrict指定で末尾を調べ、再びtoBase64()した文字列との完全一致も確かめます。後者は空白などの別表記を拒否するためです。try/catchも含めて成功か拒否かは合わせますが、Seseragiの四つの理由を独自に作ってはいません。失敗時の表示文は異なります。",
+  benefit: "Seseragiでは理由ごとに名前があり、必要な長さや位置も戻り値に含まれます。例外の文章を調べず、matchで理由に合う案内を選べます。この例は拒否の共通表示より詳しい情報を使います。",
+  setup: "base64はstd/bytes/base64、hexはstd/bytes/hexの別名です。decodeの戻り値Either<Base64DecodeError, Bytes>は、Leftの理由かRightの成功したBytesです。Bytesは書き換えられないバイト列で、hex.encodeはその内容を十六進表記で見せます。",
+  after: [
+    "fn read input: String -> Stringは、文字列inputを受け取り、表示用の文字列を返す関数です。fnが定義、: Stringが引数の型、-> Stringが戻り値の型です。base64.decode inputでは、関数名と引数を空白で区切ります。",
+    "外側のmatchはRight contentとLeft errorを分けます。Rightではhex.encode contentに+でDecoded:  を付けます。Leftでは内側のmatchが、errorに付いている四つの理由の名前から対応する枝を選びます。",
+    "InvalidBase64Length lengthは入力の長さをlengthとして取り出します。他の枝の{ offset }は、理由に含まれる名前付きの位置をoffsetとして取り出します。InvalidBase64Digitは使えない文字、InvalidBase64Paddingは不正な=の配置、NonCanonicalBase64Bitsは末尾の余分なビットです。",
+    "バッククォートで囲んだ文字列では、${length}と${offset}が数値を表示文に埋め込みます。各枝の->の右側がreadの戻り値になり、println (read input)がその文字列を表示します。",
+    "Zg==は正しい標準形式で、十六進表記で66（十進数では102）という1バイトになります。Zgは入力長2、AA Aは位置2の空白、AA=Aは位置2の=、AB==は位置1の余分な末尾ビットで失敗します。最後の例を寛容に読むとAA==と同じバイトになり、同じ内容に別の綴りを許してしまいます。",
+  ],
+  details: [
+    "InvalidBase64Length IntのIntは、入力のUTF-8バイト長です。offsetではありません。標準形式は長さが4の倍数でなければ拒否し、URL向け形式は4で割った余りが1なら拒否します。長さの検査が数字の検査より先です。",
+    "InvalidBase64Digit、InvalidBase64Padding、NonCanonicalBase64Bitsのoffsetは、入力のバイト位置を0から数えます。最後の理由は、結果のバイトに使わないビットが0でない末尾の有効な文字を指します。画面上の文字数や、結果のBytesの位置ではありません。",
+    "複数の問題がある場合、常に一番左の問題が報告されるとは限りません。AA=?は=より後ろの?を指す位置3のInvalidBase64Digitになります。一つの理由を、入力のすべての問題を見つけた結果として扱わないでください。",
+    "標準のdecodeは+と/、必要な末尾の=を使う形式です。decodeUrlは-と_を使い、=を認めません。どちらも空白を取り除かず、encoderが同じバイト列から作る一つの綴りだけを受け入れます。これがここでいう標準の表記です。",
+    "Base64DecodeErrorの内部を直接読み書きする代わりに、公開されている四つの理由の名前でmatchします。すべての理由がoffsetを持つと思わず、長さだけを持つ場合も処理します。",
+    "失敗時に部分的なBytesは返りません。成功しても文章やトークンの正しさまでは確かめていないため、文章には別にstd/textのdecodeUtf8、署名には別の検証が必要です。",
+  ],
+  nodeNote: "検証したNode 24にはfromBase64()/toBase64()がありません。Node/Bunではimport { Buffer } from \"node:buffer\"を使います。寛容なBuffer.from(input, \"base64\")の結果をtoString(\"base64\")で書き直し、inputとの完全一致で標準形式を確認します。この代替例も受け入れと拒否の比較であり、Seseragiの分類、位置、検査順序は再現しません。",
+}

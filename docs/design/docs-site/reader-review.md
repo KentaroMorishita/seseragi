@@ -3276,3 +3276,105 @@ The entire prior 195,737-byte ledger prefix is preserved, SHA-256
 `907409efb66b5192c72761430863f239f86c8987af0dc24375cafbae7ed8a1dc`. All 106 original checkbox rows,
 including eight historical checked states, remain byte-identical. No previous
 conclusion, checklist state or historical review is replaced.
+
+
+## Bytes20: binary payload and text encoding reader batch (2026-10-02)
+
+### Bounded authored scope
+
+This batch adds whole reader articles to twenty existing identities: three
+module overviews, five opaque-type identities and twelve pure functions. The
+modules are std/bytes, std/bytes/hex and std/bytes/base64, joined by the four
+UTF-8 leaves under std/text. The existing text overview is not counted again;
+individual constructor and instance pages remain deferred. The authored library
+inventory becomes 289 after the prior 269 identities. Route presence and this
+count do not establish first-time-reader acceptance or change the core ledger.
+
+The task is to inspect a small binary payload, carry it through a text-only
+field using hex or Base64, and validate it before reading it as UTF-8. Japanese
+was written first, then English, for ordinary TypeScript application developers.
+Bytes, Uint8Array, TextEncoder, error alternatives, local function calls and
+matching are explained without assuming Rust, Haskell or functional programming.
+
+### Independent complete-body reading
+
+Independent English and Japanese readers each read all twenty complete initial
+production-shaped bodies, including code, outputs, appended declarations and
+Node alternatives. The corrections distinguish a byte position from a character
+position, successful Bytes inside Right from the enclosing Either, and Node
+output from intentionally different typed Seseragi errors. They also define
+TextDecoder's fatal/BOM options where used, the actual loop variable, and Buffer
+as a byte container. Standard Base64 encoding now offers its matching decoder.
+
+Exactly fifteen English and fifteen Japanese bodies changed. Both independent
+readers reread every changed complete body and verified all five unchanged
+body/text pairs in their locale. All forty corrected bodies have no required
+correction remaining in this bounded model-reader review. Human acceptance and
+actual browser/layout review remain unverified. Optional self-links, repeated
+shared explanations and one-argument generated wording remain separate polish.
+
+### Exact source, runtime and failure evidence
+
+The final focused suite passes eight tests, zero failures and 4,911 assertions.
+It uses official Seseragi 0.61.19 (a8641b5a81a4), Bun 1.3.9, TypeScript 5.8.3,
+and a separate Node v24.19.0 lane. Fourteen complete source triples retain exact
+Seseragi, Bun-native TypeScript and Node-Buffer sources. All fourteen Seseragi
+programs pass process lint/build/run and committed-WASM/current-runtime seed
+execution, requiring Console only. All four owning modules support process and
+browser. No web-only navigation source was added to the process aggregate.
+
+The Bun codec panels use native Uint8Array methods supported by that runtime and
+its installed Bun type declarations. Node lacks those methods, so its labelled
+alternatives use Buffer and are strictly checked and actually executed on Node.
+No casts, injected method declarations, polyfills or dependency updates force
+compatibility. Eleven triples share printed output; the three error-focused
+triples intentionally show typed Seseragi details and native generic failure
+separately. Native exceptions are not assigned invented byte-offset payloads.
+
+Fifty-seven Seseragi contract observations cover byte bounds, first-invalid
+values, hex byte-length/error precedence, strict standard/URL-safe Base64, and
+thirteen UTF-8 cases. Native counterparts check the corresponding acceptance
+and data results. ignoreBOM:true preserves leading U+FEFF; native defaults strip
+it. Separate runtime checks cover copy boundaries, all 256 hex byte values and
+65 deterministic payload lengths in both Base64 formats. Five precise invalid
+fixtures each yield one SES-T0101 and have formatted executable repairs.
+
+All 87 owned Seseragi files pass canonical formatting. Strict comparison checks,
+the configured host typecheck, Biome and diff checks pass. Production rendering
+checks all forty exact source/output bodies, runtime labels, canonical metadata,
+four bounded error-type reading overrides, identity guards, localized paragraph
+pairing, title-labelled related links and section-local navigation. Two advisory
+Japanese lint passes retain required restrictions, normal polite endings and
+literal supplementary-scalar sample data rather than treating a score as proof.
+
+The final focused input also includes the preexisting text/character/correction/
+Unicode example sources. An independent snapshot audit caught omitted Unicode
+inputs on six unselected locale pages; adding those fixture inputs and rerunning
+the gate preserves all forty reviewed HTML/body hashes and makes all 124
+unselected articles byte-identical to checkpoint13. No missing-example marker
+remains in the 164-route focused snapshot.
+
+### Retained evidence and boundaries
+
+Exact body/source hashes, command/result logs, full initial and corrected bodies,
+per-route independent reviews and the changed-body list are retained with the
+batch evidence. Key final fingerprints:
+
+- `final-body-manifest.json`: `8d31e05326550b9b9b8e402ae77beac4f81c840cfc1aada9e2f9f397996bac6f`
+- `final-exact-focused.log`: `25ea86c69edd592ecd27cfa90f66a9c49510290bf58143dd56743189be430913`
+- `english-reader-review.json`: `27cdece573bb6acc45fe9b8ff2f57e53337daa56072e2328e7462adcf404727c`
+- `japanese-reader-review.json`: `ded86849d8c1c8323a1b9c6c41d0265bc51d79c9f6878806515c99542d50ec9b`
+- `english-reader-rereview.json`: `4da4f37cf71f784e3e4672ec51b4daad4c51a23ada7983e8d89faf9aaadf9b39`
+- `japanese-reader-rereview.json`: `630fad8cc8bb772a4b29415cea04b6ac2fbc28098cfb3a6114edde72174bf2a6`
+- `corrected-body-diff.json`: `e44d17f2cd6dd1c7cf602cc16fc61408511caa9a38c5f99e440571d2748683c1`
+
+Detailed scope and verification are in
+[bytes-reader-work-item.md](bytes-reader-work-item.md) and
+[bytes-reader-verification.md](bytes-reader-verification.md). No compiler/runtime
+fix, public issue, commit, deployment, whole-site integration, live Playground
+execution or human-reader acceptance is claimed by this appendix.
+
+The entire previous 203079-byte ledger prefix is preserved, SHA-256
+`67a0eb1961f8a2f848895765b7d86ad8179ae35f1bd9d2af62d62bfeb5950287`. All 106 original
+checkbox rows, including their historical checked states, remain byte-identical.
+No earlier conclusion or checklist state is replaced.

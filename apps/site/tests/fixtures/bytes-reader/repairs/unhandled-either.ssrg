@@ -1,0 +1,6 @@
+import * as bytes from "std/bytes"
+import * as hex from "std/bytes/hex"
+fn render -> String =
+  match bytes.fromInts [65] { Left error -> show error;
+    Right content -> hex.encode content }
+pub effect fn main = println (render ())

@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.encodeUrlはBytesをURL向けのBase64文字列にします。標準形式の+と/の代わりに-と_を使い、末尾の=を付けません。",
+  taskTitle: "末尾の=がないURL向け表記を作る",
+  purpose: "URL向けBase64を求める欄へ、251と255の2バイトを入れます。Base64はバイト列を限られた文字で表す方式です。ここでは-_8を作り、同じ形式のdecodeUrlで読み戻せることまで確かめます。",
+  typescriptBefore: "TypeScriptではUint8Arrayに固定の2バイトを入れ、toBase64({ alphabet: \"base64url\", omitPadding: true })で書き出します。alphabetは-と_を使う文字の組、omitPaddingは末尾の=を省く指定です。読み取り側では同じ形式で書き直して入力と比べ、寛容に読める別の綴りも拒否します。",
+  benefit: "TypeScriptの標準APIでも同じ表記を作れます。SeseragiではURL向けの文字と末尾の=なしという選択がencodeUrlの名前にまとまり、BytesからStringへの変換になります。読み戻すdecodeUrlの成功と失敗は戻り値で区別します。",
+  setup: "bytes、base64、hexは順にstd/bytes、std/bytes/base64、std/bytes/hexの別名です。Bytesは0から255までの値を並べた、書き換えられないバイト列です。hexは読めたバイト値を十六進表記で確認するために使います。",
+  after: [
+    "fn encoded -> Stringは引数なしで文字列を返す関数で、encoded ()が呼び出しです。fnは定義、-> Stringは戻り値の型です。bytes.fromInts [251, 255]は整数配列を確認し、失敗ならLeft error、成功ならRight contentを返します。この二つの結果を表す型がEitherです。",
+    "matchが届いた結果の枝を選びます。Left errorではshow errorで理由を文字列にし、Right contentでは取り出したBytesをbase64.encodeUrl contentへ渡します。呼び出しは関数名と引数を空白で区切ります。",
+    "fn read input: String -> Stringは文字列inputから表示用の文字列を返します。: Stringが引数の型です。decodeUrlのLeft _では理由を使わずRejectedを返し、Right contentではhex.encode contentでバイト値を表示します。+は文字列の連結です。",
+    "最初の-_8は[251, 255]の表記で、読み戻した行のfbffも同じ2バイトです。空文字列も受け入れます。AA=、+A、AB、Aは順に、=、別形式の文字、余分な末尾ビット、長さの問題を含み、拒否されます。forの配列にはencoded ()やread \"-_8\"が返した文字列が入り、それらを順に表示します。",
+  ],
+  details: [
+    "encodeUrlはBytesを一つ受け取り、新しいStringを返します。A–Z、a–z、0–9、-、_を使い、=、空白、改行は付けません。空のBytesは空文字列になります。",
+    "標準形式のencodeとは文字の組も末尾の埋め合わせも異なります。受け取り先が標準形式ならencodeを使います。URL向けという名前は、URL全体の組み立てや任意の文字列のURL用変換を行うという意味ではありません。",
+    "encodeUrl自体は失敗結果を返しません。例のLeft/Rightは、数値からBytesを作るfromIntsと、文字列をBytesへ戻すdecodeUrlの結果です。文章を送りたい場合は、先にstd/textのencodeUtf8でBytesを作ります。",
+    "URL向けBase64は暗号化でも署名でもありません。トークンをこの表記にしても、内容の秘匿や真正性の確認にはなりません。変換する値は入力全体から作られます。",
+  ],
+  nodeNote: "検証したNode 24ではtoBase64()/fromBase64()を使えません。Node/Bunではimport { Buffer } from \"node:buffer\"を使い、Buffer.from(content).toString(\"base64url\")で書き出せます。読み取りはBuffer.from(input, \"base64url\")だけでは寛容なので、同じbase64url形式で書き直した文字列との完全一致も確認します。",
+}

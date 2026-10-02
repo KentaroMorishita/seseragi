@@ -1,0 +1,24 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.decodeUrlは、-と_を使い、末尾の=がないBase64だけを読みます。成功したBytesと、形式に合わない入力の理由を戻り値で分けます。",
+  taskTitle: "URL向けBase64の綴りを確認する",
+  purpose: "テキスト欄の-_8を2バイトへ戻し、URL向けのencoderが作る一つの綴りだけを受け入れます。余分な=や標準形式の+と/を混ぜた入力も、別の綴りとして拒否します。",
+  typescriptBefore: "TypeScriptのfromBase64はalphabet: \"base64url\"でURL向けの文字を読みます。末尾の=がない正しい入力も必要なので、lastChunkHandling: \"strict\"にはしません。代わりにURL向け・=なしで再び書き出し、元の文字列との完全一致を確認します。例外はtry/catchで拒否にします。",
+  benefit: "Seseragiでは、同じ厳密な受け入れ規則をdecodeUrlの一回の呼び出しで使えます。Either<Base64DecodeError, Bytes>はLeftの失敗理由かRightの成功したBytesです。成功したバイトを使う前に、その二つをmatchで分けます。",
+  setup: "bytes、base64、hexは順にstd/bytes、std/bytes/base64、std/bytes/hexの別名です。例はまずencodeUrlで入力を一つ作り、続いてdecodeUrlで正しい入力と不正な入力を試します。hex.encodeは成功したBytesを十六進表記にします。",
+  after: [
+    "fn encoded -> Stringは引数なしで文字列を返す関数で、encoded ()が呼び出しです。fnは定義、-> Stringは戻り値の型です。bytes.fromInts [251, 255]は整数配列を確認し、失敗ならLeft error、成功ならRight contentを返します。この二つの結果を表す型がEitherです。",
+    "matchが届いた結果の枝を選びます。Left errorではshow errorで理由を文字列にし、Right contentでは取り出したBytesをbase64.encodeUrl contentへ渡します。呼び出しは関数名と引数を空白で区切ります。",
+    "fn read input: String -> Stringは文字列inputから表示用の文字列を返します。: Stringが引数の型です。decodeUrlのLeft _では理由を使わずRejectedを返し、Right contentではhex.encode contentでバイト値を表示します。+は文字列の連結です。",
+    "最初の-_8は[251, 255]の表記で、読み戻した行のfbffも同じ2バイトです。空文字列も受け入れます。AA=、+A、AB、Aは順に、=、別形式の文字、余分な末尾ビット、長さの問題を含み、拒否されます。forの配列にはencoded ()やread \"-_8\"が返した文字列が入り、それらを順に表示します。",
+  ],
+  details: [
+    "URL向け形式が使う文字はA–Z、a–z、0–9、-、_です。=、+、/、空白、改行は受け入れません。入力のUTF-8バイト長を4で割った余りが1なら、完全なバイトを作れないため拒否します。空文字列は成功です。",
+    "ABを寛容に読むとAAと同じバイトになるため、decodeUrlは末尾の余分なビットを拒否します。受け入れるのは、そのBytesをencodeUrlで書いたときと同じ一つの綴りだけです。",
+    "失敗の型Base64DecodeErrorは、長さ、使えない文字、埋め合わせ、余分な末尾ビットを区別します。InvalidBase64Lengthが持つのはUTF-8での入力の長さです。他の理由のoffsetは0から数える入力のバイト位置で、画面上の文字数ではありません。",
+    "長さの検査が先に行われます。複数の不正がある入力から返る理由を、常に一番左の不正や、すべての不正の一覧だと考えないでください。標準形式を受け取る仕様なら、入力を推測して直さずdecodeを選びます。",
+    "成功しても内容が文章や有効なトークンとは限りません。文章にはstd/textのdecodeUtf8による別の確認が必要です。URL全体の読み取り、暗号化、署名の検証も行いません。",
+  ],
+  nodeNote: "検証したNode 24にはfromBase64()/toBase64()がありません。Node/Bunではimport { Buffer } from \"node:buffer\"を使い、Buffer.from(input, \"base64url\")で読んだ値をtoString(\"base64url\")で書き直します。元のinputとの完全一致を確かめれば、寛容な読み取りによる別形式の受け入れを防げます。Seseragiのエラー分類や検査順序の再現ではありません。",
+}

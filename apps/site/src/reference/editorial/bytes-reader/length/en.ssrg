@@ -1,0 +1,21 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "bytes.length returns the number of bytes in Bytes. Use it to measure binary data, not to count text characters.",
+  taskTitle: "Count the bytes in a small payload",
+  purpose: "Check how many bytes a payload contains before storing or sending it. This example creates the three bytes 0, 15, and 255 and displays their values and length. It does not need a text conversion.",
+  typescriptBefore: "A Uint8Array’s content.length counts elements. Each element occupies one byte, so this is also its byte count. Array.from and join are only there to display the content clearly.",
+  benefit: "TypeScript’s length is already concise. Seseragi’s bytes.length accepts Bytes, distinguishing this binary-size calculation from an operation on a string or an ordinary array.",
+  setup: "bytes is the import alias for std/bytes. fn inspect -> String defines a function with no parameters that returns String; inspect () calls it. bytes.fromInts [0, 15, 255] passes the array as the function’s argument.",
+  after: [
+    "fromInts checks that each integer is from 0 through 255. Its Either<ByteError, Bytes> result is either a failed Left or a successful Right. match chooses the branch, and Right content names the resulting Bytes content.",
+    "bytes.length content returns Int, the integer type. Here it returns 3. bytes.toInts content copies the bytes to an integer array for display, and show turns that array into String. Computing the length itself does not need this copy.",
+    "The backtick string inserts expression results at ${...}. show (bytes.toInts content) evaluates the parenthesized call first. Left error uses show to turn a failure into a string. The expression after each branch’s -> is its result.",
+  ],
+  details: [
+    "bytes.length returns the byte count in constant time without counting through every element. Empty Bytes has length 0. There is no need to create an array with toInts just to obtain the length.",
+    "Byte count is not character count. UTF-8 uses five bytes for café and four for 🌊. Treating byte count as the visible text length, or as JavaScript string length, can give the wrong answer for a size limit.",
+    "Passing String directly to bytes.length is a type mismatch. To find the size of text stored as UTF-8, first use encodeUtf8 from std/text to obtain Bytes. Existing Bytes can be counted whether or not they represent readable text.",
+  ],
+  nodeNote: "This TypeScript example also works on Node 24.19.0. For Uint8Array, length and byteLength are equal; that is not generally true of other typed arrays whose elements take multiple bytes.",
+}

@@ -1,0 +1,22 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "decodeUtf8は、Bytes全体をUTF-8として確認し、読めたStringかUtf8DecodeErrorを返します。不正な入力を置換して成功させることはありません。",
+  taskTitle: "受け取ったバイト列を、確認してから文字として読む",
+  purpose: "16進数で受け取ったデータをBytesに戻し、その中身がUTF-8の文章なら表示します。16進数として正しくても、文字として読めるとは限りません。例のffはその違いを示します。",
+  typescriptBefore: "Uint8Array.fromHexでバイト列を作り、fatal: trueのTextDecoderで文字として読みます。不正なUTF-8ならtry/catchで拒否します。この例の16進数入力はすべて正しいため、try/catchはUTF-8の失敗だけを扱っています。",
+  benefit: "Seseragiでは、16進数の読み取りとUTF-8の読み取りが、それぞれ成功か失敗かを返します。二つのmatchを読むと、どの確認に成功して初めて文字列を使えるのかが分かります。",
+  setup: "hexはstd/bytes/hex、textはstd/textのimportの別名です。fn read input: String -> Stringは文字列inputを受け取り、表示用の文字列を返す関数です。hex.decode inputのように、関数名の後に空白で引数を渡します。",
+  after: [
+    "hex.decodeのEither<HexDecodeError, Bytes>は、失敗のLeftか、バイト列を持つRightです。外側のmatchでRight contentを選ぶと、そのBytesだけをtext.decodeUtf8へ渡せます。Left _の_は詳しいエラーを使わない印です。",
+    "decodeUtf8の戻り値Either<Utf8DecodeError, String>も同じ二つの形です。内側のmatchは、LeftならInvalid UTF-8、Right valueなら読めた文字列を使います。枝の->の右側が戻り値です。",
+    "バッククォートの${value}は、読めた文字列をText:の後へ埋め込みます。最初の二つはcaféと🌊、空の入力は空文字列です。ffはBytesへは戻せますが、255という単独のバイトをUTF-8として読めず失敗します。",
+  ],
+  details: [
+    "decodeUtf8は全体を確認してから文字列を返します。不正な入力では、読めた接頭部分だけを成功として返すことはありません。失敗のInvalidUtf8は、最初の不正な並びが始まる0始まりのバイト位置を持ちます。",
+    "関数の引数はBytesです。16進数のStringやBase64のStringを直接渡すと型が合いません。先に対応する形式をBytesへ戻し、その成功値にdecodeUtf8を呼びます。",
+    "先頭の印に使うU+FEFF（BOM）も文字として残します。TypeScriptのignoreBOM: trueはこの扱いを合わせる指定で、TextDecoderの既定値では先頭のBOMを取り除きます。空のBytes、値0の文字NUL、前の文字に付くアクセントなどの結合文字も、その内容のまま文字列になります。",
+    "厳密な読み取りは、不正な続きバイト、途中で切れた並び、必要以上に長い表記、UTF-16のペアに使うサロゲートの値、Unicodeの上限U+10FFFFを超える値を拒否します。内容をそのまま受け入れる場面で、decodeUtf8Lossyへ置き換えて失敗を隠さないでください。",
+  ],
+  nodeNote: "Node 24.19.0ではUint8Array.fromHexの代わりに、import { Buffer } from \"node:buffer\"とBuffer.from(input, \"hex\")を使えます。任意の入力を読む場合は、偶数桁かつASCIIの16進数だけであることを先に確認してください。Bufferは不正な入力を途中で切り詰めることがあります。TextDecoderの厳密な読み取りは同じですが、ネイティブの例外からバイト位置は得られません。",
+}

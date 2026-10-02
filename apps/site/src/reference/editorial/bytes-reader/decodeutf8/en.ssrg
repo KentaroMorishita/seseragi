@@ -1,0 +1,22 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "decodeUtf8 checks all of Bytes as UTF-8 and returns either a decoded String or Utf8DecodeError. It does not turn invalid input into success by replacing damaged content.",
+  taskTitle: "Check received bytes before reading them as text",
+  purpose: "Decode a hexadecimal payload into Bytes, then display its content if it is UTF-8 text. Valid hexadecimal does not necessarily represent valid text: ff demonstrates the difference.",
+  typescriptBefore: "Uint8Array.fromHex creates bytes; TextDecoder with fatal: true reads them as text. try/catch rejects malformed UTF-8. All hexadecimal inputs in this example are valid, so its try/catch handles only UTF-8 failure.",
+  benefit: "Seseragi returns success or failure separately for hexadecimal decoding and UTF-8 decoding. The two match expressions show which checks must succeed before the program can use a string.",
+  setup: "hex and text are import aliases for std/bytes/hex and std/text. fn read input: String -> String defines a function that accepts the string input and returns a display string. A call such as hex.decode input puts the argument after a space.",
+  after: [
+    "hex.decode returns Either<HexDecodeError, Bytes>: a failed Left or a Right with bytes. In the outer match, Right content makes those Bytes available to text.decodeUtf8. The underscore in Left _ means the detailed error is unused.",
+    "decodeUtf8 returns Either<Utf8DecodeError, String>, with the same two result shapes. The inner match returns Invalid UTF-8 for Left or uses the decoded string from Right value. The expression after each branch’s -> is its result.",
+    "The backtick string inserts decoded text after Text: at ${value}. The first two inputs produce café and 🌊; empty input produces an empty string. ff successfully decodes to Bytes, but its lone byte 255 cannot be read as UTF-8.",
+  ],
+  details: [
+    "decodeUtf8 validates the whole input before returning a string. Invalid input does not produce a successful readable prefix. The InvalidUtf8 error carries the zero-based byte position where the first invalid sequence starts.",
+    "The argument must be Bytes. Passing a hexadecimal String or Base64 String directly is a type mismatch. First decode that format to Bytes, then call decodeUtf8 on its successful result.",
+    "An initial U+FEFF marker, often called a BOM, is preserved as a character. TypeScript’s ignoreBOM: true matches this policy; TextDecoder’s default removes a leading BOM. Empty Bytes, NUL (the zero-valued character), and combining characters such as attached accents also retain their content in the decoded string.",
+    "Strict decoding rejects invalid continuations, truncated sequences, unnecessarily long encodings, surrogate values reserved for UTF-16 pairs, and values above Unicode’s limit U+10FFFF. Do not hide failure by switching to decodeUtf8Lossy where accepting the original content accurately is required.",
+  ],
+  nodeNote: "On Node 24.19.0, replace Uint8Array.fromHex with import { Buffer } from \"node:buffer\" and Buffer.from(input, \"hex\"). For arbitrary input, first check even length and ASCII hexadecimal digits only: Buffer can truncate malformed input. Strict TextDecoder decoding works the same, but its native exception does not provide a byte position.",
+}

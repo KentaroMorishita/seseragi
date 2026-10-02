@@ -1,0 +1,22 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "ByteErrorは、0から255に収まらない整数を表すエラーです。fromIntsでは、最初に見つかった値をByteOutOfRangeから取り出せます。",
+  taskTitle: "バイトに収まらない入力を伝える",
+  purpose: "数値の配列から小さなバイナリデータを作りたいとします。各バイトが取れる値は0から255です。範囲外の値があれば、その値を示し、元の入力を直せるようにします。",
+  typescriptBefore: "Uint8Array.fromは範囲外の数値も変換してしまうため、TypeScriptでは先にNumber.isIntegerと範囲を確認します。findは最初の不正な値を返します。すべて正しければUint8Arrayを作り、配列として表示します。",
+  benefit: "TypeScriptでも同じ検証は書けます。Seseragiでは、fromIntsが失敗の理由をByteErrorとして戻り値に含めます。成功したBytesと、失敗を説明する整数を別々の枝で扱えます。",
+  setup: "import * as bytesはstd/bytesの別名を定義します。fnはdescribeという関数の定義です。values: Array<Int>は整数の配列を受け取り、-> Stringは文字列を返すという意味です。bytes.fromInts valuesは、関数にvaluesを渡す呼び出しです。",
+  after: [
+    "Either<ByteError, Bytes>は、失敗を入れるLeftか、成功したBytesを入れるRightのどちらかです。matchでその枝を選び、->の右側の値を返します。",
+    "Left (bytes.ByteOutOfRange value)は、Leftの中のエラーをByteOutOfRangeとして読み、範囲外の整数にvalueという名前を付けます。バッククォートの${value}で、その整数を説明文に埋め込みます。",
+    "Right contentは成功したBytesをcontentと呼びます。bytes.toInts contentで整数の配列にコピーし、showで表示用のStringにします。show (bytes.toInts content)の括弧は、内側の呼び出しの結果をshowへ渡すためのものです。",
+    "[1, 256, -1]では256を先に見つけるため、Out of range: 256だけを表示します。[-1]なら-1、空の配列なら成功した空のBytesを得て[]と表示します。",
+  ],
+  details: [
+    "ByteOutOfRangeが持つのは不正な整数そのものです。配列内の位置や、すべての問題の一覧ではありません。fromIntsは入力順に調べ、最初の不正な値で失敗します。途中までの成功したBytesは返しません。",
+    "ByteErrorの内部表現は非公開ですが、この例の公開されたByteOutOfRangeという形で中身を読めます。文字列化したエラーメッセージを解析して数値を探す必要はありません。",
+    "256を0に丸めたり、-1を255として扱ったりはしません。入力値を意図した0から255の整数に直してから再度変換します。小数のFloatの配列もArray<Int>ではないので、fromIntsへそのまま渡せません。",
+  ],
+  nodeNote: "このTypeScript例のfind、Number.isInteger、Uint8Array.from、Array.fromはNode 24.19.0でも使えます。Bun専用の16進数・Base64メソッドは使っていません。",
+}
