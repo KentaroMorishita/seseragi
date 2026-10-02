@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "renderQuery turns a Query into encoded query text without a leading ?. It keeps entry order and repeated names while encoding each name and value.",
+  taskTitle: "Write filters as encoded query text",
+  purpose: "Prepare conditions containing a space, a literal plus, a slash, and an empty value for a link. Read two different spellings of those conditions and serialize them to the same text.",
+  typescriptBefore: "TypeScript's URLSearchParams.toString() already serializes and encodes query entries. It omits the leading ? and writes spaces as +. There is no need to join unescaped name/value strings by hand.",
+  benefit: "Keep conditions as Query values while reading or editing them, then call renderQuery when text is needed. Encoding happens at that final boundary rather than during each edit.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.renderQuery query is a one-argument call with a space before the argument. normalize's : String and -> String declare its input and return types.",
+  after: [
+    "parseQuery returns Either<UrlBuildError, Query>. match selects Right query for readable conditions or Left _ for rejection. The underscore ignores the detailed error; renderQuery receives only the successful Query.",
+    "A decoded space becomes +, while a literal plus becomes %2B. A slash becomes %2F; an ampersand in a value would become %26. These encodings keep value text distinct from query separators.",
+    "Both lines print q=tea+cake&literal=%2B&path=%2F&empty=. The bare empty entry is written with = because it has an empty value. Entry order and repeated names are retained.",
+    "Rendering an empty Query produces an empty string. For a complete URL, use withQuery to attach the Query rather than handling the ? marker yourself.",
+  ],
+  details: [
+    "Do not pre-encode values. Supplying %20 as data produces %2520, not a space. Supply an actual space and let renderQuery encode it.",
+    "Parsing and rendering preserves the interpreted conditions, not the original byte spelling. For example, %20 can become +. Keep the input String separately if its exact spelling is needed.",
+    "These are query-specific encoding rules. A fragment treats spaces and plus signs differently. Use renderUrl for a complete link, or withFragment to set a section.",
+  ],
+}

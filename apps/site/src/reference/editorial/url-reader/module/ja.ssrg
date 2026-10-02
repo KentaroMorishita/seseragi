@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "共有する検索リンクを作るには、URLを確認し、検索条件を編集して、最後に文字列へ戻します。std/web/navigationには、URLやクエリを読み取り、元の値を変えずに新しい値を作る操作があります。",
+  taskTitle: "選んだタグを残して検索リンクを作る",
+  purpose: "受け取った検索リンクの検索語をtea & cakeに変え、選択済みのbooksとmusicは残します。ページ番号を消して先頭ページに戻し、saleタグとresultsの見出しを指定した、コピーできるリンクを作ります。",
+  typescriptBefore: "TypeScriptではnew URL(input)で作ったURLのsearchParamsをset、delete、appendで編集し、hashを設定してhrefを読みます。標準APIだけで短く書けます。このURLは受け取った文字列から新しく作ったものなので、ここでの書き換えのために別のコピーは要りません。",
+  benefit: "Seseragi版では、URLを読めた場合と読めなかった場合が戻り値で分かれます。各編集は新しいQueryやUrlを返し、元の値を残したまま次のリンクを組み立てられます。",
+  setup: "navigationはstd/web/navigationの別名です。fn shareLink input: String -> Stringは文字列を受け取って文字列を返す関数です。関数名と引数を空白で並べて呼び出し、letで途中の値に名前を付けます。",
+  after: [
+    "parseUrlの戻り値はEither<UrlBuildError, Url>です。matchは結果に応じた分岐を選び、Right originalなら読めたUrlを、Left _なら失敗時のLink rejectedを使います。_はここでは失敗の詳しい理由を使わない印です。",
+    "urlQueryで取り出した条件に、setQueryで検索語を設定します。removeQueryでpageをすべて消し、appendQueryで最後にtag=saleを追加します。元からある二つのtagは、その順番で残ります。",
+    "withQueryで条件をURLに取り付け、withFragmentでresultsを指定し、renderUrlで完全なURLの文字列を得ます。検索語の空白は+に、&は%26になります。自分で記号を置き換える必要はありません。",
+    "このプログラムが作るのは共有用の文字列です。resultsの要素へスクロールしたり、ページを開いたり、ブラウザーの履歴を書き換えたりはしません。",
+  ],
+  details: [
+    "絶対URLの確認はparseUrl、基準URLから相対リンクを組み立てるときはresolveUrlを使います。URL全体の文字列をparseQueryへ渡すのではなく、URLからurlQueryで条件を取り出します。",
+    "一つの条件を置き換えるならsetQuery、選択項目を一つ追加するならappendQuery、条件を外すならremoveQueryです。withQueryはURLのクエリ全体を入れ替えるので、残す条件も含めたQueryを渡します。",
+    "Urlを作れても、リンク先が存在することや、アプリがそこへの移動を許可してよいことまでは確認できません。実際の画面移動や履歴操作はNavigationを使う別の処理です。",
+  ],
+}

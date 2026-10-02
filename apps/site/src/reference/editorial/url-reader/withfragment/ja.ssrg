@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "withFragmentは、ページ内の位置を表す文字列をUrlへ設定し、新しいUrlを返します。#を付けず、エンコード前の文字列を渡します。",
+  taskTitle: "検索結果の見出しを指すリンクを作る",
+  purpose: "検索条件を含むリンクへ、results 2という表示位置を追加します。共有できるURLの文字列を作り、その位置が読み戻せることを確認します。",
+  typescriptBefore: "TypeScript版はnew URL(original)で別のURLを作り、encodeURIComponentで変換した文字列をhashへ設定します。元のURLと設定後のURLから位置を読み、変更が別のURLにだけ反映されたことを確かめます。",
+  benefit: "withFragmentは通常の文字列を受け取り、フラグメント用にエンコードした新しいUrlを返します。元のリンクと検索条件を保ったまま、位置の指定を付けられます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.withFragment \"results 2\" originalのように、位置の文字列、Urlの順で空白を挟んで呼びます。letで新しいUrlに名前を付けます。 fnの: Stringは引数の型、-> Stringは戻り値の型です。",
+  after: [
+    "parseUrlをmatchで分け、Rightに入ったUrlを編集します。Leftは入力をURLとして読めなかった理由なので、失敗の表示を返します。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "results 2の空白は、renderUrlの出力では%20になります。入力文字列をそのままURLの末尾へ連結せず、withFragmentに変換を任せます。",
+    "urlFragmentで読み戻すとMaybe<String>になります。Just sectionは内容ありで、元のresults 2を受け取れます。Nothingは内容のあるフラグメントがないことを示し、sectionTextのmatchで表示を分けます。",
+    "例の最後のNo sectionは、元のURLに位置指定がないことを示します。新しいUrlにはクエリやパスが残ります。なお、withFragmentに空文字列を渡すとフラグメントを取り除けます。",
+  ],
+  details: [
+    "#resultsのように#を付けて渡すと、#も内容の一部として%23へエンコードされます。位置を指定したいならresultsだけを渡します。",
+    "%20のように事前にエンコードした文字列ではなく、実際の空白を渡します。事前にエンコードすると%自身が再びエンコードされます。",
+    "この操作はリンクを組み立てるだけです。results 2に対応する要素がページにあるかを確かめず、スクロールもしません。位置の指定だけ外す場合はwithoutFragmentも使えます。",
+  ],
+}

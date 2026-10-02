@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "withQuery replaces a Url's entire query and returns a new Url. It preserves the other URL components and leaves the original Url unchanged.",
+  taskTitle: "Replace a link's search conditions",
+  purpose: "Replace a shared link's tag and page with a new query containing only q. Also build a link with every condition removed. Keep the #results section and the original link in both comparisons.",
+  typescriptBefore: "TypeScript assigns the query's toString() output to a URL's search. This example creates new URL objects because it needs both changed versions and the original. Assigning search replaces the old query; it does not merge the conditions.",
+  benefit: "withQuery accepts a Query and a Url and returns the changed Url. You do not need to manage the ? marker or copy the original link before applying the replacement.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.withQuery replacement original passes Query first and Url second, separated by spaces. let names the returned Url. : String and -> String declare replaceFilters' input and output types.",
+  after: [
+    "parseUrl returns either Left with a rejection reason or Right with a checked Url. match selects the branch. Left _ ignores the detailed reason; all URL rebuilding happens in Right original.",
+    "oldQuery is extracted to display the original conditions. The replacement is built separately from emptyQuery and contains only q=tea.",
+    "Applying replacement removes the earlier tag and page entries. They do not survive just because the new Query omits those names: withQuery replaces the whole query.",
+    "Applying emptyQuery removes the query and its ? marker entirely. The path and #results remain, and the final output confirms that original still contains its original conditions.",
+  ],
+  details: [
+    "If the arguments are reversed, their types do not fit. Use withQuery newQuery original. Do not render the Query to a String before passing it here.",
+    "If tags disappear unexpectedly, inspect the replacement Query. To change just one condition, start with urlQuery original, edit that Query with setQuery or another operation, and then apply the result.",
+    "The query is serialized from its values, so %20 can become + even without changing the interpreted conditions. Do not rely on this operation to retain the original query spelling.",
+  ],
+}

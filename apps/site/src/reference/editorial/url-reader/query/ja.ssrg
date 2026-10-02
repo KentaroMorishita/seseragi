@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "Queryは、URLの検索条件を名前と値の組として順番付きで持つ型です。同じ名前を何度でも含められるため、複数選択したタグも失わずに扱えます。",
+  taskTitle: "複数選択のフィルターを組み立てる",
+  purpose: "検索語を一つ、選択したタグを複数含むクエリを作ります。名前が同じtagを一つの値にまとめず、選択順のままリンクへ入れられる形にします。",
+  typescriptBefore: "TypeScriptではURLSearchParamsを作ってappendで項目を追加します。同じ名前の繰り返しも順番も標準APIが扱います。値を一つしか持てない普通のオブジェクトやMapへ置き換える必要はありません。",
+  benefit: "Queryも名前と値の組を順に保持します。appendQueryなどは新しいQueryを返すので、途中までの条件を残したまま別の条件を作れます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.emptyQueryは空のQueryそのものです。関数と引数は空白で区切り、appendQueryには名前、値、元のQueryの順で渡します。letはその結果に名前を付けます。",
+  after: [
+    "空のQueryから始め、検索語とタグを一つずつ追加します。tagを追加するたびに新しい組が末尾へ入り、すでにあるtagが消えることはありません。",
+    "Queryに渡す名前と値は、エンコード前の普通の文字列です。検索語に空白や&があっても、renderQueryがURLのクエリ用の表記へ変換します。",
+    "renderQueryは先頭に?を付けない文字列を返します。完全なリンクへ取り付けるときは、文字列を足し合わせずにwithQueryへQueryを渡せます。",
+    "例のsearchは検索語だけのQuery、selectedはさらにbooksとmusicを追加したQueryです。両方を表示すると、searchにはタグが増えていないことが分かります。TypeScript版もこの二つを表示するために条件を一度コピーしています。",
+  ],
+  details: [
+    "同じ名前に値を一つだけ残したいときはsetQueryを使います。複数選択したタグへの追加にsetQueryを使うと、以前のtagがまとめて置き換わるのでappendQueryに直します。",
+    "内部のentriesフィールドを直接扱う型ではありません。すべての組を読むならqueryEntries、一つの名前の値をすべて読むならqueryValuesを使います。",
+    "空の値も条件の一部です。名前が存在しない場合と、名前はあるが値が空文字列の場合を区別できます。順番や重複を失いたくない場合は、単一の値だけを持つ形へ変換しないようにします。",
+  ],
+}

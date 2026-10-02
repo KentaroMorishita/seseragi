@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "resolveUrlは、相対リンクを既知の基準Urlに照らして完全なUrlへ変えます。成功したURLか、解決できなかった理由が戻り値に入ります。",
+  taskTitle: "相対的な検索リンクを完全なURLにする",
+  purpose: "カタログのページを基準に、../search?tag=booksというリンクの共有先を求めます。実際にページを開かず、基準URLの末尾の違いが結果にどう影響するかも確認します。",
+  typescriptBefore: "TypeScriptではnew URL(reference, base)で同じ相対参照の解決ができます。URL標準の規則を使うので、../や先頭の/を手作業で処理する必要はありません。",
+  benefit: "Seseragiでは基準のUrlを確認してから渡し、相対リンクの解決結果も成功と失敗に分けて扱えます。基準URLは変えずに、共有先となる新しいUrlを作れます。",
+  setup: "navigationはstd/web/navigationの別名です。resolveUrlには参照文字列、基準Urlの順に、空白で区切って引数を渡します。searchLinkのbaseText: Stringは引数の型、-> Stringは戻り値の型です。",
+  after: [
+    "まずparseUrlで基準を確認し、Rightに入ったUrlをresolveUrlへ渡します。どちらの呼び出しもEither<UrlBuildError, Url>を返すため、matchでLeftの失敗とRightの成功を選びます。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "基準の末尾が/catalog/itemならitemは最後のパス部分として扱われます。末尾が/catalog/item/なら、そのディレクトリーの中を基準にします。../を一段戻した結果は、この末尾の/によって変わります。",
+    "先頭が/の参照はホスト直下を基準にします。?から始まる参照はクエリ、#から始まる参照はフラグメントを変更するための書き方です。どの参照かを区別して入力します。",
+    "成功値をrenderUrlへ渡せば、共有できる完全な文字列になります。resolveUrlは新しいUrlを計算するだけで、リンク先へのアクセスや画面移動はしません。",
+  ],
+  details: [
+    "基準のディレクトリーを想定していたのに結果が一段ずれる場合は、基準URLの末尾の/を確認します。文字列を単純に連結して直すより、意図した基準Urlを指定し直します。",
+    "絶対URLや//other.example/のような参照は、基準と異なるホストを指せます。resolveUrlの成功は同一オリジンの確認や安全なリダイレクト先の保証ではありません。",
+    "解決後もHTTP(S)とユーザー情報の制限が適用されます。失敗ならLeftのUrlBuildErrorを扱い、Rightを得られたものだけを次の操作へ渡します。",
+  ],
+}

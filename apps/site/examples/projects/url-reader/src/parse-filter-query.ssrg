@@ -1,0 +1,11 @@
+import * as navigation from "std/web/navigation"
+
+fn normalize input: String -> String = match navigation.parseQuery input {
+  Left _ -> "Query rejected"
+  Right query -> navigation.renderQuery query
+}
+
+pub effect fn main = do {
+  _ <- println (normalize "?q=tea%20cake&literal=%2b&path=%2f&empty")
+  println (normalize "q=tea+cake&literal=%2B&path=%2F&empty=")
+}

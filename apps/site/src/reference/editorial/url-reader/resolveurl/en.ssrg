@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "resolveUrl interprets a reference against a known base Url and returns a complete Url or a reason it was rejected. It calculates a destination without visiting it.",
+  taskTitle: "Turn a relative search link into a complete URL",
+  purpose: "Resolve ../search?tag=books from a catalog page so the link can be shared. Compare bases ending in /catalog/item and /catalog/item/ to see why the trailing slash matters.",
+  typescriptBefore: "TypeScript already resolves references with new URL(reference, base). The native URL rules handle ../ and leading slashes; there is no need for a handwritten path resolver.",
+  benefit: "Seseragi requires a checked base Url and returns an explicit success or failure for the reference. The successful result is a new Url, leaving the base available for other links.",
+  setup: "navigation is the import alias for std/web/navigation. resolveUrl takes the reference String first and the base Url second, separated by spaces. In searchLink, : declares the input type and -> declares the return type.",
+  after: [
+    "parseUrl first checks the base. Its Right branch supplies the Url to resolveUrl, whose result is matched again. Each Left _ returns the appropriate rejection message; _ discards the detailed reason.",
+    "For a base ending in /catalog/item, item is the last path component, so ../search resolves to /search. With /catalog/item/, the base is a directory, so the same reference resolves to /catalog/search.",
+    "A reference starting with / is relative to the host root. A query-only reference starts with ?, while a fragment-only reference starts with #. Choose the reference form that matches the intended change.",
+    "renderUrl turns the successful Url into a complete link. Neither resolution nor rendering accesses the destination or changes the browser location.",
+  ],
+  details: [
+    "If a result is one directory away from where you expected, inspect the base's trailing slash. Correct the base rather than patching the result with string concatenation.",
+    "An absolute reference or a network-path reference such as //other.example/ can change the host. Resolution is not a same-origin check or a safe-redirect policy.",
+    "The resolved URL must still satisfy the HTTP(S) and user-info restrictions. Handle its Left error rather than treating every reference as a guaranteed Url.",
+  ],
+}

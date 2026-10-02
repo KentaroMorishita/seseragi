@@ -1,0 +1,8 @@
+import * as navigation from "std/web/navigation"
+
+pub effect fn main = {
+  let search = navigation.appendQuery "q" "tea & cake" navigation.emptyQuery
+  let books = navigation.appendQuery "tag" "books" search
+  let selected = navigation.appendQuery "tag" "music" books
+  println (navigation.renderQuery search + "\n" + navigation.renderQuery selected)
+}

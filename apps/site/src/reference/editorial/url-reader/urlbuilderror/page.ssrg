@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::UrlBuildError" "type" "opaque-type" "url-build-errors" "https://example.test/search\nInvalid URL at 0\nUnsupported scheme: ftp\nRemove login details\nInvalid percent escape at 21\n" (en.copy ()) (ja.copy ())

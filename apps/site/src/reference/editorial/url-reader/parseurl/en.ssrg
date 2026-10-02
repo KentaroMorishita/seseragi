@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "Use parseUrl to check text as an absolute HTTP(S) URL. Handle its result before passing the successful Url to later reading or editing operations.",
+  taskTitle: "Check a pasted absolute link",
+  purpose: "Read text from a share-link field. Display the complete URL when it can be used, or a rejection message when it cannot. This example compares a full link with the relative path /search.",
+  typescriptBefore: "TypeScript uses new URL(input), reads href on success, and catches a parsing failure. Native URL also accepts schemes beyond HTTP(S), so the two versions are not a claim of identical acceptance for every input.",
+  benefit: "parseUrl includes rejection in its return value and distinguishes a successful Url from a String. Handle both branches before using that Url in rendering or filter updates.",
+  setup: "navigation is the import alias for std/web/navigation. fn defines checkLink; input: String gives its parameter type and -> String gives its return type. A call puts spaces between the function and its arguments.",
+  after: [
+    "Either<UrlBuildError, Url> means one of two outcomes: Left carries the reason an input was rejected, and Right carries a checked Url. match chooses the corresponding branch.",
+    "Only the Url inside Right reaches renderUrl. The complete https://example.test/search is displayed, while /search produces Absolute link rejected. In Left _, the underscore means the detailed error is unused here.",
+    "The input must be absolute. For a reference such as /search, use resolveUrl and a known base Url. parseUrl does not infer a host or use the page currently open in the browser.",
+    "The operation accepts http and https, rejects nonempty usernames or passwords, and checks that each percent sign is followed by two hexadecimal digits.",
+  ],
+  details: [
+    "Do not pass parseUrl's whole result to renderUrl: an Either is not a Url. Match first, then pass the value from Right.",
+    "A successful parse does not send a request, confirm that a site exists, or approve a destination. If your application permits only particular hosts, make that decision separately.",
+    "Parsing may normalize the input's spelling. The percent-triplet check also does not guarantee valid decoded text for every getter; see urlFragment before reading arbitrary fragments containing malformed UTF-8.",
+  ],
+}

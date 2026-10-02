@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "renderUrl turns a checked Url into complete URL text, including its query and fragment. Use the returned String for display, copying, or storage.",
+  taskTitle: "Get the complete link as text",
+  purpose: "Display a URL after parsing, then after writing its query back. Observe URL normalization and the difference between an untouched query's spelling and a query rebuilt from its values.",
+  typescriptBefore: "TypeScript reads href from a URL to get complete normalized text. Writing searchParams.toString() back to search applies the query serializer as well. Both steps use standard URL APIs.",
+  benefit: "renderUrl is the final conversion from Url to String. Keep using URL operations during an edit, then render once when text is needed instead of concatenating components yourself.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.renderUrl url is a call with one argument, separated by a space. let names intermediate values; : and -> declare the input and return types of normalized.",
+  after: [
+    "match handles parseUrl's two outcomes. Right url contains a checked Url; Left _ returns Link rejected without using the detailed error. renderUrl takes the Url, not the original String or the whole parse result.",
+    "Parsing normalizes the uppercase host, the default HTTPS port, and /a/../search. The first output therefore starts with https://example.test/search, rather than preserving the input's spelling.",
+    "The first output retains q=tea%20cake~. Reading it with urlQuery and writing it back with withQuery produces q=tea+cake%7E. These query spellings carry the same value, but the second was serialized from its decoded entries.",
+    "The result is an ordinary String. Producing it sends no network request and does not change the browser's location or history.",
+  ],
+  details: [
+    "Keep the original String separately if you need to show exactly what was entered. parseUrl followed by renderUrl is not a byte-for-byte preservation mechanism.",
+    "renderQuery returns only query text without ?. Use renderUrl when you need the host, path, query, and fragment together in one complete link.",
+    "Do not access private Url fields or reconstruct the whole link by hand. Pass the result of the public URL editing operations to renderUrl.",
+  ],
+}

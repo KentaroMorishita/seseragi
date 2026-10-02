@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::parseQuery" "value" "function" "parse-filter-query" "q=tea+cake&literal=%2B&path=%2F&empty=\nq=tea+cake&literal=%2B&path=%2F&empty=\n" (en.copy ()) (ja.copy ())

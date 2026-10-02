@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "urlQuery reads a checked Url's conditions into a separate Query. Reading or editing that Query does not change the original URL; applying conditions is a separate step.",
+  taskTitle: "Read conditions from a search link",
+  purpose: "Extract and display the tag and page conditions from a shared link. Then create links with replacement conditions and with no conditions, while keeping the original link available.",
+  typescriptBefore: "The TypeScript version constructs URLSearchParams from original.search to read the conditions. It creates separate URL objects before replacing search. Editing a URL's own searchParams directly would also change that URL.",
+  benefit: "urlQuery returns conditions detached from the Url. You can inspect or edit them without altering the link, and choose explicitly when to apply a Query with withQuery.",
+  setup: "navigation is the import alias for std/web/navigation. navigation.urlQuery original passes one Url after a space. let names the extracted Query. replaceFilters uses : String for its input and -> String for its return type.",
+  after: [
+    "match handles parseUrl's result. Right original contains the checked Url; Left _ returns Link rejected while ignoring the detailed reason. urlQuery operates on the successful Url.",
+    "oldQuery contains the original names and decoded values in order. Repeated names would remain separate entries as well.",
+    "The example builds replacement independently with only q=tea. withQuery creates one URL containing that replacement, and another with emptyQuery. Neither operation changes oldQuery or original.",
+    "The first line prints tag=books&page=3. The next two show the replaced and cleared URLs, and the last shows the original URL still intact. Reading conditions and building a new link are separate operations.",
+  ],
+  details: [
+    "If editing a Query seems to have had no effect on your URL, apply the returned Query with withQuery newQuery original. Use the Url returned by that call for the next step.",
+    "urlQuery takes a Url, not a String. Start with parseUrl for a full link, or parseQuery when the input contains only query text.",
+    "Even writing an unchanged Query back can normalize its spelling, such as %20 becoming +. Preserving values and order does not mean preserving the original encoded text.",
+  ],
+}

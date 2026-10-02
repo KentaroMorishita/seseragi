@@ -1,0 +1,8 @@
+import * as navigation from "std/web/navigation"
+
+pub effect fn main = println (match navigation.parseQuery "?q=😀%ZZ" {
+    Left (navigation.InvalidPercentEncoding detail) -> "Invalid percent escape at " + show detail.offset
+    Left _ -> "Other query error"
+    Right query -> navigation.renderQuery query
+  }
+)

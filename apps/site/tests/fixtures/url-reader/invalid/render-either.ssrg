@@ -1,0 +1,3 @@
+import * as navigation from "std/web/navigation"
+
+fn bad -> String = navigation.renderUrl (navigation.parseUrl "https://example.test/")

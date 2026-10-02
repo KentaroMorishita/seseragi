@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::renderUrl" "value" "function" "render-normalized-link" "https://example.test/search?q=tea%20cake~#results\nhttps://example.test/search?q=tea+cake%7E#results\n" (en.copy ()) (ja.copy ())

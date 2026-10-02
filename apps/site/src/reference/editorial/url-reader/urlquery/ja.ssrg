@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "urlQueryは、確認済みのUrlから検索条件をQueryとして取り出します。読み取るだけではURLは変わらず、取り出した条件を編集しても元のUrlはそのままです。",
+  taskTitle: "検索リンクの条件を取り出す",
+  purpose: "共有リンクのtagとpageをQueryとして読み取って表示します。その後、別に作った条件を付けたリンクと、すべての条件を外したリンクを作り、元のリンクが残ることも確認します。",
+  typescriptBefore: "TypeScript版はoriginal.searchからURLSearchParamsを作り、元の条件を読み取ります。別の条件を反映するときは、new URL(original)で作ったURLのsearchへ設定します。URL.searchParamsを直接編集すれば、そのURL自身も変わる点に注意します。",
+  benefit: "urlQueryが返すQueryは元のUrlから独立しています。その条件を編集しても元のURLは変わらず、withQueryで反映する時点を明確に選べます。",
+  setup: "navigationはstd/web/navigationの別名です。navigation.urlQuery originalのようにUrlを空白で続けて渡します。letで取り出したQueryや、その後の編集結果に名前を付けます。 fnの: Stringは引数の型、-> Stringは戻り値の型です。",
+  after: [
+    "parseUrlの戻り値をmatchで分けます。Rightには確認できたUrl、Leftには失敗の理由が入るため、urlQueryはRightのUrlだけに使います。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "取り出すQueryには、そのURLの名前と値の組が元の順番で入っています。同じ名前のtagも、繰り返しを保って読み取られます。",
+    "例はoldQueryとは別にq=teaだけのreplacementを作ります。withQueryでそれを取り付けたURLには元のtagとpageがなくなり、emptyQueryを取り付けたURLにはクエリ自体がありません。",
+    "最初の行は取り出したtag=books&page=3、続く2行は置き換え後と削除後のURL、最後の行は元のURLです。oldQueryの読み取りや別のUrlの作成では、originalは変わりません。",
+  ],
+  details: [
+    "urlQueryの戻り値を編集したのに元のURLが変わらないのは、この操作の仕様です。withQuery newQuery originalを使い、その戻り値を次の処理へ渡します。",
+    "引数はStringではなくUrlです。完全なリンクの文字列から始める場合はparseUrl、クエリだけの文字列から始める場合はparseQueryを使います。",
+    "取り出したQueryを変更せずに書き戻しても、%20が+になるなど表記が整え直されることがあります。値や順番の保持と、元の綴りの保持は別です。",
+  ],
+}

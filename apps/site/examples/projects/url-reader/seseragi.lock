@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "docs/url-reader@0.0.0#workspace:."
+
+[[packages]]
+id = "docs/url-reader@0.0.0#workspace:."
+name = "docs/url-reader"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:79bdf67e08168288a7fe707d3f6613c5d4b6e4ee58b924e7d2ba1fe2043daa2a"
+content_digest = "sha256:d2a764f27899c948fd12f96f07bd25f2dab92cdf3f0e0725fa9897ac1f2a8882"
+dependencies = []

@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "parseUrlで、文字列を絶対HTTP(S) URLとして確認します。戻り値を分けると、成功したUrlだけを、その後の読み取りや編集へ渡せます。",
+  taskTitle: "貼り付けた絶対URLを確認する",
+  purpose: "共有リンクの入力を受け取り、使えるURLなら整えた文字列を表示します。URLとして読めない文字列なら、成功時の処理へ進めず入力を見直してもらいます。",
+  typescriptBefore: "TypeScriptではnew URL(input)が文字列を読み、失敗はtry/catchで扱います。hrefで整えた文字列を得られます。標準のURLはHTTP(S)以外も受け入れるため、parseUrlとすべての入力で同じ判定になるわけではありません。",
+  benefit: "parseUrlは失敗を戻り値に含め、成功したUrlをStringと区別します。両方の分岐を書いてから、読めた値をrenderUrlやクエリの編集に使えます。",
+  setup: "navigationはstd/web/navigationの別名です。fnは関数の定義で、: Stringは入力の型、-> Stringは返す型です。関数名と引数を空白で並べて呼び出します。",
+  after: [
+    "parseUrlの型Either<UrlBuildError, Url>は二つの結果のどちらかを返すという意味です。Leftには失敗の理由、Rightには確認済みのUrlが入ります。matchでそれぞれに対応する処理を選びます。",
+    "RightのUrlだけをrenderUrlへ渡すと、完全なURLの文字列になります。例のhttps://example.test/searchはそのまま表示され、/searchはLeftになってAbsolute link rejectedと表示されます。Left _の_は、ここでは詳しい理由を使わない印です。",
+    "入力は絶対URLが必要です。/searchのような相対リンクしかない場合は、ホスト名を推測して付け足さず、既知の基準UrlとresolveUrlを使います。",
+    "httpとhttpsだけを受け入れ、空でないユーザー名やパスワードを含むURLは拒否します。%があれば、その後ろが16進数2桁かどうかも確認します。",
+  ],
+  details: [
+    "parseUrlの戻り値を直接renderUrlへ渡すのは間違いです。その値はUrlではなく成功か失敗かの結果なので、先にmatchでRightの中身を取り出します。",
+    "確認できても、そのサイトへの通信や存在確認は行われません。許可したホストだけに移動させたい場合は、解析の成功とは別に移動先を判断する必要があります。",
+    "元の文字列の綴りがそのまま保存されるとは限りません。また、%の2桁の確認は、復号する文字の正しさをすべて保証しません。不正なUTF-8を含むフラグメントを読む場合の挙動はurlFragmentで確認できます。",
+  ],
+}

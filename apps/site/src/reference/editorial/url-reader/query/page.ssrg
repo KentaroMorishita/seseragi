@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { urlReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  urlReaderEditorial "std/web/navigation::Query" "type" "opaque-type" "build-filter-query" "q=tea+%26+cake\nq=tea+%26+cake&tag=books&tag=music\n" (en.copy ()) (ja.copy ())

@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "queryEntriesは、Queryのすべての名前と値の組を、元の順番の配列として返します。同名の項目も省略しないため、リンクの条件を一覧で確認できます。",
+  taskTitle: "共有リンクの検索条件を一覧にする",
+  purpose: "受け取ったクエリにどの条件が入っているかを、順番どおりに確認します。tagが繰り返されていても、途中の空の値があっても、それぞれを一項目として読みます。",
+  typescriptBefore: "TypeScriptではURLSearchParams.entries()を配列へ展開すれば、名前と値の組を順番どおりに得られます。Object.fromEntriesへ変換すると同じ名前の値が一つに減るため、この一覧では配列を使います。",
+  benefit: "queryEntriesで、Queryの内部フィールドへ触れずにすべての条件を読めます。元のQueryから独立した読み取り用の一覧なので、取り出した組をそのまま内部データとして編集する必要はありません。",
+  setup: "navigationはstd/web/navigation、arraysはstd/array、textはstd/textの別名です。関数と引数を空白で並べて呼び、letで途中の値に名前を付けます。pairTextのpair: (String, String)は文字列の二つ組の引数、-> Stringは戻り値の型です。",
+  after: [
+    "parseQueryをmatchで分け、RightのQueryを読みます。Left _は失敗時の表示で、_は理由を使わない印です。queryEntriesが返すArray<(String, String)>は、名前と値の二つ組を並べた配列です。",
+    "pairTextのmatchは、一つの組を(name, value)へ分けます。[pairText pair | pair <- pairs]は各組を順にpairTextへ渡し、表示用の文字列の配列を作る書き方です。text.joinがそれを|でつなぎます。",
+    "最後の行はtag=books | q=tea cake | tag=music | empty=です。tagの重複も全体の順番も残り、qの+は空白に復号されています。この表示用の=や|はクエリ用のエンコードではありません。",
+    "先の3行はqueryValuesによる読み取りです。tagの値をtext.joinでつなぎ、arrays.lengthでmissingとemptyの個数を数え、showで表示用の文字列にします。存在しない名前の個数は0、空文字列の値がある名前は1です。",
+  ],
+  details: [
+    "Queryを普通のレコードと考えて.entriesへアクセスするのではなく、queryEntriesを使います。取り出した配列や組はQueryを直接変更するための入口ではありません。",
+    "同じ名前を一つの値にまとめる辞書へ移すと、複数選択の情報を失います。順番や重複が必要な一覧では、この二つ組の配列を保ちます。",
+    "一覧を表示した文字列を、そのままクエリとしてURLへ貼り付けないようにします。URL用の表記は元のQueryにrenderQueryを使って作ります。",
+  ],
+}

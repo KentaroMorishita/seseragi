@@ -1,0 +1,21 @@
+import { UrlReaderCopy } from "../model"
+
+pub fn copy -> UrlReaderCopy = UrlReaderCopy {
+  summary: "parseQueryは、クエリ部分の文字列を名前と値の組として読み取ります。通常の先頭の?はあってもなくてもよく、読めたQueryか%の綴りのエラーを返します。",
+  taskTitle: "受け取った検索条件の文字列を読む",
+  purpose: "空白、+、/、空の値を含むクエリ文字列を読み、整えた表記へ戻します。先頭の?やエンコードの綴りが違う二つの入力から、同じ条件が得られることを確認します。",
+  typescriptBefore: "TypeScriptではnew URLSearchParams(text)でクエリを読みます。名前の繰り返しや+による空白も標準APIが扱います。ただし不正な%の綴りをparseQueryと同じ失敗として返すAPIではありません。",
+  benefit: "parseQueryは、成功したQueryと不正な%の綴りを戻り値で区別できます。読めた条件だけを、その後のフィルター編集へ渡せます。",
+  setup: "navigationはstd/web/navigationの別名です。parseQueryの引数はクエリ部分のStringで、関数と引数は空白で区切ります。fnの:は引数の型、->は戻り値の型を示します。",
+  after: [
+    "戻り値はEither<UrlBuildError, Query>です。matchのRightには読み取ったQuery、Leftには失敗の理由が入ります。例では成功値をrenderQueryで文字列に戻します。Left _の_は、ここでは失敗の詳しい理由を使わない印です。",
+    "最初の入力のq=tea%20cakeと、二つ目のq=tea+cakeは、どちらもtea cakeになります。literal=%2bとliteral=%2Bも同じ+で、名前も値も復号して扱います。",
+    "最初のemptyは値なし、二つ目のempty=は明示的な空の値です。どちらも空文字列の値になり、書き出すとempty=になります。名前が存在しないこととは区別されます。",
+    "2行ともq=tea+cake&literal=%2B&path=%2F&empty=と出力されます。先頭の?は付かず、読み取った名前と値から表記を作り直しています。",
+  ],
+  details: [
+    "完全なhttps://から始まるURLを渡す関数ではありません。URL全体から条件を読みたい場合はparseUrlで確認したUrlにurlQueryを使います。",
+    "通常は先頭の?を0個か1個にします。現在の実装は??q=xもq=xとして読む一方、普通のnew URLSearchParams(\"??q=x\")では名前が?qになります。この特殊な入力まで同じ結果になるとは考えません。",
+    "%ZZのような綴りはLeftになりますが、%FFのように2桁がそろった不正なUTF-8は置換文字として読まれます。parseQueryは文字のバイト列を厳密に検証する用途のAPIではありません。",
+  ],
+}

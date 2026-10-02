@@ -1,0 +1,25 @@
+import * as navigation from "std/web/navigation"
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn pairText pair: (String, String) -> String = match pair {
+  (name, value) -> name + "=" + value
+}
+
+fn selections input: String -> String = match navigation.parseQuery input {
+  Left _ -> "Query rejected"
+  Right query -> {
+    let tags = navigation.queryValues "tag" query
+    let missing = navigation.queryValues "missing" query
+    let empty = navigation.queryValues "empty" query
+    let pairs = navigation.queryEntries query
+    text.join "\n" [
+      text.join ", " tags,
+      "Missing count: " + show (arrays.length missing),
+      "Empty count: " + show (arrays.length empty),
+      text.join " | " [pairText pair | pair <- pairs]
+    ]
+  }
+}
+
+pub effect fn main = println (selections "tag=books&q=tea+cake&tag=music&empty=")
