@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "BytesSliceErrorはsliceが範囲を拒否した理由を表す型です。InvalidByteRangeのstart、end、lengthから、指定した境界と入力の長さを読めます。",
+  taskTitle: "切り出せなかった範囲を具体的に説明する",
+  purpose: "切り出しの失敗を単に失敗と表示する代わりに、要求した開始位置と終了位置、実際のバイト数を表示します。成功した通常の範囲と空の範囲も並べ、何が拒否されたのか確認します。",
+  typescriptBefore: "TypeScript例は範囲を検証し、無効なら指定した境界とcontent.lengthから説明を作ります。Uint8Array.slice自体は範囲を収めたり負の位置を末尾から数えたりするため、このように拒否したいなら明示的な検証が必要です。",
+  benefit: "Seseragiではsliceの失敗がBytesSliceErrorという値になり、返された理由から境界と長さを読み取れます。表示文を作る場所で、範囲の検証ルールをもう一度実装する必要はありません。",
+  setup: "import * as bytesはstd/bytesの名前をbytesという別名で使います。fn extract start: Int -> end: Int -> content: bytes.Bytes -> Stringは、2つの整数の境界とBytesからStringを作ります。bytes.slice start end contentは、引数を空白で順に渡す呼び出しです。",
+  after: [
+    "bytes.fromInts [10, 20, 30, 40]が返すEither<ByteError, Bytes>では、Left errorが入力の数値の失敗、Right contentが成功したBytesです。この入力検証と、extractの中で行う範囲検証は別の段階です。",
+    "bytes.slice start end contentの結果はEither<BytesSliceError, Bytes>です。matchのLeft側に入るのがこのページのエラー型です。Right partなら切り出したBytesが得られ、bytes.toIntsとshowで数値の表示文字列にします。",
+    "Left (bytes.InvalidByteRange { start, end, length })では、公開されたInvalidByteRangeの中のレコードを照合します。{ start, end, length }は、各フィールドの値を同名のローカル変数へ結び付ける書き方です。",
+    "startとendは要求した境界、lengthは入力のバイト数です。バッククォート文字列の${...}でそれらを埋め込むと、3..1、-1..2、0..5がいずれも4バイトの入力に対する無効な指定だったと分かります。枝の->の右側がextractの返すStringです。",
+    "do { ... }は表示を上から順に行うブロックです。1から3未満は[20, 30]、2から2未満は[]として成功します。extract (-1) 2 contentのように負の引数は括弧で囲みます。最後の行で元の入力の内容も変わらないことを確認できます。",
+  ],
+  details: [
+    "範囲は開始位置を含み終了位置を含まず、有効な条件は0 <= start <= end <= lengthです。startとendが同じ空の範囲も、両方がlengthの範囲も成功します。空のBytesに0と0を指定した場合もエラーにはなりません。",
+    "BytesSliceErrorの分類はopaque-typeですが、InvalidByteRangeは公開されたコンストラクターです。この例のように照合でき、start、end、lengthを持つ理由の値を直接作ることもできます。Byteには公開されたByteコンストラクターがない点とは区別してください。",
+    "InvalidByteRangeの値を自分で作るだけでは、範囲の検証は行われません。有効に見える数値を入れることもできます。実際にsliceが拒否したと分かるのは、sliceからLeftとして返された理由を扱っている場合です。",
+  ],
+}

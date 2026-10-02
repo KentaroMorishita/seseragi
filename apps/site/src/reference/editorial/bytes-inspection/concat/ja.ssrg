@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "concatはBytesの配列を受け取り、配列の順に1つのBytesへつなぎます。途中の空の列は要素を増やさず、空の配列からは空のBytesが得られます。",
+  taskTitle: "空の列が混ざった複数のバイト列をまとめる",
+  purpose: "[10, 20]、空の列、[30]を順番につなぎます。列が1つもない配列の場合も調べ、入力の列はそのままの内容で残ることを確認します。",
+  typescriptBefore: "TypeScriptでは各Uint8ArrayをArray.fromで通常の配列にし、flatMapで順に平らにしてUint8Array.fromへ渡します。小さなデータを読むための比較例です。入力の数値はすでに有効で、空の型付き配列も同じ処理に混ぜられます。",
+  benefit: "SeseragiのconcatはArray<Bytes>をそのまま受け取ります。各列を整数配列へ変える手順を連結のために書かずに済み、順序と空の列の扱いを1つの操作で表せます。",
+  setup: "import * as bytesはstd/bytesにbytesという別名を付けます。bytes.fromInts [10, 20]は、空白の後に整数配列を渡してBytesへ検証する呼び出しです。2つの呼び出しを丸括弧内にコンマで並べたものはタプルです。",
+  after: [
+    "fromIntsはEither<ByteError, Bytes>を返し、Leftが失敗、Rightが成功です。matchの(Right first, Right last)は両方が成功した場合を選び、Bytesをfirstとlastに結び付けます。_の枝はそれ以外、つまり少なくとも一方が失敗した場合を扱います。",
+    "let joined = ...は、計算結果にjoinedという名前を付けます。bytes.concat [first, bytes.empty (), last]へ渡すのはBytesの配列です。bytes.empty ()の()はUnitの値で、呼び出しは空のBytesを作ります。",
+    "concatはfirst、空の列、lastの順に要素をつなぐため、joinedは[10, 20, 30]になります。途中に空の列があっても、0というバイトや区切りが挿入されるわけではありません。",
+    "bytes.concat []には列が1つもない配列を渡しています。concatがArray<Bytes>を要求するので、この[]はその型の配列として扱われます。結果のBytesも空で、2行目には[]と表示されます。",
+    "do { ... }は表示を上から順に行います。bytes.toIntsでBytesを整数配列にし、showでStringにしてから表示します。最後の2行は連結結果ではなく、元のfirstとlastが[10, 20]と[30]のままであることを示します。",
+  ],
+  details: [
+    "concatがつなぐのはArray<Bytes>の1段分です。整数の配列をそのまま渡す関数ではありません。整数から列を作る場合はfromIntsで検証してBytesを得てから配列へ入れます。",
+    "空の配列からも、空のBytesだけを並べた配列からも、空のBytesが返ります。空でない列の内部の順序と、配列に置いた列の順序は保たれます。",
+    "戻り値は直接Bytesで、連結の結果をEitherから取り出す処理はありません。入力の列の内容も変わりません。2つの列だけをつなぐ場合は、suffixを先に渡すappendも使えます。",
+  ],
+}

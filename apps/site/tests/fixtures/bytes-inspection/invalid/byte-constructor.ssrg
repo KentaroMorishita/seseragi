@@ -1,0 +1,3 @@
+import * as bytes from "std/bytes"
+let value = bytes.Byte 65
+pub effect fn main = println "unreachable"

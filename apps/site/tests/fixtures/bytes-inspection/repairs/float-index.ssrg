@@ -1,0 +1,12 @@
+import * as bytes from "std/bytes"
+
+fn at index: Int -> content: bytes.Bytes -> String = match bytes.get index content {
+  Nothing -> `Index ${index}: missing`
+  Just value -> `Index ${index}: ${bytes.toInt value}`
+}
+pub effect fn main = match bytes.fromInts [0, 15, 255] {
+  Left error -> println (show error)
+  Right content -> for index <- [0, 2, 3, -1] {
+    println (at index content)
+  }
+}

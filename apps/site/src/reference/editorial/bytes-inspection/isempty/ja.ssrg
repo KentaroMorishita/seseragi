@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "isEmptyはBytesの要素数が0かをBoolで返します。バイトの値が0かどうかではなく、列に何も入っていないかを調べます。",
+  taskTitle: "バイト列が空かどうかで表示を分ける",
+  purpose: "空ならEmpty、中身があればその数値を表示します。同じdescribe関数に空のBytesと65だけを含むBytesを渡し、両方の枝を確認します。",
+  typescriptBefore: "TypeScriptではcontent.length === 0という比較が同じ空判定を表します。new Uint8Array()は空の列、Uint8Array.of(value)は1要素の列です。ここでは後者へ渡す数値を先に検証し、範囲外の値を黙って変換させないようにしています。",
+  benefit: "どちらの空判定も短く書けます。SeseragiのisEmptyはBytes -> Boolという型で、何を調べ何を返すかが明確です。結果をそのままifの条件に使い、空と空でない場合の表示を選べます。",
+  setup: "import * as bytesはstd/bytesをbytesという別名で使います。fn describe content: bytes.Bytes -> Stringは、Bytesの引数contentからStringを返す関数です。bytes.isEmpty contentでは空白の後にcontentを渡します。",
+  after: [
+    "if bytes.isEmpty content then ... else ...は、BoolがTrueならthen側、Falseならelse側の文字列を返します。空のBytesだけがTrueになり、この例の最初の出力はEmptyです。",
+    "mainのdo { ... }は処理を上から順に行います。bytes.empty ()の()はUnitの値で、この呼び出しは空のBytesを返します。describe (bytes.empty ())はそれをdescribeに渡しています。",
+    "次のbytes.byte 65は整数を検証し、Either<ByteError, Byte>を返します。Leftは失敗、Rightは成功です。matchは結果を分け、Left errorでは受け取ったエラーをshowで表示用の文字列にします。",
+    "Right checkedは成功したByteにcheckedという名前を付けます。bytes.singleton checkedはそれだけを含むBytesです。要素数が1なのでisEmptyはFalseになり、describeはelse側の文字列を返します。",
+    "else側のbytes.toInts contentは整数の配列を作り、showはそれをStringにします。バッククォート文字列の${...}がその結果を埋め込むため、2行目はBytes: [65]と表示されます。",
+  ],
+  details: [
+    "isEmptyはBytesの中身がないかだけを調べます。0のByteを1つ含む列でもFalseです。TrueとFalseはBoolの値で、失敗を表すLeftや値の不在を表すNothingとは異なります。",
+    "この関数の戻り値は直接Boolです。matchで検証結果を開く必要はありません。例のmatchはisEmptyではなく、数値の65をByteにするbyteの結果を処理しています。",
+    "Bytesは通常の整数配列とは別の型です。この例はemptyとsingletonから作っています。複数の整数を使う場合はfromIntsで検証してから、成功したBytesをisEmptyへ渡します。",
+  ],
+}

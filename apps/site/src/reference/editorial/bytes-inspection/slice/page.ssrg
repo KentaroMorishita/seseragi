@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { bytesInspectionEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  bytesInspectionEditorial "std/bytes::slice" "value" "function" "checked-range" (en.copy ()) (ja.copy ())

@@ -446,4 +446,11 @@ import * as collectionTransformListReverse from "./collection-transform/list-rev
 import * as collectionTransformListTail from "./collection-transform/list-tail"
 import * as collectionTransformListToarray from "./collection-transform/list-toarray"
 
+import * as bytesInspectionAppendChunk from "./bytes-inspection/append-chunk"
+import * as bytesInspectionCheckedRange from "./bytes-inspection/checked-range"
+import * as bytesInspectionEmptyAndSingleton from "./bytes-inspection/empty-and-singleton"
+import * as bytesInspectionInspectByte from "./bytes-inspection/inspect-byte"
+import * as bytesInspectionJoinChunks from "./bytes-inspection/join-chunks"
+import * as bytesInspectionValidateOneByte from "./bytes-inspection/validate-one-byte"
+
 pub effect fn main -> Unit = effects.succeed ()
