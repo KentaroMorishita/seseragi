@@ -1,3 +1,4 @@
+import { collectionTransformEditorialFor } from "./collection-transform/catalog"
 import {
   stdinReaderEditorialFor,
   stdinReaderModuleBlocks
@@ -228,6 +229,12 @@ fn editorialAfterPracticalCollectionEditorialFor symbol: ReferenceSymbol
 fn editorialAfterTerminalReaderEditorialFor symbol: ReferenceSymbol
   -> Maybe<Editorial> =
   match stdinReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterStdinReaderEditorialFor symbol
+  }
+
+fn editorialAfterStdinReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match collectionTransformEditorialFor symbol {
     Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }

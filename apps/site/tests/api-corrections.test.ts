@@ -341,13 +341,18 @@ test("exact identity, module, namespace and kind choose only the nine correction
     .flatMap((module) => module.items)
     .filter((x) =>
       [
-        "std/array::reverse",
-        "std/list::reverse",
-        "std/array::toList",
+        "std/array::Eq",
+        "std/list::Eq",
+        "std/array::Show",
         "std/ref::get",
       ].includes(x.identity)
     )
   expect(controls).toHaveLength(4)
+  for (const control of controls) {
+    const isInstance = control.identity !== "std/ref::get"
+    expect(control.namespace).toBe(isInstance ? "instance" : "value")
+    expect(control.itemKind).toBe(isInstance ? "instance" : "effect-function")
+  }
   const oldOverlay = all
     .flatMap((module) => module.items)
     .find((x) => x.identity === "std/array::chunksOf")!

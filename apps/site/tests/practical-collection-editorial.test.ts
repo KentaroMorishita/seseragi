@@ -10,6 +10,7 @@ import {
 import { join, resolve } from "node:path"
 import { apiCorrectionExamples } from "../scripts/api-corrections"
 import { arrayEditorialExamples } from "../scripts/array-editorial"
+import { collectionTransformExamples } from "../scripts/collection-transform"
 import { collectionTypeExamples } from "../scripts/collection-type-readers"
 import { listEditorialExamples } from "../scripts/list-editorial"
 import { mapEditorialExamples } from "../scripts/map-editorial"
@@ -62,6 +63,7 @@ function input(referenceModules: ReturnType<typeof compilerReferenceModules>) {
       ...mapEditorialExamples(playground),
       ...setEditorialExamples(playground),
       ...collectionTypeExamples(playground),
+      ...collectionTransformExamples(playground),
     ],
     referenceModules,
   }
@@ -366,10 +368,24 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
       }
     expect(bodies).toHaveLength(40)
     expect(titleLinks).toBeGreaterThanOrEqual(120)
-    for (const prefix of ["", "/ja"])
-      expect(
-        pages.get(`${prefix}/docs/library/array/function/append/`)
-      ).not.toContain('id="typescript-comparison"')
+    const controlItem = modules
+      .find((module) => module.specifier === "std/array")!
+      .items.find((item) => item.identity === "std/array::Eq")!
+    expect(controlItem).toBeDefined()
+    expect(controlItem.namespace).toBe("instance")
+    expect(controlItem.itemKind).toBe("instance")
+    for (const prefix of ["", "/ja"]) {
+      const control = pages.get(
+        `${prefix}/docs/library/array/instance/eq-array-a/`
+      )!
+      expect(control).toBeDefined()
+      expect(control).not.toContain('id="typescript-comparison"')
+      const reading =
+        prefix === "/ja" ? controlItem.reading.ja : controlItem.reading.en
+      expect(reading.trim()).not.toBe("")
+      expect(plain(control)).toContain(reading)
+      expect(plain(control)).toContain(controlItem.signature)
+    }
     const output = process.env.PRACTICAL_COLLECTION_RENDER_DIR
     if (output) {
       mkdirSync(output, { recursive: true })

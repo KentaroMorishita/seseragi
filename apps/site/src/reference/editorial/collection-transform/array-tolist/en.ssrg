@@ -1,0 +1,22 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.toList converts an Array to a List. It preserves element values and order so the result can be passed to a function that accepts List.",
+  taskTitle: "Pass tasks to a function that requires List",
+  purpose: "The available tasks are an Array, but the rendering helper renderTasks accepts List<String>. Convert with toList before calling it, then confirm that the original Array remains in the same order.",
+  typescriptBefore: "TypeScript can pass a normal array directly to a readonly string[] parameter and display it as JSON. This compares the task of rendering ordered tasks. It does not suggest that JavaScript has a native type or conversion equivalent to Seseragi List.",
+  benefit: "Seseragi distinguishes Array and List by type. The toList call makes the conversion point explicit and supplies the type required by the receiving function. The element strings need no separate conversion.",
+  setup: "items is the alias for std/array, and let tasks names the Array [\"Read\", \"Review\", \"Ship\"]. List also holds elements in order, but is a separate type from Array. A List literal is written with a backtick before its opening [.",
+  after: [
+    "fn renderTasks tasks: List<String> -> String declares a function receiving tasks as List<String> and returning String. The type after : belongs to the parameter; the type after -> is the return type. The expression after = is its body.",
+    "let converted: List<String> = items.toList tasks passes the Array to toList and names the result converted. : List<String> checks the result’s type. The annotation alone does not convert anything; the toList call performs the conversion.",
+    "renderTasks converted uses the converted List. Inside the helper, the comprehension [task | task <- tasks] reads each List element in order and creates a display Array. These brackets have no backtick, so that display value is an Array.",
+    "The last line displays the original Array. Both lines show [\"Read\",\"Review\",\"Ship\"], but identical JSON does not make the types identical: converted is List<String>, and the original tasks is Array<String>.",
+  ],
+  details: [
+    "Passing the original Array with renderTasks tasks does not match the required List<String>. Pass converted, the result of toList, instead. Use std/list toArray for the opposite conversion from List to Array.",
+    "An empty Array becomes an empty List. Multiple elements retain their order, including duplicate values. toList does not sort or remove duplicates.",
+    "The original Array’s contents remain unchanged. toList changes the collection type; it does not serialize the data to JSON or another string format. The later json.encodeString performs the JSON encoding.",
+    "The reason for this conversion is to meet renderTasks’ parameter type. Do not read a deep-copy guarantee or a promise of better performance into toList.",
+  ],
+}

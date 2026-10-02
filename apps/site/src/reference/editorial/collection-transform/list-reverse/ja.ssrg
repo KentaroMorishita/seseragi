@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.reverseはListの要素を逆順にしたListを返します。元のListの順序は変えません。",
+  taskTitle: "元の順序を残して、新しいタスクから表示する",
+  purpose: "古い順にRead、Review、Shipが入った一覧を、新しい順に表示します。保存してある順序も使えるように、元のListを続けて表示します。",
+  typescriptBefore: "通常の配列では[...oldestFirst].reverse()と書き、コピーした配列を反転します。JavaScriptのreverse()は呼び出した配列を変更するので、元の配列を残すためにコピーします。同じ表示作業の比較であり、Listの内部表現を再現するコードではありません。",
+  benefit: "Seseragiのreverseは結果のListを返し、入力のListを変えません。表示する順序を変えるために、元の一覧を保護するコピーを先に書く必要はありません。",
+  setup: "itemsはstd/listの別名です。let oldestFirstは値に名前を付けます。`[\"Read\", \"Review\", \"Ship\"]の[の前にあるバッククォートでListを作り、付けずに書けばArrayになります。items.reverse oldestFirstはListを一つ渡す呼び出しです。",
+  after: [
+    "最初の表示はitems.reverse oldestFirstの戻り値を使います。最後にあったShipが先頭になり、次はReview、最後はReadです。文字列そのものの文字順は変わりません。",
+    "次の行はoldestFirstをそのまま読みます。Read、Review、Shipの順が残るので、逆順の表示と元の順序の表示を両方作れます。",
+    "[value | value <- ...]は、各要素をvalueとして受け取り、表示用のArrayを作る内包表記です。この角括弧にはバッククォートがありません。reverseの結果はListのままで、JSONを使って要素順を見せるためにArrayへ並べています。",
+  ],
+  details: [
+    "空のListを反転すると空のListです。一要素なら同じ一要素が返り、同じ値が複数あれば重複したまま逆順に並びます。",
+    "reverseは日付や文字列の大小を調べません。この例で新しい順になるのは、入力がすでに古い順だからです。ばらばらの日時から順序を決めたい場合は、日時で並べ替える処理が必要です。",
+    "戻り値を使わずにreverseを呼んでも、oldestFirstは変わりません。反転した結果に名前を付けるか、この例のように次の処理へ渡してください。",
+    "この関数はListを受け取ります。Arrayの順序を反転する場合はstd/arrayのreverseを使います。",
+  ],
+}

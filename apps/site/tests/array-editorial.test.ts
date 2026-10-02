@@ -71,13 +71,14 @@ test("identity overlay renders twelve real pages in both locales and preserves d
     const module = {
       ...sourceModule,
       items: sourceModule.items.filter(
-        (x) => identities.has(x.identity) || x.identity === "std/array::reverse"
+        (x) => identities.has(x.identity) || x.identity === "std/array::Eq"
       ),
     }
     expect(module.items).toHaveLength(18)
     for (const item of module.items) {
-      expect(item.namespace).toBe("value")
-      expect(item.itemKind).toBe("function")
+      const isControl = item.identity === "std/array::Eq"
+      expect(item.namespace).toBe(isControl ? "instance" : "value")
+      expect(item.itemKind).toBe(isControl ? "instance" : "function")
     }
     const input = {
       schema: 1,
@@ -115,7 +116,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
   }
 }`,
     })
-    expect(output).toHaveLength(38) // Full Array overlay inventory, module and untouched reverse control.
+    expect(output).toHaveLength(38) // Full Array overlay inventory, module and untouched Eq instance control.
     const pages = new Map(output.map((x) => [x.route, x.html]))
     const titles = new Map(output.map((x) => [x.route, pageTitle(x.html)]))
     for (const prefix of ["", "/ja"]) {
@@ -191,16 +192,22 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      const reverseHtml = pages.get(
-        `${prefix}/docs/library/array/function/reverse/`
+      const controlHtml = pages.get(
+        `${prefix}/docs/library/array/instance/eq-array-a/`
       )!
-      const reverseItem = module.items.find(
-        (x) => x.identity === "std/array::reverse"
+      const controlItem = module.items.find(
+        (x) => x.identity === "std/array::Eq"
       )!
-      expect(reverseHtml).not.toContain('id="using-this-operation"')
-      expect(plain(reverseHtml)).toContain(
-        prefix === "/ja" ? reverseItem.descriptionJa : reverseItem.descriptionEn
-      )
+      expect(controlHtml).toBeDefined()
+      expect(controlItem).toBeDefined()
+      expect(controlItem.namespace).toBe("instance")
+      expect(controlItem.itemKind).toBe("instance")
+      expect(controlHtml).not.toContain('id="using-this-operation"')
+      const reading =
+        prefix === "/ja" ? controlItem.reading.ja : controlItem.reading.en
+      expect(reading.trim()).not.toBe("")
+      expect(plain(controlHtml)).toContain(reading)
+      expect(plain(controlHtml)).toContain(controlItem.signature)
       expect(
         plain(pages.get(`${prefix}/docs/library/array/function/findindex/`)!)
       ).toContain("Nothing")
@@ -260,7 +267,7 @@ test("overlay identity inventory stays valid and ignores unrelated namespace, ki
     const first = items[0]
     const probes = [
       ...items,
-      { ...first, identity: "std/array::reverse" },
+      { ...first, identity: "std/array::Eq" },
       { ...first, namespace: "type" },
       { ...first, itemKind: "constructor" },
       { ...first, module: "std/list" },

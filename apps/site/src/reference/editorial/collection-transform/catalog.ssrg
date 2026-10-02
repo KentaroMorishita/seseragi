@@ -1,0 +1,50 @@
+import { editorial as case0 } from "./array-append/page"
+import { editorial as case1 } from "./array-concat/page"
+import { editorial as case2 } from "./array-filtermap/page"
+import { editorial as case3 } from "./array-flatmap/page"
+import { editorial as case4 } from "./array-reverse/page"
+import { editorial as case5 } from "./array-tail/page"
+import { editorial as case6 } from "./array-tolist/page"
+import { editorial as case7 } from "./list-append/page"
+import { editorial as case8 } from "./list-concat/page"
+import { editorial as case9 } from "./list-filtermap/page"
+import { editorial as case10 } from "./list-flatmap/page"
+import { editorial as case11 } from "./list-reverse/page"
+import { editorial as case12 } from "./list-tail/page"
+import { editorial as case13 } from "./list-toarray/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Editorial } from "../model"
+
+// Reconstructed candidate: exact owner, namespace, kind and identity.
+pub fn collectionTransformEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  if symbol.namespace != "value"
+    || symbol.itemKind != "function" then
+    Nothing
+  else
+    match symbol.module {
+  "std/array" -> arrayEditorial symbol.identity
+  "std/list" -> listEditorial symbol.identity
+  _ -> Nothing
+}
+
+fn arrayEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/array::append" -> Just (case0 ())
+  "std/array::concat" -> Just (case1 ())
+  "std/array::filterMap" -> Just (case2 ())
+  "std/array::flatMap" -> Just (case3 ())
+  "std/array::reverse" -> Just (case4 ())
+  "std/array::tail" -> Just (case5 ())
+  "std/array::toList" -> Just (case6 ())
+  _ -> Nothing
+}
+
+fn listEditorial identity: String -> Maybe<Editorial> = match identity {
+  "std/list::append" -> Just (case7 ())
+  "std/list::concat" -> Just (case8 ())
+  "std/list::filterMap" -> Just (case9 ())
+  "std/list::flatMap" -> Just (case10 ())
+  "std/list::reverse" -> Just (case11 ())
+  "std/list::tail" -> Just (case12 ())
+  "std/list::toArray" -> Just (case13 ())
+  _ -> Nothing
+}

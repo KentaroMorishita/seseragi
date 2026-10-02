@@ -83,6 +83,8 @@ for (const command of [
     "apps/site/tests/terminal-reader-editorial.test.ts",
     "apps/site/tests/stdin-reader.test.ts",
     "apps/site/tests/stdin-reader-editorial.test.ts",
+    "apps/site/tests/collection-transform.test.ts",
+    "apps/site/tests/collection-transform-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   ["python3", "-B", "apps/site/tests/prose.test.py"],
@@ -178,6 +180,8 @@ const test = Bun.spawnSync(
     "apps/site/tests/terminal-reader-editorial.test.ts",
     "apps/site/tests/stdin-reader.test.ts",
     "apps/site/tests/stdin-reader-editorial.test.ts",
+    "apps/site/tests/collection-transform.test.ts",
+    "apps/site/tests/collection-transform-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   {
