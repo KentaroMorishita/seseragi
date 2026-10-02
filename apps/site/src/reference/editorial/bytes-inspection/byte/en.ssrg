@@ -17,6 +17,6 @@ pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
   details: [
     "The range includes both 0 and 255. TypeScript’s number can also hold fractions, so its comparison needs Number.isInteger. Seseragi’s byte requires an Int. This does not mean the languages’ numeric types are equivalent for all possible numbers.",
     "You cannot pass the result of byte directly to singleton or toInt. Those functions require Byte, rather than an entire Either. Receive the successful value in Right before passing it on.",
-    "Byte has a private representation. Use byte rather than trying to wrap a number in a public Byte constructor. To validate an array of integers and obtain Bytes instead, use fromInts.",
+    "Byte has a private representation and no public Byte value constructor. Use byte to validate a number and obtain a Byte. To validate an array of integers and obtain Bytes instead, use fromInts.",
   ],
 }

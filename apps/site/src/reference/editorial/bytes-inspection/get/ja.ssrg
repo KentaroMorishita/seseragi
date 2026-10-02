@@ -11,7 +11,7 @@ pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
     "bytes.fromInts [0, 15, 255]は整数の配列を検証してBytesにします。戻り値はEither<ByteError, Bytes>です。matchで失敗のLeft errorを表示し、成功のRight contentでBytesにcontentという名前を付けます。",
     "atのbytes.get index contentはMaybe<Byte>を返します。Maybeは値がないNothingか、値があるJustです。Nothingの枝には取り出すByteがなく、Just valueの枝では見つかったByteにvalueという名前を付けます。",
     "Justの枝のbytes.toInt valueがByteをIntへ変えます。バッククォート文字列の${index}や${bytes.toInt value}は、位置や数値を表示へ埋め込みます。各枝の->の右側がatの返す文字列です。",
-    "for index <- [0, 2, 3, -1]は配列の位置を順番にindexへ結び付けます。at index contentへ位置と元のBytesを渡し、それぞれの結果を表示します。",
+    "for index <- [0, 2, 3, -1]は、配列に書いた整数0、2、3、-1を順番にindexへ結び付けます。配列自体の添字0、1、2、3を受け取る書き方ではありません。at index contentへ位置と元のBytesを渡し、それぞれの結果を表示します。",
     "0番目には0、2番目には255があります。3バイトなので3番目はなく、-1も末尾を意味しません。後ろ2行はどちらもmissingになります。",
   ],
   details: [

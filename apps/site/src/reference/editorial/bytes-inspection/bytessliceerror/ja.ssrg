@@ -16,7 +16,7 @@ pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
   ],
   details: [
     "範囲は開始位置を含み終了位置を含まず、有効な条件は0 <= start <= end <= lengthです。startとendが同じ空の範囲も、両方がlengthの範囲も成功します。空のBytesに0と0を指定した場合もエラーにはなりません。",
-    "BytesSliceErrorの分類はopaque-typeですが、InvalidByteRangeは公開されたコンストラクターです。この例のように照合でき、start、end、lengthを持つ理由の値を直接作ることもできます。Byteには公開されたByteコンストラクターがない点とは区別してください。",
+    "BytesSliceErrorの分類はopaque-typeですが、InvalidByteRangeは公開されたコンストラクターです。内部表現が非公開という分類は、公開されたコンストラクターで値を作ったり照合したりする操作まで禁止するものではありません。この例のように照合でき、start、end、lengthを持つ理由の値を直接作ることもできます。Byteには公開されたByteコンストラクターがない点とは区別してください。",
     "InvalidByteRangeの値を自分で作るだけでは、範囲の検証は行われません。有効に見える数値を入れることもできます。実際にsliceが拒否したと分かるのは、sliceからLeftとして返された理由を扱っている場合です。",
   ],
 }

@@ -16,7 +16,7 @@ pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
   ],
   details: [
     "The range includes the start and excludes the end. Its valid bounds satisfy 0 <= start <= end <= length. An empty range with equal bounds succeeds, including when both equal length. Requesting 0 to 0 from empty Bytes is not an error either.",
-    "BytesSliceError is classified as opaque-type, but InvalidByteRange is a public constructor. You can match it as shown or directly construct a reason with start, end, and length fields. This differs from Byte, which has no public Byte value constructor.",
+    "BytesSliceError is classified as opaque-type, but InvalidByteRange is a public constructor. Keeping the representation private does not prohibit constructing or matching values through this public constructor. You can match it as shown or directly construct a reason with start, end, and length fields. This differs from Byte, which has no public Byte value constructor.",
     "Constructing an InvalidByteRange value does not validate any range. You can even give it numbers that describe a valid range. A reason establishes that slice rejected a request when it was actually returned by slice in Left.",
   ],
 }

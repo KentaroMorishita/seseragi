@@ -17,6 +17,6 @@ pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
   details: [
     "有効範囲は0以上255以下です。TypeScriptのnumberには小数などもあるため比較例にはNumber.isIntegerが必要ですが、SeseragiのbyteはIntを要求します。両言語の数値型全体が同じという意味ではありません。",
     "byteの結果をそのままsingletonやtoIntへ渡すことはできません。それらが必要とするのはByteであり、Either全体ではないためです。Rightで成功した値を受け取ってから渡します。",
-    "Byteは内部表現が非公開の型です。公開されたByteコンストラクターで包む代わりにbyteを使います。複数の整数をまとめてBytesにしたいときはfromIntsが対応する検証を行います。",
+    "Byteは内部表現が非公開の型で、公開されたByteコンストラクターはありません。数値をByteにするにはbyteで検証します。複数の整数をまとめてBytesにしたいときはfromIntsが対応する検証を行います。",
   ],
 }
