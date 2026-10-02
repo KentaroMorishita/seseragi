@@ -1,7 +1,13 @@
 import { expect, setDefaultTimeout, test } from "bun:test"
 import { spawnSync } from "node:child_process"
 import { createHash } from "node:crypto"
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs"
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  writeFileSync,
+} from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import ts from "typescript"
@@ -24,7 +30,9 @@ const { createBrowserEnvironment } = await import(browserHostPath)
 const { createEffectExecution, run } = await import(effectRuntimePath)
 const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/debug/seseragi")
 const bun = process.env.SESERAGI_BUN ?? process.execPath
-const node = process.env.SESERAGI_NODE ?? "node"
+const node = Bun.which(process.env.SESERAGI_NODE ?? "node")
+if (!node)
+  throw new Error("The reader suite requires an installed Node executable")
 const evidenceRoot = resolve(
   process.env.TERMINAL_READER_EVIDENCE_DIR ??
     join(tmpdir(), "seseragi-terminal-reader-evidence")
@@ -94,6 +102,11 @@ function succeeded(result: ReturnType<typeof command>, output?: string) {
   expect(result.status, result.stdout + result.stderr).toBe(0)
   expect(result.stderr).toBe("")
   if (output !== undefined) expect(result.stdout).toBe(output)
+}
+function hostOutput(item: (typeof terminalReaderCases)[number]): string {
+  return item.slug === "current-directory"
+    ? `Directory: ${realpathSync(demoDirectory).replaceAll("\\", "/")}\n`
+    : item.output
 }
 const entries = new Map<string, string>()
 function buildSource(slug: string, source = sample(slug).source) {
@@ -293,7 +306,7 @@ test("each exact source formats, compiles and runs as a release entry on Node an
           [entry, ...(item.slug === "arguments" ? argv : [])],
           demoDirectory
         ),
-        item.output
+        hostOutput(item)
       )
     }
   }
@@ -382,7 +395,7 @@ test("all exact TypeScript counterparts pass strict checking and Node/Bun stream
           [entry, ...(item.slug === "arguments" ? argv : [])],
           demoDirectory
         ),
-        item.output
+        hostOutput(item)
       )
       if (item.slug === "environment") {
         const missing = { ...baseEnvironment }

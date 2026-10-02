@@ -3,7 +3,7 @@ import { TerminalCopy } from "../model"
 pub fn copy -> TerminalCopy = TerminalCopy {
   summary: "currentDirectoryは、実行中のプログラムの作業ディレクトリーをPathで返します。表示するにはpaths.renderで文字列にします。",
   taskTitle: "コマンドを起動した作業ディレクトリーを表示する",
-  purpose: "プログラムがどのディレクトリーを基準に動いているかを確かめます。例ではシェルで/tmp/seseragi-process-demoへ移動してから起動し、Directory: /tmp/seseragi-process-demoと表示します。",
+  purpose: "プログラムがどのディレクトリーを基準に動いているかを確かめます。下のLinuxでの実行例では、シェルで/tmp/seseragi-process-demoへ移動してから起動し、Directory: /tmp/seseragi-process-demoと表示します。",
   typescriptBefore: "Node.jsやBunのTypeScriptではprocess.cwd()を使い、取得できなかった場合はcatchで扱えます。比較例のreplaceAllは表示の区切りを/にそろえるためのもので、作業ディレクトリーを変更する処理ではありません。",
   benefit: "SeseragiはディレクトリーをPathとして返し、表示用のStringにする操作をpaths.renderで分けます。場所を表す値と表示する文字列を区別し、取得に失敗した場合も扱えます。",
   reading: [
@@ -14,6 +14,7 @@ pub fn copy -> TerminalCopy = TerminalCopy {
   details: [
     "作業ディレクトリーは、ソースファイルやビルドしたentry.jsのある場所とは別です。同じentry.jsでも、別のディレクトリーで起動すれば読む場所は変わります。",
     "起動例は、cdを使えるPOSIX系のシェル向けです。/tmp/seseragi-process-demoは例のために選んだ場所で、APIが固定で返すパスではありません。ほかの場所で起動すれば、その場所が表示されます。",
+    "/tmpがシンボリックリンクになっている環境では、参照先の場所が表示されることがあります。今回のmacOSでの実行結果はDirectory: /private/tmp/seseragi-process-demoでした。process.currentDirectoryが取得したPathを、paths.renderで文字列にした結果です。",
     "Pathの文字列表示にはpaths.renderを使います。この操作でパスの不要な部分を整理したり、シンボリックリンクの参照先を解決したりすることは想定していません。"
   ]
 }
