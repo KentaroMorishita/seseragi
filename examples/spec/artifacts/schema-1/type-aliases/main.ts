@@ -4,7 +4,7 @@ import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 import { button as _ssrg_html_button, type Html as Html } from "@seseragi/runtime/html"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { succeed as _ssrg_effect_succeed, flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
-import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+import { println as _ssrg_console_println, type Console as Console } from "@seseragi/runtime/console"
 $ssrg$assertUnicodeVersion("17.0.0")
 
 type AppError =
@@ -13,6 +13,7 @@ const AppFailed: AppError = { tag: "AppFailed" } as const;
 const userId = (value: number) => value
 const pair = <A,>(value: A) => ({ "left": value, "right": value } as const)
 const apply = <A, B,>(transform: (argument: A) => B) => (value: A) => transform(value)
+const app = <A,>(operation: Effect<{ readonly "console": Console }, AppError, A>) => operation
 const failure = (value: AppError) => value
 const result = (value: { readonly tag: "Left"; readonly value: AppError } | { readonly tag: "Right"; readonly value: number }) => value
 const increment = (state: MutableSignal<number>) => _ssrg_signal_update((value: number) => _ssrg_int_add(value, 1), state)

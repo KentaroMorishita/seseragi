@@ -8,8 +8,9 @@
     "abiMajor": 1,
     "unicodeVersion": "17.0.0",
     "requirements": [
-      "signal.mutable-type",
       "effect.core.type",
+      "effect.console.service",
+      "signal.mutable-type",
       "web.html.type",
       "signal.type",
       "core.adt",

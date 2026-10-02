@@ -38,14 +38,15 @@ Showing unchanged input values does not establish storage or allocation identity
 
 ## Delivery discipline
 
-The initial candidate is WIP. Checkpoint coherent source remotely through the
-parent before long checks; a local environment reset must not erase the only
-copy. Then freshly run exact-source process checks, strict TypeScript and actual
+The bounded authoring candidate is checkpointed in final PR753 HEAD 85e5de3867a9
+and integrated on the Mac. The transferred final evidence is recorded in
+bytes-inspection-verification.md. Fresh Mac integration must use the current
+compiler candidate. Authoring checks cover exact-source process checks, strict TypeScript and actual
 Node/Bun execution, committed-WASM/current-browser-runtime host checks, rejection
 and repair fixtures, rendered-body checks and maintained negative controls.
 
 Read all 22 complete initial rendered bodies independently, apply corrections,
 and independently reread all 22 final bodies. Record body/source/output hashes.
 Model reading is not genuine first-time human acceptance. Actual browser,
-whole-site integration and public deployment are separate gates. Compiler,
-runtime and dependency changes are outside scope.
+whole-site integration and public deployment are separate gates. This article batch does not change compiler, runtime or dependencies; those
+independent changes are handled by the unified Mac integration owner.

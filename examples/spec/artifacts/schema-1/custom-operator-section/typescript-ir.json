@@ -320,14 +320,14 @@
                       "callee": "applyPair",
                       "arguments": [
                         {
-                          "kind": "checked-result",
-                          "value": {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$partial$0: number",
+                          "body": {
                             "kind": "lambda",
-                            "parameter": "__ssrg$partial$0: number",
+                            "parameter": "__ssrg$partial$1: number",
                             "body": {
-                              "kind": "lambda",
-                              "parameter": "__ssrg$partial$1: number",
-                              "body": {
+                              "kind": "checked-result",
+                              "value": {
                                 "kind": "call",
                                 "callee": "__ssrg$operator$3c5e3e",
                                 "arguments": [
@@ -344,20 +344,8 @@
                                     "name": "__ssrg$instance$Difference$0"
                                   }
                                 ]
-                              }
-                            }
-                          },
-                          "type": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "number"
-                            },
-                            "result": {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "number"
                               },
-                              "result": {
+                              "type": {
                                 "kind": "number"
                               }
                             }

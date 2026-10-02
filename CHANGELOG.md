@@ -7,11 +7,13 @@
 - Infer and generalize non-recursive let lambdas with captured-environment and trait constraints, preserving rank-1 and monomorphic recursion rules (#683).
 - Preserve constrained callable aliases and their dictionary evidence across top-level, block, Effect, and monadic bindings (#738).
 - Reject unresolved polymorphic callable storage before emitting TypeScript with free type variables, and honor explicit type arguments on callable values (#739).
-- Diagnose invalid or reserved declaration names, missing ordinary-function and public-let annotations, and expressions at module top level even when declarations are unused (#679, #709).
+- Diagnose invalid or reserved declaration names, missing ordinary-function and public-let annotations, and expressions at module top level even when declarations are unused; preserve record types in instance and impl headers (#679, #709).
 - Round Float HalfUp correctly at binary64 boundaries without rounding an intermediate addition, with native and WASM execution regressions (#715).
 
 ### Documentation
 
+- Add Japanese/English examples for eleven existing byte inspection and chunk composition APIs, with checked TypeScript comparisons and explicit constructor/range explanations.
+- Replace obsolete let-lambda inference and missing-annotation notes with the verified 0.61.20 behavior.
 - Define source-neutral semantic interop responsibilities and failure boundaries (#474).
 - Document Signal read snapshots, sequential-read interleaving, transaction publication, and measured composition costs (#610).
 - Select the measured release profile for complete Docs regression builds and update browser checks for the current verified examples (#706, #740).

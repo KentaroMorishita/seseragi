@@ -246,7 +246,7 @@ async function run() {
       .waitFor()
     observe("edit", `browser auto-reloaded to ${secondVersion.trim()}`)
 
-    const broken = `${changed}\nmissingProductE2eName\n`
+    const broken = `${changed}\nlet productE2eBroken = missingProductE2eName\n`
     await replaceDocument(document, broken)
     const diagnostic = await waitFor("matching LSP diagnostic", () =>
       vscode.languages

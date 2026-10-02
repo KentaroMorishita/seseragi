@@ -137,3 +137,21 @@ pub effect fn main = do {
     let artifact = parse_diagnostics("main.ssrg", source);
     assert!(artifact.diagnostics.is_empty(), "{artifact:?}");
 }
+
+#[test]
+fn distinguishes_record_type_headers_from_declaration_bodies() {
+    for declaration in [
+        "instance Debug<{ name: String }> { fn debug value: { name: String } -> String = value.name }",
+        "instance Show<Array<{ name: String }>> { fn show value: Array<{ name: String }> -> String = \"names\" }",
+        "impl Box<{ name: String }> { fn title -> String = \"name\" }",
+    ] {
+        let source = format!("{declaration}\n");
+        let artifact = parse_diagnostics("main.ssrg", &source);
+        assert!(artifact.diagnostics.is_empty(), "{source}\n{artifact:?}");
+        assert_error(
+            &format!("{source}println \"unexpected\"\n"),
+            "parser.module-expression-statement",
+            "println \"unexpected\"",
+        );
+    }
+}

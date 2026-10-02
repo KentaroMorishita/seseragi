@@ -561,6 +561,33 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
 }
 
 #[test]
+fn binary_reports_unknown_name_in_a_valid_top_level_let_initializer() {
+    let uri = "file:///product-e2e.ssrg";
+    let input = [
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}}}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {
+            "uri": uri, "languageId": "seseragi", "version": 1,
+            "text": "let productE2eBroken = missingProductE2eName\n"
+        }}}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics[0]["code"], "SES-N0001");
+    assert_eq!(
+        diagnostics[0]["range"],
+        json!({
+            "start": {"line": 0, "character": 23},
+            "end": {"line": 0, "character": 44}
+        })
+    );
+}
+
+#[test]
 fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
     assert_document_formatting(
         include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg"),

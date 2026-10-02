@@ -462,10 +462,10 @@
                     "arguments": [
                       {
                         "kind": "lambda",
-                        "parameter": "__ssrg$operator$argument$0",
+                        "parameter": "__ssrg$partial$0: (argument: number) => number",
                         "body": {
                           "kind": "lambda",
-                          "parameter": "__ssrg$operator$argument$1",
+                          "parameter": "__ssrg$partial$1: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
                           "body": {
                             "kind": "dictionary-call",
                             "dictionary": {
@@ -476,11 +476,11 @@
                             "arguments": [
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$operator$argument$0"
+                                "name": "__ssrg$partial$0"
                               },
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$operator$argument$1"
+                                "name": "__ssrg$partial$1"
                               }
                             ]
                           }
@@ -597,10 +597,10 @@
                     "arguments": [
                       {
                         "kind": "lambda",
-                        "parameter": "__ssrg$operator$argument$0",
+                        "parameter": "__ssrg$partial$0: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
                         "body": {
                           "kind": "lambda",
-                          "parameter": "__ssrg$operator$argument$1",
+                          "parameter": "__ssrg$partial$1: (argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
                           "body": {
                             "kind": "dictionary-call",
                             "dictionary": {
@@ -611,11 +611,11 @@
                             "arguments": [
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$operator$argument$1"
+                                "name": "__ssrg$partial$1"
                               },
                               {
                                 "kind": "identifier",
-                                "name": "__ssrg$operator$argument$0"
+                                "name": "__ssrg$partial$0"
                               }
                             ]
                           }

@@ -24,7 +24,7 @@ fn pair<A> value: A -> Pair<A> =
 fn apply<A, B> transform: Mapper<A, B> -> value: A -> B =
   transform value
 
-fn app<A> effect: App<A> -> Effect<{ console: Console }, AppError, A> = effect
+fn app<A> operation: App<A> -> Effect<{ console: Console }, AppError, A> = operation
 
 fn failure value: Failure -> AppError = value
 

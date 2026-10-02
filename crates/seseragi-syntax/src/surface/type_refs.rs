@@ -112,7 +112,7 @@ impl SurfaceParser<'_> {
         ))
     }
 
-    fn type_ref_span(&self, type_ref: &TypeRef) -> Option<ByteSpan> {
+    pub(super) fn type_ref_span(&self, type_ref: &TypeRef) -> Option<ByteSpan> {
         match type_ref {
             TypeRef::Named { span, .. }
             | TypeRef::Hole { span, .. }

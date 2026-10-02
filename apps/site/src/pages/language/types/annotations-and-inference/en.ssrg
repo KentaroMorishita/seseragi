@@ -16,7 +16,7 @@ pub fn copy -> ReaderCopy = ReaderCopy {
   ],
   rules: [
     "Write types for every parameter and result of an ordinary fn, and annotate public let declarations. A private, non-recursive let may omit its annotation when its initializer determines the type. Recursion means referring back to a function or other declaration itself; a recursive function also needs a result annotation.",
-    "The current 0.61.19 compiler misses some absent annotations on ordinary fn and public let declarations. Acceptance does not make their omission part of the language contract. Write the required types as shown above.",
+    "From 0.61.20, the compiler reports an error at ordinary fn and public let declarations that lack required type annotations. Add the parameter, result, or public value type as shown above and in the corrections on this page.",
     "The compact effect fn is an exception. Write its parameter types and omit all of ->, with, fails, and where to infer the returned Effect type from the body. These forms otherwise specify the result, required external services, recoverable failure, and conditions on operations a type supports, respectively.",
     "The main above uses this compact form because its output operation determines the Effect type. This is distinct from omitting the result of an ordinary fn. If there is insufficient information to determine one type, supply annotations. Editor type hovers can show the inferred types of private let declarations."
   ],

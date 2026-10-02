@@ -3,8 +3,9 @@
   "stage": "typescript-ir",
   "module": "artifact/type-aliases",
   "runtimeRequirements": [
-    "signal.mutable-type",
     "effect.core.type",
+    "effect.console.service",
+    "signal.mutable-type",
     "web.html.type",
     "signal.type",
     "core.adt",
@@ -67,12 +68,16 @@
   ],
   "typeImports": [
     {
-      "feature": "signal.mutable-type",
-      "local": "MutableSignal"
-    },
-    {
       "feature": "effect.core.type",
       "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
     },
     {
       "feature": "web.html.type",
@@ -433,6 +438,30 @@
     {
       "kind": "const-function",
       "exported": false,
+      "name": "app",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "Effect<{ readonly \"console\": Console }, AppError, A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "operation"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 631,
+        "end": 715
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
       "name": "failure",
       "parameters": [
         {
@@ -447,8 +476,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 711,
-        "end": 756
+        "start": 717,
+        "end": 762
       }
     },
     {
@@ -468,8 +497,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 758,
-        "end": 817
+        "start": 764,
+        "end": 823
       }
     },
     {
@@ -513,8 +542,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 819,
-        "end": 914
+        "start": 825,
+        "end": 920
       }
     },
     {
@@ -578,8 +607,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 916,
-        "end": 1064
+        "start": 922,
+        "end": 1070
       }
     },
     {
@@ -615,8 +644,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1066,
-        "end": 1159
+        "start": 1072,
+        "end": 1165
       }
     },
     {
@@ -641,8 +670,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1161,
-        "end": 1191
+        "start": 1167,
+        "end": 1197
       }
     },
     {
@@ -688,8 +717,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1265,
-              "end": 1289
+              "start": 1271,
+              "end": 1295
             }
           },
           {
@@ -748,8 +777,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1314,
-              "end": 1342
+              "start": 1320,
+              "end": 1348
             }
           },
           {
@@ -770,8 +799,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1347,
-              "end": 1364
+              "start": 1353,
+              "end": 1370
             }
           },
           {
@@ -818,8 +847,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1369,
-              "end": 1409
+              "start": 1375,
+              "end": 1415
             }
           }
         ],
@@ -884,8 +913,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1193,
-        "end": 1473
+        "start": 1199,
+        "end": 1479
       }
     }
   ]

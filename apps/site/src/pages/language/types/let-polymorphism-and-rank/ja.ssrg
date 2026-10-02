@@ -34,7 +34,7 @@ pub fn readerMistake -> String =
   "useTwice<A>のAは呼び出し側が選ぶ型です。その本体でoperation 42と書くと、任意のAにIntを渡せるとは限らずSES-T0101になります。operationを別々の型で使う代わりに、最初のapplyのように同じAの値も受け取って渡します。"
 
 pub fn readerDetailNote -> String =
-  "現在の実装では、let identity = \\value -> valueという短い関数の引数型を、周囲から型が分からない状態で推論できない制限が残っています。最初の例は型パラメーターを明示したfnを使います。仕様上のletの一般化と、この実装上の制限は区別してください。詳しい規則では、外側で既に決まった型や再帰の場合も扱います。"
+  "0.61.20以降では、let identity = \\value -> valueという短い関数にも、呼び出しごとに型を選べる性質を持たせられます。最初の例は型パラメーターを明示したfnに別名を付けています。どちらの書き方でも、外側ですでに決まった型や、引数として受け取った関数の型を自由に選び直せるわけではありません。詳しい規則では再帰の場合も扱います。"
 
 pub fn readerLegacyReading -> String =
   "let identity = unchangedでは関数を保存するため、identity 42とidentity \"hello\"を別々の型で使えます。一方、let fixed = wrap 42は呼び出し済みのJust 42を保存し、その型はMaybe<Int>です。"

@@ -180,7 +180,42 @@ impl SurfaceParser<'_> {
             self.raw_at(keyword),
             Some("struct" | "trait" | "impl" | "instance")
         ) {
-            if let Some(open) = self.find_significant_token(keyword, end, |kind| {
+            // A header can itself contain record types. Start after the
+            // parsed target/arguments and constraints, not at their first brace.
+            let head_end = match declaration {
+                Some(SurfaceDecl::Instance {
+                    trait_name_span,
+                    arguments,
+                    constraints,
+                    ..
+                }) => arguments
+                    .iter()
+                    .filter_map(|argument| self.type_ref_span(argument).map(|span| span.end))
+                    .chain(constraints.iter().map(|constraint| constraint.span.end))
+                    .fold(trait_name_span.end, usize::max),
+                Some(SurfaceDecl::Impl {
+                    target,
+                    constraints,
+                    ..
+                }) => constraints
+                    .iter()
+                    .map(|constraint| constraint.span.end)
+                    .fold(
+                        self.type_ref_span(target).expect("type origin").end,
+                        usize::max,
+                    ),
+                Some(SurfaceDecl::Trait {
+                    name_span,
+                    constraints,
+                    ..
+                }) => constraints
+                    .iter()
+                    .map(|constraint| constraint.span.end)
+                    .fold(name_span.end, usize::max),
+                _ => self.tokens[keyword].end,
+            };
+            let body_start = self.tokens.partition_point(|token| token.end <= head_end);
+            if let Some(open) = self.find_significant_token(body_start, end, |kind| {
                 kind == TokenKind::PunctuationBraceLeft
             }) {
                 if let Some(close) = self.find_matching_brace(open, end) {

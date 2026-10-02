@@ -3800,3 +3800,27 @@ two bounded candidate builds, all-page artifact parity, public browser review,
 merge or publication. Those remain parent-owned integration work. The complete
 227,761-byte historical ledger prefix and all 106 checkbox rows/states must remain
 unchanged; this proposal adds no checkbox completion claims.
+
+
+## Bytes inspection11 final bounded reading and Mac handoff
+
+The exact eleven std/bytes identities (Byte, BytesSliceError, byte, toInt, empty,
+singleton, isEmpty, get, slice, append and concat) add 22 Japanese/English bodies
+and six standalone source pairs. Final source is PR753 HEAD `85e5de3867a9`,
+integrated normally into the Mac branch in `e0540f7c3`. No existing checkbox row
+or completion state is changed by this appendix.
+
+Independent model readers read all 22 complete initial bodies and freshly read
+all 22 final bodies after corrections. Final acceptance was 22/22. Required
+corrections clarify Byte construction, the values bound by get's loop, and
+InvalidByteRange's public constructor/pattern beside the opaque error type.
+The final bounded run passed 14 tests / 11,804 assertions and configured site
+TypeScript checks. Thirty unselected localized bodies and 1,811 other declaration
+readings remained unchanged. These are cloud checks on official CLI 0.61.19;
+actual browser, whole-site integration and publication remain Mac gates.
+
+The final ZIP was verified on the Mac by size, SHA-256 and all 297 manifest
+entries. Its SHA-256 is
+`e0521f133a349ba8ff60948965cd10bbd26192d2e887070a7bb36fbe9814a276`.
+Detailed proof hashes and limits are in bytes-inspection-verification.md. Model
+reading does not constitute genuine first-time human acceptance.

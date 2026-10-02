@@ -1233,7 +1233,7 @@
       "visibility": "private",
       "origin": {
         "start": 964,
-        "end": 1201
+        "end": 1217
       },
       "scheme": {
         "typeParameters": [],
@@ -1317,8 +1317,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1089,
-                "end": 1096
+                "start": 1097,
+                "end": 1104
               }
             },
             "field": "draft",
@@ -1328,8 +1328,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 1089,
-              "end": 1102
+              "start": 1097,
+              "end": 1110
             }
           },
           {
@@ -1344,8 +1344,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1109,
-                "end": 1114
+                "start": 1119,
+                "end": 1124
               }
             },
             "body": {
@@ -1368,8 +1368,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1144,
-                    "end": 1149
+                    "start": 1154,
+                    "end": 1159
                   }
                 },
                 {
@@ -1386,8 +1386,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1163,
-                        "end": 1168
+                        "start": 1173,
+                        "end": 1178
                       }
                     }
                   ],
@@ -1397,8 +1397,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1151,
-                    "end": 1168
+                    "start": 1161,
+                    "end": 1178
                   }
                 }
               ],
@@ -1424,8 +1424,8 @@
                 ]
               },
               "origin": {
-                "start": 1135,
-                "end": 1169
+                "start": 1145,
+                "end": 1179
               }
             },
             "type": {
@@ -1459,8 +1459,8 @@
               }
             },
             "origin": {
-              "start": 1108,
-              "end": 1169
+              "start": 1118,
+              "end": 1179
             }
           },
           {
@@ -1483,8 +1483,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 1185,
-                  "end": 1190
+                  "start": 1197,
+                  "end": 1202
                 }
               },
               {
@@ -1496,8 +1496,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1191,
-                  "end": 1200
+                  "start": 1203,
+                  "end": 1212
                 }
               }
             ],
@@ -1523,8 +1523,8 @@
               ]
             },
             "origin": {
-              "start": 1176,
-              "end": 1200
+              "start": 1188,
+              "end": 1212
             }
           }
         ],
@@ -1557,8 +1557,8 @@
           ]
         },
         "origin": {
-          "start": 1076,
-          "end": 1201
+          "start": 1082,
+          "end": 1213
         }
       }
     },
@@ -1567,8 +1567,8 @@
       "symbol": "fixture/feature-module-composition::todo/feature::listView",
       "visibility": "private",
       "origin": {
-        "start": 1203,
-        "end": 1374
+        "start": 1219,
+        "end": 1390
       },
       "scheme": {
         "typeParameters": [],
@@ -1619,8 +1619,8 @@
             ]
           },
           "origin": {
-            "start": 1215,
-            "end": 1220
+            "start": 1231,
+            "end": 1236
           }
         },
         {
@@ -1632,8 +1632,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1252,
-            "end": 1259
+            "start": 1268,
+            "end": 1275
           }
         }
       ],
@@ -1654,8 +1654,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1330,
-                  "end": 1334
+                  "start": 1346,
+                  "end": 1350
                 }
               },
               {
@@ -1669,8 +1669,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1335,
-                    "end": 1342
+                    "start": 1351,
+                    "end": 1358
                   }
                 },
                 "field": "items",
@@ -1686,8 +1686,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 1335,
-                  "end": 1348
+                  "start": 1351,
+                  "end": 1364
                 }
               }
             ],
@@ -1726,8 +1726,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 1325,
-              "end": 1348
+              "start": 1341,
+              "end": 1364
             }
           },
           {
@@ -1750,8 +1750,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 1360,
-                  "end": 1365
+                  "start": 1376,
+                  "end": 1381
                 }
               },
               {
@@ -1763,8 +1763,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1366,
-                  "end": 1373
+                  "start": 1382,
+                  "end": 1389
                 }
               }
             ],
@@ -1790,8 +1790,8 @@
               ]
             },
             "origin": {
-              "start": 1351,
-              "end": 1373
+              "start": 1367,
+              "end": 1389
             }
           }
         ],
@@ -1824,8 +1824,8 @@
           ]
         },
         "origin": {
-          "start": 1315,
-          "end": 1374
+          "start": 1331,
+          "end": 1390
         }
       }
     },
@@ -1834,8 +1834,8 @@
       "symbol": "fixture/feature-module-composition::todo/feature::view",
       "visibility": "private",
       "origin": {
-        "start": 1376,
-        "end": 1626
+        "start": 1392,
+        "end": 1642
       },
       "scheme": {
         "typeParameters": [],
@@ -1886,8 +1886,8 @@
             ]
           },
           "origin": {
-            "start": 1384,
-            "end": 1389
+            "start": 1400,
+            "end": 1405
           }
         },
         {
@@ -1899,8 +1899,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1421,
-            "end": 1428
+            "start": 1437,
+            "end": 1444
           }
         }
       ],
@@ -1937,8 +1937,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1530,
-                            "end": 1535
+                            "start": 1546,
+                            "end": 1551
                           }
                         },
                         {
@@ -1950,8 +1950,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1536,
-                            "end": 1543
+                            "start": 1552,
+                            "end": 1559
                           }
                         }
                       ],
@@ -1984,8 +1984,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1521,
-                        "end": 1543
+                        "start": 1537,
+                        "end": 1559
                       }
                     },
                     {
@@ -2008,8 +2008,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1560,
-                            "end": 1565
+                            "start": 1576,
+                            "end": 1581
                           }
                         },
                         {
@@ -2021,8 +2021,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1566,
-                            "end": 1573
+                            "start": 1582,
+                            "end": 1589
                           }
                         }
                       ],
@@ -2055,8 +2055,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1551,
-                        "end": 1573
+                        "start": 1567,
+                        "end": 1589
                       }
                     },
                     {
@@ -2078,13 +2078,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 1601,
-                                  "end": 1614
+                                  "start": 1617,
+                                  "end": 1630
                                 }
                               },
                               "origin": {
-                                "start": 1591,
-                                "end": 1614
+                                "start": 1607,
+                                "end": 1630
                               }
                             }
                           ],
@@ -2103,8 +2103,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1589,
-                            "end": 1616
+                            "start": 1605,
+                            "end": 1632
                           }
                         }
                       ],
@@ -2176,8 +2176,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1581,
-                        "end": 1616
+                        "start": 1597,
+                        "end": 1632
                       }
                     }
                   ],
@@ -2216,13 +2216,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 1513,
-                    "end": 1622
+                    "start": 1529,
+                    "end": 1638
                   }
                 },
                 "origin": {
-                  "start": 1503,
-                  "end": 1622
+                  "start": 1519,
+                  "end": 1638
                 }
               }
             ],
@@ -2270,8 +2270,8 @@
               ]
             },
             "origin": {
-              "start": 1497,
-              "end": 1626
+              "start": 1513,
+              "end": 1642
             }
           }
         ],
@@ -2372,8 +2372,8 @@
           ]
         },
         "origin": {
-          "start": 1484,
-          "end": 1626
+          "start": 1500,
+          "end": 1642
         }
       }
     },
@@ -2382,8 +2382,8 @@
       "symbol": "fixture/feature-module-composition::todo/feature::create",
       "visibility": "public",
       "origin": {
-        "start": 1628,
-        "end": 1829
+        "start": 1644,
+        "end": 1845
       },
       "parameters": [
         {
@@ -2464,8 +2464,8 @@
                 ]
               },
               "origin": {
-                "start": 1722,
-                "end": 1727
+                "start": 1738,
+                "end": 1743
               }
             },
             "value": {
@@ -2487,13 +2487,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 1765,
-                          "end": 1767
+                          "start": 1781,
+                          "end": 1783
                         }
                       },
                       "origin": {
-                        "start": 1758,
-                        "end": 1767
+                        "start": 1774,
+                        "end": 1783
                       }
                     },
                     {
@@ -2514,13 +2514,13 @@
                           ]
                         },
                         "origin": {
-                          "start": 1776,
-                          "end": 1778
+                          "start": 1792,
+                          "end": 1794
                         }
                       },
                       "origin": {
-                        "start": 1769,
-                        "end": 1778
+                        "start": 1785,
+                        "end": 1794
                       }
                     }
                   ],
@@ -2530,8 +2530,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1746,
-                    "end": 1780
+                    "start": 1762,
+                    "end": 1796
                   }
                 }
               ],
@@ -2564,13 +2564,13 @@
                 ]
               },
               "origin": {
-                "start": 1731,
-                "end": 1780
+                "start": 1747,
+                "end": 1796
               }
             },
             "origin": {
-              "start": 1722,
-              "end": 1780
+              "start": 1738,
+              "end": 1796
             }
           }
         ],
@@ -2649,8 +2649,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1813,
-                        "end": 1818
+                        "start": 1829,
+                        "end": 1834
                       }
                     }
                   ],
@@ -2691,8 +2691,8 @@
                     }
                   },
                   "origin": {
-                    "start": 1808,
-                    "end": 1818
+                    "start": 1824,
+                    "end": 1834
                   }
                 },
                 {
@@ -2711,8 +2711,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1820,
-                    "end": 1825
+                    "start": 1836,
+                    "end": 1841
                   }
                 }
               ],
@@ -2752,19 +2752,19 @@
                 ]
               },
               "origin": {
-                "start": 1795,
-                "end": 1825
+                "start": 1811,
+                "end": 1841
               }
             }
           ],
           "origin": {
-            "start": 1785,
-            "end": 1825
+            "start": 1801,
+            "end": 1841
           }
         },
         "origin": {
-          "start": 1713,
-          "end": 1829
+          "start": 1729,
+          "end": 1845
         }
       }
     }

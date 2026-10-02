@@ -10,15 +10,15 @@
       "messageKey": "instance.missing",
       "message": "A required trait instance is not available",
       "primary": {
-        "start": 180,
-        "end": 183
+        "start": 199,
+        "end": 202
       },
       "related": [
         {
           "message": "no Difference instance matches the inferred call arguments",
           "primary": {
             "start": 165,
-            "end": 184
+            "end": 203
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "no Difference instance matches the inferred call arguments",
           "primary": {
             "start": 165,
-            "end": 184
+            "end": 203
           }
         }
       ],

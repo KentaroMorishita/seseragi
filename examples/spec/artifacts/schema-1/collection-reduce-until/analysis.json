@@ -4528,6 +4528,27 @@
         "start": 1663,
         "end": 1686
       },
+      "type": "(Int -> Int -> collections.ReduceStep<Int>) -> Array<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 1663,
+        "end": 1686
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1663,
+        "end": 1686
+      },
+      "type": "Array<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 1663,
+        "end": 1686
+      },
       "type": "B -> (B -> A -> ReduceStep<B>) -> C -> B"
     },
     {
@@ -4535,7 +4556,21 @@
         "start": 1663,
         "end": 1686
       },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1663,
+        "end": 1686
+      },
       "type": "Int -> (Int -> Int -> collections.ReduceStep<Int>) -> Array<Int> -> Int"
+    },
+    {
+      "range": {
+        "start": 1663,
+        "end": 1686
+      },
+      "type": "Int -> Int -> collections.ReduceStep<Int>"
     },
     {
       "range": {
@@ -8192,20 +8227,7 @@
           "Iterable<C, A>"
         ],
         "signature": "reduceUntil<C, A, B> arg1: B -> arg2: (B -> A -> ReduceStep<B>) -> arg3: C -> B where Iterable<C, A>",
-        "remainingParameters": [
-          {
-            "name": "arg1",
-            "type": "B"
-          },
-          {
-            "name": "arg2",
-            "type": "B -> A -> ReduceStep<B>"
-          },
-          {
-            "name": "arg3",
-            "type": "C"
-          }
-        ]
+        "remainingParameters": []
       }
     },
     {

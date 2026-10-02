@@ -6197,6 +6197,34 @@
     },
     {
       "range": {
+        "start": 1772,
+        "end": 1786
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1772,
+        "end": 1786
+      },
+      "type": "Array<Int> -> Maybe<Array<Int>>"
+    },
+    {
+      "range": {
+        "start": 1772,
+        "end": 1786
+      },
+      "type": "Int -> Maybe<Int>"
+    },
+    {
+      "range": {
+        "start": 1772,
+        "end": 1786
+      },
+      "type": "Maybe<Array<Int>>"
+    },
+    {
+      "range": {
         "start": 1793,
         "end": 1799
       },
@@ -11294,16 +11322,7 @@
           "Traversable<F<_>>"
         ],
         "signature": "traverse<F<_>, A, B> arg1: (A -> Maybe<B>) -> arg2: F<A> -> Maybe<F<B>> where Traversable<F<_>>",
-        "remainingParameters": [
-          {
-            "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "F<A>"
-          }
-        ]
+        "remainingParameters": []
       }
     },
     {

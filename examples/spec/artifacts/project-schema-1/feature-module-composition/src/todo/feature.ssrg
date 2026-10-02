@@ -39,10 +39,12 @@ fn draftAction event: html.InputEvent -> TodoAction =
 fn formView state: MutableSignal<TodoState>
   -> current: TodoState
   -> html.Html<Effect<{}, Never, Unit>> =
-  todoForm
-    current.draft
-    (\event: html.InputEvent -> dispatch state (draftAction event))
-    (dispatch state Submitted)
+  (
+    todoForm
+      current.draft
+      (\event: html.InputEvent -> dispatch state (draftAction event))
+      (dispatch state Submitted)
+  )
 
 fn listView state: MutableSignal<TodoState>
   -> current: TodoState

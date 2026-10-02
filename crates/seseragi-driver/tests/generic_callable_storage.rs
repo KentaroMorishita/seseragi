@@ -115,3 +115,23 @@ let mixed = json.record [("name", stringDecoder), ("retries", intDecoder)]
         "(\"retries\", intDecoder)"
     );
 }
+
+#[test]
+fn constrained_operator_aliases_keep_rank_one_and_required_instances() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/compile/constrained-operator-alias.ssrg");
+    for (suffix, key) in [
+        ("let stored = [aliasValue]\n", "call.value-type-unresolved"),
+        ("let invalid = aliasValue True False\n", "instance.missing"),
+    ] {
+        let source = format!("{source}\n{suffix}");
+        let input = CompileInput::new("main.ssrg", "regression/operator-alias", &source);
+        let diagnostics = compile_module(input).expect_err(&source);
+        assert_eq!(analyze_module(input).diagnostics, diagnostics);
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:?}");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key, key,
+            "{diagnostics:?}"
+        );
+    }
+}

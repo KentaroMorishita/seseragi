@@ -664,24 +664,126 @@
     {
       "kind": "fn",
       "visibility": "private",
+      "name": "app",
+      "nameSpan": {
+        "start": 634,
+        "end": 637
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "operation",
+          "nameSpan": {
+            "start": 641,
+            "end": 650
+          },
+          "type": {
+            "kind": "named",
+            "name": "App",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 656,
+                  "end": 657
+                }
+              }
+            ],
+            "span": {
+              "start": 652,
+              "end": 658
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "nameSpan": {
+                  "start": 671,
+                  "end": 678
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "span": {
+                    "start": 680,
+                    "end": 687
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 669,
+              "end": 689
+            }
+          },
+          {
+            "kind": "named",
+            "name": "AppError",
+            "span": {
+              "start": 691,
+              "end": 699
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 701,
+              "end": 702
+            }
+          }
+        ],
+        "span": {
+          "start": 662,
+          "end": 703
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "operation",
+        "span": {
+          "start": 706,
+          "end": 715
+        }
+      },
+      "span": {
+        "start": 631,
+        "end": 715
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
       "name": "failure",
       "nameSpan": {
-        "start": 714,
-        "end": 721
+        "start": 720,
+        "end": 727
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 722,
-            "end": 727
+            "start": 728,
+            "end": 733
           },
           "type": {
             "kind": "named",
             "name": "Failure",
             "span": {
-              "start": 729,
-              "end": 736
+              "start": 735,
+              "end": 742
             }
           }
         }
@@ -690,21 +792,21 @@
         "kind": "named",
         "name": "AppError",
         "span": {
-          "start": 740,
-          "end": 748
+          "start": 746,
+          "end": 754
         }
       },
       "body": {
         "kind": "name",
         "name": "value",
         "span": {
-          "start": 751,
-          "end": 756
+          "start": 757,
+          "end": 762
         }
       },
       "span": {
-        "start": 711,
-        "end": 756
+        "start": 717,
+        "end": 762
       }
     },
     {
@@ -712,22 +814,22 @@
       "visibility": "private",
       "name": "result",
       "nameSpan": {
-        "start": 761,
-        "end": 767
+        "start": 767,
+        "end": 773
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 768,
-            "end": 773
+            "start": 774,
+            "end": 779
           },
           "type": {
             "kind": "named",
             "name": "AppResult",
             "span": {
-              "start": 775,
-              "end": 784
+              "start": 781,
+              "end": 790
             }
           }
         }
@@ -740,35 +842,35 @@
             "kind": "named",
             "name": "AppError",
             "span": {
-              "start": 795,
-              "end": 803
+              "start": 801,
+              "end": 809
             }
           },
           {
             "kind": "named",
             "name": "Int",
             "span": {
-              "start": 805,
-              "end": 808
+              "start": 811,
+              "end": 814
             }
           }
         ],
         "span": {
-          "start": 788,
-          "end": 809
+          "start": 794,
+          "end": 815
         }
       },
       "body": {
         "kind": "name",
         "name": "value",
         "span": {
-          "start": 812,
-          "end": 817
+          "start": 818,
+          "end": 823
         }
       },
       "span": {
-        "start": 758,
-        "end": 817
+        "start": 764,
+        "end": 823
       }
     },
     {
@@ -776,15 +878,15 @@
       "visibility": "private",
       "name": "increment",
       "nameSpan": {
-        "start": 822,
-        "end": 831
+        "start": 828,
+        "end": 837
       },
       "parameters": [
         {
           "name": "state",
           "nameSpan": {
-            "start": 832,
-            "end": 837
+            "start": 838,
+            "end": 843
           },
           "type": {
             "kind": "named",
@@ -794,14 +896,14 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 844,
-                  "end": 847
+                  "start": 850,
+                  "end": 853
                 }
               }
             ],
             "span": {
-              "start": 839,
-              "end": 848
+              "start": 845,
+              "end": 854
             }
           }
         }
@@ -814,14 +916,14 @@
             "kind": "named",
             "name": "Unit",
             "span": {
-              "start": 857,
-              "end": 861
+              "start": 863,
+              "end": 867
             }
           }
         ],
         "span": {
-          "start": 852,
-          "end": 862
+          "start": 858,
+          "end": 868
         }
       },
       "body": {
@@ -834,18 +936,18 @@
               "kind": "name",
               "name": "signals",
               "span": {
-                "start": 867,
-                "end": 874
+                "start": 873,
+                "end": 880
               }
             },
             "field": "update",
             "fieldSpan": {
-              "start": 875,
-              "end": 881
+              "start": 881,
+              "end": 887
             },
             "span": {
-              "start": 867,
-              "end": 881
+              "start": 873,
+              "end": 887
             }
           },
           "argument": {
@@ -855,15 +957,15 @@
               "parameter": {
                 "name": "value",
                 "nameSpan": {
-                  "start": 884,
-                  "end": 889
+                  "start": 890,
+                  "end": 895
                 },
                 "type": {
                   "kind": "named",
                   "name": "Int",
                   "span": {
-                    "start": 891,
-                    "end": 894
+                    "start": 897,
+                    "end": 900
                   }
                 }
               },
@@ -871,61 +973,61 @@
                 "kind": "binary",
                 "operator": "+",
                 "operatorSpan": {
-                  "start": 904,
-                  "end": 905
+                  "start": 910,
+                  "end": 911
                 },
                 "left": {
                   "kind": "name",
                   "name": "value",
                   "span": {
-                    "start": 898,
-                    "end": 903
+                    "start": 904,
+                    "end": 909
                   }
                 },
                 "right": {
                   "kind": "integer",
                   "raw": "1",
                   "span": {
-                    "start": 906,
-                    "end": 907
+                    "start": 912,
+                    "end": 913
                   }
                 },
                 "span": {
-                  "start": 898,
-                  "end": 907
+                  "start": 904,
+                  "end": 913
                 }
               },
               "span": {
-                "start": 883,
-                "end": 907
+                "start": 889,
+                "end": 913
               }
             },
             "span": {
-              "start": 882,
-              "end": 908
+              "start": 888,
+              "end": 914
             }
           },
           "span": {
-            "start": 867,
-            "end": 908
+            "start": 873,
+            "end": 914
           }
         },
         "argument": {
           "kind": "name",
           "name": "state",
           "span": {
-            "start": 909,
-            "end": 914
+            "start": 915,
+            "end": 920
           }
         },
         "span": {
-          "start": 867,
-          "end": 914
+          "start": 873,
+          "end": 920
         }
       },
       "span": {
-        "start": 819,
-        "end": 914
+        "start": 825,
+        "end": 920
       }
     },
     {
@@ -933,15 +1035,15 @@
       "visibility": "private",
       "name": "view",
       "nameSpan": {
-        "start": 919,
-        "end": 923
+        "start": 925,
+        "end": 929
       },
       "parameters": [
         {
           "name": "state",
           "nameSpan": {
-            "start": 924,
-            "end": 929
+            "start": 930,
+            "end": 935
           },
           "type": {
             "kind": "named",
@@ -951,29 +1053,29 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 936,
-                  "end": 939
+                  "start": 942,
+                  "end": 945
                 }
               }
             ],
             "span": {
-              "start": 931,
-              "end": 940
+              "start": 937,
+              "end": 946
             }
           }
         },
         {
           "name": "current",
           "nameSpan": {
-            "start": 946,
-            "end": 953
+            "start": 952,
+            "end": 959
           },
           "type": {
             "kind": "named",
             "name": "Int",
             "span": {
-              "start": 955,
-              "end": 958
+              "start": 961,
+              "end": 964
             }
           }
         }
@@ -990,20 +1092,20 @@
                 "kind": "named",
                 "name": "Unit",
                 "span": {
-                  "start": 979,
-                  "end": 983
+                  "start": 985,
+                  "end": 989
                 }
               }
             ],
             "span": {
-              "start": 974,
-              "end": 984
+              "start": 980,
+              "end": 990
             }
           }
         ],
         "span": {
-          "start": 964,
-          "end": 985
+          "start": 970,
+          "end": 991
         }
       },
       "body": {
@@ -1014,18 +1116,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 990,
-              "end": 994
+              "start": 996,
+              "end": 1000
             }
           },
           "field": "button",
           "fieldSpan": {
-            "start": 995,
-            "end": 1001
+            "start": 1001,
+            "end": 1007
           },
           "span": {
-            "start": 990,
-            "end": 1001
+            "start": 996,
+            "end": 1007
           }
         },
         "argument": {
@@ -1035,8 +1137,8 @@
               "kind": "field",
               "name": "onClick",
               "nameSpan": {
-                "start": 1008,
-                "end": 1015
+                "start": 1014,
+                "end": 1021
               },
               "value": {
                 "kind": "application",
@@ -1044,34 +1146,34 @@
                   "kind": "name",
                   "name": "increment",
                   "span": {
-                    "start": 1017,
-                    "end": 1026
+                    "start": 1023,
+                    "end": 1032
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "state",
                   "span": {
-                    "start": 1027,
-                    "end": 1032
+                    "start": 1033,
+                    "end": 1038
                   }
                 },
                 "span": {
-                  "start": 1017,
-                  "end": 1032
+                  "start": 1023,
+                  "end": 1038
                 }
               },
               "span": {
-                "start": 1008,
-                "end": 1032
+                "start": 1014,
+                "end": 1038
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 1038,
-                "end": 1046
+                "start": 1044,
+                "end": 1052
               },
               "value": {
                 "kind": "template",
@@ -1082,40 +1184,40 @@
                       "kind": "name",
                       "name": "current",
                       "span": {
-                        "start": 1051,
-                        "end": 1058
+                        "start": 1057,
+                        "end": 1064
                       }
                     },
                     "span": {
-                      "start": 1049,
-                      "end": 1059
+                      "start": 1055,
+                      "end": 1065
                     }
                   }
                 ],
                 "span": {
-                  "start": 1048,
-                  "end": 1060
+                  "start": 1054,
+                  "end": 1066
                 }
               },
               "span": {
-                "start": 1038,
-                "end": 1060
+                "start": 1044,
+                "end": 1066
               }
             }
           ],
           "span": {
-            "start": 1002,
-            "end": 1064
+            "start": 1008,
+            "end": 1070
           }
         },
         "span": {
-          "start": 990,
-          "end": 1064
+          "start": 996,
+          "end": 1070
         }
       },
       "span": {
-        "start": 916,
-        "end": 1064
+        "start": 922,
+        "end": 1070
       }
     },
     {
@@ -1123,15 +1225,15 @@
       "visibility": "private",
       "name": "content",
       "nameSpan": {
-        "start": 1069,
-        "end": 1076
+        "start": 1075,
+        "end": 1082
       },
       "parameters": [
         {
           "name": "state",
           "nameSpan": {
-            "start": 1077,
-            "end": 1082
+            "start": 1083,
+            "end": 1088
           },
           "type": {
             "kind": "named",
@@ -1141,14 +1243,14 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 1089,
-                  "end": 1092
+                  "start": 1095,
+                  "end": 1098
                 }
               }
             ],
             "span": {
-              "start": 1084,
-              "end": 1093
+              "start": 1090,
+              "end": 1099
             }
           }
         }
@@ -1169,26 +1271,26 @@
                     "kind": "named",
                     "name": "Unit",
                     "span": {
-                      "start": 1117,
-                      "end": 1121
+                      "start": 1123,
+                      "end": 1127
                     }
                   }
                 ],
                 "span": {
-                  "start": 1112,
-                  "end": 1122
+                  "start": 1118,
+                  "end": 1128
                 }
               }
             ],
             "span": {
-              "start": 1102,
-              "end": 1123
+              "start": 1108,
+              "end": 1129
             }
           }
         ],
         "span": {
-          "start": 1097,
-          "end": 1124
+          "start": 1103,
+          "end": 1130
         }
       },
       "body": {
@@ -1201,18 +1303,18 @@
               "kind": "name",
               "name": "signals",
               "span": {
-                "start": 1129,
-                "end": 1136
+                "start": 1135,
+                "end": 1142
               }
             },
             "field": "map",
             "fieldSpan": {
-              "start": 1137,
-              "end": 1140
+              "start": 1143,
+              "end": 1146
             },
             "span": {
-              "start": 1129,
-              "end": 1140
+              "start": 1135,
+              "end": 1146
             }
           },
           "argument": {
@@ -1223,49 +1325,49 @@
                 "kind": "name",
                 "name": "view",
                 "span": {
-                  "start": 1142,
-                  "end": 1146
+                  "start": 1148,
+                  "end": 1152
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "state",
                 "span": {
-                  "start": 1147,
-                  "end": 1152
+                  "start": 1153,
+                  "end": 1158
                 }
               },
               "span": {
-                "start": 1142,
-                "end": 1152
+                "start": 1148,
+                "end": 1158
               }
             },
             "span": {
-              "start": 1141,
-              "end": 1153
+              "start": 1147,
+              "end": 1159
             }
           },
           "span": {
-            "start": 1129,
-            "end": 1153
+            "start": 1135,
+            "end": 1159
           }
         },
         "argument": {
           "kind": "name",
           "name": "state",
           "span": {
-            "start": 1154,
-            "end": 1159
+            "start": 1160,
+            "end": 1165
           }
         },
         "span": {
-          "start": 1129,
-          "end": 1159
+          "start": 1135,
+          "end": 1165
         }
       },
       "span": {
-        "start": 1066,
-        "end": 1159
+        "start": 1072,
+        "end": 1165
       }
     },
     {
@@ -1273,8 +1375,8 @@
       "visibility": "private",
       "name": "compact",
       "nameSpan": {
-        "start": 1171,
-        "end": 1178
+        "start": 1177,
+        "end": 1184
       },
       "inferredContract": true,
       "returnType": null,
@@ -1284,25 +1386,25 @@
           "kind": "name",
           "name": "succeed",
           "span": {
-            "start": 1181,
-            "end": 1188
+            "start": 1187,
+            "end": 1194
           }
         },
         "argument": {
           "kind": "unit",
           "span": {
-            "start": 1189,
-            "end": 1191
+            "start": 1195,
+            "end": 1197
           }
         },
         "span": {
-          "start": 1181,
-          "end": 1191
+          "start": 1187,
+          "end": 1197
         }
       },
       "span": {
-        "start": 1161,
-        "end": 1191
+        "start": 1167,
+        "end": 1197
       }
     },
     {
@@ -1310,15 +1412,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1207,
-        "end": 1211
+        "start": 1213,
+        "end": 1217
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 1215,
-          "end": 1219
+          "start": 1221,
+          "end": 1225
         }
       },
       "requirements": [
@@ -1326,8 +1428,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 1225,
-            "end": 1232
+            "start": 1231,
+            "end": 1238
           }
         }
       ],
@@ -1335,8 +1437,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 1239,
-          "end": 1251
+          "start": 1245,
+          "end": 1257
         }
       },
       "body": {
@@ -1348,12 +1450,12 @@
               "kind": "name",
               "name": "state",
               "nameSpan": {
-                "start": 1265,
-                "end": 1270
+                "start": 1271,
+                "end": 1276
               },
               "span": {
-                "start": 1265,
-                "end": 1270
+                "start": 1271,
+                "end": 1276
               }
             },
             "value": {
@@ -1364,36 +1466,36 @@
                   "kind": "name",
                   "name": "signals",
                   "span": {
-                    "start": 1274,
-                    "end": 1281
+                    "start": 1280,
+                    "end": 1287
                   }
                 },
                 "field": "make",
                 "fieldSpan": {
-                  "start": 1282,
-                  "end": 1286
+                  "start": 1288,
+                  "end": 1292
                 },
                 "span": {
-                  "start": 1274,
-                  "end": 1286
+                  "start": 1280,
+                  "end": 1292
                 }
               },
               "argument": {
                 "kind": "integer",
                 "raw": "41",
                 "span": {
-                  "start": 1287,
-                  "end": 1289
+                  "start": 1293,
+                  "end": 1295
                 }
               },
               "span": {
-                "start": 1274,
-                "end": 1289
+                "start": 1280,
+                "end": 1295
               }
             },
             "span": {
-              "start": 1265,
-              "end": 1289
+              "start": 1271,
+              "end": 1295
             }
           },
           {
@@ -1404,26 +1506,26 @@
                 "kind": "name",
                 "name": "increment",
                 "span": {
-                  "start": 1294,
-                  "end": 1303
+                  "start": 1300,
+                  "end": 1309
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "state",
                 "span": {
-                  "start": 1304,
-                  "end": 1309
+                  "start": 1310,
+                  "end": 1315
                 }
               },
               "span": {
-                "start": 1294,
-                "end": 1309
+                "start": 1300,
+                "end": 1315
               }
             },
             "span": {
-              "start": 1294,
-              "end": 1309
+              "start": 1300,
+              "end": 1315
             }
           },
           {
@@ -1432,12 +1534,12 @@
               "kind": "name",
               "name": "rendered",
               "nameSpan": {
-                "start": 1318,
-                "end": 1326
+                "start": 1324,
+                "end": 1332
               },
               "span": {
-                "start": 1318,
-                "end": 1326
+                "start": 1324,
+                "end": 1332
               }
             },
             "value": {
@@ -1446,26 +1548,26 @@
                 "kind": "name",
                 "name": "content",
                 "span": {
-                  "start": 1329,
-                  "end": 1336
+                  "start": 1335,
+                  "end": 1342
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "state",
                 "span": {
-                  "start": 1337,
-                  "end": 1342
+                  "start": 1343,
+                  "end": 1348
                 }
               },
               "span": {
-                "start": 1329,
-                "end": 1342
+                "start": 1335,
+                "end": 1348
               }
             },
             "span": {
-              "start": 1314,
-              "end": 1342
+              "start": 1320,
+              "end": 1348
             }
           },
           {
@@ -1474,37 +1576,37 @@
               "kind": "name",
               "name": "current",
               "nameSpan": {
-                "start": 1347,
-                "end": 1354
+                "start": 1353,
+                "end": 1360
               },
               "span": {
-                "start": 1347,
-                "end": 1354
+                "start": 1353,
+                "end": 1360
               }
             },
             "value": {
               "kind": "prefix",
               "operator": "*",
               "operatorSpan": {
-                "start": 1358,
-                "end": 1359
+                "start": 1364,
+                "end": 1365
               },
               "operand": {
                 "kind": "name",
                 "name": "state",
                 "span": {
-                  "start": 1359,
-                  "end": 1364
+                  "start": 1365,
+                  "end": 1370
                 }
               },
               "span": {
-                "start": 1358,
-                "end": 1364
+                "start": 1364,
+                "end": 1370
               }
             },
             "span": {
-              "start": 1347,
-              "end": 1364
+              "start": 1353,
+              "end": 1370
             }
           },
           {
@@ -1513,12 +1615,12 @@
               "kind": "name",
               "name": "values",
               "nameSpan": {
-                "start": 1373,
-                "end": 1379
+                "start": 1379,
+                "end": 1385
               },
               "span": {
-                "start": 1373,
-                "end": 1379
+                "start": 1379,
+                "end": 1385
               }
             },
             "value": {
@@ -1527,8 +1629,8 @@
                 "kind": "name",
                 "name": "pair",
                 "span": {
-                  "start": 1382,
-                  "end": 1386
+                  "start": 1388,
+                  "end": 1392
                 }
               },
               "argument": {
@@ -1539,44 +1641,44 @@
                     "kind": "name",
                     "name": "apply",
                     "span": {
-                      "start": 1389,
-                      "end": 1394
+                      "start": 1395,
+                      "end": 1400
                     }
                   },
                   "argument": {
                     "kind": "name",
                     "name": "userId",
                     "span": {
-                      "start": 1395,
-                      "end": 1401
+                      "start": 1401,
+                      "end": 1407
                     }
                   },
                   "span": {
-                    "start": 1389,
-                    "end": 1401
+                    "start": 1395,
+                    "end": 1407
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "current",
                   "span": {
-                    "start": 1402,
-                    "end": 1409
+                    "start": 1408,
+                    "end": 1415
                   }
                 },
                 "span": {
-                  "start": 1389,
-                  "end": 1409
+                  "start": 1395,
+                  "end": 1415
                 }
               },
               "span": {
-                "start": 1382,
-                "end": 1409
+                "start": 1388,
+                "end": 1415
               }
             },
             "span": {
-              "start": 1369,
-              "end": 1409
+              "start": 1375,
+              "end": 1415
             }
           }
         ],
@@ -1586,8 +1688,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 1414,
-              "end": 1421
+              "start": 1420,
+              "end": 1427
             }
           },
           "argument": {
@@ -1597,8 +1699,8 @@
                 "kind": "text",
                 "value": "aliases: ",
                 "span": {
-                  "start": 1425,
-                  "end": 1434
+                  "start": 1431,
+                  "end": 1440
                 }
               },
               {
@@ -1609,31 +1711,31 @@
                     "kind": "name",
                     "name": "values",
                     "span": {
-                      "start": 1436,
-                      "end": 1442
+                      "start": 1442,
+                      "end": 1448
                     }
                   },
                   "field": "left",
                   "fieldSpan": {
-                    "start": 1443,
-                    "end": 1447
+                    "start": 1449,
+                    "end": 1453
                   },
                   "span": {
-                    "start": 1436,
-                    "end": 1447
+                    "start": 1442,
+                    "end": 1453
                   }
                 },
                 "span": {
-                  "start": 1434,
-                  "end": 1448
+                  "start": 1440,
+                  "end": 1454
                 }
               },
               {
                 "kind": "text",
                 "value": ", signal: ",
                 "span": {
-                  "start": 1448,
-                  "end": 1458
+                  "start": 1454,
+                  "end": 1464
                 }
               },
               {
@@ -1642,34 +1744,34 @@
                   "kind": "name",
                   "name": "current",
                   "span": {
-                    "start": 1460,
-                    "end": 1467
+                    "start": 1466,
+                    "end": 1473
                   }
                 },
                 "span": {
-                  "start": 1458,
-                  "end": 1468
+                  "start": 1464,
+                  "end": 1474
                 }
               }
             ],
             "span": {
-              "start": 1424,
-              "end": 1469
+              "start": 1430,
+              "end": 1475
             }
           },
           "span": {
-            "start": 1414,
-            "end": 1469
+            "start": 1420,
+            "end": 1475
           }
         },
         "span": {
-          "start": 1256,
-          "end": 1473
+          "start": 1262,
+          "end": 1479
         }
       },
       "span": {
-        "start": 1193,
-        "end": 1473
+        "start": 1199,
+        "end": 1479
       }
     }
   ],
@@ -1679,7 +1781,7 @@
       "kind": "module",
       "origin": {
         "start": 127,
-        "end": 1473
+        "end": 1479
       }
     },
     {
@@ -1813,8 +1915,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 711,
-        "end": 756
+        "start": 631,
+        "end": 715
       }
     },
     {
@@ -1822,8 +1924,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 758,
-        "end": 817
+        "start": 717,
+        "end": 762
       }
     },
     {
@@ -1831,26 +1933,26 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 819,
-        "end": 914
+        "start": 764,
+        "end": 823
       }
     },
     {
       "id": 18,
-      "parent": 17,
-      "kind": "lambda",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 883,
-        "end": 907
+        "start": 825,
+        "end": 920
       }
     },
     {
       "id": 19,
-      "parent": 0,
-      "kind": "function",
+      "parent": 18,
+      "kind": "lambda",
       "origin": {
-        "start": 916,
-        "end": 1064
+        "start": 889,
+        "end": 913
       }
     },
     {
@@ -1858,8 +1960,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 1066,
-        "end": 1159
+        "start": 922,
+        "end": 1070
       }
     },
     {
@@ -1867,8 +1969,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 1161,
-        "end": 1191
+        "start": 1072,
+        "end": 1165
       }
     },
     {
@@ -1876,17 +1978,26 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 1193,
-        "end": 1473
+        "start": 1167,
+        "end": 1197
       }
     },
     {
       "id": 23,
-      "parent": 22,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1199,
+        "end": 1479
+      }
+    },
+    {
+      "id": 24,
+      "parent": 23,
       "kind": "do-block",
       "origin": {
-        "start": 1256,
-        "end": 1473
+        "start": 1262,
+        "end": 1479
       }
     }
   ],
@@ -2061,90 +2172,102 @@
     },
     {
       "id": 14,
+      "spelling": "app",
+      "canonical": "artifact/type-aliases::app",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 634,
+        "end": 637
+      }
+    },
+    {
+      "id": 15,
       "spelling": "failure",
       "canonical": "artifact/type-aliases::failure",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 714,
-        "end": 721
+        "start": 720,
+        "end": 727
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "spelling": "result",
       "canonical": "artifact/type-aliases::result",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 761,
-        "end": 767
+        "start": 767,
+        "end": 773
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "spelling": "increment",
       "canonical": "artifact/type-aliases::increment",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 822,
-        "end": 831
+        "start": 828,
+        "end": 837
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "spelling": "view",
       "canonical": "artifact/type-aliases::view",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 919,
-        "end": 923
+        "start": 925,
+        "end": 929
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "spelling": "content",
       "canonical": "artifact/type-aliases::content",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 1069,
-        "end": 1076
+        "start": 1075,
+        "end": 1082
       }
     },
     {
-      "id": 19,
+      "id": 20,
       "spelling": "compact",
       "canonical": "artifact/type-aliases::compact",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 1171,
-        "end": 1178
+        "start": 1177,
+        "end": 1184
       }
     },
     {
-      "id": 20,
+      "id": 21,
       "spelling": "main",
       "canonical": "artifact/type-aliases::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 1207,
-        "end": 1211
+        "start": 1213,
+        "end": 1217
       }
     },
     {
-      "id": 21,
+      "id": 22,
       "spelling": "html",
       "canonical": "artifact/type-aliases/std/web/html::*",
       "namespace": "module",
@@ -2156,7 +2279,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 23,
       "spelling": "signals",
       "canonical": "artifact/type-aliases/std/signal::*",
       "namespace": "module",
@@ -2168,7 +2291,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 24,
       "spelling": "MutableSignal",
       "namespace": "value",
       "kind": "imported",
@@ -2179,7 +2302,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 25,
       "spelling": "Signal",
       "namespace": "value",
       "kind": "imported",
@@ -2190,7 +2313,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 26,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -2202,7 +2325,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 27,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2213,7 +2336,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 28,
       "spelling": "Console",
       "canonical": "std/prelude::Console",
       "namespace": "type",
@@ -2225,19 +2348,8 @@
       }
     },
     {
-      "id": 28,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 4,
-      "origin": {
-        "start": 220,
-        "end": 247
-      }
-    },
-    {
       "id": 29,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 4,
@@ -2248,6 +2360,17 @@
     },
     {
       "id": 30,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 220,
+        "end": 247
+      }
+    },
+    {
+      "id": 31,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2258,7 +2381,7 @@
       }
     },
     {
-      "id": 31,
+      "id": 32,
       "spelling": "Effect",
       "canonical": "std/prelude::Effect",
       "namespace": "type",
@@ -2270,7 +2393,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 33,
       "spelling": "Either",
       "canonical": "std/prelude::Either",
       "namespace": "type",
@@ -2282,7 +2405,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 34,
       "spelling": "E",
       "canonical": "std/prelude::Either::E",
       "namespace": "type",
@@ -2294,7 +2417,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 35,
       "spelling": "A",
       "canonical": "std/prelude::Either::A",
       "namespace": "type",
@@ -2306,7 +2429,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 36,
       "spelling": "Left",
       "canonical": "std/prelude::Left",
       "namespace": "value",
@@ -2318,7 +2441,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 37,
       "spelling": "Right",
       "canonical": "std/prelude::Right",
       "namespace": "value",
@@ -2330,7 +2453,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 38,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2341,7 +2464,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 39,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2352,7 +2475,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 40,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2363,7 +2486,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 41,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2374,7 +2497,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 42,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2385,7 +2508,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 43,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2396,7 +2519,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 44,
       "spelling": "B",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2407,7 +2530,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 45,
       "spelling": "transform",
       "namespace": "value",
       "kind": "parameter",
@@ -2418,7 +2541,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 46,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2429,40 +2552,62 @@
       }
     },
     {
-      "id": 46,
-      "spelling": "value",
+      "id": 47,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 15,
+      "origin": {
+        "start": 631,
+        "end": 715
+      }
+    },
+    {
+      "id": 48,
+      "spelling": "operation",
       "namespace": "value",
       "kind": "parameter",
       "scope": 15,
       "origin": {
-        "start": 722,
-        "end": 727
+        "start": 641,
+        "end": 650
       }
     },
     {
-      "id": 47,
+      "id": 49,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
       "scope": 16,
       "origin": {
-        "start": 768,
-        "end": 773
+        "start": 728,
+        "end": 733
       }
     },
     {
-      "id": 48,
-      "spelling": "state",
+      "id": 50,
+      "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
       "scope": 17,
       "origin": {
-        "start": 832,
-        "end": 837
+        "start": 774,
+        "end": 779
       }
     },
     {
-      "id": 49,
+      "id": 51,
+      "spelling": "state",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 18,
+      "origin": {
+        "start": 838,
+        "end": 843
+      }
+    },
+    {
+      "id": 52,
       "spelling": "Task",
       "canonical": "std/prelude::Task",
       "namespace": "type",
@@ -2474,7 +2619,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 53,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -2486,18 +2631,18 @@
       }
     },
     {
-      "id": 51,
+      "id": 54,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 18,
+      "scope": 19,
       "origin": {
-        "start": 884,
-        "end": 889
+        "start": 890,
+        "end": 895
       }
     },
     {
-      "id": 52,
+      "id": 55,
       "spelling": "+",
       "canonical": "std/prelude::+",
       "namespace": "operator",
@@ -2509,40 +2654,40 @@
       }
     },
     {
-      "id": 53,
-      "spelling": "state",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 19,
-      "origin": {
-        "start": 924,
-        "end": 929
-      }
-    },
-    {
-      "id": 54,
-      "spelling": "current",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 19,
-      "origin": {
-        "start": 946,
-        "end": 953
-      }
-    },
-    {
-      "id": 55,
+      "id": 56,
       "spelling": "state",
       "namespace": "value",
       "kind": "parameter",
       "scope": 20,
       "origin": {
-        "start": 1077,
-        "end": 1082
+        "start": 930,
+        "end": 935
       }
     },
     {
-      "id": 56,
+      "id": 57,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 20,
+      "origin": {
+        "start": 952,
+        "end": 959
+      }
+    },
+    {
+      "id": 58,
+      "spelling": "state",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 21,
+      "origin": {
+        "start": 1083,
+        "end": 1088
+      }
+    },
+    {
+      "id": 59,
       "spelling": "succeed",
       "canonical": "std/prelude::succeed",
       "namespace": "value",
@@ -2554,7 +2699,7 @@
       }
     },
     {
-      "id": 57,
+      "id": 60,
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError",
       "namespace": "type",
@@ -2566,51 +2711,51 @@
       }
     },
     {
-      "id": 58,
+      "id": 61,
       "spelling": "state",
       "namespace": "value",
       "kind": "pattern-binding",
-      "scope": 23,
+      "scope": 24,
       "origin": {
-        "start": 1265,
-        "end": 1270
-      }
-    },
-    {
-      "id": 59,
-      "spelling": "rendered",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 23,
-      "origin": {
-        "start": 1318,
-        "end": 1326
-      }
-    },
-    {
-      "id": 60,
-      "spelling": "current",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 23,
-      "origin": {
-        "start": 1347,
-        "end": 1354
-      }
-    },
-    {
-      "id": 61,
-      "spelling": "values",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 23,
-      "origin": {
-        "start": 1373,
-        "end": 1379
+        "start": 1271,
+        "end": 1276
       }
     },
     {
       "id": 62,
+      "spelling": "rendered",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 24,
+      "origin": {
+        "start": 1324,
+        "end": 1332
+      }
+    },
+    {
+      "id": 63,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 24,
+      "origin": {
+        "start": 1353,
+        "end": 1360
+      }
+    },
+    {
+      "id": 64,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 24,
+      "origin": {
+        "start": 1379,
+        "end": 1385
+      }
+    },
+    {
+      "id": 65,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -2626,7 +2771,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
         "start": 142,
         "end": 145
@@ -2635,7 +2780,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 26,
+      "target": 27,
       "origin": {
         "start": 170,
         "end": 171
@@ -2644,7 +2789,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 26,
+      "target": 27,
       "origin": {
         "start": 180,
         "end": 181
@@ -2653,7 +2798,7 @@
     {
       "spelling": "Console",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 210,
         "end": 217
@@ -2662,7 +2807,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 241,
         "end": 242
@@ -2671,7 +2816,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 29,
+      "target": 30,
       "origin": {
         "start": 246,
         "end": 247
@@ -2680,7 +2825,7 @@
     {
       "spelling": "Effect",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 295,
         "end": 322
@@ -2707,7 +2852,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 30,
+      "target": 31,
       "origin": {
         "start": 320,
         "end": 321
@@ -2725,7 +2870,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 32,
+      "target": 33,
       "origin": {
         "start": 366,
         "end": 387
@@ -2743,7 +2888,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
         "start": 383,
         "end": 386
@@ -2760,7 +2905,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 37,
+      "target": 38,
       "origin": {
         "start": 418,
         "end": 419
@@ -2777,7 +2922,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 38,
+      "target": 39,
       "origin": {
         "start": 444,
         "end": 445
@@ -2795,7 +2940,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
         "start": 475,
         "end": 478
@@ -2804,7 +2949,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 39,
+      "target": 40,
       "origin": {
         "start": 481,
         "end": 486
@@ -2813,7 +2958,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 40,
+      "target": 41,
       "origin": {
         "start": 506,
         "end": 507
@@ -2831,7 +2976,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 40,
+      "target": 41,
       "origin": {
         "start": 516,
         "end": 517
@@ -2840,7 +2985,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 41,
+      "target": 42,
       "origin": {
         "start": 531,
         "end": 536
@@ -2849,7 +2994,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 41,
+      "target": 42,
       "origin": {
         "start": 545,
         "end": 550
@@ -2867,7 +3012,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 42,
+      "target": 43,
       "origin": {
         "start": 587,
         "end": 588
@@ -2876,7 +3021,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 590,
         "end": 591
@@ -2885,7 +3030,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 42,
+      "target": 43,
       "origin": {
         "start": 603,
         "end": 604
@@ -2894,7 +3039,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 608,
         "end": 609
@@ -2903,7 +3048,7 @@
     {
       "spelling": "transform",
       "namespace": "value",
-      "target": 44,
+      "target": 45,
       "origin": {
         "start": 614,
         "end": 623
@@ -2912,10 +3057,73 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 624,
         "end": 629
+      }
+    },
+    {
+      "spelling": "App",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 652,
+        "end": 658
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 47,
+      "origin": {
+        "start": 656,
+        "end": 657
+      }
+    },
+    {
+      "spelling": "Effect",
+      "namespace": "type",
+      "target": 32,
+      "origin": {
+        "start": 662,
+        "end": 703
+      }
+    },
+    {
+      "spelling": "Console",
+      "namespace": "type",
+      "target": 28,
+      "origin": {
+        "start": 680,
+        "end": 687
+      }
+    },
+    {
+      "spelling": "AppError",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 691,
+        "end": 699
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 47,
+      "origin": {
+        "start": 701,
+        "end": 702
+      }
+    },
+    {
+      "spelling": "operation",
+      "namespace": "value",
+      "target": 48,
+      "origin": {
+        "start": 706,
+        "end": 715
       }
     },
     {
@@ -2923,8 +3131,8 @@
       "namespace": "type",
       "target": 7,
       "origin": {
-        "start": 729,
-        "end": 736
+        "start": 735,
+        "end": 742
       }
     },
     {
@@ -2932,17 +3140,17 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 740,
-        "end": 748
+        "start": 746,
+        "end": 754
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 46,
+      "target": 49,
       "origin": {
-        "start": 751,
-        "end": 756
+        "start": 757,
+        "end": 762
       }
     },
     {
@@ -2950,17 +3158,17 @@
       "namespace": "type",
       "target": 8,
       "origin": {
-        "start": 775,
-        "end": 784
+        "start": 781,
+        "end": 790
       }
     },
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 32,
+      "target": 33,
       "origin": {
-        "start": 788,
-        "end": 809
+        "start": 794,
+        "end": 815
       }
     },
     {
@@ -2968,26 +3176,26 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 795,
-        "end": 803
+        "start": 801,
+        "end": 809
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 805,
-        "end": 808
+        "start": 811,
+        "end": 814
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 47,
+      "target": 50,
       "origin": {
-        "start": 812,
-        "end": 817
+        "start": 818,
+        "end": 823
       }
     },
     {
@@ -2995,79 +3203,79 @@
       "namespace": "type",
       "target": 9,
       "origin": {
-        "start": 839,
-        "end": 848
+        "start": 845,
+        "end": 854
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 844,
-        "end": 847
+        "start": 850,
+        "end": 853
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 49,
+      "target": 52,
       "origin": {
-        "start": 852,
-        "end": 862
+        "start": 858,
+        "end": 868
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 50,
+      "target": 53,
       "origin": {
-        "start": 857,
-        "end": 861
+        "start": 863,
+        "end": 867
       }
     },
     {
       "spelling": "signals.update",
       "namespace": "value",
       "origin": {
-        "start": 867,
-        "end": 881
+        "start": 873,
+        "end": 887
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 891,
-        "end": 894
+        "start": 897,
+        "end": 900
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 51,
+      "target": 54,
       "origin": {
-        "start": 898,
-        "end": 903
+        "start": 904,
+        "end": 909
       }
     },
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 52,
+      "target": 55,
       "origin": {
-        "start": 904,
-        "end": 905
+        "start": 910,
+        "end": 911
       }
     },
     {
       "spelling": "state",
       "namespace": "value",
-      "target": 48,
+      "target": 51,
       "origin": {
-        "start": 909,
-        "end": 914
+        "start": 915,
+        "end": 920
       }
     },
     {
@@ -3075,87 +3283,87 @@
       "namespace": "type",
       "target": 9,
       "origin": {
-        "start": 931,
-        "end": 940
+        "start": 937,
+        "end": 946
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 936,
-        "end": 939
+        "start": 942,
+        "end": 945
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 955,
-        "end": 958
+        "start": 961,
+        "end": 964
       }
     },
     {
       "spelling": "html.Html",
       "namespace": "type",
       "origin": {
-        "start": 964,
-        "end": 985
+        "start": 970,
+        "end": 991
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 49,
+      "target": 52,
       "origin": {
-        "start": 974,
-        "end": 984
+        "start": 980,
+        "end": 990
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 50,
+      "target": 53,
       "origin": {
-        "start": 979,
-        "end": 983
+        "start": 985,
+        "end": 989
       }
     },
     {
       "spelling": "html.button",
       "namespace": "value",
       "origin": {
-        "start": 990,
-        "end": 1001
+        "start": 996,
+        "end": 1007
       }
     },
     {
       "spelling": "increment",
       "namespace": "value",
-      "target": 16,
+      "target": 17,
       "origin": {
-        "start": 1017,
-        "end": 1026
+        "start": 1023,
+        "end": 1032
       }
     },
     {
       "spelling": "state",
       "namespace": "value",
-      "target": 53,
+      "target": 56,
       "origin": {
-        "start": 1027,
-        "end": 1032
+        "start": 1033,
+        "end": 1038
       }
     },
     {
       "spelling": "current",
       "namespace": "value",
-      "target": 54,
+      "target": 57,
       "origin": {
-        "start": 1051,
-        "end": 1058
+        "start": 1057,
+        "end": 1064
       }
     },
     {
@@ -3163,17 +3371,17 @@
       "namespace": "type",
       "target": 9,
       "origin": {
-        "start": 1084,
-        "end": 1093
+        "start": 1090,
+        "end": 1099
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 25,
+      "target": 26,
       "origin": {
-        "start": 1089,
-        "end": 1092
+        "start": 1095,
+        "end": 1098
       }
     },
     {
@@ -3181,149 +3389,149 @@
       "namespace": "type",
       "target": 10,
       "origin": {
-        "start": 1097,
-        "end": 1124
+        "start": 1103,
+        "end": 1130
       }
     },
     {
       "spelling": "html.Html",
       "namespace": "type",
       "origin": {
-        "start": 1102,
-        "end": 1123
+        "start": 1108,
+        "end": 1129
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 49,
+      "target": 52,
       "origin": {
-        "start": 1112,
-        "end": 1122
+        "start": 1118,
+        "end": 1128
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 50,
+      "target": 53,
       "origin": {
-        "start": 1117,
-        "end": 1121
+        "start": 1123,
+        "end": 1127
       }
     },
     {
       "spelling": "signals.map",
       "namespace": "value",
       "origin": {
-        "start": 1129,
-        "end": 1140
+        "start": 1135,
+        "end": 1146
       }
     },
     {
       "spelling": "view",
       "namespace": "value",
-      "target": 17,
+      "target": 18,
       "origin": {
-        "start": 1142,
-        "end": 1146
-      }
-    },
-    {
-      "spelling": "state",
-      "namespace": "value",
-      "target": 55,
-      "origin": {
-        "start": 1147,
+        "start": 1148,
         "end": 1152
       }
     },
     {
       "spelling": "state",
       "namespace": "value",
-      "target": 55,
+      "target": 58,
       "origin": {
-        "start": 1154,
-        "end": 1159
+        "start": 1153,
+        "end": 1158
+      }
+    },
+    {
+      "spelling": "state",
+      "namespace": "value",
+      "target": 58,
+      "origin": {
+        "start": 1160,
+        "end": 1165
       }
     },
     {
       "spelling": "succeed",
       "namespace": "value",
-      "target": 56,
+      "target": 59,
       "origin": {
-        "start": 1181,
-        "end": 1188
+        "start": 1187,
+        "end": 1194
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 50,
+      "target": 53,
       "origin": {
-        "start": 1215,
-        "end": 1219
+        "start": 1221,
+        "end": 1225
       }
     },
     {
       "spelling": "ConsoleError",
       "namespace": "type",
-      "target": 57,
+      "target": 60,
       "origin": {
-        "start": 1239,
-        "end": 1251
+        "start": 1245,
+        "end": 1257
       }
     },
     {
       "spelling": "signals.make",
       "namespace": "value",
       "origin": {
-        "start": 1274,
-        "end": 1286
+        "start": 1280,
+        "end": 1292
       }
     },
     {
       "spelling": "increment",
       "namespace": "value",
-      "target": 16,
+      "target": 17,
       "origin": {
-        "start": 1294,
-        "end": 1303
+        "start": 1300,
+        "end": 1309
       }
     },
     {
       "spelling": "state",
       "namespace": "value",
-      "target": 58,
+      "target": 61,
       "origin": {
-        "start": 1304,
-        "end": 1309
+        "start": 1310,
+        "end": 1315
       }
     },
     {
       "spelling": "content",
       "namespace": "value",
-      "target": 18,
+      "target": 19,
       "origin": {
-        "start": 1329,
-        "end": 1336
-      }
-    },
-    {
-      "spelling": "state",
-      "namespace": "value",
-      "target": 58,
-      "origin": {
-        "start": 1337,
+        "start": 1335,
         "end": 1342
       }
     },
     {
       "spelling": "state",
       "namespace": "value",
-      "target": 58,
+      "target": 61,
       "origin": {
-        "start": 1359,
-        "end": 1364
+        "start": 1343,
+        "end": 1348
+      }
+    },
+    {
+      "spelling": "state",
+      "namespace": "value",
+      "target": 61,
+      "origin": {
+        "start": 1365,
+        "end": 1370
       }
     },
     {
@@ -3331,8 +3539,8 @@
       "namespace": "value",
       "target": 12,
       "origin": {
-        "start": 1382,
-        "end": 1386
+        "start": 1388,
+        "end": 1392
       }
     },
     {
@@ -3340,8 +3548,8 @@
       "namespace": "value",
       "target": 13,
       "origin": {
-        "start": 1389,
-        "end": 1394
+        "start": 1395,
+        "end": 1400
       }
     },
     {
@@ -3349,44 +3557,44 @@
       "namespace": "value",
       "target": 11,
       "origin": {
-        "start": 1395,
-        "end": 1401
+        "start": 1401,
+        "end": 1407
       }
     },
     {
       "spelling": "current",
       "namespace": "value",
-      "target": 60,
+      "target": 63,
       "origin": {
-        "start": 1402,
-        "end": 1409
+        "start": 1408,
+        "end": 1415
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 62,
+      "target": 65,
       "origin": {
-        "start": 1414,
-        "end": 1421
+        "start": 1420,
+        "end": 1427
       }
     },
     {
       "spelling": "values",
       "namespace": "value",
-      "target": 61,
+      "target": 64,
       "origin": {
-        "start": 1436,
-        "end": 1442
+        "start": 1442,
+        "end": 1448
       }
     },
     {
       "spelling": "current",
       "namespace": "value",
-      "target": 60,
+      "target": 63,
       "origin": {
-        "start": 1460,
-        "end": 1467
+        "start": 1466,
+        "end": 1473
       }
     }
   ],
@@ -3411,48 +3619,48 @@
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 867,
-        "end": 881
+        "start": 873,
+        "end": 887
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 964,
-        "end": 985
+        "start": 970,
+        "end": 991
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 990,
-        "end": 1001
+        "start": 996,
+        "end": 1007
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 1102,
-        "end": 1123
+        "start": 1108,
+        "end": 1129
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 1129,
-        "end": 1140
+        "start": 1135,
+        "end": 1146
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 1274,
-        "end": 1286
+        "start": 1280,
+        "end": 1292
       }
     }
   ]

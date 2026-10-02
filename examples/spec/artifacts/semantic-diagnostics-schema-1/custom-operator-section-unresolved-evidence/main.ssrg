@@ -7,4 +7,4 @@ operator<A> infixr 4 <^>
 where Difference<A> =
   difference left right
 
-let invalid = (<^>)
+let invalid: Int -> Int -> Int = (<^>)

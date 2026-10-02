@@ -7,6 +7,7 @@ fn executes_spec_let_polymorphism_and_preserves_dictionaries() {
         "let-polymorphism",
         "let-polymorphism-constraints",
         "constrained-callable-alias",
+        "constrained-operator-alias",
     ] {
         let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join(format!("../../examples/spec/fixtures/compile/{name}.ssrg"));

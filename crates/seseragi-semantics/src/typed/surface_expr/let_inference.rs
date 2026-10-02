@@ -82,6 +82,7 @@ pub(crate) fn infer(
         ) {
             let mut signature = context
                 .target(ungrouped.span())
+                .or_else(|| context.operator_target(ungrouped.span()))
                 .and_then(|target| context.callable_value(target))?;
             if !signature.type_parameters.is_empty() || !signature.constraints.is_empty() {
                 if context.is_recursive_member(ungrouped.span()) {
@@ -235,6 +236,7 @@ pub(super) fn infer_call_arguments(
         matches!(argument, SurfaceExpr::Lambda { .. })
             || context
                 .target(argument.span())
+                .or_else(|| context.operator_target(argument.span()))
                 .and_then(|target| context.callable_value(target))
                 .is_some_and(|callable| !callable.type_parameters.is_empty())
     }) {

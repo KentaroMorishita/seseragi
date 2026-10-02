@@ -1444,10 +1444,10 @@
             },
             "initializer": {
               "kind": "lambda",
-              "parameter": "__ssrg$collection$partial$0: (argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+              "parameter": "__ssrg$partial$0: (argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
               "body": {
                 "kind": "lambda",
-                "parameter": "__ssrg$collection$partial$1: ReadonlyArray<number>",
+                "parameter": "__ssrg$partial$1: ReadonlyArray<number>",
                 "body": {
                   "kind": "runtime-call",
                   "callee": "_ssrg_maybe_traverse",
@@ -1458,11 +1458,11 @@
                     },
                     {
                       "kind": "identifier",
-                      "name": "__ssrg$collection$partial$0"
+                      "name": "__ssrg$partial$0"
                     },
                     {
                       "kind": "identifier",
-                      "name": "__ssrg$collection$partial$1"
+                      "name": "__ssrg$partial$1"
                     }
                   ]
                 }
