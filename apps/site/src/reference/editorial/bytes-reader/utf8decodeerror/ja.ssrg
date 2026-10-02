@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "Utf8DecodeErrorは、BytesをUTF-8の文字列として読めなかった理由を表します。InvalidUtf8から、最初の不正な並びが始まるバイト位置を取り出せます。",
+  taskTitle: "UTF-8を読めない位置を伝える",
+  purpose: "受け取ったバイト列を文章として読む前に、UTF-8として正しいか確認します。例の[97, 226, 40, 161]は途中で壊れています。どのバイトから見直すべきかを表示します。",
+  typescriptBefore: "TextDecoderにfatal: trueを指定すると、不正なUTF-8で例外を投げます。try/catchで失敗を表示できますが、公開されたエラーには不正なバイト位置がありません。このTypeScript例はInvalid UTF-8という一般的な説明までを表示します。",
+  benefit: "Seseragiでは失敗が戻り値のUtf8DecodeErrorに入り、InvalidUtf8のoffsetから位置を読めます。例はInvalid UTF-8 at byte 1を表示します。この追加情報が違いであり、TypeScriptの実行結果と同じ文字列になる比較ではありません。",
+  setup: "bytesはstd/bytes、textはstd/textのimportの別名です。fn explain -> Stringは引数なしで文字列を返す関数で、explain ()で呼び出します。bytes.fromInts [97, 226, 40, 161]は整数の配列を渡し、各値が1バイトの範囲かを確認します。",
+  after: [
+    "fromIntsのEither<ByteError, Bytes>は、失敗のLeftか成功したBytesのRightです。外側のmatchでRight contentを選べたときだけ、text.decodeUtf8 contentを呼びます。Left errorはshowで表示用の文字列にします。",
+    "decodeUtf8のEither<Utf8DecodeError, String>も二つの結果です。Right valueには読めた文字列が入ります。Left (text.InvalidUtf8 { offset })は、エラーのInvalidUtf8が持つoffsetというフィールドを、同じ名前の値として取り出します。",
+    "枝の->の右側が返す値です。バッククォートの${offset}は位置を説明文へ埋め込みます。offsetは入力の先頭を0としたバイト位置で、文字列の文字位置ではありません。",
+    "97はaです。次の226は複数バイトの文字の先頭ですが、その後の40は続きのバイトとして不正です。返る位置は40の位置2ではなく、不正な並びを始めた226の位置1です。",
+    "fatal: trueは不正なUTF-8を例外にします。BOMは文章の先頭の印に使われるU+FEFFという文字です。ignoreBOM: trueはこの文字を取り除かず、Seseragiと同じように残す指定です。",
+  ],
+  details: [
+    "厳密な読み取りは、不正な並びを最初に見つけると失敗し、途中まで読めたaも成功値として返しません。必要な文字がa(なら、その文字列をencodeUtf8で作り直すとバイト列は[97, 40]になります。受信データの修正は、本来の内容を確認してから行います。",
+    "InvalidUtf8は、途中で切れた文字、単独の続きバイト、必要以上に長い表記、UTF-16のペアに使うサロゲートの値、Unicodeの上限U+10FFFFを超える値も拒否した結果です。Utf8DecodeErrorの内部表現は非公開でも、この公開された形で位置を読めます。",
+    "表示を続けたいだけならdecodeUtf8Lossyで置換文字を使ったプレビューを作れます。ただし、それは入力が正しいと確認できたことにはなりません。offsetを文字列の添字として使ったり、受信データが自動で直ったと考えたりしないでください。",
+  ],
+  nodeNote: "Node 24.19.0でもUint8ArrayとTextDecoderを同じように使えます。fatal: trueでもバイト位置は提供されません。",
+}

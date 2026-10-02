@@ -1,0 +1,25 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "HexDecodeErrorで、十六進文字列の長さが奇数なのか、使えない文字があるのかを分けられます。長さと、不正な文字のバイト位置は異なる情報です。",
+  taskTitle: "十六進入力を拒否した理由を伝える",
+  purpose: "貼り付けた十六進文字列を拒否するだけでなく、桁数を見直すのか、不正な文字を探すのかを伝えたいとします。hex.decodeの失敗理由を読み、入力の長さまたは不正な位置を表示します。",
+  typescriptBefore: "TypeScriptのUint8Array.fromHexは不正な入力を例外にするため、try/catchでInvalid hexと表示できます。この例は同じ入力の成功と失敗を比べます。例外からSeseragiと同じ分類や位置を作る処理は追加していないので、失敗時の表示文は同じではありません。",
+  benefit: "Seseragiの戻り値には、理由を表す名前と数値が含まれます。文章のエラーメッセージを解析せずに、入力のUTF-8バイト数と、不正な文字が始まるバイト位置を別々に表示できます。正しいバイト列があるRightと、理由だけを持つLeftも分かれています。",
+  setup: "hexはstd/bytes/hexの別名です。decodeはStringを読み、Either<HexDecodeError, Bytes>を返します。EitherはLeftの失敗理由かRightの成功値という二つの結果で、Bytesは書き換えられないバイト列です。",
+  after: [
+    "fn read input: String -> Stringは、入力inputから表示用の文字列を返す関数です。fnが定義、: Stringが引数の型、-> Stringが戻り値の型を表します。hex.decode inputは関数名の後ろへ空白で引数を渡す呼び出しです。",
+    "外側のmatchはRight contentとLeft errorを分けます。Right contentではバイト列をhex.encodeで十六進表記にし、+でDecoded:  を付けます。Left errorでは、もう一つのmatchがerrorの理由を分けます。",
+    "hex.OddHexLength lengthは奇数の入力長をlengthという名前で取り出す枝です。hex.InvalidHexDigit { offset }は、使えない文字の位置をoffsetという名前で取り出します。{ offset }はその理由に含まれる名前付きの値を読む形です。この二つでHexDecodeErrorの理由をすべて扱います。",
+    "バッククォートで囲む文字列の${length}や${offset}は、数値を表示文へ埋め込みます。各枝の->の右が、その枝の結果です。println (read input)はreadが返した表示文を出します。",
+    "00FFは成功し、小文字の00ffで表示されます。0は奇数の長さ、00xzは数字でないx、é0はUTF-8で数えると奇数の長さで失敗します。長さの確認と数字の確認で、表示する数値の意味が変わります。",
+  ],
+  details: [
+    "OddHexLength Intが持つIntは入力のUTF-8バイト数です。不正な位置ではありません。decodeは長さが偶数かを最初に調べるため、é0は見える文字が2個でも、UTF-8の3バイトという長さで拒否されます。",
+    "長さの検査を通った後、ASCIIの0–9、a–f、A–F以外があるとInvalidHexDigitになります。offsetは入力をUTF-8のバイトで数えた0始まりの位置です。00xzならxの位置2です。éだけなら長さは2なので、位置0の不正な数字になります。",
+    "HexDecodeErrorは内部の表現を直接操作する型ではありません。公開されているOddHexLengthとInvalidHexDigitという理由の名前を使ってmatchします。errorにいつもoffsetがあると考えると、長さだけを持つ理由を扱えません。",
+    "0x00や00 00はそのままでは十六進入力として使えません。入力の仕様を確かめ、許可された接頭辞や区切りの処理が必要ならdecodeの前に別に行います。失敗から一部のBytesが得られるわけではありません。",
+    "成功したBytesも文章とは限りません。文章として使う場合はstd/textのdecodeUtf8でさらに確認します。ここでの理由は十六進表記の問題を伝え、データの意味や安全性は判断しません。",
+  ],
+  nodeNote: "検証したNode 24ではfromHex()/toHex()を使えません。Node/Bunのimport { Buffer } from \"node:buffer\"を使う例では、偶数の長さとASCIIの十六進数字だけであることを先に確かめます。Buffer.from(input, \"hex\")だけだと不正な部分で切り詰めることがあるためです。この代替例も成功か拒否かを比べ、HexDecodeErrorの分類や数値は再現しません。",
+}

@@ -1,0 +1,26 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "Base64DecodeError distinguishes length, invalid characters, padding placement, and unused trailing bits. Standard and URL-safe decoding return their failure reasons through this same type.",
+  taskTitle: "Distinguish Base64 rejection reasons",
+  purpose: "When Base64 input is rejected, tell the caller whether to review its length, characters, or = placement. Use standard base64.decode to display successful bytes and four different failure reasons.",
+  typescriptBefore: "TypeScript checks the ending with fromBase64’s strict option, then requires the result re-encoded with toBase64() to match the input exactly. That extra check rejects alternate representations such as whitespace. Together with try/catch, it matches success and rejection without creating its own versions of Seseragi’s four reasons. The failure messages therefore differ.",
+  benefit: "Seseragi gives each reason a name and includes its relevant length or position in the result. match selects suitable guidance without inspecting an exception message. This example uses more information than a single generic rejection message.",
+  setup: "base64 aliases std/bytes/base64, and hex aliases std/bytes/hex. decode returns Either<Base64DecodeError, Bytes>: a reason in Left or successful Bytes in Right. Bytes is an immutable byte sequence; hex.encode makes its contents visible as hexadecimal.",
+  after: [
+    "fn read input: String -> String defines a function that takes a string named input and returns a display string. fn introduces the definition, : String gives the argument type, and -> String gives the return type. base64.decode input separates the function and its argument with a space.",
+    "The outer match separates Right content from Left error. Right uses + to put Decoded:  before hex.encode content. Left uses the inner match to select a branch according to one of the four reason names carried by error.",
+    "InvalidBase64Length length names the input length length. The { offset } in other branches names the position carried by that reason offset. InvalidBase64Digit means an invalid character, InvalidBase64Padding means invalid = placement, and NonCanonicalBase64Bits means unused trailing bits.",
+    "A string enclosed in backticks uses ${length} and ${offset} to insert numbers into the display message. The expression after each branch’s -> becomes the result of read, and println (read input) prints that string.",
+    "Zg== is valid standard Base64 and produces one byte, shown as hexadecimal 66 (decimal 102). Zg fails with input length 2, AA A for whitespace at offset 2, AA=A for padding at offset 2, and AB== for unused trailing bits at offset 1. A permissive decoder would read that last input as the same bytes as AA==, allowing another spelling of the same contents.",
+  ],
+  details: [
+    "The Int in InvalidBase64Length Int is the input’s UTF-8 byte length, not an offset. Standard decoding rejects lengths that are not multiples of four. URL-safe decoding rejects lengths leaving a remainder of one when divided by four. The length check precedes the digit check.",
+    "The offset in InvalidBase64Digit, InvalidBase64Padding, or NonCanonicalBase64Bits counts input bytes from zero. The last reason points to the final significant symbol whose unused bits are nonzero. These are not visible-character counts or positions in the resulting Bytes.",
+    "With multiple defects, the reported problem is not necessarily the leftmost. AA=? produces InvalidBase64Digit at offset 3, pointing to ? after the =. Do not treat one reason as a complete list of the input’s problems.",
+    "Standard decode expects + and / with required trailing = padding. decodeUrl uses - and _ and allows no =. Neither removes whitespace. Each accepts only the one spelling its encoder would produce for those bytes; that is what canonical means here.",
+    "Instead of reading or writing the private representation of Base64DecodeError, match its four public reason names. Handle the length-only reason rather than assuming every reason has an offset.",
+    "Failure returns no partial Bytes. Success still does not validate text or a token: use decodeUtf8 from std/text for text and a separate verification step for signatures.",
+  ],
+  nodeNote: "The inspected Node 24 runtime has no fromBase64()/toBase64(). With Node/Bun, import { Buffer } from \"node:buffer\". Re-encode the result of permissive Buffer.from(input, \"base64\") with toString(\"base64\") and require exact equality with input to check standard form. This alternative compares acceptance and rejection without reproducing Seseragi’s categories, positions, or check order.",
+}

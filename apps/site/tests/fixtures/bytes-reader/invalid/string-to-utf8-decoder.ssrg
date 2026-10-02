@@ -1,0 +1,3 @@
+import * as text from "std/text"
+let result = text.decodeUtf8 "hello"
+pub effect fn main = println "unreachable"

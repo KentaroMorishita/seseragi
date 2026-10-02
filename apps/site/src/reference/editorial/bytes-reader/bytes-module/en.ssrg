@@ -1,0 +1,24 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "std/bytes holds file or network content as an immutable sequence of bytes. Keep that value separate from text and ordinary integer arrays, and convert where needed.",
+  taskTitle: "Carry a short label through a text-only field",
+  purpose: "Turn café into UTF-8 bytes, count them, and display hexadecimal and Base64 spellings. One byte holds an integer from 0 through 255. A byte sequence is a row of those values and can represent data other than text.",
+  typescriptBefore: "TextEncoder turns a TypeScript string into a UTF-8 Uint8Array, a byte container whose elements can be changed. Bun’s toHex and toBase64 turn that same content into printable strings. The final TextDecoder reads the original bytes back as text.",
+  benefit: "The TypeScript conversions are already short. Seseragi gives the result the immutable Bytes type, distinct from String. Reading text includes failure in the return value, making it visible where a successfully decoded string becomes available.",
+  setup: "import * as bytes makes std/bytes available under the name bytes. The other aliases are text for text and UTF-8, hex for hexadecimal, and base64 for Base64. let gives a value a name. text.encodeUtf8 \"café\" calls a function by putting its argument after a space.",
+  after: [
+    "content is Bytes, not String. bytes.length content returns 5: é takes two UTF-8 bytes, so the byte count differs from the visible character count of café.",
+    "hex.encode writes two hexadecimal digits per byte. base64.encode makes the standard Base64 spelling; base64.encodeUrl uses the URL-safe alphabet and omits trailing = padding. These are different spellings of the same five bytes. They do not encrypt or compress the data.",
+    "fn decoded -> String defines a function with no parameters that returns String. Call it with decoded (); the parentheses mark the no-argument call. decodeUtf8 returns Either<Utf8DecodeError, String>: either Left containing an error or Right containing the decoded string.",
+    "match chooses the branch for that result. Right value names the successful string value. In Left _, the underscore means this example does not use the detailed error. The expression after each branch’s -> is that branch’s result.",
+    "A backtick string inserts expression results at ${...}. The program prints the byte count, hexadecimal, standard Base64, URL-safe Base64, and original text. Its last conversion reads content directly as UTF-8; it is not decoding the displayed Base64 string.",
+    "fatal: true makes TextDecoder throw on invalid UTF-8. A BOM is a marker that can use the U+FEFF character at the start of text. ignoreBOM: true keeps that character instead of removing it, matching Seseragi’s decoding policy.",
+  ],
+  details: [
+    "The public Bytes operations do not let you assign directly to an element. Immutability is a promise at the Seseragi value boundary, not a claim that a JavaScript Uint8Array has been frozen with Object.freeze.",
+    "For an integer array, use fromInts to check the 0–255 range. To inspect numeric content, use toInts. Successfully creating Bytes does not establish that those bytes are valid UTF-8.",
+    "UTF-8 encoding, hexadecimal encoding, and Base64 encoding allocate complete results. This example handles a small payload all at once. After decoding Base64 to bytes, check those bytes separately with decodeUtf8 before treating them as text.",
+  ],
+  nodeNote: "Node 24.19.0 lacks this example’s Uint8Array toHex/toBase64 methods. Use import { Buffer } from \"node:buffer\", then Buffer.from(content).toString(\"hex\"), with \"base64\" or \"base64url\" for the other formats. Node also has TextEncoder and TextDecoder.",
+}

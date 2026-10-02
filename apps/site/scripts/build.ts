@@ -15,6 +15,7 @@ import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { apiCorrectionExamples } from "./api-corrections"
 import { arrayEditorialExamples } from "./array-editorial"
+import { bytesReaderExamples } from "./bytes-reader"
 import { canonicalExample } from "./canonical-example"
 import { charTextExamples } from "./char-text-reader"
 import { collectionTypeExamples } from "./collection-type-readers"
@@ -108,6 +109,7 @@ export function generatorInput(playgroundUrl: string) {
       ...effectSequencingReaderExamples(playgroundUrl),
       ...jsonReaderExamples(playgroundUrl),
       ...urlReaderExamples(playgroundUrl),
+      ...bytesReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

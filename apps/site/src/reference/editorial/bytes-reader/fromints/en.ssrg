@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "fromInts checks integers in input order and copies them into Bytes. A value outside 0 through 255 returns an error for the first offending integer.",
+  taskTitle: "Validate numeric values before creating bytes",
+  purpose: "Turn an array such as 0, 127, and 255 into a byte sequence for storage or transport. A byte holds an integer from 0 through 255. Check every value rather than silently adjusting the input.",
+  typescriptBefore: "A TypeScript number can contain a fraction, so check Number.isInteger and the 0–255 range before calling Uint8Array.from. Without validation, conversion to a typed array can change the input values.",
+  benefit: "Seseragi’s parameter is Array<Int>, which distinguishes it from an array of fractional numbers. fromInts then checks the byte range and returns either Bytes or the first out-of-range integer. Being an Int does not remove the runtime need to reject a value such as 256.",
+  setup: "bytes is the import alias for std/bytes. fn describe values: Array<Int> -> String defines a function from the integer array values to a string. Calls put spaces between a function and its arguments. Square brackets in [0, 127, 255] create an array value.",
+  after: [
+    "bytes.fromInts values returns Either<ByteError, Bytes>: either Left with an error or Right with checked Bytes. match chooses the appropriate branch; the expression after its -> is the branch’s result.",
+    "Left (bytes.ByteOutOfRange value) extracts the out-of-range integer and calls it value. The backtick string inserts it into the message at ${value}.",
+    "Only the Bytes extracted by Right content reaches bytes.toInts. toInts copies the bytes to an integer array; show converts that array to a display String. The parentheses calculate bytes.toInts content before passing its result to show.",
+    "[0, 127, 255] succeeds with the same order. [1, 256, -1] stops at 256, and [-1] fails too. An empty array is valid and produces empty Bytes.",
+  ],
+  details: [
+    "On success, fromInts makes a new byte sequence. It checks once in input order and fails at the first invalid integer, returning neither an error list nor a successful prefix. The work and required copy grow with the input length.",
+    "Passing the whole fromInts result to a function expecting Bytes is a type mismatch. Either is not Bytes. Match it first and use only the value inside Right.",
+    "Out-of-range values are not wrapped. Correct the input to the intended integer from 0 through 255. A Float such as 1.5 has a different type from Int, so an array containing it is also the wrong argument type.",
+    "Success means every value fits in one byte. To establish whether the resulting bytes represent valid UTF-8 text, check them separately with decodeUtf8.",
+  ],
+  nodeNote: "This TypeScript example uses the same APIs on Node 24.19.0. Keep the Number.isInteger and range checks before Uint8Array.from; typed-array conversion itself does not perform this validation.",
+}

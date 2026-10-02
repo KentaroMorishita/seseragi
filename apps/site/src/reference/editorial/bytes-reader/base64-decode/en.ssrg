@@ -1,0 +1,23 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.decode strictly reads standard Base64. It checks required = padding, allowed characters, and trailing bits, returning either successful Bytes or a failure reason.",
+  taskTitle: "Accept only standard Base64",
+  purpose: "Read Zg== from an external text field and recover the original bytes. To avoid alternate spellings and damaged input, accept only the one representation the standard encoder would produce for those bytes.",
+  typescriptBefore: "TypeScript calls Uint8Array.fromBase64 with lastChunkHandling: \"strict\" to check incomplete endings and unused bits. It still accepts whitespace, so an additional check requires the result of toBase64() to equal input exactly. try/catch turns decoding exceptions into Rejected.",
+  benefit: "Seseragi’s decode includes this standard-format acceptance policy. Its Either<Base64DecodeError, Bytes> result contains either a failure reason in Left or bytes in Right, so the caller handles those two cases. The TypeScript version matches acceptance for the inputs without reproducing the error categories.",
+  setup: "base64 aliases std/bytes/base64, and hex aliases std/bytes/hex. On success, decode returns immutable Bytes inside Right. hex.encode makes successful bytes visible by representing each one as two lowercase hexadecimal digits.",
+  after: [
+    "fn read input: String -> String defines a function from a string named input to a display string. fn introduces the function, : String gives the argument type, and -> String gives the return type. base64.decode input passes the argument after a space.",
+    "match branches on Left or Right. The _ in Left _ means the detailed failure reason is not used here. Right content names the successful value content; + joins Accepted:  to hex.encode content.",
+    "Zg== becomes one byte with decimal value 102, displayed in hexadecimal as Accepted: 66. The empty string is also accepted. Zm9v becomes three bytes, displayed in hexadecimal as 666f6f and is valid standard Base64 without trailing =. println (read input) displays the string produced by read.",
+    "Zg is rejected because it lacks required padding. Whitespace in AA A and Z g==, a misplaced = in AA=A, unused trailing bits in AB==, and the URL-safe input -_8 are also rejected. Ignoring those bits in AB== would let it represent the same bytes as AA==.",
+  ],
+  details: [
+    "Standard Base64 uses A–Z, a–z, 0–9, +, /, and required trailing =. The decoder checks the entire input without removing whitespace or line breaks. Neither omitting necessary = nor adding unnecessary = is allowed.",
+    "Base64DecodeError includes InvalidBase64Length carrying the input’s UTF-8 byte length, plus InvalidBase64Digit, InvalidBase64Padding, and NonCanonicalBase64Bits carrying positions. An offset counts input bytes from zero. A length is not an offset.",
+    "Length is checked before digits. With multiple defects, the reported error is not necessarily the leftmost one. For example, AA=? produces InvalidBase64Digit at offset 3. Do not treat one result as a list of every defect in the input.",
+    "Success gives Bytes rather than text. To recover text, separately call decodeUtf8 from std/text and check that the bytes are valid UTF-8. Base64 decoding does not verify a signature or validate a token.",
+  ],
+  nodeNote: "The inspected Node 24 runtime has no fromBase64()/toBase64(). With Node/Bun, import { Buffer } from \"node:buffer\". Buffer.from(input, \"base64\") is permissive, so encode its result with toString(\"base64\") and require exact equality with input. This can match the acceptance policy, but it does not reproduce Seseragi’s error categories or check order.",
+}

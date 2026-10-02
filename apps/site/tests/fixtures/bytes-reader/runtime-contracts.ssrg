@@ -1,0 +1,94 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+import * as hex from "std/bytes/hex"
+import * as base64 from "std/bytes/base64"
+fn hexResult input: String -> String = match hex.decode input {
+  Right value -> "ok:" + hex.encode value
+  Left error -> match error {
+    hex.OddHexLength length -> `length:${length}`
+    hex.InvalidHexDigit { offset } -> `digit:${offset}`
+  }
+}
+fn baseResult result: Either<base64.Base64DecodeError, bytes.Bytes> -> String =
+  match result {
+    Right value -> "ok:" + hex.encode value
+    Left error -> match error {
+      base64.InvalidBase64Length length -> `length:${length}`
+      base64.InvalidBase64Digit { offset } -> `digit:${offset}`
+      base64.InvalidBase64Padding { offset } -> `padding:${offset}`
+      base64.NonCanonicalBase64Bits { offset } -> `bits:${offset}`
+    }
+  }
+fn byteResult values: Array<Int> -> String = match bytes.fromInts values {
+  Right value -> "ok:" + hex.encode value
+  Left (bytes.ByteOutOfRange value) -> `range:${value}`
+}
+fn utfResult values: Array<Int> -> String = match bytes.fromInts values {
+  Left error -> show error
+  Right content -> {
+    let strict = match text.decodeUtf8 content {
+      Right value -> "ok:" + hex.encode (text.encodeUtf8 value)
+      Left (text.InvalidUtf8 { offset }) -> `offset:${offset}`
+    }
+    strict + "|" + hex.encode (text.encodeUtf8 (text.decodeUtf8Lossy content))
+  }
+}
+pub effect fn main = for line <- [
+  "byte-0|" + byteResult [0, 255],
+  "byte-1|" + byteResult [-1],
+  "byte-2|" + byteResult [256],
+  "byte-3|" + byteResult [1, 256, -1],
+  "byte-4|" + byteResult [],
+  "hex-0|" + hexResult "",
+  "hex-1|" + hexResult "00FF",
+  "hex-2|" + hexResult "0",
+  "hex-3|" + hexResult "é0",
+  "hex-4|" + hexResult "é",
+  "hex-5|" + hexResult "00é",
+  "hex-6|" + hexResult "00xz",
+  "hex-7|" + hexResult "0x00",
+  "hex-8|" + hexResult "00 00",
+  "hex-9|" + hexResult "0\n",
+  "base64-0|" + baseResult (base64.decode ""),
+  "base64-1|" + baseResult (base64.decode "Zg=="),
+  "base64-2|" + baseResult (base64.decode "Zm8="),
+  "base64-3|" + baseResult (base64.decode "Zm9v"),
+  "base64-4|" + baseResult (base64.decode "Zg"),
+  "base64-5|" + baseResult (base64.decode "AA A"),
+  "base64-6|" + baseResult (base64.decode "AA-A"),
+  "base64-7|" + baseResult (base64.decode "AA=A"),
+  "base64-8|" + baseResult (base64.decode "A==="),
+  "base64-9|" + baseResult (base64.decode "AAAA===="),
+  "base64-10|" + baseResult (base64.decode "AB=="),
+  "base64-11|" + baseResult (base64.decode "AAB="),
+  "base64-12|" + baseResult (base64.decode "AAé"),
+  "base64-13|" + baseResult (base64.decode "Z g=="),
+  "base64-14|" + baseResult (base64.decode "Zg==\n"),
+  "base64-15|" + baseResult (base64.decode "AA=?"),
+  "url-0|" + baseResult (base64.decodeUrl ""),
+  "url-1|" + baseResult (base64.decodeUrl "-_8"),
+  "url-2|" + baseResult (base64.decodeUrl "--__"),
+  "url-3|" + baseResult (base64.decodeUrl "Zg"),
+  "url-4|" + baseResult (base64.decodeUrl "A"),
+  "url-5|" + baseResult (base64.decodeUrl "AA="),
+  "url-6|" + baseResult (base64.decodeUrl "+A"),
+  "url-7|" + baseResult (base64.decodeUrl "/w"),
+  "url-8|" + baseResult (base64.decodeUrl "AB"),
+  "url-9|" + baseResult (base64.decodeUrl "AAB"),
+  "url-10|" + baseResult (base64.decodeUrl "éAA"),
+  "url-11|" + baseResult (base64.decodeUrl "Z g"),
+  "url-12|" + baseResult (base64.decodeUrl "Zg=="),
+  "utf-ascii|" + utfResult [65],
+  "utf-multibyte|" + utfResult [99, 97, 102, 195, 169],
+  "utf-supplementary|" + utfResult [240, 159, 140, 138],
+  "utf-empty|" + utfResult [],
+  "utf-nul|" + utfResult [0],
+  "utf-bom|" + utfResult [239, 187, 191, 65],
+  "utf-bad-continuation|" + utfResult [97, 226, 40, 161],
+  "utf-truncated|" + utfResult [226, 130],
+  "utf-overlong|" + utfResult [192, 175],
+  "utf-surrogate|" + utfResult [237, 160, 128],
+  "utf-above-max|" + utfResult [244, 144, 128, 128],
+  "utf-lone-continuation|" + utfResult [128],
+  "utf-valid-prefix-before-bad|" + utfResult [195, 169, 255]
+] { println line }

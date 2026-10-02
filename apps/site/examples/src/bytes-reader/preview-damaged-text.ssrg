@@ -1,0 +1,8 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+fn preview -> String = match bytes.fromInts [97, 226, 40, 161] {
+  Left error -> show error
+  Right content -> text.decodeUtf8Lossy content
+}
+pub effect fn main = println (preview ())

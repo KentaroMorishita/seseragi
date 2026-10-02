@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
+import { bytesReaderReading } from "./bytes-reader-reading"
 import { effectSequencingReading } from "./effect-sequencing-reading"
 import { filesystemReaderReading } from "./filesystem-reader-reading"
 import { jsonReaderReading } from "./json-reader-reading"
@@ -343,19 +344,22 @@ export function compilerReferenceModules() {
           description: item.description,
           descriptionEn: description.en,
           descriptionJa: description.ja,
-          reading: jsonReaderReading(
+          reading: bytesReaderReading(
             item,
-            effectSequencingReading(
+            jsonReaderReading(
               item,
-              filesystemReaderReading(
+              effectSequencingReading(
                 item,
-                resultFoundationReading(
+                filesystemReaderReading(
                   item,
-                  signatureReading(
-                    item.signature,
-                    item.kind,
-                    item.typeParameters,
-                    item.constraints
+                  resultFoundationReading(
+                    item,
+                    signatureReading(
+                      item.signature,
+                      item.kind,
+                      item.typeParameters,
+                      item.constraints
+                    )
                   )
                 )
               )

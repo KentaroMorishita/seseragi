@@ -1,0 +1,24 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "バイト列をログやテキスト欄に残すとき、std/bytes/hexで十六進文字列にできます。読み取り時は、不正な桁や長さを成功したBytesと区別して受け取ります。",
+  taskTitle: "バイト列を読める十六進表記にする",
+  purpose: "ファイルや通信のデータを、元のバイト値が分かる文字列として記録したいとします。1バイトは0から255までの値です。十六進表記では1バイトを2桁で表すので、0も先頭の0を省かず00と記録できます。",
+  typescriptBefore: "TypeScriptではUint8Array.fromで固定の数値配列からバイト列を作り、toHex()で小文字の十六進文字列にします。Uint8Arrayは要素を書き換えられるバイト用の配列です。この例の数値はすべて範囲内なので、追加の検査は必要ありません。",
+  benefit: "TypeScriptのtoHex()も短く書けます。SeseragiではBytesという書き換えられない値をhex.encodeへ渡します。数値の検査をするfromIntsと、確認済みのバイト列を文字列にするencodeの役割が分かれています。",
+  setup: "bytesはstd/bytes、hexはstd/bytes/hexの別名です。import * asでその別名を付け、hex.encodeのように操作を選びます。例では5個のバイトと空のバイト列を表示します。",
+  after: [
+    "fn render values: Array<Int> -> Stringは、整数の配列valuesを受け取り、文字列を返す関数です。fnが定義を始め、:の後ろが引数の型、->の後ろが戻り値の型です。Intは整数、Array<Int>はその配列、Stringは文字列です。",
+    "bytes.fromInts valuesは、関数名の後ろに空白で引数を渡す呼び出しです。fromIntsは範囲を調べ、成功ならRight content、失敗ならLeft errorを返します。この二つの結果を表す型をEitherと呼びます。matchは届いた結果に合う枝を選びます。",
+    "Right contentの枝では、得られたBytesにcontentという名前を付け、hex.encode contentを返します。Left errorの枝ではshow errorが理由を表示用の文字列にします。->の右の式が、その枝とrenderの結果になります。",
+    "0、15、16、171、255は順に00、0f、10、ab、ffとなり、000f10abffが表示されます。空配列からは空文字列ができるので、次の行は空行です。println (render values)の括弧は、先にrenderを呼んでから表示する順序を示します。",
+  ],
+  details: [
+    "encodeは各バイトを小文字の0–9とa–fで表します。先頭の0x、区切り文字、空白は付けません。入力のバイト数の2倍の桁数を持つ、新しい文字列を作ります。",
+    "逆向きのdecodeは、大文字と小文字の十六進数字を受け入れます。00FFを読んでencodeで書き直すと00ffになります。ここでの標準の表記は、同じバイト列に対してencodeが選ぶ一つの綴りです。",
+    "decodeは入力のUTF-8でのバイト数が偶数か先に調べ、その後で数字を調べます。失敗はLeftのHexDecodeErrorです。OddHexLengthが持つのは入力の長さ、InvalidHexDigitが持つoffsetは0から数えるバイト位置です。",
+    "0x00や00 00をdecodeへ渡すと拒否されます。送り側がその形式を使うなら、その仕様を確かめてから別途処理します。また、十六進文字列を読めても中身が文章とは限りません。文字列に戻すには、別にstd/textのdecodeUtf8で確認します。",
+    "十六進表記は、暗号化でも圧縮でもありません。処理はブラウザーとプロセスの両方で使え、入出力サービスを必要としません。例のprintlnだけが表示を行います。",
+  ],
+  nodeNote: "検証したNode 24ではtoHex()/fromHex()を使えません。Node/Bunではimport { Buffer } from \"node:buffer\"を使い、Buffer.from(content).toString(\"hex\")で書き出せます。Bufferは変換用の操作を持つUint8Arrayの一種です。読み取りのBuffer.from(input, \"hex\")は不正な部分で切り詰めることがあるため、偶数の長さとASCIIの十六進数字だけであることを先に確かめます。",
+}

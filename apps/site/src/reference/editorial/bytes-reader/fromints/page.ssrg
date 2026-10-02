@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { bytesReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  bytesReaderEditorial "std/bytes::fromInts" "value" "function" "validate-byte-input" (en.copy ()) (ja.copy ())

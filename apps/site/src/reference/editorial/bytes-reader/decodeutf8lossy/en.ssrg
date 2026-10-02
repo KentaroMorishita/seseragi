@@ -1,0 +1,21 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "decodeUtf8Lossy replaces malformed UTF-8 sequences and returns a String for preview. It does not establish that the original input was valid.",
+  taskTitle: "Preview damaged text data",
+  purpose: "A diagnostic screen may need to show the readable parts of a partly damaged payload. Read [97, 226, 40, 161] and display � for the unreadable parts. The original data has not been repaired.",
+  typescriptBefore: "TextDecoder’s normal TypeScript decoding replaces malformed UTF-8. Omit fatal: true and use ignoreBOM: true to preserve an initial U+FEFF. This example prints a�(�.",
+  benefit: "Both versions are short. Seseragi’s decodeUtf8Lossy name and direct String result distinguish a preview from the failure-reporting decodeUtf8 operation. Choose it where replacement characters are acceptable for display.",
+  setup: "bytes and text are import aliases for std/bytes and std/text. fn preview -> String defines a function with no parameters that returns a string; preview () calls it. bytes.fromInts [97, 226, 40, 161] passes an integer array after a space.",
+  after: [
+    "fromInts checks that each integer is from 0 through 255 and returns Either<ByteError, Bytes>. Left means failure; Right means success. Only the match branch Right content passes the created Bytes to text.decodeUtf8Lossy content.",
+    "The Left error branch turns a failure into String with show error. The expression after each branch’s -> is its result. decodeUtf8Lossy itself returns String, so its result does not need another Left/Right match.",
+    "97 reads as a and 40 reads as (. The sequence started by 226 and the lone 161 cannot be read, so they become �, the U+FFFD replacement character. Strict decodeUtf8 would reject this input with InvalidUtf8 at offset 1.",
+  ],
+  details: [
+    "Replacement applies to each maximal invalid subsequence, meaning a group of malformed bytes treated as one unit. It does not necessarily add one � per bad byte. Valid original text may also contain �, so searching the preview for that character cannot establish input validity.",
+    "The replacement String cannot recover the original damaged bytes. For signature checks or processing that must accept the original content exactly, use the original Bytes and strict decodeUtf8 result rather than a preview.",
+    "An initial U+FEFF marker, often called a BOM, is retained as a character. Empty Bytes produces an empty string. The operation reads the whole input and creates a new string, using time and memory that grow with the input size.",
+  ],
+  nodeNote: "Node 24.19.0 supports this Uint8Array and TextDecoder example unchanged. Omitting ignoreBOM: true removes an initial BOM, so it would no longer match Seseragi’s preservation policy.",
+}

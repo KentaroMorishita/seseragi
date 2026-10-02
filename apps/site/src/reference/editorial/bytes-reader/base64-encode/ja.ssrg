@@ -1,0 +1,22 @@
+import { BytesReaderCopy } from "../model"
+
+pub fn copy -> BytesReaderCopy = BytesReaderCopy {
+  summary: "base64.encodeはBytesを標準のBase64文字列にします。必要な数だけ末尾へ=を付け、同じバイト列をいつも同じ綴りで表します。",
+  taskTitle: "標準のBase64文字列を書き出す",
+  purpose: "短いラベルのバイト列を、標準のBase64を求めるテキスト欄へ入れます。Base64はバイト列を限られたASCII文字で表す方式です。空文字列からfoobarまでを順に変換し、末尾の=がいつ必要かを確かめます。",
+  typescriptBefore: "TypeScriptではTextEncoderが各labelをUTF-8のUint8Arrayへ変換し、toBase64()が標準のBase64文字列にします。標準形式と必要な末尾の=が既定なので、この例ではオプションを指定しません。",
+  benefit: "どちらの変換も短い呼び出しで済みます。SeseragiではStringをBytesへ変えるencodeUtf8と、BytesをBase64のStringへ変えるencodeの境目が型に表れます。文章をそのままencodeに渡す間違いを防げます。",
+  setup: "textはstd/text、base64はstd/bytes/base64の別名です。UTF-8は文章をバイト値にする方式で、Bytesはその値を並べた書き換えられないバイト列です。この例の英字は1文字につき1バイトです。",
+  after: [
+    "for label <- [...]で各文字列にlabelという名前を付け、順番に処理します。text.encodeUtf8 labelは関数名と引数を空白で並べた呼び出しです。括弧で囲んだ結果を、外側のbase64.encodeへ渡します。",
+    "最初の空文字列は空のBytesになり、Base64も空文字列です。fはZg==、foはZm8=、fooはZm9vになります。末尾の=は元の文章に含まれる文字ではなく、出力の長さを4の倍数にする埋め合わせです。",
+    "3バイトの組が完全なら=は不要です。末尾が1バイトなら==、2バイトなら=が付きます。foob、fooba、foobarの出力でも同じ規則を確かめられます。",
+  ],
+  details: [
+    "encodeはBytesを一つ受け取り、新しいStringを返します。成功か失敗かの分岐はなく、与えられたバイト列の内容によって拒否されることもありません。入力自体を書き換えません。",
+    "標準形式の文字はA–Z、a–z、0–9、+、/です。必要な=だけを末尾へ付け、空白や改行は挿入しません。標準の表記とは、同じバイト列に対してencoderが出す一つの綴りです。",
+    "受け取り先がURL向け形式を求めるならencodeUrlを使います。標準形式から単に=を消すだけでは、+と/も変える必要がある場合に対応できません。読み戻すときは対応するdecodeを使います。",
+    "文字列を直接encodeへ渡すと、必要なBytesと型が合いません。例のように先にencodeUtf8へ渡します。Base64にしても内容は秘匿されず、暗号化や圧縮は行われません。",
+  ],
+  nodeNote: "検証したNode 24ではtoBase64()を使えません。Node/Bunではimport { Buffer } from \"node:buffer\"を使い、Buffer.from(content).toString(\"base64\")で同じ標準形式を書き出せます。Bufferは文字列との変換操作を持つUint8Arrayの一種です。",
+}

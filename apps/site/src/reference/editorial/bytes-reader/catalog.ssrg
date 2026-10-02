@@ -1,0 +1,119 @@
+import { editorial as case0 } from "./bytes-module/page"
+import { editorial as case1 } from "./bytes/page"
+import { editorial as case2 } from "./byteerror/page"
+import { editorial as case3 } from "./fromints/page"
+import { editorial as case4 } from "./toints/page"
+import { editorial as case5 } from "./length/page"
+import { editorial as case6 } from "./utf8decodeerror/page"
+import { editorial as case7 } from "./encodeutf8/page"
+import { editorial as case8 } from "./decodeutf8/page"
+import { editorial as case9 } from "./decodeutf8lossy/page"
+import { editorial as case10 } from "./hex-module/page"
+import { editorial as case11 } from "./hexdecodeerror/page"
+import { editorial as case12 } from "./hex-encode/page"
+import { editorial as case13 } from "./hex-decode/page"
+import { editorial as case14 } from "./base64-module/page"
+import { editorial as case15 } from "./base64decodeerror/page"
+import { editorial as case16 } from "./base64-encode/page"
+import { editorial as case17 } from "./base64-decode/page"
+import { editorial as case18 } from "./base64-encodeurl/page"
+import { editorial as case19 } from "./base64-decodeurl/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Block } from "../../../model/page"
+import { Editorial, editorialBlocks } from "../model"
+
+// Shallow branches preserve exact canonical owner, namespace, kind and identity.
+pub fn bytesReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match symbol.module {
+    "std/bytes" -> module0 symbol
+    "std/text" -> module1 symbol
+    "std/bytes/hex" -> module2 symbol
+    "std/bytes/base64" -> module3 symbol
+    _ -> Nothing
+  }
+
+fn module0 symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("type", "opaque-type") -> types0 symbol.identity
+    ("value", "function") -> functions0 symbol.identity
+    _ -> Nothing
+  }
+
+fn types0 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes::Bytes" -> Just (case1 ())
+  "std/bytes::ByteError" -> Just (case2 ())
+  _ -> Nothing
+}
+
+fn functions0 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes::fromInts" -> Just (case3 ())
+  "std/bytes::toInts" -> Just (case4 ())
+  "std/bytes::length" -> Just (case5 ())
+  _ -> Nothing
+}
+
+fn module1 symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("type", "opaque-type") -> types1 symbol.identity
+    ("value", "function") -> functions1 symbol.identity
+    _ -> Nothing
+  }
+
+fn types1 identity: String -> Maybe<Editorial> = match identity {
+  "std/text::Utf8DecodeError" -> Just (case6 ())
+  _ -> Nothing
+}
+
+fn functions1 identity: String -> Maybe<Editorial> = match identity {
+  "std/text::encodeUtf8" -> Just (case7 ())
+  "std/text::decodeUtf8" -> Just (case8 ())
+  "std/text::decodeUtf8Lossy" -> Just (case9 ())
+  _ -> Nothing
+}
+
+fn module2 symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("type", "opaque-type") -> types2 symbol.identity
+    ("value", "function") -> functions2 symbol.identity
+    _ -> Nothing
+  }
+
+fn types2 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes/hex::HexDecodeError" -> Just (case11 ())
+  _ -> Nothing
+}
+
+fn functions2 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes/hex::encode" -> Just (case12 ())
+  "std/bytes/hex::decode" -> Just (case13 ())
+  _ -> Nothing
+}
+
+fn module3 symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match (symbol.namespace, symbol.itemKind) {
+    ("type", "opaque-type") -> types3 symbol.identity
+    ("value", "function") -> functions3 symbol.identity
+    _ -> Nothing
+  }
+
+fn types3 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes/base64::Base64DecodeError" -> Just (case15 ())
+  _ -> Nothing
+}
+
+fn functions3 identity: String -> Maybe<Editorial> = match identity {
+  "std/bytes/base64::encode" -> Just (case16 ())
+  "std/bytes/base64::decode" -> Just (case17 ())
+  "std/bytes/base64::encodeUrl" -> Just (case18 ())
+  "std/bytes/base64::decodeUrl" -> Just (case19 ())
+  _ -> Nothing
+}
+
+pub fn bytesReaderModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (match specifier {
+    "std/bytes" -> Just (case0 ())
+    "std/bytes/hex" -> Just (case10 ())
+    "std/bytes/base64" -> Just (case14 ())
+    _ -> Nothing
+  }
+)

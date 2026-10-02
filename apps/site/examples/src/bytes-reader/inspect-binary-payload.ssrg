@@ -1,0 +1,8 @@
+import * as bytes from "std/bytes"
+
+fn inspect -> String = match bytes.fromInts [0, 15, 255] {
+  Left error -> show error
+  Right content -> `${show (bytes.toInts content)}
+${bytes.length content}`
+}
+pub effect fn main = println (inspect ())

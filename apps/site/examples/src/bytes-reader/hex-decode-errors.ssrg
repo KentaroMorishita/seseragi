@@ -1,0 +1,9 @@
+import * as hex from "std/bytes/hex"
+fn read input: String -> String = match hex.decode input {
+  Right content -> "Decoded: " + hex.encode content
+  Left error -> match error {
+    hex.OddHexLength length -> `Odd byte length: ${length}`
+    hex.InvalidHexDigit { offset } -> `Invalid hex at byte ${offset}`
+  }
+}
+pub effect fn main = for input <- ["00FF", "0", "00xz", "é0"] { println (read input) }
