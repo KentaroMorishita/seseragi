@@ -69,15 +69,16 @@ test("identity overlay renders twelve List pages in both locales and preserves d
       items: sourceModule.items.filter(
         (x) =>
           identities.has(x.identity) ||
-          ["std/list::length", "std/list::empty", "std/list::zip"].includes(
+          ["std/list::Eq", "std/list::empty", "std/list::zip"].includes(
             x.identity
           )
       ),
     }
     expect(module.items).toHaveLength(14)
     for (const item of module.items) {
-      expect(item.namespace).toBe("value")
-      expect(item.itemKind).toBe("function")
+      const isControl = item.identity === "std/list::Eq"
+      expect(item.namespace).toBe(isControl ? "instance" : "value")
+      expect(item.itemKind).toBe(isControl ? "instance" : "function")
     }
     const input = {
       schema: 1,
@@ -203,16 +204,22 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      const lengthHtml = pages.get(
-        `${prefix}/docs/library/list/function/length/`
+      const controlHtml = pages.get(
+        `${prefix}/docs/library/list/instance/eq-list-a/`
       )!
-      const lengthItem = module.items.find(
-        (x) => x.identity === "std/list::length"
+      const controlItem = module.items.find(
+        (x) => x.identity === "std/list::Eq"
       )!
-      expect(lengthHtml).not.toContain('id="using-this-operation"')
-      expect(plain(lengthHtml)).toContain(
-        prefix === "/ja" ? lengthItem.descriptionJa : lengthItem.descriptionEn
-      )
+      expect(controlHtml).toBeDefined()
+      expect(controlItem).toBeDefined()
+      expect(controlItem.namespace).toBe("instance")
+      expect(controlItem.itemKind).toBe("instance")
+      expect(controlHtml).not.toContain('id="using-this-operation"')
+      const reading =
+        prefix === "/ja" ? controlItem.reading.ja : controlItem.reading.en
+      expect(reading.trim()).not.toBe("")
+      expect(plain(controlHtml)).toContain(reading)
+      expect(plain(controlHtml)).toContain(controlItem.signature)
       expect(
         plain(pages.get(`${prefix}/docs/library/list/function/findindex/`)!)
       ).toContain("Nothing")
@@ -272,7 +279,7 @@ test("overlay identity inventory stays valid and ignores unrelated namespace, ki
     const first = items[0]
     const probes = [
       ...items,
-      { ...first, identity: "std/list::length" },
+      { ...first, identity: "std/list::Eq" },
       { ...first, namespace: "type" },
       { ...first, itemKind: "constructor" },
       { ...first, module: "std/array" },

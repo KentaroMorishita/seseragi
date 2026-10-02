@@ -1,0 +1,17 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "println writes a string followed by a newline. Use it to report a completed step on its own line.",
+  taskTitle: "Report a successful save on one line",
+  purpose: "After saving files, print Saved 3 files. The next message should start on a new line, so use println to write the text and its ending newline together.",
+  typescriptBefore: "In Node.js or Bun TypeScript, passing a string to console.log is enough. This short expression prints the same line. The comparison is terminal output; a browser developer console has a different presentation model.",
+  benefit: "Seseragi puts output inside an effect fn. println requires the Console output service and can fail with ConsoleError. The benefit is making an external write, its required service, and its possible failure part of the operation, rather than making this already-small task shorter.",
+  reading: [
+    "pub effect fn main defines the input/output operation the program runs. The println to the right of = is what happens when main executes. println is in the Prelude, so this example needs no import.",
+    "println \"Saved 3 files\" calls the function with one string argument, separated from the function name by a space. It adds a newline after the string, producing a single line containing Saved 3 files."
+  ],
+  details: [
+    "To build one line from several writes, use print for the earlier parts and println for the end. println adds its newline even if the supplied string already ends with one.",
+    "For a number or another value with a display rule, printValue is also available, but it does not add a newline. println fits this task of writing one string as a complete line."
+  ]
+}

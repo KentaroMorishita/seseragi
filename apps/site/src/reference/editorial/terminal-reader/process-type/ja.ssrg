@@ -1,0 +1,19 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "Processは、実行中のプログラムの設定、引数、作業ディレクトリーを読むために必要なサービスの型です。",
+  taskTitle: "設定を読む処理の実行条件を宣言する",
+  purpose: "SESERAGI_DOCS_MODEという起動時の設定を読み、結果を表示します。ここでは、処理の宣言にあるprocess: process.Processが何を要求しているかに注目します。",
+  typescriptBefore: "Node.jsやBunのTypeScriptでは、node:processから得たprocessを通して環境変数を読めます。この例ではprocess.envの値がundefinedなら既定値を選び、それ以外は空文字列もそのまま表示します。",
+  benefit: "SeseragiのwithにProcessを書くと、その処理が実行環境の情報を必要とすることを型に表せます。設定の値をProcess型に入れるのではなく、設定を読めるサービスが必要だと宣言する書き方です。",
+  reading: [
+    "with Console, process: process.Processのprocess:は、必要なサービスの名前です。その右のprocess.Processは、std/processをprocessという別名で読み込んだときの型名です。設定名や設定値ではありません。",
+    "同じwithにあるConsoleはprintlnで結果を表示するためのサービスです。プロセス情報の読み取りと画面への出力は別の役割なので、このmainには両方を宣言しています。",
+    "process.environmentの読み取りが成功しても、設定がない場合はNothingです。値があればJust modeになります。Processは読み取れる環境を要求する型であり、特定の設定が必ず存在するという保証ではありません。"
+  ],
+  details: [
+    "通常はProcessの内部を自分で組み立てる必要はありません。processターゲットの実行環境がmainに必要なサービスを用意します。importは型や操作の名前を使えるようにする宣言で、それだけでは設定を読みません。",
+    "この例では読み取りのProcessErrorをその場で受け取り、表示内容を選んでいます。その後のprintlnは別に失敗する可能性があるため、mainの宣言にはfails ConsoleErrorが残ります。",
+    "同じProcessサービスを必要とする操作にargumentsとcurrentDirectoryがあります。設定や引数をブラウザーから読むための型ではなく、この例はNode.jsかBunで起動するprocessターゲット用です。"
+  ]
+}

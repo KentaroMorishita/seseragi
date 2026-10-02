@@ -1,0 +1,22 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "Mapのキーと値を条件で調べ、合う項目だけを元の順序で残します。",
+  taskTitle: "販売できる商品の在庫だけを残す",
+  purpose: "商品名と在庫数を持つ一覧から、保留中の商品と在庫がない商品を外します。元の一覧はそのまま保ち、販売できる項目を持つ別のMapを作ります。",
+  typescriptBefore: "TypeScriptではMapを[...stock]でキーと値の組の配列にし、filterで選んでからnew Mapで戻せます。([sku, quantity])は組の一つ目を商品名、二つ目を在庫数として取り出します。この書き方も元のMapを変えません。",
+  benefit: "Seseragiではmaps.filterに条件の関数とMapを渡し、Mapを直接返します。配列へ変換して戻す手順は不要です。条件を別の関数として読みやすくできる点はTypeScriptと同じです。",
+  setup: "mapsはstd/map、jsonは表示用のstd/jsonのimportの別名です。maps.fromEntriesは(\"tea\", 2)のようなキーと値の組からMapを作ります。この例のキーはString、値はIntです。let stockはその一覧に名前を付けます。",
+  after: [
+    "fn available sku: String -> quantity: Int -> Boolは、商品名skuを先に、在庫数quantityを後に受け取る関数です。sku != \"hold\"で保留中の商品を除き、quantity > 0で在庫を確認します。&&は両方の条件を満たすか調べます。",
+    "maps.filter available stockは、各キーと値をavailableへ渡します。Trueになった項目だけをselectedに残します。宣言のK -> V -> Boolも、キー、値、判定結果の順を表しています。",
+    "maps.entries selectedでキーと値の組を取り出して表示します。結果はteaが2個、coffeeが3個の順です。次の表示には元のstockの四項目が残っており、filterで削除されていないことを確認できます。",
+    "最後のmaps.empty<String, Int> ()は空のMapを作ります。<String, Int>はキーと値の型を指定し、()は意味のある入力値を必要としない呼び出しの引数です。空のMapを絞り込んでも空のままです。",
+  ],
+  details: [
+    "条件の関数は挿入順に各項目へ一度ずつ呼ばれ、残した項目もその順序を保ちます。最初の一件で止まる操作ではありません。",
+    "キーと値の順序を取り違えないでください。この例でIntを先に、Stringを後に受け取る関数を渡すと型が合いません。キーを使わない条件でも、キーを受け取る位置は必要です。",
+    "0、False、空文字列だから自動的に除かれるわけではありません。残すかどうかを決めるのは条件のBoolです。この例が在庫0を除くのはquantity > 0を書いたためです。",
+    "この比較は文字列のキーを使います。オブジェクトなど別の種類のキーで、JavaScriptとSeseragiの同一性の判定が同じだと示すものではありません。",
+  ],
+}

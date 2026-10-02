@@ -1,0 +1,9 @@
+import * as effects from "std/effect"
+fn requireText value: String -> String = value
+pub effect fn main -> Unit with Console, Stdin fails ConsoleError = do {
+  result <- effects.attempt (readLine ())
+  match result {
+    Left _ -> println "Input failed"
+    Right value -> println (requireText value)
+  }
+}

@@ -1,0 +1,13 @@
+import * as items from "std/list"
+import * as json from "std/json"
+
+fn describe value: Maybe<List<String>> -> String = match value {
+  Nothing -> "missing"
+  Just rest -> "present: " + (json.encodeString [value | value <- rest])
+}
+
+pub effect fn main = do {
+  _ <- println (describe (items.tail (items.empty<String> ())))
+  _ <- println (describe (items.tail `["Read"]))
+  println (describe (items.tail `["Read", "Review", "Ship"]))
+}

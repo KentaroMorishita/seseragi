@@ -1,3 +1,13 @@
+import { collectionTransformEditorialFor } from "./collection-transform/catalog"
+import {
+  stdinReaderEditorialFor,
+  stdinReaderModuleBlocks
+} from "./stdin-reader/catalog"
+import {
+  terminalReaderEditorialFor,
+  terminalReaderModuleBlocks
+} from "./terminal-reader/catalog"
+import { practicalCollectionEditorialFor } from "./practical-collection/catalog"
 import {
   bytesReaderEditorialFor,
   bytesReaderModuleBlocks
@@ -200,6 +210,32 @@ fn editorialAfterJsonReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editori
 fn editorialAfterUrlReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match bytesReaderEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterBytesReaderEditorialFor symbol
+  }
+
+fn editorialAfterBytesReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match practicalCollectionEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterPracticalCollectionEditorialFor symbol
+  }
+
+fn editorialAfterPracticalCollectionEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match terminalReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterTerminalReaderEditorialFor symbol
+  }
+
+fn editorialAfterTerminalReaderEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match stdinReaderEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterStdinReaderEditorialFor symbol
+  }
+
+fn editorialAfterStdinReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match collectionTransformEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -281,5 +317,7 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   effectSequencingModuleBlocks specifier,
   jsonReaderModuleBlocks specifier,
   urlReaderModuleBlocks specifier,
-  bytesReaderModuleBlocks specifier
+  bytesReaderModuleBlocks specifier,
+  terminalReaderModuleBlocks specifier,
+  stdinReaderModuleBlocks specifier
 ]

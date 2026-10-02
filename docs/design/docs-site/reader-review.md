@@ -3378,3 +3378,425 @@ The entire previous 203079-byte ledger prefix is preserved, SHA-256
 `67a0eb1961f8a2f848895765b7d86ad8179ae35f1bd9d2af62d62bfeb5950287`. All 106 original
 checkbox rows, including their historical checked states, remain byte-identical.
 No earlier conclusion or checklist state is replaced.
+
+
+## 2026-10-02: Collection20 everyday operations
+
+This bounded batch authors twenty existing value/function identities:
+Array and List get/head/isEmpty/length/filter/find/take/drop, plus Map and Set
+filter/isEmpty. Existing module entrances, canonical declarations and runtime
+behavior are preserved. The scope is forty EN/JA article bodies.
+
+Independent reading covers all forty initial complete bodies and all forty
+corrected complete bodies, twenty per language in each pass. Each review binds
+to the exact whole-body and text hashes. No required correction remains.
+These are independent simulated novice reads, not first-time human feedback
+or actual browser-host acceptance.
+
+Corrections align the TypeScript filter's empty-input case, use native
+slice(1, 3) with its exclusive endpoint, define Unit and () correctly, explain
+show only where it is used, and distinguish direct console.log Boolean output
+from JSON.stringify. Negative-count clamping and the distinction between a
+present zero/False/empty string and absence remain explicit. List costs are
+supported by implementation reading, not timing. Map/Set equality limits use
+plain language.
+
+The final focused gate passes eight tests and 3,132 assertions. Fourteen visible
+source pairs and three supplementary pairs pass official-CLI process checks,
+strict TS and Bun/Node output checks, and committed-WASM/current-runtime checks.
+Seven isolated type rejections have complete successful repairs. The final
+JSON-fixture formatting-only adjustment is separate from those teaching-source
+and wording corrections: its data is unchanged, a fresh full focused run passes,
+and all forty rendered body hashes match the corrected bodies the readers read.
+All 248 unselected article bodies in the four owning modules match checkpoint14.
+
+Final evidence fingerprints (the manifests contain the exact per-file,
+per-source/output and per-route body/text hashes):
+
+- `final-owned-source-manifest.json`: `48451a0f1ddc22fe3306d38b3af403fe6e3b85e03a3fe796905abeaf822b73d7`
+- `final-source-output-manifest.json`: `22c759fe499b715bcc8b120307a7ad0737953f84bf9f4dca8b3f2442c6bc337d`
+- `final-body-manifest.json`: `c419b159a27357973d6963c8677cf34e7a16744eff18c983b72c83525cfa21cb`
+- `reviewed-final-body-parity.json`: `31b0e6545895c781c691bed0b2c4741fce8268eb71c35487b9f93c4043277bfb`
+- `english-reader-review.json`: `5cfde2e2183c89edb3261f688c81131a993de802b7c09b244ea9b06ecf268314`
+- `japanese-reader-review.json`: `9b9d234d0dd828288cd2bd65f03ce7c908e4753b0ec333a3083c03b25a8d8f78`
+- `english-reader-rereview.json`: `cf9cdafbd7ffa45645cf576e48034c4fd7aa945372604812e0c3ce58e12c56f8`
+- `japanese-reader-rereview.json`: `5b683143e6c987d4783641ea043af8aabe2c4031a3d4ea4d5a252a7c9c230bf2`
+- `frozen-exact-focused.log`: `2353717b628c825c9325a6ae25163e5a587b074eef6fe16358ed6df6fcdcb53f`
+- `final-unselected-body-audit.json`: `5c8181a62d1b67066875476fbad668bf5a47251ef6dbfbc36319f7c9730974d9`
+
+See [the bounded work item](practical-collection-work-item.md) and
+[verification record](practical-collection-verification.md). Whole-site
+integration, real-browser display/host checks and publication remain separate.
+No compiler/runtime repair or unselected source correction is included.
+
+The entire prior 209413-byte ledger prefix is preserved, SHA-256
+`72408ea5d92df1b00d933b8f42765fde8760b65cee007d8d18c13496f8ef7f2a`. All 106 historical checkbox rows and their states remain
+byte-identical; this appendix adds no checkbox or changes an earlier verdict.
+
+
+## 2026-10-02: Terminal9 output and startup inputs
+
+This bounded tranche authors nine existing destinations: Prelude println, print,
+printValue, plus std/process, Process, ProcessError, environment, arguments and
+currentDirectory. The scope is eighteen EN/JA bodies, Japanese authored first for
+ordinary TypeScript application developers. Seven complete source pairs teach
+short output, optional synthetic settings, application arguments, a controlled
+working directory and one local attempt/match failure boundary. No advanced
+functional-programming prerequisite or new language/runtime behavior is added.
+
+### Complete-body reading and corrections
+
+Independent readers completed all eighteen initial whole-body reads and all
+eighteen corrected full-body rereads, nine per language on each pass. Each read
+binds to its exact body/text/HTML hashes and includes code, output, shell launch
+commands, generated declaration tails and related/navigation content. No required
+reader issue remains. These are simulated reader judgments, not first-time human
+usability feedback.
+
+Two precisely guarded type-reading explanations replace misleading generic
+opaque-type guidance: Process is supplied by the process-target runner and has no
+public constructor; ProcessError retains public alternatives that can be matched,
+including InvalidEnvironmentName. Exactly these two reading records changed among
+1,812 canonical reference records. All 1,810 others, every declaration and all type
+classifications remain unchanged. The TypeScript comparisons were repository-
+formatted and rerun. The illustrative cwd uses a neutral synthetic directory,
+/tmp/seseragi-process-demo, rather than an internal batch label.
+
+### Exact-source and host evidence
+
+The final focused run passes ten tests and 3,401 assertions. Seventy-five recorded
+subprocess commands cover the supplied official Seseragi v0.61.19 release CLI,
+strict TypeScript 5.8.3, Node 24.19.0 and Bun 1.3.9. All seven exact Seseragi
+programs pass formatting/lint, release build and separate stdout/stderr checks;
+all seven exact TypeScript comparisons produce the tested task outputs on both
+runtimes. A real Maybe-as-String rejection has a complete successful repair.
+Synthetic settings distinguish present-empty from absent, argv preserves spaces
+and empty values, and empty/NUL names exercise actual ProcessError matching.
+No real environment dump, secret or arbitrary file content is read by the tests.
+
+The supported argument recipe builds for process and runs manifest-declared
+entry.js. The CLI run command does not forward application arguments or accept
+a -- separator. All four Process source programs declare their services and
+remain process-only; every one of the twelve Process locale bodies has no
+source-seeded browser launch link. Browser compilation alone is not host support.
+
+The three exact portable Prelude sources pass committed-WASM/current production
+browser-execution checking under Bun. Supplemental current-browser-host callbacks
+preserve raw chunks to prove newline behavior; the normal output display trims
+trailing whitespace. One earlier coordinated public Playground observation passed
+the exact combined Prelude output program. That single observation is limited
+public-host evidence, not a public run of every page, a deployed-version parity
+claim, site-layout acceptance or proof of separate browser stderr.
+
+Production rendering checks all eighteen actual bodies, source/output hashes,
+locale pairing, exact titles and return links. Six directly rendered unselected
+article controls match checkpoint15 byte-for-byte. This focused control set is
+not a whole-site regression claim. Owned helpers/tests pass the existing site
+TypeScript flags and Biome; all twenty-nine family modules pass formatting.
+
+### Preserved backlog and boundaries
+
+The original seventeen-destination plan is retained. Eight std/console-owned
+destinations remain explicitly gated: its entrance, Console, ConsoleError,
+println, print, printValue, error and errorLine. Prelude identities on the two
+exported types do not change their std/console ownership. Qualified ConsoleError
+compatibility, explicit provider requirements, beginner-facing error handling
+and separate browser proof need a later decision; none is silently accepted by
+this tranche. Stdin and process signals remain outside scope.
+
+Final evidence fingerprints (the manifests contain exact per-file, source/output
+and per-route body/text hashes):
+
+- `final-owned-source-manifest.json`: `60808e917db06063763a4a68945fd092609c12363c8e91e9c5164d6f26319f7d`
+- `final-source-output-manifest.json`: `cc3637ca790f3219c51e261ff50aa3a86bf564faf290228f0a9fc996e5c3fbe8`
+- `final-body-manifest.json`: `5e08c2c9d8705a9c1340081101bc3ce34ac9646ee9ff8dad12109b06a6e8c580`
+- `reviewed-final-body-parity.json`: `afe9dbeaf365337b7e8d8412fe12c3f7e6e56f71752603ac0a86a9691d55e273`
+- `final-tests.log`: `2c17516446cb2062fb67d0ff41739b5d548a7e799487f54ae024639a12163c8f`
+- `reading-change-audit.json`: `776b67746183875f8b1151819ecaddbf11bb3f9d04690f732b2fcc3dc67f3a28`
+- `english-reader-review.json`: `a582cf96703b6d501dd534a7e6d98a1baff0e95eb1789d9abd6962283aa45103`
+- `japanese-reader-review.json`: `081a5e0bbed348af1ca54d347c980dba11d024894eb866068419db58e56c11f6`
+- `english-reader-rereview.json`: `47227f390ccd51e7f218e3c71839f1dd9df5518768af46ccf9f3ca031c7c626b`
+- `japanese-reader-rereview.json`: `6f98b62493a5941a25f6767b311f9859efa31811a8a24efaaf99f08f24ef4e2d`
+- `final-unselected-controls.json`: `c3c67380c5399e9ff28ce1fa63f616d7d6d79e9331517cce218d8c510003351e`
+
+See [the bounded work item](terminal-reader-work-item.md) and
+[verification record](terminal-reader-verification.md). Parent-owned whole-site
+integration, actual documentation layout/browser checks, commit and publication
+remain separate. No compiler/runtime repair or public issue is included.
+
+The entire prior 212904-byte ledger prefix is preserved, SHA-256
+`455849f485ba5d6b287ce9094dc766063775ff30fa570ec34b45feb428a77e00`. All 106 historical checkbox rows and their
+states remain byte-identical. This appendix adds no checkbox and changes no
+earlier verdict.
+
+
+## 2026-10-02: Stdin12 one-line input and checked byte limits
+
+This bounded addition covers twelve existing destinations and 24 EN/JA bodies:
+std/stdin; its Stdin, StdinError, readLine, LineLimit, lineLimit, defaultLineLimit,
+readLineWith, StdinConfigError, InvalidStdinUtf8 and StdinLineTooLong pages; and
+Prelude readLine. Canonical Stdin/StdinError identities still belong to the
+std/stdin catalog owner. Exact identity/owner/namespace/kind guards preserve
+all other destinations and their classification.
+
+The reader path starts with ordinary standalone Node/Bun TypeScript, a short
+pipe input and a complete Seseragi program. It distinguishes the first line
+from whole-input collection, blank from EOF and failure, checked UTF-8 byte
+limits from character counts, absolute malformed-byte offsets, and moving to
+the next line after a rejected line has been consumed. Native readline's
+malformed-byte replacement and bare-CR splitting are explicitly different;
+the proof-only strict byte helper is not a displayed teaching program.
+
+All 24 initial complete bodies were independently read, then all 24 final
+complete bodies were independently reread after corrections. No final reader
+findings remain. The host-supplied Stdin explanation and the two error tails
+received separately approved exact reading corrections; public constructors
+can be matched while internal representation stays private. Exactly three
+reading records change in each locale; 1,809 others and every canonical
+signature/kind remain unchanged. Configuration headings no longer imply stdin
+consumption, and the standalone TS validator accurately distinguishes an
+unsafe/fractional number from a nonpositive byte count.
+
+The final owned run passed 14 tests and 4,485 assertions. Its 209 subprocess
+records preserve actual argv, synthetic input/environment, exit status and
+separate output bytes/hashes, including expected negative observations. Six
+exact source pairs ran under Node/Bun after strict TS checking. Byte-policy
+recovery, the actual POSIX octal printf pipeline, declared release entry.js,
+package target rejection, focused diagnostics/repairs and six bounded open-pipe
+observations are retained. All 38 family modules format; owned TypeScript,
+Biome and diff checks pass. Six unselected locale article bodies match
+checkpoint16 exactly. This is bounded batch acceptance, not whole-site reader
+acceptance or a new publication claim.
+
+All 22 std/stdin-owned locale bodies suppress browser launch links. Qualified
+package web rejection remains separate from successful standalone bundling;
+bundling does not prove stdin host availability. Only the unchanged Prelude
+readLine source has portable evidence: seven finite-text committed-WASM/current
+browser-path cases and the retained public Playground parcel/newline/empty
+observations. Its source link does not prefill Input. No new public browser
+session, deployed version, arbitrary malformed browser bytes, interactive OS
+stdin or browser stderr separation is claimed. Qualified StdinError Show
+remains unavailable in the verified release observation; examples use public
+patterns and a plain fallback. The eight qualified Console destinations stay
+in gated backlog. Streams, chunks, concurrent input, cancellation and
+compiler/runtime changes are outside this acceptance.
+
+The complete prior ledger prefix and its historical checkbox states are
+preserved. Existing unchecked areas are not promoted by this append.
+
+### Exact displayed source and output fingerprints
+
+| Sample | Seseragi SHA-256 | TypeScript SHA-256 | Demonstration stdout SHA-256 |
+| --- | --- | --- | --- |
+| qualified-one-line | `ba72aed7df35d013d3c626b3e54275b2bf77ddd6083a6fd6152c3704bc088482` | `3bb3cd93b398b349643eb3a5fba6ec5070a69788edd9cbe342ff0ab32d875910` | `bcb8919d5c90e6dcdf1c7d76471e292e91bac412d17d08ff973bd4d9303561bb` |
+| three-lines | `71511a3fea683c5069333ab1c8f23c5299bccfed25506758c35c9ff6671e2822` | `4283d4d0c69489d4b4b4d2c8f4e8b380f397afbb5afa17d682ef2f4da9732313` | `227c5970a1089e1d79fe3294b662c71f7b65cac175eb0e5667c0278f160ac022` |
+| limited-lines | `3f50678a27f0d5a371f205f1c83ca9d377a0b2d13446169e91c6331d58958aad` | `63fb45b70953df6605b6641562f10b467c7596afd40f89766f20edfd50f90050` | `563dc8c1210f4eb189a716e9152bf921f7346e428c7c6935507905f952de3e0f` |
+| limit-config | `8161f10419085caff9438d531cbb8c0d0181a9a1df60fb86a3c799a4bdea62ad` | `cdb38473ba179913ab8d0dfb83bbfd0e4f25923b40ac2ea786b34be246b2afc9` | `15774a2ecba0b6df43cbb926e7f155383870dfd325b51d7034cefee7f0c375fd` |
+| default-limit | `d71ea0a134804ff8abe947cc6f257cb8d6a57ac24053310229ef5726c9adb7d1` | `bfa8814efcca4bcfadf31c81aba5b099238f1006bd174f219ce273f44d3325f2` | `99bedcb01a260d7bbaa507f2f1be2754abadd385edd98257477b8c68d3abd801` |
+| one-line | `3da2a0a10804c02c391cee2ec589983dcb4370168566c8f5b175a1111a5dcd15` | `3bb3cd93b398b349643eb3a5fba6ec5070a69788edd9cbe342ff0ab32d875910` | `bcb8919d5c90e6dcdf1c7d76471e292e91bac412d17d08ff973bd4d9303561bb` |
+
+### Complete final article body fingerprints
+
+| English route (Japanese adds /ja) | EN body SHA-256 | JA body SHA-256 |
+| --- | --- | --- |
+| /docs/library/stdin/ | `245e16fa11dba6218ebd64c8672e5f02baf27f0a1a09b7fd4bcaad0abe32c5aa` | `70bff6596b7f4bf3adcb87459dc9f6ea6f5f496bbb7f28a73cefc9570a47d6a0` |
+| /docs/library/stdin/opaque-type/stdin/ | `9347a9a7de550caa8e8f1ec4c6cca20004520aabca2052ab596438a1ed6a8dce` | `64b682711f4d3f986aeb20012256f786d1b0a9756ee30c668166eac117d2fb84` |
+| /docs/library/stdin/opaque-type/stdinerror/ | `afcceeccbf18b7703eb13f3a618a9581b3a8b89fb1941988becca8f55274fcb0` | `518da2b19500c050739a145c00f1890d57c92888e0644bd0a0145762357dd8aa` |
+| /docs/library/stdin/effect-function/readline/ | `ae7774110c70c6afec9e032d0ebee47e13b9f1610113bc67841cebc462e26373` | `9da87f2404bffde99186572aeabaefe36e24b64c4fbbe0d91ba6bcead6ee4d64` |
+| /docs/library/stdin/opaque-type/linelimit/ | `da0b121d8d7eef077365e4a8f5674a69740b412b4dd2f567605e497d265829c6` | `482300f2c59d8247a1e5917c7cb45a9243d454b215c85ceb4ff411e2a6589bd2` |
+| /docs/library/stdin/function/linelimit/ | `b4edcffd7e3225a72d8c31fcedeaaac2e59ae5c96a9f5ea2eb1e79f46b4a7fe6` | `0ec798ae4c6128be087ec65305f93bc5cf812ea056f7f80b84c1606419ae7ae6` |
+| /docs/library/stdin/function/defaultlinelimit/ | `263ba1fa849af29753fcfd9d44c46ea416c107e61e49ea83403e1fee3b46ae65` | `931fe78289055218be828eb314dcca5280d0ffdbca87d37b120d85d4d7ed435c` |
+| /docs/library/stdin/effect-function/readlinewith/ | `153588373beae2b9ba5c39e8284390476694257c49c9d9f92209b9f1be8c10fb` | `93acaa3c2cd4e5b66e4cb207e02f1878f4c76072376f5a32d2b84ddec2d5a9fd` |
+| /docs/library/stdin/opaque-type/stdinconfigerror/ | `5ed26b9a03f292a271b1c1800a9c92d40204d19263272842a351d7bd6bc53947` | `0c608580ec14a96547e419040633795b8c1e9e602435ba371142e5edf0b99466` |
+| /docs/library/stdin/constructor/invalidstdinutf8/ | `657bb95317bf46808279f9881852e985e9ae636c5636b524ed10f00d95c912dd` | `6c8aed87db48a4f750190dae20042f6b1036c84bbe50d8d2d5499372b1851493` |
+| /docs/library/stdin/constructor/stdinlinetoolong/ | `4fbd33685d1b6227b44bd95aacce044ed76522f4475d6037ca9d909520e73ae4` | `c1cb76617edbe81220d75cc57d1632643303529806891d35963443f342ecce73` |
+| /docs/library/prelude/function/readline/ | `f043e921146d591677dbecffbc026491582a7ce25e13b446877a0ca3a429d387` | `979be2d1e5eddc15439277cb027521eb6320c521f9db284e6b7bc71687168153` |
+
+### Evidence bindings
+
+Evidence root: `/workspace/shared/seseragi-stdin12-authoring-20261002`.
+Retained feasibility: `/workspace/shared/seseragi-stdin12-plan-20261002`.
+
+- `final-owned-source-manifest.json`: `aaba0926a4f0a801c2d2b98cdc129d1d1a5b15a036b131ee7c760bccaba7ca8e`
+- `final-source-output-manifest.json`: `9fa3b48deac3a5d6a5b0d5eb5e18029b5791a74c9690ab08063e7fcaffbc5590`
+- `initial-body-manifest.json`: `45e9d10c3562ee4ba7af1893602919bafcc4caf8933d8b2175994c6f9890cb81`
+- `final-body-manifest.json`: `3ce42143806fa7ddb8c697c3dd23922abcd5e228789c334ea0e5d0da191f1105`
+- `english-reader-review.json`: `caaaf73c1dc1120863164525341ac22c6b97d377a120515e35e75f6f6569076d`
+- `japanese-reader-review.json`: `cdd1036b2d4928c2942b613056b15547abf6dd979804f5c8e26830f2423d9884`
+- `english-reader-rereview.json`: `7a3d6cd05c2ce8abe602276a6155994ec1aefad3353001b226cb782938626f18`
+- `japanese-reader-rereview.json`: `ec06ef596a42d8045c784a63b0151be6e037c6edcb9b822eba403584ee36cd26`
+- `reading-change-audit-final.json`: `211666452c7ccf8696857e5a5eeb5e8f5dbc7592e5f0acf59eb2541fe32bf7ba`
+- `final-test-summary.json`: `cb844c8343e5f0c6b9a7390770395e723b708ec86a5e2a46de73d259a474fd05`
+- `final-unselected-controls.json`: `eb57c30fb8626e7289c40d6f5f75cb76fc25881e15f2170aa923c587bb3adac2`
+- `prior-public-playground-observation.json`: `e7fcecfa5c2a68a19b5b222ab8f5af123073c98599f60e3cbd080d6ac4243927`
+
+
+## Collection transformations14: rebuilt reader acceptance (2026-10-02)
+
+This is a new acceptance record after replacement of the cloud workspace. The
+previous uncommitted Transform14 sources and evidence were lost. Retained scripts
+and displayed text were recovery inputs; missing implementation was newly
+authored against public Stdin commit 14c324998c6963c2de02280b09672a02d43e96c6
+(tree ca065c6f253852a6bdfed62f1aeb02e7e398c1d5). No lost PASS, digest, reader approval
+or ledger append is inherited here. The reconstructed WIP received an immutable
+draft backup before long verification; that backup was not final acceptance.
+
+### Exact family and reader task
+
+The family adds Japanese and English task-first bodies for fourteen existing
+compiler-owned value/function identities: std/array::{append, concat, filterMap,
+flatMap, reverse, tail, toList} and std/list::{append, concat, filterMap, flatMap,
+reverse, tail, toArray}. Dispatch requires the exact owner, namespace, kind and
+identity. Canonical declarations and localized readings remain compiler-owned.
+The focused fresh baseline render has no authored operation section on any of
+these 28 locale routes; the rebuilt render provides the new family sections.
+Whole-site authored totals and regressions remain a separate integration gate.
+
+Each page starts with a familiar TypeScript task and complete comparison, then
+the Seseragi program, exact output, local syntax explanation, boundaries and
+canonical-title next links. The examples teach suffix-first append, one-level
+concat/flatMap, successful optional conversion results including zero, reverse
+without input mutation, Nothing versus a present empty tail, and explicit
+collection conversions for typed consumers. List comparisons use ordinary
+TypeScript arrays for the same task, without representation, cost or deep-copy
+equivalence. Callback order/count statements concern the checked pure callbacks;
+filterMap is not described as catching arbitrary exceptions or Effect failures.
+
+### Fresh complete reading and corrections
+
+Two independent readers, started without historical-review context, read all
+28 complete initial bodies, Japanese then English within each collection family.
+Twenty-four were accepted; four localized filterMap bodies required correction
+because their related map links named nonexistent function routes. The fresh
+initial editorial gate also failed on that defect; its log and complete rendered
+bodies are retained. This failed gate is not counted as acceptance.
+
+The correction changes both Array/List link destinations to concat, uses the
+canonical title, and explains one-level combination of existing batches in both
+languages. Exactly those four body hashes changed; all 24 other bodies remained
+identical. No displayed source or output changed. Both readers then fully reread
+all 28 final bodies, including every unchanged body. All 28 are accepted, with
+84 exact-title purpose links and every Playground payload checked against its
+complete native panel. The coordinator additionally read the four affected
+initial and final bodies. No remaining reader blocker was found.
+
+The corrected editorial suite passes three tests and 2,465 assertions in 83.63s.
+It verifies exact tuple guards, all source/output panels and decoded seeds,
+locale correspondence, declarations/readings, navigation and article controls.
+The initial failing run remains separately recorded as two pass / one fail.
+
+### Fresh execution and bounded failures
+
+The actual configured site TypeScript command passes, including this test
+harness. Strict checks cover the exact fourteen TypeScript comparisons and an
+isolated type-error negative. Real Node and Bun runs cover each native and
+TypeScript program, with exact stdout bytes and final newlines. Each execution
+mode retains 193 command receipts: 56 displayed-panel process runs, four boundary
+runs, twelve intended malformed-source rejections, 24 nearby repair runs, two
+callback-contract probe runs, and fourteen decoded WASM/current-host seed runs.
+The malformed sources retain exact code, message key, actual/expected types and
+fresh spans/hashes. No negative expectation or runtime assertion was removed.
+
+Portable-default checking passes seven tests / 1,762 assertions in 18.79s. It
+uses a 60-second child timeout and 16 MiB output bound with explicit null RSS
+measurements and limits. Python and /proc are not required by the default path.
+The separate opt-in Linux monitor passes seven tests / 1,569 assertions in
+25.77s, sampling the child process tree every 20ms against a 1GiB RSS limit;
+observed peak RSS is 724,791,296 bytes. Sampling is not an address-space
+reservation guarantee. The assertion difference comes from the null-RSS branch.
+No Mac or Windows host execution is claimed.
+
+Fresh receipts pin CLI 0.61.19 at the restored official release executable,
+actual Node 24.19.0 and Bun 1.3.9 paths. CLI SHA-256:
+987b0834c1ac299d0e4922e33160a324fa1d85dde909867b15660bac6e9d53b7.
+The committed WASM compiles each exact decoded seed, and the current browser-host
+implementation executes it under Bun with a separate raw-output comparison.
+This is not actual browser UI or public deployed execution. Generated-TypeScript
+digest fields are receipt-only where that generated text was not saved; source,
+compiler/runtime and raw output bytes are separately bound. This limitation is
+not presented as a public-browser result.
+
+### Restored-baseline preservation and maintained guards
+
+A fresh isolated render of the restored public baseline produced 184 complete
+Array/List pages. The new fixture derives 156 unselected article hashes from
+those bytes. The corrected candidate matches all 156 complete articles, covering
+78 prior destinations in both languages. The empty WIP placeholder was replaced
+only after this fresh render; no lost fixture hashes were copied.
+
+Five existing suites preserve positive matrices, control counts and identity-only
+negative dimensions. The now-authored functions can no longer serve as genuine
+same-owner no-overlay controls, so canonical Eq instances (and Array Show for the
+third control where required) use explicit namespace/kind, nonempty localized
+readings and exact signatures. Valid wrong-owner and Text concat controls remain.
+The practical full-module fixture adds the new examples and checks Eq lookup
+existence. All five suites pass freshly: 22 tests / 4,585 assertions, comprising
+Array 4/429, List 5/464, Sequence 3/448, API corrections 7/639 and practical
+collections 3/2,605. This bounded regression set does not replace whole-site gates.
+
+### Exact new source and output bindings
+
+All rows below were regenerated from the rebuilt candidate and its fresh runs;
+equality with any historical value does not imply reuse of lost evidence.
+
+| Sample | Seseragi SHA-256 | TypeScript SHA-256 | Exact stdout SHA-256 |
+| --- | --- | --- | --- |
+| array-append | `c3ce7a402791c76eefa16d3d1b089fb4376eaa85349c74b34c4a1f6b7cc29348` | `6c7ccbba295eb63df0d7967bc62ea7822acf30d13baa1b6770e563fe28b4688d` | `a0df2b162c4a581c62fdfe6b93fbddc3acc147db1a6c3497fb0cd5b3001fb9b7` |
+| array-concat | `a68f6abcb9b5d6fc323e81885d6b0c9eba93dd8f4782c3b7f1ef53a41c7306ec` | `22cd5af76bef2ab9d96a5460794e7bd1d27113515b6061ae842def3fbff50bbe` | `2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d` |
+| array-filtermap | `925b9ff9fed771c037bdc548423be9f247c8911d4122e7c4e96247a5d2424dea` | `2b6336ee3202ba1b5d0b84e69983a6ec8d5d24047305ea1d9502d888e08cbc1e` | `16437bc388e360c52a4cdba72302609d2bc8cfbab2eacb5e726c02bcc255fd60` |
+| array-flatmap | `3366be1684bf6a4ac691d6c388e4be5bf9790dbb8cf17c25d0ffd87ee4ca3f96` | `c58c32a84bc111311826a7d6a8228ad49822b7e437278802314c84c23551bdc0` | `2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d` |
+| array-reverse | `f45276734c22afdf2a8f3cbb5509c0ddd94a868d02661ee68d1022c77a725f41` | `d401f1d71fef32151261efcbb10917c23da2e7ba0ae2c0db11d26792af58540f` | `cd9fa547420cd49caf052ec6f083104213957971fd58bd1b676019a238628265` |
+| array-tail | `b1c6675b33186c13049fb9aa69f31ee5f369772c5a92effc85062d0688485cae` | `b6debe0fbbd852dbb0f544801ad79703fcd99c2098e88bef08a56c7c36075d68` | `20ffed77b8e7eaf465f0f62e209a62300a83d3257546bccd1e039742f2dc1a8b` |
+| array-tolist | `d0443279f01cc9e85089137e0f4f1f7fb0c08d977a4f5fc7a2b2c30e23124875` | `ece75061bc043147c0880f6e25e52748b4244f9dded3c94542c5bc030a79a4dc` | `9cbedf5d2612fb33d130020bad421aaad34fbce6308efbb83b3dcc2de55bbcc0` |
+| list-append | `481eb338bd43f470032cbfcd9f0ef646772fe1daa781b6f206d0eca4905d2855` | `6c7ccbba295eb63df0d7967bc62ea7822acf30d13baa1b6770e563fe28b4688d` | `a0df2b162c4a581c62fdfe6b93fbddc3acc147db1a6c3497fb0cd5b3001fb9b7` |
+| list-concat | `151b5d4df25ace9e3b2bf5bb6050936a81b9330d534c37e363250dc54572c806` | `22cd5af76bef2ab9d96a5460794e7bd1d27113515b6061ae842def3fbff50bbe` | `2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d` |
+| list-filtermap | `0a51d0075e715c1be0cc674067dc9ae242589fa980f971385f0b3d2889cb3b8f` | `2b6336ee3202ba1b5d0b84e69983a6ec8d5d24047305ea1d9502d888e08cbc1e` | `16437bc388e360c52a4cdba72302609d2bc8cfbab2eacb5e726c02bcc255fd60` |
+| list-flatmap | `db7643097fcd705af4dccdc321aa2d468fdb8420b8a2e214edbaa6632fb99db7` | `c58c32a84bc111311826a7d6a8228ad49822b7e437278802314c84c23551bdc0` | `2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d` |
+| list-reverse | `e629a5d1c6a2910eedb57b19f2b3033b9ea768fbe0b8b0abda88811c27e7c06a` | `d401f1d71fef32151261efcbb10917c23da2e7ba0ae2c0db11d26792af58540f` | `cd9fa547420cd49caf052ec6f083104213957971fd58bd1b676019a238628265` |
+| list-tail | `a397bc1f92c580bfd8b7c992617131f355608e1f4ec237fef3ac186cff18e3d3` | `b6debe0fbbd852dbb0f544801ad79703fcd99c2098e88bef08a56c7c36075d68` | `20ffed77b8e7eaf465f0f62e209a62300a83d3257546bccd1e039742f2dc1a8b` |
+| list-toarray | `153c843dc2f7605457149a33e1128bbc42bf20511a3b2d89e267e42c0180209a` | `ece75061bc043147c0880f6e25e52748b4244f9dded3c94542c5bc030a79a4dc` | `9cbedf5d2612fb33d130020bad421aaad34fbce6308efbb83b3dcc2de55bbcc0` |
+
+### Exact final complete article bindings
+
+| Sample | English article SHA-256 | Japanese article SHA-256 |
+| --- | --- | --- |
+| array-append | `ecd01a16d2e21009ddbd27c78ab9872916b0161d1c841204901da7e0ae512580` | `67e52cd8a944c0fb1509ca73fe8e7d61d6d0465e28394f2b2854e2c42ee78da6` |
+| array-concat | `c7e9e6d9e52fc6b954151969713fadc62ef2de312d318a01bcb75e30ce061bd2` | `104b006402a81357d2a9f957f00cf76327edec0c151743e4583e15c5f07ac0d9` |
+| array-filtermap | `f7aa81a3639612ccb07de544cc167baf40804e06ca9af41ec3095ca36f1c3d90` | `9cbc41cbd90e4de081aece0fdccc40769c76bd91b1bfcc1f685f8f864b72476b` |
+| array-flatmap | `944d0b8c16f235228c115dc2defe25d929647af807c806c39b7eeedce0ce2c0c` | `28e870bb66cd49d139ae0fa6d807bc33ddb542eb907958e3350f0deb943aa438` |
+| array-reverse | `eae7467a79ddbdc22c012d53ac3dc324a5bba05a86f13776a84fe3f7f1cf4057` | `0b78ef500fc2a4dc250b63bdaaab35be4516b789e49df183551dd6650b56bc80` |
+| array-tail | `9d83a9e38bafd222c937004b3250ea035bd71aa36aff8f8f3f8512a44e72d1ba` | `5c6e167eba49f8882dd0ae40377aab07489b07aed60a6d582c159ed8db5f2099` |
+| array-tolist | `05b8ff3f29c176c5ffec821d6cfe46f252784020de0aa786965e21c262d88b39` | `f04dfb88738aa9d9760f06852c5e05bcdb62632bf72a39b4afe57593ef00e39e` |
+| list-append | `8409f2285e41a5571702ea26c1ab4f0f93bc348aeb5b9b2abf8b06f1d637ac07` | `ceb83e6a5c487d1929d19d938855f9af70736deb5620abfd2bd98de9220bda37` |
+| list-concat | `6059d36187605a3d8d328cd127ef968683799be38d1ba911e2e9b01aaf2767fb` | `4d033dd71213dc5d9cf92edef4c3cfd062bd7dc41e69edfb78b7ef6829464e06` |
+| list-filtermap | `e70fe4fa35d5d1ac9e3bd9b74e40e3ec1e1b381eaa3c6934ee3e96a3c642463e` | `042393f65e5546560a447ffebbb8ac944b9443c1250cb4032b227e1a8e08361c` |
+| list-flatmap | `82f91531c6f96ad3992d91c5dde4e737aadf258bf0d3bb085f614acf6bf9543b` | `9ce2daa87c80e86983dedf79384ccb5eed6661fcb5bcd9d4425d964be5fc3f4b` |
+| list-reverse | `5351f08f65af55b3c9c8a63ab661952ee79c3ee9561a07c4cd8833134ba3dec4` | `a33d7b4953498939db70279e19a79a1a39137536abaa50460d49b11a67005f11` |
+| list-tail | `103d34782bed904300349aee222a99add74b25102f0c821331d4f8d1b8f6c457` | `10d539b38f6ae1067fe9d6821fc7cf783269d95cbdf5e565cefa8aa436b560ec` |
+| list-toarray | `fc2cb415d3dc0a1697e69ee70625c9c6d5bf13ed44e4ed4feeab82761245e38f` | `9c653902b03954391f375a42fa689f689a11ebf5108d5c9e4a4ab42b474a6d0b` |
+
+### New evidence index and limits
+
+The fresh evidence root is
+`/workspace/shared/seseragi-transform14-rebuilt-20261002`; recovered-context inputs
+are stored separately and are not execution/read acceptance. The following
+records bind the scoped results and full readings:
+
+- `owned-source-manifest-pre-ledger.json`: `dbee4c07ca0463d2a72961f7c2f7f8965d0f94762f91901d597b3767827835ef`
+- `source-checks/source-output-manifest.json`: `e0cc81747e486965d0bd4f4bef57240c950057ff9e475d35e38b353b0b201665`
+- `source-checks/summary.json`: `e20148ec7fdbf2782c4b5159363b42f7a224cc0475e0927596b16bc5aafe65f7`
+- `source-checks/configured-tsc.receipt.json`: `2e61c68aa91ef78c28435398e9edaf4058f68c0a871906c2ec722520d393af72`
+- `baseline-render-receipt.json`: `e3fb31633d3e8861873d41de29e4cccd28ff02dd9674fc2e659210a7bdfea81b`
+- `baseline-controls.json`: `3f36b43e523f1ae15c675ce6ce609027f66209add35a1dec0b7ba49b303e64ba`
+- `editorial-initial.log`: `9f08c01f57a3d4b66162f8a362100b1e6752ad278ad9c50792d2d068bca4469e`
+- `editorial-final.log`: `eb125dcf82f15e35d9f8e9e0e61873d7392129df66e6c4c5c89d18db70f94345`
+- `body-correction-diff.json`: `c6a18488dec7d644b0dedd96149c00c151c46b2c66b0b8e0bb520f8b3e11ace4`
+- `reader-review/initial-full-body-review.json`: `188eb9f705cfad8b3797f8643fbca983230c84682d41c1252d98b177536ba29d`
+- `reader-review/final-full-body-review.json`: `4481f768b734d6cdb4dc0d99b0baa2771ed82ded99b71833255fa8b97d6a97e7`
+- `maintained/receipts.json`: `59c772db487aa39c12a05e4906c183bdffe966fa801eeb8085b6ee358dc79db3`
+
+This appendix does not assert completion of the fresh whole-site baseline build,
+two bounded candidate builds, all-page artifact parity, public browser review,
+merge or publication. Those remain parent-owned integration work. The complete
+227,761-byte historical ledger prefix and all 106 checkbox rows/states must remain
+unchanged; this proposal adds no checkbox completion claims.

@@ -9,6 +9,8 @@ import { jsonReaderReading } from "./json-reader-reading"
 import { referenceDescription } from "./reference-copy"
 import { resultFoundationReading } from "./result-foundation-reading"
 import { signatureReading } from "./signature-reading"
+import { stdinReaderReading } from "./stdin-reader-reading"
+import { terminalReaderReading } from "./terminal-reader-reading"
 
 const root = resolve(import.meta.dir, "../../..")
 const referencePath = join(
@@ -344,21 +346,27 @@ export function compilerReferenceModules() {
           description: item.description,
           descriptionEn: description.en,
           descriptionJa: description.ja,
-          reading: bytesReaderReading(
+          reading: stdinReaderReading(
             item,
-            jsonReaderReading(
+            terminalReaderReading(
               item,
-              effectSequencingReading(
+              bytesReaderReading(
                 item,
-                filesystemReaderReading(
+                jsonReaderReading(
                   item,
-                  resultFoundationReading(
+                  effectSequencingReading(
                     item,
-                    signatureReading(
-                      item.signature,
-                      item.kind,
-                      item.typeParameters,
-                      item.constraints
+                    filesystemReaderReading(
+                      item,
+                      resultFoundationReading(
+                        item,
+                        signatureReading(
+                          item.signature,
+                          item.kind,
+                          item.typeParameters,
+                          item.constraints
+                        )
+                      )
                     )
                   )
                 )

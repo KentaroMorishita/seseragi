@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "array-false-like-values",
+    "expected": "present:0\npresent:false\npresent:\"\"\npresent:0\npresent:false\npresent:\"\"\npresent:0\npresent:false\npresent:\"\"\n[0,0]\n[false,false]\n[\"\",\"\"]\n",
+    "identities": [
+      "std/array::get",
+      "std/array::head",
+      "std/array::find",
+      "std/array::filter"
+    ]
+  },
+  {
+    "slug": "list-false-like-values",
+    "expected": "present:0\npresent:false\npresent:\"\"\npresent:0\npresent:false\npresent:\"\"\npresent:0\npresent:false\npresent:\"\"\n[0,0]\n[false,false]\n[\"\",\"\"]\n",
+    "identities": [
+      "std/list::get",
+      "std/list::head",
+      "std/list::find",
+      "std/list::filter"
+    ]
+  },
+  {
+    "slug": "map-set-false-like-values",
+    "expected": "[[\"zero\",0]]\n[[\"flag\",false]]\n[[\"\",\"\"]]\n[0]\n[false]\n[\"\"]\n",
+    "identities": ["std/map::filter", "std/set::filter"]
+  }
+]

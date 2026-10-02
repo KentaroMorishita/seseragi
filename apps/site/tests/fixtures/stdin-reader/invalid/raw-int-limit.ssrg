@@ -1,0 +1,2 @@
+import * as stdin from "std/stdin"
+pub effect fn main = stdin.readLineWith 4

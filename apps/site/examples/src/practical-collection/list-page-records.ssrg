@@ -1,0 +1,19 @@
+import * as items from "std/list"
+import * as json from "std/json"
+
+let labels = `["Read", "Review", "Ship"]
+fn describe values: List<String> -> String = json.encodeString [value | value <- values]
+pub effect fn main = do {
+  _ <- println (describe (items.take 2 (items.drop 1 labels)))
+  _ <- println (describe (items.take (0 - 1) labels))
+  _ <- println (describe (items.take 0 labels))
+  _ <- println (describe (items.take 3 labels))
+  _ <- println (describe (items.take 4 labels))
+  _ <- println (describe (items.drop (0 - 1) labels))
+  _ <- println (describe (items.drop 0 labels))
+  _ <- println (describe (items.drop 3 labels))
+  _ <- println (describe (items.drop 4 labels))
+  _ <- println (describe (items.take 2 (items.empty<String> ())))
+  _ <- println (describe (items.drop 2 (items.empty<String> ())))
+  println (describe labels)
+}

@@ -72,7 +72,7 @@ test("fourteen editorial pages render exact canonical declarations and samples i
         items: module.items.filter(
           (x) =>
             identities.has(x.identity) ||
-            x.identity === `${module.specifier}::length`
+            x.identity === `${module.specifier}::Eq`
         ),
       }))
     expect(modules).toHaveLength(2)
@@ -134,15 +134,19 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           )
         } else expect(html).toContain(`href="${prefix}/docs/library/list/"`)
         const control = pages.get(
-          `${prefix}/docs/library/${module}/function/length/`
+          `${prefix}/docs/library/${module}/instance/eq-${module}-a/`
         )!
         const item = modules
           .find((x) => x.specifier === `std/${module}`)!
-          .items.find((x) => x.identity === `std/${module}::length`)!
+          .items.find((x) => x.identity === `std/${module}::Eq`)!
+        expect(control).toBeDefined()
+        expect(item).toBeDefined()
+        expect(item.namespace).toBe("instance")
+        expect(item.itemKind).toBe("instance")
         expect(control).not.toContain('id="using-this-operation"')
-        expect(plain(control)).toContain(
-          prefix === "/ja" ? item.descriptionJa : item.descriptionEn
-        )
+        const reading = prefix === "/ja" ? item.reading.ja : item.reading.en
+        expect(reading.trim()).not.toBe("")
+        expect(plain(control)).toContain(reading)
         expect(plain(control)).toContain(item.signature)
       }
       for (const sample of sequenceEditorialCases) {
@@ -231,7 +235,7 @@ test("each selected identity exists once and wrong module, namespace, kind and s
         ...module,
         items: [
           ...items,
-          { ...first, identity: `std/${name}::length` },
+          { ...first, identity: `std/${name}::Eq` },
           { ...first, namespace: "type" },
           { ...first, itemKind: "constructor" },
           { ...first, module: "std/text" },

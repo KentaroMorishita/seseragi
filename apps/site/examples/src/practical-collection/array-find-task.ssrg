@@ -1,0 +1,21 @@
+import * as items from "std/array"
+import * as json from "std/json"
+
+struct Task { title: String, urgent: Bool }
+fn urgent task: Task -> Bool = task.urgent
+let tasks = [
+  Task { title: "Read", urgent: False },
+  Task { title: "Review", urgent: True },
+  Task { title: "Ship", urgent: True }
+]
+
+fn describe value: Maybe<Task> -> String = match value {
+  Just task -> task.title
+  Nothing -> "not found"
+}
+pub effect fn main = do {
+  _ <- println (describe (items.find urgent tasks))
+  _ <- println (describe (items.find (\task -> task.title == "Missing") tasks))
+  _ <- println (describe (items.find urgent (items.empty<Task> ())))
+  println (json.encodeString [task.title | task <- tasks])
+}

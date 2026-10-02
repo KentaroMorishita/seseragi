@@ -77,16 +77,26 @@ test("identity overlay renders thirteen Set pages in both locales and preserves 
       items: sourceModule.items.filter(
         (x) =>
           identities.has(x.identity) ||
-          [
-            "std/set::filter",
-            "std/set::isEmpty",
-            "std/set::toArray",
-            "std/set::toList",
-          ].includes(x.identity)
+          ["std/set::toArray", "std/set::toList"].includes(x.identity)
       ),
     }
-    expect(module.items).toHaveLength(16)
+    expect(module.items).toHaveLength(14)
     for (const item of module.items) {
+      expect(item.namespace).toBe("value")
+      expect(item.itemKind).toBe("function")
+    }
+    // Every canonical function in this family is now authored. Keep the
+    // global no-editorial check on real, still-unclaimed Stream functions.
+    const stream = allModules.find((x) => x.specifier === "std/stream")!
+    const fallbackModule = {
+      ...stream,
+      items: stream.items.filter((x) =>
+        ["std/stream::filterMap", "std/stream::empty"].includes(x.identity)
+      ),
+    }
+    expect(fallbackModule.items).toHaveLength(2)
+    for (const item of fallbackModule.items) {
+      expect(item.module).toBe("std/stream")
       expect(item.namespace).toBe("value")
       expect(item.itemKind).toBe("function")
     }
@@ -97,7 +107,7 @@ test("identity overlay renders thirteen Set pages in both locales and preserves 
       tourUrl: "https://seseragi.vercel.app/tour/",
       grammar: "",
       examples,
-      referenceModules: [module],
+      referenceModules: [module, fallbackModule],
     }
     const output = renderPageClosure<Array<{ route: string; html: string }>>({
       directory,
@@ -127,7 +137,7 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
   }
 }`,
     })
-    expect(output).toHaveLength(34) // Thirteen edited identities and four controls in EN/JA.
+    expect(output).toHaveLength(36) // Set articles plus two generic Stream controls, each in EN/JA.
     const pages = new Map(output.map((x) => [x.route, x.html]))
     for (const prefix of ["", "/ja"]) {
       const moduleHtml = pages.get(`${prefix}/docs/library/set/`)!
@@ -135,6 +145,17 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
       const titles = new Map(
         output.map((page) => [page.route, pageTitle(page.html)])
       )
+      // These two published Set destinations are outside this legacy
+      // rendering fixture; retain exact module-link checks against their
+      // canonical compiler names rather than dropping title coverage.
+      for (const symbol of sourceModule.items.filter((x) =>
+        ["std/set::filter", "std/set::isEmpty"].includes(x.identity)
+      )) {
+        titles.set(
+          `${prefix}/docs/library/set/function/${symbol.name.toLowerCase()}/`,
+          symbol.name
+        )
+      }
       expect(
         assertReferenceLinkTitles(
           `${moduleHtml.split('id="set-api-index"')[0]}</article>`,
@@ -274,14 +295,16 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(inpu
           [...en.matchAll(/^ {2}(\w+): /gm)].map((x) => x[1])
         )
       }
-      for (const name of ["filter", "isEmpty"]) {
-        const control = module.items.find(
-          (x) => x.identity === `std/set::${name}`
+      for (const name of ["filterMap", "empty"]) {
+        const control = fallbackModule.items.find(
+          (x) => x.identity === `std/stream::${name}`
         )!
         const html = pages.get(
-          `${prefix}/docs/library/set/function/${name.toLowerCase()}/`
+          `${prefix}/docs/library/stream/function/${name.toLowerCase()}/`
         )!
         expect(html).not.toContain('id="using-this-operation"')
+        expect(html).not.toContain("Missing canonical example")
+        expect(plain(html)).toContain(control.signature)
         expect(plain(html)).toContain(
           prefix ? control.descriptionJa : control.descriptionEn
         )

@@ -1,0 +1,86 @@
+[
+  {
+    "slug": "array-append",
+    "sourceSha256": "c3ce7a402791c76eefa16d3d1b089fb4376eaa85349c74b34c4a1f6b7cc29348",
+    "typescriptSourceSha256": "6c7ccbba295eb63df0d7967bc62ea7822acf30d13baa1b6770e563fe28b4688d",
+    "outputSha256": "a0df2b162c4a581c62fdfe6b93fbddc3acc147db1a6c3497fb0cd5b3001fb9b7"
+  },
+  {
+    "slug": "array-concat",
+    "sourceSha256": "a68f6abcb9b5d6fc323e81885d6b0c9eba93dd8f4782c3b7f1ef53a41c7306ec",
+    "typescriptSourceSha256": "22cd5af76bef2ab9d96a5460794e7bd1d27113515b6061ae842def3fbff50bbe",
+    "outputSha256": "2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d"
+  },
+  {
+    "slug": "array-filtermap",
+    "sourceSha256": "925b9ff9fed771c037bdc548423be9f247c8911d4122e7c4e96247a5d2424dea",
+    "typescriptSourceSha256": "2b6336ee3202ba1b5d0b84e69983a6ec8d5d24047305ea1d9502d888e08cbc1e",
+    "outputSha256": "16437bc388e360c52a4cdba72302609d2bc8cfbab2eacb5e726c02bcc255fd60"
+  },
+  {
+    "slug": "array-flatmap",
+    "sourceSha256": "3366be1684bf6a4ac691d6c388e4be5bf9790dbb8cf17c25d0ffd87ee4ca3f96",
+    "typescriptSourceSha256": "c58c32a84bc111311826a7d6a8228ad49822b7e437278802314c84c23551bdc0",
+    "outputSha256": "2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d"
+  },
+  {
+    "slug": "array-reverse",
+    "sourceSha256": "f45276734c22afdf2a8f3cbb5509c0ddd94a868d02661ee68d1022c77a725f41",
+    "typescriptSourceSha256": "d401f1d71fef32151261efcbb10917c23da2e7ba0ae2c0db11d26792af58540f",
+    "outputSha256": "cd9fa547420cd49caf052ec6f083104213957971fd58bd1b676019a238628265"
+  },
+  {
+    "slug": "array-tail",
+    "sourceSha256": "b1c6675b33186c13049fb9aa69f31ee5f369772c5a92effc85062d0688485cae",
+    "typescriptSourceSha256": "b6debe0fbbd852dbb0f544801ad79703fcd99c2098e88bef08a56c7c36075d68",
+    "outputSha256": "20ffed77b8e7eaf465f0f62e209a62300a83d3257546bccd1e039742f2dc1a8b"
+  },
+  {
+    "slug": "array-tolist",
+    "sourceSha256": "d0443279f01cc9e85089137e0f4f1f7fb0c08d977a4f5fc7a2b2c30e23124875",
+    "typescriptSourceSha256": "ece75061bc043147c0880f6e25e52748b4244f9dded3c94542c5bc030a79a4dc",
+    "outputSha256": "9cbedf5d2612fb33d130020bad421aaad34fbce6308efbb83b3dcc2de55bbcc0"
+  },
+  {
+    "slug": "list-append",
+    "sourceSha256": "481eb338bd43f470032cbfcd9f0ef646772fe1daa781b6f206d0eca4905d2855",
+    "typescriptSourceSha256": "6c7ccbba295eb63df0d7967bc62ea7822acf30d13baa1b6770e563fe28b4688d",
+    "outputSha256": "a0df2b162c4a581c62fdfe6b93fbddc3acc147db1a6c3497fb0cd5b3001fb9b7"
+  },
+  {
+    "slug": "list-concat",
+    "sourceSha256": "151b5d4df25ace9e3b2bf5bb6050936a81b9330d534c37e363250dc54572c806",
+    "typescriptSourceSha256": "22cd5af76bef2ab9d96a5460794e7bd1d27113515b6061ae842def3fbff50bbe",
+    "outputSha256": "2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d"
+  },
+  {
+    "slug": "list-filtermap",
+    "sourceSha256": "0a51d0075e715c1be0cc674067dc9ae242589fa980f971385f0b3d2889cb3b8f",
+    "typescriptSourceSha256": "2b6336ee3202ba1b5d0b84e69983a6ec8d5d24047305ea1d9502d888e08cbc1e",
+    "outputSha256": "16437bc388e360c52a4cdba72302609d2bc8cfbab2eacb5e726c02bcc255fd60"
+  },
+  {
+    "slug": "list-flatmap",
+    "sourceSha256": "db7643097fcd705af4dccdc321aa2d468fdb8420b8a2e214edbaa6632fb99db7",
+    "typescriptSourceSha256": "c58c32a84bc111311826a7d6a8228ad49822b7e437278802314c84c23551bdc0",
+    "outputSha256": "2aa001cdf6310cb72eff1afd4fe3098a0b3eb779e024727c2f1c0e22dfdbc64d"
+  },
+  {
+    "slug": "list-reverse",
+    "sourceSha256": "e629a5d1c6a2910eedb57b19f2b3033b9ea768fbe0b8b0abda88811c27e7c06a",
+    "typescriptSourceSha256": "d401f1d71fef32151261efcbb10917c23da2e7ba0ae2c0db11d26792af58540f",
+    "outputSha256": "cd9fa547420cd49caf052ec6f083104213957971fd58bd1b676019a238628265"
+  },
+  {
+    "slug": "list-tail",
+    "sourceSha256": "a397bc1f92c580bfd8b7c992617131f355608e1f4ec237fef3ac186cff18e3d3",
+    "typescriptSourceSha256": "b6debe0fbbd852dbb0f544801ad79703fcd99c2098e88bef08a56c7c36075d68",
+    "outputSha256": "20ffed77b8e7eaf465f0f62e209a62300a83d3257546bccd1e039742f2dc1a8b"
+  },
+  {
+    "slug": "list-toarray",
+    "sourceSha256": "153c843dc2f7605457149a33e1128bbc42bf20511a3b2d89e267e42c0180209a",
+    "typescriptSourceSha256": "ece75061bc043147c0880f6e25e52748b4244f9dded3c94542c5bc030a79a4dc",
+    "outputSha256": "9cbedf5d2612fb33d130020bad421aaad34fbce6308efbb83b3dcc2de55bbcc0"
+  }
+]

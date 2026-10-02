@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "PreludeのreadLineは、標準入力から一行を読みます。std/stdinをimportせずに、文字のある行、空行、入力の終わりを分けて扱えます。",
+  taskTitle: "最初のラベルだけを読み、結果を表示する",
+  purpose: "parcelとignoredを別々の行で渡し、最初のparcelだけを表示します。入力を空にした場合や、空行を一つ渡した場合も、それぞれの結果を確認できます。",
+  typescriptBefore: "Node.jsやBunではnode:readlineのループを最初の行で抜ければ、入力全体が終わる前に一行を扱えます。この比較も空文字列と行がない場合を分け、読み終えたらreadlineを閉じます。",
+  benefit: "SeseragiではreadLineがPreludeから使えます。読んだ行がある場合だけtextを取り出し、空行、入力終了、読み取りの失敗に、それぞれの表示を選べます。",
+  reading: [
+    "この例のimportは、入力の失敗を結果として受け取るeffects.attemptのためです。readLine、println、StdinはPreludeから使うので、std/stdinのimportはありません。",
+    "読み取りは一回だけです。parcelの行を渡すとLine: parcel、空行ならBlank line、空の入力ならEOFです。parcelの後にignoredがあっても、二行目を表示しません。",
+    "Right (Just text)ではtextを文字列として使えます。Left reasonの分岐は、このPrelude版の読み取りの失敗をshow reasonで文字列にして表示します。"
+  ],
+  details: [
+    "既定の上限は一行の内容が1,048,576バイトまでです。LFやCRLFの行末は返る文字列から除かれ、単独のCRは残ります。改行なしの最後の内容も一行として読めます。",
+    "Just \"\"もJust textの形に当てはまります。空行の分岐を先に置くことで、空文字列をLine: の後に表示せず、Blank lineという専用の表示にできます。",
+    "TypeScriptの比較と同じ表示になるのは、ここで渡す通常の入力です。node:readlineは単独のCRも行の区切りにし、壊れたUTF-8を置換します。Seseragiは単独のCRを残し、壊れたUTF-8を読み取りの失敗として扱います。"
+  ]
+}

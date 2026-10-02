@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.concatはListの中のListを一段だけつなぎます。外側と内側の順序を保ち、空のListからは要素を追加しません。",
+  taskTitle: "分かれたタスクの一覧を一つにまとめる",
+  purpose: "Readの一覧、空の一覧、ReviewとShipの一覧を順につなぎます。三つのまとまりから、Read、Review、Shipが並ぶ一つのListを作ります。",
+  typescriptBefore: "通常の配列ならbatches.flat()で、入れ子を一段だけ平らにできます。途中の空の配列からは要素が増えず、ほかの要素は元の順序で並びます。この配列は同じ作業を比べるためのもので、SeseragiのListの内部表現を示してはいません。",
+  benefit: "Seseragiのconcatも、すでにまとまっている複数のListを一つにします。入力はList<List<String>>、結果はList<String>なので、取り除く入れ子が一段だと型からも読み取れます。",
+  setup: "itemsはstd/listの別名で、let batchesはタスクのまとまりに名前を付けます。[の前のバッククォートはListを作る印です。batchesでは外側にも内側にも付いており、真ん中の`[]は空のListです。",
+  after: [
+    "items.concat batchesは、関数名の後へbatchesを空白で区切って渡します。最初の`[\"Read\"]、空の`[]、最後の`[\"Review\", \"Ship\"]から順に要素を取り出すので、結果のListにはRead、Review、Shipが並びます。",
+    "[value | value <- ...]は、concatの結果から各要素をvalueとして受け取り、表示用のArrayを作る内包表記です。バッククォートのない角括弧なのでArrayですが、concatの戻り値自体はListです。JSON表示の[\"Read\",\"Review\",\"Ship\"]で要素順を確認できます。",
+    "concatはbatches自体や、その中のListを変更しません。結合した結果を戻り値として受け取り、表示や次の処理に使います。",
+  ],
+  details: [
+    "取り除く入れ子は一段です。たとえば三段のListである`[`[`[1], `[2]], `[], `[`[3]]]を渡すと、結果は`[`[1], `[2], `[3]]です。内側の`[1]、`[2]、`[3]はListのまま残ります。",
+    "外側が空なら、結果も空のListです。中身が空のListばかりでも、結果は空になります。同じ値が複数のまとまりにあれば、その回数だけ残ります。",
+    "concatにはListを要素とするListが必要です。`[1, 2, 3]のような整数だけのListや、Listの代わりにArrayを入れた値は渡せません。内側と外側の型を確認してください。",
+    "二つのListだけをつなぐならappend、レコードから各Listを取り出してつなぐならflatMapを使えます。concat自身には取り出し方を決める関数を渡しません。",
+  ],
+}

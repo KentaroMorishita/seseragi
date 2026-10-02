@@ -1,0 +1,19 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "std/processは、起動したプログラムの環境変数、引数、作業ディレクトリーを読むためのモジュールです。",
+  taskTitle: "コマンドの起動時設定を一つ読む",
+  purpose: "コマンドラインのプログラムで、起動時に渡された動作モードを読みます。まずは秘密の情報を含まない例示用の環境変数SESERAGI_DOCS_MODEを一つだけ読み、未設定のときはpreviewを選びます。",
+  typescriptBefore: "Node.jsやBunのTypeScriptではprocess.env.SESERAGI_DOCS_MODEを読みます。=== undefinedで未設定かどうかを調べれば、値が空文字列でも設定済みとして扱えます。この小さな処理はTypeScriptでも短く書けます。",
+  benefit: "Seseragiでは、起動元の情報を読むProcessサービスが必要だと明示できます。値がない場合はMaybeで、読み取り自体が失敗した場合はProcessErrorで表すので、設定の不在と読み取りの失敗を別々に扱えます。",
+  reading: [
+    "import * as process from \"std/process\"は、このモジュールの名前をprocessという別名で使う宣言です。process.environment \"SESERAGI_DOCS_MODE\"で、その名前の設定だけを読みます。",
+    "読み取りが成功して値があればJust mode、未設定ならNothingです。modeがpreviewならMode: [preview]、空文字列ならMode: []と表示します。NothingのときだけMode: preview (default)になります。",
+    "このプログラムは設定を読むだけでなく、結果をprintlnで出します。そのためmainは、読み取り用のprocess: process.Processと出力用のConsoleの両方を必要とします。"
+  ],
+  details: [
+    "environmentは名前を指定した環境変数を、argumentsはプログラムに渡された引数の一覧を、currentDirectoryは現在の作業ディレクトリーを読みます。必要な入力に応じて次の操作を選べます。",
+    "この例はprocessターゲットで動かします。ビルドしたentry.jsをNode.jsかBunで起動し、その起動時の環境や引数、作業ディレクトリーを読みます。ブラウザーのページ設定を読むAPIではありません。",
+    "設定を表示するときは、表示してよい名前と値だけを選びます。この例のような動作モードの確認に、環境変数全体や認証情報の表示は必要ありません。"
+  ]
+}

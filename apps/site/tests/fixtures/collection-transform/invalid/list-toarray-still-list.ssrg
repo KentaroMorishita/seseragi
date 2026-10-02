@@ -1,0 +1,2 @@
+import * as items from "std/list"
+pub fn invalid -> List<Int> = items.toArray `[1]

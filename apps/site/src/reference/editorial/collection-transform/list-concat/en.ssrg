@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.concat joins the Lists inside a List, removing one level of nesting. It preserves outer and inner order, and an empty List contributes no elements.",
+  taskTitle: "Combine separate task batches into one list",
+  purpose: "Join the batch containing Read, an empty batch, and the batch containing Review and Ship. Turn those three groups into one List ordered Read, Review, Ship.",
+  typescriptBefore: "For normal arrays, batches.flat() flattens one level of nesting. The empty middle array contributes no elements, and the other elements keep their order. These arrays compare the task without representing Seseragi List’s internal structure.",
+  benefit: "Seseragi concat also combines several Lists that are already grouped together. The input is List<List<String>> and the result is List<String>, making the single removed level visible in the types.",
+  setup: "items is the alias for std/list, and let batches names the grouped tasks. A backtick before [ creates a List. In batches, both the outer and inner brackets have backticks; the middle `[] is an empty List.",
+  after: [
+    "items.concat batches calls the function by placing its argument after the name, separated by a space. It takes elements from `[\"Read\"], then `[], then `[\"Review\", \"Ship\"], producing a List ordered Read, Review, Ship.",
+    "The comprehension [value | value <- ...] takes each element of the concat result as value and creates a display Array. These brackets have no backtick, but the concat return value itself is still a List. Its JSON display, [\"Read\",\"Review\",\"Ship\"], makes the order visible.",
+    "concat changes neither batches nor the Lists it contains. Receive the combined list as its return value and use it for display or further processing.",
+  ],
+  details: [
+    "Only one nesting level is removed. For example, the three-level List `[`[`[1], `[2]], `[], `[`[3]]] becomes `[`[1], `[2], `[3]]. The inner `[1], `[2], and `[3] remain Lists.",
+    "An empty outer List gives an empty result. A collection containing only empty Lists also gives an empty result. A value appearing in several batches is kept each time.",
+    "concat requires a List whose elements are Lists. A List of integers such as `[1, 2, 3] cannot be passed, nor can a collection with Arrays in place of Lists. Check both the outer and inner types.",
+    "Use append to join just two Lists, or flatMap to extract a List from each record before joining. concat itself takes no function to choose what to extract.",
+  ],
+}

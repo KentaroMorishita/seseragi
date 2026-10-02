@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "length returns an array’s element count as Int. Zero values and repeated values each count as elements; an empty array has length 0.",
+  taskTitle: "Count list entries, including results equal to zero",
+  purpose: "Calculate the count to display beside a list. The example compares no results, one result equal to 0, and three results in [0, 2, 0]. Count entries rather than adding their values or counting distinct values.",
+  typescriptBefore: "In TypeScript, read the array’s .length property. none.length, one.length, and several.length return 0, 1, and 3. The earlier part of the example also uses .length === 0 to check whether an array is empty.",
+  benefit: "Seseragi also gets the count in one call: items.length values. Its argument is Array<A> and its result is the integer type Int. The operation stays concise while using an ordinary function that accepts an array.",
+  setup: "items and json are import aliases for std/array and std/json. let none: Array<Int> = [] explicitly defines an empty integer array. The 0 and 2 elements establish the integer element type for one and several. A call such as items.length one passes the array after the function name.",
+  after: [
+    "The final three lines display the length results: 0 for none, 1 for one, and 3 for several. The two appearances of 0 in several each count as a separate element.",
+    "show (items.length one) converts the Int count to a display String. The parenthesized length call is evaluated first, and its result is passed to show.",
+    "The earlier isEmpty calls return Bool. Only [] is empty; [0], [False], and [\"\"] are not. JSON displays these Bool results as lowercase true or false.",
+  ],
+  details: [
+    "length does not add values. [0, 2, 0] has 3 entries, rather than its sum of 2 or its 2 distinct values. False and an empty string also count as one element when present in an array.",
+    "The result counts array elements, not characters inside its strings. An array containing one long label has length 1. Counting characters in a string is a different operation with a different input.",
+    "Use isEmpty when all you need is an emptiness check. A count is not itself a valid final position: an array of length 3 has positions 0 through 2, and get 3 returns Nothing.",
+  ],
+}

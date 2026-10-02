@@ -1,0 +1,3 @@
+import * as arrays from "std/array"
+fn selected value: Int -> String = "yes"
+pub fn rejected unit: Unit -> Array<Int> = arrays.filter selected [10]

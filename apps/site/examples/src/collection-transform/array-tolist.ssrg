@@ -1,0 +1,12 @@
+import * as items from "std/array"
+import * as json from "std/json"
+
+fn renderTasks tasks: List<String> -> String = json.encodeString [task | task <- tasks]
+
+let tasks = ["Read", "Review", "Ship"]
+let converted: List<String> = items.toList tasks
+
+pub effect fn main = do {
+  _ <- println (renderTasks converted)
+  println (json.encodeString [task | task <- tasks])
+}

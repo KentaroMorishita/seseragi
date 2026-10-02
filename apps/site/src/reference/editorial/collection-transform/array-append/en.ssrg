@@ -1,0 +1,21 @@
+import { CollectionTransformCopy } from "../model"
+
+pub fn copy -> CollectionTransformCopy = CollectionTransformCopy {
+  summary: "items.append joins two Arrays. Elements from the second argument come before elements from the first, and both original Arrays stay unchanged.",
+  taskTitle: "Add the next tasks after the current tasks",
+  purpose: "Put the next task, Ship, after the existing Read and Review tasks. Build the combined list while keeping both original lists available.",
+  typescriptBefore: "[...firstBatch, ...nextBatch] places each array’s elements into a new array from left to right. firstBatch.concat(nextBatch) gives the same result. Neither changes the original arrays, whose contents appear in the last two output lines.",
+  benefit: "Seseragi also joins two Arrays while keeping both inputs. append takes the Array to add at the end first, allowing the next line to use |> to read the operation starting from the current Array.",
+  setup: "items is the alias for std/array. let names a value, and [\"Read\", \"Review\"] creates an Array of String elements. items.append nextBatch firstBatch is a function call with two arguments separated by spaces after the function name.",
+  after: [
+    "Pass nextBatch, the suffix to add, first; pass firstBatch, the starting Array, second. The result contains Read and Review from firstBatch, followed by Ship from nextBatch. The order of arguments in the call differs from their order in the result.",
+    "In firstBatch |> items.append nextBatch, |> passes the value on its left to the function on its right. items.append nextBatch fixes the suffix and leaves a function waiting for the starting Array. Supplying firstBatch produces the same result as the first call.",
+    "The comprehension [value | value <- ...] takes each element from ... as value and creates a display Array in the same order. The first two lines display the same combined result; the last two display the unchanged firstBatch and nextBatch.",
+  ],
+  details: [
+    "Reversing the arguments to items.append firstBatch nextBatch produces Ship, Read, Review. To add after firstBatch, write items.append nextBatch firstBatch.",
+    "If either Array is empty, the other Array’s elements make up the result. Two empty inputs give an empty Array. Duplicate values are all retained.",
+    "Both arguments must be Arrays with the same element type. A List cannot be passed directly. Use std/list append to join two Lists.",
+    "append does not write elements into an original Array. Use its return value to display or further process the combined list. If several Arrays are already grouped together in an Array, concat can combine them.",
+  ],
+}

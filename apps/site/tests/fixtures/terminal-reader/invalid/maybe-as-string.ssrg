@@ -1,0 +1,7 @@
+import * as process from "std/process"
+
+pub effect fn main = do {
+  mode <- process.environment "SESERAGI_DOCS_MODE"
+  let text: String = mode
+  process.environment text
+}

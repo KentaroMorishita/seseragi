@@ -18,6 +18,7 @@ import { arrayEditorialExamples } from "./array-editorial"
 import { bytesReaderExamples } from "./bytes-reader"
 import { canonicalExample } from "./canonical-example"
 import { charTextExamples } from "./char-text-reader"
+import { collectionTransformExamples } from "./collection-transform"
 import { collectionTypeExamples } from "./collection-type-readers"
 import { comparisonExamples } from "./comparisons"
 import { referenceCoverage } from "./coverage"
@@ -36,13 +37,16 @@ import { newModelReaderExamples } from "./model-reader"
 import { moduleProjectExamples } from "./module-examples"
 import { nonemptyIteratorReaderExamples } from "./nonempty-iterator-readers"
 import { numericReaderExamples } from "./numeric-readers"
+import { practicalCollectionExamples } from "./practical-collection"
 import { compilerReferenceModules } from "./reference"
 import { regexReaderExamples } from "./regex-readers"
 import { type RenderedPage, renderGenerator } from "./render-generator"
 import { resultFoundationExamples } from "./result-foundation-readers"
 import { sequenceEditorialExamples } from "./sequence-editorial"
 import { setEditorialExamples } from "./set-editorial"
+import { stdinReaderExamples } from "./stdin-reader"
 import { syntaxExamples } from "./syntax-examples"
+import { terminalReaderExamples } from "./terminal-reader"
 import { textEditorialExamples } from "./text-editorial"
 import { traitReaderExamples } from "./trait-readers"
 import { typeLimitExamples } from "./type-limits"
@@ -110,6 +114,10 @@ export function generatorInput(playgroundUrl: string) {
       ...jsonReaderExamples(playgroundUrl),
       ...urlReaderExamples(playgroundUrl),
       ...bytesReaderExamples(playgroundUrl),
+      ...practicalCollectionExamples(playgroundUrl),
+      ...terminalReaderExamples(playgroundUrl),
+      ...stdinReaderExamples(playgroundUrl),
+      ...collectionTransformExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

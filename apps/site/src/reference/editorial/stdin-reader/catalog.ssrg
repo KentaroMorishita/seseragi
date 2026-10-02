@@ -1,0 +1,51 @@
+import { editorial as case0 } from "./stdin-module/page"
+import { editorial as case1 } from "./stdin-type/page"
+import { editorial as case2 } from "./stdin-error/page"
+import { editorial as case3 } from "./readline/page"
+import { editorial as case4 } from "./line-limit/page"
+import { editorial as case5 } from "./line-limit-create/page"
+import { editorial as case6 } from "./default-line-limit/page"
+import { editorial as case7 } from "./readline-with/page"
+import { editorial as case8 } from "./stdin-config-error/page"
+import { editorial as case9 } from "./invalid-stdin-utf8/page"
+import { editorial as case10 } from "./stdin-line-too-long/page"
+import { editorial as case11 } from "./prelude-readline/page"
+import { ReferenceSymbol } from "../../../model/build"
+import { Block } from "../../../model/page"
+import { Editorial, editorialBlocks } from "../model"
+
+fn guarded symbol: ReferenceSymbol
+  -> owner: String
+  -> namespace: String
+  -> kind: String
+  -> value: Editorial
+  -> Maybe<Editorial> =
+  if symbol.module == owner
+    && symbol.namespace == namespace
+    && symbol.itemKind == kind then
+    Just value
+  else
+    Nothing
+
+pub fn stdinReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match symbol.identity {
+    "std/prelude::Stdin" -> guarded symbol "std/stdin" "type" "opaque-type" (case1 ())
+    "std/prelude::StdinError" -> guarded symbol "std/stdin" "type" "opaque-type" (case2 ())
+    "std/stdin::readLine" -> guarded symbol "std/stdin" "value" "effect-function" (case3 ())
+    "std/stdin::LineLimit" -> guarded symbol "std/stdin" "type" "opaque-type" (case4 ())
+    "std/stdin::lineLimit" -> guarded symbol "std/stdin" "value" "function" (case5 ())
+    "std/stdin::defaultLineLimit" -> guarded symbol "std/stdin" "value" "function" (case6 ())
+    "std/stdin::readLineWith" -> guarded symbol "std/stdin" "value" "effect-function" (case7 ())
+    "std/stdin::StdinConfigError" -> guarded symbol "std/stdin" "type" "opaque-type" (case8 ())
+    "std/stdin::InvalidStdinUtf8" -> guarded symbol "std/stdin" "value" "constructor" (case9 ())
+    "std/stdin::StdinLineTooLong" -> guarded symbol "std/stdin" "value" "constructor" (case10 ())
+    "std/prelude::readLine" -> guarded symbol "std/prelude" "value" "function" (case11 ())
+    _ -> Nothing
+  }
+
+pub fn stdinReaderModuleBlocks specifier: String -> Array<Block> =
+  editorialBlocks (match specifier {
+    "std/stdin" -> Just (case0 ())
+    _ -> Nothing
+  }
+)

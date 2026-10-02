@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "Stdinは、標準入力から読む処理が必要とするサービスの型です。読み取り位置を共有し、実行するたびに次の行へ進みます。",
+  taskTitle: "同じ入力から三回続けて読む",
+  purpose: "parcelの行、空行、入力の終わりを順に読みます。ここでは、読み取った文字列ではなく、読み取るためのサービスを宣言するstdin: stdin.Stdinに注目します。",
+  typescriptBefore: "Node.jsやBunではprocess.stdinをnode:readlineに渡して入力を読みます。同じ読み取り口から三回取り出すと、最初の文字列、空文字列、その後の入力終了を順に確認できます。",
+  benefit: "SeseragiのwithにStdinを書くと、その処理が入力サービスを必要とすることを示せます。入力の文字列自体はJust textとして受け取り、サービスの型とは分けて扱います。",
+  reading: [
+    "with Console, stdin: stdin.Stdinのstdin:は必要なサービスの名前です。右側のstdin.Stdinは、std/stdinをstdinという別名で読み込んだときの型名です。",
+    "mainはreportLine ()を三回、上から順に実行します。同じ入力の読み取り位置を使うので、parcelを三回読むのではなく、Line: parcel、Blank line、EOFの順に表示します。",
+    "Consoleはprintlnで結果を表示するために必要です。標準入力を読むStdinとは別の役割なので、この処理には両方のサービスを宣言しています。"
+  ],
+  details: [
+    "Stdinの内部を自分で組み立てたり、文字列をStdin型に変換したりする必要はありません。processターゲットの実行環境がmainに必要な入力サービスを用意します。",
+    "入力が空でもサービスが欠けているわけではありません。使える入力サービスがあり、残りの行がない場合は、読み取りが成功してNothingを返します。",
+    "importは名前を使えるようにする宣言で、それだけでは入力を消費しません。この例ではreportLine内の読み取りを実行したときに、次の一行を消費します。"
+  ]
+}

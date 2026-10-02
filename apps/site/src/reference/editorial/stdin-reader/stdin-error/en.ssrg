@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "StdinError describes why standard input could not be read. It distinguishes malformed UTF-8 and an oversized line from a blank line or end-of-input.",
+  taskTitle: "Distinguish missing input from unreadable input",
+  purpose: "Read three times to display a string, a blank line, and end-of-input. In the same operation, provide messages for malformed text bytes and lines that are too long.",
+  typescriptBefore: "TypeScript can distinguish a blank line from end-of-input by separating the string yielded by node:readline from the end of iteration. However, ordinary readline replaces malformed UTF-8 when producing a string, so it does not return the same failures as StdinError in this example.",
+  benefit: "Match the shapes InvalidStdinUtf8 and StdinLineTooLong instead of inspecting error-message text. Within successful reads, you can still handle a blank line separately from end-of-input.",
+  reading: [
+    "Passing parcel followed by two newlines displays Line: parcel, Blank line, and EOF. This ordinary input does not enter a Left branch.",
+    "Right (Just \"\") means that a line was read even though its content is empty. Right Nothing means that no line remains. Neither is a StdinError.",
+    "Left (stdin.InvalidStdinUtf8 { offset }) extracts the location of malformed text bytes, and Left (stdin.StdinLineTooLong { limitBytes }) extracts the configured limit. Left _ handles other input failures."
+  ],
+  details: [
+    "Although the type is listed as opaque-type, its public error constructors can be matched as shown. Constructing an error value does not itself read input or make an operation fail.",
+    "With official CLI 0.61.19, this std/stdin failure cannot be converted as a whole using show reason. The example matches its public shapes and displays Input failed for the rest. Keep this separate from the show fallback supported by the Prelude readLine example.",
+    "Catching and displaying an input failure does not automatically make the whole program fail. This example reports it through ordinary output. That println can itself fail, so the declaration still includes fails ConsoleError."
+  ]
+}

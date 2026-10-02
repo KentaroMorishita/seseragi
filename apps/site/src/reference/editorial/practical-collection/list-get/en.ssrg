@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.get returns the element at a zero-based List position as Maybe. An invalid position gives Nothing; a present value, including an empty string, gives Just.",
+  taskTitle: "Read a label at a position that might be missing",
+  purpose: "Display the label at a selected position, or missing when no element exists there. The first label is an empty string so that a blank label stays distinct from an absent element.",
+  typescriptBefore: "Read a normal array with labels[index] and check explicitly for undefined. An empty string is a valid value, so a truthiness check such as if (label) would answer the wrong question. This array compares the same task; it does not reproduce List’s representation or performance.",
+  benefit: "TypeScript’s indexed access is already short. In Seseragi, Maybe<String> makes presence and absence part of the result type, so both cases can be handled before using the contained String.",
+  setup: "items is the import alias for std/list. items.get 1 labels passes the position first and the List second. A backtick immediately before [, as in `[\"\", \"Review\"], creates a List. Without that backtick, [\"\", \"Review\"] creates the separate Array type.",
+  after: [
+    "Position 0 contains an empty string, and position 1 contains Review. describe accepts Maybe<String>; match separates Just label from Nothing. Just label names the contained string label, while Nothing returns missing.",
+    "json.encodeString label adds JSON quotation marks, making the first present: \"\" visibly different from missing. The negative position, position 2, and access to an empty List all produce missing.",
+    "items.empty<String> () creates an empty List with String as its element type. The final two lines use head to read the first element. They produce present: \"\" for labels and missing for the empty List, using the same Maybe handling as get.",
+  ],
+  details: [
+    "Positions start at zero. With two elements, only 0 and 1 are valid; 2 and negative positions return Nothing. This differs from JavaScript’s at, which can count backward from the end. The example’s (0 - 1) is an expression producing the integer -1.",
+    "The position must be Int; a Float such as 1.5 does not fit. The result is Maybe<String>, not String itself, so extract the Just value before passing it to an operation that needs a string.",
+    "0, False, and an empty string are all real elements. Reading them from Lists of their respective types returns Just. A value does not become Nothing because it looks empty or false.",
+    "List get walks from the beginning to the requested position. It is not the same constant-time operation as indexing an array. If only the first element is needed, use head; there is no need to count the entire List with length first.",
+  ],
+}

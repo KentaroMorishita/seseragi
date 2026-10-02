@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "defaultLineLimitは、標準の一行上限である1,048,576バイトをLineLimitとして返します。readLineが使う上限を明示的に渡したいときに使えます。",
+  taskTitle: "標準の上限を指定してラベルを受け付ける",
+  purpose: "短いparcelの行を読み、Line acceptedと表示します。readLineWithへ独自の数値を設定する代わりに、標準のLineLimitをそのまま渡します。",
+  typescriptBefore: "TypeScriptの比較は、node:readlineで得た文字列をTextEncoderで数え、1,048,576バイトと比べます。読み取った文字列についての判定なので、Seseragiの読み取り中の上限や厳密なUTF-8検査を再現するものではありません。",
+  benefit: "上限の数値を呼び出すたびに書かず、標準の方針を関数名で示せます。戻り値はそのままreadLineWithへ渡せるLineLimitで、設定エラーを処理する分岐は不要です。",
+  reading: [
+    "stdin.defaultLineLimit ()の()はUnitの引数です。この関数が返すLineLimitを、stdin.readLineWithの引数に直接渡しています。",
+    "Right (Just _)は、空ではない行を読めた場合です。直前にJust \"\"の分岐があるので、空行はBlank lineと表示され、それ以外がLine acceptedになります。",
+    "長すぎる行ならStdinLineTooLongのlimitBytesを使って上限を表示します。入力終了はEOF、それ以外の読み取りの失敗はInput failedです。"
+  ],
+  details: [
+    "既定値は1 MiB、つまり1,048,576バイトです。内容がちょうどその長さなら受け付けられ、一バイトでも超えると失敗します。LFやCRLFの行末はこの長さに含みません。",
+    "この上限は一行ごとのUTF-8バイト数です。全入力の合計、待ち時間、プロセス全体のメモリー量の上限ではありません。",
+    "readLine ()は同じ既定の上限で読みます。アプリケーション独自の短い上限が必要なら、lineLimitで確認した値をreadLineWithへ渡します。"
+  ]
+}

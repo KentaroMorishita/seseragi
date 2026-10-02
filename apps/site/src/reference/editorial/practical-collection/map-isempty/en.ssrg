@@ -1,0 +1,22 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "Check whether a Map has no entries. Entries containing zero, False or empty text still count.",
+  taskTitle: "Choose the display for an empty lookup",
+  purpose: "Show an empty-state message when a stock or settings lookup has no entries; otherwise show its normal content. The question is whether entries exist, rather than what their values contain.",
+  typescriptBefore: "For a TypeScript Map, size === 0 checks emptiness directly. A Map with a value of 0, false or an empty string still has size 1. There is no need to retrieve a value and convert it to a Boolean.",
+  benefit: "maps.isEmpty directly returns a Bool that can be used in an if condition. TypeScript’s size === 0 is already concise. This example checks the same decisions side by side.",
+  setup: "maps is the import alias for std/map. maps.empty<String, Int> () creates an empty Map with String keys and Int values. Specifying those types does not add an entry.",
+  after: [
+    "maps.fromEntries [(\"stock\", 0)] creates one entry associating the stock key with integer zero. (\"stock\", 0) is a pair whose two values are distinguished by position; the square brackets enclose an array of pairs.",
+    "maps.isEmpty returns True for the empty Map and False whenever at least one entry exists. The remaining examples contain a False setting and an empty label, but each still has one entry.",
+    "json.encodeString renders Bool as JSON’s lowercase true or false. The output is therefore true, false, false, false. Seseragi source spells its Boolean values True and False.",
+    "Pass only the Map. There is no predicate or search-key argument. Checking whether a particular key exists is a different question.",
+  ],
+  details: [
+    "isEmpty uses the stored entry count rather than visiting values. Converting to an array just to count it is unnecessary.",
+    "Do not confuse an empty Map with a Map containing empty text. An entry with an empty-string key also still exists.",
+    "The same check works after filtering. If maps.filter retains no entries, isEmpty returns True. The original Map is unchanged.",
+    "Use maps.size when you need to display the count itself. Use isEmpty when the question is simply whether there are any entries.",
+  ],
+}

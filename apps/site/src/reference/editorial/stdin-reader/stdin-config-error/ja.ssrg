@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "StdinConfigErrorは、入力の上限などの設定が不正な理由を表します。lineLimitでは、正でない値と大きすぎる値を分けて扱えます。",
+  taskTitle: "使えない上限に、直し方を添えて返す",
+  purpose: "五つの設定候補を確認し、0と-1には最低値、67,108,865には最大値を案内します。使える両端の値はAcceptedと表示します。",
+  typescriptBefore: "TypeScriptでは整数と範囲を確認してから、条件に合うメッセージを返せます。ここではその設定チェックだけを比べます。入力の読み取りや、文字列のバイト数の検査はまだ行いません。",
+  benefit: "エラーの文字列を解析せず、NonPositiveLineLimitとLineLimitTooLargeをmatchで分けられます。どちらも渡した整数を持つので、直すべき値を案内に含められます。",
+  reading: [
+    "Left (stdin.NonPositiveLineLimit bytes)のbytesは、0や-1という設定値です。読んだ行の長さではありません。表示では最低1バイトという条件と一緒に示します。",
+    "Left (stdin.LineLimitTooLarge bytes)は、最大の67,108,864を超える設定です。候補の67,108,865はこの分岐に入り、使える最大値を表示します。",
+    "Right _は設定が有効だった場合です。Left reasonの分岐は、それ以外の設定エラーを表示するために残しています。"
+  ],
+  details: [
+    "StdinConfigErrorの公開されたコンストラクターは、型の表示がopaque-typeでも照合できます。lineLimitのこの例では二つの上限エラーを扱い、ほかの入力設定の機能は使いません。",
+    "設定の誤りは、読み取り中のStdinErrorとは別です。lineLimitは入力を消費せず、壊れたUTF-8や実際の行の上限超過も、この段階では検査しません。",
+    "有効な設定から得たLineLimitをreadLineWithへ渡して、初めてその上限で入力を読む処理を作れます。エラーのコンストラクターで値を作るだけでは、入力を読んだり失敗を起こしたりしません。"
+  ]
+}

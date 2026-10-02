@@ -122,6 +122,7 @@ test("FileSystemError reading describes its verified fields without invented typ
 
 test("filesystem editorial selects only exact existing identities and module owners", () => {
   const all = compilerReferenceModules()
+  expect(all.some((module) => module.specifier === "std/console")).toBe(true)
   const leaves = filesystemReaderRoutes.filter((item) => item.kind !== "module")
   expect(filesystemReaderRoutes).toHaveLength(16)
   expect(leaves).toHaveLength(14)
@@ -171,18 +172,21 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
   Left _ -> println "[]"
   Right input -> println (json.encodeString (arrays.concat [
     arrays.concat [[(present (filesystemReaderEditorialFor symbol), present (editorialFor symbol)) | symbol <- module.items] | module <- input.referenceModules],
-    [(arrays.length (filesystemReaderModuleBlocks name) > 0, arrays.length (moduleEditorial name) > 0) | name <- ["std/path", "std/fs", "std/process", "std/fs-extra", "std/path::Path"]]
+    [(arrays.length (filesystemReaderModuleBlocks name) > 0, arrays.length (moduleEditorial name) > 0) | name <- ["std/path", "std/fs", "std/process", "std/console", "std/fs-extra", "std/path::Path"]]
   ]))
 }`,
     })
-    expect(result).toHaveLength(probes.length + controls.length + 5)
+    expect(result).toHaveLength(probes.length + controls.length + 6)
     for (let i = 0; i < probes.length; i++)
       expect(result[i]).toEqual(i % 5 === 0 ? [true, true] : [false, false])
     for (let i = probes.length; i < probes.length + controls.length; i++)
       expect(result[i]).toEqual([false, false])
-    expect(result.slice(-5)).toEqual([
+    expect(result.slice(-6)).toEqual([
       [true, true],
       [true, true],
+      // Process belongs to Terminal9, never to the FileSystem family.
+      [false, true],
+      // Console is a real, still-unclaimed module in both dispatchers.
       [false, false],
       [false, false],
       [false, false],

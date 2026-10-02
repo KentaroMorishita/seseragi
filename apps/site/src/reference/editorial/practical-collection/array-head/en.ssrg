@@ -1,0 +1,20 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "head returns an array’s first element as Maybe. An empty array returns Nothing; an existing first element, including an empty string or 0, returns Just.",
+  taskTitle: "Read the first label, even when the list is empty",
+  purpose: "Display the first label in a list, or missing when the list itself is empty. The important distinction is a first label that is blank versus no labels at all. The example’s final two lines compare those cases.",
+  typescriptBefore: "In TypeScript, read labels[0] and check === undefined for absence. This is already concise and does not need a separate length check. Avoid a truthiness check so that the empty string remains present. The first five lines also compare indexed access using the same display function.",
+  benefit: "Seseragi’s head needs no position argument and returns either Just with the first element or Nothing for an empty array. Handle the two Maybe cases directly instead of separating a length check from the read.",
+  setup: "items and json are import aliases for std/array and std/json. The square brackets create labels as Array<String>. The call items.head labels takes one array argument; items.empty<String> () creates an empty array of String values.",
+  after: [
+    "describe accepts Maybe<String> and returns String. In its match, Just label extracts the existing string, while Nothing handles the absence of an element. Both branches return display text.",
+    "The second-to-last call gets the empty string inside Just. json.encodeString adds quotation marks, producing present: \"\". The final call uses an empty array and displays missing.",
+    "The earlier get calls check positions 0 and 1, a negative position, an out-of-range position, and an empty array. head serves the case where you want position 0. Both return Maybe, so the same describe function handles their results.",
+  ],
+  details: [
+    "head reads the first element. It does not skip the empty string to find Review. A first element equal to 0 or False also returns Just. To look for the first element that meets a condition, use find.",
+    "Just \"\" and Nothing are different values. Do not treat the whole result of head as a String; match it and use the contained value. The example displays missing for absence, but your application can choose its own message.",
+    "head does not shorten the array or change its elements. Reading the first value with head differs from getting the remaining array after skipping a leading count with drop. For a List input, use head from std/list.",
+  ],
+}

@@ -1,0 +1,8 @@
+import * as maps from "std/map"
+import * as json from "std/json"
+pub effect fn main = do {
+  _ <- println (json.encodeString (maps.isEmpty (maps.empty<String, Int> ())))
+  _ <- println (json.encodeString (maps.isEmpty (maps.fromEntries [("stock", 0)])))
+  _ <- println (json.encodeString (maps.isEmpty (maps.fromEntries [("enabled", False)])))
+  println (json.encodeString (maps.isEmpty (maps.fromEntries [("label", "")])))
+}

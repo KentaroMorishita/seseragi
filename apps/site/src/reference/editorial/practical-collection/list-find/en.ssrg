@@ -1,0 +1,21 @@
+import { PracticalCollectionCopy } from "../model"
+
+pub fn copy -> PracticalCollectionCopy = PracticalCollectionCopy {
+  summary: "items.find returns the first List element whose condition function returns True, wrapped in Just. It returns Nothing if no element matches.",
+  taskTitle: "Find the first urgent task",
+  purpose: "Read and display just one urgent task. Both Review and Ship are urgent, but Review comes first in the original order. Also handle a missing match and an empty list.",
+  typescriptBefore: "A normal array’s find locates the first match. Check explicitly for undefined to display not found, or display the task’s title when present. Native find is already concise. This array compares the same search task without reproducing List’s representation or performance.",
+  benefit: "Seseragi gives the condition type Task -> Bool and the result type Maybe<Task>. The Just and Nothing branches make the two possible outcomes explicit before using a found Task.",
+  setup: "struct Task defines a record type with title and urgent, and Task { ... } constructs a value. The backtick before tasks’ opening bracket creates a List; without it, brackets create an Array. items is the alias for std/list.",
+  after: [
+    "fn urgent task: Task -> Bool takes one task and returns task.urgent. items.find urgent tasks passes this function first and the List second. Read returns False and Review returns True, so the result is Just containing the Review Task.",
+    "describe uses match to return task.title for Just task or not found for Nothing. The first three outputs are Review, not found for the absent title, and not found for an empty List. items.empty<Task> () constructs an empty List with an explicit element type.",
+    "\\task -> task.title == \"Missing\" creates a function where task is the input and the equality test after -> produces Bool. The final comprehension [task.title | task <- tasks] makes an Array of titles from the original List; its JSON display still contains all three tasks.",
+  ],
+  details: [
+    "find checks elements from the beginning and stops at the first True result. In this example it does not need to inspect Ship. If no element matches, the result is Nothing; an empty input does not call the condition at all.",
+    "0, False, and an empty string can all be returned in Just when they match a condition. Nothing represents a missing match, independently of whether a found value is zero, false, or blank.",
+    "Maybe<Task> is not Task itself, so it cannot be passed directly to an operation that needs Task. Extract the Just value with match and decide what to do for Nothing. The condition function also needs to return Bool, rather than a string.",
+    "Choose filter if all matching tasks are needed. find returns the first match as Maybe, while filter keeps every matching element in order as List. Neither operation changes the contents of the input tasks.",
+  ],
+}

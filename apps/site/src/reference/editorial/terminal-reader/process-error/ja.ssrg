@@ -1,0 +1,20 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "ProcessErrorは、設定、引数、作業ディレクトリーなどを読めなかった理由を表します。環境変数名の誤りはInvalidEnvironmentNameとして区別できます。",
+  taskTitle: "設定名が空、またはNULを含む場合に説明を出す",
+  purpose: "設定を読む処理に、空の名前とNUL文字を含む名前を渡してみます。どちらもInvalidEnvironmentNameになり、使える名前の条件を同じメッセージで知らせます。実際の設定や秘密の値を読む必要はありません。",
+  typescriptBefore: "このTypeScriptのreadSettingは、空の名前やNULを含む名前を自分で検査してからprocess.envを読みます。Seseragiと同じ入力条件を比べるために加えた検査で、Node.jsやBunのprocess.envがもともと同じエラーを出すという意味ではありません。",
+  benefit: "エラーの文字列を読み比べる代わりに、process.InvalidEnvironmentNameという形で理由を選べます。それ以外の失敗を受け取る枝も残しておけば、設定名の問題だけに具体的な案内を出せます。",
+  reading: [
+    "inspectNameは、String型の引数nameを受け取り、その名前で設定の読み取りを試すeffect fnです。mainは空文字列と\"BAD\\0NAME\"を順に渡します。文字列中の\\0は、文字の0ではなくNULという制御文字を表します。",
+    "Left (process.InvalidEnvironmentName _)は、設定名が無効な失敗だけに合う枝です。_はエラーに含まれる名前をここでは使わないという意味です。Left reasonの枝はその他の失敗を、Right _の枝は読み取りの成功を受け取ります。",
+    "この二つの呼び出しでは、どちらもUse a nonempty setting name without a NUL characterと表示します。mainの_ <- inspectName \"\"は、最初の処理を終えてから次へ進み、その戻り値を使わない書き方です。"
+  ],
+  details: [
+    "ProcessErrorにはprocess.InvalidEnvironmentNameなどの公開されたエラーの形があり、matchで区別できます。ページの型分類がopaque-typeでも、これらの公開コンストラクターを使った判定まで隠されているわけではありません。",
+    "存在しない有効な名前を読むと、成功した結果の中にNothingが返ります。名前が無効で読み取りが失敗することとは別です。この例のRight _は、値の有無によらず名前を受け付けたことだけを表示します。",
+    "この例で再現するのは空とNULを含む名前の拒否です。文字の変換や作業ディレクトリー取得に関する失敗を、どのOSでも同じ入力で再現できるとは限りません。",
+    "ProcessErrorを扱った後でも、案内を出すprintlnはConsoleErrorで失敗する可能性があります。mainのfails ConsoleErrorは、その出力側の失敗を表しています。"
+  ]
+}
