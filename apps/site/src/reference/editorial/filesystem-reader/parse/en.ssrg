@@ -1,0 +1,20 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "Validate a path spelling and return either Left with a problem or Right with a Path.",
+  taskTitle: "Decide whether to accept a destination input",
+  purpose: "Check destinations received from settings. Try reports/./report.txt, empty text, and a Windows-style string containing backslashes. Display either the accepted spelling or the rejection reason, without checking whether a file exists.",
+  setup: "Import std/path as paths. fn describe text: String -> String declares a function named describe with a String parameter text and a String return value. The expression after = produces that value. paths.parse text returns one of two shapes, Left or Right, and match selects its branch. Left reason receives a problem; Right file receives a checked Path.",
+  after: [
+    "The first input produces accepted: reports/./report.txt. parse does not remove the . segment, so render preserves the input spelling. Empty text is rejected with EmptyPath. The third input is rejected with PathContainsBackslash and offset 2. For this ASCII-only input, that points to the first backslash at index 2, counting from 0.",
+    "show reason converts a problem into text, while paths.render file converts a Path into text. ${...} inside backticks inserts that result after accepted: or rejected:. In the source, \\\\ spells one backslash inside a string.",
+    "pub effect fn main is the execution entry point. do runs the printing operations in order. _ <- println (...) completes a print and discards its return value before continuing. The last println is the block’s final operation. describe itself only returns text."
+  ],
+  details: [
+    "The return type Either<PathError, Path> means either Left carrying a PathError or Right carrying a Path. The example handles both. Rather than substituting an empty path after failure, the caller can correct the input or stop the operation.",
+    "Use / as the separator. Spellings can be relative, start at /, use a drive such as C:/, or use a share such as //server/share/. Empty text, NUL (the zero character), backslashes, and malformed drive or share roots are rejected. This function does not silently trim surrounding whitespace either.",
+    "parse preserves . and .. and does not check file existence or access permission. Accepting a path does not guarantee confinement to a safe storage area. Tidying spelling with normalize and checking actual link destinations are separate operations."
+  ],
+  comparisonBefore: "A TS validation function can also return accepted text or an error. Both languages still need validation conditions and a caller that responds appropriately.",
+  comparisonAfter: "parse puts the failure reason and successful Path in its return type. The two match branches give each outcome an explicit response. Valid input still does not guarantee a successful file operation."
+}

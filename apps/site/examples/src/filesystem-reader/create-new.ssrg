@@ -1,0 +1,41 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type ReportError deriving Show =
+  | PathFailure paths.PathError
+  | WriteFailure fs.FileSystemError
+  | ReadFailure fs.FileTextError
+
+fn describe error: fs.FileSystemError -> file: paths.Path -> String = {
+  let secondPath = match error.otherPath {
+    Nothing -> "none"
+    Just other -> paths.render other
+  }
+  let samePath = paths.render error.path == paths.render file
+  `operation: ${show error.operation}\nkind: ${show error.kind}\npath matches report: ${show samePath}\nother path: ${secondPath}`
+}
+
+effect fn report directory: paths.Path -> String with FileSystem fails ReportError =
+  do {
+    file <- paths.child "report.txt" directory
+      |> effects.fromEither
+      |> effects.mapError PathFailure
+    _ <- fs.writeTextUtf8 fs.CreateNew "original" file |> effects.mapError WriteFailure
+    second <- effects.attempt (fs.writeTextUtf8 fs.CreateNew "replacement" file)
+    original <- fs.readTextUtf8 file |> effects.mapError ReadFailure
+    let status = match second {
+      Left error -> describe error file
+      Right _ -> "unexpected success"
+    }
+    effects.succeed `${status}\ncontents: ${original}`
+  }
+
+pub effect fn main = do {
+  result <- effects.attempt (fs.withTemporaryDirectory "fs16-create-" report)
+  let message = match result {
+    Right text -> text
+    Left problem -> show problem
+  }
+  println message
+}

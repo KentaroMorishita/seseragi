@@ -1,0 +1,21 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "Choose whether a write creates a new file, replaces existing content, or appends to the end.",
+  taskTitle: "Choose how to handle an existing report",
+  purpose: "Write original to a new report.txt, then rerun the creation to check that it is rejected. Replace the content with OK and append ! to obtain OK!. One destination demonstrates all three modes.",
+  setup: "fs, paths, and effects are imported module aliases. effect fn report directory: paths.Path -> String defines work taking directory and producing explanatory text when run. with FileSystem declares the file service requirement; fails ReportError names ordinary failures. do runs operations in order, <- receives a result, and _ <- waits without keeping one.",
+  after: [
+    "paths.child obtains the Path for report.txt. Its result is Left with a problem or Right with a Path. |> passes a value to the next function. effects.fromEither turns the result into work, and effects.mapError PathFailure labels a failure. ReportError’s WriteFailure and ReadFailure similarly retain original write and read problems. deriving Show enables display with show.",
+    "let planned names the work of writing original using CreateNew. It has not executed yet, so fs.exists returns False as before. _ <- planned performs the first write. effects.attempt planned executes the same work again and fails because the file now exists.",
+    "attempt converts an ordinary failure into Left error or success into Right. match displays error.kind as FileAlreadyExists. original still contains the first content. Replace truncates it to OK, then Append adds !, so updated is OK!.",
+    "let names an immutable value, and ${...} inside backticks inserts values into text. effects.succeed returns work that succeeds with this description. In main, withTemporaryDirectory supplies a dedicated workspace and removes it afterward. attempt and match choose the result for println to display."
+  ],
+  details: [
+    "WriteMode has three named choices: CreateNew, Replace, and Append. Each is a value with no arguments, written as fs.CreateNew without (). Choose one as the first argument to writeTextUtf8.",
+    "CreateNew fails with FileAlreadyExists if the destination already exists. Replace truncates existing content or creates a file. Append writes at the end, creating the file if absent. Append adds no newline automatically.",
+    "An existence check does not replace a mode. before only demonstrates that constructing work has not written anything. CreateNew enforces new-file protection during the write itself. Replace and Append do not guarantee an all-or-nothing operation; content written before a failure can remain."
+  ],
+  comparisonBefore: "TS writeFile also makes this concise: wx creates exclusively, w replaces, and a appends. await waits for each file operation, and try/catch handles EEXIST from duplicate creation. This example’s existence check only inspects the initial state in its dedicated temporary directory.",
+  comparisonAfter: "Both preserve the initial content and finish with OK!. False versus false and FileAlreadyExists versus EEXIST retain each API’s own presentation. Seseragi supplies named values of a mode type and lets the saved Effect execute again. A TS async function starts when called; saving a Promise alone does not create the same unexecuted work."
+}

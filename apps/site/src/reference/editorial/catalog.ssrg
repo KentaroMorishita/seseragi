@@ -1,3 +1,7 @@
+import {
+  filesystemReaderEditorialFor,
+  filesystemReaderModuleBlocks
+} from "./filesystem-reader/catalog"
 import { webReaderEditorialFor, webReaderModuleBlocks } from "./web-reader/catalog"
 import { resultFoundationEditorialFor } from "./result-foundations/catalog"
 import {
@@ -154,6 +158,12 @@ fn editorialAfterResultFoundationEditorialFor symbol: ReferenceSymbol
   -> Maybe<Editorial> =
   match webReaderEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterWebReaderEditorialFor symbol
+  }
+
+fn editorialAfterWebReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
+  match filesystemReaderEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -230,5 +240,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   charTextModuleBlocks specifier,
   dataValidationModuleBlocks specifier,
   numericReaderModuleBlocks specifier,
-  webReaderModuleBlocks specifier
+  webReaderModuleBlocks specifier,
+  filesystemReaderModuleBlocks specifier
 ]

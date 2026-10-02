@@ -1,0 +1,39 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type ReportError deriving Show =
+  | PathFailure paths.PathError
+  | WriteFailure fs.FileSystemError
+  | ReadFailure fs.FileTextError
+
+effect fn report directory: paths.Path -> String with FileSystem fails ReportError =
+  do {
+    file <- paths.child "report.txt" directory
+      |> effects.fromEither
+      |> effects.mapError PathFailure
+    _ <- fs.writeTextUtf8 fs.CreateNew "ready" file |> effects.mapError WriteFailure
+    fs.readTextUtf8 file |> effects.mapError ReadFailure
+  }
+
+effect fn reject directory: paths.Path -> String with FileSystem fails String =
+  effects.fail "report rejected"
+
+fn describe result: Either<Either<fs.FileSystemError, String>, String> -> String =
+  match result {
+    Right text -> `success: ${text}`
+    Left failure -> match failure {
+      Left error -> `resource failure: ${show error.kind}`
+      Right reason -> `callback failure: ${reason}`
+    }
+  }
+
+pub effect fn main = do {
+  success <- effects.attempt (
+    fs.withTemporaryDirectory "fs16-success-"
+      (\directory -> report directory |> effects.mapError show)
+  )
+  _ <- println (describe success)
+  failure <- effects.attempt (fs.withTemporaryDirectory "fs16-failure-" reject)
+  println (describe failure)
+}

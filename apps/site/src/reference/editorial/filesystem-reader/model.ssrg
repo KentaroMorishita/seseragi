@@ -1,0 +1,162 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { Editorial } from "../model"
+
+pub struct FilesystemReaderCopy {
+  summary: String,
+  taskTitle: String,
+  purpose: String,
+  setup: String,
+  after: Array<String>,
+  details: Array<String>,
+  comparisonBefore: String,
+  comparisonAfter: String
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  [Paragraph ([Words (localized en ja)]) | (en, ja) <- arrays.zip japanese english]
+
+fn link title: String -> route: String -> en: String -> ja: String -> Block =
+  Paragraph (
+    [
+      InternalLink (localized title title, route),
+      Words (localized (": " + en) ("：" + ja))
+    ]
+  )
+
+pub fn filesystemReaderEditorial identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> source: String
+  -> output: String
+  -> comparison: String
+  -> comparisonOutput: String
+  -> english: FilesystemReaderCopy
+  -> japanese: FilesystemReaderCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace,
+    itemKind,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("using-this-operation", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Paragraph ([Words (localized english.setup japanese.setup)]),
+        CodeExample (
+          "filesystem-reader-" + source,
+          localized "Complete Seseragi program" "Seseragiの完全なプログラム"
+        ),
+        Paragraph (
+          [Words (
+            if namespace == "module" && identity == "std/path" || identity == "std/path::Path" || identity == "std/path::parse" || identity == "std/path::render" || identity == "std/path::child" then
+              localized
+              "Save this program with the filename below and run it with the CLI. The path calculations themselves do not read or write files; main prints their results."
+              "このプログラムを下のファイル名で保存し、CLIで実行します。パスの計算はファイルを読み書きせず、mainが結果を出力します。"
+            else
+              localized
+              "Save this program with the filename below and run it with the CLI. The example creates its report in a managed temporary directory. These file operations need a FileSystem service, supplied here by the process runtime. A successful browser build alone does not supply that service."
+              "このプログラムを下のファイル名で保存し、CLIで実行します。例では一時ディレクトリーを作り、その中にレポートを保存します。ファイルの操作にはFileSystemサービスが必要です。ここではプロセスの実行環境がそのサービスを用意します。ブラウザ向けのビルドに成功するだけでは、サービスは用意されません。"
+          )]
+        ),
+        Terminal (
+          localized "Run locally" "ローカルで実行する",
+          "seseragi run " + source + ".ssrg --target process"
+        ),
+        Terminal (localized "Seseragi output" "Seseragiの実行結果", output),
+        Heading ("reading-the-example", localized "Read the example" "例を順に読む")
+      ],
+      paragraphs english.after japanese.after,
+      [
+        Heading (
+          "typescript-comparison",
+          localized "The same task in TypeScript" "TypeScriptで同じ処理を表す"
+        ),
+        Paragraph
+              ([Words (localized english.comparisonBefore japanese.comparisonBefore)])
+      ],
+      if comparison == "" then
+        []
+      else
+        [CodeExample (
+          "filesystem-reader-" + comparison + "-ts",
+          localized "Complete TypeScript comparison" "TypeScriptの完全な比較例"
+        )],
+      if comparisonOutput == "" then
+        []
+      else
+        [Terminal (localized "TypeScript output" "TypeScriptの実行結果", comparisonOutput)],
+      [
+        Paragraph ([Words (localized english.comparisonAfter japanese.comparisonAfter)]),
+        Heading ("operation-rules", localized "Rules and common mistakes" "使う前に確認する規則")
+      ],
+      paragraphs english.details japanese.details,
+      [Heading ("choose-next", localized "Choose what you need next" "必要な操作を選ぶ")],
+      related identity,
+      if itemKind == "module" then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+}
+
+fn related identity: String -> Array<Block> =
+  if identity == "std/path"
+    || identity == "std/path::Path"
+    || identity == "std/path::parse"
+    || identity == "std/path::render"
+    || identity == "std/path::child" then
+    [
+      link "std/path" "/docs/library/path/"
+        "choose between checking path text, adding a filename and displaying a path."
+        "文字列の検査、ファイル名の追加、パスの表示から必要な操作を選べます。",
+      link "parse" "/docs/library/path/function/parse/"
+        "turn outside text into a Path and handle rejected input."
+        "外から受け取った文字列をPathに変換し、拒否された入力も扱います。",
+      link "child" "/docs/library/path/function/child/"
+        "add one checked filename to a base directory." "基準のディレクトリーに、検査したファイル名を一個追加します。",
+      link "std/fs" "/docs/library/fs/" "use a Path to write and read a small report."
+        "Pathを使って小さなレポートを保存し、読み戻します。"
+    ]
+  else if identity == "std/fs::WriteMode"
+    || identity == "std/fs::CreateNew"
+    || identity == "std/fs::Replace"
+    || identity == "std/fs::Append"
+    || identity == "std/fs::writeTextUtf8" then
+    [
+      link "WriteMode" "/docs/library/fs/opaque-type/writemode/"
+        "choose whether existing contents should be kept, replaced or extended."
+        "既存の内容を守る、置き換える、末尾へ加える、のどれかを選べます。",
+      link "CreateNew" "/docs/library/fs/constructor/createnew/"
+        "refuse to overwrite a path that already exists." "すでにあるパスへの上書きを拒否します。",
+      link "writeTextUtf8" "/docs/library/fs/effect-function/writetextutf8/"
+        "write text with the selected mode and wait for completion."
+        "選んだ方法で文字列を書き、完了を待ちます。",
+      link "readTextUtf8" "/docs/library/fs/effect-function/readtextutf8/"
+        "read the resulting bytes as strict UTF-8 text." "保存したバイト列を、厳密なUTF-8検査を行って読みます。"
+    ]
+  else
+    [
+      link "std/fs" "/docs/library/fs/" "start with a complete small-file workflow."
+        "小さなファイルを扱う一連の処理から始められます。",
+      link "FileSystemError" "/docs/library/fs/struct/filesystemerror/"
+        "find the operation, path and reason for a file-access failure."
+        "ファイルの操作に失敗したとき、操作名、パス、理由を確認できます。",
+      link "FileTextError" "/docs/library/fs/opaque-type/filetexterror/"
+        "distinguish a file-access problem from invalid UTF-8 bytes."
+        "ファイルの操作の失敗と、不正なUTF-8のバイト列を区別します。",
+      link "withTemporaryDirectory"
+        "/docs/library/fs/effect-function/withtemporarydirectory/"
+        "keep intermediate files within the callback's temporary workspace."
+        "処理の途中で使うファイルを、コールバックが使う一時領域に置きます。"
+    ]

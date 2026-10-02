@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { filesystemReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  filesystemReaderEditorial "std/fs::FileSystemError" "type" "struct" "create-new" "operation: WriteFile\nkind: FileAlreadyExists\npath matches report: True\nother path: none\ncontents: original" "" "" (en.copy ()) (ja.copy ())

@@ -1,0 +1,20 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "既存の内容を切り詰めて書くモードです。保存先のファイルがなければ作ります。",
+  taskTitle: "長いレポートを短い本文に置き換える",
+  purpose: "report.txtにA longer reportを書き、次にOKだけを書きます。読み戻すとOKだけが残ります。短い本文の後ろに、以前のレポートの末尾が残らないことを確かめる例です。",
+  setup: "effects、fs、pathsはimportしたモジュールです。effect fn report directory: paths.Path -> Stringは、directoryというPathを受け取り、実行時にStringを返します。with FileSystemは必要なサービス、fails ReportErrorは通常の失敗の型です。doは処理を上から順に実行し、<-で結果を受け取り、_ <-で完了だけを待ちます。",
+  after: [
+    "paths.child \"report.txt\" directoryの結果は、問題のLeftかPathのRightです。|>でeffects.fromEitherへ渡して実行する処理に変え、file <-でPathを得ます。ReportErrorのPathFailure、WriteFailure、ReadFailureは各段階の問題を保持し、effects.mapErrorが対応する形に包みます。deriving Showによりshowで表示できます。",
+    "最初のwriteTextUtf8はfs.Replace、\"A longer report\"、fileの順に引数を受け取ります。一時ディレクトリーにはまだファイルがないので、Replaceが新しく作ります。二度目もReplaceで\"OK\"を書き、以前の内容を切り詰めます。",
+    "最後のreadTextUtf8がStringのOKを返し、それがreportの成功時の結果になります。mainはwithTemporaryDirectoryで専用の作業場所を作って終了後に削除します。effects.attemptは通常の失敗をLeft problem、成功をRight textにし、letで変更しないmessageに名前を付け、matchで選んだ文字列をprintlnが表示します。"
+  ],
+  details: [
+    "ReplaceはWriteModeの名前付きの選択肢で、引数なしの値です。fs.Replaceと書き、()は付けません。既存の内容を守りたいならCreateNew、内容の後ろへ足したいならAppendを選びます。",
+    "名前のReplaceは、ファイル全体を一度に切り替える保証を意味しません。書き込み途中で失敗やキャンセルが起きると、それまでに書けた内容だけが残る場合があります。元の内容を残す必要がある仕事で、通常のReplaceを安全な一括置き換えだと扱わないでください。",
+    "本文はUTF-8で書かれ、成功するまでにflushとcloseを終えます。flushは保留した出力を送り出す処理で、closeはファイルを閉じる処理です。それでも停電後の保存は保証しません。ファイル全体の一括置き換えが必要なら、別の操作であるwriteAtomicの条件を確認します。"
+  ],
+  comparisonBefore: "NodeのTSコードではwriteFileのflag: \"w\"が、既存の内容を切り詰めるか新しくファイルを作ります。短い本文への変更もこの操作で行えます。",
+  comparisonAfter: "Seseragiは同じ選択をfs.Replaceという値で明示します。どちらも普通の書き込みだけで一括置き換えや停電への耐性を保証するわけではありません。"
+}

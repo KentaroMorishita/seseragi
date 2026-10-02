@@ -1,0 +1,6 @@
+import * as fs from "std/fs"
+
+pub effect fn main = do {
+  content <- fs.readTextUtf8 "report.txt"
+  println content
+}

@@ -1,0 +1,20 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "パスとして検査した書き方を保持する型です。文字列や、開いたファイルそのものとは区別します。",
+  taskTitle: "文字列からPathを得る",
+  purpose: "レポートの保存先としてreports/report.txtを受け取ります。文字列をPathという型名で飾るだけでは検査になりません。paths.parseで確かめ、成功した値を以後のパス操作に渡します。",
+  setup: "importでstd/pathをpathsという名前で使います。paths.parseはStringを受け取り、Left reasonかRight fileを返します。Leftは検査に失敗した形で、reasonが理由です。Rightは成功した形で、fileがPathです。matchはその形に応じて->の右側を実行します。関数名と引数は空白で区切ります。",
+  after: [
+    "この入力は有効なので、paths.render fileがreports/report.txtを返し、Saving reports/report.txtを表示します。バッククォート内の${...}は式の値を文字列へ埋め込む記法です。fileはRightの行の中でだけ使えます。",
+    "pub effect fn mainは実行の開始点で、printlnが改行付きで表示します。入力が不正なら、show reasonでエラーを文字列にしてInvalid path:に続けます。成功側と失敗側の両方を読むと、どの値を次の操作へ渡せるかが分かります。",
+    "opaqueという宣言は、Pathの内部の作りを利用側から直接組み立てないという意味です。parseやchildなど、ライブラリーが用意した操作から値を得ます。Path自体はファイルを開いた状態でも、ファイルが存在する証明でもありません。"
+  ],
+  details: [
+    "let report: paths.Path = \"report.txt\"という定義では、letが変更しない値にreportと名付け、: paths.Pathが必要な型を指定します。型注釈はStringを変換しないため、この定義はSES-T0101のBinding annotation type mismatchで拒否されます。parseしてRightで受け取った値を使うのが修正です。",
+    "Pathは/を区切りに使う書き方を保持します。parseは.や..を残し、renderもそのまま文字列へ戻します。大文字と小文字、Unicodeの表記、シンボリックリンクを自動でそろえる値ではありません。",
+    "Pathを受け取った後でも、実際の読み書きは存在しないファイルや権限の不足で失敗します。Pathによる入力の検査と、FileSystemErrorによる実行時の失敗の報告は、別の役割です。"
+  ],
+  comparisonBefore: "TSではパスをstringで受け取るAPIが一般的です。必要なら呼び出し前に検査を入れたり、検査済みの値を専用の型やオブジェクトで区別したりできます。",
+  comparisonAfter: "Pathはその検査済みの値を型で区別します。単にTSの型注釈を書き換えた場合と違い、この例ではparseが実際に入力を調べています。"
+}

@@ -1,0 +1,51 @@
+import * as bytes from "std/bytes"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+type FixtureError deriving Show =
+  | PathFailure paths.PathError
+  | ByteFailure bytes.ByteError
+  | WriteFailure fs.FileSystemError
+
+fn describe result: Either<fs.FileTextError, String> -> String = match result {
+  Right text -> `decoded: ${text}`
+  Left error -> match error {
+    fs.FileAccessFailure detail -> `access: ${show detail.kind}`
+    fs.FileUtf8Failure detail -> `decode: ${show detail}`
+  }
+}
+
+effect fn inspect directory: paths.Path -> String with FileSystem fails FixtureError =
+  do {
+    file <- paths.child "report.txt" directory
+      |> effects.fromEither
+      |> effects.mapError PathFailure
+    missing <- effects.attempt (fs.readTextUtf8 file)
+    malformed <- bytes.fromInts [
+      65,
+      195,
+      40,
+      66
+    ]
+      |> effects.fromEither
+      |> effects.mapError ByteFailure
+    _ <- fs.writeBytes fs.CreateNew malformed file |> effects.mapError WriteFailure
+    invalid <- effects.attempt (fs.readTextUtf8 file)
+    _ <- fs.writeTextUtf8 fs.Replace "\u{FEFF}A" file |> effects.mapError WriteFailure
+    bom <- effects.attempt (fs.readTextUtf8 file)
+    let preserved = match bom {
+      Right text -> text == "\u{FEFF}A"
+      Left _ -> False
+    }
+    effects.succeed `${describe missing}\n${describe invalid}\nBOM preserved: ${show preserved}`
+  }
+
+pub effect fn main = do {
+  result <- effects.attempt (fs.withTemporaryDirectory "fs16-utf8-" inspect)
+  let message = match result {
+    Right text -> text
+    Left problem -> show problem
+  }
+  println message
+}

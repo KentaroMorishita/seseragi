@@ -1,0 +1,22 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "Pathで指定したファイルを読み書きします。実行するには、ファイル操作を受け持つFileSystemサービスが必要です。",
+  taskTitle: "小さなUTF-8レポートを書いて読む",
+  purpose: "report.txtにcaféと日本語の本文を書き、同じ文字列を読み戻します。この例は専用の一時ディレクトリーを使うので、既存のレポートには触れません。処理が終わると、そのディレクトリーと中のファイルを削除します。",
+  setup: "importは三つのモジュールにeffects、fs、pathsという名前を付けます。effect fn report directory: paths.Path -> Stringは、directoryを受け取り、実行時にStringを得る処理を定義します。with FileSystemは必要なファイル操作のサービス、fails ReportErrorは通常の失敗の型です。do内で<-は処理を実行して結果を左の名前で受け取り、_ <-は結果を使わず完了を待ちます。",
+  after: [
+    "paths.child \"report.txt\" directoryは、directoryに一つのファイル名を足します。結果は問題を持つLeftかPathを持つRightです。|>は左の値を右の関数へ渡し、effects.fromEitherがこの結果を実行する処理へ変えます。成功するとfileを得ます。",
+    "let textは変更しない本文の値に名前を付けます。文字列内の\\nは改行です。fs.writeTextUtf8 fs.CreateNew text fileの引数は、書き方、本文、保存先の順です。CreateNewは既存のファイルを上書きしません。最後のfs.readTextUtf8 fileで読み戻したStringがreportの成功時の結果です。",
+    "ReportErrorはこの例で定義した三つの失敗の形です。PathFailureにはパスの問題、WriteFailureには書き込みの問題、ReadFailureには読み込みの問題を入れます。effects.mapErrorがそれぞれの失敗を対応する形に包み、deriving Showによってshowで表示できるようにします。",
+    "mainは実行の開始点です。withTemporaryDirectoryがdirectoryを用意してreportを呼び、処理後に片付けます。effects.attemptは通常の失敗をLeft、成功した本文をRightとして受け取り直します。matchで表示するmessageを選び、printlnが本文と最後の改行を出力します。"
+  ],
+  details: [
+    "関数を呼んでEffectという処理の値を作っただけでは、読み書きは始まりません。mainから実行し、doの順序に従って進めます。FileSystemは実行環境が供給します。モジュールのimportやブラウザ向けのコンパイルだけでは、OSのファイルを操作できるようにはなりません。この例はCLIのプロセスとして実行します。",
+    "CreateNewは新規作成、Replaceは既存内容の切り詰めまたは新規作成、Appendは末尾への追記です。本文を変えるならtextを、名前を変えるならchildの\"report.txt\"を編集します。普通の読み書きにはファイル全体をメモリーに置くコストがあり、大きなファイル向けの例ではありません。",
+    "保存先にはStringでなくPathを渡します。外部から文字列を受け取る場合はpaths.parseのLeftとRightを処理してください。Pathが有効でも、存在やアクセス権の問題はFileSystemError、UTF-8として読めない内容はFileTextErrorの中の別の形で報告されます。",
+    "一時ディレクトリーの中で使ったPathを返しても、処理の終了後にそのファイルを使い続けることはできません。例のように必要な本文を返します。成功と通常の失敗での片付けを確認した例であり、強制終了やキャンセルでの保証をこの結果から広げることはできません。"
+  ],
+  comparisonBefore: "TSでもNodeのファイルAPIで新規作成と読み戻しを簡潔に書けます。Promiseを返す関数を呼び、awaitでその完了を待つのが一般的です。",
+  comparisonAfter: "SeseragiはPath、WriteMode、失敗の型、必要なFileSystemを分けて表します。Effectは構築だけでは実行しないため、呼び出した時点で始まる通常のTSの非同期処理とは分けて考えます。"
+}

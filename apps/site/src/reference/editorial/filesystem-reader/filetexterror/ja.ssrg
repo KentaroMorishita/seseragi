@@ -1,0 +1,23 @@
+import { FilesystemReaderCopy } from "../model"
+
+pub fn copy -> FilesystemReaderCopy = FilesystemReaderCopy {
+  summary: "ファイルにアクセスできない問題と、内容をUTF-8として読めない問題を区別する失敗の型です。",
+  taskTitle: "読めない理由に応じたメッセージを作る",
+  purpose: "存在しないreport.txtを読み、次に同じファイルへ不正なUTF-8のバイトを書いて読みます。どちらも本文を得られませんが、必要な対応は異なります。最後に、先頭のBOMという文字コードの目印を保持することも確かめます。",
+  setup: "importでbytes、effects、fs、pathsを使います。fn describe result: Either<fs.FileTextError, String> -> Stringは、読み込み結果を説明文にする関数です。Eitherは二つの形からなる値で、この例ではRight textが成功した本文、Left errorが失敗です。matchで形を選び、失敗側でもう一度matchしてアクセスと解読の問題を分けます。",
+  after: [
+    "fs.FileAccessFailure detailにはFileSystemErrorが入ります。detail.kindをshowで文字列にすると、最初の読み込みはaccess: FileNotFoundです。ファイルを開けなかった理由なので、本文の文字コードを直しても解決しません。",
+    "fs.FileUtf8Failure detailにはUtf8DecodeErrorが入ります。[65, 195, 40, 66]は四つのバイトの数値です。bytes.fromIntsでBytesへ変え、writeBytesで書いた後の読み込みはdecode: InvalidUtf8 { offset: 1 }になります。offsetは先頭を0と数えたバイト位置で、二つ目のバイトから正しいUTF-8を読めません。",
+    "effect fn inspect directory: paths.Path -> Stringはdirectoryを使い、実行時に説明文を返す処理です。with FileSystemは必要なサービス、fails FixtureErrorは準備段階の失敗の型です。FixtureErrorのPathFailure、ByteFailure、WriteFailureは、それぞれパス、バイト作成、書き込みの問題を保持します。deriving Showで表示を可能にします。",
+    "paths.childでPathを作り、bytes.fromIntsで0から255の整数をバイトへ変えます。どちらもLeftかRightを返すので、|>でeffects.fromEitherへ渡して処理へ変えます。mapErrorは準備の失敗を対応するFixtureErrorへ包みます。do内の<-は結果を受け取り、_ <-は書き込みの完了だけを待ちます。",
+    "読み込みはeffects.attemptで実行し、missing、invalid、bomに成功か通常の失敗を値として受け取ります。\\u{FEFF}はBOMに使うU+FEFFの文字です。最後はその文字とAを書き、matchで成功側の本文を==で比べます。letは変更しない値に名前を付けます。preservedの値はTrueです。",
+    "effects.succeedは${...}で組み立てた説明文を成功値にします。mainのwithTemporaryDirectoryが専用の作業場所を用意して終了後に削除し、外側のattemptとmatchがprintlnで表示するmessageを選びます。壊れたバイトを用意する処理も、この作業場所の中だけで行います。"
+  ],
+  details: [
+    "FileTextErrorはJSの例外クラスではなく、名前付きの形を持つ失敗の値です。FileAccessFailureからは操作、パス、理由を読めます。FileUtf8Failureからは解読の問題を読めますが、ファイルのPathを持つFileSystemErrorと同じフィールドがあるとは限りません。",
+    "readTextUtf8は不正なバイトを置換文字に変えません。本文として使えない場合は失敗を処理し、必要なら入力ファイルを直します。空のファイルは空のStringとして成功し、先頭のBOMはU+FEFFとして残ります。",
+    "この例の読み込みはファイル全体をメモリーに保持します。FileTextErrorは解読方法を選ぶ設定ではありません。別の文字コードのファイルを渡しても、その文字コードを自動で検出して読み分けるわけではありません。"
+  ],
+  comparisonBefore: "TS側はreadFileでバイトを読み、TextDecoderにfatal: trueとignoreBOM: trueを指定します。fatalは不正なUTF-8で失敗させ、ignoreBOM: trueはこの比較でBOMを文字として残すための指定です。async関数内のawaitは読み込みを待ち、二つのtry/catchがアクセスと解読の失敗を分けます。",
+  comparisonAfter: "両方とも存在しないファイルと不正なUTF-8を区別し、BOMを残します。表示は各APIのままで、TSのENOENTはここではFileNotFound、TextDecoderのTypeErrorはFileUtf8Failureに対応します。TextDecoderは失敗のバイト位置を返しません。NodeのreadFile(file, \"utf8\")だけなら不正なバイトを置換文字へ変えるため、この例と同じ条件にはなりません。"
+}

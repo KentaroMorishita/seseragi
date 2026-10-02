@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { filesystemReaderEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  filesystemReaderEditorial "std/fs::withTemporaryDirectory" "value" "effect-function" "temporary-workspace" "success: ready\ncallback failure: report rejected" "temporary-workspace" "success: ready\ncallback failure: report rejected" (en.copy ()) (ja.copy ())

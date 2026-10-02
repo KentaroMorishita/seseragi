@@ -352,4 +352,15 @@ import * as webReaderRendertostring from "./web-reader/rendertostring"
 import * as webReaderRenderdocument from "./web-reader/renderdocument"
 import * as webReaderReleaseCardView from "./web-reader/release-card-view"
 
+import * as filesystemReaderAppend from "./filesystem-reader/append"
+import * as filesystemReaderChildFilenames from "./filesystem-reader/child-filenames"
+import * as filesystemReaderCreateNew from "./filesystem-reader/create-new"
+import * as filesystemReaderParseInputs from "./filesystem-reader/parse-inputs"
+import * as filesystemReaderPathBasics from "./filesystem-reader/path-basics"
+import * as filesystemReaderReplace from "./filesystem-reader/replace"
+import * as filesystemReaderReportRoundtrip from "./filesystem-reader/report-roundtrip"
+import * as filesystemReaderStrictUtf8 from "./filesystem-reader/strict-utf8"
+import * as filesystemReaderTemporaryWorkspace from "./filesystem-reader/temporary-workspace"
+import * as filesystemReaderWriteModes from "./filesystem-reader/write-modes"
+
 pub effect fn main -> Unit = effects.succeed ()
