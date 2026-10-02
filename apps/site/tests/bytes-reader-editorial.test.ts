@@ -250,6 +250,16 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
           )
         const own = copy(locale),
           other = copy(locale === "en" ? "ja" : "en")
+        // The narrow-layout regression is a prose run, not an inline code
+        // chip. Preserve the complete authored note in paragraph markup.
+        const nodeNote = JSON.parse(
+          own.match(/^ {2}nodeNote: ("(?:[^"\\]|\\.)*")/mu)![1]
+        ) as string
+        const nodeParagraph = body.match(
+          /<h2 id="node-alternative">[^<]*<\/h2><p><span>([^<]*)<\/span><\/p>/u
+        )
+        expect(nodeParagraph, `${route}: Node prose structure`).not.toBeNull()
+        expect(plain(nodeParagraph![1])).toBe(nodeNote)
         expect(paragraphs(own)).toHaveLength(paragraphs(other).length)
         for (const p of paragraphs(own))
           expect(text, `${route}: own paragraph`).toContain(p)

@@ -20,6 +20,7 @@
 .article-content p,
 .article-content li {
   color: #c1d0d6;
+  overflow-wrap: anywhere;
   font-size: var(--type-body);
   line-height: 1.75;
 }
