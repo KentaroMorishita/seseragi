@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "処理の成功と既知の失敗を、呼び出し側で値として調べたいときはattemptを使います。この例では両方の結果を表示した後、最後のメッセージまで処理を続けます。",
+  taskTitle: "結果を表示して処理を続ける",
+  purpose: "申請が拒否されても、この呼び出し側では理由を表示したうえで続けたいとします。承認された処理と拒否された処理を一つずつ実行し、共通の説明関数へ結果を渡します。最後にCaller continuesが表示されることまで確認します。",
+  typescriptBefore: "TypeScriptの関数は、初めから普通のResultオブジェクトを返します。acceptedはok: trueとvalue: 42、rejectedはok: falseと理由not approvedを返します。describeがresult.okを読み、呼び出し側がそれぞれの説明を表示します。通常の戻り値なのでtry/catchは必要ありません。",
+  benefit: "attemptを置くと、effectの既知の失敗を普通の条件分岐で調べられる値にできます。次に何をするかは呼び出し側が決めます。途中の失敗で呼び出し側の残りの処理を止めるのではなく、結果のメッセージを表示したい場合に使えます。",
+  setup: "effectsはstd/effectの別名です。effect fn accepted -> Int fails Stringとeffect fn rejected -> Int fails Stringは、整数での成功と、文字列を理由にした失敗を宣言しています。succeed 42は成功を、fail \"not approved\" は既知の失敗を選びます。()は意味のある入力を持たない関数を呼び出すための引数です。",
+  after: [
+    "mainはdoで処理を順に並べます。acceptedResult <- effects.attempt (accepted ())は、attemptを付けた結果を受け取り、次の行ではrejectedResultも同様に受け取ります。<- は各処理から得た値に名前を付ける書き方です。",
+    "ここではそれぞれの結果がEither<String, Int>になります。文字列の失敗理由が入るLeft、または整数の成功値が入るRightと読めます。attemptが拒否された申請を整数での成功に置き換えるわけではありません。",
+    "fn describe result: Either<String, Int> -> Stringは、文章を返す通常の関数です。matchはRight valueなら準備完了の文章、Left reasonなら拒否理由の文章を選びます。showが整数を文章に変換します。",
+    "printlnがReady: 42とRejected: not approvedを表示します。_ <- は表示処理の戻り値を使わないことを示します。最後のprintln \"Caller continues\" により、拒否された結果を受け取った後も呼び出し側が続けられると分かります。",
+  ],
+  details: [
+    "結果の型Effect<R, Never, Either<E, A>>の中央のNeverは、囲んだ処理の想定した失敗を、もはや失敗として外へ返さないことを示します。その理由は成功値であるEitherのLeftに入ります。Rが表すサービスの要求は残ります。この変換が不具合やキャンセルを捕まえるわけではありません。",
+    "attemptなしで拒否する処理を直接 <- につなぐと、失敗として扱われ、後続の処理は実行されません。attemptが変えるのは呼び出し側の結果の受け取り方です。元の申請が承認されたことにはなりません。",
+    "attempt自体も処理を返します。describeに渡したりmatchで調べたりする前に、doの中で <- を使って結果を受け取ってください。囲んだ式そのものを、すでに手元にあるEitherの値としては扱えません。",
+    "この例の二つの -> Int fails Stringという宣言は残してください。それぞれの本体は片方の結果だけを選びますが、宣言によって両方のattemptの結果を同じ形でdescribeに渡せます。",
+    "attemptが扱うのは、囲んだ処理から伝わる既知の失敗です。実行時のプログラム上の不具合やキャンセルは対象外です。どこを囲むかも重要です。後のprintlnはどちらのattemptの外にもあるため、表示の失敗はこれらの結果に変換されません。",
+  ],
+}

@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "繰り返しを続けるか、成功として終えるかを表す、普通の値の型です。",
+  taskTitle: "続けるか止めるかを、戻り値で伝える",
+  purpose: "一件の処理を終えた関数から、次の項目へ進むか、ここで正常に終えるかを伝えたいときに使います。まず例でContinueとBreakという二つの値を作り、それぞれの意味を表示します。",
+  typescriptBefore: "TypeScriptの例は、continueとbreakという二種類の文字列をLoopControlと名付け、条件分岐で説明します。どちらの言語でも、ここで作るのは呼び出し先が意味を解釈する普通の値です。",
+  benefit: "コールバックが返す判断に名前があるので、続行と正常な終了を区別できます。その判断を成功値として返せば、想定した失敗とは別に扱えます。",
+  setup: "std/effectをeffectsという名前で読み込みます。effects.LoopControlが二つの判断を表す型で、effects.Continueとeffects.Breakがその値です。値を作るだけでは、何かが実行されるわけではありません。",
+  after: [
+    "fn describe control: effects.LoopControl -> Stringは、制御値を一つ受け取り、説明の文字列を返す普通の関数です。matchは二つの値を分け、Continueには次へ進む説明、Breakには成功で止まる説明を返します。",
+    "keepGoingとstopHereは、letで付けた値の名前です。: effects.LoopControlはそれぞれの型を明示します。どちらも処理そのものではなく、整数や文字列と同じように、関数へ渡したり保持したりできる値です。",
+    "effects.succeed stopHereは、その値を成功結果とする処理を作ります。返す値の型はLoopControlのままですが、これで実行できる処理に包まれます。forEachUntilのコールバックのように、処理を返す場所で使う形です。",
+    "effect fn mainのdoは出力を順に実行します。_ <- printlnは出力の戻り値を捨て、result <- effects.succeed stopHereは成功値を取り出します。resultは普通の制御値なので、そのままdescribeに渡せます。",
+    "このプログラムは値の説明を表示するだけで、項目を繰り返し処理しません。実際に使うforEachUntilは、一件分の処理の完了を順に待ち、Continueなら次へ進み、Breakなら次の項目を取り出さず正常に終了します。",
+    "forEachUntilの成功値は完了だけを表すUnitで、処理結果を集めた配列ではありません。コールバックが失敗すれば、全体も失敗して止まります。Breakを返す正常な終了と、失敗で止まることは別の結果です。"
+  ],
+  details: [
+    "普通の制御値を <- の右辺に置いても、実行する処理にはなりません。処理が必要な場所ではeffects.succeed effects.Breakのように包みます。値として保持するだけなら、この例のlet stopHereの形で十分です。",
+    "Breakは、その行で外側のdoや任意のループを抜ける命令ではありません。受け取る側が意味を解釈します。この例でもBreakを取り出した後に、最後のprintlnが実行されます。",
+    "二つのmatch分岐は、続行と正常な終了を明示的に扱っています。失敗を第三の制御値として作る必要はありません。コールバックの処理が失敗すれば、その失敗が伝わり、後続項目は処理されません。"
+  ]
+}

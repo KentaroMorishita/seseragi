@@ -1,0 +1,2 @@
+import * as effects from "std/effect"
+pub effect fn main = effects.fromEither "Search improvements"

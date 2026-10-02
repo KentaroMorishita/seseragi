@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "タイトルを確認し、テンプレートを取り出し、表示用の文章を組み立てます。std/effectを使うと、途中で分かった失敗を後続の処理へ渡さず、呼び出し側で結果を表示できます。",
+  taskTitle: "リリースのプレビューを準備して表示する",
+  purpose: "プレビューには空でないタイトルと、指定されたテンプレートが必要です。この例では、正常な入力、空のタイトル、テンプレートの指定なし、空文字列のテンプレートを順に試します。どこまで処理が進み、どこで後続の処理が止まるのかを読み取るのが目標です。",
+  typescriptBefore: "TypeScript版は、成功ならok: trueとvalue、失敗ならok: falseとreasonを持つ普通のResultオブジェクトを使います。prepareが結果を分岐し、template === undefinedを確認して次のオブジェクトを返します。previewも通常の条件分岐で表示内容を選びます。Promiseや例外は使っていません。",
+  benefit: "Seseragiのprepareでは、前の結果を使う処理をdoの中に並べられます。<- が成功した値を受け取り、既知の失敗があればブロックの残りを実行しません。表示する側ではattemptで結果を取り出し、成功と失敗を分けて扱えます。",
+  setup: "effectsは読み込んだstd/effectの別名です。通常の関数fn checkedTitleはEither<String, String>を返します。Leftは失敗理由、Rightは確認済みのタイトルを持つ選択肢です。Maybe<String>はJustでテンプレートの文字列があることを、Nothingで指定がないことを表します。JavaScriptの真偽値判定とは別の区別です。",
+  after: [
+    "effect fn prepareは処理を定義します。入力のtitle: Stringとtemplate: Maybe<String>、結果のString、既知の失敗理由の型であるfails Stringを宣言しています。fromEitherがcheckedTitleの結果を処理に変換し、validTitle <- が成功時の値に名前を付けます。",
+    "fromMaybeは指定がなければ失敗理由を使い、あればselectedにテンプレートを渡します。succeedは組み立てた文章をprepareの成功結果にします。doの最後に置いた処理の結果が、ブロック全体の結果になります。",
+    "previewはprepareをattemptで囲み、成功か失敗を表すEitherをresultとして受け取ります。通常の関数describeがmatchでRight valueとLeft reasonを分け、printlnがその文章を表示します。",
+    "previewのUnitは戻り値として使う情報がないことを表します。with Console fails ConsoleErrorは表示にコンソールが必要で、表示自体も失敗し得るという宣言です。mainは四つのプレビューを順に実行します。_ <- は処理の完了を待ち、その値は使わない書き方です。",
+  ],
+  details: [
+    "空のタイトルはテンプレートの確認より先に失敗します。そのため、空のタイトルとNothingの組み合わせではtitle is requiredが表示されます。タイトルが有効でNothingの場合はtemplate is missingになります。",
+    "Just \"\" は空文字列のテンプレートが指定されている状態なので、最後の呼び出しは成功します。空のテンプレートも拒否したい場合は、その確認を別に追加します。fromMaybeが確認するのは値の有無だけです。",
+    "effects.succeed 42は整数を作る処理であり、Intの値そのものではありません。値を使うにはdoの中で <- で受け取ります。同様に、fromEitherには文字列を直接渡さず、LeftまたはRightの結果を渡します。",
+    "attemptが値に変えるのは、囲んだ処理が宣言した既知の失敗です。実行時のプログラム上の不具合やキャンセルをLeftにするものではありません。後で実行するprintlnも、このattemptの対象外です。",
+  ],
+}

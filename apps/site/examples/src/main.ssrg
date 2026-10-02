@@ -363,4 +363,14 @@ import * as filesystemReaderStrictUtf8 from "./filesystem-reader/strict-utf8"
 import * as filesystemReaderTemporaryWorkspace from "./filesystem-reader/temporary-workspace"
 import * as filesystemReaderWriteModes from "./filesystem-reader/write-modes"
 
+import * as effectSequencingDefer from "./effect-sequencing/defer"
+import * as effectSequencingDeferredUnrun from "./effect-sequencing/deferred-unrun"
+import * as effectSequencingForeachUntil from "./effect-sequencing/foreach-until"
+import * as effectSequencingFromMaybe from "./effect-sequencing/from-maybe"
+import * as effectSequencingLoopControl from "./effect-sequencing/loop-control"
+import * as effectSequencingMapError from "./effect-sequencing/map-error"
+import * as effectSequencingRecover from "./effect-sequencing/recover"
+import * as effectSequencingSucceedFail from "./effect-sequencing/succeed-fail"
+import * as effectSequencingValidatePreview from "./effect-sequencing/validate-preview"
+
 pub effect fn main -> Unit = effects.succeed ()

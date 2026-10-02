@@ -1,0 +1,24 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "一件ずつ処理し、続行・成功で終了・失敗で終了を選びます。",
+  taskTitle: "stopで終え、badは失敗として伝える",
+  purpose: "ラベルを順番に表示し、stopに着いたら正常に終えます。badは不正なラベルとして拒否し、それより後は処理しません。空の配列ではvisitの行は表示されず、完了を示すCompletedだけを表示します。",
+  typescriptBefore: "TypeScriptでは普通のfor...ofを使えます。stopならbreakで抜け、badなら拒否を表示してreturnします。ここで行うのは出力だけなので、不要な非同期処理は加えていません。",
+  benefit: "forEachUntilでは、一件分の処理であるvisitが続けるか止めるかを返します。正常な終了と想定した失敗を区別しながら、各処理が終わる順序を保てます。",
+  setup: "std/effectをeffectsとして読み込みます。visitは一つのStringを処理するコールバックです。previewのlabels: Array<String>は、文字列を並べた配列を受け取るという意味です。",
+  after: [
+    "outputFailureは、出力の失敗ConsoleErrorをoutput failedというStringに変える普通の関数です。effects.mapErrorでprintlnを包み、visit内の想定した失敗をStringにそろえます。出力が必ず成功するという意味ではありません。",
+    "effect fn visitのdoは、まずprintlnを実行します。_ <- はその完了を待ち、戻り値を捨てます。その後、badならeffects.fail、stopならBreak、それ以外ならContinueを選びます。二つの制御値は普通の値なので、effects.succeedで処理に包んで返します。",
+    "effects.forEachUntil visit labelsは、項目ごとにvisitを呼び、その処理の完了を待ちます。Continueなら次を取り出し、Breakなら成功として終了し、次の項目を取り出しません。非同期のコールバックでもこの順序を守り、失敗時も後続へ進みません。",
+    "全体の成功値は、完了だけを表すUnitです。項目ごとの結果を集めた配列ではありません。effects.attemptは成功をRight、想定したStringの失敗をLeftにして、Either<String, Unit>として返します。RightのvalueはこのUnitです。",
+    "describeはmatchでRightとLeftを分け、CompletedまたはRejected:に理由を付けた文字列を返します。-> Stringはその戻り値の型です。printlnは、この普通の関数が返した文字列を表示します。",
+    "previewのresult <- はattemptを実行してEitherを受け取ります。mainの_ <- previewは実行後の値を捨てますが、失敗を無視しません。最後のpreviewはmainの最後の処理です。結果を表示するprintln自体はattemptの外側です。",
+    "五つの配列で、途中のstop、最後まで続行、空の入力、先頭のstop、badによる失敗を確認します。どの場合もafterは表示されません。宣言にあるIterableは、項目を順に取り出せる入力を表し、この例では配列がその役割を持ちます。"
+  ],
+  details: [
+    "stopやbad自身が表示されるのは、visitが判断より先に出力するためです。Breakは現在の項目を取り消しません。止まるラベル自体を表示したくない場合は、出力より先にその条件を判断します。",
+    "コールバックからBreakやContinueだけを返すと、必要な処理を返したことになりません。effects.succeedで包みます。また、forEachUntilの成功値を結果の配列として使うことはできません。結果を集めたい場合は、集めるための処理を選びます。",
+    "出力が失敗すれば、ラベルの判断より先に止まり、output failedがLeftに入ります。Breakは成功、effects.failは失敗のままです。実行時の欠陥やキャンセルはattemptがLeftに変える想定した失敗には含まれません。"
+  ]
+}

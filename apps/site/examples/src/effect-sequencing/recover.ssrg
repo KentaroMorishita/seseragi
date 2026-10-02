@@ -1,0 +1,28 @@
+import * as effects from "std/effect"
+
+fn lookup key: String -> Effect<{}, String, String> =
+  if key == "saved" then
+    effects.succeed "Release"
+  else if key == "missing" then
+    effects.fail "missing"
+  else
+    effects.fail "invalid setting"
+
+fn fallback reason: String -> Effect<{}, String, String> =
+  if reason == "missing" then effects.succeed "Preview" else effects.fail reason
+
+fn describe result: Either<String, String> -> String = match result {
+  Right value -> "Title: " + value
+  Left reason -> "Rejected: " + reason
+}
+
+effect fn display key: String = do {
+  result <- effects.attempt (effects.recover fallback (lookup key))
+  println (describe result)
+}
+
+pub effect fn main = do {
+  _ <- display "saved"
+  _ <- display "missing"
+  display "broken"
+}

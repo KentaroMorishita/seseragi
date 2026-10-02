@@ -1,0 +1,13 @@
+import * as effects from "std/effect"
+effect fn prepare value: Either<String, String> -> String fails String = do {
+  title <- effects.fromEither value
+  effects.succeed ("Preview: " + title)
+}
+pub effect fn main = do {
+  result <- effects.attempt (prepare (Right "Search improvements"))
+  let message = match result {
+    Right value -> value
+    Left reason -> reason
+  }
+  println message
+}

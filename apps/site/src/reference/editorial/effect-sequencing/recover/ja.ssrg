@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "見つからない設定など、想定した失敗に代わりの処理を用意します。",
+  taskTitle: "見つからない設定には、プレビュー名を使う",
+  purpose: "保存済みの見出しはそのまま表示し、設定がないときだけPreviewを使います。壊れた設定まで受け入れないように、missingとinvalid settingを区別します。",
+  typescriptBefore: "TypeScriptでは成功か失敗かを表す普通の結果オブジェクトを返し、失敗理由がmissingのときだけ値を差し替えます。例外を投げず、条件分岐で同じ判断を書けます。",
+  benefit: "recoverでは、失敗した場合の判断をfallbackにまとめられます。元の処理が成功すれば値はそのまま通り、fallbackは呼ばれません。",
+  setup: "std/effectをeffectsという名前で読み込み、成功や失敗を組み立てる関数を使います。lookupとfallbackは、文字列を受け取って処理を返す普通の関数です。",
+  after: [
+    "lookupの戻り値Effect<{}, String, String>は、追加の環境を要求せず、想定した失敗も成功値もStringである処理です。effects.succeedは成功、effects.failは想定した失敗を表します。文字列の意味は、成功側か失敗側かで区別されます。",
+    "effects.recover fallback (lookup key)では、元の処理が失敗したときにfallbackがその理由を受け取ります。このように後で呼ばれる関数がコールバックです。missingならPreviewを返す処理を選び、それ以外ならeffects.fail reasonで失敗を引き継ぎます。",
+    "effects.attemptは、ここまでの処理の成功か想定した失敗かをEither<String, String>の値にします。Rightは成功値、Leftは失敗理由を持つので、どちらの場合も表示用の判断を続けられます。",
+    "describeは普通の関数です。matchはRightとLeftのどちらかを選び、valueまたはreasonに中身を取り出します。その文字列にTitle:またはRejected:を付けて返します。",
+    "effect fn displayのdoは処理を順に実行します。result <- はattemptを実行して成功値であるEitherを受け取ります。mainの_ <- はdisplayを実行して戻り値を捨てますが、失敗を無視する記法ではありません。",
+    "savedはRelease、missingはPreview、brokenはRejected: invalid settingになります。最後のdisplayはmainの最後の処理です。ここでは、設定がない場合の代替と、不正な設定の拒否を別々に確認できます。"
+  ],
+  details: [
+    "よくある間違いは、どの理由にもPreviewを返して不正な設定まで隠すことです。代替を許す理由だけ分岐し、残りはeffects.fail reasonのように失敗として返します。",
+    "fallbackは文字列そのものではなく処理を返す必要があります。代替値ならeffects.succeedで包みます。recoverが扱うのは型に含まれた想定した失敗だけで、実行時の欠陥やキャンセルはこのコールバックを通りません。",
+    "attemptが囲むのはlookupとrecoverです。後ろのprintlnまで成功が保証されるわけではなく、出力自体が失敗することもあります。attemptを外せば、回復しなかった失敗は外側の処理へ伝わります。"
+  ]
+}

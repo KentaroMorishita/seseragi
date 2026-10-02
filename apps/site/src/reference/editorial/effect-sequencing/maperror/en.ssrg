@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Use mapError to change a known failure reason while leaving a successful value alone. The example adds preview:  to a title-validation failure so the caller can tell which operation rejected the input.",
+  taskTitle: "Add context to a preview failure",
+  purpose: "A reusable title check returns title is required. That message is useful, but the preview screen should identify its own operation too. Add the prefix at the preview boundary without changing the shared check or altering a valid title.",
+  typescriptBefore: "The TypeScript version uses a plain Result object from checkedTitle. In preview, an ordinary result.ok branch prints the successful value unchanged or prints Rejected: preview:  followed by the reason. No exception handling is involved: the failure is a returned object.",
+  benefit: "mapError gives the reason transformation a separate, reusable place in the sequence. It changes the failure reason without recovering from the failure. The following attempt still receives a failed outcome, now with enough context for the caller's display.",
+  setup: "effects is the alias for std/effect. fn checkedTitle title: String -> Either<String, String> returns Left \"title is required\" for an empty title and Right title otherwise. Either has the reason type first and the success type second. fromEither turns those alternatives into effect work.",
+  after: [
+    "fn annotate reason: String -> String is an ordinary text-to-text function. It adds preview:  to its reason. mapError takes annotate first and the work from fromEither (checkedTitle title) second.",
+    "effect fn preview title: String defines the work that checks and displays a title. mapError changes only a known failure from the wrapped fromEither (checkedTitle title) operation. For a successful title, the value passes through unchanged.",
+    "result <- effects.attempt (...) makes the outcome available as an Either value. The ordinary fn describe uses match to select Right value or Left reason and returns the ready or rejected text. println displays it.",
+    "main calls preview with Search improvements, then with an empty string. _ <- discards the first preview's return value. The output is Ready: Search improvements, followed by Rejected: preview: title is required.",
+  ],
+  details: [
+    "annotate receives the reason, not the successful title and not the entire Either. Put reason-specific formatting there. Changing successful values is a different operation; this example deliberately preserves the title.",
+    "After mapError, a rejected step is still rejected. Sequencing it directly with <- would skip dependent steps in that block. This example uses attempt around the transformed work so describe can display the new reason.",
+    "The order of these wrappers matters. The example changes the work's failure with mapError before attempt turns that outcome into Left. Once you are inspecting an Either value, use match to read or change its alternatives.",
+    "mapError and attempt operate on known failures from the wrapped work. They do not catch runtime programming defects or cancellation. The later println is outside the wrapped title check, so its own possible failure is not annotated with preview: .",
+  ],
+}

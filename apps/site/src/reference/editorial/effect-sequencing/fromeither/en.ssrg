@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Use fromEither to turn an existing validation result into a step in an effect sequence. A Right value becomes the step's success value; a Left reason becomes its known failure.",
+  taskTitle: "Use a checked title in a preview",
+  purpose: "checkedTitle already knows how to accept a title or explain why it is invalid. Reuse that function while preparing a preview that also needs a template. The empty-title case should stop before template selection, so the caller sees the first relevant problem.",
+  typescriptBefore: "The TypeScript checkedTitle returns an ordinary Result object. prepare stores it in checked, returns it when !checked.ok, then checks whether the template is undefined. Otherwise it returns the combined text as a successful object. preview branches on result.ok to print the outcome.",
+  benefit: "fromEither adapts that existing check to do, so later steps receive the checked title through <-. You do not have to move the validation rule into an effect function or write a second match just to continue on success.",
+  setup: "effects is the alias for std/effect. fn checkedTitle title: String -> Either<String, String> is an ordinary function from text to two alternatives: Left \"title is required\" for an empty title, or Right title otherwise. Either names the reason type first and the success type second.",
+  after: [
+    "effect fn prepare defines work with title: String and template: Maybe<String> inputs, a String success result, and fails String for known failures. validTitle <- effects.fromEither (checkedTitle title) makes the existing validation its first step.",
+    "Maybe<String> means Just some template text or Nothing. fromMaybe binds a supplied template to selected, or fails with template is missing. succeed returns selected + \": \" + validTitle as the successful result of this do block.",
+    "preview wraps prepare in attempt and binds its result to result. The ordinary describe function uses match: Right value makes the ready message and Left reason makes the rejected message. println displays that text.",
+    "preview returns Unit, with no useful return value. with Console fails ConsoleError declares the console access and possible printing failure. main runs four cases; _ <- discards each earlier preview's result before the final call.",
+  ],
+  details: [
+    "Passing a plain String to fromEither is a type error (SES-T0101). Pass the result of checkedTitle, which is already an Either. If text is already your successful result and needs no check, succeed is the appropriate constructor.",
+    "When both the title and template are missing, the title check fails first. That call prints Rejected: title is required; it does not collect every validation problem.",
+    "Just \"\" still contains a template, so the last call prints Ready: : Search improvements. fromEither enforces the rule in checkedTitle; it does not add a separate non-empty-template rule.",
+    "attempt turns the known rejection from prepare into Left for display. It does not catch runtime programming defects or cancellation. The following println is outside the wrapped work and retains its own possible failure.",
+  ],
+}

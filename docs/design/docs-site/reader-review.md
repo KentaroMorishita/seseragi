@@ -2885,3 +2885,131 @@ This appendix was added after the existing ledger's complete 173,692-byte
 prefix, SHA-256 `cea398cb74821ca4d243f31e114fee59e80887e1a2688a64f45b83fb5e474f6f`. The prefix and every existing checkbox state
 were verified unchanged after the append. No historical checkbox or earlier
 review conclusion was replaced or bulk-marked complete.
+
+
+## Checkpoint 11: bounded Effect sequencing reader evidence
+
+Date: 2026-10-02. This appendix records the completed independent automated
+reading of thirteen existing Library identities, together with separately
+attributed author verification. It does not establish first-time-human reader
+acceptance, actual browser inspection, whole-site integration or publication.
+
+### Exact scope and practical task
+
+The paired EN/JA pages are std/effect, succeed, fail, fromEither, fromMaybe,
+attempt, mapError, recover, defer, forEachUntil, LoopControl, Continue and Break.
+The exact identities, ownership, namespaces, kinds and routes are recorded in
+`apps/site/scripts/effect-sequencing-reader.ts`. No absent roadmap page or
+additional generic core identity is counted in this batch.
+
+Readers validate a release preview, require a supplied count while accepting
+zero, add context to a rejection, choose a fallback only for missing settings,
+delay preparing work and stop sequential label processing deliberately. Each
+page starts with the practical task, a fair ordinary TypeScript comparison,
+Seseragi source, the concrete benefit and local syntax explanations. The TS
+comparisons use plain result objects, undefined, functions and for-of loops;
+advanced TypeScript, Rust, Haskell or functional-programming knowledge is not
+assumed. Break and Continue are introduced as ordinary values before their use
+as a successful callback result.
+
+### Complete reading, corrections and final rereading
+
+Independent English and Japanese reading covered all thirteen initial bodies
+per language: **26 complete initial bodies**. Both readers then reread every
+final body from beginning to end: **26 complete final rereads**, including the
+unchanged English LoopControl body after the Japanese-only reading correction.
+These were full article readings, including complete TS/Seseragi programs,
+outputs, local explanations, mistakes and repairs, canonical declarations,
+generated readings, related navigation and module API sections. They were not
+changed-paragraph samples or acceptance inferred from compilation.
+
+Five necessary findings from the Japanese reading are resolved:
+
+1. succeed, fail and attempt now explain Never in the actual signature position,
+   including whether it denotes no expected failure or no successful value.
+2. mapError now explicitly changes only the known failure from the wrapped
+   fromEither (checkedTitle title) operation; subsequent printing is outside it.
+3. The Japanese LoopControl reading no longer incorrectly directs readers to
+   module functions as the only way to create or inspect its values. It names
+   the public Continue/Break values, match and wrapping with succeed.
+4. defer now connects Unit, its () value, the callback contract and the unused
+   underscore parameter.
+5. Empty traversal now explicitly prints Completed while producing no visit
+   lines, matching both complete programs and their displayed output.
+
+No necessary finding remains in the bounded final rereads. The English reread
+also confirms the paired explanations and the useful succeed-to-defer link.
+Optional navigation/style suggestions are not represented as blocking defects
+or evidence of universal comprehension.
+
+The generated-reading adapter is guarded by the exact std/effect::LoopControl
+identity, std/effect owner, type namespace and opaque-type kind. It preserves
+the English reading and canonical declaration. Wrong identity, owner, namespace,
+kind and neighboring-type controls retain their fallback; a changed expected
+Japanese baseline is rejected. The inaccurate generic Effect summaries for the
+ordinary Break/Continue values are replaced only on their exact authored pages.
+
+Eighteen final article bodies differ from the initial snapshot and eight remain
+byte-identical. All parsed code-block text, including programs, outputs, commands
+and declarations, remains unchanged on all 26 pages. Both readers checked all
+fourteen final Playground source links in their language against the displayed
+source. These 28 matching payloads establish link content, not execution on a
+public website or clicked navigation behavior.
+
+### Separate author, runtime and rendering evidence
+
+The author-run focused suite passes nine tests, zero failures and 1,879
+assertions. It executes nine canonical native sources with verified official CLI
+0.61.19, strict-checks and executes nine fair TypeScript comparisons, and
+compiles/executes all nine committed-WASM seeds. Four genuine rejection/repair
+pairs and four native defect probes exercise invalid contracts and the limits
+of declared failure handling. Current-runtime assertions separately verify
+construction timing, repeated deferral, typed failure versus defect/cancellation,
+selective recovery, sequential stopping and no later iterator pull after Break.
+These are author execution checks, not independently rerun reader checks.
+
+The production-render tests verify all 26 selected bodies, exact sources,
+outputs and canonical declarations, precise identity selection and negative
+controls, locale pairing, task order, source payloads and bounded navigation.
+After final canonical source formatting, all three editorial tests pass again
+with 1,670 assertions. That rerun is not added to the combined suite's count.
+All 77 owned source-manifest entries were rehashed against the current files at
+this append. Native/strict-TS/current-runtime/committed-WASM and rendered-page
+proofs remain separately attributable; in-process WASM execution is not an
+actual browser check.
+
+The full reproducible author record and advisory Japanese prose results are in
+[effect-sequencing-reader-verification.md](effect-sequencing-reader-verification.md).
+The no-network examples need no browser navigation or fetch provider; Console
+is required where they print. No runtime, compiler or temporal-API repair is
+included or inferred from this reading review.
+
+### Exact retained artifact fingerprints
+
+SHA-256 values identify the exact reviewed and verified artifact bytes:
+
+- `owned-source-manifest.json` (77 owned files): `af3e861eda91d72190aed1ffa090cc764fb25d1421ddb183a577558daef619d3`
+- `initial-body-manifest.json` (26 article/full-HTML hash pairs): `3ebcd06cb9d3dca8f67d8802ec9e6bca31a4d6ab72410fedcd1ed439dbd46c04`
+- `final-body-manifest.json` (26 article/full-HTML hash pairs): `bc9ffb01d9b9a2cc14519ea0c72b6e62387ea5aa61562d16e50f189856244642`
+- Initial `selected-bodies.json` snapshot: `bdc4c4a205c1d3af32de788d643421d42f10443ca8e03ed0e13abce980701c28`
+- Final `selected-bodies.json` snapshot: `edda4c46dec93e9e813f73b99176fefdf8c6fbb7def462125101611042bdfcf5`
+- `english-reader-review.md`, including final complete reread: `cadb80f9e2cf244ac0591f6b03a39f34cff8fa2f4844af713827ce5f4f0f3c48`
+- `japanese-reader-review.md`, including resolved findings and final complete reread: `9c40f02df22bfe1b06a5b6e7cb4ac94bd476386670dfdb40bfc6e6e38262dbb9`
+- `final-focused.log`: `02c78017d77d816b9afc957809fc8d3a1ba629c51950da0381c95667326a6604`
+- `final-editorial-format-check.log`: `f12a82116784fcde6874d2620b2380b51e3869f3138abfc5e0abb15c0bff0219`
+
+### Remaining acceptance and historical preservation
+
+The independent reading conclusions are bounded automated assessments of these
+26 bodies. Actual first-time TypeScript-reader feedback remains outstanding.
+Desktop/mobile visual layout, public Playground interaction, clicked locale or
+navigation round trips, whole-site gates and publication require separate
+evidence. Neither route presence nor a successful test suite establishes that
+a person understands a page.
+
+This appendix follows the existing ledger's complete 180,139-byte prefix,
+SHA-256 `67e9a109ff0a93d7f9eb9e889f19a57be71c3d489c16ccf97b9b07e101220d38`.
+The entire prefix and all 106 original checkbox rows, including the eight
+historical checked states, were verified unchanged. This append changes no
+checkbox, prior conclusion or source body. The append itself makes no commit,
+push, public issue/comment or deployment claim.

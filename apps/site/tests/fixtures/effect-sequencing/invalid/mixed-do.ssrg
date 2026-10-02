@@ -1,0 +1,6 @@
+import * as effects from "std/effect"
+fn prepare value: Either<String, String> -> Effect<{}, String, String> = do {
+  title <- effects.fromEither value
+  effects.succeed ("Preview: " + title)
+}
+pub effect fn main = println "ready"

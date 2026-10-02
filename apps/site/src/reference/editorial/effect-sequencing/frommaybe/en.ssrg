@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Use fromMaybe when an optional value is required for the next step. You supply the failure reason; a present value becomes success, and an absent value becomes that known failure.",
+  taskTitle: "Display a required count",
+  purpose: "A count can be two, zero, or missing. Zero must still be displayed as a real count. This example separates presence from numeric value, then prints a clear rejection when no count was supplied.",
+  typescriptBefore: "The TypeScript version accepts number | undefined and explicitly checks value === undefined. It prints Rejected: count is missing only for undefined; both 2 and 0 become count messages. A truthiness check such as if (!value) would mix up zero with absence, so it is not the comparison used here.",
+  benefit: "fromMaybe provides the same presence check as a reusable effect step. A later step can receive the count through <-, while absence follows the declared failure path. In this display example, attempt makes either outcome available for a message.",
+  setup: "effects is the alias for std/effect. Maybe<Int> means either Just an integer or Nothing. Just 0 contains a real integer; it is different from Nothing. The ordinary fn describe accepts Either<String, Int> and returns a String for printing.",
+  after: [
+    "effect fn display value: Maybe<Int> defines work that takes the optional count. The expression effects.fromMaybe \"count is missing\" value puts the reason first and the optional value second. It succeeds with the contents of Just, or fails for Nothing.",
+    "do sequences the work. result <- effects.attempt (...) receives the outcome of that one presence check. For this call, Either<String, Int> lists the failure reason type first and the successful count type second.",
+    "In describe, match result selects Right value for a present count or Left reason for absence. show turns the integer into text; it does not change zero into a missing value. println displays the chosen description.",
+    "main tries Just 2, Just 0, and Nothing. _ <- waits for each earlier display and ignores its return value. The final display Nothing finishes the block. The output is Count: 2, Count: 0, then Rejected: count is missing.",
+  ],
+  details: [
+    "fromMaybe checks presence only. A negative count inside Just would also be present. If your application requires a non-negative count, add a separate validation step rather than expecting this function to enforce that rule.",
+    "Pass a Maybe<Int> here, not a bare integer. Use Just 2 for a supplied count and Nothing for absence. The failure reason is your chosen application message; it is not extracted from Nothing.",
+    "This example uses attempt so absence can be displayed and the caller can continue to the next case. Sequencing a failed fromMaybe directly with <- would instead skip the dependent steps in that block.",
+    "attempt handles this known missing-count failure, not runtime programming defects or cancellation. The println after it is a separate step, so this attempt does not also handle a failure to print.",
+  ],
+}

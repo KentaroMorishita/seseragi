@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "成功値はそのままにして、既知の失敗理由だけを変えるときはmapErrorを使います。この例では、タイトルの確認に失敗した理由へpreview:  を付け、どの処理で拒否されたのかを伝えます。",
+  taskTitle: "プレビューの失敗理由に説明を加える",
+  purpose: "共通のタイトル確認はtitle is requiredを返します。この理由を、プレビュー画面ではどの処理から来たものかも分かるようにしたいとします。共通の確認関数や有効なタイトルを変えずに、プレビュー側で理由に接頭辞を付けます。",
+  typescriptBefore: "TypeScript版はcheckedTitleから普通のResultオブジェクトを受け取ります。previewの通常のresult.ok分岐で、成功なら元の値をそのまま表示し、失敗ならRejected: preview:  に理由を続けます。失敗も戻り値のオブジェクトなので、例外処理は使っていません。",
+  benefit: "mapErrorを使うと、理由を加工する部分を独立した関数として処理につなげられます。変わるのは理由であり、失敗から成功へ回復するわけではありません。後のattemptには、表示に必要な説明が加わった失敗結果が届きます。",
+  setup: "effectsはstd/effectの別名です。fn checkedTitle title: String -> Either<String, String>は、空のタイトルにはLeft \"title is required\"、それ以外にはRight titleを返します。Eitherの型は失敗理由、成功値の順です。fromEitherがこの二つの選択肢をeffectの処理に変えます。",
+  after: [
+    "fn annotate reason: String -> Stringは、文章を受け取って文章を返す通常の関数です。reasonにpreview:  を付けます。mapErrorには先にannotate、次にfromEither (checkedTitle title)が作る処理を渡します。",
+    "effect fn preview title: Stringは、タイトルを確認して表示する処理を定義します。mapErrorが変えるのは、囲んだfromEither (checkedTitle title)の処理から返る既知の失敗理由だけです。タイトルが有効なら、成功した値は変更せずに通します。",
+    "result <- effects.attempt (...)で、結果をEitherの値として受け取ります。通常の関数fn describeはmatchでRight valueとLeft reasonを分け、準備完了または拒否理由の文章を返します。printlnがその文章を表示します。",
+    "mainはSearch improvements、続いて空文字列をpreviewに渡します。_ <- は最初のプレビューの戻り値を使わないことを表します。表示はReady: Search improvements、続いてRejected: preview: title is requiredになります。",
+  ],
+  details: [
+    "annotateが受け取るのは失敗理由です。成功したタイトルでも、Either全体でもありません。理由に必要な説明はここで加えます。成功値を変えるのは別の操作で、この例ではタイトルをそのまま残しています。",
+    "mapErrorの後も、拒否された処理は失敗のままです。直接 <- でつなぐと、そのブロックの後続の処理は実行されません。この例では加工した処理をattemptで囲み、describeが新しい理由を表示できるようにしています。",
+    "囲む順番にも意味があります。例では先にmapErrorが処理の失敗理由を変え、その後でattemptが結果をLeftにします。すでにEitherの値を受け取っている場合は、matchで選択肢を読み取ったり変更したりします。",
+    "mapErrorとattemptが扱うのは、囲んだ処理の既知の失敗です。実行時のプログラム上の不具合やキャンセルは捕まえません。後のprintlnはタイトル確認を囲む範囲の外にあるので、表示自体の失敗にpreview:  が付くわけではありません。",
+  ],
+}

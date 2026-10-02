@@ -1,0 +1,32 @@
+import * as effects from "std/effect"
+
+fn checkedTitle title: String -> Either<String, String> =
+  if title == "" then Left "title is required" else Right title
+
+effect fn prepare title: String -> template: Maybe<String> -> String fails String = do {
+  validTitle <- effects.fromEither (checkedTitle title)
+  selected <- effects.fromMaybe "template is missing" template
+  effects.succeed (selected + ": " + validTitle)
+}
+
+fn describe result: Either<String, String> -> String = match result {
+  Right value -> "Ready: " + value
+  Left reason -> "Rejected: " + reason
+}
+
+effect fn preview title: String
+  -> template: Maybe<String>
+  -> Unit
+with Console
+fails ConsoleError =
+  do {
+    result <- effects.attempt (prepare title template)
+    println (describe result)
+  }
+
+pub effect fn main = do {
+  _ <- preview "Search improvements" (Just "Release")
+  _ <- preview "" Nothing
+  _ <- preview "Search improvements" Nothing
+  preview "Search improvements" (Just "")
+}
