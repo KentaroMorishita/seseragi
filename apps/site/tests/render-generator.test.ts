@@ -184,13 +184,19 @@ test("batch collection rejects malformed plans and incomplete or reordered outpu
 })
 
 function checked(args: string[], cwd: string) {
+  const started = performance.now()
   const result = spawnSync(cli, args, {
     cwd,
     encoding: "utf8",
     timeout: 90_000,
     maxBuffer: 4 * 1024 * 1024,
   })
-  expect(result.status, result.stderr || result.error?.message).toBe(0)
+  const elapsed = Math.round(performance.now() - started)
+  expect(
+    result.status,
+    `${args[0]} after ${elapsed}ms: ${result.stderr || result.error?.message || result.status}`
+  ).toBe(0)
+  console.info(`Render protocol ${args[0]} completed in ${elapsed}ms`)
   return result.stdout
 }
 
@@ -257,8 +263,18 @@ pub effect fn main = {
 `
   )
   checked(["lock", "update", directory], directory)
-  checked(["build", directory, "--out-dir", join(directory, "dist")], directory)
-  return join(directory, "dist/entry.ts")
+  checked(
+    [
+      "build",
+      directory,
+      "--profile",
+      "release",
+      "--out-dir",
+      join(directory, "dist"),
+    ],
+    directory
+  )
+  return join(directory, "dist/entry.js")
 }
 
 test("typed protocol preserves full navigation and exact HTML across batch sizes", () => {
@@ -313,7 +329,9 @@ test("typed protocol preserves full navigation and exact HTML across batch sizes
       )
     )
     checked(["lock", "update", directory], directory)
-    expect(JSON.parse(checked(["run", directory], directory))).toEqual(one)
+    expect(
+      JSON.parse(checked(["run", directory, "--profile", "release"], directory))
+    ).toEqual(one)
     for (const selection of [
       { schema: 2, mode: "plan", offset: 0, count: 0 },
       { schema: 1, mode: "unknown", offset: 0, count: 0 },
@@ -336,7 +354,9 @@ test("typed protocol preserves full navigation and exact HTML across batch sizes
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
-})
+  // This test compiles both the protocol and independent direct-render entries.
+  // Canonical CLI 0.61.19 exceeded 120s on macOS; each CLI step remains capped at 90s.
+}, 180_000)
 
 test("transport removes request/output files after malformed output or a child failure", () => {
   const directory = mkdtempSync(join(tmpdir(), "seseragi-render-transport-"))

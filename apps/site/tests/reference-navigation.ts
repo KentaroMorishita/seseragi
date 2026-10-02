@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import type { Browser } from "../../playground/node_modules/@playwright/test"
+import { modelReaderCases } from "../scripts/model-reader"
 
 const principles = [
   ["expression-oriented", "Expression-oriented", "式指向"],
@@ -16,16 +17,6 @@ const principles = [
   ["visible-costs", "Visible costs", "コストを見えるようにする"],
   ["readable-density", "Readable density", "読みやすい密度"],
 ] as const
-
-const outputs: Record<string, string> = {
-  "expression-oriented": "pass",
-  "immutable-by-default": "10 -> 11",
-  "no-hidden-danger": "not found",
-  "backend-independent-semantics": "-3, 3.5",
-  "diagnosable-behavior": "`[]",
-  "visible-costs": "[2, 4, 6]",
-  "readable-density": "7",
-}
 
 export async function verifyReferenceNavigation(
   browser: Browser,
@@ -57,35 +48,62 @@ export async function verifyReferenceNavigation(
           assert.equal(await page.locator("h1").innerText(), title)
           const article = page.locator(".article-content")
           const code = article.locator(".code-panel pre > code")
-          assert.equal(await code.count(), 2)
+          const modelCase = modelReaderCases.find((item) => item.slug === slug)
+          const example = modelCase?.source ?? "principle-immutable-by-default"
+          const output = modelCase?.expectedOutput.trimEnd() ?? "10 -> 11"
+          const source = readFileSync(
+            resolve(
+              import.meta.dir,
+              `../examples/src/language/${example}.ssrg`
+            ),
+            "utf8"
+          )
+          const panels = await code.allTextContents()
+          // Articles may include rejected examples and their corrections. Find
+          // the canonical program and result without assuming panel positions.
           assert.equal(
-            await code.nth(0).textContent(),
-            readFileSync(
-              resolve(
-                import.meta.dir,
-                `../examples/src/language/principle-${slug}.ssrg`
-              ),
+            panels.filter((text) => text === source).length,
+            1,
+            `${destination}: one exact canonical source`
+          )
+          assert.equal(
+            panels.filter((text) => text === output).length,
+            1,
+            `${destination}: one canonical result`
+          )
+          if (modelCase?.invalidSourcePath) {
+            const rejected = readFileSync(
+              resolve(import.meta.dir, "../../..", modelCase.invalidSourcePath),
               "utf8"
             )
-          )
-          assert.equal(await code.nth(1).textContent(), outputs[slug])
+            assert.equal(
+              panels.filter((text) => text === rejected).length,
+              1,
+              `${destination}: one exact rejected source`
+            )
+            assert.ok(
+              panels.some((text) =>
+                text.includes(modelCase.expectedDiagnostic)
+              ),
+              `${destination}: documented diagnostic`
+            )
+          }
           for (const section of [
             "understand-this",
-            "meaning",
             "why",
-            "limits",
+            "mistakes",
             "related-rules",
+            ...(slug === "immutable-by-default"
+              ? ["reading-the-example", "rules"]
+              : ["meaning", "limits"]),
           ])
             assert.equal(await article.locator(`h2#${section}`).count(), 1)
-          // One walkthrough explains the example before the rules and limits.
-          // Do not reintroduce the old duplicate walkthrough or lose locale pairs.
+          // The values pilot owns a dedicated reading section. The other
+          // principles explain their examples in the meaning section.
           assert.equal(
             await article.locator("h2#reading-the-example").count(),
-            0
+            slug === "immutable-by-default" ? 1 : 0
           )
-          assert.equal(await article.locator(".seseragi-highlight").count(), 1)
-          assert.equal(await article.locator(":scope > p").count(), 8)
-          assert.equal(await article.locator(".callout").count(), 0)
           assert.equal(
             await page.locator(".breadcrumb-current").innerText(),
             title,

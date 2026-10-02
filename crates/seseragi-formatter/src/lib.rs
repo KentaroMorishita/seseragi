@@ -148,7 +148,7 @@ mod tests {
 
     #[test]
     fn wraps_inline_lambda_bindings_without_breaking_application_indentation() {
-        let source = "pub let example = effects.defer (\\_ -> { let result = benchmark.blackBox (values |> map (\\x -> x + 1) |> arrays.filter (\\x -> x > 2) |> reduce 0 (+)); effects.succeed () })\n";
+        let source = "let example = effects.defer (\\_ -> { let result = benchmark.blackBox (values |> map (\\x -> x + 1) |> arrays.filter (\\x -> x > 2) |> reduce 0 (+)); effects.succeed () })\n";
         assert!(seseragi_syntax::parse_diagnostics("inline.ssrg", source)
             .diagnostics
             .is_empty());
@@ -198,7 +198,7 @@ mod tests {
 
     #[test]
     fn preserves_right_associative_maybe_fallback_layout() {
-        let source = "pub let display = cached??requested??\"anonymous\"\n";
+        let source = "let display = cached??requested??\"anonymous\"\n";
         for width in [20, 88] {
             let formatted = format_with_width(source, width);
             assert_eq!(
@@ -217,7 +217,7 @@ mod tests {
     #[test]
     fn preserves_char_literal_spelling_and_apostrophe_application() {
         let source = r"let account'='瀬'
-pub let result=(account','\u{03BB}','\'','\\')
+let result=(account','\u{03BB}','\'','\\')
 ";
         for width in [20, 88] {
             let formatted = format_with_width(source, width);
