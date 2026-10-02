@@ -57,3 +57,18 @@ unchanged-site audit and actual browser review. Record current executable
 versions and hashes. The cloud's official 0.61.19 results do not prove the new
 compiler candidate. Merge, public deployment and human acceptance are not
 claimed by this verification record.
+
+## Mac production and browser evidence
+
+The integrated current compiler generated 3,976 production pages successfully.
+All 22 selected article bodies match the final transferred accepted HTML exactly,
+including declaration tails. Actual Chrome checks at 1280x900 and 390x844 covered
+all 22 localized routes (44 observations), with 220 matching displayed panels,
+no document overflow and no console errors. Viewport settings were restored.
+Evidence: docs/reviews/0.61.20/bytes-browser-qa.json and production-memory.json.
+The sampled full-generator peak was 2,571,488 KiB at 250ms intervals.
+
+The exact 2e40b880 Docs preview is Ready after explicit site lock refresh. This
+confirms the earlier stale-lock deployment error is repaired. Whole-site
+aggregate/two-build parity on the next frozen candidate and public production
+deployment remain separate gates; model review is not human acceptance.

@@ -1,0 +1,7 @@
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.module-expression-statement]	0	27	"println \"not a declaration\""
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.function-annotations-required]	28	60	"fn missingParameter value -> Int"
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.function-annotations-required]	69	96	"fn missingResult value: Int"
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.public-let-annotation-required]	113	118	"count"
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.invalid-declaration-name]	127	133	"1value"
+examples/spec/artifacts/schema-1/declaration-validation/main.ssrg [parser.invalid-declaration-name]	142	147	"match"
+Scanned 3391 sources; 6 module-expression diagnostics

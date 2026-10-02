@@ -4,6 +4,6 @@ let left: Maybe<Int> = Just 6
 let right: Maybe<Int> = Just 7
 let partial: Maybe<Int -> Int> = map multiply left
 let named: Maybe<Int> = apply partial right
-let operator: Maybe<Int> = multiply <$> left <*> right
+let viaOperator: Maybe<Int> = multiply <$> left <*> right
 
-pub effect fn main = println $ `apply: ${named} / <*>: ${operator}`
+pub effect fn main = println $ `apply: ${named} / <*>: ${viaOperator}`

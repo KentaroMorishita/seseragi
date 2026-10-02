@@ -1,0 +1,15 @@
+{
+  "sample_interval_seconds": 0.25,
+  "limit_kib": 4194304,
+  "processes": {
+    "1868": {
+      "command": "bun apps/site/scripts/build.ts /tmp/seseragi-06120-unified-production",
+      "peak_kib": 2571488,
+      "samples": 806,
+      "started_seconds": 0.04,
+      "within_limit": true,
+      "ended_seconds": 243.84
+    }
+  },
+  "gate_finished": true
+}

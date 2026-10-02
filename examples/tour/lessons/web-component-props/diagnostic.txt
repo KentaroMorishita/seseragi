@@ -1,4 +1,8 @@
-examples/tour/lessons/web-component-props/diagnostic.ssrg:5:15: error[SES-N0001]: Name could not be resolved
+examples/tour/lessons/web-component-props/diagnostic.ssrg:5:20: error[SES-T0101]: Argument type does not match the parameter type
   | let invalid = card 42
-  |               ^^^^ let declaration
-  = help: Check the spelling, or define or import the name before using it.
+  |                    ^^ argument 1 expected String, received Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -2,7 +2,7 @@ let source: Effect<{}, Never, Int> = pure 7
 let triple: Int -> Effect<{}, Never, Int> = \value: Int -> pure $ value * 3
 
 let named: Effect<{}, Never, Int> = flatMap triple source
-let operator: Effect<{}, Never, Int> = source >>= triple
+let viaOperator: Effect<{}, Never, Int> = source >>= triple
 let block: Effect<{}, Never, Int> = do {
   value <- source
   pure $ value * 3
@@ -10,7 +10,7 @@ let block: Effect<{}, Never, Int> = do {
 
 pub effect fn main = do {
   namedValue <- named
-  operatorValue <- operator
+  operatorValue <- viaOperator
   blockValue <- block
   println $ `flatMap: ${namedValue}`
   println $ `>>=: ${operatorValue}`

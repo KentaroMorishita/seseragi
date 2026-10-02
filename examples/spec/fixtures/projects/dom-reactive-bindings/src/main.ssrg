@@ -13,8 +13,7 @@ type DispatchError =
   | StopRequested
   | DispatchImpossible String
 
-fn impossible failure: Never -> DispatchError =
-  DispatchImpossible "unreachable"
+fn impossible failure: Never -> DispatchError = DispatchImpossible "unreachable"
 
 let noBindings: Array<dom.DomBinding<Action>> = []
 
@@ -23,10 +22,10 @@ fn startPointer event: html.PointerEvent -> html.EventAction<Action> =
   |> html.capturePointer event
   |> html.suppressCompatibilityClick event
 
-fn region active: Bool -> dom.DomContent<Action> =
+fn region active: Bool -> dom.DomContent<Action> = (
   if active then
-    dom.content
-      (html.fragment [
+    dom.content (
+      html.fragment [
         html.button {
           key: "alpha",
           id: "region-alpha",
@@ -40,11 +39,11 @@ fn region active: Bool -> dom.DomContent<Action> =
           onClick: RegionIncrement,
           children: "beta"
         }
-      ])
-      noBindings
+      ]
+    ) noBindings
   else
-    dom.content
-      (html.fragment [
+    dom.content (
+      html.fragment [
         html.button {
           key: "beta",
           id: "region-beta",
@@ -64,32 +63,17 @@ fn region active: Bool -> dom.DomContent<Action> =
           onPointerDown: startPointer,
           children: "alpha moved"
         }
-      ])
-      noBindings
+      ]
+    ) noBindings
+)
 
 fn initialView -> html.Html<Action> = html.div {
   children: [
     html.span { id: "static", children: "static" },
-    html.span {
-      id: "count",
-      title: "0",
-      children: "0"
-    },
-    html.input {
-      id: "controlled",
-      value: "0",
-      onInput: \_event -> Increment
-    },
-    html.input {
-      id: "controlled-check",
-      inputType: "checkbox",
-      checked: False
-    },
-    html.span {
-      id: "styled",
-      style: html.style { color: "red" },
-      children: "styled"
-    },
+    html.span { id: "count", title: "0", children: "0" },
+    html.input { id: "controlled", value: "0", onInput: \_event -> Increment },
+    html.input { id: "controlled-check", inputType: "checkbox", checked: False },
+    html.span { id: "styled", style: html.style { color: "red" }, children: "styled" },
     html.div {
       id: "region",
       children: [
@@ -121,7 +105,10 @@ fn dispatch count: signals.MutableSignal<Int>
   match action {
     Increment -> signals.update (\value -> value + 1) count
       |> effects.mapError impossible
-    Toggle -> signals.update (\value -> if value then False else True) active
+    Toggle -> signals.update (\value -> if value then
+      False
+    else
+      True) active
       |> effects.mapError impossible
     RegionIncrement -> signals.update (\value -> value + 10) count
       |> effects.mapError impossible
@@ -137,7 +124,8 @@ fn continueAfterFailure failure: dom.DomRuntimeError<DispatchError>
 
 fn runTarget target: dom.DomTarget -> Effect<{ dom: dom.Dom }, Never, Unit> = do {
   count <- signals.make 0 |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
-  active <- signals.make True |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
+  active <- signals.make True
+    |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
   let countText = signals.map (\value: Int -> show value) count
   let countAttribute = signals.map (\value -> Just (show value)) count
   let checked = signals.map (\value -> value == 1) count

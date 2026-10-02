@@ -1,5 +1,5 @@
 fn triple value: Int -> Int = value * 3
 let named: Maybe<Int> = map triple (Just 14)
-let operator: Maybe<Int> = triple <$> Just 14
+let viaOperator: Maybe<Int> = triple <$> Just 14
 
-pub effect fn main = println $ `map: ${named} / <$>: ${operator}`
+pub effect fn main = println $ `map: ${named} / <$>: ${viaOperator}`
