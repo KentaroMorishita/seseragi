@@ -23,7 +23,8 @@ Seseragiが保証する意味を記述します。
 16. [Runtime Provider Contract](./15-runtime-providers.md)
 17. [PostgreSQL application package](./16-postgresql-package.md)
 18. [SQLite application package](./17-sqlite-package.md)
-19. [Appendix A: 文法要約](./grammar.md)
+19. [外部型意味論の共通境界](./18-semantic-interop.md)
+20. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -86,6 +87,7 @@ Seseragiが保証する意味を記述します。
 - nullable、Promise、throw、class、callbackの明示境界
 - TypeScript向けstable wrapper ABI
 - `.d.ts` subset変換とunsupported診断
+- source frontend、共通Semantic IR、Seseragi projection、runtime接続の責務分離
 - `any` や高度なTypeScript型を黙って通常型へ弱めない規則
 - backend非依存Provider Contractとbackend固有Runtime ABIの分離
 - provider identityをapplication requirementへ漏らさないservice / operation schema
