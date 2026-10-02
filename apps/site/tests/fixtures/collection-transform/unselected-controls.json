@@ -1,1 +1,626 @@
-[]
+[
+  {
+    "route": "/docs/library/array/",
+    "articleSha256": "26bcfa5df1531802ba9355ce0fbf6a0586c2c3e5a596af19cd82b325a50ee717"
+  },
+  {
+    "route": "/docs/library/array/function/chunksof/",
+    "articleSha256": "16da70e5cdad9cdc67e5bf690924b8c5b92c1bd86cf37108609f6401e354f6b0"
+  },
+  {
+    "route": "/docs/library/array/function/drop/",
+    "articleSha256": "0830ff542f2ea9da1b6d9eef3f3a815930789986d30a40f9eedc0d64e2398009"
+  },
+  {
+    "route": "/docs/library/array/function/dropwhile/",
+    "articleSha256": "fe180e02f0e3a11542e621f51c0efafc823529fa1c879154dec42b0a48e3860a"
+  },
+  {
+    "route": "/docs/library/array/function/empty/",
+    "articleSha256": "9f0088283caa16ccbffe77f934365ccc30d3f460b55b5288021559663f297efc"
+  },
+  {
+    "route": "/docs/library/array/function/filter/",
+    "articleSha256": "a667570dd3207c55c65665c865d86cf9d7ac9935746d29a9a0380f1ea26c325b"
+  },
+  {
+    "route": "/docs/library/array/function/find/",
+    "articleSha256": "9ebe49749e25b534a20da16bcb2f152564fffe9559bef57533d61fdab6afabda"
+  },
+  {
+    "route": "/docs/library/array/function/findindex/",
+    "articleSha256": "97f0a0132bc51c27875e5a19dd93384194213a0707dfdbf9c96fb8ce12697af6"
+  },
+  {
+    "route": "/docs/library/array/function/fromiterable/",
+    "articleSha256": "587fa646aad4c2b48934f962e85986534f9876a1fdbcafe334e57907d2c0ce33"
+  },
+  {
+    "route": "/docs/library/array/function/get/",
+    "articleSha256": "4518ae097acf5ee8b72981c648dc3a64e77ee1bdd1f49d7826f7e27282f93f45"
+  },
+  {
+    "route": "/docs/library/array/function/groupby/",
+    "articleSha256": "ed27e49da5902656ab520d012de6bfcdc434dd6b145d7efa4dad356d03b9ec81"
+  },
+  {
+    "route": "/docs/library/array/function/head/",
+    "articleSha256": "2d6f44b60cd61e0770e4c08e4d4c648f2839fe9801022143c13ec0814167a4da"
+  },
+  {
+    "route": "/docs/library/array/function/init/",
+    "articleSha256": "cc3df86d2ea8d50ac2800270ba0fb5f7ea1fb548eaa69efb02c1bc28b08b156b"
+  },
+  {
+    "route": "/docs/library/array/function/isempty/",
+    "articleSha256": "0cc00e8efe0d12791ffda6f2304c9196ef2ee8bc5a88543fdef83050449b0585"
+  },
+  {
+    "route": "/docs/library/array/function/last/",
+    "articleSha256": "8b963dcc6659c15fab20a38a6111c3aed72d40865d0ae94e704fc903c3e349cf"
+  },
+  {
+    "route": "/docs/library/array/function/length/",
+    "articleSha256": "04fba6c402d633dae490c74ff1de02fee10a02fcf597ca41f3a5f13ff1f3a4a6"
+  },
+  {
+    "route": "/docs/library/array/function/reduceright/",
+    "articleSha256": "4c44edfc757a73598baf54647ac87811a11060eee49ac20c9426fb2259f66ec5"
+  },
+  {
+    "route": "/docs/library/array/function/singleton/",
+    "articleSha256": "047431d2e3f8d2c6bb2de88442c151e81271068f9888660375491d132ad21d9e"
+  },
+  {
+    "route": "/docs/library/array/function/sort/",
+    "articleSha256": "42f7cdcb4633356093ef32c209fdb4dace61e36df468c9dc325861f61e1b1e21"
+  },
+  {
+    "route": "/docs/library/array/function/sortby/",
+    "articleSha256": "cb92600cf1a0ef54f3c90cd16770b266c52a12f8fe2093b98da11c0e4745a38c"
+  },
+  {
+    "route": "/docs/library/array/function/take/",
+    "articleSha256": "e256ebf8f550875b30b1e989130feb87a37fb84270378881fb0d1ee805cba5c0"
+  },
+  {
+    "route": "/docs/library/array/function/takewhile/",
+    "articleSha256": "e0c4c6456764a2d9061d5120e03fa28192a5ea346d307fc15d27c3edcc65e26c"
+  },
+  {
+    "route": "/docs/library/array/function/unzip/",
+    "articleSha256": "5dfb9f6ffbf680bddcad2d4806ead0bbfecba6868d5aa63d3d4b13046b13d1da"
+  },
+  {
+    "route": "/docs/library/array/function/windows/",
+    "articleSha256": "0e56ed4cfb51dc9ed7e7024bff685c4639838f0286e5ac403e537afa954a0276"
+  },
+  {
+    "route": "/docs/library/array/function/zip/",
+    "articleSha256": "426b010d02b322edb2f81a15e722eb1df81db00b2051009ba3f28d1357995a4b"
+  },
+  {
+    "route": "/docs/library/array/function/zipwith/",
+    "articleSha256": "4a83552000090bb300fa3d0a1aff200740c9d7e754bec1110fc3c3069c3f3a80"
+  },
+  {
+    "route": "/docs/library/array/instance/applicative-array/",
+    "articleSha256": "c6148669f909db5ee56a6789912f89a07e5dd4de68af07e4193fad514b4ee3fe"
+  },
+  {
+    "route": "/docs/library/array/instance/debug-array-a/",
+    "articleSha256": "983a156cb366a5e4e37fb05da82430e32e04d958f1de4f1c03a140a36b98f4af"
+  },
+  {
+    "route": "/docs/library/array/instance/eq-array-a/",
+    "articleSha256": "3c623caeca595f0e7956d347bde49507b4b83a69b3054678465c82e4630221d7"
+  },
+  {
+    "route": "/docs/library/array/instance/functor-array/",
+    "articleSha256": "e90c6ba333cea1b96681cbacaf3cc69fd2f5ae213d6b06dcb3d027cdc7e6768a"
+  },
+  {
+    "route": "/docs/library/array/instance/iterable-array-a-a/",
+    "articleSha256": "b5278e9094d2cf8dc07d04754e9a40f93d5de30979cca7c008d49b146c6c605a"
+  },
+  {
+    "route": "/docs/library/array/instance/jsondecode-array-a/",
+    "articleSha256": "7fe627b685dfa50e282e21549155f73c229ef0c92b0b3488f12939c80a30f08b"
+  },
+  {
+    "route": "/docs/library/array/instance/jsonencode-array-a/",
+    "articleSha256": "015e52fa06f8804be50da91d4d7a32f93a8f096406ee7a2c19ddd16ab1a81dac"
+  },
+  {
+    "route": "/docs/library/array/instance/monad-array/",
+    "articleSha256": "283dbf8348a23ffe6cb407e573448674e241b45d0ad276f7cd9f0ab6dab3ca00"
+  },
+  {
+    "route": "/docs/library/array/instance/monoid-array-a/",
+    "articleSha256": "5db4073be3dc403375999d649f2bb9c4c0516edf1efa39db800656bb5f8dd219"
+  },
+  {
+    "route": "/docs/library/array/instance/reducible-array-a-a/",
+    "articleSha256": "f08394ac72fe542fe51ecbc744e24e132773abc27f1847bb348f28a1af8f2abb"
+  },
+  {
+    "route": "/docs/library/array/instance/semigroup-array-a/",
+    "articleSha256": "327b781c6f7d9f673e4f556dce77709d62f298ca167ef332c89eba3813c64678"
+  },
+  {
+    "route": "/docs/library/array/instance/show-array-a/",
+    "articleSha256": "3854171ff23d9ab96653e27d73c427b306466d4670338148553f1fdc7937af2f"
+  },
+  {
+    "route": "/docs/library/array/instance/traversable-array/",
+    "articleSha256": "93a86d94b9d53746db4a3ef3803e7fa55729ea10d917ccfc43b6c8e100e3f9eb"
+  },
+  {
+    "route": "/docs/library/list/",
+    "articleSha256": "83a0ec4466967eeab72ef097ba53d06bcc1f9145b06b8425d411a14e8039b3c2"
+  },
+  {
+    "route": "/docs/library/list/function/chunksof/",
+    "articleSha256": "5dbaa41f3f9bbe0e02d63a7470853d4d21b3cd5b187b3243fb7e4769c07dc093"
+  },
+  {
+    "route": "/docs/library/list/function/drop/",
+    "articleSha256": "5ce2c1a04dd18b20c122a38488c42dbcff38b55f6f0dd56880c9e2851ac5a821"
+  },
+  {
+    "route": "/docs/library/list/function/dropwhile/",
+    "articleSha256": "3653a0a70d3cb89f554d6023edcf24250dc5868d5cff50d0daf8243d5cf7eaa1"
+  },
+  {
+    "route": "/docs/library/list/function/empty/",
+    "articleSha256": "8a5a9df87b1a2bccbc59fbc4778c66e4bca7cd6e8c5959112153798cbf990be6"
+  },
+  {
+    "route": "/docs/library/list/function/filter/",
+    "articleSha256": "0ae837a60a31e0506412dd1f914ea21372db561a3e011dfccb5c9d6254aca24a"
+  },
+  {
+    "route": "/docs/library/list/function/find/",
+    "articleSha256": "6023de3bedb6dd519274dd166b5a10135759aa72feb28689f12a8ec1ad57c095"
+  },
+  {
+    "route": "/docs/library/list/function/findindex/",
+    "articleSha256": "c788c103a14a87b6ddf417e75902152fce27c659e92bb4899faed6f79dba2fa1"
+  },
+  {
+    "route": "/docs/library/list/function/fromiterable/",
+    "articleSha256": "29e13efd666b0d7b0a60b186db3252912b300c035388c0fefeb0cf51be92b16a"
+  },
+  {
+    "route": "/docs/library/list/function/get/",
+    "articleSha256": "1e75204a403ed3cc42eb0983eae4f7b44af632128e007dfecaf94b24ca268c3f"
+  },
+  {
+    "route": "/docs/library/list/function/groupby/",
+    "articleSha256": "63169103d5031f7fb8b4e93afaec549275d1d21e08df9c3506c0b8a92006639a"
+  },
+  {
+    "route": "/docs/library/list/function/head/",
+    "articleSha256": "64073e94639ea2a0f83249cc849f6259061d1a28acd60df0ce158c91ee9d9069"
+  },
+  {
+    "route": "/docs/library/list/function/init/",
+    "articleSha256": "97b3e2af3cd4b1288f41062338fb1ca9cb22bd934a31d66bdfc402c812c1d245"
+  },
+  {
+    "route": "/docs/library/list/function/isempty/",
+    "articleSha256": "1dea9f920841513b9e473811089ba767eb11663dfcc67b44e5dc11408ed43689"
+  },
+  {
+    "route": "/docs/library/list/function/last/",
+    "articleSha256": "785b26cb3bfec6c0c77883a4eee26c1bffdc5f3a628f404f1bc94156f61037cb"
+  },
+  {
+    "route": "/docs/library/list/function/length/",
+    "articleSha256": "69155b1f7631fca63725f82417c310580d7985858bd636f2858939110b92511e"
+  },
+  {
+    "route": "/docs/library/list/function/reduceright/",
+    "articleSha256": "69e2bc6a205ed41eb73b6f0f134e313f6d3b2c25e3ccfac0a28087db59da0901"
+  },
+  {
+    "route": "/docs/library/list/function/singleton/",
+    "articleSha256": "75c74d55a6a3a7ae7fb8bff8275f510f3d299e8cf90923cf04f2e2cbdb8642c6"
+  },
+  {
+    "route": "/docs/library/list/function/sort/",
+    "articleSha256": "b138062619fc6d857b74d7e24e722a7743677dbda2b3dba1ce1ea224ba61b5b3"
+  },
+  {
+    "route": "/docs/library/list/function/sortby/",
+    "articleSha256": "724b4156322e65785c85d91c34681b71d23bef6de614664aef635b36f1bed032"
+  },
+  {
+    "route": "/docs/library/list/function/take/",
+    "articleSha256": "745f9a44e62f8a9e60ed38cd0b268d09e2731e73ba88085dc65f02ad00f449bc"
+  },
+  {
+    "route": "/docs/library/list/function/takewhile/",
+    "articleSha256": "1ecab9ef092853827224e267f5b080571bc0ee39ee9c99a8fc39a1db2c404e6f"
+  },
+  {
+    "route": "/docs/library/list/function/unzip/",
+    "articleSha256": "370c69544fe27075d5763d35096b8eae9fa12adb47667db1052825eb76e0c6d7"
+  },
+  {
+    "route": "/docs/library/list/function/windows/",
+    "articleSha256": "0b5cd5b35f1e01d0101e12599f9fb6483c5cbe72290e9d87bb76a4e74f7878b4"
+  },
+  {
+    "route": "/docs/library/list/function/zip/",
+    "articleSha256": "9aabdd62329f1b54c0615045604c46bef349c34d53027a47a8de29c9433ab2b9"
+  },
+  {
+    "route": "/docs/library/list/function/zipwith/",
+    "articleSha256": "5d249fc0ebb8f4831082b778bdab654c972287685903bcebcd4f3e597fb80edb"
+  },
+  {
+    "route": "/docs/library/list/instance/applicative-list/",
+    "articleSha256": "3c39820890c0052941915dce5dca4adf65d59c2ad6d06ba82272055b8616d7f9"
+  },
+  {
+    "route": "/docs/library/list/instance/debug-list-a/",
+    "articleSha256": "20340688b1ad40a481e17f449473ffc8c162f058137f20714334d271254693fc"
+  },
+  {
+    "route": "/docs/library/list/instance/eq-list-a/",
+    "articleSha256": "7f14eed5cf9c643f4a72f7f1c1688779f667905962c918576be3b27bfa7229fe"
+  },
+  {
+    "route": "/docs/library/list/instance/functor-list/",
+    "articleSha256": "ca33336cd26f500e5df2cbeb4cfd49719f3fb2fee51224f966545779b22a5adf"
+  },
+  {
+    "route": "/docs/library/list/instance/iterable-list-a-a/",
+    "articleSha256": "8245d7bc962cf5d4fce2484a15a96656a35ff3d169384dac41bcb5162938f797"
+  },
+  {
+    "route": "/docs/library/list/instance/jsondecode-list-a/",
+    "articleSha256": "927476e93f2d1e19cd798dc612a53cf97d4411a2f1674cb6e359891d33d7f7c7"
+  },
+  {
+    "route": "/docs/library/list/instance/jsonencode-list-a/",
+    "articleSha256": "d17ad1fac422844dbb16c90a96237ddd870cac5669a4b95222c9dfdf52ed16ac"
+  },
+  {
+    "route": "/docs/library/list/instance/monad-list/",
+    "articleSha256": "7696b741af28367220402b1274a07111c14b1d18c0c93150c202a735298708e9"
+  },
+  {
+    "route": "/docs/library/list/instance/monoid-list-a/",
+    "articleSha256": "d0b6ad111440354c0d23496bdb4c0f3537f562a93bd93ad63325ea7218118eb6"
+  },
+  {
+    "route": "/docs/library/list/instance/reducible-list-a-a/",
+    "articleSha256": "9009bd54e611b548bf238d8f33e3d5fea2fd9db6566ab393ea78f8ce146b6719"
+  },
+  {
+    "route": "/docs/library/list/instance/semigroup-list-a/",
+    "articleSha256": "3ccc3875e73a960f723e9c00e5534052e5b152909ac0c15c5f8bd502e6c64434"
+  },
+  {
+    "route": "/docs/library/list/instance/show-list-a/",
+    "articleSha256": "7d0028c1d9a092a38a46b92eb5f843c92d0e50c30ebab4e2b3a97875b7c0ec58"
+  },
+  {
+    "route": "/docs/library/list/instance/traversable-list/",
+    "articleSha256": "33684c864d4b9c06df33be4b27acd01806665c05883fe766738ab74a0b2eef8f"
+  },
+  {
+    "route": "/ja/docs/library/array/",
+    "articleSha256": "a135f3d4377f1e5bd19c74a64edf437dd93630587dc68f9fa6a45c148c709f54"
+  },
+  {
+    "route": "/ja/docs/library/array/function/chunksof/",
+    "articleSha256": "e3a10ca5c91bd690ad4a5047059a1b8bfdb0ac0f4bf3292f023d2bfb8cf5f332"
+  },
+  {
+    "route": "/ja/docs/library/array/function/drop/",
+    "articleSha256": "f7ed10924115477185ee71c69c8d68237d993488d489613705856799980ea1de"
+  },
+  {
+    "route": "/ja/docs/library/array/function/dropwhile/",
+    "articleSha256": "1dc50ec77e9484af25021105291d0cd8f527e7fbf9363bccd52f326fed062b43"
+  },
+  {
+    "route": "/ja/docs/library/array/function/empty/",
+    "articleSha256": "f2330221a4550a989867d890af94ee633e650dc69a2b7cded4e627283263a3ba"
+  },
+  {
+    "route": "/ja/docs/library/array/function/filter/",
+    "articleSha256": "d80b159a4e5f921419b403b87e626166f01519911672807410ac7e5fb7aebe13"
+  },
+  {
+    "route": "/ja/docs/library/array/function/find/",
+    "articleSha256": "b5476d92001422e575396e91ba8c5cba95476dd9ed6c991ab8f6308badc057c4"
+  },
+  {
+    "route": "/ja/docs/library/array/function/findindex/",
+    "articleSha256": "dcdfc426907f50f4c2059e60a24c5e2f9e0e99bfe159594debc6ec3281269911"
+  },
+  {
+    "route": "/ja/docs/library/array/function/fromiterable/",
+    "articleSha256": "f14a9ccfaae25cf8b56f901a35dc7544cb500d3e2e45a634ce82bc4d481004e6"
+  },
+  {
+    "route": "/ja/docs/library/array/function/get/",
+    "articleSha256": "55033f533da540a2c9d2c5fafe90fa24d8b2cc1d2594557fd143932cfa9da860"
+  },
+  {
+    "route": "/ja/docs/library/array/function/groupby/",
+    "articleSha256": "2bf9ee0613a46e1faf2c02e097b2f6c7a418f4bbec91010784d3ab2d12471ce9"
+  },
+  {
+    "route": "/ja/docs/library/array/function/head/",
+    "articleSha256": "ff2ea6ba30b1ba19f742214644b2795cb515a71d7137e65ceba9e2846a84e49d"
+  },
+  {
+    "route": "/ja/docs/library/array/function/init/",
+    "articleSha256": "27e0f22ad5e6f71f04ef84e112dc853d29090853a75db21a0d8415ce46252e8f"
+  },
+  {
+    "route": "/ja/docs/library/array/function/isempty/",
+    "articleSha256": "6972d627cea51b7fc7f8f012d72b2030ef630c36d7933d09c2eee23985a7baeb"
+  },
+  {
+    "route": "/ja/docs/library/array/function/last/",
+    "articleSha256": "d9c79312ab4f5ef9374e797540d977f2dd705c8473c7ef944c9d3eaa08142ade"
+  },
+  {
+    "route": "/ja/docs/library/array/function/length/",
+    "articleSha256": "633974f254007317b20b7696435e3fb47619193325a0e1f6220607c14ca7db10"
+  },
+  {
+    "route": "/ja/docs/library/array/function/reduceright/",
+    "articleSha256": "3bb8f88044c46d73ee4a8365c7efdc7779b59904da25ab6b85c88e04a7422c48"
+  },
+  {
+    "route": "/ja/docs/library/array/function/singleton/",
+    "articleSha256": "641529354ca6fbb79899810afadf27566f98b620ca239e83d8e4872b614d29e6"
+  },
+  {
+    "route": "/ja/docs/library/array/function/sort/",
+    "articleSha256": "c0a7fc6a189879424659406f67fb30b374d53bf0f689752a7a1cc2b5e315e06d"
+  },
+  {
+    "route": "/ja/docs/library/array/function/sortby/",
+    "articleSha256": "09792f2fcbfe961a229b019e80791e3943fdd521b30a2d26e0ee33e23fbfd2f4"
+  },
+  {
+    "route": "/ja/docs/library/array/function/take/",
+    "articleSha256": "1ab359ac5bf5392bce0f354ff94092d59bb19f53f16b4bca9c6dea5f39e0671b"
+  },
+  {
+    "route": "/ja/docs/library/array/function/takewhile/",
+    "articleSha256": "9c0c8ec35d6f82845914fc9e16e9b666b495fca4286a3d6f6642bde36be30bfc"
+  },
+  {
+    "route": "/ja/docs/library/array/function/unzip/",
+    "articleSha256": "c278caa42802bf6c7054328ea6f9cd1a755a5c030361edd440b6663fc2d6a180"
+  },
+  {
+    "route": "/ja/docs/library/array/function/windows/",
+    "articleSha256": "7d816c8e0b9a6024c090bfbe756e2e5823f487696ba3653aa5eac3609e6603ee"
+  },
+  {
+    "route": "/ja/docs/library/array/function/zip/",
+    "articleSha256": "b252406f4d2b66861a955967514f4a4780bb9ca7aa787c0cb8bc78de752046fd"
+  },
+  {
+    "route": "/ja/docs/library/array/function/zipwith/",
+    "articleSha256": "3f0e93d91d259f69630ddf575784cc58b6ed0f4c54bc2dd7edd907ab52b00ca3"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/applicative-array/",
+    "articleSha256": "41ff41a561d959135023a1e8a4b9c973b09378ab87d0b17ce77831550c4c96e6"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/debug-array-a/",
+    "articleSha256": "76c199aab1782b1d14b7757a0f036841b0163b7b6af6d78356bb8d0755fe915d"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/eq-array-a/",
+    "articleSha256": "10102df5fa26b64ef987a016a3fe0fc3ce10d6af58a0c11130a2f5fb93357d99"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/functor-array/",
+    "articleSha256": "ce800f0e074b85f1863e539534de8d0c1138376861018af79cccb8ec912c3ac1"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/iterable-array-a-a/",
+    "articleSha256": "a254847bab75e9098119353fc728740c6d87f8c99d6010094e047d00715bbd32"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/jsondecode-array-a/",
+    "articleSha256": "671ef9e441da3702f89617cb2cfa29ba2a1fd9b34866a0136921ff9e77ac1fc9"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/jsonencode-array-a/",
+    "articleSha256": "e66eed011c749bd701a98abb0e9ae79ceb3d4837ff3c86776940f0382fc6c949"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/monad-array/",
+    "articleSha256": "efd0c39463e9b677dbfd2f5cb8dfcd5a42f676e164d332c4d21d078effd93685"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/monoid-array-a/",
+    "articleSha256": "8413b4c16b9a73e6645767e24feee43aa6434de7dfcea8fce41b732349444aca"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/reducible-array-a-a/",
+    "articleSha256": "d864041856cf906484f06ec22a0d1ea1c55d703a2a29d7845884b33a47137a14"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/semigroup-array-a/",
+    "articleSha256": "916ee6fe1e186af162575fbe88a67784568c55397d3d6c0cea067fa67e67fd68"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/show-array-a/",
+    "articleSha256": "4af4a0300ec57525e5700e6a0c92e235c553bcdd0f293152e22b6625fd8c6106"
+  },
+  {
+    "route": "/ja/docs/library/array/instance/traversable-array/",
+    "articleSha256": "7501ff46e38a1d63e9e9cc95395b49c59ba69abf9ea64baab9fbaa8b917ca6c9"
+  },
+  {
+    "route": "/ja/docs/library/list/",
+    "articleSha256": "d79ee65084141c3ae2a417011d125f862bff5d1d1e3a9677f15c3623c816fa1a"
+  },
+  {
+    "route": "/ja/docs/library/list/function/chunksof/",
+    "articleSha256": "df4a895911d37d47a1b5d134b899e92fbf5d7f9368fb055174eafb20ceb8c593"
+  },
+  {
+    "route": "/ja/docs/library/list/function/drop/",
+    "articleSha256": "4e6b755205604262b4e6eb9d581896176e8fd4cc91ffe90d477b15c187cedd9b"
+  },
+  {
+    "route": "/ja/docs/library/list/function/dropwhile/",
+    "articleSha256": "026b268355398ccc7b33fdbb2b2ab7cbe0b15babe0c5335e66c74cbcf8666297"
+  },
+  {
+    "route": "/ja/docs/library/list/function/empty/",
+    "articleSha256": "301ecc9fc79c99dd4c35ea5be17b511f92e083d1746c539a27cb07dd702f0919"
+  },
+  {
+    "route": "/ja/docs/library/list/function/filter/",
+    "articleSha256": "2517947390384a3780b54c092bb930cd9b67b673b47af0549a7d82a31f068449"
+  },
+  {
+    "route": "/ja/docs/library/list/function/find/",
+    "articleSha256": "a0a32ce762f91d9bab895f64ed7c9d7013998888fc2c25eaf173737dc6e4f17e"
+  },
+  {
+    "route": "/ja/docs/library/list/function/findindex/",
+    "articleSha256": "656368faf53350310c0422a65ea733af98b775bd4b6fb3cc3a8e8dd62fdf610e"
+  },
+  {
+    "route": "/ja/docs/library/list/function/fromiterable/",
+    "articleSha256": "e194e4b505810bd81607c3ebe1470dc3f05853c3b330795b85be49a7ca416224"
+  },
+  {
+    "route": "/ja/docs/library/list/function/get/",
+    "articleSha256": "a870614a7c870f7c55b91c1889957e7c1ed0352fd6504de52c0b1faa657c70fa"
+  },
+  {
+    "route": "/ja/docs/library/list/function/groupby/",
+    "articleSha256": "9c7f9da4e34a891d3e8a8bd2127ccc3e0c1f9dc4aa08d31894c4665fc60ab014"
+  },
+  {
+    "route": "/ja/docs/library/list/function/head/",
+    "articleSha256": "04cb88dc06ed4151ce60bdb0cf7a3c40e6edd9dbafa4e819cbd623d167524f17"
+  },
+  {
+    "route": "/ja/docs/library/list/function/init/",
+    "articleSha256": "05b01a92375d47935eb1d7e51b00ee1861b6bebe2dc80af9d640d2f7f845fab4"
+  },
+  {
+    "route": "/ja/docs/library/list/function/isempty/",
+    "articleSha256": "5ed9e88372ab28b8b2dda9450eecc11bfa4a258d62b52fd90ab5d12fccc85896"
+  },
+  {
+    "route": "/ja/docs/library/list/function/last/",
+    "articleSha256": "c4f0d85b45a04b06eedec9eff8c2961742cd01667a4c8c5a98c32f2c7c143f2c"
+  },
+  {
+    "route": "/ja/docs/library/list/function/length/",
+    "articleSha256": "ba41fd790a3f2db030a87198adc66de4c46f4ca605e4ac03541c36eb2295d981"
+  },
+  {
+    "route": "/ja/docs/library/list/function/reduceright/",
+    "articleSha256": "207d7bcc0bc4cb14a8689d0bd23d8514a27e31a46a230e1a74b8c70d3daef2a6"
+  },
+  {
+    "route": "/ja/docs/library/list/function/singleton/",
+    "articleSha256": "c5586ca4145ca235dadf12525a496360b0a1ba84933e367bb29e5d91070985b6"
+  },
+  {
+    "route": "/ja/docs/library/list/function/sort/",
+    "articleSha256": "2691287f1ad3e646d832a744a634beab7e28ec454f70f6840c3951649aaf6c06"
+  },
+  {
+    "route": "/ja/docs/library/list/function/sortby/",
+    "articleSha256": "a833ed7ec08f1af2a0a36396bee0b5d7f8f8a747173fdd909bcea89658a04fa4"
+  },
+  {
+    "route": "/ja/docs/library/list/function/take/",
+    "articleSha256": "92cb27f489963d0b60f3b10967c0e4c171fadf5af0c90a3a5c49b482434614d9"
+  },
+  {
+    "route": "/ja/docs/library/list/function/takewhile/",
+    "articleSha256": "ae515904f5f58f3520ed21e660d4d5d6f782da31187edd68824bb5f507399c89"
+  },
+  {
+    "route": "/ja/docs/library/list/function/unzip/",
+    "articleSha256": "1e66f4b3faded23f19a639cfbaf578357c19d7f14b32feea32f0ed24f46d554a"
+  },
+  {
+    "route": "/ja/docs/library/list/function/windows/",
+    "articleSha256": "8492a07fe4fd63b521782df761d86b76abd592253fffe93024e93586ca82645b"
+  },
+  {
+    "route": "/ja/docs/library/list/function/zip/",
+    "articleSha256": "d84645b20b13943bb1c2dc51d6879343ab573a44d392a0fd924601fd170830cc"
+  },
+  {
+    "route": "/ja/docs/library/list/function/zipwith/",
+    "articleSha256": "7c3a5ce1e20a2c985bdaa641cdb2f114143defd92c484fd419fbec1d578a34de"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/applicative-list/",
+    "articleSha256": "b6482c2925b88b52414e4313a80ea167e70d4152c87020e55e5cab9adebbdc9d"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/debug-list-a/",
+    "articleSha256": "2bc6fab005985f6f811fbbe328e32a8a06f1c579747be158c92d1e909b27a479"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/eq-list-a/",
+    "articleSha256": "070375395e26308f30cbb6aef5fbc2029ba7faa09b79533974b4f359ab0b688a"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/functor-list/",
+    "articleSha256": "87a5697be79467429e459a6e7074e5e4ac5afd05716d72d5ef0c5363b5189499"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/iterable-list-a-a/",
+    "articleSha256": "6a893e1bb69b96e8515f60145b238778f4b137e1a0d2aa67aa969eaddc45c05b"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/jsondecode-list-a/",
+    "articleSha256": "9162cd8d295e7a66d704e72f780ddaaeac435f583e8dbbb680b67d66960d29b4"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/jsonencode-list-a/",
+    "articleSha256": "2126685e4eadeded0ed7a4170699f94de01184e6805a39ae8b43413a0eaab4cc"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/monad-list/",
+    "articleSha256": "81246d3a9158b75fe87bbc5ff866d799dfe13a8b8306bf41e09fc9a91b966dc1"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/monoid-list-a/",
+    "articleSha256": "cb1e5373ebf63c943ce31eeb2e00261a79d92f21ceb315c4112b3f5f3df7b3b3"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/reducible-list-a-a/",
+    "articleSha256": "f0354fa635eeba215ff2d5bae7224691c2a5d4c58842c4576cacc16a602d362a"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/semigroup-list-a/",
+    "articleSha256": "2e4b69b1aa833bb94dd61e00091d0e972ded54c8741d7359819c6d06c15d0adb"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/show-list-a/",
+    "articleSha256": "7e90ba814c716dff1a889280174c164596a2c21e98c636a99902ca1bc5483d26"
+  },
+  {
+    "route": "/ja/docs/library/list/instance/traversable-list/",
+    "articleSha256": "7b1f0ab190fdd85c7c73231e5275d8f8fe336d142c089d0ce98453117ee5555e"
+  }
+]

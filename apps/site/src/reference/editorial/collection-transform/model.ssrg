@@ -140,8 +140,8 @@ fn related identity: String -> Array<Block> = match identity {
       "produce a group from each input, then join those groups." "各入力から一覧を作ってつなぎます。",
     link "filter" "/docs/library/array/function/filter/"
       "keep each original item that passes a condition." "条件に合う元の値を残します。",
-    link "map" "/docs/library/array/function/map/"
-      "transform every input into exactly one result." "各入力を一つずつ変換します。",
+    link "concat" "/docs/library/array/function/concat/"
+      "flatten an existing collection of batches by one level." "すでにある複数の一覧を一段つなぎます。",
   ]
   "std/array::flatMap" -> [
     link "concat" "/docs/library/array/function/concat/"
@@ -197,8 +197,8 @@ fn related identity: String -> Array<Block> = match identity {
       "produce a group from each input, then join those groups." "各入力から一覧を作ってつなぎます。",
     link "filter" "/docs/library/list/function/filter/"
       "keep each original item that passes a condition." "条件に合う元の値を残します。",
-    link "map" "/docs/library/list/function/map/"
-      "transform every input into exactly one result." "各入力を一つずつ変換します。",
+    link "concat" "/docs/library/list/function/concat/"
+      "flatten an existing collection of batches by one level." "すでにある複数の一覧を一段つなぎます。",
   ]
   "std/list::flatMap" -> [
     link "concat" "/docs/library/list/function/concat/"

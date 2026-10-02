@@ -1,6 +1,6 @@
 # Collection transformations14
 
-Status: reconstructed WIP candidate after the cloud workspace reset on
+Status: reconstructed candidate with fresh scoped verification and reader acceptance; whole-site integration remains pending after the cloud workspace reset on
 2026-10-02. This work is based on the restored public Stdin checkpoint. The lost
 Transform14 checkout was never committed or published. Retained generation
 scripts and reader text are reconstruction inputs, not accepted artifacts.
@@ -39,17 +39,22 @@ identical representation, cost or deep-copy behavior. Show conversions meeting a
 typed consumer boundary. Keep Number/Number.isInteger comparisons explicitly
 limited to the demonstrated inputs.
 
-## New acceptance required
+## Acceptance requirements
 
-- Fresh source/output manifests and bounded Node/Bun execution for all28 panels
+- Fresh source/output manifests and bounded Node/Bun execution for all 28 panels
 - Strict comparison checking and the actual configured site TypeScript gate
 - Exact negative diagnostics, nearby repairs and boundary/runtime probes
 - Current committed WASM/current-host execution, explicitly separate from browser QA
-- Fresh28 complete initial article reads and28 final rereads after corrections
-- Fresh restored-baseline hashes for156 unselected complete articles
+- Fresh 28 complete initial article reads and 28 final rereads after corrections
+- Fresh restored-baseline hashes for 156 unselected complete articles
 - Five-suite negative-control maintenance without weakening identity dimensions
 - Whole-site integration, including two bounded builds, under the parent task
 
 No compiler/runtime changes, release or public publication are part of this
 family. The recovery WIP backup is not final acceptance. Do not copy lost test
 receipts, reader approvals or ledger rows into the new verification record.
+
+Fresh source, reader and maintained-suite results are recorded in
+[the verification record](collection-transform-verification.md). The original
+failed navigation gate remains evidence; all 28 corrected bodies have new final
+acceptance. Whole-site release/integration status is not implied.
