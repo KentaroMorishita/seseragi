@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "Stdin is the service type required by operations that read standard input. Reads share a position in the input and advance to the next line as they run.",
+  taskTitle: "Read from the same input three times",
+  purpose: "Read the parcel line, a blank line, and end-of-input in order. Focus on stdin: stdin.Stdin, which declares the service needed to read, rather than the string that was read.",
+  typescriptBefore: "In Node.js or Bun, pass process.stdin to node:readline to read input. Taking three results from the same reader lets you observe the first string, an empty string, and then the end of the input.",
+  benefit: "Putting Stdin in a Seseragi with declaration states that the operation needs an input service. The actual input string arrives as Just text and is handled separately from the service type.",
+  reading: [
+    "In with Console, stdin: stdin.Stdin, stdin: names the required service. The stdin.Stdin on the right is the type name from std/stdin, imported using the alias stdin.",
+    "main runs reportLine () three times, from top to bottom. They share the same input position, so they display Line: parcel, Blank line, and EOF in order instead of reading parcel three times.",
+    "Console is needed by println to display the result. It has a different role from Stdin, which reads standard input, so this operation declares both services."
+  ],
+  details: [
+    "You do not need to assemble the internals of Stdin or convert a string to the Stdin type. The process runtime supplies the input service required by main.",
+    "Empty input does not mean the service is missing. When an input service is available but has no lines left, the read succeeds with Nothing.",
+    "An import makes names available; it does not itself consume input. In this example, a line is consumed when the read inside reportLine is executed."
+  ]
+}

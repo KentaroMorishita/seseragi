@@ -1,0 +1,7 @@
+import { copy as english } from "./en"
+import { copy as japanese } from "./ja"
+import { stdinReaderEditorial } from "../model"
+import { Editorial } from "../../model"
+
+pub fn editorial _unit: Unit -> Editorial =
+  stdinReaderEditorial "std/stdin" "module" "module" "qualified-one-line" (english ()) (japanese ())

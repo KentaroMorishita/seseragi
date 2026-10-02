@@ -1,0 +1,4 @@
+pub effect fn main -> Unit with Stdin fails StdinError = do {
+  _ <- readLine ()
+  succeed ()
+}

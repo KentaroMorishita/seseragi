@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "readLineは、標準入力から次の一行を既定の上限で読みます。空行はJust \"\"、残りの行がなければNothingを返します。",
+  taskTitle: "文字のある行、空行、入力終了を順に読む",
+  purpose: "parcelの後に空行を一つ渡し、三回読むと何が得られるかを確認します。一回の読み取りは一行を返し、次の呼び出しはその続きから読みます。",
+  typescriptBefore: "Node.jsやBunのnode:readlineでも、同じ入力から行を順に取り出せます。この比較では、ループで受け取る空文字列とループの終了を分け、足りない回数だけEOFを表示します。",
+  benefit: "Seseragiでは、一行があるかどうかをMaybe<String>で受け取ります。文字列が必要な分岐だけでtextを使えるため、入力がない場合を先に扱ってからラベルを表示できます。",
+  reading: [
+    "stdin.readLine ()の()は、引数に渡すUnitです。この操作を実行すると一行分の結果が得られます。呼び出しの宣言にあるEffectは、必要なStdinと、起こり得るStdinErrorと、成功時のMaybe<String>を示します。",
+    "reportLine ()を三回実行するので、parcel、空行、入力終了の順に進みます。_ <-の_は各報告の戻り値を使わないという意味で、入力の行を読み飛ばす指定ではありません。",
+    "Just textの分岐で初めてtextを文字列として使います。Maybe<String>全体をそのままStringとして使うことはできません。空行の分岐を先に置くことで、その表示も選べます。"
+  ],
+  details: [
+    "行末のLFと、その直前のCRは返る文字列に含まれません。単独のCRは内容として残ります。改行なしで入力が終わっても、残った内容があれば最後の一行として返ります。",
+    "最後の行を読み終えた後の呼び出しはNothingを返します。入力終了後にさらに呼び出してもNothingで、最後の行を繰り返すことはありません。",
+    "一行の内容の上限は1,048,576バイトです。別の上限が必要ならreadLineWithを使います。std/stdinを修飾して呼ぶこの例はprocessターゲット用で、短い書き方はPrelude版readLineで確認できます。"
+  ]
+}

@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "StdinErrorは、標準入力を読めなかった理由を表す型です。壊れたUTF-8や一行の上限超過を、空行や入力終了と区別できます。",
+  taskTitle: "入力がない場合と読めない場合を分ける",
+  purpose: "三回の読み取りで、文字列、空行、入力の終わりを表示します。その同じ処理に、文字のデータが壊れている場合や行が長すぎる場合の表示も用意します。",
+  typescriptBefore: "node:readlineから得た文字列と、反復の終了を分ければ、TypeScriptでも空行と入力終了を区別できます。ただし通常のreadlineは壊れたUTF-8を置換して文字列にするので、この例のStdinErrorと同じ失敗を返すわけではありません。",
+  benefit: "エラーメッセージの文字列を調べる代わりに、InvalidStdinUtf8やStdinLineTooLongの形をmatchで選べます。成功した読み取りの中でも、空行と入力の終わりは引き続き別々に扱えます。",
+  reading: [
+    "parcelの後に二つの改行を渡すと、表示はLine: parcel、Blank line、EOFです。この通常の入力ではLeftの分岐を通りません。",
+    "Right (Just \"\")は、内容が空でも一行を読めた場合です。Right Nothingはもう行がない場合で、どちらもStdinErrorではありません。",
+    "Left (stdin.InvalidStdinUtf8 { offset })は壊れた文字データの位置を、Left (stdin.StdinLineTooLong { limitBytes })は設定された上限を取り出します。Left _はそれ以外の入力失敗を扱います。"
+  ],
+  details: [
+    "型の表示がopaque-typeでも、公開されているエラーのコンストラクターはこのように照合できます。コンストラクターでエラー値を作るだけでは、入力を読んだり処理を失敗させたりはしません。",
+    "公式CLI 0.61.19では、このstd/stdinの失敗全体をshow reasonで文字列にする書き方は利用できません。この例は公開された形を照合し、残りはInput failedと表示します。Prelude版readLineのshowによる表示とは分けて考えてください。",
+    "入力の失敗を受け取って表示しても、プログラム全体が自動で失敗するわけではありません。ここでは通常の出力として報告します。そのprintln自体は失敗し得るので、宣言にはfails ConsoleErrorが残ります。"
+  ]
+}

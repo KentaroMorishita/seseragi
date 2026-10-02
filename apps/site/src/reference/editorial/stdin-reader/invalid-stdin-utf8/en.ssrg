@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "InvalidStdinUtf8 is the StdinError for a standard-input line that cannot be decoded as UTF-8. Its offset is a byte position measured from the start of the entire input.",
+  taskTitle: "Report malformed text instead of replacing it",
+  purpose: "First read parcel, a blank line, and end-of-input. The same match includes a branch to report the position of malformed input bytes and then continue with the next line.",
+  typescriptBefore: "node:readline replaces malformed UTF-8 while producing a string, so this short TypeScript example does not reproduce InvalidStdinUtf8. Compare its ordinary text, blank-line, and end-of-input messages while treating malformed-byte handling as a separate policy.",
+  benefit: "Report unreadable text as a failure instead of unknowingly accepting replacement characters as a label. The public error shape supplies offset without requiring you to parse an error message.",
+  reading: [
+    "Left (stdin.InvalidStdinUtf8 { offset }) extracts the offset carried by the error. show offset converts that integer to a string for the message beginning Invalid UTF-8 at byte.",
+    "Ordinary parcel and blank-line input does not enter this branch. It handles malformed raw UTF-8 bytes; it does not mean that ordinary Japanese text or emoji are rejected.",
+    "reportLine is called three times. A malformed line is consumed through its line ending or end-of-input, so a call after reporting the failure starts at the next line."
+  ],
+  details: [
+    "offset is zero-based and measured from the start of the entire input. It is neither a character number nor a position local to the current line. LF and CRLF endings in earlier lines are included.",
+    "For example, if ok and LF come first, and the next line starts with a followed by an invalid byte, that invalid position is 4. The four preceding bytes are o, k, LF, and a.",
+    "Constructing InvalidStdinUtf8 { offset: 4 } is separate from reading real input and receiving a failure. Playground Input provides finite text, so it cannot be used to supply arbitrary malformed raw bytes."
+  ]
+}

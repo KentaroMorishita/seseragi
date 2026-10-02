@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "InvalidStdinUtf8は、標準入力の行をUTF-8として読めない場合のStdinErrorです。offsetは入力全体の先頭から数えたバイト位置です。",
+  taskTitle: "壊れた文字データを置き換えずに報告する",
+  purpose: "まずparcel、空行、入力終了を読む処理を確認します。同じmatchに、入力の文字データが壊れていたら位置を報告し、その後の行へ進む分岐を用意します。",
+  typescriptBefore: "node:readlineは壊れたUTF-8を置換して文字列にするため、この短いTypeScript例はInvalidStdinUtf8を再現しません。通常の文字列、空行、入力終了の表示を比べ、壊れたバイトの扱いは別の方針として読みます。",
+  benefit: "読めない文字を気付かずラベルとして受け取る代わりに、失敗として報告できます。公開されたエラーの形からoffsetを取り出せるので、エラーメッセージの解析は不要です。",
+  reading: [
+    "Left (stdin.InvalidStdinUtf8 { offset })で、エラーが持つoffsetを取り出します。show offsetはその整数を文字列にし、Invalid UTF-8 at byteという案内に続けます。",
+    "通常のparcelと空行だけではこの分岐に入りません。壊れたUTF-8の生のバイトが入力されたときの分岐であり、普通の日本語や絵文字を拒否するという意味ではありません。",
+    "reportLineは三回呼ばれます。壊れた行は行末または入力終了まで消費されるため、失敗を表示した後の呼び出しは次の行から読みます。"
+  ],
+  details: [
+    "offsetは0始まりで、入力全体の先頭から数えます。文字の番号でも、その行の中だけの位置でもありません。前に読んだ行のLFやCRLFも位置に含まれます。",
+    "例えば先にokとLFがあり、次の行がaと不正なバイトで始まる場合、その不正な位置は4です。o、k、LF、aの四バイトがその前にあります。",
+    "InvalidStdinUtf8 { offset: 4 }でエラー値を作ることと、実際の入力を読んで失敗することは別です。PlaygroundのInputは有限の文字列なので、任意の不正な生バイトを渡す確認には使えません。"
+  ]
+}

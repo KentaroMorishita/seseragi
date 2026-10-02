@@ -1,0 +1,19 @@
+import { StdinCopy } from "../model"
+
+pub fn copy _unit: Unit -> StdinCopy = StdinCopy {
+  summary: "Read one line from standard input, distinguishing a blank line, end-of-input, and a read failure. This module also lets you choose a limit on the bytes in each line.",
+  taskTitle: "Read one label from a pipe",
+  purpose: "Pass parcel and ignored on separate lines and display only the first label, parcel. Start with a single read, then choose the input limit and failure messages your program needs.",
+  typescriptBefore: "In Node.js or Bun, node:readline lets you leave the loop after receiving its first line. This is a different task from collecting all of standard input with an asynchronous loop: you do not need to wait for all input to end before finding its first line.",
+  benefit: "Seseragi represents whether a line was present separately from whether reading failed. Use readLine for the standard limit or pass a checked limit to readLineWith, using the same input service.",
+  reading: [
+    "import * as stdin makes the names from std/stdin available through the alias stdin. stdin.readLine () is the input operation; println is the operation that displays the result.",
+    "This main executes just one read. Even with a newline and ignored after parcel, it displays only Line: parcel. It does not contain a loop that displays the remaining lines.",
+    "A present line gives Just text, a blank line gives Just \"\", and no remaining line gives Nothing. A read failure goes into the Left branch, separate from a blank line or end-of-input."
+  ],
+  details: [
+    "readLine uses a limit of 1,048,576 bytes per line. To accept only short labels, check a smaller limit with lineLimit and pass it to readLineWith.",
+    "The ordinary LF and CRLF inputs in this comparison produce the same display. However, node:readline also treats a bare CR as a separator and replaces malformed UTF-8. Seseragi keeps a bare CR in the content and returns malformed UTF-8 as a failure.",
+    "This example imports std/stdin and is for the process target. The runtime supplies the input service, so the application does not need to construct the internals of Stdin."
+  ]
+}

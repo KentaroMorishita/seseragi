@@ -1,0 +1,13 @@
+import * as effects from "std/effect"
+import * as stdin from "std/stdin"
+
+pub effect fn main -> Unit with Console, stdin: stdin.Stdin fails ConsoleError = do {
+  result <- effects.attempt (stdin.readLineWith (stdin.defaultLineLimit ()))
+  match result {
+    Right Nothing -> println "EOF"
+    Right (Just "") -> println "Blank line"
+    Right (Just _) -> println "Line accepted"
+    Left (stdin.StdinLineTooLong { limitBytes }) -> println ("Line exceeds " + show limitBytes + " bytes")
+    Left _ -> println "Input failed"
+  }
+}
