@@ -416,4 +416,12 @@ import * as practicalCollectionMapFilterStock from "./practical-collection/map-f
 import * as practicalCollectionSetEmptyState from "./practical-collection/set-empty-state"
 import * as practicalCollectionSetFilterIds from "./practical-collection/set-filter-ids"
 
+import * as terminalReaderArguments from "./terminal-reader/arguments"
+import * as terminalReaderCurrentDirectory from "./terminal-reader/current-directory"
+import * as terminalReaderEnvironment from "./terminal-reader/environment"
+import * as terminalReaderPrintProgress from "./terminal-reader/print-progress"
+import * as terminalReaderPrintlnStatus from "./terminal-reader/println-status"
+import * as terminalReaderPrintvalueCount from "./terminal-reader/printvalue-count"
+import * as terminalReaderProcessFailure from "./terminal-reader/process-failure"
+
 pub effect fn main -> Unit = effects.succeed ()

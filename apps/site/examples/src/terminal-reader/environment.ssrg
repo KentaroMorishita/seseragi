@@ -1,0 +1,12 @@
+import * as effects from "std/effect"
+import * as process from "std/process"
+
+pub effect fn main -> Unit with Console, process: process.Process fails ConsoleError =
+  do {
+    result <- effects.attempt (process.environment "SESERAGI_DOCS_MODE")
+    match result {
+      Right (Just mode) -> println ("Mode: [" + mode + "]")
+      Right Nothing -> println "Mode: preview (default)"
+      Left reason -> println ("Cannot read the setting: " + show reason)
+    }
+  }

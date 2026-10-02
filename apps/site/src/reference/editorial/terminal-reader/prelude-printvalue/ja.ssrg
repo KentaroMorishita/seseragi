@@ -1,0 +1,17 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "printValueは、値のShowによる表示を出力します。文字列への変換を自分で挟む必要はありませんが、末尾に改行は加わりません。",
+  taskTitle: "ファイル数を見出しの後に表示する",
+  purpose: "Files: という見出しの後に、整数の3を表示します。この例の出力はFiles: 3で、末尾の改行はありません。数値を含む短い状況表示を組み立てる例です。",
+  typescriptBefore: "Node.jsやBunではprocess.stdout.writeに文字列を渡します。整数3をString(3)で文字列にしてから書けば、ここでは同じFiles: 3になります。process.stdout.writeはブラウザー用のAPIではありません。",
+  benefit: "printValueは、その型に用意されたShowという表示の規則を使います。値を文字列にする部分と出力する部分を一回の呼び出しにまとめつつ、出力の順序、必要なサービス、書き込みの失敗をeffectの処理として扱えます。",
+  reading: [
+    "doの最初のprint \"Files: \"が、末尾に空白のある見出しを書きます。次のprintValue 3が整数を表示し、同じ行に続けます。どちらも改行を加えません。",
+    "printValueの引数は、Showの表示規則を持つ型の値です。ここで3の型はIntで、その表示は3です。表示のための文字列を呼び出し側で作る必要はありません。"
+  ],
+  details: [
+    "printValueはprintlnの「値を渡せる版」でも、console.logのように常に一行を終える操作でもありません。次の出力を次の行にしたいときは、後でprintlnによる改行を加えます。",
+    "この比較で一致するのは、例に使った整数3の表示です。配列や独自の型などでもShow、TypeScriptのString、console.logが同じ表記になるとは限りません。"
+  ]
+}

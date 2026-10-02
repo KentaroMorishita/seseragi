@@ -44,6 +44,7 @@ import { resultFoundationExamples } from "./result-foundation-readers"
 import { sequenceEditorialExamples } from "./sequence-editorial"
 import { setEditorialExamples } from "./set-editorial"
 import { syntaxExamples } from "./syntax-examples"
+import { terminalReaderExamples } from "./terminal-reader"
 import { textEditorialExamples } from "./text-editorial"
 import { traitReaderExamples } from "./trait-readers"
 import { typeLimitExamples } from "./type-limits"
@@ -112,6 +113,7 @@ export function generatorInput(playgroundUrl: string) {
       ...urlReaderExamples(playgroundUrl),
       ...bytesReaderExamples(playgroundUrl),
       ...practicalCollectionExamples(playgroundUrl),
+      ...terminalReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

@@ -1,0 +1,17 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "printは、末尾に改行を付けずに文字列を出力します。後の出力を同じ行に続けたいときに使います。",
+  taskTitle: "見出しと結果を順に出して一行にする",
+  purpose: "先にStatus: という見出しを出し、その後にsavedという結果を続けます。途中では改行せず、結果を出したところで一行を終えます。",
+  typescriptBefore: "Node.jsやBunではprocess.stdout.writeで改行なしの文字列を出し、その後のconsole.logで行を終えられます。process.stdout.writeは端末の標準出力を扱うAPIで、ブラウザーのJavaScriptにはありません。",
+  benefit: "Seseragiでも途中の出力と行の終わりを分けて書けます。doに並べた順にprintとprintlnを実行し、どこで改行するかを呼び出しで示せます。出力サービスの必要性と書き込みの失敗は、出力の処理の型に含まれます。",
+  reading: [
+    "do { ... }の中では上から順に処理します。最初のprint \"Status: \"は見出しだけを書き、改行を加えません。次のprintln \"saved\"がその続きと改行を書きます。",
+    "結果はStatus: savedという一行です。コロンの後の空白は最初の文字列に含まれています。printが区切りの空白を自動で入れるわけではありません。"
+  ],
+  details: [
+    "printを二回呼んでも、その間には改行が入りません。区切りの文字や空白が必要なら、渡す文字列に含めます。一行で完結するメッセージならprintlnを選べます。",
+    "この例のdoは二つの出力を順番に実行します。別の並行処理の出力までまとめて一回の書き込みにする、という指定ではありません。"
+  ]
+}

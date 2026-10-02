@@ -1,0 +1,17 @@
+import * as effects from "std/effect"
+import * as process from "std/process"
+
+effect fn inspectName name: String = do {
+  result <- effects.attempt (process.environment name)
+  match result {
+    Left (process.InvalidEnvironmentName _) -> println "Use a nonempty setting name without a NUL character"
+    Left reason -> println ("Cannot read the setting: " + show reason)
+    Right _ -> println "Setting name accepted"
+  }
+}
+
+pub effect fn main -> Unit with Console, process: process.Process fails ConsoleError =
+  do {
+    _ <- inspectName ""
+    inspectName "BAD\0NAME"
+  }

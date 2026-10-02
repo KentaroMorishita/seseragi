@@ -1,0 +1,20 @@
+import { TerminalCopy } from "../model"
+
+pub fn copy -> TerminalCopy = TerminalCopy {
+  summary: "environment reads a named environment variable. A present value is Just, an absent setting is Nothing, and an empty string remains a present value.",
+  taskTitle: "Choose a default mode only when the setting is absent",
+  purpose: "Display SESERAGI_DOCS_MODE if it was supplied when the program started. Use preview as the default only when it is absent, preserving an explicitly supplied empty string.",
+  typescriptBefore: "In Node.js or Bun TypeScript, read the process.env value and test === undefined for absence. Using mode || \"preview\" would also replace a present empty string with the default. The comparison here checks only for an absent setting.",
+  benefit: "Maybe<String> separates a present Just from an absent Nothing. Branch on whether the setting exists rather than whether its value looks empty, and handle an unsuccessful read as a separate outcome.",
+  reading: [
+    "process.environment \"SESERAGI_DOCS_MODE\" calls the operation with one name. It reads this setting rather than returning the entire environment.",
+    "Right (Just mode) means the read succeeded and a value exists; mode names that string. preview prints Mode: [preview], and an empty string prints Mode: []. This program adds brackets to make the empty value visible.",
+    "Right Nothing means the read succeeded but the setting is absent. Only this case prints Mode: preview (default). Left reason means the read failed, rather than that the setting is missing; show reason adds an explanation to the message."
+  ],
+  details: [
+    "Handle Just and Nothing before using the value as a String. Maybe<String> is not itself a string; it represents the two possibilities of a string being present or absent.",
+    "Try an unset setting separately from a setting whose value is empty. Launching with an empty value produces Mode: [] and does not select the default.",
+    "An empty setting name or a name containing NUL fails with InvalidEnvironmentName. That is different from Nothing for a valid name absent from the environment.",
+    "This example displays only a non-secret mode. Environment variables can contain credentials, so choose deliberately which names to read and which values are safe to print in a real program."
+  ]
+}

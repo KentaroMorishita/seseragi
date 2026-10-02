@@ -1,0 +1,258 @@
+import * as arrays from "std/array"
+import { localized } from "../../../model/locale"
+import {
+  Block,
+  CodeExample,
+  Heading,
+  InternalLink,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../model/page"
+import { Editorial } from "../model"
+
+pub struct TerminalCopy {
+  summary: String,
+  taskTitle: String,
+  purpose: String,
+  typescriptBefore: String,
+  benefit: String,
+  reading: Array<String>,
+  details: Array<String>
+}
+
+fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
+  [Paragraph ([Words (localized en ja)]) | (en, ja) <- arrays.zip japanese english]
+
+fn link title: String -> route: String -> english: String -> japanese: String -> Block =
+  Paragraph (
+    [
+      InternalLink (localized title title, route),
+      Words (localized (": " + english) ("：" + japanese))
+    ]
+  )
+
+fn portable source: String -> Bool =
+  source == "println-status"
+  || source == "print-progress"
+  || source == "printvalue-count"
+
+pub fn terminalReaderEditorial identity: String
+  -> namespace: String
+  -> itemKind: String
+  -> source: String
+  -> english: TerminalCopy
+  -> japanese: TerminalCopy
+  -> Editorial =
+  Editorial {
+    identity,
+    namespace,
+    itemKind,
+    summary: localized english.summary japanese.summary,
+    blocks: arrays.concat [
+      [
+        Heading ("terminal-task", localized english.taskTitle japanese.taskTitle),
+        Paragraph ([Words (localized english.purpose japanese.purpose)]),
+        Heading (
+          "typescript-comparison",
+          localized "Start with familiar TypeScript" "TypeScriptの処理から考える"
+        ),
+        Paragraph
+          ([Words (localized english.typescriptBefore japanese.typescriptBefore)]),
+        CodeExample (
+          "terminal-reader-" + source + "-ts",
+          localized "TypeScript · Node 24.19.0 / Bun 1.3.9"
+          "TypeScript・Node 24.19.0 / Bun 1.3.9"
+        ),
+        Terminal (localized "TypeScript output" "TypeScriptの実行結果", output source),
+        Heading (
+          "seseragi-example",
+          localized "Write the same task in Seseragi" "Seseragiで同じ処理を書く"
+        ),
+        CodeExample (
+          "terminal-reader-" + source,
+          localized "Complete Seseragi program" "Seseragiの完全なプログラム"
+        ),
+        Terminal (localized "Seseragi output" "Seseragiの実行結果", output source),
+        Paragraph ([Words (localized english.benefit japanese.benefit)]),
+        Heading ("reading-the-example", localized "Read the important lines" "大事な行を読む")
+      ],
+      paragraphs english.reading japanese.reading,
+      executionExplanation source,
+      [
+        Heading
+          ("run-this-program", localized "Run the complete program" "完全なプログラムを実行する"),
+        Paragraph (
+          [Words (
+            localized (
+              if portable source then
+                "Save the source with the filename below and run it, or use its Playground link. The TypeScript comparisons use Node.js or Bun; process.stdout.write is not a browser API. The Playground displays captured text and trims trailing whitespace, so use the process output to check the final newline."
+              else
+                "Save the source with the filename below. Build for the process target, then launch the generated entry.js with Node.js or Bun. These POSIX-shell examples read only named synthetic settings and arguments. Process programs do not run in the browser Playground; no browser launch link is provided. The same TypeScript source runs on the labelled Node.js and Bun versions."
+            ) (
+              if portable source then
+                "ソースを下のファイル名で保存して実行できます。Playgroundのリンクからも開けます。TypeScriptの比較例はNode.jsかBunで動かし、process.stdout.writeはブラウザーのAPIではありません。Playgroundは取り込んだ文字列の末尾の空白や改行を除いて表示するので、最後の改行の有無はプロセスの出力で確認してください。"
+              else
+                "ソースを下のファイル名で保存します。process向けにビルドし、生成されたentry.jsをNode.jsかBunで実行してください。以下はPOSIXシェル用の例で、指定した架空の設定や引数だけを読みます。Processを使うプログラムはブラウザーのPlaygroundでは動かないため、起動リンクを付けていません。TypeScriptの比較例も、見出しに示したNode.jsとBunで動きます。"
+            )
+          )]
+        ),
+        Terminal (localized "Run locally" "ローカルで実行する", command source)
+      ],
+      launchNotes source,
+      boundaryLaunches identity,
+      [Heading ("operation-rules", localized "Rules and common mistakes" "規則と間違いやすい点")],
+      paragraphs english.details japanese.details,
+      [Heading ("choose-next", localized "Choose the next operation" "次に必要な操作を選ぶ")],
+      related identity,
+      if itemKind == "module" then
+        []
+      else
+        [Heading ("canonical-declaration", localized "Exact declaration" "正確な宣言")]
+    ]
+}
+
+fn executionExplanation source: String -> Array<Block> =
+  if portable source then
+    [Paragraph (
+      [Words (
+        localized
+          "pub effect fn main defines the public program entry. In a do block, each output step finishes before the next starts. These Prelude operations need no import. An output call describes work; the runner executes it with Console. Its successful result is Unit, which carries no useful data."
+          "pub effect fn mainはプログラムの公開された実行入口です。doの中では、各出力が終わってから次の処理へ進みます。Preludeの出力操作にはimportが要りません。呼び出しは実行する処理を表し、実行側がConsoleを用意して動かします。成功時のUnitは、意味のあるデータを持たない結果です。"
+      )]
+    )]
+  else
+    [Paragraph (
+      [Words (
+        localized
+          "pub effect fn main is the public entry operation; -> Unit means it returns no useful data, and do runs the steps in order. with Console, process: process.Process declares the output and process services supplied by the process runner. result <- effects.attempt (...) runs the read and makes its recoverable outcome available to match: Right contains the successful value; Left contains the ProcessError. The final println can still fail with ConsoleError, which is why main declares fails ConsoleError. This handles the read failure locally without creating an application error type."
+          "pub effect fn mainは公開された実行入口です。-> Unitは意味のあるデータを返さないことを表し、doは処理を順番に実行します。with Console, process: process.Processは、プロセスの実行側が用意する出力とプロセスのサービスを宣言します。result <- effects.attempt (...)は読み取りを実行し、回復可能な結果をmatchで扱える形にします。成功した値はRight、ProcessErrorはLeftに入ります。最後のprintln自体はConsoleErrorで失敗する可能性があるため、mainにfails ConsoleErrorと書きます。読み取りの失敗をここで扱うので、アプリ専用のエラー型を作る必要はありません。"
+      )]
+    )]
+
+fn output source: String -> String = match source {
+  "println-status" -> "Saved 3 files\n"
+  "print-progress" -> "Status: saved\n"
+  "printvalue-count" -> "Files: 3"
+  "environment" -> "Mode: [preview]\n"
+  "arguments" -> "Argument: [alpha]\nArgument: [two words]\nArgument: []\nArgument: [--preview]\nArgument: [設定]\n"
+  "current-directory" -> "Directory: /tmp/seseragi-process-demo\n"
+  "process-failure" -> "Use a nonempty setting name without a NUL character\nUse a nonempty setting name without a NUL character\n"
+  _ -> ""
+}
+
+fn command source: String -> String =
+  if portable source then
+    "seseragi run " + source + ".ssrg --target process"
+  else
+    "seseragi build " + source + ".ssrg --target process --profile release --out-dir dist\n" + (match source {
+    "environment" -> "SESERAGI_DOCS_MODE=preview node dist/entry.js"
+    "arguments" -> "node dist/entry.js alpha \"two words\" \"\" --preview 設定"
+    "current-directory" -> "entry=\"$PWD/dist/entry.js\"\nmkdir -p /tmp/seseragi-process-demo\n(cd /tmp/seseragi-process-demo && node \"$entry\")"
+    _ -> "node dist/entry.js"
+  }
+)
+
+fn launchNotes source: String -> Array<Block> =
+  if portable source then
+    []
+  else
+    [Paragraph (
+      [Words (
+        localized
+          "The release build declares entry.js as its entry. Replace node with bun to use Bun. Application arguments go after that entry path: seseragi run currently accepts neither extra application arguments nor a -- separator. These examples print a status report to stdout; they do not demonstrate stderr output."
+          "releaseビルドの実行入口はentry.jsです。Bunを使う場合はnodeをbunに替えてください。アプリへの引数は、この入口のパスの後ろに渡します。現在のseseragi runは、アプリ用の追加引数も区切りの--も受け付けません。これらの例は状況をstdoutへ表示するもので、stderrへの出力例ではありません。"
+      )]
+    )]
+
+fn related identity: String -> Array<Block> = match identity {
+  "std/prelude::println" -> [
+    link "print" "/docs/library/prelude/function/print/"
+      "write a prefix without a newline." "改行せずに接頭部分を出力します。",
+    link "printValue" "/docs/library/prelude/function/printvalue/"
+      "render a value with Show." "Showで値を表示用に変換します。"
+  ]
+  "std/prelude::print" -> [
+    link "println" "/docs/library/prelude/function/println/"
+      "finish a line with a newline." "末尾に改行を付けます。",
+    link "printValue" "/docs/library/prelude/function/printvalue/"
+      "write a rendered value without a newline." "表示用に変換した値を改行せずに出力します。"
+  ]
+  "std/prelude::printValue" -> [
+    link "print" "/docs/library/prelude/function/print/" "write text without a newline."
+      "文字列を改行せずに出力します。",
+    link "println" "/docs/library/prelude/function/println/"
+      "finish the line when needed." "必要なときに行を終えます。"
+  ]
+  "std/process" -> processLinks ()
+  "std/process::Process" -> [
+    link "std/process" "/docs/library/process/" "choose a startup input."
+      "起動時に必要な入力を選びます。",
+    link "ProcessError" "/docs/library/process/opaque-type/processerror/"
+      "handle a failed read." "読み取りの失敗を扱います。",
+    link "environment" "/docs/library/process/effect-function/environment/"
+      "read one named setting." "名前を指定して設定を一つ読みます。"
+  ]
+  "std/process::ProcessError" -> [
+    link "environment" "/docs/library/process/effect-function/environment/"
+      "distinguish a missing setting from a failure." "設定の不在と読み取りの失敗を分けます。",
+    link "Process" "/docs/library/process/opaque-type/process/"
+      "read the required-service declaration." "必要なサービスの宣言を確認します。"
+  ]
+  "std/process::environment" -> [
+    link "arguments" "/docs/library/process/effect-function/arguments/"
+      "read values passed at launch." "起動時に渡された値を読みます。",
+    link "ProcessError" "/docs/library/process/opaque-type/processerror/"
+      "handle an invalid setting name." "設定名が正しくない場合を扱います。"
+  ]
+  "std/process::arguments" -> [
+    link "environment" "/docs/library/process/effect-function/environment/"
+      "read a named optional setting." "名前を指定して省略可能な設定を読みます。",
+    link "currentDirectory" "/docs/library/process/effect-function/currentdirectory/"
+      "find the launch working directory." "起動時の作業ディレクトリーを確認します。"
+  ]
+  "std/process::currentDirectory" -> [
+    link "render" "/docs/library/path/function/render/" "turn a Path into text."
+      "Pathを文字列にします。",
+    link "arguments" "/docs/library/process/effect-function/arguments/"
+      "inspect launch arguments." "起動時の引数を確認します。"
+  ]
+  _ -> []
+}
+
+fn processLinks _unit: Unit -> Array<Block> = [
+  link "environment" "/docs/library/process/effect-function/environment/"
+    "read one optional setting." "省略可能な設定を一つ読みます。",
+  link "arguments" "/docs/library/process/effect-function/arguments/"
+    "read application arguments." "アプリへの引数を読みます。",
+  link "currentDirectory" "/docs/library/process/effect-function/currentdirectory/"
+    "read the working directory." "作業ディレクトリーを読みます。"
+]
+
+fn boundaryLaunches identity: String -> Array<Block> =
+  if identity == "std/process::environment" then
+    [
+      Paragraph (
+        [Words (
+          localized
+            "Try an absent setting and a present empty setting separately. The first command unsets only this synthetic variable in a subshell; the second supplies an empty value for one launch."
+            "設定がない場合と、空文字列が設定されている場合を別々に試します。最初のコマンドは子シェルの中でこの架空の変数だけを未設定にし、次のコマンドは1回の起動に空の値を渡します。"
+        )]
+      ),
+      Terminal (
+        localized "Missing, then present-empty" "未設定、次に空文字列で起動",
+        "(unset SESERAGI_DOCS_MODE; node dist/entry.js)\nSESERAGI_DOCS_MODE= node dist/entry.js"
+      ),
+      Terminal
+            (localized "The two results" "二つの実行結果", "Mode: preview (default)\nMode: []\n")
+    ]
+  else if identity == "std/process::arguments" then
+    [
+      Terminal (
+        localized "Launch without application arguments" "アプリへの引数なしで起動",
+        "node dist/entry.js"
+      ),
+      Terminal (localized "Output without arguments" "引数なしの実行結果", "No arguments\n")
+    ]
+  else
+    []
