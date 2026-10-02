@@ -368,6 +368,7 @@
 
 .page-intro h1 {
   margin: 0;
+  overflow-wrap: anywhere;
   font-size: var(--type-page-title);
   font-weight: 620;
   letter-spacing: var(--tracking-heading);
