@@ -53,6 +53,18 @@ function code(html: string) {
   )
 }
 
+test("documentation titles wrap long identifiers without truncation", () => {
+  const docs = readFileSync(join(root, "apps/site/styles/docs.css"), "utf8")
+  const heading = docs.match(/\n\.page-intro h1\s*\{([^}]+)\}/u)?.[1] ?? ""
+  // withTemporaryDirectory overflows the 500px layout unless the title can
+  // break an otherwise unbreakable identifier. Keep ordinary word wrapping.
+  expect(heading).toMatch(/overflow-wrap:\s*anywhere\s*;/u)
+  expect(heading).not.toMatch(/word-break:\s*break-all\s*;/u)
+  expect(heading).not.toMatch(/white-space:\s*nowrap\s*;/u)
+  expect(heading).not.toMatch(/text-overflow:\s*ellipsis\s*;/u)
+  expect(heading).not.toMatch(/overflow(?:-x)?:\s*(?:hidden|clip)\s*;/u)
+})
+
 test("the home hero starts both columns without inherited article spacing", () => {
   const home = readFileSync(join(root, "apps/site/styles/home.css"), "utf8")
   const responsive = readFileSync(
