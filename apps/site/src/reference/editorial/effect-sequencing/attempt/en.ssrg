@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Use attempt when the caller needs to inspect a piece of work's success or known failure as a value. This example displays both outcomes and then prints a final message.",
+  taskTitle: "Display an outcome and keep going",
+  purpose: "A rejected request should be shown to the user without preventing this caller from continuing. Run one approved request and one rejected request, give both results to the same description function, and check that Caller continues is still displayed.",
+  typescriptBefore: "The TypeScript functions already return plain Result objects. accepted returns an ok: true object with value: 42; rejected returns an ok: false object with the reason not approved. describe reads result.ok, and the caller logs each description. No try/catch is needed for these ordinary returned results.",
+  benefit: "attempt provides an explicit place to turn an effect's known failure into a value for ordinary branching. The caller chooses what to do next. This is useful when a failed step should produce a message rather than skip the rest of the caller's sequence.",
+  setup: "effects is the alias for std/effect. Both effect fn accepted -> Int fails String and effect fn rejected -> Int fails String declare integer successes and string failure reasons. succeed 42 chooses success; fail \"not approved\" chooses known failure. () calls either function without meaningful input.",
+  after: [
+    "main uses do to sequence the work. acceptedResult <- effects.attempt (accepted ()) receives the attempted result, and the next line does the same for rejectedResult. <- names the value obtained from each step.",
+    "Here, each result has type Either<String, Int>. Read that as either a string failure reason in Left or an integer success value in Right. attempt does not replace a rejected request with a successful integer.",
+    "fn describe result: Either<String, Int> -> String is an ordinary function returning text. match selects Right value to build the ready message or Left reason to build the rejected message. show converts the integer to text.",
+    "println displays Ready: 42 and Rejected: not approved. _ <- discards each print step's return value. The final println \"Caller continues\" confirms that the caller can proceed after examining the rejection.",
+  ],
+  details: [
+    "In the result type Effect<R, Never, Either<E, A>>, Never in the middle means the wrapped expected failure is no longer returned through the failure channel: it is a Left value inside the successful Either. R still names the required services. This change does not catch defects or cancellation.",
+    "Without attempt, sequencing the rejected work directly with <- would follow its failure path and skip the remaining dependent steps. Adding attempt changes what the caller receives; it does not make the underlying request approved.",
+    "attempt still produces work. Receive its result with <- inside do before passing that result to describe or inspecting it with match. Do not treat the wrapped expression itself as an already available Either.",
+    "Keep the two explicit -> Int fails String declarations in this example. They give both attempted results the same shape for describe, even though the individual bodies choose only one outcome.",
+    "attempt handles known failures reported by the wrapped work, not runtime programming defects or cancellation. Its scope matters: the later println calls are outside both attempts, so their possible failures are not converted into these results.",
+  ],
+}

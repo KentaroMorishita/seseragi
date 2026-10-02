@@ -1,4 +1,8 @@
 import {
+  effectSequencingEditorialFor,
+  effectSequencingModuleBlocks
+} from "./effect-sequencing/catalog"
+import {
   filesystemReaderEditorialFor,
   filesystemReaderModuleBlocks
 } from "./filesystem-reader/catalog"
@@ -164,6 +168,13 @@ fn editorialAfterResultFoundationEditorialFor symbol: ReferenceSymbol
 fn editorialAfterWebReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match filesystemReaderEditorialFor symbol {
     Just editorial -> Just editorial
+    Nothing -> editorialAfterFilesystemReaderEditorialFor symbol
+  }
+
+fn editorialAfterFilesystemReaderEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match effectSequencingEditorialFor symbol {
+    Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }
 
@@ -241,5 +252,6 @@ pub fn moduleEditorial specifier: String -> Array<Block> = arrays.concat [
   dataValidationModuleBlocks specifier,
   numericReaderModuleBlocks specifier,
   webReaderModuleBlocks specifier,
-  filesystemReaderModuleBlocks specifier
+  filesystemReaderModuleBlocks specifier,
+  effectSequencingModuleBlocks specifier
 ]

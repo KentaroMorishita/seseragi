@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "次の処理に必要な値が、あるかもしれないし、ないかもしれない場合はfromMaybeを使います。失敗理由を指定すると、値があれば成功に、なければその理由の既知の失敗になります。",
+  taskTitle: "必須の件数を表示する",
+  purpose: "件数には二件、零件、指定なしの三つの場合があります。零件も有効な件数として表示する必要があります。この例では値の有無と数値の大小を分け、件数が指定されていない場合だけ理由を表示します。",
+  typescriptBefore: "TypeScript版はnumber | undefinedを受け取り、value === undefinedを明示的に確認します。Rejected: count is missingを表示するのはundefinedの場合だけで、2と 0はどちらも件数として表示します。if (!value)のような真偽値判定では零と指定なしが混ざるため、この比較では使っていません。",
+  benefit: "fromMaybeは、同じ値の有無の確認をeffectの一段階として使えるようにします。後続の処理は <- で件数を受け取り、指定がなければ既知の失敗として扱えます。この表示例ではattemptを使い、どちらの結果も文章にできるようにしています。",
+  setup: "effectsはstd/effectの別名です。Maybe<Int>は、Justに整数が入っているか、Nothingで値がないかのどちらかです。Just 0には整数が入っており、Nothingとは異なります。通常の関数fn describeはEither<String, Int>を受け取り、表示用のStringを返します。",
+  after: [
+    "effect fn display value: Maybe<Int>は、指定されているかもしれない件数を受け取る処理です。effects.fromMaybe \"count is missing\" valueには、先に失敗理由、次に値の有無を渡します。Justなら中の値で成功し、Nothingなら失敗します。",
+    "doが処理を順番に並べます。result <- effects.attempt (...)は、この値の有無の確認結果を受け取ります。この呼び出しのEither<String, Int>は、失敗理由の型、成功した件数の型という順番です。",
+    "describeのmatch resultは、件数があればRight value、なければLeft reasonの分岐を選びます。showは整数を文章に変えるための関数です。零を指定なしに変えることはありません。printlnが選んだ説明を表示します。",
+    "mainはJust 2、Just 0、Nothingを順に試します。_ <- は先の表示が終わるのを待ち、戻り値は使わない書き方です。最後のdisplay Nothingでブロックを終えます。表示はCount: 2、Count: 0、Rejected: count is missingの順です。",
+  ],
+  details: [
+    "fromMaybeが確認するのは値の有無だけです。Justに負の件数が入っていても、値は存在します。零以上でなければならない場合は別の検証を追加してください。この関数だけではそのルールを確認しません。",
+    "この例には普通の整数ではなくMaybe<Int>を渡します。指定された件数はJust 2、指定なしはNothingで表します。失敗理由は呼び出し側で選ぶ文章であり、Nothingから取り出されるものではありません。",
+    "この例ではattemptによって指定なしを表示でき、呼び出し側は次のケースへ進めます。失敗したfromMaybeを直接 <- でつなぐ場合は、同じブロックの後続の処理が実行されません。",
+    "attemptが扱うのは、件数がないという既知の失敗です。実行時のプログラム上の不具合やキャンセルは対象外です。その後のprintlnは別の処理なので、このattemptは表示自体の失敗も扱うわけではありません。",
+  ],
+}

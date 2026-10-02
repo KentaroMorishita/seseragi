@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { effectSequencingEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  effectSequencingEditorial "std/effect::attempt" "value" "effect-function" "succeed-fail" "Ready: 42\nRejected: not approved\nCaller continues\n" (en.copy ()) (ja.copy ())

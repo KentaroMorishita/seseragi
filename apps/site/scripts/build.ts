@@ -23,6 +23,7 @@ import { referenceCoverage } from "./coverage"
 import { dataChoiceExamples } from "./data-choices"
 import { dataOperationExamples } from "./data-operations"
 import { dataValidationReaderExamples } from "./data-validation-readers"
+import { effectSequencingReaderExamples } from "./effect-sequencing-reader"
 import { failureReaderExamples } from "./failure-readers"
 import { filesystemReaderExamples } from "./filesystem-reader"
 import { lifecycleReaderExamples } from "./lifecycle-readers"
@@ -102,6 +103,7 @@ export function generatorInput(playgroundUrl: string) {
       ...numericReaderExamples(playgroundUrl),
       ...webReaderExamples(playgroundUrl),
       ...filesystemReaderExamples(playgroundUrl),
+      ...effectSequencingReaderExamples(playgroundUrl),
       ...resultFoundationExamples(playgroundUrl),
       ...moduleProjectExamples(playgroundUrl),
       ...newModelReaderExamples(playgroundUrl),

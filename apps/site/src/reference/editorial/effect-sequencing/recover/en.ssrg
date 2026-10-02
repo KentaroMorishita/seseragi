@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Provide a fallback for an expected failure, such as a missing setting.",
+  taskTitle: "Use a preview title when a setting is missing",
+  purpose: "Keep a saved title, use Preview only when the setting is missing, and reject a broken setting. The important decision is to distinguish missing from invalid setting rather than replace every failure with a default.",
+  typescriptBefore: "The TypeScript version returns an ordinary success-or-failure object. An if statement replaces the result only when its reason is missing. It makes the same decision with normal branching, without throwing an exception.",
+  benefit: "recover keeps the failure decision in fallback. If the original operation succeeds, its value passes through and fallback is not called.",
+  setup: "The std/effect import makes the helpers available under effects. lookup and fallback are ordinary functions that take a string and return an operation to run.",
+  after: [
+    "lookup returns Effect<{}, String, String>: an operation needing no additional environment, with String for both its expected failure and its successful value. effects.succeed represents success; effects.fail represents an expected failure. The success or failure side distinguishes what each string means.",
+    "In effects.recover fallback (lookup key), fallback receives the reason if the original operation fails. A function called later this way is a callback. For missing, it chooses an operation producing Preview. Otherwise, effects.fail reason preserves the failure.",
+    "effects.attempt turns success or an expected failure from that operation into an Either<String, String> value. Right carries the successful value; Left carries the failure reason. Either case can then reach the display decision.",
+    "describe is an ordinary function. match selects the Right or Left case and names its contents value or reason. The function adds Title: or Rejected: and returns the resulting string.",
+    "The do block in effect fn display runs operations in order. result <- runs attempt and receives its successful value, which is an Either. In main, _ <- runs display and discards its result; it does not ignore a failure.",
+    "saved produces Release, missing produces Preview, and broken produces Rejected: invalid setting. The last display is main's final operation. These cases separately demonstrate an allowed fallback and a setting that must remain rejected."
+  ],
+  details: [
+    "A common mistake is returning Preview for every reason and hiding an invalid setting. Branch only on reasons that permit a fallback, and return the others as failures, as effects.fail reason does here.",
+    "fallback must return an operation rather than a bare string. Wrap a replacement value with effects.succeed. recover handles only the expected failures represented by the error type; runtime defects and cancellation bypass this callback.",
+    "attempt surrounds lookup and recover, not the later println. Output itself can still fail. Without attempt, an unrecovered expected failure would propagate to the surrounding operation instead of becoming a Left value for describe."
+  ]
+}

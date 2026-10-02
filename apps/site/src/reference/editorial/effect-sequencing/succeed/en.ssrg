@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Use succeed when you already have a value and want it to be the successful result of a piece of work. In this example, an approved request produces the number 42.",
+  taskTitle: "Return an approved result",
+  purpose: "The caller must display both an approved result and a rejected result, then continue. This page focuses on accepted, the branch that already knows its answer. Its partner rejected makes the difference between producing a value and reporting a known failure visible.",
+  typescriptBefore: "TypeScript's accepted returns the plain object { ok: true, value: 42 }. rejected returns { ok: false, reason: \"not approved\" }. Both use the same Result type, and describe checks result.ok to select a message. Ordinary calls and console.log are sufficient for this version.",
+  benefit: "succeed makes an existing value fit into the same sequencing style as other effect steps. It does not validate the value or print it. The caller can combine the step with more work, or use attempt to turn its outcome into a result to inspect.",
+  setup: "effects names the imported std/effect module. effect fn accepted -> Int fails String defines work with an integer success result and a string known-failure type. This particular body succeeds with 42; the declaration does not mean it sometimes rejects.",
+  after: [
+    "effects.succeed 42 is the body of accepted. Calling accepted () obtains that work; () is the argument used for a function with no meaningful input. rejected () obtains work that reports not approved through fail.",
+    "main sequences its steps with do. acceptedResult <- effects.attempt (accepted ()) runs the attempted step and gives its returned result a name. The next line does the same for rejectedResult.",
+    "describe is an ordinary fn returning text, not an effect function. Its Either<String, Int> input has two alternatives: Right value contains the integer, while Left reason contains the string. match selects the corresponding branch.",
+    "show turns the integer into text for Ready: 42. println displays each description, and _ <- discards the print step's return value. The last print produces Caller continues, showing that both attempted outcomes have been handled.",
+  ],
+  details: [
+    "In the declaration below, Effect<{}, Never, A> needs no environment services ({}), has no expected failure value (Never in the middle), and succeeds with A. Never describes that position in the type; it is not a value to pass. Runtime programming defects and cancellation are separate from this expected-failure type.",
+    "Do not assign effects.succeed 42 where an Int is required. It is work that produces an integer. Inside do, bind its result with <- before using integer operations; if you only need a plain integer, use 42.",
+    "Keep the explicit signatures on accepted and rejected when using this shared describe function. They let both attempted calls have the same Either<String, Int> shape, even though one always succeeds and the other always fails.",
+    "succeed does not add a rule that the number must be positive, approved, or within a limit. Check such rules separately and choose succeed or fail based on the check.",
+    "The failure shown here is an expected outcome reported by fail. attempt does not catch runtime programming defects or cancellation. It also does not cover the later printing steps merely because they are in the same do block.",
+  ],
+}

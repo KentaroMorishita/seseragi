@@ -1,0 +1,23 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "An ordinary LoopControl value describing a successful stop.",
+  taskTitle: "Stop successfully when the needed item has been reached",
+  purpose: "Once enough items have been processed, you may want to finish normally without going further. Break is a value for returning that decision. The example stores it as stopHere and prints its meaning alongside Continue.",
+  typescriptBefore: "The TypeScript example also stores a label named break and passes it to describe. This value is separate from TypeScript's break statement. Stopping through a returned value needs a caller that receives and interprets it.",
+  benefit: "The decision that enough work is done can be a successful result. forEachUntil recognizes it as normal completion, separately from an input or output problem.",
+  setup: "Import std/effect under the name effects. effects.Break and effects.Continue are both ordinary values of effects.LoopControl. Break itself neither constructs an operation nor produces a failure.",
+  after: [
+    "let stopHere: effects.LoopControl = effects.Break names the stop decision. keepGoing stores Continue with the same type. The : effects.LoopControl annotation states the type; it does not start a traversal.",
+    "describe is an ordinary function receiving control. match distinguishes Continue from Break and returns a string, as the -> String annotation says. The returned description is not an instruction to stop anything either.",
+    "effects.succeed stopHere creates an operation that succeeds with Break. A forEachUntil callback returns this kind of operation. Distinguish the Break value from an operation whose execution produces that value.",
+    "The do block in effect fn main executes operations in order. _ <- println discards the output result. result <- effects.succeed stopHere receives the successful value. The final println still executes afterward: Break is not an instruction to leave this do block.",
+    "This example prints descriptions without traversing any items. Used with forEachUntil, Break stops traversal when the current callback operation completes successfully with that value. Each callback is awaited in sequence, and no subsequent item is pulled after Break.",
+    "forEachUntil then succeeds with Unit, a completion-only value; it does not collect per-item results. If the current operation fails first, it stops with that failure instead of converting it to Break. Output or other work already performed is not undone."
+  ],
+  details: [
+    "Using effects.fail for an intentional, normal stop makes the traversal fail. Use effects.succeed effects.Break for the planned finish, and reserve a failure for an actual problem. Keep those outcomes distinct.",
+    "Break alone is not an operation that <- can execute. Wrap it with effects.succeed when an operation is needed. When you only need to keep the ordinary value, use let as stopHere does here.",
+    "Defining Break does not skip subsequent statements. Make the stop decision the callback result that the traversal receives. If unwanted work follows the stopping condition, make the result decision before entering that work."
+  ]
+}

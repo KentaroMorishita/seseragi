@@ -1,0 +1,22 @@
+import { EffectSequencingCopy } from "../model"
+
+pub fn copy -> EffectSequencingCopy = EffectSequencingCopy {
+  summary: "Build a preview in small steps: check the title, require a template, then prepare the text. std/effect lets these steps share a known-failure path while the caller decides how to display the result.",
+  taskTitle: "Prepare and display a release preview",
+  purpose: "A preview needs a non-empty title and a supplied template. The example tries four inputs so you can see success, an invalid title, a missing template, and a present but empty template. The goal is to explain what happens at each step, including when a later step is skipped.",
+  typescriptBefore: "The TypeScript version uses a plain Result object with either ok: true and value, or ok: false and reason. prepare checks that object, checks template === undefined, and returns another object. preview uses an ordinary branch to choose what to print. There are no promises or thrown exceptions here.",
+  benefit: "In Seseragi, prepare can put those dependent steps in a do block. Each <- receives a successful value; a known failure stops the remaining steps in that block. attempt gives the caller a value it can inspect and display.",
+  setup: "effects is the imported alias for std/effect. The ordinary fn checkedTitle returns Either<String, String>: Left carries a rejection reason and Right carries a valid title. Maybe<String> represents a template as Just some text or Nothing. These are explicit alternatives, not JavaScript truthiness checks.",
+  after: [
+    "effect fn prepare defines work. Its title: String and template: Maybe<String> inputs lead to a String result; fails String declares its known-failure reason. fromEither turns checkedTitle into a step, and validTitle <- names its successful value.",
+    "fromMaybe supplies the missing-template reason and binds a present template to selected. succeed makes the combined text the successful result of prepare. The final line of do is the work whose result the block returns.",
+    "preview calls attempt around prepare and names the resulting Either value result. The ordinary function describe uses match to select Right value or Left reason; println displays its text.",
+    "preview returns Unit, meaning no useful return value, and declares with Console fails ConsoleError because printing needs console access and can fail. main runs the four previews. _ <- waits for a step while discarding its value.",
+  ],
+  details: [
+    "The empty title fails before the template is checked, so the call with an empty title and Nothing reports title is required. A valid title with Nothing reports template is missing instead.",
+    "Just \"\" is a supplied template, so the final call succeeds with an empty prefix. To reject blank templates too, add that validation explicitly; fromMaybe only checks whether a value is present.",
+    "effects.succeed 42 is work that produces an integer, not an Int itself. Use <- inside do when you need its value. Likewise, fromEither needs a Left/Right result, not plain text.",
+    "attempt handles the declared failure of the work it wraps. It does not turn runtime programming defects or cancellation into Left, and the later println is outside this attempt.",
+  ],
+}
