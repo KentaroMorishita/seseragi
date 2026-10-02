@@ -436,15 +436,17 @@ fn passes_type_class_operators_as_source_order_function_values() {
     .expect("type-class operator sections should compile");
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
-    assert!(compiled.generated.typescript.contains(
-        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_functor[\"map\"](__ssrg$operator$argument$0)(__ssrg$operator$argument$1)"
-    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_functor[\"map\"](__ssrg$partial$0)(__ssrg$partial$1)"));
     assert!(compiled.generated.typescript.contains(
         "(__ssrg$operator$argument$1) => _ssrg_maybe_applicative[\"apply\"](_ssrg_maybe_Just(increment))(__ssrg$operator$argument$1)"
     ));
-    assert!(compiled.generated.typescript.contains(
-        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_monad[\"flatMap\"](__ssrg$operator$argument$1)(__ssrg$operator$argument$0)"
-    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_monad[\"flatMap\"](__ssrg$partial$1)(__ssrg$partial$0)"));
     assert!(compiled
         .generated
         .typescript
