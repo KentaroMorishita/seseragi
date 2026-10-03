@@ -1,7 +1,7 @@
 use crate::{
-    logical_module_id, parse_manifest, resolve_source_import, Manifest, ModuleGraph,
-    ModuleGraphError, ModuleIdentity, ModulePath, ModuleRoot, PackageIdentity,
-    PackageSourceIdentity, SourceImportError, SourceImportResolution, IMPLEMENTED_LANGUAGE_VERSION,
+    logical_module_id, parse_manifest, resolve_module_import, Manifest, ModuleGraph,
+    ModuleGraphError, ModuleIdentity, ModuleImportResolution, ModulePath, ModuleRoot,
+    PackageIdentity, PackageSourceIdentity, SourceImportError, IMPLEMENTED_LANGUAGE_VERSION,
 };
 use semver::Version;
 use seseragi_syntax::{parse_unlinked_module_interface, ByteSpan};
@@ -10,6 +10,7 @@ use std::fmt;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct VirtualSourceFile {
+    root: ModuleRoot,
     path: String,
     source: String,
 }
@@ -17,6 +18,16 @@ pub struct VirtualSourceFile {
 impl VirtualSourceFile {
     pub fn new(path: impl Into<String>, source: impl Into<String>) -> Self {
         Self {
+            root: ModuleRoot::Source,
+            path: path.into(),
+            source: source.into(),
+        }
+    }
+
+    /// A path relative to the generated module root, displayed under `gen/`.
+    pub fn generated(path: impl Into<String>, source: impl Into<String>) -> Self {
+        Self {
+            root: ModuleRoot::Generated,
             path: path.into(),
             source: source.into(),
         }
@@ -107,7 +118,9 @@ pub fn load_virtual_package(
             .expect("virtual workspace identity was checked by its constructor"),
     );
 
-    let mut sources = BTreeMap::<ModulePath, (String, String)>::new();
+    let mut sources = BTreeMap::<(ModuleRoot, ModulePath), (String, String)>::new();
+    let mut displayed_paths = BTreeSet::new();
+    let mut logical_paths = BTreeSet::new();
     for file in files {
         let module = source_module_path(&file.path)?;
         let canonical_path = format!("{}.ssrg", module.as_str());
@@ -117,17 +130,25 @@ pub fn load_virtual_package(
                 canonical: canonical_path,
             });
         }
-        if sources
-            .insert(module.clone(), (canonical_path, file.source))
-            .is_some()
+        let displayed_path = if file.root == ModuleRoot::Generated {
+            format!("gen/{canonical_path}")
+        } else {
+            canonical_path
+        };
+        // Logical IDs currently share one package namespace. Diagnose both ID
+        // and editor-path collisions before either map can overwrite a module.
+        if !logical_paths.insert(module.clone()) || !displayed_paths.insert(displayed_path.clone())
         {
-            return Err(VirtualPackageLoadError::DuplicateModule { module });
+            return Err(VirtualPackageLoadError::DuplicateModule {
+                module: source_module_path(&displayed_path)?,
+            });
         }
+        sources.insert((file.root, module), (displayed_path, file.source));
     }
     if sources.is_empty() {
         return Err(VirtualPackageLoadError::EmptySourceRoot);
     }
-    if !sources.contains_key(&entry_path) {
+    if !sources.contains_key(&(ModuleRoot::Source, entry_path.clone())) {
         return Err(VirtualPackageLoadError::MissingEntry {
             entry: entry_path.clone(),
         });
@@ -136,25 +157,29 @@ pub fn load_virtual_package(
     let available = sources.keys().cloned().collect::<BTreeSet<_>>();
     let mut graph = ModuleGraph::new();
     let mut modules = BTreeMap::new();
-    for (path, (source_path, source)) in sources {
-        let module = ModuleIdentity::new(identity.clone(), ModuleRoot::Source, path.clone());
+    for ((root, path), (source_path, source)) in sources {
+        let module = ModuleIdentity::new(identity.clone(), root, path.clone());
+        let diagnostic_module = source_module_path(&source_path)?;
         let unlinked =
             parse_unlinked_module_interface(&source_path, logical_module_id(&module), &source);
         let mut dependencies = BTreeMap::new();
         for import in unlinked.imports {
-            match resolve_source_import(&path, &import.specifier).map_err(|error| {
+            match resolve_module_import(root, &path, &import.specifier).map_err(|error| {
                 VirtualPackageLoadError::Import {
-                    module: path.clone(),
+                    module: diagnostic_module.clone(),
                     specifier: import.specifier.clone(),
                     origin: import.span,
                     error,
                 }
             })? {
-                SourceImportResolution::Standard => {}
-                SourceImportResolution::Local(dependency) => {
-                    if !available.contains(&dependency) {
+                ModuleImportResolution::Standard => {}
+                ModuleImportResolution::Local {
+                    root,
+                    path: dependency,
+                } => {
+                    if !available.contains(&(root, dependency.clone())) {
                         return Err(VirtualPackageLoadError::MissingModule {
-                            module: path.clone(),
+                            module: diagnostic_module.clone(),
                             specifier: import.specifier,
                             origin: import.span,
                             dependency,
@@ -162,7 +187,7 @@ pub fn load_virtual_package(
                     }
                     dependencies.insert(
                         import.specifier,
-                        ModuleIdentity::new(identity.clone(), ModuleRoot::Source, dependency),
+                        ModuleIdentity::new(identity.clone(), root, dependency),
                     );
                 }
             }
@@ -343,6 +368,86 @@ mod tests {
         let order = project.graph().topological_order().unwrap();
         assert_eq!(order[0].path().as_str(), "feature/value");
         assert_eq!(order[1], *project.entry());
+    }
+
+    #[test]
+    fn resolves_generated_modules_and_relative_generated_dependencies() {
+        let project = load_virtual_package(
+            "playground",
+            manifest(),
+            [
+                VirtualSourceFile::new(
+                    "main.ssrg",
+                    "import { value } from \"gen/api\"\npub let answer = value\n",
+                ),
+                VirtualSourceFile::generated(
+                    "api.ssrg",
+                    "import { value } from \"./model\"\npub let answer = value\n",
+                ),
+                VirtualSourceFile::generated("model.ssrg", "pub let value = 42\n"),
+            ],
+        )
+        .unwrap();
+        let dependencies = project
+            .graph()
+            .dependencies_for(project.entry())
+            .unwrap()
+            .into_iter()
+            .collect::<BTreeMap<_, _>>();
+        let api = &dependencies["gen/api"];
+        assert_eq!(api.root(), ModuleRoot::Generated);
+        assert_eq!(project.module(api).unwrap().source_path(), "gen/api.ssrg");
+        let dependencies = project
+            .graph()
+            .dependencies_for(api)
+            .unwrap()
+            .into_iter()
+            .collect::<BTreeMap<_, _>>();
+        assert_eq!(dependencies["./model"].root(), ModuleRoot::Generated);
+    }
+
+    #[test]
+    fn rejects_generated_namespace_and_display_path_collisions() {
+        for handwritten in ["api.ssrg", "gen/api.ssrg"] {
+            let error = load_virtual_package(
+                "playground",
+                manifest(),
+                [
+                    VirtualSourceFile::new("main.ssrg", "pub let main = 0\n"),
+                    VirtualSourceFile::new(handwritten, "pub let value = 1\n"),
+                    VirtualSourceFile::generated("api.ssrg", "pub let value = 2\n"),
+                ],
+            )
+            .unwrap_err();
+            assert!(
+                matches!(error, VirtualPackageLoadError::DuplicateModule { .. }),
+                "{error}"
+            );
+        }
+    }
+
+    #[test]
+    fn preserves_generated_import_boundaries_and_diagnostic_paths() {
+        for specifier in ["self/main", "gen/model", "../model"] {
+            let error = load_virtual_package(
+                "playground",
+                manifest(),
+                [
+                    VirtualSourceFile::new("main.ssrg", "pub let main = 0\n"),
+                    VirtualSourceFile::generated(
+                        "api.ssrg",
+                        format!("import {{ value }} from \"{specifier}\"\n"),
+                    ),
+                ],
+            )
+            .unwrap_err();
+            match error {
+                VirtualPackageLoadError::Import { module, .. } => {
+                    assert_eq!(module.as_str(), "gen/api")
+                }
+                other => panic!("unexpected error: {other}"),
+            }
+        }
     }
 
     #[test]

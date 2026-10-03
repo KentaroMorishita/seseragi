@@ -13,7 +13,7 @@ use seseragi_driver::{
 use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
     load_virtual_package, logical_module_id, logical_package_scope, LinkError, LinkTargetError,
-    LoadedVirtualPackage, ModuleGraph, ModuleGraphError, ModuleIdentity, ModulePath,
+    LoadedVirtualPackage, ModuleGraph, ModuleGraphError, ModuleIdentity, ModulePath, ModuleRoot,
     VirtualPackageLoadError, VirtualSourceFile,
 };
 use seseragi_runtime::{project_main_contract, MainContract};
@@ -41,6 +41,16 @@ struct ProjectRequest {
 struct ProjectSource {
     path: String,
     source: String,
+    #[serde(default)]
+    root: ProjectSourceRoot,
+}
+
+#[derive(Clone, Copy, Default, Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum ProjectSourceRoot {
+    #[default]
+    Source,
+    Generated,
 }
 
 #[derive(Deserialize)]
@@ -600,12 +610,28 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
             ))
         })?)?,
     };
+    for file in &files {
+        if matches!(file.root, ProjectSourceRoot::Generated) && !file.path.starts_with("gen/") {
+            return Err(ProjectFailure::problem(ProjectProblem::file(
+                "SES-K0001",
+                "generated source paths must start with `gen/`",
+                &file.path,
+                None,
+            )));
+        }
+    }
     let package = load_virtual_package(
         PACKAGE_SCOPE,
         &manifest,
-        files
-            .iter()
-            .map(|file| VirtualSourceFile::new(&file.path, &file.source)),
+        files.iter().map(|file| match file.root {
+            ProjectSourceRoot::Source => VirtualSourceFile::new(&file.path, &file.source),
+            ProjectSourceRoot::Generated => VirtualSourceFile::generated(
+                file.path
+                    .strip_prefix("gen/")
+                    .expect("generated path was validated"),
+                &file.source,
+            ),
+        }),
     )
     .map_err(virtual_package_failure)?;
 
@@ -655,7 +681,11 @@ fn prepare_virtual_package(
                 path,
                 id,
                 module.source(),
-                format!("{}.js", identity.path().as_str()),
+                if identity.root() == ModuleRoot::Generated {
+                    format!("gen/{}.js", identity.path().as_str())
+                } else {
+                    format!("{}.js", identity.path().as_str())
+                },
             )
             .with_package_scope(&package_scope),
         );
@@ -1387,6 +1417,56 @@ mod tests {
 
     fn request(files: Value, entry: &str) -> String {
         json!({ "schema": 1, "entry": entry, "files": files }).to_string()
+    }
+
+    #[test]
+    fn generated_sources_share_compilation_analysis_and_regeneration_graphs() {
+        let mut files = json!([
+            {"path":"main.ssrg", "source":"import { value } from \"gen/api\"\npub let answer = value\npub effect fn main -> Unit = succeed ()\n"},
+            {"path":"gen/api.ssrg", "root":"generated", "source":"pub let value: Int = 42\n"}
+        ]);
+        let request = super::tests::request(files.clone(), "main.ssrg");
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        assert_eq!(analyzed["status"], "success", "{analyzed}");
+        assert!(analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|document| document["path"] == "gen/api.ssrg"));
+        assert!(compiled.to_string().contains("gen/api.js"), "{compiled}");
+        // The next request replaces the generated text; removed exports cannot
+        // survive in a module cache or a fixture-specific resolver.
+        files[1]["source"] = json!("pub let replacement: Int = 7\n");
+        let request = super::tests::request(files, "main.ssrg");
+        for result in [compile_project(&request), analyze_project(&request)] {
+            let result: Value = serde_json::from_str(&result).unwrap();
+            assert_eq!(result["status"], "failure", "{result}");
+            assert!(result.to_string().contains("value"));
+        }
+    }
+
+    #[test]
+    fn generated_identity_collisions_are_reported_by_both_project_operations() {
+        let request = request(
+            json!([
+                {"path":"main.ssrg", "source":"pub let main = 0\n"},
+                {"path":"api.ssrg", "source":"pub let value = 1\n"},
+                {"path":"gen/api.ssrg", "root":"generated", "source":"pub let value = 2\n"}
+            ]),
+            "main.ssrg",
+        );
+        for result in [compile_project(&request), analyze_project(&request)] {
+            let result: Value = serde_json::from_str(&result).unwrap();
+            assert_eq!(result["status"], "failure", "{result}");
+            assert!(
+                result
+                    .to_string()
+                    .contains("duplicate source path or module identity"),
+                "{result}"
+            );
+        }
     }
 
     fn request_with_provider(files: Value, entry: &str, provider: Value) -> String {

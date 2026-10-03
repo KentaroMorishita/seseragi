@@ -168,6 +168,9 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
         names: BTreeSet::new(),
         external: BTreeSet::new(),
     };
+    for foreign in &module.foreign_modules {
+        collect_foreign_type_names(&foreign.members, &mut references);
+    }
     for adt in &module.adts {
         for variant in &adt.variants {
             if let Some(payload) = &variant.payload {
@@ -209,6 +212,33 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
         collect_expr_type_names(&function.body, &mut references);
     }
     references
+}
+
+fn collect_foreign_type_names(
+    members: &[crate::CoreForeignMember],
+    references: &mut ReferencedTypes,
+) {
+    for member in members {
+        match member {
+            crate::CoreForeignMember::Function {
+                parameters,
+                return_type,
+                ..
+            } => {
+                for parameter in parameters {
+                    collect_type_names(&parameter.type_ref, references);
+                }
+                collect_type_names(return_type, references);
+            }
+            crate::CoreForeignMember::Value { type_ref, .. } => {
+                collect_type_names(type_ref, references)
+            }
+            crate::CoreForeignMember::Namespace { members, .. } => {
+                collect_foreign_type_names(members, references)
+            }
+            crate::CoreForeignMember::OpaqueType { .. } => {}
+        }
+    }
 }
 
 fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {

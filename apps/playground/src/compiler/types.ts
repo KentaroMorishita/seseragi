@@ -193,6 +193,7 @@ export type ProjectRequest = {
   /** @deprecated Compatibility fallback for manifestless single-file clients. */
   readonly entry?: string
   readonly files: readonly {
+    readonly root?: "generated"
     readonly path: string
     readonly source: string
   }[]

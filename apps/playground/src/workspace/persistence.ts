@@ -133,6 +133,9 @@ function workspaceSeed(workspace: WorkspaceState): WorkspaceSeed {
           packageManifest: workspace.packageManifest,
           packageEntryFile: workspace.packageEntryFile,
         }),
+    ...(workspace.bindingInputRevision === undefined
+      ? {}
+      : { bindingInputRevision: workspace.bindingInputRevision }),
     ...(workspace.activeFile === undefined
       ? {}
       : { activeFile: workspace.activeFile }),
@@ -162,6 +165,7 @@ function parseWorkspaceSeed(value: unknown, context: string): WorkspaceSeed {
     ...optionalStringProperty(workspace, "packageManifest", context),
     ...optionalStringProperty(workspace, "packageEntryFile", context),
     ...optionalStringProperty(workspace, "activeFile", context),
+    ...optionalStringProperty(workspace, "bindingInputRevision", context),
     openFiles: expectStrings(workspace.openFiles, `${context}.openFiles`),
     dirtyFiles: expectStrings(workspace.dirtyFiles, `${context}.dirtyFiles`),
     expandedFolders: expectStrings(

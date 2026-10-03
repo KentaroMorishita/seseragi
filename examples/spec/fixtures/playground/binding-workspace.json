@@ -1,0 +1,37 @@
+{
+  "files": [
+    {
+      "path": "main.ssrg",
+      "source": "pub effect fn main = println \"Bindings are generated in gen/. External package execution requires a runtime package.\"\n"
+    },
+    {
+      "path": "seseragi.toml",
+      "source": "[package]\nname = \"fixture/dts-basic-conversion\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[foreign.typescript]\nresolver = \"node\"\nmanifest = \"host/package.json\"\nlockfile = \"host/bun.lock\"\nbindings = \"seseragi.bindings.toml\"\n\n[run]\nentry = \"main\"\n"
+    },
+    {
+      "path": "seseragi.bindings.toml",
+      "source": "schema = 1\n\n[entries.api]\ndeclaration = \"host/index.d.ts\"\nspecifier = \"fixture-api\"\noutput = \"fixture-api\"\nevaluation = \"task\"\n"
+    },
+    {
+      "path": "host/index.d.ts",
+      "source": "export interface Config {\n  readonly label: string;\n  readonly limit?: number;\n}\n\nexport declare function fetchName(id: bigint): Promise<string>;\nexport declare function first<T>(values: readonly T[]): T | undefined;\nexport declare function useConfig(config: Config): void;\n"
+    },
+    {
+      "path": "host/package.json",
+      "source": "{\n  \"name\": \"fixture-api\",\n  \"version\": \"1.0.0\",\n  \"types\": \"index.d.ts\"\n}\n"
+    }
+  ],
+  "entryFile": "main.ssrg",
+  "activeFile": "host/index.d.ts",
+  "openFiles": [
+    "host/index.d.ts",
+    "seseragi.bindings.toml",
+    "seseragi.toml"
+  ],
+  "expandedFolders": [
+    "host"
+  ],
+  "explorer": {
+    "visible": true
+  }
+}

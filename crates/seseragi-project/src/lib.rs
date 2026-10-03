@@ -71,7 +71,10 @@ pub use manifest::{
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};
-pub use source_import::{resolve_source_import, SourceImportError, SourceImportResolution};
+pub use source_import::{
+    resolve_module_import, resolve_source_import, ModuleImportResolution, SourceImportError,
+    SourceImportResolution,
+};
 pub use specifier::{
     classify_specifier, resolve_relative_specifier, ImportSpecifier, RelativeSpecifierError,
     SpecifierError,

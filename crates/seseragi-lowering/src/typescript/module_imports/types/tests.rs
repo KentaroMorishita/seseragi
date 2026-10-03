@@ -160,6 +160,85 @@ fn collects_an_external_type_used_only_by_a_struct_field() {
 }
 
 #[test]
+fn plans_external_types_used_only_by_foreign_parameters_results_and_nested_values() {
+    use crate::{CoreForeignMember, CoreForeignModule};
+    use seseragi_syntax::{ForeignCallKind, ForeignCallMode};
+    let mut module = module(
+        ["Input", "Output", "Constant"]
+            .into_iter()
+            .map(|name| {
+                binding(
+                    name,
+                    &format!("fixture/domain::{name}"),
+                    "fixture/domain",
+                    name,
+                )
+            })
+            .collect(),
+        Vec::new(),
+    );
+    module.foreign_modules.push(CoreForeignModule {
+        visibility: Visibility::Public,
+        language: "typescript".to_owned(),
+        specifier: "foreign-api".to_owned(),
+        pure_load: false,
+        origin: origin(),
+        members: vec![
+            CoreForeignMember::Function {
+                mode: ForeignCallMode::Task,
+                call_kind: ForeignCallKind::Function,
+                symbol: "fixture/main::request".to_owned(),
+                name: "request".to_owned(),
+                host_name: "request".to_owned(),
+                parameters: vec![CoreParameter {
+                    id: "input".to_owned(),
+                    kind: "named".to_owned(),
+                    type_ref: CoreType::Named {
+                        name: "Array".to_owned(),
+                        arguments: vec![external("Input", "fixture/domain::Input")],
+                    },
+                }],
+                return_type: CoreType::Named {
+                    name: "Maybe".to_owned(),
+                    arguments: vec![external("Output", "fixture/domain::Output")],
+                },
+                origin: origin(),
+            },
+            CoreForeignMember::Namespace {
+                symbol: "fixture/main::nested".to_owned(),
+                name: "nested".to_owned(),
+                host_name: "nested".to_owned(),
+                origin: origin(),
+                members: vec![CoreForeignMember::Value {
+                    symbol: "fixture/main::nested.value".to_owned(),
+                    name: "value".to_owned(),
+                    host_name: "value".to_owned(),
+                    type_ref: external("Constant", "fixture/domain::Constant"),
+                    origin: origin(),
+                }],
+            },
+        ],
+    });
+    let plan = TypeScriptOutputPlan::new([("fixture/domain".to_owned(), "./domain.js".to_owned())]);
+    let imports = lower_module_imports(&module, &plan).unwrap();
+    for name in ["Input", "Output", "Constant"] {
+        assert_eq!(
+            imports
+                .type_names
+                .get(&format!("fixture/domain::{name}"))
+                .map(String::as_str),
+            Some(name)
+        );
+    }
+    assert_eq!(imports.imports[0].bindings.len(), 3);
+    assert!(imports.imports[0]
+        .bindings
+        .iter()
+        .all(|binding| binding.type_only));
+    lower_core_module_to_typescript_ir_with_plan(module, &plan).unwrap();
+}
+
+#[test]
 fn freshens_same_spelling_owners_and_rewrites_exact_type_occurrences() {
     let left = "fixture/left::Hand";
     let right = "fixture/right::Hand";

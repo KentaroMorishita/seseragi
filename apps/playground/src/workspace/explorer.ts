@@ -10,6 +10,8 @@ import {
   createWorkspaceFolder,
   defaultExplorerWidth,
   deleteWorkspacePath,
+  isGeneratedWorkspaceFile,
+  isWorkspaceSourceFile,
   maximumExplorerWidth,
   minimumExplorerWidth,
   renameWorkspacePath,
@@ -18,8 +20,8 @@ import {
   setWorkspaceFolderExpanded,
   type WorkspacePath,
   type WorkspaceState,
+  workspaceFilePath,
   workspacePath,
-  workspaceSourcePath,
 } from "./model"
 
 const explorerWidthStorageKey = "seseragi.playground.explorer-width"
@@ -637,7 +639,11 @@ export function connectWorkspaceExplorer(
     const actions = document.createElement("span")
     actions.className = "explorer-row-actions"
     actions.append(
-      ...(row.kind === "file" && !row.entry
+      ...(row.kind === "file" &&
+      !row.entry &&
+      isWorkspaceSourceFile(row.path) &&
+      !isGeneratedWorkspaceFile(row.path) &&
+      !options.getState().files.some(({ path }) => path === "seseragi.toml")
         ? [rowAction("entry", `Set ${row.path} as entry`, "▶")]
         : []),
       rowAction("rename", `Rename ${row.path}`, "✎"),
@@ -662,7 +668,9 @@ export function connectWorkspaceExplorer(
       "aria-label",
       current.kind.startsWith("rename") ? "New name" : "Name"
     )
-    input.placeholder = current.kind.includes("file") ? "name.ssrg" : "folder"
+    input.placeholder = current.kind.includes("file")
+      ? "name.ssrg / name.d.ts / config.toml"
+      : "folder"
     if (current.kind === "rename-file" || current.kind === "rename-folder")
       input.value = workspaceName(current.path)
     input.addEventListener("blur", () => {
@@ -708,7 +716,7 @@ export function workspaceExplorerPath(
     throw new Error("Name must be one workspace path segment")
   }
   const path = parent === undefined ? value : `${parent}/${value}`
-  return kind === "file" ? workspaceSourcePath(path) : workspacePath(path)
+  return kind === "file" ? workspaceFilePath(path) : workspacePath(path)
 }
 
 function workspaceParent(path: WorkspacePath): WorkspacePath | undefined {

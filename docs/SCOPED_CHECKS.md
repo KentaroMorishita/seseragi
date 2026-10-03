@@ -41,6 +41,24 @@ native専用moduleは`browser: null`で宣言し、Playgroundへ別のmodule一�
 providerの`browser/` sourceから`runtime-browser/` packageへのprojectionはRustの
 package staging testでも同一内容を検証します。
 
+## Portable declaration conversion
+
+`cargo test -p seseragi-dts` は in-memory conversion と native filesystem adapter の
+source / metadata / report の完全一致を検証します。
+`bun scripts/check-dts-wasm.ts` は同じ declaration parser と converter を filesystem
+feature なしで `wasm32-unknown-unknown` に build し、canonical fixture と diagnostic を
+native の出力と比較します。Rust target、wasm32 対応 clang / llvm-ar、lockfile と同じ
+version の wasm-bindgen CLI が必要です。必要に応じて `CC_wasm32_unknown_unknown` と
+`WASM_BINDGEN` で既存 toolchain の executable を指定できます。依存は暗黙 install しません。
+
+production adapter は `bun scripts/check-interop-wasm.ts [wasm-package-directory]` で
+workspace artifact → conversion → `gen/` import → compile / analysis を検証します。
+`check:wasm` は再生成した canonical package に対して両 probe を実行します。
+末端実装では `scripts/build-playground-wasm.sh /tmp/seseragi-interop-wasm` と
+`bun scripts/check-interop-wasm.ts /tmp/seseragi-interop-wasm` で committed artifact を
+変更せず検証できます。WASM export の conversion request は 8 MiB、512 files、1 file
+1 MiB を上限にし、revision を opaque な文字列として応答へ返します。
+
 ## Standard instance audit
 
 Prelude auditの`specified-but-implementation-missing`行は、canonical registryの

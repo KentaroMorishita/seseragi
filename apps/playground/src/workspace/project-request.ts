@@ -1,5 +1,11 @@
 import type { ProjectRequest } from "../compiler/types"
-import { type WorkspaceState, workspaceSourcePath } from "./model"
+import { workspaceBindingsAreCurrent } from "./binding-conversion"
+import {
+  isGeneratedWorkspaceFile,
+  isWorkspaceSourceFile,
+  type WorkspaceState,
+  workspaceSourcePath,
+} from "./model"
 
 const virtualPackageName = "playground/workspace"
 
@@ -18,25 +24,53 @@ function workspaceManifest(entryFile: string): string {
 }
 
 export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
-  const entry = state.entryFile ?? state.activeFile
+  const entry =
+    state.entryFile ??
+    (state.activeFile !== undefined &&
+    isWorkspaceSourceFile(state.activeFile) &&
+    !isGeneratedWorkspaceFile(state.activeFile)
+      ? state.activeFile
+      : state.files.find(
+          ({ path }) =>
+            isWorkspaceSourceFile(path) && !isGeneratedWorkspaceFile(path)
+        )?.path)
   if (entry === undefined) throw new Error("Workspace has no source file")
+  const manifest = state.files.find(
+    ({ path }) => path === "seseragi.toml"
+  )?.source
+  const generated = state.files.some(
+    ({ path }) => isGeneratedWorkspaceFile(path) && isWorkspaceSourceFile(path)
+  )
+  if (generated && !workspaceBindingsAreCurrent(state))
+    throw new Error(
+      "Binding inputs changed. Convert bindings again before compiling."
+    )
   return {
     schema: 1,
     manifest:
-      state.packageManifest !== undefined && entry === state.packageEntryFile
+      manifest ??
+      (state.packageManifest !== undefined && entry === state.packageEntryFile
         ? state.packageManifest
-        : workspaceManifest(entry),
-    files: state.files.map(({ path, source }) => ({
-      path: workspaceSourcePath(path),
-      source,
-    })),
+        : workspaceManifest(entry)),
+    files: state.files
+      .filter(({ path }) => isWorkspaceSourceFile(path))
+      .map(({ path, source }) => ({
+        ...(isGeneratedWorkspaceFile(path)
+          ? { root: "generated" as const }
+          : {}),
+        path: workspaceSourcePath(path),
+        source,
+      })),
   }
 }
 
 export function runnableWorkspaceProjectRequest(
   state: WorkspaceState
 ): ProjectRequest {
-  if (state.entryFile === undefined) {
+  if (
+    state.entryFile === undefined &&
+    !state.files.some(({ path }) => path === "seseragi.toml")
+  ) {
     throw new Error("Select an entry file in Explorer before Run")
   }
   return workspaceProjectRequest(state)

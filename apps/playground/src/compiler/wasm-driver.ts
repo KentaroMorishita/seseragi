@@ -1,3 +1,4 @@
+import * as wasmBindings from "../wasm/pkg/seseragi_wasm"
 import init, {
   analyze_project,
   analyze_single_file,
@@ -5,6 +6,10 @@ import init, {
   format_project_file,
   format_project_file_with_options,
 } from "../wasm/pkg/seseragi_wasm"
+import type {
+  BindingConversionRequest,
+  BindingConversionResponse,
+} from "./interop-types"
 import type {
   AnalysisDocument,
   CompileResponse,
@@ -132,4 +137,23 @@ function firstDiagnostics(
   }[]
 ): DiagnosticArtifact {
   return diagnostics[0]?.diagnostics ?? { diagnostics: [] }
+}
+
+export async function convertBindings(
+  request: BindingConversionRequest
+): Promise<BindingConversionResponse> {
+  initialization ??= init()
+  await initialization
+  const convert = (
+    wasmBindings as unknown as {
+      convert_bindings?: (request: string) => string
+    }
+  ).convert_bindings
+  if (convert === undefined)
+    throw new Error(
+      "This compiler build does not include binding conversion. Reload after the compiler update."
+    )
+  return JSON.parse(
+    convert(JSON.stringify(request))
+  ) as BindingConversionResponse
 }

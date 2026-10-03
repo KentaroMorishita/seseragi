@@ -230,6 +230,9 @@ run_wasm_checks() {
   echo "Checking committed WASM freshness..."
   check_step ./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg
   check_step git diff --exit-code -- apps/playground/src/wasm/pkg
+  echo "Checking shared declaration conversion and generated browser modules..."
+  check_step bun scripts/check-dts-wasm.ts
+  check_step bun scripts/check-interop-wasm.ts
 }
 
 run_release_contract_metadata_check() {

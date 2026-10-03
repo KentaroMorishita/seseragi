@@ -21,6 +21,7 @@ import { seseragiEditorTheme } from "./theme"
 
 const whitespaceCompartment = new Compartment()
 const editableCompartment = new Compartment()
+const languageCompartment = new Compartment()
 
 export function createEditor(
   parent: HTMLElement,
@@ -57,7 +58,7 @@ export function createEditorState(
         "aria-keyshortcuts":
           "F6 Shift+F6 Control+Shift+E Meta+Shift+E Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
       }),
-      seseragiLanguage,
+      languageCompartment.of(seseragiLanguage),
       ...seseragiEditorTheme,
       EditorView.updateListener.of((update) => {
         if (update.docChanged) onChange(update.state.doc.toString())
@@ -85,7 +86,10 @@ export function setEditorWhitespaceVisible(
 
 export function setEditorEditable(editor: EditorView, editable: boolean): void {
   editor.dispatch({
-    effects: editableCompartment.reconfigure(EditorView.editable.of(editable)),
+    effects: editableCompartment.reconfigure([
+      EditorView.editable.of(editable),
+      EditorState.readOnly.of(!editable),
+    ]),
   })
   editor.contentDOM.setAttribute("aria-disabled", String(!editable))
 }
@@ -212,4 +216,18 @@ export function replaceEditorSource(editor: EditorView, source: string): void {
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: source },
   })
+}
+
+export function setEditorFileKind(
+  editor: EditorView,
+  path: string | undefined
+): void {
+  const seseragi = path?.endsWith(".ssrg") ?? true
+  editor.dispatch({
+    effects: languageCompartment.reconfigure(seseragi ? seseragiLanguage : []),
+  })
+  editor.contentDOM.setAttribute(
+    "aria-label",
+    seseragi ? "Seseragi source editor" : `Workspace file editor: ${path}`
+  )
 }

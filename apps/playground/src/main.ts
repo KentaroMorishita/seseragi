@@ -1,4 +1,5 @@
 import { setDiagnostics } from "@codemirror/lint"
+import bindingWorkspaceSeed from "../../../examples/spec/fixtures/playground/binding-workspace.json"
 import { analysisHoverAt } from "./analysis/hover"
 import {
   createLiveAnalysis,
@@ -12,6 +13,7 @@ import type {
 import {
   analyzeProject,
   compileProject,
+  convertBindings,
   formatProjectFile,
 } from "./compiler/wasm-driver"
 import { renderWorkspaceDiagnosticCards } from "./diagnostics/diagnostic-cards"
@@ -26,6 +28,7 @@ import {
   createEditorState,
   replaceEditorSource,
   setEditorEditable,
+  setEditorFileKind,
   setEditorWhitespaceVisible,
 } from "./editor/create-editor"
 import { resolveEditorLineWidth } from "./editor/format-width"
@@ -46,6 +49,12 @@ import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
 import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
+import {
+  applyBindingConversion,
+  bindingWorkspaceDiagnostics,
+  workspaceBindingRequest,
+  workspaceBindingRevision,
+} from "./workspace/binding-conversion"
 import { createWorkspaceEditorSessions } from "./workspace/editor-session"
 import {
   connectWorkspaceTabs,
@@ -62,6 +71,8 @@ import {
   activeWorkspaceSource,
   createSingleFileWorkspace,
   createWorkspace,
+  isGeneratedWorkspaceFile,
+  isWorkspaceSourceFile,
   setWorkspaceExplorer,
   updateActiveWorkspaceSource,
   type WorkspaceState,
@@ -123,6 +134,14 @@ const sampleBrowserClose = requiredElement(
 )
 const sampleNewBlankButton = requiredElement(
   "#sample-new-blank-button",
+  HTMLButtonElement
+)
+const sampleBindingsButton = requiredElement(
+  "#sample-bindings-button",
+  HTMLButtonElement
+)
+const convertBindingsButton = requiredElement(
+  "#convert-bindings-button",
   HTMLButtonElement
 )
 const sampleStarterButton = requiredElement(
@@ -342,6 +361,8 @@ let currentSample = initialSample
 let latestAnalysis: AnalysisDocument | undefined
 let persistenceFailureShown = false
 let editorEditable: boolean | undefined
+let editorFileKind: string | undefined
+let conversionRunning = false
 
 const sampleBrowser = connectSampleBrowser(
   {
@@ -507,6 +528,22 @@ const newBlank = (): void => {
   editor.focus()
 }
 sampleNewBlankButton.addEventListener("click", newBlank)
+sampleBindingsButton.addEventListener("click", () => {
+  if (!loadBlankWorkspace("TypeScript bindings workspace created")) return
+  applyWorkspaceChange(createWorkspace(bindingWorkspaceSeed), {
+    focusEditor: true,
+    message: "Edit host/index.d.ts, then Convert bindings",
+  })
+  showTextOutput(
+    "Edit the .d.ts declarations and binding settings in Explorer, then choose Convert bindings. Generated source and conversion diagnostics stay in this workspace. External package execution is not configured by conversion."
+  )
+  if (sampleBrowserDialog.open) sampleBrowserDialog.close()
+})
+convertBindingsButton.addEventListener(
+  "click",
+  () => void convertWorkspaceBindings()
+)
+
 sampleStarterButton.addEventListener("click", () => {
   if (!loadSample(defaultSample, "Starter loaded")) return
   sampleBrowserDialog.close()
@@ -514,8 +551,12 @@ sampleStarterButton.addEventListener("click", () => {
 })
 const formatSource = async (): Promise<void> => {
   const requestedFile = workspaceState.activeFile
-  if (requestedFile === undefined) {
-    setStatus("error", "Select a file before Format")
+  if (
+    requestedFile === undefined ||
+    !isWorkspaceSourceFile(requestedFile) ||
+    isGeneratedWorkspaceFile(requestedFile)
+  ) {
+    setStatus("error", "Select an editable Seseragi source before Format")
     return
   }
   const request = workspaceProjectRequest(workspaceState)
@@ -649,6 +690,8 @@ function loadSample(
   applyingWorkspaceSource = true
   try {
     editorSessions.reset(workspaceState)
+    editorEditable = undefined
+    editorFileKind = undefined
   } finally {
     applyingWorkspaceSource = false
   }
@@ -685,6 +728,8 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   applyingWorkspaceSource = true
   try {
     editorSessions.reset(workspaceState)
+    editorEditable = undefined
+    editorFileKind = undefined
   } finally {
     applyingWorkspaceSource = false
   }
@@ -720,6 +765,10 @@ function applyWorkspaceChange(
   } finally {
     applyingWorkspaceSource = false
   }
+  if (switched) {
+    editorEditable = undefined
+    editorFileKind = undefined
+  }
   renderWorkspaceChrome()
   const projectChanged =
     previousProjectRevision !== workspaceProjectRevisionOrUndefined(nextState)
@@ -742,17 +791,74 @@ function applyWorkspaceChange(
 
 function handleEditorChange(nextSource: string): void {
   if (!applyingWorkspaceSource) {
-    if (workspaceState.activeFile === undefined) return
+    if (
+      workspaceState.activeFile === undefined ||
+      isGeneratedWorkspaceFile(workspaceState.activeFile)
+    )
+      return
     const wasDirty =
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
-    if (!wasDirty) renderWorkspaceChrome()
+    if (!wasDirty || convertBindingsButton.hidden === false)
+      renderWorkspaceChrome()
     persistCurrentWorkspace()
   }
   latestAnalysis = undefined
   editor.dispatch(setDiagnostics(editor.state, []))
   scheduleWorkspaceAnalysis()
+}
+
+async function convertWorkspaceBindings(): Promise<void> {
+  if (conversionRunning) return
+  let request
+  try {
+    request = workspaceBindingRequest(workspaceState)
+  } catch (error) {
+    showTextOutput(error instanceof Error ? error.message : String(error))
+    setStatus("error", "Binding inputs required")
+    return
+  }
+  conversionRunning = true
+  convertBindingsButton.disabled = true
+  liveAnalysis.cancel()
+  setStatus("running", "Converting bindings…")
+  try {
+    const response = await convertBindings(request)
+    const applied = applyBindingConversion(workspaceState, response)
+    if (applied.status === "stale") {
+      setStatus("ready", "Workspace changed; convert bindings again")
+      return
+    }
+    const diagnostics = bindingWorkspaceDiagnostics(workspaceState, response)
+    if (applied.status === "failure") {
+      setActiveEditorDiagnostics(diagnostics)
+      showWorkspaceDiagnostics(diagnostics)
+      setStatus("error", `${diagnostics.length} binding diagnostic(s)`)
+      showIoOnSmallScreens()
+      return
+    }
+    applyWorkspaceChange(applied.state, {
+      message: `Generated ${response.generated.length} binding(s)`,
+    })
+    if (diagnostics.length > 0) showWorkspaceDiagnostics(diagnostics)
+    else
+      showTextOutput(
+        response.generated
+          .map(
+            (binding) =>
+              `${binding.entry}: ${binding.declaration} → gen/${binding.output}.ssrg`
+          )
+          .join("\n") || "No binding entries selected."
+      )
+  } catch (error) {
+    if (request.revision !== workspaceBindingRevision(workspaceState)) return
+    showTextOutput(error instanceof Error ? error.message : String(error))
+    setStatus("error", "Binding conversion failed")
+  } finally {
+    conversionRunning = false
+    renderWorkspaceChrome()
+  }
 }
 
 function persistCurrentWorkspace(): void {
@@ -785,6 +891,20 @@ function renderWorkspaceChrome(): void {
   tabs.render(workspaceState)
   const path = workspaceState.activeFile
   const hasActiveFile = path !== undefined
+  const editable = hasActiveFile && !isGeneratedWorkspaceFile(path)
+  const hasBindings = workspaceState.files.some(
+    ({ path }) => path.endsWith(".d.ts") || path === "seseragi.toml"
+  )
+  convertBindingsButton.hidden = !hasBindings
+  convertBindingsButton.disabled = conversionRunning
+  if (currentSample === undefined && hasBindings)
+    currentSampleTitle.textContent = "TypeScript bindings"
+  const kind =
+    path === undefined ? "" : isWorkspaceSourceFile(path) ? "seseragi" : path
+  if (editorFileKind !== kind) {
+    setEditorFileKind(editor, path)
+    editorFileKind = kind
+  }
   const emptyWorkspace = workspaceState.files.length === 0
   activeFileName.textContent = path ?? "No active file"
   activeFileName.dataset.dirty = String(
@@ -805,18 +925,21 @@ function renderWorkspaceChrome(): void {
   workspaceEmptyAction.textContent = emptyWorkspace
     ? "New File"
     : "Open Explorer"
-  const missingEntry = hasActiveFile && workspaceState.entryFile === undefined
+  const missingEntry =
+    hasActiveFile &&
+    workspaceState.entryFile === undefined &&
+    !workspaceState.files.some(({ path }) => path === "seseragi.toml")
   workspaceNotice.hidden = !missingEntry
   workspaceNoticeText.textContent = missingEntry
     ? "No entry file. Choose Set as entry in Explorer before Run."
     : ""
   editorHost.inert = !hasActiveFile
-  if (editorEditable !== hasActiveFile) {
-    setEditorEditable(editor, hasActiveFile)
-    editorEditable = hasActiveFile
+  if (editorEditable !== editable) {
+    setEditorEditable(editor, editable)
+    editorEditable = editable
   }
-  clearSourceButton.disabled = !hasActiveFile
-  formatSourceButton.disabled = !hasActiveFile
+  clearSourceButton.disabled = !editable
+  formatSourceButton.disabled = !editable || !isWorkspaceSourceFile(path ?? "")
   const resetLabel =
     currentSample === undefined
       ? "Reset Blank workspace"
@@ -869,7 +992,9 @@ function workspaceAnalysisResult(
 function scheduleWorkspaceAnalysis(): void {
   if (
     workspaceState.activeFile === undefined ||
-    workspaceState.files.length === 0
+    workspaceState.files.length === 0 ||
+    !isWorkspaceSourceFile(workspaceState.activeFile) ||
+    workspaceAnalysisRevisionOrUndefined(workspaceState) === undefined
   ) {
     liveAnalysis.cancel()
     latestAnalysis = undefined

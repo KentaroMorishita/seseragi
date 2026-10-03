@@ -407,6 +407,22 @@ impl<'a> SourceDiscovery<'a> {
                 ResolvedImport::Standard => continue,
                 ResolvedImport::Module(dependency) => dependency,
             };
+            if !self
+                .source_roots
+                .contains_key(&(dependency.package().clone(), dependency.root()))
+            {
+                return Err(LocalProjectLoadError::Import {
+                    module: Box::new(module.clone()),
+                    specifier: import.specifier,
+                    origin: import.span,
+                    code: "SES-N0104",
+                    reason: format!(
+                        "module root {:?} for package `{}` is missing",
+                        dependency.root(),
+                        dependency.package().name().as_str()
+                    ),
+                });
+            }
             edges.insert(import.specifier, dependency.clone());
             if !self.modules.contains_key(&dependency) {
                 self.pending.insert(dependency);
@@ -421,6 +437,20 @@ impl<'a> SourceDiscovery<'a> {
     }
 
     fn finish(&self) -> Result<ModuleGraph<ModuleIdentity>, LocalProjectLoadError> {
+        let mut logical_owners = BTreeMap::<String, &Path>::new();
+        for (identity, module) in &self.modules {
+            if !matches!(identity.root(), ModuleRoot::Source | ModuleRoot::Generated) {
+                continue;
+            }
+            let logical = crate::logical_module_id(identity);
+            if let Some(first) = logical_owners.insert(logical.clone(), module.source_path()) {
+                return Err(LocalProjectLoadError::DuplicateLogicalModule {
+                    identity: logical,
+                    first: first.to_path_buf(),
+                    second: module.source_path().to_path_buf(),
+                });
+            }
+        }
         let mut graph = ModuleGraph::new();
         for (module, dependencies) in &self.edges {
             graph

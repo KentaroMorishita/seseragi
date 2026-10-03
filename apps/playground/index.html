@@ -110,6 +110,10 @@
                 <strong>Hello world</strong>
                 <span>canonical starterを開く</span>
               </button>
+              <button id="sample-bindings-button" type="button">
+                <strong>TypeScript bindings</strong>
+                <span>.d.ts と設定を編集して binding を生成する</span>
+              </button>
               <button id="reset-sample-button" type="button">
                 <strong>Reset workspace</strong>
                 <span>現在のworkspaceを元の状態へ戻す</span>
@@ -248,6 +252,7 @@
           </button>
           <div class="editor-local-actions">
             <span id="active-file-name" class="file-name">main.ssrg</span>
+            <button id="convert-bindings-button" class="editor-local-button" type="button" title="Convert workspace declarations into Seseragi bindings" hidden>Convert bindings</button>
             <button
               id="format-source-button"
               class="editor-local-button"
