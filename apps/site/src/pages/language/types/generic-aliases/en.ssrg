@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic aliases",
+  summary: "Aliases substitute transparently into one canonical type while tooling preserves the source name and declaration span.",
+  ruleTitle: "Capture-avoiding transparent substitution",
+  ruleBody: "Named<A> expands to its right side with A replaced by the supplied argument and creates no nominal identity. Arity is checked recursively in every annotation position, including local lets, lambdas, functions, constraints, records, tuples, and nested generic types.",
+  identityBody: "Compatibility and lowering use the fully expanded canonical type; runtime has no alias wrapper. Hovers, completion, and definition jump retain the written alias. Higher-kinded parameters reapply constructors such as Maybe or Either<E, _> without capture.",
+  checkingBody: "Direct and indirect cycles fail. Constructor arguments must match the required remaining kind and arity. Public aliases enter module interfaces but may not expose a private nominal type through expansion.",
+  invalidTitle: "Transparency does not waive arity, kind, or visibility",
+  invalidBody: "Missing or extra arguments, M<_> supplied with Int or Maybe<Int>, bare Either at the wrong remaining arity, cyclic expansion, and public leakage of private types are all errors at the original use or declaration.",
+  diagnosticsBody: "Alias diagnostics preserve the source alias chain and original use range even when recovery uses an internal placeholder. Tooling can display both the friendly alias and expanded type.",
+  provenanceBody: "This article covers specification section 2.17. Canonical generics and HKT fixtures demonstrate ordinary and constructor-parameter aliases; the invalid panel covers kind mismatch."
+}

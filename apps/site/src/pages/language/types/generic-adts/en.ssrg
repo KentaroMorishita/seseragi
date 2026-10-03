@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic ADTs",
+  summary: "Every constructor quantifies the ADT parameters freshly, while patterns recover their concrete substitutions from the matched value.",
+  ruleTitle: "Constructors quantify the whole declaration",
+  ruleBody: "For Result<E, A>, Failure has forall E A. E -> Result<E, A> and Success has forall E A. A -> Result<E, A>. Every constructor use receives fresh parameters, including ones absent from its payload.",
+  identityBody: "An expected type, match context, or full explicit type argument list determines payload-independent parameters. Pattern matching substitutes the scrutinee arguments into bound payloads. Recursive occurrences spell their type arguments explicitly, as Tree<A>.",
+  checkingBody: "Constructor payloads, expected results, and explicit arguments must unify. A pattern constructor must belong to the scrutinee ADT, after which each field receives the substituted concrete type.",
+  invalidTitle: "A missing payload parameter is not silently invented",
+  invalidBody: "Failure alone cannot determine its success parameter without context. A recursive Tree occurrence with the wrong argument, a constructor from another ADT, or conflicting explicit arguments is rejected.",
+  diagnosticsBody: "Constructor diagnostics retain both the constructor scheme and expected ADT. Pattern hovers show substituted field types rather than declaration placeholders.",
+  provenanceBody: "This article covers specification section 2.14. The recursive-data lesson provides a canonical Tree<A>, recursive constructor use, construction, and typed matching."
+}

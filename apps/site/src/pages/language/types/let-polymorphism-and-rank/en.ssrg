@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Let-polymorphism and rank",
+  summary: "Non-recursive lets generalize environment-free variables at rank 1; saturated applications store their concrete result type.",
+  ruleTitle: "Generalize only what the environment does not own",
+  ruleBody: "After inferring a non-recursive let initializer, the checker quantifies free variables absent from the current environment. Each reference instantiates them freshly. Constraints depending on quantified variables remain in the scheme; environment-only constraints do not.",
+  identityBody: "A saturated generic call stores its resolved result, so wrap 42 binds Maybe<Int>, not a still-generic Maybe<A>. Rank 1 means containers, record fields, and function parameters cannot hold a value whose own scheme re-instantiates at each internal call.",
+  checkingBody: "Value and expected types resolve an applied function before generalization. Return-only ambiguity is rejected rather than fixed to an arbitrary nominal type. Recursive groups use their separate monomorphic-then-generalize rule.",
+  invalidTitle: "A function parameter is monomorphic within one call",
+  invalidBody: "A parameter typed A -> A cannot be called once at Bool and once at Int unless the outer declaration supplies two appropriate values. Seseragi has no higher-rank forall annotation to request that behavior.",
+  diagnosticsBody: "Tooling shows schemes on generalized let bindings and concrete types on saturated results. Rank errors identify the position attempting to store or pass a polymorphic value.",
+  provenanceBody: "This article covers specification section 2.13 and builds on sections 2.5 and 2.12. The highlighted callable-value fixture demonstrates generalized aliases and later concrete uses."
+}

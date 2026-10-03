@@ -1,0 +1,3 @@
+import { TypeCopy } from "../article"
+import { incomplete } from "../ja-fallback"
+pub fn copy -> TypeCopy = incomplete "Kinds" "Type・constructor kind・hole・arity検査を説明します。"

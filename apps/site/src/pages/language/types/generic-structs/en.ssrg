@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic structs",
+  summary: "Construction infers parameters from fields, while access, update, and spread preserve the receiver's exact type arguments.",
+  ruleTitle: "Infer construction from declared fields",
+  ruleBody: "Box { value: 42 } infers Box<Int>; Box<String> { value: \"hello\" } fixes A explicitly. Constraints from every field must agree, and explicit arguments take precedence while still being checked against fields and expected type.",
+  identityBody: "Access substitutes receiver arguments into the declaration, so Box<Int>.value is Int. Update and spread retain the original exact nominal arguments and cannot transform Box<Int> into Box<String>.",
+  checkingBody: "The constructor checks arity, resolves nested types, unifies field constraints, and rejects remaining holes before lowering. Missing, duplicate, unknown, and conflicting fields retain their ordinary struct diagnostics.",
+  invalidTitle: "An update does not re-infer nominal identity",
+  invalidBody: "Changing value to String in a Box<Int> update fails. Conflicting fields for one parameter, wrong explicit arity, or an unresolved explicit hole also stop at type checking.",
+  diagnosticsBody: "Construction diagnostics show which fields constrained each parameter. Access hovers substitute the receiver, and update diagnostics report the fixed original struct type.",
+  provenanceBody: "This article covers specification section 2.15. The generic-struct lesson and compile fixture demonstrate inferred construction, explicit parameters, access, and generic methods."
+}

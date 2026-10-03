@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Type parameter scope",
+  summary: "A declared type parameter owns one non-shadowable scope from its parameter list through the end of its declaration.",
+  ruleTitle: "Bind type names at the declaration",
+  ruleBody: "In fn map<A, B>, A and B enter scope immediately after the type-parameter list and remain available in parameter types, return types, constraints, the body, and explicit local annotations until the declaration ends.",
+  identityBody: "Inside that scope a type parameter wins over a same-named module type, but an inner declaration may not shadow it. Names begin uppercase, and an undeclared uppercase name is resolved as a type name rather than guessed as an implicit parameter.",
+  checkingBody: "The declaration list is checked for duplicates first, then every reference resolves against the active parameter scope and imported/module types. Each nested declaration introduces only its explicitly listed fresh names.",
+  invalidTitle: "Capitalization does not declare a parameter",
+  invalidBody: "Duplicate A parameters, nested shadowing of outer A, lowercase parameter names, and an unbound T are errors. The compiler never repairs them by inserting an implicit generic parameter.",
+  diagnosticsBody: "Scope diagnostics distinguish duplicate binding, forbidden shadowing, and undefined type. Definition jump targets the parameter declaration even when a module type has the same spelling.",
+  provenanceBody: "This article covers specification section 2.11. The highlighted HKT source demonstrates parameters in values, constraints, nested functions, and explicit annotations."
+}

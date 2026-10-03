@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic impls and methods",
+  summary: "Impl parameters come from the receiver type before method-local parameters follow ordinary generic call inference.",
+  ruleTitle: "Bind receiver parameters at the impl",
+  ruleBody: "impl<A> Box<A> binds A for every member, and A must occur in the target type. A method may add parameters after its own name, such as map<B>, without rebinding the impl parameter.",
+  identityBody: "Static receiver resolution first substitutes Box<Int> to determine impl A = Int. Only then does the selected method instantiate B from its value arguments and expected result. This is compile-time selection, not runtime generic dispatch.",
+  checkingBody: "The impl target establishes all impl-bound parameters. Method-local parameters, constraints, partial application, and ambiguity then use the same rules as generic functions.",
+  invalidTitle: "An impl parameter must be determined by its target",
+  invalidBody: "impl<A> Box<Int> leaves A unbound and is rejected. A method cannot shadow impl A, use the wrong self type, or rely on a later runtime value to choose an impl.",
+  diagnosticsBody: "Impl diagnostics identify undetermined or duplicate parameters before method bodies. Method hovers show receiver-substituted impl parameters and still-generic local parameters separately.",
+  provenanceBody: "This article covers specification section 2.16. The canonical generics lesson defines Box<A>, get, and map<B> and calls them through a concrete receiver."
+}

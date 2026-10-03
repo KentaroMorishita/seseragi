@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Kinds",
+  summary: "Kinds classify complete types and type constructors, so arity errors stop before a type reaches values or a backend.",
+  ruleTitle: "Type and constructor kinds",
+  ruleBody: "Kinds are Type or arrows between kinds. Ordinary parameters have kind Type; M<_> accepts a Type -> Type constructor. Maybe has Type -> Type, Pair has Type -> Type -> Type, and fully applied Maybe<Int> has Type.",
+  identityBody: "The hole _ marks constructor parameters or permitted partial applications; it is not a runtime wildcard and cannot remain in a value type. Maybe and Either<E, _> may satisfy constructor-kind positions, while complete Maybe<Int> may not.",
+  checkingBody: "Every application checks arity and kind independently. Ordinary type positions require complete Type results. Missing arguments are not Unknown, extra arguments are not ignored, and a value type cannot stand in for a constructor.",
+  invalidTitle: "Partial application belongs only where a constructor is requested",
+  invalidBody: "Bare Maybe and Pair<Int> are invalid value types. Passing Int or Maybe<Int> to M<_>, passing bare Either where one argument must already be fixed, or leaving _ in a value annotation is rejected.",
+  diagnosticsBody: "Kind diagnostics name expected and actual kinds plus the argument position. Tooling may show constructor arrows but never exposes kind holes as executable values.",
+  provenanceBody: "This article covers specification section 2.10. The highlighted HKT fixture uses F<_> and M<_> in real generic APIs; the invalid alias fixture covers value/constructor mismatches."
+}

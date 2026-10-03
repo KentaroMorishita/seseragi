@@ -1,0 +1,14 @@
+import { TypeCopy } from "../article"
+
+pub fn copy -> TypeCopy = TypeCopy {
+  title: "Generic functions",
+  summary: "Call sites instantiate fresh parameters, collect value and expected-type constraints, resolve traits, and reject remaining ambiguity.",
+  ruleTitle: "Five ordered inference steps",
+  ruleBody: "A call replaces each declared parameter with a fresh variable, gathers constraints from value arguments, adds any expected-return constraint, resolves trait evidence, then rejects unresolved variables. The declaration scheme quantifies every explicit parameter.",
+  identityBody: "Explicit arguments attach directly to the function name and follow declaration order. They must be all supplied or all omitted; named and partial type arguments do not exist. Instantiation changes checking variables, not runtime function identity.",
+  checkingBody: "Argument and expected-result constraints must agree with explicit arguments. A return-only parameter requires an expected type or explicit arguments, as with empty<A> returning List<A>.",
+  invalidTitle: "Omitted is allowed; partly specified is not",
+  invalidBody: "identity<String> 42 conflicts, a partial argument list is rejected, and empty () without an expected type is ambiguous. Trait evidence must still be unique after type variables resolve.",
+  diagnosticsBody: "Ambiguity diagnostics list unresolved parameters and the available remedies. Conflicting explicit arguments retain both the written type application and the value or expected-type source range.",
+  provenanceBody: "This article covers specification section 2.12. The callable-values fixture supplies generic identity, higher-order returns, constraints, and fresh uses."
+}
