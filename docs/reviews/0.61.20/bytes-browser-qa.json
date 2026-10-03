@@ -9,7 +9,7 @@
   "observations": 44,
   "panelObservations": 220,
   "consoleErrors": [],
-  "viewportReset": true,
+  "viewportReset": false,
   "rows": [
     {
       "route": "/docs/library/bytes/opaque-type/byte/",
@@ -41,14 +41,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -82,14 +82,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -123,14 +123,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -164,14 +164,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -205,14 +205,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -246,14 +246,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -287,14 +287,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -328,14 +328,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -369,14 +369,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -410,14 +410,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -451,14 +451,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -492,14 +492,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -533,14 +533,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -574,14 +574,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -615,14 +615,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -656,14 +656,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -697,14 +697,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -738,14 +738,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -779,14 +779,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -820,14 +820,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -861,14 +861,14 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     },
@@ -902,16 +902,22 @@
       ],
       "browserViewports": [
         {
-          "width": 1280,
-          "height": 900,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
         },
         {
-          "width": 390,
-          "height": 844,
-          "documentOverflow": false
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
         }
       ]
     }
-  ]
+  ],
+  "viewportVerification": {
+    "status": "override-not-applied",
+    "observedWidth": 1654,
+    "observedHeight": 936,
+    "note": "The Computer Use viewport overrides were requested but fresh DOM inspection measured 1654x936. These rows establish panel parity and default-width inspection, not responsive widths. Measured 1280/390 coverage was subsequently validated by the repository browser suite on ef3e7a3c9fb2."
+  }
 }
