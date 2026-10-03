@@ -15,13 +15,13 @@ fn render value: Either<ErrorInfo, Int> -> String = match value {
 let success: Either<String, Int> = Right 41
 let failure: Either<String, Int> = Left "invalid"
 let named = map increment success
-let operator = increment <$> success
+let viaOperator = increment <$> success
 let preserved = increment <$> failure
 let tagged = tagError failure
 
 pub effect fn main = do {
   named |> debug |> println
-  operator |> debug |> println
+  viaOperator |> debug |> println
   preserved |> debug |> println
   tagged |> render |> println
 }

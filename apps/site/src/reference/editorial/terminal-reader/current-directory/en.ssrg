@@ -3,7 +3,7 @@ import { TerminalCopy } from "../model"
 pub fn copy -> TerminalCopy = TerminalCopy {
   summary: "currentDirectory returns the running program’s working directory as a Path. Use paths.render to turn it into a string for display.",
   taskTitle: "Display the directory a command was launched from",
-  purpose: "Check which directory the program is working from. The example changes the shell’s directory to /tmp/seseragi-process-demo before launch, then prints Directory: /tmp/seseragi-process-demo.",
+  purpose: "Check which directory the program is working from. The Linux run shown below changes the shell’s directory to /tmp/seseragi-process-demo before launch, then prints Directory: /tmp/seseragi-process-demo.",
   typescriptBefore: "In Node.js or Bun TypeScript, use process.cwd() and handle an unsuccessful read with catch. The comparison’s replaceAll uses / for displayed separators; it does not change the working directory.",
   benefit: "Seseragi returns a Path and separates conversion to a display String through paths.render. This distinguishes a location value from text used to show it, while accounting for an unsuccessful read.",
   reading: [
@@ -14,6 +14,7 @@ pub fn copy -> TerminalCopy = TerminalCopy {
   details: [
     "The working directory is separate from the location of the source file or built entry.js. Launching the same entry.js from another directory changes the location this operation reads.",
     "The launch example uses a POSIX-style shell with cd. /tmp/seseragi-process-demo is a directory chosen for the example, not a fixed result from the API. Launch elsewhere and that location is displayed instead.",
+    "When /tmp is a symbolic link, a host can report its target directory. The macOS run of these sources printed Directory: /private/tmp/seseragi-process-demo. process.currentDirectory supplies that Path and paths.render converts it to text.",
     "Use paths.render to display a Path. Do not expect this operation to simplify path components or resolve symbolic links to their targets."
   ]
 }

@@ -179,10 +179,10 @@ pub effect fn guarded semaphore: semaphores.Semaphore -> Int =
   semaphores.withPermit semaphore (effects.succeed 42)
 
 pub effect fn parallel -> Array<Int> =
-  effects.traverseParallel
+  (effects.traverseParallel
     (effects.unboundedParallelism ())
     (\value: Int -> effects.succeed (value + 1))
-    [1, 2, 3]
+    [1, 2, 3])
 
 effect fn one -> Int = effects.succeed 1
 effect fn two -> Int = effects.succeed 2
@@ -436,15 +436,17 @@ fn passes_type_class_operators_as_source_order_function_values() {
     .expect("type-class operator sections should compile");
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
-    assert!(compiled.generated.typescript.contains(
-        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_functor[\"map\"](__ssrg$operator$argument$0)(__ssrg$operator$argument$1)"
-    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_functor[\"map\"](__ssrg$partial$0)(__ssrg$partial$1)"));
     assert!(compiled.generated.typescript.contains(
         "(__ssrg$operator$argument$1) => _ssrg_maybe_applicative[\"apply\"](_ssrg_maybe_Just(increment))(__ssrg$operator$argument$1)"
     ));
-    assert!(compiled.generated.typescript.contains(
-        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_monad[\"flatMap\"](__ssrg$operator$argument$1)(__ssrg$operator$argument$0)"
-    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_monad[\"flatMap\"](__ssrg$partial$1)(__ssrg$partial$0)"));
     assert!(compiled
         .generated
         .typescript
@@ -613,20 +615,13 @@ fn rejects_semantically_invalid_source_before_producing_outputs() {
 }
 
 #[test]
-fn rejects_an_unconstrained_lambda_before_producing_typescript() {
-    let diagnostics = compile_module(input(
-        "artifact/driver-invalid-lambda/main.ssrg",
-        "artifact/driver-invalid-lambda",
-        "pub let identity = \\value -> value\n",
-    ))
-    .expect_err("an unresolved lambda parameter must prevent emission");
-
-    assert_eq!(diagnostics.diagnostics.len(), 1);
-    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
-    assert_eq!(
-        diagnostics.diagnostics[0].message_key,
-        "lambda.parameter-type-unresolved"
-    );
+fn compiles_an_unconstrained_let_lambda_at_independent_types() {
+    let compiled = compile_module(input(
+        "artifact/driver-inferred-lambda/main.ssrg",
+        "artifact/driver-inferred-lambda",
+        "let identity = \\value -> value\nlet number = identity 42\nlet text = identity \"hello\"\npub effect fn main = println text\n",
+    )).expect("a non-recursive let lambda must acquire a polymorphic scheme");
+    assert!(compiled.generated.typescript.contains("identity"));
 }
 
 #[test]

@@ -186,7 +186,11 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     );
     let rebuilt_version = rebuilt_version.unwrap();
 
-    fs::write(&source_path, format!("{changed}\nmissingDevName\n")).unwrap();
+    fs::write(
+        &source_path,
+        format!("{changed}\nlet brokenDevValue = missingDevName\n"),
+    )
+    .unwrap();
     wait_for(
         Duration::from_secs(20),
         || {
@@ -411,7 +415,11 @@ fn recovers_when_the_initial_build_has_compiler_diagnostics() {
     update_lock(&project);
     let source_path = project.join("src/app.ssrg");
     let source = fs::read_to_string(&source_path).unwrap();
-    fs::write(&source_path, format!("{source}\nmissingInitialDevName\n")).unwrap();
+    fs::write(
+        &source_path,
+        format!("{source}\nlet brokenInitialDevValue = missingInitialDevName\n"),
+    )
+    .unwrap();
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))

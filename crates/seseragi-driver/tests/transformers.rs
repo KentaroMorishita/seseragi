@@ -15,7 +15,7 @@ let error: et.EitherT<String, Maybe, Int> = et.fromEither (Right 5)
 let reader: rt.ReaderT<Int, Maybe, Int> = rt.ask ()
 let state: st.StateT<Int, Maybe, Int> = st.get ()
 let writer: wt.WriterT<String, Maybe, Unit> = wt.tell "a"
-pub let values = (result, et.run error, rt.run 7 reader, st.run 8 state, wt.run writer)
+let values = (result, et.run error, rt.run 7 reader, st.run 8 state, wt.run writer)
 "#;
     let result = compile_module(CompileInput::new(
         "transformer.ssrg",
@@ -36,7 +36,7 @@ let lifted: Work<Int> = mt.lift (eff.succeed 4)
 let mapped: Work<Int> = map (\n: Int -> n + 1) lifted
 let nested: mt.MaybeT<st.StateT<Int, Maybe, _>, Int> = mt.fromMaybe (Just 2)
 pub let work: Effect<{}, Never, Maybe<Int>> = mt.run mapped
-pub let pure = st.run 0 (mt.run nested)
+let pure = st.run 0 (mt.run nested)
 "#;
     let result = compile_module(CompileInput::new("stack.ssrg", "fixture/stack", source));
     assert!(result.is_ok(), "{result:#?}");

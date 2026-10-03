@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "toIntはByteを同じ値のIntへ変えます。すでにByteとして受け入れられた値を、数値の表示や計算に使うための操作です。",
+  taskTitle: "検証済みの1バイトを整数として表示する",
+  purpose: "1バイトとして検証した値を整数に戻し、表示します。0と255はそのまま表示でき、-1と256はByteにならないためtoIntへ進みません。",
+  typescriptBefore: "TypeScriptでは範囲を調べたvalueも普通のnumberなので、成功後に別の数値変換は要りません。この例もそのまま文字列に埋め込みます。Number.isIntegerと上下限の比較は受け入れる値を決める検証であり、独自のByte型を作る処理ではありません。",
+  benefit: "TypeScript側に不要な変換を足す必要はありません。SeseragiでtoIntが役立つのは、ByteとIntが別の型だからです。引数にByteを要求するため、まだ検証結果を処理していない値や普通のIntを区別できます。",
+  setup: "import * as bytesでstd/bytesをbytesという別名から使います。fn describe value: Int -> Stringは整数を受けて文字列を返す関数です。bytes.toInt checkedは、関数名に続けて空白でcheckedを渡す呼び出しです。",
+  after: [
+    "最初のbytes.byte valueがIntを検証し、Either<ByteError, Byte>を返します。EitherのLeftは失敗、Rightは成功です。matchで分けるため、toIntを呼ぶ枝には成功した値だけが来ます。",
+    "Right checkedはByteをcheckedという名前で受け取ります。bytes.toInt checkedの結果はIntで、Byteと同じ0から255までの値です。ここで再び範囲エラーが返るわけではありません。",
+    "Left (bytes.ByteOutOfRange invalid)は、検証エラーに入った元の整数をinvalidとして読みます。この枝は失敗の文字列を返し、toIntを呼びません。ByteをByteというパターンで分解しているのではありません。",
+    "バッククォート文字列の${bytes.toInt checked}には計算結果を、${invalid}には変数の値を埋め込みます。それぞれの枝の->の右側がdescribeの返すStringです。",
+    "for value <- [0, 255, -1, 256]は各整数に順番にvalueという名前を付けます。describe valueを呼ぶと、0と255は数値を表示し、残り2つは検証に失敗したことを表示します。",
+  ],
+  details: [
+    "toIntはByte -> Intで、失敗を表すEitherを返しません。入力はすでにByteです。IntやEither<ByteError, Byte>をそのまま渡すことは型が異なるためできません。",
+    "Byteには公開されたByteコンストラクターやByteパターンがありません。整数の値が必要なら、内部の形を推測せずtoIntを使います。byteのほか、getで得たJustの中にもByteがあります。",
+    "この操作は1つのByte用です。Bytes全体の値を整数の配列として見たい場合はtoIntsを使います。ここでは文字コードへの変換は行いません。",
+  ],
+}

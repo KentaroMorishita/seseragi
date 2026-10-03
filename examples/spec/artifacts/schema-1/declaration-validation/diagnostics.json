@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.module-expression-statement",
+      "message": "Module top level only permits declarations",
+      "primary": {
+        "start": 0,
+        "end": 27
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Bind a pure value with let, or put the expression in a function body."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.function-annotations-required",
+      "message": "Ordinary functions require parameter and result type annotations",
+      "primary": {
+        "start": 28,
+        "end": 60
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Write each parameter as name: Type and end the signature with -> ResultType."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.function-annotations-required",
+      "message": "Ordinary functions require parameter and result type annotations",
+      "primary": {
+        "start": 69,
+        "end": 96
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Write each parameter as name: Type and end the signature with -> ResultType."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.public-let-annotation-required",
+      "message": "Public let declarations require a type annotation",
+      "primary": {
+        "start": 113,
+        "end": 118
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add : Type before =, or make the let declaration private."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.invalid-declaration-name",
+      "message": "Declaration contains an invalid or reserved name",
+      "primary": {
+        "start": 127,
+        "end": 133
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Use a non-reserved identifier with the letter case required by this declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.invalid-declaration-name",
+      "message": "Declaration contains an invalid or reserved name",
+      "primary": {
+        "start": 142,
+        "end": 147
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Use a non-reserved identifier with the letter case required by this declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

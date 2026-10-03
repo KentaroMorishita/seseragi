@@ -10,15 +10,15 @@
       "messageKey": "array.index-receiver-not-array",
       "message": "Array index receiver not array",
       "primary": {
-        "start": 24,
-        "end": 25
+        "start": 36,
+        "end": 37
       },
       "related": [
         {
           "message": "index access requires Array<A>, received Int",
           "primary": {
             "start": 0,
-            "end": 28
+            "end": 40
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "index access requires Array<A>, received Int",
           "primary": {
             "start": 0,
-            "end": 28
+            "end": 40
           }
         }
       ],
@@ -44,15 +44,15 @@
       "messageKey": "array.index-not-int",
       "message": "Array index not int",
       "primary": {
-        "start": 54,
-        "end": 58
+        "start": 78,
+        "end": 82
       },
       "related": [
         {
           "message": "array index must be Int, received Bool",
           "primary": {
-            "start": 29,
-            "end": 59
+            "start": 41,
+            "end": 83
           }
         }
       ],
@@ -60,8 +60,8 @@
         {
           "message": "array index must be Int, received Bool",
           "primary": {
-            "start": 29,
-            "end": 59
+            "start": 41,
+            "end": 83
           }
         }
       ],
@@ -78,15 +78,15 @@
       "messageKey": "array.index-receiver-not-array",
       "message": "Array index receiver not array",
       "primary": {
-        "start": 75,
-        "end": 79
+        "start": 111,
+        "end": 115
       },
       "related": [
         {
           "message": "index access requires Array<A>, received List<Int>",
           "primary": {
-            "start": 60,
-            "end": 82
+            "start": 84,
+            "end": 118
           }
         }
       ],
@@ -94,8 +94,8 @@
         {
           "message": "index access requires Array<A>, received List<Int>",
           "primary": {
-            "start": 60,
-            "end": 82
+            "start": 84,
+            "end": 118
           }
         }
       ],
@@ -112,15 +112,15 @@
       "messageKey": "array.index-receiver-not-array",
       "message": "Array index receiver not array",
       "primary": {
-        "start": 99,
-        "end": 105
+        "start": 147,
+        "end": 153
       },
       "related": [
         {
           "message": "index access requires Array<A>, received (Int, Int)",
           "primary": {
-            "start": 83,
-            "end": 108
+            "start": 119,
+            "end": 156
           }
         }
       ],
@@ -128,8 +128,8 @@
         {
           "message": "index access requires Array<A>, received (Int, Int)",
           "primary": {
-            "start": 83,
-            "end": 108
+            "start": 119,
+            "end": 156
           }
         }
       ],

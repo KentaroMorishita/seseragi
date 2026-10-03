@@ -2,6 +2,6 @@ fn next value: Int -> Maybe<Int> = Just (value + 1)
 
 let source: Maybe<Int> = Just 41
 let named: Maybe<Int> = flatMap next source
-let operator: Maybe<Int> = source >>= next
+let viaOperator: Maybe<Int> = source >>= next
 
-pub effect fn main = println $ `flatMap: ${named} / >>=: ${operator}`
+pub effect fn main = println $ `flatMap: ${named} / >>=: ${viaOperator}`

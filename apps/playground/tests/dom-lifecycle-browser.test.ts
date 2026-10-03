@@ -44,7 +44,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await browser?.close()
-  server?.stop(true)
+  await server?.stop(true)
 })
 
 test("owns mount, hydration, coarse updates, cancellation, and cleanup in a browser", async () => {
@@ -217,14 +217,18 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       },
     })
 
+    const fixturePort = fixtureServer.port
+    expect(Number.isInteger(fixturePort)).toBe(true)
+    expect(fixturePort).toBeGreaterThan(0)
+    expect(fixturePort).toBeLessThan(65_536)
+    const fixtureOrigin = `http://127.0.0.1:${fixturePort}`
+
     const hydrationPage = await browser.newPage()
     const hydrationErrors: string[] = []
     hydrationPage.on("pageerror", (error) =>
       hydrationErrors.push(error.message)
     )
-    await hydrationPage.goto(
-      `http://127.0.0.1:${fixtureServer.port}/hydration/`
-    )
+    await hydrationPage.goto(`${fixtureOrigin}/hydration/`)
     await hydrationPage.waitForFunction(
       () => document.documentElement.dataset.seseragiStatus === "completed"
     )
@@ -237,7 +241,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     const signalPage = await browser.newPage()
     const signalErrors: string[] = []
     signalPage.on("pageerror", (error) => signalErrors.push(error.message))
-    await signalPage.goto(`http://127.0.0.1:${fixtureServer.port}/signal/`)
+    await signalPage.goto(`${fixtureOrigin}/signal/`)
     await signalPage.locator("#count").waitFor()
     await signalPage.locator("#increment").click()
     await signalPage.waitForFunction(
@@ -255,7 +259,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     const reactivePage = await browser.newPage()
     const reactiveErrors: string[] = []
     reactivePage.on("pageerror", (error) => reactiveErrors.push(error.message))
-    await reactivePage.goto(`http://127.0.0.1:${fixtureServer.port}/reactive/`)
+    await reactivePage.goto(`${fixtureOrigin}/reactive/`)
     await reactivePage.locator("#count").waitFor()
     await reactivePage.evaluate(() => {
       const state = window as typeof window & {
@@ -419,7 +423,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(reactiveErrors).toEqual([])
     await reactivePage.close()
   } finally {
-    fixtureServer?.stop(true)
+    await fixtureServer?.stop(true)
     await rm(directory, { recursive: true, force: true })
   }
 }, 120_000)

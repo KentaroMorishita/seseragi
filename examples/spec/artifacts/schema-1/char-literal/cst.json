@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 161,
+    "endToken": 164,
     "children": [
       {
         "kind": "top-decl",
@@ -386,7 +386,7 @@
       {
         "kind": "top-decl",
         "startToken": 151,
-        "endToken": 161,
+        "endToken": 164,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -397,24 +397,24 @@
           {
             "kind": "let-decl",
             "startToken": 153,
-            "endToken": 161,
+            "endToken": 164,
             "children": []
           },
           {
             "kind": "complete-declaration",
             "startToken": 151,
-            "endToken": 160,
+            "endToken": 163,
             "children": [
               {
                 "kind": "complete-signature",
                 "startToken": 151,
-                "endToken": 159,
+                "endToken": 162,
                 "children": []
               },
               {
                 "kind": "complete-expression",
-                "startToken": 159,
-                "endToken": 160,
+                "startToken": 162,
+                "endToken": 163,
                 "children": []
               }
             ]

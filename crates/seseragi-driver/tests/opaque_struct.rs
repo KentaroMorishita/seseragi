@@ -37,9 +37,9 @@ fn preserves_opaque_identity_and_evidence_through_reexport() {
         r#"
 import { Secret, Box, create, read, unpack, update, box, unbox, nested, collect } from "./facade"
 pub let secret: Secret = create 7
-pub let value = (read secret, unpack secret, show secret, secret == create 7)
+let value = (read secret, unpack secret, show secret, secret == create 7)
 pub let generic: Box<Int> = box 42
-pub let values = (unbox generic, nested (box secret), collect [secret])
+let values = (unbox generic, nested (box secret), collect [secret])
 "#,
     )
     .unwrap();

@@ -1,5 +1,5 @@
 import * as html from "std/web/html"
 
-fn card title: String = html.h2 { children: title }
+fn card title: String -> html.Html<Unit> = html.h2 { children: title }
 
 let invalid = card 42

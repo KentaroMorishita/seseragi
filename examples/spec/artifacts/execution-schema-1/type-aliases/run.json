@@ -33,8 +33,9 @@
   "expected": {
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
-      "signal.mutable-type",
       "effect.core.type",
+      "effect.console.service",
+      "signal.mutable-type",
       "web.html.type",
       "signal.type",
       "core.adt",

@@ -10,6 +10,10 @@ import {
 import { join, resolve } from "node:path"
 import { apiCorrectionExamples } from "../scripts/api-corrections"
 import {
+  bytesInspectionExamples,
+  bytesInspectionRoutes,
+} from "../scripts/bytes-inspection"
+import {
   bytesReaderCases,
   bytesReaderExamples,
   bytesReaderRoutes,
@@ -53,6 +57,7 @@ function input(referenceModules: ReturnType<typeof compilerReferenceModules>) {
     grammar: "",
     examples: [
       ...examples,
+      ...bytesInspectionExamples("https://seseragi.vercel.app/"),
       ...textEditorialExamples("https://seseragi.vercel.app/"),
       ...charTextExamples("https://seseragi.vercel.app/"),
       ...apiCorrectionExamples("https://seseragi.vercel.app/"),
@@ -121,7 +126,16 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
     for (let i = 0; i < controls.length; i++) {
       const row = result[probes.length + i]
       expect(row[0]).toBe(false)
-      if (controls[i].module !== "std/text") expect(row[1]).toBe(false)
+      if (controls[i].module !== "std/text") {
+        const newlyAuthored = bytesInspectionRoutes.some(
+          (item) =>
+            item.identity === controls[i].identity &&
+            item.module === controls[i].module &&
+            item.namespace === controls[i].namespace &&
+            item.kind === controls[i].itemKind
+        )
+        expect(row[1]).toBe(newlyAuthored)
+      }
       if (controls[i].identity === "std/text::contains")
         expect(row[1]).toBe(true)
     }
@@ -372,10 +386,24 @@ pub effect fn main = match decodeBuildInput ${JSON.stringify(JSON.stringify(data
       }
     expect(bodies).toHaveLength(40)
     expect(titleLinks).toBeGreaterThanOrEqual(120)
-    for (const prefix of ["", "/ja"])
-      expect(
-        pages.get(`${prefix}/docs/library/bytes/function/slice/`)
-      ).not.toContain('id="typescript-comparison"')
+    const copyControl = modules
+      .find((module) => module.specifier === "std/bytes")!
+      .items.find(
+        (item) =>
+          item.identity === "std/bytes::copy" &&
+          item.namespace === "value" &&
+          item.itemKind === "function"
+      )
+    expect(copyControl).toBeDefined()
+    expect(copyControl!.signature).toBe("copy arg1: Bytes -> Bytes")
+    expect(copyControl!.reading.en.length).toBeGreaterThan(0)
+    expect(copyControl!.reading.ja.length).toBeGreaterThan(0)
+    for (const prefix of ["", "/ja"]) {
+      const generic = pages.get(`${prefix}/docs/library/bytes/function/copy/`)
+      expect(generic).toBeDefined()
+      expect(plain(generic!)).toContain(copyControl!.signature)
+      expect(generic).not.toContain('id="typescript-comparison"')
+    }
     const output = process.env.BYTES_READER_RENDER_DIR
     if (output) {
       mkdirSync(output, { recursive: true })

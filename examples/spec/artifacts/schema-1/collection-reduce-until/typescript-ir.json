@@ -1123,13 +1123,13 @@
             },
             "initializer": {
               "kind": "lambda",
-              "parameter": "__ssrg$collection$partial$0: number",
+              "parameter": "__ssrg$partial$0: number",
               "body": {
                 "kind": "lambda",
-                "parameter": "__ssrg$collection$partial$1: (argument: number) => (argument: number) => ReduceStep<number>",
+                "parameter": "__ssrg$partial$1: (argument: number) => (argument: number) => ReduceStep<number>",
                 "body": {
                   "kind": "lambda",
-                  "parameter": "__ssrg$collection$partial$2: ReadonlyArray<number>",
+                  "parameter": "__ssrg$partial$2: ReadonlyArray<number>",
                   "body": {
                     "kind": "runtime-call",
                     "callee": "_ssrg_collection_reduceUntil",
@@ -1140,15 +1140,15 @@
                       },
                       {
                         "kind": "identifier",
-                        "name": "__ssrg$collection$partial$0"
+                        "name": "__ssrg$partial$0"
                       },
                       {
                         "kind": "identifier",
-                        "name": "__ssrg$collection$partial$1"
+                        "name": "__ssrg$partial$1"
                       },
                       {
                         "kind": "identifier",
-                        "name": "__ssrg$collection$partial$2"
+                        "name": "__ssrg$partial$2"
                       }
                     ]
                   }

@@ -21,7 +21,9 @@ setDefaultTimeout(180_000)
 const root = resolve(import.meta.dir, "../../..")
 const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/debug/seseragi")
 const bun = process.env.SESERAGI_BUN ?? process.execPath
-const node = process.env.SESERAGI_NODE ?? "node"
+const node = Bun.which(process.env.SESERAGI_NODE ?? "node")
+if (!node)
+  throw new Error("The reader suite requires an installed Node executable")
 const runtimes = [
   ["node", node],
   ["bun", bun],

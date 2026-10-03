@@ -2,7 +2,7 @@ pub struct Box<A> {
   value: A,
 }
 
-pub let inferred = Box { value: 42 }
+pub let inferred: Box<Int> = Box { value: 42 }
 
 fn replace<A> value: A -> box: Box<A> -> Box<A> =
   Box { ...box, value }

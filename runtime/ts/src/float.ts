@@ -234,8 +234,11 @@ export function roundIntegral(rounding: RoundingMode, value: number): number {
       return rounded === 0 && value < 0 ? -0 : rounded
     }
     case "HalfUp": {
-      const magnitude = Math.floor(Math.abs(value) + 0.5)
-      return value < 0 ? -magnitude : magnitude
+      const magnitude = Math.abs(value)
+      const integral = Math.floor(magnitude)
+      // Adding 0.5 first can round a below-midpoint value or a large integer up.
+      const rounded = magnitude - integral < 0.5 ? integral : integral + 1
+      return value < 0 ? -rounded : rounded
     }
     case "TowardZero":
       return Math.trunc(value)

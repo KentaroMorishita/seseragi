@@ -11,7 +11,7 @@ import { assertReferenceLinkTitles, pageTitle } from "./reference-titles"
 
 const root = resolve(import.meta.dir, "../../..")
 // This test builds all 3976 routes twice to verify deterministic output.
-// Complete-metadata 32-page batches measured about 1.6s each (125 batches).
+// Release-profile complete-metadata batches measured about 1.6s each (125 batches).
 // Include compilation and retain a finite deadline for each complete build.
 const buildTimeout = 420_000
 setDefaultTimeout(2 * buildTimeout + 60_000)
@@ -41,6 +41,7 @@ function build(output: string): SiteManifest {
       timeout: buildTimeout,
       env: {
         ...process.env,
+        NODE_ENV: "production",
         SESERAGI_BIN: resolve(
           root,
           process.env.SESERAGI_BIN ?? "target/debug/seseragi"

@@ -329,7 +329,7 @@ mod tests {
                 VirtualSourceFile::new("feature/value.ssrg", "pub let value: Int = 42\n"),
                 VirtualSourceFile::new(
                     "main.ssrg",
-                    "import { value } from \"./feature/value\"\npub let answer = value\n",
+                    "import { value } from \"./feature/value\"\npub let answer: Int = value\n",
                 ),
             ],
         )
@@ -353,7 +353,7 @@ mod tests {
                 manifest(),
                 [VirtualSourceFile::new(
                     "cafe\u{301}.ssrg",
-                    "pub let value = 1\n"
+                    "pub let value: Int = 1\n"
                 )],
             ),
             Err(VirtualPackageLoadError::NonCanonicalSourcePath { .. })
@@ -387,10 +387,14 @@ mod tests {
         ));
         fs::create_dir_all(root.join("src/feature")).unwrap();
         fs::write(root.join("seseragi.toml"), manifest()).unwrap();
-        fs::write(root.join("src/feature/value.ssrg"), "pub let value = 42\n").unwrap();
+        fs::write(
+            root.join("src/feature/value.ssrg"),
+            "pub let value: Int = 42\n",
+        )
+        .unwrap();
         fs::write(
             root.join("src/main.ssrg"),
-            "import { value } from \"./feature/value\"\npub let answer = value\n",
+            "import { value } from \"./feature/value\"\npub let answer: Int = value\n",
         )
         .unwrap();
 
@@ -399,10 +403,10 @@ mod tests {
             "playground",
             manifest(),
             [
-                VirtualSourceFile::new("feature/value.ssrg", "pub let value = 42\n"),
+                VirtualSourceFile::new("feature/value.ssrg", "pub let value: Int = 42\n"),
                 VirtualSourceFile::new(
                     "main.ssrg",
-                    "import { value } from \"./feature/value\"\npub let answer = value\n",
+                    "import { value } from \"./feature/value\"\npub let answer: Int = value\n",
                 ),
             ],
         )

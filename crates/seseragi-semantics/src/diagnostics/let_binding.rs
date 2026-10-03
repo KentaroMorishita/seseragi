@@ -23,6 +23,7 @@ pub(super) fn collect_let_binding_diagnostics(
     let context = PureExpressionContext::new(&[], resolution).with_expected(
         annotation.map(|annotation| resolution.semantic_value_from_type_ref(annotation)),
     );
+    let context = context.with_let_expectation(body);
     let analysis = analyze_resolved_expression(body, &context);
     if analysis.array_issue.is_some()
         || analysis.range_issue.is_some()

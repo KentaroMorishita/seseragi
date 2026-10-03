@@ -1,6 +1,8 @@
 fn double value: Int -> Int = value * 2
 let named: Maybe<Int> = map double (Just 21)
-let operator: Maybe<Int> = double <$> Just 21
+let viaOperator: Maybe<Int> = double <$> Just 21
 let missing: Maybe<Int> = double <$> Nothing
 
-pub effect fn main = println $ `map: ${named} / <$>: ${operator} / missing: ${missing}`
+pub effect fn main =
+  println $
+  `map: ${named} / <$>: ${viaOperator} / missing: ${missing}`

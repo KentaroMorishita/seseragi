@@ -1,0 +1,923 @@
+{
+  "schema": 1,
+  "sourceCandidate": "2e40b880d322a53ea90069d502db50e50c4520d5",
+  "productionOutput": "/tmp/seseragi-06120-unified-production",
+  "pages": 3976,
+  "browser": "existing Chrome session through Computer Use",
+  "articleParity": "exact SHA-256 and byte equality against transferred final cloud articles",
+  "browserFingerprint": "noncryptographic FNV-1a over UTF-16 code units plus length; checked against decoded artifact panels",
+  "observations": 44,
+  "panelObservations": 220,
+  "consoleErrors": [],
+  "viewportReset": false,
+  "rows": [
+    {
+      "route": "/docs/library/bytes/opaque-type/byte/",
+      "cloudArticleSha256": "41409242c98e10859bb9509cde725c4e58a052cd588473e6e3d203f0a0289ed8",
+      "macArticleSha256": "41409242c98e10859bb9509cde725c4e58a052cd588473e6e3d203f0a0289ed8",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/opaque-type/byte/",
+      "cloudArticleSha256": "4dfbc6bd4820a641cee4180f11c04f14a3a31fd651b739cbd09e22abe59de83b",
+      "macArticleSha256": "4dfbc6bd4820a641cee4180f11c04f14a3a31fd651b739cbd09e22abe59de83b",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/opaque-type/bytessliceerror/",
+      "cloudArticleSha256": "e66743588fcf15c77bae7973f6367c3246e16cd5fc6e5afd20c986b30bf0cc19",
+      "macArticleSha256": "e66743588fcf15c77bae7973f6367c3246e16cd5fc6e5afd20c986b30bf0cc19",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 637,
+          "fnv1aUtf16": "bed05947"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 649,
+          "fnv1aUtf16": "82d96314"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 48,
+          "fnv1aUtf16": "29fbebf3"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/opaque-type/bytessliceerror/",
+      "cloudArticleSha256": "5f31cae856a75df8b9f51977e313183ad12f6c470d2c6f94ae8b32efedab0180",
+      "macArticleSha256": "5f31cae856a75df8b9f51977e313183ad12f6c470d2c6f94ae8b32efedab0180",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 637,
+          "fnv1aUtf16": "bed05947"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 649,
+          "fnv1aUtf16": "82d96314"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 48,
+          "fnv1aUtf16": "29fbebf3"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/byte/",
+      "cloudArticleSha256": "12efcddd903e3789188d336ff07484582daafc01c89b6de28f00cac71e4cf2fa",
+      "macArticleSha256": "12efcddd903e3789188d336ff07484582daafc01c89b6de28f00cac71e4cf2fa",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/byte/",
+      "cloudArticleSha256": "8a44ed5b8147eda5d6d5d12a84cadd10903750cb98e0a059ab03ad90b4b3efaa",
+      "macArticleSha256": "8a44ed5b8147eda5d6d5d12a84cadd10903750cb98e0a059ab03ad90b4b3efaa",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/toint/",
+      "cloudArticleSha256": "9b3a2613b76e13a0400c8d1cdd84ffa7040df6892cb27f8451d83f65298badca",
+      "macArticleSha256": "9b3a2613b76e13a0400c8d1cdd84ffa7040df6892cb27f8451d83f65298badca",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/toint/",
+      "cloudArticleSha256": "577513dc41161c50fdc5a0439b5e3056f52d62f44408fc6f47f6da393005eb37",
+      "macArticleSha256": "577513dc41161c50fdc5a0439b5e3056f52d62f44408fc6f47f6da393005eb37",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 245,
+          "fnv1aUtf16": "55134d21"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 299,
+          "fnv1aUtf16": "5aa22517"
+        },
+        {
+          "units": 53,
+          "fnv1aUtf16": "7989a372"
+        },
+        {
+          "units": 52,
+          "fnv1aUtf16": "e8ebef32"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/empty/",
+      "cloudArticleSha256": "775677b9f32541f5f1c71f41d2e887ce967f52aa428bc0b26da32fe07b109568",
+      "macArticleSha256": "775677b9f32541f5f1c71f41d2e887ce967f52aa428bc0b26da32fe07b109568",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/empty/",
+      "cloudArticleSha256": "93f8f1c2030c00e4c8114583dfc17eab45b1d5bcd20e684624f2b51b8ff53063",
+      "macArticleSha256": "93f8f1c2030c00e4c8114583dfc17eab45b1d5bcd20e684624f2b51b8ff53063",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/singleton/",
+      "cloudArticleSha256": "8beef522a794b6983e8ab84c11f83d39d24dfc51b37fc9b3cdd36a3b59482081",
+      "macArticleSha256": "8beef522a794b6983e8ab84c11f83d39d24dfc51b37fc9b3cdd36a3b59482081",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/singleton/",
+      "cloudArticleSha256": "597a526592368a7cefb4871cf9c817431af2785fea98f4b3cf0e437b18030c20",
+      "macArticleSha256": "597a526592368a7cefb4871cf9c817431af2785fea98f4b3cf0e437b18030c20",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/isempty/",
+      "cloudArticleSha256": "8d3768d510d35827b3499fb7fe2b22102ef70e23e174a2806e333ecf1c24f98a",
+      "macArticleSha256": "8d3768d510d35827b3499fb7fe2b22102ef70e23e174a2806e333ecf1c24f98a",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/isempty/",
+      "cloudArticleSha256": "16f045c4699589cae722616a02a06d3f41afb3bab56e7ff7a912a85486444384",
+      "macArticleSha256": "16f045c4699589cae722616a02a06d3f41afb3bab56e7ff7a912a85486444384",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 360,
+          "fnv1aUtf16": "f01738fb"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 365,
+          "fnv1aUtf16": "8faa8525"
+        },
+        {
+          "units": 18,
+          "fnv1aUtf16": "a4f5cca8"
+        },
+        {
+          "units": 54,
+          "fnv1aUtf16": "d84e2b8f"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/get/",
+      "cloudArticleSha256": "bba8ddc3e646631738ac2177aa61a1c78b5f7b3d4f905127ed30cdd7e1fb516e",
+      "macArticleSha256": "bba8ddc3e646631738ac2177aa61a1c78b5f7b3d4f905127ed30cdd7e1fb516e",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 222,
+          "fnv1aUtf16": "96761ab0"
+        },
+        {
+          "units": 59,
+          "fnv1aUtf16": "3754068e"
+        },
+        {
+          "units": 396,
+          "fnv1aUtf16": "5977c9ee"
+        },
+        {
+          "units": 59,
+          "fnv1aUtf16": "3754068e"
+        },
+        {
+          "units": 47,
+          "fnv1aUtf16": "a025b61d"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/get/",
+      "cloudArticleSha256": "1092efe67dc4ea421e803b1fc1377f4ccae3eef1402b01903c23965b5f94d941",
+      "macArticleSha256": "1092efe67dc4ea421e803b1fc1377f4ccae3eef1402b01903c23965b5f94d941",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 222,
+          "fnv1aUtf16": "96761ab0"
+        },
+        {
+          "units": 59,
+          "fnv1aUtf16": "3754068e"
+        },
+        {
+          "units": 396,
+          "fnv1aUtf16": "5977c9ee"
+        },
+        {
+          "units": 59,
+          "fnv1aUtf16": "3754068e"
+        },
+        {
+          "units": 47,
+          "fnv1aUtf16": "a025b61d"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/slice/",
+      "cloudArticleSha256": "227ffaa01dc1fa87d9a29682ac2cc2a595c07cdee88c76429e25b53959a469fc",
+      "macArticleSha256": "227ffaa01dc1fa87d9a29682ac2cc2a595c07cdee88c76429e25b53959a469fc",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 637,
+          "fnv1aUtf16": "bed05947"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 649,
+          "fnv1aUtf16": "82d96314"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 48,
+          "fnv1aUtf16": "29fbebf3"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/slice/",
+      "cloudArticleSha256": "ebaf926fd9bc4101cdebe88acae40cbfd285dd82865afb5825d164d38c7680fe",
+      "macArticleSha256": "ebaf926fd9bc4101cdebe88acae40cbfd285dd82865afb5825d164d38c7680fe",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 637,
+          "fnv1aUtf16": "bed05947"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 649,
+          "fnv1aUtf16": "82d96314"
+        },
+        {
+          "units": 123,
+          "fnv1aUtf16": "3bcf9e4f"
+        },
+        {
+          "units": 48,
+          "fnv1aUtf16": "29fbebf3"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/append/",
+      "cloudArticleSha256": "db61d301f67e340f9dfaa542089ad7b96ff7cb6db2034000bc96f9f3b30ed623",
+      "macArticleSha256": "db61d301f67e340f9dfaa542089ad7b96ff7cb6db2034000bc96f9f3b30ed623",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 465,
+          "fnv1aUtf16": "2bcf0cb4"
+        },
+        {
+          "units": 69,
+          "fnv1aUtf16": "9f0612f3"
+        },
+        {
+          "units": 476,
+          "fnv1aUtf16": "d5f05597"
+        },
+        {
+          "units": 69,
+          "fnv1aUtf16": "9f0612f3"
+        },
+        {
+          "units": 47,
+          "fnv1aUtf16": "f311ecc8"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/append/",
+      "cloudArticleSha256": "6ede6431010ab8ee54b2c74060af35ec95e6cf5b32af819c2a061bdddc27c21b",
+      "macArticleSha256": "6ede6431010ab8ee54b2c74060af35ec95e6cf5b32af819c2a061bdddc27c21b",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 465,
+          "fnv1aUtf16": "2bcf0cb4"
+        },
+        {
+          "units": 69,
+          "fnv1aUtf16": "9f0612f3"
+        },
+        {
+          "units": 476,
+          "fnv1aUtf16": "d5f05597"
+        },
+        {
+          "units": 69,
+          "fnv1aUtf16": "9f0612f3"
+        },
+        {
+          "units": 47,
+          "fnv1aUtf16": "f311ecc8"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/docs/library/bytes/function/concat/",
+      "cloudArticleSha256": "285d3e5f679d6647ca0317b7bda4e99b7792b04e4cb644da32fdb6627c1d6422",
+      "macArticleSha256": "285d3e5f679d6647ca0317b7bda4e99b7792b04e4cb644da32fdb6627c1d6422",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 499,
+          "fnv1aUtf16": "58a74962"
+        },
+        {
+          "units": 30,
+          "fnv1aUtf16": "5c4da9fb"
+        },
+        {
+          "units": 422,
+          "fnv1aUtf16": "0d9ecb93"
+        },
+        {
+          "units": 30,
+          "fnv1aUtf16": "5c4da9fb"
+        },
+        {
+          "units": 46,
+          "fnv1aUtf16": "edd34edf"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    },
+    {
+      "route": "/ja/docs/library/bytes/function/concat/",
+      "cloudArticleSha256": "304c782d04410dd68659e81b712029e1fa475300ae424921bb04ee0834cb4d60",
+      "macArticleSha256": "304c782d04410dd68659e81b712029e1fa475300ae424921bb04ee0834cb4d60",
+      "equal": true,
+      "panelCount": 5,
+      "panels": [
+        {
+          "units": 499,
+          "fnv1aUtf16": "58a74962"
+        },
+        {
+          "units": 30,
+          "fnv1aUtf16": "5c4da9fb"
+        },
+        {
+          "units": 422,
+          "fnv1aUtf16": "0d9ecb93"
+        },
+        {
+          "units": 30,
+          "fnv1aUtf16": "5c4da9fb"
+        },
+        {
+          "units": 46,
+          "fnv1aUtf16": "edd34edf"
+        }
+      ],
+      "browserViewports": [
+        {
+          "documentOverflow": false,
+          "requestedWidth": 1280,
+          "requestedHeight": 900
+        },
+        {
+          "documentOverflow": false,
+          "requestedWidth": 390,
+          "requestedHeight": 844
+        }
+      ]
+    }
+  ],
+  "viewportVerification": {
+    "status": "override-not-applied",
+    "observedWidth": 1654,
+    "observedHeight": 936,
+    "note": "The Computer Use viewport overrides were requested but fresh DOM inspection measured 1654x936. These rows establish panel parity and default-width inspection, not responsive widths. Measured 1280/390 coverage was subsequently validated by the repository browser suite on ef3e7a3c9fb2."
+  }
+}

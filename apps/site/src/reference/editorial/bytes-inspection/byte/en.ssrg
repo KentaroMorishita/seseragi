@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "byte checks whether an Int is between 0 and 255. It returns either a successful Byte or a ByteError, wrapped in an Either result.",
+  taskTitle: "Reject an out-of-range number instead of converting it to a byte",
+  purpose: "Accept an input only when it fits in one byte, without rounding or wrapping it. Check 0, 255, -1, and 256 in order to see which values succeed at the boundaries.",
+  typescriptBefore: "TypeScript explicitly checks that the value is an integer from 0 through 255. Passing it to Uint8Array alone does not implement this rejection policy: for example, 256 becomes 0. This example displays the validated number directly and does not introduce a custom Byte type.",
+  benefit: "Seseragi’s byte provides the validation rule and the successful Byte in one API. Either<ByteError, Byte> makes the possible failure visible, and the success branch supplies a Byte for the next operation.",
+  setup: "import * as bytes gives std/bytes the alias bytes. fn describe value: Int -> String defines a function from an Int argument named value to a String. bytes.byte value calls the function with value after a space.",
+  after: [
+    "byte takes an Int, which is an integer. Its Either<ByteError, Byte> result holds a validation error in Left or a successful Byte in Right. match separates the two cases and evaluates the expression after the chosen branch’s ->.",
+    "Left (bytes.ByteOutOfRange invalid) checks the error case and binds the rejected original integer to invalid. The ${invalid} inside the backtick string inserts that value into the message.",
+    "Right checked receives the validated Byte as checked. bytes.toInt checked converts it to an integer, and ${bytes.toInt checked} inserts it into the string. You do not need to access the Byte’s private representation.",
+    "for value <- [0, 255, -1, 256] binds each array value to value in order. The parenthesized describe value call makes a string explaining each input, which is then printed.",
+    "0 and 255 succeed; -1 and 256 fail. Successful validation preserves the value. An out-of-range input is not wrapped into a different byte and accepted.",
+  ],
+  details: [
+    "The range includes both 0 and 255. TypeScript’s number can also hold fractions, so its comparison needs Number.isInteger. Seseragi’s byte requires an Int. This does not mean the languages’ numeric types are equivalent for all possible numbers.",
+    "You cannot pass the result of byte directly to singleton or toInt. Those functions require Byte, rather than an entire Either. Receive the successful value in Right before passing it on.",
+    "Byte has a private representation and no public Byte value constructor. Use byte to validate a number and obtain a Byte. To validate an array of integers and obtain Bytes instead, use fromInts.",
+  ],
+}

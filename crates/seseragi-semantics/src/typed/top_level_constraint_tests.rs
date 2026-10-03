@@ -152,23 +152,37 @@ fn captures_concrete_evidence_for_a_generic_custom_operator_value() {
         panic!("expected total function call");
     };
 
-    assert!(matches!(
-        arguments.as_slice(),
-        [TypedExpr::Call {
-            arguments,
-            evidence,
-            deferred_evidence_parameters,
+    let TypedExpr::Lambda {
+        parameter: left,
+        body,
+        ..
+    } = &arguments[0]
+    else {
+        panic!("expected first constrained callable parameter");
+    };
+    let TypedExpr::Lambda {
+        parameter: right,
+        body,
+        ..
+    } = body.as_ref()
+    else {
+        panic!("expected second constrained callable parameter");
+    };
+    for parameter in [left, right] {
+        assert!(
+            matches!(parameter, crate::TypedParameter::Named { type_ref: crate::TypedType::Named { name, arguments }, .. } if name == "Int" && arguments.is_empty())
+        );
+    }
+    assert!(matches!(body.as_ref(), TypedExpr::Call {
+        arguments,
+        evidence,
+        deferred_evidence_parameters,
+        ..
+    } if arguments.len() == 2
+        && deferred_evidence_parameters.is_empty()
+        && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+            evidence: TypedInstanceEvidence::Local { .. },
             ..
-        }, _, _]
-            if arguments.is_empty()
-                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Local { .. },
-                    ..
-                }])
-                && matches!(deferred_evidence_parameters.as_slice(), [
-                    crate::TypedType::Named { name: left, arguments: left_arguments },
-                    crate::TypedType::Named { name: right, arguments: right_arguments },
-                ] if left == "Int" && left_arguments.is_empty()
-                    && right == "Int" && right_arguments.is_empty())
+        }])
     ));
 }

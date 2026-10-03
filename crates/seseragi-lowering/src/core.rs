@@ -599,6 +599,10 @@ pub enum CoreMonadDoStatement {
         value: CoreExpr,
     },
     PureLet {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<CoreInstanceConstraint>,
         name: String,
         #[serde(rename = "type")]
         type_ref: CoreType,
@@ -746,6 +750,36 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     .collect(),
                 origin: source_span(&module.source, origin),
             }),
+            TypedDecl::Let {
+                bindings: pattern_bindings,
+                scheme,
+                visibility,
+                origin,
+                value,
+                ..
+            } if !scheme.constraints.is_empty() => {
+                let (parameters, body) = expr::peel_lambdas(value);
+                functions.push(CoreFunction {
+                    symbol: pattern_bindings[0].symbol.clone(),
+                    visibility,
+                    origin: source_span(&module.source, origin),
+                    is_effect: false,
+                    type_parameters: scheme.type_parameters,
+                    constraints: scheme
+                        .constraints
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, constraint)| {
+                            instances::lower_constraint_with_identity(
+                                constraint,
+                                scheme.constraint_identities.get(index).cloned().flatten(),
+                            )
+                        })
+                        .collect(),
+                    parameters: parameters.iter().map(lower_parameter).collect(),
+                    body: lower_expr(&module.source, body),
+                });
+            }
             TypedDecl::Let {
                 bindings: pattern_bindings,
                 scheme,

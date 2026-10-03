@@ -36,7 +36,7 @@ pub fn readerMistake -> String =
   "A in useTwice<A> is selected by the caller. operation 42 in its body reports SES-T0101 because an arbitrary A need not be Int. Instead of using operation at unrelated types, receive a value of the same A and pass it, as the first apply example does."
 
 pub fn readerDetailNote -> String =
-  "The current implementation still cannot infer the parameter in the short function let identity = \\value -> value when no surrounding type supplies it. The first example uses a named fn with explicit type parameters. Distinguish this implementation gap from the specified let-generalization rule. Further rules cover types already fixed by the surrounding environment and recursive declarations."
+  "From 0.61.20, a short function such as let identity = \\value -> value can also choose types independently at its calls. The first example names a fn with explicit type parameters instead. Neither form lets you freely select types already fixed by surrounding values or by a received function parameter. Further rules also cover recursive declarations."
 
 pub fn readerLegacyReading -> String =
   "let identity = unchanged stores the function, so identity 42 and identity \"hello\" use Int and String separately. let fixed = wrap 42 instead stores Just 42, a Maybe<Int>; it is not the function wrap."

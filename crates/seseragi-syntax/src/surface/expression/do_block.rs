@@ -99,7 +99,11 @@ fn expression_or_error(tokens: &[Token], start: usize, end: usize, error_at: usi
     })
 }
 
-pub(super) fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usize)> {
+pub(in crate::surface) fn split_segments(
+    tokens: &[Token],
+    start: usize,
+    end: usize,
+) -> Vec<(usize, usize)> {
     let mut segments = Vec::new();
     let mut segment_start = start;
     let mut brace_depth = 0usize;

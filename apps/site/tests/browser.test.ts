@@ -17,6 +17,36 @@ import { verifyMobileNavigation } from "./mobile-navigation"
 import { verifyReaderArticles } from "./reader-articles"
 import { verifyReferenceNavigation } from "./reference-navigation"
 
+async function verifyArticleExample(
+  article: Locator,
+  source: string,
+  output?: string,
+  invalidSource?: string
+) {
+  const panels = await article
+    .locator(".code-panel pre > code")
+    .allTextContents()
+  for (const path of [source, invalidSource].filter(
+    (path): path is string => !!path
+  )) {
+    const expected = readFileSync(
+      resolve(import.meta.dir, "../examples", path),
+      "utf8"
+    )
+    assert.equal(
+      panels.filter((text) => text === expected).length,
+      1,
+      `${path}: exact canonical source`
+    )
+  }
+  if (output !== undefined)
+    assert.equal(
+      panels.filter((text) => text === output).length,
+      1,
+      `${source}: canonical output`
+    )
+}
+
 async function codeSurface(locator: Locator) {
   return locator.evaluate((code) => {
     const style = getComputedStyle(code)
@@ -99,7 +129,7 @@ const screenshots = process.env.SITE_SCREENSHOTS
 if (screenshots) mkdirSync(screenshots, { recursive: true })
 
 try {
-  buildSite({ output, origin: "https://seseragi.example" })
+  buildSite({ output, origin: "https://seseragi.example", profile: "release" })
   const configuration = JSON.parse(
     readFileSync(resolve(import.meta.dir, "../vercel.json"), "utf8")
   )
@@ -144,6 +174,11 @@ try {
         })
 
         await page.goto(`http://127.0.0.1:${server.port}/`)
+        const actualWidth = await page.evaluate(() => innerWidth)
+        assert.equal(actualWidth, width, "actual browser viewport width")
+        console.log(
+          `Site browser viewport: requested=${width}, actual=${actualWidth}`
+        )
         assert.equal(await page.locator("h1").textContent(), "Seseragi")
         assert.equal(await page.locator("html").getAttribute("lang"), "en")
         assert.equal(await page.locator(".seseragi-highlight").count(), 1)
@@ -297,18 +332,17 @@ try {
           assert.ok(headerRows)
           assert.ok(Math.max(...headerRows) - Math.min(...headerRows) <= 1)
         }
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/pilot-function-application.ssrg",
+          "3",
+          "invalid/src/language/pilot-function-application.ssrg"
+        )
         assert.ok(
-          (await page.locator("body").innerText()).includes(
-            "add (1, 2) passes one tuple, whereas add 1 2 passes two integers"
+          (await page.locator(".article-content").innerText()).includes(
+            "SES-T0101"
           )
         )
-        const functionApplicationSource = await page
-          .locator(".seseragi-highlight")
-          .first()
-          .innerText()
-        assert.ok(functionApplicationSource.includes("let addOne = add 1"))
-        assert.ok(!functionApplicationSource.includes("Lesson"))
-        assert.ok(functionApplicationSource.trim().split("\n").length <= 6)
         const articleWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -355,7 +389,9 @@ try {
           )
         )
         const typeSystemCode = await syntaxPresentation(
-          page.locator(".seseragi-highlight").first(),
+          page
+            .locator(".seseragi-highlight")
+            .filter({ hasText: "newtype Score" }),
           [
             "keyword",
             "typeName",
@@ -431,13 +467,21 @@ try {
           await page.locator(".reference-previous strong").textContent(),
           "Irrefutable patterns"
         )
-        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
-        const matchSource = await page
-          .locator(".seseragi-highlight")
-          .first()
-          .innerText()
-        assert.ok(matchSource.includes("Complete count when count > 0"))
-        assert.ok(!matchSource.includes("Lesson"))
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/data-reader-alternatives.ssrg",
+          "not shipped\ntracking: JP42",
+          "invalid/src/language/data-reader-match.ssrg"
+        )
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/patterns-match.ssrg"
+        )
+        assert.ok(
+          (await page.locator(".article-content").innerText()).includes(
+            "SES-T0301"
+          )
+        )
         const matchWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -451,6 +495,12 @@ try {
         )
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(await page.locator("h1").textContent(), "パターン照合")
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/data-reader-alternatives.ssrg",
+          "not shipped\ntracking: JP42",
+          "invalid/src/language/data-reader-match.ssrg"
+        )
         const japaneseMatch = await page.locator("body").innerText()
         assert.ok(
           japaneseMatch.includes("上から順に照合し、最初に一致した分岐を使う")
@@ -503,14 +553,15 @@ try {
           "How do blocks desugar"
         )
         const doText = await page.locator("body").innerText()
-        assert.ok(
-          doText.includes(
-            "increment Nothing skips the addition and returns Nothing"
-          )
-        )
+        assert.ok(doText.includes("Nothing"))
         assert.ok(!doText.includes("Lesson"))
         assert.ok(!doText.match(/#[0-9]+/u))
-        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/trait-reader-do-notation.ssrg",
+          "1 River Road, Tokyo\naddress incomplete",
+          "invalid/src/language/trait-reader-do-notation.ssrg"
+        )
         const doWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -529,10 +580,16 @@ try {
         )
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(await page.locator("h1").textContent(), "do記法")
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/trait-reader-do-notation.ssrg",
+          "1 River Road, Tokyo\naddress incomplete",
+          "invalid/src/language/trait-reader-do-notation.ssrg"
+        )
         const japaneseDoText = await page.locator("body").innerText()
         assert.ok(
           japaneseDoText.includes(
-            "Maybe、Either、自分で定義した型、Effectのいずれも"
+            "EitherやEffect、自分の型にも対応する実装があればdoを使えます"
           )
         )
         assert.ok(!japaneseDoText.match(/#[0-9]+/u))
@@ -587,7 +644,12 @@ try {
         )
         assert.ok(!effectText.includes("Lesson"))
         assert.ok(!effectText.match(/#[0-9]+/u))
-        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/failure-reader-effect.ssrg",
+          "before\nrun\nrun",
+          "invalid/src/language/failure-reader-effect.ssrg"
+        )
         const effectWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -606,6 +668,12 @@ try {
         )
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(await page.locator("h1").textContent(), "Effect型")
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/failure-reader-effect.ssrg",
+          "before\nrun\nrun",
+          "invalid/src/language/failure-reader-effect.ssrg"
+        )
         const japaneseEffectText = await page.locator("body").innerText()
         assert.ok(japaneseEffectText.includes("構築と実行は別の段階"))
         assert.ok(!japaneseEffectText.match(/#[0-9]+/u))
@@ -663,7 +731,12 @@ try {
         )
         assert.ok(!signalText.includes("Lesson"))
         assert.ok(!signalText.match(/#[0-9]+/u))
-        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/lifecycle-reader-transactions.ssrg",
+          "[2, 12]\n12",
+          "invalid/src/language/lifecycle-reader-transactions.ssrg"
+        )
         const signalWidth = await page.evaluate(
           () => document.documentElement.scrollWidth
         )
@@ -684,6 +757,12 @@ try {
         assert.equal(
           await page.locator("h1").textContent(),
           "Signalとトランザクション"
+        )
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/lifecycle-reader-transactions.ssrg",
+          "[2, 12]\n12",
+          "invalid/src/language/lifecycle-reader-transactions.ssrg"
         )
         const japaneseSignalText = await page.locator("body").innerText()
         assert.ok(
@@ -819,7 +898,12 @@ try {
           `http://127.0.0.1:${server.port}/docs/language/syntax/literals/`
         )
         assert.equal(await page.locator("h1").textContent(), "Literals")
-        assert.equal(await page.locator(".seseragi-highlight").count(), 2)
+        await verifyArticleExample(
+          page.locator(".article-content"),
+          "src/language/syntax-reader-literals.ssrg",
+          "3, 2.5, True, S, Seseragi",
+          "invalid/src/language/syntax-reader-literals.ssrg"
+        )
         assert.ok(
           (await page.locator("body").innerText()).includes("SES-P0203")
         )
@@ -885,7 +969,7 @@ try {
         assert.equal(await page.locator("html").getAttribute("lang"), "ja")
         assert.equal(
           await page.locator("h1").textContent(),
-          "Seseragi リファレンス"
+          "Seseragi ドキュメント"
         )
         assert.equal(await page.locator(".docs-sidebar").count(), 0)
         assert.ok(
@@ -953,15 +1037,36 @@ try {
         )
         assert.equal(await page.locator("h1").textContent(), "Module identity")
         const modulePanels = page.locator("main .code-panel")
-        assert.equal(await modulePanels.count(), 2)
-        assert.equal(
-          await modulePanels.nth(0).locator(".code-actions a").count(),
-          1
+        const moduleFile = (project: string, path: string) =>
+          readFileSync(
+            resolve(
+              import.meta.dir,
+              "../examples/projects/modules",
+              project,
+              path
+            ),
+            "utf8"
+          )
+        assert.deepEqual(
+          await modulePanels.locator("pre > code").allTextContents(),
+          [
+            moduleFile("identity-greeting", "seseragi.toml"),
+            moduleFile("identity-greeting", "src/greeting.ssrg"),
+            moduleFile("identity-greeting", "src/main.ssrg"),
+            "seseragi lock update .\nseseragi run .",
+            "Hello, Aki!\nHello, Aki!",
+            moduleFile("identity", "seseragi.toml"),
+            moduleFile("identity", "src/domain.ssrg"),
+            moduleFile("identity", "src/main.ssrg"),
+            "42",
+            moduleFile("copied-identity", "src/copied-domain.ssrg"),
+            moduleFile("copied-identity", "src/main.ssrg"),
+            "SES-T0101: argument 1 expected UserId, received UserId",
+          ]
         )
-        assert.equal(
-          await modulePanels.nth(1).locator(".code-actions a").count(),
-          0
-        )
+        // These files need their complete project, so no single-file Playground
+        // action may imply that one displayed source can run by itself.
+        assert.equal(await modulePanels.locator(".code-actions a").count(), 0)
         assert.equal(
           await page
             .locator(".docs-sidebar .sidebar-link.current")
@@ -1254,8 +1359,13 @@ try {
                 layout.codeFonts.every((font) => font >= 13 && font <= 15),
                 `${localizedRoute}: code font ${layout.codeFonts.join(",")}`
               )
+              // A value such as the trait example's "#42" is legitimate
+              // article content. Reject authoring placeholders and explicit
+              // work-item references, rather than every hash-prefixed number.
               assert.ok(
-                !/準備中|整備中|Lesson|#[0-9]+/u.test(layout.text),
+                !/準備中|整備中|Lesson|(?:Issue|PR|Pull request|課題|イシュー)\s*#[0-9]+/iu.test(
+                  layout.text
+                ),
                 localizedRoute
               )
               if (

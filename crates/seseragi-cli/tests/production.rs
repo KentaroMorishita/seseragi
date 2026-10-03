@@ -118,7 +118,7 @@ fn release_removes_dead_modules_and_declarations_before_bundling() {
     let before = manifest(&package.join("release"));
     fs::write(
         package.join("src/unreferenced.ssrg"),
-        "pub let anotherDeadValue = 99999\n",
+        "pub let anotherDeadValue: Int = 99999\n",
     )
     .unwrap();
     let values = package.join("src/values.ssrg");

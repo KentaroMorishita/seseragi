@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "singleton takes one Byte and creates Bytes containing only that byte. Its argument must be Byte, rather than Int.",
+  taskTitle: "Make a one-byte sequence from a validated number",
+  purpose: "Check that 65 is a valid byte, then make Bytes with one element. Display an empty sequence first to compare zero elements with one element.",
+  typescriptBefore: "TypeScript’s Uint8Array.of(value) can create a one-element typed array. This example first checks that the input is an integer from 0 through 255, avoiding a conversion that would wrap an out-of-range value. Even on the success path, value has the ordinary number type.",
+  benefit: "singleton itself is a small operation. By requiring Byte, Seseragi makes the order clear in the types: validate the number, then build the one-element Bytes. There is no range error to handle after passing a Byte to singleton.",
+  setup: "import * as bytes exposes std/bytes names through bytes. fn describe content: bytes.Bytes -> String defines a function that makes a display string from Bytes named content. Function calls separate arguments with spaces, as in bytes.singleton checked.",
+  after: [
+    "The do { ... } in main runs the steps from top to bottom. The () passed to bytes.empty () is a Unit value, and the call produces empty Bytes. describe turns that into the first output line, Empty.",
+    "bytes.byte 65 validates the integer 65 and returns Either<ByteError, Byte>. Left means failure and Right means success. The match branch Left error names the failure and displays its contents with show.",
+    "Right checked receives the successful Byte as checked. bytes.singleton checked returns Bytes containing that one Byte. The parentheses in describe (bytes.singleton checked) pass this result to describe.",
+    "describe chooses a string with if ... then ... else .... The Bool returned by bytes.isEmpty content is False for a one-element sequence, so the else branch is used.",
+    "bytes.toInts content makes an array of integers and show turns it into a string. Inserting that result at ${...} inside the backtick string produces Bytes: [65]. You can see that the sequence contains exactly the validated value.",
+  ],
+  details: [
+    "singleton has type Byte -> Bytes. It does not itself validate an Int. Neither bytes.singleton 65 nor passing the entire Either from byte has the required input type.",
+    "You can also pass a Byte obtained by validating 0 or 255. The sequence made from a Byte of value 0 still has one element, so isEmpty returns False. Use empty if you want no elements.",
+    "Byte has a private representation and no public Byte value constructor. Obtain it from an integer with byte, or from existing Bytes with an operation such as get. Use fromInts to turn a whole integer array into Bytes.",
+  ],
+}

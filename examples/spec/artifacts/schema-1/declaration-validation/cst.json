@@ -1,0 +1,200 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 72,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 4,
+        "endToken": 18,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 4,
+            "endToken": 18,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 18,
+        "endToken": 31,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 18,
+            "endToken": 31,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 31,
+        "endToken": 41,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 31,
+            "endToken": 32,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 33,
+            "endToken": 41,
+            "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 31,
+            "endToken": 40,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 31,
+                "endToken": 39,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 39,
+                "endToken": 40,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 41,
+        "endToken": 50,
+        "children": [
+          {
+            "kind": "let-decl",
+            "startToken": 41,
+            "endToken": 50,
+            "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 41,
+            "endToken": 49,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 41,
+                "endToken": 48,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 48,
+                "endToken": 49,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 50,
+        "endToken": 58,
+        "children": [
+          {
+            "kind": "let-decl",
+            "startToken": 50,
+            "endToken": 58,
+            "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 50,
+            "endToken": 57,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 50,
+                "endToken": 56,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 56,
+                "endToken": 57,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 58,
+        "endToken": 72,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 58,
+            "endToken": 59,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 60,
+            "endToken": 72,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 60,
+                "endToken": 72,
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 58,
+            "endToken": 71,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 58,
+                "endToken": 68,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 68,
+                "endToken": 71,
+                "children": [
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 68,
+                    "endToken": 69,
+                    "children": []
+                  },
+                  {
+                    "kind": "complete-expression",
+                    "startToken": 70,
+                    "endToken": 71,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

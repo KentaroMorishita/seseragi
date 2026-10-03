@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "appendは2つのBytesをつなぎます。引数は末尾に足すsuffixが先、元になるcontentが後で、結果はcontentの後ろにsuffixが続きます。",
+  taskTitle: "バイト列の末尾へ別の列をつなぐ",
+  purpose: "[10, 20]の後ろへ[30, 40]を足します。直接呼び出す書き方とパイプを使う書き方を比べ、引数を入れ替えると順序が変わることも確かめます。",
+  typescriptBefore: "TypeScriptではnew Uint8Array([...content, ...suffix])で小さな2つの列を簡潔につなげます。広げる順序が結果の順序です。この例の数値はすでに0から255の範囲内です。Array.fromとjoinは比較しやすい表示にそろえるために使います。",
+  benefit: "どちらも短い連結です。SeseragiではBytesのままappendに渡せます。末尾に元の列を受け取る引数順なので、content |> bytes.append suffixと書いて処理の流れを左から追えます。",
+  setup: "import * as bytesはstd/bytesをbytesという別名で使います。bytes.fromInts [10, 20]は、空白の後に整数配列を渡して検証する呼び出しです。括弧内の(bytes.fromInts ..., bytes.fromInts ...)は、2つの検証結果を並べたタプルです。",
+  after: [
+    "fromIntsの結果はEither<ByteError, Bytes>で、Leftが失敗、Rightが成功です。matchの(Right content, Right suffix)は両方の成功を照合し、それぞれのBytesにcontentとsuffixという名前を付けます。_の枝はそれ以外を受け取り、少なくとも一方が失敗した場合の文字列を表示します。",
+    "bytes.append suffix contentでは、関数名に続けて2つの引数を空白で渡します。第1引数は足す列、第2引数は元の列です。結果は[10, 20, 30, 40]で、引数を左からそのまま並べた順序ではありません。",
+    "content |> bytes.append suffixの|>は、左側の値を右側の呼び出しの最後の引数として渡します。つまりbytes.append suffix contentと同じ呼び出しなので、先頭2行は同じ結果になります。",
+    "3行目のbytes.append content suffixは引数を逆にしています。今度はsuffixが元の列になり、その後ろへcontentが続くため[30, 40, 10, 20]になります。",
+    "do { ... }は表示を上から順に行います。bytes.toIntsはBytesを整数配列にし、showは表示用のStringにします。内側の括弧でappendの結果を先に得てから変換しています。最後の2行は元のcontentとsuffixの内容です。",
+  ],
+  details: [
+    "appendは2つのBytesを受けてBytesを直接返します。例のEitherは連結の失敗ではなく、fromIntsで入力を検証した結果です。連結前にRightのBytesを取り出しています。",
+    "空のsuffixを渡すと元のcontentと同じ要素の並びになります。元のcontentが空ならsuffixと同じ並びになります。両方が空なら結果も空です。",
+    "連結後も入力の内容は[10, 20]と[30, 40]のままです。どちらの入力を書き換える操作でもありません。3つ以上の列を配列から順にまとめたい場合はconcatを使います。",
+  ],
+}

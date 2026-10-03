@@ -43,10 +43,10 @@ fn keep<A> values: {container}<A> -> {container}<A> = values
 fn keepFirst<A> values: {container}<A> -> ignored: {container}<A> -> {container}<A> = values
 effect fn echo<A> values: {container}<A> -> {container}<A> = succeed values
 let standalone = {expression}
-pub let inlineValue = keep {expression}
-pub let boundValue = keep standalone
+let inlineValue = keep {expression}
+let boundValue = keep standalone
 let partial = keepFirst {expression}
-pub let partialValue = partial standalone
+let partialValue = partial standalone
 pub effect fn main = do {{
   effectValue <- echo {expression}
   boundEffectValue <- echo standalone
@@ -106,7 +106,7 @@ fn nested_expected_collection_elements_preserve_inferred_fields() {
 fn keep<A> values: Array<{element_type}> -> Array<{element_type}> = values
 let result = keep {expression}
 pub let checked: Array<{concrete_type}> = result
-pub let rendered = show result
+let rendered = show result
 "#
         );
         compile_module(CompileInput::new("nested.ssrg", "fixture/nested", &source))
@@ -169,7 +169,7 @@ fn refining_inference_holes_preserves_concrete_element_requirements() {
             "[{ fixed: n, value: n } | n <- 1..=3]",
         ),
     ] {
-        let source = format!("fn keep<A> values: Array<{element_type}> -> Array<{element_type}> = values\npub let invalid = keep {expression}\n");
+        let source = format!("fn keep<A> values: Array<{element_type}> -> Array<{element_type}> = values\nlet invalid = keep {expression}\n");
         let diagnostics = compile_module(CompileInput::new(
             "invalid.ssrg",
             "fixture/invalid",

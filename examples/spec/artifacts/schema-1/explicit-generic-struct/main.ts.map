@@ -6,7 +6,7 @@
     "seseragi://artifact/explicit-generic-struct"
   ],
   "sourcesContent": [
-    "pub struct Marker<A> {\n  label: String,\n  value: A,\n}\n\npub let marker = Marker<Array<String>> {\n  label: \"ready\",\n  value: [],\n}\n\nfn render value: Marker<Array<String>> -> String =\n  \"Explicit generic Struct: \" + value.label\n\npub effect fn main =\n  marker\n  |> render\n  |> println\n"
+    "pub struct Marker<A> {\n  label: String,\n  value: A,\n}\n\npub let marker: Marker<Array<String>> = Marker<Array<String>> {\n  label: \"ready\",\n  value: [],\n}\n\nfn render value: Marker<Array<String>> -> String =\n  \"Explicit generic Struct: \" + value.label\n\npub effect fn main =\n  marker\n  |> render\n  |> println\n"
   ],
   "names": [
     "Marker",

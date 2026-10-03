@@ -314,6 +314,25 @@
             "startToken": 285,
             "endToken": 325,
             "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 285,
+            "endToken": 323,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 285,
+                "endToken": 322,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 322,
+                "endToken": 323,
+                "children": []
+              }
+            ]
           }
         ]
       },

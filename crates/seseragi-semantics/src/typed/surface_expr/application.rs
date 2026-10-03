@@ -25,6 +25,22 @@ pub(super) fn type_application(
     type_application_with(expression, context, type_surface_expression)
 }
 
+pub(super) fn type_explicit_callable_value(
+    signature: TopLevelPureFunction,
+    arguments: &[TypeRef],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let (signature, issue) =
+        instantiate_explicit_signature(signature, Some(arguments), span, context);
+    let mut analysis = type_callable_value(&signature, span, context);
+    if issue.is_some() {
+        analysis.pure_call_issue = issue;
+        analysis.semantic_type = SemanticTypeKey::Invalid;
+    }
+    analysis
+}
+
 /// Types a named callable used without value arguments. Unconstrained
 /// callables remain ordinary variables, while constrained callables reuse the
 /// partial-application path so their dictionaries are captured after every
@@ -40,6 +56,29 @@ pub(super) fn type_callable_value(
         *parameter = context.hydrate_semantic_value(parameter.clone());
     }
     application.result = context.hydrate_semantic_value(application.result);
+
+    // A callable scheme is instantiated at a value use. Leaving its parameters
+    // in an Array element or record field would make them free types in the
+    // generated program. Let aliases supply their scheme as an expectation;
+    // other uses need enough context to select one monotype.
+    let value_type = instantiated_application_result_type(&application, 0);
+    if matches!(value_type, TypedType::Function { .. })
+        && contains_unresolved_type_parameter(
+            &value_type,
+            &signature.type_parameters,
+            &application.resolved_type_parameters,
+        )
+    {
+        let mut analysis = SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+            name: signature.symbol.clone(),
+            evidence: Vec::new(),
+            type_ref: TypedType::Hole,
+            origin: span,
+        });
+        analysis.pure_call_issue = Some(PureCallIssue::CallableTypeUnresolved { callee: span });
+        analysis.semantic_type = SemanticTypeKey::Invalid;
+        return analysis;
+    }
 
     if let Some(issue) = context
         .expected()
@@ -100,7 +139,68 @@ pub(super) fn type_callable_value(
             *type_ref = TypedType::Hole;
         }
     }
+    if analysis.pure_call_issue.is_none() && !signature.parameters.is_empty() {
+        analysis.value = abstract_callable_value(analysis.value, signature.parameters.len());
+    }
     analysis
+}
+
+/// Keep a constrained first-class callable's declared arity explicit. This
+/// lets a generalized alias abstract its dictionaries after its value
+/// parameters, including when the callable's result is itself a function.
+fn abstract_callable_value(mut value: TypedExpr, arity: usize) -> TypedExpr {
+    let TypedExpr::Call {
+        arguments,
+        deferred_evidence_parameters,
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        type_ref,
+        origin,
+        ..
+    } = &mut value
+    else {
+        return value;
+    };
+    let origin = *origin;
+    let mut parameters = Vec::new();
+    for index in 0..arity {
+        let TypedType::Function { parameter, result } = type_ref.clone() else {
+            return value;
+        };
+        let name = format!("__ssrg$partial${index}");
+        arguments.push(TypedExpr::Variable {
+            name: name.clone(),
+            evidence: Vec::new(),
+            type_ref: (*parameter).clone(),
+            origin,
+        });
+        parameters.push(crate::TypedParameter::Named {
+            name,
+            type_ref: *parameter,
+            origin,
+        });
+        *type_ref = *result;
+    }
+    deferred_evidence_parameters.clear();
+    deferred_evidence_type_constructor_parameters.clear();
+    *evidence_argument_index = None;
+    let mut body_type = type_ref.clone();
+    for parameter in parameters.into_iter().rev() {
+        let crate::TypedParameter::Named { type_ref, .. } = &parameter else {
+            unreachable!()
+        };
+        body_type = TypedType::Function {
+            parameter: Box::new(type_ref.clone()),
+            result: Box::new(body_type),
+        };
+        value = TypedExpr::Lambda {
+            parameter,
+            body: Box::new(value),
+            type_ref: body_type.clone(),
+            origin,
+        };
+    }
+    value
 }
 
 pub(crate) fn type_application_with(
@@ -258,6 +358,12 @@ pub(crate) fn type_known_application_with_explicit(
     let mut semantic_arguments = (0..argument_nodes.len())
         .map(|_| None)
         .collect::<Vec<Option<SemanticValueType>>>();
+    let inferred_arguments = super::let_inference::infer_call_arguments(
+        &signature,
+        argument_nodes,
+        expected_application,
+        context,
+    );
     let argument_order = argument_nodes
         .iter()
         .enumerate()
@@ -306,6 +412,11 @@ pub(crate) fn type_known_application_with_explicit(
                 );
                 expected
             });
+        let expected = inferred_arguments
+            .as_ref()
+            .and_then(|arguments| arguments.get(index))
+            .and_then(|argument| argument.clone())
+            .or(expected);
         let argument_context = context.with_expected(expected);
         let analysis = type_argument(argument, &argument_context);
         semantic_arguments[index] = Some(SemanticValueType {
@@ -394,6 +505,23 @@ pub(crate) fn type_known_application_with_explicit(
                 .collect::<Vec<_>>(),
             &instantiated_application_result_type(&application, arguments.len()),
         );
+    }
+    // An invalid argument cannot supply reliable type-parameter evidence.
+    // Preserve its primary diagnostic instead of cascading into an unresolved
+    // callable-result diagnostic during recovery.
+    if issue.is_none() && child_analyses.iter().all(|child| !child.has_issues()) {
+        let callable_result = instantiated_application_result_type(&application, arguments.len());
+        if matches!(callable_result, TypedType::Function { .. })
+            && contains_unresolved_type_parameter(
+                &callable_result,
+                &signature.type_parameters,
+                &application.resolved_type_parameters,
+            )
+        {
+            issue = Some(PureCallIssue::CallableTypeUnresolved {
+                callee: expression_span,
+            });
+        }
     }
     let saturated = arguments.len() >= declared_arity;
     let concrete_partial_constraints = !saturated
@@ -543,6 +671,20 @@ fn refine_collection_parameters(
         .iter()
         .zip(&application.constraint_identities)
     {
+        if let [left, right, output] = constraint.arguments.as_slice() {
+            if let Ok((actual, _)) = context.select_binary_operator_evidence(
+                &constraint.name,
+                left.clone(),
+                right.clone(),
+            ) {
+                infer_type_parameters(
+                    output,
+                    &actual,
+                    &signature.type_parameters,
+                    &mut substitutions,
+                );
+            }
+        }
         // An absent identity denotes the standard-operation fallback, exactly
         // as in select_function_call_evidence; named user traits stay distinct.
         if !matches!(constraint.name.as_str(), "Iterable" | "Reducible")

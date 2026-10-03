@@ -78,7 +78,7 @@
       "visibility": "public",
       "origin": {
         "start": 35,
-        "end": 71
+        "end": 81
       },
       "scheme": {
         "typeParameters": [],
@@ -110,13 +110,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 67,
-                "end": 69
+                "start": 77,
+                "end": 79
               }
             },
             "origin": {
-              "start": 60,
-              "end": 69
+              "start": 70,
+              "end": 79
             }
           }
         ],
@@ -132,8 +132,8 @@
           ]
         },
         "origin": {
-          "start": 54,
-          "end": 71
+          "start": 64,
+          "end": 81
         }
       }
     },
@@ -142,8 +142,8 @@
       "symbol": "artifact/generic-struct::replace",
       "visibility": "private",
       "origin": {
-        "start": 73,
-        "end": 146
+        "start": 83,
+        "end": 156
       },
       "scheme": {
         "typeParameters": [
@@ -172,8 +172,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 87,
-            "end": 92
+            "start": 97,
+            "end": 102
           }
         },
         {
@@ -191,8 +191,8 @@
             ]
           },
           "origin": {
-            "start": 99,
-            "end": 102
+            "start": 109,
+            "end": 112
           }
         }
       ],
@@ -216,13 +216,13 @@
                 ]
               },
               "origin": {
-                "start": 134,
-                "end": 137
+                "start": 144,
+                "end": 147
               }
             },
             "origin": {
-              "start": 131,
-              "end": 137
+              "start": 141,
+              "end": 147
             }
           },
           {
@@ -237,13 +237,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 139,
-                "end": 144
+                "start": 149,
+                "end": 154
               }
             },
             "origin": {
-              "start": 139,
-              "end": 144
+              "start": 149,
+              "end": 154
             }
           }
         ],
@@ -259,8 +259,8 @@
           ]
         },
         "origin": {
-          "start": 125,
-          "end": 146
+          "start": 135,
+          "end": 156
         }
       }
     },
@@ -269,8 +269,8 @@
       "symbol": "artifact/generic-struct::unwrap",
       "visibility": "private",
       "origin": {
-        "start": 148,
-        "end": 224
+        "start": 158,
+        "end": 234
       },
       "scheme": {
         "typeParameters": [
@@ -299,8 +299,8 @@
             ]
           },
           "origin": {
-            "start": 161,
-            "end": 164
+            "start": 171,
+            "end": 174
           }
         }
       ],
@@ -321,8 +321,8 @@
             ]
           },
           "origin": {
-            "start": 188,
-            "end": 191
+            "start": 198,
+            "end": 201
           }
         },
         "arms": [
@@ -334,7 +334,7 @@
                   "name": "value",
                   "pattern": {
                     "kind": "binding",
-                    "symbol": 12,
+                    "symbol": 13,
                     "name": "value",
                     "type": {
                       "kind": "named",
@@ -342,13 +342,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 204,
-                      "end": 209
+                      "start": 214,
+                      "end": 219
                     }
                   },
                   "origin": {
-                    "start": 204,
-                    "end": 209
+                    "start": 214,
+                    "end": 219
                   }
                 }
               ],
@@ -364,8 +364,8 @@
                 ]
               },
               "origin": {
-                "start": 198,
-                "end": 211
+                "start": 208,
+                "end": 221
               }
             },
             "body": {
@@ -377,13 +377,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 215,
-                "end": 220
+                "start": 225,
+                "end": 230
               }
             },
             "origin": {
-              "start": 198,
-              "end": 220
+              "start": 208,
+              "end": 230
             }
           }
         ],
@@ -394,8 +394,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 182,
-          "end": 224
+          "start": 192,
+          "end": 234
         }
       }
     },
@@ -404,8 +404,8 @@
       "symbol": "artifact/generic-struct::render",
       "visibility": "private",
       "origin": {
-        "start": 226,
-        "end": 287
+        "start": 236,
+        "end": 297
       },
       "scheme": {
         "typeParameters": [],
@@ -426,8 +426,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 236,
-            "end": 241
+            "start": 246,
+            "end": 251
           }
         }
       ],
@@ -438,8 +438,8 @@
             "kind": "text",
             "value": "Generic Struct: ",
             "origin": {
-              "start": 262,
-              "end": 278
+              "start": 272,
+              "end": 288
             }
           },
           {
@@ -453,8 +453,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 280,
-                "end": 285
+                "start": 290,
+                "end": 295
               }
             },
             "evidence": {
@@ -475,8 +475,8 @@
             },
             "traitIdentity": "std/prelude::Show",
             "origin": {
-              "start": 278,
-              "end": 286
+              "start": 288,
+              "end": 296
             }
           }
         ],
@@ -486,8 +486,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 261,
-          "end": 287
+          "start": 271,
+          "end": 297
         }
       }
     },
@@ -496,8 +496,8 @@
       "symbol": "artifact/generic-struct::main",
       "visibility": "public",
       "origin": {
-        "start": 289,
-        "end": 373
+        "start": 299,
+        "end": 383
       },
       "inferredContract": true,
       "parameters": [
@@ -587,8 +587,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 334,
-                          "end": 336
+                          "start": 344,
+                          "end": 346
                         }
                       },
                       {
@@ -606,8 +606,8 @@
                           ]
                         },
                         "origin": {
-                          "start": 312,
-                          "end": 320
+                          "start": 322,
+                          "end": 330
                         }
                       }
                     ],
@@ -623,8 +623,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 312,
-                      "end": 336
+                      "start": 322,
+                      "end": 346
                     }
                   }
                 ],
@@ -634,8 +634,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 312,
-                  "end": 348
+                  "start": 322,
+                  "end": 358
                 }
               }
             ],
@@ -645,14 +645,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 312,
-              "end": 360
+              "start": 322,
+              "end": 370
             }
           }
         ],
         "origin": {
-          "start": 312,
-          "end": 373
+          "start": 322,
+          "end": 383
         }
       }
     }

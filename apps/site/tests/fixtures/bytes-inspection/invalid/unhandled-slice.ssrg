@@ -1,0 +1,3 @@
+import * as bytes from "std/bytes"
+let values = bytes.toInts (bytes.slice 0 0 (bytes.empty ()))
+pub effect fn main = println "unreachable"

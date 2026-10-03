@@ -15,11 +15,11 @@ fn classify control: effects.LoopControl -> Bool = match control {
   effects.Break -> True
 }
 fn advance n: Int -> Maybe<(Int, Int)> = Just (n, n + 1)
-pub let direct = effects.forEachUntil step [1, 2]
-pub let array = visit step [1, 2, 3, 4]
-pub let list = visit step `[1, 2, 3, 4]
-pub let range = visit step (1..=4)
-pub let infinite = visit step (iterator.unfold advance 1)
+let direct = effects.forEachUntil step [1, 2]
+let array = visit step [1, 2, 3, 4]
+let list = visit step `[1, 2, 3, 4]
+let range = visit step (1..=4)
+let infinite = visit step (iterator.unfold advance 1)
 "#;
     let analysis = analyze_module(CompileInput::new("until.ssrg", "fixture/until", source));
     assert!(
@@ -121,7 +121,7 @@ fn pure_standard_effect_calls_preserve_existing_reducible_evidence() {
     let source = r#"
 import * as effects from "std/effect"
 fn action n: Int -> Effect<{}, Never, Unit> = effects.succeed ()
-pub let pending = effects.forEachParallel (effects.unboundedParallelism ()) action [1, 2]
+let pending = effects.forEachParallel (effects.unboundedParallelism ()) action [1, 2]
 "#;
     let compiled = compile_module(CompileInput::new(
         "parallel.ssrg",

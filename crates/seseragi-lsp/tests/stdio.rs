@@ -561,6 +561,33 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
 }
 
 #[test]
+fn binary_reports_unknown_name_in_a_valid_top_level_let_initializer() {
+    let uri = "file:///product-e2e.ssrg";
+    let input = [
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}}}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {"textDocument": {
+            "uri": uri, "languageId": "seseragi", "version": 1,
+            "text": "let productE2eBroken = missingProductE2eName\n"
+        }}}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics[0]["code"], "SES-N0001");
+    assert_eq!(
+        diagnostics[0]["range"],
+        json!({
+            "start": {"line": 0, "character": 23},
+            "end": {"line": 0, "character": 44}
+        })
+    );
+}
+
+#[test]
 fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
     assert_document_formatting(
         include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg"),
@@ -679,7 +706,7 @@ fn rename_honors_utf8_utf16_and_utf32_positions() {
     let uri = "file:///rename-position-encoding.ssrg";
     let source = concat!(
         "pub fn greet value: Int -> Int = value\n",
-        "pub let result = length \"🙂\" |> greet\n",
+        "pub let result: Int = length \"🙂\" |> greet\n",
     );
     let definition = source.find("greet").unwrap();
     let reference = source.rfind("greet").unwrap();
@@ -1001,7 +1028,7 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
     let domain = "pub fn increment value: Int -> Int = value + 1\n";
     workspace.write("main.ssrg", main);
     workspace.write("domain.ssrg", domain);
-    workspace.write("unrelated.ssrg", "pub let broken = missing\n");
+    workspace.write("unrelated.ssrg", "pub let broken: Int = missing\n");
 
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -1484,7 +1511,7 @@ fn workspace_references_and_rename_follow_reexported_symbols() {
     );
     let main = concat!(
         "import { userId } from \"./facade\"\n",
-        "pub let current = userId 42\n",
+        "pub let current: Int = userId 42\n",
     );
     workspace.write("src/main.ssrg", main);
     workspace.write(
@@ -1930,7 +1957,7 @@ fn binary_exposes_optional_checked_change_snapshot() {
 #[test]
 fn binary_exposes_effect_until_iterable_and_control_contract() {
     let workspace = TempWorkspace::new();
-    let source = "import * as effects from \"std/effect\"\nfn action value: Int -> Effect<{}, Never, effects.LoopControl> = effects.succeed effects.Break\npub let work = effects.forEachUntil action [1, 2]\n";
+    let source = "import * as effects from \"std/effect\"\nfn action value: Int -> Effect<{}, Never, effects.LoopControl> = effects.succeed effects.Break\npub let work: Effect<{}, Never, Unit> = effects.forEachUntil action [1, 2]\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -1963,7 +1990,7 @@ fn binary_exposes_effect_until_iterable_and_control_contract() {
 #[test]
 fn binary_exposes_canonical_monoid_wrapper_result() {
     let workspace = TempWorkspace::new();
-    let source = "pub let total = combine [Sum 1, Sum 2]\n";
+    let source = "pub let total: Sum<Int> = combine [Sum 1, Sum 2]\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -2011,7 +2038,7 @@ fn binary_exposes_canonical_transformer_result() {
 #[test]
 fn binary_exposes_canonical_array_index_result() {
     let workspace = TempWorkspace::new();
-    let source = "let values = [10, 20]\npub let total = values[1]\n";
+    let source = "let values = [10, 20]\npub let total: Maybe<Int> = values[1]\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -2035,7 +2062,7 @@ fn binary_exposes_canonical_array_index_result() {
 #[test]
 fn binary_exposes_canonical_char_literal_result() {
     let workspace = TempWorkspace::new();
-    let source = "let values = ['a', '瀬']\npub let total = 'λ'\n";
+    let source = "let values = ['a', '瀬']\npub let total: Char = 'λ'\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -2059,7 +2086,7 @@ fn binary_exposes_canonical_char_literal_result() {
 #[test]
 fn binary_exposes_canonical_maybe_fallback_result() {
     let workspace = TempWorkspace::new();
-    let source = "let values = Just 7\npub let total = values ?? 9\n";
+    let source = "let values = Just 7\npub let total: Int = values ?? 9\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
@@ -2083,7 +2110,7 @@ fn binary_exposes_canonical_maybe_fallback_result() {
 #[test]
 fn binary_exposes_canonical_list_cons_result() {
     let workspace = TempWorkspace::new();
-    let source = "let values = `[7]\npub let total = 1 : values\n";
+    let source = "let values = `[7]\npub let total: List<Int> = 1 : values\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));

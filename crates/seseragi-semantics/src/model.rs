@@ -835,6 +835,10 @@ pub struct TypedRecordPatternField {
 pub enum TypedBlockStatement {
     Let {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypedConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraint_identities: Vec<Option<String>>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<seseragi_syntax::TypeParameter>,
         pattern: TypedPattern,
         value: TypedExpr,
@@ -872,6 +876,10 @@ pub enum TypedDoStatement {
     },
     PureLet {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypedConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraint_identities: Vec<Option<String>>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<seseragi_syntax::TypeParameter>,
         pattern: TypedPattern,
         value: TypedExpr,
@@ -895,6 +903,12 @@ pub enum TypedMonadDoStatement {
         value: TypedExpr,
     },
     PureLet {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypedConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraint_identities: Vec<Option<String>>,
         pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,

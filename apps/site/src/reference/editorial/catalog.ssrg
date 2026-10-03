@@ -1,3 +1,4 @@
+import { bytesInspectionEditorialFor } from "./bytes-inspection/catalog"
 import { collectionTransformEditorialFor } from "./collection-transform/catalog"
 import {
   stdinReaderEditorialFor,
@@ -235,6 +236,13 @@ fn editorialAfterTerminalReaderEditorialFor symbol: ReferenceSymbol
 
 fn editorialAfterStdinReaderEditorialFor symbol: ReferenceSymbol -> Maybe<Editorial> =
   match collectionTransformEditorialFor symbol {
+    Just editorial -> Just editorial
+    Nothing -> editorialAfterCollectionTransformEditorialFor symbol
+  }
+
+fn editorialAfterCollectionTransformEditorialFor symbol: ReferenceSymbol
+  -> Maybe<Editorial> =
+  match bytesInspectionEditorialFor symbol {
     Just editorial -> Just editorial
     Nothing -> collectionEditorialFor symbol
   }

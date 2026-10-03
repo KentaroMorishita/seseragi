@@ -13,7 +13,7 @@ impl Temporary {
         ));
         fs::create_dir_all(path.join("src")).unwrap();
         fs::create_dir(path.join("benchmarks")).unwrap();
-        fs::write(path.join("src/library.ssrg"), "pub let answer = 42\n").unwrap();
+        fs::write(path.join("src/library.ssrg"), "pub let answer: Int = 42\n").unwrap();
         fs::write(path.join("seseragi.toml"), "[package]\nname = \"fixture/benchmark\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0\"\n[benchmark]\ntarget = \"node\"\nwarmup = 0\nsamples = 3\nminimum_sample_ms = 1\n").unwrap();
         Self(path)
     }
@@ -249,10 +249,14 @@ fn release_quality_suite_executes_tool_root_imports_and_foreign_copy() {
         .all(|case| case["status"] == "passed"));
     // Same module path in src/ and benchmarks/ must retain distinct identities;
     // a relative benchmark import stays in the benchmark root.
-    fs::write(temporary.0.join("src/helper.ssrg"), "pub let number = 0\n").unwrap();
+    fs::write(
+        temporary.0.join("src/helper.ssrg"),
+        "pub let number: Int = 0\n",
+    )
+    .unwrap();
     fs::write(
         temporary.0.join("benchmarks/helper.ssrg"),
-        "pub let number = 42\n",
+        "pub let number: Int = 42\n",
     )
     .unwrap();
     fs::write(temporary.0.join("benchmarks/basic.ssrg"), "import * as benchmark from \"std/benchmark\"\nimport * as effects from \"std/effect\"\nimport { number } from \"./helper\"\npub let benchmarks: benchmark.Benchmark = benchmark.benchmark \"identity\" (if number == 42 then effects.succeed () else benchmark.fail \"wrong root\")\n").unwrap();

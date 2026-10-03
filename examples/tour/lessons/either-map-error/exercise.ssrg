@@ -14,11 +14,11 @@ fn render value: Either<ErrorInfo, Int> -> String = match value {
 
 let success: Either<String, Int> = Right 21
 let named = map double success
-let operator = double <$> success
+let viaOperator = double <$> success
 let tagged = tagError (Left "invalid")
 
 pub effect fn main = do {
   named |> debug |> println
-  operator |> debug |> println
+  viaOperator |> debug |> println
   tagged |> render |> println
 }

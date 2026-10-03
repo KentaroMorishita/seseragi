@@ -43,6 +43,6 @@ pub fn readerLegacyResult -> String =
   "identityの同じAは、一回の呼び出しの中では同じ型を表します。整数を渡して文字列を返すことはできません。仕様のforall A. A -> Aは、呼び出しごとにAを選べるという説明用の記法です。Seseragiのソースにはforallを書きません。"
 
 pub fn readerLimitation -> String =
-  "現在のコンパイラでは、let identity = \\value -> valueのように引数の型を省いた短い関数を書くと、その型を推論できない場合があります。最初の例のように型パラメーターを明示したfnを使えます。これは仕様上のletの一般化を否定する規則ではなく、現在の実装の制限です。"
+  "0.61.20以降では、let identity = \\value -> valueのように引数の型を省いた短い関数も、呼び出しごとにIntやStringで使えます。最初の例のように型パラメーターを明示したfnに別名を付ける書き方も使えます。周囲の値からすでに決まった型は、別の呼び出しで選び直せません。"
 
 pub fn readerRelated -> String = "では、関数に別名を付ける場合と、関数を引数へ渡す場合の違いを詳しく調べられます。"

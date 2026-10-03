@@ -45,7 +45,7 @@ pub fn readerLegacyResult -> String =
   "The same A denotes the same type within one call to identity. It cannot accept an integer and return text. The specification notation forall A. A -> A describes choosing A for each call. forall is not written in Seseragi source."
 
 pub fn readerLimitation -> String =
-  "The current compiler may fail to infer the parameter of a short function such as let identity = \\value -> value with no parameter annotation. Use a named fn with explicit type parameters, as the first example does. This is an implementation limitation, not a change to the specified let-generalization rule."
+  "From 0.61.20, a short function such as let identity = \\value -> value can omit its parameter annotation and be called independently with Int or String. Naming a fn with explicit type parameters, as the first example does, also works. Types already fixed by surrounding values cannot be selected again at another call."
 
 pub fn readerRelated -> String =
   " details the difference between naming a function and receiving one as a parameter."

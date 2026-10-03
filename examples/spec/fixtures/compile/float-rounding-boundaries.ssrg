@@ -1,0 +1,44 @@
+import * as floats from "std/float"
+import * as numbers from "std/number"
+
+fn converted value: Float -> String = match floats.toInt numbers.HalfUp value {
+  Right integer -> "Right " + show integer
+  Left floats.FloatNotFinite -> "FloatNotFinite"
+  Left floats.FloatOutsideIntRange -> "FloatOutsideIntRange"
+}
+
+fn rounded mode: numbers.RoundingMode -> value: Float -> String =
+  floats.format (floats.roundIntegral mode value)
+
+fn observed value: Float -> String =
+  floats.format value + ": " + rounded numbers.HalfEven value + " | " + rounded numbers.HalfUp value + " | " + rounded numbers.TowardZero value + " | " + rounded numbers.AwayFromZero value + " | " + rounded numbers.Floor value + " | " + rounded numbers.Ceiling value + " | " + converted value
+
+pub effect fn main = do {
+  println (observed 0.0)
+  println (observed (-0.0))
+  println (observed 0.49999999999999994)
+  println (observed (-0.49999999999999994))
+  println (observed 0.5)
+  println (observed (-0.5))
+  println (observed 0.5000000000000001)
+  println (observed (-0.5000000000000001))
+  println (observed 1.4999999999999998)
+  println (observed (-1.4999999999999998))
+  println (observed 1.5)
+  println (observed (-1.5))
+  println (observed 1.5000000000000002)
+  println (observed (-1.5000000000000002))
+  println (observed 2.5)
+  println (observed (-2.5))
+  println (observed 3.5)
+  println (observed (-3.5))
+  println (observed 4503599627370497.0)
+  println (observed (-4503599627370497.0))
+  println (observed 9007199254740991.0)
+  println (observed (-9007199254740991.0))
+  println (observed 9007199254740992.0)
+  println (observed (-9007199254740992.0))
+  println (observed (floats.nan ()))
+  println (observed (floats.positiveInfinity ()))
+  println (observed (floats.negativeInfinity ()))
+}

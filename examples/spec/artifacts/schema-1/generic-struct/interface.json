@@ -39,6 +39,31 @@
           }
         ]
       }
+    },
+    {
+      "symbol": "artifact/generic-struct::inferred",
+      "namespace": "value",
+      "name": "inferred",
+      "visibility": "public",
+      "declaration": {
+        "start": 35,
+        "end": 81
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      }
     }
   ],
   "operators": [],

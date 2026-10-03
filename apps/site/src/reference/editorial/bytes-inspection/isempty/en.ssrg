@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "isEmpty returns a Bool saying whether Bytes has zero elements. It checks that the sequence contains nothing, rather than checking whether a byte has the value 0.",
+  taskTitle: "Choose a message based on whether a byte sequence is empty",
+  purpose: "Display Empty when there is no content and the numeric values otherwise. Pass empty Bytes and Bytes containing only 65 to the same describe function to exercise both branches.",
+  typescriptBefore: "In TypeScript, content.length === 0 expresses the same emptiness check. new Uint8Array() creates an empty sequence; Uint8Array.of(value) creates one element. Here the number for the latter is validated first so an out-of-range value is not silently converted.",
+  benefit: "Both emptiness checks are short. Seseragi’s isEmpty has type Bytes -> Bool, making its input and result explicit. Use the result directly as an if condition to choose the empty or nonempty message.",
+  setup: "import * as bytes gives std/bytes the alias bytes. fn describe content: bytes.Bytes -> String defines a function from a Bytes argument named content to a String. bytes.isEmpty content passes content after a space.",
+  after: [
+    "if bytes.isEmpty content then ... else ... returns the then string when the Bool is True and the else string when it is False. Only empty Bytes produces True, so the first line in this example is Empty.",
+    "The do { ... } in main runs the steps from top to bottom. The () in bytes.empty () is a Unit value, and the call returns empty Bytes. describe (bytes.empty ()) passes it to describe.",
+    "The next call, bytes.byte 65, validates an integer and returns Either<ByteError, Byte>. Left means failure and Right means success. match separates the cases; Left error uses show to make a display string from the received error.",
+    "Right checked gives the successful Byte the name checked. bytes.singleton checked is Bytes containing that one value. Its element count is one, so isEmpty returns False and describe returns the else string.",
+    "In the else branch, bytes.toInts content makes an integer array and show turns it into a String. The ${...} inside the backtick string inserts that result, making the second output line Bytes: [65].",
+  ],
+  details: [
+    "isEmpty only checks for an absence of elements. It returns False even for a sequence containing one Byte with the value 0. True and False are Bool values, distinct from a failure in Left or a missing value in Nothing.",
+    "The result is directly a Bool. You do not need match to unpack a validation result. The match in this example handles byte, which validates 65, rather than isEmpty.",
+    "Bytes is a different type from an ordinary integer array. This example creates it with empty and singleton. For several integers, validate them with fromInts and then pass the successful Bytes to isEmpty.",
+  ],
+}

@@ -47,6 +47,37 @@
           }
         ]
       }
+    },
+    {
+      "symbol": "artifact/explicit-generic-struct::marker",
+      "namespace": "value",
+      "name": "marker",
+      "visibility": "public",
+      "declaration": {
+        "start": 55,
+        "end": 151
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   ],
   "operators": [],

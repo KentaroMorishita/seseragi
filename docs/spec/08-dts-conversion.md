@@ -14,6 +14,10 @@
 4. purity、throw、side effectを `.d.ts` から推測しない。
 5. 生成結果と未変換項目を機械可読reportへ必ず出す。
 
+source frontend、共通IR、Seseragiへの変換、runtime接続の責務は
+[18章](18-semantic-interop.md)に従います。本章はTypeScript向けの具体的な
+変換方針を定義します。
+
 ## 8.2 入力とsymbol解決
 
 converterは、entry `.d.ts`、compiler options、package resolverを入力としてTypeScriptの

@@ -40,7 +40,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 35,
-        "end": 71
+        "end": 81
       },
       "value": {
         "kind": "record",
@@ -53,14 +53,14 @@
               "value": "42",
               "origin": {
                 "source": "main.ssrg",
-                "start": 67,
-                "end": 69
+                "start": 77,
+                "end": 79
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 60,
-              "end": 69
+              "start": 70,
+              "end": 79
             }
           }
         ],
@@ -77,8 +77,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 54,
-          "end": 71
+          "start": 64,
+          "end": 81
         }
       }
     }
@@ -89,8 +89,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 73,
-        "end": 146
+        "start": 83,
+        "end": 156
       },
       "typeParameters": [
         "A"
@@ -142,14 +142,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 134,
-                "end": 137
+                "start": 144,
+                "end": 147
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 131,
-              "end": 137
+              "start": 141,
+              "end": 147
             }
           },
           {
@@ -165,14 +165,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 139,
-                "end": 144
+                "start": 149,
+                "end": 154
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 139,
-              "end": 144
+              "start": 149,
+              "end": 154
             }
           }
         ],
@@ -189,8 +189,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 125,
-          "end": 146
+          "start": 135,
+          "end": 156
         }
       }
     },
@@ -199,8 +199,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 148,
-        "end": 224
+        "start": 158,
+        "end": 234
       },
       "typeParameters": [
         "A"
@@ -240,8 +240,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 188,
-            "end": 191
+            "start": 198,
+            "end": 201
           }
         },
         "scrutineeType": {
@@ -274,8 +274,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 204,
-                  "end": 209
+                  "start": 214,
+                  "end": 219
                 }
               }
             ],
@@ -289,14 +289,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 215,
-                "end": 220
+                "start": 225,
+                "end": 230
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 198,
-              "end": 220
+              "start": 208,
+              "end": 230
             }
           }
         ],
@@ -308,8 +308,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 182,
-          "end": 224
+          "start": 192,
+          "end": 234
         }
       }
     },
@@ -318,8 +318,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 226,
-        "end": 287
+        "start": 236,
+        "end": 297
       },
       "parameters": [
         {
@@ -340,8 +340,8 @@
             "value": "Generic Struct: ",
             "origin": {
               "source": "main.ssrg",
-              "start": 262,
-              "end": 278
+              "start": 272,
+              "end": 288
             }
           },
           {
@@ -356,8 +356,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 280,
-                "end": 285
+                "start": 290,
+                "end": 295
               }
             },
             "evidence": {
@@ -379,15 +379,15 @@
             "traitIdentity": "std/prelude::Show",
             "origin": {
               "source": "main.ssrg",
-              "start": 278,
-              "end": 286
+              "start": 288,
+              "end": 296
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 261,
-          "end": 287
+          "start": 271,
+          "end": 297
         }
       }
     },
@@ -396,8 +396,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 289,
-        "end": 373
+        "start": 299,
+        "end": 383
       },
       "parameters": [
         {
@@ -455,8 +455,8 @@
                         "value": "42",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 334,
-                          "end": 336
+                          "start": 344,
+                          "end": 346
                         }
                       },
                       {
@@ -475,8 +475,8 @@
                         },
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 312,
-                          "end": 320
+                          "start": 322,
+                          "end": 330
                         }
                       }
                     ],
@@ -493,8 +493,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 312,
-                      "end": 336
+                      "start": 322,
+                      "end": 346
                     }
                   }
                 ],
@@ -505,8 +505,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 312,
-                  "end": 348
+                  "start": 322,
+                  "end": 358
                 }
               }
             ],
@@ -517,15 +517,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 312,
-              "end": 360
+              "start": 322,
+              "end": 370
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 312,
-          "end": 373
+          "start": 322,
+          "end": 383
         }
       }
     }

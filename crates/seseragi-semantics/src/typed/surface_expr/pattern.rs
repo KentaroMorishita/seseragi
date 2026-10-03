@@ -50,6 +50,7 @@ pub(crate) struct PatternAnalysis {
 }
 
 pub(crate) struct PatternBindingAnalysis {
+    pub(crate) inferred_callable: Option<(SymbolId, crate::typed::functions::TopLevelPureFunction)>,
     pub(crate) expression: SurfaceExpressionAnalysis,
     pub(crate) pattern: PatternAnalysis,
     pub(crate) mismatch: Option<PureCallIssue>,
@@ -63,7 +64,13 @@ pub(crate) fn type_pattern_binding(
     analyze: impl FnOnce(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> PatternBindingAnalysis {
     let expected = annotation.map(|type_ref| context.semantic_value_from_type_ref(type_ref));
-    let expression_context = context.with_expected(expected.clone());
+    let inferred = annotation
+        .is_none()
+        .then(|| context.infer_let(value))
+        .flatten();
+    let expression_context = context
+        .with_expected(expected.clone())
+        .with_let_expectation(value);
     let expression = analyze(value, &expression_context);
     let actual = SemanticValueType {
         type_ref: application_argument_type_from_expr(&expression.value),
@@ -81,7 +88,16 @@ pub(crate) fn type_pattern_binding(
     });
     let input = expected.unwrap_or_else(|| context.hydrate_semantic_value(actual));
     let pattern = type_pattern(pattern, &input, &expression_context);
+    let inferred_callable = inferred.and_then(|inferred| {
+        if pattern.locals.len() != 1 || expression.pure_call_issue.is_some() {
+            return None;
+        }
+        let symbol = *pattern.locals.keys().next()?;
+        let name = context.resolution.symbol(symbol)?.spelling.clone();
+        Some((symbol, inferred.callable(name, context)))
+    });
     PatternBindingAnalysis {
+        inferred_callable,
         expression,
         pattern,
         mismatch,

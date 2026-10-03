@@ -8479,6 +8479,20 @@
         "start": 2509,
         "end": 2523
       },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2509,
+        "end": 2523
+      },
+      "type": "Int -> maps.Map<String, Int>"
+    },
+    {
+      "range": {
+        "start": 2509,
+        "end": 2523
+      },
       "type": "K -> V -> Map<K, V>"
     },
     {
@@ -8486,7 +8500,21 @@
         "start": 2509,
         "end": 2523
       },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2509,
+        "end": 2523
+      },
       "type": "String -> Int -> maps.Map<String, Int>"
+    },
+    {
+      "range": {
+        "start": 2509,
+        "end": 2523
+      },
+      "type": "maps.Map<String, Int>"
     },
     {
       "range": {
@@ -18931,16 +18959,7 @@
           "Hash<K>"
         ],
         "signature": "singleton<K, V> arg1: K -> arg2: V -> Map<K, V> where Eq<K>, Hash<K>",
-        "remainingParameters": [
-          {
-            "name": "arg1",
-            "type": "K"
-          },
-          {
-            "name": "arg2",
-            "type": "V"
-          }
-        ]
+        "remainingParameters": []
       }
     },
     {

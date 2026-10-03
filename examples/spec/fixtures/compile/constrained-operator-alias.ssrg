@@ -1,0 +1,32 @@
+trait Choose<A> {
+  fn choose left: A -> right: A -> A
+}
+
+instance Choose<Int> {
+  fn choose left: Int -> right: Int -> Int = left - right
+}
+
+instance Choose<String> {
+  fn choose left: String -> right: String -> String = left + right
+}
+
+operator<A> infixr 4 <^> left: A -> right: A -> A where Choose<A> = choose left right
+
+let aliasValue = (<^>)
+let aliasChain = aliasValue
+
+fn apply step: (Int -> Int -> Int) -> Int = step 10 3
+
+fn block -> String = {
+  let localAlias = (<^>)
+  localAlias "a" "b"
+}
+
+pub effect fn main = do {
+  println (apply aliasChain)
+  println (aliasValue "left" "right")
+  println (block ())
+  let doAlias = (<^>)
+  println (doAlias 20 5)
+  println (doAlias "x" "y")
+}

@@ -1129,30 +1129,157 @@
                     "callee": "artifact/type-class-operator-section::mapWith",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": "<$>",
-                        "arguments": [],
-                        "evidence": [
-                          {
-                            "constraint": {
-                              "name": "Functor",
+                        "kind": "lambda",
+                        "parameter": {
+                          "id": "__ssrg$partial$0",
+                          "kind": "named",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        },
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "__ssrg$partial$1",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "Maybe",
                               "arguments": [
                                 {
                                   "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "body": {
+                            "kind": "call",
+                            "callee": "<$>",
+                            "arguments": [
+                              {
+                                "kind": "variable",
+                                "name": "__ssrg$partial$0",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1015,
+                                  "end": 1018
+                                }
+                              },
+                              {
+                                "kind": "variable",
+                                "name": "__ssrg$partial$1",
+                                "type": {
+                                  "kind": "named",
                                   "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1015,
+                                  "end": 1018
+                                }
+                              }
+                            ],
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Functor",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "std/maybe::Functor"
+                                }
+                              }
+                            ],
+                            "traitDispatch": {
+                              "traitIdentity": "std/prelude::Functor",
+                              "method": "map"
+                            },
+                            "type": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
                                   "arguments": []
                                 }
                               ]
                             },
-                            "evidence": {
-                              "kind": "standard",
-                              "identity": "std/maybe::Functor"
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1015,
+                              "end": 1018
                             }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1015,
+                            "end": 1018
                           }
-                        ],
-                        "traitDispatch": {
-                          "traitIdentity": "std/prelude::Functor",
-                          "method": "map"
                         },
                         "type": {
                           "kind": "function",
@@ -1455,30 +1582,177 @@
                     "callee": "artifact/type-class-operator-section::bindWith",
                     "arguments": [
                       {
-                        "kind": "call",
-                        "callee": ">>=",
-                        "arguments": [],
-                        "evidence": [
-                          {
-                            "constraint": {
-                              "name": "Monad",
+                        "kind": "lambda",
+                        "parameter": {
+                          "id": "__ssrg$partial$0",
+                          "kind": "named",
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        },
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "__ssrg$partial$1",
+                            "kind": "named",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "body": {
+                            "kind": "call",
+                            "callee": ">>=",
+                            "arguments": [
+                              {
+                                "kind": "variable",
+                                "name": "__ssrg$partial$0",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1117,
+                                  "end": 1120
+                                }
+                              },
+                              {
+                                "kind": "variable",
+                                "name": "__ssrg$partial$1",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Maybe",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1117,
+                                  "end": 1120
+                                }
+                              }
+                            ],
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Monad",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "std/maybe::Monad"
+                                }
+                              }
+                            ],
+                            "traitDispatch": {
+                              "traitIdentity": "std/prelude::Monad",
+                              "method": "flatMap"
+                            },
+                            "type": {
+                              "kind": "named",
+                              "name": "Maybe",
                               "arguments": [
                                 {
                                   "kind": "named",
-                                  "name": "Maybe",
+                                  "name": "Int",
                                   "arguments": []
                                 }
                               ]
                             },
-                            "evidence": {
-                              "kind": "standard",
-                              "identity": "std/maybe::Monad"
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1117,
+                              "end": 1120
                             }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1117,
+                            "end": 1120
                           }
-                        ],
-                        "traitDispatch": {
-                          "traitIdentity": "std/prelude::Monad",
-                          "method": "flatMap"
                         },
                         "type": {
                           "kind": "function",

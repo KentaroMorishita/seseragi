@@ -738,7 +738,7 @@
       "visibility": "public",
       "origin": {
         "start": 334,
-        "end": 381
+        "end": 389
       },
       "scheme": {
         "typeParameters": [],
@@ -773,8 +773,8 @@
                 ]
               },
               "origin": {
-                "start": 354,
-                "end": 359
+                "start": 362,
+                "end": 367
               }
             },
             "evidence": {
@@ -856,16 +856,16 @@
             },
             "traitIdentity": "std/prelude::Show",
             "origin": {
-              "start": 352,
-              "end": 360
+              "start": 360,
+              "end": 368
             }
           },
           {
             "kind": "text",
             "value": ", ",
             "origin": {
-              "start": 360,
-              "end": 362
+              "start": 368,
+              "end": 370
             }
           },
           {
@@ -891,8 +891,8 @@
                 ]
               },
               "origin": {
-                "start": 364,
-                "end": 370
+                "start": 372,
+                "end": 378
               }
             },
             "evidence": {
@@ -987,16 +987,16 @@
             },
             "traitIdentity": "std/prelude::Show",
             "origin": {
-              "start": 362,
-              "end": 371
+              "start": 370,
+              "end": 379
             }
           },
           {
             "kind": "text",
             "value": ", ",
             "origin": {
-              "start": 371,
-              "end": 373
+              "start": 379,
+              "end": 381
             }
           },
           {
@@ -1010,8 +1010,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 375,
-                "end": 379
+                "start": 383,
+                "end": 387
               }
             },
             "evidence": {
@@ -1032,8 +1032,8 @@
             },
             "traitIdentity": "std/prelude::Show",
             "origin": {
-              "start": 373,
-              "end": 380
+              "start": 381,
+              "end": 388
             }
           }
         ],
@@ -1043,8 +1043,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 351,
-          "end": 381
+          "start": 359,
+          "end": 389
         }
       }
     }

@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "int-is-not-byte",
+    "repairExample": "empty-and-singleton",
+    "expectedRepairOutput": "Empty\nBytes: [65]\n",
+    "invalidSha256": "fbf5f64ee352dd313979922530a94d24b706bd5c7ac00c6ed1cb3cab68f0bde9",
+    "repairSha256": "efd0a701310319e72877d640aba95fa68de774627632871a358e6133269e4c23",
+    "diagnostic": {
+      "code": "SES-T0101",
+      "messageKey": "call.argument-type-mismatch",
+      "actualType": "Int",
+      "expectedType": "Byte"
+    }
+  },
+  {
+    "slug": "unhandled-byte",
+    "repairExample": "empty-and-singleton",
+    "expectedRepairOutput": "Empty\nBytes: [65]\n",
+    "invalidSha256": "0b04952fbfb14ccd8cd7e3734a8e5c0bf93e743b5114b6459d916b54efb16c26",
+    "repairSha256": "efd0a701310319e72877d640aba95fa68de774627632871a358e6133269e4c23",
+    "diagnostic": {
+      "code": "SES-T0101",
+      "messageKey": "call.argument-type-mismatch",
+      "actualType": "Either<ByteError, Byte>",
+      "expectedType": "Byte"
+    }
+  },
+  {
+    "slug": "float-index",
+    "repairExample": "inspect-byte",
+    "expectedRepairOutput": "Index 0: 0\nIndex 2: 255\nIndex 3: missing\nIndex -1: missing\n",
+    "invalidSha256": "533967deb57760c1341d1082a66a3e1e30516752790a266d080864b25ae81bcd",
+    "repairSha256": "eeb710fd22da3192f630aad614991ff9d0cf705dbc13677fbf53e1fe631b3681",
+    "diagnostic": {
+      "code": "SES-T0101",
+      "messageKey": "call.argument-type-mismatch",
+      "actualType": "Float",
+      "expectedType": "Int"
+    }
+  },
+  {
+    "slug": "unhandled-slice",
+    "repairExample": "checked-range",
+    "expectedRepairOutput": "[20, 30]\n[]\nInvalid range 3..1 for 4 bytes\nInvalid range -1..2 for 4 bytes\nInvalid range 0..5 for 4 bytes\n[10, 20, 30, 40]\n",
+    "invalidSha256": "e4a33e76e94195d1a9daa6e8a71d8a137b67c0e876b47a89dd711a3f598b853e",
+    "repairSha256": "9699224c540cb1e9f77a9a5047c0d2717a6ba0bce29353ae641b54ca08949951",
+    "diagnostic": {
+      "code": "SES-T0101",
+      "messageKey": "call.argument-type-mismatch",
+      "actualType": "Either<BytesSliceError, Bytes>",
+      "expectedType": "Bytes"
+    }
+  },
+  {
+    "slug": "byte-constructor",
+    "repairExample": "validate-one-byte",
+    "expectedRepairOutput": "Byte: 0\nByte: 255\nOut of range: -1\nOut of range: 256\n",
+    "invalidSha256": "dfda24c1e4cfb8bac2783c70f11d08e73abdae58344417ed10d8931a2e35f5cf",
+    "repairSha256": "fb5896b64eb952fec58f4005505fc3b18db04d69f44956164c8ec0ecba6c546c",
+    "diagnostic": {
+      "code": "SES-N0104",
+      "messageKey": "module.export-unresolved",
+      "actualType": null,
+      "expectedType": null
+    }
+  },
+  {
+    "slug": "byte-pattern",
+    "repairExample": "validate-one-byte",
+    "expectedRepairOutput": "Byte: 0\nByte: 255\nOut of range: -1\nOut of range: 256\n",
+    "invalidSha256": "d2ac3abab5d8c9037206036d84897dc86942d9024cdf8ae86b1b80a9e95d805f",
+    "repairSha256": "fb5896b64eb952fec58f4005505fc3b18db04d69f44956164c8ec0ecba6c546c",
+    "diagnostic": {
+      "code": "SES-N0104",
+      "messageKey": "module.export-unresolved",
+      "actualType": null,
+      "expectedType": null
+    }
+  }
+]

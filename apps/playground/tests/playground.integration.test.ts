@@ -3131,7 +3131,7 @@ describe("Playground sample catalog", () => {
     for (const operator of ["<", "<=", ">", ">="]) {
       const negative = await compile(
         "missing-ord.ssrg",
-        `pub let invalid = 1.0 ${operator} 2.0`
+        `let invalid = 1.0 ${operator} 2.0`
       )
       expect(negative.status).not.toBe("success")
     }

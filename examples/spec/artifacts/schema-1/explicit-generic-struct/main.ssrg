@@ -3,7 +3,7 @@ pub struct Marker<A> {
   value: A,
 }
 
-pub let marker = Marker<Array<String>> {
+pub let marker: Marker<Array<String>> = Marker<Array<String>> {
   label: "ready",
   value: [],
 }

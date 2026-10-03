@@ -10,8 +10,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 22,
-        "end": 24
+        "start": 27,
+        "end": 29
       },
       "related": [],
       "labels": [],
@@ -30,8 +30,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 47,
-        "end": 49
+        "start": 57,
+        "end": 59
       },
       "related": [],
       "labels": [],
@@ -50,8 +50,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 71,
-        "end": 73
+        "start": 86,
+        "end": 88
       },
       "related": [],
       "labels": [],
@@ -70,8 +70,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 95,
-        "end": 97
+        "start": 115,
+        "end": 117
       },
       "related": [],
       "labels": [],
@@ -90,8 +90,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 122,
-        "end": 123
+        "start": 147,
+        "end": 148
       },
       "related": [],
       "labels": [],
@@ -110,8 +110,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 146,
-        "end": 148
+        "start": 176,
+        "end": 178
       },
       "related": [],
       "labels": [],
@@ -130,8 +130,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 171,
-        "end": 172
+        "start": 206,
+        "end": 207
       },
       "related": [],
       "labels": [],
@@ -150,8 +150,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 200,
-        "end": 202
+        "start": 240,
+        "end": 242
       },
       "related": [],
       "labels": [],
@@ -170,8 +170,8 @@
       "messageKey": "parser.expected-expression",
       "message": "Expected an expression here",
       "primary": {
-        "start": 230,
-        "end": 233
+        "start": 275,
+        "end": 278
       },
       "related": [],
       "labels": [],

@@ -956,7 +956,7 @@ fails Never =
     fn reports_function_value_return_type_mismatch_instead_of_arity() {
         let diagnostics = semantic_diagnostics(
             "artifact/function-value-reference/main.ssrg",
-            "fn source unit: Unit -> Int = 1\nfn alias unit: Unit -> Int = source\n",
+            "fn source unit: Unit -> Int = 1\nfn proxy unit: Unit -> Int = source\n",
         );
 
         assert_eq!(diagnostics.diagnostics.len(), 1);

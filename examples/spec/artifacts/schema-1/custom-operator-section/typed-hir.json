@@ -685,39 +685,112 @@
                   "callee": "artifact/custom-operator-section::applyPair",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "artifact/custom-operator-section::operator(<^>)",
-                      "arguments": [],
-                      "evidence": [
-                        {
-                          "constraint": {
-                            "name": "Difference",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "Int",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "evidence": {
-                            "kind": "local",
-                            "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>"
-                          }
-                        }
-                      ],
-                      "deferredEvidenceParameters": [
-                        {
+                      "kind": "lambda",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "__ssrg$partial$0",
+                        "type": {
                           "kind": "named",
                           "name": "Int",
                           "arguments": []
                         },
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
+                        "origin": {
+                          "start": 733,
+                          "end": 736
                         }
-                      ],
+                      },
+                      "body": {
+                        "kind": "lambda",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "__ssrg$partial$1",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 733,
+                            "end": 736
+                          }
+                        },
+                        "body": {
+                          "kind": "call",
+                          "callee": "artifact/custom-operator-section::operator(<^>)",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "__ssrg$partial$0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 733,
+                                "end": 736
+                              }
+                            },
+                            {
+                              "kind": "variable",
+                              "name": "__ssrg$partial$1",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 733,
+                                "end": 736
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Difference",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "local",
+                                "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 733,
+                            "end": 736
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        },
+                        "origin": {
+                          "start": 733,
+                          "end": 736
+                        }
+                      },
                       "type": {
                         "kind": "function",
                         "parameter": {

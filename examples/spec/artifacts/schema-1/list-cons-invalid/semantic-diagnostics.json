@@ -10,15 +10,15 @@
       "messageKey": "call.argument-type-mismatch",
       "message": "Argument type does not match the parameter type",
       "primary": {
-        "start": 26,
-        "end": 27
+        "start": 37,
+        "end": 38
       },
       "related": [
         {
           "message": "argument 2 expected List<Int>, received Int",
           "primary": {
             "start": 0,
-            "end": 27
+            "end": 38
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "argument 2 expected List<Int>, received Int",
           "primary": {
             "start": 0,
-            "end": 27
+            "end": 38
           }
         }
       ],
@@ -61,15 +61,15 @@
       "messageKey": "list.element-type-mismatch",
       "message": "List element type mismatch",
       "primary": {
-        "start": 62,
-        "end": 63
+        "start": 84,
+        "end": 85
       },
       "related": [
         {
           "message": "element 1 expected Bool, received Int",
           "primary": {
-            "start": 28,
-            "end": 64
+            "start": 39,
+            "end": 86
           }
         }
       ],
@@ -77,8 +77,8 @@
         {
           "message": "element 1 expected Bool, received Int",
           "primary": {
-            "start": 28,
-            "end": 64
+            "start": 39,
+            "end": 86
           }
         }
       ],
@@ -108,15 +108,15 @@
       "messageKey": "call.argument-type-mismatch",
       "message": "Argument type does not match the parameter type",
       "primary": {
-        "start": 60,
-        "end": 64
+        "start": 82,
+        "end": 86
       },
       "related": [
         {
           "message": "argument 2 expected List<Bool>, received List<unknown>",
           "primary": {
-            "start": 28,
-            "end": 64
+            "start": 39,
+            "end": 86
           }
         }
       ],
@@ -124,8 +124,8 @@
         {
           "message": "argument 2 expected List<Bool>, received List<unknown>",
           "primary": {
-            "start": 28,
-            "end": 64
+            "start": 39,
+            "end": 86
           }
         }
       ],

@@ -1,6 +1,7 @@
 import { resolve } from "node:path"
 
 const root = resolve(import.meta.dir, "../../..")
+const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/release/seseragi")
 
 for (const command of [
   ["node_modules/.bin/biome", "check", "apps/site"],
@@ -85,10 +86,14 @@ for (const command of [
     "apps/site/tests/stdin-reader-editorial.test.ts",
     "apps/site/tests/collection-transform.test.ts",
     "apps/site/tests/collection-transform-editorial.test.ts",
+    "apps/site/tests/bytes-inspection.test.ts",
+    "apps/site/tests/bytes-inspection-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   ["python3", "-B", "apps/site/tests/prose.test.py"],
-  ["cargo", "build", "-p", "seseragi-cli"],
+  // The site exercises thousands of declarations. Build the current compiler
+  // with Rust optimizations, independently of the generated program profile.
+  ["cargo", "build", "--locked", "--release", "-p", "seseragi-cli"],
   ["bun", "apps/site/scripts/check-examples.ts"],
   [
     "cargo",
@@ -100,6 +105,7 @@ for (const command of [
 ]) {
   const result = Bun.spawnSync(command, {
     cwd: root,
+    env: { ...process.env, SESERAGI_BIN: cli },
     stdout: "inherit",
     stderr: "inherit",
   })
@@ -182,13 +188,15 @@ const test = Bun.spawnSync(
     "apps/site/tests/stdin-reader-editorial.test.ts",
     "apps/site/tests/collection-transform.test.ts",
     "apps/site/tests/collection-transform-editorial.test.ts",
+    "apps/site/tests/bytes-inspection.test.ts",
+    "apps/site/tests/bytes-inspection-editorial.test.ts",
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   {
     cwd: root,
     env: {
       ...process.env,
-      SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
+      SESERAGI_BIN: cli,
     },
     stdout: "inherit",
     stderr: "inherit",
@@ -200,7 +208,7 @@ const browser = Bun.spawnSync(["bun", "apps/site/tests/browser.test.ts"], {
   cwd: root,
   env: {
     ...process.env,
-    SESERAGI_BIN: resolve(root, "target/debug/seseragi"),
+    SESERAGI_BIN: cli,
   },
   stdout: "inherit",
   stderr: "inherit",

@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "byteはIntが0から255までかを検証します。成功すればByte、失敗すればByteErrorを、Eitherの結果として返します。",
+  taskTitle: "範囲外の数値を1バイトに変換せず拒否する",
+  purpose: "入力の数値を丸めたり折り返したりせず、1バイトに収まるときだけ受け入れます。0、255、-1、256を順に調べて、境界で何が成功し何が失敗するか確認します。",
+  typescriptBefore: "TypeScriptでは整数判定と0から255までの範囲判定を明示します。Uint8Arrayへ渡すだけでは、この拒否ルールにはなりません。たとえば256は0に変換されます。この例では検証に通ったnumberをそのまま表示し、独自のByte型は作りません。",
+  benefit: "Seseragiのbyteは検証ルールと成功時のByteを1つのAPIで表します。Either<ByteError, Byte>を見れば失敗もあると分かり、成功経路でだけByteを次の操作へ渡せます。",
+  setup: "import * as bytesはstd/bytesにbytesという別名を付けます。fn describe value: Int -> Stringは、Intの引数valueからStringを返す関数を定義します。bytes.byte valueは、空白の後にvalueを渡す呼び出しです。",
+  after: [
+    "byteの入力はInt、つまり整数です。結果のEither<ByteError, Byte>は、Leftに検証エラー、Rightに成功したByteを持ちます。matchはこの2通りを分け、枝の->の右側を実行します。",
+    "Left (bytes.ByteOutOfRange invalid)は失敗の種類を調べ、拒否された元の整数をinvalidに結び付けます。バッククォート文字列の${invalid}がその値を表示に埋め込みます。",
+    "Right checkedでは検証済みのByteをcheckedとして受け取ります。bytes.toInt checkedで整数に戻し、${bytes.toInt checked}で文字列へ埋め込みます。Byteの内部を直接参照する必要はありません。",
+    "for value <- [0, 255, -1, 256]は、配列の値を順番にvalueへ結び付けます。括弧の中のdescribe valueが各入力を説明する文字列を作り、それが表示されます。",
+    "0と255は成功し、-1と256は失敗します。成功時に元の値は変わらず、範囲外の値を別のバイトへ折り返して成功させることはありません。",
+  ],
+  details: [
+    "有効範囲は0以上255以下です。TypeScriptのnumberには小数などもあるため比較例にはNumber.isIntegerが必要ですが、SeseragiのbyteはIntを要求します。両言語の数値型全体が同じという意味ではありません。",
+    "byteの結果をそのままsingletonやtoIntへ渡すことはできません。それらが必要とするのはByteであり、Either全体ではないためです。Rightで成功した値を受け取ってから渡します。",
+    "Byteは内部表現が非公開の型で、公開されたByteコンストラクターはありません。数値をByteにするにはbyteで検証します。複数の整数をまとめてBytesにしたいときはfromIntsが対応する検証を行います。",
+  ],
+}

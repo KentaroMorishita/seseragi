@@ -1,0 +1,3 @@
+import * as bytes from "std/bytes"
+let content = bytes.singleton (bytes.byte 65)
+pub effect fn main = println "unreachable"

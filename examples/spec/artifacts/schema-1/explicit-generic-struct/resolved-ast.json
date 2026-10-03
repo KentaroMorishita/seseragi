@@ -68,13 +68,40 @@
           "end": 69
         }
       },
-      "typeRef": null,
+      "typeRef": {
+        "kind": "named",
+        "name": "Marker",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 84,
+                  "end": 90
+                }
+              }
+            ],
+            "span": {
+              "start": 78,
+              "end": 91
+            }
+          }
+        ],
+        "span": {
+          "start": 71,
+          "end": 92
+        }
+      },
       "body": {
         "kind": "struct",
         "name": "Marker",
         "nameSpan": {
-          "start": 72,
-          "end": 78
+          "start": 95,
+          "end": 101
         },
         "typeArguments": [
           {
@@ -85,14 +112,14 @@
                 "kind": "named",
                 "name": "String",
                 "span": {
-                  "start": 85,
-                  "end": 91
+                  "start": 108,
+                  "end": 114
                 }
               }
             ],
             "span": {
-              "start": 79,
-              "end": 92
+              "start": 102,
+              "end": 115
             }
           }
         ],
@@ -101,51 +128,51 @@
             "kind": "field",
             "name": "label",
             "nameSpan": {
-              "start": 98,
-              "end": 103
+              "start": 121,
+              "end": 126
             },
             "value": {
               "kind": "string",
               "raw": "\"ready\"",
               "span": {
-                "start": 105,
-                "end": 112
+                "start": 128,
+                "end": 135
               }
             },
             "span": {
-              "start": 98,
-              "end": 112
+              "start": 121,
+              "end": 135
             }
           },
           {
             "kind": "field",
             "name": "value",
             "nameSpan": {
-              "start": 116,
-              "end": 121
+              "start": 139,
+              "end": 144
             },
             "value": {
               "kind": "array",
               "elements": [],
               "span": {
-                "start": 123,
-                "end": 125
+                "start": 146,
+                "end": 148
               }
             },
             "span": {
-              "start": 116,
-              "end": 125
+              "start": 139,
+              "end": 148
             }
           }
         ],
         "span": {
-          "start": 72,
-          "end": 128
+          "start": 95,
+          "end": 151
         }
       },
       "span": {
         "start": 55,
-        "end": 128
+        "end": 151
       }
     },
     {
@@ -153,15 +180,15 @@
       "visibility": "private",
       "name": "render",
       "nameSpan": {
-        "start": 133,
-        "end": 139
+        "start": 156,
+        "end": 162
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 140,
-            "end": 145
+            "start": 163,
+            "end": 168
           },
           "type": {
             "kind": "named",
@@ -175,20 +202,20 @@
                     "kind": "named",
                     "name": "String",
                     "span": {
-                      "start": 160,
-                      "end": 166
+                      "start": 183,
+                      "end": 189
                     }
                   }
                 ],
                 "span": {
-                  "start": 154,
-                  "end": 167
+                  "start": 177,
+                  "end": 190
                 }
               }
             ],
             "span": {
-              "start": 147,
-              "end": 168
+              "start": 170,
+              "end": 191
             }
           }
         }
@@ -197,23 +224,23 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 172,
-          "end": 178
+          "start": 195,
+          "end": 201
         }
       },
       "body": {
         "kind": "binary",
         "operator": "+",
         "operatorSpan": {
-          "start": 211,
-          "end": 212
+          "start": 234,
+          "end": 235
         },
         "left": {
           "kind": "string",
           "raw": "\"Explicit generic Struct: \"",
           "span": {
-            "start": 183,
-            "end": 210
+            "start": 206,
+            "end": 233
           }
         },
         "right": {
@@ -222,28 +249,28 @@
             "kind": "name",
             "name": "value",
             "span": {
-              "start": 213,
-              "end": 218
+              "start": 236,
+              "end": 241
             }
           },
           "field": "label",
           "fieldSpan": {
-            "start": 219,
-            "end": 224
+            "start": 242,
+            "end": 247
           },
           "span": {
-            "start": 213,
-            "end": 224
+            "start": 236,
+            "end": 247
           }
         },
         "span": {
-          "start": 183,
-          "end": 224
+          "start": 206,
+          "end": 247
         }
       },
       "span": {
-        "start": 130,
-        "end": 224
+        "start": 153,
+        "end": 247
       }
     },
     {
@@ -251,8 +278,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 240,
-        "end": 244
+        "start": 263,
+        "end": 267
       },
       "inferredContract": true,
       "returnType": null,
@@ -262,8 +289,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 273,
-            "end": 280
+            "start": 296,
+            "end": 303
           }
         },
         "argument": {
@@ -272,31 +299,31 @@
             "kind": "name",
             "name": "render",
             "span": {
-              "start": 261,
-              "end": 267
+              "start": 284,
+              "end": 290
             }
           },
           "argument": {
             "kind": "name",
             "name": "marker",
             "span": {
-              "start": 249,
-              "end": 255
+              "start": 272,
+              "end": 278
             }
           },
           "span": {
-            "start": 249,
-            "end": 267
+            "start": 272,
+            "end": 290
           }
         },
         "span": {
-          "start": 249,
-          "end": 280
+          "start": 272,
+          "end": 303
         }
       },
       "span": {
-        "start": 226,
-        "end": 280
+        "start": 249,
+        "end": 303
       }
     }
   ],
@@ -306,7 +333,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 280
+        "end": 303
       }
     },
     {
@@ -323,8 +350,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 130,
-        "end": 224
+        "start": 153,
+        "end": 247
       }
     },
     {
@@ -332,8 +359,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 226,
-        "end": 280
+        "start": 249,
+        "end": 303
       }
     }
   ],
@@ -370,8 +397,8 @@
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 133,
-        "end": 139
+        "start": 156,
+        "end": 162
       }
     },
     {
@@ -382,8 +409,8 @@
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 240,
-        "end": 244
+        "start": 263,
+        "end": 267
       }
     },
     {
@@ -428,8 +455,8 @@
       "kind": "parameter",
       "scope": 2,
       "origin": {
-        "start": 140,
-        "end": 145
+        "start": 163,
+        "end": 168
       }
     },
     {
@@ -481,8 +508,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 72,
-        "end": 78
+        "start": 71,
+        "end": 92
       }
     },
     {
@@ -490,8 +517,8 @@
       "namespace": "type",
       "target": 6,
       "origin": {
-        "start": 79,
-        "end": 92
+        "start": 78,
+        "end": 91
       }
     },
     {
@@ -499,8 +526,8 @@
       "namespace": "type",
       "target": 5,
       "origin": {
-        "start": 85,
-        "end": 91
+        "start": 84,
+        "end": 90
       }
     },
     {
@@ -508,8 +535,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 147,
-        "end": 168
+        "start": 95,
+        "end": 101
       }
     },
     {
@@ -517,8 +544,8 @@
       "namespace": "type",
       "target": 6,
       "origin": {
-        "start": 154,
-        "end": 167
+        "start": 102,
+        "end": 115
       }
     },
     {
@@ -526,8 +553,26 @@
       "namespace": "type",
       "target": 5,
       "origin": {
-        "start": 160,
-        "end": 166
+        "start": 108,
+        "end": 114
+      }
+    },
+    {
+      "spelling": "Marker",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 170,
+        "end": 191
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 177,
+        "end": 190
       }
     },
     {
@@ -535,8 +580,17 @@
       "namespace": "type",
       "target": 5,
       "origin": {
-        "start": 172,
-        "end": 178
+        "start": 183,
+        "end": 189
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 195,
+        "end": 201
       }
     },
     {
@@ -544,8 +598,8 @@
       "namespace": "operator",
       "target": 8,
       "origin": {
-        "start": 211,
-        "end": 212
+        "start": 234,
+        "end": 235
       }
     },
     {
@@ -553,8 +607,8 @@
       "namespace": "value",
       "target": 7,
       "origin": {
-        "start": 213,
-        "end": 218
+        "start": 236,
+        "end": 241
       }
     },
     {
@@ -562,8 +616,8 @@
       "namespace": "value",
       "target": 9,
       "origin": {
-        "start": 273,
-        "end": 280
+        "start": 296,
+        "end": 303
       }
     },
     {
@@ -571,8 +625,8 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 261,
-        "end": 267
+        "start": 284,
+        "end": 290
       }
     },
     {
@@ -580,8 +634,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 249,
-        "end": 255
+        "start": 272,
+        "end": 278
       }
     }
   ],

@@ -1,5 +1,5 @@
 pub fn identity<A> value: A -> A = value
-pub let forward = identity
+pub fn forward<A> value: A -> A = identity value
 pub fn returned x: Int -> Int -> Int = \y -> x + y
 pub fn same<A> x: A -> A -> Bool where Eq<A> = \y -> x == y
 pub fn local unit: Unit -> Int = {

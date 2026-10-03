@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "append joins two Bytes values. Its suffix argument comes first and the original content comes second; the result places suffix after content.",
+  taskTitle: "Add another byte sequence to the end",
+  purpose: "Put [30, 40] after [10, 20]. Compare a direct call with a pipe, then swap the arguments to see how the order changes.",
+  typescriptBefore: "TypeScript can concisely join these two small sequences with new Uint8Array([...content, ...suffix]). Their spread order is their result order. The numbers in this example already fit in the byte range. Array.from and join make the output easy to compare.",
+  benefit: "Both joins are short. Seseragi accepts Bytes directly through append. Because the original content is the last argument, content |> bytes.append suffix lets you follow the operation from left to right.",
+  setup: "import * as bytes gives std/bytes the alias bytes. bytes.fromInts [10, 20] is a call that passes an integer array after a space for validation. The parenthesized (bytes.fromInts ..., bytes.fromInts ...) is a tuple containing two validation results.",
+  after: [
+    "fromInts returns Either<ByteError, Bytes>, with Left for failure and Right for success. The match pattern (Right content, Right suffix) requires both successes and names their Bytes content and suffix. The _ branch accepts anything else, displaying a message if at least one validation failed.",
+    "bytes.append suffix content passes two arguments after spaces. The first is the sequence to add; the second is the original sequence. The result is [10, 20, 30, 40], not the order you would get by reading the arguments from left to right.",
+    "The |> in content |> bytes.append suffix passes the value on its left as the final argument of the call on its right. It therefore means bytes.append suffix content, and the first two lines have the same result.",
+    "The third line reverses the arguments with bytes.append content suffix. Now suffix is the original sequence and content goes after it, producing [30, 40, 10, 20].",
+    "do { ... } runs the display steps from top to bottom. bytes.toInts converts Bytes to an integer array, and show makes a display String. The inner parentheses obtain the append result before converting it. The final two lines show the original content and suffix.",
+  ],
+  details: [
+    "append takes two Bytes values and returns Bytes directly. The Either in this example comes from validating the inputs with fromInts, not from a possible join failure. The Right values are received before joining.",
+    "An empty suffix gives the same element sequence as the original content. If the original content is empty, the result has the same elements as suffix. If both are empty, the result is empty too.",
+    "After joining, the inputs still contain [10, 20] and [30, 40]. The operation does not change either input’s contents. To join three or more sequences from an array in order, use concat.",
+  ],
+}

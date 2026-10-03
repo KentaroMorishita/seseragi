@@ -5,7 +5,7 @@ fn cons_uses_canonical_persistent_list_and_right_associativity() {
     let source = r#"
 fn prepend<A> head: A -> tail: List<A> -> List<A> = head : tail
 let values: List<Int> = 1 : 2 : 3 : `[]
-pub let result = (values, prepend 4 values, 1 + 2 : `[4])
+let result = (values, prepend 4 values, 1 + 2 : `[4])
 "#;
     let result = compile_module(CompileInput::new("cons.ssrg", "fixture/cons", source));
     assert!(result.is_ok(), "{result:#?}");
@@ -22,9 +22,9 @@ pub let result = (values, prepend 4 values, 1 + 2 : `[4])
 #[test]
 fn cons_rejects_invalid_tail_and_nominal_shadowing() {
     for source in [
-        "pub let bad = 1 : 2",
-        "pub let bad = 1 : [2]",
-        "pub let bad = True : `[1]",
+        "let bad = 1 : 2",
+        "let bad = 1 : [2]",
+        "let bad = True : `[1]",
         "struct List<A> { value: A }\nfn bad head: Int -> tail: List<Int> -> List<Int> = head : tail",
         "fn bad<List> head: Int -> tail: List<Int> -> List<Int> = head : tail",
         "operator infixr 4 : head: Int -> tail: Int -> Int = head",
@@ -36,7 +36,7 @@ fn cons_rejects_invalid_tail_and_nominal_shadowing() {
 
 #[test]
 fn cons_sections_preserve_generic_currying() {
-    let source = "let prepend: Bool -> List<Bool> -> List<Bool> = (:)\nlet withOne = (:) 1\npub let result = (prepend True `[], withOne `[2], (:) 3 `[4])\n";
+    let source = "let prepend: Bool -> List<Bool> -> List<Bool> = (:)\nlet withOne = (:) 1\nlet result = (prepend True `[], withOne `[2], (:) 3 `[4])\n";
     let result = compile_module(CompileInput::new("section.ssrg", "fixture/cons", source));
     assert!(result.is_ok(), "{result:#?}");
     let generated = result.unwrap().generated.typescript;
@@ -80,7 +80,7 @@ fn formatted_cons_keeps_the_same_generated_program() {
 #[test]
 fn cons_infers_nullary_head_and_empty_collection_from_tail() {
     let source =
-        "pub let values = (Nothing : `[Just 1], [] : `[[1]], Nothing : Nothing : `[Just 2], (:) Nothing `[Just 3])\n";
+        "let values = (Nothing : `[Just 1], [] : `[[1]], Nothing : Nothing : `[Just 2], (:) Nothing `[Just 3])\n";
     let result = compile_module(CompileInput::new("infer.ssrg", "fixture/cons", source));
     assert!(result.is_ok(), "{result:#?}");
 }
@@ -88,8 +88,8 @@ fn cons_infers_nullary_head_and_empty_collection_from_tail() {
 #[test]
 fn cons_infers_nested_nullary_elements_and_preserves_generic_identity() {
     for source in [
-        "pub let values = (Nothing, 1) : `[(Just 2, 3)]",
-        "pub let values = { value: Nothing } : `[{ value: Just 2 }]",
+        "let values = (Nothing, 1) : `[(Just 2, 3)]",
+        "let values = { value: Nothing } : `[{ value: Just 2 }]",
         "fn prepend<A> head: A -> List<A> = head : `[]",
         "pub let values: List<Maybe<Int>> = Nothing : `[]",
     ] {

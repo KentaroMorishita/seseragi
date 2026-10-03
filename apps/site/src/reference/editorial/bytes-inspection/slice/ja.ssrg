@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "sliceは開始位置を含み、終了位置を含まない範囲を切り出します。範囲が無効なら補正せず、BytesSliceErrorをLeftで返します。",
+  taskTitle: "範囲を検証してバイト列の一部を取り出す",
+  purpose: "4バイトの列から位置1以上3未満を取り出します。空の範囲も許可しつつ、逆向き、負の開始位置、末尾を超える終了位置は理由付きで拒否します。",
+  typescriptBefore: "TypeScriptのUint8Array.sliceは、範囲外の境界を収めたり負の位置を末尾から数えたりします。そのままではこの拒否ルールになりません。extractでは整数と0 <= start <= end <= content.lengthを先に検証し、通った範囲だけをネイティブのsliceへ渡します。",
+  benefit: "Seseragiのsliceは範囲の検証をAPIに含みます。Either<BytesSliceError, Bytes>を分けることで、成功した部分列と、指定した境界を保った失敗理由をそれぞれ扱えます。",
+  setup: "import * as bytesはstd/bytesをbytesという別名で使います。fn extract start: Int -> end: Int -> content: bytes.Bytes -> Stringは、開始位置、終了位置、Bytesを受けてStringを返します。bytes.slice start end contentでは、3つの引数を空白で順番に渡します。",
+  after: [
+    "mainのbytes.fromInts [10, 20, 30, 40]は、整数の配列を検証してBytesにします。そのEitherのLeft errorは入力の失敗で、showで表示します。Right contentで得たBytesが切り出しの対象です。",
+    "extractのmatchはsliceのEitherを分けます。Left (bytes.InvalidByteRange { start, end, length })は、範囲エラーのレコードから3つのフィールドを同名のローカル変数へ結び付けます。startとendは指定した境界、lengthは入力のバイト数です。",
+    "バッククォート文字列の${start}、${end}、${length}へ値を埋め込むと、失敗した指定を説明できます。Right partは成功したBytesをpartとして受け取り、bytes.toIntsとshowで整数の配列を表示する文字列にします。各枝の->の右側が返す値です。",
+    "Right contentのdo { ... }は、呼び出しと表示を上から順に行います。extract 1 3 contentは位置1と2の[20, 30]、extract 2 2 contentは空の[]になります。",
+    "extract 3 1 content、extract (-1) 2 content、extract 0 5 contentは失敗します。呼び出しに負数を渡す(-1)の括弧にも注目してください。最後に元のcontentを表示すると、[10, 20, 30, 40]のままです。",
+  ],
+  details: [
+    "有効な範囲は0 <= start <= end <= lengthです。startを含みendを含まないので、slice 0 length contentで全体を取り出せます。startとendはIntで、小数の位置は受け付けません。",
+    "startとendが同じなら空の範囲です。両方がlengthの場合も成功し、空の入力に0と0を指定しても成功します。開始位置も終了位置も負数やlength超過にはできず、逆向きの範囲も失敗します。",
+    "入力のBytesの内容は変更されません。失敗時には元のstart、endと実際のlengthが返るため、補正された範囲を推測する必要がありません。結果のBytesを使うには、Either全体を渡さずRightの値を受け取ります。",
+  ],
+}

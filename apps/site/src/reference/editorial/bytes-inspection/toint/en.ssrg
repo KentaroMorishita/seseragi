@@ -1,0 +1,22 @@
+import { BytesInspectionCopy } from "../model"
+
+pub fn copy -> BytesInspectionCopy = BytesInspectionCopy {
+  summary: "toInt converts a Byte to an Int with the same value. Use it to display or calculate with the number that has already been accepted as a Byte.",
+  taskTitle: "Display a validated byte as an integer",
+  purpose: "Turn a validated byte back into an integer for display. 0 and 255 can be displayed unchanged. -1 and 256 never reach toInt because they do not become Byte values.",
+  typescriptBefore: "In TypeScript, the checked value is still an ordinary number, so no extra numeric conversion is needed after success. This example inserts it directly into a string. Number.isInteger and the bounds checks decide which inputs to accept; they do not create a custom Byte type.",
+  benefit: "There is no need to add an unnecessary conversion to the TypeScript version. toInt is useful in Seseragi because Byte and Int are distinct types. Requiring a Byte distinguishes it from an ordinary Int or a validation result you have not handled yet.",
+  setup: "import * as bytes makes std/bytes available through the alias bytes. fn describe value: Int -> String defines a function from an integer to a string. bytes.toInt checked calls the function with checked after a space.",
+  after: [
+    "The initial bytes.byte value validates the Int and returns Either<ByteError, Byte>. Left means failure; Right means success. match separates them, so only the successful value reaches the branch that calls toInt.",
+    "Right checked receives the Byte as checked. bytes.toInt checked produces an Int with the same value, from 0 through 255. It does not return another possible range error at this stage.",
+    "Left (bytes.ByteOutOfRange invalid) reads the original integer from the validation error as invalid. This branch returns a failure message without calling toInt. It is not taking apart a Byte with a Byte pattern.",
+    "In a backtick string, ${bytes.toInt checked} inserts a calculated result and ${invalid} inserts a variable. The expression after each branch’s -> supplies the String returned by describe.",
+    "for value <- [0, 255, -1, 256] gives each integer the name value in turn. Calling describe value displays the numeric value for 0 and 255, and reports validation failures for the other two inputs.",
+  ],
+  details: [
+    "The type of toInt is Byte -> Int. It does not return an Either failure result: its input is already a Byte. You cannot pass an Int or an entire Either<ByteError, Byte> directly because those types do not match.",
+    "Byte has no public Byte value constructor or Byte pattern. Use toInt when you need the integer rather than guessing its internal shape. Besides the result of byte, the Just case returned by get also contains a Byte.",
+    "This operation handles one Byte. To inspect a whole Bytes value as an array of integers, use toInts. No character encoding conversion happens here.",
+  ],
+}

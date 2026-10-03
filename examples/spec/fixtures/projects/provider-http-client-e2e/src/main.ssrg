@@ -3,10 +3,10 @@ import * as effects from "std/effect"
 import * as http from "std/http"
 import * as text from "std/text"
 
--- Exercises the public small-response HTTP client surface.
--- The local server also verifies the request bytes and header.
--- Redirect handling remains explicit at this layer.
--- The fixture intentionally stays within the small-response contract.
+// Exercises the public small-response HTTP client surface.
+// The local server also verifies the request bytes and header.
+// Redirect handling remains explicit at this layer.
+// The fixture intentionally stays within the small-response contract.
 
 type AppError deriving Show =
   | BuildFailure http.HttpBuildError

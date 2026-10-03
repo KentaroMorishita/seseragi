@@ -1,5 +1,35 @@
 # Bounded complete-site generation (#706)
 
+## 2026-10-02 release-profile regression check
+
+The complete build regression now selects `NODE_ENV=production` explicitly,
+and the browser regression requests `profile: "release"`. The 420-second
+per-build budget was measured for release generation, but both test entry points
+previously inherited the development default when no environment was set.
+The public development-build default and all route assertions remain unchanged.
+
+On macOS arm64 with Bun 1.3.9 and the canonical released CLI 0.61.19,
+`bun test apps/site/tests/build.test.ts` passed: 1 test, 8,877 assertions.
+Both complete 3,976-route builds passed validation and produced identical
+manifests and file hashes. Generation took 255.320 and 279.804 seconds;
+the entire test, including artifact assertions and cleanup, took 586.704 seconds.
+It checked 662 bilingual Language page-name links and 1,411 authored Library
+page-name links across 578 localized bodies.
+
+A separate monitor sampled RSS every 250 ms for the test process and all
+descendants found recursively from macOS `ps` parent IDs. The observed process-tree
+peak was 2,917,488 KiB (about 2.78 GiB), below the configured 4 GiB stop limit.
+The monitor also enforced a 1,200-second overall deadline. Neither limit fired.
+Sampling does not establish an unsampled instantaneous maximum or guarantee a
+fixed memory bound for future metadata or larger pages.
+
+The first complete output was retained for browser checks through the test's
+existing `SESERAGI_SITE_TEST_RETAIN_OUTPUT` option. Local evidence is in
+`/tmp/seseragi-706-release-build-check.json` and
+`/tmp/seseragi-706-release-build-check.log`; the retained site is
+`/tmp/seseragi-706-complete-site`. Browser checks and simulated reader review
+remain separate results. The full generation success does not mark them passed.
+
 Status: the bounded protocol and two complete static builds were verified on a
 fixed source snapshot on 2026-10-01. This removes the observed all-at-once
 rendering blocker for that snapshot. It does not accept later prose revisions,

@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import type { Browser } from "../../playground/node_modules/@playwright/test"
+import { traitReaders } from "../scripts/trait-readers"
 
 const articles = [
   {
@@ -29,21 +30,11 @@ const articles = [
     source: "data-operations-collections",
     output: "answer\n42\nJust 20\nNothing\n20\n`[Ren, Aki, Mio]",
   },
-  {
-    route: "/docs/language/traits/model/",
-    source: "reader-trait",
-    output: "ticket-42",
-  },
-  {
-    route: "/docs/language/traits/declarations/",
-    source: "reader-trait",
-    output: "ticket-42",
-  },
-  {
-    route: "/docs/language/traits/instances/",
-    source: "reader-trait",
-    output: "ticket-42",
-  },
+  ...traitReaders.slice(0, 3).map(({ key, output }) => ({
+    route: `/docs/language/traits/${key}/`,
+    source: `trait-reader-${key}`,
+    output: output.trimEnd(),
+  })),
 ] as const
 
 export async function verifyReaderArticles(
@@ -51,6 +42,7 @@ export async function verifyReaderArticles(
   origin: string,
   screenshots?: string
 ) {
+  const englishParagraphCounts = new Map<string, number>()
   for (const width of [320, 390, 1280]) {
     const context = await browser.newContext({
       viewport: { width, height: 900 },
@@ -73,15 +65,28 @@ export async function verifyReaderArticles(
           await page.goto(origin + route)
           const article = page.locator(".article-content")
           for (const id of [
-            "purpose",
-            "reading-the-example",
+            "understand-this",
             "rules",
             "mistakes",
             "related-rules",
+            ...(item.route.includes("/traits/")
+              ? item.route.endsWith("/model/")
+                ? ["typescript"]
+                : []
+              : ["purpose", "reading-the-example"]),
           ])
             assert.equal(await article.locator(`h2#${id}`).count(), 1, route)
-          // This is paragraph-pairing regression protection, not a quality score.
-          assert.equal(await article.locator(":scope > p").count(), 18, route)
+          // Compare paired locales; articles may have different explanation
+          // lengths without losing or duplicating one locale's paragraphs.
+          const paragraphs = await article.locator(":scope > p").count()
+          if (locale === "en")
+            englishParagraphCounts.set(item.route, paragraphs)
+          else
+            assert.equal(
+              paragraphs,
+              englishParagraphCounts.get(item.route),
+              route
+            )
           const code = article.locator(".code-panel pre > code")
           assert.equal(
             await code.nth(0).textContent(),

@@ -1,0 +1,7 @@
+import { Editorial } from "../../model"
+import { bytesInspectionEditorial } from "../model"
+import * as en from "./en"
+import * as ja from "./ja"
+
+pub fn editorial -> Editorial =
+  bytesInspectionEditorial "std/bytes::Byte" "type" "opaque-type" "validate-one-byte" (en.copy ()) (ja.copy ())
