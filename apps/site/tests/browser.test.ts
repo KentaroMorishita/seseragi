@@ -174,6 +174,11 @@ try {
         })
 
         await page.goto(`http://127.0.0.1:${server.port}/`)
+        const actualWidth = await page.evaluate(() => innerWidth)
+        assert.equal(actualWidth, width, "actual browser viewport width")
+        console.log(
+          `Site browser viewport: requested=${width}, actual=${actualWidth}`
+        )
         assert.equal(await page.locator("h1").textContent(), "Seseragi")
         assert.equal(await page.locator("html").getAttribute("lang"), "en")
         assert.equal(await page.locator(".seseragi-highlight").count(), 1)

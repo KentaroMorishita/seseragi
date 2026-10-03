@@ -142,7 +142,7 @@ fn legacyExplain selection: LegacySelection -> explanation: Explanation
     ]
   }
 }
-fn explanation selection: ExampleSelection -> Explanation = makeExplanation selection
+fn explanation selection: ExampleSelection -> Explanation = (makeExplanation selection
   (ExplanationCopy {
     question: "How do these files fit together?",
     summary: "Read the complete panels in their chosen order.",
@@ -154,7 +154,7 @@ fn explanation selection: ExampleSelection -> Explanation = makeExplanation sele
     summary: "選んだ順に完全なコードを読みます。",
     reading: "定義を読んで、呼び出しを確かめます。",
     result: "ラベルとソースはそのままです。"
-  })
+  }))
 fn baseBlocks -> Array<Block> = [
   Paragraph ([Words (localized "Before the original examples." "元の例より前。")]),
   CodeExample ("model-日本", localized "model.ssrg — café 😀" "定義.ssrg — 日本語 😀"),
