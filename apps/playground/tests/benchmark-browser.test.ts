@@ -2,13 +2,13 @@ import { expect, test } from "bun:test"
 import { mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { resolve } from "node:path"
-import { chromium } from "playwright"
+import { launchTestBrowser } from "./browser-test-support"
 
 test("portable benchmark kernel measures reactive DOM and tears its host down", async () => {
   const temporary = await mkdtemp(
     resolve(tmpdir(), "seseragi-benchmark-browser-")
   )
-  let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
+  let browser: Awaited<ReturnType<typeof launchTestBrowser>> | undefined
   let server: ReturnType<typeof Bun.serve> | undefined
   try {
     const bundle = resolve(temporary, "main.js")
@@ -42,7 +42,7 @@ test("portable benchmark kernel measures reactive DOM and tears its host down", 
             )
       },
     })
-    browser = await chromium.launch()
+    browser = await launchTestBrowser()
     const page = await browser.newPage()
     const errors: string[] = []
     let rejectPageError: ((error: Error) => void) | undefined
