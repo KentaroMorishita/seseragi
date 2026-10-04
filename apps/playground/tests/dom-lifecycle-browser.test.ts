@@ -9,6 +9,7 @@ import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 let browser: Browser | undefined
 let server: ReturnType<typeof Bun.serve> | undefined
+let lifecycleOrigin = ""
 
 beforeAll(async () => {
   const build = await Bun.build({
@@ -39,6 +40,16 @@ beforeAll(async () => {
       )
     },
   })
+  const port = server.port
+  if (
+    typeof port !== "number" ||
+    !Number.isInteger(port) ||
+    port < 1 ||
+    port > 65_535
+  ) {
+    throw new Error(`invalid DOM lifecycle server port: ${port}`)
+  }
+  lifecycleOrigin = `http://127.0.0.1:${port}`
   browser = await chromium.launch()
 })
 
@@ -64,7 +75,7 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text())
   })
-  await page.goto(`http://127.0.0.1:${server.port}`)
+  await page.goto(lifecycleOrigin)
   await Promise.race([
     page.waitForFunction(
       () => document.documentElement.dataset.domLifecycle === "complete"
@@ -125,6 +136,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
   let currentStage = "prepare"
   const mark = (stage: string) => {
     currentStage = stage
+    console.log(`DOM lifecycle: ${stage}`)
   }
   const pages: Page[] = []
   const pageErrors: string[] = []
@@ -463,7 +475,9 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     await Promise.all(
       pages.filter((page) => !page.isClosed()).map((page) => page.close())
     )
+    mark("cleanup server")
     await fixtureServer?.stop(true)
+    mark("cleanup server complete")
     await rm(directory, { recursive: true, force: true })
   }
 }, 120_000)
