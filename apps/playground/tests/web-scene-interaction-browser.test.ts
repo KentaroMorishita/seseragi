@@ -1,7 +1,8 @@
 import { afterAll, beforeAll, expect, test } from "bun:test"
 import { readFile } from "node:fs/promises"
 import { extname, resolve } from "node:path"
-import { type Browser, chromium } from "playwright"
+import type { Browser } from "playwright"
+import { launchTestBrowser } from "./browser-test-support"
 import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(import.meta.dir, "../../..")
@@ -21,6 +22,9 @@ beforeAll(async () => {
     port: 0,
     async fetch(request) {
       const url = new URL(request.url)
+      if (url.pathname === "/favicon.ico") {
+        return new Response(null, { status: 204 })
+      }
       const relative =
         url.pathname === "/" ? "index.html" : url.pathname.slice(1)
       const path = resolve(output, relative)
@@ -39,7 +43,7 @@ beforeAll(async () => {
       })
     },
   })
-  browser = await chromium.launch()
+  browser = await launchTestBrowser()
 }, 30_000)
 
 afterAll(async () => {

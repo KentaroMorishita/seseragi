@@ -8,7 +8,8 @@ import {
 import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { type Browser, chromium } from "playwright"
+import type { Browser } from "playwright"
+import { launchTestBrowser } from "./browser-test-support"
 import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
@@ -52,13 +53,7 @@ beforeAll(async () => {
     "subjectAltName=IP:127.0.0.1",
   ])
   const cli = await ensureSeseragiCli()
-  await runCommand([
-    cli,
-    "build",
-    fixture,
-    "--out-dir",
-    output,
-  ])
+  await runCommand([cli, "build", fixture, "--out-dir", output])
   uploaded = new Promise((resolveUpload) => {
     resolveUploaded = resolveUpload
   })
@@ -70,6 +65,11 @@ beforeAll(async () => {
     void (async () => {
       const method = String(headers[":method"] ?? "GET")
       const pathname = String(headers[":path"] ?? "/")
+      if (method === "GET" && pathname === "/favicon.ico") {
+        stream.respond({ ":status": 204 })
+        stream.end()
+        return
+      }
       if (method === "POST" && pathname === "/upload") {
         const chunks: Buffer[] = []
         for await (const chunk of stream) chunks.push(Buffer.from(chunk))
@@ -110,7 +110,7 @@ beforeAll(async () => {
   await new Promise<void>((resolveListen) => {
     server?.listen(41289, "127.0.0.1", resolveListen)
   })
-  browser = await chromium.launch()
+  browser = await launchTestBrowser()
 }, 120_000)
 
 afterAll(async () => {

@@ -72,6 +72,19 @@ rootとPlaygroundの両方をbootstrapしてください。lockfileまたは依�
 該当workspaceでfrozen installを明示的に行います。full gateはrootとPlaygroundを先に
 bootstrapし、extension packaging時にもfrozen installを行います。
 
+## Browser executable for Playground Bun tests
+
+PlaygroundのBun browser testsは、既定でlockfileのPlaywrightに対応するChromiumを使います。
+Cloudなどでインストール済みGoogle Chromeを使う場合は、その実行ファイルの絶対pathを
+`SESERAGI_TEST_BROWSER_PATH`へ設定します。起動したbrowserのpathとversionをログへ残し、
+指定pathで起動できない場合はそのまま失敗します。この設定はBun tests用で、
+`test:visual`やproduction browser scriptsのbrowser選択は変更しません。
+
+```sh
+cd apps/playground
+SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
+```
+
 ## Web UI browser review
 
 `apps/playground/tests/fixtures/web-ui-regression.json`が、全HTML sample、320px /

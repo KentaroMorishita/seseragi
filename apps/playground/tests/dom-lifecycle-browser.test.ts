@@ -3,13 +3,13 @@ import { mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { type Browser, chromium, type Page } from "playwright"
+import type { Browser, Page } from "playwright"
+import { launchTestBrowser } from "./browser-test-support"
 import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 let browser: Browser | undefined
-let server: ReturnType<typeof Bun.serve> | undefined
-let lifecycleOrigin = ""
+let lifecycleJavascript = ""
 
 beforeAll(async () => {
   const build = await Bun.build({
@@ -23,14 +23,28 @@ beforeAll(async () => {
   expect(build.success).toBe(true)
   const output = build.outputs[0]
   if (output === undefined) throw new Error("missing lifecycle browser bundle")
-  const javascript = await output.text()
-  server = Bun.serve({
+  lifecycleJavascript = await output.text()
+  browser = await launchTestBrowser()
+})
+
+afterAll(async () => {
+  await browser?.close()
+})
+
+test("owns mount, hydration, coarse updates, cancellation, and cleanup in a browser", async () => {
+  if (browser === undefined) {
+    throw new Error("browser lifecycle harness did not start")
+  }
+  const page = await browser.newPage()
+  page.setDefaultTimeout(15_000)
+  page.setDefaultNavigationTimeout(15_000)
+  const server = Bun.serve({
     hostname: "127.0.0.1",
     port: 0,
     fetch(request) {
       const pathname = new URL(request.url).pathname
       if (pathname === "/main.js") {
-        return new Response(javascript, {
+        return new Response(lifecycleJavascript, {
           headers: { "content-type": "text/javascript; charset=utf-8" },
         })
       }
@@ -40,95 +54,94 @@ beforeAll(async () => {
       )
     },
   })
-  const port = server.port
-  if (
-    typeof port !== "number" ||
-    !Number.isInteger(port) ||
-    port < 1 ||
-    port > 65_535
-  ) {
-    throw new Error(`invalid DOM lifecycle server port: ${port}`)
+  try {
+    const port = server.port
+    if (
+      typeof port !== "number" ||
+      !Number.isInteger(port) ||
+      port < 1 ||
+      port > 65_535
+    ) {
+      throw new Error(`invalid DOM lifecycle server port: ${port}`)
+    }
+    const lifecycleOrigin = `http://127.0.0.1:${port}`
+    const ready = await fetch(lifecycleOrigin, {
+      signal: AbortSignal.timeout(5_000),
+    })
+    expect(ready.status).toBe(200)
+    await ready.text()
+    const errors: string[] = []
+    let rejectPageError: ((error: Error) => void) | undefined
+    const pageError = new Promise<never>((_resolve, reject) => {
+      rejectPageError = reject
+    })
+    page.on("pageerror", (error) => {
+      errors.push(error.message)
+      rejectPageError?.(error)
+    })
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text())
+    })
+    await page.goto(lifecycleOrigin)
+    await Promise.race([
+      page.waitForFunction(
+        () => document.documentElement.dataset.domLifecycle === "complete"
+      ),
+      pageError,
+    ])
+    expect(errors).toEqual([])
+    expect(
+      await page.evaluate(
+        () =>
+          (
+            window as typeof window & {
+              readonly domLifecycleResult?: unknown
+            }
+          ).domLifecycleResult
+      )
+    ).toEqual({
+      changeSnapshots: [
+        { value: "changed", checked: { tag: "Nothing" } },
+        { value: "42", checked: { tag: "Nothing" } },
+        { value: "changed", checked: { tag: "Just", value: true } },
+        { value: "changed", checked: { tag: "Just", value: true } },
+        { value: "changed", checked: { tag: "Nothing" } },
+        { value: "changed", checked: { tag: "Nothing" } },
+      ],
+      strictMismatchPath: [0, 0],
+      dispatched: 1,
+      duplicateTargetRejected: true,
+      coarseUpdateRendered: true,
+      hydrationPreservedIdentity: true,
+      replacementPreservedAncestor: true,
+      reactiveLeafIsolation: true,
+      reactiveRegionIsolation: true,
+      reactiveRegionCleanup: true,
+      reactiveTransactionStable: true,
+      reactiveDistinctSkippedWrite: true,
+      reactiveHydrationPreservedIdentity: true,
+      reactiveUnmountStoppedUpdates: true,
+      keyedRegionHydrationPreservedIdentity: true,
+      keyedRegionPreservedIdentity: true,
+      keyedRegionFocusSelection: true,
+      keyedRegionBoundedMutations: true,
+      keyedRegionCleanup: true,
+      keyedRegionDiagnostics: true,
+      keyedSvgNamespacePreserved: true,
+      typedBindingPreservedHydrationIdentity: true,
+      typedBindingValuesUpdated: true,
+      typedBindingMissingRefRejected: true,
+      typedBindingKindMismatchRejected: true,
+      cancellationReleasedTarget: true,
+      targetRemoval: "DomTargetRemoved",
+    })
+  } finally {
+    try {
+      await page.close()
+    } finally {
+      await server.stop(true)
+    }
   }
-  lifecycleOrigin = `http://127.0.0.1:${port}`
-  browser = await chromium.launch()
-})
-
-afterAll(async () => {
-  await browser?.close()
-  await server?.stop(true)
-})
-
-test("owns mount, hydration, coarse updates, cancellation, and cleanup in a browser", async () => {
-  if (browser === undefined || server === undefined) {
-    throw new Error("browser lifecycle harness did not start")
-  }
-  const page = await browser.newPage()
-  const errors: string[] = []
-  let rejectPageError: ((error: Error) => void) | undefined
-  const pageError = new Promise<never>((_resolve, reject) => {
-    rejectPageError = reject
-  })
-  page.on("pageerror", (error) => {
-    errors.push(error.message)
-    rejectPageError?.(error)
-  })
-  page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text())
-  })
-  await page.goto(lifecycleOrigin)
-  await Promise.race([
-    page.waitForFunction(
-      () => document.documentElement.dataset.domLifecycle === "complete"
-    ),
-    pageError,
-  ])
-  expect(errors).toEqual([])
-  expect(
-    await page.evaluate(
-      () =>
-        (
-          window as typeof window & {
-            readonly domLifecycleResult?: unknown
-          }
-        ).domLifecycleResult
-    )
-  ).toEqual({
-    changeSnapshots: [
-      { value: "changed", checked: { tag: "Nothing" } },
-      { value: "42", checked: { tag: "Nothing" } },
-      { value: "changed", checked: { tag: "Just", value: true } },
-      { value: "changed", checked: { tag: "Just", value: true } },
-      { value: "changed", checked: { tag: "Nothing" } },
-      { value: "changed", checked: { tag: "Nothing" } },
-    ],
-    strictMismatchPath: [0, 0],
-    dispatched: 1,
-    duplicateTargetRejected: true,
-    coarseUpdateRendered: true,
-    hydrationPreservedIdentity: true,
-    replacementPreservedAncestor: true,
-    reactiveLeafIsolation: true,
-    reactiveRegionIsolation: true,
-    reactiveRegionCleanup: true,
-    reactiveTransactionStable: true,
-    reactiveDistinctSkippedWrite: true,
-    reactiveHydrationPreservedIdentity: true,
-    reactiveUnmountStoppedUpdates: true,
-    keyedRegionHydrationPreservedIdentity: true,
-    keyedRegionPreservedIdentity: true,
-    keyedRegionFocusSelection: true,
-    keyedRegionBoundedMutations: true,
-    keyedRegionCleanup: true,
-    keyedRegionDiagnostics: true,
-    keyedSvgNamespacePreserved: true,
-    typedBindingPreservedHydrationIdentity: true,
-    typedBindingValuesUpdated: true,
-    typedBindingMissingRefRejected: true,
-    typedBindingKindMismatchRejected: true,
-    cancellationReleasedTarget: true,
-    targetRemoval: "DomTargetRemoved",
-  })
-  await page.close()
 }, 30_000)
 
 test("runs promoted DOM lifecycle fixtures through the CLI web product route", async () => {
