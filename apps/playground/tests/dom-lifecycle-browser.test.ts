@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { type Browser, chromium } from "playwright"
+import { type Browser, chromium, type Page } from "playwright"
 import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
@@ -122,8 +122,23 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
 
 test("runs promoted DOM lifecycle fixtures through the CLI web product route", async () => {
   if (browser === undefined) throw new Error("browser harness did not start")
+  let currentStage = "prepare"
+  const mark = (stage: string) => {
+    currentStage = stage
+  }
+  const pages: Page[] = []
+  const pageErrors: string[] = []
+  const fixtureBrowser = browser
+  const openPage = async () => {
+    const page = await fixtureBrowser.newPage()
+    pages.push(page)
+    page.setDefaultTimeout(15_000)
+    page.setDefaultNavigationTimeout(15_000)
+    page.on("pageerror", (error) => pageErrors.push(error.message))
+    return page
+  }
+  mark("start")
   const directory = await mkdtemp(resolve(tmpdir(), "seseragi-dom-fixtures-"))
-  const cli = await ensureSeseragiCli()
   const fixtureRoots = {
     hydration: resolve(
       root,
@@ -145,6 +160,9 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
   }
   let fixtureServer: ReturnType<typeof Bun.serve> | undefined
   try {
+    mark("build CLI")
+    const cli = await ensureSeseragiCli()
+    mark("build hydration, signal, and reactive fixtures")
     await runCommand([
       cli,
       "build",
@@ -223,7 +241,8 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(fixturePort).toBeLessThan(65_536)
     const fixtureOrigin = `http://127.0.0.1:${fixturePort}`
 
-    const hydrationPage = await browser.newPage()
+    mark("hydration new page")
+    const hydrationPage = await openPage()
     const hydrationErrors: string[] = []
     hydrationPage.on("pageerror", (error) =>
       hydrationErrors.push(error.message)
@@ -236,9 +255,11 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       "<p>server</p>"
     )
     expect(hydrationErrors).toEqual([])
+    mark("hydration complete")
     await hydrationPage.close()
 
-    const signalPage = await browser.newPage()
+    mark("signal new page")
+    const signalPage = await openPage()
     const signalErrors: string[] = []
     signalPage.on("pageerror", (error) => signalErrors.push(error.message))
     await signalPage.goto(`${fixtureOrigin}/signal/`)
@@ -254,9 +275,11 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         document.querySelector("#app")?.childNodes.length === 0
     )
     expect(signalErrors).toEqual([])
+    mark("signal complete")
     await signalPage.close()
 
-    const reactivePage = await browser.newPage()
+    mark("reactive new page")
+    const reactivePage = await openPage()
     const reactiveErrors: string[] = []
     reactivePage.on("pageerror", (error) => reactiveErrors.push(error.message))
     await reactivePage.goto(`${fixtureOrigin}/reactive/`)
@@ -302,6 +325,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         })
       )
     })
+    mark("reactive increment")
     await reactivePage.locator("#increment").dispatchEvent("click")
     await reactivePage.waitForFunction(
       () => document.querySelector("#count")?.textContent === "1"
@@ -311,6 +335,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(await reactivePage.locator("#controlled-check").isChecked()).toBe(
       true
     )
+    mark("reactive composition end")
     await reactivePage.locator("#controlled").dispatchEvent("compositionend")
     await reactivePage.waitForFunction(
       () =>
@@ -328,16 +353,18 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         }
       })
     ).toEqual({ focused: true, selectionStart: 1, selectionEnd: 1 })
+    mark("reactive pointer begin")
     await reactivePage.locator("#region-alpha").hover()
     await reactivePage.mouse.down()
-    await reactivePage.waitForFunction(
-      () =>
-        (
-          window as typeof window & {
-            reactivePointerId?: number
-          }
-        ).reactivePointerId !== undefined
-    )
+    await reactivePage.waitForFunction(() => {
+      const pointerId = (
+        window as typeof window & { reactivePointerId?: number }
+      ).reactivePointerId
+      return (
+        pointerId !== undefined &&
+        document.querySelector("#region-alpha")?.hasPointerCapture(pointerId)
+      )
+    })
     await reactivePage.evaluate(() => {
       document.querySelector<HTMLButtonElement>("#toggle")?.click()
     })
@@ -368,6 +395,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         )
       })
     ).toBe(true)
+    mark("reactive pointer/reorder complete")
     await reactivePage.mouse.up()
     expect(
       await reactivePage
@@ -376,10 +404,12 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
           getComputedStyle(element).getPropertyValue("color")
         )
     ).toBe("rgb(0, 0, 255)")
+    mark("reactive beta click")
     await reactivePage.locator("#region-beta").click()
     await reactivePage.waitForFunction(
       () => document.querySelector("#count")?.textContent === "12"
     )
+    mark("reactive toggle")
     await reactivePage.locator("#toggle").click()
     await reactivePage.waitForFunction(
       () => document.querySelector("#region-gamma") === null
@@ -414,6 +444,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         )
       })
     ).toBe(true)
+    mark("reactive stop")
     await reactivePage.locator("#stop").click()
     await reactivePage.waitForFunction(
       () =>
@@ -421,8 +452,17 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
         document.querySelector("#app")?.childNodes.length === 0
     )
     expect(reactiveErrors).toEqual([])
+    mark("reactive complete")
     await reactivePage.close()
+  } catch (error) {
+    throw new Error(
+      `DOM lifecycle fixture failed during ${currentStage}; page errors: ${JSON.stringify(pageErrors)}`,
+      { cause: error }
+    )
   } finally {
+    await Promise.all(
+      pages.filter((page) => !page.isClosed()).map((page) => page.close())
+    )
     await fixtureServer?.stop(true)
     await rm(directory, { recursive: true, force: true })
   }

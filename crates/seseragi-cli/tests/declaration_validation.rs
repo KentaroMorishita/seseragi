@@ -1,7 +1,10 @@
 use std::fs;
 use std::path::PathBuf;
 use std::process::{Command, Output};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
+
+static NEXT_FIXTURE: AtomicU64 = AtomicU64::new(0);
 
 struct Fixture(PathBuf);
 
@@ -11,11 +14,16 @@ impl Fixture {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
+        Self::with_nonce(nonce)
+    }
+
+    fn with_nonce(nonce: u128) -> Self {
+        let sequence = NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed);
         let root = std::env::temp_dir().join(format!(
-            "seseragi-declaration-validation-{}-{nonce}",
+            "seseragi-declaration-validation-{}-{nonce}-{sequence}",
             std::process::id()
         ));
-        fs::create_dir_all(&root).unwrap();
+        fs::create_dir(&root).unwrap();
         Self(root)
     }
 
@@ -27,6 +35,30 @@ impl Fixture {
         }
         process.output().unwrap()
     }
+}
+
+#[test]
+fn fixtures_with_the_same_clock_reading_keep_sources_and_cleanup_isolated() {
+    let first = Fixture::with_nonce(0);
+    let second = Fixture::with_nonce(0);
+    fs::write(
+        first.0.join("main.ssrg"),
+        "pub effect fn main = println 1\n",
+    )
+    .unwrap();
+    fs::write(
+        second.0.join("main.ssrg"),
+        "pub effect fn main = println 2\n",
+    )
+    .unwrap();
+    drop(first);
+    let output = second.run("run");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"2\n");
 }
 
 impl Drop for Fixture {
