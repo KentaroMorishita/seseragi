@@ -1,10 +1,10 @@
 use seseragi_semantics::{ExternalTypeBinding, ExternalTypeProvider};
-use seseragi_syntax::Visibility;
+use seseragi_syntax::{ForeignCallKind, ForeignCallMode, Visibility};
 
 use crate::{
-    lower_core_module_to_typescript_ir_with_plan, CoreAdt, CoreExpr, CoreFunction, CoreModule,
-    CoreModuleDependency, CoreParameter, CoreStruct, CoreStructField, CoreType, SourceSpan,
-    TypeScriptLoweringError, TypeScriptOutputPlan,
+    lower_core_module_to_typescript_ir_with_plan, CoreAdt, CoreExpr, CoreForeignMember,
+    CoreForeignModule, CoreFunction, CoreModule, CoreModuleDependency, CoreParameter, CoreStruct,
+    CoreStructField, CoreType, SourceSpan, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
 
 use super::super::lower_module_imports;
@@ -157,6 +157,89 @@ fn collects_an_external_type_used_only_by_a_struct_field() {
         lowered.type_names.get(canonical).map(String::as_str),
         Some("Signal")
     );
+}
+
+#[test]
+fn collects_external_types_used_only_in_foreign_declarations() {
+    let names = ["Argument", "Result", "Value", "Nested"];
+    let mut module = module(
+        names
+            .iter()
+            .map(|name| {
+                binding(
+                    name,
+                    &format!("fixture/domain::{name}"),
+                    "fixture/domain",
+                    name,
+                )
+            })
+            .collect(),
+        Vec::new(),
+    );
+    let foreign_type = |name| external(name, &format!("fixture/domain::{name}"));
+    module.foreign_modules.push(CoreForeignModule {
+        visibility: Visibility::Public,
+        language: "typescript".to_owned(),
+        specifier: "fixture-api".to_owned(),
+        pure_load: false,
+        origin: origin(),
+        members: vec![
+            CoreForeignMember::Function {
+                mode: ForeignCallMode::Task,
+                call_kind: ForeignCallKind::Function,
+                symbol: "fixture/main::fetch".to_owned(),
+                name: "fetch".to_owned(),
+                host_name: "fetch".to_owned(),
+                parameters: vec![CoreParameter {
+                    id: "values".to_owned(),
+                    kind: "named".to_owned(),
+                    type_ref: CoreType::Named {
+                        name: "Array".to_owned(),
+                        arguments: vec![foreign_type("Argument")],
+                    },
+                }],
+                return_type: foreign_type("Result"),
+                origin: origin(),
+            },
+            CoreForeignMember::Value {
+                symbol: "fixture/main::value".to_owned(),
+                name: "value".to_owned(),
+                host_name: "value".to_owned(),
+                type_ref: foreign_type("Value"),
+                origin: origin(),
+            },
+            CoreForeignMember::Namespace {
+                symbol: "fixture/main::nested".to_owned(),
+                name: "nested".to_owned(),
+                host_name: "nested".to_owned(),
+                origin: origin(),
+                members: vec![CoreForeignMember::Value {
+                    symbol: "fixture/main::nested.value".to_owned(),
+                    name: "value".to_owned(),
+                    host_name: "value".to_owned(),
+                    type_ref: foreign_type("Nested"),
+                    origin: origin(),
+                }],
+            },
+        ],
+    });
+    let plan = TypeScriptOutputPlan::new([("fixture/domain".to_owned(), "./domain.js".to_owned())]);
+
+    let lowered = lower_module_imports(&module, &plan).unwrap();
+
+    assert_eq!(lowered.imports.len(), 1);
+    assert_eq!(lowered.imports[0].bindings.len(), names.len());
+    for name in names {
+        let canonical = format!("fixture/domain::{name}");
+        assert_eq!(
+            lowered.type_names.get(&canonical).map(String::as_str),
+            Some(name)
+        );
+        assert!(lowered.imports[0]
+            .bindings
+            .iter()
+            .any(|binding| binding.type_only && binding.canonical == canonical));
+    }
 }
 
 #[test]

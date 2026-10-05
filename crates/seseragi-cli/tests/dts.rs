@@ -100,6 +100,45 @@ fn executes_every_dts_fixture_through_the_cli_product_route() {
 }
 
 #[test]
+fn builds_generated_foreign_bindings_with_imported_big_int_types() {
+    let directory = test_directory("imported-types");
+    let package = directory.join("package");
+    copy_directory(&fixture("dts-basic-conversion"), &package);
+    let manifest = package.join("seseragi.toml");
+    fs::write(
+        &manifest,
+        format!(
+            "{}\n[run]\nentry = \"main\"\ntarget = \"process\"\n",
+            fs::read_to_string(&manifest).unwrap()
+        ),
+    )
+    .unwrap();
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::create_dir_all(package.join("host/node_modules")).unwrap();
+    fs::write(
+        package.join("src/main.ssrg"),
+        "import { fetchName } from \"gen/fixture-api\"\npub effect fn main = println \"ok\"\n",
+    )
+    .unwrap();
+
+    for command in [
+        vec!["dts", "convert"],
+        vec!["lock", "update"],
+        vec!["build"],
+    ] {
+        let mut arguments = command;
+        arguments.push(package.to_str().unwrap());
+        let output = run(&arguments);
+        assert!(
+            output.status.success(),
+            "{arguments:?}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn converts_a_configured_entry_and_writes_the_three_deterministic_artifacts() {
     let directory = test_directory("success");
     let package = directory.join("package");
