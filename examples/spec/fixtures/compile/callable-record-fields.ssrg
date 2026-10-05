@@ -1,0 +1,16 @@
+fn identity value: Int -> Int = value
+fn add left: Int -> right: Int -> Int = left + right
+fn invoke<A> record: { apply: A -> A } -> value: A -> A = record.apply value
+
+let record: { apply: Int -> Int } = { apply: identity }
+let nested = { inner: { apply: add } }
+let partial = nested.inner.apply 20
+let extracted = record.apply
+
+pub effect fn main = do {
+  println (show (record.apply 42))
+  println (show (nested.inner.apply 20 22))
+  println (show (partial 22))
+  println (show (invoke record 42))
+  println (show (extracted 42))
+}

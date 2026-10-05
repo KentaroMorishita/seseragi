@@ -232,6 +232,66 @@ pub(crate) fn type_application_with(
                 &mut type_argument,
             );
         }
+        if context.target(callee.span()).is_none() {
+            let field_value = type_argument(callee, &context.without_expected());
+            let mut result_type = application_argument_type_from_expr(&field_value.value);
+            let mut parameters = Vec::new();
+            while let TypedType::Function { parameter, result } = result_type {
+                parameters.push(*parameter);
+                result_type = *result;
+            }
+            if !parameters.is_empty() {
+                // Reuse ordinary curried-call checking, capturing the field once
+                // so receiver evaluation precedes every argument evaluation.
+                let name = format!("__ssrg$field${}", callee.span().start);
+                let signature = TopLevelPureFunction {
+                    symbol: name.clone(),
+                    trait_identity: None,
+                    trait_method: None,
+                    type_parameters: Vec::new(),
+                    constraints: Vec::new(),
+                    constraint_identities: Vec::new(),
+                    semantic_parameters: parameters
+                        .iter()
+                        .map(|parameter| context.semantic_value_from_typed_type(parameter).key)
+                        .collect(),
+                    parameters,
+                    semantic_result: context.semantic_value_from_typed_type(&result_type).key,
+                    result: result_type,
+                };
+                let mut call = type_known_application_with_explicit(
+                    signature,
+                    explicit_type_arguments,
+                    *field_span,
+                    &argument_nodes,
+                    expression.span(),
+                    context,
+                    &mut type_argument,
+                );
+                let type_ref = application_argument_type_from_expr(&call.value);
+                let field_type = application_argument_type_from_expr(&field_value.value);
+                call.value = TypedExpr::Block {
+                    statements: vec![crate::TypedBlockStatement::Let {
+                        constraints: Vec::new(),
+                        constraint_identities: Vec::new(),
+                        type_parameters: Vec::new(),
+                        pattern: crate::TypedPattern::Binding {
+                            symbol: crate::SymbolId(u32::MAX),
+                            name,
+                            type_ref: field_type,
+                            origin: callee.span(),
+                        },
+                        value: field_value.value.clone(),
+                        origin: callee.span(),
+                    }],
+                    result: Box::new(call.value),
+                    type_ref,
+                    origin: expression.span(),
+                };
+                call.merge_issues_from(field_value);
+                return call;
+            }
+        }
     }
     let callee_span = callee.span();
     let signature = if let Some(target) = context
@@ -463,6 +523,15 @@ pub(crate) fn type_known_application_with_explicit(
             &semantic_arguments,
         )
     });
+    if issue.is_none() {
+        // Keep a nested call's argument type diagnostic instead of reporting an
+        // unrelated missing instance on the enclosing call.
+        issue = child_analyses
+            .iter()
+            .filter_map(|child| child.pure_call_issue.as_ref())
+            .find(|issue| matches!(issue, PureCallIssue::ArgumentType { .. }))
+            .cloned();
+    }
     if issue.is_none() && !context.recursive_groups.is_empty() {
         // Infer the callback expectation from the other arguments. A recursive
         // member's own scheme must not erase a more specific expectation.

@@ -175,6 +175,17 @@ mod tests {
     }
 
     #[test]
+    fn compiles_direct_callable_record_fields_through_the_shared_driver() {
+        let source =
+            include_str!("../../../examples/spec/fixtures/compile/callable-record-fields.ssrg");
+        let response: Value =
+            serde_json::from_str(&compile_single_file("main.ssrg", "playground/main", source))
+                .unwrap();
+        assert_eq!(response["status"], "success", "{response:#}");
+        assert_eq!(response["diagnostics"]["diagnostics"], serde_json::json!([]));
+    }
+
+    #[test]
     fn preserves_typescript_precedence_for_grouped_arithmetic() {
         let source = include_str!(
             "../../../examples/spec/artifacts/schema-1/typescript-precedence-grouping/main.ssrg"
