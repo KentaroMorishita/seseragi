@@ -288,6 +288,10 @@ pub(crate) fn type_application_with(
                     type_ref,
                     origin: expression.span(),
                 };
+                call.prioritize_field_argument_issue = matches!(
+                    call.pure_call_issue,
+                    Some(PureCallIssue::ArgumentType { .. })
+                );
                 call.merge_issues_from(field_value);
                 return call;
             }
@@ -523,14 +527,17 @@ pub(crate) fn type_known_application_with_explicit(
             &semantic_arguments,
         )
     });
-    if issue.is_none() {
-        // Keep a nested call's argument type diagnostic instead of reporting an
-        // unrelated missing instance on the enclosing call.
-        issue = child_analyses
-            .iter()
-            .filter_map(|child| child.pure_call_issue.as_ref())
-            .find(|issue| matches!(issue, PureCallIssue::ArgumentType { .. }))
-            .cloned();
+    let field_argument_issue = child_analyses
+        .iter()
+        .filter(|child| child.prioritize_field_argument_issue)
+        .filter_map(|child| child.pure_call_issue.as_ref())
+        .find(|issue| matches!(issue, PureCallIssue::ArgumentType { .. }))
+        .cloned();
+    let prioritize_field_argument_issue = issue.is_none() && field_argument_issue.is_some();
+    if prioritize_field_argument_issue {
+        // Preserve a field call's precise argument error through an enclosing
+        // constrained call, leaving ordinary-call diagnostic priority intact.
+        issue = field_argument_issue;
     }
     if issue.is_none() && !context.recursive_groups.is_empty() {
         // Infer the callback expectation from the other arguments. A recursive
@@ -710,6 +717,7 @@ pub(crate) fn type_known_application_with_explicit(
         semantic_type,
     );
     result.pure_call_issue = issue;
+    result.prioritize_field_argument_issue = prioritize_field_argument_issue;
     for child in child_analyses {
         result.merge_issues_from(child);
     }
