@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.21] - 2026-10-05
+
+### Fixed
+
+- Apply function-valued record fields directly, including nested, generic, lexical, and partially applied calls (#741).
+- Diagnose source/generated module identity collisions and imports before the generated root exists instead of panicking (#742, #743).
+- Plan imported types used by foreign parameters, results, values, and nested namespaces, including generated DTS bindings (#744).
+
 ## [0.61.20] - 2026-10-02
 
 ### Fixed
