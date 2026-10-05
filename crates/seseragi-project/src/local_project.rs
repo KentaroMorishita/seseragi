@@ -407,6 +407,22 @@ impl<'a> SourceDiscovery<'a> {
                 ResolvedImport::Standard => continue,
                 ResolvedImport::Module(dependency) => dependency,
             };
+            if !self
+                .source_roots
+                .contains_key(&(dependency.package().clone(), dependency.root()))
+            {
+                return Err(LocalProjectLoadError::Import {
+                    module: Box::new(module.clone()),
+                    specifier: import.specifier,
+                    origin: import.span,
+                    code: "SES-N0104",
+                    reason: format!(
+                        "{:?} module root has not been created for package `{}`",
+                        dependency.root(),
+                        dependency.package().name().as_str()
+                    ),
+                });
+            }
             edges.insert(import.specifier, dependency.clone());
             if !self.modules.contains_key(&dependency) {
                 self.pending.insert(dependency);
