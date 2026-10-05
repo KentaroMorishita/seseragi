@@ -31,6 +31,12 @@ pub enum LocalProjectLoadError {
         second: Box<ModuleIdentity>,
         canonical_path: PathBuf,
     },
+    DuplicateLogicalModule {
+        first: Box<ModuleIdentity>,
+        second: Box<ModuleIdentity>,
+        first_path: PathBuf,
+        second_path: PathBuf,
+    },
     Graph(Box<ModuleGraphError<ModuleIdentity>>),
 }
 
@@ -88,6 +94,19 @@ impl fmt::Display for LocalProjectLoadError {
                 canonical_path.display()
             ),
             Self::Graph(error) => write!(formatter, "invalid source module graph: {error:?}"),
+            Self::DuplicateLogicalModule {
+                first,
+                second,
+                first_path,
+                second_path,
+            } => {
+                write!(
+                formatter,
+                "modules from {:?} root `{}` and {:?} root `{}` share logical module identity `{}`",
+                first.root(), first_path.display(), second.root(), second_path.display(),
+                crate::logical_module_id(first)
+            )
+            }
         }
     }
 }
