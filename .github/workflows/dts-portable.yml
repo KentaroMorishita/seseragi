@@ -17,6 +17,8 @@ on:
       - "scripts/portable-parser-environment.ts"
       - "scripts/run-portable-parser.ts"
       - "scripts/wasm-reproducibility.ts"
+      - "scripts/check-dts-browser-fixtures.ts"
+      - "scripts/collect-wasm-build-evidence.ts"
       - "scripts/build-playground-wasm.sh"
       - ".github/workflows/dts-portable.yml"
       - ".github/actions/setup-wasi-sdk/**"
@@ -58,9 +60,26 @@ jobs:
           version: v0.15.0
       - name: Install the locked wasm-bindgen CLI
         run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
-      - name: Verify committed browser converter
+      - name: Verify canonical Linux browser artifact
+        if: runner.os == 'Linux'
+        env:
+          SESERAGI_WASM_BUILD_EVIDENCE: ${{ runner.temp }}/dts-build-evidence/canonical
+        run: bun run check:wasm
+      - name: Verify macOS rebuild consistency
+        if: runner.os == 'macOS'
+        shell: bash
         run: |
-          bun run check:wasm
+          builds="$(mktemp -d)"
+          trap 'rm -rf "$builds"' EXIT
+          SESERAGI_WASM_BUILD_EVIDENCE="$RUNNER_TEMP/dts-build-evidence/first" \
+          CARGO_TARGET_DIR="$builds/target-first" \
+            ./scripts/build-playground-wasm.sh "$builds/pkg-first"
+          SESERAGI_WASM_BUILD_EVIDENCE="$RUNNER_TEMP/dts-build-evidence/second" \
+          CARGO_TARGET_DIR="$builds/target-second" \
+            bun run build:playground:wasm
+          diff -r "$builds/pkg-first" apps/playground/src/wasm/pkg
+      - name: Exercise the rebuilt browser converter
+        run: |
           bun install --frozen-lockfile
           cd apps/playground
           bun install --frozen-lockfile
@@ -68,6 +87,20 @@ jobs:
           bunx tsc --noEmit
           bunx playwright install --with-deps chromium
           bunx playwright test e2e/workspace-bindings.spec.ts
+      - name: Record host conversion results
+        run: bun scripts/check-dts-browser-fixtures.ts "$RUNNER_TEMP/dts-results.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dts-conversion-results-${{ runner.os }}
+          path: ${{ runner.temp }}/dts-results.json
+          retention-days: 7
+      - name: Preserve compiler inputs and intermediate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dts-build-evidence-${{ runner.os }}
+          path: ${{ runner.temp }}/dts-build-evidence
+          retention-days: 7
       - name: Compare WASM section fingerprints
         if: failure()
         run: bun scripts/wasm-reproducibility.ts
@@ -78,3 +111,14 @@ jobs:
           name: portable-dts-wasm-reproduction-${{ runner.os }}-${{ runner.arch }}
           path: apps/playground/src/wasm/pkg
           retention-days: 7
+
+  cross-host-results:
+    needs: convert
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dts-conversion-results-*
+          path: results
+      - name: Require identical Linux and macOS conversion results
+        run: diff -u results/dts-conversion-results-Linux/dts-results.json results/dts-conversion-results-macOS/dts-results.json
