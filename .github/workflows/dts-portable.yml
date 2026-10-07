@@ -58,9 +58,21 @@ jobs:
           version: v0.15.0
       - name: Install the locked wasm-bindgen CLI
         run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
-      - name: Verify committed browser converter
+      - name: Verify canonical Linux browser artifact
+        if: runner.os == 'Linux'
+        run: bun run check:wasm
+      - name: Verify macOS rebuild consistency
+        if: runner.os == 'macOS'
+        shell: bash
         run: |
-          bun run check:wasm
+          first_build="$(mktemp -d)"
+          trap 'rm -rf "$first_build"' EXIT
+          bun run build:playground:wasm
+          cp -R apps/playground/src/wasm/pkg "$first_build/pkg"
+          bun run build:playground:wasm
+          diff -r "$first_build/pkg" apps/playground/src/wasm/pkg
+      - name: Exercise the rebuilt browser converter
+        run: |
           bun install --frozen-lockfile
           cd apps/playground
           bun install --frozen-lockfile
