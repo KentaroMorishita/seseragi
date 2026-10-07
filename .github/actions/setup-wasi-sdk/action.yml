@@ -1,0 +1,19 @@
+name: Set up reproducible WASM C compiler
+description: Install the pinned WASI SDK used to compile the portable declaration parser.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+        if [[ "$RUNNER_OS" != Linux || "$RUNNER_ARCH" != X64 ]]; then
+          echo "This action installs the Linux x86_64 SDK; use the matching WASI SDK 25.0 archive on other hosts." >&2
+          exit 1
+        fi
+        archive="$RUNNER_TEMP/wasi-sdk-25.0-x86_64-linux.tar.gz"
+        curl --fail --location --retry 3 \
+          https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sdk-25.0-x86_64-linux.tar.gz \
+          --output "$archive"
+        echo "52640dde13599bf127a95499e61d6d640256119456d1af8897ab6725bcf3d89c  $archive" | sha256sum --check
+        tar -xzf "$archive" -C "$RUNNER_TEMP"
+        echo "WASI_SDK_PATH=$RUNNER_TEMP/wasi-sdk-25.0-x86_64-linux" >> "$GITHUB_ENV"
