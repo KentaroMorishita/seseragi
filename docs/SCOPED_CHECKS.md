@@ -177,3 +177,5 @@ The conformance lane includes these checks. Profile/compiler/runtime integration
 still requires the full gate and regenerated WASM during Promotion.
 
 WASM再生成時は[WASI SDK 25.0](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-25)のホストOS/CPU用archiveを展開し、`WASI_SDK_PATH`をそのdirectoryへ設定する。C parserのcompilerも固定し、Rust/wasm-packだけが同じでも発生する生成物差分を防ぐ。
+
+WASM glueには`cargo install wasm-bindgen-cli --version 0.2.126 --locked`でCargo.lockと同じCLIを用意する。`wasm-pack`の自動install fallbackはCLI内部の依存versionを変えるため、buildは`--mode no-install`で既存のCLIを使う。

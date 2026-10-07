@@ -65,6 +65,8 @@ jobs:
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: v0.15.0
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
       - uses: ./.github/actions/setup-wasi-sdk
       - name: Verify canonical metadata before promotion
         run: |

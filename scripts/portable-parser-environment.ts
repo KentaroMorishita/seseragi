@@ -35,7 +35,7 @@ export function portableParserEnvironment(root: string) {
   if (metadataProcess.exitCode !== 0) throw new Error("cargo metadata failed")
   const metadata = JSON.parse(metadataProcess.stdout.toString()) as {
     target_directory: string
-    packages: { name: string; manifest_path: string }[]
+    packages: { name: string; version: string; manifest_path: string }[]
   }
   const language = metadata.packages.find(
     (dependency) => dependency.name === "tree-sitter-language"
