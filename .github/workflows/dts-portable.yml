@@ -16,6 +16,7 @@ on:
       - "scripts/check-dts-wasm.ts"
       - "scripts/portable-parser-environment.ts"
       - "scripts/run-portable-parser.ts"
+      - "scripts/wasm-reproducibility.ts"
       - "scripts/build-playground-wasm.sh"
       - ".github/workflows/dts-portable.yml"
       - ".github/actions/setup-wasi-sdk/**"
@@ -26,7 +27,11 @@ permissions:
 
 jobs:
   convert:
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -61,10 +66,13 @@ jobs:
           bunx tsc --noEmit
           bunx playwright install --with-deps chromium
           bunx playwright test e2e/workspace-bindings.spec.ts
+      - name: Compare WASM section fingerprints
+        if: failure()
+        run: bun scripts/wasm-reproducibility.ts
       - name: Preserve WASM reproducibility evidence
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: portable-dts-wasm-reproduction
+          name: portable-dts-wasm-reproduction-${{ runner.os }}-${{ runner.arch }}
           path: apps/playground/src/wasm/pkg
           retention-days: 7
