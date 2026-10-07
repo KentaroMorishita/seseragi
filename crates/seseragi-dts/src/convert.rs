@@ -7,42 +7,13 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
-use std::fs;
-use std::path::{Component, Path, PathBuf};
+use std::path::{Component, Path};
+
+#[cfg(feature = "filesystem")]
+pub(crate) mod filesystem;
 
 const METADATA_SCHEMA: u32 = 1;
 const REPORT_SCHEMA: u32 = 1;
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ConvertRequest {
-    pub package_root: PathBuf,
-    pub generated_root: PathBuf,
-    pub bindings: PathBuf,
-    pub host_manifest: PathBuf,
-    pub entry: Option<String>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ConversionOutcome {
-    pub converted: Vec<ConvertedEntry>,
-    pub diagnostics: Vec<ConversionDiagnostic>,
-}
-
-impl ConversionOutcome {
-    pub fn has_errors(&self) -> bool {
-        self.diagnostics
-            .iter()
-            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ConvertedEntry {
-    pub id: String,
-    pub source: PathBuf,
-    pub metadata: PathBuf,
-    pub report: PathBuf,
-}
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub enum DiagnosticSeverity {
@@ -79,217 +50,132 @@ impl fmt::Display for ConvertError {
 
 impl std::error::Error for ConvertError {}
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ValidationError {
-    pub entry: String,
-    pub message: String,
+/// All host metadata needed to resolve an entry, supplied by its adapter.
+/// `resolved_package` is the package.json text for a dependency when the host
+/// manifest is not itself the imported package. Relative imports need neither.
+#[derive(Clone, Copy, Debug)]
+pub struct HostMetadata<'a> {
+    pub manifest: &'a str,
+    pub resolved_package: Option<&'a str>,
 }
 
-pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, ConvertError> {
-    let bindings_path = request.package_root.join(&request.bindings);
-    let settings_source = read_utf8(&bindings_path, "binding settings")?;
-    let config = parse_config(&settings_source)?;
-    validate_config(&config)?;
-    if let Some(entry) = &request.entry {
-        if !config.entries.contains_key(entry) {
-            return Err(ConvertError::new(format!(
-                "binding entry `{entry}` does not exist in {}",
-                request.bindings.display()
-            )));
-        }
-    }
+/// Convert one configured entry without reading or writing files.
+/// Paths in the settings remain logical package-relative paths in diagnostics
+/// and metadata. Previous metadata is optional; invalid JSON is treated as a
+/// first conversion, matching the filesystem adapter.
+#[derive(Clone, Copy, Debug)]
+pub struct ConversionInput<'a> {
+    pub settings: &'a str,
+    pub entry: &'a str,
+    pub declaration: &'a str,
+    pub host: HostMetadata<'a>,
+    pub previous_metadata: Option<&'a str>,
+}
 
-    let settings_digest = sha256(&settings_source);
-    let host_manifest_path = request.package_root.join(&request.host_manifest);
-    let host_manifest_source = read_utf8(&host_manifest_path, "foreign host manifest")?;
-    let mut outcome = ConversionOutcome {
-        converted: Vec::new(),
-        diagnostics: Vec::new(),
-    };
-    for (id, entry) in &config.entries {
-        if request
-            .entry
-            .as_deref()
-            .is_some_and(|selected| selected != id)
-        {
-            continue;
-        }
-        let declaration_path = request.package_root.join(&entry.declaration);
-        let declaration = read_utf8(&declaration_path, "TypeScript declaration")?;
-        let scope = match parse_declarations(&declaration) {
-            Ok(scope) => scope,
-            Err(error) => {
-                outcome.diagnostics.push(diagnostic(
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub struct ConversionResult {
+    pub generated: Option<GeneratedBinding>,
+    pub diagnostics: Vec<ConversionDiagnostic>,
+}
+
+/// Text artifacts ready to publish under `output` in a generated workspace.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub struct GeneratedBinding {
+    pub id: String,
+    pub output: String,
+    pub source: String,
+    pub metadata: String,
+    pub report: String,
+}
+
+pub fn convert_entry(input: &ConversionInput<'_>) -> Result<ConversionResult, ConvertError> {
+    let config = parse_config(input.settings)?;
+    validate_config(&config)?;
+    let entry = config.entries.get(input.entry).ok_or_else(|| {
+        ConvertError::new(format!(
+            "binding entry `{}` does not exist in binding settings",
+            input.entry
+        ))
+    })?;
+    convert_entry_with_host(
+        input.entry,
+        entry,
+        input.declaration,
+        &sha256(input.settings),
+        input.previous_metadata,
+        || resolve_host_metadata(&entry.specifier, input.host),
+    )
+}
+
+fn convert_entry_with_host(
+    id: &str,
+    entry: &EntryConfig,
+    declaration: &str,
+    settings_digest: &str,
+    previous: Option<&str>,
+    host: impl FnOnce() -> Result<HostModuleIdentity, ConvertError>,
+) -> Result<ConversionResult, ConvertError> {
+    let scope = match parse_declarations(declaration) {
+        Ok(scope) => scope,
+        Err(error) => {
+            return Ok(ConversionResult {
+                generated: None,
+                diagnostics: vec![diagnostic(
                     "SES-F0100",
                     DiagnosticSeverity::Error,
                     error.message,
                     &entry.declaration,
                     error.span,
                     None,
-                ));
-                continue;
-            }
-        };
-        let previous = read_previous_metadata(
-            &request
-                .generated_root
-                .join(format!("{}.binding.json", entry.output)),
-        );
-        let rendered = render_entry(id, entry, &scope, &entry.declaration);
-        outcome.diagnostics.extend(rendered.diagnostics.clone());
-        if rendered
-            .diagnostics
-            .iter()
-            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
-        {
-            continue;
+                )],
+            })
         }
-        let input_digest = sha256(&declaration);
-        let host_module = resolve_host_module_identity(
-            &request.package_root,
-            &request.host_manifest,
-            &host_manifest_source,
-            &entry.specifier,
-        )?;
-        let metadata = BindingMetadata {
-            schema: METADATA_SCHEMA,
-            kind: "seseragi-typescript-binding".to_owned(),
-            generator: GeneratorIdentity {
-                name: "seseragi-dts".to_owned(),
-                version: env!("CARGO_PKG_VERSION").to_owned(),
-            },
-            entry: id.clone(),
-            declaration: entry.declaration.clone(),
-            output: entry.output.clone(),
-            specifier: entry.specifier.clone(),
-            host_module,
-            evaluation: evaluation_name(entry.evaluation).to_owned(),
-            input_digest,
-            settings_digest: settings_digest.clone(),
-            symbols: rendered.symbols,
-        };
-        let report = build_report(id, previous.as_ref(), &metadata, &rendered.diagnostics);
-        let source_path = request
-            .generated_root
-            .join(format!("{}.ssrg", entry.output));
-        let metadata_path = request
-            .generated_root
-            .join(format!("{}.binding.json", entry.output));
-        let report_path = request
-            .generated_root
-            .join(format!("{}.report.json", entry.output));
-        atomic_write_set(&[
-            (&source_path, rendered.source.as_bytes()),
-            (&metadata_path, json_bytes(&metadata)?.as_slice()),
-            (&report_path, json_bytes(&report)?.as_slice()),
-        ])?;
-        outcome.converted.push(ConvertedEntry {
-            id: id.clone(),
-            source: source_path,
-            metadata: metadata_path,
-            report: report_path,
+    };
+    let rendered = render_entry(id, entry, &scope, &entry.declaration);
+    if rendered
+        .diagnostics
+        .iter()
+        .any(|d| d.severity == DiagnosticSeverity::Error)
+    {
+        return Ok(ConversionResult {
+            generated: None,
+            diagnostics: rendered.diagnostics,
         });
     }
-    Ok(outcome)
+    let previous = previous.and_then(|text| serde_json::from_str(text).ok());
+    let metadata = BindingMetadata {
+        schema: METADATA_SCHEMA,
+        kind: "seseragi-typescript-binding".to_owned(),
+        generator: GeneratorIdentity {
+            name: "seseragi-dts".to_owned(),
+            version: env!("CARGO_PKG_VERSION").to_owned(),
+        },
+        entry: id.to_owned(),
+        declaration: entry.declaration.clone(),
+        output: entry.output.clone(),
+        specifier: entry.specifier.clone(),
+        host_module: host()?,
+        evaluation: evaluation_name(entry.evaluation).to_owned(),
+        input_digest: sha256(declaration),
+        settings_digest: settings_digest.to_owned(),
+        symbols: rendered.symbols,
+    };
+    let report = build_report(id, previous.as_ref(), &metadata, &rendered.diagnostics);
+    Ok(ConversionResult {
+        generated: Some(GeneratedBinding {
+            id: id.to_owned(),
+            output: entry.output.clone(),
+            source: rendered.source,
+            metadata: json_text(&metadata)?,
+            report: json_text(&report)?,
+        }),
+        diagnostics: rendered.diagnostics,
+    })
 }
 
-pub fn validate_generated_bindings(
-    package_root: &Path,
-    generated_root: &Path,
-    bindings: &Path,
-    host_manifest: &Path,
-) -> Result<(), Vec<ValidationError>> {
-    let settings_path = package_root.join(bindings);
-    let settings_source = match fs::read_to_string(&settings_path) {
-        Ok(source) => source,
-        Err(error) => {
-            return Err(vec![ValidationError {
-                entry: "configuration".to_owned(),
-                message: format!("failed to read {}: {error}", settings_path.display()),
-            }]);
-        }
-    };
-    let config = match parse_config(&settings_source).and_then(|config| {
-        validate_config(&config)?;
-        Ok(config)
-    }) {
-        Ok(config) => config,
-        Err(error) => {
-            return Err(vec![ValidationError {
-                entry: "configuration".to_owned(),
-                message: error.to_string(),
-            }]);
-        }
-    };
-    let settings_digest = sha256(&settings_source);
-    let host_manifest_path = package_root.join(host_manifest);
-    let host_manifest_source = match fs::read_to_string(&host_manifest_path) {
-        Ok(source) => source,
-        Err(error) => {
-            return Err(vec![ValidationError {
-                entry: "configuration".to_owned(),
-                message: format!("failed to read {}: {error}", host_manifest_path.display()),
-            }]);
-        }
-    };
-    let mut errors = Vec::new();
-    for (id, entry) in config.entries {
-        let metadata_path = generated_root.join(format!("{}.binding.json", entry.output));
-        let source_path = generated_root.join(format!("{}.ssrg", entry.output));
-        let report_path = generated_root.join(format!("{}.report.json", entry.output));
-        let Some(metadata) = read_previous_metadata(&metadata_path) else {
-            errors.push(ValidationError {
-                entry: id,
-                message: format!(
-                    "generated binding metadata is missing or invalid at {}; run `seseragi dts convert`",
-                    metadata_path.display()
-                ),
-            });
-            continue;
-        };
-        let declaration_path = package_root.join(&entry.declaration);
-        let input_digest = fs::read_to_string(&declaration_path)
-            .map(|source| sha256(&source))
-            .unwrap_or_default();
-        let host_module = resolve_host_module_identity(
-            package_root,
-            host_manifest,
-            &host_manifest_source,
-            &entry.specifier,
-        )
-        .ok();
-        if metadata.schema != METADATA_SCHEMA
-            || metadata.entry != id
-            || metadata.output != entry.output
-            || metadata.specifier != entry.specifier
-            || host_module.as_ref() != Some(&metadata.host_module)
-            || metadata.evaluation != evaluation_name(entry.evaluation)
-            || metadata.settings_digest != settings_digest
-            || metadata.input_digest != input_digest
-            || !source_path.is_file()
-            || !report_path.is_file()
-        {
-            errors.push(ValidationError {
-                entry: id,
-                message: format!(
-                    "generated binding `{}` is stale; run `seseragi dts convert`",
-                    entry.output
-                ),
-            });
-        }
-    }
-    if errors.is_empty() {
-        Ok(())
-    } else {
-        Err(errors)
-    }
-}
-
-fn resolve_host_module_identity(
-    package_root: &Path,
-    host_manifest: &Path,
-    host_manifest_source: &str,
+fn resolve_host_metadata(
     specifier: &str,
+    host: HostMetadata<'_>,
 ) -> Result<HostModuleIdentity, ConvertError> {
     if specifier.starts_with("./") || specifier.starts_with("../") {
         return Ok(HostModuleIdentity {
@@ -306,33 +192,32 @@ fn resolve_host_module_identity(
         .strip_prefix(&package_name)
         .unwrap_or_default()
         .trim_start_matches('/');
-    let root_manifest: serde_json::Value =
-        serde_json::from_str(host_manifest_source).map_err(|error| {
-            ConvertError::new(format!(
-                "invalid foreign host manifest {}: {error}",
-                package_root.join(host_manifest).display()
-            ))
-        })?;
-    let manifest = if root_manifest.get("name").and_then(|value| value.as_str())
-        == Some(package_name.as_str())
-    {
-        root_manifest
-    } else {
-        let package_manifest = package_root
-            .join(host_manifest)
-            .parent()
-            .expect("manifest has a package-relative parent")
-            .join("node_modules")
-            .join(&package_name)
-            .join("package.json");
-        let source = read_utf8(&package_manifest, "resolved foreign package manifest")?;
-        serde_json::from_str(&source).map_err(|error| {
-            ConvertError::new(format!(
-                "invalid resolved foreign package manifest {}: {error}",
-                package_manifest.display()
-            ))
-        })?
-    };
+    let root: serde_json::Value = serde_json::from_str(host.manifest)
+        .map_err(|error| ConvertError::new(format!("invalid foreign host manifest: {error}")))?;
+    let manifest =
+        if root.get("name").and_then(|value| value.as_str()) == Some(package_name.as_str()) {
+            root
+        } else {
+            let source = host.resolved_package.ok_or_else(|| {
+                ConvertError::new(format!(
+                    "missing resolved foreign package manifest for `{package_name}`"
+                ))
+            })?;
+            serde_json::from_str(source).map_err(|error| {
+                ConvertError::new(format!(
+                    "invalid resolved foreign package manifest: {error}"
+                ))
+            })?
+        };
+    host_identity(specifier, &package_name, subpath, &manifest)
+}
+
+fn host_identity(
+    specifier: &str,
+    package_name: &str,
+    subpath: &str,
+    manifest: &serde_json::Value,
+) -> Result<HostModuleIdentity, ConvertError> {
     let resolved_name = manifest
         .get("name")
         .and_then(|value| value.as_str())
@@ -1422,57 +1307,15 @@ fn evaluation_name(value: Evaluation) -> &'static str {
     }
 }
 
-fn read_utf8(path: &Path, label: &str) -> Result<String, ConvertError> {
-    fs::read_to_string(path).map_err(|error| {
-        ConvertError::new(format!(
-            "failed to read {label} {}: {error}",
-            path.display()
-        ))
-    })
-}
-
 fn sha256(value: &str) -> String {
     format!("{:x}", Sha256::digest(value.as_bytes()))
 }
 
-fn json_bytes(value: &impl Serialize) -> Result<Vec<u8>, ConvertError> {
-    let mut bytes = serde_json::to_vec_pretty(value)
+fn json_text(value: &impl Serialize) -> Result<String, ConvertError> {
+    let mut bytes = serde_json::to_string_pretty(value)
         .map_err(|error| ConvertError::new(format!("failed to encode generated JSON: {error}")))?;
-    bytes.push(b'\n');
+    bytes.push('\n');
     Ok(bytes)
-}
-
-fn atomic_write_set(entries: &[(&Path, &[u8])]) -> Result<(), ConvertError> {
-    let nonce = format!("{}.tmp", std::process::id());
-    let mut temporary = Vec::new();
-    for (path, bytes) in entries {
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent).map_err(|error| {
-                ConvertError::new(format!("failed to create {}: {error}", parent.display()))
-            })?;
-        }
-        let extension = path
-            .extension()
-            .and_then(|value| value.to_str())
-            .map(|value| format!("{value}.{nonce}"))
-            .unwrap_or_else(|| nonce.clone());
-        let temp = path.with_extension(extension);
-        fs::write(&temp, bytes).map_err(|error| {
-            ConvertError::new(format!("failed to write {}: {error}", temp.display()))
-        })?;
-        temporary.push((temp, path.to_path_buf()));
-    }
-    for (temp, path) in &temporary {
-        if cfg!(windows) && path.exists() {
-            fs::remove_file(path).map_err(|error| {
-                ConvertError::new(format!("failed to replace {}: {error}", path.display()))
-            })?;
-        }
-        fs::rename(temp, path).map_err(|error| {
-            ConvertError::new(format!("failed to replace {}: {error}", path.display()))
-        })?;
-    }
-    Ok(())
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1586,81 +1429,5 @@ fn build_report(
             .filter(|diagnostic| diagnostic.severity == DiagnosticSeverity::Warning)
             .cloned()
             .collect(),
-    }
-}
-
-fn read_previous_metadata(path: &Path) -> Option<BindingMetadata> {
-    serde_json::from_str(&fs::read_to_string(path).ok()?).ok()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use tempfile::TempDir;
-
-    fn fixture_root(name: &str) -> PathBuf {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../..")
-            .join("examples/spec/fixtures/projects")
-            .join(name)
-    }
-
-    fn convert_fixture(name: &str) -> (TempDir, ConversionOutcome) {
-        let temporary = TempDir::new().unwrap();
-        let request = ConvertRequest {
-            package_root: fixture_root(name),
-            generated_root: temporary.path().join("generated"),
-            bindings: PathBuf::from("seseragi.bindings.toml"),
-            host_manifest: PathBuf::from("host/package.json"),
-            entry: None,
-        };
-        let outcome = convert_package(&request).unwrap();
-        (temporary, outcome)
-    }
-
-    #[test]
-    fn matches_existing_conversion_snapshots() {
-        for (fixture, output) in [
-            ("dts-basic-conversion", "fixture-api"),
-            ("dts-callback-during-call", "callback-api"),
-            ("dts-declaration-merge", "merge-api"),
-            ("dts-generated-name", "naming-api"),
-            ("dts-namespace-runtime", "analytics"),
-        ] {
-            let (temporary, outcome) = convert_fixture(fixture);
-            assert!(!outcome.has_errors(), "{:?}", outcome.diagnostics);
-            let actual = fs::read_to_string(
-                temporary
-                    .path()
-                    .join("generated")
-                    .join(format!("{output}.ssrg")),
-            )
-            .unwrap();
-            let expected = fs::read_to_string(
-                fixture_root(fixture)
-                    .join("expected")
-                    .join(format!("{output}.ssrg")),
-            )
-            .unwrap();
-            assert_eq!(actual, expected, "{fixture}");
-        }
-    }
-
-    #[test]
-    fn preserves_conversion_error_spans_without_updating_outputs() {
-        for (fixture, code, start, end) in [
-            ("dts-unsupported-any", "SES-F0101", 38, 41),
-            ("dts-callback-missing-release", "SES-F0102", 30, 38),
-        ] {
-            let (temporary, outcome) = convert_fixture(fixture);
-            assert!(outcome.has_errors());
-            let diagnostic = outcome
-                .diagnostics
-                .iter()
-                .find(|diagnostic| diagnostic.code == code)
-                .unwrap();
-            assert_eq!((diagnostic.start, diagnostic.end), (start, end));
-            assert!(!temporary.path().join("generated").exists());
-        }
     }
 }

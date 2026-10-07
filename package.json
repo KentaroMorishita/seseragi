@@ -17,6 +17,7 @@
     "check:playground": "./scripts/check-scoped.sh playground",
     "check:rust": "./scripts/check-scoped.sh rust",
     "check:conformance": "./scripts/check-scoped.sh conformance",
+    "check:dts:wasm": "bun scripts/check-dts-wasm.ts",
     "check:wasm": "./scripts/check-scoped.sh wasm",
     "check:extension": "./scripts/check-scoped.sh extension",
     "check:release": "./scripts/check-scoped.sh release",
