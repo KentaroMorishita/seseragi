@@ -1,5 +1,9 @@
 import type { ProjectRequest } from "../compiler/types"
-import { type WorkspaceState, workspaceSourcePath } from "./model"
+import {
+  isWorkspaceSourcePath,
+  type WorkspaceState,
+  workspaceSourcePath,
+} from "./model"
 
 const virtualPackageName = "playground/workspace"
 
@@ -18,7 +22,11 @@ function workspaceManifest(entryFile: string): string {
 }
 
 export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
-  const entry = state.entryFile ?? state.activeFile
+  const entry =
+    state.entryFile ??
+    (isWorkspaceSourcePath(state.activeFile)
+      ? state.activeFile
+      : state.files.find(({ path }) => isWorkspaceSourcePath(path))?.path)
   if (entry === undefined) throw new Error("Workspace has no source file")
   return {
     schema: 1,
@@ -26,10 +34,12 @@ export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
       state.packageManifest !== undefined && entry === state.packageEntryFile
         ? state.packageManifest
         : workspaceManifest(entry),
-    files: state.files.map(({ path, source }) => ({
-      path: workspaceSourcePath(path),
-      source,
-    })),
+    files: state.files
+      .filter(({ path }) => isWorkspaceSourcePath(path))
+      .map(({ path, source }) => ({
+        path: workspaceSourcePath(path),
+        source,
+      })),
   }
 }
 
@@ -54,7 +64,10 @@ export type WorkspaceAnalysisRequest = Readonly<{
 export function workspaceAnalysisRequest(
   state: WorkspaceState
 ): WorkspaceAnalysisRequest {
-  if (state.activeFile === undefined) {
+  if (
+    !isWorkspaceSourcePath(state.activeFile) ||
+    state.activeFile === undefined
+  ) {
     throw new Error("Workspace has no active file")
   }
   return {

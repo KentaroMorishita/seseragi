@@ -88,6 +88,13 @@ pub struct GeneratedBinding {
     pub report: String,
 }
 
+/// Parse and validate settings with the same rules as native conversion.
+pub fn parse_bindings(source: &str) -> Result<BindingsConfig, ConvertError> {
+    let config = parse_config(source)?;
+    validate_config(&config)?;
+    Ok(config)
+}
+
 pub fn convert_entry(input: &ConversionInput<'_>) -> Result<ConversionResult, ConvertError> {
     let config = parse_config(input.settings)?;
     validate_config(&config)?;

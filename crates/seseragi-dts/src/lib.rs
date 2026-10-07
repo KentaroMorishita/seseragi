@@ -18,6 +18,6 @@ pub use convert::filesystem::{
     ConvertedEntry, ValidationError,
 };
 pub use convert::{
-    convert_entry, ConversionDiagnostic, ConversionInput, ConversionResult, ConvertError,
-    DiagnosticSeverity, GeneratedBinding, HostMetadata,
+    convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, ConversionResult,
+    ConvertError, DiagnosticSeverity, GeneratedBinding, HostMetadata,
 };

@@ -14,7 +14,9 @@ use seseragi_runtime::{main_contract, MainContract};
 use seseragi_syntax::DiagnosticArtifact;
 use wasm_bindgen::prelude::*;
 
+mod bindings;
 mod project;
+pub use bindings::convert_workspace_bindings;
 
 pub use project::{
     analyze_project, compile_project, format_project_file, format_project_file_with_options,

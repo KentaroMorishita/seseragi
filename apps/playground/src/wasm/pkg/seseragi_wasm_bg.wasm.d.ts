@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const memcmp: (a: number, b: number, c: number) => number;
 export const analyze_project: (a: number, b: number) => [number, number];
 export const compile_project: (a: number, b: number) => [number, number];
 export const format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
@@ -10,6 +11,33 @@ export const compile_single_file: (a: number, b: number, c: number, d: number, e
 export const format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
 export const format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
 export const toolchain_version_json: () => [number, number];
+export const convert_workspace_bindings: (a: number, b: number) => [number, number];
+export const iswspace: (a: number) => number;
+export const iswalpha: (a: number) => number;
+export const iswdigit: (a: number) => number;
+export const strlen: (a: number) => number;
+export const abort: () => void;
+export const calloc: (a: number, b: number) => number;
+export const free: (a: number) => void;
+export const malloc: (a: number) => number;
+export const realloc: (a: number, b: number) => number;
+export const memcpy: (a: number, b: number, c: number) => number;
+export const strncmp: (a: number, b: number, c: number) => number;
+export const memset: (a: number, b: number, c: number) => number;
+export const memmove: (a: number, b: number, c: number) => number;
+export const memchr: (a: number, b: number, c: number) => number;
+export const strchr: (a: number, b: number) => number;
+export const strcmp: (a: number, b: number) => number;
+export const strncat: (a: number, b: number, c: number) => number;
+export const strncpy: (a: number, b: number, c: number) => number;
+export const iswalnum: (a: number) => number;
+export const iswblank: (a: number) => number;
+export const iswlower: (a: number) => number;
+export const towupper: (a: number) => number;
+export const iswpunct: (a: number) => number;
+export const iswupper: (a: number) => number;
+export const towlower: (a: number) => number;
+export const iswxdigit: (a: number) => number;
 export const __wbindgen_externrefs: WebAssembly.Table;
 export const __wbindgen_malloc: (a: number, b: number) => number;
 export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

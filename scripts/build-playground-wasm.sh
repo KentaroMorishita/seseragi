@@ -34,7 +34,7 @@ fi
 RUST_CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
 export RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }--remap-path-prefix=$ROOT=/workspace --remap-path-prefix=$RUST_CARGO_HOME=/cargo"
 
-wasm-pack build "$ROOT/crates/seseragi-wasm" \
+bun "$ROOT/scripts/run-portable-parser.ts" wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
   --out-dir "$OUT_DIR" \
   --out-name seseragi_wasm \

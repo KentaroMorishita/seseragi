@@ -25,6 +25,8 @@ export function compile_project(request: string): string;
  */
 export function compile_single_file(source_name: string, module_id: string, source: string): string;
 
+export function convert_workspace_bindings(json: string): string;
+
 /**
  * Formats one path selected from the versioned workspace request.
  */
@@ -60,6 +62,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly memcmp: (a: number, b: number, c: number) => number;
     readonly analyze_project: (a: number, b: number) => [number, number];
     readonly compile_project: (a: number, b: number) => [number, number];
     readonly format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
@@ -69,6 +72,33 @@ export interface InitOutput {
     readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
     readonly format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly toolchain_version_json: () => [number, number];
+    readonly convert_workspace_bindings: (a: number, b: number) => [number, number];
+    readonly iswspace: (a: number) => number;
+    readonly iswalpha: (a: number) => number;
+    readonly iswdigit: (a: number) => number;
+    readonly strlen: (a: number) => number;
+    readonly abort: () => void;
+    readonly calloc: (a: number, b: number) => number;
+    readonly free: (a: number) => void;
+    readonly malloc: (a: number) => number;
+    readonly realloc: (a: number, b: number) => number;
+    readonly memcpy: (a: number, b: number, c: number) => number;
+    readonly strncmp: (a: number, b: number, c: number) => number;
+    readonly memset: (a: number, b: number, c: number) => number;
+    readonly memmove: (a: number, b: number, c: number) => number;
+    readonly memchr: (a: number, b: number, c: number) => number;
+    readonly strchr: (a: number, b: number) => number;
+    readonly strcmp: (a: number, b: number) => number;
+    readonly strncat: (a: number, b: number, c: number) => number;
+    readonly strncpy: (a: number, b: number, c: number) => number;
+    readonly iswalnum: (a: number) => number;
+    readonly iswblank: (a: number) => number;
+    readonly iswlower: (a: number) => number;
+    readonly towupper: (a: number) => number;
+    readonly iswpunct: (a: number) => number;
+    readonly iswupper: (a: number) => number;
+    readonly towlower: (a: number) => number;
+    readonly iswxdigit: (a: number) => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

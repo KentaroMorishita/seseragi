@@ -7,11 +7,16 @@ on:
       - "Cargo.lock"
       - "rust-toolchain.toml"
       - "crates/seseragi-dts/**"
+      - "crates/seseragi-wasm/**"
+      - "apps/playground/**"
       - "crates/seseragi-cli/src/dts.rs"
       - "crates/seseragi-cli/tests/dts.rs"
       - "examples/spec/fixtures/projects/dts-*/**"
       - "package.json"
       - "scripts/check-dts-wasm.ts"
+      - "scripts/portable-parser-environment.ts"
+      - "scripts/run-portable-parser.ts"
+      - "scripts/build-playground-wasm.sh"
       - ".github/workflows/dts-portable.yml"
   workflow_dispatch:
 
@@ -40,5 +45,19 @@ jobs:
           cargo test --locked -p seseragi-dts
           cargo test --locked -p seseragi-dts --no-default-features
           cargo test --locked -p seseragi-cli --test dts
+          cargo test --locked -p seseragi-wasm
       - name: Build and execute converter without host imports
         run: bun run check:dts:wasm
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: v0.15.0
+      - name: Verify committed browser converter
+        run: |
+          bun run check:wasm
+          bun install --frozen-lockfile
+          cd apps/playground
+          bun install --frozen-lockfile
+          bun test tests/binding-wasm.test.ts tests/workspace-*.test.ts
+          bunx tsc --noEmit
+          bunx playwright install --with-deps chromium
+          bunx playwright test e2e/workspace-bindings.spec.ts
