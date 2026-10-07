@@ -222,6 +222,40 @@ mod tests {
     }
 
     #[test]
+    fn accepts_direct_curried_and_nested_callable_fields() {
+        for source in [
+            "fn identity value: Int -> Int = value\nlet record: {apply: Int -> Int} = {apply: identity}\npub effect fn main = println (show (record.apply 42))\n",
+            "fn invoke<A> record: {apply: A -> A} -> value: A -> A = record.apply value\n",
+            "fn add a: Int -> b: Int -> Int = a + b\nlet nested = {inner: {apply: add}}\nlet partial = nested.inner.apply 20\npub fn result -> Int = partial 22\n",
+        ] {
+            let artifact = semantic_diagnostics("callable-field.ssrg", source);
+            assert!(artifact.diagnostics.is_empty(), "{source}\n{artifact:#?}");
+        }
+    }
+
+    #[test]
+    fn reports_a_callable_field_argument_mismatch_at_the_argument() {
+        let source = "fn identity value: Int -> Int = value\nlet record: {apply: Int -> Int} = {apply: identity}\npub effect fn main = println (show (record.apply \"wrong\"))\n";
+        let artifact = semantic_diagnostics("callable-field-invalid.ssrg", source);
+        let diagnostic = artifact
+            .diagnostics
+            .iter()
+            .find(|diagnostic| diagnostic.message_key == "call.argument-type-mismatch")
+            .unwrap_or_else(|| panic!("{artifact:#?}"));
+        assert_eq!(
+            &source[diagnostic.primary.start..diagnostic.primary.end],
+            "\"wrong\""
+        );
+        assert!(
+            !artifact
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key == "instance.missing"),
+            "{artifact:#?}"
+        );
+    }
+
+    #[test]
     fn reports_invalid_record_construction_and_access() {
         for (source, expected) in [
             (

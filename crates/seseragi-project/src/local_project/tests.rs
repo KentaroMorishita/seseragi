@@ -99,6 +99,70 @@ fn audits_unreachable_source_aliases_before_entry_discovery() {
     ));
 }
 
+#[test]
+fn reports_missing_generated_root_at_the_import_edge() {
+    let project = TempProject::new();
+    project.write("seseragi.toml", "[package]\nname = \"fixture/missing-generated\"\nversion = \"0.0.0\"\nlanguage = \"^0.1.0\"\n[run]\nentry = \"main\"\n");
+    let source = "import { value } from \"gen/api\"\npub let main: Int = value\n";
+    project.write("src/main.ssrg", source);
+    let error = load_local_project(project.path()).unwrap_err();
+    assert_eq!(error.code(), "SES-N0104");
+    assert!(
+        matches!(error, LocalProjectLoadError::Import { module, specifier, origin, reason, .. }
+        if module.path().as_str() == "main" && specifier == "gen/api"
+        && source[origin.start..origin.end].contains("gen/api")
+        && reason.contains("Generated module root"))
+    );
+
+    // Generating the same dependency makes ordinary discovery succeed.
+    project.write(".seseragi/generated/api.ssrg", "pub let value: Int = 42\n");
+    let loaded = load_local_project(project.path()).unwrap();
+    assert_eq!(loaded.modules().count(), 2);
+    assert!(loaded
+        .modules()
+        .any(|(module, _)| module.root() == ModuleRoot::Generated));
+}
+
+#[test]
+fn rejects_source_generated_logical_collisions_before_driver_compilation() {
+    let project = TempProject::new();
+    project.write("seseragi.toml", "[package]\nname = \"fixture/collision\"\nversion = \"0.0.0\"\nlanguage = \"^0.1.0\"\n[layout]\ngenerated = \"gen\"\n[run]\nentry = \"main\"\n");
+    project.write("src/main.ssrg", "import { left } from \"./api\"\nimport { right } from \"gen/api\"\npub let main: Int = left + right\n");
+    project.write("src/api.ssrg", "pub let left: Int = 1\n");
+    project.write("gen/api.ssrg", "pub let right: Int = 2\n");
+    let error = load_local_project(project.path()).unwrap_err();
+    let message = error.to_string();
+    assert!(message.contains("src/api.ssrg"), "{message}");
+    assert!(message.contains("gen/api.ssrg"), "{message}");
+    assert!(
+        matches!(error, LocalProjectLoadError::DuplicateLogicalModule { first, second, .. }
+        if first.path() == second.path() && first.root() != second.root())
+    );
+}
+
+#[test]
+fn preserves_noncolliding_generated_imports_and_root_boundaries() {
+    let project = TempProject::new();
+    project.write("seseragi.toml", "[package]\nname = \"fixture/generated\"\nversion = \"0.0.0\"\nlanguage = \"^0.1.0\"\n[layout]\ngenerated = \"gen\"\n[run]\nentry = \"main\"\n");
+    project.write(
+        "src/main.ssrg",
+        "import { right } from \"gen/api\"\npub let main: Int = right\n",
+    );
+    project.write(
+        "gen/api.ssrg",
+        "import { value } from \"./value\"\npub let right: Int = value\n",
+    );
+    project.write("gen/value.ssrg", "pub let value: Int = 2\n");
+    let loaded = load_local_project(project.path()).unwrap();
+    assert_eq!(loaded.modules().count(), 3);
+    project.write(
+        "gen/api.ssrg",
+        "import { value } from \"self/value\"\npub let right: Int = value\n",
+    );
+    assert!(matches!(load_local_project(project.path()).unwrap_err(),
+        LocalProjectLoadError::Import { reason, .. } if reason.contains("handwritten source")));
+}
+
 struct TempProject {
     path: PathBuf,
 }

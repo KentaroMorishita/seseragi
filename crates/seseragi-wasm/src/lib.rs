@@ -175,6 +175,45 @@ mod tests {
     }
 
     #[test]
+    fn compiles_direct_callable_record_fields_through_the_shared_driver() {
+        let source =
+            include_str!("../../../examples/spec/fixtures/compile/callable-record-fields.ssrg");
+        let response: Value =
+            serde_json::from_str(&compile_single_file("main.ssrg", "playground/main", source))
+                .unwrap();
+        assert_eq!(response["status"], "success", "{response:#}");
+        assert_eq!(
+            response["diagnostics"]["diagnostics"],
+            serde_json::json!([])
+        );
+    }
+
+    #[test]
+    fn compiles_foreign_declarations_with_imported_big_int_types() {
+        let source = r#"import { BigInt } from "std/big-int"
+foreign "typescript" from "fixture-api" {
+  opaque type Config
+  task fn fetchName id: BigInt -> String
+  task fn first<A> values: Array<A> -> Js.UndefinedOr<A>
+  task fn useConfig config: Config -> Unit
+}
+pub effect fn main = println "ok"
+"#;
+        let response: Value =
+            serde_json::from_str(&compile_single_file("main.ssrg", "playground/main", source))
+                .unwrap();
+        assert_eq!(response["status"], "success", "{response:#}");
+        assert_eq!(
+            response["diagnostics"]["diagnostics"],
+            serde_json::json!([])
+        );
+        assert!(response["generated"]["typescript"]
+            .as_str()
+            .unwrap()
+            .contains("BigInt"));
+    }
+
+    #[test]
     fn preserves_typescript_precedence_for_grouped_arithmetic() {
         let source = include_str!(
             "../../../examples/spec/artifacts/schema-1/typescript-precedence-grouping/main.ssrg"

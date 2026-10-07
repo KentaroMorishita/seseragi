@@ -231,6 +231,7 @@ struct SourceDiscovery<'a> {
     modules: BTreeMap<ModuleIdentity, LoadedModule>,
     edges: BTreeMap<ModuleIdentity, BTreeMap<String, ModuleIdentity>>,
     physical_owners: BTreeMap<PathBuf, ModuleIdentity>,
+    logical_owners: BTreeMap<String, ModuleIdentity>,
     overlays: BTreeMap<PathBuf, String>,
 }
 
@@ -312,6 +313,7 @@ impl<'a> SourceDiscovery<'a> {
             modules: BTreeMap::new(),
             edges: BTreeMap::new(),
             physical_owners: BTreeMap::new(),
+            logical_owners: BTreeMap::new(),
             overlays,
         })
     }
@@ -364,6 +366,21 @@ impl<'a> SourceDiscovery<'a> {
                 }),
             });
         }
+        // Source and generated roots share the compiler/output module namespace.
+        // Reject a collision before the driver erases the filesystem root.
+        if matches!(module.root(), ModuleRoot::Source | ModuleRoot::Generated) {
+            let logical = crate::logical_module_id(&module);
+            if let Some(first) = self.logical_owners.get(&logical) {
+                let loaded = &self.modules[first];
+                return Err(LocalProjectLoadError::DuplicateLogicalModule {
+                    first: Box::new(first.clone()),
+                    second: Box::new(module),
+                    first_path: loaded.source_path().to_owned(),
+                    second_path: canonical_path,
+                });
+            }
+            self.logical_owners.insert(logical, module.clone());
+        }
         if let Some(first) = self
             .physical_owners
             .insert(canonical_path.clone(), module.clone())
@@ -407,6 +424,22 @@ impl<'a> SourceDiscovery<'a> {
                 ResolvedImport::Standard => continue,
                 ResolvedImport::Module(dependency) => dependency,
             };
+            if !self
+                .source_roots
+                .contains_key(&(dependency.package().clone(), dependency.root()))
+            {
+                return Err(LocalProjectLoadError::Import {
+                    module: Box::new(module.clone()),
+                    specifier: import.specifier,
+                    origin: import.span,
+                    code: "SES-N0104",
+                    reason: format!(
+                        "{:?} module root has not been created for package `{}`",
+                        dependency.root(),
+                        dependency.package().name().as_str()
+                    ),
+                });
+            }
             edges.insert(import.specifier, dependency.clone());
             if !self.modules.contains_key(&dependency) {
                 self.pending.insert(dependency);

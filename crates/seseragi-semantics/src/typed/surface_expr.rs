@@ -495,6 +495,9 @@ pub(crate) struct SurfaceExpressionAnalysis {
     pub(crate) record_issue: Option<RecordIssue>,
     pub(crate) range_issue: Option<RangeIssue>,
     pub(crate) pure_call_issue: Option<PureCallIssue>,
+    // Direct field calls must retain their argument error through enclosing
+    // calls without changing the existing priority of ordinary call issues.
+    pub(super) prioritize_field_argument_issue: bool,
     pub(crate) monad_do_issue: Option<MonadDoIssue>,
     pub(crate) match_issues: Vec<MatchIssue>,
     pub(crate) semantic_type: SemanticTypeKey,
@@ -509,6 +512,7 @@ impl SurfaceExpressionAnalysis {
             record_issue: None,
             range_issue: None,
             pure_call_issue: None,
+            prioritize_field_argument_issue: false,
             monad_do_issue: None,
             match_issues: Vec::new(),
             semantic_type: SemanticTypeKey::Other,
@@ -526,6 +530,7 @@ impl SurfaceExpressionAnalysis {
             record_issue: None,
             range_issue: None,
             pure_call_issue: None,
+            prioritize_field_argument_issue: false,
             monad_do_issue: None,
             match_issues: Vec::new(),
             semantic_type,
@@ -547,7 +552,10 @@ impl SurfaceExpressionAnalysis {
         self.array_issue = self.array_issue.take().or(child.array_issue);
         self.record_issue = self.record_issue.take().or(child.record_issue);
         self.range_issue = self.range_issue.take().or(child.range_issue);
-        self.pure_call_issue = self.pure_call_issue.take().or(child.pure_call_issue);
+        if self.pure_call_issue.is_none() {
+            self.pure_call_issue = child.pure_call_issue;
+            self.prioritize_field_argument_issue = child.prioritize_field_argument_issue;
+        }
         self.monad_do_issue = self.monad_do_issue.take().or(child.monad_do_issue);
         self.match_issues.extend(child.match_issues);
     }
