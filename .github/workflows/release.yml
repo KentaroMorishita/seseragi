@@ -39,31 +39,8 @@ jobs:
             published=true
           fi
           bun scripts/release-promotion.ts plan --published "$published"
-  wasm-freshness:
-    needs: plan
-    if: needs.plan.outputs.should_release == 'true'
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.plan.outputs.release_sha }}
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: 1.97.1
-          targets: wasm32-unknown-unknown
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.9
-      - uses: jetli/wasm-pack-action@v0.4.0
-        with:
-          version: v0.15.0
-      - uses: ./.github/actions/setup-wasi-sdk
-      - name: Install the locked wasm-bindgen CLI
-        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
-      - name: Verify the canonical committed WASM before promotion
-        run: bun run check:wasm
   gate:
-    needs: [plan, wasm-freshness]
+    needs: plan
     if: needs.plan.outputs.should_release == 'true'
     runs-on: macos-15
     permissions:

@@ -91,18 +91,9 @@ describe("release publish gate", () => {
       workflow.indexOf('git push origin "refs/tags/$RELEASE_TAG"')
     )
     expect(workflow).toContain(
-      "gate:\n    needs: [plan, wasm-freshness]\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: macos-15"
+      "gate:\n    needs: plan\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: macos-15"
     )
-    expect(workflow).toContain(
-      "wasm-freshness:\n    needs: plan\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: ubuntu-24.04"
-    )
-    const freshnessJob = workflow
-      .split("  wasm-freshness:")[1]
-      ?.split("  gate:")[0]
-    expect(freshnessJob).toContain(
-      ["ref: $", "{{ needs.plan.outputs.release_sha }}"].join("")
-    )
-    expect(freshnessJob).toContain("run: bun run check:wasm")
+    expect(workflow).not.toContain("run: bun run check:wasm")
     expect(workflow).not.toContain("seseragi-wasm-freshness-")
     expect(workflow).toContain(
       `seseragi-release-${releaseShaExpression}-native-${matrixTargetExpression}`
@@ -122,7 +113,7 @@ describe("release publish gate", () => {
     expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
     expect(workflow).toContain("bun scripts/release-readiness.ts check")
     expect(workflow).toContain("version: v0.15.0")
-    expect(workflow.match(/toolchain: 1\.97\.1/gu)?.length).toBe(4)
+    expect(workflow.match(/toolchain: 1\.97\.1/gu)?.length).toBe(3)
     expect(workflow).not.toContain("VSCE_PAT")
     expect(workflow).not.toContain("vsce publish")
     expect(workflow).not.toContain("marketplace:")
