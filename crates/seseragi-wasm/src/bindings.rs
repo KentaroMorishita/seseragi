@@ -173,6 +173,20 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
             .map(|(parent, _)| format!("{parent}/"))
             .unwrap_or_default();
         let resolved_path = format!("{parent}node_modules/{package}/package.json");
+        // The core selects the root manifest when it names the imported package;
+        // otherwise identity errors belong to the resolved dependency artifact.
+        // Invalid root JSON is still diagnosed at the root manifest itself.
+        let dependency_metadata = !entry.specifier.starts_with("./")
+            && !entry.specifier.starts_with("../")
+            && serde_json::from_str::<serde_json::Value>(host).is_ok_and(|manifest| {
+                manifest.get("name").and_then(|name| name.as_str()) != Some(package.as_str())
+            });
+        let host_diagnostic_path = if dependency_metadata {
+            resolved_path.as_str()
+        } else {
+            foreign.manifest.as_str()
+        };
+
         let resolved_package = path(&resolved_path)
             .ok()
             .and_then(|name| files.get(&name).copied());
@@ -194,7 +208,7 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
             },
             previous_metadata,
         })
-        .map_err(|error| (foreign.manifest.as_str().to_owned(), error.to_string()))?;
+        .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
         response.diagnostics.extend(converted.diagnostics);
         if let Some(generated) = converted.generated {
             response.generated.push(generated);

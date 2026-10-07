@@ -76,3 +76,34 @@ test("a non-ASCII declaration diagnostic selects the exact source span", async (
   const range = utf8RangeToUtf16(source, diagnostic.diagnostic.primary)
   expect(source.slice(range.from, range.to)).toBe("any")
 })
+
+test("resolved dependency metadata errors point to the artifact that failed", async () => {
+  const input = await request()
+  const dependency = "host/node_modules/fixture-api/package.json"
+  for (const contents of [
+    "{",
+    '{"name":"wrong","version":"1.0.0"}',
+    '{"name":"fixture-api"}',
+  ]) {
+    const result = convert({
+      ...input,
+      files: [
+        ...input.files.map((file) =>
+          file.path === "host/package.json"
+            ? { ...file, source: '{"name":"app"}' }
+            : file
+        ),
+        { path: dependency, source: contents },
+      ],
+    })
+    expect(result.status).toBe("failure")
+    expect(result.diagnostics[0]?.file).toBe(dependency)
+  }
+  const badRoot = convert({
+    ...input,
+    files: input.files.map((file) =>
+      file.path === "host/package.json" ? { ...file, source: "{" } : file
+    ),
+  })
+  expect(badRoot.diagnostics[0]?.file).toBe("host/package.json")
+})
