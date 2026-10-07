@@ -1,0 +1,44 @@
+name: Portable DTS converter
+
+on:
+  pull_request:
+    paths:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "crates/seseragi-dts/**"
+      - "crates/seseragi-cli/src/dts.rs"
+      - "crates/seseragi-cli/tests/dts.rs"
+      - "examples/spec/fixtures/projects/dts-*/**"
+      - "package.json"
+      - "scripts/check-dts-wasm.ts"
+      - ".github/workflows/dts-portable.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  convert:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
+          components: rustfmt
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install C compiler for the portable parser
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Check native adapter and memory-only core
+        run: |
+          cargo fmt --all -- --check
+          cargo test --locked -p seseragi-dts
+          cargo test --locked -p seseragi-dts --no-default-features
+          cargo test --locked -p seseragi-cli --test dts
+      - name: Build and execute converter without host imports
+        run: bun run check:dts:wasm
