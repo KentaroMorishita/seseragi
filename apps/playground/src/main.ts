@@ -1017,7 +1017,8 @@ async function run(): Promise<void> {
     return
   }
   const requestedRevision = JSON.stringify(request)
-  const requestedAnalysisRevision = workspaceAnalysisRevision(workspaceState)
+  const requestedAnalysisRevision =
+    workspaceAnalysisRevisionOrUndefined(workspaceState)
   liveAnalysis.cancel()
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true

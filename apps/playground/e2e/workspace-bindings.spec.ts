@@ -63,6 +63,22 @@ test("external workspace edits survive reload, diagnose rename/delete, and prese
       exact: true,
     })
   ).toHaveCount(0)
+  for (const path of [
+    "host/index.d.ts",
+    "seseragi.bindings.toml",
+    "host/package.json",
+  ]) {
+    await page
+      .locator(`[data-explorer-path="${path}"] .explorer-row-label`)
+      .click()
+    await expect(page.locator("#active-file-name")).toHaveText(path)
+    await page.locator("#run-button").click()
+    await expect(page.locator("#output")).toHaveText("ordinary source")
+    await expect(page.locator("#active-file-name")).toHaveText(path)
+  }
+  await page
+    .locator('[data-explorer-path="host/index.d.ts"] .explorer-row-label')
+    .click()
   const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
   await editor.fill("export declare function café(): number;")
   await page
