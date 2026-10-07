@@ -61,3 +61,10 @@ jobs:
           bunx tsc --noEmit
           bunx playwright install --with-deps chromium
           bunx playwright test e2e/workspace-bindings.spec.ts
+      - name: Preserve WASM reproducibility evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-dts-wasm-reproduction
+          path: apps/playground/src/wasm/pkg
+          retention-days: 7
