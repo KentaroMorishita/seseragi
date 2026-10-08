@@ -168,3 +168,67 @@ test("resolved dependency metadata errors point to the artifact that failed", as
   })
   expect(badRoot.diagnostics[0]?.file).toBe("host/package.json")
 })
+
+test("Inspector consumes core metadata and reports, rejects stale results and tracks input revisions", async () => {
+  const { inspectWorkspaceBindings, currentBindingInspection } = await import(
+    "../src/workspace/binding-inspection"
+  )
+  const { renameWorkspacePath, deleteWorkspacePath } = await import(
+    "../src/workspace/model"
+  )
+  const input = await request()
+  const state = createWorkspace({
+    files: [...input.files, { path: "main.ssrg", source: "pub let x = 1\n" }],
+    entryFile: "main.ssrg",
+    activeFile: "main.ssrg",
+    openFiles: ["main.ssrg"],
+  })
+  const snapshot = workspaceBindingRequest(state)
+  const result = convert(snapshot)
+  const inspection = inspectWorkspaceBindings(state, snapshot, result)
+  expect(inspection.bindings[0]?.declaration).toBe("host/index.d.ts")
+  expect(inspection.bindings[0]?.path).toBe(
+    ".seseragi/generated/fixture-api.ssrg"
+  )
+  expect(inspection.bindings[0]?.source).toContain("Config")
+  expect(inspection.bindings[0]?.report.added).toContain(
+    "fixture-api::Config::type"
+  )
+  expect(inspection.inputs.some((file) => file.path.endsWith(".ssrg"))).toBe(
+    false
+  )
+  expect(
+    currentBindingInspection(
+      inspection,
+      updateWorkspaceFileSource(state, "main.ssrg", "pub let x = 2\n")
+    )
+  ).toBe(inspection)
+  for (const changed of [
+    updateWorkspaceFileSource(state, "host/index.d.ts", "changed"),
+    renameWorkspacePath(state, "host/index.d.ts", "host/new.d.ts"),
+    deleteWorkspacePath(state, "host/index.d.ts"),
+  ]) {
+    expect(currentBindingInspection(inspection, changed)).toBeUndefined()
+    expect(() => inspectWorkspaceBindings(changed, snapshot, result)).toThrow(
+      "snapshot"
+    )
+  }
+  expect(() =>
+    inspectWorkspaceBindings(state, snapshot, { ...result, revision: "stale" })
+  ).toThrow("snapshot")
+  const generated = result.generated[0]!
+  expect(() =>
+    inspectWorkspaceBindings(state, snapshot, {
+      ...result,
+      generated: [
+        {
+          ...generated,
+          report: JSON.stringify({
+            ...JSON.parse(generated.report),
+            entry: "wrong",
+          }),
+        },
+      ],
+    })
+  ).toThrow("entry")
+})

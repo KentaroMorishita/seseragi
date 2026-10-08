@@ -37,6 +37,8 @@ import {
   startGeneratedProject,
 } from "./runtime/browser-execution"
 import { discoverGroups, samples } from "./samples"
+import { connectInteropInspector } from "./ui/interop-inspector"
+import { inspectWorkspaceBindings } from "./workspace/binding-inspection"
 import {
   bindingDiagnostics,
   createBindingConversion,
@@ -481,6 +483,15 @@ workspaceEmptyAction.addEventListener("click", () => {
   explorer.focus()
 })
 
+const interopInspectorButton = requiredElement(
+  "#interop-inspector-button",
+  HTMLButtonElement
+)
+const interopInspector = connectInteropInspector({
+  button: interopInspectorButton,
+  dialog: requiredElement("#interop-inspector", HTMLDialogElement),
+  navigate: navigateWorkspaceDiagnostic,
+})
 renderWorkspaceChrome()
 if (initialSample !== undefined) {
   stdinInput.value =
@@ -515,6 +526,7 @@ function replaceBindingPublication(next: WorkspaceState): void {
   persistCurrentWorkspace()
 }
 convertBindingsButton.addEventListener("click", async () => {
+  interopInspector.set(undefined)
   if (workspaceState.generatedBindings !== undefined) {
     const { generatedBindings: _previous, ...editable } = workspaceState
     replaceBindingPublication(createWorkspace(editable))
@@ -524,9 +536,15 @@ convertBindingsButton.addEventListener("click", async () => {
   try {
     const response = await bindingConversion.run(request)
     if (response === undefined) return
+    const inspection = inspectWorkspaceBindings(
+      workspaceState,
+      request,
+      response
+    )
     replaceBindingPublication(
       publishWorkspaceBindings(workspaceState, request, response)
     )
+    interopInspector.set(inspection)
     const diagnostics = bindingDiagnostics(request, response)
     setActiveEditorDiagnostics(diagnostics)
     if (diagnostics.length > 0) showWorkspaceDiagnostics(diagnostics)
@@ -818,6 +836,7 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     bindingConversion.invalidate()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
+    interopInspector.sync(workspaceState)
     if (!wasDirty) renderWorkspaceChrome()
     persistCurrentWorkspace()
   }
@@ -852,6 +871,7 @@ function editorHoverAt(position: number) {
 }
 
 function renderWorkspaceChrome(): void {
+  interopInspector.sync(workspaceState)
   explorer.render(workspaceState)
   tabs.render(workspaceState)
   const path = workspaceState.activeFile
@@ -891,6 +911,7 @@ function renderWorkspaceChrome(): void {
   convertBindingsButton.hidden = !workspaceState.files.some(
     (file) => file.path === "seseragi.toml"
   )
+  interopInspectorButton.hidden = convertBindingsButton.hidden
   const resetLabel =
     currentSample === undefined
       ? "Reset Blank workspace"
@@ -1177,24 +1198,33 @@ function showWorkspaceDiagnostics(
   clearHtmlPreview()
   setOutputMode("text")
   output.dataset.liveDiagnostics = "true"
-  renderWorkspaceDiagnosticCards(output, diagnostics, (path, byteRange) => {
-    if (!workspaceState.files.some((file) => file.path === path)) return
-    if (workspaceState.activeFile !== path) {
-      applyWorkspaceChange(activateWorkspaceFile(workspaceState, path), {
-        message: `Opened diagnostic: ${path}`,
-      })
-    }
-    const range = utf8RangeToUtf16(
-      workspaceState.files.find((file) => file.path === path)?.source ?? "",
-      byteRange
-    )
-    editor.dispatch({
-      selection: { anchor: range.from, head: range.to },
-      scrollIntoView: true,
+  renderWorkspaceDiagnosticCards(
+    output,
+    diagnostics,
+    navigateWorkspaceDiagnostic
+  )
+}
+
+function navigateWorkspaceDiagnostic(
+  path: string,
+  byteRange: { start: number; end: number }
+): void {
+  if (!workspaceState.files.some((file) => file.path === path)) return
+  if (workspaceState.activeFile !== path) {
+    applyWorkspaceChange(activateWorkspaceFile(workspaceState, path), {
+      message: `Opened diagnostic: ${path}`,
     })
-    mobilePanels.show("code")
-    editor.focus()
+  }
+  const range = utf8RangeToUtf16(
+    workspaceState.files.find((file) => file.path === path)?.source ?? "",
+    byteRange
+  )
+  editor.dispatch({
+    selection: { anchor: range.from, head: range.to },
+    scrollIntoView: true,
   })
+  mobilePanels.show("code")
+  editor.focus()
 }
 
 function renderHtmlPreview(html: string): void {

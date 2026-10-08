@@ -247,6 +247,7 @@
             <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
           </button>
           <div class="editor-local-actions">
+            <button id="interop-inspector-button" hidden class="editor-local-button" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="interop-inspector">Interop</button>
             <button id="convert-bindings-button" hidden class="editor-local-button" type="button" title="Convert declarations configured in seseragi.toml">Convert bindings</button>
             <span id="active-file-name" class="file-name">main.ssrg</span>
             <button
@@ -525,6 +526,7 @@
         <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
       </footer>
     </div>
+    <dialog id="interop-inspector" class="sample-browser-dialog interop-dialog" aria-labelledby="interop-inspector-title"></dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
