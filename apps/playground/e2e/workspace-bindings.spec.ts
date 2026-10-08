@@ -143,3 +143,54 @@ test("editing while WASM initializes discards the old conversion result", async 
   await expect(page.locator("#output")).toContainText("any")
   await expect(page.locator("#output")).not.toContainText("Entry: api")
 })
+
+test("generated imports survive reload and regeneration replaces the previous module", async ({
+  page,
+}) => {
+  const errors: string[] = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.goto("/")
+  const convert = page.getByRole("button", {
+    name: "Convert bindings",
+    exact: true,
+  })
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Converted 1 binding(s)"
+  )
+  await page
+    .locator('[data-explorer-path="main.ssrg"] .explorer-row-label')
+    .click()
+  const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
+  const source = (module: string) =>
+    `import * as api from "gen/${module}"\npub fn identity config: api.Config -> api.Config = config\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError = println "generated import compiled"\n`
+  await editor.fill(source("fixture-api"))
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toHaveText("generated import compiled")
+  await page.reload()
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toHaveText("generated import compiled")
+  await page
+    .locator(
+      '[data-explorer-path="seseragi.bindings.toml"] .explorer-row-label'
+    )
+    .click()
+  const settings = await editor.innerText()
+  await editor.fill(
+    settings.replace('output = "fixture-api"', 'output = "renamed-api"')
+  )
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Converted 1 binding(s)"
+  )
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toContainText("gen/fixture-api")
+  await expect(page.locator("#output")).toContainText("missing module")
+  await page
+    .locator('[data-explorer-path="main.ssrg"] .explorer-row-label')
+    .click()
+  await editor.fill(source("renamed-api"))
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toHaveText("generated import compiled")
+  expect(errors).toEqual([])
+})

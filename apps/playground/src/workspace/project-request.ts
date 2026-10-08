@@ -2,6 +2,7 @@ import type { ProjectRequest } from "../compiler/types"
 import {
   isWorkspaceSourcePath,
   type WorkspaceState,
+  workspaceBindingInputRevision,
   workspaceSourcePath,
 } from "./model"
 
@@ -40,6 +41,11 @@ export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
         path: workspaceSourcePath(path),
         source,
       })),
+    ...(state.generatedBindings !== undefined &&
+    state.generatedBindings.inputRevision ===
+      workspaceBindingInputRevision(state)
+      ? { generatedFiles: state.generatedBindings.files }
+      : {}),
   }
 }
 

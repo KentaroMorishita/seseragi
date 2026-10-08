@@ -40,6 +40,7 @@ import { discoverGroups, samples } from "./samples"
 import {
   bindingDiagnostics,
   createBindingConversion,
+  publishWorkspaceBindings,
   workspaceBindingRequest,
 } from "./workspace/bindings"
 import "./styles.css"
@@ -505,12 +506,27 @@ const bindingConversion = createBindingConversion(
   convertWorkspaceBindings,
   () => workspaceBindingRequest(workspaceState).revision
 )
+function replaceBindingPublication(next: WorkspaceState): void {
+  workspaceState = next
+  cancelActiveExecution()
+  liveAnalysis.cancel()
+  latestAnalysis = undefined
+  scheduleWorkspaceAnalysis()
+  persistCurrentWorkspace()
+}
 convertBindingsButton.addEventListener("click", async () => {
+  if (workspaceState.generatedBindings !== undefined) {
+    const { generatedBindings: _previous, ...editable } = workspaceState
+    replaceBindingPublication(createWorkspace(editable))
+  }
   const request = workspaceBindingRequest(workspaceState)
   setStatus("running", "Converting bindings…")
   try {
     const response = await bindingConversion.run(request)
     if (response === undefined) return
+    replaceBindingPublication(
+      publishWorkspaceBindings(workspaceState, request, response)
+    )
     const diagnostics = bindingDiagnostics(request, response)
     setActiveEditorDiagnostics(diagnostics)
     if (diagnostics.length > 0) showWorkspaceDiagnostics(diagnostics)
@@ -905,14 +921,11 @@ function workspaceAnalysisResult(
       ),
     }
   }
-  const sources = new Map(
-    request.project.files.map(({ path, source }) => [path, source])
-  )
-  const diagnostics = response.documents.flatMap(({ path, document }) =>
-    document.diagnostics.diagnostics.map((diagnostic) => ({
+  const diagnostics = collectWorkspaceDiagnostics(
+    request.project,
+    response.documents.map(({ path, document }) => ({
       path,
-      source: sources.get(path) ?? "",
-      diagnostic,
+      diagnostics: document.diagnostics,
     }))
   )
   const activeDocument = response.documents.find(

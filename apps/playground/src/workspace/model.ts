@@ -10,12 +10,18 @@ export type WorkspaceFile = Readonly<{
   source: string
 }>
 
+export type WorkspaceGeneratedBindings = Readonly<{
+  inputRevision: string
+  files: readonly Readonly<{ module: string; path: string; source: string }>[]
+}>
+
 export type WorkspaceExplorerState = Readonly<{
   visible: boolean
   width: number
 }>
 
 export type WorkspaceState = Readonly<{
+  generatedBindings?: WorkspaceGeneratedBindings
   files: readonly WorkspaceFile[]
   folders: readonly WorkspacePath[]
   entryFile?: WorkspacePath
@@ -30,6 +36,7 @@ export type WorkspaceState = Readonly<{
 }>
 
 export type WorkspaceSeed = Readonly<{
+  generatedBindings?: WorkspaceGeneratedBindings
   files: readonly Readonly<{ path: string; source: string }>[]
   folders?: readonly string[]
   entryFile?: string
@@ -125,6 +132,20 @@ export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
   )
 
   return freezeWorkspace({
+    ...(seed.generatedBindings === undefined
+      ? {}
+      : {
+          generatedBindings: {
+            inputRevision: seed.generatedBindings.inputRevision,
+            files: seed.generatedBindings.files.map(
+              ({ module, path, source }) => ({
+                module: workspaceSourceIdentity(`${module}.ssrg`).module,
+                path: workspaceSourcePath(path),
+                source,
+              })
+            ),
+          },
+        }),
     files: sortedFiles,
     folders: sortedFolders,
     ...(entryFile === undefined
@@ -519,7 +540,31 @@ export function workspaceModuleName(path: WorkspacePath): string {
   return workspaceSourceIdentity(path).module
 }
 
+export function workspaceBindingInputRevision(
+  state: Pick<WorkspaceState, "files">
+): string {
+  return JSON.stringify(
+    state.files
+      .filter(({ path }) => !isWorkspaceSourcePath(path))
+      .map(({ path, source }) => ({ path, source }))
+      .sort(compareFiles)
+  )
+}
+
 function freezeWorkspace(state: WorkspaceState): WorkspaceState {
+  if (state.generatedBindings !== undefined) {
+    if (
+      state.generatedBindings.inputRevision !==
+      workspaceBindingInputRevision(state)
+    ) {
+      const { generatedBindings: _stale, ...current } = state
+      state = current
+    } else {
+      for (const file of state.generatedBindings.files) Object.freeze(file)
+      Object.freeze(state.generatedBindings.files)
+      Object.freeze(state.generatedBindings)
+    }
+  }
   const files = state.files.map((file) => Object.freeze({ ...file }))
   return Object.freeze({
     ...state,

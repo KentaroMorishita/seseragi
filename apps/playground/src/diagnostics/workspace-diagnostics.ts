@@ -17,7 +17,9 @@ export function collectWorkspaceDiagnostics(
   problems: readonly ProjectProblem[] = []
 ): readonly WorkspaceDiagnostic[] {
   const sources = new Map(
-    request.files.map(({ path, source }) => [path, source])
+    [...request.files, ...(request.generatedFiles ?? [])].map(
+      ({ path, source }) => [path, source]
+    )
   )
   const diagnostics = files.flatMap(({ path, diagnostics }) =>
     diagnostics.diagnostics.map((diagnostic) => ({
