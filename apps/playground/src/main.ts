@@ -660,6 +660,7 @@ clearSourceButton.addEventListener("click", () => {
   bindingConversion.invalidate()
   workspaceState = updateActiveWorkspaceSource(workspaceState, "")
   replaceEditorFromWorkspace("")
+  renderWorkspaceChrome()
   editor.dispatch(setDiagnostics(editor.state, []))
   editor.focus()
   setStatus("ready", "Source cleared")

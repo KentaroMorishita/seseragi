@@ -274,3 +274,35 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   await expect(dialog.locator("pre")).toHaveCount(0)
   expect(errors).toEqual([])
 })
+
+for (const undoBeforeOpening of [false, true]) {
+  test(`Clear invalidates Inspector even when undo ${undoBeforeOpening ? "precedes" : "follows"} opening it`, async ({
+    page,
+  }) => {
+    await page.goto("/")
+    const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
+    const original = await editor.innerText()
+    await page
+      .getByRole("button", { name: "Convert bindings", exact: true })
+      .click()
+    await expect(page.locator("#status-text")).toHaveText(
+      "Converted 1 binding(s)"
+    )
+    await page.locator("#clear-source-button").click()
+    await expect(editor).toHaveText("")
+    const open = page.getByRole("button", { name: "Interop", exact: true })
+    const dialog = page.getByRole("dialog", { name: "Interop Inspector" })
+    if (!undoBeforeOpening) {
+      await open.click()
+      await expect(dialog).toContainText("Inputs changed")
+      await expect(dialog.locator("pre, .diagnostic-card")).toHaveCount(0)
+      await page.keyboard.press("Escape")
+    }
+    await editor.focus()
+    await page.keyboard.press("ControlOrMeta+z")
+    await expect(editor).toHaveText(original, { useInnerText: true })
+    await open.click()
+    await expect(dialog).toContainText("Inputs changed")
+    await expect(dialog.locator("pre, .diagnostic-card")).toHaveCount(0)
+  })
+}
