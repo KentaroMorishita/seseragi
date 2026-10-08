@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Plan one canonical release
         id: plan
         env:
@@ -39,8 +39,31 @@ jobs:
             published=true
           fi
           bun scripts/release-promotion.ts plan --published "$published"
-  gate:
+  wasm-freshness:
     needs: plan
+    if: needs.plan.outputs.should_release == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.release_sha }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: v0.15.0
+      - uses: ./.github/actions/setup-wasi-sdk
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - name: Verify the canonical committed WASM before promotion
+        run: bun run check:wasm
+  gate:
+    needs: [plan, wasm-freshness]
     if: needs.plan.outputs.should_release == 'true'
     runs-on: macos-15
     permissions:
@@ -61,10 +84,13 @@ jobs:
           targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: v0.15.0
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - uses: ./.github/actions/setup-wasi-sdk
       - name: Verify canonical metadata before promotion
         run: |
           bun scripts/release-contract.ts check
@@ -134,7 +160,7 @@ jobs:
           toolchain: 1.97.1
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Build CLI and LSP
         run: cargo build --locked --release -p seseragi-cli -p seseragi-lsp
       - name: Package, extract, and smoke test native archive
@@ -182,7 +208,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - uses: actions/download-artifact@v4
         with:
           name: seseragi-release-${{ needs.gate.outputs.release_sha }}-native-${{ matrix.target }}
@@ -224,7 +250,7 @@ jobs:
           toolchain: 1.97.1
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Install root dependencies
         run: bun install --frozen-lockfile
       - name: Install extension dependencies
@@ -266,7 +292,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Install extension dependencies
         working-directory: extensions/seseragi
         run: bun install --frozen-lockfile
@@ -324,7 +350,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Install frozen E2E dependencies
         run: |
           bun install --frozen-lockfile
@@ -371,7 +397,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: 1.3.11
       - name: Re-verify release ref before publish
         run: |
           git fetch --force --no-tags origin \

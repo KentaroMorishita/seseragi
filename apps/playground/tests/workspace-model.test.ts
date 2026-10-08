@@ -95,9 +95,9 @@ describe("Playground virtual workspace", () => {
 
     const initial = createSingleFileWorkspace("main")
     expect(() => createWorkspaceFile(initial, ".ssrg")).toThrow()
-    expect(() => renameWorkspacePath(initial, "main.ssrg", "main")).toThrow(
-      "end in .ssrg"
-    )
+    expect(
+      renameWorkspacePath(initial, "main.ssrg", "main").entryFile
+    ).toBeUndefined()
     expect(initial.files).toEqual([{ path: "main.ssrg", source: "main" }])
 
     const named = createWorkspace({

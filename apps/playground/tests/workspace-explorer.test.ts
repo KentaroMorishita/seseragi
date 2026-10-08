@@ -134,7 +134,7 @@ describe("Playground workspace Explorer", () => {
     )
   })
 
-  test("uses the workspace source-path contract for file create and rename drafts", () => {
+  test("uses the workspace artifact-path contract for file create and rename drafts", () => {
     expect(workspaceExplorerPath(undefined, "cafe\u0301.ssrg", "file")).toBe(
       "café.ssrg"
     )
@@ -145,8 +145,11 @@ describe("Playground workspace Explorer", () => {
       "café"
     )
     expect(() => workspaceExplorerPath(undefined, ".ssrg", "file")).toThrow()
-    expect(() => workspaceExplorerPath(undefined, "main", "file")).toThrow(
-      "end in .ssrg"
+    expect(workspaceExplorerPath(undefined, "index.d.ts", "file")).toBe(
+      "index.d.ts"
+    )
+    expect(workspaceExplorerPath(undefined, "custom.settings", "file")).toBe(
+      "custom.settings"
     )
     expect(() =>
       workspaceExplorerPath(undefined, "nested/main.ssrg", "file")

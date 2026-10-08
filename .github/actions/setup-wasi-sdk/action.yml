@@ -1,0 +1,30 @@
+name: Set up reproducible WASM C compiler
+description: Install the pinned WASI SDK used to compile the portable declaration parser.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+        case "$RUNNER_OS:$RUNNER_ARCH" in
+          Linux:X64)
+            sdk_host=x86_64-linux
+            sdk_checksum=52640dde13599bf127a95499e61d6d640256119456d1af8897ab6725bcf3d89c ;;
+          Linux:ARM64)
+            sdk_host=arm64-linux
+            sdk_checksum=47fccad8b2498f2239e05e1115c3ffc652bf37e7de2f88fb64b2d663c976ce2d ;;
+          macOS:X64)
+            sdk_host=x86_64-macos
+            sdk_checksum=55e3ff3fee1a15678a16eeccba0129276c9f6be481bc9c283e7f9f65bf055c11 ;;
+          macOS:ARM64)
+            sdk_host=arm64-macos
+            sdk_checksum=e1e529ea226b1db0b430327809deae9246b580fa3cae32d31c82dfe770233587 ;;
+          *) echo "Unsupported WASI SDK host: $RUNNER_OS:$RUNNER_ARCH" >&2; exit 1 ;;
+        esac
+        sdk_archive="$RUNNER_TEMP/wasi-sdk-25.0-$sdk_host.tar.gz"
+        curl --fail --location --retry 3 \
+          "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-25/wasi-sdk-25.0-$sdk_host.tar.gz" \
+          --output "$sdk_archive"
+        echo "$sdk_checksum  $sdk_archive" | shasum -a 256 --check
+        tar -xzf "$sdk_archive" -C "$RUNNER_TEMP"
+        echo "WASI_SDK_PATH=$RUNNER_TEMP/wasi-sdk-25.0-$sdk_host" >> "$GITHUB_ENV"

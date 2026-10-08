@@ -7,12 +7,21 @@ on:
       - "Cargo.lock"
       - "rust-toolchain.toml"
       - "crates/seseragi-dts/**"
+      - "crates/seseragi-wasm/**"
+      - "apps/playground/**"
       - "crates/seseragi-cli/src/dts.rs"
       - "crates/seseragi-cli/tests/dts.rs"
       - "examples/spec/fixtures/projects/dts-*/**"
       - "package.json"
       - "scripts/check-dts-wasm.ts"
+      - "scripts/portable-parser-environment.ts"
+      - "scripts/run-portable-parser.ts"
+      - "scripts/wasm-reproducibility.ts"
+      - "scripts/check-dts-browser-fixtures.ts"
+      - "scripts/collect-wasm-build-evidence.ts"
+      - "scripts/build-playground-wasm.sh"
       - ".github/workflows/dts-portable.yml"
+      - ".github/actions/setup-wasi-sdk/**"
   workflow_dispatch:
 
 permissions:
@@ -20,7 +29,11 @@ permissions:
 
 jobs:
   convert:
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -31,14 +44,82 @@ jobs:
           components: rustfmt
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
-      - name: Install C compiler for the portable parser
-        run: sudo apt-get update && sudo apt-get install -y clang
+          bun-version: 1.3.11
+      - uses: ./.github/actions/setup-wasi-sdk
       - name: Check native adapter and memory-only core
         run: |
           cargo fmt --all -- --check
           cargo test --locked -p seseragi-dts
           cargo test --locked -p seseragi-dts --no-default-features
           cargo test --locked -p seseragi-cli --test dts
+          cargo test --locked -p seseragi-wasm
       - name: Build and execute converter without host imports
         run: bun run check:dts:wasm
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: v0.15.0
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - name: Verify canonical Linux browser artifact
+        if: runner.os == 'Linux'
+        env:
+          SESERAGI_WASM_BUILD_EVIDENCE: ${{ runner.temp }}/dts-build-evidence/canonical
+        run: bun run check:wasm
+      - name: Verify macOS rebuild consistency
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          builds="$(mktemp -d)"
+          trap 'rm -rf "$builds"' EXIT
+          SESERAGI_WASM_BUILD_EVIDENCE="$RUNNER_TEMP/dts-build-evidence/first" \
+          CARGO_TARGET_DIR="$builds/target-first" \
+            ./scripts/build-playground-wasm.sh "$builds/pkg-first"
+          SESERAGI_WASM_BUILD_EVIDENCE="$RUNNER_TEMP/dts-build-evidence/second" \
+          CARGO_TARGET_DIR="$builds/target-second" \
+            bun run build:playground:wasm
+          diff -r "$builds/pkg-first" apps/playground/src/wasm/pkg
+      - name: Exercise the rebuilt browser converter
+        run: |
+          bun install --frozen-lockfile
+          cd apps/playground
+          bun install --frozen-lockfile
+          bun test tests/binding-wasm.test.ts tests/workspace-*.test.ts
+          bunx tsc --noEmit
+          bunx playwright install --with-deps chromium
+          bunx playwright test e2e/workspace-bindings.spec.ts
+      - name: Record host conversion results
+        run: bun scripts/check-dts-browser-fixtures.ts "$RUNNER_TEMP/dts-results.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dts-conversion-results-${{ runner.os }}
+          path: ${{ runner.temp }}/dts-results.json
+          retention-days: 7
+      - name: Preserve compiler inputs and intermediate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dts-build-evidence-${{ runner.os }}
+          path: ${{ runner.temp }}/dts-build-evidence
+          include-hidden-files: true
+          retention-days: 7
+      - name: Compare WASM section fingerprints
+        if: failure()
+        run: bun scripts/wasm-reproducibility.ts
+      - name: Preserve WASM reproducibility evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-dts-wasm-reproduction-${{ runner.os }}-${{ runner.arch }}
+          path: apps/playground/src/wasm/pkg
+          retention-days: 7
+
+  cross-host-results:
+    needs: convert
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dts-conversion-results-*
+          path: results
+      - name: Require identical Linux and macOS conversion results
+        run: diff -u results/dts-conversion-results-Linux/dts-results.json results/dts-conversion-results-macOS/dts-results.json

@@ -17,8 +17,8 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | Official site production / deploy handoff | `bun run build:site:production` | release-profile process SSGから既定で`target/site`を生成する。root cutoverまでは`seseragi-docs` projectのRoot Directoryを`apps/site`に固定し、`apps/site/vercel.json`から`apps/site/dist`へ配信してroot `vercel.json`のPlayground責務と混在させない |
 | production artifacts | `bun run check:production` | first-party 6 fixtureのrelease build、manifest shape、必要runtime、size budget、digest / identity / 再build、process実行。full / release source gateにも含む |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
-| Portable .d.ts converter | `bun run check:dts:wasm` | filesystem featureを無効にしたconverterをwasm32-unknown-unknownへbuildし、host importなしで変換・metadata・再生成report・診断を実行。clangとRust WASM targetが必要 |
-| compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
+| Portable .d.ts converter | `bun run check:dts:wasm` | filesystem featureを無効にしたconverterをwasm32-unknown-unknownへbuildし、host importなしで変換・metadata・再生成report・診断を実行。WASI SDK 25.0とRust WASM targetが必要 |
+| compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認。portable declaration parser用のWASI SDK 25.0が必要 |
 | VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXのarchive mode・展開・`--version-json` smoke、非LSP migration VSIXのpackage / verify |
 | Local Web product E2E | native archiveとVSIXをpackage後に`bun run test:local-web-e2e` | 展開したCLIとinstall済みVSIXだけを使い、canonical multi-module Web projectのLSP / Dev / browser / edit / diagnostic / recovery / production buildを同一sourceで確認し、reportとPNGを`target/local-web-product-e2e`へ保存 |
 | release metadata / native artifact | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、host向けCLI / LSP archive・checksum・再展開実行smoke |
@@ -55,6 +55,12 @@ JSONの`trackingIssue`投影を検証します。auditだけの変更はこのse
 conformanceの`stdlib_surface` testを先に実行できます。
 
 ## Dependency installation
+
+検証用のBunはCIとlocalで **1.3.11** に揃える。1.3.9のLinux x64 WASM
+IPIntクラッシュと同じstackが全体gateで観測されたため、上流の
+[WebKit更新 #26922](https://github.com/oven-sh/bun/pull/26922)を含む版を使う。
+WASMの実行・assertionを省略したり、JSCの実行tierを無効化したりはしない。
+既存Docsの過去の実測version表記は、その検証時点の記録として残す。
 
 通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。
 必要なdependencyが無い場合は暗黙downloadへ進まず、bootstrap commandを表示して失敗します。
@@ -175,3 +181,9 @@ roots are retained in release output; bundling/DCE is a separate boundary.
 checks shape rejection cases and 100,000 Effect binds independently of pure TCO.
 The conformance lane includes these checks. Profile/compiler/runtime integration
 still requires the full gate and regenerated WASM during Promotion.
+
+WASM再生成時は[WASI SDK 25.0](https://github.com/WebAssembly/wasi-sdk/releases/tag/wasi-sdk-25)のホストOS/CPU用archiveを展開し、`WASI_SDK_PATH`をそのdirectoryへ設定する。C parserのcompilerも固定し、Rust/wasm-packだけが同じでも発生する生成物差分を防ぐ。
+
+WASM glueには`cargo install wasm-bindgen-cli --version 0.2.126 --locked`でCargo.lockと同じCLIを用意する。`wasm-pack`の自動install fallbackはCLI内部の依存versionを変えるため、buildは`--mode no-install`で既存のCLIを使う。
+
+配布用WASMの正規生成hostはLinux x64。`check:wasm`は生成物全体のbyte一致を検証し、PRとrelease promotionのLinux gateで必須とする。Cargoはhostで実行するbuild script/proc macroのmetadataを依存先へ伝播するため、macOS生成物とはcode/dataを含む差分が生じ得る。macOS CIでは同じ固定toolchainと2つの独立したfresh Cargo targetで再構築する。1回目のfresh outputと2回目のrepo/pkg stagingで全packageのfile集合とbyte一致を確認し、変換・workspace・browser回帰を検証する。さらに両hostの変換JSON出力をCIで完全一致比較し、macOS生成物で配布artifactを置き換えない。

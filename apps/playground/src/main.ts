@@ -12,6 +12,7 @@ import type {
 import {
   analyzeProject,
   compileProject,
+  convertWorkspaceBindings,
   formatProjectFile,
 } from "./compiler/wasm-driver"
 import { renderWorkspaceDiagnosticCards } from "./diagnostics/diagnostic-cards"
@@ -36,6 +37,11 @@ import {
   startGeneratedProject,
 } from "./runtime/browser-execution"
 import { discoverGroups, samples } from "./samples"
+import {
+  bindingDiagnostics,
+  createBindingConversion,
+  workspaceBindingRequest,
+} from "./workspace/bindings"
 import "./styles.css"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
@@ -62,6 +68,7 @@ import {
   activeWorkspaceSource,
   createSingleFileWorkspace,
   createWorkspace,
+  isWorkspaceSourcePath,
   setWorkspaceExplorer,
   updateActiveWorkspaceSource,
   type WorkspaceState,
@@ -176,6 +183,10 @@ const sampleDiscoverResults = requiredElement(
   HTMLElement
 )
 const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
+const convertBindingsButton = requiredElement(
+  "#convert-bindings-button",
+  HTMLButtonElement
+)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
 const resetSampleButton = requiredElement(
   "#reset-sample-button",
@@ -490,6 +501,40 @@ if (restoredWorkspace.status === "recovered") {
   setStatus("ready", "Workspace recovered")
 }
 
+const bindingConversion = createBindingConversion(
+  convertWorkspaceBindings,
+  () => workspaceBindingRequest(workspaceState).revision
+)
+convertBindingsButton.addEventListener("click", async () => {
+  const request = workspaceBindingRequest(workspaceState)
+  setStatus("running", "Converting bindings…")
+  try {
+    const response = await bindingConversion.run(request)
+    if (response === undefined) return
+    const diagnostics = bindingDiagnostics(request, response)
+    setActiveEditorDiagnostics(diagnostics)
+    if (diagnostics.length > 0) showWorkspaceDiagnostics(diagnostics)
+    else
+      showTextOutput(
+        response.generated
+          .map(
+            (binding) =>
+              `Entry: ${binding.id}\nOutput: ${binding.output}\n\n${binding.source}`
+          )
+          .join("\n\n")
+      )
+    setStatus(
+      response.status === "success" ? "success" : "error",
+      response.status === "success"
+        ? `Converted ${response.generated.length} binding(s)`
+        : "Cannot convert bindings"
+    )
+  } catch (error) {
+    showTextOutput(String(error))
+    setStatus("error", "Binding conversion failed")
+  }
+})
+
 runButton.addEventListener("click", () => void run())
 const resetSample = (): void => {
   if (currentSample === undefined) {
@@ -514,8 +559,8 @@ sampleStarterButton.addEventListener("click", () => {
 })
 const formatSource = async (): Promise<void> => {
   const requestedFile = workspaceState.activeFile
-  if (requestedFile === undefined) {
-    setStatus("error", "Select a file before Format")
+  if (requestedFile === undefined || !isWorkspaceSourcePath(requestedFile)) {
+    setStatus("error", "Select a Seseragi file before Format")
     return
   }
   const request = workspaceProjectRequest(workspaceState)
@@ -545,6 +590,7 @@ const formatSource = async (): Promise<void> => {
       setStatus("success", "Already formatted")
       return
     }
+    bindingConversion.invalidate()
     workspaceState = updateActiveWorkspaceSource(
       workspaceState,
       formatted.source
@@ -577,6 +623,7 @@ clearSourceButton.addEventListener("click", () => {
     return
   }
   cancelActiveExecution()
+  bindingConversion.invalidate()
   workspaceState = updateActiveWorkspaceSource(workspaceState, "")
   replaceEditorFromWorkspace("")
   editor.dispatch(setDiagnostics(editor.state, []))
@@ -648,6 +695,7 @@ function loadSample(
   sampleGuide.setSample(sample)
   applyingWorkspaceSource = true
   try {
+    bindingConversion.invalidate()
     editorSessions.reset(workspaceState)
   } finally {
     applyingWorkspaceSource = false
@@ -684,6 +732,7 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   sampleGuide.setBlank()
   applyingWorkspaceSource = true
   try {
+    bindingConversion.invalidate()
     editorSessions.reset(workspaceState)
   } finally {
     applyingWorkspaceSource = false
@@ -708,6 +757,11 @@ function applyWorkspaceChange(
   const previousProjectRevision = workspaceProjectRevisionOrUndefined(previous)
   const previousAnalysisRevision =
     workspaceAnalysisRevisionOrUndefined(previous)
+  if (
+    workspaceBindingRequest(previous).revision !==
+    workspaceBindingRequest(nextState).revision
+  )
+    bindingConversion.invalidate()
   workspaceState = nextState
   applyingWorkspaceSource = true
   let switched = false
@@ -746,6 +800,7 @@ function handleEditorChange(nextSource: string): void {
     const wasDirty =
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
+    bindingConversion.invalidate()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     if (!wasDirty) renderWorkspaceChrome()
     persistCurrentWorkspace()
@@ -816,7 +871,10 @@ function renderWorkspaceChrome(): void {
     editorEditable = hasActiveFile
   }
   clearSourceButton.disabled = !hasActiveFile
-  formatSourceButton.disabled = !hasActiveFile
+  formatSourceButton.disabled = !isWorkspaceSourcePath(path)
+  convertBindingsButton.hidden = !workspaceState.files.some(
+    (file) => file.path === "seseragi.toml"
+  )
   const resetLabel =
     currentSample === undefined
       ? "Reset Blank workspace"
@@ -868,7 +926,7 @@ function workspaceAnalysisResult(
 
 function scheduleWorkspaceAnalysis(): void {
   if (
-    workspaceState.activeFile === undefined ||
+    !isWorkspaceSourcePath(workspaceState.activeFile) ||
     workspaceState.files.length === 0
   ) {
     liveAnalysis.cancel()
@@ -959,7 +1017,8 @@ async function run(): Promise<void> {
     return
   }
   const requestedRevision = JSON.stringify(request)
-  const requestedAnalysisRevision = workspaceAnalysisRevision(workspaceState)
+  const requestedAnalysisRevision =
+    workspaceAnalysisRevisionOrUndefined(workspaceState)
   liveAnalysis.cancel()
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true

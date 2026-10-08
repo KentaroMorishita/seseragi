@@ -2,9 +2,11 @@ import init, {
   analyze_project,
   analyze_single_file,
   compile_project,
+  convert_workspace_bindings,
   format_project_file,
   format_project_file_with_options,
 } from "../wasm/pkg/seseragi_wasm"
+import type { BindingRequest, BindingResponse } from "../workspace/bindings"
 import type {
   AnalysisDocument,
   CompileResponse,
@@ -132,4 +134,14 @@ function firstDiagnostics(
   }[]
 ): DiagnosticArtifact {
   return diagnostics[0]?.diagnostics ?? { diagnostics: [] }
+}
+
+export async function convertWorkspaceBindings(
+  request: BindingRequest
+): Promise<BindingResponse> {
+  initialization ??= init()
+  await initialization
+  return JSON.parse(
+    convert_workspace_bindings(JSON.stringify(request))
+  ) as BindingResponse
 }

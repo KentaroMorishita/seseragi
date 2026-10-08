@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.22] - 2026-10-07
+
+### Added
+
+- Edit, persist and convert TypeScript declarations, binding settings and host metadata as Playground workspace files, using the shared portable converter and rejecting stale conversion responses (#470, #471).
+
 ## [0.61.21] - 2026-10-05
 
 ### Fixed

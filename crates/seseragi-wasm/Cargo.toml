@@ -11,6 +11,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
+unicode-normalization.workspace = true
+seseragi-dts = { path = "../seseragi-dts", default-features = false }
 seseragi-driver = { path = "../seseragi-driver" }
 seseragi-lowering = { path = "../seseragi-lowering" }
 seseragi-project = { path = "../seseragi-project" }
