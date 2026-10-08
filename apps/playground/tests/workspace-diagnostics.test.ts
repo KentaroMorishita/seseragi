@@ -29,6 +29,18 @@ const diagnostic: Diagnostic = {
 }
 
 describe("Playground workspace diagnostics", () => {
+  test("retains generated source text at its physical diagnostic path", () => {
+    const path = "custom/bindings/api.ssrg"
+    const source = "pub let value = missing\n"
+    const diagnostics = collectWorkspaceDiagnostics(
+      {
+        ...request,
+        generatedFiles: [{ module: "api", path, source }],
+      },
+      [{ path, diagnostics: { diagnostics: [diagnostic] } }]
+    )
+    expect(diagnostics).toEqual([{ path, source, diagnostic }])
+  })
   test("keeps each diagnostic paired with its file source", () => {
     expect(
       collectWorkspaceDiagnostics(request, [

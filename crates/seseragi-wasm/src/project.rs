@@ -12,9 +12,9 @@ use seseragi_driver::{
 };
 use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
-    load_virtual_package, logical_module_id, logical_package_scope, LinkError, LinkTargetError,
-    LoadedVirtualPackage, ModuleGraph, ModuleGraphError, ModuleIdentity, ModulePath,
-    VirtualPackageLoadError, VirtualSourceFile,
+    load_virtual_package_with_generated, logical_module_id, logical_package_scope, LinkError,
+    LinkTargetError, LoadedVirtualPackage, ModuleGraph, ModuleGraphError, ModuleIdentity,
+    ModulePath, VirtualGeneratedFile, VirtualPackageLoadError, VirtualSourceFile,
 };
 use seseragi_runtime::{project_main_contract, MainContract};
 use seseragi_syntax::{parse_diagnostics, ByteSpan, DiagnosticArtifact, DiagnosticSeverity};
@@ -34,11 +34,20 @@ struct ProjectRequest {
     entry: Option<String>,
     files: Vec<ProjectSource>,
     #[serde(default)]
+    generated_files: Vec<ProjectGeneratedSource>,
+    #[serde(default)]
     provider: Option<ProjectProviderRequest>,
 }
 
 #[derive(Clone, Deserialize)]
 struct ProjectSource {
+    path: String,
+    source: String,
+}
+
+#[derive(Clone, Deserialize)]
+struct ProjectGeneratedSource {
+    module: String,
     path: String,
     source: String,
 }
@@ -585,6 +594,7 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
 
     let ProjectRequest {
         files,
+        generated_files,
         entry,
         manifest,
         provider,
@@ -600,12 +610,15 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
             ))
         })?)?,
     };
-    let package = load_virtual_package(
+    let package = load_virtual_package_with_generated(
         PACKAGE_SCOPE,
         &manifest,
         files
             .iter()
             .map(|file| VirtualSourceFile::new(&file.path, &file.source)),
+        generated_files
+            .iter()
+            .map(|file| VirtualGeneratedFile::new(&file.module, &file.path, &file.source)),
     )
     .map_err(virtual_package_failure)?;
 
@@ -738,29 +751,44 @@ fn virtual_package_failure(error: VirtualPackageLoadError) -> ProjectFailure {
             ))
         }
         VirtualPackageLoadError::Import {
-            module,
+            path,
             specifier,
             origin,
             error,
+            ..
         } => ProjectFailure::problem(ProjectProblem::file(
             "SES-N0104",
             format!("cannot resolve import `{specifier}`: {error}"),
-            format!("{}.ssrg", module.as_str()),
+            path,
             Some(origin),
         )),
         VirtualPackageLoadError::MissingModule {
-            module,
+            path,
             specifier,
             origin,
             dependency,
+            ..
         } => ProjectFailure::problem(ProjectProblem::file(
             "SES-N0104",
             format!(
                 "import `{specifier}` resolves to missing module `{}`",
                 dependency.as_str()
             ),
-            format!("{}.ssrg", module.as_str()),
+            path,
             Some(origin),
+        )),
+        VirtualPackageLoadError::GeneratedCollision {
+            path,
+            module,
+            reason,
+        } => ProjectFailure::problem(ProjectProblem::file(
+            "SES-K0001",
+            format!(
+                "generated artifact collides with an existing {reason} `{}`",
+                module.as_str()
+            ),
+            path,
+            None,
         )),
         VirtualPackageLoadError::Graph(error) => virtual_graph_failure(error),
         other => ProjectFailure::problem(ProjectProblem::workspace("SES-K0001", other.to_string())),
@@ -1976,6 +2004,66 @@ mod tests {
             analysis_diagnostics
         );
         assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
+    fn generated_modules_are_shared_by_compile_and_analysis() {
+        let mut input: Value = serde_json::from_str(&request(json!([
+            {"path": "main.ssrg", "source": "import * as api from \"gen/sdk/api\"\npub let answer: Int = api.value\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError = println \"generated\"\n"}
+        ]), "main.ssrg")).unwrap();
+        input["generatedFiles"] = json!([
+            {"module":"sdk/api", "path":"custom/generated/sdk/api.ssrg", "source":"import { value as inner } from \"./value\"\npub let value: Int = inner\n"},
+            {"module":"sdk/value", "path":"custom/generated/sdk/value.ssrg", "source":"pub let value: Int = 42\n"}
+        ]);
+        let input = input.to_string();
+        let analyzed: Value = serde_json::from_str(&analyze_project(&input)).unwrap();
+        let compiled: Value = serde_json::from_str(&compile_project(&input)).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        assert_eq!(analyzed["status"], "success", "{analyzed}");
+        for path in [
+            "main.ssrg",
+            "custom/generated/sdk/api.ssrg",
+            "custom/generated/sdk/value.ssrg",
+        ] {
+            assert!(analyzed["documents"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|document| document["path"] == path));
+            assert!(compiled["modules"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|module| module["path"] == path));
+        }
+    }
+
+    #[test]
+    fn generated_collisions_and_diagnostics_agree_across_surfaces() {
+        let mut input: Value = serde_json::from_str(&request(json!([
+            {"path":"main.ssrg", "source":"import * as api from \"gen/api\"\npub let answer: Int = api.value\n"}
+        ]), "main.ssrg")).unwrap();
+        input["generatedFiles"] = json!([{"module":"api","path":"custom/api.ssrg","source":"pub let value: Int = \"wrong\"\n"}]);
+        let compiled: Value = serde_json::from_str(&compile_project(&input.to_string())).unwrap();
+        let analyzed: Value = serde_json::from_str(&analyze_project(&input.to_string())).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"][0]["path"], "custom/api.ssrg");
+        let document = analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|doc| doc["path"] == "custom/api.ssrg")
+            .unwrap();
+        assert_eq!(
+            compiled["diagnostics"][0]["diagnostics"],
+            document["document"]["diagnostics"]
+        );
+        input["generatedFiles"][0]["module"] = json!("main");
+        let compiled: Value = serde_json::from_str(&compile_project(&input.to_string())).unwrap();
+        let analyzed: Value = serde_json::from_str(&analyze_project(&input.to_string())).unwrap();
+        assert_eq!(compiled["problems"], analyzed["problems"]);
+        assert_eq!(compiled["problems"][0]["path"], "custom/api.ssrg");
+        assert_eq!(compiled["problems"][0]["code"], "SES-K0001");
     }
 
     #[test]

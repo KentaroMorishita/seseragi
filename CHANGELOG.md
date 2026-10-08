@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.23] - 2026-10-08
+
+### Added
+
+- Import converted Playground bindings through ordinary `gen/*` modules, sharing generated identities across compilation and analysis, diagnosing collisions, and replacing or invalidating stale generated artifacts across edits and reloads (#472).
+
 ## [0.61.22] - 2026-10-07
 
 ### Added

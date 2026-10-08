@@ -1,6 +1,6 @@
 use crate::{
-    resolve_source_import, ImportSpecifier, LocalPackageGraph, ModuleIdentity, ModuleRoot,
-    SourceImportError, SourceImportResolution,
+    resolve_module_import, ImportSpecifier, LocalPackageGraph, ModuleIdentity,
+    ModuleImportResolution, ModuleRoot, SourceImportError,
 };
 
 pub(super) fn resolve_import(
@@ -8,12 +8,10 @@ pub(super) fn resolve_import(
     current: &ModuleIdentity,
     specifier: &str,
 ) -> Result<ResolvedImport, ImportFailure> {
-    let classified = crate::classify_specifier(specifier)
-        .map_err(|error| ImportFailure::new("SES-N0104", error.to_string()))?;
-    let resolved = resolve_source_import(current.path(), specifier);
-    let (package, path) = match resolved {
-        Ok(SourceImportResolution::Local(path)) => (current.package().clone(), path),
-        Ok(SourceImportResolution::Standard) => return Ok(ResolvedImport::Standard),
+    let resolved = resolve_module_import(current.root(), current.path(), specifier);
+    let (package, root, path) = match resolved {
+        Ok(ModuleImportResolution::Local { root, path }) => (current.package().clone(), root, path),
+        Ok(ModuleImportResolution::Standard) => return Ok(ResolvedImport::Standard),
         Err(SourceImportError::Unsupported(ImportSpecifier::Package(_))) => {
             let package_name = current.package().name().as_str();
             if specifier == package_name
@@ -60,41 +58,19 @@ pub(super) fn resolve_import(
             let resolved = packages
                 .resolve_package_import(current.package(), specifier)
                 .map_err(|error| ImportFailure::new(error.code(), error.to_string()))?;
-            (resolved.package().clone(), resolved.module().clone())
+            (
+                resolved.package().clone(),
+                ModuleRoot::Source,
+                resolved.module().clone(),
+            )
         }
-        Err(SourceImportError::Unsupported(ImportSpecifier::Generated(path))) => {
-            if current.root() == ModuleRoot::Generated {
-                return Err(ImportFailure::new(
-                    "SES-N0104",
-                    "generated modules must use relative imports within the generated root",
-                ));
-            }
-            let path = crate::ModulePath::parse(&path)
-                .map_err(|error| ImportFailure::new("SES-N0104", error.to_string()))?;
-            return Ok(ResolvedImport::Module(ModuleIdentity::new(
-                current.package().clone(),
-                ModuleRoot::Generated,
-                path,
-            )));
-        }
-        Err(SourceImportError::Unsupported(ImportSpecifier::Standard(_))) => unreachable!(),
+        Err(SourceImportError::Unsupported(ImportSpecifier::Standard(_)))
+        | Err(SourceImportError::Unsupported(ImportSpecifier::Generated(_))) => unreachable!(),
         Err(SourceImportError::Unsupported(ImportSpecifier::Relative(_)))
         | Err(SourceImportError::Unsupported(ImportSpecifier::SelfPackage(_))) => unreachable!(),
         Err(SourceImportError::Invalid(reason)) => {
             return Err(ImportFailure::new("SES-N0104", reason));
         }
-    };
-    let root = match (current.root(), classified) {
-        (ModuleRoot::Test, ImportSpecifier::Relative(_)) => ModuleRoot::Test,
-        (ModuleRoot::Benchmark, ImportSpecifier::Relative(_)) => ModuleRoot::Benchmark,
-        (ModuleRoot::Generated, ImportSpecifier::Relative(_)) => ModuleRoot::Generated,
-        (ModuleRoot::Generated, ImportSpecifier::SelfPackage(_)) => {
-            return Err(ImportFailure::new(
-                "SES-N0104",
-                "generated modules cannot import handwritten source through `self/`",
-            ));
-        }
-        _ => ModuleRoot::Source,
     };
     Ok(ResolvedImport::Module(ModuleIdentity::new(
         package, root, path,

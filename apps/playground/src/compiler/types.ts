@@ -196,6 +196,11 @@ export type ProjectRequest = {
     readonly path: string
     readonly source: string
   }[]
+  readonly generatedFiles?: readonly {
+    readonly module: string
+    readonly path: string
+    readonly source: string
+  }[]
   readonly provider?: ProjectProviderRequest
 }
 

@@ -2,6 +2,8 @@ import {
   createWorkspace,
   type WorkspaceSeed,
   type WorkspaceState,
+  workspaceSourceIdentity,
+  workspaceSourcePath,
 } from "./model"
 
 export const workspacePersistenceSchema = 1
@@ -122,6 +124,9 @@ export function confirmDirtyWorkspaceSwitch(
 
 function workspaceSeed(workspace: WorkspaceState): WorkspaceSeed {
   return {
+    ...(workspace.generatedBindings === undefined
+      ? {}
+      : { generatedBindings: workspace.generatedBindings }),
     files: workspace.files,
     folders: workspace.folders,
     ...(workspace.entryFile === undefined
@@ -157,6 +162,14 @@ function parseWorkspaceSeed(value: unknown, context: string): WorkspaceSeed {
   const explorer = expectObject(workspace.explorer, `${context}.explorer`)
   return {
     files,
+    ...(workspace.generatedBindings === undefined
+      ? {}
+      : {
+          generatedBindings: parseGeneratedBindings(
+            workspace.generatedBindings,
+            context
+          ),
+        }),
     folders: expectStrings(workspace.folders, `${context}.folders`),
     ...optionalStringProperty(workspace, "entryFile", context),
     ...optionalStringProperty(workspace, "packageManifest", context),
@@ -172,6 +185,36 @@ function parseWorkspaceSeed(value: unknown, context: string): WorkspaceSeed {
       visible: expectBoolean(explorer.visible, `${context}.explorer.visible`),
       width: expectNumber(explorer.width, `${context}.explorer.width`),
     },
+  }
+}
+
+function parseGeneratedBindings(value: unknown, context: string) {
+  try {
+    const snapshot = expectObject(value, `${context}.generatedBindings`)
+    if (!Array.isArray(snapshot.files))
+      throw new Error(`${context}.generatedBindings.files is invalid`)
+    return {
+      inputRevision: expectString(
+        snapshot.inputRevision,
+        `${context}.generatedBindings.inputRevision`
+      ),
+      files: snapshot.files.map((value, index) => {
+        const file = expectObject(
+          value,
+          `${context}.generatedBindings.files[${index}]`
+        )
+        return {
+          module: workspaceSourceIdentity(
+            `${expectString(file.module, "generated module")}.ssrg`
+          ).module,
+          path: workspaceSourcePath(expectString(file.path, "generated path")),
+          source: expectString(file.source, "generated source"),
+        }
+      }),
+    }
+  } catch {
+    // Derived artifacts are disposable; malformed caches must not discard user files.
+    return undefined
   }
 }
 

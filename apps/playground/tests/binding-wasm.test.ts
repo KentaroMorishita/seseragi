@@ -1,11 +1,22 @@
 import { beforeAll, expect, test } from "bun:test"
 import { utf8RangeToUtf16 } from "../src/diagnostics/source-range"
-import init, { convert_workspace_bindings } from "../src/wasm/pkg/seseragi_wasm"
+import init, {
+  analyze_project,
+  compile_project,
+  convert_workspace_bindings,
+} from "../src/wasm/pkg/seseragi_wasm"
 import {
   type BindingRequest,
   type BindingResponse,
   bindingDiagnostics,
+  publishWorkspaceBindings,
+  workspaceBindingRequest,
 } from "../src/workspace/bindings"
+import {
+  createWorkspace,
+  updateWorkspaceFileSource,
+} from "../src/workspace/model"
+import { workspaceProjectRequest } from "../src/workspace/project-request"
 
 beforeAll(async () => {
   await init({
@@ -37,6 +48,56 @@ async function request(): Promise<BindingRequest> {
 }
 const convert = (input: BindingRequest): BindingResponse =>
   JSON.parse(convert_workspace_bindings(JSON.stringify(input)))
+
+test("converted bindings compile and analyze through the ordinary generated module graph", async () => {
+  const inputs = await request()
+  const state = createWorkspace({
+    files: [
+      ...inputs.files.map((file) =>
+        file.path === "seseragi.toml"
+          ? {
+              ...file,
+              source: `${file.source}\n[layout]\ngenerated = "custom/bindings"\n`,
+            }
+          : file
+      ),
+      {
+        path: "main.ssrg",
+        source:
+          'import * as api from "gen/fixture-api"\npub fn identity config: api.Config -> api.Config = config\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError = println "generated"\n',
+      },
+    ],
+    entryFile: "main.ssrg",
+    activeFile: "main.ssrg",
+    openFiles: ["main.ssrg"],
+  })
+  const input = workspaceBindingRequest(state)
+  const response = convert(input)
+  expect(response.status).toBe("success")
+  expect(response.generatedRoot).toBe("custom/bindings")
+  const published = publishWorkspaceBindings(state, input, response)
+  const project = workspaceProjectRequest(published)
+  const compiled = JSON.parse(compile_project(JSON.stringify(project)))
+  const analyzed = JSON.parse(analyze_project(JSON.stringify(project)))
+  expect(compiled.status).toBe("success")
+  expect(analyzed.status).toBe("success")
+  expect(
+    analyzed.documents.some(
+      (document: { path: string }) =>
+        document.path === "custom/bindings/fixture-api.ssrg"
+    )
+  ).toBe(true)
+  const stale = workspaceProjectRequest(
+    updateWorkspaceFileSource(
+      published,
+      "host/index.d.ts",
+      "export declare function replaced(): string;"
+    )
+  )
+  const missing = JSON.parse(compile_project(JSON.stringify(stale)))
+  expect(missing.status).toBe("failure")
+  expect(missing.problems[0].code).toBe("SES-N0104")
+})
 
 test("committed WASM returns generated artifacts and preserves a revision", async () => {
   const input = await request()
