@@ -56,6 +56,12 @@ conformanceの`stdlib_surface` testを先に実行できます。
 
 ## Dependency installation
 
+検証用のBunはCIとlocalで **1.3.11** に揃える。1.3.9のLinux x64 WASM
+IPIntクラッシュと同じstackが全体gateで観測されたため、上流の
+[WebKit更新 #26922](https://github.com/oven-sh/bun/pull/26922)を含む版を使う。
+WASMの実行・assertionを省略したり、JSCの実行tierを無効化したりはしない。
+既存Docsの過去の実測version表記は、その検証時点の記録として残す。
+
 通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。
 必要なdependencyが無い場合は暗黙downloadへ進まず、bootstrap commandを表示して失敗します。
 新しいworktreeやCI runnerでは、検証前に対象workspaceを一度bootstrapしてください。
