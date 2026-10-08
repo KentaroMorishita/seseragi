@@ -24,11 +24,13 @@ struct File {
     source: String,
 }
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Response {
     schema: u32,
     revision: String,
     status: &'static str,
     generated: Vec<GeneratedBinding>,
+    generated_root: Option<String>,
     diagnostics: Vec<ConversionDiagnostic>,
 }
 
@@ -39,6 +41,7 @@ pub fn convert_workspace_bindings(json: &str) -> String {
         revision: String::new(),
         status: "success",
         generated: vec![],
+        generated_root: None,
         diagnostics: vec![],
     };
     let result = serde_json::from_str::<Request>(json)
@@ -115,6 +118,7 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
     let manifest_path = "seseragi.toml";
     let manifest = seseragi_project::parse_manifest(read(&files, manifest_path)?)
         .map_err(|error| (manifest_path.to_owned(), error.to_string()))?;
+    response.generated_root = Some(manifest.layout.generated.as_str().to_owned());
     let foreign = manifest.foreign_typescript.ok_or_else(|| {
         (
             manifest_path.to_owned(),

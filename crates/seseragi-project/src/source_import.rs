@@ -1,4 +1,6 @@
-use crate::{classify_specifier, resolve_relative_specifier, ImportSpecifier, ModulePath};
+use crate::{
+    classify_specifier, resolve_relative_specifier, ImportSpecifier, ModulePath, ModuleRoot,
+};
 use std::fmt;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -11,6 +13,54 @@ pub enum SourceImportResolution {
 pub enum SourceImportError {
     Invalid(String),
     Unsupported(ImportSpecifier),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum ModuleImportResolution {
+    Standard,
+    Local { root: ModuleRoot, path: ModulePath },
+}
+
+/// Resolve imports within one package, preserving the source/generated root.
+/// Package dependencies and public exports remain the package loader's concern.
+pub fn resolve_module_import(
+    root: ModuleRoot,
+    current: &ModulePath,
+    specifier: &str,
+) -> Result<ModuleImportResolution, SourceImportError> {
+    let classified = classify_specifier(specifier)
+        .map_err(|error| SourceImportError::Invalid(error.to_string()))?;
+    match classified {
+        ImportSpecifier::Generated(path) => {
+            if root == ModuleRoot::Generated {
+                return Err(SourceImportError::Invalid(
+                    "generated modules must use relative imports within the generated root"
+                        .to_owned(),
+                ));
+            }
+            Ok(ModuleImportResolution::Local {
+                root: ModuleRoot::Generated,
+                path: ModulePath::parse(&path)
+                    .map_err(|error| SourceImportError::Invalid(error.to_string()))?,
+            })
+        }
+        ImportSpecifier::SelfPackage(_) if root == ModuleRoot::Generated => {
+            Err(SourceImportError::Invalid(
+                "generated modules cannot import handwritten source through `self/`".to_owned(),
+            ))
+        }
+        other => match resolve_source_import(current, specifier)? {
+            SourceImportResolution::Standard => Ok(ModuleImportResolution::Standard),
+            SourceImportResolution::Local(path) => Ok(ModuleImportResolution::Local {
+                root: if matches!(other, ImportSpecifier::Relative(_)) {
+                    root
+                } else {
+                    ModuleRoot::Source
+                },
+                path,
+            }),
+        },
+    }
 }
 
 pub fn resolve_source_import(

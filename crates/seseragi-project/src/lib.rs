@@ -71,7 +71,10 @@ pub use manifest::{
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};
-pub use source_import::{resolve_source_import, SourceImportError, SourceImportResolution};
+pub use source_import::{
+    resolve_module_import, resolve_source_import, ModuleImportResolution, SourceImportError,
+    SourceImportResolution,
+};
 pub use specifier::{
     classify_specifier, resolve_relative_specifier, ImportSpecifier, RelativeSpecifierError,
     SpecifierError,
@@ -88,8 +91,8 @@ pub use target::{
     TargetSelectionSource,
 };
 pub use virtual_package::{
-    load_virtual_package, LoadedVirtualPackage, VirtualPackageLoadError, VirtualPackageModule,
-    VirtualSourceFile,
+    load_virtual_package, load_virtual_package_with_generated, LoadedVirtualPackage,
+    VirtualGeneratedFile, VirtualPackageLoadError, VirtualPackageModule, VirtualSourceFile,
 };
 pub use workspace::{
     load_workspace_project, LoadedWorkspaceProject, SourceOverlay, WorkspaceModule,
