@@ -210,7 +210,7 @@ bun run check:site
   詳細anchor、関連先へ移って戻る操作、キーボードlocale切替、overflow、page/console/
   response error、canonical code/出力/診断を確認し、既存browser gateからも呼び出す。
 
-最終scoped/build/browser結果は追記する。残件は作者レビュー、章全体の実読者検証、
+scoped/build/browser結果は下記。残件は作者レビュー、章全体の実読者検証、
 残る固定templateのconsumer移行、独立#706/#740の全gate再確認。
 
 ### 764の検証結果
@@ -231,11 +231,13 @@ bun run check:site
   詳細規則と目的別出口まで読める。これは作者・実読者による美学/読解承認ではない。
 - 初期scoped verifierの一段落HTML assertionはrendererのinline spanを考慮して修正。
   keyboard locale検証はEnter後のnavigation完了を明示的に待つよう修正して再実行。
-- 全siteの `build.test.ts` は単独で再検証中。旧日本語の一文そのものを要求していた
+- 全siteの `build.test.ts`: **1 pass / 0 fail / 9,252 assertions**。全3,976 routesを
+  311,312msと398,713msで生成し、manifest/HTML/assetsの二回build一致を確認。
+  既存420,000ms deadline内で通過。旧日本語の一文そのものを要求していた
   assertionを「空白での引数区切り」と `add 1 2` の意味の確認へ置換した。
   route数・link数・二回buildのhash比較・deadlineは変えない。
 - `check:site`全suite完走は未確認。#763のrepeat-build timeoutと未完了suiteは上の
   記録を保持し、今回のscoped passを全suiteの成功として扱わない。
 
-状態: 置換実装あり / 上記技術scope pass（全決定性は実行中） / agent編集・表示所見あり /
+状態: 置換実装あり / 上記技術scope・全site決定性 pass / agent編集・表示所見あり /
 作者判断未確認 / 実読者未確認 / 新本文はPR候補。#769の契約に依存するPR #770。
