@@ -1,11 +1,6 @@
-import * as arrays from "std/array"
-import { explainPage } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
-import * as guide from "./guide"
-import { LocalizedText, localized } from "../../../../model/locale"
+import { articlePage, prose } from "../../../../model/article"
+import { localized } from "../../../../model/locale"
 import {
-  Article,
-  Block,
   CodeExample,
   Heading,
   InternalLink,
@@ -17,79 +12,77 @@ import {
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn paragraph pair: (String, String) -> Block = match pair {
-  (english, japanese) -> Paragraph ([Words (localized english japanese)])
-}
-
-fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
-  map paragraph (arrays.zip japanese english)
-
-fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
-  ((title, path), (english, japanese)) -> Paragraph ([
-    InternalLink (title, path),
-    Words (localized (". " + english) ("。" + japanese))
-  ])
-}
-
-fn content -> PageDefinition = {
-  let english = en.copy ()
-  let japanese = ja.copy ()
-  let related = [
-    (
-      localized "Function types and currying" "関数型とカリー化",
-      "/docs/language/types/function-types-and-currying/"
+pub fn page -> PageDefinition =
+  articlePage "language.syntax.function-application" "/docs/language/syntax/function-application/" (en.copy ()) (ja.copy ()) [
+    Heading
+      ("understand-this", localized "Functions: name a calculation" "関数：計算に名前を付ける"),
+    prose (en.opening ()) (ja.opening ()),
+    CodeExample (
+      "pilot-function-application",
+      localized "Write a function, then call it" "関数を書いて呼んでみよう"
     ),
-    (
-      localized "Annotations and inference" "型注釈と推論",
-      "/docs/language/types/annotations-and-inference/"
+    prose (en.call ()) (ja.call ()),
+    Terminal (localized "Output" "実行結果", "3"),
+    Heading ("reading-the-example", localized "Read the declaration" "宣言の読み方"),
+    prose (en.declaration ()) (ja.declaration ()),
+    prose (en.display ()) (ja.display ()),
+    Heading ("why", localized "Use the same function again" "同じ関数を使い回す"),
+    prose (en.reuse ()) (ja.reuse ()),
+    Heading ("rules", localized "Exact call and type rules" "呼び出しと型の詳しい規則"),
+    prose (en.grouping ()) (ja.grouping ()),
+    prose (en.unit ()) (ja.unit ()),
+    prose (en.generic ()) (ja.generic ()),
+    prose (en.evaluation ()) (ja.evaluation ()),
+    prose (en.forms ()) (ja.forms ()),
+    Heading ("mistakes", localized "A tuple is one argument" "タプルは一つの引数"),
+    prose (en.tuple ()) (ja.tuple ()),
+    CodeExample (
+      "pilot-function-application-invalid",
+      localized "Two values, but one tuple" "二つの値をまとめたタプル"
     ),
-    (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/"),
-    (
-      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
-      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    prose (en.repair ()) (ja.repair ()),
+    Heading ("related-rules", localized "Choose your next question" "次に知りたいことへ"),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Function types and currying" "関数型とカリー化",
+          "/docs/language/types/function-types-and-currying/"
+        ),
+        Words (localized (en.partialExit ()) (ja.partialExit ()))
+      ]
     ),
-    (
-      localized "Operator precedence" "演算子の優先順位",
-      "/docs/language/syntax/operator-precedence/"
+    Paragraph (
+      [
+        InternalLink (
+          localized "Annotations and inference" "型注釈と推論",
+          "/docs/language/types/annotations-and-inference/"
+        ),
+        Words (localized (en.typesExit ()) (ja.typesExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink
+      (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/"),
+        Words (localized (en.methodExit ()) (ja.methodExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+          "/docs/language/syntax/pipelines-and-low-precedence-application/"
+        ),
+        Words (localized (en.compositionExit ()) (ja.compositionExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Operator precedence" "演算子の優先順位",
+          "/docs/language/syntax/operator-precedence/"
+        ),
+        Words (localized (en.precedenceExit ()) (ja.precedenceExit ()))
+      ]
     )
   ]
-  PageDefinition {
-    id: "language.syntax.function-application",
-    path: "/docs/language/syntax/function-application/",
-    kind: Article,
-    title: localized english.title japanese.title,
-    summary: localized english.summary japanese.summary,
-    blocks: arrays.concat [
-      [CodeExample (
-        "pilot-function-application",
-        localized english.exampleTitle japanese.exampleTitle
-      )],
-      [Heading (
-        "reading-the-example",
-        localized "Read the call from the function’s definition" "宣言と呼び出しを対応させる"
-      )],
-      paragraphs english.reading japanese.reading,
-      [Terminal (localized "Output" "実行結果", "3")],
-      [Heading ("why", localized "Reuse the same calculation" "同じ計算へ違う値を渡せる")],
-      paragraphs english.purpose japanese.purpose,
-      [Heading (
-        "rules",
-        localized "Fewer arguments, grouping, and advanced call forms"
-          "引数の省略、括弧、さらに詳しい呼び方"
-      )],
-      paragraphs english.rules japanese.rules,
-      [Heading (
-        "mistakes",
-        localized "A TypeScript-style call passes a tuple"
-          "TypeScript式の括弧では、タプル一個を渡してしまう"
-      )],
-      paragraphs english.mistakes japanese.mistakes,
-      [CodeExample
-          ("pilot-function-application-invalid", localized "Rejected example" "受け付けられない例")],
-      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
-      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
-    ]
-  }
-}
-
-pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())

@@ -85,7 +85,7 @@ test("unknown upstream descriptions fail instead of bypassing bilingual review",
   })
 })
 
-test("every conceptual article owns a bilingual example explanation", () => {
+test("conceptual articles retain bilingual explanations during staged composition migration", () => {
   const root = resolve(import.meta.dir, "../src/pages/language")
   let count = 0
   for (const category of readdirSync(root, { withFileTypes: true }).filter(
@@ -96,8 +96,33 @@ test("every conceptual article owns a bilingual example explanation", () => {
     }).filter((d) => d.isDirectory())) {
       const directory = resolve(root, category.name, page.name)
       if (page.name === "overview") continue
-      const guide = readFileSync(resolve(directory, "guide.ssrg"), "utf8")
       const source = readFileSync(resolve(directory, "page.ssrg"), "utf8")
+      if (category.name === "syntax" && page.name === "function-application") {
+        // This route is verified by the production render/execution pilot too.
+        // Its paragraphs are paired at the chosen block positions, without
+        // requiring old ExplanationCopy fields or an invented section count.
+        const pairs = [
+          ...source.matchAll(/prose \(en\.(\w+) \(\)\) \(ja\.(\w+) \(\)\)/gu),
+        ]
+        expect(pairs.length).toBeGreaterThan(0)
+        for (const [, english, japanese] of pairs)
+          expect(english).toBe(japanese)
+        for (const locale of ["en", "ja"]) {
+          const copy = readFileSync(
+            resolve(directory, `${locale}.ssrg`),
+            "utf8"
+          )
+          expect(copy).toMatch(/title: "[^"\n]+"/u)
+          expect(copy).toMatch(/summary: "[^"\n]+"/u)
+          for (const [, english] of pairs)
+            expect(copy).toContain(`pub fn ${english} -> String`)
+        }
+        expect(source).toContain('"pilot-function-application"')
+        expect(source).toContain('"pilot-function-application-invalid"')
+        count++
+        continue
+      }
+      const guide = readFileSync(resolve(directory, "guide.ssrg"), "utf8")
       expect(source, directory).toContain(
         "explainPage (guide.explanation ()) (content ())"
       )

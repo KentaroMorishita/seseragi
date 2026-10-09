@@ -1,44 +1,52 @@
-import { ExplanationCopy } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
+import { ArticleCopy } from "../../../../model/article"
 
-pub fn copy -> ReaderCopy = ReaderCopy {
+pub fn copy -> ArticleCopy = ArticleCopy {
   title: "Function application",
-  summary: (explanation ()).summary,
-  purpose: [
-    "Declare the calculation once, then reuse it with different inputs, as in add 20 2. The declaration shows the order and types of its arguments. Both arguments here are Int, so their types cannot detect swapped values.",
-    "You can also supply only some arguments and create a function waiting for the rest. Establish the complete call first; the partial-application details below explain that additional use."
-  ],
-  exampleTitle: "Define a function and supply all its arguments",
-  reading: [
-    "Int is the integer type. Arrows separate the parameters and result while you read a declaration from left to right. At the call, write values without types or arrows: add 1 2. Writing add alone refers to the function itself rather than a computed sum.",
-    "println (show answer) handles display. show answer converts the integer to text; parentheses make that whole calculation one argument. println writes the text and a newline. pub effect fn main is the public entry point; the runner executes the returned Effect, a value describing work to perform."
-  ],
-  rules: [
-    "add 1 2 groups as (add 1) 2. Supplying just 1 with add 1 creates a function waiting for the remaining integer. Name it with let addOne = add 1, then call addOne 2 to obtain 3. Supplying only some arguments is called partial application.",
-    "Int -> Int -> Int means Int -> (Int -> Int). After one integer, the remaining type is Int -> Int: a function taking an integer and returning an integer. In the general notation A -> B -> C, A, B, and C are explanatory names for arbitrary types; it means A -> (B -> C).",
-    "A declaration with no named parameter, fn answer -> Int = 42, still accepts one value () of type Unit. Call answer () to obtain 42. Unit represents an input with no payload and has only that value. answer alone remains a function.",
-    "A call can also select a concrete type. fn identity<A> value: A -> A = value accepts and returns a value of the same type. A names the type chosen for a call; identity<String> \"ready\" chooses String. Attach <String> to the function name without spaces. In identity < value, < is parsed as comparison, not a type argument.",
-    "The function and arguments are computed once, from left to right. Calling a function returning Effect produces a value describing work to execute later. The call alone does not start the described I/O.",
-    "Use parentheses to make a whole multi-part expression one argument. This applies to if (choosing by a condition), match (choosing by data shape), do (connecting operations in order), and lambdas (functions created in place). A custom binary operator requires surrounding spaces, as in left <+> right. As a function value, write (<+>) without spaces inside. Here <+> illustrates an operator that must be defined separately."
-  ],
-  mistakes: [
-    "(1, 2) is one tuple containing two values. The add(1, 2) below attempts to pass that tuple to the first Int parameter, causing SES-T0101: expected Int, actual (Int, Int). Correct it to add 1 2.",
-    "A type error may mean the argument has the wrong type or that you tried to call a value that is not a function. Compare the call with the declaration and check what is being passed as one argument."
-  ],
-  related: [
-    "Look up the remaining function and its type after partial application.",
-    "Find where to annotate a function’s types.",
-    "Look up calls written with a dot after a value.",
-    "Find ways to lay out nested calls more readably.",
-    "Find how an expression groups when parentheses are omitted."
-  ],
-}
-
-pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I pass two integers to an addition function?",
-  summary: "Put the arguments after the function name, separated by spaces. Call add 1 2 to add 1 and 2. Passing a value to a function is also called function application.",
-  reading: "fn declares a function named add. left: Int and right: Int are integer parameters. The intermediate -> continues to the next parameter, and the final -> Int states that it returns an integer. The body after = returns left + right.",
-  result: "add 1 2 gives left the value 1 and right the value 2, so its result is 3. let answer = ... names that result answer. The ordinary two-argument call that TypeScript would write add(1, 2) uses spaces here."
+  summary: "Write a small fn, then call it with arguments separated by spaces. An ordinary call is enough to get started; partial application lets you reuse it with fewer arguments."
 }
 
 pub fn title -> String = (copy ()).title
+
+pub fn opening -> String =
+  "Let's give addition a name. add takes two integers and returns their sum. Once the function is written, we can use it with different inputs."
+
+pub fn call -> String =
+  "Read add 1 2 as ‘give add the values 1 and 2’. The spaces separate arguments; there is no comma or pair of call parentheses. The result is 3. let answer names that result."
+
+pub fn declaration -> String =
+  "In the declaration, left: Int and right: Int name the integer arguments. Each arrow continues to the next argument or the result type. The final Int says the function returns an integer; left + right is that returned value."
+
+pub fn display -> String =
+  "The calculation stays separate from printing. show answer converts 3 to text, and println describes writing that text with a newline. main returns this Effect; the runner starts it. Parentheses pass the whole show answer calculation as one argument."
+
+pub fn reuse -> String =
+  "The same add also accepts add 20 2. Or give it just the first argument: let addOne = add 1. Now addOne is a function waiting for one more integer, so addOne 2 is 3. Supplying only some arguments is called partial application."
+
+pub fn grouping -> String =
+  "add 1 2 groups as (add 1) 2. Correspondingly, Int -> Int -> Int means Int -> (Int -> Int): after the first integer, a function of type Int -> Int remains. A -> B -> C follows the same rule; A, B and C stand for arbitrary types here."
+
+pub fn unit -> String =
+  "A declaration without a named parameter still takes one Unit value: fn answer -> Int = 42 is called as answer (). Unit means there is no useful input to supply, and () is its only value. The name answer alone still refers to the function."
+
+pub fn generic -> String =
+  "You can supply a type explicitly too. fn identity<A> value: A -> A = value returns its argument unchanged. identity<String> \"ready\" chooses String for A. Attach <String> directly to the function name; identity < value uses comparison syntax instead."
+
+pub fn evaluation -> String =
+  "The function and its arguments are evaluated once, from left to right. Calling a function that returns an Effect produces a description of work; that call alone does not start the described I/O. Both add arguments are Int, so the types cannot detect that you swapped their roles."
+
+pub fn forms -> String =
+  "Use parentheses when a whole compound expression must be one argument: an if expression, a match that selects a data shape, a do expression that sequences operations, or a lambda defined at the call site. A custom binary operator uses spaces, as in left <+> right; (<+>) refers to that operator as a function. Here <+> is notation for an operator you would define separately."
+
+pub fn tuple -> String =
+  "add(1, 2) looks familiar in several languages, but (1, 2) is one tuple here. It tries to pass (Int, Int) where add expects its first Int, so the compiler reports SES-T0101. Write add 1 2 to pass two arguments."
+
+pub fn repair -> String =
+  "When an application fails, compare what you passed with the declaration: is it one tuple, the wrong type, or a value that is not a function? Adding parentheses does not turn a tuple into two arguments."
+
+pub fn partialExit -> String =
+  " — follow the function left after supplying some arguments."
+pub fn typesExit -> String = " — choose where to write a type annotation."
+pub fn methodExit -> String = " — call from the value using a dot."
+pub fn compositionExit -> String =
+  " — choose parentheses, $ or a pipeline for nested calls."
+pub fn precedenceExit -> String = " — look up how an unparenthesized expression groups."
