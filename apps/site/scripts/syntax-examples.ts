@@ -89,7 +89,7 @@ export const syntaxExampleCases = [
     source: "apps/site/examples/src/language/syntax-reader-pipelines.ssrg",
     invalidSource:
       "apps/site/examples/invalid/src/language/syntax-reader-pipelines.ssrg",
-    expectedOutput: "7\n7\n7\n",
+    expectedOutput: "[> build, > bundle]\nTrue\nJust > build\nNothing\n",
     expectedDiagnostic: "SES-T0101",
   },
   {

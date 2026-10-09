@@ -81,11 +81,17 @@ test("syntax example metadata preserves source bytes and runnable Playground see
       expect(sourceFromPlaygroundUrl(example.playgroundUrl)).toBe(source)
     }
   }
-  for (const key of ["layout", "pipelines"]) {
+  for (const key of ["layout"]) {
     expect(exampleById(`syntax-reader-${key}`).source).toMatch(
       /\n[\t ]*3\n[\t ]*\|> double\n[\t ]*\|> addOne/u
     )
   }
+  expect(exampleById("syntax-reader-pipelines").source).toMatch(
+    /commands\s*\|> arrays\.filter \(matches "b"\)\s*\|> map badge/u
+  )
+  expect(exampleById("syntax-reader-pipelines").source).toContain(
+    "badge <$> picked"
+  )
   expect(exampleById("syntax-reader-layout").source).toContain(
     "fn addOne value: Int -> Int = {\n"
   )
@@ -445,7 +451,7 @@ pub effect fn main = {
           page.locale === "ja" ? "大文字・小文字の区別がない" : "Uncased"
         )
       }
-      if (example.key === "layout" || example.key === "pipelines") {
+      if (example.key === "layout") {
         expect(code(codePanels[0])).toMatch(
           /\n[\t ]*3\n[\t ]*\|> double\n[\t ]*\|> addOne/u
         )

@@ -11,6 +11,7 @@ import {
 import { tmpdir } from "node:os"
 import { dirname, join, relative, resolve } from "node:path"
 import { canonicalExample } from "../scripts/canonical-example"
+import { chapterExamples } from "../scripts/function-chapter-examples"
 
 const root = resolve(import.meta.dir, "../../..")
 const sourceRoot = join(root, "apps/site/src")
@@ -134,19 +135,22 @@ function renderPilot(
     join(directory, "seseragi.toml"),
     '[package]\nname = "values-functions-verification"\nversion = "0.0.0"\nlanguage = ">=0.1.0 <0.2.0"\n\n[run]\nentry = "verify"\ntarget = "process"\n'
   )
-  const sources = pilot.flatMap(([, , example, , invalid]) => [
-    canonicalExample(
-      example,
-      `${exampleRoot}/src/language/${example}.ssrg`,
-      "https://seseragi.vercel.app/"
-    ),
-    canonicalExample(
-      `${invalid}-invalid`,
-      `${exampleRoot}/invalid/src/language/${invalid}.ssrg`,
-      "https://seseragi.vercel.app/",
-      false
-    ),
-  ])
+  const sources = [
+    ...chapterExamples("https://seseragi.vercel.app/"),
+    ...pilot.flatMap(([, , example, , invalid]) => [
+      canonicalExample(
+        example,
+        `${exampleRoot}/src/language/${example}.ssrg`,
+        "https://seseragi.vercel.app/"
+      ),
+      canonicalExample(
+        `${invalid}-invalid`,
+        `${exampleRoot}/invalid/src/language/${invalid}.ssrg`,
+        "https://seseragi.vercel.app/",
+        false
+      ),
+    ]),
+  ]
   writeFileSync(
     join(directory, "src/verify.ssrg"),
     `import * as json from "std/json"
@@ -201,7 +205,12 @@ test("values/functions pilot preserves identities, paired copy, and exact destin
     expect(source).toContain(`"/docs/language/${path}/"`)
     const en = readFileSync(join(directory, "en.ssrg"), "utf8")
     const ja = readFileSync(join(directory, "ja.ssrg"), "utf8")
-    if (path !== "syntax/function-application") {
+    if (
+      ![
+        "syntax/function-application",
+        "types/function-types-and-currying",
+      ].includes(path)
+    ) {
       for (const field of [
         "purpose",
         "reading",
@@ -311,11 +320,29 @@ test("pilot pages render canonical examples, exact output, and same-identity loc
             /<code class="seseragi-highlight">([\s\S]*?)<\/code>/gu
           ),
         ].map((match) => text(match[1]))
-        expect(code, `${prefix}${route}`).toEqual([source, rejected])
-        const terminal = html.match(
-          /<section class="code-panel terminal-panel">[\s\S]*?<pre><code>([\s\S]*?)<\/code>/u
-        )?.[1]
-        expect(text(terminal ?? ""), route).toBe(output)
+        const chapter =
+          path === "syntax/function-application"
+            ? "chapter-functions"
+            : path === "types/function-types-and-currying"
+              ? "chapter-function-values"
+              : undefined
+        const expectedCode = chapter
+          ? [
+              readFileSync(
+                join(root, `${exampleRoot}/src/language/${chapter}.ssrg`),
+                "utf8"
+              ),
+              source,
+              rejected,
+            ]
+          : [source, rejected]
+        expect(code, `${prefix}${route}`).toEqual(expectedCode)
+        const terminals = [
+          ...html.matchAll(
+            /<section class="code-panel terminal-panel">[\s\S]*?<pre><code>([\s\S]*?)<\/code>/gu
+          ),
+        ].map((match) => text(match[1]))
+        expect(terminals, route).toContain(output)
         const headings = [...html.matchAll(/<h2[^>]*\bid="([^"]+)"/gu)].map(
           (match) => match[1]
         )

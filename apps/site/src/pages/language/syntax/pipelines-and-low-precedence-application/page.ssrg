@@ -1,37 +1,109 @@
-import * as arrays from "std/array"
-import { explainPage } from "../../explanation"
-import * as guide from "./guide"
+import { articlePage, prose } from "../../../../model/article"
 import { localized } from "../../../../model/locale"
-import { CodeExample, PageDefinition } from "../../../../model/page"
-import { readerPage } from "../../reader-article"
-import { withDetails } from "../reader-details"
-import * as details from "./details"
+import {
+  BulletList,
+  CodeExample,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../../../../model/page"
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn content -> PageDefinition = withDetails (
-  readerPage "language.syntax.pipelines"
-    "/docs/language/syntax/pipelines-and-low-precedence-application/" (en.copy ())
-    (ja.copy ()) "syntax-reader-pipelines" "7\n7\n7" (
-      arrays.concat [
-        [CodeExample
-    ("syntax-reader-pipelines-invalid", localized "Rejected example" "受け付けられない例")],
-        details.rejected ()
+pub fn page -> PageDefinition =
+  articlePage "language.syntax.pipelines" "/docs/language/syntax/pipelines-and-low-precedence-application/" (en.copy ()) (ja.copy ()) [
+    Heading (
+      "understand-this",
+      localized "Pipelines and $: connect search to display" "パイプラインと$：検索から表示へつなぐ"
+    ),
+    prose (en.opening ()) (ja.opening ()),
+    CodeExample (
+      "syntax-reader-pipelines",
+      localized "Search, format and keep the missing case" "検索し、表示し、見つからない場合も残す"
+    ),
+    Terminal
+      (localized "Output" "実行結果", "[> build, > bundle]\nTrue\nJust > build\nNothing"),
+    Heading ("purpose", localized "Choose a shape for this job" "この作業に合う形を選ぶ"),
+    prose (en.flow ()) (ja.flow ()),
+    Heading (
+      "reading-the-example",
+      localized "Same calls; different reading paths" "同じ呼び出しを、違う向きから読む"
+    ),
+    prose (en.choice ()) (ja.choice ()),
+    prose (en.maybe ()) (ja.maybe ()),
+    prose (en.effects ()) (ja.effects ()),
+    Heading ("rules", localized "Grouping and evaluation rules" "まとまりと評価の詳しい規則"),
+    prose (en.pipelineRules ()) (ja.pipelineRules ()),
+    prose (en.dollarRules ()) (ja.dollarRules ()),
+    prose (en.evaluation ()) (ja.evaluation ()),
+    Heading
+      ("mistakes", localized "Application keeps the parameter type" "適用の書き方を変えても、引数の型は同じ"),
+    prose (en.rejected ()) (ja.rejected ()),
+    CodeExample (
+      "syntax-reader-pipelines-invalid",
+      localized "A number where a label is required" "文字列のラベルが必要な場所へ数値を渡す"
+    ),
+    prose (en.syntaxBoundary ()) (ja.syntaxBoundary ()),
+    Heading
+      ("next-context", localized "Continue into contextual composition" "文脈を保つ合成へ"),
+    prose (en.bridge ()) (ja.bridge ()),
+    Heading (
+      "related-rules",
+      localized "Chapter paths and exact references" "章の行き来と、詳しいReferenceへ"
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Function types and currying" "関数型とカリー化",
+          "/docs/language/types/function-types-and-currying/"
+        ),
+        Words (localized (en.previousExit ()) (ja.previousExit ()))
       ]
-    ) [
-      (
-        localized "Function application" "関数適用",
-        "/docs/language/syntax/function-application/"
-      ),
-      (
-        localized "Layout and line continuation" "レイアウトと行継続",
-        "/docs/language/syntax/layout-and-line-continuation/"
-      ),
-      (
-        localized "Operator precedence" "演算子の優先順位",
-        "/docs/language/syntax/operator-precedence/"
-      )
-    ]
-) (details.forms ())
-
-pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Layout and line continuation" "レイアウトと行継続",
+          "/docs/language/syntax/layout-and-line-continuation/"
+        ),
+        Words (localized (en.layoutExit ()) (ja.layoutExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Operator precedence" "演算子の優先順位",
+          "/docs/language/syntax/operator-precedence/"
+        ),
+        Words (localized (en.precedenceExit ()) (ja.precedenceExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        ),
+        Words (localized (en.startExit ()) (ja.startExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Standard operators and traits" "標準演算子とtrait",
+          "/docs/language/traits/standard-operators/"
+        ),
+        Words (localized (en.operatorsExit ()) (ja.operatorsExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink
+      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/"),
+        Words (localized (en.doExit ()) (ja.doExit ()))
+      ]
+    )
+  ]

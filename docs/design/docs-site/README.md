@@ -44,3 +44,5 @@ The first quality model is #765 Functions/Notation, after #763 and the necessary
 #764 composition. #766 uses that example; #767 bulk migration follows the accepted
 chapter. #768 adds optional interaction and does not block the chapter/home.
 #702/#706/#740/#631 remain independent gates under #601.
+
+- [function-chapter-review.md](function-chapter-review.md): #765の章候補、作者・実読者の確認対象と独立した受け入れ状態。

@@ -1,3 +1,5 @@
+import * as chapter_functions from "./language/chapter-functions"
+import * as chapter_function_values from "./language/chapter-function-values"
 import * as pilot_built_in_types from "./language/pilot-built-in-types"
 import * as pilot_annotations from "./language/pilot-annotations"
 import * as pilot_function_application from "./language/pilot-function-application"

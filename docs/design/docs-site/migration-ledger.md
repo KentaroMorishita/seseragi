@@ -241,3 +241,34 @@ scoped/build/browser結果は下記。残件は作者レビュー、章全体の
 
 状態: 置換実装あり / 上記技術scope・全site決定性 pass / agent編集・表示所見あり /
 作者判断未確認 / 実読者未確認 / 新本文はPR候補。#769の契約に依存するPR #770。
+
+## 765: 関数と記法の代表章候補
+
+#769 → #770の部品を使った依存PR候補。既存の三つの深いrouteを章としてつなぎ、
+小さなコマンドパレットの検索を題材に、新しいコードと本文を組み立てる。
+作者・実読者の承認は未取得。最初の章の受け入れや#767の大量移行を完了扱いにしない。
+
+| Route / identity | 新しい体験 | 保全と退役候補 |
+| --- | --- | --- |
+| `syntax/function-application` / `language.syntax.function-application` | fnで検索キーを作る。式の結果、普通の呼び出し、pureな計算とEffectの境目 | 英日route/title/6 fragmentsを保持。旧integer valid/invalidは詳細規則用に残す。#764の段落を章の入口に再構成 |
+| `types/function-types-and-currying` / `language.types.function-types` | 検索文字を先に渡し、残る関数をfilterへ渡す。ラムダ、map、reduceへ渡す(+) | 英日route/title/既存fragmentsを保持。型の右結合、各段階の引数検査、Unit/generic制約、既存integer valid/invalidを保全。旧guide/ReaderCopyを退役候補へ |
+| `syntax/pipelines-and-low-precedence-application` / `language.syntax.pipelines` | 同じ検索と表示を通常適用/$/pipelineで比較。findの不在を<$>で保ち、doで出力を順につなぐ | 英日route/title/既存fragmentsを保持。結合/優先順位/型と評価/$の非関数値性、invalid/repairを保全。literal3のpipelineを新しい検証sourceへ置換し、旧guide/readerPage/withDetailsと空detailsを退役候補へ |
+
+h2には「技術名＋何ができるか」を示す。既存のmetadata titleとpage-name linkは維持。
+最初の記事に短い章の見取り図、各記事の目的付きリンクに章の次/前/入口への経路を置く。
+最後は標準演算子とdo記法の正確なReferenceへつなぎ、この章に理論を詰め込まない。
+型規則用の整数例は章の代表コードではなく、Heroにも自動転用しない。
+
+実行可能な新sourceは `chapter-functions` / `chapter-function-values`、置換したsourceは
+`syntax-reader-pipelines`。既存canonicalExample/source hash/highlight/Playground seedを使い、
+追加のページ内容inventory・compiler・rendererを作らない。新しい例のnative/WASM検証は
+`function-chapter.test.ts`、第三記事は既存 `syntax-reader.test.ts` の全11 caseで検証する。
+既存実行checkerにも最初の二例を追加し、Bun gateから両test/browser verifierを呼ぶ。
+
+初回scoped検証では、旧literal pipelineを要求する構造assertionと、localeの関数名
+`arguments`が生成JavaScriptのstrict modeに衝突する失敗を確認。新sourceの意味を確認する
+assertionと `argumentTypes` に修正した。layout記事の改行検証、構文11記事、関数系6記事、
+全routeとcanonical invalid/repairのcoverageは削らない。
+
+現行の検証結果は追記する。初見読者・作者用の具体的な確認対象と未確認状態は
+[function-chapter-review.md](function-chapter-review.md)へ記録する。

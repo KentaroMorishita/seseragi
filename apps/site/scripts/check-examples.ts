@@ -11,6 +11,7 @@ import {
 import { tmpdir } from "node:os"
 import { basename, join, resolve } from "node:path"
 import { checkComparisons } from "./check-comparisons"
+import { functionChapterExamples } from "./function-chapter-examples"
 
 const root = resolve(import.meta.dir, "../../..")
 const cli = process.env.SESERAGI_BIN ?? join(root, "target/debug/seseragi")
@@ -68,6 +69,9 @@ try {
     ["pilot-function-application", "3"],
     ["pilot-blocks", "65"],
     ["pilot-currying", "3, 3"],
+    ...functionChapterExamples.map(
+      ({ id, output }) => [id, output.trimEnd()] as const
+    ),
   ]) {
     const source = join(examples, "src/language", `${slug}.ssrg`)
     // run <file> inside a package uses that package's declared entry point.

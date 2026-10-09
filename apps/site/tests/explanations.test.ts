@@ -97,7 +97,7 @@ test("conceptual articles retain bilingual explanations during staged compositio
       const directory = resolve(root, category.name, page.name)
       if (page.name === "overview") continue
       const source = readFileSync(resolve(directory, "page.ssrg"), "utf8")
-      if (category.name === "syntax" && page.name === "function-application") {
+      if (source.includes("articlePage ")) {
         // This route is verified by the production render/execution pilot too.
         // Its paragraphs are paired at the chosen block positions, without
         // requiring old ExplanationCopy fields or an invented section count.
@@ -117,8 +117,21 @@ test("conceptual articles retain bilingual explanations during staged compositio
           for (const [, english] of pairs)
             expect(copy).toContain(`pub fn ${english} -> String`)
         }
-        expect(source).toContain('"pilot-function-application"')
-        expect(source).toContain('"pilot-function-application-invalid"')
+        const samples =
+          page.name === "function-application"
+            ? [
+                "chapter-functions",
+                "pilot-function-application",
+                "pilot-function-application-invalid",
+              ]
+            : page.name === "function-types-and-currying"
+              ? [
+                  "chapter-function-values",
+                  "pilot-currying",
+                  "pilot-currying-invalid",
+                ]
+              : ["syntax-reader-pipelines", "syntax-reader-pipelines-invalid"]
+        for (const sample of samples) expect(source).toContain(`"${sample}"`)
         count++
         continue
       }

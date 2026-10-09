@@ -1,35 +1,47 @@
-import { ExplanationCopy } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
+import { ArticleCopy } from "../../../../model/article"
 
-pub fn copy -> ReaderCopy = ReaderCopy {
+pub fn copy -> ArticleCopy = ArticleCopy {
   title: "関数型とカリー化",
-  summary: (explanation ()).summary,
-  purpose: [
-    "一部の入力がいつも同じなら、毎回その入力を書かずに、残りだけを受け取る関数を作れます。addOneは、どの整数を渡しても1を足す計算として使えます。使い回したい条件を先に渡す場面で役立ちます。",
-    "TypeScriptなら、たとえばconst addOne = (value: number) => add(1, value)という矢印関数で同じ使い方を表せます。Seseragiでは、全部の引数を渡すときと同じ呼び出し方で、一部の入力を決めた関数も作れます。この例では比較する入力を整数に限っています。"
-  ],
-  exampleTitle: "普通の呼び出しと、1を先に渡した関数を比べる",
-  reading: [
-    "Int -> Intは「整数を一つ受け取り、整数を返す関数」の型です。addOneの型がこれに当たります。addの型Int -> Int -> IntはInt -> (Int -> Int)というまとまりで、最初の整数を受け取ると、次の整数を受け取る関数が返ると読みます。",
-    "引数の一部を渡す使い方を部分適用と呼びます。その仕組みとして、引数を一つずつ受け取る関数を組み合わせる形をカリー化と呼びます。普通の複数引数の関数もこの形なので、特別な作り直しは不要です。",
-    "最後のpub effect fn mainは公開された実行入口です。effect fnは画面出力などの処理を表すEffectを返し、実行機構が実行します。printlnが文字列と改行を出力します。バッククォート内の${direct}と${answer}には、それぞれの値の表示が入ります。"
-  ],
-  rules: [
-    "関数の型は右側を先にまとめます。Int -> Int -> Intと(Int -> Int) -> Intは別です。後者は、整数を受け取るのではなく、Int -> Intという関数を一つ受け取って整数を返します。関数を引数に取る場合は、必要な括弧を明示します。",
-    "引数は左から渡し、一つ渡すたびに、その段階で必要な型と照合します。まだ引数が残るなら戻り値は関数です。必要な引数をすべて渡して初めて、addでは整数の結果になります。タプル一個を渡すadd (1, 2)とは、引数の型も呼び方も異なります。",
-    "これは言語の関数型と呼び出しの規則であり、最適化で後から変わる書き方ではありません。型を呼び出しごとに選べる関数では、まだ決まっていない型や、型が支える操作の条件（traitの制約）が残る場合があります。残りの引数や、結果を使う場所の型によって確定します。",
-    "引数名を書かないfn answer -> Int = 42も、実際にはUnit -> Int型の関数です。Unitは渡す内容がないことを表す型で、値は()だけです。answer ()で42を得ます。answerだけでは関数であり、宣言しただけで本体を実行することもありません。",
-    "エディターの型表示では、矢印が右側でまとまることや、部分適用後に残る関数の型を確認できます。型エラーでは、すべての引数を一まとめに考えるのではなく、どの一個を渡した時点で型が合わなくなったかを確認します。"
-  ],
-  mistakes: ["次のadd 1はInt -> Int型の関数なので、整数を求める: Intには合いません。SES-T0101は期待するIntと実際のInt -> Intを示します。3が必要ならadd 1 2と残りを渡します。関数を残したいならlet addOne = add 1とし、後でaddOne 2と呼びます。"],
-  related: ["全部の引数を渡す呼び方と括弧の役割を確認します。", "引数と戻り値の型を書く位置を調べます。", "呼び出しごとに型を選ぶ関数の規則を調べます。"],
-}
-
-pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "足す数を1に決め、後からもう一つの数を渡すには",
-  summary: "add 1 2は二つの整数を渡す普通の呼び出しです。add 1と一つだけ渡すと、残りの整数を受け取る関数が返ります。",
-  reading: "fnは関数を定義します。addのleft: Intとright: Intは二つの整数引数で、途中の->は次の引数へ続き、最後の-> Intは整数を返す指定です。=の後のleft + rightが計算です。まずadd 1 2は3を返し、その値をdirectと名付けます。",
-  result: "let addOne = add 1は、leftへ1だけを渡し、rightを待つ関数にaddOneという名前を付けます。まだ整数の結果ではありません。次のaddOne 2が残りの2を渡すので、answerも3となり、表示は3, 3です。"
+  summary: "部分適用でコマンドの検索条件を決め、関数をfilterやmapへ渡す。ラムダと演算子の関数値も、残る型から読んでみよう。"
 }
 
 pub fn title -> String = (copy ()).title
+
+pub fn opening -> String =
+  "検索文字は、ひとまず\"b\"。候補の名前と一緒に毎回渡してもいいけど、matchesへ検索文字だけ渡したらどうなるだろう。その条件で検索する関数が手元に残り、filterへ渡せる。"
+
+pub fn partial -> String =
+  "matchesは検索文字、候補の名前の順に受け取り、Boolを返す。だからmatches \"b\"の型はString -> Bool。buildsは検索結果ではなく、検索する関数だ。arrays.filterが各ラベルにその関数を使い、残す候補を決める。最初の出力には、commandsにあった空白や綴りがそのまま残っている。"
+
+pub fn lambda -> String =
+  "必要な場所で関数を作ることもできる。\\nameから始まるラムダは、空白を取ったラベルの長さを測る、その場だけの関数。mapへ渡すとArray<Int>ができる。一度しか使わない計算に、無理に名前を増やす必要はないよ。この長さはUnicode scalar数で、端末の表示幅とは別。"
+
+pub fn section -> String =
+  "演算子も関数値として渡せる。(+)は足し算のカリー化された関数。reduce 0 (+)が長さを足し合わせ、合計19を返す。こうして演算子を括弧で参照する書き方がoperator section。filter、map、reduceのように関数を受け取るものを、高階関数と呼ぶ。"
+
+pub fn arrows -> String =
+  "関数型の矢印は右側でまとまる。String -> String -> BoolはString -> (String -> Bool)の意味。関数を引数に取る場合は、(String -> Bool)のように括弧で一つの引数型を示す。これは言語の呼び出し規則で、最適化の結果たまたまこうなるわけではない。"
+
+pub fn argumentTypes -> String =
+  "引数は左から一つずつ渡し、その段階の引数型と照合する。最後の引数を渡すまでは、結果も関数。下の小さな整数例では同じ規則だけを取り出している。directとaddOne 2は、どちらも3になる。add (1, 2)なら一個のタプルを渡すので、二つのInt引数とは型も呼び方も違う。"
+
+pub fn generic -> String =
+  "多相な関数を部分適用すると、型引数やtraitの制約がまだ決まらずに残ることがある。残りの引数や結果を使う場所の型が、その情報を補う。最後に欲しい値だけで考えず、今どんな関数が残っているかを型表示で見てみよう。"
+
+pub fn unit -> String =
+  "引数名を書かない宣言もUnitを受け取る。fn answer -> Int = 42の型はUnit -> Int。answer ()で42を得るが、answerだけではまだ関数だ。宣言しただけで本体を実行することもない。"
+
+pub fn rejected -> String =
+  "ここでadd 1の型はInt -> Intだが、注釈が求めるのはIntなのでSES-T0101になる。値3が欲しければadd 1 2と残りを渡す。後で呼ぶ関数を残したいならlet addOne = add 1としよう。"
+
+pub fn previousExit -> String = "：章の入口。keyの宣言と普通の呼び出しを確認する。"
+
+pub fn nextExit -> String = "：次のページ。絞り込みと表示をつなぎ、見つからなかった場合も扱う。"
+
+pub fn lambdaExit -> String = "：ラムダの引数とスコープを単独で調べる。"
+
+pub fn annotationsExit -> String = "：関数を渡す引数の型を、どこに書くか調べる。"
+
+pub fn genericExit -> String = "：部分適用後に残る型引数や制約を調べる。"
+
+pub fn operatorExit -> String = "：演算子の参照と結合規則を調べる。"

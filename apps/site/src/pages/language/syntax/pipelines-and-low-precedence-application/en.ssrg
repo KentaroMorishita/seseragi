@@ -1,42 +1,56 @@
-import { ExplanationCopy } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
+import { ArticleCopy } from "../../../../model/article"
 
-pub fn copy -> ReaderCopy = ReaderCopy {
+pub fn copy -> ArticleCopy = ArticleCopy {
   title: "Pipelines and low-precedence application",
-  summary: (explanation ()).summary,
-  exampleTitle: "Read doubling and adding one from left to right",
-  purpose: [
-    "A pipeline writes a sequence of calls from left to right, passing each result into the next function. x |> f means the ordinary call f x.",
-    "Here double doubles the integer 3 and addOne adds 1. Compare the pipeline with ordinary parenthesized calls and with $, which groups a right-hand expression as an argument.",
-  ],
-  reading: [
-    "double and addOne both take and return Int, the integer type. The name after fn identifies the function; value: Int declares the parameter and its type; the final -> Int declares the result type.",
-    "In piped, 3 |> double calls double 3 and produces 6. |> addOne on the next line receives 6 and produces 7. The actual source spans several lines, with |> at each continuation.",
-    "nested passes the inner result, 6, to addOne in addOne (double 3). withoutParentheses uses addOne $ double 3 to group the right-hand double 3 as one argument.",
-    "main prints the three values separated by newlines. Each form passes the same values through the same functions, so the output is three lines containing 7.",
-  ],
-  rules: [
-    "|> groups left: x |> f |> g means g (f x). For a multi-argument function, supply earlier arguments first; the value on the left of the pipeline becomes its next argument. A pipeline does not automatically supply every remaining argument.",
-    "$ groups right: f $ g $ x means f (g x). Binary operators other than the Signal update symbol := bind more tightly than $. Therefore f $ x + 1 passes the whole x + 1 to f.",
-    "A pipeline binds more tightly than $. render $ values |> transform means render (transform values), with transform taking one argument: transform values first, then pass that result to render.",
-    "Both forms use ordinary call typing and evaluation order. The supplied value must match the next parameter type. Evaluate the function and arguments before its body. Neither |> nor $ alone delays evaluation, creates parallel work, or executes an Effect.",
-  ],
-  mistakes: [
-    "decorate below requires String but receives the Int 3, producing SES-T0101. Supply a string, or convert first with show 3 |> decorate.",
-    "A single | is not a pipeline; it has other roles such as separating type alternatives. $ is fixed call syntax rather than an overloadable operator or a function value. You cannot pass ($) as an argument.",
-  ],
-  related: [
-    "Check how supplying earlier arguments creates a function waiting for the next value.",
-    "Check when a pipeline remains one expression across newlines.",
-    "Look up grouping when $ and |> are mixed with arithmetic or other operators.",
-  ],
+  summary: "Connect a command search to its display with ordinary calls, $ or |>. Then keep a missing match explicit with <$>."
 }
 
 pub fn title -> String = (copy ()).title
 
-pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I read a transformation from left to right?",
-  summary: "|> passes its left value to the function on the right. $ groups the expression on its right as an argument.",
-  reading: "Both are ways to write ordinary function calls. Start by following functions that take one argument.",
-  result: "The pipeline, parentheses, and $ all double the same 3 and then add 1, producing 7.",
-}
+pub fn opening -> String =
+  "We have a search predicate. Now keep the matching commands and turn them into display labels. The nested call, $ call and pipeline below all pass the same data through the same functions; choose the shape that makes this job easy to read."
+
+pub fn flow -> String =
+  "choices begins with the command collection, filters by a configured search, then maps badge over the survivors. That is a useful reason for a pipeline: each stage has a job. Within key the smaller trim/lowercase pipeline has the same shape. No new function type or runtime action is hiding in |> itself."
+
+pub fn choice -> String =
+  "nested groups the filtered collection with parentheses. compact uses $ to collect the expression on its right as the argument to map badge. same is True because all three results agree. A short call such as matches \"b\" is already clear; turning every call into a pipeline would only add punctuation."
+
+pub fn maybe -> String =
+  "find gives us Maybe<String>: a match can be Just a label, or Nothing. badge <$> picked changes the label inside a match while keeping that possibility of absence. The \"z\" search has no match, so mapping badge over it remains Nothing. Passing picked straight to badge would not fit its String parameter."
+
+pub fn effects -> String =
+  "main uses do to sequence four console operations. The search and formatting stay pure; do connects the effects, and the runner executes the returned Effect. It is not a decoration that makes println look nicer, and it does not make the earlier collection stages effectful."
+
+pub fn pipelineRules -> String =
+  "Pipelines associate left: x |> f |> g means g (f x). If f takes more arguments, supply the earlier ones first, as with arrays.filter (matches \"b\"). The piped collection becomes its next argument; |> does not fill in the rest automatically."
+
+pub fn dollarRules -> String =
+  "$ associates right: f $ g $ x means f (g x). Binary operators other than Signal assignment := bind more tightly, so f $ x + 1 passes all of x + 1 to f. Pipelines also bind more tightly: render $ values |> transform means render (transform values)."
+
+pub fn evaluation -> String =
+  "Both forms have ordinary application type checks and evaluation order: evaluate the function and arguments, then call the body. Neither |> nor $ delays work, starts parallel execution or runs an Effect. They change how application is written."
+
+pub fn rejected -> String =
+  "The example below passes Int to decorate, which accepts String, so the compiler reports SES-T0101. Supply a String, or convert the number explicitly with show 3 before applying decorate. A pipeline does not invent the conversion."
+
+pub fn syntaxBoundary -> String =
+  "A lone | is not a pipeline. Also, $ is fixed application syntax: it cannot be overridden or passed as ($). Short-circuit and other syntax-only operators are not arbitrary function values either; check the operator reference before treating a spelling as a section."
+
+pub fn bridge -> String =
+  "This is the edge of the chapter, not the end of composition. <$> transforms a value in a context; <*> combines a contextual function and argument; >>= passes a contextual result to the next contextual step. do can express that last dependency with named results. Which one fits depends on whether the next input is independent or needs the previous result. Follow the links for each exact operation; no category theory prerequisite is needed."
+
+pub fn previousExit -> String =
+  " — previous chapter page: the predicate returned by matches \"b\"."
+
+pub fn layoutExit -> String =
+  " — inspect where a multiline pipeline continues the same expression."
+
+pub fn precedenceExit -> String = " — jump to the grouping table for mixed operators."
+
+pub fn startExit -> String = " — return to the chapter map and the small key function."
+
+pub fn doExit -> String = " — read do as a sequence of binds, including pure contexts."
+
+pub fn operatorsExit -> String =
+  " — choose <$>, <*> or >>= by the dependency between inputs."

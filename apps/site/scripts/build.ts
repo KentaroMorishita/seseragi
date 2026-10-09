@@ -29,6 +29,7 @@ import { dataValidationReaderExamples } from "./data-validation-readers"
 import { effectSequencingReaderExamples } from "./effect-sequencing-reader"
 import { failureReaderExamples } from "./failure-readers"
 import { filesystemReaderExamples } from "./filesystem-reader"
+import { chapterExamples } from "./function-chapter-examples"
 import { jsonReaderExamples } from "./json-reader"
 import { lifecycleReaderExamples } from "./lifecycle-readers"
 import { listEditorialExamples } from "./list-editorial"
@@ -127,6 +128,7 @@ export function generatorInput(playgroundUrl: string) {
       ...modelConceptExamples(playgroundUrl),
       ...textEditorialExamples(playgroundUrl),
       ...syntaxExamples(playgroundUrl),
+      ...chapterExamples(playgroundUrl),
       ...sequenceEditorialExamples(playgroundUrl),
       ...typeReaderExamples(playgroundUrl),
       ...typeLimitExamples(playgroundUrl),
