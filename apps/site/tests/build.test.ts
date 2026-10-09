@@ -481,7 +481,7 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     expect(japanese).toContain('<html lang="ja">')
     // Preserve the call explanation, without requiring the retired prose.
     expect(textContent(japanese)).toContain("add 1 2")
-    expect(textContent(japanese)).toMatch(/引数[^。]*空白/u)
+    expect(textContent(japanese)).toMatch(/(?:引数[^。]*空白|空白[^。]*引数)/u)
     expect(textContent(japanese)).not.toMatch(/準備中|整備中|#[0-9]+/u)
     expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
     expect(japanese).toContain("言語リファレンス")

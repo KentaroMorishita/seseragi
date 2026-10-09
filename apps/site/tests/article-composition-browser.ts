@@ -116,7 +116,7 @@ export async function verifyArticleComposition(
           )
           // Follow a real detail destination, then return to the same identity.
           const destination = `${prefix}/docs/language/types/function-types-and-currying/`
-          await article.locator(`a[href="${destination}"]`).click()
+          await article.locator(`#related-rules ~ p a[href="${destination}"]`).click()
           assert.equal(new URL(page.url()).pathname, destination)
           await page.goBack()
           assert.equal(new URL(page.url()).pathname, prefix + route)
