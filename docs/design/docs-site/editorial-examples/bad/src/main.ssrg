@@ -1,0 +1,3 @@
+fn calculateTotalPriceForThreeNotebooks unitPrice: Int -> Int = unitPrice * 3
+
+pub effect fn main = 120 |> calculateTotalPriceForThreeNotebooks |> show |> println
