@@ -38,10 +38,10 @@ reference-sequenceは保持しており、章の経路とは区別する。
 
 | Scope | 状態 | 記録 |
 | --- | --- | --- |
-| 新source / native / WASM | 検証中 | 結果はmigration ledgerとPRに記録 |
-| 英日render / canonical source / URL / fragment | 検証中 | 既存scoped testsとproduction build |
-| 章を順に読むmobile/desktop/JS/no-JS/keyboard | 検証中 | 章専用browser verifier・screenshots |
-| 実装agentの通読 | 候補の構成を確認、表示は検証中 | 題材を同じ検索へ揃え、各記事の役割を分けた。数学用の小例は詳細規則へ置いた |
+| 新source / native / WASM | pass | Bun1.3.11のscoped tests、全実行例checker、検索変更/Maybe拒否 |
+| 英日render / canonical source / URL / fragment | scoped/production pass、CI全決定性未確認 | 3,976 routes生成。CI並行/単独再実行ともdeadline failを台帳に保持 |
+| 章を順に読むmobile/desktop/JS/no-JS/keyboard | 36 page cases / 12章通読 pass | 英日×320/390/1280px×JS有無。48 screenshots（記事構成12caseも含む） |
+| 実装agentの通読 | 構成・英日mobile/desktopの表示を確認 | 題材を同じ検索へ揃え、各記事の役割を分けた。数学用の小例は詳細規則へ置いた。独立/初見レビューではない |
 | 独立agent simulated reader | 未取得 | この実装agentの確認を独立/初見レビューとは扱わない |
 | 作者の美学判断 | 未取得 | draft候補。新章/Heroの承認を主張しない |
 | 実読者の初見理解 | 未取得 | 読者背景・感想・修正後の再確認も未取得 |

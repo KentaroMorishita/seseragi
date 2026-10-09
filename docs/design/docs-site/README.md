@@ -12,6 +12,7 @@ issues and orchestration order are implementation history, not a work queue.
 - [Migration ledger](migration-ledger.md) and [route snapshot](migration-inventory.tsv):
   KEEP/REWRITE/RETIRE/MERGE decisions, source/route owners, replacement and deletion
   prerequisites, compatibility and validation evidence.
+- [function-chapter-review.md](function-chapter-review.md): #765の章候補、作者・実読者の確認対象と独立した受け入れ状態。
 - [Reader review protocol](reader-contract.md): how to distinguish technical
   checks, author decisions, agent self-review and actual reader understanding.
 - [Site architecture](site-architecture.md): global surfaces and navigation,
@@ -44,5 +45,3 @@ The first quality model is #765 Functions/Notation, after #763 and the necessary
 #764 composition. #766 uses that example; #767 bulk migration follows the accepted
 chapter. #768 adds optional interaction and does not block the chapter/home.
 #702/#706/#740/#631 remain independent gates under #601.
-
-- [function-chapter-review.md](function-chapter-review.md): #765の章候補、作者・実読者の確認対象と独立した受け入れ状態。
