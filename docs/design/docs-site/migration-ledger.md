@@ -212,3 +212,30 @@ bun run check:site
 
 最終scoped/build/browser結果は追記する。残件は作者レビュー、章全体の実読者検証、
 残る固定templateのconsumer移行、独立#706/#740の全gate再確認。
+
+### 764の検証結果
+
+- `bun test apps/site/tests/values-functions.test.ts apps/site/tests/explanations.test.ts`:
+  **8 pass / 0 fail / 15,039 assertions**。6既存pilotの実行・invalid診断・修復と日英
+  renderを維持。追加の一段落compositionを含め14 rendered pagesを確認。
+- 現行release CLI `0.61.23 / 46755c08f4e9` を指定したproduction build:
+  **3,976 routes、pass**。新しいpackage content digestをlock updateで更新後に実行。
+  全体route/link/fragment/translation/metadataの既存検証も通過。
+- `article-composition-browser.ts`をそのproduction出力で実行:
+  **12 locale/viewport/JS cases、pass**（英日×320/390/1280px×JS有無）。
+  valid/invalid source・出力・診断、詳細anchor、関連先往復、keyboard locale、
+  horizontal overflow、page/console/response errorを確認。各caseのscreenshotを保存。
+- Biome全site、対象TypeScript、4変更Seseragi sourceのcanonical format、diff whitespace:
+  **pass**。`check-content-map.ts`と#763の限定例verifierも引き続きpass。
+- 日本語320px/no-JSの全ページscreenshotをagentが目視確認。コードと出力が区別され、
+  詳細規則と目的別出口まで読める。これは作者・実読者による美学/読解承認ではない。
+- 初期scoped verifierの一段落HTML assertionはrendererのinline spanを考慮して修正。
+  keyboard locale検証はEnter後のnavigation完了を明示的に待つよう修正して再実行。
+- 全siteの `build.test.ts` は単独で再検証中。旧日本語の一文そのものを要求していた
+  assertionを「空白での引数区切り」と `add 1 2` の意味の確認へ置換した。
+  route数・link数・二回buildのhash比較・deadlineは変えない。
+- `check:site`全suite完走は未確認。#763のrepeat-build timeoutと未完了suiteは上の
+  記録を保持し、今回のscoped passを全suiteの成功として扱わない。
+
+状態: 置換実装あり / 上記技術scope pass（全決定性は実行中） / agent編集・表示所見あり /
+作者判断未確認 / 実読者未確認 / 新本文はPR候補。#769の契約に依存するPR #770。

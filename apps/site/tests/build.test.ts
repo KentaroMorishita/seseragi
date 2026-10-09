@@ -479,9 +479,9 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
       "utf8"
     )
     expect(japanese).toContain('<html lang="ja">')
-    expect(textContent(japanese)).toContain(
-      "関数名の後に、引数を空白で区切って書きます"
-    )
+    // Preserve the call explanation, without requiring the retired prose.
+    expect(textContent(japanese)).toContain("add 1 2")
+    expect(textContent(japanese)).toMatch(/引数[^。]*空白/u)
     expect(textContent(japanese)).not.toMatch(/準備中|整備中|#[0-9]+/u)
     expect(textContent(japanese)).not.toMatch(/#[0-9]+/u)
     expect(japanese).toContain("言語リファレンス")
