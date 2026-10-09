@@ -21,10 +21,14 @@ Rust、Haskell、圏論、関数型用語の知識は要求しない。
 Seseragiの記法は必要になった場所で読み方を示す。deep linkから来た読者も、
 例の目的・入力・結果をそのページで理解できるようにする。
 
-作者と隣でコードを読むような、自然でフランクな文体にする。
+作者の個人サイトで、隣のエンジニアとコードについて話している感覚を目指す。
+単に技術書の語尾を柔らかくするだけで会話調とみなさない。
+「このコードを読んだ瞬間に何に気づけるか」から文章を起こす。
 「こんなときは〜してみよう」「〜だよね」は使えるが、語尾を機械的に揃えない。
 英語も自然な会話調で書き、関西弁や日本語の語尾を直訳しない。
-比喩、小さな脱線、遊び心は、読者がコードの関係を掴む助けになるときに使う。
+比喩、小さな脱線、遊び心は積極的に歓迎する。読者がコードの関係を掴む助けに
+なるものを選び、必ず比喩を入れる型や、取って付けた例えにはしない。
+日英それぞれ完成記事を通読して、作者と自然に話している温度か確かめる。
 ポエム、誇張、自画自賛、毎段落の問いかけ、コードの逐語説明は避ける。
 設計思想は実例の理由として伝え、一般的なFP礼賛や数学を前提にしない。
 数学・法則は知りたい人が寄り道できる出口に置く。
@@ -59,7 +63,11 @@ OOPやメソッドchainをSeseragiの標準スタイルにしたりしない。
   コメントは判断に必要な箇所へ短く添える。
 - 通常適用は素直な呼び出し、`$`は右側をまとめて渡す適用、`|>`は値から処理を
   辿る流れとして選ぶ。意味のないリテラル先頭pipelineを標準例にしない。
-- `<$>`は包まれた値への変換、`<*>`は包まれた関数と引数の適用、`>>=`は
+- `<$>` / `<*>` / `>>=` / `do` などはSeseragiの重要な表現手段として
+  **積極的に活かす**。文脈が合うなら記号を第一候補として検討する。
+  名前付きのmap/flatMapや `|>` に回収せず、通常適用・名前付き操作との意味の差が
+  コードから分かる自然な合成を選ぶ。記号の美しさと処理の必然性を両立させる。
+  `<$>`は包まれた値への変換、`<*>`は包まれた関数と引数の適用、`>>=`は
   前の結果に依存する合成、`do`はその合成を順に読む記法として、
   違いが必要になった場所で扱う。具体的な型・instanceの規則はspecと照合する。
   記号を全種類使うノルマや、全てpipelineにする方針は設けない。
@@ -70,7 +78,9 @@ OOPやメソッドchainをSeseragiの標準スタイルにしたりしない。
 
 ## 同じ計算、違う書き方
 
-良い候補。個々の関数や値に一つずつ役割があり、部分適用で再利用を示せる。
+**部分適用を説明する範囲での良い候補**。個々の関数や値に一つずつ役割があり、
+再利用を対比できる。全Docsの美学のお手本や、#766のHero候補ではない。
+この例を代表コードへ自動転用しない。
 完全sourceは `editorial-examples/good/src/main.ssrg`。
 
 ```seseragi
@@ -99,9 +109,9 @@ pub effect fn main = 120 |> calculateTotalPriceForThreeNotebooks |> show |> prin
 
 ### 良い文章の候補
 
-> ノートの単価は120。`price 120` まで渡すと、あとは冊数を待つ関数になる。
-> それに `notebook` と名前を付けておこう。3冊なら `notebook 3`、5冊なら
-> `notebook 5`。単価を覚えている、小さな値札みたいなものだね。
+> `price` は二つ引数を取るのに、ここでは `price 120` で止めている。
+> 残りの冊数はあとで渡せるんだ。これに `notebook` と名前を付けておけば、
+> 3冊は `notebook 3`、5冊は `notebook 5`。単価を毎回書かずに使い回せる。
 >
 > この「引数を一部だけ渡す」書き方を部分適用と呼ぶ。
 > `price` は単価と冊数を受け取るけど、`notebook` が待つのは冊数だけ。
@@ -110,9 +120,9 @@ pub effect fn main = 120 |> calculateTotalPriceForThreeNotebooks |> show |> prin
 
 英語は同じ例の意味を自然に書き直す。
 
-> A notebook costs 120. Give `price` that first argument and you get a function
-> waiting for the quantity. Let's call it `notebook`: `notebook 3` for three,
-> `notebook 5` for five. Think of it as a little price tag that remembers the unit price.
+> `price` takes two arguments, but we stop at `price 120` here. We can supply
+> the quantity later. Call that function `notebook`, and we get `notebook 3`
+> for three or `notebook 5` for five, without repeating the unit price.
 >
 > Supplying only some of a function's arguments is called partial application.
 > `price` takes a unit price and a quantity; `notebook` only needs the quantity.
@@ -157,6 +167,10 @@ Examplesは検証済みsourceへ、Releasesは実在するreleaseへ繋ぐ。
 関数を書く → 関数を値として扱う → 関数を組み合わせる、という流れを候補にし、
 最後に `<$>` / `<*>` / `>>=` / `do` へ進める出口を設ける。
 記事数は固定しない。深い関数URL、型規則、個別記法の参照性を保つ。
+#765では上の限定例とは別に、短く意味のある `fn` と `main`、小さな関数同士の
+自然な合成、記法が必要になる理由が見える検証済みの代表例を選ぶ。
+動くだけの無難な教材を量産しない。「自分でもこう書きたい」と感じるかを、
+コードの正しさと分けてレビューする。#766のHeroもその観点で独立に選定する。
 #764はこの章の最初の一ページを、新しいtyped compositionで日英表示する。
 
 | 確認軸 | 合格の証拠 |
@@ -169,6 +183,10 @@ Examplesは検証済みsourceへ、Releasesは実在するreleaseへ繋ぐ。
 | 表示・導線 | desktop/mobile、no-JS、a11y、locale往復、URL/fragment、章の入口と出口を確認する |
 | 基盤・退行 | scoped checkと必要なproduction/browser/full-site gate。既存のSSG、Reference、実行検証、Playgroundを維持する |
 
+#765の最初の代表章では作者の美学判断と実読者の理解を重点的に検証する。
+残りのroute/APIは、技術検証・agent編集レビュー・作者判断・実読者検証・公開退役を
+独立した状態として記録する。全1,812 API・全routeの実読者承認を一律の退役条件に
+しない。実読者未確認の移行はその状態を明示し、agent自己レビューで埋めない。
 本文数・見出し数・文字数・翻訳ファイルの存在・旧Issueのcloseだけでは合格にしない。
 失敗したgateと未検証の項目はそのまま残件に記録する。
 自然な編集順へ変える際のassertion修正は#740と調整し、同等の意味・導線の

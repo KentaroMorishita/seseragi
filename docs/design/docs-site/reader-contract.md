@@ -37,6 +37,13 @@ are optional; where used, verify both programs' input, output and restrictions.
 | Author review | Actual decision about prose/code aesthetics; do not infer it from agent review |
 | First-time reader | Background, observed understanding, help required, feedback, corrections and subsequent review |
 
+The #765 representative chapter receives focused author and actual-reader
+review. Other route/API migration batches may record actual-reader review as
+not yet performed, independently of technical/editorial verification and public
+retirement. Do not require a human sign-off on every generated symbol, and do
+not turn self-review into a claim that a human read it. Explicit reader gates
+on #601 / individual issues still apply to their stated scope.
+
 No category substitutes for another. A blocked build or browser check stays
 blocked. Automatic word/heading/paragraph counts cannot establish understanding.
 #702 records the new chapter's reading evidence; #706 and #740 own independent
