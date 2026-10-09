@@ -148,9 +148,14 @@ bun run check:site
 - `check-content-map.ts`: 351 unique routes、4 named spec source、pass。
 - `compilerReferenceModules()`: 63 module / 1,812 symbol・instance、重複tuple検証pass。
 - 設計文書のlocal linksと `git diff --check`: pass。
-- `bun run check:site`: 実行中。formatter/TypeScript/prose、現行release CLI build、
-  canonical example実行、compiler metadata freshnessは通過。全site/build/browserの
-  成功としてはまだ扱わない。最終結果はPRへ追記する。
+- `bun run check:site`: **fail / incomplete**。formatter/TypeScript/prose、現行release
+  CLI build、canonical example実行、compiler metadata freshnessは通過。
+  最初の全3,976 routeのproduction SSGは313,628msで成功し、662件のLanguage
+  page-name linkと1,795件のLibrary page-name linkを確認。決定性用の2回目が
+  既存420,000ms上限を超え、420,223msで `spawnSync bun ETIMEDOUT`。
+  元のBun testは失敗後も別suiteへ進むため、所有するcheck process treeを停止した。
+  残りのsuite・最終browser gateは未完了。timeout/assertion/coverageは緩めていない。
+  このPRにsite implementation diffはなく、成功を主張せず#706側へ再検証を残す。
 
 新しい公開ページのbrowser/実読者レビューはこの設計PRの成果ではない。
 次の実装PRでsource・route・英日表示の実物に対して記録する。
