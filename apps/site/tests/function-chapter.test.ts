@@ -131,3 +131,41 @@ test("new chapter Playground programs compile in WASM and execute with matching 
     expect(result.stdout, id).toBe(output.trimEnd())
   }
 })
+
+test("the chapter's follow-up search and missing-value distinction behave as stated", () => {
+  const temporary = mkdtempSync(join(tmpdir(), "seseragi-chapter-followup-"))
+  try {
+    const pipeline = readFileSync(
+      resolve(
+        root,
+        "apps/site/examples/src/language/syntax-reader-pipelines.ssrg"
+      ),
+      "utf8"
+    )
+    writeFileSync(
+      join(temporary, "main.ssrg"),
+      pipeline.replaceAll('matches "b"', 'matches "c"')
+    )
+    const changed = spawnSync(cli, ["run", "main.ssrg"], {
+      cwd: temporary,
+      encoding: "utf8",
+      timeout: 30_000,
+    })
+    expect(changed.status, changed.stderr).toBe(0)
+    expect(changed.stdout).toBe("[> check]\nTrue\nJust > check\nNothing\n")
+    writeFileSync(
+      join(temporary, "main.ssrg"),
+      pipeline.replace("badge <$> picked", "badge picked")
+    )
+    const rejected = spawnSync(cli, ["lint", "main.ssrg"], {
+      cwd: temporary,
+      encoding: "utf8",
+      timeout: 30_000,
+    })
+    expect(rejected.status).not.toBe(0)
+    expect(rejected.stderr).toContain("SES-T0101")
+    expect(rejected.stderr).toContain("Maybe<String>")
+  } finally {
+    rmSync(temporary, { recursive: true, force: true })
+  }
+})
