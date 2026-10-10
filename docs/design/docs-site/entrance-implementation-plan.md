@@ -159,6 +159,34 @@ compiler-owned symbol identity/title から導ける静的 index と必要時の
 同名 symbol の owner/kind、英日 destination、keyboard、empty/no-result、no-JS の
 Language/Library lookup fallback を検証する。検索実装未完了のまま #766 全体を close しない。
 
+生成境界の bounded probe は、#771 `7a0a0390b6bb` の実 source closure と、967 examples /
+63 modules / 1,812 symbols を含む current input から `catalog` を呼び、ページごとの
+identity・locale・route・title・summary を Seseragi で JSON 化した。
+英日各1,988件、計3,976件で route inventory は現行 public manifest と一致。
+別々の Bun1.3.11 process の二回出力は byte一致（SHA256
+`712a9ba7450434689e4c3159d0d1e790fb87d1502e872e1f91a8743b7a0d6659`）。
+全体1,125,198 bytes、gzip130,016 bytes。locale別の gzip は EN61,790 / JA68,301 bytes。
+生成8,300 / 3,384ms、process-tree peak RSS1,188,636 / 1,182,364KiB、残存 process は0。
+compile と各生成は90秒 / 4GiBに制限した。これは検索 index の調査で、全 site の二回生成、
+現在 head の正式CI、browser、公開の合格証拠には使わない。
+[完全な入力・source・toolchain・測定記録](../../reviews/issue-766/2026-10-10-search-catalog-probe.json)
+に local optimized CLI の古い commit metadata と、その制限を明記した。
+
+各localeに同名titleが111種類あり、`empty` と `get` は各8ページある。
+結果の title だけでは識別できないため、compiler-owned module / namespace / item kind / identity
+を同じ入力から持たせる。title/summary は解決済み page から読み、`editorialFor` を再評価しない。
+共有 `referenceRoute` を使う一回の metadata lookup が候補で、client に API inventory を
+コピーしたり、owner を title から推測したりしない。
+
+実装候補は既存の一回の planning process が typed index を返し、transport が locale別の
+静的assetとして一回書く構成。全HTMLへ1.13MBを埋め込まず、常駐rendererや新しいcompilerは作らない。
+RenderResponse の契約変更、plan validation、追加assetの全hash比較、同名symbolの識別、
+実際の planning RSS と全420秒 budget を再測定してから採否を判断する。
+必要時の fetch は、現行 `connect-src 'none'` のままでは使えない。
+同一originの静的indexだけを読む場合に `connect-src 'self'` を検討し、外部接続を増やさず
+browserで成功・失敗時fallbackを確認する。UI は必要時に開き、結果DOMの件数を有限に保つ。
+この probe に owner/kind field、ranking、UI、CSP変更、a11y、no-JS fallback は未実装。
+
 **motion/SEO。** 現行に reduced-motion handling は確認できない。
 追加する transition と既存 path-card hover を reduced-motion で抑制する。
 canonical/hreflang/x-default/description、document lang、h1、repository-owned icon の実取得を保つ。
