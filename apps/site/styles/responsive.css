@@ -228,3 +228,57 @@
     padding: 14px 0 8px;
   }
 }
+
+/* The reader edition keeps every global destination available on mobile. */
+.site-menu {
+  display: none;
+  position: relative;
+}
+.site-menu-trigger {
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.6rem;
+}
+.site-menu .site-nav {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: min(16rem, calc(100vw - 2rem));
+  display: grid;
+  gap: 0;
+  padding: 0.5rem;
+  background: var(--page-background, #fff);
+  border: 1px solid var(--line, #ddd);
+  border-radius: 0.6rem;
+  z-index: 30;
+  box-shadow: 0 8px 28px #0001;
+}
+.site-menu .site-nav a {
+  display: block;
+  padding: 0.65rem;
+}
+@media (max-width: 960px) {
+  .site-header-inner > .site-nav {
+    display: none;
+  }
+  .site-menu {
+    display: block;
+  }
+  .site-menu .site-nav a {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  .path-card:hover {
+    transform: none;
+  }
+}

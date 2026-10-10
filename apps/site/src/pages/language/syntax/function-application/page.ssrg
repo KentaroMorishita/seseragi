@@ -5,6 +5,7 @@ import {
   CodeExample,
   Heading,
   InternalLink,
+  ExternalLink,
   PageDefinition,
   Paragraph,
   Terminal,
@@ -88,17 +89,19 @@ pub fn page -> PageDefinition =
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Annotations and inference" "型注釈と推論",
-          "/docs/language/types/annotations-and-inference/"
+        ExternalLink (
+          localized "Annotations and inference (specification)" "型注釈と推論（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md"
         ),
         Words (localized (en.typesExit ()) (ja.typesExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink
-      (localized "Method calls" "メソッド呼び出し", "/docs/language/syntax/method-calls/"),
+        ExternalLink (
+          localized "Method calls (specification)" "メソッド呼び出し（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
+        ),
         Words (localized (en.methodExit ()) (ja.methodExit ()))
       ]
     ),
@@ -113,9 +116,9 @@ pub fn page -> PageDefinition =
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Operator precedence" "演算子の優先順位",
-          "/docs/language/syntax/operator-precedence/"
+        ExternalLink (
+          localized "Operator precedence (specification)" "演算子の優先順位（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md"
         ),
         Words (localized (en.precedenceExit ()) (ja.precedenceExit ()))
       ]

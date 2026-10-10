@@ -1,22 +1,3 @@
-import * as arrays from "std/array"
-import { page as grammarPage } from "../pages/language/grammar/page"
-import { page as specifierResolutionPage } from "../pages/language/modules/specifier-resolution/page"
-import { page as reExportsPage } from "../pages/language/modules/re-exports/page"
-import { page as namespacesAndResolutionPage } from "../pages/language/modules/namespaces-and-resolution/page"
-import { page as dependencyGraphsPage } from "../pages/language/modules/dependency-graphs/page"
-import { page as initializationPage } from "../pages/language/modules/initialization/page"
-import { page as entryPointsPage } from "../pages/language/modules/entry-points/page"
-import { page as kindsTypePage } from "../pages/language/types/kinds/page"
-import { page as typeParameterScopeTypePage } from "../pages/language/types/type-parameter-scope/page"
-import { page as genericFunctionsTypePage } from "../pages/language/types/generic-functions/page"
-import { page as letPolymorphismAndRankTypePage } from "../pages/language/types/let-polymorphism-and-rank/page"
-import { page as genericAdtsTypePage } from "../pages/language/types/generic-adts/page"
-import { page as genericStructsTypePage } from "../pages/language/types/generic-structs/page"
-import { page as genericImplsAndMethodsTypePage } from "../pages/language/types/generic-impls-and-methods/page"
-import { page as genericAliasesTypePage } from "../pages/language/types/generic-aliases/page"
-import { page as newtypesTypePage } from "../pages/language/types/newtypes/page"
-import { page as varianceTypePage } from "../pages/language/types/variance/page"
-import { page as erasureAndRuntimeRepresentationTypePage } from "../pages/language/types/erasure-and-runtime-representation/page"
 import { BuildInput } from "../model/build"
 import { localized } from "../model/locale"
 import {
@@ -24,480 +5,51 @@ import {
   NavigationArea,
   NavigationGroup,
   NavigationSection,
-  PageDefinition,
   SiteCatalog
 } from "../model/page"
-import { page as homePage } from "../pages/home/page"
-import { page as docsOverviewPage } from "../pages/docs/overview/page"
-import { page as firstRunPage } from "../pages/docs/first-run/page"
-import { page as languageOverviewPage } from "../pages/language/overview/page"
-import { page as whatIsSeseragiPage } from "../pages/language/model/what-is-seseragi/page"
-import { page as designPrinciplesPage } from "../pages/language/model/design-principles/page"
-import { page as expressionOrientedPage } from "../pages/language/model/expression-oriented/page"
-import { page as immutableByDefaultPage } from "../pages/language/model/immutable-by-default/page"
-import { page as noHiddenDangerPage } from "../pages/language/model/no-hidden-danger/page"
-import { page as backendIndependentSemanticsPage } from "../pages/language/model/backend-independent-semantics/page"
-import { page as diagnosableBehaviorPage } from "../pages/language/model/diagnosable-behavior/page"
-import { page as visibleCostsPage } from "../pages/language/model/visible-costs/page"
-import { page as readableDensityPage } from "../pages/language/model/readable-density/page"
-import { page as programsPage } from "../pages/language/model/programs/page"
-import { page as nonFeaturesPage } from "../pages/language/model/non-features/page"
-import { page as functionApplicationPage } from "../pages/language/syntax/function-application/page"
-import { page as methodCallsPage } from "../pages/language/syntax/method-calls/page"
-import { page as pipelinesPage } from "../pages/language/syntax/pipelines-and-low-precedence-application/page"
-import { page as operatorPrecedencePage } from "../pages/language/syntax/operator-precedence/page"
-import { page as customOperatorsPage } from "../pages/language/syntax/custom-operators/page"
-import { page as reservedWordsPage } from "../pages/language/syntax/reserved-words-and-names/page"
-import { page as optionalRecordFieldsPage } from "../pages/language/syntax/optional-record-fields/page"
-import { page as sourceTextPage } from "../pages/language/syntax/source-text/page"
-import { page as literalsPage } from "../pages/language/syntax/literals/page"
-import { page as characterStringEscapesPage } from "../pages/language/syntax/character-string-escapes/page"
-import { page as layoutLineContinuationPage } from "../pages/language/syntax/layout-and-line-continuation/page"
-import { page as typeSystemPage } from "../pages/language/types/type-system/page"
-import { page as builtInTypesPage } from "../pages/language/types/built-in-types/page"
-import { page as typeConstructorsPage } from "../pages/language/types/type-constructors/page"
-import { page as annotationsInferencePage } from "../pages/language/types/annotations-and-inference/page"
-import { page as polymorphismPage } from "../pages/language/types/polymorphism/page"
-import { page as nominalStructuralPage } from "../pages/language/types/nominal-and-structural-types/page"
-import { page as optionalRecordTypePage } from "../pages/language/types/optional-record-fields/page"
-import { page as closedRecordsPage } from "../pages/language/types/closed-records/page"
-import { page as requirementMergePage } from "../pages/language/types/requirement-merge/page"
-import { page as functionTypesPage } from "../pages/language/types/function-types-and-currying/page"
-import { page as identityCoercionPage } from "../pages/language/types/type-identity-and-coercion/page"
-import { page as recursiveDeclarationsPage } from "../pages/language/types/recursive-declarations/page"
-import { page as evaluationPage } from "../pages/language/expressions/evaluation/page"
-import { page as blocksLocalPage } from "../pages/language/expressions/blocks-and-local-declarations/page"
-import { page as conditionalsPage } from "../pages/language/expressions/conditionals/page"
-import { page as rangesComprehensionsPage } from "../pages/language/expressions/ranges-and-comprehensions/page"
-import { page as lambdasPage } from "../pages/language/expressions/lambdas/page"
-import { page as algebraicDataTypesPage } from "../pages/language/data/algebraic-data-types/page"
-import { page as structsPage } from "../pages/language/data/structs/page"
-import { page as newtypesPage } from "../pages/language/data/newtypes/page"
-import { page as recordsPage } from "../pages/language/data/records/page"
-import { page as tuplesArraysListsPage } from "../pages/language/data/tuples-arrays-and-lists/page"
-import { page as implsMethodsPage } from "../pages/language/data/impls-and-methods/page"
-import { page as operatorOverloadsPage } from "../pages/language/data/operator-overloads/page"
-import { page as bindingRulesPage } from "../pages/language/patterns/binding-rules/page"
-import { page as irrefutablePatternsPage } from "../pages/language/patterns/irrefutable-patterns/page"
-import { page as matchPage } from "../pages/language/patterns/match/page"
-import { page as traitModelPage } from "../pages/language/traits/model/page"
-import { page as traitDeclarationsPage } from "../pages/language/traits/declarations/page"
-import { page as traitInstancesPage } from "../pages/language/traits/instances/page"
-import { page as traitConstraintsPage } from "../pages/language/traits/constraints/page"
-import { page as traitMethodCallsPage } from "../pages/language/traits/method-calls/page"
-import { page as traitCoherencePage } from "../pages/language/traits/coherence/page"
-import { page as traitStandardOperatorsPage } from "../pages/language/traits/standard-operators/page"
-import { page as traitLawsPage } from "../pages/language/traits/laws/page"
-import { page as traitDerivingPage } from "../pages/language/traits/deriving/page"
-import { page as methodsVersusTraitsPage } from "../pages/language/traits/methods-versus-traits/page"
-import { page as doNotationPage } from "../pages/language/traits/do-notation/page"
-import { page as doDesugaringPage } from "../pages/language/traits/do-desugaring/page"
-import { page as doBlockTypingPage } from "../pages/language/traits/do-block-typing/page"
-import { page as pureExpressionsPage } from "../pages/language/effects/pure-expressions/page"
-import { page as maybePage } from "../pages/language/effects/maybe/page"
-import { page as eitherPage } from "../pages/language/effects/either/page"
-import { page as effectTypePage } from "../pages/language/effects/effect-type/page"
-import { page as effectContractFormPage } from "../pages/language/effects/effect-functions-contract-form/page"
-import { page as effectInferredFormPage } from "../pages/language/effects/effect-functions-inferred-form/page"
-import { page as effectfulForPage } from "../pages/language/effects/effectful-for/page"
-import { page as environmentRequirementsPage } from "../pages/language/effects/environment-requirements/page"
-import { page as effectErrorChannelsPage } from "../pages/language/effects/error-channels/page"
-import { page as taskPage } from "../pages/language/effects/task/page"
-import { page as sequentialParallelPage } from "../pages/language/effects/sequential-and-parallel/page"
-import { page as runtimeBoundariesPage } from "../pages/language/effects/runtime-boundaries/page"
-import { page as defectsPage } from "../pages/language/effects/defects/page"
-import { page as cancellationResourcesPage } from "../pages/language/effects/cancellation-and-resources/page"
-import { page as schedulerFairnessPage } from "../pages/language/effects/scheduler-fairness/page"
-import { page as fiberSupervisionPage } from "../pages/language/effects/fiber-supervision/page"
-import { page as signalsTransactionsPage } from "../pages/language/effects/signals-and-transactions/page"
-import { page as derivedSignalsPage } from "../pages/language/effects/derived-signals/page"
-import { page as signalOperatorsPage } from "../pages/language/effects/signal-operators/page"
-import { page as subscriptionsLifetimePage } from "../pages/language/effects/subscriptions-and-lifetime/page"
-import { page as exceptionsAlgebraicPage } from "../pages/language/effects/exceptions-and-algebraic-effects/page"
-import { page as moduleIdentityPage } from "../pages/language/modules/identity/page"
-import { page as packagesPage } from "../pages/language/modules/packages/page"
-import { page as topLevelPage } from "../pages/language/modules/top-level/page"
-import { page as visibilityPage } from "../pages/language/modules/visibility/page"
-import { page as importsPage } from "../pages/language/modules/imports/page"
-import { page as libraryOverviewPage } from "../pages/library/overview/page"
-import { page as examplesPage } from "../pages/examples/page"
-import { page as releasesPage } from "../pages/releases/page"
-import { referenceGroups } from "../reference/catalog"
-
-fn languageArea input: BuildInput -> NavigationArea = NavigationArea {
-  id: "language",
-  title: localized "Language Reference" "言語リファレンス",
-  description: localized
-    "Understand each language concept, then inspect its exact rules."
-    "言語の各概念から、正確な規則と関連項目へ辿れます。",
-  landing: languageOverviewPage (),
-  groups: [
-    NavigationGroup {
-      id: "orientation",
-      title: localized "Understand Seseragi" "Seseragiを理解する",
-      sections: [
-        NavigationSection {
-          id: "language-model",
-          title: localized "The language model" "言語モデル",
-          kind: FlatSection,
-          overview: whatIsSeseragiPage (),
-          pages: [programsPage (), nonFeaturesPage ()]
-        },
-        NavigationSection {
-          id: "design-principles",
-          title: localized "Design principles" "設計原則",
-          kind: FlatSection,
-          overview: designPrinciplesPage (),
-          pages: [
-            expressionOrientedPage (),
-            immutableByDefaultPage (),
-            noHiddenDangerPage (),
-            backendIndependentSemanticsPage (),
-            diagnosableBehaviorPage (),
-            visibleCostsPage (),
-            readableDensityPage ()
-          ]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "source-and-syntax",
-      title: localized "Source and syntax" "ソースと構文",
-      sections: [
-        NavigationSection {
-          id: "source-forms",
-          title: localized "Reading source" "ソースを読む",
-          kind: FlatSection,
-          overview: sourceTextPage (),
-          pages: [
-            literalsPage (),
-            characterStringEscapesPage (),
-            layoutLineContinuationPage (),
-            grammarPage input
-          ]
-        },
-        NavigationSection {
-          id: "names-and-fields",
-          title: localized "Names and fields" "名前とフィールド",
-          kind: FlatSection,
-          overview: reservedWordsPage (),
-          pages: [optionalRecordFieldsPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "functions-and-operators",
-      title: localized "Functions and operators" "関数と演算子",
-      sections: [
-        NavigationSection {
-          id: "calling-functions",
-          title: localized "Calling functions" "関数を呼び出す",
-          kind: FlatSection,
-          overview: functionApplicationPage (),
-          pages: [methodCallsPage (), pipelinesPage ()]
-        },
-        NavigationSection {
-          id: "operators",
-          title: localized "Operators" "演算子",
-          kind: FlatSection,
-          overview: operatorPrecedencePage (),
-          pages: [customOperatorsPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "types",
-      title: localized "Types" "型",
-      sections: [
-        NavigationSection {
-          id: "understanding-types",
-          title: localized "Understanding types" "型を理解する",
-          kind: FlatSection,
-          overview: typeSystemPage (),
-          pages: [
-            builtInTypesPage (),
-            typeConstructorsPage (),
-            annotationsInferencePage (),
-            polymorphismPage ()
-          ]
-        },
-        NavigationSection {
-          id: "data-shapes",
-          title: localized "Nominal and structural data" "名前付き型と構造的な型",
-          kind: FlatSection,
-          overview: nominalStructuralPage (),
-          pages: [
-            optionalRecordTypePage (),
-            closedRecordsPage (),
-            requirementMergePage ()
-          ]
-        },
-        NavigationSection {
-          id: "function-and-recursive-types",
-          title: localized "Functions and recursion" "関数と再帰",
-          kind: FlatSection,
-          overview: functionTypesPage (),
-          pages: [identityCoercionPage (), recursiveDeclarationsPage ()]
-        },
-        NavigationSection {
-          id: "generic-types",
-          title: localized "Generic types" "ジェネリック型",
-          kind: FlatSection,
-          overview: kindsTypePage (),
-          pages: [
-            typeParameterScopeTypePage (),
-            genericFunctionsTypePage (),
-            letPolymorphismAndRankTypePage (),
-            genericAdtsTypePage (),
-            genericStructsTypePage (),
-            genericImplsAndMethodsTypePage (),
-            genericAliasesTypePage ()
-          ]
-        },
-        NavigationSection {
-          id: "representation-and-variance",
-          title: localized "Identity and representation" "同一性と表現",
-          kind: FlatSection,
-          overview: newtypesTypePage (),
-          pages: [varianceTypePage (), erasureAndRuntimeRepresentationTypePage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "expressions",
-      title: localized "Expressions" "式",
-      sections: [
-        NavigationSection {
-          id: "evaluation-and-scope",
-          title: localized "Evaluation and local scope" "評価とローカルスコープ",
-          kind: FlatSection,
-          overview: evaluationPage (),
-          pages: [blocksLocalPage (), conditionalsPage (), lambdasPage ()]
-        },
-        NavigationSection {
-          id: "ranges-and-comprehensions",
-          title: localized "Ranges and comprehensions" "範囲と内包表記",
-          kind: FlatSection,
-          overview: rangesComprehensionsPage (),
-          pages: []
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "data",
-      title: localized "Data" "データ",
-      sections: [
-        NavigationSection {
-          id: "nominal-data",
-          title: localized "Nominal data" "名前を持つデータ型",
-          kind: FlatSection,
-          overview: algebraicDataTypesPage (),
-          pages: [structsPage (), newtypesPage ()]
-        },
-        NavigationSection {
-          id: "structural-and-collection-data",
-          title: localized "Structural and collection data" "構造的データとコレクション",
-          kind: FlatSection,
-          overview: recordsPage (),
-          pages: [tuplesArraysListsPage ()]
-        },
-        NavigationSection {
-          id: "methods-and-operators",
-          title: localized "Methods and operator overloads" "メソッドと演算子オーバーロード",
-          kind: FlatSection,
-          overview: implsMethodsPage (),
-          pages: [operatorOverloadsPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "patterns",
-      title: localized "Patterns" "パターン",
-      sections: [NavigationSection {
-        id: "binding-and-matching",
-        title: localized "Binding and matching" "束縛とパターン照合",
-        kind: FlatSection,
-        overview: bindingRulesPage (),
-        pages: [irrefutablePatternsPage (), matchPage ()]
-      }]
-    },
-    NavigationGroup {
-      id: "traits-and-abstraction",
-      title: localized "Traits and abstraction" "traitと抽象化",
-      sections: [
-        NavigationSection {
-          id: "trait-evidence",
-          title: localized "Trait basics" "traitの基本",
-          kind: FlatSection,
-          overview: traitModelPage (),
-          pages: [
-            traitDeclarationsPage (),
-            traitInstancesPage (),
-            traitConstraintsPage (),
-            traitMethodCallsPage ()
-          ]
-        },
-        NavigationSection {
-          id: "coherence-and-contracts",
-          title: localized "Coherence and contracts" "一貫性と契約",
-          kind: FlatSection,
-          overview: traitCoherencePage (),
-          pages: [
-            traitStandardOperatorsPage (),
-            traitLawsPage (),
-            traitDerivingPage (),
-            methodsVersusTraitsPage ()
-          ]
-        },
-        NavigationSection {
-          id: "do-notation",
-          title: localized "Do notation" "do記法",
-          kind: FlatSection,
-          overview: doNotationPage (),
-          pages: [doDesugaringPage (), doBlockTypingPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "effects-and-failure",
-      title: localized "Effects and failure" "Effectと失敗",
-      sections: [
-        NavigationSection {
-          id: "values-and-computations",
-          title: localized "Values and computations" "値と計算",
-          kind: FlatSection,
-          overview: pureExpressionsPage (),
-          pages: [maybePage (), eitherPage (), effectTypePage ()]
-        },
-        NavigationSection {
-          id: "effect-programs",
-          title: localized "Writing Effect programs" "Effectを組み立てる",
-          kind: FlatSection,
-          overview: effectContractFormPage (),
-          pages: [
-            effectInferredFormPage (),
-            effectfulForPage (),
-            environmentRequirementsPage (),
-            effectErrorChannelsPage (),
-            taskPage ()
-          ]
-        },
-        NavigationSection {
-          id: "effect-execution",
-          title: localized "Execution and faults" "実行と異常終了",
-          kind: FlatSection,
-          overview: runtimeBoundariesPage (),
-          pages: [defectsPage (), exceptionsAlgebraicPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "concurrency-and-resources",
-      title: localized "Concurrency and resources" "並行処理とリソース",
-      sections: [
-        NavigationSection {
-          id: "execution-order",
-          title: localized "Execution order" "実行順序",
-          kind: FlatSection,
-          overview: sequentialParallelPage (),
-          pages: []
-        },
-        NavigationSection {
-          id: "runtime-ownership",
-          title: localized "Runtime ownership" "実行時の所有関係",
-          kind: FlatSection,
-          overview: cancellationResourcesPage (),
-          pages: [schedulerFairnessPage (), fiberSupervisionPage ()]
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "signals",
-      title: localized "Signals" "Signal",
-      sections: [
-        NavigationSection {
-          id: "reactive-state",
-          title: localized "Reactive state" "反応的な状態",
-          kind: FlatSection,
-          overview: signalsTransactionsPage (),
-          pages: [derivedSignalsPage (), signalOperatorsPage ()]
-        },
-        NavigationSection {
-          id: "observation-boundaries",
-          title: localized "Observation and boundaries" "監視と境界",
-          kind: FlatSection,
-          overview: subscriptionsLifetimePage (),
-          pages: []
-        }
-      ]
-    },
-    NavigationGroup {
-      id: "modules",
-      title: localized "Modules and packages" "モジュールとパッケージ",
-      sections: [
-        NavigationSection {
-          id: "module-boundaries",
-          title: localized "Module boundaries" "モジュールの境界",
-          kind: FlatSection,
-          overview: moduleIdentityPage (),
-          pages: [packagesPage (), topLevelPage ()]
-        },
-        NavigationSection {
-          id: "module-interfaces",
-          title: localized "Public interfaces" "公開インターフェース",
-          kind: FlatSection,
-          overview: visibilityPage (),
-          pages: [importsPage (), reExportsPage ()]
-        },
-        NavigationSection {
-          id: "module-resolution",
-          title: localized "Resolution and dependency graph" "名前解決と依存グラフ",
-          kind: FlatSection,
-          overview: specifierResolutionPage (),
-          pages: [namespacesAndResolutionPage (), dependencyGraphsPage ()]
-        },
-        NavigationSection {
-          id: "module-execution",
-          title: localized "Initialization and entry" "初期化と実行入口",
-          kind: FlatSection,
-          overview: initializationPage (),
-          pages: [entryPointsPage ()]
-        }
-      ]
-    }
-  ]
-}
-
-fn libraryArea input: BuildInput -> NavigationArea = NavigationArea {
-  id: "library",
-  title: localized "Standard Library" "標準ライブラリ",
-  description: localized "Look up modules and public symbols." "標準モジュールと公開シンボルを調べられます。",
-  landing: libraryOverviewPage (),
-  groups: referenceGroups input.referenceModules
-}
-
-fn sectionPages section: NavigationSection -> Array<PageDefinition> = arrays.concat [
-  [section.overview],
-  section.pages
-]
-
-fn groupPages group: NavigationGroup -> Array<PageDefinition> =
-  arrays.concat [sectionPages section | section <- group.sections]
-
-fn areaPages area: NavigationArea -> Array<PageDefinition> = arrays.concat [
-  [area.landing],
-  arrays.concat [groupPages group | group <- area.groups]
-]
+import * as entrance from "../pages/entrance"
+import { page as application } from "../pages/language/syntax/function-application/page"
+import { page as currying } from "../pages/language/types/function-types-and-currying/page"
+import { page as composition } from "../pages/language/syntax/pipelines-and-low-precedence-application/page"
 
 pub fn catalog input: BuildInput -> SiteCatalog = {
-  let home = homePage ()
-  let areas = [languageArea input, libraryArea input]
+  let home = entrance.home ()
+  let first = application ()
+  let second = currying ()
+  let third = composition ()
+  let landing = entrance.language ()
+  let area = NavigationArea {
+    id: "language",
+    title: localized "Functions and notation" "関数と記法",
+    description: localized
+      "Start with a search key. Keep a condition, then connect the calls."
+      "検索用の文字列を作るところから。条件を手元に残し、呼び出しをつないでみよう。",
+    landing,
+    groups: [NavigationGroup {
+      id: "functions-and-notation",
+      title: localized "Three small steps" "三つの小さな段階",
+      sections: [NavigationSection {
+        id: "functions",
+        title: localized "Functions and notation" "関数と記法",
+        kind: FlatSection,
+        overview: first,
+        pages: [second, third]
+      }]
+    }]
+  }
   SiteCatalog {
     home,
-    areas,
-    pages: arrays.concat [
-      [home, docsOverviewPage (), firstRunPage (), examplesPage (), releasesPage ()],
-      arrays.concat [areaPages area | area <- areas]
+    areas: [area],
+    pages: [
+      home,
+      entrance.docs (),
+      entrance.firstRun (),
+      entrance.examples (),
+      entrance.releases (),
+      landing,
+      first,
+      second,
+      third
     ]
   }
 }

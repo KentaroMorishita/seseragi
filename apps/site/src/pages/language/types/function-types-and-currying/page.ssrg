@@ -5,6 +5,7 @@ import {
   CodeExample,
   Heading,
   InternalLink,
+  ExternalLink,
   PageDefinition,
   Paragraph,
   Terminal,
@@ -78,32 +79,36 @@ pub fn page -> PageDefinition =
     ),
     Paragraph (
       [
-        InternalLink
-      (localized "Lambda expressions" "ラムダ式", "/docs/language/expressions/lambdas/"),
+        ExternalLink (
+          localized "Lambda expressions (specification)" "ラムダ式（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md"
+        ),
         Words (localized (en.lambdaExit ()) (ja.lambdaExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Annotations and inference" "型注釈と推論",
-          "/docs/language/types/annotations-and-inference/"
+        ExternalLink (
+          localized "Annotations and inference (specification)" "型注釈と推論（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md"
         ),
         Words (localized (en.annotationsExit ()) (ja.annotationsExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink
-      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/"),
+        ExternalLink (
+          localized "Polymorphism (specification)" "多相性（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md"
+        ),
         Words (localized (en.genericExit ()) (ja.genericExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Custom operators and fixity" "カスタム演算子と結合規則",
-          "/docs/language/syntax/custom-operators/"
+        ExternalLink (
+          localized "Custom operators and fixity (specification)" "カスタム演算子と結合規則（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md"
         ),
         Words (localized (en.operatorExit ()) (ja.operatorExit ()))
       ]

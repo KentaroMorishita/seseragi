@@ -1,7 +1,7 @@
 import { Messages } from "./model"
 
 pub fn messages -> Messages = Messages {
-  documentation: "Reference",
+  documentation: "Docs",
   playground: "Playground",
   tour: "Tour",
   examples: "Examples",
