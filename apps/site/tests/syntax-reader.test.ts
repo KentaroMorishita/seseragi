@@ -16,6 +16,7 @@ import type {
 } from "../../playground/src/compiler/types"
 import { sourceFromPlaygroundUrl } from "../../playground/src/workspace/source-link"
 import { canonicalExample } from "../scripts/canonical-example"
+import { chapterExamples } from "../scripts/function-chapter-examples"
 import { syntaxExampleCases, syntaxExamples } from "../scripts/syntax-examples"
 import { renderPageClosure } from "./render-page-closure"
 
@@ -299,7 +300,11 @@ const titles: Record<string, { en: string; ja: string }> = {
 
 test("syntax render: all eleven real page modules preserve bilingual identities and executable panels", () => {
   const temporary = mkdtempSync(join(tmpdir(), "seseragi-syntax-render-"))
-  const allExamples = [...examples, ...supplementalExamples]
+  const allExamples = [
+    ...examples,
+    ...supplementalExamples,
+    ...chapterExamples(playgroundUrl),
+  ]
   try {
     const encodedExamples = allExamples
       .map(
@@ -454,6 +459,26 @@ pub effect fn main = {
       if (example.key === "layout") {
         expect(code(codePanels[0])).toMatch(
           /\n[\t ]*3\n[\t ]*\|> double\n[\t ]*\|> addOne/u
+        )
+      }
+      if (example.key === "pipelines") {
+        const grouping = allExamples.find(
+          (value) => value.id === "chapter-dollar-grouping"
+        )
+        expect(codePanels.map(code), page.route).toContain(grouping?.source)
+        expect(terminals(page.html), page.route).toContain("READY")
+        const prose = text(page.html)
+        for (const shape of ["if", "match", "do"])
+          expect(prose, page.route).toContain(shape)
+        expect(prose, page.route).toContain(
+          page.locale === "ja"
+            ? "$は左の関数を一度、次に右の引数を一度評価し"
+            : "$ evaluates the left function once, then the right argument once"
+        )
+        expect(prose, page.route).toContain(
+          page.locale === "ja"
+            ? "|>は左の値を一度、次に右の関数を一度評価し"
+            : "|> evaluates the left value once, then the right function once"
         )
       }
       if (example.key === "escapes") {

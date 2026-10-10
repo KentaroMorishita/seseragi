@@ -8,13 +8,16 @@ pub fn copy -> ArticleCopy = ArticleCopy {
 pub fn title -> String = (copy ()).title
 
 pub fn opening -> String =
-  "検索文字は、ひとまず\"b\"。候補の名前と一緒に毎回渡してもいいけど、matchesへ検索文字だけ渡したらどうなるだろう。その条件で検索する関数が手元に残り、filterへ渡せる。"
+  "検索文字は、ひとまず\"b\"。候補の名前と一緒に毎回渡してもいいけど、matchesへ検索文字だけ渡したらどうなるだろう。条件を決めた関数が手元に残り、全コマンドにもショートカットにも、同じ条件をfilterへ渡せる。"
 
 pub fn partial -> String =
-  "matchesは検索文字、候補の名前の順に受け取り、Boolを返す。だからmatches \"b\"の型はString -> Bool。buildsは検索結果ではなく、検索する関数だ。arrays.filterが各ラベルにその関数を使い、残す候補を決める。最初の出力には、commandsにあった空白や綴りがそのまま残っている。"
+  "matchesは検索文字、候補の名前の順に受け取り、Boolを返す。だからmatches \"b\"の型はString -> Bool。buildsは検索結果ではなく、検索する関数だ。arrays.filterが各ラベルにその関数を使い、残す候補を決める。最初の出力はcommandsの空白や綴りを保ち、二つ目は同じ条件でショートカットを絞り込んだ結果になる。"
+
+pub fn effects -> String =
+  "mainのdoは、この二つの出力Effectを順につなぐ。mainが返した一つのEffectを実行機構が実行すると、候補、ショートカットの順に表示される。絞り込み自体はpureな計算のままだ。"
 
 pub fn lambda -> String =
-  "必要な場所で関数を作ることもできる。\\nameから始まるラムダは、空白を取ったラベルの長さを測る、その場だけの関数。mapへ渡すとArray<Int>ができる。一度しか使わない計算に、無理に名前を増やす必要はないよ。この長さはUnicode scalar数で、端末の表示幅とは別。"
+  "検索からは離れて、ラベルの空白を取ったあとの文字数を数える小さな練習もしてみよう。ここは検索とは独立した計算。\\labelから始まるラムダは、一つのラベルの長さを測る、その場だけの関数だ。mapへ渡すとArray<Int>のlengthsができる。この長さはUnicode scalar数で、端末の表示幅とは別。"
 
 pub fn section -> String =
   "演算子も関数値として渡せる。(+)は足し算のカリー化された関数。reduce 0 (+)が長さを足し合わせ、合計19を返す。こうして演算子を括弧で参照する書き方がoperator section。filter、map、reduceのように関数を受け取るものを、高階関数と呼ぶ。"

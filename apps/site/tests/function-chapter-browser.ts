@@ -22,9 +22,13 @@ const chapter = [
   },
   {
     route: "/docs/language/types/function-types-and-currying/",
-    sources: ["chapter-function-values", "pilot-currying"],
+    sources: [
+      "chapter-function-values",
+      "chapter-label-lengths",
+      "pilot-currying",
+    ],
     invalid: "pilot-currying",
-    outputs: ["[ Build , bundle]\n[5, 6, 5, 3]\n19", "3, 3"],
+    outputs: ["[ Build , bundle]\n[bundle]", "[5, 6, 5, 3]\n19", "3, 3"],
     anchors: [
       "understand-this",
       "reading-the-example",
@@ -42,9 +46,9 @@ const chapter = [
   },
   {
     route: "/docs/language/syntax/pipelines-and-low-precedence-application/",
-    sources: ["syntax-reader-pipelines"],
+    sources: ["syntax-reader-pipelines", "chapter-dollar-grouping"],
     invalid: "syntax-reader-pipelines",
-    outputs: ["[> build, > bundle]\nTrue\nJust > build\nNothing"],
+    outputs: ["[> build, > bundle]\nTrue\nJust > build\nNothing", "READY"],
     anchors: [
       "understand-this",
       "purpose",

@@ -38,6 +38,12 @@ pub fn page -> PageDefinition =
     Heading ("rules", localized "Grouping and evaluation rules" "まとまりと評価の詳しい規則"),
     prose (en.pipelineRules ()) (ja.pipelineRules ()),
     prose (en.dollarRules ()) (ja.dollarRules ()),
+    prose (en.dollarShapes ()) (ja.dollarShapes ()),
+    CodeExample (
+      "chapter-dollar-grouping",
+      localized "Pass a whole conditional after a newline" "改行のあとに、条件式をそのまま渡す"
+    ),
+    Terminal (localized "Output" "実行結果", "READY"),
     prose (en.evaluation ()) (ja.evaluation ()),
     Heading
       ("mistakes", localized "Application keeps the parameter type" "適用の書き方を変えても、引数の型は同じ"),

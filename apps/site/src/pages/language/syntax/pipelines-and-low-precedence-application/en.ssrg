@@ -29,7 +29,10 @@ pub fn dollarRules -> String =
   "$ associates right: f $ g $ x means f (g x). Binary operators other than Signal assignment := bind more tightly, so f $ x + 1 passes all of x + 1 to f. Pipelines also bind more tightly: render $ values |> transform means render (transform values)."
 
 pub fn evaluation -> String =
-  "Both forms have ordinary application type checks and evaluation order: evaluate the function and arguments, then call the body. Neither |> nor $ delays work, starts parallel execution or runs an Effect. They change how application is written."
+  "$ evaluates the left function once, then the right argument once, then applies that function once. |> evaluates the left value once, then the right function once, then applies that function once. Both use ordinary application type checks. Neither form delays work, starts parallel execution or runs an Effect."
+
+pub fn dollarShapes -> String =
+  "The right operand can start on the next line after $, and can be an unparenthesized if, match, do or lambda. Below, the whole if expression is the argument to text.toUpper. status True selects \"ready\" and produces \"READY\"; try False to get \"WAITING\"."
 
 pub fn rejected -> String =
   "The example below passes Int to decorate, which accepts String, so the compiler reports SES-T0101. Supply a String, or convert the number explicitly with show 3 before applying decorate. A pipeline does not invent the conversion."

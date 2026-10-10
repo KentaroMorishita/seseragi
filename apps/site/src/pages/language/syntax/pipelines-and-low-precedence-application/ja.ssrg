@@ -29,7 +29,10 @@ pub fn dollarRules -> String =
   "$は右からまとまる。f $ g $ xはf (g x)。Signalへの代入:=を除く二項演算子は$より強くまとまるので、f $ x + 1ではx + 1全体をfへ渡す。|>も$より強い。render $ values |> transformはrender (transform values)になる。"
 
 pub fn evaluation -> String =
-  "どちらも普通の適用と同じ型検査・評価順序。関数と引数を評価してから、本体を呼ぶ。|>や$だけで遅延計算、並列実行、Effectの実行が始まることはない。変わるのは、適用の書き方だ。"
+  "$は左の関数を一度、次に右の引数を一度評価し、関数適用を一度行う。|>は左の値を一度、次に右の関数を一度評価し、その関数適用を一度行う。型検査はどちらも普通の適用と同じ。これらの記号だけで遅延計算、並列実行、Effectの実行が始まることはない。"
+
+pub fn dollarShapes -> String =
+  "$の直後では改行でき、右辺にif、match、do、ラムダを括弧なしで置ける。下の例では、if式全体がtext.toUpperの引数だ。status Trueは\"ready\"を選び、\"READY\"を返す。Falseにすると\"WAITING\"になるよ。"
 
 pub fn rejected -> String =
   "下の例はStringを受け取るdecorateへIntを渡すので、SES-T0101になる。Stringを渡すか、show 3で明示的に文字列へ変えてからdecorateを使おう。パイプラインが型変換を補うことはない。"

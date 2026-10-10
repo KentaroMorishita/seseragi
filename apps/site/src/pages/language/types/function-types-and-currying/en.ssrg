@@ -8,13 +8,16 @@ pub fn copy -> ArticleCopy = ArticleCopy {
 pub fn title -> String = (copy ()).title
 
 pub fn opening -> String =
-  "The search text is \"b\" for now. We could pass it with every command name, but watch what happens when matches receives only that first argument. The search itself becomes a value we can hand to filter."
+  "The search text is \"b\" for now. We could pass it with every command name, but watch what happens when matches receives only that first argument. We get a condition we can hand to filter, for the full command list and for our shortcuts."
 
 pub fn partial -> String =
-  "matches takes a query, then a name, and returns Bool. matches \"b\" therefore has type String -> Bool. builds is that function, not a search result. arrays.filter uses it to decide which original labels to keep; the first output still contains the spaces and spelling from commands."
+  "matches takes a query, then a name, and returns Bool. matches \"b\" therefore has type String -> Bool. builds is that function, not a search result. arrays.filter calls it for each label to decide what to keep. The first output preserves the spaces and spelling from commands; the second filters the shortcut list with the same condition."
+
+pub fn effects -> String =
+  "The do block in main sequences these two output Effects. main returns the combined Effect, which the runner executes to print the command choices and then the shortcuts. The filtering itself is a pure calculation."
 
 pub fn lambda -> String =
-  "A function can also live right where it is needed. The lambda beginning with \\name measures each trimmed label once, so map produces an Array<Int>. There is no need to give that one-off calculation a permanent name. These lengths count Unicode scalars, not terminal display columns."
+  "For a separate small exercise, count the text in the labels after trimming it. This calculation is independent of the search above. The lambda beginning with \\label is a one-off function that measures one label; map gives us the lengths as Array<Int>. These lengths count Unicode scalars, not terminal display columns."
 
 pub fn section -> String =
   "An operator can be a function value too: (+) is the curried addition function. reduce 0 (+) combines the lengths into their total, 19. This parenthesized operator reference is an operator section. Passing a function to filter, map or reduce is what makes those operations higher-order functions."

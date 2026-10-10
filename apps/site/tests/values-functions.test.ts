@@ -326,16 +326,29 @@ test("pilot pages render canonical examples, exact output, and same-identity loc
             : path === "types/function-types-and-currying"
               ? "chapter-function-values"
               : undefined
+        const secondary =
+          path === "types/function-types-and-currying"
+            ? "chapter-label-lengths"
+            : undefined
+        const secondaryCode = secondary
+          ? [
+              readFileSync(
+                join(root, `${exampleRoot}/src/language/${secondary}.ssrg`),
+                "utf8"
+              ),
+            ]
+          : []
         const expectedCode = chapter
           ? [
               readFileSync(
                 join(root, `${exampleRoot}/src/language/${chapter}.ssrg`),
                 "utf8"
               ),
+              ...secondaryCode,
               source,
               rejected,
             ]
-          : [source, rejected]
+          : [source, ...secondaryCode, rejected]
         expect(code, `${prefix}${route}`).toEqual(expectedCode)
         const terminals = [
           ...html.matchAll(
@@ -343,6 +356,16 @@ test("pilot pages render canonical examples, exact output, and same-identity loc
           ),
         ].map((match) => text(match[1]))
         expect(terminals, route).toContain(output)
+        if (path === "types/function-types-and-currying") {
+          expect(terminals, route).toContain("[ Build , bundle]\n[bundle]")
+          expect(terminals, route).toContain("[5, 6, 5, 3]\n19")
+          expect(text(html), route).toContain(
+            prefix
+              ? "mainのdoは、この二つの出力Effectを順につなぐ"
+              : "The do block in main sequences these two output Effects"
+          )
+          expect(text(html), route).not.toContain("Search once")
+        }
         const headings = [...html.matchAll(/<h2[^>]*\bid="([^"]+)"/gu)].map(
           (match) => match[1]
         )

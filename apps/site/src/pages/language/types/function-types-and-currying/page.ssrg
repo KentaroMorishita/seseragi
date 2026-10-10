@@ -20,15 +20,24 @@ pub fn page -> PageDefinition =
     prose (en.opening ()) (ja.opening ()),
     CodeExample (
       "chapter-function-values",
-      localized "Search once; reuse the condition" "検索条件を決めて使い回す"
+      localized "Set up a search condition; reuse it" "検索条件を決めて使い回す"
     ),
-    Terminal (localized "Output" "実行結果", "[ Build , bundle]\n[5, 6, 5, 3]\n19"),
+    Terminal (localized "Output" "実行結果", "[ Build , bundle]\n[bundle]"),
+    prose (en.effects ()) (ja.effects ()),
     Heading
       ("reading-the-example", localized "A search is a function value" "検索する関数も一つの値"),
     prose (en.partial ()) (ja.partial ()),
-    Heading
-      ("why", localized "Use named, inline and operator functions" "名前付き関数、ラムダ、演算子を渡す"),
+    Heading (
+      "why",
+      localized "A separate calculation: count the label text" "別の小さな計算：ラベルの文字数を数える"
+    ),
     prose (en.lambda ()) (ja.lambda ()),
+    CodeExample (
+      "chapter-label-lengths",
+      localized "Count Unicode scalars, separately from searching"
+      "検索とは別に、Unicode scalar数を数える"
+    ),
+    Terminal (localized "Output" "実行結果", "[5, 6, 5, 3]\n19"),
     prose (en.section ()) (ja.section ()),
     Heading ("rules", localized "The type left after each argument" "引数を渡すたびに残る型"),
     prose (en.arrows ()) (ja.arrows ()),

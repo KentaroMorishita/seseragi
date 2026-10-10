@@ -17,7 +17,7 @@ const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/debug/seseragi")
 const examples = chapterExamples("https://seseragi.vercel.app/")
 
 test("chapter sources retain bytes, highlighting and runnable Playground seeds", () => {
-  expect(examples).toHaveLength(2)
+  expect(examples).toHaveLength(4)
   for (const example of examples) {
     const source = readFileSync(resolve(root, example.sourcePath), "utf8")
     expect(example.source).toBe(source)
@@ -26,6 +26,8 @@ test("chapter sources retain bytes, highlighting and runnable Playground seeds",
     )
     expect(example.highlighted.map((part) => part.text).join("")).toBe(source)
     expect(sourceFromPlaygroundUrl(example.playgroundUrl)).toBe(source)
+    if (example.id === "chapter-dollar-grouping")
+      expect(source).toMatch(/\$\n\s*\/\/[^\n]+\n\s*if ready/u)
   }
 })
 
@@ -135,6 +137,24 @@ test("new chapter Playground programs compile in WASM and execute with matching 
 test("the chapter's follow-up search and missing-value distinction behave as stated", () => {
   const temporary = mkdtempSync(join(tmpdir(), "seseragi-chapter-followup-"))
   try {
+    const grouping = readFileSync(
+      resolve(
+        root,
+        "apps/site/examples/src/language/chapter-dollar-grouping.ssrg"
+      ),
+      "utf8"
+    )
+    writeFileSync(
+      join(temporary, "main.ssrg"),
+      grouping.replace("status True", "status False")
+    )
+    const alternative = spawnSync(cli, ["run", "main.ssrg"], {
+      cwd: temporary,
+      encoding: "utf8",
+      timeout: 30_000,
+    })
+    expect(alternative.status, alternative.stderr).toBe(0)
+    expect(alternative.stdout).toBe("WAITING\n")
     const pipeline = readFileSync(
       resolve(
         root,
