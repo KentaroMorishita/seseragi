@@ -1,0 +1,34 @@
+import * as arrays from "std/array"
+import * as effects from "std/effect"
+import * as signals from "std/signal"
+
+fn remember history: signals.MutableSignal<Array<Int>> -> value: Int -> Task<Unit> =
+  signals.update (\items: Array<Int> -> arrays.concat [
+    items,
+    [value]
+  ]) history
+
+effect fn watch history: signals.MutableSignal<Array<Int>>
+  -> count: signals.MutableSignal<Int>
+  -> Unit
+fails String =
+  do {
+    let acquire = signals.subscribe (remember history) count
+    effects.acquireRelease acquire signals.unsubscribe
+    count := 1
+    let result: Either<String, Unit> = Left "stopped"
+    effects.fromEither result
+  }
+
+pub effect fn main = do {
+  let empty: Array<Int> = []
+  history <- signals.make empty
+  count <- signals.make 0
+  outcome <- effects.attempt (effects.scoped (watch history count))
+  println (show outcome)
+  count := 2
+  observed <- *history
+  println (show observed)
+  current <- *count
+  println ("current: " + show current)
+}

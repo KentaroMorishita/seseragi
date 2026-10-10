@@ -44,6 +44,7 @@ const screenshotNames: Record<string, string> = {
   "/docs/effects/errors/": "errors",
   "/docs/types/variants/": "variants",
   "/docs/signals/transactions/": "transactions",
+  "/docs/effects/resources/": "resources",
 }
 try {
   // Every published route and every API declaration is checked in the browser,
@@ -158,6 +159,7 @@ try {
             "/docs/composition/apply/",
             "/docs/effects/",
             "/docs/effects/errors/",
+            "/docs/effects/resources/",
             "/docs/types/",
             "/docs/types/records/",
             "/docs/types/variants/",
@@ -226,6 +228,7 @@ try {
               "/docs/effects/",
               "/docs/effects/actions/",
               "/docs/effects/errors/",
+              "/docs/effects/resources/",
               "/docs/api/effect/",
             ],
             [

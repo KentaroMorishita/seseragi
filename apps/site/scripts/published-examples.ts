@@ -23,6 +23,12 @@ export const compositionExamples = [
 
 export const effectExamples = [
   {
+    id: "effect-resource",
+    route: "/docs/effects/resources/",
+    sourcePath: "apps/site/examples/src/effects/effect-resource.ssrg",
+    output: "Left stopped\n[0, 1]\ncurrent: 2\n",
+  },
+  {
     id: "effect-notice",
     route: "/docs/effects/actions/",
     sourcePath: "apps/site/examples/src/effects/effect-notice.ssrg",

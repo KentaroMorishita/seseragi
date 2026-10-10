@@ -36,12 +36,18 @@ export async function verifySearch(
           })
           await page.goto(`${origin + prefix}/docs/`)
           assert.equal(await page.locator('script[src*="search"]').count(), 0)
-          await page.locator(`main a[href="${prefix}/docs/search/"]`).click()
+          await Promise.all([
+            page.waitForURL(`${origin + prefix}/docs/search/`),
+            page.locator(`main a[href="${prefix}/docs/search/"]`).click(),
+          ])
           const query = page.locator("#docs-search-query")
           await expect(page.locator('main a[href$="/docs/api/"]')).toBeVisible()
           if (!javaScriptEnabled) {
             await expect(query).toBeHidden()
-            await page.locator(`main a[href="${prefix}/docs/signals/"]`).click()
+            await Promise.all([
+              page.waitForURL(`${origin + prefix}/docs/signals/`),
+              page.locator(`main a[href="${prefix}/docs/signals/"]`).click(),
+            ])
             assert.equal(
               new URL(page.url()).pathname,
               `${prefix}/docs/signals/`
@@ -144,7 +150,8 @@ export async function verifySearch(
           assert.ok(
             await page.evaluate(
               () => document.documentElement.scrollWidth <= innerWidth
-            )
+            ),
+            `Search navigation layout: ${page.url()}, width=${width}, JS=${javaScriptEnabled}`
           )
           assert.deepEqual(errors, [])
           cases++
@@ -162,7 +169,10 @@ export async function verifySearch(
       await page.goto(`${origin + prefix}/docs/search/`)
       await expect(page.locator("#docs-search-unavailable")).toBeVisible()
       await expect(page.locator("#docs-search-query")).toBeHidden()
-      await page.locator(`main a[href="${prefix}/docs/api/"]`).click()
+      await Promise.all([
+        page.waitForURL(`${origin + prefix}/docs/api/`),
+        page.locator(`main a[href="${prefix}/docs/api/"]`).click(),
+      ])
       assert.equal(new URL(page.url()).pathname, `${prefix}/docs/api/`)
       cases++
     } finally {

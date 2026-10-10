@@ -105,7 +105,13 @@ fn usage specifier: String -> Array<Block> = match specifier {
     CodeExample ("chapter-functions", localized "A reusable search key" "使い回せる検索用の文字列")
   ]
   "std/maybe" -> [
-    Paragraph ([InternalLink (localized "Match Just/Nothing with a generic function" "genericな関数でJust/Nothingをmatchする", "/docs/types/generics/")]),
+    Paragraph (
+      [InternalLink (
+        localized "Match Just/Nothing with a generic function"
+          "genericな関数でJust/Nothingをmatchする",
+        "/docs/types/generics/"
+      )]
+    ),
     Paragraph (
       [Words (
         localized
@@ -136,23 +142,55 @@ fn usage specifier: String -> Array<Block> = match specifier {
     )
   ]
   "std/effect" -> [
-    Paragraph ([Words (localized
-      "An Effect keeps its required environment, failure, and successful result in the type. Use fromEither to bring a pure validation result into this channel, <$> to transform success, and recover to choose another Effect on failure."
-      "Effectは、必要な環境・失敗・成功時の結果を型に持つ。純粋な検証結果を持ち込むならfromEither、成功した値を変えるなら<$>、失敗したときに別の処理を選ぶならrecover。")]),
+    Paragraph (
+      [Words (
+        localized
+          "An Effect keeps its required environment, failure, and successful result in the type. Use fromEither to bring a pure validation result into this channel, <$> to transform success, and recover to choose another Effect on failure."
+          "Effectは、必要な環境・失敗・成功時の結果を型に持つ。純粋な検証結果を持ち込むならfromEither、成功した値を変えるなら<$>、失敗したときに別の処理を選ぶならrecover。"
+      )]
+    ),
     CodeExample ("effect-error", localized "Recover a blank name" "空の名前から回復する"),
-    Paragraph ([InternalLink (localized "Read the example step by step" "例を順番に読んでみる", "/docs/effects/errors/")])
+    Paragraph (
+      [InternalLink (
+        localized "Read the example step by step" "例を順番に読んでみる",
+        "/docs/effects/errors/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "scoped and acquireRelease — own a subscription's lifetime"
+          "scopedとacquireRelease — 購読の寿命を持つ",
+        "/docs/effects/resources/"
+      )]
+    )
   ]
   "std/console" -> [
-    Paragraph ([Words (localized
-      "println returns an Effect requiring Console and failing with ConsoleError. Calling it builds the job; the runner executes the job returned by main. Its successful value is Unit."
-      "printlnは、Consoleを必要とし、ConsoleErrorで失敗するEffectを返す。呼び出すと処理が組み立てられ、mainが返した処理をrunnerが実行する。成功時の値はUnitだ。")]),
-    Paragraph ([InternalLink (localized "Name and reuse a console action" "表示する処理に名前を付けて、使い回す", "/docs/effects/actions/")])
+    Paragraph (
+      [Words (
+        localized
+          "println returns an Effect requiring Console and failing with ConsoleError. Calling it builds the job; the runner executes the job returned by main. Its successful value is Unit."
+          "printlnは、Consoleを必要とし、ConsoleErrorで失敗するEffectを返す。呼び出すと処理が組み立てられ、mainが返した処理をrunnerが実行する。成功時の値はUnitだ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Name and reuse a console action" "表示する処理に名前を付けて、使い回す",
+        "/docs/effects/actions/"
+      )]
+    )
   ]
   "std/signal" -> [
-    Paragraph ([Words (localized
-      "Use <$> and <*> to build a derived graph, *source to read one snapshot, and update or := to change a mutable source. subscribe observes the current value and later updates; distinct suppresses equal repeats. Combine related plans with transaction before publishing their new values."
-      "<$>と<*>でderived graphを作り、*sourceでsnapshotを読み、updateや:=でmutableな元の値を変える。subscribeで現在値と後の更新を受け取り、distinctで等しい繰り返しを除く。関係するplanはtransactionでまとめてから、新しい値を公開しよう。")]),
-    Paragraph ([InternalLink (localized "Try a changing progress label" "変わっていく進捗表示を試す", "/docs/signals/")])
+    Paragraph (
+      [Words (
+        localized
+          "Use <$> and <*> to build a derived graph, *source to read one snapshot, and update or := to change a mutable source. subscribe observes the current value and later updates; distinct suppresses equal repeats. Combine related plans with transaction before publishing their new values."
+          "<$>と<*>でderived graphを作り、*sourceでsnapshotを読み、updateや:=でmutableな元の値を変える。subscribeで現在値と後の更新を受け取り、distinctで等しい繰り返しを除く。関係するplanはtransactionでまとめてから、新しい値を公開しよう。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink
+          (localized "Try a changing progress label" "変わっていく進捗表示を試す", "/docs/signals/")]
+    )
   ]
   _ -> []
 }

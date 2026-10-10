@@ -1,4 +1,5 @@
 import { localized } from "../model/locale"
+import * as resources from "./resources"
 import {
   Article,
   BulletList,
@@ -26,14 +27,29 @@ pub fn overview -> PageDefinition = PageDefinition {
     "A message on the console changes the outside world. Keep the job as a value, connect its steps, and decide what to do when it fails."
     "コンソールへの表示は、プログラムの外に働きかける処理だ。その処理を値として持ち、順番につなぎ、失敗したときの進み方を決めよう。",
   blocks: [
-    Paragraph ([Words (localized
-      "We have used println in main already. Now we will name a printing job, reuse it twice, and see why describing a job differs from running it. Then a blank name will give us a small, typed failure to recover from."
-      "これまでmainで使ってきたprintln。今度は表示する処理に名前を付け、二回使ってみよう。処理を組み立てることと実行することの違いが見えてくる。その後は、空の名前を小さな型付きの失敗として扱ってみる。")]),
+    Paragraph (
+      [Words (
+        localized
+    "We have used println in main already. Now we will name a printing job, reuse it twice, and see why describing a job differs from running it. Then a blank name will give us a small, typed failure to recover from."
+    "これまでmainで使ってきたprintln。今度は表示する処理に名前を付け、二回使ってみよう。処理を組み立てることと実行することの違いが見えてくる。その後は、空の名前を小さな型付きの失敗として扱ってみる。"
+      )]
+    ),
     BulletList [
-      [InternalLink (localized "An action you can reuse" "使い回せる処理", "/docs/effects/actions/")],
-      [InternalLink (localized "Keep the failure in the type" "失敗を型に残す", "/docs/effects/errors/")]
+      [InternalLink
+    (localized "An action you can reuse" "使い回せる処理", "/docs/effects/actions/")],
+      [InternalLink
+    (localized "Keep the failure in the type" "失敗を型に残す", "/docs/effects/errors/")],
+      [InternalLink (
+        localized "scoped — end a subscription with its job" "scoped — 処理と一緒に購読を終える",
+        "/docs/effects/resources/"
+      )]
     ],
-    Paragraph ([InternalLink (localized "First, put small functions together" "先に、小さな関数の組み合わせを試す", "/docs/composition/")])
+    Paragraph (
+      [InternalLink (
+        localized "First, put small functions together" "先に、小さな関数の組み合わせを試す",
+        "/docs/composition/"
+      )]
+    )
   ]
 }
 
@@ -45,33 +61,74 @@ pub fn actions -> PageDefinition = PageDefinition {
   summary: localized "Give a console message a name. Describing it does not print it."
     "コンソールへ表示する処理に名前を付けよう。組み立てただけでは、まだ表示されない。",
   blocks: [
-    Paragraph ([Words (localized
-      "A notice should have the same prefix wherever we print it. notice makes that reusable. Before running the program, predict where the two ready messages will appear: before or after the first println?"
-      "お知らせには、どこで表示しても同じ目印を付けたい。noticeでその処理を使い回せるようにしよう。実行する前に予想してみてほしい。二つのreadyは、最初のprintlnより前に出るだろうか、後だろうか。")]),
-    CodeExample ("effect-notice", localized "Name the job once, run it twice" "処理に名前を付けて、二回動かす"),
+    Paragraph (
+      [Words (
+        localized
+    "A notice should have the same prefix wherever we print it. notice makes that reusable. Before running the program, predict where the two ready messages will appear: before or after the first println?"
+    "お知らせには、どこで表示しても同じ目印を付けたい。noticeでその処理を使い回せるようにしよう。実行する前に予想してみてほしい。二つのreadyは、最初のprintlnより前に出るだろうか、後だろうか。"
+      )]
+    ),
+    CodeExample
+    ("effect-notice", localized "Name the job once, run it twice" "処理に名前を付けて、二回動かす"),
     Terminal (localized "Output" "実行結果", "before\n> ready\n> ready"),
     Heading ("description", localized "ready holds a job" "readyが持っているのは処理"),
-    Paragraph ([InlineCode "let ready = notice \"ready\"", Words (localized
-      " builds an Effect value. It does not print a line at that point. main returns the combined Effect, and the runner executes it: first before, then ready, then ready again. Reusing the Effect repeats the action; it does not reuse a cached result."
-      "はEffectの値を作る。その時点で一行表示するわけではない。mainが組み合わせたEffectを返すと、runnerが実行する。before、ready、もう一度readyの順だ。同じEffectを使うと処理も繰り返される。前の実行結果をキャッシュして返す値ではない。")]),
+    Paragraph (
+      [
+        InlineCode "let ready = notice \"ready\"",
+        Words (
+          localized
+    " builds an Effect value. It does not print a line at that point. main returns the combined Effect, and the runner executes it: first before, then ready, then ready again. Reusing the Effect repeats the action; it does not reuse a cached result."
+    "はEffectの値を作る。その時点で一行表示するわけではない。mainが組み合わせたEffectを返すと、runnerが実行する。before、ready、もう一度readyの順だ。同じEffectを使うと処理も繰り返される。前の実行結果をキャッシュして返す値ではない。"
+        )
+      ]
+    ),
     Heading ("contract", localized "What the type tells us" "型から分かること"),
-    Terminal (localized "The contract in ordinary fn notation" "普通のfn記法で書いた契約", "fn notice message: String -> Effect<{ console: Console }, ConsoleError, Unit>"),
-    Paragraph ([Words (localized
-      "effect fn is a way to declare a function returning Effect. In the contract form above, -> Unit names the successful result, with Console names the required capability, and fails ConsoleError names the possible failure. The ordinary fn signature shows all three together."
-      "effect fnは、Effectを返す関数を宣言する記法だ。この契約形式では、-> Unitが成功時の結果、with Consoleが必要な機能、fails ConsoleErrorが失敗の型を表す。普通のfnのシグネチャで見ると、三つが一緒に並んでいる。")]),
-    Paragraph ([Words (localized
-      "Read Effect<R, E, A> as a job requiring R, failing with E or succeeding with A. Here R has the console field, E is ConsoleError, and A is Unit. Unit carries no interesting result, but the job still matters: it prints a line."
-      "Effect<R, E, A>は、Rを必要とし、Eで失敗するかAで成功する処理。ここではRにconsoleがあり、EはConsoleError、AはUnitだ。Unitには取り出して使いたい結果はないけれど、一行表示する処理には意味がある。")]),
+    Terminal (
+      localized "The contract in ordinary fn notation" "普通のfn記法で書いた契約",
+      "fn notice message: String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "effect fn is a way to declare a function returning Effect. In the contract form above, -> Unit names the successful result, with Console names the required capability, and fails ConsoleError names the possible failure. The ordinary fn signature shows all three together."
+    "effect fnは、Effectを返す関数を宣言する記法だ。この契約形式では、-> Unitが成功時の結果、with Consoleが必要な機能、fails ConsoleErrorが失敗の型を表す。普通のfnのシグネチャで見ると、三つが一緒に並んでいる。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Read Effect<R, E, A> as a job requiring R, failing with E or succeeding with A. Here R has the console field, E is ConsoleError, and A is Unit. Unit carries no interesting result, but the job still matters: it prints a line."
+    "Effect<R, E, A>は、Rを必要とし、Eで失敗するかAで成功する処理。ここではRにconsoleがあり、EはConsoleError、AはUnitだ。Unitには取り出して使いたい結果はないけれど、一行表示する処理には意味がある。"
+      )]
+    ),
     Heading ("sequence", localized "do keeps the order" "doで順番につなぐ"),
-    Paragraph ([Words (localized
-      "This do block runs its Effects in order. If a step fails, later steps do not run. main uses the compact effect fn form, so its Effect contract is inferred from the body. The native runner supplies Console; being supplied does not make console errors impossible."
-      "このdoはEffectを順番に実行する。途中で失敗すると、その後の処理には進まない。mainは省略形式のeffect fnなので、Effectの契約は本文から推論される。native runnerがConsoleを提供してくれるが、それでコンソールの失敗がなくなるわけではない。")]),
+    Paragraph (
+      [Words (
+        localized
+    "This do block runs its Effects in order. If a step fails, later steps do not run. main uses the compact effect fn form, so its Effect contract is inferred from the body. The native runner supplies Console; being supplied does not make console errors impossible."
+    "このdoはEffectを順番に実行する。途中で失敗すると、その後の処理には進まない。mainは省略形式のeffect fnなので、Effectの契約は本文から推論される。native runnerがConsoleを提供してくれるが、それでコンソールの失敗がなくなるわけではない。"
+      )]
+    ),
     Heading ("try", localized "Change which jobs run" "動かす処理を変えてみる"),
-    Paragraph ([Words (localized
-      "Remove both ready lines from main while keeping the let declaration. Only before is printed. Add a third ready line and you get a third notice. The let declaration gives you a value to compose; the do block determines which actions run."
-      "letは残して、mainの二つのreadyだけを消してみよう。表示はbeforeだけになる。readyをもう一行足すと、お知らせももう一回出る。letで持つのは組み合わせるための値。どの処理を実行するかは、doの中で決まる。")]),
-    Paragraph ([InternalLink (localized "Next, recover from a typed failure" "次は、型付きの失敗から回復する", "/docs/effects/errors/")]),
-    Paragraph ([InternalLink (localized "Console declarations and targets" "Consoleの宣言と実行対象", "/docs/api/console/")])
+    Paragraph (
+      [Words (
+        localized
+    "Remove both ready lines from main while keeping the let declaration. Only before is printed. Add a third ready line and you get a third notice. The let declaration gives you a value to compose; the do block determines which actions run."
+    "letは残して、mainの二つのreadyだけを消してみよう。表示はbeforeだけになる。readyをもう一行足すと、お知らせももう一回出る。letで持つのは組み合わせるための値。どの処理を実行するかは、doの中で決まる。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Next, recover from a typed failure" "次は、型付きの失敗から回復する",
+        "/docs/effects/errors/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Console declarations and targets" "Consoleの宣言と実行対象",
+        "/docs/api/console/"
+      )]
+    )
   ]
 }
 
@@ -80,58 +137,125 @@ pub fn errors -> PageDefinition = PageDefinition {
   path: "/docs/effects/errors/",
   kind: Article,
   title: localized "Keep the failure in the type" "失敗を型に残す",
-  summary: localized "An empty name has a reason to stop. Give that reason a type, then choose a fallback."
+  summary: localized
+    "An empty name has a reason to stop. Give that reason a type, then choose a fallback."
     "空の名前なら、先へ進めない理由がある。その理由に型を付け、代わりの結果を選ぼう。",
   blocks: [
-    Paragraph ([Words (localized
-      "We want to greet a name after trimming its surrounding spaces. A blank name should not quietly become Hello, . The name function returns Either<InputError, String>: Right for a usable name, Left Blank otherwise. This validation is still a pure function."
-      "前後の空白を取ってから、名前に挨拶したい。空の名前が黙ってHello, .になるのは困る。nameはEither<InputError, String>を返し、使える名前ならRight、空ならLeft Blankにする。この検証は、まだ純粋な関数だ。")]),
-    Paragraph ([InternalLink (localized "New to type declarations and constructors?" "type宣言とconstructorから読みたいときは", "/docs/types/variants/")]),
-    CodeExample ("effect-error", localized "A successful greeting and a fallback" "挨拶できた場合と、代わりの結果"),
+    Paragraph (
+      [Words (
+        localized
+    "We want to greet a name after trimming its surrounding spaces. A blank name should not quietly become Hello, . The name function returns Either<InputError, String>: Right for a usable name, Left Blank otherwise. This validation is still a pure function."
+    "前後の空白を取ってから、名前に挨拶したい。空の名前が黙ってHello, .になるのは困る。nameはEither<InputError, String>を返し、使える名前ならRight、空ならLeft Blankにする。この検証は、まだ純粋な関数だ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "New to type declarations and constructors?"
+    "type宣言とconstructorから読みたいときは",
+        "/docs/types/variants/"
+      )]
+    ),
+    CodeExample
+    ("effect-error", localized "A successful greeting and a fallback" "挨拶できた場合と、代わりの結果"),
     Terminal (localized "Output" "実行結果", "Hello, Aki.\nNo name: Blank"),
-    Heading ("lift", localized "Move Either into the Effect channel" "EitherをEffectの成功と失敗へ移す"),
-    Paragraph ([InlineCode "effects.fromEither (name raw)", Words (localized
-      " turns Right name into a successful Effect and Left Blank into a failed one. The pure call name raw computes its Either when greeting is called; wrapping it does not defer that call. <$> applies greet only to a success. Blank stays in the failure channel."
-      "は、Right nameを成功するEffect、Left Blankを失敗するEffectにする。純粋なname rawは、greetingが呼ばれたときにEitherを計算する。包んだからといって、この関数呼び出しまで遅延するわけではない。<$>は成功した値だけにgreetを適用し、Blankは失敗として残る。")]),
-    Paragraph ([InlineCode "Effect<{}, InputError, String>", Words (localized
-      " makes the greeting contract explicit: no required environment, InputError on failure, String on success. Constructing this job does not perform console I/O. Printing is a separate step in main."
-      "で、挨拶の契約を明示している。必要な環境は空、失敗はInputError、成功はString。この処理を作るときにはコンソールへ表示しない。表示はmainの別の段階だ。")]),
+    Heading
+    ("lift", localized "Move Either into the Effect channel" "EitherをEffectの成功と失敗へ移す"),
+    Paragraph (
+      [
+        InlineCode "effects.fromEither (name raw)",
+        Words (
+          localized
+    " turns Right name into a successful Effect and Left Blank into a failed one. The pure call name raw computes its Either when greeting is called; wrapping it does not defer that call. <$> applies greet only to a success. Blank stays in the failure channel."
+    "は、Right nameを成功するEffect、Left Blankを失敗するEffectにする。純粋なname rawは、greetingが呼ばれたときにEitherを計算する。包んだからといって、この関数呼び出しまで遅延するわけではない。<$>は成功した値だけにgreetを適用し、Blankは失敗として残る。"
+        )
+      ]
+    ),
+    Paragraph (
+      [
+        InlineCode "Effect<{}, InputError, String>",
+        Words (
+          localized
+    " makes the greeting contract explicit: no required environment, InputError on failure, String on success. Constructing this job does not perform console I/O. Printing is a separate step in main."
+    "で、挨拶の契約を明示している。必要な環境は空、失敗はInputError、成功はString。この処理を作るときにはコンソールへ表示しない。表示はmainの別の段階だ。"
+        )
+      ]
+    ),
     Heading ("recover", localized "Choose another job on failure" "失敗したら、別の処理を選ぶ"),
-    Paragraph ([Words (localized
-      "recover leaves a successful greeting alone. On failure it passes InputError to fallback and runs the Effect returned by that function. succeed makes an Effect that succeeds with its value. fallback returns Task<String>, the alias for Effect<{}, Never, String>, so this recovery removes the InputError failure."
-      "recoverは、成功した挨拶には手を加えない。失敗した場合はInputErrorをfallbackに渡し、返ってきたEffectを実行する。succeedは、渡した値で成功するEffectを作る。fallbackの結果はTask<String>、つまりEffect<{}, Never, String>なので、ここでInputErrorの失敗はなくなる。")]),
-    Terminal (localized "The recover signature" "recoverのシグネチャ", "recover<R, E, F, A> arg1: (E -> Effect<R, F, A>) -> arg2: Effect<R, E, A> -> Effect<R, F, A>"),
-    Paragraph ([Words (localized
-      "Recovery can change the error type from E to F, while keeping the environment R and result A. It handles the typed failure of this Effect, rather than catching every possible host exception. println after the recovery still requires Console and can fail with ConsoleError."
-      "回復で失敗の型をEからFへ変えられる。環境Rと結果Aは同じまま。扱うのは、このEffectの型付きの失敗であり、hostのあらゆる例外を捕まえる操作ではない。回復後のprintlnには、引き続きConsoleが必要で、ConsoleErrorで失敗する可能性もある。")]),
+    Paragraph (
+      [Words (
+        localized
+    "recover leaves a successful greeting alone. On failure it passes InputError to fallback and runs the Effect returned by that function. succeed makes an Effect that succeeds with its value. fallback returns Task<String>, the alias for Effect<{}, Never, String>, so this recovery removes the InputError failure."
+    "recoverは、成功した挨拶には手を加えない。失敗した場合はInputErrorをfallbackに渡し、返ってきたEffectを実行する。succeedは、渡した値で成功するEffectを作る。fallbackの結果はTask<String>、つまりEffect<{}, Never, String>なので、ここでInputErrorの失敗はなくなる。"
+      )]
+    ),
+    Terminal (
+      localized "The recover signature" "recoverのシグネチャ",
+      "recover<R, E, F, A> arg1: (E -> Effect<R, F, A>) -> arg2: Effect<R, E, A> -> Effect<R, F, A>"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Recovery can change the error type from E to F, while keeping the environment R and result A. It handles the typed failure of this Effect, rather than catching every possible host exception. println after the recovery still requires Console and can fail with ConsoleError."
+    "回復で失敗の型をEからFへ変えられる。環境Rと結果Aは同じまま。扱うのは、このEffectの型付きの失敗であり、hostのあらゆる例外を捕まえる操作ではない。回復後のprintlnには、引き続きConsoleが必要で、ConsoleErrorで失敗する可能性もある。"
+      )]
+    ),
     Heading ("bind", localized "Use the successful value" "成功した値を使う"),
-    Paragraph ([InlineCode "okay <- effects.recover fallback (greeting \" Aki \")", Words (localized
-      " binds the successful String for the next step in do. println receives that String, not an Effect. This is the same result-dependent composition we used with Maybe, now applied to an Effect."
-      "は、成功したStringに名前を付けて、doの次の段階で使っている。printlnに渡すのはEffectではなくString。Maybeで試した、結果を受け取って次へ進む組み合わせをEffectにも使っている。")]),
+    Paragraph (
+      [
+        InlineCode "okay <- effects.recover fallback (greeting \" Aki \")",
+        Words (
+          localized
+    " binds the successful String for the next step in do. println receives that String, not an Effect. This is the same result-dependent composition we used with Maybe, now applied to an Effect."
+    "は、成功したStringに名前を付けて、doの次の段階で使っている。printlnに渡すのはEffectではなくString。Maybeで試した、結果を受け取って次へ進む組み合わせをEffectにも使っている。"
+        )
+      ]
+    ),
     Heading ("try", localized "Keep validation separate" "検証を分けたまま変えてみる"),
-    Paragraph ([Words (localized
-      "Replace Aki with spaces: the first line now uses the fallback too. Change fallback's message without touching name or greet. Each small function has one job, and the Effect composition decides how success and failure meet."
-      "Akiを空白に変えると、一行目もfallbackの結果になる。nameとgreetには触らず、fallbackの文面だけ変えてみよう。小さな関数がそれぞれの役割を持ち、Effectの組み合わせで成功と失敗の進み方を決められる。")]),
-    Paragraph ([InternalLink (localized "Look up fromEither, recover, and succeed" "fromEither・recover・succeedの宣言を引く", "/docs/api/effect/")])
+    Paragraph (
+      [Words (
+        localized
+    "Replace Aki with spaces: the first line now uses the fallback too. Change fallback's message without touching name or greet. Each small function has one job, and the Effect composition decides how success and failure meet."
+    "Akiを空白に変えると、一行目もfallbackの結果になる。nameとgreetには触らず、fallbackの文面だけ変えてみよう。小さな関数がそれぞれの役割を持ち、Effectの組み合わせで成功と失敗の進み方を決められる。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "End a subscription even when its job fails" "処理が失敗しても、購読を終える",
+        "/docs/effects/resources/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Look up fromEither, recover, and succeed"
+    "fromEither・recover・succeedの宣言を引く",
+        "/docs/api/effect/"
+      )]
+    )
   ]
 }
 
-pub fn pages -> Array<PageDefinition> = [overview (), actions (), errors ()]
+pub fn pages -> Array<PageDefinition> = [
+  overview (),
+  actions (),
+  errors (),
+  resources.page ()
+]
 pub fn area -> NavigationArea = NavigationArea {
   id: "effects",
   title: localized "Effects and failures" "処理と失敗",
-  description: localized "Name an action, run it in order, and recover with a typed error."
+  description: localized
+    "Name an action, run it in order, and recover with a typed error."
     "処理に名前を付け、順番に実行し、型付きの失敗から回復する。",
   landing: overview (),
   groups: [NavigationGroup {
     id: "effects",
-    title: localized "Two small jobs" "二つの小さな処理",
+    title: localized "Jobs, failures, and lifetimes" "処理・失敗・寿命",
     sections: [NavigationSection {
       id: "effects",
       title: localized "Effect values and typed failures" "Effectの値と型付きの失敗",
       kind: FlatSection,
       overview: actions (),
-      pages: [errors ()]
+      pages: [errors (), resources.page ()]
     }]
   }]
 }
