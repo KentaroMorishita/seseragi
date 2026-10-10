@@ -82,7 +82,12 @@ fn referenceLabel symbol: ReferenceSymbol -> LocalizedText = {
 }
 
 pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
-  match editorialFor symbol {
+  summaryWithEditorial symbol (editorialFor symbol)
+
+fn summaryWithEditorial symbol: ReferenceSymbol
+  -> value: Maybe<Editorial>
+  -> LocalizedText =
+  match value {
     Just editorial -> editorial.summary
     Nothing ->
       if symbol.itemKind != "instance" then
@@ -91,33 +96,37 @@ pub fn referenceSummary symbol: ReferenceSymbol -> LocalizedText =
         instanceSummary symbol
   }
 
-fn symbolPage symbol: ReferenceSymbol -> PageDefinition = PageDefinition {
-  id: "reference.symbol." + symbol.identity + "." + symbol.namespace + "." + symbol.itemKind,
-  path: referenceRoute symbol,
-  kind: Reference,
-  title: localized symbol.name symbol.name,
-  summary: referenceSummary symbol,
-  blocks: arrays.concat [
-    editorialBlocks (editorialFor symbol),
-    [
-      ApiReference (symbol.identity, symbol.namespace, symbol.itemKind),
-      Heading ("related", localized "Related documentation" "関連ドキュメント"),
-      Paragraph (
-        [
-          Words (
-            localized
-              "Browse the owning module for related public symbols, or consult the language reference for syntax and typing rules."
-              "関連する公開シンボルは所属するモジュール、構文や型付けの規則は言語リファレンスで確認できます。"
-          ),
-          InternalLink (
-            localized (" " + symbol.module) (" " + symbol.module),
-            moduleRoute symbol.module
-          ),
-          InternalLink (localized " Language Reference" " 言語リファレンス", "/docs/language/")
-        ]
-      )
+fn symbolPage symbol: ReferenceSymbol -> PageDefinition = {
+  let editorial = editorialFor symbol
+  PageDefinition {
+    id: "reference.symbol." + symbol.identity + "." + symbol.namespace + "." + symbol.itemKind,
+    path: referenceRoute symbol,
+    kind: Reference,
+    title: localized symbol.name symbol.name,
+    summary: summaryWithEditorial symbol editorial,
+    blocks: arrays.concat [
+      editorialBlocks editorial,
+      [
+        ApiReference (symbol.identity, symbol.namespace, symbol.itemKind),
+        Heading ("related", localized "Related documentation" "関連ドキュメント"),
+        Paragraph (
+          [
+            Words (
+              localized
+                "Browse the owning module for related public symbols, or consult the language reference for syntax and typing rules."
+                "関連する公開シンボルは所属するモジュール、構文や型付けの規則は言語リファレンスで確認できます。"
+            ),
+            InternalLink (
+              localized (" " + symbol.module) (" " + symbol.module),
+              moduleRoute symbol.module
+            ),
+            InternalLink
+                (localized " Language Reference" " 言語リファレンス", "/docs/language/")
+          ]
+        )
+      ]
     ]
-  ]
+  }
 }
 
 fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {

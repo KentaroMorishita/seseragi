@@ -1,5 +1,123 @@
 # Bounded complete-site generation (#706)
 
+## 2026-10-10 canonical-toolchain timeout investigation
+
+The current candidate keeps fresh processes and raises the finite page cap from
+32 to 64. It does not reduce the catalog, metadata, examples, routes, locales,
+validation or full artifact comparison. The per-build deadline remains 420s.
+Integration acceptance is pending complete two-build and browser PR CI results;
+the historical passes below do not establish current release readiness.
+
+Baseline: #771 head `0601ba3ccbbed07ee9be34db019320356590eb5c`, Bun 1.3.11
+(`af24e281`), optimized CLI 0.61.23, Linux x86_64. Compiler Rust source matches
+main's canonical compiler; the locally built binary records the Docs checkout
+commit `0601ba3ccbbe`, rather than claiming to be a downloaded release archive.
+The complete input has 965 examples, 63 modules and 1,812 symbols. Its exact
+size/digest and measurements are in
+[the probe report](../../reviews/issue-706/2026-10-10-probes.json).
+
+Compile took 40.049s. Fresh baseline 32-page probes took 3.4–4.4s, repeating
+the same full-input JSON parse and derived decode. CPU sampling identified that
+decode as a substantial fixed cost. Diagnostic timing of pure expressions in
+a separate compiled artifact also measured decode, catalog, render and encode;
+its stdout matched the original exactly. Instrumented timing is diagnostic,
+not a benchmark of the untouched entry.
+
+Resolving each symbol's editorial entry once preserves matching, precedence,
+fallback and output. It reduces redundant catalog work, but representative
+wall times did not prove an end-to-end improvement from that change alone.
+The 64-page candidate amortizes full-input decoding across 63 rather than 125
+fresh render processes. Three full-input probes (including Japanese pages)
+took 4.577/3.674/3.952s and peaked at 1,321,104/1,603,412/1,420,864 KiB.
+All 192 selected page records, route order and HTML matched the original
+32-page pairs exactly. Sampling at 50ms does not establish an instantaneous
+maximum; full host-plus-descendant measurements remain required.
+
+Opt-in `SESERAGI_SITE_PROFILE` writes phase JSONL outside published artifacts:
+compile, input, serialization, plan, every batch, generation, validation,
+links, publication, hashes and cleanup. Use an absolute path when subprocesses
+change working directory. Linux `profile-process.py` samples the process tree,
+enforces a deadline and 4 GiB ceiling, and cleans up its descendants. Its
+child-capture, deadline and memory-stop smoke checks passed.
+
+The new `Site verification` PR lane runs on relevant draft and stacked PRs,
+checks the exact head with Bun 1.3.11 and optimized current-source CLI, and runs
+complete `check:site`, including its browser stage. Logs, phase data, memory
+report, toolchain/lock provenance and screenshots are retained as Actions
+artifacts. Both complete `site-manifest.json` files (including every artifact
+hash and route) are copied to the artifact before temporary outputs are removed,
+through the absolute `SESERAGI_SITE_TEST_EVIDENCE` directory. A failed build
+without a published manifest does not produce a claimed complete manifest.
+Branch protection and Vercel production settings are unchanged.
+
+Independent review of head `78a5f60512f5fcb77ca14e95231c9235be8c1d51`
+found that the original monitor could miss detached, reparented descendants.
+A safe reproduction allocated only 64 MiB with a 48 MiB sampled-tree limit:
+the old monitor exited successfully and reported only 8,412 KiB while a detached
+orphan remained alive. The corrected monitor seeds every sample with matching
+PID/start-time identities and adopted children, then expands their descendants.
+Cleanup pins each process with a pidfd, validates its start time before signaling,
+and reaps adopted children with a finite cleanup budget. Five regression tests
+cover normal children, deadline stop, detached-orphan memory stop, PID reuse,
+descendant expansion and complete cleanup. The before/after reports are retained
+in [the monitor regression evidence](../../reviews/issue-706/2026-10-10-monitor.json).
+The original-head CI remains historical evidence; final-head CI is required.
+The regression suite is Linux-only: other hosts report an explicit instrumentation
+skip because `/proc` and pidfd are unavailable; general site gates still run.
+Linux executes all five regressions without skips. A simulated Darwin selection
+verified that boundary, but is not a native macOS execution result. Existing
+Darwin workflows are unchanged. Manifest retention is wrapped in `try/finally`
+so a copy/mkdir failure still removes the original temporary output tree.
+
+The protocol oracle's four CLI steps took 80.825/34.025/48.695/22.572s on this
+host. Its assertions completed but the aggregate 180s test deadline failed
+at 187.792s. Its total budget now covers four existing 90s command caps plus
+30s for transport/assertions; those caps and the full-build 420s deadline are
+unchanged. This measured fixture-budget correction is separate from the
+full-input batching improvement.
+
+Reproduction (after locked dependencies and browser bootstrap):
+
+```sh
+mkdir -p target/site-verification
+export SESERAGI_SITE_PROFILE="$PWD/target/site-verification/phases.jsonl"
+export SESERAGI_SITE_TEST_EVIDENCE="$PWD/target/site-verification/manifests"
+python3 apps/site/scripts/profile-process.py \
+  --report target/site-verification/process-tree.json \
+  --timeout 7200 --limit-mib 4096 -- bun run check:site
+```
+
+### Whole-suite watchdog calibration
+
+Normal PR CI on `c0998a9acbcedf4b6b9b15251d61265a21b957d1`
+([run 38010497243](https://github.com/KentaroMorishita/seseragi/actions/runs/38010497243))
+completed both 3,976-route builds in 256,361 and 254,442 ms under Bun 1.3.11,
+Rust 1.97.1 and a clean optimized CLI built from that exact head. Both full
+manifests are byte-identical, SHA-256
+`aeef4b9dbb8ea2436caee596ce0d5267bad47434d23bce24c99921298f880377`.
+All 3,981 artifact paths/hashes and route/example/compiler Reference inventories
+were retained. The complete manifest is also archived as deterministic gzip
+in [the evidence directory](../../reviews/issue-706/), so every hash remains
+available after the Actions artifact expires. The machine-readable
+[CI report](../../reviews/issue-706/2026-10-10-ci-c099.json) records provenance,
+both builds' phase timings, memory and the incomplete suite workload.
+
+The whole command stopped at 3,300,099 ms with `stopReason: "deadline"`;
+it did not reach browser verification. Tree RSS peaked at 3,064,520 KiB,
+cleanup handled four processes, and no processes remained. The checker at
+that exact head schedules 65 Bun test files: 39 had started, with 26 plus
+browser remaining. Logs show 223 passing tests, no observed assertion failure,
+and steady progress. This partial run is not a complete site-gate pass.
+
+The newly introduced aggregate watchdog is now a finite 7,200 seconds, with
+a 130-minute job envelope for setup and evidence upload. Observed suite progress
+and the remaining workload suggest about 90–100 minutes serially; that is a
+projection, not a proved final runtime. This calibration preserves the complete
+serial checker, all assertions/browser checks, two full builds, the 420-second
+per-build deadline, 90-second CLI requests, 390-second protocol fixture budget,
+fresh bounded processes and the 4 GiB sampled-tree ceiling. Only a completed
+normal CI run on the final exact head can establish full acceptance.
+
 ## 2026-10-02 release-profile regression check
 
 The complete build regression now selects `NODE_ENV=production` explicitly,
@@ -39,7 +157,7 @@ browser behavior, root-domain cutover, or first-time-reader understanding.
 
 [Issue #706](https://github.com/KentaroMorishita/seseragi/issues/706) adds a
 separate, versioned request envelope around unchanged `BuildInput`. Seseragi
-returns the complete route plan and renders contiguous batches of 1–32 pages.
+returns the complete route plan and renders contiguous batches of 1–64 pages.
 Every document still receives the full catalog and compiler metadata. A fresh
 process releases each batch's HTML and typed JSON allocations before the next
 batch starts.

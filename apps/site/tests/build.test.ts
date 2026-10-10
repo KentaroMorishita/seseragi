@@ -1,6 +1,14 @@
 import { expect, setDefaultTimeout, test } from "bun:test"
 import { spawnSync } from "node:child_process"
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+} from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import {
@@ -11,8 +19,8 @@ import { assertReferenceLinkTitles, pageTitle } from "./reference-titles"
 
 const root = resolve(import.meta.dir, "../../..")
 // This test builds all 3976 routes twice to verify deterministic output.
-// Release-profile complete-metadata batches measured about 1.6s each (125 batches).
-// Include compilation and retain a finite deadline for each complete build.
+// Full-input JSON decoding is repeated in fresh, finite batches. Keep the
+// measured per-build deadline, compilation and complete artifact comparison.
 const buildTimeout = 420_000
 setDefaultTimeout(2 * buildTimeout + 60_000)
 
@@ -76,6 +84,15 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const directory = mkdtempSync(join(tmpdir(), "seseragi-site-test-"))
   const output = join(directory, "site")
   const repeatedOutput = join(directory, "site-repeated")
+  const evidenceDirectory = process.env.SESERAGI_SITE_TEST_EVIDENCE
+  function retainManifest(generated: string, name: string) {
+    if (!evidenceDirectory) return
+    const source = join(generated, "site-manifest.json")
+    if (!existsSync(source)) return
+    const destination = resolve(evidenceDirectory)
+    mkdirSync(destination, { recursive: true })
+    copyFileSync(source, join(destination, name))
+  }
   try {
     const manifest = build(output)
     expect(manifest.pages).toHaveLength(3976)
@@ -645,6 +662,13 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     const repeatedManifest = build(repeatedOutput)
     expect(repeatedManifest).toEqual(manifest)
   } finally {
-    rmSync(directory, { recursive: true, force: true })
+    // Keep both complete hash/route manifests even if a later assertion fails.
+    // An interrupted build without a published manifest is not called complete.
+    try {
+      retainManifest(output, "first-site-manifest.json")
+      retainManifest(repeatedOutput, "repeated-site-manifest.json")
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
   }
 })
