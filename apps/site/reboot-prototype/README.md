@@ -1,16 +1,17 @@
-# Seseragi / interface reset (visual prototype)
+# Seseragi UI reset — second prototype
 
-This directory is intentionally **static HTML and CSS**. It is not an attempt to preserve or patch the old Docs implementation.
+This is a deliberately small, independent static HTML/CSS prototype, not the legacy Docs implementation.
 
-## Scope of this first pass
+## Design constraints actually applied
 
-- Home: brand, hero, one code sample, three purposeful routes.
-- Docs: editorial reading hierarchy without duplicate card grids.
-- Article: readable code, local table of contents, reference detail when wanted.
-- Mobile: responsive layout and native menu.
+- Use the existing Seseragi logo asset (`assets/brand/extension/logo-light.svg`), unchanged.
+- Home is the language's front door: one clear promise, two working actions, one verified-source code illustration **below** the hero.
+- No invented wave logo, serif rebranding, saturated red, decorative circles, tilted code, card wall or excessive mobile top whitespace.
+- Docs index is a navigable entrance, not a duplicate list of category cards.
+- Article is for reading: accessible header/menu, readable line lengths, working in-page anchors and a specific code example.
+- All three screens have layouts for desktop and 360px / 390px mobile, using the same small responsive stylesheet.
+- Code example is adapted from the repository's FizzBuzz sample (`examples/samples/fizzbuzz/main.ssrg`) and links to the original source.
+- This stage does **not** create a new compiler, API generator, mass corpus or heavyweight test-suite.
+- Existing site production and Playground are unchanged. Branch-only Vercel config serves static prototype for visual review.
 
-We deliberately postponed **all content migration, code generation, mass API references, test-suite restructuring and compiler integration**. The included example is a UI specimen, not a formally executed compiler fixture.
-
-The Vercel configuration change in this branch serves these static files **only for the prototype preview**, leaving `main` and the existing production Docs untouched. Review visual quality first; if accepted, integrate the rendering/SSG architecture in a separate follow-up.
-
-See Issue #601 for the original 61 design decisions. New concept/design work does not inherit old article or route preservation obligations.
+The prototype currently shows Japanese copy only; Japanese/English authoring and typed Seseragi SSG integration follow after the UI is evaluated.
