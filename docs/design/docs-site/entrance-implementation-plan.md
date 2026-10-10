@@ -38,7 +38,7 @@ Q30 の A+C の厳密な選択、Q31 の視覚比率、Q37 の題材選択は未
 | `pages/language/overview/` | values/types/declarations/calls と全 concept directory | 新章の短い見取り図を入口にし、全 concept directory と identity は保持 |
 | `components/site-header.ssrg` / `styles/responsive.css` | mobile は global links のうち Docs 以外を CSS で隠す | native disclosure を使う全体メニューから五つの既存 destination を辿れるようにする |
 | `i18n/{model,en,ja}.ssrg` / `components/mobile-sidebar.ssrg` | `documentation` を global Reference label と記事 drawer の label に共用 | global Docs と現在の Reference tree の label を分け、drawer の意味を保つ |
-| `render/document.ssrg` | canonical/hreflang/description はあるが favicon link がない | 既存 `/assets/seseragi-icon.svg` を head から参照。資産の複製や root 設定変更はしない |
+| `render/document.ssrg` | canonical/hreflang/description はあるが favicon link がない | head から既存 icon を参照し、repository-owned `favicon.ico` も Docs output へ配信。新しい資産の作成や root domain 設定変更はしない |
 | `pages/examples/` | 送料・record・literal 始まりの三通りの計算・Web の実体がある | 空殻として再実装しない。合成の例を新章の自然な計算へ置換し、元 source は最後の consumer 確認まで保持 |
 | `pages/releases/` / `pages/docs/first-run/` | v0.61.19 / Bun1.3.9 は 2026-10-01 の明示的な検証 snapshot | 旧証拠を削除せず、現在の公開 release と新しい実行証拠を区別して案内 |
 | `client/` / `styles/` | 検索 UI と `prefers-reduced-motion` の処理は確認できない | 実装済みと主張しない。検索の生成境界を調査し、motion 設定の検証を追加 |
@@ -188,8 +188,16 @@ browserで成功・失敗時fallbackを確認する。UI は必要時に開き�
 この probe に owner/kind field、ranking、UI、CSP変更、a11y、no-JS fallback は未実装。
 
 **motion/SEO。** 現行に reduced-motion handling は確認できない。
-追加する transition と既存 path-card hover を reduced-motion で抑制する。
+`styles/base.css` の全体の smooth scroll、`styles/docs.css` の二箇所の transition、
+`styles/home.css` の path-card hover が対象。追加する transition も含め、
+reduced-motion では scroll を auto にし、移動と transition を抑制する。
+drawer の現行 `scrollTo({behavior: "instant"})` は維持し、current link の
+`scrollIntoView` と fragment 移動を preference 別に実画面で確認する。
 canonical/hreflang/x-default/description、document lang、h1、repository-owned icon の実取得を保つ。
+既存 `assets/brand/public/brand/favicon.ico` は SHA を保って Docs output の
+`/favicon.ico` へ配信する候補。head の icon link と直接取得の両方を確認し、現在の404を
+未解決のまま console-clean と呼ばない。これは Docs 配信先内のassetで、#631 の primary
+root domain 切替ではない。manifest に追加assetとhashを含め、二回の全artifact比較へ入れる。
 全 page の icon/head を触る変更は全 site gate で確認する。
 
 ## 受け入れと実行順
