@@ -46,6 +46,13 @@ complete `check:site`, including its browser stage. Logs, phase data, memory
 report, toolchain/lock provenance and screenshots are retained as Actions
 artifacts. Branch protection and Vercel production settings are unchanged.
 
+The protocol oracle's four CLI steps took 80.825/34.025/48.695/22.572s on this
+host. Its assertions completed but the aggregate 180s test deadline failed
+at 187.792s. Its total budget now covers four existing 90s command caps plus
+30s for transport/assertions; those caps and the full-build 420s deadline are
+unchanged. This measured fixture-budget correction is separate from the
+full-input batching improvement.
+
 Reproduction (after locked dependencies and browser bootstrap):
 
 ```sh

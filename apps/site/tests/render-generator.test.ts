@@ -384,9 +384,10 @@ test("typed protocol preserves full navigation and exact HTML across batch sizes
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
-  // This test compiles both the protocol and independent direct-render entries.
-  // Canonical CLI 0.61.19 exceeded 120s on macOS; each CLI step remains capped at 90s.
-}, 180_000)
+  // Four independently capped CLI steps (lock/build/lock/run) took 186s in
+  // current-source Cloud verification. Cover their 4 * 90s budgets plus the
+  // transport assertions; preserve each CLI cap and the full-site 420s cap.
+}, 390_000)
 
 test("transport removes request/output files after malformed output or a child failure", () => {
   const directory = mkdtempSync(join(tmpdir(), "seseragi-render-transport-"))
