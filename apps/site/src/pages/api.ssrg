@@ -105,6 +105,7 @@ fn usage specifier: String -> Array<Block> = match specifier {
     CodeExample ("chapter-functions", localized "A reusable search key" "使い回せる検索用の文字列")
   ]
   "std/maybe" -> [
+    Paragraph ([InternalLink (localized "Match Just/Nothing with a generic function" "genericな関数でJust/Nothingをmatchする", "/docs/types/generics/")]),
     Paragraph (
       [Words (
         localized

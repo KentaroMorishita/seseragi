@@ -1,0 +1,6 @@
+fn preview<A> value: Maybe<A> -> String = match value {
+  Just item -> show item
+  Nothing -> "(empty)"
+}
+
+pub effect fn main = println (preview (Just 3))

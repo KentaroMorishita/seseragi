@@ -3,7 +3,10 @@ import { mkdirSync, readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { chromium } from "../../playground/node_modules/@playwright/test"
 import { generatorInput } from "../scripts/build"
-import { articleExecutions } from "../scripts/published-examples"
+import {
+  articleExecutions,
+  typeDiagnostics,
+} from "../scripts/published-examples"
 import { staticSiteHandler } from "../scripts/static-site-handler"
 import { verifyFunctionChapter } from "./function-chapter-browser"
 
@@ -33,6 +36,7 @@ const screenshots = resolve(
 mkdirSync(screenshots, { recursive: true })
 const browser = await chromium.launch({ headless: true })
 let cases = 0
+let chapterWalks = 0
 try {
   // Every published route and every API declaration is checked in the browser,
   // against compiler data rather than a historical page-count snapshot.
@@ -83,11 +87,21 @@ try {
     }
     for (const example of articleExecutions) {
       if (path !== example.route) continue
+      const negatives = typeDiagnostics.filter((item) => item.route === path)
       assert.deepEqual(
         await page.locator(".code-panel .seseragi-highlight").allTextContents(),
-        [readFileSync(join(root, example.sourcePath), "utf8")],
+        [example, ...negatives].map((item) =>
+          readFileSync(join(root, item.sourcePath), "utf8")
+        ),
         route
       )
+      for (const negative of negatives)
+        assert.ok(
+          (
+            await page.locator(".terminal-panel pre code").allTextContents()
+          ).includes(negative.display),
+          `${route}: diagnostic differs`
+        )
       assert.equal(
         await page.locator(".terminal-panel pre code").first().textContent(),
         example.output.trimEnd(),
@@ -135,6 +149,10 @@ try {
             "/docs/composition/apply/",
             "/docs/effects/",
             "/docs/effects/errors/",
+            "/docs/types/",
+            "/docs/types/records/",
+            "/docs/types/variants/",
+            "/docs/types/generics/",
             "/docs/api/",
             "/docs/api/prelude/",
           ]) {
@@ -157,12 +175,13 @@ try {
             if (
               route === "/" ||
               route === "/docs/composition/apply/" ||
-              route === "/docs/effects/errors/"
+              route === "/docs/effects/errors/" ||
+              route === "/docs/types/variants/"
             )
               await page.screenshot({
                 path: join(
                   screenshots,
-                  `reboot-${prefix ? "ja" : "en"}-${route === "/" ? "home" : route === "/docs/effects/errors/" ? "errors" : "apply"}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
+                  `reboot-${prefix ? "ja" : "en"}-${route === "/" ? "home" : route === "/docs/effects/errors/" ? "errors" : route === "/docs/types/variants/" ? "variants" : "apply"}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
                 ),
                 fullPage: true,
               })
@@ -194,21 +213,33 @@ try {
           }
           // Read the new chapter through its actual links in both locales,
           // including mobile widths and browsers without JavaScript.
-          await page.goto(`${origin + prefix}/docs/`)
-          for (const route of [
-            "/docs/effects/",
-            "/docs/effects/actions/",
-            "/docs/effects/errors/",
-            "/docs/api/effect/",
+          for (const chapter of [
+            [
+              "/docs/effects/",
+              "/docs/effects/actions/",
+              "/docs/effects/errors/",
+              "/docs/api/effect/",
+            ],
+            [
+              "/docs/types/",
+              "/docs/types/records/",
+              "/docs/types/variants/",
+              "/docs/types/generics/",
+              "/docs/api/prelude/",
+            ],
           ]) {
-            const link = page
-              .locator(`main a[href="${prefix}${route}"]`)
-              .first()
-            await Promise.all([
-              page.waitForURL(origin + prefix + route),
-              link.click(),
-            ])
-            assert.equal(new URL(page.url()).pathname, prefix + route)
+            await page.goto(`${origin + prefix}/docs/`)
+            for (const route of chapter) {
+              const link = page
+                .locator(`main a[href="${prefix}${route}"]`)
+                .first()
+              await Promise.all([
+                page.waitForURL(origin + prefix + route),
+                link.click(),
+              ])
+              assert.equal(new URL(page.url()).pathname, prefix + route)
+            }
+            chapterWalks++
           }
         }
       } finally {
@@ -217,7 +248,7 @@ try {
     }
   await verifyFunctionChapter(browser, origin)
   console.info(
-    `Reboot browser: ${cases} route/viewport cases; all signatures, locale navigation, no-JS, mobile, and first chapter verified`
+    `Reboot browser: ${cases} route/viewport cases; ${chapterWalks} types/effects chapter walks; all signatures, locale navigation, no-JS, mobile, and first chapter verified`
   )
 } finally {
   await browser.close()

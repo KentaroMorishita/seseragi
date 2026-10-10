@@ -36,12 +36,78 @@ export const effectExamples = [
   },
 ] as const
 
+export const typeExamples = [
+  {
+    id: "types-records",
+    route: "/docs/types/records/",
+    sourcePath: "apps/site/examples/src/types/types-records.ssrg",
+    output: "build site\nbuild tests\ncheck types\n",
+  },
+  {
+    id: "types-variants",
+    route: "/docs/types/variants/",
+    sourcePath: "apps/site/examples/src/types/types-variants.ssrg",
+    output: "build: waiting\nbuild: 40%\nbuild: done\n",
+  },
+  {
+    id: "types-generic",
+    route: "/docs/types/generics/",
+    sourcePath: "apps/site/examples/src/types/types-generic.ssrg",
+    output: "build\n3\n(empty)\n",
+  },
+] as const
+
+export const typeDiagnostics = [
+  {
+    id: "types-match-incomplete",
+    route: "/docs/types/variants/",
+    sourcePath:
+      "apps/site/examples/invalid/src/types/types-match-incomplete.ssrg",
+    code: "SES-T0301",
+    message: "This match does not cover every possible value",
+    detail: "missing patterns: Cancelled _",
+    display:
+      "SES-T0301: This match does not cover every possible value\nmissing patterns: Cancelled _",
+  },
+  {
+    id: "types-show-unconstrained",
+    route: "/docs/types/generics/",
+    sourcePath:
+      "apps/site/examples/invalid/src/types/types-show-unconstrained.ssrg",
+    code: "SES-T0201",
+    message: "A required trait instance is not available",
+    detail: "no Show<A> instance matches the inferred call arguments",
+    display:
+      "SES-T0201: A required trait instance is not available\nno Show<A> instance matches the inferred call arguments",
+  },
+] as const
+
+export const publishedDiagnostics: readonly {
+  id: string
+  sourcePath: string
+  code: string
+  message?: string
+  detail?: string
+}[] = [
+  ...[
+    "pilot-function-application",
+    "pilot-currying",
+    "syntax-reader-pipelines",
+  ].map((id) => ({
+    id: `${id}-invalid`,
+    sourcePath: `apps/site/examples/invalid/src/language/${id}.ssrg`,
+    code: "SES-T0101",
+  })),
+  ...typeDiagnostics,
+]
+
 export const articleExecutions = [
   ...compositionExamples.map((example) => ({
     ...example,
     route: `/docs/composition/${example.id.slice("composition-".length)}/`,
   })),
   ...effectExamples,
+  ...typeExamples,
 ] as const
 
 export const publishedExecutions = [
@@ -51,6 +117,7 @@ export const publishedExecutions = [
   })),
   ...compositionExamples,
   ...effectExamples,
+  ...typeExamples,
   {
     id: "pilot-function-application",
     sourcePath:

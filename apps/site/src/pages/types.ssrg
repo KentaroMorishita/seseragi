@@ -1,0 +1,360 @@
+import { localized } from "../model/locale"
+import {
+  Article,
+  BulletList,
+  CodeExample,
+  DocumentationLanding,
+  ExternalLink,
+  FlatSection,
+  Heading,
+  InlineCode,
+  InternalLink,
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../model/page"
+
+pub fn overview -> PageDefinition = PageDefinition {
+  id: "types.overview",
+  path: "/docs/types/",
+  kind: DocumentationLanding,
+  title: localized "Give your data a shape" "データの形を決める",
+  summary: localized
+    "Keep a command's settings together, describe a job's states, and reuse a function across different types."
+    "コマンドの設定をまとめ、ジョブの状態を表し、違う型にも同じ関数を使ってみよう。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "A command has several settings at once. A job is in one state at a time. Those are different shapes of data. We will build each one, then use Maybe to discover what can stay the same when the value's type changes."
+    "コマンドには、いくつかの設定が同時にある。ジョブの状態は、そのときどれかひとつ。この違いをデータの形にしてみよう。その後はMaybeを使い、中の型が変わっても共通にできる部分を探す。"
+      )]
+    ),
+    BulletList [
+      [InternalLink (
+        localized "record and alias — keep settings together"
+    "recordとalias — 設定をひとまとまりにする",
+        "/docs/types/records/"
+      )],
+      [InternalLink (
+        localized "ADT and match — give each state its data" "ADTとmatch — 状態ごとにデータを持つ",
+        "/docs/types/variants/"
+      )],
+      [InternalLink (
+        localized "Generics — reuse the shape of a function" "ジェネリクス — 関数の形を使い回す",
+        "/docs/types/generics/"
+      )]
+    ],
+    Paragraph (
+      [InternalLink (
+        localized "Start with functions and application" "関数と適用から始めたいときは",
+        "/docs/language/"
+      )]
+    )
+  ]
+}
+
+pub fn records -> PageDefinition = PageDefinition {
+  id: "types.records",
+  path: "/docs/types/records/",
+  kind: Article,
+  title: localized "record and alias — keep settings together"
+    "recordとalias — 設定をひとまとまりにする",
+  summary: localized
+    "Keep the command name and target together. Change the target without changing the original."
+    "コマンド名と対象を一緒に持とう。元の値はそのままに、対象を変えてみる。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "build site and build tests share a command name. Keeping the name and target in one record lets us pass them around together. at makes another command with a different target; label turns either command into text."
+    "build siteとbuild testsは、コマンド名が同じ。名前と対象をrecordにまとめておくと、ひとつの値として渡せる。atで対象を変えたコマンドを作り、labelでどちらも文字列にしてみよう。"
+      )]
+    ),
+    CodeExample
+    ("types-records", localized "One command, two targets" "ひとつのコマンドから、二つの対象へ"),
+    Terminal (localized "Output" "実行結果", "build site\nbuild tests\ncheck types"),
+    Heading ("fields", localized "Fields give the pieces names" "部品に名前を付ける"),
+    Paragraph (
+      [
+        InlineCode "{ name: \"build\", target: \"site\" }",
+        Words (
+          localized
+    " is a record value. The field names tell us which String means what. In label, let { name, target } = command picks those fields out. You can also read a field directly, such as command.target."
+    "はrecordの値。どのStringが何を表すか、fieldの名前で分かる。labelのlet { name, target } = commandは、そのfieldを取り出すpatternだ。command.targetのように直接読むこともできる。"
+        )
+      ]
+    ),
+    Heading ("copy", localized "A new target makes a new value" "対象を変えると、新しい値になる"),
+    Paragraph (
+      [
+        InlineCode "{ ...command, target }",
+        Words (
+          localized
+    " starts with the fields of command, then gives target the value of the target parameter. The shorthand target means target: target. This creates a new record. The first output line is still build site, even though tests has a different target."
+    "はcommandのfieldを引き継ぎ、その後でtargetを引数の値に置き換える。targetだけの部分はtarget: targetの省略形だ。できるのは新しいrecordなので、testsの対象を変えても、一行目のbuild siteは変わらない。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "at is curried: it receives a target first, then a command. If several commands should use the tests target, let forTests = at \"tests\" keeps that partially applied function ready to reuse."
+    "atは、対象、その後にコマンドを受け取るカリー化された関数だ。いくつかのコマンドをtests向けにしたいなら、let forTests = at \"tests\"と部分適用して使い回せる。"
+      )]
+    ),
+    Heading ("alias", localized "The alias names a shape" "aliasで形に名前を付ける"),
+    Paragraph (
+      [
+        InlineCode "alias Command = { name: String, target: String }",
+        Words (
+          localized
+    " gives that record type a name. It does not create a constructor or a separate nominal type. label accepts a record with those required fields and types, including the last record with an extra quiet field. It just does not use quiet. This is structural typing."
+    "は、このrecord型に名前を付けている。constructorや、別の名義を持つ型ができるわけではない。labelは必要なfieldとその型がそろったrecordを受け取るので、最後のquietが追加された値も使える。quietを使わないだけだ。こういう型の扱いをstructural typingと呼ぶ。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Extra fields are allowed here, but a required field cannot be absent or have a different type. { name: \"build\", target: 3 } does not satisfy Command. Records are immutable; spread constructs a value, rather than assigning to an existing field."
+    "ここでは追加のfieldがあってもよいけれど、必要なfieldを省いたり、別の型にしたりはできない。{ name: \"build\", target: 3 }はCommandに合わない。recordは不変で、spreadは既存のfieldへの代入ではなく、値を作る操作だ。"
+      )]
+    ),
+    Heading ("try", localized "Keep a target ready" "対象を手元に置いてみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Add forTests, then apply it to both build and { name: \"check\", target: \"site\" }. Both new commands use tests. Now print the original records again: their targets remain site."
+    "forTestsを追加して、buildと{ name: \"check\", target: \"site\" }に使ってみよう。新しい二つのコマンドは、どちらもtestsが対象になる。元の値ももう一度表示すると、対象はsiteのままだ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "What if the data has alternative states?" "いくつかの状態から、どれかを選ぶデータなら",
+        "/docs/types/variants/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Record construction and spread rules" "recordの構築とspreadの詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md#37-record"
+      )]
+    )
+  ]
+}
+
+pub fn variants -> PageDefinition = PageDefinition {
+  id: "types.variants",
+  path: "/docs/types/variants/",
+  kind: Article,
+  title: localized "ADT and match — give each state its data" "ADTとmatch — 状態ごとにデータを持つ",
+  summary: localized
+    "A job can wait, run, or finish. A progress percentage only belongs to the running state."
+    "ジョブは待機中、実行中、完了のどれか。進捗の割合は、実行中の状態だけが持つ。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "A job waiting to run has a name, but no progress yet. A running job has both. Instead of keeping separate waiting, running, and finished flags that could disagree, let Job be one of three alternatives."
+    "待機中のジョブには名前があるけれど、まだ進捗はない。実行中なら両方ある。待機・実行・完了のflagを別々に持つと、食い違う組み合わせも作れてしまう。Jobを三つの選択肢のどれかにしてみよう。"
+      )]
+    ),
+    CodeExample ("types-variants", localized "Data for each state" "それぞれの状態に合うデータ"),
+    Terminal (localized "Output" "実行結果", "build: waiting\nbuild: 40%\nbuild: done"),
+    Heading ("constructors", localized "A tag and the data it needs" "目印と、そこに必要なデータ"),
+    Paragraph (
+      [Words (
+        localized
+    "type Job declares an algebraic data type, or ADT. Each | introduces a constructor. Queued and Finished carry a String. Running carries one tuple, (String, Int), so Running (\"build\", 40) is a name and a percentage together. A Job value has exactly one of these constructors."
+    "type Jobで代数的データ型、ADTを宣言している。|の後ろは、それぞれの値を作るconstructor。QueuedとFinishedはStringを持つ。Runningが持つのは(String, Int)というひとつのtupleなので、Running (\"build\", 40)で名前と割合の組を渡せる。Jobの値は、このconstructorのどれかひとつになる。"
+      )]
+    ),
+    Heading ("patterns", localized "match reads the same shape back" "matchで、その形を読む"),
+    Paragraph (
+      [
+        InlineCode "Running (name, percent)",
+        Words (
+          localized
+    " is a pattern, not a call that starts a job. It matches the Running constructor and binds the tuple's pieces inside that arm. Queued name does the same for the queued name. The arrows lead to the String each arm produces, so the whole match is a String expression."
+    "はジョブを開始する呼び出しではなくpatternだ。Runningの値に一致したら、tupleの部品をそのarmの中でnameとpercentに束縛する。Queued nameも同じように名前を取り出す。矢印の先は各armが作るStringで、match全体もStringの式になる。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The type separates the alternatives; it does not validate every payload. Running (\"build\", 140) still has the right type. If progress must stay between 0 and 100, enforce that with a validation function before constructing the value."
+    "型が分けてくれるのは、状態の選択肢。中身のすべてを検証するわけではない。Running (\"build\", 140)も型には合う。進捗を0から100の間にしたいなら、値を作る前に別の関数で検証しよう。"
+      )]
+    ),
+    Heading (
+      "exhaustiveness",
+      localized "Add a state and find the forgotten case" "状態を足すと、忘れた場合が見つかる"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Now a job can be cancelled too. Keep status unchanged and add Cancelled to the declaration. This version is intentionally incomplete; the compiler points out the missing state before running main."
+    "ジョブをキャンセルできるようにしてみる。statusはそのままで、宣言にCancelledを足したのが次のコード。意図的に不完全な例で、mainを動かす前に、コンパイラが足りない状態を教えてくれる。"
+      )]
+    ),
+    CodeExample (
+      "types-match-incomplete",
+      localized "A new state, an unchanged match" "新しい状態と、変えていないmatch"
+    ),
+    Terminal (
+      localized "Compiler diagnostic" "コンパイラの診断",
+      "SES-T0301: This match does not cover every possible value\nmissing patterns: Cancelled _"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Add Cancelled name -> name + \": cancelled\" to status. The _ in the diagnostic means any cancelled name was left uncovered. You could write a final _ arm to accept every remaining value, but then adding another constructor would no longer reveal a forgotten case here. Choose a catch-all only when that is the behavior you intend."
+    "statusにCancelled name -> name + \": cancelled\"を足せば、その状態にも結果を返せる。診断の_は、どの名前のCancelledも扱われていないということ。最後の_ armで残りを全部受けることもできるけれど、その場合はconstructorを追加しても、この場所の処理漏れは見つからなくなる。本当に残りをまとめたいときに使おう。"
+      )]
+    ),
+    Heading ("rules", localized "Matching rules you can return to" "あとから引けるmatchの規則"),
+    Paragraph (
+      [Words (
+        localized
+    "Arms are tried in source order and the first matching pattern and guard is used. All arm results must have the same type. A guard uses when and returns Bool; guarded arms do not establish exhaustiveness. Unreachable arms are compile errors too. Job is nominal: declaring another ADT with a similar shape does not make it the same type."
+    "armは上から試され、patternとguardが最初に一致した式が使われる。結果の型は全armで同じでなければならない。guardはwhenで書くBoolの条件で、guard付きarmだけでは網羅性を満たせない。到達できないarmもコンパイルエラーになる。Jobはnominalな型なので、似た形のADTをもうひとつ宣言しても、同じ型にはならない。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Reuse a match across different payload types" "中身の型が違っても、同じmatchを使う",
+        "/docs/types/generics/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Pattern, guard, and exhaustiveness rules" "pattern・guard・網羅性の詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md#310-match-と-pattern"
+      )]
+    )
+  ]
+}
+
+pub fn generics -> PageDefinition = PageDefinition {
+  id: "types.generics",
+  path: "/docs/types/generics/",
+  kind: Article,
+  title: localized "Generics — reuse the shape of a function" "ジェネリクス — 関数の形を使い回す",
+  summary: localized
+    "Preview a command name or a count. Presence and absence have the same shape."
+    "コマンド名でも個数でも、短く表示したい。「あるか、ないか」の形は共通だ。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "A preview should show the value when one exists, and (empty) otherwise. The value might be a command name or a count. We do not need a separate match for each: Maybe keeps the same Just/Nothing alternatives."
+    "値があればその値、なければ(empty)を表示したい。中身はコマンド名かもしれないし、個数かもしれない。でも、それぞれにmatchを書き直す必要はない。MaybeのJust/Nothingという選択肢は同じだからだ。"
+      )]
+    ),
+    CodeExample (
+      "types-generic",
+      localized "One preview, two payload types" "ひとつのpreviewで、二つの型を表示する"
+    ),
+    Terminal (localized "Output" "実行結果", "build\n3\n(empty)"),
+    Heading ("parameter", localized "A stands for one chosen type" "Aは、その呼び出しで選ぶ型"),
+    Paragraph (
+      [
+        InlineCode "fn preview<A> value: Maybe<A> -> String",
+        Words (
+          localized
+    " introduces a type parameter A. For Just \"build\", A is String. For Just 3, A is Int. Within one call, every occurrence of A means the same type. This is not an untyped container that can hold anything; Maybe<Int> and Maybe<String> remain different types."
+    "の<A>で型parameterを導入している。Just \"build\"ならAはString、Just 3ならInt。同じ呼び出しの中では、Aはすべて同じ型を指す。何でも入れられる型なしの箱になるわけではなく、Maybe<Int>とMaybe<String>は別の型のままだ。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Nothing carries no payload to infer A from. The annotation on missing chooses Maybe<Int> before we call preview. A type annotation can supply that information without changing the value's absence."
+    "Nothingには、Aを推論するための中身がない。missingにMaybe<Int>と注釈を付けて、previewに渡す前に型を選んでいる。型注釈で情報を補っても、値が欠けていること自体は変わらない。"
+      )]
+    ),
+    Heading ("constraint", localized "Ask for the operation you use" "使う操作を、型に求める"),
+    Paragraph (
+      [
+        InlineCode "where Show<A>",
+        Words (
+          localized
+    " says A must have a Show instance. We use show to turn the payload into String, so the generic function needs that promise. Being a type parameter alone does not give A every operation. String and Int already support Show here."
+    "は、AにShowのinstanceが必要だという条件。中身をStringにするためにshowを使うので、genericな関数にもこの約束が要る。型parameterというだけで、Aにあらゆる操作が使えるわけではない。この例のStringとIntにはShowがある。"
+        )
+      ]
+    ),
+    CodeExample
+    ("types-show-unconstrained", localized "Without the Show contract" "Showの条件を外してみる"),
+    Terminal (
+      localized "Compiler diagnostic" "コンパイラの診断",
+      "SES-T0201: A required trait instance is not available\nno Show<A> instance matches the inferred call arguments"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Even though main passes an Int, preview must be valid for the types allowed by its own declaration. Add the constraint back to make its contract match its body. The compiler chooses instances from lexical and import scope; a where clause does not invent an implementation of show."
+    "mainでIntを渡していても、previewは自身の宣言が許す型について成り立つ必要がある。条件を戻すと、本文に合った契約になる。instanceはlexical scopeとimportからコンパイラが選ぶ。whereを書けばshowの実装まで生まれるわけではない。"
+      )]
+    ),
+    Heading ("try", localized "Try a third type" "三つ目の型でも試す"),
+    Paragraph (
+      [Words (
+        localized
+    "Call preview (Just True). Bool has Show, so the result is True. Then use let absent: Maybe<String> = Nothing: it still gives (empty). We changed the payload type while keeping the same presence/absence handling."
+    "preview (Just True)も試してみよう。BoolにもShowがあり、結果はTrueになる。次にlet absent: Maybe<String> = Nothingを渡すと、やはり(empty)。中身の型を変えても、値の有無を扱う部分はそのまま使える。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Transform Just values with <$>" "Justの中を<$>で変える",
+        "/docs/composition/transform/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Look up Show and its instances" "Showとそのinstanceの宣言を引く",
+        "/docs/api/prelude/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Type inference and polymorphism" "型推論と多相性の詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md#25-多相性"
+      )]
+    )
+  ]
+}
+
+pub fn pages -> Array<PageDefinition> = [
+  overview (),
+  records (),
+  variants (),
+  generics ()
+]
+pub fn area -> NavigationArea = NavigationArea {
+  id: "types",
+  title: localized "Types and patterns" "型とパターン",
+  description: localized
+    "Group fields, choose a state, and share a function across types."
+    "fieldをまとめ、状態を選び、違う型で同じ関数を使う。",
+  landing: overview (),
+  groups: [NavigationGroup {
+    id: "types",
+    title: localized "Shapes of data" "データの形",
+    sections: [NavigationSection {
+      id: "types",
+      title: localized "record, ADT, match, generics" "record・ADT・match・ジェネリクス",
+      kind: FlatSection,
+      overview: records (),
+      pages: [variants (), generics ()]
+    }]
+  }]
+}
