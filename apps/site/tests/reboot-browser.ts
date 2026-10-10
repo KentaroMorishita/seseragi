@@ -201,7 +201,9 @@ try {
             "/docs/effects/errors/",
             "/docs/api/effect/",
           ]) {
-            const link = page.locator(`main a[href="${prefix}${route}"]`).first()
+            const link = page
+              .locator(`main a[href="${prefix}${route}"]`)
+              .first()
             await Promise.all([
               page.waitForURL(origin + prefix + route),
               link.click(),
