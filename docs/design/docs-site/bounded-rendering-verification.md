@@ -84,8 +84,39 @@ export SESERAGI_SITE_PROFILE="$PWD/target/site-verification/phases.jsonl"
 export SESERAGI_SITE_TEST_EVIDENCE="$PWD/target/site-verification/manifests"
 python3 apps/site/scripts/profile-process.py \
   --report target/site-verification/process-tree.json \
-  --timeout 3300 --limit-mib 4096 -- bun run check:site
+  --timeout 7200 --limit-mib 4096 -- bun run check:site
 ```
+
+### Whole-suite watchdog calibration
+
+Normal PR CI on `c0998a9acbcedf4b6b9b15251d61265a21b957d1`
+([run 38010497243](https://github.com/KentaroMorishita/seseragi/actions/runs/38010497243))
+completed both 3,976-route builds in 256,361 and 254,442 ms under Bun 1.3.11,
+Rust 1.97.1 and a clean optimized CLI built from that exact head. Both full
+manifests are byte-identical, SHA-256
+`aeef4b9dbb8ea2436caee596ce0d5267bad47434d23bce24c99921298f880377`.
+All 3,981 artifact paths/hashes and route/example/compiler Reference inventories
+were retained. The complete manifest is also archived as deterministic gzip
+in [the evidence directory](../../reviews/issue-706/), so every hash remains
+available after the Actions artifact expires. The machine-readable
+[CI report](../../reviews/issue-706/2026-10-10-ci-c099.json) records provenance,
+both builds' phase timings, memory and the incomplete suite workload.
+
+The whole command stopped at 3,300,099 ms with `stopReason: "deadline"`;
+it did not reach browser verification. Tree RSS peaked at 3,064,520 KiB,
+cleanup handled four processes, and no processes remained. The checker at
+that exact head schedules 65 Bun test files: 39 had started, with 26 plus
+browser remaining. Logs show 223 passing tests, no observed assertion failure,
+and steady progress. This partial run is not a complete site-gate pass.
+
+The newly introduced aggregate watchdog is now a finite 7,200 seconds, with
+a 130-minute job envelope for setup and evidence upload. Observed suite progress
+and the remaining workload suggest about 90–100 minutes serially; that is a
+projection, not a proved final runtime. This calibration preserves the complete
+serial checker, all assertions/browser checks, two full builds, the 420-second
+per-build deadline, 90-second CLI requests, 390-second protocol fixture budget,
+fresh bounded processes and the 4 GiB sampled-tree ceiling. Only a completed
+normal CI run on the final exact head can establish full acceptance.
 
 ## 2026-10-02 release-profile regression check
 

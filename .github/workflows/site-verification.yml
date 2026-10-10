@@ -29,7 +29,10 @@ concurrency:
 jobs:
   site:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    # c0998a9 completed both full builds, but the serial suite was still
+    # passing with 26/65 files and browser remaining at the old 55m bound.
+    # Keep every individual deadline and the sampled 4 GiB tree ceiling.
+    timeout-minutes: 130
     steps:
       - uses: actions/checkout@v4
         with:
@@ -66,7 +69,7 @@ jobs:
           set -o pipefail
           python3 apps/site/scripts/profile-process.py \
             --report target/site-verification/process-tree.json \
-            --timeout 3300 --limit-mib 4096 \
+            --timeout 7200 --limit-mib 4096 \
             -- bun run check:site 2>&1 | tee target/site-verification/check-site.log
       - name: Record optimized CLI provenance
         if: ${{ !cancelled() }}
