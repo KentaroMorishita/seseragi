@@ -4,7 +4,6 @@
 
 html {
   background: var(--bg-deep);
-  scroll-behavior: smooth;
 }
 
 body {

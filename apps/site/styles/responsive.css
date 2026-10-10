@@ -247,8 +247,8 @@
   display: grid;
   gap: 0;
   padding: 0.5rem;
-  background: var(--page-background, #fff);
-  border: 1px solid var(--line, #ddd);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
   border-radius: 0.6rem;
   z-index: 30;
   box-shadow: 0 8px 28px #0001;

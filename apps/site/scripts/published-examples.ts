@@ -5,17 +5,17 @@ import { functionChapterExamples } from "./function-chapter-examples"
 export const compositionExamples = [
   {
     id: "composition-transform",
-    sourcePath: "examples/spec/docs-reboot/composition-transform.ssrg",
+    sourcePath: "apps/site/examples/src/composition/composition-transform.ssrg",
     output: "Just > build\nNothing\n[> build, > check]\n",
   },
   {
     id: "composition-apply",
-    sourcePath: "examples/spec/docs-reboot/composition-apply.ssrg",
+    sourcePath: "apps/site/examples/src/composition/composition-apply.ssrg",
     output: "Just build site\nNothing\nNothing\n",
   },
   {
     id: "composition-bind",
-    sourcePath: "examples/spec/docs-reboot/composition-bind.ssrg",
+    sourcePath: "apps/site/examples/src/composition/composition-bind.ssrg",
     output:
       "Just Just Compile the project.\nJust Compile the project.\nJust Check the types.\nNothing\nNothing\n",
   },
