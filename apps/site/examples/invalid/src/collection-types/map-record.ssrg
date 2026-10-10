@@ -1,3 +1,0 @@
-import * as maps from "std/map"
-let prices: maps.Map<String, Int> = { tea: 2 }
-pub effect fn main = println "unreachable"

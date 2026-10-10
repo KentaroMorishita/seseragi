@@ -1,7 +1,0 @@
-alias UserName = String
-
-fn greeting name: UserName -> String = `Hello, ${name}`
-
-let userName: UserName = "Aki"
-
-pub effect fn main = println (greeting userName)

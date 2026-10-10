@@ -1,7 +1,0 @@
-import * as arrays from "std/array"
-
-fn describe values: Array<Int> -> String = match arrays.get 5 values {
-  Just value -> `found: ${value}`
-}
-
-pub effect fn main = println (describe [10, 20])

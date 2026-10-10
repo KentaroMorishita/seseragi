@@ -1,7 +1,0 @@
-fn accept value: { profile: { name: String, score: Int }, enabled: Bool } -> Int =
-  value.profile.score
-
-let invalid = accept {
-  profile: { name: "Mio", extra: True },
-  stale: 1,
-}

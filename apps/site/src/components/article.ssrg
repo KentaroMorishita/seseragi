@@ -10,12 +10,14 @@ import {
   CodeExample,
   Heading,
   Inline,
+  ModuleSignatures,
   OrderedList,
   Paragraph,
   Terminal
 } from "../model/page"
 import { apiReference, codeExample } from "./code-example"
 import { callout } from "./callout"
+import { moduleSignatures } from "./module-signatures"
 import { renderInlines } from "./primitives"
 
 fn listItem<Action> locale: Locale -> values: Array<Inline> -> html.Html<Action> =
@@ -49,6 +51,7 @@ pub fn renderBlock<Action> input: BuildInput
     }
     Callout (tone, title, body) -> callout locale tone title body
     ApiReference (identity, namespace, itemKind) -> apiReference input locale identity namespace itemKind
+    ModuleSignatures specifier -> moduleSignatures input locale specifier
   }
 
 pub fn article<Action> input: BuildInput

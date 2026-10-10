@@ -1,0 +1,67 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import { BuildInput, ReferenceModule, ReferenceSymbol } from "../model/build"
+import { Locale, localized, translate } from "../model/locale"
+import { anchor } from "./primitives"
+
+pub fn symbolSignature<Action> locale: Locale
+  -> symbol: ReferenceSymbol
+  -> html.Html<Action> =
+  html.section {
+    id: symbol.anchor,
+    class: "api-reference",
+    children: [
+      html.h3 { children: anchor symbol.name ("#" + symbol.anchor) "article-link" },
+      html.p {
+        class: "api-reference-kind",
+        children: symbol.namespace + " · " + symbol.itemKind
+      },
+      html.pre {
+        children: html.code {
+          class: "seseragi-highlight",
+          children: [html.span { class: part.className, children: part.text } | part <- symbol.highlighted]
+        }
+      },
+      html.p { class: "api-reference-identity", children: symbol.identity }
+    ]
+  }
+
+fn matches specifier: String -> value: ReferenceModule -> Bool =
+  value.specifier == specifier
+
+fn declarations<Action> locale: Locale -> value: ReferenceModule -> html.Html<Action> =
+  html.div {
+    class: "module-signatures",
+    children: [
+      html.p {
+        children: translate locale (localized "Targets: " "対象: ") + join ", " value.targets + " · " + value.availability
+      },
+      html.details {
+        class: "symbol-index",
+        children: [
+          html.summary {
+            children: translate locale (localized "Jump to a declaration" "宣言を選ぶ")
+          },
+          html.ul {
+            children: [html.li {
+              children: anchor (symbol.name + " · " + symbol.itemKind)
+                ("#" + symbol.anchor) "article-link"
+            } | symbol <- value.items]
+          }
+        ]
+      },
+      html.div { children: [symbolSignature locale symbol | symbol <- value.items] }
+    ]
+  }
+
+pub fn moduleSignatures<Action> input: BuildInput
+  -> locale: Locale
+  -> specifier: String
+  -> html.Html<Action> =
+  match arrays.find (matches specifier) input.referenceModules {
+    Nothing -> html.p {
+      class: "site-build-error",
+      children: "Unknown module: " + specifier
+    }
+    Just value -> declarations locale value
+  }

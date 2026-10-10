@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { sequenceEditorial } from "../../sequence-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  sequenceEditorial "std/list::zipWith" "list" "sequence-list-zipwith" "`[9, 18]\n`[-9, -18]\n`[]\n`[]" (en.copy ()) (ja.copy ())

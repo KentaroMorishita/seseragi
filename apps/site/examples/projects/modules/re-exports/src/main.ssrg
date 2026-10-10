@@ -1,4 +1,0 @@
-import * as api from "./public"
-
-let id: api.domain.UserId = api.UserId 42
-pub effect fn main = println (show (api.toInt id))

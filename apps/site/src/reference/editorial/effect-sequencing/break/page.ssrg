@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { effectSequencingEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  effectSequencingEditorial "std/effect::Break" "value" "constructor" "loop-control" "Continue permits the next item\nBreak stops successfully\nBreak stops successfully\n" (en.copy ()) (ja.copy ())

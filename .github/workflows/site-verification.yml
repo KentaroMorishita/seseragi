@@ -59,7 +59,7 @@ jobs:
           bun --version > target/site-verification/bun.txt
           rustc --version > target/site-verification/rust.txt
           sha256sum bun.lock Cargo.lock apps/site/seseragi.lock > target/site-verification/locks.txt
-      - name: Build the published reader edition
+      - name: Verify the published Docs Reboot
         env:
           CARGO_INCREMENTAL: "0"
           SESERAGI_SITE_PROFILE: ${{ github.workspace }}/target/site-verification/phases.jsonl
@@ -68,7 +68,7 @@ jobs:
           python3 apps/site/scripts/profile-process.py \
             --report target/site-verification/process-tree.json \
             --timeout 7200 --limit-mib 4096 \
-            -- bun run build:site:production 2>&1 | tee target/site-verification/check-site.log
+            -- bun run check:site 2>&1 | tee target/site-verification/check-site.log
       - name: Record optimized CLI provenance
         if: ${{ !cancelled() }}
         run: |

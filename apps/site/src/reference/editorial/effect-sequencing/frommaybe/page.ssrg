@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { effectSequencingEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  effectSequencingEditorial "std/effect::fromMaybe" "value" "effect-function" "from-maybe" "Count: 2\nCount: 0\nRejected: count is missing\n" (en.copy ()) (ja.copy ())

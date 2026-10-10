@@ -1,3 +1,0 @@
-import * as json from "std/json"
-fn identity value: String -> Either<json.DecodeError, String> = Right value
-pub let wrong: json.Decoder<String> = identity

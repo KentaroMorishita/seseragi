@@ -1,9 +1,0 @@
-import * as unicode from "std/text/unicode"
-
-let letter = 'A'
-pub effect fn main =
-  println `A alphabetic: ${unicode.isAlphabetic letter}
-漢 alphabetic: ${unicode.isAlphabetic '漢'}
-3 alphabetic: ${unicode.isAlphabetic '3'}
-U+0345 alphabetic: ${unicode.isAlphabetic '\u{0345}'}
-U+0301 alphabetic: ${unicode.isAlphabetic '\u{0301}'}`

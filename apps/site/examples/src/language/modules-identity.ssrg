@@ -1,7 +1,0 @@
-import { UserId, userId } from "./modules-domain"
-import { toInt } from "./modules-domain.ssrg"
-
-fn makeId value: Int -> Maybe<UserId> = userId value
-
-let identifier = makeId 42
-let number = map toInt identifier

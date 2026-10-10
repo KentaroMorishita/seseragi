@@ -1,3 +1,0 @@
-import { secret } from "docs/greetings/internal/secret"
-
-pub effect fn main = println secret

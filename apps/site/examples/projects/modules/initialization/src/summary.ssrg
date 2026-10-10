@@ -1,6 +1,0 @@
-fn double value: Int -> Int = value * 2
-
-pub let answer: Int = double 21
-pub effect fn main = println "imported main must not run"
-effect fn report = println "stored Effect must not run"
-let pending = report ()

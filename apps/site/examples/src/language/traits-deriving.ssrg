@@ -1,9 +1,0 @@
-type Priority deriving Eq, Ord, Show =
-  | Low
-  | Normal
-  | High
-
-struct Task deriving Eq, Show { title: String, priority: Priority, }
-
-let task = Task { title: "publish", priority: High, }
-let sameTask = task == task

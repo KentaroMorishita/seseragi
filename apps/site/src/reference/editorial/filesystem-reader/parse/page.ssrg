@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { filesystemReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  filesystemReaderEditorial "std/path::parse" "value" "function" "parse-inputs" "accepted: reports/./report.txt\nrejected: EmptyPath\nrejected: PathContainsBackslash { offset: 2 }" "" "" (en.copy ()) (ja.copy ())

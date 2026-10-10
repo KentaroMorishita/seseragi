@@ -1,7 +1,0 @@
-import * as stdin from "std/stdin"
-fn limitValue -> Float = 4.5
-pub effect fn main -> Unit with Console fails ConsoleError =
-  match stdin.lineLimit (limitValue ()) {
-    Left _ -> println "Invalid limit"
-    Right _ -> println "Accepted"
-  }

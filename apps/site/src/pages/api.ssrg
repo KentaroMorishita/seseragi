@@ -1,0 +1,175 @@
+import * as text from "std/text"
+import * as arrays from "std/array"
+import { BuildInput, ReferenceModule } from "../model/build"
+import { localized } from "../model/locale"
+import {
+  Block,
+  BulletList,
+  CodeExample,
+  DocumentationLanding,
+  ExternalLink,
+  Heading,
+  InternalLink,
+  ModuleSignatures,
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  NestedSection,
+  PageDefinition,
+  Paragraph,
+  Reference,
+  Terminal,
+  Words
+} from "../model/page"
+pub fn moduleRoute specifier: String -> String =
+  "/docs/api/" + text.replace "std/" "" specifier + "/"
+pub fn index input: BuildInput -> PageDefinition = PageDefinition {
+  id: "api.overview",
+  path: "/docs/api/",
+  kind: DocumentationLanding,
+  title: localized "API Reference" "API Reference",
+  summary: localized
+    "Looking for an exact type? Pick a module, then jump to its declaration."
+    "正確な型を調べたいときは、モジュールを選んで宣言へ。",
+  blocks: [
+    Heading ("reading", localized "A quick way to read a signature" "シグネチャを読むコツ"),
+    Paragraph (
+      [Words (
+        localized
+    "Follow the arrows from left to right: arguments, then the result. A where clause tells you which operations a type must support. Functions in std/prelude are already in scope; import the other modules explicitly."
+    "矢印を左からたどると、引数、その先に結果の型がある。whereの後ろは、その型に必要な操作の条件。std/preludeは最初から使えるけど、ほかのモジュールはimportして使おう。"
+      )]
+    ),
+    Terminal
+    (localized "Import a module" "モジュールを読み込む", "import * as arrays from \"std/array\""),
+    Paragraph (
+      [InternalLink (
+        localized "See these types in use" "型を実際のコードで読む",
+        "/docs/composition/transform/"
+      )]
+    ),
+    Heading ("modules", localized "Modules" "モジュール"),
+    BulletList
+    [[InternalLink
+    (localized value.specifier value.specifier, moduleRoute value.specifier)] | value <- input.referenceModules],
+    Heading ("source", localized "Where the declarations come from" "宣言の出どころ"),
+    Paragraph (
+      [Words (
+        localized
+    "These signatures, constraints, instances, and target labels come from the compiler's public standard-library metadata. They describe the current implementation, rather than features planned in the specification."
+    "シグネチャ、制約、instance、実行対象は、コンパイラが公開する標準ライブラリのmetadataから取っている。仕様に書かれた将来の機能ではなく、現在の実装の宣言だ。"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Standard-library specification" "標準ライブラリの仕様",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/09-standard-library.md"
+      )]
+    )
+  ]
+}
+
+fn usage specifier: String -> Array<Block> = match specifier {
+  "std/prelude" -> [
+    Paragraph (
+      [Words (
+        localized
+          "map transforms within a context, apply combines wrapped arguments, and flatMap chooses the next computation from a result. The operators <$>, <*>, and >>= use these traits."
+          "文脈を保って変えるmap、包まれた引数を組み合わせるapply、結果で次の計算を選ぶflatMap。<$>・<*>・>>=は、ここにあるtraitの操作を使っている。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink
+          (localized "Read the composition chapter" "合成の章で使ってみる", "/docs/composition/")]
+    )
+  ]
+  "std/array" -> [
+    Paragraph (
+      [Words (
+        localized
+          "Use find when a predicate chooses the value, get when you know its position, and filter when you want every match. find and get return Maybe because there may be no value."
+          "条件で値を選ぶならfind、位置が決まっているならget、合う値を全部残すならfilter。findとgetの結果がMaybeなのは、値がない場合もあるからだ。"
+      )]
+    ),
+    CodeExample
+          ("composition-apply", localized "Read two positions safely" "二つの位置を、欠如も含めて読む")
+  ]
+  "std/text" -> [
+    Paragraph (
+      [Words (
+        localized
+          "Trim or normalize a name before comparing it. These operations return new strings. They do not change the original command name."
+          "名前を比較する前に、空白や大文字・小文字を整えよう。これらの操作は新しい文字列を返し、元のコマンド名は変えない。"
+      )]
+    ),
+    CodeExample ("chapter-functions", localized "A reusable search key" "使い回せる検索用の文字列")
+  ]
+  "std/maybe" -> [
+    Paragraph (
+      [Words (
+        localized
+          "Maybe keeps ordinary absence separate from a value: Just value or Nothing. Use withDefault to choose a fallback value. Use <$> to keep the absence, or >>= when your next function also returns Maybe."
+          "Maybeは、普通にありうる欠如を値と分ける型で、Just valueかNothingになる。代わりの値を選ぶならwithDefault。欠如を保って変えるなら<$>、次の関数もMaybeを返すなら>>=を使える。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Transform a found name" "見つかった名前を変える",
+        "/docs/composition/transform/"
+      )]
+    )
+  ]
+  "std/either" -> [
+    Paragraph (
+      [Words (
+        localized
+          "Either keeps a reason as well as the successful value: Left error or Right value. Its applicative and monadic combinations stop at the first Left. To accumulate independent validation errors, use Validation instead."
+          "Eitherなら、成功の値だけでなく理由も残せる。Left errorかRight valueになり、ApplicativeとMonadの合成は最初のLeftで止まる。独立した検証エラーを集めたい場合はValidationを選ぼう。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Compare Maybe with a reason to stop" "Maybeと、止まった理由を比べる",
+        "/docs/composition/bind/"
+      )]
+    )
+  ]
+  _ -> []
+}
+
+fn modulePage value: ReferenceModule -> PageDefinition = PageDefinition {
+  id: "api.module." + value.specifier,
+  path: moduleRoute value.specifier,
+  kind: Reference,
+  title: localized value.specifier value.specifier,
+  summary: localized
+    "Public declarations, type constraints, and instances. Use a name below to link directly to one declaration."
+    "公開された宣言と型の制約、instance。名前を選ぶと、その宣言へ直接リンクできる。",
+  blocks: arrays.concat [
+    usage value.specifier,
+    [
+      Paragraph ([InternalLink (localized "All modules" "モジュール一覧", "/docs/api/")]),
+      ModuleSignatures value.specifier
+    ]
+  ]
+}
+pub fn pages input: BuildInput -> Array<PageDefinition> =
+  [modulePage value | value <- input.referenceModules]
+pub fn area input: BuildInput -> NavigationArea = NavigationArea {
+  id: "api",
+  title: localized "API Reference" "API Reference",
+  description: localized "Exact signatures and constraints, grouped by module."
+    "モジュールから、正確なシグネチャと制約を引く。",
+  landing: index input,
+  groups: [NavigationGroup {
+    id: "api-modules",
+    title: localized "Standard library" "標準ライブラリ",
+    sections: [NavigationSection {
+      id: "api-modules",
+      title: localized "Modules" "モジュール",
+      kind: NestedSection,
+      overview: index input,
+      pages: pages input
+    }]
+  }]
+}

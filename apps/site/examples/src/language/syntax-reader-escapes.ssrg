@@ -1,6 +1,0 @@
-let quote = "\"Seseragi\""
-let path = "docs\\guide"
-let lambda: Char = '\u{03BB}'
-let lines = "first\nsecond"
-
-pub effect fn main = println `${quote}\n${path}\n${lambda}\n${lines}`

@@ -1,2 +1,0 @@
-let values: List<Int> = [10, 20]
-pub effect fn main = println "unreachable"

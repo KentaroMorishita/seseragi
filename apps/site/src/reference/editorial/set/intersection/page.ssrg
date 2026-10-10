@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { setEditorial } from "../../set-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  setEditorial "std/set::intersection" "set-intersection" "[1,2]\n[2,1]\n[]\n[]\n[3,1,2]\n[2,4,1]" (en.copy ()) (ja.copy ())

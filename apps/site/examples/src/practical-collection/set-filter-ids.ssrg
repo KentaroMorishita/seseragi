@@ -1,9 +1,0 @@
-import * as sets from "std/set"
-import * as json from "std/json"
-fn eligible value: Int -> Bool = value >= 3
-pub effect fn main = do {
-  let ids = sets.fromIterable [4, 1, 4, 3, 0]
-  _ <- println (json.encodeString (sets.toArray (sets.filter eligible ids)))
-  _ <- println (json.encodeString (sets.toArray ids))
-  println (json.encodeString (sets.toArray (sets.filter eligible (sets.empty<Int> ()))))
-}

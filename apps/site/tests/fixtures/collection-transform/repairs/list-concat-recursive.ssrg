@@ -1,6 +1,0 @@
-import * as json from "std/json"
-import * as items from "std/list"
-pub fn valid -> List<List<Int>> = items.concat `[`[`[1]]]
-
-pub effect fn main =
-  println (json.encodeString [[n | n <- group] | group <- (valid ())])

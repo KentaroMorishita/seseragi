@@ -171,7 +171,10 @@ export async function verifyFunctionChapter(browser: Browser, origin: string) {
               1,
               `${item.route}: chapter continuation`
             )
-            await nextLink.click()
+            await Promise.all([
+              page.waitForURL(origin + prefix + next, { waitUntil: "load" }),
+              nextLink.click(),
+            ])
             assert.equal(new URL(page.url()).pathname, prefix + next)
             pages++
           }

@@ -1,3 +1,0 @@
-import * as collections from "std/collection"
-fn step total: Int -> score: Int -> collections.ReduceStep<Int> = total + score
-pub effect fn main = println "unreachable"

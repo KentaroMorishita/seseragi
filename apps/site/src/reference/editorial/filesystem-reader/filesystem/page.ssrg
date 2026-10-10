@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { filesystemReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  filesystemReaderEditorial "std/fs::FileSystem" "type" "opaque-type" "report-roundtrip" "café\nこんにちは" "" "" (en.copy ()) (ja.copy ())

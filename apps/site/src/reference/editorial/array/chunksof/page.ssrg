@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::chunksOf" "array-chunksof" "Right [[10, 20], [30, 40], [50]]\nRight []\nLeft NonPositiveSize 0\nLeft NonPositiveSize -2" (en.copy ()) (ja.copy ())

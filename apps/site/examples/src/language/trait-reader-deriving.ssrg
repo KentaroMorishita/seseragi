@@ -1,5 +1,0 @@
-struct Ticket deriving Eq, Show { number: Int }
-
-let first = Ticket { number: 42 }
-let second = Ticket { number: 42 }
-pub effect fn main = println (show (first == second) + "\n" + show first)

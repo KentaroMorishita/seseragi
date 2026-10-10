@@ -1,2 +1,0 @@
-alias Wrapped<M<_>, A> = M<A>
-let number: Wrapped<Int, Int> = 42

@@ -1,5 +1,0 @@
-fn duplicate<A> value: A -> (A, A) = (value, value)
-
-let (left, right) = duplicate 21
-let (first, second) = duplicate<String> "ready"
-pub effect fn main = println `${left}, ${right}\n${first}, ${second}`

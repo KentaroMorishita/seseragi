@@ -1,3 +1,9 @@
+> 2026-10-10: 旧記事・URL・ページ数の保全条件は撤回済み。現在の制作方針は
+> [編集契約](editorial-contract.md)、公開構成と検証は[制作記録](migration-ledger.md)、
+> 作業状態は[#601](https://github.com/KentaroMorishita/seseragi/issues/601)。
+> このフォルダの以前のwork-item/verification資料とinventoryは実装史であり、
+> 旧記事の移植や保全を義務付ける現行gateではない。
+
 # Docs Reboot design and evidence
 
 [#601](https://github.com/KentaroMorishita/seseragi/issues/601) is the single

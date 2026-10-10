@@ -1,2 +1,0 @@
-let escaped = "\q"
-pub effect fn main = println escaped

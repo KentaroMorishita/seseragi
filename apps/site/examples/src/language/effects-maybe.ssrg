@@ -1,4 +1,0 @@
-pub fn displayName cached: Maybe<String> -> requested: Maybe<String> -> String =
-  cached
-  ?? requested
-  ?? "anonymous"

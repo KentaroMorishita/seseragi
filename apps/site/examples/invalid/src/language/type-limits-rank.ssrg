@@ -1,4 +1,0 @@
-fn useTwice<A> operation: (A -> A) -> String = {
-  let number = operation 42
-  operation "ready"
-}

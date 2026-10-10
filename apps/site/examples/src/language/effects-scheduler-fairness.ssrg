@@ -1,6 +1,0 @@
-import * as effects from "std/effect"
-
-effect fn cooperativeStep -> Int = do {
-  effects.yieldNow ()
-  effects.succeed 42
-}

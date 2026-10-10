@@ -1,4 +1,0 @@
-import { a } from "./shared-a"
-import { b } from "./shared-b"
-
-pub effect fn main = println `${a}, ${b}`

@@ -1,5 +1,0 @@
-newtype UserId = Int
-fn raw identifier: UserId -> Int = match identifier {
-  UserId number -> number
-}
-pub effect fn main = println (raw 42)

@@ -1,4 +1,0 @@
-alias Person = { name: String, nickname ?: String }
-fn requireNickname person: { nickname: String } -> String = person.nickname
-let ordinary: Person = { name: "Aki" }
-let label = requireNickname ordinary

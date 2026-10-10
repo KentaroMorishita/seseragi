@@ -1,2 +1,0 @@
-type Outcome<E, A> = | Failure E | Success A
-let result: Outcome<String, Int> = Success "42"

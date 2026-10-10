@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { resultFoundationEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  resultFoundationEditorial "std/either::sequence" "value" "function" "either" "either-sequence" "Seats: [2,1]\nError: first\nError: first\nSeats: []" (en.copy ()) (ja.copy ())

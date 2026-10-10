@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::findIndex" "array-findindex" "found at 1\nnot found\nnot found" (en.copy ()) (ja.copy ())

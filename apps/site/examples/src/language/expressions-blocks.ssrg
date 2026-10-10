@@ -1,7 +1,0 @@
-fn label score: Int -> String = {
-  let normalized = if score < 0 then 0 else score
-  fn render value: Int -> String = `score=${value}`
-  render normalized
-}
-
-let result = label 42

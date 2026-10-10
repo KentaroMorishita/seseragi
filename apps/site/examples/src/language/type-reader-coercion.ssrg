@@ -1,7 +1,0 @@
-import { fromInt } from "std/float"
-
-fn half value: Float -> Float = value / 2.0
-
-let count = 42
-let result = half (fromInt count)
-pub effect fn main = println (show result)

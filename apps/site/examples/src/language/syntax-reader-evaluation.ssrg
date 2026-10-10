@@ -1,6 +1,0 @@
-fn place tens: Int -> ones: Int -> Int = tens * 10 + ones
-fn next value: Int -> Int = value + 1
-
-let number = place (next 1) (next 2)
-
-pub effect fn main = println number

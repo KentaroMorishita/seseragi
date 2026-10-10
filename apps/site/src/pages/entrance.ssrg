@@ -73,6 +73,10 @@ pub fn docs -> PageDefinition = PageDefinition {
   blocks: [
     Heading ("start-here", localized "What would you like to make?" "何を作ってみようか"),
     BulletList (chapterLinks ()),
+    Heading ("composition", localized "Keep the missing case in the type" "見つからない場合も、型に残す"),
+    Paragraph ([InternalLink (localized "<$>, <*>, >>=, and do — values with a context" "<$>・<*>・>>=・do — 文脈のある値", "/docs/composition/")]),
+    Heading ("api", localized "Look up an exact type" "正確な型を引く"),
+    Paragraph ([InternalLink (localized "API Reference — declarations by module" "API Reference — モジュールから宣言へ", "/docs/api/")]),
     Heading ("first-run", localized "Try it in your own terminal" "手元のターミナルでも試そう"),
     Paragraph (
       [InternalLink

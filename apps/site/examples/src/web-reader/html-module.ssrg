@@ -1,5 +1,0 @@
-import * as html from "std/web/html"
-
-fn paragraph -> html.Html<Unit> = html.p { children: "Release <notes>" }
-
-pub effect fn main = println (html.renderToString (paragraph ()))

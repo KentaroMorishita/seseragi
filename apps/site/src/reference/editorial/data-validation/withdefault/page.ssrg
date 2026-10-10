@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { dataValidationEditorial } from "../../data-validation-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  dataValidationEditorial "std/maybe::withDefault" "withdefault" "Hello, [Ada]\nHello, [guest]\nHello, []\n0" (en.copy ()) (ja.copy ())

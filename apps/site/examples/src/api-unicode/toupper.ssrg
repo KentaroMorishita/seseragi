@@ -1,8 +1,0 @@
-import * as text from "std/text"
-
-pub effect fn main =
-  println `ordinary: ${text.toUpper "Hello"}
-expanded: ${text.toUpper "Straße"}
-ligature: ${text.toUpper "ﬃ"}
-accent: ${text.toUpper "é"}
-empty: [${text.toUpper ""}]`

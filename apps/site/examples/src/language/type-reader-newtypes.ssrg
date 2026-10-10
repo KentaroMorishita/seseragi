@@ -1,9 +1,0 @@
-newtype UserId = Int
-newtype OrderId = Int
-
-fn userLabel id: UserId -> String = match id {
-  UserId number -> `user: ${number}`
-}
-
-let user = UserId 42
-pub effect fn main = println (userLabel user)

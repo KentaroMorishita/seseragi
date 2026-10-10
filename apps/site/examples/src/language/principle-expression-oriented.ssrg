@@ -1,3 +1,0 @@
-fn result score: Int -> String = if score >= 80 then "pass" else "retry"
-
-pub effect fn main = println (result 85)

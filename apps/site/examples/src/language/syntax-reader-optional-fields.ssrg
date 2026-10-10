@@ -1,8 +1,0 @@
-alias Profile = { name: String, nickname?: String }
-
-fn display profile: Profile -> String = profile.nickname ?? profile.name
-
-let absent: Profile = { name: "Aki" }
-let present: Profile = { name: "Aki", nickname: "A" }
-
-pub effect fn main = println `${display absent}, ${display present}`

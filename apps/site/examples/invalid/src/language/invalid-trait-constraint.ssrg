@@ -1,6 +1,0 @@
-type Token =
-  | Token
-
-fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
-
-let invalid = equal Token Token

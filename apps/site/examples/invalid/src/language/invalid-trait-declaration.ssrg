@@ -1,3 +1,0 @@
-trait BrokenRender<A> {
-  fn render value: Missing -> String
-}

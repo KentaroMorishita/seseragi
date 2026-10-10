@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { resultFoundationEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  resultFoundationEditorial "std/maybe::sequence" "value" "function" "maybe" "maybe-sequence" "Seats: [2,1]\nMissing seat\nMissing seat\nSeats: []" (en.copy ()) (ja.copy ())

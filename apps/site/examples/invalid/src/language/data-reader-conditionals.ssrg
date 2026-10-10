@@ -1,1 +1,0 @@
-fn shipping subtotal: Int -> Int = if subtotal then 0 else 500

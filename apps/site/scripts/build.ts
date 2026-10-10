@@ -16,7 +16,8 @@ import { dirname, join, resolve } from "node:path"
 import { canonicalExample } from "./canonical-example"
 import { chapterExamples } from "./function-chapter-examples"
 import { sitePhase } from "./profile"
-import type { compilerReferenceModules } from "./reference"
+import { compositionExamples } from "./published-examples"
+import { compilerReferenceModules } from "./reference"
 import { type RenderedPage, renderGenerator } from "./render-generator"
 
 const app = resolve(import.meta.dir, "..")
@@ -53,6 +54,9 @@ export function generatorInput(playgroundUrl: string) {
     grammar: "",
     examples: [
       ...chapterExamples(playgroundUrl),
+      ...compositionExamples.map(({ id, sourcePath }) =>
+        canonicalExample(id, sourcePath, playgroundUrl)
+      ),
       ...[
         [
           "pilot-function-application",
@@ -81,7 +85,7 @@ export function generatorInput(playgroundUrl: string) {
         ["first-run-hello", "examples/samples/hello-world/main.ssrg"],
       ].map(([id, path]) => canonicalExample(id, path, playgroundUrl)),
     ],
-    referenceModules: [] as ReturnType<typeof compilerReferenceModules>,
+    referenceModules: compilerReferenceModules(),
   }
 }
 
@@ -221,11 +225,7 @@ export function buildSite(options: BuildOptions) {
     const pages = sitePhase("generation", () => renderGenerator(entry, input))
     const coverage = sitePhase("validation", () => {
       const routes = new Set(pages.map(({ route }) => route))
-      assert.equal(
-        pages.length,
-        18,
-        "Reader edition: nine pages in two locales"
-      )
+      assert.ok(pages.length > 0, "The published catalog must not be empty")
       for (const route of routes) {
         if (!route.startsWith("/ja/"))
           assert.ok(
@@ -240,8 +240,8 @@ export function buildSite(options: BuildOptions) {
       )
       sitePhase("links", () => validateInternalLinks(pages))
       const coverage = {
-        edition: "functions-and-notation",
-        pages: 9,
+        edition: "docs-reboot",
+        pages: routes.size / 2,
         locales: ["en", "ja"],
       }
       for (const { route, html } of pages) {

@@ -1,9 +1,0 @@
-import * as effects from "std/effect"
-struct Settings { label: String }
-fn selectSettings environment: { settings: Settings } -> Settings = environment.settings
-
-effect fn applicationLabel -> String with Settings = do {
-  settings <- effects.service selectSettings
-  effects.succeed settings.label
-}
-let wrong = effects.provide {} (applicationLabel ())

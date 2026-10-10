@@ -1,6 +1,0 @@
-// Source is UTF-8. Comments are not part of the program value.
-let userName = "Aki"
-let 次の値 = 42
-
-// Apostrophes may continue a lowercase value name.
-let account' = "primary"

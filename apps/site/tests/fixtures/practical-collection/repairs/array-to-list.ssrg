@@ -1,2 +1,0 @@
-import * as arrays from "std/array"
-pub effect fn main = println (show (arrays.head [10]))

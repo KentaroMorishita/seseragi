@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { regexEditorial } from "../../regex-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  regexEditorial "std/regex::find" "find" "ORD-42: bytes 3..9; captures=2; tag=absent\nORD-42-X: bytes 3..11; captures=2; tag=X\nno match" "ORD-42: UTF-16 2..8; captures=2; tag=absent\nORD-42-X: UTF-16 2..10; captures=2; tag=X\nno match" (en.copy ()) (ja.copy ())

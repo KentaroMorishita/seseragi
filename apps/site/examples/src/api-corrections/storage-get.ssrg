@@ -1,9 +1,0 @@
-import * as storage from "std/web/storage"
-import * as effects from "std/effect"
-fn describe value: Maybe<String> -> String = match value {
-  Just text -> `found: [${text}]`
-  Nothing -> "missing"
-}
-pub fn readName -> Effect<{ storage: storage.Storage }, Never, String> =
-  (describe <$> storage.get storage.Local "name")
-  |> effects.recover (\error: storage.StorageError -> effects.succeed (storage.errorMessage error))

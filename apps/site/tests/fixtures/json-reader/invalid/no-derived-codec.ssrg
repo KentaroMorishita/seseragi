@@ -1,4 +1,0 @@
-import * as json from "std/json"
-struct Settings { name: String, retries: Int }
-pub fn read source: String -> Either<json.JsonReadError, Settings> =
-  json.decodeString source

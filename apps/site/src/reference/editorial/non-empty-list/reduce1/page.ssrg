@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { sequenceReaderEditorial } from "../../nonempty-iterator-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  sequenceReaderEditorial "std/non-empty-list::reduce1" "std/non-empty-list" "reduce1" "15\n20\n`[20, 3, 2]" "15\n20\n[20,3,2]" (en.copy ()) (ja.copy ())

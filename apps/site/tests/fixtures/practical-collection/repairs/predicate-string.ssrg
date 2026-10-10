@@ -1,3 +1,0 @@
-import * as arrays from "std/array"
-fn selected value: Int -> Bool = value > 0
-pub effect fn main = println (show (arrays.filter selected [10]))
