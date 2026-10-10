@@ -1,8 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && SESERAGI_SITE_OUTPUT=apps/site/dist bun run build:site:production",
+  "buildCommand": "mkdir -p dist && cp -R reboot-prototype/. dist/",
   "outputDirectory": "dist",
-  "installCommand": "cd ../.. && bun install --frozen-lockfile && bun install --frozen-lockfile --cwd apps/playground",
+  "installCommand": "echo 'Static UI prototype: no dependencies or code generation'",
   "framework": null,
   "trailingSlash": true,
   "headers": [
@@ -10,14 +10,13 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'none'; connect-src 'none'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; script-src 'self'; style-src 'self'"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        }
       ]
     }
   ]
