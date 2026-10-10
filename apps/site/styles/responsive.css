@@ -140,6 +140,10 @@
     padding: 48px 0 80px;
   }
 
+  .docs-landing {
+    width: min(calc(100% - 32px), 980px);
+  }
+
   .reference-index {
     padding: 48px 0 80px;
   }
