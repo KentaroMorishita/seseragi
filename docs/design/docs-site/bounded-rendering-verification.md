@@ -62,6 +62,12 @@ cover normal children, deadline stop, detached-orphan memory stop, PID reuse,
 descendant expansion and complete cleanup. The before/after reports are retained
 in [the monitor regression evidence](../../reviews/issue-706/2026-10-10-monitor.json).
 The original-head CI remains historical evidence; final-head CI is required.
+The regression suite is Linux-only: other hosts report an explicit instrumentation
+skip because `/proc` and pidfd are unavailable; general site gates still run.
+Linux executes all five regressions without skips. A simulated Darwin selection
+verified that boundary, but is not a native macOS execution result. Existing
+Darwin workflows are unchanged. Manifest retention is wrapped in `try/finally`
+so a copy/mkdir failure still removes the original temporary output tree.
 
 The protocol oracle's four CLI steps took 80.825/34.025/48.695/22.572s on this
 host. Its assertions completed but the aggregate 180s test deadline failed

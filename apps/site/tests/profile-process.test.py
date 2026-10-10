@@ -17,6 +17,10 @@ monitor = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(monitor)
 
 
+@unittest.skipUnless(
+    sys.platform == "linux",
+    "Linux process-tree instrumentation requires /proc and pidfd; general site gates remain enabled",
+)
 class ProcessBounds(unittest.TestCase):
     def run_monitor(self, source, limit=64, timeout=3):
         with tempfile.TemporaryDirectory(prefix="seseragi-profile-test-") as directory:

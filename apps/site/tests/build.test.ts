@@ -664,8 +664,11 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   } finally {
     // Keep both complete hash/route manifests even if a later assertion fails.
     // An interrupted build without a published manifest is not called complete.
-    retainManifest(output, "first-site-manifest.json")
-    retainManifest(repeatedOutput, "repeated-site-manifest.json")
-    rmSync(directory, { recursive: true, force: true })
+    try {
+      retainManifest(output, "first-site-manifest.json")
+      retainManifest(repeatedOutput, "repeated-site-manifest.json")
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
   }
 })
