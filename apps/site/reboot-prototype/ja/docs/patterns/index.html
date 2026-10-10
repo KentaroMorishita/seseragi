@@ -148,176 +148,41 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/ja/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      言語ガイド
-     </div>
-     <span class="kicker">
-      02 / PATTERN MATCHING
-     </span>
-     <h1>
-      データとmatch
-     </h1>
-     <p class="lead">
-      分岐するときも、式のままでいい。
-      <code class="inline-code">
-       match
-      </code>
-      は値の形を調べ、一致した枝からひとつの値を作る。
-     </p>
-     <h2 id="match">
-      結果を選ぶのも、式。
-     </h2>
-     <p>
-      FizzBuzzなら、3と5で割った余りをまとめて調べればいい。
-      <code class="inline-code">
-       match
-      </code>
-      の各枝は文字列を返すから、関数全体の結果にもなる。
-     </p>
-     <div class="code-window">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        fizzbuzz.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="コピー fizzbuzz.ssrg" class="copy-code" type="button">
-         コピー
-        </button>
-        <a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20%28number%20%25%203%2C%20number%20%25%205%29%20%7B%0A%20%20%20%20%280%2C%200%29%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20%280%2C%20_%29%20-%3E%20%22Fizz%22%0A%20%20%20%20%28_%2C%200%29%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A" rel="noopener noreferrer">
-         Playgroundで試す ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">fn</span> fizzBuzz number: <span class="ty">Int</span> -&gt; <span class="ty">String</span> =
-  <span class="cm">// A tuple lets one match classify both divisibility rules.</span>
-  <span class="kw">match</span> (number % 3, number % 5) {
-    (0, 0) -&gt; <span class="st">"FizzBuzz"</span>
-    (0, _) -&gt; <span class="st">"Fizz"</span>
-    (_, 0) -&gt; <span class="st">"Buzz"</span>
-    _ -&gt; `<span class="op">$</span>{number}`
+    <article class="article deep-guide"><div class="crumbs"><a href="/ja/docs/">Guide</a> / データとmatch</div><span class="kicker">02 / DATA HAS SHAPE</span><h1>条件ではなく、値の形で考える。</h1><p class="lead">分岐を書くとき、いつも <code>if</code> を重ねればいいわけじゃない。データが「どんな形か」を見て、ひとつの結果を作りたいことがある。Seseragiの <code>match</code> は、まさにそのための<strong>式</strong>なんだ。</p>
+<h2 id="from-value">まず、二つの情報を一緒に見る。</h2>
+<p>FizzBuzzを題材にしてみよう。よくある例だけど、ここでは文字列の出力より、<strong>パターンの重なりと網羅性</strong>を見るために使う。3で割った余りと5で割った余りを、タプルにまとめる。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / 抜粋：タプルを一度に照合する</span><div class="code-tools"><button type="button" class="copy-code">コピー</button></div></div><pre><code>match (number % 3, number % 5) {
+  (0, 0) -&gt; &quot;FizzBuzz&quot;
+  (0, _) -&gt; &quot;Fizz&quot;
+  (_, 0) -&gt; &quot;Buzz&quot;
+  _ -&gt; `${number}`
+}</code></pre></div>
+<p><code>(0, 0)</code> は両方の余りが0。<code>_</code> は「その場所の値は問わない」というパターン。二つの条件を順に重ねる代わりに、<strong>ひとつの値の形</strong>として読める。</p>
+<figure class="concept-figure matrix-figure"><figcaption><span class="concept-kicker">A COMPLETE SET OF CASES</span><strong>この4通りで、入力の組み合わせはすべて覆える。</strong></figcaption><div class="matrix-wrap"><table class="matrix-table"><thead><tr><th scope="col">3で割り切れる？</th><th scope="col">5で割り切れる？</th><th scope="col">match</th></tr></thead><tbody><tr><td>Yes</td><td>Yes</td><td><code>"FizzBuzz"</code></td></tr><tr><td>Yes</td><td>No</td><td><code>"Fizz"</code></td></tr><tr><td>No</td><td>Yes</td><td><code>"Buzz"</code></td></tr><tr><td>No</td><td>No</td><td><code>`${number}`</code></td></tr></tbody></table></div><p><code>(0, _)</code> は <code>(0, 0)</code> にも一致する。でも先に <code>(0, 0)</code> を置けば、FizzBuzz が先に選ばれる。<strong>上から調べる順序</strong>にも意味がある。</p></figure>
+<h2 id="expression">どの枝も、ひとつの値を作る。</h2>
+<p>この <code>match</code> は文字列を作って返す。各枝の <code>→</code> の右側も式で、型はすべて <code>String</code> に揃っている。だから関数本体そのものを <code>match</code> にできる。<code>return</code> がないのは単なる省略ではなく、<strong>制御のための文と値を作る式を分けない</strong>設計から来ている。</p>
+<p>全体を動かすとこうなる。<code>fizzBuzz</code> が文字列を決め、<code>main</code> のEffectがそれを表示する。値の計算と実行は別の役割だ。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">fizzbuzz/main.ssrg / 完全なプログラム</span><div class="code-tools"><button type="button" class="copy-code">コピー</button><a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20(number%20%25%203%2C%20number%20%25%205)%20%7B%0A%20%20%20%20(0%2C%200)%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20(0%2C%20_)%20-%3E%20%22Fizz%22%0A%20%20%20%20(_%2C%200)%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D" target="_blank" rel="noopener noreferrer">Playgroundで動かす ↗</a></div></div><pre><code>fn fizzBuzz number: Int -&gt; String =
+  // A tuple lets one match classify both divisibility rules.
+  match (number % 3, number % 5) {
+    (0, 0) -&gt; &quot;FizzBuzz&quot;
+    (0, _) -&gt; &quot;Fizz&quot;
+    (_, 0) -&gt; &quot;Buzz&quot;
+    _ -&gt; `${number}`
   }
 
-<span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">for</span> number &lt;- 1 ..= 30 {
-  println <span class="op">$</span> fizzBuzz number
-}</code></pre>
-      <div aria-label="Output" class="code-result">
-       1   2   Fizz   4   Buzz   Fizz   …
-      </div>
-     </div>
-     <p>
-      <code class="inline-code">
-       (0, 0)
-      </code>
-      は3でも5でも割り切れる場合。
-      <code class="inline-code">
-       (0, _)
-      </code>
-      なら3だけを見て、2つ目は問わない。
-      <code class="inline-code">
-       _
-      </code>
-      は残りすべて。
-      <strong>
-       分岐の外に
-       <code class="inline-code">
-        return
-       </code>
-       を置かなくていい
-      </strong>
-      のが面白いところだね。
-     </p>
-     <h2 id="boundaries">
-      値を作るところと、表示するところ。
-     </h2>
-     <p>
-      <code class="inline-code">
-       fizzBuzz
-      </code>
-      は文字列を返すだけ。
-      <code class="inline-code">
-       main
-      </code>
-      では
-      <code class="inline-code">
-       for
-      </code>
-      で範囲を回り、
-      <code class="inline-code">
-       println $ fizzBuzz number
-      </code>
-      で結果を出力している。値を計算する部分とEffectが分かれている。
-     </p>
-     <h2 id="try">
-      実際に変えてみよう。
-     </h2>
-     <p>
-      <code class="inline-code">
-       "Fizz"
-      </code>
-      を別の文字列にして、結果がどう変わるか試してみるのもいい。動くコードは下のリンクからそのまま開ける。
-     </p>
-     <a class="text-link" href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20%28number%20%25%203%2C%20number%20%25%205%29%20%7B%0A%20%20%20%20%280%2C%200%29%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20%280%2C%20_%29%20-%3E%20%22Fizz%22%0A%20%20%20%20%28_%2C%200%29%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A">
-      この例をPlaygroundで開く ↗
-     </a>
-     <details class="rule-note" id="rules">
-      <summary>
-       matchの読み方
-      </summary>
-      <p>
-       上からパターンを調べ、最初に一致した枝の右側が結果になる。複数の値をタプルにして照合できる。詳しい網羅性や型の扱いは言語仕様とコンパイラを参照してね。
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/ja/docs/functions/">
-       <span class="step-flag">
-        前に読む
-       </span>
-       <strong>
-        ← 関数と記法
-       </strong>
-      </a>
-      <a class="step-link" href="/ja/docs/composition/">
-       <span class="step-flag">
-        次に読む
-       </span>
-       <strong>
-        関数を組み合わせる →
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="このページの内容" class="right-index">
-     <p class="side-group">
-      このページの内容
-     </p>
-     <a href="#match">
-      matchは式
-     </a>
-     <a href="#boundaries">
-      純粋な値とEffect
-     </a>
-     <a href="#try">
-      試してみる
-     </a>
-     <a href="#rules">
-      記法のメモ
-     </a>
-    </nav>
+pub effect fn main = for number &lt;- 1 ..= 30 {
+  println $ fizzBuzz number
+}</code></pre></div>
+<h2 id="exhaustive">全部の状態を考えたか、コンパイラが確認する。</h2>
+<p>ここが <code>match</code> の大事なところ。Seseragiでは<strong>網羅的でない <code>match</code> はコンパイルエラー</strong>になる。逆に、すでに一致する枝の後に置かれて絶対に選ばれない枝もエラー。処理が「それ以外はどうなる？」を曖昧にしたまま通ることを許さない。</p>
+<div class="concept-figure"><div class="concept-kicker">THINK ABOUT THE TYPE</div><div class="variant-track"><span>Idle</span><span>Loading</span><span>Loaded value</span></div><p>例えば型が「Idle・Loading・Loaded」の3つの状態を持つなら、<strong>考えるべき選択肢はその3つ</strong>。後から状態が増えたとき、どこを直す必要があるかコンパイラが知らせてくれる。この図は型の考え方を示すもので、実行コードではない。</p></div>
+<h2 id="guards">guardは便利。でも網羅性には数えない。</h2>
+<p><code>when</code> を使えば、パターンに一致したあとで <code>Bool</code> の条件を追加できる。ただし条件がFalseになるかもしれないので、<strong>guard付きの枝は網羅性には寄与しない</strong>。必要なら最後に、残りのケースを覆う枝を用意しよう。</p>
+<p><code>if</code> とどちらが正しいという話ではない。Boolの条件なら <code>if</code> も自然。ADTやタプルなど、値の形に応じた処理を網羅的に書きたいとき、<code>match</code> が特に力を発揮する。</p>
+<div class="deep-inline-reference"><strong>規則を正確に確認する</strong><p>armの評価順、使えるパターン、guard、結果型、網羅性、到達不能な枝はサイト内で調べられる。</p><a href="/ja/reference/match/">matchのリファレンスへ →</a></div>
+<nav class="article-steps" aria-label="記事の移動"><a class="step-link" href="/ja/docs/functions/"><span class="step-flag">前に読む</span><strong>← 関数は値</strong></a><a class="step-link" href="/ja/docs/composition/"><span class="step-flag">次に読む</span><strong>関数の合成 →</strong></a></nav></article>
+    <nav aria-label="この記事の内容" class="right-index"><p class="side-group">このページの内容</p><a href="#from-value">値の形で考える</a><a href="#expression">式としてのmatch</a><a href="#exhaustive">網羅性と型</a><a href="#guards">guardの扱い</a></nav>
    </div>
   </main>
   <footer class="site-footer">

@@ -148,165 +148,41 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      Language guide
-     </div>
-     <span class="kicker">
-      02 / PATTERN MATCHING
-     </span>
-     <h1>
-      Data and match
-     </h1>
-     <p class="lead">
-      A branch can still be an expression.
-      <code class="inline-code">
-       match
-      </code>
-      inspects the shape of a value and produces a result from a matching arm.
-     </p>
-     <h2 id="match">
-      Choose a value, not a statement.
-     </h2>
-     <p>
-      FizzBuzz works nicely as a tuple pattern. The remainders for 3 and 5 are checked together.
-     </p>
-     <div class="code-window">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        fizzbuzz.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy fizzbuzz.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20%28number%20%25%203%2C%20number%20%25%205%29%20%7B%0A%20%20%20%20%280%2C%200%29%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20%280%2C%20_%29%20-%3E%20%22Fizz%22%0A%20%20%20%20%28_%2C%200%29%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">fn</span> fizzBuzz number: <span class="ty">Int</span> -&gt; <span class="ty">String</span> =
-  <span class="cm">// A tuple lets one match classify both divisibility rules.</span>
-  <span class="kw">match</span> (number % 3, number % 5) {
-    (0, 0) -&gt; <span class="st">"FizzBuzz"</span>
-    (0, _) -&gt; <span class="st">"Fizz"</span>
-    (_, 0) -&gt; <span class="st">"Buzz"</span>
-    _ -&gt; `<span class="op">$</span>{number}`
+    <article class="article deep-guide"><div class="crumbs"><a href="/docs/">Guide</a> / Data and match</div><span class="kicker">02 / DATA HAS SHAPE</span><h1>Choose by the shape of a value.</h1><p class="lead">Sometimes you're not really asking a series of unrelated Boolean questions. You're asking <strong>what shape does this data have?</strong> A Seseragi <code>match</code> answers that question and produces a value. It's an expression, not a collection of exit statements.</p>
+<h2 id="from-value">Start with two facts, read together.</h2>
+<p>FizzBuzz is familiar enough to make the interesting part stand out: the overlap between patterns and how cases are covered. Pair the remainders from division by 3 and 5 in a tuple.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / Excerpt: match a tuple</span><div class="code-tools"><button type="button" class="copy-code">Copy</button></div></div><pre><code>match (number % 3, number % 5) {
+  (0, 0) -&gt; &quot;FizzBuzz&quot;
+  (0, _) -&gt; &quot;Fizz&quot;
+  (_, 0) -&gt; &quot;Buzz&quot;
+  _ -&gt; `${number}`
+}</code></pre></div>
+<p><code>(0, 0)</code> means both remainders are zero. <code>_</code> doesn't care about the value in that position. Instead of scattering two checks everywhere, we're describing a single data shape.</p>
+<figure class="concept-figure matrix-figure"><figcaption><span class="concept-kicker">A COMPLETE SET OF CASES</span><strong>These four outcomes cover every combination.</strong></figcaption><div class="matrix-wrap"><table class="matrix-table"><thead><tr><th scope="col">Divisible by 3?</th><th scope="col">Divisible by 5?</th><th scope="col">match</th></tr></thead><tbody><tr><td>Yes</td><td>Yes</td><td><code>"FizzBuzz"</code></td></tr><tr><td>Yes</td><td>No</td><td><code>"Fizz"</code></td></tr><tr><td>No</td><td>Yes</td><td><code>"Buzz"</code></td></tr><tr><td>No</td><td>No</td><td><code>`${number}`</code></td></tr></tbody></table></div><p><code>(0, _)</code> would also match <code>(0, 0)</code>. The first arm gets that case first. Match arms have an observable order.</p></figure>
+<h2 id="expression">Every branch produces a value.</h2>
+<p>Each arm returns a <code>String</code>, so the entire match has that result type. It can serve as the body of a function. Not writing <code>return</code> isn't just shorter syntax. Seseragi doesn't separate control-only statements from value-producing expressions in the usual way.</p>
+<p>Here's the complete program. <code>fizzBuzz</code> chooses a string; the Effect returned by <code>main</code> prints it. Pure computation and execution have separate jobs.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">fizzbuzz/main.ssrg / complete program</span><div class="code-tools"><button type="button" class="copy-code">Copy</button><a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20(number%20%25%203%2C%20number%20%25%205)%20%7B%0A%20%20%20%20(0%2C%200)%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20(0%2C%20_)%20-%3E%20%22Fizz%22%0A%20%20%20%20(_%2C%200)%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D" target="_blank" rel="noopener noreferrer">Run in Playground ↗</a></div></div><pre><code>fn fizzBuzz number: Int -&gt; String =
+  // A tuple lets one match classify both divisibility rules.
+  match (number % 3, number % 5) {
+    (0, 0) -&gt; &quot;FizzBuzz&quot;
+    (0, _) -&gt; &quot;Fizz&quot;
+    (_, 0) -&gt; &quot;Buzz&quot;
+    _ -&gt; `${number}`
   }
 
-<span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">for</span> number &lt;- 1 ..= 30 {
-  println <span class="op">$</span> fizzBuzz number
-}</code></pre>
-      <div aria-label="Output" class="code-result">
-       1   2   Fizz   4   Buzz   Fizz   …
-      </div>
-     </div>
-     <p>
-      <code class="inline-code">
-       (0, 0)
-      </code>
-      matches both divisibility rules.
-      <code class="inline-code">
-       (0, _)
-      </code>
-      ignores the second component. The last
-      <code class="inline-code">
-       _
-      </code>
-      catches what remains. Each arm returns a string, and the whole function returns that value.
-     </p>
-     <h2 id="boundaries">
-      Producing a value is not printing it.
-     </h2>
-     <p>
-      <code class="inline-code">
-       fizzBuzz
-      </code>
-      simply returns text.
-      <code class="inline-code">
-       main
-      </code>
-      uses
-      <code class="inline-code">
-       for
-      </code>
-      and
-      <code class="inline-code">
-       println $ fizzBuzz number
-      </code>
-      to print each result. Pure computation and Effects stay separate.
-     </p>
-     <h2 id="try">
-      Change one branch.
-     </h2>
-     <p>
-      Try replacing
-      <code class="inline-code">
-       "Fizz"
-      </code>
-      with something else. Open the whole program and run it.
-     </p>
-     <a class="text-link" href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20%28number%20%25%203%2C%20number%20%25%205%29%20%7B%0A%20%20%20%20%280%2C%200%29%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20%280%2C%20_%29%20-%3E%20%22Fizz%22%0A%20%20%20%20%28_%2C%200%29%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A">
-      Try FizzBuzz in Playground ↗
-     </a>
-     <details class="rule-note" id="rules">
-      <summary>
-       How match is evaluated
-      </summary>
-      <p>
-       The first matching arm provides the expression’s result. Tuple patterns can examine multiple values together. Refer to the compiler and specification for exhaustive matching and precise type constraints.
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/docs/functions/">
-       <span class="step-flag">
-        Previous
-       </span>
-       <strong>
-        ← Functions and notation
-       </strong>
-      </a>
-      <a class="step-link" href="/docs/composition/">
-       <span class="step-flag">
-        Next
-       </span>
-       <strong>
-        Composing functions →
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="On this page" class="right-index">
-     <p class="side-group">
-      ON THIS PAGE
-     </p>
-     <a href="#match">
-      match is an expression
-     </a>
-     <a href="#boundaries">
-      Values and Effects
-     </a>
-     <a href="#try">
-      Try it
-     </a>
-     <a href="#rules">
-      Details
-     </a>
-    </nav>
+pub effect fn main = for number &lt;- 1 ..= 30 {
+  println $ fizzBuzz number
+}</code></pre></div>
+<h2 id="exhaustive">The compiler checks that nothing falls through.</h2>
+<p>An incomplete match is a <strong>compile error</strong>. An arm that can never be reached is also rejected. You cannot silently leave an alternative unexplained.</p>
+<div class="concept-figure"><div class="concept-kicker">THINK ABOUT THE TYPE</div><div class="variant-track"><span>Idle</span><span>Loading</span><span>Loaded value</span></div><p>Imagine a type with three alternatives: Idle, Loading and Loaded. Those are the cases a match must account for. If a new alternative appears later, the compiler can show where handling must change. This is a conceptual diagram, not executable source.</p></div>
+<h2 id="guards">A guard doesn't make an arm exhaustive.</h2>
+<p><code>when</code> adds a <code>Bool</code> condition after a pattern matches. The guard might be false, so guarded arms don't contribute to exhaustiveness. Make sure the remaining values are handled elsewhere.</p>
+<p>This doesn't mean <code>if</code> is somehow wrong. If the problem is a plain Boolean condition, <code>if</code> may be just right. Match shines when the alternatives are encoded in data such as ADTs and tuples.</p>
+<div class="deep-inline-reference"><strong>Need the exact behavior?</strong><p>Check matching order, permitted patterns, guards, result types and unreachable arms without leaving this site.</p><a href="/reference/match/">Open the match reference →</a></div>
+<nav class="article-steps" aria-label="Article navigation"><a class="step-link" href="/docs/functions/"><span class="step-flag">PREVIOUS</span><strong>← Functions as values</strong></a><a class="step-link" href="/docs/composition/"><span class="step-flag">NEXT</span><strong>Composition →</strong></a></nav></article>
+    <nav aria-label="On this page" class="right-index"><p class="side-group">ON THIS PAGE</p><a href="#from-value">Read a data shape</a><a href="#expression">An expression</a><a href="#exhaustive">Exhaustiveness</a><a href="#guards">Guards</a></nav>
    </div>
   </main>
   <footer class="site-footer">
