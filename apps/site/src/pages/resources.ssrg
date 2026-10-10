@@ -1,0 +1,142 @@
+import { localized } from "../model/locale"
+import {
+  Article,
+  CodeExample,
+  ExternalLink,
+  Heading,
+  InlineCode,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../model/page"
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "effects.resources",
+  path: "/docs/effects/resources/",
+  kind: Article,
+  title: localized "scoped and acquireRelease — end a subscription with its job"
+    "scopedとacquireRelease — 処理と一緒に購読を終える",
+  summary: localized
+    "A failed job still ends its subscription before the caller continues."
+    "処理が失敗しても、呼び出し元へ戻る前に購読を終える。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "A job watches a count and records what it sees. Its subscription should last as long as that job. Here we deliberately fail the job after recording 1, then change the count to 2. The history will tell us whether cleanup happened at the right boundary."
+    "ある処理がcountを見守り、受け取った値を記録する。購読の寿命は、その処理に合わせたい。ここでは1を記録した後に処理を失敗させ、countを2へ変える。履歴を見れば、どこで購読が終わったか分かる。"
+      )]
+    ),
+    CodeExample ("effect-resource", localized "A subscription owned by a job" "処理が持つ購読"),
+    Terminal (localized "Output" "実行結果", "Left stopped\n[0, 1]\ncurrent: 2"),
+    Heading
+    ("register", localized "Keep acquisition and release together" "取得と解放を、一緒に登録する"),
+    Paragraph (
+      [
+        InlineCode "effects.acquireRelease acquire signals.unsubscribe",
+        Words (
+          localized
+    " runs acquire. When acquisition succeeds, it registers a finalizer in the current resource scope and returns the acquired handle. At scope exit, the finalizer calls signals.unsubscribe with that handle. We do not need a separate unsubscribe line after the job's remaining steps."
+    "でacquireを実行する。取得に成功すると、現在のresource scopeへfinalizerを登録し、取得したhandleを返す。scopeが終わると、そのhandleをsignals.unsubscribeへ渡す。この処理の残りの段階の後に、unsubscribeを別の行で呼ぶ必要はない。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "subscribe delivers the initial 0 immediately. count := 1 adds the next observed value. Then fromEither runs the Left stopped as a typed failure, so watch stops. Its effect fn contract names String as the failure type; it needs no Console capability. The subscription and history operations themselves are Tasks."
+    "subscribeからは、最初の0がすぐに届く。count := 1で、次の値が記録される。その後のfromEitherがLeft stoppedを型付きの失敗として実行し、watchが止まる。effect fnの契約には失敗の型をStringと書き、Consoleは要求していない。購読や履歴の操作自体はTaskだ。"
+      )]
+    ),
+    Heading
+    ("boundary", localized "scoped chooses when cleanup happens" "scopedで、解放する境目を決める"),
+    Paragraph (
+      [
+        InlineCode "effects.scoped (watch history count)",
+        Words (
+          localized
+    " gives this execution its own resource scope. It closes that scope when watch succeeds, fails, or is cooperatively cancelled, and waits for its finalizers. On this failure, unsubscribe finishes before the scoped Effect passes stopped to its caller. Several acquisitions in one scope release in reverse registration order."
+    "で、この実行にresource scopeを用意する。watchの成功・失敗・cooperative cancellationでscopeを閉じ、finalizerの完了を待つ。この例ではunsubscribeが終わってから、scopedのEffectがstoppedを呼び出し元へ渡す。同じscopeでいくつか取得したresourceは、登録と逆の順に解放する。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The handoff from a successful acquisition to finalizer registration is atomic against cancellation. If acquisition fails, there is no successfully acquired handle to release. Creating the acquire Effect alone neither starts the subscription nor registers its cleanup; acquireRelease does both when executed."
+    "取得成功からfinalizer登録までのhandoffは、キャンセルに対してatomicになっている。取得自体が失敗した場合は、解放すべき成功handleがない。acquireのEffectを作っただけでは、購読もcleanupの登録も始まらない。acquireReleaseを実行したときに行う。"
+      )]
+    ),
+    Heading (
+      "attempt",
+      localized "Return the failure as data after cleanup" "解放した後で、失敗を値として受け取る"
+    ),
+    Paragraph (
+      [
+        InlineCode "effects.attempt",
+        Words (
+          localized
+    " converts the typed result to Either<String, Unit>. main receives Left stopped as a successful value and can keep running. Its later count := 2 updates the source, but the subscription has ended, so history stays [0, 1]. current: 2 confirms that closing the subscription did not freeze the source."
+    "で、型付きの結果をEither<String, Unit>にする。mainはLeft stoppedを成功した値として受け取り、その先も実行できる。後のcount := 2で元の値は変わるけれど、購読は終わっているのでhistoryは[0, 1]のまま。current: 2で、購読を閉じても元の値は更新できると分かる。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "attempt handles typed failures. Cancellation is a separate outcome, so it does not become Left stopped; it still closes the scope and propagates. A defect also is not an Either failure. Cooperative shutdown allows finalizers to run, while forced process termination cannot provide that guarantee. Printing the recorded result remains a separate Console operation."
+    "attemptが扱うのは型付きの失敗だ。キャンセルは別の終了状態なのでLeft stoppedにはならず、scopeを閉じた上で伝播する。defectもEitherの失敗ではない。cooperativeな終了ならfinalizerを実行できるが、processを強制終了した場合にはその保証はない。記録した結果を表示するのは、別のConsole操作だ。"
+      )]
+    ),
+    Heading (
+      "release",
+      localized "The release callback cannot leave a typed failure"
+    "解放するcallbackに、型付きの失敗を残さない"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The release callback returns Effect<R, Never, Unit>. signals.unsubscribe already meets that contract. For a close operation that can fail, handle its recoverable failure inside the callback. Never describes the typed error channel; it does not guarantee that the finalizer finishes. A finalizer that never completes also prevents the scope from finishing."
+    "解放するcallbackの結果はEffect<R, Never, Unit>。signals.unsubscribeは、その契約を満たしている。失敗する可能性のあるclose処理なら、回復可能な失敗をcallbackの内側で扱う。Neverが表すのは型付きの失敗のchannelで、finalizerの完了を保証するものではない。finalizerが終わらなければ、scopeの終了も終わらない。"
+      )]
+    ),
+    Heading
+    ("try", localized "Give the subscription a longer lifetime" "購読を、もう少し長く生かしてみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Remove just scoped, leaving effects.attempt (watch history count). History becomes [0, 1, 2]: acquisition now registers cleanup in main's root scope, which is still open when count becomes 2. Cleanup still runs when main ends. attempt converts the typed failure to a value, but does not create or close a resource scope itself."
+    "scopedだけを外し、effects.attempt (watch history count)にしてみよう。historyは[0, 1, 2]になる。cleanupの登録先がmainのroot scopeになり、countを2へ変える時点ではまだ閉じていないからだ。mainの終了時には解放される。attemptは型付きの失敗を値にするけれど、それ自体でresource scopeを作ったり閉じたりする操作ではない。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Restore scoped and change Left \"stopped\" to Right () in the result declaration. The first line becomes Right (), and history still stays [0, 1]. The same scope boundary also cleans up after success."
+    "scopedを戻し、resultの宣言のLeft \"stopped\"をRight ()へ変えてみよう。最初の行はRight ()になり、historyは[0, 1]のまま。成功した場合にも、同じscopeの境目で解放している。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "How subscribe and distinct choose notifications"
+    "subscribeとdistinctが、どの通知を届けるか",
+        "/docs/signals/subscriptions/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Exact declarations for scoped, acquireRelease, and attempt"
+    "scoped・acquireRelease・attemptの正確な宣言",
+        "/docs/api/effect/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Cancellation and resource rules" "キャンセルとresourceの詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/05-effects.md#511-cancellationとresource"
+      )]
+    )
+  ]
+}

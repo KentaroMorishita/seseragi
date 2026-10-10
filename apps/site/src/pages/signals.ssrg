@@ -236,8 +236,9 @@ pub fn subscriptions -> PageDefinition = PageDefinition {
     ),
     Paragraph (
       [InternalLink (
-        localized "Resource operations in std/effect" "std/effectのresource操作を引く",
-        "/docs/api/effect/"
+        localized "Use a resource scope for this subscription"
+    "この購読の寿命をresource scopeに合わせる",
+        "/docs/effects/resources/"
       )]
     ),
     Paragraph (

@@ -37,6 +37,7 @@ export function verifyPublication(output: string) {
     "/docs/effects/",
     "/docs/effects/actions/",
     "/docs/effects/errors/",
+    "/docs/effects/resources/",
     "/docs/signals/",
     "/docs/signals/derived/",
     "/docs/signals/subscriptions/",
