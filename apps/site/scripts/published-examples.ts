@@ -21,12 +21,36 @@ export const compositionExamples = [
   },
 ] as const
 
+export const effectExamples = [
+  {
+    id: "effect-notice",
+    route: "/docs/effects/actions/",
+    sourcePath: "apps/site/examples/src/effects/effect-notice.ssrg",
+    output: "before\n> ready\n> ready\n",
+  },
+  {
+    id: "effect-error",
+    route: "/docs/effects/errors/",
+    sourcePath: "apps/site/examples/src/effects/effect-error.ssrg",
+    output: "Hello, Aki.\nNo name: Blank\n",
+  },
+] as const
+
+export const articleExecutions = [
+  ...compositionExamples.map((example) => ({
+    ...example,
+    route: `/docs/composition/${example.id.slice("composition-".length)}/`,
+  })),
+  ...effectExamples,
+] as const
+
 export const publishedExecutions = [
   ...functionChapterExamples.map((example) => ({
     ...example,
     sourcePath: `apps/site/examples/src/language/${example.id}.ssrg`,
   })),
   ...compositionExamples,
+  ...effectExamples,
   {
     id: "pilot-function-application",
     sourcePath:

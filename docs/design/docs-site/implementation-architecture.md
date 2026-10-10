@@ -2,7 +2,8 @@
 
 公開catalogの正本は `apps/site/src/navigation/catalog.ssrg`。
 Home/Docs/Examples/First Run/Releasesは `pages/entrance.ssrg`、
-最初の章は三つのpage-owned article、次の章は `pages/composition.ssrg`、
+最初の章は三つのpage-owned article、文脈の章は `pages/composition.ssrg`、
+処理と失敗の章は `pages/effects.ssrg`、
 APIの索引とmodule pageは `pages/api.ssrg` が持つ。
 旧固定templateと旧symbol別記事catalogは退役した。
 

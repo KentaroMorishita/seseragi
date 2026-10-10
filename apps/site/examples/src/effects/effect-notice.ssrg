@@ -1,0 +1,10 @@
+effect fn notice message: String -> Unit with Console fails ConsoleError =
+  println ("> " + message)
+
+let ready = notice "ready"
+
+pub effect fn main = do {
+  println "before"
+  ready
+  ready
+}

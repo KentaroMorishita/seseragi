@@ -16,7 +16,7 @@ import { dirname, join, resolve } from "node:path"
 import { canonicalExample } from "./canonical-example"
 import { chapterExamples } from "./function-chapter-examples"
 import { sitePhase } from "./profile"
-import { compositionExamples } from "./published-examples"
+import { articleExecutions } from "./published-examples"
 import { compilerReferenceModules } from "./reference"
 import { type RenderedPage, renderGenerator } from "./render-generator"
 
@@ -54,7 +54,7 @@ export function generatorInput(playgroundUrl: string) {
     grammar: "",
     examples: [
       ...chapterExamples(playgroundUrl),
-      ...compositionExamples.map(({ id, sourcePath }) =>
+      ...articleExecutions.map(({ id, sourcePath }) =>
         canonicalExample(id, sourcePath, playgroundUrl)
       ),
       ...[

@@ -28,6 +28,9 @@ export function verifyPublication(output: string) {
     "/docs/composition/transform/",
     "/docs/composition/apply/",
     "/docs/composition/bind/",
+    "/docs/effects/",
+    "/docs/effects/actions/",
+    "/docs/effects/errors/",
     "/docs/api/",
   ])
     assert.ok(routes.has(route), `Missing reader destination: ${route}`)
