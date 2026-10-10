@@ -86,6 +86,7 @@ pub fn errors -> PageDefinition = PageDefinition {
     Paragraph ([Words (localized
       "We want to greet a name after trimming its surrounding spaces. A blank name should not quietly become Hello, . The name function returns Either<InputError, String>: Right for a usable name, Left Blank otherwise. This validation is still a pure function."
       "前後の空白を取ってから、名前に挨拶したい。空の名前が黙ってHello, .になるのは困る。nameはEither<InputError, String>を返し、使える名前ならRight、空ならLeft Blankにする。この検証は、まだ純粋な関数だ。")]),
+    Paragraph ([InternalLink (localized "New to type declarations and constructors?" "type宣言とconstructorから読みたいときは", "/docs/types/variants/")]),
     CodeExample ("effect-error", localized "A successful greeting and a fallback" "挨拶できた場合と、代わりの結果"),
     Terminal (localized "Output" "実行結果", "Hello, Aki.\nNo name: Blank"),
     Heading ("lift", localized "Move Either into the Effect channel" "EitherをEffectの成功と失敗へ移す"),

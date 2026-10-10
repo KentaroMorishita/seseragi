@@ -16,7 +16,7 @@ import { dirname, join, resolve } from "node:path"
 import { canonicalExample } from "./canonical-example"
 import { chapterExamples } from "./function-chapter-examples"
 import { sitePhase } from "./profile"
-import { articleExecutions } from "./published-examples"
+import { articleExecutions, publishedDiagnostics } from "./published-examples"
 import { compilerReferenceModules } from "./reference"
 import { type RenderedPage, renderGenerator } from "./render-generator"
 
@@ -57,30 +57,21 @@ export function generatorInput(playgroundUrl: string) {
       ...articleExecutions.map(({ id, sourcePath }) =>
         canonicalExample(id, sourcePath, playgroundUrl)
       ),
+      ...publishedDiagnostics.map(({ id, sourcePath }) =>
+        canonicalExample(id, sourcePath, playgroundUrl)
+      ),
       ...[
         [
           "pilot-function-application",
           "apps/site/examples/src/language/pilot-function-application.ssrg",
         ],
         [
-          "pilot-function-application-invalid",
-          "apps/site/examples/invalid/src/language/pilot-function-application.ssrg",
-        ],
-        [
           "pilot-currying",
           "apps/site/examples/src/language/pilot-currying.ssrg",
         ],
         [
-          "pilot-currying-invalid",
-          "apps/site/examples/invalid/src/language/pilot-currying.ssrg",
-        ],
-        [
           "syntax-reader-pipelines",
           "apps/site/examples/src/language/syntax-reader-pipelines.ssrg",
-        ],
-        [
-          "syntax-reader-pipelines-invalid",
-          "apps/site/examples/invalid/src/language/syntax-reader-pipelines.ssrg",
         ],
         ["first-run-hello", "examples/samples/hello-world/main.ssrg"],
       ].map(([id, path]) => canonicalExample(id, path, playgroundUrl)),

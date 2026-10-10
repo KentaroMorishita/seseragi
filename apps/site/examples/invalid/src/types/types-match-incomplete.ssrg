@@ -1,0 +1,13 @@
+type Job =
+  | Queued String
+  | Running (String, Int)
+  | Finished String
+  | Cancelled String
+
+fn status job: Job -> String = match job {
+  Queued name -> name + ": waiting"
+  Running (name, percent) -> name + ": " + show percent + "%"
+  Finished name -> name + ": done"
+}
+
+pub effect fn main = println (status (Queued "build"))

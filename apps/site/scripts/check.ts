@@ -42,6 +42,7 @@ run([
   "--moduleResolution",
   "Bundler",
   "apps/site/scripts/check.ts",
+  "apps/site/scripts/check-published-examples.ts",
   "apps/site/tests/reboot-browser.ts",
   "apps/site/tests/render-generator.test.ts",
   "apps/site/tests/static-site-handler.test.ts",

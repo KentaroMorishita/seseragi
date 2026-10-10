@@ -73,6 +73,8 @@ pub fn docs -> PageDefinition = PageDefinition {
   blocks: [
     Heading ("start-here", localized "What would you like to make?" "何を作ってみようか"),
     BulletList (chapterLinks ()),
+    Heading ("types", localized "Give your data a shape" "データの形を決める"),
+    Paragraph ([InternalLink (localized "record, ADT, match, and generics — types and patterns" "record・ADT・match・ジェネリクス — 型とパターン", "/docs/types/")]),
     Heading ("composition", localized "Keep the missing case in the type" "見つからない場合も、型に残す"),
     Paragraph ([InternalLink (localized "<$>, <*>, >>=, and do — values with a context" "<$>・<*>・>>=・do — 文脈のある値", "/docs/composition/")]),
     Heading ("effects", localized "Connect jobs and handle failures" "処理をつなぎ、失敗を扱う"),
