@@ -18,9 +18,9 @@ def processes():
         try:
             stat = Path(entry.path, "stat").read_text().rsplit(")", 1)[1].split()
             status = Path(entry.path, "status").read_text().splitlines()
-            rss = next(
+            rss = next((
                 int(line.split()[1]) for line in status if line.startswith("VmRSS:")
-            )
+            ), 0)
             result[int(entry.name)] = {
                 "ppid": int(stat[1]),
                 "group": int(stat[2]),
@@ -33,10 +33,17 @@ def processes():
     return result
 
 
-def tree(snapshot, root):
-    # Group membership also catches children orphaned after a failed build.
-    selected = {pid for pid, value in snapshot.items() if value["group"] == root}
-    selected.add(root)
+def tree(snapshot, root, starts, owner):
+    # Track identities across setsid/reparenting, and include adopted children
+    # even if their former parent exited between samples. This standalone
+    # subreaper starts only the profiled command, so its children belong to it.
+    selected = {
+        pid for pid, start in starts.items()
+        if pid in snapshot and snapshot[pid]["start"] == start
+    }
+    selected.update(pid for pid, value in snapshot.items() if value["ppid"] == owner)
+    if root in snapshot and snapshot[root]["start"] == starts.get(root):
+        selected.update(pid for pid, value in snapshot.items() if value["group"] == root)
     while True:
         descendants = {
             pid for pid, value in snapshot.items() if value["ppid"] in selected
@@ -45,6 +52,37 @@ def tree(snapshot, root):
         if expanded == selected:
             return {pid: snapshot[pid] for pid in selected if pid in snapshot}
         selected = expanded
+
+
+def signal_processes(selected, kind):
+    # The pidfd pins the selected process, so PID reuse between validation and
+    # signal delivery cannot terminate a different process.
+    for pid, value in selected.items():
+        try:
+            descriptor = os.pidfd_open(pid)
+        except ProcessLookupError:
+            continue
+        try:
+            try:
+                start = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[19]
+            except (OSError, IndexError):
+                continue
+            if start == value["start"]:
+                try:
+                    signal.pidfd_send_signal(descriptor, kind)
+                except ProcessLookupError:
+                    pass
+        finally:
+            os.close(descriptor)
+
+
+def reap_adopted(snapshot, owner, root):
+    for pid, value in snapshot.items():
+        if value["ppid"] == owner and pid != root:
+            try:
+                os.waitpid(pid, os.WNOHANG)
+            except ChildProcessError:
+                pass
 
 
 def main():
@@ -66,14 +104,18 @@ def main():
         raise OSError(ctypes.get_errno(), "cannot become a child subreaper")
     started = time.monotonic()
     child = subprocess.Popen(command, start_new_session=True)
+    owner = os.getpid()
     peak = 0
     per_pid = {}
     starts = {}
+    initial = processes()
+    if child.pid in initial:
+        starts[child.pid] = initial[child.pid]["start"]
     samples = 0
     stopped = None
     try:
-        while child.poll() is None:
-            selected = tree(processes(), child.pid)
+        while True:
+            selected = tree(processes(), child.pid, starts, owner)
             observed = sum(value["rssKiB"] for value in selected.values())
             peak = max(peak, observed)
             samples += 1
@@ -84,6 +126,8 @@ def main():
             if observed > args.limit_mib * 1024:
                 stopped = "memory limit"
                 break
+            if child.poll() is not None:
+                break
             if time.monotonic() - started > args.timeout:
                 stopped = "deadline"
                 break
@@ -91,36 +135,24 @@ def main():
     except KeyboardInterrupt:
         stopped = "interrupted"
     finally:
-        snapshot = processes()
-        remaining = tree(snapshot, child.pid)
-        remaining.update({
-            pid: snapshot[pid] for pid, start in starts.items()
-            if pid in snapshot and snapshot[pid]["start"] == start
-        })
-        if remaining:
-            # Only this command's group and current descendants are terminated.
-            for pid in remaining:
-                try:
-                    os.kill(pid, signal.SIGTERM)
-                except ProcessLookupError:
-                    pass
-            try:
-                child.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                pass
-            for pid in remaining:
-                try:
-                    os.kill(pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-        child.wait()
+        cleanup_started = time.monotonic()
+        cleanup_identities = set()
+        remaining = {}
         while True:
-            try:
-                pid, _ = os.waitpid(-1, os.WNOHANG)
-                if pid == 0:
-                    break
-            except ChildProcessError:
+            child.poll()
+            snapshot = processes()
+            reap_adopted(snapshot, owner, child.pid)
+            remaining = tree(processes(), child.pid, starts, owner)
+            if not remaining:
                 break
+            cleanup_identities.update((pid, value["start"]) for pid, value in remaining.items())
+            starts.update((pid, value["start"]) for pid, value in remaining.items())
+            elapsed_cleanup = time.monotonic() - cleanup_started
+            signal_processes(remaining, signal.SIGKILL if elapsed_cleanup >= 5 else signal.SIGTERM)
+            if elapsed_cleanup >= 6:
+                stopped = stopped or "cleanup incomplete"
+                break
+            time.sleep(0.01)
         report = {
             "command": command,
             "elapsedMs": round((time.monotonic() - started) * 1000),
@@ -132,7 +164,8 @@ def main():
             "samples": samples,
             "limitMiB": args.limit_mib,
             "deadlineSeconds": args.timeout,
-            "cleanupProcessCount": len(remaining),
+            "cleanupProcessCount": len(cleanup_identities),
+            "remainingProcessCount": len(remaining),
         }
         report_path.write_text(json.dumps(report, indent=2) + "\n")
         print(json.dumps(report), flush=True)

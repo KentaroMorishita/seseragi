@@ -91,6 +91,7 @@ for (const command of [
     "apps/site/tests/result-foundation-readers.test.ts",
   ],
   ["python3", "-B", "apps/site/tests/prose.test.py"],
+  ["python3", "-B", "apps/site/tests/profile-process.test.py"],
   // The site exercises thousands of declarations. Build the current compiler
   // with Rust optimizations, independently of the generated program profile.
   ["cargo", "build", "--locked", "--release", "-p", "seseragi-cli"],

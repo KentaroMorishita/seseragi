@@ -44,7 +44,24 @@ The new `Site verification` PR lane runs on relevant draft and stacked PRs,
 checks the exact head with Bun 1.3.11 and optimized current-source CLI, and runs
 complete `check:site`, including its browser stage. Logs, phase data, memory
 report, toolchain/lock provenance and screenshots are retained as Actions
-artifacts. Branch protection and Vercel production settings are unchanged.
+artifacts. Both complete `site-manifest.json` files (including every artifact
+hash and route) are copied to the artifact before temporary outputs are removed,
+through the absolute `SESERAGI_SITE_TEST_EVIDENCE` directory. A failed build
+without a published manifest does not produce a claimed complete manifest.
+Branch protection and Vercel production settings are unchanged.
+
+Independent review of head `78a5f60512f5fcb77ca14e95231c9235be8c1d51`
+found that the original monitor could miss detached, reparented descendants.
+A safe reproduction allocated only 64 MiB with a 48 MiB sampled-tree limit:
+the old monitor exited successfully and reported only 8,412 KiB while a detached
+orphan remained alive. The corrected monitor seeds every sample with matching
+PID/start-time identities and adopted children, then expands their descendants.
+Cleanup pins each process with a pidfd, validates its start time before signaling,
+and reaps adopted children with a finite cleanup budget. Five regression tests
+cover normal children, deadline stop, detached-orphan memory stop, PID reuse,
+descendant expansion and complete cleanup. The before/after reports are retained
+in [the monitor regression evidence](../../reviews/issue-706/2026-10-10-monitor.json).
+The original-head CI remains historical evidence; final-head CI is required.
 
 The protocol oracle's four CLI steps took 80.825/34.025/48.695/22.572s on this
 host. Its assertions completed but the aggregate 180s test deadline failed
@@ -58,6 +75,7 @@ Reproduction (after locked dependencies and browser bootstrap):
 ```sh
 mkdir -p target/site-verification
 export SESERAGI_SITE_PROFILE="$PWD/target/site-verification/phases.jsonl"
+export SESERAGI_SITE_TEST_EVIDENCE="$PWD/target/site-verification/manifests"
 python3 apps/site/scripts/profile-process.py \
   --report target/site-verification/process-tree.json \
   --timeout 3300 --limit-mib 4096 -- bun run check:site

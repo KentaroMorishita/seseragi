@@ -1,0 +1,55 @@
+{
+  "reviewedHead": "78a5f60512f5fcb77ca14e95231c9235be8c1d51",
+  "before": {
+    "command": [
+      "python3",
+      "/workspace/scratch/docs-706/monitor-regression/detached.py"
+    ],
+    "elapsedMs": 1139,
+    "exitCode": 0,
+    "stopReason": null,
+    "peakTreeRssKiB": 8412,
+    "perPidPeakRssKiB": {
+      "10964": 8412
+    },
+    "sampleIntervalMs": 50,
+    "samples": 22,
+    "limitMiB": 48,
+    "deadlineSeconds": 4.0,
+    "cleanupProcessCount": 0
+  },
+  "after": {
+    "command": [
+      "python3",
+      "/workspace/scratch/docs-706/monitor-regression/detached.py"
+    ],
+    "elapsedMs": 287,
+    "exitCode": -15,
+    "stopReason": "memory limit",
+    "peakTreeRssKiB": 79676,
+    "perPidPeakRssKiB": {
+      "11083": 8408,
+      "11084": 0,
+      "11085": 71268
+    },
+    "sampleIntervalMs": 50,
+    "samples": 6,
+    "limitMiB": 48,
+    "deadlineSeconds": 4.0,
+    "cleanupProcessCount": 3,
+    "remainingProcessCount": 0
+  },
+  "fixture": "root remains alive 1.1s; grandchild sets separate session via intermediate parent, is orphaned and adopted by monitor, allocates 64 MiB after 0.2s, sleeps at most 3s",
+  "regressions": {
+    "passed": 5,
+    "elapsedSeconds": 0.813,
+    "tests": [
+      "normal child RSS",
+      "deadline cleanup",
+      "detached orphan memory stop and reaping",
+      "tracked/adopted descendants and recycled root PID",
+      "pidfd cleanup start-time mismatch"
+    ]
+  },
+  "limitation": "50ms sampled RSS is not an unsampled instantaneous maximum"
+}

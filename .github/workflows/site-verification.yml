@@ -60,6 +60,7 @@ jobs:
         env:
           CARGO_INCREMENTAL: "0"
           SESERAGI_SITE_PROFILE: ${{ github.workspace }}/target/site-verification/phases.jsonl
+          SESERAGI_SITE_TEST_EVIDENCE: ${{ github.workspace }}/target/site-verification/manifests
           SITE_SCREENSHOTS: ${{ github.workspace }}/target/site-verification/screenshots
         run: |
           set -o pipefail

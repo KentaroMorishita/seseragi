@@ -1,6 +1,14 @@
 import { expect, setDefaultTimeout, test } from "bun:test"
 import { spawnSync } from "node:child_process"
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+} from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 import {
@@ -76,6 +84,15 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
   const directory = mkdtempSync(join(tmpdir(), "seseragi-site-test-"))
   const output = join(directory, "site")
   const repeatedOutput = join(directory, "site-repeated")
+  const evidenceDirectory = process.env.SESERAGI_SITE_TEST_EVIDENCE
+  function retainManifest(generated: string, name: string) {
+    if (!evidenceDirectory) return
+    const source = join(generated, "site-manifest.json")
+    if (!existsSync(source)) return
+    const destination = resolve(evidenceDirectory)
+    mkdirSync(destination, { recursive: true })
+    copyFileSync(source, join(destination, name))
+  }
   try {
     const manifest = build(output)
     expect(manifest.pages).toHaveLength(3976)
@@ -645,6 +662,10 @@ test("Seseragi SSG renders the bilingual site and compiler Reference", () => {
     const repeatedManifest = build(repeatedOutput)
     expect(repeatedManifest).toEqual(manifest)
   } finally {
+    // Keep both complete hash/route manifests even if a later assertion fails.
+    // An interrupted build without a published manifest is not called complete.
+    retainManifest(output, "first-site-manifest.json")
+    retainManifest(repeatedOutput, "repeated-site-manifest.json")
     rmSync(directory, { recursive: true, force: true })
   }
 })
