@@ -1,5 +1,61 @@
 # Bounded complete-site generation (#706)
 
+## 2026-10-10 canonical-toolchain timeout investigation
+
+The current candidate keeps fresh processes and raises the finite page cap from
+32 to 64. It does not reduce the catalog, metadata, examples, routes, locales,
+validation or full artifact comparison. The per-build deadline remains 420s.
+Integration acceptance is pending complete two-build and browser PR CI results;
+the historical passes below do not establish current release readiness.
+
+Baseline: #771 head `0601ba3ccbbed07ee9be34db019320356590eb5c`, Bun 1.3.11
+(`af24e281`), optimized CLI 0.61.23, Linux x86_64. Compiler Rust source matches
+main's canonical compiler; the locally built binary records the Docs checkout
+commit `0601ba3ccbbe`, rather than claiming to be a downloaded release archive.
+The complete input has 965 examples, 63 modules and 1,812 symbols. Its exact
+size/digest and measurements are in
+[the probe report](../../reviews/issue-706/2026-10-10-probes.json).
+
+Compile took 40.049s. Fresh baseline 32-page probes took 3.4–4.4s, repeating
+the same full-input JSON parse and derived decode. CPU sampling identified that
+decode as a substantial fixed cost. Diagnostic timing of pure expressions in
+a separate compiled artifact also measured decode, catalog, render and encode;
+its stdout matched the original exactly. Instrumented timing is diagnostic,
+not a benchmark of the untouched entry.
+
+Resolving each symbol's editorial entry once preserves matching, precedence,
+fallback and output. It reduces redundant catalog work, but representative
+wall times did not prove an end-to-end improvement from that change alone.
+The 64-page candidate amortizes full-input decoding across 63 rather than 125
+fresh render processes. Three full-input probes (including Japanese pages)
+took 4.577/3.674/3.952s and peaked at 1,321,104/1,603,412/1,420,864 KiB.
+All 192 selected page records, route order and HTML matched the original
+32-page pairs exactly. Sampling at 50ms does not establish an instantaneous
+maximum; full host-plus-descendant measurements remain required.
+
+Opt-in `SESERAGI_SITE_PROFILE` writes phase JSONL outside published artifacts:
+compile, input, serialization, plan, every batch, generation, validation,
+links, publication, hashes and cleanup. Use an absolute path when subprocesses
+change working directory. Linux `profile-process.py` samples the process tree,
+enforces a deadline and 4 GiB ceiling, and cleans up its descendants. Its
+child-capture, deadline and memory-stop smoke checks passed.
+
+The new `Site verification` PR lane runs on relevant draft and stacked PRs,
+checks the exact head with Bun 1.3.11 and optimized current-source CLI, and runs
+complete `check:site`, including its browser stage. Logs, phase data, memory
+report, toolchain/lock provenance and screenshots are retained as Actions
+artifacts. Branch protection and Vercel production settings are unchanged.
+
+Reproduction (after locked dependencies and browser bootstrap):
+
+```sh
+mkdir -p target/site-verification
+export SESERAGI_SITE_PROFILE="$PWD/target/site-verification/phases.jsonl"
+python3 apps/site/scripts/profile-process.py \
+  --report target/site-verification/process-tree.json \
+  --timeout 3300 --limit-mib 4096 -- bun run check:site
+```
+
 ## 2026-10-02 release-profile regression check
 
 The complete build regression now selects `NODE_ENV=production` explicitly,
@@ -39,7 +95,7 @@ browser behavior, root-domain cutover, or first-time-reader understanding.
 
 [Issue #706](https://github.com/KentaroMorishita/seseragi/issues/706) adds a
 separate, versioned request envelope around unchanged `BuildInput`. Seseragi
-returns the complete route plan and renders contiguous batches of 1–32 pages.
+returns the complete route plan and renders contiguous batches of 1–64 pages.
 Every document still receives the full catalog and compiler metadata. A fresh
 process releases each batch's HTML and typed JSON allocations before the next
 batch starts.

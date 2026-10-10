@@ -39,6 +39,7 @@ import { moduleProjectExamples } from "./module-examples"
 import { nonemptyIteratorReaderExamples } from "./nonempty-iterator-readers"
 import { numericReaderExamples } from "./numeric-readers"
 import { practicalCollectionExamples } from "./practical-collection"
+import { sitePhase } from "./profile"
 import { compilerReferenceModules } from "./reference"
 import { regexReaderExamples } from "./regex-readers"
 import { type RenderedPage, renderGenerator } from "./render-generator"
@@ -1086,56 +1087,67 @@ export function buildSite(options: BuildOptions) {
   const temporary = mkdtempSync(join(tmpdir(), "seseragi-site-"))
   try {
     const generator = join(temporary, "generator")
-    const entry = compileGenerator(generator, options.profile ?? "development")
-    const input = { ...generatorInput(playgroundUrl), origin: origin.origin }
-    const pages = renderGenerator(entry, input)
-    const referencePageCount = input.referenceModules.reduce(
-      (count, module) => count + 1 + module.items.length,
-      0
+    const entry = sitePhase("compile", () =>
+      compileGenerator(generator, options.profile ?? "development")
     )
-    assert.equal(
-      pages.length,
-      2 * (113 + referencePageCount),
-      "Unexpected bilingual page count"
-    )
-    assert.equal(
-      new Set(pages.map(({ route }) => route)).size,
-      pages.length,
-      "Duplicate generated route"
-    )
-    validateInternalLinks(pages)
-    const coverage = referenceCoverage(pages.map(({ route }) => route))
-    for (const { route, html } of pages) {
-      if (!route.startsWith("/ja/")) continue
-      const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/u)?.[1]
-      assert.ok(main, `Missing article main: ${route}`)
-      assert.ok(
-        !/準備中|整備中|詳しい日本語解説|日本語本文は#[0-9]+/u.test(main),
-        `Untranslated article placeholder: ${route}`
+    const input = sitePhase("input", () => ({
+      ...generatorInput(playgroundUrl),
+      origin: origin.origin,
+    }))
+    const pages = sitePhase("generation", () => renderGenerator(entry, input))
+    const coverage = sitePhase("validation", () => {
+      const referencePageCount = input.referenceModules.reduce(
+        (count, module) => count + 1 + module.items.length,
+        0
       )
-    }
-    mkdirSync(output, { recursive: true })
-    for (const page of pages) {
-      assert.ok(!page.html.includes("site-build-error"), page.route)
-      const path = routeFile(output, page.route)
-      mkdirSync(dirname(path), { recursive: true })
-      // Browser-only enhancement is linked by the host publisher, not embedded
-      // in page prose. Content, navigation and component markup stay in Seseragi.
-      const html = page.html.includes('class="mobile-docs-navigation"')
-        ? page.html.replace(
-            "</body>",
-            '<script type="module" src="/assets/mobile-navigation.js"></script></body>'
-          )
-        : page.html
-      writeFileSync(
-        path,
-        html.replace(
-          "</body>",
-          '<script type="module" src="/assets/language-menu.js"></script></body>'
+      assert.equal(
+        pages.length,
+        2 * (113 + referencePageCount),
+        "Unexpected bilingual page count"
+      )
+      assert.equal(
+        new Set(pages.map(({ route }) => route)).size,
+        pages.length,
+        "Duplicate generated route"
+      )
+      sitePhase("links", () => validateInternalLinks(pages))
+      const coverage = referenceCoverage(pages.map(({ route }) => route))
+      for (const { route, html } of pages) {
+        if (!route.startsWith("/ja/")) continue
+        const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/u)?.[1]
+        assert.ok(main, `Missing article main: ${route}`)
+        assert.ok(
+          !/準備中|整備中|詳しい日本語解説|日本語本文は#[0-9]+/u.test(main),
+          `Untranslated article placeholder: ${route}`
         )
-      )
-    }
-    const assets = publishAssets(output)
+      }
+      return coverage
+    })
+    const assets = sitePhase("publication", () => {
+      mkdirSync(output, { recursive: true })
+      for (const page of pages) {
+        assert.ok(!page.html.includes("site-build-error"), page.route)
+        const path = routeFile(output, page.route)
+        mkdirSync(dirname(path), { recursive: true })
+        // Browser-only enhancement is linked by the host publisher, not embedded
+        // in page prose. Content, navigation and component markup stay in Seseragi.
+        const html = page.html.includes('class="mobile-docs-navigation"')
+          ? page.html.replace(
+              "</body>",
+              '<script type="module" src="/assets/mobile-navigation.js"></script></body>'
+            )
+          : page.html
+        writeFileSync(
+          path,
+          html.replace(
+            "</body>",
+            '<script type="module" src="/assets/language-menu.js"></script></body>'
+          )
+        )
+      }
+      const assets = publishAssets(output)
+      return assets
+    })
     const files = [
       ...pages.map(({ route }) =>
         route === "/" ? "index.html" : `${route.slice(1)}index.html`
@@ -1164,10 +1176,12 @@ export function buildSite(options: BuildOptions) {
           })),
         })
       ),
-      files: files.map((path) => ({
-        path,
-        sha256: sha256(readFileSync(join(output, path))),
-      })),
+      files: sitePhase("hashes", () =>
+        files.map((path) => ({
+          path,
+          sha256: sha256(readFileSync(join(output, path))),
+        }))
+      ),
     }
     writeFileSync(
       join(output, "site-manifest.json"),
@@ -1178,7 +1192,9 @@ export function buildSite(options: BuildOptions) {
     rmSync(output, { recursive: true, force: true })
     throw error
   } finally {
-    rmSync(temporary, { recursive: true, force: true })
+    sitePhase("cleanup", () =>
+      rmSync(temporary, { recursive: true, force: true })
+    )
   }
 }
 

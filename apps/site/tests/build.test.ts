@@ -11,8 +11,8 @@ import { assertReferenceLinkTitles, pageTitle } from "./reference-titles"
 
 const root = resolve(import.meta.dir, "../../..")
 // This test builds all 3976 routes twice to verify deterministic output.
-// Release-profile complete-metadata batches measured about 1.6s each (125 batches).
-// Include compilation and retain a finite deadline for each complete build.
+// Full-input JSON decoding is repeated in fresh, finite batches. Keep the
+// measured per-build deadline, compilation and complete artifact comparison.
 const buildTimeout = 420_000
 setDefaultTimeout(2 * buildTimeout + 60_000)
 
