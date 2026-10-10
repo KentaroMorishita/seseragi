@@ -6,6 +6,9 @@ import { verifyPublication } from "./verify-publication"
 
 const root = resolve(import.meta.dir, "../../..")
 const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/release/seseragi")
+// The second build runs in this process, rather than through run(). Use the
+// same optimized CLI in both processes, including on a fresh CI runner.
+process.env.SESERAGI_BIN = cli
 const output = resolve(root, process.env.SITE_OUTPUT ?? "target/site")
 
 function run(command: string[]) {

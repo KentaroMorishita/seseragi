@@ -157,6 +157,7 @@ export function compileGenerator(
     ],
     { cwd: root, encoding: "utf8" }
   )
+  assert.ifError(result.error)
   assert.equal(result.status, 0, result.stderr || result.stdout)
   const entry = join(directory, profile === "release" ? "entry.js" : "entry.ts")
   assert.ok(existsSync(entry), `Missing ${profile} generator entry: ${entry}`)
