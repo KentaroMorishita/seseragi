@@ -148,157 +148,44 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      Language guide
-     </div>
-     <span class="kicker">
-      04 / EFFECT
-     </span>
-     <h1>
-      Effect and do
-     </h1>
-     <p class="lead">
-      Computing a value and displaying it are different jobs. Keeping Effects separate makes the calculation easier to understand.
-     </p>
-     <h2 id="pure">
-      Compute the values first.
-     </h2>
-     <p>
-      Clean up a few labels, count their characters and calculate the total. Nothing needs to be printed yet.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        calculate.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy calculate.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> labels = [<span class="st">" Build "</span>, <span class="st">"bundle"</span>, <span class="st">"CHECK"</span>, <span class="st">"run"</span>]
-<span class="kw">let</span> lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
-<span class="kw">let</span> total = reduce 0 (+) lengths</code></pre>
-     </div>
-     <h2 id="do">
-      Then compose the effects.
-     </h2>
-     <p>
-      <code class="inline-code">
-       main
-      </code>
-      handles output.
-      <code class="inline-code">
-       do
-      </code>
-      lets you compose two print Effects in sequence.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        main.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy main.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">do</span> {
+    <article class="article deep-guide"><div class="crumbs"><a href="/docs/">Guide</a> / Effect and do</div><span class="kicker">04 / VALUES, EFFECTS, EXECUTION</span><h1>Describing a computation isn't running it.</h1><p class="lead">Calculating a value is different from reading a file, printing a line, or making a network request. Seseragi represents computations that interact with the outside world as <code>Effect</code> <strong>values</strong>. That lets us compose a plan before running it.</p>
+<h2 id="pure">A pure calculation needs no outside world.</h2>
+<p>Suppose we trim the edges of some labels, count their characters, and add the lengths. The result depends only on the strings in our array.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / Excerpt: calculate values</span><div class="code-tools"><button class="copy-code" type="button">Copy</button></div></div><pre><code>let labels = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
+let total = reduce 0 (+) lengths</code></pre></div>
+<p><code>map</code> gives us <code>[5, 6, 5, 3]</code>; <code>reduce</code> adds them to <code>19</code>. No console, filesystem or network is required just to compute that value.</p>
+<h2 id="effect">What changes when we want to print?</h2>
+<p>Calculating a number and writing that number to a console aren't the same kind of operation. <code>println</code> describes an operation requiring the console environment; it does not expose I/O as a plain pure function returning an ordinary Unit.</p>
+<figure class="concept-figure effect-figure" aria-label="Effect structure and execution boundary"><figcaption><span class="concept-kicker">A VALUE THAT DESCRIBES A COMPUTATION</span><strong>Building an Effect is not running it.</strong></figcaption><div class="effect-type"><code>Effect&lt;R, E, A&gt;</code><div class="effect-parameters"><div><strong>R</strong><span>Required environment</span></div><div><strong>E</strong><span>Recoverable failure</span></div><div><strong>A</strong><span>Success value</span></div></div></div><div class="effect-stages"><div class="effect-stage"><b>01</b><span>Build the computation</span><code>Effect&lt;R,E,A&gt;</code></div><div class="effect-arrow" aria-hidden="true">→</div><div class="effect-stage selected"><b>02</b><span>The host executes</span><code>run + R</code></div><div class="effect-arrow" aria-hidden="true">→</div><div class="effect-stage"><b>03</b><span>Observe the outcome</span><code>A / E</code></div></div><p>A plan does not run a machine simply because it exists. An Effect is a cold computation value; executing it is the host's job at the execution boundary.</p></figure>
+<p>In <code>Effect&lt;R,E,A&gt;</code>, <strong>R</strong> describes the required environment, <strong>E</strong> the recoverable failure channel, and <strong>A</strong> the success value. Those are part of the type, not conventions hidden in comments.</p>
+<p>The application's <code>pub effect fn main</code> provides the entry-point Effect. Merely declaring an <code>effect fn</code> doesn't run an operation.</p>
+<h2 id="do-notation"><code>do</code> belongs to Monad, not only to Effect.</h2>
+<p>It's worth getting this exactly right. <code>do</code> is readable syntax for a sequence of Monad binds. It is not reserved for Effect or Task, and it is not a way of turning ordinary expressions back into imperative statements.</p>
+<div class="concept-figure"><div class="concept-kicker">THE MEANING OF DO</div><div class="do-equivalence"><div><small>Written with do</small><pre><code>do {
+  x &lt;- mx
+  next x
+}</code></pre></div><span aria-hidden="true">≡</span><div><small>Expressed with bind</small><pre><code>mx &gt;&gt;= (\x -&gt; next x)</code></pre></div></div><p>Think of <code>mx</code> as an <code>M&lt;A&gt;</code> value, and <code>next</code> as a function from the unwrapped A to the next <code>M&lt;B&gt;</code>. This diagram shows the semantic expansion, not a stand-alone runnable program.</p></div>
+<p>Inside <code>do</code>, <code>x &lt;- mx</code> binds a value, while <code>let x = ...</code> introduces a pure local name. The final expression is required and has the same Monad constructor. Different Monads aren't implicitly mixed.</p>
+<h2 id="run">Here's the complete program.</h2>
+<p>After calculating the lengths, the Effect returned by <code>main</code> combines two output operations. Sequencing them with <code>do</code> reads naturally in this example.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">chapter-label-lengths.ssrg / complete program</span><div class="code-tools"><button class="copy-code" type="button">Copy</button><a href="https://seseragi.vercel.app/?source=import%20*%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20(%5Clabel%20-%3E%20text.lengthScalars%20(text.trim%20label))%20labels%0Alet%20total%20%3D%20reduce%200%20(%2B)%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20(show%20lengths)%0A%20%20println%20(show%20total)%0A%7D" target="_blank" rel="noopener noreferrer">Run in Playground ↗</a></div></div><pre><code>import * as text from &quot;std/text&quot;
+
+let labels = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
+let total = reduce 0 (+) lengths
+
+pub effect fn main = do {
   println (show lengths)
   println (show total)
-}</code></pre>
-     </div>
-     <p>
-      This is not a return to imperative statements.
-      <code class="inline-code">
-       do
-      </code>
-      is notation for effectful composition, not a decorative semicolon.
-     </p>
-     <div class="inline-action-row">
-      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A">
-       Run the whole example ↗
-      </a>
-      <a class="text-link subtle" href="https://github.com/KentaroMorishita/seseragi/blob/main/apps/site/examples/src/language/chapter-label-lengths.ssrg">
-       Verified source ↗
-      </a>
-     </div>
-     <details class="rule-note" id="rules">
-      <summary>
-       How do and other operators relate
-      </summary>
-      <p>
-       Dependent composition and independent combination are not identical. Explore
-       <code class="inline-code">
-        do
-       </code>
-       ,
-       <code class="inline-code">
-        &gt;&gt;=
-       </code>
-       and
-       <code class="inline-code">
-        &lt;*&gt;
-       </code>
-       in the context of types, failures and Effects.
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/docs/composition/">
-       <span class="step-flag">
-        Previous
-       </span>
-       <strong>
-        ← Composing functions
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="On this page" class="right-index">
-     <p class="side-group">
-      ON THIS PAGE
-     </p>
-     <a href="#pure">
-      Pure calculation
-     </a>
-     <a href="#do">
-      Compose Effects with do
-     </a>
-     <a href="#rules">
-      More notation
-     </a>
-    </nav>
+}</code></pre></div>
+<p>If you execute the same Effect twice, its computation is performed twice. The value is <strong>cold</strong>. You shouldn't assume a Promise-like eager start, or that simply constructing an Effect performs I/O.</p>
+<h2 id="independent">Dependent and independent computations differ.</h2>
+<p><code>&gt;&gt;=</code> allows the next computation to depend on a previous result. Applicative <code>&lt;*&gt;</code> combines computations without making the form of the next one depend on that value. This does <strong>not</strong> automatically mean parallel execution; runtime behavior follows the relevant type and instance.</p>
+<p>The key is that Seseragi doesn't blur the boundary between a value calculation and interaction with the outside world. Its types and expressions make that boundary visible.</p>
+<div class="deep-inline-reference"><strong>Want to revisit composition?</strong><p>The comparison between <code>&lt;$&gt;</code>, <code>&lt;*&gt;</code> and <code>&gt;&gt;=</code> has its own diagram in the composition chapter. This article is meant to stand on its own.</p><a href="/docs/composition/">Back to composing functions →</a></div>
+<nav class="article-steps" aria-label="Article navigation"><a class="step-link" href="/docs/composition/"><span class="step-flag">PREVIOUS</span><strong>← Composing functions</strong></a></nav></article>
+    <nav aria-label="On this page" class="right-index"><p class="side-group">ON THIS PAGE</p><a href="#pure">Pure computation</a><a href="#effect">Effect type</a><a href="#do-notation">do and Monad</a><a href="#run">Complete program</a><a href="#independent">Independent vs dependent</a></nav>
    </div>
   </main>
   <footer class="site-footer">

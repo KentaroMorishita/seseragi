@@ -148,166 +148,44 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/ja/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      言語ガイド
-     </div>
-     <span class="kicker">
-      04 / EFFECT
-     </span>
-     <h1>
-      Effectとdo
-     </h1>
-     <p class="lead">
-      値を計算することと、画面に出すことは別。Effectを一緒くたにしないと、何を計算する関数なのかが見えてくる。
-     </p>
-     <h2 id="pure">
-      まずは値だけを計算する。
-     </h2>
-     <p>
-      ラベルの余分な空白を取り除いて、文字数を数える。ここまでは単なる値の計算。
-      <code class="inline-code">
-       map
-      </code>
-      で配列のそれぞれに処理を適用し、
-      <code class="inline-code">
-       reduce
-      </code>
-      で合計している。
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        calculate.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="コピー calculate.ssrg" class="copy-code" type="button">
-         コピー
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
-         Playgroundで試す ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> labels = [<span class="st">" Build "</span>, <span class="st">"bundle"</span>, <span class="st">"CHECK"</span>, <span class="st">"run"</span>]
-<span class="kw">let</span> lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
-<span class="kw">let</span> total = reduce 0 (+) lengths</code></pre>
-     </div>
-     <h2 id="do">
-      実行する処理は、別にまとめる。
-     </h2>
-     <p>
-      結果を表示するのは
-      <code class="inline-code">
-       main
-      </code>
-      の仕事。
-      <code class="inline-code">
-       do
-      </code>
-      の中で二つの出力を順に組み立てられる。
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        main.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="コピー main.ssrg" class="copy-code" type="button">
-         コピー
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
-         Playgroundで試す ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">do</span> {
+    <article class="article deep-guide"><div class="crumbs"><a href="/ja/docs/">Guide</a> / Effectとdo</div><span class="kicker">04 / VALUES, EFFECTS, EXECUTION</span><h1>計算を作ることと、動かすこと。</h1><p class="lead">関数から値を作ることと、ファイルを読む・表示する・通信することは同じではない。Seseragiでは、外の世界に触れる計算を <code>Effect</code> という<strong>値</strong>で表す。「実行する処理」を、まず「組み立てられるもの」にするんだ。</p>
+<h2 id="pure">純粋な計算には、外の世界が要らない。</h2>
+<p>例えば、ラベルの両端の空白を取り除いて、文字数を合計したい。文字列と配列だけで決まるなら、これは普通の値の計算。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / 抜粋：値を計算する</span><div class="code-tools"><button class="copy-code" type="button">コピー</button></div></div><pre><code>let labels = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
+let total = reduce 0 (+) lengths</code></pre></div>
+<p><code>map</code> で各ラベルの長さを求め、<code>reduce</code> で足している。得られる長さは <code>[5, 6, 5, 3]</code>、合計は <code>19</code>。この計算そのものはconsoleも、ファイルも必要としない。</p>
+<h2 id="effect">出力したいとき、何が変わる？</h2>
+<p>数を計算することと、その数をconsoleへ書くことには違いがある。<code>println</code> は単なる <code>Unit</code> を返す普通の純粋な関数ではなく、consoleという外部の環境を必要とするEffectを作る。</p>
+<figure class="concept-figure effect-figure" aria-label="Effectの構造と実行境界"><figcaption><span class="concept-kicker">A VALUE THAT DESCRIBES A COMPUTATION</span><strong>Effectを作ることと、Effectを実行することは別。</strong></figcaption><div class="effect-type"><code>Effect&lt;R, E, A&gt;</code><div class="effect-parameters"><div><strong>R</strong><span>必要な環境</span></div><div><strong>E</strong><span>回復可能な失敗</span></div><div><strong>A</strong><span>成功した値</span></div></div></div><div class="effect-stages"><div class="effect-stage"><b>01</b><span>計算を組み立てる</span><code>Effect&lt;R,E,A&gt;</code></div><div class="effect-arrow" aria-hidden="true">→</div><div class="effect-stage selected"><b>02</b><span>ホストが実行する</span><code>run + R</code></div><div class="effect-arrow" aria-hidden="true">→</div><div class="effect-stage"><b>03</b><span>結果を受け取る</span><code>A / E</code></div></div><p>設計図を書いただけでは機械は動かない。Effect値も同じで、作っただけではI/Oを実行しない。実行するのはホストの実行境界だ。</p></figure>
+<p><code>Effect&lt;R,E,A&gt;</code> の3つの型引数は、順番に<strong>必要な環境 R、回復可能な失敗 E、成功値 A</strong>。コンパイラは、それぞれの計算が何を必要とし、どう失敗し得るかを型から追える。</p>
+<p>例えば <code>pub effect fn main</code> は、実行境界となるEffectを返すエントリーポイント。<code>effect fn</code> を宣言しただけで副作用が勝手に起きるわけじゃない。</p>
+<h2 id="do-notation"><code>do</code> は、Effectだけの特別扱いではない。</h2>
+<p>ここは誤解しやすいところ。<code>do</code> は <strong>Monadに対するbindの列を読みやすく書く構文</strong>で、EffectやTask専用じゃない。<code>Maybe</code> や他のMonadでも、同じ構造の合成を表せる。</p>
+<div class="concept-figure"><div class="concept-kicker">THE MEANING OF DO</div><div class="do-equivalence"><div><small>読みやすいdoの形</small><pre><code>do {
+  x &lt;- mx
+  next x
+}</code></pre></div><span aria-hidden="true">≡</span><div><small>bindで表すと</small><pre><code>mx &gt;&gt;= (\x -&gt; next x)</code></pre></div></div><p><code>mx</code> は <code>M&lt;A&gt;</code>、<code>next</code> は前の値から次の <code>M&lt;B&gt;</code> を作る関数だと考えてほしい。上の式は<strong>展開の意味を表す模式図</strong>で、独立して実行するプログラムではない。</p></div>
+<p><code>do</code> の途中では <code>x &lt;- mx</code> で値を取り出して次へ渡せるし、<code>let x = ...</code> で純粋な名前も導入できる。最後には同じMonadの式が必要で、違うMonadを暗黙に混ぜることはできない。</p>
+<h2 id="run">完全なプログラムに戻ってみよう。</h2>
+<p>ラベルの長さを計算したあと、<code>main</code> の中で2つの出力を組み合わせる。I/Oの順序を持つEffectの合成として、ここでは <code>do</code> が自然に読める。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">chapter-label-lengths.ssrg / 完全なプログラム</span><div class="code-tools"><button class="copy-code" type="button">コピー</button><a href="https://seseragi.vercel.app/?source=import%20*%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20(%5Clabel%20-%3E%20text.lengthScalars%20(text.trim%20label))%20labels%0Alet%20total%20%3D%20reduce%200%20(%2B)%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20(show%20lengths)%0A%20%20println%20(show%20total)%0A%7D" target="_blank" rel="noopener noreferrer">Playgroundで動かす ↗</a></div></div><pre><code>import * as text from &quot;std/text&quot;
+
+let labels = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
+let total = reduce 0 (+) lengths
+
+pub effect fn main = do {
   println (show lengths)
   println (show total)
-}</code></pre>
-     </div>
-     <p>
-      この
-      <code class="inline-code">
-       do
-      </code>
-      は単なるセミコロンの代わりではない。Effectをつなぐための記法だ。Seseragiが何でも「順次実行する文」に戻ったわけではない。
-     </p>
-     <div class="inline-action-row">
-      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A">
-       結果をPlaygroundで確かめる ↗
-      </a>
-      <a class="text-link subtle" href="https://github.com/KentaroMorishita/seseragi/blob/main/apps/site/examples/src/language/chapter-label-lengths.ssrg">
-       検証済みのソース ↗
-      </a>
-     </div>
-     <details class="rule-note" id="rules">
-      <summary>
-       doと他の記法の関係
-      </summary>
-      <p>
-       前の結果に依存する合成と、独立した値の合成は同じではない。
-       <code class="inline-code">
-        do
-       </code>
-       、
-       <code class="inline-code">
-        &gt;&gt;=
-       </code>
-       、
-       <code class="inline-code">
-        &lt;*&gt;
-       </code>
-       を知りたくなったら、型・失敗・Effectの文脈と一緒に見ていこう。
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/ja/docs/composition/">
-       <span class="step-flag">
-        前に読む
-       </span>
-       <strong>
-        ← 関数を組み合わせる
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="このページの内容" class="right-index">
-     <p class="side-group">
-      このページの内容
-     </p>
-     <a href="#pure">
-      純粋な計算
-     </a>
-     <a href="#do">
-      doでEffectをつなぐ
-     </a>
-     <a href="#rules">
-      記法のメモ
-     </a>
-    </nav>
+}</code></pre></div>
+<p>同じEffect値を二度実行したら、その計算も二度実行される。Effectは<strong>cold</strong>だからだ。逆に、先に作られた計算を自動的に実行したり、Promiseのようなeagerな振る舞いを前提にしたりはしない。</p>
+<h2 id="independent">依存している計算、独立した計算。</h2>
+<p><code>&gt;&gt;=</code> は前の結果で次の計算を決められる。<code>&lt;*&gt;</code> は、次の計算の形が前の結果に依存しない場合のApplicativeな合成。**どちらを使うかと、必ず並列になるかどうかは別の話**で、具体的な実行順序は型とinstanceに従う。</p>
+<p>一番大事なのは、Seseragiが純粋な値計算と、外の世界に触れる計算の境界を曖昧にしないこと。型と式が、その違いをちゃんと表してくれる。</p>
+<div class="deep-inline-reference"><strong>別の章へ進む前に</strong><p><code>&lt;$&gt;</code>・<code>&lt;*&gt;</code>・<code>&gt;&gt;=</code> の違いは、関数の合成の記事でも図で確認できる。この章の内容はここだけで読めるように、引き続き本文を磨いていく。</p><a href="/ja/docs/composition/">合成の考え方を振り返る →</a></div>
+<nav class="article-steps" aria-label="記事の移動"><a class="step-link" href="/ja/docs/composition/"><span class="step-flag">前に読む</span><strong>← 関数を組み合わせる</strong></a></nav></article>
+    <nav aria-label="この記事の内容" class="right-index"><p class="side-group">このページの内容</p><a href="#pure">純粋な値の計算</a><a href="#effect">Effectの型</a><a href="#do-notation">doとMonad</a><a href="#run">完全なプログラム</a><a href="#independent">独立・依存の合成</a></nav>
    </div>
   </main>
   <footer class="site-footer">
