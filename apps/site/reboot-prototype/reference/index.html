@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Notation reference · Seseragi
+  </title>
+  <meta content="Seseragi notation reference" name="description"/>
+  <link href="https://seseragi-docs.vercel.app/reference/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/reference/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a aria-current="page" href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/reference/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a aria-current="page" href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/reference/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <div class="container reference-layout">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       LANGUAGE GUIDE
+      </div>
+      <nav aria-label="Language guide">
+       <a href="/docs/">
+        Overview
+       </a>
+       <a href="/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        Functions and notation
+       </a>
+       <a href="/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        Data and match
+       </a>
+       <a href="/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        Composing functions
+       </a>
+       <a href="/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effect and do
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       LOOK UP / TRY
+      </div>
+      <nav aria-label="Resources">
+       <a aria-current="page" href="/reference/">
+        Notation reference
+       </a>
+       <a href="/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       Language guide
+       <span class="menu-current">
+        Notation reference
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        LANGUAGE GUIDE
+       </div>
+       <nav aria-label="Language guide">
+        <a href="/docs/">
+         Overview
+        </a>
+        <a href="/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         Functions and notation
+        </a>
+        <a href="/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         Data and match
+        </a>
+        <a href="/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         Composing functions
+        </a>
+        <a href="/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effect and do
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        LOOK UP / TRY
+       </div>
+       <nav aria-label="Resources">
+        <a aria-current="page" href="/reference/">
+         Notation reference
+        </a>
+        <a href="/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <article class="reference-main">
+     <div class="crumbs">
+      <a href="/docs/">
+       Docs
+      </a>
+      <span aria-hidden="true">
+       /
+      </span>
+      Reference
+     </div>
+     <p class="kicker">
+      LOOK UP / NOTATION
+     </p>
+     <h1>
+      Notation reference
+     </h1>
+     <p class="reference-lead">
+      Need to remember an operator? Jump directly to it. For exact type rules and constraints, follow through to the relevant article and compiler specification.
+     </p>
+     <label class="search-field">
+      <span aria-hidden="true">
+       ⌕
+      </span>
+      <input aria-label="Find notation (fn, match, &lt;$&gt;…)" autocomplete="off" data-doc-search="" placeholder="Find notation (fn, match, &lt;$&gt;…)" type="search"/>
+     </label>
+     <p aria-live="polite" class="search-status" data-search-status="">
+     </p>
+     <div class="ref-list">
+      <div class="ref-row" data-keywords="fn Declare a function fn key name: String -&gt; String = …" data-search-item="">
+       <div>
+        <code class="ref-token">
+         fn
+        </code>
+       </div>
+       <div>
+        <strong>
+         Declare a function
+        </strong>
+        <p>
+         <code>
+          fn key name: String -&gt; String = …
+         </code>
+        </p>
+       </div>
+       <a aria-label="Declare a function" href="/docs/functions/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='f x Apply a function key "  Build  "' data-search-item="">
+       <div>
+        <code class="ref-token">
+         f x
+        </code>
+       </div>
+       <div>
+        <strong>
+         Apply a function
+        </strong>
+        <p>
+         <code>
+          key "  Build  "
+         </code>
+        </p>
+       </div>
+       <a aria-label="Apply a function" href="/docs/functions/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="match Produce a value by matching match (number % 3, number % 5) { … }" data-search-item="">
+       <div>
+        <code class="ref-token">
+         match
+        </code>
+       </div>
+       <div>
+        <strong>
+         Produce a value by matching
+        </strong>
+        <p>
+         <code>
+          match (number % 3, number % 5) { … }
+         </code>
+        </p>
+       </div>
+       <a aria-label="Produce a value by matching" href="/docs/patterns/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='$ Apply to the right-hand expression map badge $ arrays.filter (matches "b") commands' data-search-item="">
+       <div>
+        <code class="ref-token">
+         $
+        </code>
+       </div>
+       <div>
+        <strong>
+         Apply to the right-hand expression
+        </strong>
+        <p>
+         <code>
+          map badge $ arrays.filter (matches "b") commands
+         </code>
+        </p>
+       </div>
+       <a aria-label="Apply to the right-hand expression" href="/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='|&gt; Follow transformations from a value commands |&gt; arrays.filter (matches "b") |&gt; map badge' data-search-item="">
+       <div>
+        <code class="ref-token">
+         |&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         Follow transformations from a value
+        </strong>
+        <p>
+         <code>
+          commands |&gt; arrays.filter (matches "b") |&gt; map badge
+         </code>
+        </p>
+       </div>
+       <a aria-label="Follow transformations from a value" href="/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&lt;$&gt; Map within a context badge &lt;$&gt; picked" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &lt;$&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         Map within a context
+        </strong>
+        <p>
+         <code>
+          badge &lt;$&gt; picked
+         </code>
+        </p>
+       </div>
+       <a aria-label="Map within a context" href="/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="do Read effectful composition pub effect fn main = do { … }" data-search-item="">
+       <div>
+        <code class="ref-token">
+         do
+        </code>
+       </div>
+       <div>
+        <strong>
+         Read effectful composition
+        </strong>
+        <p>
+         <code>
+          pub effect fn main = do { … }
+         </code>
+        </p>
+       </div>
+       <a aria-label="Read effectful composition" href="/docs/effects/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&lt;*&gt; Apply in an applicative context Functor / Applicative" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &lt;*&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         Apply in an applicative context
+        </strong>
+        <p>
+         <code>
+          Functor / Applicative
+         </code>
+        </p>
+       </div>
+       <a aria-label="Apply in an applicative context" href="/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&gt;&gt;= Dependent sequencing Monad" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &gt;&gt;=
+        </code>
+       </div>
+       <div>
+        <strong>
+         Dependent sequencing
+        </strong>
+        <p>
+         <code>
+          Monad
+         </code>
+        </p>
+       </div>
+       <a aria-label="Dependent sequencing" href="/docs/effects/">
+        ↗
+       </a>
+      </div>
+     </div>
+     <p class="no-results" data-empty-results="" hidden="">
+      No matching notation.
+     </p>
+    </article>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

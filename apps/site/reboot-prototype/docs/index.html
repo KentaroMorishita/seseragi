@@ -1,1 +1,324 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fcfdfc"><title>Docs · Seseragi</title><meta name="description" content="Seseragiは、宣言と式でプログラムを組み立てる言語です。"><link rel="stylesheet" href="/assets/site.css"></head><body><a href="#main" class="skip">本文へスキップ</a><header class="site-header"><div class="container header-inner"><a href="/" class="brand" aria-label="Seseragi ホーム"><img src="/assets/seseragi-logo.svg" alt="Seseragi"></a><nav class="desktop-nav" aria-label="メインナビゲーション"><a href="/docs/">Docs</a><a href="/docs/functions/">言語ガイド</a><a href="https://github.com/KentaroMorishita/seseragi">GitHub ↗</a></nav><a href="https://seseragi.vercel.app/" class="top-action">Playground ↗</a><details class="mobile-menu"><summary>メニュー</summary><nav aria-label="モバイルメニュー"><a href="/">ホーム</a><a href="/docs/">Docs</a><a href="/docs/functions/">言語ガイド</a><a href="https://seseragi.vercel.app/">Playground ↗</a><a href="https://github.com/KentaroMorishita/seseragi">GitHub ↗</a></nav></details></div></header><main id="main"><header class="doc-hero"><div class="container"><span class="kicker">DOCUMENTATION</span><h1>Docs</h1><p>最初から順に読んでも、気になるところだけ見てもいい。言語の考え方と書き方を、実際のコードで確かめていこう。</p></div></header><div class="container doc-grid"><aside class="doc-sidebar"><p class="side-group">DOCS</p><nav aria-label="Docsナビゲーション"><a href="/docs/">はじめに</a><a href="/docs/functions/">関数と記法</a></nav><div class="sep"></div><nav aria-label="関連リソース"><a href="https://seseragi.vercel.app/">Playground ↗</a></nav></aside><div class="docs-main"><h2>まず、関数から。</h2><p>Seseragiの関数は、宣言と式で書ける。定義・適用から始めて、合成や型へ進んでいこう。</p><a class="entry-link" href="/docs/functions/"><span><strong>関数と記法</strong><small>関数を書く / 値を返す / 式を組み合わせる</small></span><span class="arr">→</span></a><section class="docs-tools"><h3>すぐに試したいなら</h3><p>PlaygroundではSeseragiのコードをブラウザで実行できる。まず書いてみて、気になった記法だけDocsへ戻って調べるのもありだね。</p><a href="https://seseragi.vercel.app/">Playgroundを開く ↗</a></section></div></div></main><footer class="site-footer"><div class="container footer-inner"><span>Seseragi · Experimental programming language</span><span><a href="https://github.com/KentaroMorishita/seseragi">GitHub</a> · <a href="https://seseragi.vercel.app/">Playground</a></span></div></footer></body></html>
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Docs · Seseragi
+  </title>
+  <meta content="Write a function. Match a value. Compose with the right operator. Start anywhere, and jump back to exact notation when you need it." name="description"/>
+  <link href="https://seseragi-docs.vercel.app/docs/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/docs/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a aria-current="page" href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/docs/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a aria-current="page" href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/docs/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <header class="doc-hero">
+    <div class="container">
+     <span class="kicker">
+      DOCUMENTATION
+     </span>
+     <h1>
+      A language guide,
+      <br/>
+      not a maze.
+     </h1>
+     <p>
+      Write a function. Match a value. Compose with the right operator. Start anywhere, and jump back to exact notation when you need it.
+     </p>
+    </div>
+   </header>
+   <div class="container docs-main-grid">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       LANGUAGE GUIDE
+      </div>
+      <nav aria-label="Language guide">
+       <a aria-current="page" href="/docs/">
+        Overview
+       </a>
+       <a href="/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        Functions and notation
+       </a>
+       <a href="/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        Data and match
+       </a>
+       <a href="/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        Composing functions
+       </a>
+       <a href="/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effect and do
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       LOOK UP / TRY
+      </div>
+      <nav aria-label="Resources">
+       <a href="/reference/">
+        Notation reference
+       </a>
+       <a href="/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       Language guide
+       <span class="menu-current">
+        Docs
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        LANGUAGE GUIDE
+       </div>
+       <nav aria-label="Language guide">
+        <a aria-current="page" href="/docs/">
+         Overview
+        </a>
+        <a href="/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         Functions and notation
+        </a>
+        <a href="/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         Data and match
+        </a>
+        <a href="/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         Composing functions
+        </a>
+        <a href="/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effect and do
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        LOOK UP / TRY
+       </div>
+       <nav aria-label="Resources">
+        <a href="/reference/">
+         Notation reference
+        </a>
+        <a href="/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <section class="docs-main">
+     <label class="search-field">
+      <span aria-hidden="true">
+       ⌕
+      </span>
+      <input aria-label="Find an article or notation…" autocomplete="off" data-doc-search="" placeholder="Find an article or notation…" type="search"/>
+     </label>
+     <p aria-live="polite" class="search-status" data-search-status="">
+     </p>
+     <a class="entry-link docs-entry" data-keywords="Functions and notation Declarations, function application and partial application." data-search-item="" href="/docs/functions/">
+      <span>
+       <small>
+        01 / LANGUAGE
+       </small>
+       <strong>
+        Functions and notation
+       </strong>
+       <small>
+        Declarations, function application and partial application.
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="Data and match Choose a result by matching a value’s shape." data-search-item="" href="/docs/patterns/">
+      <span>
+       <small>
+        02 / LANGUAGE
+       </small>
+       <strong>
+        Data and match
+       </strong>
+       <small>
+        Choose a result by matching a value’s shape.
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="Composing functions Choose normal application, $, |&gt; and &lt;$&gt; by meaning." data-search-item="" href="/docs/composition/">
+      <span>
+       <small>
+        03 / LANGUAGE
+       </small>
+       <strong>
+        Composing functions
+       </strong>
+       <small>
+        Choose normal application, $, |&gt; and &lt;$&gt; by meaning.
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="Effect and do Keep pure calculations separate from executable effects." data-search-item="" href="/docs/effects/">
+      <span>
+       <small>
+        04 / LANGUAGE
+       </small>
+       <strong>
+        Effect and do
+       </strong>
+       <small>
+        Keep pure calculations separate from executable effects.
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <p class="no-results" data-empty-results="" hidden="">
+      Nothing matched. Try another term.
+     </p>
+    </section>
+    <aside class="docs-companion">
+     <div class="side-group">
+      REFERENCE
+     </div>
+     <h3>
+      Jump straight to an operator.
+     </h3>
+     <p>
+      $, |&gt;, &lt;$&gt;, do — no need to read a full lesson first.
+     </p>
+     <a href="/reference/">
+      Open notation reference →
+     </a>
+     <div class="docs-companion-rule">
+     </div>
+     <div class="side-group">
+      PLAYGROUND
+     </div>
+     <p>
+      Want to start by running code? The browser is fine.
+     </p>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </aside>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   記法リファレンス · Seseragi
+  </title>
+  <meta content="Seseragi notation reference" name="description"/>
+  <link href="https://seseragi-docs.vercel.app/ja/reference/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/reference/" hreflang="en" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   本文へスキップ
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/ja/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/ja/docs/">
+      Docs
+     </a>
+     <a href="/ja/examples/">
+      Examples
+     </a>
+     <a aria-current="page" href="/ja/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/reference/" lang="en">
+     EN
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      メニュー
+     </summary>
+     <nav aria-label="メニュー">
+      <a href="/ja/">
+       ホーム
+      </a>
+      <a href="/ja/docs/">
+       Docs
+      </a>
+      <a href="/ja/examples/">
+       Examples
+      </a>
+      <a aria-current="page" href="/ja/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/reference/">
+       English
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <div class="container reference-layout">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       言語ガイド
+      </div>
+      <nav aria-label="言語ガイド">
+       <a href="/ja/docs/">
+        概要
+       </a>
+       <a href="/ja/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        関数と記法
+       </a>
+       <a href="/ja/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        データとmatch
+       </a>
+       <a href="/ja/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        関数を組み合わせる
+       </a>
+       <a href="/ja/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effectとdo
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       調べる・試す
+      </div>
+      <nav aria-label="Resources">
+       <a aria-current="page" href="/ja/reference/">
+        記法リファレンス
+       </a>
+       <a href="/ja/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       言語ガイド
+       <span class="menu-current">
+        記法リファレンス
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        言語ガイド
+       </div>
+       <nav aria-label="言語ガイド">
+        <a href="/ja/docs/">
+         概要
+        </a>
+        <a href="/ja/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         関数と記法
+        </a>
+        <a href="/ja/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         データとmatch
+        </a>
+        <a href="/ja/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         関数を組み合わせる
+        </a>
+        <a href="/ja/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effectとdo
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        調べる・試す
+       </div>
+       <nav aria-label="Resources">
+        <a aria-current="page" href="/ja/reference/">
+         記法リファレンス
+        </a>
+        <a href="/ja/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <article class="reference-main">
+     <div class="crumbs">
+      <a href="/ja/docs/">
+       Docs
+      </a>
+      <span aria-hidden="true">
+       /
+      </span>
+      Reference
+     </div>
+     <p class="kicker">
+      LOOK UP / NOTATION
+     </p>
+     <h1>
+      記法リファレンス
+     </h1>
+     <p class="reference-lead">
+      記号の名前だけ思い出したいときに。読まなくていい章は、飛ばしてしまおう。正確な型や制約は各記事とコンパイラ仕様で確認できる。
+     </p>
+     <label class="search-field">
+      <span aria-hidden="true">
+       ⌕
+      </span>
+      <input aria-label="記法を検索（fn、match、&lt;$&gt;…）" autocomplete="off" data-doc-search="" placeholder="記法を検索（fn、match、&lt;$&gt;…）" type="search"/>
+     </label>
+     <p aria-live="polite" class="search-status" data-search-status="">
+     </p>
+     <div class="ref-list">
+      <div class="ref-row" data-keywords="fn 関数を宣言する fn key name: String -&gt; String = …" data-search-item="">
+       <div>
+        <code class="ref-token">
+         fn
+        </code>
+       </div>
+       <div>
+        <strong>
+         関数を宣言する
+        </strong>
+        <p>
+         <code>
+          fn key name: String -&gt; String = …
+         </code>
+        </p>
+       </div>
+       <a aria-label="関数を宣言する" href="/ja/docs/functions/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='f x 関数へ値を渡す key "  Build  "' data-search-item="">
+       <div>
+        <code class="ref-token">
+         f x
+        </code>
+       </div>
+       <div>
+        <strong>
+         関数へ値を渡す
+        </strong>
+        <p>
+         <code>
+          key "  Build  "
+         </code>
+        </p>
+       </div>
+       <a aria-label="関数へ値を渡す" href="/ja/docs/functions/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="match 分岐を値として返す match (number % 3, number % 5) { … }" data-search-item="">
+       <div>
+        <code class="ref-token">
+         match
+        </code>
+       </div>
+       <div>
+        <strong>
+         分岐を値として返す
+        </strong>
+        <p>
+         <code>
+          match (number % 3, number % 5) { … }
+         </code>
+        </p>
+       </div>
+       <a aria-label="分岐を値として返す" href="/ja/docs/patterns/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='$ 右側の式をまとめて適用する map badge $ arrays.filter (matches "b") commands' data-search-item="">
+       <div>
+        <code class="ref-token">
+         $
+        </code>
+       </div>
+       <div>
+        <strong>
+         右側の式をまとめて適用する
+        </strong>
+        <p>
+         <code>
+          map badge $ arrays.filter (matches "b") commands
+         </code>
+        </p>
+       </div>
+       <a aria-label="右側の式をまとめて適用する" href="/ja/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords='|&gt; 値から変換を追う commands |&gt; arrays.filter (matches "b") |&gt; map badge' data-search-item="">
+       <div>
+        <code class="ref-token">
+         |&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         値から変換を追う
+        </strong>
+        <p>
+         <code>
+          commands |&gt; arrays.filter (matches "b") |&gt; map badge
+         </code>
+        </p>
+       </div>
+       <a aria-label="値から変換を追う" href="/ja/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&lt;$&gt; 文脈の中の値を変換する badge &lt;$&gt; picked" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &lt;$&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         文脈の中の値を変換する
+        </strong>
+        <p>
+         <code>
+          badge &lt;$&gt; picked
+         </code>
+        </p>
+       </div>
+       <a aria-label="文脈の中の値を変換する" href="/ja/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="do Effectの合成を読む pub effect fn main = do { … }" data-search-item="">
+       <div>
+        <code class="ref-token">
+         do
+        </code>
+       </div>
+       <div>
+        <strong>
+         Effectの合成を読む
+        </strong>
+        <p>
+         <code>
+          pub effect fn main = do { … }
+         </code>
+        </p>
+       </div>
+       <a aria-label="Effectの合成を読む" href="/ja/docs/effects/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&lt;*&gt; 独立した文脈付き引数を組み合わせる Functor / Applicative" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &lt;*&gt;
+        </code>
+       </div>
+       <div>
+        <strong>
+         独立した文脈付き引数を組み合わせる
+        </strong>
+        <p>
+         <code>
+          Functor / Applicative
+         </code>
+        </p>
+       </div>
+       <a aria-label="独立した文脈付き引数を組み合わせる" href="/ja/docs/composition/">
+        ↗
+       </a>
+      </div>
+      <div class="ref-row" data-keywords="&gt;&gt;= 前の結果に依存する合成 Monad" data-search-item="">
+       <div>
+        <code class="ref-token">
+         &gt;&gt;=
+        </code>
+       </div>
+       <div>
+        <strong>
+         前の結果に依存する合成
+        </strong>
+        <p>
+         <code>
+          Monad
+         </code>
+        </p>
+       </div>
+       <a aria-label="前の結果に依存する合成" href="/ja/docs/effects/">
+        ↗
+       </a>
+      </div>
+     </div>
+     <p class="no-results" data-empty-results="" hidden="">
+      該当する記法が見つからなかったよ。
+     </p>
+    </article>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · 実験的なプログラミング言語
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

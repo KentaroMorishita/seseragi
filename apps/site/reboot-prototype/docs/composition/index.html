@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Composing functions · Seseragi
+  </title>
+  <meta content="There are several ways to compose functions. A pipeline is not the only answer. Choose the notation that makes the structure easiest to follow." name="description"/>
+  <link href="https://seseragi-docs.vercel.app/docs/composition/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/docs/composition/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a aria-current="page" href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/docs/composition/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a aria-current="page" href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/docs/composition/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <div class="container article-grid">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       LANGUAGE GUIDE
+      </div>
+      <nav aria-label="Language guide">
+       <a href="/docs/">
+        Overview
+       </a>
+       <a href="/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        Functions and notation
+       </a>
+       <a href="/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        Data and match
+       </a>
+       <a aria-current="page" href="/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        Composing functions
+       </a>
+       <a href="/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effect and do
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       LOOK UP / TRY
+      </div>
+      <nav aria-label="Resources">
+       <a href="/reference/">
+        Notation reference
+       </a>
+       <a href="/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       Language guide
+       <span class="menu-current">
+        Composing functions
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        LANGUAGE GUIDE
+       </div>
+       <nav aria-label="Language guide">
+        <a href="/docs/">
+         Overview
+        </a>
+        <a href="/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         Functions and notation
+        </a>
+        <a href="/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         Data and match
+        </a>
+        <a aria-current="page" href="/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         Composing functions
+        </a>
+        <a href="/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effect and do
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        LOOK UP / TRY
+       </div>
+       <nav aria-label="Resources">
+        <a href="/reference/">
+         Notation reference
+        </a>
+        <a href="/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <article class="article">
+     <div class="crumbs">
+      <a href="/docs/">
+       Docs
+      </a>
+      <span aria-hidden="true">
+       /
+      </span>
+      Language guide
+     </div>
+     <span class="kicker">
+      03 / COMPOSITION
+     </span>
+     <h1>
+      Composing functions
+     </h1>
+     <p class="lead">
+      There are several ways to compose functions. A pipeline is not the only answer. Choose the notation that makes the structure easiest to follow.
+     </p>
+     <h2 id="three">
+      One calculation, three shapes.
+     </h2>
+     <p>
+      Search for commands and add a display badge. After naming the filter
+      <code class="inline-code">
+       pick
+      </code>
+      , these three expressions produce the same value — and emphasize different reading directions.
+     </p>
+     <div class="code-window compact">
+      <div class="code-head">
+       <span aria-hidden="true" class="dots">
+        <i>
+        </i>
+        <i>
+        </i>
+        <i>
+        </i>
+       </span>
+       <span class="file">
+        syntax-reader-pipelines.ssrg
+       </span>
+       <div class="code-tools">
+        <button aria-label="Copy syntax-reader-pipelines.ssrg" class="copy-code" type="button">
+         Copy
+        </button>
+        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
+         Try in Playground ↗
+        </a>
+       </div>
+      </div>
+      <pre><code><span class="kw">let</span> pick = arrays.filter (matches <span class="st">"b"</span>)
+<span class="kw">let</span> nested = map badge (pick commands)
+<span class="kw">let</span> compact = map badge <span class="op">$</span> pick commands
+<span class="kw">let</span> choices = commands <span class="op">|&gt;</span> pick <span class="op">|&gt;</span> map badge</code></pre>
+     </div>
+     <p>
+      Ordinary application nests function calls.
+      <code class="inline-code">
+       $
+      </code>
+      groups an expression on the right.
+      <code class="inline-code">
+       |&gt;
+      </code>
+      puts a value first, then follows its transformations. Choose by meaning, not by a pipeline quota.
+     </p>
+     <h2 id="maybe">
+      An absent result can stay absent.
+     </h2>
+     <p>
+      <code class="inline-code">
+       arrays.find
+      </code>
+      may not find anything.
+      <code class="inline-code">
+       &lt;$&gt;
+      </code>
+      lets you apply
+      <code class="inline-code">
+       badge
+      </code>
+      only when there is a value.
+     </p>
+     <div class="code-window compact">
+      <div class="code-head">
+       <span aria-hidden="true" class="dots">
+        <i>
+        </i>
+        <i>
+        </i>
+        <i>
+        </i>
+       </span>
+       <span class="file">
+        find-and-map.ssrg
+       </span>
+       <div class="code-tools">
+        <button aria-label="Copy find-and-map.ssrg" class="copy-code" type="button">
+         Copy
+        </button>
+        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
+         Try in Playground ↗
+        </a>
+       </div>
+      </div>
+      <pre><code><span class="kw">let</span> picked = arrays.find (matches <span class="st">"b"</span>) commands
+<span class="kw">let</span> suggestion = badge <span class="op">&lt;$&gt;</span> picked
+<span class="kw">let</span> missing = arrays.find (matches <span class="st">"z"</span>) commands
+<span class="kw">let</span> absentLabel = badge <span class="op">&lt;$&gt;</span> missing</code></pre>
+     </div>
+     <p>
+      <code class="inline-code">
+       badge &lt;$&gt; picked
+      </code>
+      transforms the value when present, preserving absence otherwise. That is why
+      <code class="inline-code">
+       &lt;$&gt;
+      </code>
+      belongs in this example.
+     </p>
+     <div class="inline-action-row">
+      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A">
+       Compare all three in Playground ↗
+      </a>
+      <a class="text-link subtle" href="/reference/">
+       Look up notation →
+      </a>
+     </div>
+     <details class="rule-note" id="rules">
+      <summary>
+       Operator roles at a glance
+      </summary>
+      <p>
+       <code class="inline-code">
+        $
+       </code>
+       groups application,
+       <code class="inline-code">
+        |&gt;
+       </code>
+       pipelines values and
+       <code class="inline-code">
+        &lt;$&gt;
+       </code>
+       maps within a context.
+       <code class="inline-code">
+        &lt;*&gt;
+       </code>
+       ,
+       <code class="inline-code">
+        &gt;&gt;=
+       </code>
+       and
+       <code class="inline-code">
+        do
+       </code>
+       support other forms of composition.
+      </p>
+     </details>
+     <nav aria-label="Article navigation" class="article-steps">
+      <a class="step-link" href="/docs/patterns/">
+       <span class="step-flag">
+        Previous
+       </span>
+       <strong>
+        ← Data and match
+       </strong>
+      </a>
+      <a class="step-link" href="/docs/effects/">
+       <span class="step-flag">
+        Next
+       </span>
+       <strong>
+        Effect and do →
+       </strong>
+      </a>
+     </nav>
+    </article>
+    <nav aria-label="On this page" class="right-index">
+     <p class="side-group">
+      ON THIS PAGE
+     </p>
+     <a href="#three">
+      Application / $ / |&gt;
+     </a>
+     <a href="#maybe">
+      Mapping with &lt;$&gt;
+     </a>
+     <a href="#rules">
+      Notation
+     </a>
+    </nav>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

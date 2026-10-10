@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Effect and do · Seseragi
+  </title>
+  <meta content="Computing a value and displaying it are different jobs. Keeping Effects separate makes the calculation easier to understand." name="description"/>
+  <link href="https://seseragi-docs.vercel.app/docs/effects/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/docs/effects/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a aria-current="page" href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/docs/effects/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a aria-current="page" href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/docs/effects/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <div class="container article-grid">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       LANGUAGE GUIDE
+      </div>
+      <nav aria-label="Language guide">
+       <a href="/docs/">
+        Overview
+       </a>
+       <a href="/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        Functions and notation
+       </a>
+       <a href="/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        Data and match
+       </a>
+       <a href="/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        Composing functions
+       </a>
+       <a aria-current="page" href="/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effect and do
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       LOOK UP / TRY
+      </div>
+      <nav aria-label="Resources">
+       <a href="/reference/">
+        Notation reference
+       </a>
+       <a href="/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       Language guide
+       <span class="menu-current">
+        Effect and do
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        LANGUAGE GUIDE
+       </div>
+       <nav aria-label="Language guide">
+        <a href="/docs/">
+         Overview
+        </a>
+        <a href="/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         Functions and notation
+        </a>
+        <a href="/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         Data and match
+        </a>
+        <a href="/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         Composing functions
+        </a>
+        <a aria-current="page" href="/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effect and do
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        LOOK UP / TRY
+       </div>
+       <nav aria-label="Resources">
+        <a href="/reference/">
+         Notation reference
+        </a>
+        <a href="/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <article class="article">
+     <div class="crumbs">
+      <a href="/docs/">
+       Docs
+      </a>
+      <span aria-hidden="true">
+       /
+      </span>
+      Language guide
+     </div>
+     <span class="kicker">
+      04 / EFFECT
+     </span>
+     <h1>
+      Effect and do
+     </h1>
+     <p class="lead">
+      Computing a value and displaying it are different jobs. Keeping Effects separate makes the calculation easier to understand.
+     </p>
+     <h2 id="pure">
+      Compute the values first.
+     </h2>
+     <p>
+      Clean up a few labels, count their characters and calculate the total. Nothing needs to be printed yet.
+     </p>
+     <div class="code-window compact">
+      <div class="code-head">
+       <span aria-hidden="true" class="dots">
+        <i>
+        </i>
+        <i>
+        </i>
+        <i>
+        </i>
+       </span>
+       <span class="file">
+        calculate.ssrg
+       </span>
+       <div class="code-tools">
+        <button aria-label="Copy calculate.ssrg" class="copy-code" type="button">
+         Copy
+        </button>
+        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
+         Try in Playground ↗
+        </a>
+       </div>
+      </div>
+      <pre><code><span class="kw">let</span> labels = [<span class="st">" Build "</span>, <span class="st">"bundle"</span>, <span class="st">"CHECK"</span>, <span class="st">"run"</span>]
+<span class="kw">let</span> lengths = map (\label -&gt; text.lengthScalars (text.trim label)) labels
+<span class="kw">let</span> total = reduce 0 (+) lengths</code></pre>
+     </div>
+     <h2 id="do">
+      Then compose the effects.
+     </h2>
+     <p>
+      <code class="inline-code">
+       main
+      </code>
+      handles output.
+      <code class="inline-code">
+       do
+      </code>
+      lets you compose two print Effects in sequence.
+     </p>
+     <div class="code-window compact">
+      <div class="code-head">
+       <span aria-hidden="true" class="dots">
+        <i>
+        </i>
+        <i>
+        </i>
+        <i>
+        </i>
+       </span>
+       <span class="file">
+        main.ssrg
+       </span>
+       <div class="code-tools">
+        <button aria-label="Copy main.ssrg" class="copy-code" type="button">
+         Copy
+        </button>
+        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A" rel="noopener noreferrer">
+         Try in Playground ↗
+        </a>
+       </div>
+      </div>
+      <pre><code><span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">do</span> {
+  println (show lengths)
+  println (show total)
+}</code></pre>
+     </div>
+     <p>
+      This is not a return to imperative statements.
+      <code class="inline-code">
+       do
+      </code>
+      is notation for effectful composition, not a decorative semicolon.
+     </p>
+     <div class="inline-action-row">
+      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0A%0Alet%20labels%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20lengths%20%3D%20map%20%28%5Clabel%20-%3E%20text.lengthScalars%20%28text.trim%20label%29%29%20labels%0Alet%20total%20%3D%20reduce%200%20%28%2B%29%20lengths%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20lengths%29%0A%20%20println%20%28show%20total%29%0A%7D%0A">
+       Run the whole example ↗
+      </a>
+      <a class="text-link subtle" href="https://github.com/KentaroMorishita/seseragi/blob/main/apps/site/examples/src/language/chapter-label-lengths.ssrg">
+       Verified source ↗
+      </a>
+     </div>
+     <details class="rule-note" id="rules">
+      <summary>
+       How do and other operators relate
+      </summary>
+      <p>
+       Dependent composition and independent combination are not identical. Explore
+       <code class="inline-code">
+        do
+       </code>
+       ,
+       <code class="inline-code">
+        &gt;&gt;=
+       </code>
+       and
+       <code class="inline-code">
+        &lt;*&gt;
+       </code>
+       in the context of types, failures and Effects.
+      </p>
+     </details>
+     <nav aria-label="Article navigation" class="article-steps">
+      <a class="step-link" href="/docs/composition/">
+       <span class="step-flag">
+        Previous
+       </span>
+       <strong>
+        ← Composing functions
+       </strong>
+      </a>
+     </nav>
+    </article>
+    <nav aria-label="On this page" class="right-index">
+     <p class="side-group">
+      ON THIS PAGE
+     </p>
+     <a href="#pure">
+      Pure calculation
+     </a>
+     <a href="#do">
+      Compose Effects with do
+     </a>
+     <a href="#rules">
+      More notation
+     </a>
+    </nav>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

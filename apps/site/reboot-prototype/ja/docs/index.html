@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Docs · Seseragi
+  </title>
+  <meta content="まず関数をひとつ書く。値の形で分岐する。演算子で組み合わせてみる。必要なところから読み始めて、いつでも正確な記法に戻れるようにしてある。" name="description"/>
+  <link href="https://seseragi-docs.vercel.app/ja/docs/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/docs/" hreflang="en" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   本文へスキップ
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/ja/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a aria-current="page" href="/ja/docs/">
+      Docs
+     </a>
+     <a href="/ja/examples/">
+      Examples
+     </a>
+     <a href="/ja/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/docs/" lang="en">
+     EN
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      メニュー
+     </summary>
+     <nav aria-label="メニュー">
+      <a href="/ja/">
+       ホーム
+      </a>
+      <a aria-current="page" href="/ja/docs/">
+       Docs
+      </a>
+      <a href="/ja/examples/">
+       Examples
+      </a>
+      <a href="/ja/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/docs/">
+       English
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <header class="doc-hero">
+    <div class="container">
+     <span class="kicker">
+      DOCUMENTATION
+     </span>
+     <h1>
+      読む順番は自由。
+      <br/>
+      でも、迷わないように。
+     </h1>
+     <p>
+      まず関数をひとつ書く。値の形で分岐する。演算子で組み合わせてみる。必要なところから読み始めて、いつでも正確な記法に戻れるようにしてある。
+     </p>
+    </div>
+   </header>
+   <div class="container docs-main-grid">
+    <aside class="doc-sidebar">
+     <div class="desktop-side">
+      <div class="side-group">
+       言語ガイド
+      </div>
+      <nav aria-label="言語ガイド">
+       <a aria-current="page" href="/ja/docs/">
+        概要
+       </a>
+       <a href="/ja/docs/functions/">
+        <span class="side-number">
+         01
+        </span>
+        関数と記法
+       </a>
+       <a href="/ja/docs/patterns/">
+        <span class="side-number">
+         02
+        </span>
+        データとmatch
+       </a>
+       <a href="/ja/docs/composition/">
+        <span class="side-number">
+         03
+        </span>
+        関数を組み合わせる
+       </a>
+       <a href="/ja/docs/effects/">
+        <span class="side-number">
+         04
+        </span>
+        Effectとdo
+       </a>
+      </nav>
+      <div class="sep">
+      </div>
+      <div class="side-group">
+       調べる・試す
+      </div>
+      <nav aria-label="Resources">
+       <a href="/ja/reference/">
+        記法リファレンス
+       </a>
+       <a href="/ja/examples/">
+        Examples
+       </a>
+       <a href="https://seseragi.vercel.app/">
+        Playground ↗
+       </a>
+      </nav>
+     </div>
+     <details class="mobile-docs-menu">
+      <summary>
+       言語ガイド
+       <span class="menu-current">
+        Docs
+       </span>
+      </summary>
+      <div class="mobile-docs-items">
+       <div class="side-group">
+        言語ガイド
+       </div>
+       <nav aria-label="言語ガイド">
+        <a aria-current="page" href="/ja/docs/">
+         概要
+        </a>
+        <a href="/ja/docs/functions/">
+         <span class="side-number">
+          01
+         </span>
+         関数と記法
+        </a>
+        <a href="/ja/docs/patterns/">
+         <span class="side-number">
+          02
+         </span>
+         データとmatch
+        </a>
+        <a href="/ja/docs/composition/">
+         <span class="side-number">
+          03
+         </span>
+         関数を組み合わせる
+        </a>
+        <a href="/ja/docs/effects/">
+         <span class="side-number">
+          04
+         </span>
+         Effectとdo
+        </a>
+       </nav>
+       <div class="sep">
+       </div>
+       <div class="side-group">
+        調べる・試す
+       </div>
+       <nav aria-label="Resources">
+        <a href="/ja/reference/">
+         記法リファレンス
+        </a>
+        <a href="/ja/examples/">
+         Examples
+        </a>
+        <a href="https://seseragi.vercel.app/">
+         Playground ↗
+        </a>
+       </nav>
+      </div>
+     </details>
+    </aside>
+    <section class="docs-main">
+     <label class="search-field">
+      <span aria-hidden="true">
+       ⌕
+      </span>
+      <input aria-label="記事・記法を探す…" autocomplete="off" data-doc-search="" placeholder="記事・記法を探す…" type="search"/>
+     </label>
+     <p aria-live="polite" class="search-status" data-search-status="">
+     </p>
+     <a class="entry-link docs-entry" data-keywords="関数と記法 宣言・関数適用・部分適用。小さい関数を再利用する。" data-search-item="" href="/ja/docs/functions/">
+      <span>
+       <small>
+        01 / LANGUAGE
+       </small>
+       <strong>
+        関数と記法
+       </strong>
+       <small>
+        宣言・関数適用・部分適用。小さい関数を再利用する。
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="データとmatch 値の形を調べて、ひとつの式で分岐する。" data-search-item="" href="/ja/docs/patterns/">
+      <span>
+       <small>
+        02 / LANGUAGE
+       </small>
+       <strong>
+        データとmatch
+       </strong>
+       <small>
+        値の形を調べて、ひとつの式で分岐する。
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="関数を組み合わせる 通常適用、$、|&gt;、&lt;$&gt;を意味に応じて使う。" data-search-item="" href="/ja/docs/composition/">
+      <span>
+       <small>
+        03 / LANGUAGE
+       </small>
+       <strong>
+        関数を組み合わせる
+       </strong>
+       <small>
+        通常適用、$、|&gt;、&lt;$&gt;を意味に応じて使う。
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <a class="entry-link docs-entry" data-keywords="Effectとdo 純粋な計算と、実行する処理を分けて考える。" data-search-item="" href="/ja/docs/effects/">
+      <span>
+       <small>
+        04 / LANGUAGE
+       </small>
+       <strong>
+        Effectとdo
+       </strong>
+       <small>
+        純粋な計算と、実行する処理を分けて考える。
+       </small>
+      </span>
+      <span class="arr">
+       →
+      </span>
+     </a>
+     <p class="no-results" data-empty-results="" hidden="">
+      見つからないときは、別の言葉で試してみてね。
+     </p>
+    </section>
+    <aside class="docs-companion">
+     <div class="side-group">
+      記法を調べたい？
+     </div>
+     <h3>
+      知りたい記号へ、まっすぐ。
+     </h3>
+     <p>
+      $、|&gt;、&lt;$&gt;、do。記事を最初から読む必要はない。
+     </p>
+     <a href="/ja/reference/">
+      記法リファレンスを見る →
+     </a>
+     <div class="docs-companion-rule">
+     </div>
+     <div class="side-group">
+      PLAYGROUND
+     </div>
+     <p>
+      まず動かしてみたい？ ブラウザから始めてもいいよ。
+     </p>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </aside>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · 実験的なプログラミング言語
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

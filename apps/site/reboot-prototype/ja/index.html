@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>
+   Seseragi · Seseragi
+  </title>
+  <meta content="Seseragi programming language" name="description"/>
+  <link href="https://seseragi-docs.vercel.app/ja/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/" hreflang="en" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   本文へスキップ
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/ja/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/ja/docs/">
+      Docs
+     </a>
+     <a href="/ja/examples/">
+      Examples
+     </a>
+     <a href="/ja/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/" lang="en">
+     EN
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      メニュー
+     </summary>
+     <nav aria-label="メニュー">
+      <a href="/ja/">
+       ホーム
+      </a>
+      <a href="/ja/docs/">
+       Docs
+      </a>
+      <a href="/ja/examples/">
+       Examples
+      </a>
+      <a href="/ja/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/">
+       English
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main">
+   <section class="hero">
+    <div class="container hero-inner">
+     <span class="kicker">
+      SESERAGI / PROGRAMMING LANGUAGE
+     </span>
+     <h1>
+      宣言と式で、
+      <br/>
+      <span>
+       プログラムを書く。
+      </span>
+     </h1>
+     <p class="description">
+      Seseragiは、データの形から状態やUIまで、同じ型と構文で書ける言語。まず短いコードから、どんな考え方なのか見てみよう。
+     </p>
+     <div class="hero-actions">
+      <a class="button primary" href="/ja/docs/">
+       ドキュメントを読む
+       <span aria-hidden="true">
+        →
+       </span>
+      </a>
+      <a class="button secondary" href="https://seseragi.vercel.app/">
+       Playgroundで試す ↗
+      </a>
+     </div>
+    </div>
+   </section>
+   <section class="language-showcase">
+    <div class="container showcase-grid">
+     <div class="showcase-copy">
+      <span class="kicker">
+       CODE, NOT JUST WORDS
+      </span>
+      <h2>
+       分岐も、
+       <br/>
+       ひとつの式になる。
+      </h2>
+      <p>
+       `match` は条件に合う枝の値を返す。`return` を書かなくても、その結果がそのまま関数の値になる。
+      </p>
+      <a href="/ja/docs/patterns/">
+       コードをもう少し読んでみる →
+      </a>
+     </div>
+     <div class="code-window compact">
+      <div class="code-head">
+       <span aria-hidden="true" class="dots">
+        <i>
+        </i>
+        <i>
+        </i>
+        <i>
+        </i>
+       </span>
+       <span class="file">
+        fizzbuzz.ssrg
+       </span>
+       <div class="code-tools">
+        <button aria-label="コピー fizzbuzz.ssrg" class="copy-code" type="button">
+         コピー
+        </button>
+        <a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20%28number%20%25%203%2C%20number%20%25%205%29%20%7B%0A%20%20%20%20%280%2C%200%29%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20%280%2C%20_%29%20-%3E%20%22Fizz%22%0A%20%20%20%20%28_%2C%200%29%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A" rel="noopener noreferrer">
+         Playgroundで試す ↗
+        </a>
+       </div>
+      </div>
+      <pre><code><span class="kw">fn</span> fizzBuzz number: <span class="ty">Int</span> -&gt; <span class="ty">String</span> =
+  <span class="cm">// A tuple lets one match classify both divisibility rules.</span>
+  <span class="kw">match</span> (number % 3, number % 5) {
+    (0, 0) -&gt; <span class="st">"FizzBuzz"</span>
+    (0, _) -&gt; <span class="st">"Fizz"</span>
+    (_, 0) -&gt; <span class="st">"Buzz"</span>
+    _ -&gt; `<span class="op">$</span>{number}`
+  }
+
+<span class="kw">pub</span> <span class="kw">effect</span> <span class="kw">fn</span> main = <span class="kw">for</span> number &lt;- 1 ..= 30 {
+  println <span class="op">$</span> fizzBuzz number
+}</code></pre>
+      <div aria-label="Output" class="code-result">
+       1   2   Fizz   4   Buzz   Fizz   ...
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="home-journey">
+    <div class="container">
+     <div class="section-overline">
+      読み始めるなら
+     </div>
+     <h2>
+      コードを読んで、少し試して、続きへ。
+     </h2>
+     <div class="journey-list">
+      <a class="journey-link" href="/ja/docs/functions/">
+       <span>
+        01
+       </span>
+       関数を書いてみる
+       <span aria-hidden="true">
+        →
+       </span>
+      </a>
+      <a class="journey-link" href="/ja/docs/patterns/">
+       <span>
+        02
+       </span>
+       値の形で分岐する
+       <span aria-hidden="true">
+        →
+       </span>
+      </a>
+      <a class="journey-link" href="/ja/docs/composition/">
+       <span>
+        03
+       </span>
+       関数を組み合わせる
+       <span aria-hidden="true">
+        →
+       </span>
+      </a>
+     </div>
+    </div>
+   </section>
+  </main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · 実験的なプログラミング言語
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+
