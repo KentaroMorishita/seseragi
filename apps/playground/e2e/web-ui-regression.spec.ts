@@ -338,13 +338,13 @@ async function expectReadableContrast(
 
 test.describe("canonical Web UI browser regression", () => {
   for (const viewport of matrix.viewports) {
-    test(`${viewport.id} renders every HTML sample without horizontal overflow`, async ({
-      page,
-    }, testInfo) => {
-      await routeImages(page)
-      await open(page, viewport.width, viewport.height)
+    for (const entry of matrix.samples) {
+      test(`${entry.id} / ${viewport.id} renders without horizontal overflow`, async ({
+        page,
+      }, testInfo) => {
+        await routeImages(page)
+        await open(page, viewport.width, viewport.height)
 
-      for (const entry of matrix.samples) {
         await select(page, entry)
         if (viewport.id === "minimum-320") {
           await page.locator('[data-panel-target="code"]').click()
@@ -381,16 +381,15 @@ test.describe("canonical Web UI browser regression", () => {
           undefined,
           preview.locator("body")
         )
-      }
-    })
+      })
+    }
   }
 
-  test("records interaction, empty, disabled, and Explorer states", async ({
-    page,
-  }, testInfo) => {
-    await routeImages(page)
-
-    for (const id of ["interactive-app", "signal-run-route"] as const) {
+  for (const id of ["interactive-app", "signal-run-route"] as const) {
+    test(`${id} / desktop selects the riverside route`, async ({
+      page,
+    }, testInfo) => {
+      await routeImages(page)
       const entry = sample(id)
       await open(page, 1440, 1000)
       await select(page, entry)
@@ -398,8 +397,13 @@ test.describe("canonical Web UI browser regression", () => {
       await preview.getByRole("button", { name: "川辺" }).click()
       await expect(preview.locator("h1")).toContainText("川辺をゆっくり歩く")
       await capture(page, testInfo, entry, "desktop", "riverside-route")
-    }
+    })
+  }
 
+  test("feature-composition / desktop hides a feature", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
     const feature = sample("feature-composition")
     await open(page, 1440, 1000)
     await select(page, feature)
@@ -411,7 +415,12 @@ test.describe("canonical Web UI browser regression", () => {
       featurePreview.getByText("First feature is outside the HTML tree.")
     ).toBeVisible()
     await capture(page, testInfo, feature, "desktop", "hidden-feature")
+  })
 
+  test("form-todo / desktop validates, submits and empties the form", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
     const form = sample("form-todo")
     await open(page, 1440, 1000)
     await select(page, form)
@@ -475,7 +484,12 @@ test.describe("canonical Web UI browser regression", () => {
       "empty",
       formPreview.locator("body")
     )
+  })
 
+  test("project-flow-app / desktop exposes Explorer, validates and clears the deck", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
     const project = sample("project-flow-app")
     await open(page, 1440, 1000)
     await select(page, project)
@@ -545,7 +559,12 @@ test.describe("canonical Web UI browser regression", () => {
       "empty-disabled",
       projectPreview.locator("body")
     )
+  })
 
+  test("seseragi-landing-page / desktop links to Playground and selects Composable", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
     const landing = sample("seseragi-landing-page")
     await open(page, 1440, 1000)
     await select(page, landing)
@@ -574,7 +593,13 @@ test.describe("canonical Web UI browser regression", () => {
       undefined,
       landingPreview.locator("body")
     )
+  })
 
+  test("seseragi-landing-page / android-360 selects Alive with the keyboard", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
+    const landing = sample("seseragi-landing-page")
     await open(page, 360, 800)
     await select(page, landing)
     const landingMobilePreview = await run(page, landing)
@@ -640,13 +665,13 @@ test.describe("canonical Web UI browser regression", () => {
     }
   })
 
-  test("keeps descriptive image fallback layout for every HTML sample", async ({
-    page,
-  }, testInfo) => {
-    await routeImages(page, true)
-    await open(page, 390, 844)
+  for (const entry of matrix.samples) {
+    test(`${entry.id} / iphone-390 keeps descriptive image fallback layout`, async ({
+      page,
+    }, testInfo) => {
+      await routeImages(page, true)
+      await open(page, 390, 844)
 
-    for (const entry of matrix.samples) {
       await select(page, entry)
       const preview = await run(page, entry)
       const image = preview.locator("img").first()
@@ -686,8 +711,8 @@ test.describe("canonical Web UI browser regression", () => {
         undefined,
         preview.locator("body")
       )
-    }
-  })
+    })
+  }
 })
 
 async function expectLocalizedVisualMismatch(

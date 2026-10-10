@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.25] - 2026-10-08
+
+### Fixed
+
+- Give Web UI regression samples and viewports independent browser contexts and timeout budgets while preserving all visual baselines and assertions.
+
 ## [0.61.23] - 2026-10-08
 
 ### Added
