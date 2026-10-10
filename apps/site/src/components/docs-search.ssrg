@@ -1,0 +1,66 @@
+import * as html from "std/web/html"
+import { Locale, localized, translate } from "../model/locale"
+
+pub fn docsSearch<Action> locale: Locale -> html.Html<Action> = html.section {
+  class: "docs-search",
+  children: [
+    html.form {
+      id: "docs-search-form",
+      hidden: True,
+      autoComplete: "off",
+      children: [
+        html.label {
+          htmlFor: "docs-search-query",
+          children: translate locale
+            (localized "Search articles and declarations" "記事と宣言を検索する")
+        },
+        html.input {
+          id: "docs-search-query",
+          inputType: "search",
+          name: "q",
+          placeholder: translate locale (
+            localized "For example: transaction or std/signal map"
+            "たとえば：transaction、網羅性、std/signal map"
+          ),
+          autoComplete: "off"
+        }
+      ]
+    },
+    html.p {
+      id: "docs-search-unavailable",
+      hidden: True,
+      children: translate locale (
+        localized
+            "Search could not load. The chapters and module index below are still available."
+            "検索を読み込めなかった。下の章とモジュール索引からも辿れる。"
+      )
+    },
+    html.p {
+      id: "docs-search-count",
+      hidden: True,
+      role: "status",
+      children: [
+        html.span { id: "docs-search-total", children: "0" },
+        html.span { children: translate locale (localized " results" "件の候補") }
+      ]
+    },
+    html.p {
+      id: "docs-search-empty",
+      hidden: True,
+      children: translate locale (
+        localized
+            "No matches. Try a shorter term, or add a module name such as std/signal."
+            "候補がなかった。短い言葉で試したり、std/signalのようなモジュール名を添えてみよう。"
+      )
+    },
+    html.p {
+      id: "docs-search-more",
+      hidden: True,
+      children: translate locale (
+        localized "Showing the first 40 results. Add another term to narrow the search."
+            "最初の40件を表示している。言葉を足すと候補を絞れる。"
+      )
+    },
+    html.ol { id: "docs-search-results", children: "" }
+  ]
+}

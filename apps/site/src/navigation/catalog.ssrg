@@ -13,6 +13,7 @@ import * as effects from "../pages/effects"
 import * as types from "../pages/types"
 import * as signals from "../pages/signals"
 import * as api from "../pages/api"
+import * as search from "../pages/search"
 import * as arrays from "std/array"
 import { page as application } from "../pages/language/syntax/function-application/page"
 import { page as currying } from "../pages/language/types/function-types-and-currying/page"
@@ -45,18 +46,33 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
   }
   SiteCatalog {
     home,
-    areas: [area, types.area (), compositionChapter.area (), effects.area (), signals.area (), api.area input],
-    pages: arrays.concat [[
-      home,
-      entrance.docs (),
-      entrance.firstRun (),
-      entrance.examples (),
-      entrance.releases (),
-      landing,
-      first,
-      second,
-      third,
-      api.index input
-    ], types.pages (), compositionChapter.pages (), effects.pages (), signals.pages (), api.pages input]
+    areas: [
+      area,
+      types.area (),
+      compositionChapter.area (),
+      effects.area (),
+      signals.area (),
+      api.area input
+    ],
+    pages: arrays.concat [
+      [
+        home,
+        entrance.docs (),
+        search.page (),
+        entrance.firstRun (),
+        entrance.examples (),
+        entrance.releases (),
+        landing,
+        first,
+        second,
+        third,
+        api.index input
+      ],
+      types.pages (),
+      compositionChapter.pages (),
+      effects.pages (),
+      signals.pages (),
+      api.pages input
+    ]
   }
 }
