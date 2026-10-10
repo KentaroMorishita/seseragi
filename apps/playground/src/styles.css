@@ -2464,3 +2464,119 @@ footer a {
     display: none;
   }
 }
+
+.interop-dialog {
+  width: min(1120px, calc(100vw - 32px));
+}
+.interop-dialog .sample-browser-dialog-header > div {
+  min-width: 0;
+}
+.interop-content {
+  min-width: 0;
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+}
+.interop-content label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+}
+.interop-content button,
+.interop-content select {
+  padding: 8px 12px;
+  border: 1px solid #315047;
+  border-radius: 8px;
+  background: #162720;
+  color: #dce9e4;
+  font: inherit;
+}
+.interop-content select {
+  min-width: 0;
+  max-width: 100%;
+}
+.interop-content button:focus-visible,
+.interop-content select:focus-visible,
+.interop-code-panel pre:focus-visible {
+  outline: 2px solid #7ed6b5;
+  outline-offset: 3px;
+}
+.interop-result-status {
+  color: #a7c3b7;
+  font-size: 13px;
+}
+.interop-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 18px 0;
+  overflow-x: auto;
+}
+.interop-tabs [aria-selected="true"] {
+  border-color: #7ed6b5;
+  background: #254536;
+}
+.interop-tabs button {
+  white-space: nowrap;
+  cursor: pointer;
+}
+.interop-source-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.interop-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+.interop-code-panel {
+  min-width: 0;
+}
+.interop-code-panel h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.interop-code-panel p {
+  color: #a7c3b7;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.interop-code-panel pre {
+  min-height: 180px;
+  max-height: 50dvh;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid #315047;
+  border-radius: 10px;
+  background: #08120e;
+  color: #dce9e4;
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+.interop-report-group {
+  border-top: 1px solid #315047;
+  padding: 8px 0;
+  overflow-wrap: anywhere;
+}
+.interop-report-group h4 {
+  margin: 8px 0;
+}
+@media (max-width: 700px) {
+  .interop-dialog {
+    width: calc(100vw - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+  .interop-content {
+    padding: 14px;
+  }
+  .interop-comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .interop-code-panel pre {
+    max-height: 30dvh;
+  }
+}

@@ -194,3 +194,115 @@ test("generated imports survive reload and regeneration replaces the previous mo
   await expect(page.locator("#output")).toHaveText("generated import compiled")
   expect(errors).toEqual([])
 })
+
+test("Inspector compares readonly artifacts, reports and navigates Unicode diagnostics", async ({
+  page,
+}, testInfo) => {
+  const errors: string[] = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.goto("/")
+  const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
+  const convert = page.getByRole("button", {
+    name: "Convert bindings",
+    exact: true,
+  })
+  const open = page.getByRole("button", { name: "Interop", exact: true })
+  const dialog = page.getByRole("dialog", { name: "Interop Inspector" })
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Converted 1 binding(s)"
+  )
+  await open.click()
+  await expect(dialog.locator("pre").nth(0)).toContainText(
+    "export interface Config"
+  )
+  await expect(dialog.locator("pre").nth(1)).toContainText("Config")
+  await expect(dialog).toContainText(".seseragi/generated/fixture-api.ssrg")
+  await expect(
+    dialog.locator('[contenteditable="true"], textarea')
+  ).toHaveCount(0)
+  await page.screenshot({ path: testInfo.outputPath("inspector-desktop.png") })
+  await dialog.getByRole("tab", { name: "Bindings", exact: true }).focus()
+  await page.keyboard.press("ArrowRight")
+  await expect(
+    dialog.getByRole("tab", { name: "Report", exact: true })
+  ).toBeFocused()
+  await expect(dialog.getByRole("tabpanel")).toContainText("Added (4)")
+  await expect(dialog.getByRole("tabpanel")).toContainText("Config")
+  await page.keyboard.press("Escape")
+  await expect(open).toBeFocused()
+  const source =
+    "// 🙂 café\nexport declare function unsafe(value: any): string;"
+  await editor.fill(source)
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Cannot convert bindings"
+  )
+  await open.click()
+  await dialog.getByRole("tab", { name: /^Diagnostics/ }).click()
+  await dialog.locator(".diagnostic-card-location").first().click()
+  await expect(dialog).not.toBeVisible()
+  await expect(page.locator("#active-file-name")).toHaveText("host/index.d.ts")
+  expect(await page.evaluate(() => window.getSelection()?.toString())).toBe(
+    "any"
+  )
+  // Already-dirty edits invalidate the snapshot; restoring identical text cannot revive it.
+  await editor.fill(`${source}\n`)
+  await editor.fill(source)
+  await open.click()
+  await expect(dialog).toContainText("Inputs changed")
+  await expect(dialog.locator("pre")).toHaveCount(0)
+  await page.keyboard.press("Escape")
+  await editor.fill("export declare function fresh(): string;")
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Converted 1 binding(s)"
+  )
+  await page.setViewportSize({ width: 390, height: 844 })
+  await open.click()
+  await dialog.getByRole("tab", { name: "Bindings", exact: true }).click()
+  await expect(dialog.locator("pre").nth(1)).toContainText("fresh")
+  expect(
+    await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth)
+  ).toBe(true)
+  await page.screenshot({ path: testInfo.outputPath("inspector-mobile.png") })
+  await dialog.getByRole("button", { name: "Open source in editor" }).click()
+  await expect(editor).toBeFocused()
+  await page.reload()
+  await open.click()
+  await expect(dialog).toContainText("Convert bindings to compare")
+  await expect(dialog.locator("pre")).toHaveCount(0)
+  expect(errors).toEqual([])
+})
+
+for (const undoBeforeOpening of [false, true]) {
+  test(`Clear invalidates Inspector even when undo ${undoBeforeOpening ? "precedes" : "follows"} opening it`, async ({
+    page,
+  }) => {
+    await page.goto("/")
+    const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
+    const original = await editor.innerText()
+    await page
+      .getByRole("button", { name: "Convert bindings", exact: true })
+      .click()
+    await expect(page.locator("#status-text")).toHaveText(
+      "Converted 1 binding(s)"
+    )
+    await page.locator("#clear-source-button").click()
+    await expect(editor).toHaveText("")
+    const open = page.getByRole("button", { name: "Interop", exact: true })
+    const dialog = page.getByRole("dialog", { name: "Interop Inspector" })
+    if (!undoBeforeOpening) {
+      await open.click()
+      await expect(dialog).toContainText("Inputs changed")
+      await expect(dialog.locator("pre, .diagnostic-card")).toHaveCount(0)
+      await page.keyboard.press("Escape")
+    }
+    await editor.focus()
+    await page.keyboard.press("ControlOrMeta+z")
+    await expect(editor).toHaveText(original, { useInnerText: true })
+    await open.click()
+    await expect(dialog).toContainText("Inputs changed")
+    await expect(dialog.locator("pre, .diagnostic-card")).toHaveCount(0)
+  })
+}
