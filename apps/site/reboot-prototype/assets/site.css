@@ -86,3 +86,10 @@
  .deep-inline-reference{padding:17px 18px}
  .deep-guide .editorial-code pre{font-size:11px}
 }
+
+
+/* Unfinished reference topics remain visible as roadmap labels, not external links. */
+.ref-item.ref-draft{background:#f7faf9;cursor:default;opacity:.66}
+.ref-item.ref-draft span{font-weight:500}.ref-item.ref-draft small{color:#697e7c}
+.ref-normative ul{padding-left:24px;color:#43585b;line-height:2;font-size:13px}
+.ref-normative li{margin:8px 0}.ref-normative code{font:500 .9em var(--mono);color:#076c73;background:#e8f2f0;padding:2px 4px}

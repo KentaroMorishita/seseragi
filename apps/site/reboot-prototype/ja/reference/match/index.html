@@ -50,7 +50,7 @@ pub effect fn main = for number &lt;- 1 ..= 30 {
 Fizz
 4
 Buzz
-…</b></div></div><p class="ref-source"><a target="_blank" rel="noopener noreferrer" href="https://github.com/KentaroMorishita/seseragi/blob/main/examples/samples/fizzbuzz/main.ssrg">完全な元ソース ↗</a></p><section class="ref-normative" id="sources"><h2>仕様出典</h2><p>照合、guard、網羅性の厳密な規則は言語仕様 §3.10 を参照。</p><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md" target="_blank" rel="noopener noreferrer">仕様 §3.10 match と pattern ↗</a></section><p class="ref-next"><a href="/ja/reference/function-application/">← 関数適用</a><a href="/ja/reference/">リファレンスへ戻る →</a></p></article></div></main>
+…</b></div></div><p class="ref-source"><a target="_blank" rel="noopener noreferrer" href="https://github.com/KentaroMorishita/seseragi/blob/main/examples/samples/fizzbuzz/main.ssrg">完全な元ソース ↗</a></p><section class="ref-normative" id="sources"><h2>matchの規則をまとめて確認する</h2><p><code>match</code>が単なる分岐の飾りではない理由は、次の規則にある。</p><ul><li>対象の値を、書かれた順にarmのpatternへ照合する。guardがある場合はpatternの後で判定する。</li><li>一致した最初のarmの右側の式が、<code>match</code>全体の結果になる。</li><li>すべてのarmの結果型は一致する必要がある。guardは <code>Bool</code> 型。</li><li>パターンにはリテラル、名前の束縛、<code>_</code>、constructor、tuple、record、struct、Array、Listを入れ子に使える。</li><li>網羅的でない<code>match</code>はコンパイルエラー。到達不能なarmもコンパイルエラー。</li><li>guard付きのarmは、条件がFalseになり得るため網羅性に寄与しない。</li><li>同じpattern内で同じ名前を二度束縛することはできない。</li></ul><p>だから、新しい状態が増えたときに対応漏れを見つけやすい。対応すべき選択肢が、型とコードに現れるからだ。</p></section><p class="ref-next"><a href="/ja/reference/function-application/">← 関数適用</a><a href="/ja/reference/">リファレンスへ戻る →</a></p></article></div></main>
   <footer class="site-footer">
    <div class="container footer-inner">
     <span>
