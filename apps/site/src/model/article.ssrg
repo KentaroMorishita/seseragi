@@ -1,0 +1,23 @@
+import { localized } from "./locale"
+import { Article, Block, PageDefinition, Paragraph, Words } from "./page"
+
+// Only metadata is shared. Each page chooses its own copy and block order.
+pub struct ArticleCopy { title: String, summary: String }
+
+pub fn articlePage id: String
+  -> path: String
+  -> english: ArticleCopy
+  -> japanese: ArticleCopy
+  -> blocks: Array<Block>
+  -> PageDefinition =
+  PageDefinition {
+    id,
+    path,
+    kind: Article,
+    title: localized english.title japanese.title,
+    summary: localized english.summary japanese.summary,
+    blocks
+  }
+
+pub fn prose english: String -> japanese: String -> Block =
+  Paragraph ([Words (localized english japanese)])

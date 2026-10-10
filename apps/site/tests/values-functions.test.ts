@@ -114,7 +114,7 @@ function readArray(source: string, field: string): string[] {
 
 function renderPilot(
   directory: string
-): Array<{ route: string; html: string }> {
+): Array<{ id: string; route: string; html: string }> {
   const copied = new Set<string>()
   function copyModule(path: string) {
     if (copied.has(path)) return
@@ -151,13 +151,15 @@ function renderPilot(
     join(directory, "src/verify.ssrg"),
     `import * as json from "std/json"
 import { BuildInput, ExampleSource, HighlightPart } from "./model/build"
+import { articlePage, ArticleCopy, prose } from "./model/article"
 import { En, Ja, localizedRoute } from "./model/locale"
 import { SiteCatalog } from "./model/page"
 import { renderDocument } from "./render/document"
 ${pilot.map(([path], i) => `import { page as page${i} } from "./pages/language/${path}/page"`).join("\n")}
-struct Output deriving JsonEncode { route: String, html: String }
+struct Output deriving JsonEncode { id: String, route: String, html: String }
 pub effect fn main = {
-  let pages = [${pilot.map((_, i) => `page${i} ()`).join(", ")}]
+  let short = articlePage "composition-probe" "/composition-probe/" (ArticleCopy { title: "Usage", summary: "A short article" }) (ArticleCopy { title: "使い方", summary: "短い記事" }) [prose "Just the usage." "使い方だけ。"]
+  let pages = [${pilot.map((_, i) => `page${i} ()`).join(", ")}, short]
   let input = BuildInput {
     schema: 1, origin: "https://seseragi.example", playgroundUrl: "https://seseragi.vercel.app/",
     tourUrl: "https://seseragi.vercel.app/tour/", grammar: "", referenceModules: [],
@@ -180,6 +182,7 @@ pub effect fn main = {
   }
   let site = SiteCatalog { home: page0 (), areas: [], pages }
   println (json.encodeString [Output {
+    id: page.id,
     route: localizedRoute locale page.path,
     html: renderDocument input site locale page
   } | locale <- [En, Ja], page <- site.pages])
@@ -194,17 +197,25 @@ test("values/functions pilot preserves identities, paired copy, and exact destin
   for (const [path, id, example] of pilot) {
     const directory = join(sourceRoot, "pages/language", path)
     const source = readFileSync(join(directory, "page.ssrg"), "utf8")
-    expect(source).toContain(`id: "${id}"`)
-    expect(source).toContain(`path: "/docs/language/${path}/"`)
+    expect(source).toContain(`"${id}"`)
+    expect(source).toContain(`"/docs/language/${path}/"`)
     const en = readFileSync(join(directory, "en.ssrg"), "utf8")
     const ja = readFileSync(join(directory, "ja.ssrg"), "utf8")
-    for (const field of ["purpose", "reading", "rules", "mistakes", "related"])
-      expect(readArray(en, field).length, `${path}: ${field}`).toBe(
-        readArray(ja, field).length
+    if (path !== "syntax/function-application") {
+      for (const field of [
+        "purpose",
+        "reading",
+        "rules",
+        "mistakes",
+        "related",
+      ])
+        expect(readArray(en, field).length, `${path}: ${field}`).toBe(
+          readArray(ja, field).length
+        )
+      expect(readFileSync(join(directory, "guide.ssrg"), "utf8")).toContain(
+        `ArticleExample "${example}"`
       )
-    expect(readFileSync(join(directory, "guide.ssrg"), "utf8")).toContain(
-      `ArticleExample "${example}"`
-    )
+    }
     for (const [, english, japanese, destination] of source.matchAll(
       /localized\s+"([^"]+)"\s+"([^"]+)"\s*,\s*"\/docs\/language\/([^"]+)\/"/gu
     )) {
@@ -260,7 +271,26 @@ test("pilot pages render canonical examples, exact output, and same-identity loc
   const directory = mkdtempSync(join(tmpdir(), "seseragi-pilot-render-"))
   try {
     const pages = renderPilot(directory)
-    expect(pages).toHaveLength(12)
+    expect(pages).toHaveLength(14)
+    for (const [route, paragraph] of [
+      ["/composition-probe/", "Just the usage."],
+      ["/ja/composition-probe/", "使い方だけ。"],
+    ]) {
+      const html = pages.find((page) => page.route === route)?.html ?? ""
+      const body = html.match(
+        /<article class="article-content">([\s\S]*?)<\/article>/u
+      )?.[1]
+      expect(text(body ?? "")).toBe(paragraph)
+      expect(body?.match(/<p>/gu)).toHaveLength(1)
+      expect(body).not.toContain("<h2")
+    }
+    for (const [path, id] of pilot)
+      for (const prefix of ["", "/ja"])
+        expect(
+          pages.find(
+            (page) => page.route === `${prefix}/docs/language/${path}/`
+          )?.id
+        ).toBe(id)
     const rendered = new Map(pages.map(({ route, html }) => [route, html]))
     for (const [path, , example, output, invalid] of pilot) {
       const route = `/docs/language/${path}/`
@@ -290,6 +320,28 @@ test("pilot pages render canonical examples, exact output, and same-identity loc
           (match) => match[1]
         )
         expect(new Set(headings).size, route).toBe(headings.length)
+        if (path === "syntax/function-application") {
+          for (const anchor of [
+            "understand-this",
+            "reading-the-example",
+            "why",
+            "rules",
+            "mistakes",
+            "related-rules",
+          ])
+            expect(headings, `${prefix}${route}: retained fragment`).toContain(
+              anchor
+            )
+          const outputPosition = html.indexOf("terminal-panel")
+          expect(outputPosition).toBeGreaterThan(-1)
+          expect(html.indexOf('id="rules"')).toBeGreaterThan(outputPosition)
+          expect(text(html), route).toContain("SES-T0101")
+          expect(text(html), route).toContain("addOne 2")
+          expect(text(html), route).toContain("Int -> (Int -> Int)")
+          expect(text(html), route).toContain("identity<String>")
+          expect(text(html), route).toContain("answer ()")
+        }
+
         if (process.env.SESERAGI_PILOT_OUTPUT) {
           const target = join(
             resolve(root, process.env.SESERAGI_PILOT_OUTPUT),

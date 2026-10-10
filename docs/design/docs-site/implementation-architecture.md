@@ -54,6 +54,13 @@ src/pages/language/syntax/function-application/
 - `Callout`
 - `ApiReference`
 
+`model/article.ssrg` exposes `ArticleCopy` for title/summary only,
+`articlePage` for metadata plus any ordered `Array<Block>`, and `prose` for a
+paragraph at a page-chosen position with paired locale text. It neither selects
+headings nor injects an entry-function explanation. The first migrated route is
+`language.syntax.function-application`; a one-paragraph composition is also
+rendered through the same production renderer in the scoped verification.
+
 Inline content is also typed as words, inline code, internal links, external
 links, emphasis and strong text. Pages choose their own ordered typed blocks.
 Reuse existing constructors/components first; add a new semantic constructor only

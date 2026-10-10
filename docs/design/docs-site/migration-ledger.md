@@ -179,3 +179,65 @@ bun run check:site
 
 新しい公開ページのbrowser/実読者レビューはこの設計PRの成果ではない。
 次の実装PRでsource・route・英日表示の実物に対して記録する。
+
+## 764: 最初の自由な記事構成
+
+#769の契約・台帳を基にした依存PRの実装候補。作者の美学承認は未取得のままで、
+新本文を公開承認済みとは扱わない。#765の全章・#767のbulk移行はこの一ページの
+成功から自動的に完了扱いにしない。
+
+- 新しい `apps/site/src/model/article.ssrg` は、title/summaryのmetadataだけを共有し、
+  `articlePage`へ任意の `Array<Block>` を渡す。`prose`は日英の一つの段落を同じ
+  位置に置く補助。code/output/spec/callout/relatedは既存Blockを必要な順で組む。
+  一律の本文field、導入/診断の義務、汎用main/do解説は生成しない。
+  この足し算例はarchitectureの最小検証例で、章やHeroの代表コードではない。
+  #765で、書いてみたくなる小さな関数の合成と記法の必然性が見える例を別途選ぶ。
+- `syntax/function-application/{page,en,ja}.ssrg` を移行。旧guideを削除し、
+  `ExplanationCopy`/`ReaderCopy`/`explainPage`への直接依存を除去。
+  記事は小さなfn→呼び出し→出力→再利用→正確な規則→誤り→目的別の出口を選ぶ。
+- KEEP: `language.syntax.function-application`、英日route、見出しtitle、
+  既存6 anchor、canonical valid/invalid source、出力 `3`、診断 `SES-T0101`。
+  Unit、型引数、左から右の評価、Effect値と実行の区別、括弧/タプル/演算子規則を保全。
+- RETIRE済みの候補: このrouteの `guide.ssrg` と旧locale copy field。
+  shared old templatesはまだ他のconsumerがあるので削除していない。
+  `migration-inventory.tsv`のold_compositionは着手時snapshotとして保存し、
+  新compositionはこのcheckpointとPRに記録する。
+- 構造テストの旧guide/固定field assertionを、このrouteではpaired prose・canonical
+  source・実際のrendered identity/anchor/規則へ置き換える。全conceptのinventory数、
+  全pilotの実行・invalid・render coverageは保持する。短い一段落だけの記事も日英で
+  同じrendererへ通し、不要な見出しや定型文が挿入されないことを検証する。
+- browser verifierは実際のproduction出力で英日・320/390/1280px・JS有無を確認。
+  詳細anchor、関連先へ移って戻る操作、キーボードlocale切替、overflow、page/console/
+  response error、canonical code/出力/診断を確認し、既存browser gateからも呼び出す。
+
+scoped/build/browser結果は下記。残件は作者レビュー、章全体の実読者検証、
+残る固定templateのconsumer移行、独立#706/#740の全gate再確認。
+
+### 764の検証結果
+
+- `bun test apps/site/tests/values-functions.test.ts apps/site/tests/explanations.test.ts`:
+  **8 pass / 0 fail / 15,039 assertions**。6既存pilotの実行・invalid診断・修復と日英
+  renderを維持。追加の一段落compositionを含め14 rendered pagesを確認。
+- 現行release CLI `0.61.23 / 46755c08f4e9` を指定したproduction build:
+  **3,976 routes、pass**。新しいpackage content digestをlock updateで更新後に実行。
+  全体route/link/fragment/translation/metadataの既存検証も通過。
+- `article-composition-browser.ts`をそのproduction出力で実行:
+  **12 locale/viewport/JS cases、pass**（英日×320/390/1280px×JS有無）。
+  valid/invalid source・出力・診断、詳細anchor、関連先往復、keyboard locale、
+  horizontal overflow、page/console/response errorを確認。各caseのscreenshotを保存。
+- Biome全site、対象TypeScript、4変更Seseragi sourceのcanonical format、diff whitespace:
+  **pass**。`check-content-map.ts`と#763の限定例verifierも引き続きpass。
+- 日本語320px/no-JSの全ページscreenshotをagentが目視確認。コードと出力が区別され、
+  詳細規則と目的別出口まで読める。これは作者・実読者による美学/読解承認ではない。
+- 初期scoped verifierの一段落HTML assertionはrendererのinline spanを考慮して修正。
+  keyboard locale検証はEnter後のnavigation完了を明示的に待つよう修正して再実行。
+- 全siteの `build.test.ts`: **1 pass / 0 fail / 9,252 assertions**。全3,976 routesを
+  311,312msと398,713msで生成し、manifest/HTML/assetsの二回build一致を確認。
+  既存420,000ms deadline内で通過。旧日本語の一文そのものを要求していた
+  assertionを「空白での引数区切り」と `add 1 2` の意味の確認へ置換した。
+  route数・link数・二回buildのhash比較・deadlineは変えない。
+- `check:site`全suite完走は未確認。#763のrepeat-build timeoutと未完了suiteは上の
+  記録を保持し、今回のscoped passを全suiteの成功として扱わない。
+
+状態: 置換実装あり / 上記技術scope・全site決定性 pass / agent編集・表示所見あり /
+作者判断未確認 / 実読者未確認 / 新本文はPR候補。#769の契約に依存するPR #770。

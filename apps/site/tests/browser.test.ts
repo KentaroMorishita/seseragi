@@ -10,6 +10,7 @@ import { buildSite } from "../scripts/build"
 import { entranceComparison } from "../scripts/comparisons"
 import { plannedReferenceRoutes } from "../scripts/coverage"
 import { staticSiteHandler } from "../scripts/static-site-handler"
+import { verifyArticleComposition } from "./article-composition-browser"
 import { verifyExamplesAndReleases } from "./examples-releases-browser"
 import { verifyFirstRun } from "./first-run-browser"
 import { verifyLanguageMenu } from "./language-menu"
@@ -141,6 +142,7 @@ try {
   try {
     const browser = await chromium.launch()
     try {
+      await verifyArticleComposition(browser, `http://127.0.0.1:${server.port}`)
       await verifyFirstRun(
         browser,
         `http://127.0.0.1:${server.port}`,

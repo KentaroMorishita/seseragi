@@ -25,6 +25,7 @@ for (const command of [
     "apps/site/scripts/check-content-map.ts",
     "apps/site/tests/build.test.ts",
     "apps/site/tests/browser.test.ts",
+    "apps/site/tests/article-composition-browser.ts",
     "apps/site/tests/deployment.test.ts",
     "apps/site/tests/static-site-handler.test.ts",
     "apps/site/tests/coverage.test.ts",
