@@ -1,4 +1,0 @@
-struct User { id: Int, name: String, }
-
-let original = User { id: 1, name: "Aki" }
-let renamed = User { ...original, name: "Mio" }

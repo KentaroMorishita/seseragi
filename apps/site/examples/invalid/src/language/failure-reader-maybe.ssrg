@@ -1,2 +1,0 @@
-let missing: Maybe<String> = Nothing
-let wrong = missing ?? 0

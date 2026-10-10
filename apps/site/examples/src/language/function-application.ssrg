@@ -1,5 +1,0 @@
-fn add left: Int -> right: Int -> Int =
-  left + right
-
-let addOne = add 1
-let answer = addOne 2

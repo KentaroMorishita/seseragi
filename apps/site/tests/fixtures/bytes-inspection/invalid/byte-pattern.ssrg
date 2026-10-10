@@ -1,3 +1,0 @@
-import * as bytes from "std/bytes"
-fn unwrap value: bytes.Byte -> Int = match value { bytes.Byte raw -> raw }
-pub effect fn main = println "unreachable"

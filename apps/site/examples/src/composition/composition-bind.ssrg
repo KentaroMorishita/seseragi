@@ -1,0 +1,22 @@
+import * as arrays from "std/array"
+
+fn help command: String -> Maybe<String> = match command {
+  "build" -> Just "Compile the project."
+  "check" -> Just "Check the types."
+  _ -> Nothing
+}
+
+fn lookup args: Array<String> -> Maybe<String> = arrays.get 0 args >>= help
+
+fn explained args: Array<String> -> Maybe<String> = do {
+  command <- arrays.get 0 args
+  help command
+}
+
+pub effect fn main = do {
+  println (show (help <$> arrays.get 0 ["build"]))
+  println (show (lookup ["build"]))
+  println (show (explained ["check"]))
+  println (show (lookup ["run"]))
+  println (show (lookup []))
+}

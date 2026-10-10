@@ -1,1 +1,0 @@
-pub effect fn main = println (show (Just (1 / 0)))

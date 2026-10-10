@@ -1,1 +1,0 @@
-effect fn missingConsole message: String -> Unit = println message

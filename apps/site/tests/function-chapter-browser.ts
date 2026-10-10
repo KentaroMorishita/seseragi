@@ -89,6 +89,7 @@ export async function verifyFunctionChapter(browser: Browser, origin: string) {
         viewport: { width, height: 900 },
         javaScriptEnabled,
       })
+      context.setDefaultNavigationTimeout(15_000)
       try {
         const page = await context.newPage()
         const errors: string[] = []
@@ -171,7 +172,22 @@ export async function verifyFunctionChapter(browser: Browser, origin: string) {
               1,
               `${item.route}: chapter continuation`
             )
-            await nextLink.click()
+            try {
+              await Promise.all([
+                page.waitForURL(origin + prefix + next, { waitUntil: "load" }),
+                nextLink.click(),
+              ])
+            } catch (error) {
+              console.error(
+                `Chapter transition failed: ${width}px ${javaScriptEnabled ? "JS" : "no-JS"} ${prefix}${item.route} → ${next}; actual ${page.url()}`
+              )
+              if (screenshots)
+                await page.screenshot({
+                  path: resolve(screenshots, "chapter-navigation-failure.png"),
+                  fullPage: true,
+                })
+              throw error
+            }
             assert.equal(new URL(page.url()).pathname, prefix + next)
             pages++
           }

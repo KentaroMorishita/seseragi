@@ -1,5 +1,0 @@
-fn total quantity: Int -> Int = {
-  let subtotal = quantity * 20
-  subtotal + 5
-}
-let answer = subtotal

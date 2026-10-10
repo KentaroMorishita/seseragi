@@ -1,3 +1,0 @@
-struct Clock {}
-
-alias Timed<R, E, A> = Effect<R & { clock: Clock }, E, A>

@@ -1,221 +1,97 @@
+import assert from "node:assert/strict"
+import { mkdirSync, rmSync, writeFileSync } from "node:fs"
 import { resolve } from "node:path"
+import { buildSite } from "./build"
+import { verifyPublication } from "./verify-publication"
 
 const root = resolve(import.meta.dir, "../../..")
 const cli = resolve(root, process.env.SESERAGI_BIN ?? "target/release/seseragi")
+// The second build runs in this process, rather than through run(). Use the
+// same optimized CLI in both processes, including on a fresh CI runner.
+process.env.SESERAGI_BIN = cli
+const output = resolve(root, process.env.SITE_OUTPUT ?? "target/site")
 
-for (const command of [
-  ["node_modules/.bin/biome", "check", "apps/site"],
-  [
-    "node_modules/.bin/tsc",
-    "--noEmit",
-    "--skipLibCheck",
-    "--types",
-    "bun",
-    "--target",
-    "ES2022",
-    "--module",
-    "Preserve",
-    "--moduleResolution",
-    "Bundler",
-    "apps/site/scripts/build.ts",
-    "apps/site/scripts/static-site-handler.ts",
-    "apps/site/client/mobile-navigation.ts",
-    "apps/site/client/language-menu.ts",
-    "apps/site/scripts/check-examples.ts",
-    "apps/site/scripts/check-content-map.ts",
-    "apps/site/tests/build.test.ts",
-    "apps/site/tests/browser.test.ts",
-    "apps/site/tests/article-composition-browser.ts",
-    "apps/site/tests/function-chapter-browser.ts",
-    "apps/site/tests/deployment.test.ts",
-    "apps/site/tests/static-site-handler.test.ts",
-    "apps/site/tests/coverage.test.ts",
-    "apps/site/tests/reference-titles.test.ts",
-    "apps/site/tests/library-titles.test.ts",
-    "apps/site/tests/explanations.test.ts",
-    "apps/site/tests/first-run.test.ts",
-    "apps/site/tests/comparisons.test.ts",
-    "apps/site/tests/syntax-highlight.test.ts",
-    "apps/site/tests/entrance.test.ts",
-    "apps/site/tests/values-functions.test.ts",
-    "apps/site/tests/array-editorial.test.ts",
-    "apps/site/tests/examples-releases.test.ts",
-    "apps/site/tests/data-choices.test.ts",
-    "apps/site/tests/render-generator.test.ts",
-    "apps/site/tests/text-editorial.test.ts",
-    "apps/site/tests/failure-readers.test.ts",
-    "apps/site/tests/syntax-reader.test.ts",
-    "apps/site/tests/function-chapter.test.ts",
-    "apps/site/tests/sequence-editorial.test.ts",
-    "apps/site/tests/type-readers.test.ts",
-    "apps/site/tests/data-operations.test.ts",
-    "apps/site/tests/module-projects.test.ts",
-    "apps/site/tests/explanation-groups.test.ts",
-    "apps/site/tests/modules-reader.test.ts",
-    "apps/site/tests/type-limits.test.ts",
-    "apps/site/tests/model-reader.test.ts",
-    "apps/site/tests/model-concepts.test.ts",
-    "apps/site/tests/lifecycle-readers.test.ts",
-    "apps/site/tests/trait-readers.test.ts",
-    "apps/site/tests/list-editorial.test.ts",
-    "apps/site/tests/library-landing.test.ts",
-    "apps/site/tests/api-corrections.test.ts",
-    "apps/site/tests/map-editorial.test.ts",
-    "apps/site/tests/unicode-reader.test.ts",
-    "apps/site/tests/regex-readers.test.ts",
-    "apps/site/tests/set-editorial.test.ts",
-    "apps/site/tests/nonempty-iterator-readers.test.ts",
-    "apps/site/tests/char-text-reader.test.ts",
-    "apps/site/tests/collection-type-readers.test.ts",
-    "apps/site/tests/data-validation-readers.test.ts",
-    "apps/site/tests/numeric-readers.test.ts",
-    "apps/site/tests/web-reader.test.ts",
-    "apps/site/tests/web-reader-editorial.test.ts",
-    "apps/site/tests/filesystem-reader.test.ts",
-    "apps/site/tests/filesystem-reader-editorial.test.ts",
-    "apps/site/tests/effect-sequencing-reader.test.ts",
-    "apps/site/tests/effect-sequencing-editorial.test.ts",
-    "apps/site/tests/json-reader.test.ts",
-    "apps/site/tests/json-reader-editorial.test.ts",
-    "apps/site/tests/url-reader.test.ts",
-    "apps/site/tests/url-reader-editorial.test.ts",
-    "apps/site/tests/bytes-reader.test.ts",
-    "apps/site/tests/bytes-reader-editorial.test.ts",
-    "apps/site/tests/practical-collection-reader.test.ts",
-    "apps/site/tests/practical-collection-editorial.test.ts",
-    "apps/site/tests/terminal-reader.test.ts",
-    "apps/site/tests/terminal-reader-editorial.test.ts",
-    "apps/site/tests/stdin-reader.test.ts",
-    "apps/site/tests/stdin-reader-editorial.test.ts",
-    "apps/site/tests/collection-transform.test.ts",
-    "apps/site/tests/collection-transform-editorial.test.ts",
-    "apps/site/tests/bytes-inspection.test.ts",
-    "apps/site/tests/bytes-inspection-editorial.test.ts",
-    "apps/site/tests/result-foundation-readers.test.ts",
-  ],
-  ["python3", "-B", "apps/site/tests/prose.test.py"],
-  ["python3", "-B", "apps/site/tests/profile-process.test.py"],
-  // The site exercises thousands of declarations. Build the current compiler
-  // with Rust optimizations, independently of the generated program profile.
-  ["cargo", "build", "--locked", "--release", "-p", "seseragi-cli"],
-  ["bun", "apps/site/scripts/check-examples.ts"],
-  [
-    "cargo",
-    "test",
-    "-p",
-    "seseragi-conformance",
-    "stdlib_surface::tests::canonical_",
-  ],
-]) {
+function run(command: string[]) {
   const result = Bun.spawnSync(command, {
-    cwd: root,
-    env: { ...process.env, SESERAGI_BIN: cli },
-    stdout: "inherit",
-    stderr: "inherit",
-  })
-  if (result.exitCode !== 0) process.exit(result.exitCode)
-}
-
-const contentMap = Bun.spawnSync(
-  ["bun", "apps/site/scripts/check-content-map.ts"],
-  {
-    cwd: root,
-    stdout: "inherit",
-    stderr: "inherit",
-  }
-)
-if (contentMap.exitCode !== 0) process.exit(contentMap.exitCode)
-
-const test = Bun.spawnSync(
-  [
-    "bun",
-    "test",
-    "apps/site/tests/build.test.ts",
-    "apps/site/tests/deployment.test.ts",
-    "apps/site/tests/static-site-handler.test.ts",
-    "apps/site/tests/coverage.test.ts",
-    "apps/site/tests/reference-titles.test.ts",
-    "apps/site/tests/library-titles.test.ts",
-    "apps/site/tests/explanations.test.ts",
-    "apps/site/tests/first-run.test.ts",
-    "apps/site/tests/comparisons.test.ts",
-    "apps/site/tests/syntax-highlight.test.ts",
-    "apps/site/tests/entrance.test.ts",
-    "apps/site/tests/values-functions.test.ts",
-    "apps/site/tests/array-editorial.test.ts",
-    "apps/site/tests/examples-releases.test.ts",
-    "apps/site/tests/data-choices.test.ts",
-    "apps/site/tests/render-generator.test.ts",
-    "apps/site/tests/text-editorial.test.ts",
-    "apps/site/tests/failure-readers.test.ts",
-    "apps/site/tests/syntax-reader.test.ts",
-    "apps/site/tests/function-chapter.test.ts",
-    "apps/site/tests/sequence-editorial.test.ts",
-    "apps/site/tests/type-readers.test.ts",
-    "apps/site/tests/data-operations.test.ts",
-    "apps/site/tests/module-projects.test.ts",
-    "apps/site/tests/explanation-groups.test.ts",
-    "apps/site/tests/modules-reader.test.ts",
-    "apps/site/tests/type-limits.test.ts",
-    "apps/site/tests/model-reader.test.ts",
-    "apps/site/tests/model-concepts.test.ts",
-    "apps/site/tests/lifecycle-readers.test.ts",
-    "apps/site/tests/trait-readers.test.ts",
-    "apps/site/tests/list-editorial.test.ts",
-    "apps/site/tests/library-landing.test.ts",
-    "apps/site/tests/api-corrections.test.ts",
-    "apps/site/tests/map-editorial.test.ts",
-    "apps/site/tests/unicode-reader.test.ts",
-    "apps/site/tests/regex-readers.test.ts",
-    "apps/site/tests/set-editorial.test.ts",
-    "apps/site/tests/nonempty-iterator-readers.test.ts",
-    "apps/site/tests/char-text-reader.test.ts",
-    "apps/site/tests/collection-type-readers.test.ts",
-    "apps/site/tests/data-validation-readers.test.ts",
-    "apps/site/tests/numeric-readers.test.ts",
-    "apps/site/tests/web-reader.test.ts",
-    "apps/site/tests/web-reader-editorial.test.ts",
-    "apps/site/tests/filesystem-reader.test.ts",
-    "apps/site/tests/filesystem-reader-editorial.test.ts",
-    "apps/site/tests/effect-sequencing-reader.test.ts",
-    "apps/site/tests/effect-sequencing-editorial.test.ts",
-    "apps/site/tests/json-reader.test.ts",
-    "apps/site/tests/json-reader-editorial.test.ts",
-    "apps/site/tests/url-reader.test.ts",
-    "apps/site/tests/url-reader-editorial.test.ts",
-    "apps/site/tests/bytes-reader.test.ts",
-    "apps/site/tests/bytes-reader-editorial.test.ts",
-    "apps/site/tests/practical-collection-reader.test.ts",
-    "apps/site/tests/practical-collection-editorial.test.ts",
-    "apps/site/tests/terminal-reader.test.ts",
-    "apps/site/tests/terminal-reader-editorial.test.ts",
-    "apps/site/tests/stdin-reader.test.ts",
-    "apps/site/tests/stdin-reader-editorial.test.ts",
-    "apps/site/tests/collection-transform.test.ts",
-    "apps/site/tests/collection-transform-editorial.test.ts",
-    "apps/site/tests/bytes-inspection.test.ts",
-    "apps/site/tests/bytes-inspection-editorial.test.ts",
-    "apps/site/tests/result-foundation-readers.test.ts",
-  ],
-  {
     cwd: root,
     env: {
       ...process.env,
+      CARGO_INCREMENTAL: "0",
+      NODE_ENV: "production",
       SESERAGI_BIN: cli,
+      SITE_OUTPUT: output,
+      SITE_SCREENSHOTS: resolve(root, "target/site-verification/screenshots"),
     },
     stdout: "inherit",
     stderr: "inherit",
-  }
-)
-if (test.exitCode !== 0) process.exit(test.exitCode)
+  })
+  assert.equal(result.exitCode, 0, command.join(" "))
+}
 
-const browser = Bun.spawnSync(["bun", "apps/site/tests/browser.test.ts"], {
-  cwd: root,
-  env: {
-    ...process.env,
-    SESERAGI_BIN: cli,
-  },
-  stdout: "inherit",
-  stderr: "inherit",
-})
-process.exit(browser.exitCode)
+run(["node_modules/.bin/biome", "check", "apps/site"])
+run([
+  "node_modules/.bin/tsc",
+  "--noEmit",
+  "--skipLibCheck",
+  "--types",
+  "bun",
+  "--target",
+  "ES2022",
+  "--module",
+  "Preserve",
+  "--moduleResolution",
+  "Bundler",
+  "apps/site/scripts/check.ts",
+  "apps/site/tests/reboot-browser.ts",
+  "apps/site/tests/render-generator.test.ts",
+  "apps/site/tests/static-site-handler.test.ts",
+])
+run(["cargo", "build", "--locked", "--release", "-p", "seseragi-cli"])
+// Check compiler metadata at its existing conformance boundary.
+run([
+  "cargo",
+  "test",
+  "--locked",
+  "-p",
+  "seseragi-conformance",
+  "stdlib_surface::tests::canonical_",
+])
+run(["bun", "apps/site/scripts/check-published-examples.ts"])
+run(["python3", "-B", "apps/site/tests/profile-process.test.py"])
+run([
+  "bun",
+  "test",
+  "apps/site/tests/static-site-handler.test.ts",
+  "apps/site/tests/render-generator.test.ts",
+])
+run(["bun", "apps/site/scripts/build.ts", output])
+const manifest = verifyPublication(output)
+const duplicateOutput = `${output}-determinism-${process.pid}`
+const reports = resolve(root, "target/site-verification")
+mkdirSync(reports, { recursive: true })
+writeFileSync(
+  `${reports}/manifest-first.json`,
+  `${JSON.stringify(manifest, null, 2)}\n`
+)
+try {
+  const duplicate = buildSite({
+    output: duplicateOutput,
+    origin: "https://seseragi-docs.vercel.app",
+    profile: "release",
+  })
+  writeFileSync(
+    `${reports}/manifest-second.json`,
+    `${JSON.stringify(duplicate, null, 2)}\n`
+  )
+  assert.deepEqual(
+    duplicate,
+    manifest,
+    "Two complete builds must have identical routes and artifact hashes"
+  )
+} finally {
+  rmSync(duplicateOutput, { recursive: true, force: true })
+}
+run(["bun", "apps/site/tests/reboot-browser.ts"])
+console.info(
+  "Docs Reboot: publication, execution, compiler metadata, determinism, and browser checks passed"
+)

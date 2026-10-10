@@ -1,3 +1,0 @@
-let arithmetic = 1 + 2 * 3
-let grouped = (1 + 2) * 3
-let comparison = arithmetic < grouped && grouped == 9

@@ -1,4 +1,0 @@
-newtype UserId = Int
-newtype OrderId = Int
-fn userLabel id: UserId -> String = match id { UserId number -> `user: ${number}` }
-let label = userLabel (OrderId 42)

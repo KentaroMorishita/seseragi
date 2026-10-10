@@ -8,6 +8,9 @@ import {
   SiteCatalog
 } from "../model/page"
 import * as entrance from "../pages/entrance"
+import * as compositionChapter from "../pages/composition"
+import * as api from "../pages/api"
+import * as arrays from "std/array"
 import { page as application } from "../pages/language/syntax/function-application/page"
 import { page as currying } from "../pages/language/types/function-types-and-currying/page"
 import { page as composition } from "../pages/language/syntax/pipelines-and-low-precedence-application/page"
@@ -39,8 +42,8 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
   }
   SiteCatalog {
     home,
-    areas: [area],
-    pages: [
+    areas: [area, compositionChapter.area (), api.area input],
+    pages: arrays.concat [[
       home,
       entrance.docs (),
       entrance.firstRun (),
@@ -49,7 +52,8 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
       landing,
       first,
       second,
-      third
-    ]
+      third,
+      api.index input
+    ], compositionChapter.pages (), api.pages input]
   }
 }

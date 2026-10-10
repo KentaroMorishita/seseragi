@@ -1,5 +1,0 @@
-import * as json from "std/json"
-import * as items from "std/array"
-pub fn valid -> List<Int> = items.toList [1]
-
-pub effect fn main = println (json.encodeString [n | n <- (valid ())])

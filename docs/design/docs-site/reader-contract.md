@@ -1,64 +1,27 @@
-# Docs reader review protocol
+# Docs Reboot レビューの区別
 
-The sole editorial policy is [editorial-contract.md](editorial-contract.md),
-established by Docs Reboot #601 / #763. This file owns the review protocol only.
-Its former TypeScript-only audience, mandatory explanation sequence,
-`reader-article` authoring prescription and #698–#701 work sequence are retired.
-Earlier verification and reader-session files remain historical evidence;
-they do not accept the new chapter or re-open the old work queue.
+編集判断は [editorial-contract.md](editorial-contract.md)、現在の制作・技術検証は
+[migration-ledger.md](migration-ledger.md)、作業入口は[#601](https://github.com/KentaroMorishita/seseragi/issues/601)。
+旧本文・URL・ページ数・anchorの保全は不要。旧corpusの検証記録は過去の実装史。
 
-## Review a changed route or chapter
+## 記事を通読する
 
-Record the exact commit, route and locale, the reviewer's programming background,
-and whether this is agent self-review, author review or an actual first-time
-reader session. Programming experience is required; no particular language,
-Rust, Haskell or category theory is assumed.
+- 小さな仕事とコードから始まり、結果を確かめて、新しい記法の意味へ進めるか。
+- 関数は小さく自然な名前か。記法を見せるためだけのpipelineや全部盛りがないか。
+- 記法の読み方と選んだ理由が分かるか。コードの逐語翻訳に陥っていないか。
+- 日英が同じsource・条件・結果を扱い、各言語で自然に話しているか。
+- 詳しい規則を直接引けるか。章の入口と次に試す出口があるか。
 
-Read each article both in chapter order and directly from its deep link.
-Ask the reader to explain the task, important notation, input, result and how
-they would change the example. Record where they needed help. Check that they
-can find an exact rule and return, and choose a useful next destination.
-Questions are review prompts, not compulsory public headings or prose quotas.
-The applicable semantic obligations in `reference-content-map.md` remain;
-their placement can change or move to a documented linked destination.
+## 証拠を混ぜない
 
-Review Japanese and English as natural writing with matching meaning, examples,
-constraints and links. Japanese-first drafting is a workflow, not a reason to
-translate sentence structure literally. Fair comparisons with another language
-are optional; where used, verify both programs' input, output and restrictions.
-
-## Keep evidence separate
-
-| Evidence | Record |
+| 確認 | 記録 |
 | --- | --- |
-| Code and meaning | Source path/hash, current CLI version/commit, command, stdout/diagnostic, formatter result, spec and compiler provenance |
-| Display and navigation | Both locales, desktop/mobile, no-JS, keyboard/a11y, heading anchors, locale identity, related-link round trips and chapter navigation |
-| Editorial self-review | Concrete observations against the editorial contract; unresolved style choices for the author |
-| Author review | Actual decision about prose/code aesthetics; do not infer it from agent review |
-| First-time reader | Background, observed understanding, help required, feedback, corrections and subsequent review |
+| Compiler/実行 | source、型、stdout/診断、toolchain、build結果 |
+| Browser | 全公開route/API宣言、日英切替、mobile/desktop、JS有効/無効、リンク、screenshot |
+| Agent編集レビュー | 通読して気付いた点と修正内容 |
+| 作者の美学 | 作者が実際に示した判断と対象範囲 |
+| 初見読者の理解 | 読者の背景、分かったこと、必要だった助け |
 
-The #765 representative chapter receives focused author and actual-reader
-review. Other route/API migration batches may record actual-reader review as
-not yet performed, independently of technical/editorial verification and public
-retirement. Do not require a human sign-off on every generated symbol, and do
-not turn self-review into a claim that a human read it. Explicit reader gates
-on #601 / individual issues still apply to their stated scope.
-
-No category substitutes for another. A blocked build or browser check stays
-blocked. Automatic word/heading/paragraph counts cannot establish understanding.
-#702 records the new chapter's reading evidence; #706 and #740 own independent
-SSG/browser gates. #631 owns root cutover after the #601 prerequisites.
-
-## Existing records
-
-`reader-review.md` retains the previous 106-core-route review and API history.
-Checked boxes there describe the review standard and commit recorded there;
-they are not Docs Reboot acceptance. Preserve actual reader feedback and source
-execution evidence and link them from each migration batch. Do not bulk-check
-old rows, erase outstanding work, or treat published text as an approved draft.
-Local `*-work-item.md` files are old scope/evidence records, not dispatch orders.
-
-The earlier yomiyasu `tech` pass and pinned tool version are historical/advisory.
-If reused, lint prose extracted from rendered Japanese pages, excluding code,
-and record intentional technical exceptions. Lint results do not replace author
-or reader review and do not impose a formal tone on the new conversational prose.
+Agentの検証を作者や実読者の承認へ読み替えない。
+未確認の軸は未確認と書く。ただし通常の実装・PR・マージ・検証済みDocs公開は
+都度の承認待ちで止めず継続する。全APIに長い読み物や個別承認を要求しない。

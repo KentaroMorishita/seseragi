@@ -1,3 +1,0 @@
-import { greet } from "./public"
-
-pub effect fn main = println (greet "Aki")

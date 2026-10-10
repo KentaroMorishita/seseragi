@@ -1,9 +1,0 @@
-newtype Score = Int
-
-impl Score {
-  operator + self -> other: Score -> Score = match (self, other) {
-    (Score left, Score right) -> Score (left + right)
-  }
-}
-
-let total = Score 20 + Score 22

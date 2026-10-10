@@ -1,9 +1,0 @@
-import * as arrays from "std/array"
-
-let values = [10, 20]
-let message = match arrays.get 5 values {
-  Just value -> `found: ${value}`
-  Nothing -> "not found"
-}
-
-pub effect fn main = println message

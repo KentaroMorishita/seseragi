@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { collectionTypeEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  collectionTypeEditorial "std/prelude::Iterator" "type" "opaque-type" "iterator" "3\n3\n2\ndone" "3\n3\n2\ndone" (en.copy ()) (ja.copy ())

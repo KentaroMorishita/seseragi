@@ -1,8 +1,0 @@
-import * as arrays from "std/array"
-
-pub effect fn main = do {
-  _ <- println (show (arrays.singleton 42))
-  _ <- println (show (arrays.singleton "Aki"))
-  _ <- println (show (arrays.singleton (arrays.empty<Int> ())))
-  println (arrays.length (arrays.singleton ""))
-}

@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { filesystemReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  filesystemReaderEditorial "std/path::child" "value" "function" "child-filenames" "reports/report.txt\nreports/report.v2.txt\nrejected: ../report.txt\nrejected: \nrejected: .\nrejected: .." "child-filenames" "reports/report.txt\nreports/report.v2.txt\nrejected: ../report.txt\nrejected: \nrejected: .\nrejected: .." (en.copy ()) (ja.copy ())

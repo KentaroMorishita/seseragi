@@ -1,9 +1,0 @@
-fn total quantity: Int -> Int = {
-  let unitPrice = 20
-  let subtotal = quantity * unitPrice
-  subtotal + 5
-}
-
-let answer = total 3
-
-pub effect fn main = println (show answer)

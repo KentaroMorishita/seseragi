@@ -1,2 +1,0 @@
-fn squares -> Array<Int> = [value * value | value <- 1 ..= 4, value]
-pub effect fn main = println (show (squares ()))

@@ -1,4 +1,0 @@
-let integerResult = -7 / 2
-let decimalResult = 7.0 / 2.0
-
-pub effect fn main = println `${integerResult}, ${decimalResult}`

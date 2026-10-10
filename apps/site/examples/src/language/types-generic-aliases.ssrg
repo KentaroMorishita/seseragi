@@ -1,7 +1,0 @@
-alias Pair<A> = (A, A)
-
-fn first<A> pair: Pair<A> -> A = match pair {
-  (left, _) -> left
-}
-
-let answer = first (42, 7)

@@ -1,2 +1,0 @@
-type Box<A> = | Box A
-let wrong: Box<Int> = Box "hello"

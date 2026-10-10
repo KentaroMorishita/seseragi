@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { unicodeEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  unicodeEditorial "std/text/unicode::fullCaseFold" "unicode-fullcasefold" "folded: strasse\noriginal: Straße\nsame comparison: True\ndotted I: i̇\nsigmas: σσ\naccent scalars: 2\nempty: []" "std/text/unicode" (en.copy ()) (ja.copy ())

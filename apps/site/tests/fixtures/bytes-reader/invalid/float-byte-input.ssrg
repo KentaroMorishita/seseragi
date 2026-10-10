@@ -1,3 +1,0 @@
-import * as bytes from "std/bytes"
-let content = bytes.fromInts [1.5]
-pub effect fn main = println "unreachable"

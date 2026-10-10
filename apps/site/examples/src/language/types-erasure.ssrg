@@ -1,4 +1,0 @@
-fn identity<A> value: A -> A = value
-
-let number: Int = identity 42
-let text: String = identity "hello"

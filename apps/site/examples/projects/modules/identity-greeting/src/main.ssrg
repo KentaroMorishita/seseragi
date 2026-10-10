@@ -1,7 +1,0 @@
-import { greet } from "./greeting"
-import { greet as greetAgain } from "./greeting.ssrg"
-
-pub effect fn main = do {
-  println (greet "Aki")
-  println (greetAgain "Aki")
-}

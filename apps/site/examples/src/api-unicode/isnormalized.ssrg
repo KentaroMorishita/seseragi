@@ -1,9 +1,0 @@
-import * as unicode from "std/text/unicode"
-
-let original = "e\u{0301}"
-let composed = unicode.normalize unicode.NFC original
-pub effect fn main =
-  println `before: ${unicode.isNormalized unicode.NFC original}
-after: ${unicode.isNormalized unicode.NFC composed}
-original still decomposed: ${unicode.isNormalized unicode.NFD original}
-empty: ${unicode.isNormalized unicode.NFC ""}`

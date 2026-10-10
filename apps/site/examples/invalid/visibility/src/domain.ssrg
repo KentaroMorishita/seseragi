@@ -1,3 +1,0 @@
-fn internal value: Int -> Int = value
-
-pub fn exposed value: Int -> Int = internal value

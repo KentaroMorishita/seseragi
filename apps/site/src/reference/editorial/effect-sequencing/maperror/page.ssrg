@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { effectSequencingEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  effectSequencingEditorial "std/effect::mapError" "value" "effect-function" "map-error" "Ready: Search improvements\nRejected: preview: title is required\n" (en.copy ()) (ja.copy ())

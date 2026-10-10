@@ -1,4 +1,0 @@
-fn place tens: Int -> ones: Int -> Int = tens * 10 + ones
-
-// Arguments are evaluated from left to right, once each.
-let result = place (1 + 1) (2 + 1)

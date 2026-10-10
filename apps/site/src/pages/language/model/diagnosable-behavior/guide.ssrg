@@ -1,6 +1,0 @@
-import { Explanation, makeExplanation, WithoutExample } from "../../explanation"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn explanation -> Explanation =
-  makeExplanation WithoutExample (en.explanation ()) (ja.explanation ())

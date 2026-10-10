@@ -1,6 +1,0 @@
-struct Box<A> { value: A }
-
-let count = Box<Int> { value: 42 }
-let message = Box<String> { value: "ready" }
-
-pub effect fn main = println `${count.value}\n${message.value}`

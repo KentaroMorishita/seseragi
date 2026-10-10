@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { collectionTypeEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  collectionTypeEditorial "std/collection::NonPositiveSize" "value" "constructor" "size-error" "[[10, 20], [30]]\n[]\nsize must be positive: 0\nsize must be positive: -2\nNonPositiveSize 2" "[[10,20],[30]]\n[]\nsize must be positive: 0\nsize must be positive: -2\n{\"kind\":\"non-positive-size\",\"size\":2}" (en.copy ()) (ja.copy ())

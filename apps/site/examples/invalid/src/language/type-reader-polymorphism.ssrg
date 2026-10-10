@@ -1,2 +1,0 @@
-fn keepFirst<A> first: A -> second: A -> A = first
-let result = keepFirst 1 "Aki"

@@ -1,4 +1,0 @@
-newtype UserId = Int
-
-fn invalid id: UserId -> Int =
-  id

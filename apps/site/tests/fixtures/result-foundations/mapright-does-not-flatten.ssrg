@@ -1,8 +1,0 @@
-import * as either from "std/either"
-fn quote count: Int -> Either<String, Int> = Right (count * 20)
-pub effect fn main = do {
-  let input: Either<String, Int> = Right 2
-  let nested: Either<String, Either<String, Int>> = either.mapRight quote input
-  println (show nested)
-  println (show (flatMap quote input))
-}

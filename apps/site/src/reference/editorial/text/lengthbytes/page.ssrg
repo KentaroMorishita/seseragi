@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { textEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  textEditorial "std/text::lengthBytes" "text-lengthbytes" "10\n2\n0" (en.copy ()) (ja.copy ())

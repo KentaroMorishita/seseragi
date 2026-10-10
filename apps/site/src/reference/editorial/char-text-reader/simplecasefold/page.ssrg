@@ -1,8 +1,0 @@
-import { localized } from "../../../../model/locale"
-import { Editorial } from "../../model"
-import { charTextEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  charTextEditorial "std/text/unicode::simpleCaseFold" "char-text-simplecasefold" "same scalar: False\nsame simple fold: True\ncapital fold: σ\nfinal fold: σ\nsharp s: ß\ncapital sharp s: ß\ndotted I: İ\ndotted I equals i: False" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "same scalar: false\ncase-insensitive sigma: true\ncase-insensitive sharp s: true\ndotted I equals i: false"

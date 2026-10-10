@@ -1,5 +1,0 @@
-let low = 1
-let middle = 2
-let high = 3
-let ordered = low < middle < high
-pub effect fn main = println ordered

@@ -1,8 +1,0 @@
-import { localized } from "../../../../model/locale"
-import { Editorial } from "../../model"
-import { charTextEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  charTextEditorial "std/text::trimStart" "char-text-trimstart" "result: [Aki  ]\noriginal: [  Aki  ]\nNEL removed: True\nFEFF preserved: True\nempty: []\nonly whitespace: []" "std/text" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "result: [Aki  ]\noriginal: [  Aki  ]\nJS removes NEL: false\nUnicode removes NEL: true\nJS preserves FEFF: false\nUnicode preserves FEFF: true\nempty: []\nonly whitespace: []"

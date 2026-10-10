@@ -1,6 +1,0 @@
-trait Render<A> {
-  fn render value: A -> String
-}
-
-type Secret deriving Render =
-  | Secret String

@@ -1,5 +1,0 @@
-import * as bytes from "std/bytes"
-fn render -> String =
-  match bytes.byte 65 { Left error -> show error;
-    Right value -> show (bytes.toInts (bytes.singleton value)) }
-pub effect fn main = println (render ())

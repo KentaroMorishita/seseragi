@@ -1,2 +1,0 @@
-import * as effects from "std/effect"
-fn childValue -> Task<Int> = effects.fork (effects.succeed 21)

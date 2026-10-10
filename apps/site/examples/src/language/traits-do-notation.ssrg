@@ -1,7 +1,0 @@
-fn increment value: Maybe<Int> -> Maybe<Int> = do {
-  number <- value
-  let next = number + 1
-  pure next
-}
-
-let result = increment (Just 41)

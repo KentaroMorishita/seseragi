@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { jsonReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  jsonReaderEditorial "std/json::Json" "type" "opaque-type" "parse-normalize" "{\"name\":\"Mio\",\"retries\":2}\n[true,null,\"ready\"]\nInvalid JSON text\n" (en.copy ()) (ja.copy ())

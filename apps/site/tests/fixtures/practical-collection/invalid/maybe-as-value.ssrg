@@ -1,3 +1,0 @@
-import * as arrays from "std/array"
-fn label value: String -> String = value
-pub effect fn main = println (label (arrays.head ["ready"]))

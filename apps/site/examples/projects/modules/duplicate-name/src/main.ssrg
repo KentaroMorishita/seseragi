@@ -1,4 +1,0 @@
-let value = 1
-let value = 42
-
-pub effect fn main = println (show value)

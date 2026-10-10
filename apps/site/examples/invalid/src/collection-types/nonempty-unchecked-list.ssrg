@@ -1,3 +1,0 @@
-import * as nonempty from "std/non-empty-list"
-fn first values: List<Int> -> Int = nonempty.head values
-pub effect fn main = println "unreachable"

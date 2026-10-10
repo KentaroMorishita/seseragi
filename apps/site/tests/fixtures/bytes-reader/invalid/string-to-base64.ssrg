@@ -1,2 +1,0 @@
-import * as base64 from "std/bytes/base64"
-pub effect fn main = println (base64.encode "hello")

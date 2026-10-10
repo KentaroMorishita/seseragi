@@ -30,6 +30,7 @@ fn navigation<Action> input: BuildInput
     class: "site-nav",
     children: [
       anchor messages.documentation (localizedRoute locale "/docs/") "",
+      anchor "API" (localizedRoute locale "/docs/api/") "",
       anchor messages.playground input.playgroundUrl "",
       anchor messages.tour input.tourUrl "",
       anchor messages.examples (localizedRoute locale "/examples/") "",

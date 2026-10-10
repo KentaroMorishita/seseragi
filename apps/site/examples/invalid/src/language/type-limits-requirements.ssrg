@@ -1,3 +1,0 @@
-struct Settings { label: String }
-struct Theme { suffix: String }
-alias Conflicting = Effect<{ settings: Settings } & { settings: Theme }, Never, String>

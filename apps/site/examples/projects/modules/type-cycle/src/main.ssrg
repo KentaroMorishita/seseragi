@@ -1,3 +1,0 @@
-import { User } from "./user"
-
-pub effect fn main = println (User { name: "Aki" }).name

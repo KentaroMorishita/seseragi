@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { jsonReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  jsonReaderEditorial "std/json::record" "value" "function" "two-labels" "[[\"first\",\"A\"],[\"second\",\"B\"]]\nLabels rejected\nLabels rejected\n" (en.copy ()) (ja.copy ())

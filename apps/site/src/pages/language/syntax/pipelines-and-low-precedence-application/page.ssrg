@@ -70,6 +70,7 @@ pub fn page -> PageDefinition =
         Words (localized (en.previousExit ()) (ja.previousExit ()))
       ]
     ),
+    Paragraph ([InternalLink (localized "Continue with <$>, <*>, >>=, and do" "<$>・<*>・>>=・doを具体例で読む", "/docs/composition/")]),
     Paragraph (
       [
         ExternalLink (

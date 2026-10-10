@@ -1,8 +1,0 @@
-import * as signals from "std/signal"
-
-effect fn readAndWrite -> Int = do {
-  count <- signals.make 0
-  count := 1
-  signals.update (\current: Int -> current + 1) count
-  * count
-}

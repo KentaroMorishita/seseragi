@@ -1,3 +1,0 @@
-import * as collections from "std/collection"
-let problem: collections.SizeError = 0
-pub effect fn main = println "unreachable"

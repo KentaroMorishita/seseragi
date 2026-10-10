@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::windows" "array-windows" "Right [[10, 20], [20, 30], [30, 40]]\nRight []\nRight []\nLeft NonPositiveSize 0" (en.copy ()) (ja.copy ())

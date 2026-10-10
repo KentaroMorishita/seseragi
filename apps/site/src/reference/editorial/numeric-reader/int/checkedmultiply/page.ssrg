@@ -1,6 +1,0 @@
-import { Editorial } from "../../../model"
-import { numericReaderEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  numericReaderEditorial "std/int::checkedMultiply" "std/int" "int-checkedmultiply" "result: 60\nout of range" "result: 60\nout of range" (en.copy ()) (ja.copy ())
