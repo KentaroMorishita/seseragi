@@ -1,5 +1,7 @@
 # #766 Home とナビゲーションの実装準備
 
+> この調査計画にある旧記事・全route保全の公開条件は、こちらの過剰な解釈として撤回した。制作規範は61問と編集契約。現在は入口と最初の章を制作・公開しており、この旧計画や任意調査の完了を先行条件にしない。
+
 これは [#766](https://github.com/KentaroMorishita/seseragi/issues/766) の差分計画で、
 新しい編集規範ではない。文章・コードの規範は [editorial-contract.md](editorial-contract.md)、
 導線は [site-architecture.md](site-architecture.md)、移行は

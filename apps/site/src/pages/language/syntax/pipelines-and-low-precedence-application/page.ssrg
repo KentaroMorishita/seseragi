@@ -5,6 +5,7 @@ import {
   CodeExample,
   Heading,
   InternalLink,
+  ExternalLink,
   PageDefinition,
   Paragraph,
   Terminal,
@@ -71,18 +72,18 @@ pub fn page -> PageDefinition =
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Layout and line continuation" "レイアウトと行継続",
-          "/docs/language/syntax/layout-and-line-continuation/"
+        ExternalLink (
+          localized "Layout and line continuation (specification)" "レイアウトと行継続（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md"
         ),
         Words (localized (en.layoutExit ()) (ja.layoutExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Operator precedence" "演算子の優先順位",
-          "/docs/language/syntax/operator-precedence/"
+        ExternalLink (
+          localized "Operator precedence (specification)" "演算子の優先順位（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md"
         ),
         Words (localized (en.precedenceExit ()) (ja.precedenceExit ()))
       ]
@@ -98,17 +99,19 @@ pub fn page -> PageDefinition =
     ),
     Paragraph (
       [
-        InternalLink (
-          localized "Standard operators and traits" "標準演算子とtrait",
-          "/docs/language/traits/standard-operators/"
+        ExternalLink (
+          localized "Standard operators and traits (specification)" "標準演算子とtrait（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
         ),
         Words (localized (en.operatorsExit ()) (ja.operatorsExit ()))
       ]
     ),
     Paragraph (
       [
-        InternalLink
-      (localized "Do notation" "do記法", "/docs/language/traits/do-notation/"),
+        ExternalLink (
+          localized "Do notation (specification)" "do記法（仕様）",
+          "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
+        ),
         Words (localized (en.doExit ()) (ja.doExit ()))
       ]
     )

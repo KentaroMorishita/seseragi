@@ -37,13 +37,30 @@ fn navigation<Action> input: BuildInput
     ]
   }
 
-fn tools<Action> messages: Messages
+fn tools<Action> input: BuildInput
+  -> messages: Messages
   -> locale: Locale
   -> page: PageDefinition
   -> html.Html<Action> =
   html.div {
     class: "site-tools",
-    children: languageMenu messages locale page.path
+    children: [
+      html.details {
+        class: "site-menu",
+        children: [
+          html.summary {
+            class: "site-menu-trigger",
+            children:
+              if localizedRoute locale "/" == "/" then
+                "Menu"
+              else
+                "メニュー"
+          },
+          navigation input messages locale
+        ]
+      },
+      languageMenu messages locale page.path
+    ]
   }
 
 pub fn siteHeader<Action> input: BuildInput
@@ -58,7 +75,7 @@ pub fn siteHeader<Action> input: BuildInput
       children: [
         brand locale,
         navigation input messages locale,
-        tools messages locale page
+        tools input messages locale page
       ]
     }]
   }

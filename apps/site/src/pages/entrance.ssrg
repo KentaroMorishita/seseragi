@@ -1,0 +1,264 @@
+import { localized } from "../model/locale"
+import {
+  Article,
+  Block,
+  BulletList,
+  CodeExample,
+  DocumentationIndex,
+  DocumentationLanding,
+  ExternalLink,
+  Heading,
+  Home,
+  Inline,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  SiteLanding,
+  Terminal,
+  Words
+} from "../model/page"
+
+fn chapterLinks -> Array<Array<Inline>> = [
+  [
+    Words (localized "Make a search key — " "検索用の文字列を作る："),
+    InternalLink (
+      localized "Function application" "関数適用",
+      "/docs/language/syntax/function-application/"
+    )
+  ],
+  [
+    Words (localized "Keep a condition for later — " "検索条件を手元に残す："),
+    InternalLink (
+      localized "Function types and currying" "関数型とカリー化",
+      "/docs/language/types/function-types-and-currying/"
+    )
+  ],
+  [
+    Words (localized "Connect search to display — " "検索から表示へつなぐ："),
+    InternalLink (
+      localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+      "/docs/language/syntax/pipelines-and-low-precedence-application/"
+    )
+  ]
+]
+
+pub fn home -> PageDefinition = PageDefinition {
+  id: "home",
+  path: "/",
+  kind: Home,
+  title: localized "Seseragi" "Seseragi",
+  summary: localized "Give a small job a name. Then put the pieces together."
+    "小さな仕事に名前をつけて、計算をつないでいこう。",
+  blocks: [
+    CodeExample ("chapter-functions", localized "A name, tidied up" "名前をひとつ、整える"),
+    Terminal (localized "Output" "実行結果", "build"),
+    Paragraph (
+      [Words (
+        localized
+    "key makes a value; main returns the printing effect. Start here, then try keeping a search condition and combining the calls."
+    "keyが値を作り、mainが出力のEffectを返す。ここから、検索条件を手元に残したり、呼び出しを組み合わせたりしてみよう。"
+      )]
+    )
+  ]
+}
+
+pub fn docs -> PageDefinition = PageDefinition {
+  id: "docs.overview",
+  path: "/docs/",
+  kind: DocumentationIndex,
+  title: localized "Start with a small function" "小さな関数から始めよう",
+  summary: localized
+    "Three short steps from a useful function to a small composition. Read the code, run it, and change one thing."
+    "役に立つ関数から、小さな合成までの三つの段階。コードを読み、動かして、ひとつ変えてみよう。",
+  blocks: [
+    Heading ("start-here", localized "What would you like to make?" "何を作ってみようか"),
+    BulletList (chapterLinks ()),
+    Heading ("first-run", localized "Try it in your own terminal" "手元のターミナルでも試そう"),
+    Paragraph (
+      [InternalLink
+    (localized "Run your first program" "最初のプログラムを動かす", "/docs/first-run/")]
+    ),
+    Heading
+    ("learn-by-doing", localized "Keep going by changing the code" "コードを変えながら先へ"),
+    Paragraph (
+      [
+        InternalLink (localized "Examples" "例", "/examples/"),
+        Words (
+          localized
+    " has the complete programs and their results. The Tour is a separate sequence of exercises; Playground is where you can edit and run."
+    "には、プログラム全体と実行結果を置いた。Tourは順に試す練習コース、Playgroundは編集して動かす場所だ。"
+        )
+      ]
+    ),
+    Paragraph (
+      [ExternalLink
+    (localized "Open the Tour" "Tourを開く", "https://seseragi.vercel.app/tour/")]
+    )
+  ]
+}
+
+pub fn language -> PageDefinition = PageDefinition {
+  id: "language.overview",
+  path: "/docs/language/",
+  kind: DocumentationLanding,
+  title: localized "Functions and notation" "関数と記法",
+  summary: localized
+    "A function is a useful piece to keep. Learn how to call it, keep a partly applied function, and put calls together."
+    "関数は、手元に残せる計算のひとつの部品。呼び出し、引数を一部渡して残し、ほかの計算と組み合わせてみよう。",
+  blocks: [
+    Heading ("chapter", localized "One job, three steps" "ひとつの作業を、三つの段階で"),
+    Paragraph (
+      [Words (
+        localized
+    "We will tidy a command name, reuse a search condition, then format the matches. Each page begins with the work and its result before looking more closely at the rule."
+    "コマンド名を整え、検索条件を使い回し、合う候補を表示する。どのページも、まず作業と結果を見てから、記法の規則を詳しく読む。"
+      )]
+    ),
+    BulletList (chapterLinks ())
+  ]
+}
+
+pub fn examples -> PageDefinition = PageDefinition {
+  id: "examples",
+  path: "/examples/",
+  kind: SiteLanding,
+  title: localized "Examples" "例",
+  summary: localized
+    "Small, complete programs. Open one, change an input, and see what stays the same."
+    "小さく、最後まで動くプログラム。ひとつ開いて入力を変え、何が変わるか見てみよう。",
+  blocks: [
+    Heading ("search-key", localized "Make a search key" "検索用の文字列を作る"),
+    CodeExample ("chapter-functions", localized "Trim and lowercase" "空白を取り、小文字にする"),
+    Terminal (localized "Output" "実行結果", "build"),
+    Paragraph (
+      [InternalLink (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      )]
+    ),
+    Heading ("search-condition", localized "Keep a search condition" "検索条件を手元に残す"),
+    CodeExample (
+      "chapter-function-values",
+      localized "One condition, two collections" "ひとつの条件を、二つの候補へ"
+    ),
+    Terminal (localized "Output" "実行結果", "[ Build , bundle]\n[bundle]"),
+    Paragraph (
+      [InternalLink (
+        localized "Function types and currying" "関数型とカリー化",
+        "/docs/language/types/function-types-and-currying/"
+      )]
+    ),
+    Heading ("connect-functions", localized "Connect search to display" "検索から表示へつなぐ"),
+    CodeExample (
+      "syntax-reader-pipelines",
+      localized "Filter, format, and keep the missing case" "絞り込み、表示し、見つからない場合も残す"
+    ),
+    Terminal
+    (localized "Output" "実行結果", "[> build, > bundle]\nTrue\nJust > build\nNothing"),
+    Paragraph (
+      [InternalLink (
+        localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+        "/docs/language/syntax/pipelines-and-low-precedence-application/"
+      )]
+    )
+  ]
+}
+
+pub fn firstRun -> PageDefinition = PageDefinition {
+  id: "docs.first-run",
+  path: "/docs/first-run/",
+  kind: SiteLanding,
+  title: localized "Run your first program" "最初のプログラムを動かす",
+  summary: localized "Install the CLI and Bun, then make a file you can change."
+    "CLIとBunを用意したら、自分で変えられるファイルを作ろう。",
+  blocks: [
+    Heading ("install", localized "Get Seseragi and Bun" "SeseragiとBunを用意する"),
+    Paragraph (
+      [Words (
+        localized
+    "Seseragi checks your program and produces code that Bun runs. Download the native archive for your OS from the release, verify its checksum, and put its directory on PATH."
+    "Seseragiがプログラムの型を調べ、Bunで動くコードを作る。リリースからOSに合うnative archiveを取り、checksumを確認して、展開したディレクトリをPATHへ加えよう。"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Seseragi 0.61.23 downloads" "Seseragi 0.61.23をダウンロード",
+        "https://github.com/KentaroMorishita/seseragi/releases/tag/v0.61.23"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Native archive installation steps" "native archiveのインストール手順",
+        "https://github.com/KentaroMorishita/seseragi/blob/v0.61.23/docs/RELEASE.md#native-archiveからinstall"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink
+    (localized "Install Bun" "Bunをインストール", "https://bun.com/docs/installation")]
+    ),
+    Terminal
+    (localized "Check your tools" "使うツールを確認", "seseragi --version\nbun --version"),
+    Paragraph (
+      [Words (
+        localized
+    "These examples were run with the published Seseragi 0.61.23 Linux x64 CLI and Bun 1.3.11."
+    "この例は、正式公開されたSeseragi 0.61.23のLinux x64 CLIとBun 1.3.11で動かした。"
+      )]
+    ),
+    Heading ("run", localized "Make main.ssrg" "main.ssrgを作る"),
+    CodeExample ("first-run-hello", localized "The whole program" "プログラム全体"),
+    Terminal (
+      localized "Check and run" "型を調べて、動かす",
+      "seseragi lint main.ssrg\nseseragi run main.ssrg"
+    ),
+    Terminal (localized "Output" "実行結果", "Hello, Seseragi!"),
+    Paragraph (
+      [Words (
+        localized
+    "Change the text and run it again. Then make a small function of your own."
+    "文字列を変えて、もう一度動かしてみよう。次は、自分の小さな関数を作ってみる。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Function application" "関数適用",
+        "/docs/language/syntax/function-application/"
+      )]
+    )
+  ]
+}
+
+pub fn releases -> PageDefinition = PageDefinition {
+  id: "releases",
+  path: "/releases/",
+  kind: SiteLanding,
+  title: localized "Releases" "リリース",
+  summary: localized "Published tools, downloads, and the changes behind them."
+    "公開されたツールとダウンロード、その変更内容。",
+  blocks: [
+    Heading ("current", localized "Seseragi 0.61.23" "Seseragi 0.61.23"),
+    Paragraph (
+      [Words (
+        localized
+    "Published on October 8, 2026. Seseragi is experimental; read the release notes before updating a project."
+    "2026年10月8日公開。Seseragiは実験中の言語なので、プロジェクトを更新するときはリリースノートも読んでおこう。"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Release notes and native downloads" "リリースノートとnative版のダウンロード",
+        "https://github.com/KentaroMorishita/seseragi/releases/tag/v0.61.23"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "All releases" "これまでのリリース",
+        "https://github.com/KentaroMorishita/seseragi/releases"
+      )]
+    ),
+    Paragraph (
+      [InternalLink
+    (localized "Run your first program" "最初のプログラムを動かす", "/docs/first-run/")]
+    )
+  ]
+}
