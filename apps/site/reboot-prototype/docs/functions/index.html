@@ -148,183 +148,50 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      Language guide
-     </div>
-     <span class="kicker">
-      01 / FUNCTION APPLICATION
-     </span>
-     <h1>
-      Functions and notation
-     </h1>
-     <p class="lead">
-      Write small functions first. Compose them when the task calls for it. A function can itself become a value — even after some arguments have already been supplied.
-     </p>
-     <h2 id="a-function">
-      A small function is a useful promise.
-     </h2>
-     <p>
-      Need to trim a label and normalize its casing? Give that little job a name.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        functions.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy functions.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20text.toLower%20%28text.trim%20name%29%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20builds%20%3D%20matches%20%22b%22%0Alet%20choices%20%3D%20arrays.filter%20builds%20commands%0Alet%20shortcuts%20%3D%20arrays.filter%20builds%20%5B%22bundle%22%2C%20%22run%22%5D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20shortcuts%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">import</span> * <span class="kw">as</span> text <span class="kw">from</span> <span class="st">"std/text"</span>
+    <article class="article deep-guide"><div class="crumbs"><a href="/docs/">Guide</a> / Functions and notation</div><span class="kicker">01 / FUNCTIONS AS VALUES</span><h1>You don't have to apply every argument at once.</h1><p class="lead">One idea makes Seseragi functions much easier to reason about: <strong>a function is a value</strong>. Partial application isn't simply a shorthand for omitting parameters. It's how small pieces of behavior can become ingredients for other functions.</p>
+<h2 id="problem">Suppose you want to reuse a search rule.</h2>
+<p>Think about filtering a list of commands. You want to ignore stray whitespace and capitalization when comparing names. Give that job its own small function first.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / Excerpt: normalize a name</span><div class="code-tools"><button class="copy-code" type="button">Copy</button></div></div><pre><code>import * as text from &quot;std/text&quot;
 
-<span class="kw">fn</span> key name: <span class="ty">String</span> -&gt; <span class="ty">String</span> = text.toLower (text.trim name)</code></pre>
-     </div>
-     <p>
-      <code class="inline-code">
-       fn
-      </code>
-      declares a function.
-      <code class="inline-code">
-       name: String
-      </code>
-      is the input, and the last
-      <code class="inline-code">
-       String
-      </code>
-      is the result type. The expression after
-      <code class="inline-code">
-       =
-      </code>
-      is the result — no
-      <code class="inline-code">
-       return
-      </code>
-      statement needed.
-     </p>
-     <h2 id="apply">
-      Pass a value by writing it after the function.
-     </h2>
-     <p>
-      <code class="inline-code">
-       key " Build "
-      </code>
-      applies the function to a string. You are not building a parenthesized argument list.
-     </p>
-     <h2 id="partial">
-      Supply some arguments. Keep the function.
-     </h2>
-     <p>
-      This one checks whether a command starts with a query. The query can be supplied now and the command later.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        function-values.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy function-values.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20text.toLower%20%28text.trim%20name%29%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20builds%20%3D%20matches%20%22b%22%0Alet%20choices%20%3D%20arrays.filter%20builds%20commands%0Alet%20shortcuts%20%3D%20arrays.filter%20builds%20%5B%22bundle%22%2C%20%22run%22%5D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20shortcuts%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">fn</span> matches query: <span class="ty">String</span> -&gt; name: <span class="ty">String</span> -&gt; <span class="ty">Bool</span> =
+fn key name: String -&gt; String = text.toLower (text.trim name)</code></pre></div>
+<p><code>key</code> does exactly one thing. It doesn't know about searching or rendering. It trims the edges and makes the text lowercase.</p>
+<p>Next, a function that checks whether a name starts with a query. It needs two strings.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">02 / Excerpt: build a predicate</span><div class="code-tools"><button class="copy-code" type="button">Copy</button></div></div><pre><code>fn matches query: String -&gt; name: String -&gt; Bool =
+  text.startsWith (key query) (key name)</code></pre></div>
+<p>Read <code>String → String → Bool</code> carefully. It isn't one box that must receive two strings together. It's a function that takes a string and yields <strong>another function</strong> waiting for a string.</p>
+<figure class="concept-figure" aria-label="Type transformation through partial application"><figcaption><span class="concept-kicker">ONE ARGUMENT AT A TIME</span><strong>Applying an argument can still leave a function.</strong></figcaption><div class="type-flow"><div class="type-stage"><small>Declared function</small><code>String → String → Bool</code><span>matches</span></div><div class="type-connector"><b>“b”</b><span aria-hidden="true">→</span></div><div class="type-stage selected"><small>Query supplied</small><code>String → Bool</code><span>matches "b"</span></div><div class="type-connector"><b>“Build”</b><span aria-hidden="true">→</span></div><div class="type-stage"><small>Result</small><code>Bool</code><span>True</span></div></div><p>The middle stage is <em>not</em> a Bool. It is a function value waiting for the candidate name.</p></figure>
+<h2 id="partial">Keep the function that's left over.</h2>
+<p>Once the query is fixed to <code>"b"</code>, we can apply only that first argument.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">03 / Excerpt: reuse the predicate</span><div class="code-tools"><button class="copy-code" type="button">Copy</button></div></div><pre><code>let builds = matches &quot;b&quot;
+let choices = arrays.filter builds commands
+let shortcuts = arrays.filter builds [&quot;bundle&quot;, &quot;run&quot;]</code></pre></div>
+<p><code>builds</code> is a <code>String → Bool</code> function. That's exactly what <code>arrays.filter</code> needs. The list can change without copying the matching logic. We're passing a function to another function.</p>
+<h2 id="program">Now put the whole program together.</h2>
+<p>Those snippets shared surrounding definitions, so here's the complete program. <code>main</code> returns an Effect that prints the results; <code>key</code> and <code>matches</code> just calculate values.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">chapter-function-values.ssrg / complete program</span><div class="code-tools"><button class="copy-code" type="button">Copy</button><a href="https://seseragi.vercel.app/?source=import%20*%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20*%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20text.toLower%20(text.trim%20name)%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20(key%20query)%20(key%20name)%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20builds%20%3D%20matches%20%22b%22%0Alet%20choices%20%3D%20arrays.filter%20builds%20commands%0Alet%20shortcuts%20%3D%20arrays.filter%20builds%20%5B%22bundle%22%2C%20%22run%22%5D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20(show%20choices)%0A%20%20println%20(show%20shortcuts)%0A%7D" target="_blank" rel="noopener noreferrer">Run in Playground ↗</a></div></div><pre><code>import * as text from &quot;std/text&quot;
+import * as arrays from &quot;std/array&quot;
+
+fn key name: String -&gt; String = text.toLower (text.trim name)
+fn matches query: String -&gt; name: String -&gt; Bool =
   text.startsWith (key query) (key name)
 
-<span class="kw">let</span> builds = matches <span class="st">"b"</span>
-<span class="kw">let</span> choices = arrays.filter builds commands</code></pre>
-     </div>
-     <p>
-      <code class="inline-code">
-       matches "b"
-      </code>
-      is still a function, waiting for a name.
-      <code class="inline-code">
-       filter
-      </code>
-      can use it without having to know how that function was made.
-     </p>
-     <div class="inline-action-row">
-      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20text.toLower%20%28text.trim%20name%29%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20builds%20%3D%20matches%20%22b%22%0Alet%20choices%20%3D%20arrays.filter%20builds%20commands%0Alet%20shortcuts%20%3D%20arrays.filter%20builds%20%5B%22bundle%22%2C%20%22run%22%5D%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20shortcuts%29%0A%7D%0A">
-       Try the whole example ↗
-      </a>
-      <a class="text-link subtle" href="https://github.com/KentaroMorishita/seseragi/blob/main/apps/site/examples/src/language/chapter-function-values.ssrg">
-       See verified source ↗
-      </a>
-     </div>
-     <details class="rule-note" id="rules">
-      <summary>
-       Function application, precisely
-      </summary>
-      <p>
-       <code class="inline-code">
-        fn f x: A -&gt; B = ...
-       </code>
-       declares parameter and result types.
-       <code class="inline-code">
-        f value
-       </code>
-       applies a function. When arguments remain, the result is another function value.
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/docs/patterns/">
-       <span class="step-flag">
-        Next
-       </span>
-       <strong>
-        Data and match →
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="On this page" class="right-index">
-     <p class="side-group">
-      ON THIS PAGE
-     </p>
-     <a href="#a-function">
-      Write a function
-     </a>
-     <a href="#apply">
-      Apply a function
-     </a>
-     <a href="#partial">
-      Partial application
-     </a>
-     <a href="#rules">
-      Notation
-     </a>
-    </nav>
+let commands = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let builds = matches &quot;b&quot;
+let choices = arrays.filter builds commands
+let shortcuts = arrays.filter builds [&quot;bundle&quot;, &quot;run&quot;]
+
+pub effect fn main = do {
+  println (show choices)
+  println (show shortcuts)
+}</code></pre></div>
+<p><code>choices</code> includes <code>" Build "</code> and <code>"bundle"</code>. What happens if you use <code>"c"</code> as the query instead? The rest of the code can stay the same.</p>
+<h2 id="why">Why is this worth designing around?</h2>
+<p>Normalizing a name, deciding whether it matches, and filtering a list are three separate responsibilities. Instead of hiding everything inside a giant search function, we compose those smaller pieces when needed.</p>
+<p>This behavior follows from the language's function types: multi-parameter functions are curried. Arguments are applied from left to right, and the intermediate function is a real value you can keep.</p>
+<details class="deep-aside"><summary>A quick comparison with JavaScript</summary><p>JavaScript can express the same shape as <code>(query) =&gt; (name) =&gt; ...</code>. In Seseragi, nested one-argument functions are the normal type interpretation of multi-parameter declarations. The point isn't saving punctuation; it's making the intermediate function useful.</p></details>
+<div class="deep-inline-reference"><strong>Want the exact rules?</strong><p>Function application is whitespace-based and left-associative. You can also check argument evaluation order, Unit parameters, and type arguments without leaving this site.</p><a href="/reference/function-application/">Open the function application reference →</a></div>
+<nav class="article-steps" aria-label="Article navigation"><a class="step-link" href="/docs/patterns/"><span class="step-flag">NEXT</span><strong>Data shapes and match →</strong></a></nav></article>
+    <nav aria-label="On this page" class="right-index"><p class="side-group">ON THIS PAGE</p><a href="#problem">A reusable search rule</a><a href="#partial">Partial application</a><a href="#program">Complete program</a><a href="#why">Why it matters</a></nav>
    </div>
   </main>
   <footer class="site-footer">
