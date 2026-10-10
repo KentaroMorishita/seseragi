@@ -1,3 +1,7 @@
+import * as chapter_functions from "./language/chapter-functions"
+import * as chapter_function_values from "./language/chapter-function-values"
+import * as chapter_label_lengths from "./language/chapter-label-lengths"
+import * as chapter_dollar_grouping from "./language/chapter-dollar-grouping"
 import * as pilot_built_in_types from "./language/pilot-built-in-types"
 import * as pilot_annotations from "./language/pilot-annotations"
 import * as pilot_function_application from "./language/pilot-function-application"

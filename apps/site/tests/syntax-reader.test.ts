@@ -16,6 +16,7 @@ import type {
 } from "../../playground/src/compiler/types"
 import { sourceFromPlaygroundUrl } from "../../playground/src/workspace/source-link"
 import { canonicalExample } from "../scripts/canonical-example"
+import { chapterExamples } from "../scripts/function-chapter-examples"
 import { syntaxExampleCases, syntaxExamples } from "../scripts/syntax-examples"
 import { renderPageClosure } from "./render-page-closure"
 
@@ -81,11 +82,17 @@ test("syntax example metadata preserves source bytes and runnable Playground see
       expect(sourceFromPlaygroundUrl(example.playgroundUrl)).toBe(source)
     }
   }
-  for (const key of ["layout", "pipelines"]) {
+  for (const key of ["layout"]) {
     expect(exampleById(`syntax-reader-${key}`).source).toMatch(
       /\n[\t ]*3\n[\t ]*\|> double\n[\t ]*\|> addOne/u
     )
   }
+  expect(exampleById("syntax-reader-pipelines").source).toMatch(
+    /commands\s*\|> arrays\.filter \(matches "b"\)\s*\|> map badge/u
+  )
+  expect(exampleById("syntax-reader-pipelines").source).toContain(
+    "badge <$> picked"
+  )
   expect(exampleById("syntax-reader-layout").source).toContain(
     "fn addOne value: Int -> Int = {\n"
   )
@@ -293,7 +300,11 @@ const titles: Record<string, { en: string; ja: string }> = {
 
 test("syntax render: all eleven real page modules preserve bilingual identities and executable panels", () => {
   const temporary = mkdtempSync(join(tmpdir(), "seseragi-syntax-render-"))
-  const allExamples = [...examples, ...supplementalExamples]
+  const allExamples = [
+    ...examples,
+    ...supplementalExamples,
+    ...chapterExamples(playgroundUrl),
+  ]
   try {
     const encodedExamples = allExamples
       .map(
@@ -445,9 +456,29 @@ pub effect fn main = {
           page.locale === "ja" ? "大文字・小文字の区別がない" : "Uncased"
         )
       }
-      if (example.key === "layout" || example.key === "pipelines") {
+      if (example.key === "layout") {
         expect(code(codePanels[0])).toMatch(
           /\n[\t ]*3\n[\t ]*\|> double\n[\t ]*\|> addOne/u
+        )
+      }
+      if (example.key === "pipelines") {
+        const grouping = allExamples.find(
+          (value) => value.id === "chapter-dollar-grouping"
+        )
+        expect(codePanels.map(code), page.route).toContain(grouping?.source)
+        expect(terminals(page.html), page.route).toContain("READY")
+        const prose = text(page.html)
+        for (const shape of ["if", "match", "do"])
+          expect(prose, page.route).toContain(shape)
+        expect(prose, page.route).toContain(
+          page.locale === "ja"
+            ? "$は左の関数を一度、次に右の引数を一度評価し"
+            : "$ evaluates the left function once, then the right argument once"
+        )
+        expect(prose, page.route).toContain(
+          page.locale === "ja"
+            ? "|>は左の値を一度、次に右の関数を一度評価し"
+            : "|> evaluates the left value once, then the right function once"
         )
       }
       if (example.key === "escapes") {

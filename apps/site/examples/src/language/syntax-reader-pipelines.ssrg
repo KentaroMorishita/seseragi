@@ -1,11 +1,23 @@
-fn double value: Int -> Int = value * 2
-fn addOne value: Int -> Int = value + 1
+import * as text from "std/text"
+import * as arrays from "std/array"
 
-let piped =
-  3
-    |> double
-    |> addOne
-let nested = addOne (double 3)
-let withoutParentheses = addOne $ double 3
+fn key name: String -> String = name |> text.trim |> text.toLower
+fn matches query: String -> name: String -> Bool =
+  text.startsWith (key query) (key name)
+fn badge name: String -> String = "> " + key name
 
-pub effect fn main = println `${piped}\n${nested}\n${withoutParentheses}`
+let commands = [" Build ", "bundle", "CHECK", "run"]
+let nested = map badge (arrays.filter (matches "b") commands)
+let compact = map badge $ arrays.filter (matches "b") commands
+let choices = commands |> arrays.filter (matches "b") |> map badge
+let same = nested == compact && compact == choices
+let picked = arrays.find (matches "b") commands
+let suggestion = badge <$> picked
+let missing = badge <$> arrays.find (matches "z") commands
+
+pub effect fn main = do {
+  println (show choices)
+  println (show same)
+  println (show suggestion)
+  println (show missing)
+}

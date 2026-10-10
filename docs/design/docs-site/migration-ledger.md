@@ -241,3 +241,106 @@ scoped/build/browser結果は下記。残件は作者レビュー、章全体の
 
 状態: 置換実装あり / 上記技術scope・全site決定性 pass / agent編集・表示所見あり /
 作者判断未確認 / 実読者未確認 / 新本文はPR候補。#769の契約に依存するPR #770。
+
+## 765: 関数と記法の代表章候補
+
+#769 → #770の部品を使った依存PR候補。既存の三つの深いrouteを章としてつなぎ、
+小さなコマンドパレットの検索を題材に、新しいコードと本文を組み立てる。
+作者・実読者の承認は未取得。最初の章の受け入れや#767の大量移行を完了扱いにしない。
+
+| Route / identity | 新しい体験 | 保全と退役候補 |
+| --- | --- | --- |
+| `syntax/function-application` / `language.syntax.function-application` | fnで検索キーを作る。式の結果、普通の呼び出し、pureな計算とEffectの境目 | 英日route/title/6 fragmentsを保持。旧integer valid/invalidは詳細規則用に残す。#764の段落を章の入口に再構成 |
+| `types/function-types-and-currying` / `language.types.function-types` | 検索文字を先に渡し、同じ条件を候補とショートカットのfilterへ渡す。独立したscalar長の計算でラムダ/map/reduce/(+)を扱う | 英日route/title/既存fragmentsを保持。型の右結合、各段階の引数検査、Unit/generic制約、既存integer valid/invalidを保全。旧guide/ReaderCopyを退役候補へ |
+| `syntax/pipelines-and-low-precedence-application` / `language.syntax.pipelines` | 同じ検索と表示を通常適用/$/pipelineで比較。findの不在を<$>で保ち、doで出力を順につなぐ | 英日route/title/既存fragmentsを保持。結合/優先順位/型と評価/$の非関数値性、invalid/repairを保全。literal3のpipelineを新しい検証sourceへ置換し、旧guide/readerPage/withDetailsと空detailsを退役候補へ |
+
+h2には「技術名＋何ができるか」を示す。既存のmetadata titleとpage-name linkは維持。
+最初の記事に短い章の見取り図、各記事の目的付きリンクに章の次/前/入口への経路を置く。
+最後は標準演算子とdo記法の正確なReferenceへつなぎ、この章に理論を詰め込まない。
+型規則用の整数例は章の代表コードではなく、Heroにも自動転用しない。
+
+実行可能な新sourceは `chapter-functions` / `chapter-function-values`、置換したsourceは
+`syntax-reader-pipelines`。既存canonicalExample/source hash/highlight/Playground seedを使い、
+追加のページ内容inventory・compiler・rendererを作らない。新しい例のnative/WASM検証は
+`function-chapter.test.ts`、第三記事は既存 `syntax-reader.test.ts` の全11 caseで検証する。
+既存実行checkerにも最初の二例を追加し、Bun gateから両test/browser verifierを呼ぶ。
+
+初回scoped検証では、旧literal pipelineを要求する構造assertionと、localeの関数名
+`arguments`が生成JavaScriptのstrict modeに衝突する失敗を確認。新sourceの意味を確認する
+assertionと `argumentTypes` に修正した。layout記事の改行検証、構文11記事、関数系6記事、
+全routeとcanonical invalid/repairのcoverageは削らない。
+
+現行の検証結果は追記する。初見読者・作者用の具体的な確認対象と未確認状態は
+[function-chapter-review.md](function-chapter-review.md)へ記録する。
+
+### 765の技術・表示検証
+
+- Compilerはrelease `0.61.23 / 46755c08f4e9`。CIと同じBun **1.3.11**で実行。
+- 対象4 suite: **26 pass / 0 fail / 16,152 assertions**。新2例と既存11構文例の
+  native/format/WASM/Playground source、関数系6記事・構文11記事の英日render、既存
+  invalid/repair/metadata/source hash/highlight/localeと一段落compositionを検証。
+- 追加した検索変更とMaybe引数拒否を含むchapter suite再確認:
+  **4 pass / 0 fail / 37 assertions**。検索をcへ変えたstdoutは
+  `[> check]\nTrue\nJust > check\nNothing\n`。`badge picked`は`SES-T0101`で拒否。
+- 全 `check-examples.ts`: **exit 0**。既存比較・canonical valid/invalid、追加した
+  章2例の実行/出力を検証。Bun1.4.2ではNode console出力がspawnSyncのpipeに入らず
+  比較のTS2345 assertionが失敗した。Node22/24で同じ最小再現を確認し、CIのBun1.3.11
+  ではstdout/stderrを取得できることを確認してgate自体を変更せず再実行した。
+- 全site production SSG: **3,976 routes、pass**（Bun1.4.2の初回単独生成）。
+  既存route/link/fragment/translation/metadata validationを保持して通過。
+- そのproduction出力でBun1.3.11のbrowser verifierを実行:
+  **36 page cases / 12 complete chapter walks + 12 article-composition cases、pass**。
+  英日×320/390/1280px×JS有無で、全掲載source/出力、診断/詳細fragment、章の次/入口、
+  keyboard locale、overflow、page/console/response errorを確認。48 screenshotsを保存。
+- 英日320px/no-JSと日本語1280px/JSの実物をagentが確認。コード・出力・詳細規則と
+  章の経路が見える。作者/実読者の美学・理解承認とは別の観察。
+- browser初回は見取り図と末尾に同じ目的リンクがあるためstrict locatorで失敗。
+  末尾のchapter continuationを明示するselectorへ修正して全48 caseを再検証した。
+- Biome全site、対象TypeScript、12変更Seseragi sourceのcanonical format、prose tests、
+  design local links、content-map351 routes、diff whitespace: **pass**。
+- CI Bun1.3.11の全site決定性test初回: **fail**。browser/scoped checksとの並行中に
+  最初の生成が420,180msで既存420,000ms deadlineへ達した。失敗ログは保持。
+  browser終了後の単独再実行は、1回目を416,101msで生成し3,976 routesを保持。
+  680件のLanguage linkと1,795件のLibrary linkを確認。2回目は420,145msで
+  deadlineへ達し、**0 pass / 1 fail / 9,259 assertions**。全決定性は未確認。
+  並行なしでも再現したため、並行負荷だけでは説明できない。#706へ残す。
+  初回Bun1.4.2出力とCI1.3.11出力の英日6章HTML・CSS/JS assetsはbyte一致。
+  並行負荷を原因と断定せず、deadlineを延長しない。
+  #763の元check:site timeoutと未完了suiteも引き続き履歴として保持する。
+
+Source SHA-256:
+
+- chapter-functions: `8f3c1aecfd660ade2ea71e1849589400d6c21609a8963609e46163f7cb69abb6`
+- chapter-function-values: `8d9faa8ef5a62492191e6b1260b6ff84cd1c78d9b4359dc3324e00ffb7ce060f`
+- syntax-reader-pipelines: `ab5548c32f2d71a8b8ee6b17ac5f326e00e930a91ed33b2f9760a7065bbc9b7e`
+
+状態: 英日3記事の置換候補あり / 上記技術scope・実行例checker・browser pass /
+CI全決定性はdeadline fail・未確認 / agent通読・表示所見あり / 作者判断未取得 /
+実読者・改善後の再確認未取得 / 公開退役未実施。依存draft PR #771。
+
+### 765 独立レビュー改善後（2026-10-10）
+
+#771 comment6091348119の4点を修正。記事2に初出doの局所説明、検索条件captionの訂正、
+同一predicateの二箇所での再利用、scalar長の独立例を追加。記事3に$直後の改行と
+括弧なしif/match/do/lambda、左右を各一度評価してから適用する正確な順序を英日で復元した。
+if例はTrue→READY、False→WAITINGを実行確認。旧widths名は使わずlengthsとした。
+
+Bun1.3.11 / release-built CLIで4 suite **27 pass / 0 fail / 16,221 assertions**、173.85s。
+新4例native/format/WASM/Playgroundと既存全11構文・6関数記事の英日renderを確認。
+新例をscoped test入力へ追加し、完全source/出力/既存診断/identity/URL/fragmentsと
+英日do/評価順の検証を保持。初回fixture不足によるrender failureを修正して再実行した。
+最新本文の全実行checker・全site二回生成/完全hash・browserは#772統合後の通常CIで再確認。
+上の旧headのproduction/browser成功を改善後の成功へ読み替えない。
+記事のscoped import closureと同じproduction CSSで、英日×320/390/1280px・no-JSの
+18 layout casesも確認。全catalog/sidebar/production JSを含めないためfull browser gateとは
+区別する。canonical formatで$直後の改行が残るif例へ整えた後、影響する2 suiteを再検証:
+**19 pass / 0 fail / 1,129 assertions**（92.11s）。native/WASM/英日renderとREADY/WAITINGを保持。
+
+改善後source SHA-256（旧hashは上の履歴に保持）:
+
+- chapter-functions: `8f3c1aecfd660ade2ea71e1849589400d6c21609a8963609e46163f7cb69abb6`
+- chapter-function-values: `d5e53845d570af8cb814775d4312e69ca85cae8227bc4770e2b53ab270255624`
+- chapter-label-lengths: `cfbc8a1315415c842418840ab376fc61d7fda617a55a7807e9ab30ea22b56c3d`
+- chapter-dollar-grouping: `4759324272e73d15cae3db2c732854ccf128362ee788bf38b554fc54463d7c4d`
+
+作者/実読者の改善後確認・公開退役は引き続き未取得。#771の既存branch/PRを更新する。

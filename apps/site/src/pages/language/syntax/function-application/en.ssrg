@@ -2,28 +2,31 @@ import { ArticleCopy } from "../../../../model/article"
 
 pub fn copy -> ArticleCopy = ArticleCopy {
   title: "Function application",
-  summary: "Write a small fn, then call it with arguments separated by spaces. An ordinary call is enough to get started; partial application lets you reuse it with fewer arguments."
+  summary: "Write a search key with fn, call it with a name, and separate the calculation from its output. Start of the functions and notation chapter."
 }
 
 pub fn title -> String = (copy ()).title
 
 pub fn opening -> String =
-  "Let's give addition a name. add takes two integers and returns their sum. Once the function is written, we can use it with different inputs."
+  "A command palette should still find build when someone types \"  Build  \". Keep the label people see; give the comparison its own small function."
+
+pub fn roadmap -> String =
+  "This chapter has three stops: name a calculation, keep a function for later, then put those functions together. You can also jump straight to the exact rules on any page."
 
 pub fn call -> String =
-  "Read add 1 2 as ‘give add the values 1 and 2’. The spaces separate arguments; there is no comma or pair of call parentheses. The result is 3. let answer names that result."
+  "key \"  Build  \" returns \"build\". Arguments follow the function with spaces; commas and call parentheses are unnecessary. The parentheses inside key collect text.trim name into the one argument that text.toLower needs."
 
 pub fn declaration -> String =
-  "In the declaration, left: Int and right: Int name the integer arguments. Each arrow continues to the next argument or the result type. The final Int says the function returns an integer; left + right is that returned value."
+  "fn names the function. name: String says what it takes; -> String says what it returns. The expression after = supplies that result. There is no separate return statement to tuck into the last line. Here, text.trim removes surrounding whitespace and text.toLower lowercases the ASCII command name."
 
 pub fn display -> String =
-  "The calculation stays separate from printing. show answer converts 3 to text, and println describes writing that text with a newline. main returns this Effect; the runner starts it. Parentheses pass the whole show answer calculation as one argument."
+  "key computes a String. println describes an output operation as an Effect, which main returns for the runner to execute. Calling an effectful function constructs that value; it does not start the operation. Keeping this boundary lets us test the search calculation without a console."
 
 pub fn reuse -> String =
-  "The same add also accepts add 20 2. Or give it just the first argument: let addOne = add 1. Now addOne is a function waiting for one more integer, so addOne 2 is 3. Supplying only some arguments is called partial application."
+  "Now both a query and a command label can use key. We have a useful unit to reuse, rather than a long function that trims, searches, formats and prints all at once. On the next page, matches will take the query first so we can keep a search configured for later."
 
 pub fn grouping -> String =
-  "add 1 2 groups as (add 1) 2. Correspondingly, Int -> Int -> Int means Int -> (Int -> Int): after the first integer, a function of type Int -> Int remains. A -> B -> C follows the same rule; A, B and C stand for arbitrary types here."
+  "add 1 2 groups as (add 1) 2. Correspondingly, Int -> Int -> Int means Int -> (Int -> Int): after the first integer, a function of type Int -> Int remains. A -> B -> C follows the same rule; A, B and C stand for arbitrary types here. For example, let addOne = add 1 leaves one Int argument, and addOne 2 returns 3."
 
 pub fn unit -> String =
   "A declaration without a named parameter still takes one Unit value: fn answer -> Int = 42 is called as answer (). Unit means there is no useful input to supply, and () is its only value. The name answer alone still refers to the function."
@@ -44,9 +47,13 @@ pub fn repair -> String =
   "When an application fails, compare what you passed with the declaration: is it one tuple, the wrong type, or a value that is not a function? Adding parentheses does not turn a tuple into two arguments."
 
 pub fn partialExit -> String =
-  " — follow the function left after supplying some arguments."
+  " — next in this chapter: keep the query and pass the resulting function to a search."
+
 pub fn typesExit -> String = " — choose where to write a type annotation."
+
 pub fn methodExit -> String = " — call from the value using a dot."
+
 pub fn compositionExit -> String =
   " — choose parentheses, $ or a pipeline for nested calls."
+
 pub fn precedenceExit -> String = " — look up how an unparenthesized expression groups."

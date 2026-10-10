@@ -13,6 +13,7 @@ import { staticSiteHandler } from "../scripts/static-site-handler"
 import { verifyArticleComposition } from "./article-composition-browser"
 import { verifyExamplesAndReleases } from "./examples-releases-browser"
 import { verifyFirstRun } from "./first-run-browser"
+import { verifyFunctionChapter } from "./function-chapter-browser"
 import { verifyLanguageMenu } from "./language-menu"
 import { verifyMobileNavigation } from "./mobile-navigation"
 import { verifyReaderArticles } from "./reader-articles"
@@ -142,6 +143,7 @@ try {
   try {
     const browser = await chromium.launch()
     try {
+      await verifyFunctionChapter(browser, `http://127.0.0.1:${server.port}`)
       await verifyArticleComposition(browser, `http://127.0.0.1:${server.port}`)
       await verifyFirstRun(
         browser,

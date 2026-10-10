@@ -6,6 +6,7 @@ import {
   chromium,
 } from "../../playground/node_modules/@playwright/test"
 import { staticSiteHandler } from "../scripts/static-site-handler"
+import { verifyFunctionChapter } from "./function-chapter-browser"
 
 const root = resolve(import.meta.dir, "../../..")
 const route = "/docs/language/syntax/function-application/"
@@ -14,6 +15,10 @@ const source = readFileSync(
     root,
     "apps/site/examples/src/language/pilot-function-application.ssrg"
   ),
+  "utf8"
+)
+const chapterSource = readFileSync(
+  resolve(root, "apps/site/examples/src/language/chapter-functions.ssrg"),
   "utf8"
 )
 const invalid = readFileSync(
@@ -62,11 +67,13 @@ export async function verifyArticleComposition(
             assert.equal(await article.locator(`h2#${anchor}`).count(), 1)
           assert.deepEqual(
             await article.locator(".seseragi-highlight").allTextContents(),
-            [source, invalid]
+            [chapterSource, source, invalid]
           )
-          assert.equal(
-            await article.locator(".terminal-panel pre > code").textContent(),
-            "3"
+          assert.deepEqual(
+            await article
+              .locator(".terminal-panel pre > code")
+              .allTextContents(),
+            ["build", "3"]
           )
           const text = await article.innerText()
           for (const detail of [
@@ -109,7 +116,9 @@ export async function verifyArticleComposition(
           )
           // Follow a real detail destination, then return to the same identity.
           const destination = `${prefix}/docs/language/types/function-types-and-currying/`
-          await article.locator(`a[href="${destination}"]`).click()
+          await article
+            .locator(`#related-rules ~ p a[href="${destination}"]`)
+            .click()
           assert.equal(new URL(page.url()).pathname, destination)
           await page.goBack()
           assert.equal(new URL(page.url()).pathname, prefix + route)
@@ -154,6 +163,7 @@ if (import.meta.main) {
     )
     try {
       await verifyArticleComposition(browser, `http://127.0.0.1:${server.port}`)
+      await verifyFunctionChapter(browser, `http://127.0.0.1:${server.port}`)
     } finally {
       await browser.close()
     }

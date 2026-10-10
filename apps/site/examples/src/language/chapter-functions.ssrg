@@ -1,0 +1,7 @@
+import * as text from "std/text"
+
+fn key name: String -> String = text.toLower (text.trim name)
+
+let query = key "  Build  "
+
+pub effect fn main = println query

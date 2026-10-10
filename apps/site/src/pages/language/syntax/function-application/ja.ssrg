@@ -2,28 +2,31 @@ import { ArticleCopy } from "../../../../model/article"
 
 pub fn copy -> ArticleCopy = ArticleCopy {
   title: "関数適用",
-  summary: "小さなfnを書いて、引数を空白で区切って渡してみよう。まずは普通の呼び出しから。一部の引数だけ渡すと、その関数を別の形で使い回せる。"
+  summary: "fnで検索用の文字列を作り、名前を渡して呼んでみよう。計算と出力の境目も確認する。「関数と記法」の章の入口。"
 }
 
 pub fn title -> String = (copy ()).title
 
 pub fn opening -> String =
-  "まずは足し算に名前を付けてみよう。addは二つの整数を受け取って、その合計を返す関数。一度書けば、違う値でも同じ計算を使える。"
+  "コマンドパレットで「  Build  」と入力しても、buildを見つけたい。表示名はそのままにして、比較用の文字列だけ整えてみよう。"
+
+pub fn roadmap -> String =
+  "この章は三つの寄り道。まず計算に名前を付け、次に関数を手元に残し、最後に組み合わせる。呼び出しの細かい規則を調べたいときは、各ページの後半へ直接飛んでね。"
 
 pub fn call -> String =
-  "add 1 2は「addに1と2を渡す」と読めばいい。引数の区切りは空白で、カンマや呼び出し用の括弧は要らない。結果は3。let answerが、その結果にanswerという名前を付けている。"
+  "key \"  Build  \"は\"build\"を返す。関数の後ろに、空白で区切って引数を渡す。カンマや呼び出し用の括弧は要らない。keyの中の括弧は、text.trim nameの結果を丸ごとtext.toLowerへ渡すためのもの。"
 
 pub fn declaration -> String =
-  "宣言のleft: Intとright: Intは、整数を受け取る引数の名前と型。->で次の引数や戻り値の型へ進む。最後のIntは整数を返す指定で、left + rightがその戻り値になる。"
+  "fnで関数に名前を付ける。name: Stringが受け取る値、-> Stringが返す値の型。=の後の式が、そのまま結果になる。最後にreturnを書くための一行は要らない。ここではtext.trimで前後の空白を取り、text.toLowerでASCIIのコマンド名を小文字にしている。"
 
 pub fn display -> String =
-  "計算と出力は分けておこう。show answerで3を文字列にし、printlnでその文字列と改行を出力する処理を表す。mainが返すこのEffectを、実行機構が開始する。括弧はshow answerの計算全体を一つの引数として渡すためにある。"
+  "keyがするのはStringの計算。printlnは出力する処理をEffectという値で表し、mainが返したその値を実行機構が実行する。effectな関数を呼ぶだけでは、その処理は始まらない。この境目があるので、検索の計算はコンソールなしでも試せる。"
 
 pub fn reuse -> String =
-  "同じaddに、今度はadd 20 2と渡してもいい。最初の引数だけ渡してlet addOne = add 1とすると、addOneはもう一つの整数を待つ関数になる。だからaddOne 2も3。このように引数を一部だけ渡す書き方を、部分適用と呼ぶ。"
+  "入力した検索文字にも、候補のラベルにもkeyを使える。整形・検索・表示・出力を全部詰めた大きな関数にせず、使い回せる一片ができた。次のページではmatchesへ検索文字を先に渡し、その条件を覚えた関数を作ってみよう。"
 
 pub fn grouping -> String =
-  "add 1 2は(add 1) 2としてまとまる。型も対応していて、Int -> Int -> IntはInt -> (Int -> Int)の意味。最初の整数を渡すと、Int -> Intという関数が残る。A -> B -> Cも同じで、ここでのA・B・Cは任意の型を表す説明用の名前だよ。"
+  "add 1 2は(add 1) 2としてまとまる。型も対応していて、Int -> Int -> IntはInt -> (Int -> Int)の意味。最初の整数を渡すと、Int -> Intという関数が残る。A -> B -> Cも同じで、ここでのA・B・Cは任意の型を表す説明用の名前だよ。 たとえばlet addOne = add 1ならInt引数が一つ残り、addOne 2で3を得る。"
 
 pub fn unit -> String =
   "引数名のない宣言も、Unitという型の値を一つ受け取る。たとえばfn answer -> Int = 42はanswer ()と呼ぶ。Unitは渡す内容がないことを表し、()が唯一の値。answerという名前だけでは関数のままになる。"
@@ -43,8 +46,12 @@ pub fn tuple -> String =
 pub fn repair -> String =
   "呼び出しが型エラーになったら、渡したものを宣言と比べてみよう。タプル一個なのか、型が違うのか、そもそも関数ではない値なのか。括弧を足しても、タプルが二つの引数に分かれるわけではない。"
 
-pub fn partialExit -> String = "：一部の引数を渡したあとに残る関数を見てみよう。"
+pub fn partialExit -> String = "：章の次のページ。検索文字を固定した関数を、候補の絞り込みへ渡してみよう。"
+
 pub fn typesExit -> String = "：型注釈をどこに書くか調べる。"
+
 pub fn methodExit -> String = "：値の後ろにドットを付ける呼び方へ。"
+
 pub fn compositionExit -> String = "：入れ子の呼び出しで、括弧・$・パイプラインを使い分ける。"
+
 pub fn precedenceExit -> String = "：括弧を省いた式がどうまとまるか調べる。"

@@ -1,0 +1,10 @@
+import * as text from "std/text"
+
+let labels = [" Build ", "bundle", "CHECK", "run"]
+let lengths = map (\label -> text.lengthScalars (text.trim label)) labels
+let total = reduce 0 (+) lengths
+
+pub effect fn main = do {
+  println (show lengths)
+  println (show total)
+}

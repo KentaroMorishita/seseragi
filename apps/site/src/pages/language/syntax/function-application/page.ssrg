@@ -1,6 +1,7 @@
 import { articlePage, prose } from "../../../../model/article"
 import { localized } from "../../../../model/locale"
 import {
+  BulletList,
   CodeExample,
   Heading,
   InternalLink,
@@ -14,21 +15,54 @@ import * as ja from "./ja"
 
 pub fn page -> PageDefinition =
   articlePage "language.syntax.function-application" "/docs/language/syntax/function-application/" (en.copy ()) (ja.copy ()) [
-    Heading
-      ("understand-this", localized "Functions: name a calculation" "関数：計算に名前を付ける"),
-    prose (en.opening ()) (ja.opening ()),
-    CodeExample (
-      "pilot-function-application",
-      localized "Write a function, then call it" "関数を書いて呼んでみよう"
+    Heading (
+      "understand-this",
+      localized "Function application: build a search key" "関数適用：検索用の文字列を作る"
     ),
+    prose (en.opening ()) (ja.opening ()),
+    prose (en.roadmap ()) (ja.roadmap ()),
+    BulletList (
+      [
+        [
+          InternalLink (
+            localized "Function application" "関数適用",
+            "/docs/language/syntax/function-application/"
+          ),
+          Words (localized " — write and call a function" "：関数を書いて呼ぶ")
+        ],
+        [
+          InternalLink (
+            localized "Function types and currying" "関数型とカリー化",
+            "/docs/language/types/function-types-and-currying/"
+          ),
+          Words (localized " — keep a configured search" "：条件を決めた検索を手元に残す")
+        ],
+        [
+          InternalLink (
+            localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+            "/docs/language/syntax/pipelines-and-low-precedence-application/"
+          ),
+          Words (localized " — combine the search and display" "：検索と表示を組み合わせる")
+        ]
+      ]
+    ),
+    CodeExample ("chapter-functions", localized "A reusable search key" "検索用の文字列を作る関数"),
     prose (en.call ()) (ja.call ()),
-    Terminal (localized "Output" "実行結果", "3"),
-    Heading ("reading-the-example", localized "Read the declaration" "宣言の読み方"),
+    Terminal (localized "Output" "実行結果", "build"),
+    Heading (
+      "reading-the-example",
+      localized "Read the fn, then its effect boundary" "fnと、出力との境目を読む"
+    ),
     prose (en.declaration ()) (ja.declaration ()),
     prose (en.display ()) (ja.display ()),
-    Heading ("why", localized "Use the same function again" "同じ関数を使い回す"),
+    Heading ("why", localized "Keep labels; compare keys" "ラベルは残し、比較用の文字列を作る"),
     prose (en.reuse ()) (ja.reuse ()),
     Heading ("rules", localized "Exact call and type rules" "呼び出しと型の詳しい規則"),
+    CodeExample (
+      "pilot-function-application",
+      localized "Integer arguments for the exact rules" "詳しい型規則を見るための整数引数"
+    ),
+    Terminal (localized "Output" "実行結果", "3"),
     prose (en.grouping ()) (ja.grouping ()),
     prose (en.unit ()) (ja.unit ()),
     prose (en.generic ()) (ja.generic ()),
@@ -41,7 +75,8 @@ pub fn page -> PageDefinition =
       localized "Two values, but one tuple" "二つの値をまとめたタプル"
     ),
     prose (en.repair ()) (ja.repair ()),
-    Heading ("related-rules", localized "Choose your next question" "次に知りたいことへ"),
+    Heading
+      ("related-rules", localized "Continue the chapter, or look up a rule" "章の続きと、詳しい規則へ"),
     Paragraph (
       [
         InternalLink (

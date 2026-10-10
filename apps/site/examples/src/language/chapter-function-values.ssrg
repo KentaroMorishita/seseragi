@@ -1,0 +1,16 @@
+import * as text from "std/text"
+import * as arrays from "std/array"
+
+fn key name: String -> String = text.toLower (text.trim name)
+fn matches query: String -> name: String -> Bool =
+  text.startsWith (key query) (key name)
+
+let commands = [" Build ", "bundle", "CHECK", "run"]
+let builds = matches "b"
+let choices = arrays.filter builds commands
+let shortcuts = arrays.filter builds ["bundle", "run"]
+
+pub effect fn main = do {
+  println (show choices)
+  println (show shortcuts)
+}

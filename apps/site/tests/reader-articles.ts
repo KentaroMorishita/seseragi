@@ -13,7 +13,7 @@ const articles = [
   {
     route: "/docs/language/syntax/pipelines-and-low-precedence-application/",
     source: "syntax-reader-pipelines",
-    output: "7\n7\n7",
+    output: "[> build, > bundle]\nTrue\nJust > build\nNothing",
   },
   {
     route: "/docs/language/data/records/",
@@ -105,7 +105,24 @@ export async function verifyReaderArticles(
             .evaluate((code) => parseFloat(getComputedStyle(code).fontSize))
           assert.ok(fontSize >= 13 && fontSize <= 16, `${route}: code size`)
           const related = article.locator("h2#related-rules ~ p")
-          assert.equal(await related.count(), 3, route)
+          if (item.source === "syntax-reader-pipelines") {
+            assert.ok((await related.count()) >= 3, route)
+            for (const destination of [
+              "types/function-types-and-currying",
+              "syntax/layout-and-line-continuation",
+              "syntax/operator-precedence",
+              "syntax/function-application",
+              "traits/standard-operators",
+              "traits/do-notation",
+            ])
+              assert.equal(
+                await related
+                  .locator(`a[href="${prefix}/docs/language/${destination}/"]`)
+                  .count(),
+                1,
+                route
+              )
+          } else assert.equal(await related.count(), 3, route)
           for (const paragraph of await related.all()) {
             assert.equal(await paragraph.locator("a").count(), 1)
             const reason = await paragraph.evaluate((p) => {

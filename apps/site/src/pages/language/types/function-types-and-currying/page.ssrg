@@ -1,11 +1,7 @@
-import * as arrays from "std/array"
-import { explainPage } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
-import * as guide from "./guide"
-import { LocalizedText, localized } from "../../../../model/locale"
+import { articlePage, prose } from "../../../../model/article"
+import { localized } from "../../../../model/locale"
 import {
-  Article,
-  Block,
+  BulletList,
   CodeExample,
   Heading,
   InternalLink,
@@ -17,62 +13,99 @@ import {
 import * as en from "./en"
 import * as ja from "./ja"
 
-fn paragraph pair: (String, String) -> Block = match pair {
-  (english, japanese) -> Paragraph ([Words (localized english japanese)])
-}
-
-fn paragraphs english: Array<String> -> japanese: Array<String> -> Array<Block> =
-  map paragraph (arrays.zip japanese english)
-
-fn readingLink pair: ((LocalizedText, String), (String, String)) -> Block = match pair {
-  ((title, path), (english, japanese)) -> Paragraph ([
-    InternalLink (title, path),
-    Words (localized (". " + english) ("。" + japanese))
-  ])
-}
-
-fn content -> PageDefinition = {
-  let english = en.copy ()
-  let japanese = ja.copy ()
-  let related = [
-    (
-      localized "Function application" "関数適用",
-      "/docs/language/syntax/function-application/"
+pub fn page -> PageDefinition =
+  articlePage "language.types.function-types" "/docs/language/types/function-types-and-currying/" (en.copy ()) (ja.copy ()) [
+    Heading
+      ("understand-this", localized "Currying: keep a configured search" "カリー化：条件を決めた検索を残す"),
+    prose (en.opening ()) (ja.opening ()),
+    CodeExample (
+      "chapter-function-values",
+      localized "Set up a search condition; reuse it" "検索条件を決めて使い回す"
     ),
-    (
-      localized "Annotations and inference" "型注釈と推論",
-      "/docs/language/types/annotations-and-inference/"
+    Terminal (localized "Output" "実行結果", "[ Build , bundle]\n[bundle]"),
+    prose (en.effects ()) (ja.effects ()),
+    Heading
+      ("reading-the-example", localized "A search is a function value" "検索する関数も一つの値"),
+    prose (en.partial ()) (ja.partial ()),
+    Heading (
+      "why",
+      localized "A separate calculation: count the label text" "別の小さな計算：ラベルの文字数を数える"
     ),
-    (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/")
+    prose (en.lambda ()) (ja.lambda ()),
+    CodeExample (
+      "chapter-label-lengths",
+      localized "Count Unicode scalars, separately from searching"
+      "検索とは別に、Unicode scalar数を数える"
+    ),
+    Terminal (localized "Output" "実行結果", "[5, 6, 5, 3]\n19"),
+    prose (en.section ()) (ja.section ()),
+    Heading ("rules", localized "The type left after each argument" "引数を渡すたびに残る型"),
+    prose (en.arrows ()) (ja.arrows ()),
+    prose (en.argumentTypes ()) (ja.argumentTypes ()),
+    CodeExample
+      ("pilot-currying", localized "A small check of the arrow rule" "矢印の規則だけを確かめる小さな例"),
+    Terminal (localized "Output" "実行結果", "3, 3"),
+    prose (en.generic ()) (ja.generic ()),
+    prose (en.unit ()) (ja.unit ()),
+    Heading
+      ("mistakes", localized "A remaining function is not the final value" "残った関数と、最後の値は別"),
+    prose (en.rejected ()) (ja.rejected ()),
+    CodeExample (
+      "pilot-currying-invalid",
+      localized "A function where Int is required" "Intが必要な場所へ関数を渡す"
+    ),
+    Heading (
+      "related-rules",
+      localized "Continue with composition, or look up a rule" "合成の続きと、詳しい規則へ"
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Function application" "関数適用",
+          "/docs/language/syntax/function-application/"
+        ),
+        Words (localized (en.previousExit ()) (ja.previousExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Pipelines and low-precedence application" "パイプラインと低優先順位の適用",
+          "/docs/language/syntax/pipelines-and-low-precedence-application/"
+        ),
+        Words (localized (en.nextExit ()) (ja.nextExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink
+      (localized "Lambda expressions" "ラムダ式", "/docs/language/expressions/lambdas/"),
+        Words (localized (en.lambdaExit ()) (ja.lambdaExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Annotations and inference" "型注釈と推論",
+          "/docs/language/types/annotations-and-inference/"
+        ),
+        Words (localized (en.annotationsExit ()) (ja.annotationsExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink
+      (localized "Polymorphism" "多相性", "/docs/language/types/polymorphism/"),
+        Words (localized (en.genericExit ()) (ja.genericExit ()))
+      ]
+    ),
+    Paragraph (
+      [
+        InternalLink (
+          localized "Custom operators and fixity" "カスタム演算子と結合規則",
+          "/docs/language/syntax/custom-operators/"
+        ),
+        Words (localized (en.operatorExit ()) (ja.operatorExit ()))
+      ]
+    )
   ]
-  PageDefinition {
-    id: "language.types.function-types",
-    path: "/docs/language/types/function-types-and-currying/",
-    kind: Article,
-    title: localized english.title japanese.title,
-    summary: localized english.summary japanese.summary,
-    blocks: arrays.concat [
-      [CodeExample
-          ("pilot-currying", localized english.exampleTitle japanese.exampleTitle)],
-      [Heading
-          ("reading-the-example", localized "Read the remaining function" "残りの引数を待つ関数を読む")],
-      paragraphs english.reading japanese.reading,
-      [Terminal (localized "Output" "実行結果", "3, 3")],
-      [Heading
-          ("why", localized "Fix an input once and reuse the function" "一つの入力を固定して使い回す")],
-      paragraphs english.purpose japanese.purpose,
-      [Heading ("rules", localized "Arrow grouping and argument checks" "矢印のまとまりと引数の検査")],
-      paragraphs english.rules japanese.rules,
-      [Heading (
-        "mistakes",
-        localized "A function is not its eventual result" "関数そのものと、計算結果を区別する"
-      )],
-      paragraphs english.mistakes japanese.mistakes,
-      [CodeExample ("pilot-currying-invalid", localized "Rejected example" "受け付けられない例")],
-      [Heading ("related-rules", localized "Find a specific answer" "必要なことを詳しく調べる")],
-      map readingLink (arrays.zip (arrays.zip japanese.related english.related) related)
-    ]
-  }
-}
-
-pub fn page -> PageDefinition = explainPage (guide.explanation ()) (content ())
