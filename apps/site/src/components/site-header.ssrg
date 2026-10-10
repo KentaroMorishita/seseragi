@@ -1,7 +1,7 @@
 import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput } from "../model/build"
-import { Locale, localizedRoute } from "../model/locale"
+import { Locale, localized, localizedRoute, translate } from "../model/locale"
 import { PageDefinition } from "../model/page"
 import { anchor } from "./primitives"
 import { languageMenu } from "./language-menu"
@@ -31,6 +31,8 @@ fn navigation<Action> input: BuildInput
     children: [
       anchor messages.documentation (localizedRoute locale "/docs/") "",
       anchor "API" (localizedRoute locale "/docs/api/") "",
+      anchor (translate locale (localized "Search" "検索"))
+        (localizedRoute locale "/docs/search/") "",
       anchor messages.playground input.playgroundUrl "",
       anchor messages.tour input.tourUrl "",
       anchor messages.examples (localizedRoute locale "/examples/") "",

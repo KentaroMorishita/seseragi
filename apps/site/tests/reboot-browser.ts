@@ -9,6 +9,7 @@ import {
 } from "../scripts/published-examples"
 import { staticSiteHandler } from "../scripts/static-site-handler"
 import { verifyFunctionChapter } from "./function-chapter-browser"
+import { verifySearch } from "./search-browser"
 
 const root = resolve(import.meta.dir, "../../..")
 const output = resolve(root, process.env.SITE_OUTPUT ?? "target/site")
@@ -152,6 +153,7 @@ try {
           for (const route of [
             "/",
             "/docs/",
+            "/docs/search/",
             "/docs/composition/",
             "/docs/composition/apply/",
             "/docs/effects/",
@@ -260,6 +262,7 @@ try {
       }
     }
   await verifyFunctionChapter(browser, origin)
+  await verifySearch(browser, origin, input.referenceModules, screenshots)
   console.info(
     `Reboot browser: ${cases} route/viewport cases; ${chapterWalks} types/effects/signals chapter walks; all signatures, locale navigation, no-JS, mobile, and first chapter verified`
   )

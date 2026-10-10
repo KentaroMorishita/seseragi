@@ -19,6 +19,7 @@ import { sitePhase } from "./profile"
 import { articleExecutions, publishedDiagnostics } from "./published-examples"
 import { compilerReferenceModules } from "./reference"
 import { type RenderedPage, renderGenerator } from "./render-generator"
+import { searchIndex } from "./search-index"
 
 const app = resolve(import.meta.dir, "..")
 const root = resolve(app, "../..")
@@ -32,6 +33,7 @@ const styleFiles = [
   "mobile-navigation.css",
   "article.css",
   "code.css",
+  "search.css",
   "responsive.css",
 ]
 
@@ -155,7 +157,11 @@ export function compileGenerator(
   return entry
 }
 
-function publishAssets(output: string): string[] {
+function publishAssets(
+  output: string,
+  pages: RenderedPage[],
+  input: ReturnType<typeof generatorInput>
+): string[] {
   const assets = join(output, "assets")
   mkdirSync(assets, { recursive: true })
   const css = [
@@ -187,6 +193,18 @@ function publishAssets(output: string): string[] {
     join(root, "assets/brand/public/brand/favicon.ico"),
     join(output, "favicon.ico")
   )
+  for (const name of ["search", "search-engine"])
+    writeFileSync(
+      join(assets, `${name}.js`),
+      new Bun.Transpiler({ loader: "ts" }).transformSync(
+        readFileSync(join(app, "client", `${name}.ts`), "utf8")
+      )
+    )
+  for (const locale of ["en", "ja"] as const)
+    writeFileSync(
+      join(assets, `search-index-${locale}.js`),
+      `export default ${JSON.stringify(searchIndex(pages, input.referenceModules, locale))};\n`
+    )
   return [
     "favicon.ico",
     "assets/seseragi-icon.svg",
@@ -194,6 +212,10 @@ function publishAssets(output: string): string[] {
     "assets/mobile-navigation.js",
     "assets/language.svg",
     "assets/language-menu.js",
+    "assets/search.js",
+    "assets/search-engine.js",
+    "assets/search-index-en.js",
+    "assets/search-index-ja.js",
   ]
 }
 
@@ -261,15 +283,21 @@ export function buildSite(options: BuildOptions) {
               '<script type="module" src="/assets/mobile-navigation.js"></script></body>'
             )
           : page.html
+        const searchable = /^(?:\/ja)?\/docs\/search\/$/u.test(page.route)
+          ? html.replace(
+              "</body>",
+              '<script type="module" src="/assets/search.js"></script></body>'
+            )
+          : html
         writeFileSync(
           path,
-          html.replace(
+          searchable.replace(
             "</body>",
             '<script type="module" src="/assets/language-menu.js"></script></body>'
           )
         )
       }
-      const assets = publishAssets(output)
+      const assets = publishAssets(output, pages, input)
       return assets
     })
     const files = [

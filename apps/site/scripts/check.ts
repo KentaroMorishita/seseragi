@@ -43,6 +43,8 @@ run([
   "Bundler",
   "apps/site/scripts/check.ts",
   "apps/site/scripts/check-published-examples.ts",
+  "apps/site/client/search.ts",
+  "apps/site/tests/search.test.ts",
   "apps/site/tests/reboot-browser.ts",
   "apps/site/tests/render-generator.test.ts",
   "apps/site/tests/static-site-handler.test.ts",
@@ -64,6 +66,7 @@ run([
   "test",
   "apps/site/tests/static-site-handler.test.ts",
   "apps/site/tests/render-generator.test.ts",
+  "apps/site/tests/search.test.ts",
 ])
 run(["bun", "apps/site/scripts/build.ts", output])
 const manifest = verifyPublication(output)

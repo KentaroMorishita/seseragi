@@ -3,6 +3,7 @@ import { createHash } from "node:crypto"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { generatorInput } from "./build"
+import { searchIndex } from "./search-index"
 
 export function verifyPublication(output: string) {
   const manifest = JSON.parse(
@@ -20,6 +21,7 @@ export function verifyPublication(output: string) {
   for (const route of [
     "/",
     "/docs/",
+    "/docs/search/",
     "/examples/",
     "/releases/",
     "/docs/first-run/",
@@ -79,6 +81,25 @@ export function verifyPublication(output: string) {
         .digest("hex"),
       file.sha256,
       file.path
+    )
+  }
+  const pages = manifest.pages.map((route: string) => ({
+    route,
+    html: readFileSync(join(output, route.slice(1), "index.html"), "utf8"),
+  }))
+  for (const locale of ["en", "ja"] as const) {
+    const script = readFileSync(
+      join(output, "assets", `search-index-${locale}.js`),
+      "utf8"
+    )
+    assert.ok(script.startsWith("export default "))
+    const actual = JSON.parse(
+      script.slice("export default ".length).trim().replace(/;$/u, "")
+    )
+    assert.deepEqual(
+      actual,
+      searchIndex(pages, input.referenceModules, locale),
+      `Search index differs from published content: ${locale}`
     )
   }
   console.info(

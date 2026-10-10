@@ -32,6 +32,7 @@ pub type Block =
   | Callout (CalloutTone, LocalizedText, Array<Inline>)
   | ApiReference (String, String, String)
   | ModuleSignatures String
+  | Search
 
 pub struct PageDefinition {
   id: String,
