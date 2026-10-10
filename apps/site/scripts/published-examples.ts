@@ -57,6 +57,27 @@ export const typeExamples = [
   },
 ] as const
 
+export const signalExamples = [
+  {
+    id: "signals-derived",
+    route: "/docs/signals/derived/",
+    sourcePath: "apps/site/examples/src/signals/signals-derived.ssrg",
+    output: "0/3\n1/3\n1/4\n0/3\n",
+  },
+  {
+    id: "signals-subscription",
+    route: "/docs/signals/subscriptions/",
+    sourcePath: "apps/site/examples/src/signals/signals-subscription.ssrg",
+    output: "[0, 1]\ncurrent: 2\n",
+  },
+  {
+    id: "signals-transaction",
+    route: "/docs/signals/transactions/",
+    sourcePath: "apps/site/examples/src/signals/signals-transaction.ssrg",
+    output: "[0/3, 2/4]\n",
+  },
+] as const
+
 export const typeDiagnostics = [
   {
     id: "types-match-incomplete",
@@ -108,6 +129,7 @@ export const articleExecutions = [
   })),
   ...effectExamples,
   ...typeExamples,
+  ...signalExamples,
 ] as const
 
 export const publishedExecutions = [
@@ -118,6 +140,7 @@ export const publishedExecutions = [
   ...compositionExamples,
   ...effectExamples,
   ...typeExamples,
+  ...signalExamples,
   {
     id: "pilot-function-application",
     sourcePath:

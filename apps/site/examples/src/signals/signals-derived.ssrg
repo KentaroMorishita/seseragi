@@ -1,0 +1,25 @@
+import * as signals from "std/signal"
+
+fn caption done: Int -> total: Int -> String = show done + "/" + show total
+
+fn progress done: signals.Signal<Int>
+  -> total: signals.Signal<Int>
+  -> signals.Signal<String> =
+  caption
+  <$> done
+  <*> total
+
+pub effect fn main = do {
+  done <- signals.make 0
+  total <- signals.make 3
+  let label = progress done total
+  first <- *label
+  println first
+  signals.update (\value -> value + 1) done
+  second <- *label
+  println second
+  total := 4
+  third <- *label
+  println third
+  println first
+}

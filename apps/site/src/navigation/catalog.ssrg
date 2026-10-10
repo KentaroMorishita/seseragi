@@ -11,6 +11,7 @@ import * as entrance from "../pages/entrance"
 import * as compositionChapter from "../pages/composition"
 import * as effects from "../pages/effects"
 import * as types from "../pages/types"
+import * as signals from "../pages/signals"
 import * as api from "../pages/api"
 import * as arrays from "std/array"
 import { page as application } from "../pages/language/syntax/function-application/page"
@@ -44,7 +45,7 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
   }
   SiteCatalog {
     home,
-    areas: [area, types.area (), compositionChapter.area (), effects.area (), api.area input],
+    areas: [area, types.area (), compositionChapter.area (), effects.area (), signals.area (), api.area input],
     pages: arrays.concat [[
       home,
       entrance.docs (),
@@ -56,6 +57,6 @@ pub fn catalog input: BuildInput -> SiteCatalog = {
       second,
       third,
       api.index input
-    ], types.pages (), compositionChapter.pages (), effects.pages (), api.pages input]
+    ], types.pages (), compositionChapter.pages (), effects.pages (), signals.pages (), api.pages input]
   }
 }

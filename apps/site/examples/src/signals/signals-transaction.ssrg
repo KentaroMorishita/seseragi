@@ -1,0 +1,30 @@
+import * as arrays from "std/array"
+import * as signals from "std/signal"
+
+fn caption done: Int -> total: Int -> String = show done + "/" + show total
+
+fn progress done: signals.Signal<Int>
+  -> total: signals.Signal<Int>
+  -> signals.Signal<String> =
+  caption
+  <$> done
+  <*> total
+
+fn remember<A> history: signals.MutableSignal<Array<A>> -> value: A -> Task<Unit> =
+  signals.update (\items: Array<A> -> arrays.concat [
+    items,
+    [value]
+  ]) history
+
+pub effect fn main = do {
+  let empty: Array<String> = []
+  history <- signals.make empty
+  done <- signals.make 0
+  total <- signals.make 3
+  let label = progress done total
+  subscription <- signals.subscribe (remember history) label
+  signals.transaction [signals.planSet 2 done, signals.planSet 4 total]
+  signals.unsubscribe subscription
+  observed <- *history
+  println (show observed)
+}

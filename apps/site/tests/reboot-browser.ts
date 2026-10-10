@@ -37,6 +37,13 @@ mkdirSync(screenshots, { recursive: true })
 const browser = await chromium.launch({ headless: true })
 let cases = 0
 let chapterWalks = 0
+const screenshotNames: Record<string, string> = {
+  "/": "home",
+  "/docs/composition/apply/": "apply",
+  "/docs/effects/errors/": "errors",
+  "/docs/types/variants/": "variants",
+  "/docs/signals/transactions/": "transactions",
+}
 try {
   // Every published route and every API declaration is checked in the browser,
   // against compiler data rather than a historical page-count snapshot.
@@ -153,6 +160,10 @@ try {
             "/docs/types/records/",
             "/docs/types/variants/",
             "/docs/types/generics/",
+            "/docs/signals/",
+            "/docs/signals/derived/",
+            "/docs/signals/subscriptions/",
+            "/docs/signals/transactions/",
             "/docs/api/",
             "/docs/api/prelude/",
           ]) {
@@ -172,16 +183,11 @@ try {
               assert.equal(new URL(page.url()).hash, href)
               assert.ok(await page.locator(href ?? "missing").isVisible())
             }
-            if (
-              route === "/" ||
-              route === "/docs/composition/apply/" ||
-              route === "/docs/effects/errors/" ||
-              route === "/docs/types/variants/"
-            )
+            if (screenshotNames[route])
               await page.screenshot({
                 path: join(
                   screenshots,
-                  `reboot-${prefix ? "ja" : "en"}-${route === "/" ? "home" : route === "/docs/effects/errors/" ? "errors" : route === "/docs/types/variants/" ? "variants" : "apply"}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
+                  `reboot-${prefix ? "ja" : "en"}-${screenshotNames[route]}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
                 ),
                 fullPage: true,
               })
@@ -227,6 +233,13 @@ try {
               "/docs/types/generics/",
               "/docs/api/prelude/",
             ],
+            [
+              "/docs/signals/",
+              "/docs/signals/derived/",
+              "/docs/signals/subscriptions/",
+              "/docs/signals/transactions/",
+              "/docs/api/signal/",
+            ],
           ]) {
             await page.goto(`${origin + prefix}/docs/`)
             for (const route of chapter) {
@@ -248,7 +261,7 @@ try {
     }
   await verifyFunctionChapter(browser, origin)
   console.info(
-    `Reboot browser: ${cases} route/viewport cases; ${chapterWalks} types/effects chapter walks; all signatures, locale navigation, no-JS, mobile, and first chapter verified`
+    `Reboot browser: ${cases} route/viewport cases; ${chapterWalks} types/effects/signals chapter walks; all signatures, locale navigation, no-JS, mobile, and first chapter verified`
   )
 } finally {
   await browser.close()

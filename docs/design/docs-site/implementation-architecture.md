@@ -5,6 +5,7 @@ Home/Docs/Examples/First Run/Releasesは `pages/entrance.ssrg`、
 最初の章は三つのpage-owned article、文脈の章は `pages/composition.ssrg`、
 処理と失敗の章は `pages/effects.ssrg`、
 型とパターンの章は `pages/types.ssrg`、
+Signalの章は `pages/signals.ssrg`、
 APIの索引とmodule pageは `pages/api.ssrg` が持つ。
 旧固定templateと旧symbol別記事catalogは退役した。
 
