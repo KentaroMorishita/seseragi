@@ -21,17 +21,7 @@
     <a aria-label="Seseragi" class="brand" href="/ja/">
      <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
     </a>
-    <nav aria-label="Main navigation" class="desktop-nav">
-     <a href="/ja/docs/">
-      Docs
-     </a>
-     <a href="/ja/examples/">
-      Examples
-     </a>
-     <a aria-current="page" href="/ja/reference/">
-      Reference
-     </a>
-    </nav>
+    <nav aria-label="Main navigation" class="desktop-nav"><a href="/ja/reference/" aria-current="page">Reference</a><a href="/ja/docs/" >Guide</a><a href="/ja/examples/" >Examples</a></nav>
     <a class="lang-switch" href="/reference/function-application/" lang="en">
      EN
     </a>
@@ -41,31 +31,7 @@
       ↗
      </span>
     </a>
-    <details class="mobile-menu">
-     <summary>
-      メニュー
-     </summary>
-     <nav aria-label="メニュー">
-      <a href="/ja/">
-       ホーム
-      </a>
-      <a href="/ja/docs/">
-       Docs
-      </a>
-      <a href="/ja/examples/">
-       Examples
-      </a>
-      <a aria-current="page" href="/ja/reference/">
-       Reference
-      </a>
-      <a href="https://seseragi.vercel.app/">
-       Playground ↗
-      </a>
-      <a href="/reference/">
-       English
-      </a>
-     </nav>
-    </details>
+    <details class="mobile-menu"><summary>メニュー</summary><nav aria-label="メニュー"><a href="/ja/">ホーム</a><a href="/ja/reference/" aria-current="page">Reference</a><a href="/ja/docs/" >Guide</a><a href="/ja/examples/" >Examples</a><a href="https://seseragi.vercel.app/">Playground ↗</a><a href="/reference/function-application/">English</a></nav></details>
    </div>
   </header>
   <main id="main"><div class="container reference-layout"><aside class="doc-sidebar ref-side"><div class="desktop-side"><div class="side-group">LANGUAGE REFERENCE</div><nav aria-label="リファレンスナビゲーション"><a href="/ja/reference/" >概要</a><a href="/ja/reference/function-application/" aria-current="page">関数適用・部分適用</a><a href="/ja/reference/match/" >matchとパターン</a><a href="/ja/docs/" >ガイドで学ぶ</a><a href="/ja/examples/" >Examples</a></nav></div><details class="mobile-docs-menu"><summary>Reference <span class="menu-current">関数適用</span></summary><div class="mobile-docs-items"><nav aria-label="リファレンスナビゲーション"><a href="/ja/reference/" >概要</a><a href="/ja/reference/function-application/" aria-current="page">関数適用・部分適用</a><a href="/ja/reference/match/" >matchとパターン</a><a href="/ja/docs/" >ガイドで学ぶ</a><a href="/ja/examples/" >Examples</a></nav></div></details></aside><article class="reference-main ref-article"><div class="crumbs"><a href="/ja/reference/">言語リファレンス</a> / 関数適用</div><p class="kicker">SYNTAX §1.4 · TYPES §2.7 · EVALUATION §3.1</p><h1>関数適用</h1><p class="reference-lead">関数適用は、関数のあとに値を空白で並べて書く。左結合、型、評価順序をここで調べられる。</p><nav class="ref-page-toc" aria-label="この記事の目次"><a href="#syntax">構文</a><a href="#partial">型と部分適用</a><a href="#evaluation">評価規則</a><a href="#unit">Unitと型引数</a><a href="#sources">仕様出典</a></nav><h2 id="syntax">構文と結合</h2><p><code>add 1 2</code> は <code>(add 1) 2</code> と同じ。カンマ区切りの <code>add(1, 2)</code> はSeseragiの複数引数呼び出し構文ではない。</p><div class="ref-syntax"><div><code>f value</code><span>関数へ一つの値を適用</span></div><div><code>add 1 2</code><span>左結合 — (add 1) 2 と同じ</span></div><div><code>identity&lt;String&gt; value</code><span>型引数はcalleeと空白を空けない</span></div></div><h2 id="partial">型と部分適用</h2><p>引数を途中まで渡すと、残りを受け取る関数が残る。<code>add</code> の型は <code>Int -&gt; Int -&gt; Int</code>、<code>add 1</code> は <code>Int -&gt; Int</code>。これは特別な呼び出しモードではなく、関数が入れ子になっているから。</p><p>完全なプログラムでは、直接2つ渡した結果と、部分適用してから残りを渡した結果を比べられる。</p><div class="code-window ref-code"><div class="code-head"><span class="file">pilot-currying.ssrg</span><div class="code-tools"><button class="copy-code" type="button" aria-label="ソースをコピー">コピー</button><a href="https://seseragi.vercel.app/?source=fn%20add%20left%3A%20Int%20-%3E%20right%3A%20Int%20-%3E%20Int%20%3D%20left%20%2B%20right%0A%0Alet%20direct%20%3D%20add%201%202%0Alet%20addOne%20%3D%20add%201%0Alet%20answer%20%3D%20addOne%202%0A%0Apub%20effect%20fn%20main%20%3D%20println%20%60%24%7Bdirect%7D%2C%20%24%7Banswer%7D%60%0A" target="_blank" rel="noopener noreferrer">Playgroundで試す ↗</a></div></div><pre><code>fn add left: Int -&gt; right: Int -&gt; Int = left + right
