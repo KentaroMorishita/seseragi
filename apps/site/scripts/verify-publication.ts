@@ -35,6 +35,10 @@ export function verifyPublication(output: string) {
     "/docs/effects/",
     "/docs/effects/actions/",
     "/docs/effects/errors/",
+    "/docs/signals/",
+    "/docs/signals/derived/",
+    "/docs/signals/subscriptions/",
+    "/docs/signals/transactions/",
     "/docs/api/",
   ])
     assert.ok(routes.has(route), `Missing reader destination: ${route}`)

@@ -1,0 +1,372 @@
+import { localized } from "../model/locale"
+import {
+  Article,
+  BulletList,
+  CodeExample,
+  DocumentationLanding,
+  ExternalLink,
+  FlatSection,
+  Heading,
+  InlineCode,
+  InternalLink,
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../model/page"
+
+pub fn overview -> PageDefinition = PageDefinition {
+  id: "signals.overview",
+  path: "/docs/signals/",
+  kind: DocumentationLanding,
+  title: localized "Keep up with a changing value" "変わっていく値につながる",
+  summary: localized
+    "Build a progress label from two sources, watch changes, and update related values together."
+    "二つの値から進捗表示を作り、変化を見守り、関係する値をまとめて更新する。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "0 of 3 tasks are done. A task finishes, then another task is added. We want the label to follow both numbers. A Signal keeps that relationship; reading it gives us one snapshot. We will try the graph in a terminal before involving a UI."
+    "三つの作業のうち、完了はゼロ。ひとつ終わり、その後に作業がひとつ増える。表示は両方の数字についてきてほしい。Signalでその関係を持ち、読み取ったときのsnapshotを使ってみよう。まずはUIを用意せず、ターミナルでグラフを試す。"
+      )]
+    ),
+    BulletList [
+      [InternalLink (
+        localized "Signal and <*> — let a label follow its sources"
+    "Signalと<*> — 元の値に表示をつなぐ",
+        "/docs/signals/derived/"
+      )],
+      [InternalLink (
+        localized "subscribe — choose which changes to watch" "subscribe — 変化を見守る期間を決める",
+        "/docs/signals/subscriptions/"
+      )],
+      [InternalLink (
+        localized "transaction — publish related changes together"
+    "transaction — 関係する変更を一緒に公開する",
+        "/docs/signals/transactions/"
+      )]
+    ],
+    Paragraph (
+      [InternalLink (
+        localized "Effects are the jobs we execute" "実行する処理をEffectで持つ",
+        "/docs/effects/"
+      )]
+    )
+  ]
+}
+
+pub fn derived -> PageDefinition = PageDefinition {
+  id: "signals.derived",
+  path: "/docs/signals/derived/",
+  kind: Article,
+  title: localized "Signal and <*> — let a label follow its sources"
+    "Signalと<*> — 元の値に表示をつなぐ",
+  summary: localized
+    "The label changes with the counts. A String you already read stays the same."
+    "数字が変われば表示も変わる。でも、すでに読んだStringはそのままだ。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "caption turns two numbers into a label such as 0/3. progress uses the same function on two Signals. Rather than rebuilding the label in every update, it describes how the label depends on the counts."
+    "captionは、二つの数字から0/3のような表示を作る関数。progressでは、その同じ関数を二つのSignalに使っている。更新のたびに表示を作り直す処理を書く代わりに、どの数字に表示がつながるかを表す。"
+      )]
+    ),
+    CodeExample
+    ("signals-derived", localized "A label and its snapshots" "表示と、そのsnapshot"),
+    Terminal (localized "Output" "実行結果", "0/3\n1/3\n1/4\n0/3"),
+    Heading ("graph", localized "The same notation, a different context" "同じ記法を、違う文脈へ"),
+    Paragraph (
+      [
+        InlineCode "caption <$> done <*> total",
+        Words (
+          localized
+    " applies caption to the values in two Signals. <$> maps the first argument; <*> combines the remaining argument. For Maybe we kept presence or absence. Here the context is a changing value, so the resulting Signal stays connected to both sources."
+    "で、二つのSignalの値にcaptionを適用する。<$>で最初の引数を渡し、<*>で残りの引数を組み合わせる。Maybeでは値の有無を保っていた。今度の文脈は変化する値なので、できたSignalは二つの元の値につながったままになる。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "caption is a pure Int -> Int -> String function. progress is pure too, returning Signal<String> rather than a current String. Its Signal<Int> parameters accept the mutable sources by dropping write permission. MutableSignal<A> can be used as Signal<A>; a read-only Signal cannot be used as a mutable source."
+    "captionは純粋なInt -> Int -> Stringの関数。progressも純粋で、現在のStringではなくSignal<String>を返す。Signal<Int>の引数には、書き込み権限を落としてmutableな元の値を渡せる。MutableSignal<A>をSignal<A>として使えるけれど、読み取り専用のSignalをmutableな元の値としては使えない。"
+      )]
+    ),
+    Heading ("snapshot", localized "Reading is an Effect" "読み取るのはEffect"),
+    Paragraph (
+      [
+        InlineCode "first <- *label",
+        Words (
+          localized
+    " executes a read and binds its String result. The prefix * returns Task<String>, not a pure dereference. first holds 0/3; it does not become a Signal. The final println therefore still prints 0/3 even though the graph now holds 1/4."
+    "で読み取りを実行し、結果のStringを束縛している。prefixの*が返すのはTask<String>で、純粋なdereferenceではない。firstは0/3を持ち、Signalになるわけではない。だからグラフが1/4になっていても、最後のprintlnは0/3を表示する。"
+        )
+      ]
+    ),
+    Heading
+    ("updates", localized "Use update when the old value matters" "元の値が必要ならupdate"),
+    Paragraph (
+      [Words (
+        localized
+    "signals.make creates a mutable source when its Effect runs. update receives the current done value and increments it atomically. total := 4 replaces the total through a set Effect. := updates a MutableSignal; it is not assignment to an ordinary let binding. The do block executes these Effects in order."
+    "signals.makeのEffectを実行すると、mutableな元のSignalができる。updateはdoneの現在値を受け取って、atomicにひとつ増やす。total := 4はsetのEffectで合計を置き換える。:=で更新するのはMutableSignalで、普通のletへの代入ではない。doはこれらのEffectを順番に実行する。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "*source is short for signals.read source, and source := value for signals.set value source. A read is a snapshot at its execution point. Several reads in one do block do not freeze the whole block into one snapshot."
+    "*sourceはsignals.read source、source := valueはsignals.set value sourceの短い記法。読み取るのは、その実行時点のsnapshotだ。ひとつのdoに何回かreadを書いても、ブロック全体をひとつのsnapshotに固定するわけではない。"
+      )]
+    ),
+    Heading ("try", localized "Read it again" "もう一度読んでみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Replace the final println first with another read of label followed by println. It now prints 1/4. The difference is not a changing String variable: you executed a new read of the changing Signal."
+    "最後のprintln firstを、labelをもう一度readして表示する処理に変えてみよう。今度は1/4になる。Stringの変数が勝手に変わったのではなく、変化するSignalを新しく読み取った結果だ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Record changes with subscribe" "subscribeで変化を記録する",
+        "/docs/signals/subscriptions/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Read Signal's exact declarations" "Signalの正確な宣言を引く",
+        "/docs/api/signal/"
+      )]
+    )
+  ]
+}
+
+pub fn subscriptions -> PageDefinition = PageDefinition {
+  id: "signals.subscriptions",
+  path: "/docs/signals/subscriptions/",
+  kind: Article,
+  title: localized "subscribe — choose which changes to watch"
+    "subscribe — 変化を見守る期間を決める",
+  summary: localized
+    "Record the values you observe, skip repeats, and stop watching while the source keeps changing."
+    "受け取った値を記録し、同じ値は飛ばし、元の値が変わり続けても購読を終える。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Reading a Signal gives one value. subscribe lets us receive its current value and later updates. This observer records values in a history Signal, so we can see exactly what arrived after the updates finish."
+    "Signalをreadすると、ひとつの値が手に入る。subscribeなら、その現在値と後の更新を受け取れる。このobserverはhistoryというSignalに値を記録するので、更新が終わった後に、何が届いたか確かめられる。"
+      )]
+    ),
+    CodeExample
+    ("signals-subscription", localized "Watch, then stop watching" "見守って、それから購読を終える"),
+    Terminal (localized "Output" "実行結果", "[0, 1]\ncurrent: 2"),
+    Heading ("observer", localized "A callback returns a job" "callbackは処理を返す"),
+    Paragraph (
+      [
+        InlineCode "remember history",
+        Words (
+          localized
+    " is a partially applied function waiting for one value. Its result is Task<Unit>: a job that appends the value to history without a typed failure. subscribe needs an observer returning Effect<R, Never, Unit>; this one uses the empty environment. Printing the recorded history is a separate, fallible Console operation in main."
+    "は、ひとつの値を待つ部分適用済みの関数だ。結果はTask<Unit>で、型付きの失敗を残さずhistoryへ値を追加する処理。subscribeが求めるobserverの結果はEffect<R, Never, Unit>で、この例では環境も空になる。記録したhistoryを表示するのは、mainの別のConsole処理で、そちらは失敗する可能性もある。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "remember is generic so the same callback shape can record other payload types too. update passes it the current Array, and arrays.concat makes a new Array with the received value at the end. We keep old Array values immutable while updating the Signal that holds the latest one."
+    "rememberはgenericなので、同じcallbackの形で別の型も記録できる。updateが現在のArrayを渡し、arrays.concatで受け取った値を末尾に足した新しいArrayを作る。前のArrayの値は不変のまま、最新のArrayを持つSignalを更新している。"
+      )]
+    ),
+    Heading ("distinct", localized "The first value counts too" "最初の値も届く"),
+    Paragraph (
+      [Words (
+        localized
+    "subscribe calls the observer once with the current value, so history starts with 0. A source normally notifies even when set to the same value. distinct uses Eq to suppress updates equal to its last published value: setting count to 0 again is skipped, then 1 is recorded."
+    "subscribeは現在値でobserverを一回呼ぶので、historyには最初に0が入る。元のSignalは、同じ値をsetしても通常は通知する。distinctはEqで直前の公開値と比べ、等しい更新を通知しない。countにもう一度0をsetした分は飛ばされ、次の1は記録される。"
+      )]
+    ),
+    Heading
+    ("lifetime", localized "Unsubscribe ends the connection" "unsubscribeで接続を終える"),
+    Paragraph (
+      [Words (
+        localized
+    "subscription is the handle returned by subscribe. After its unsubscribe Effect runs, remember stops receiving values. count still changes to 2, and reading it shows current: 2, but that 2 is absent from history. Unsubscribe is idempotent, so repeating it is safe."
+    "subscriptionはsubscribeが返すhandleだ。unsubscribeのEffectを実行すると、rememberには値が届かなくなる。count自体は2へ変わり、readすればcurrent: 2になるけれど、historyには2が入らない。unsubscribeはidempotentなので、繰り返し実行してもよい。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "This example ends the subscription explicitly. For work whose lifetime is controlled by an Effect resource scope, register cleanup with that scope so failure or cancellation also ends the subscription. Holding a Signal and keeping a subscription alive are separate choices."
+    "この例では、明示的に購読を終えている。Effectのresource scopeに寿命を合わせる処理なら、失敗やキャンセルでも購読が終わるよう、scopeにcleanupを登録する。Signalを持つことと、購読を生かしておくことは別の選択だ。"
+      )]
+    ),
+    Heading (
+      "notifications",
+      localized "An observer does not re-enter itself" "observerに通知を重ねない"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "An observer's updates are queued as new transactions after the current transaction. remember therefore does not recursively interrupt the notification that called it. Observers on the same Signal run in registration order, with one notification at a time. Typed failures must be handled inside an observer or moved to a Stream consumer that has a failure channel."
+    "observerが起こした更新は、現在のtransactionの後に新しいtransactionとしてqueueに入る。rememberが自分を呼んだ通知へ再帰的に割り込むわけではない。同じSignalのobserverは登録順に、一回ずつ通知される。型付きの失敗はobserverの内側で処理するか、失敗のchannelを持つStreamのconsumerへ移して扱う。"
+      )]
+    ),
+    Heading ("try", localized "Change what is recorded" "記録される値を変えてみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Replace signals.distinct count with count: history becomes [0, 0, 1]. Keep distinct but remove unsubscribe: it becomes [0, 1, 2]. These changes affect which notifications arrive, not the final count value."
+    "signals.distinct countをcountに変えると、historyは[0, 0, 1]になる。distinctは残してunsubscribeを消すと、[0, 1, 2]になる。変わるのは届く通知で、countの最後の値ではない。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Publish two related changes together" "関係する二つの変更を一緒に公開する",
+        "/docs/signals/transactions/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Resource operations in std/effect" "std/effectのresource操作を引く",
+        "/docs/api/effect/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Subscription and lifetime rules" "購読と寿命の詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/05-effects.md#515-subscribeとlifetime"
+      )]
+    )
+  ]
+}
+
+pub fn transactions -> PageDefinition = PageDefinition {
+  id: "signals.transactions",
+  path: "/docs/signals/transactions/",
+  kind: Article,
+  title: localized "transaction — publish related changes together"
+    "transaction — 関係する変更を一緒に公開する",
+  summary: localized
+    "The completed count and total change together. An observer should receive the finished combination."
+    "完了数と合計が一緒に変わる。observerに届いてほしいのは、変更がそろった組み合わせだ。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Our label starts at 0/3. Now two tasks are complete and the total is four. Separate sets could show 2/3 on the way to 2/4. If these numbers describe one change, publish them in one transaction."
+    "表示は0/3から始まる。次は、完了が二つになり、合計が四つになる。別々にsetすると、2/4になる途中に2/3が見える。この二つの数字がひとつの変更を表すなら、transactionで一緒に公開しよう。"
+      )]
+    ),
+    CodeExample (
+      "signals-transaction",
+      localized "Observe the completed combination" "変更がそろった組み合わせを受け取る"
+    ),
+    Terminal (localized "Output" "実行結果", "[0/3, 2/4]"),
+    Heading
+    ("plans", localized "Describe changes before applying them" "変更を適用する前に、組み立てる"),
+    Paragraph (
+      [
+        InlineCode "signals.planSet 2 done",
+        Words (
+          localized
+    " describes a change; it does not set done immediately. planSet and planUpdate return SignalChange values. transaction takes an Array of those plans and returns a Task<Unit>. Running that Task applies the plans and publishes their result together."
+    "は変更の記述で、すぐにdoneをsetするわけではない。planSetとplanUpdateの結果はSignalChangeという値。transactionはそのplanのArrayを受け取り、Task<Unit>を返す。このTaskを実行するとplanが適用され、結果が一緒に公開される。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "SignalChange is opaque: the public API lets us make and combine plans without taking their target or payload back out. Plans for different payload types can share an Array<SignalChange>. This example changes two Int sources, but the transaction mechanism does not require all sources to hold Int."
+    "SignalChangeはopaqueな型。公開APIでplanを作ってまとめられるけれど、その対象や中身を取り出す操作はない。中身の型が違うplanも、同じArray<SignalChange>に入れられる。この例の元の値は二つともIntだが、transactionの仕組みがIntだけを要求するわけではない。"
+      )]
+    ),
+    Heading ("stable", localized "Notify after the graph settles" "グラフが落ち着いてから通知する"),
+    Paragraph (
+      [Words (
+        localized
+    "The transaction stages both source changes, commits them, and recomputes the affected derived graph before notifying observers. The history starts with the initial 0/3 and receives 2/4 once. It never receives the intermediate 2/3. This is what glitch-free combination means here."
+    "transactionは二つの変更をstagingしてcommitし、影響するderived graphを再計算してからobserverへ通知する。historyには初期値の0/3と、一回だけ届く2/4が入る。途中の2/3は届かない。ここでいうglitch-freeな組み合わせとは、このことだ。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Plans are applied in Array order. If several plans change one source, planUpdate receives the value staged by earlier plans. If calculating a change defects, or cancellation happens before commit, no change is published. Once commit starts, graph stabilization and notification finish before cancellation is observed."
+    "planはArrayの順に適用される。同じ元のSignalをいくつかのplanで変えるなら、planUpdateが受け取るのは前のplanまででstagingされた値。変更の計算でdefectが起きたり、commit前にキャンセルされたりした場合は、変更を公開しない。commitが始まったら、グラフの安定化と通知が終わってからキャンセルを観測する。"
+      )]
+    ),
+    Heading
+    ("scope", localized "This transaction changes Signals" "このtransactionで変えるのはSignal"),
+    Paragraph (
+      [Words (
+        localized
+    "set and update each perform a one-change transaction. The Array form groups several Signal changes; it does not include arbitrary I/O or make database operations atomic. Our do block sequences the Effect that updates the graph with the Effect that reads the recorded history. It is not a do block over Signal values themselves."
+    "setとupdateも、それぞれ一件のtransaction。Arrayを渡す形式は、複数のSignal変更をまとめるもので、任意のI/Oやデータベース操作をatomicにするものではない。このdoは、グラフを更新するEffectと、記録された履歴を読むEffectをつなぐ。Signalの値そのものをdoで束縛しているわけではない。"
+      )]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "Signal has Functor and Applicative instances, but no Monad instance. <$> and <*> describe fixed dependencies. To change which inner Signal is connected, use the explicit switchMap operation, whose lifetime rules are separate from ordinary flatMap."
+    "SignalにはFunctorとApplicativeのinstanceがあるが、Monadはない。<$>と<*>は、決まった依存関係を表す。つながる内側のSignalを変えるときは、寿命の規則を持つswitchMapを明示的に使う。普通のflatMapとは別の操作だ。"
+      )]
+    ),
+    Heading ("try", localized "Let the intermediate state through" "途中の状態も通してみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Replace the transaction with done := 2 followed by total := 4. History becomes [0/3, 2/3, 2/4]. Then restore the transaction and replace the first planSet with signals.planUpdate (\\value: Int -> value + 2) done: the final result is still 2/4."
+    "transactionをdone := 2、その次にtotal := 4へ置き換えると、historyは[0/3, 2/3, 2/4]になる。次はtransactionに戻して、最初のplanSetをsignals.planUpdate (\\value: Int -> value + 2) doneへ変える。最後の結果は、やはり2/4だ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Look up plans, transactions, and switchMap"
+    "plan・transaction・switchMapの宣言を引く",
+        "/docs/api/signal/"
+      )]
+    ),
+    Paragraph (
+      [ExternalLink (
+        localized "Signal transaction and graph rules" "Signalのtransactionとグラフの詳しい規則",
+        "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/05-effects.md#512-signal"
+      )]
+    )
+  ]
+}
+
+pub fn pages -> Array<PageDefinition> = [
+  overview (),
+  derived (),
+  subscriptions (),
+  transactions ()
+]
+pub fn area -> NavigationArea = NavigationArea {
+  id: "signals",
+  title: localized "Changing values" "変わっていく値",
+  description: localized
+    "Compose Signals, observe changes, and publish updates together."
+    "Signalを組み合わせ、変化を購読し、更新をまとめて公開する。",
+  landing: overview (),
+  groups: [NavigationGroup {
+    id: "signals",
+    title: localized "A progress label over time" "時間とともに変わる進捗表示",
+    sections: [NavigationSection {
+      id: "signals",
+      title: localized "Signal, subscribe, transaction" "Signal・subscribe・transaction",
+      kind: FlatSection,
+      overview: derived (),
+      pages: [subscriptions (), transactions ()]
+    }]
+  }]
+}

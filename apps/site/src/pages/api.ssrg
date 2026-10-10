@@ -148,6 +148,12 @@ fn usage specifier: String -> Array<Block> = match specifier {
       "printlnは、Consoleを必要とし、ConsoleErrorで失敗するEffectを返す。呼び出すと処理が組み立てられ、mainが返した処理をrunnerが実行する。成功時の値はUnitだ。")]),
     Paragraph ([InternalLink (localized "Name and reuse a console action" "表示する処理に名前を付けて、使い回す", "/docs/effects/actions/")])
   ]
+  "std/signal" -> [
+    Paragraph ([Words (localized
+      "Use <$> and <*> to build a derived graph, *source to read one snapshot, and update or := to change a mutable source. subscribe observes the current value and later updates; distinct suppresses equal repeats. Combine related plans with transaction before publishing their new values."
+      "<$>と<*>でderived graphを作り、*sourceでsnapshotを読み、updateや:=でmutableな元の値を変える。subscribeで現在値と後の更新を受け取り、distinctで等しい繰り返しを除く。関係するplanはtransactionでまとめてから、新しい値を公開しよう。")]),
+    Paragraph ([InternalLink (localized "Try a changing progress label" "変わっていく進捗表示を試す", "/docs/signals/")])
+  ]
   _ -> []
 }
 
