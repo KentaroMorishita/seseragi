@@ -134,6 +134,19 @@ fn usage specifier: String -> Array<Block> = match specifier {
       )]
     )
   ]
+  "std/effect" -> [
+    Paragraph ([Words (localized
+      "An Effect keeps its required environment, failure, and successful result in the type. Use fromEither to bring a pure validation result into this channel, <$> to transform success, and recover to choose another Effect on failure."
+      "Effectは、必要な環境・失敗・成功時の結果を型に持つ。純粋な検証結果を持ち込むならfromEither、成功した値を変えるなら<$>、失敗したときに別の処理を選ぶならrecover。")]),
+    CodeExample ("effect-error", localized "Recover a blank name" "空の名前から回復する"),
+    Paragraph ([InternalLink (localized "Read the example step by step" "例を順番に読んでみる", "/docs/effects/errors/")])
+  ]
+  "std/console" -> [
+    Paragraph ([Words (localized
+      "println returns an Effect requiring Console and failing with ConsoleError. Calling it builds the job; the runner executes the job returned by main. Its successful value is Unit."
+      "printlnは、Consoleを必要とし、ConsoleErrorで失敗するEffectを返す。呼び出すと処理が組み立てられ、mainが返した処理をrunnerが実行する。成功時の値はUnitだ。")]),
+    Paragraph ([InternalLink (localized "Name and reuse a console action" "表示する処理に名前を付けて、使い回す", "/docs/effects/actions/")])
+  ]
   _ -> []
 }
 

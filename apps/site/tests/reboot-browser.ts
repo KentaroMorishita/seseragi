@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { chromium } from "../../playground/node_modules/@playwright/test"
 import { generatorInput } from "../scripts/build"
-import { compositionExamples } from "../scripts/published-examples"
+import { articleExecutions } from "../scripts/published-examples"
 import { staticSiteHandler } from "../scripts/static-site-handler"
 import { verifyFunctionChapter } from "./function-chapter-browser"
 
@@ -81,11 +81,8 @@ try {
         route
       )
     }
-    for (const example of compositionExamples) {
-      if (
-        path !== `/docs/composition/${example.id.slice("composition-".length)}/`
-      )
-        continue
+    for (const example of articleExecutions) {
+      if (path !== example.route) continue
       assert.deepEqual(
         await page.locator(".code-panel .seseragi-highlight").allTextContents(),
         [readFileSync(join(root, example.sourcePath), "utf8")],
@@ -136,6 +133,8 @@ try {
             "/docs/",
             "/docs/composition/",
             "/docs/composition/apply/",
+            "/docs/effects/",
+            "/docs/effects/errors/",
             "/docs/api/",
             "/docs/api/prelude/",
           ]) {
@@ -155,11 +154,15 @@ try {
               assert.equal(new URL(page.url()).hash, href)
               assert.ok(await page.locator(href ?? "missing").isVisible())
             }
-            if (route === "/" || route === "/docs/composition/apply/")
+            if (
+              route === "/" ||
+              route === "/docs/composition/apply/" ||
+              route === "/docs/effects/errors/"
+            )
               await page.screenshot({
                 path: join(
                   screenshots,
-                  `reboot-${prefix ? "ja" : "en"}-${route === "/" ? "home" : "apply"}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
+                  `reboot-${prefix ? "ja" : "en"}-${route === "/" ? "home" : route === "/docs/effects/errors/" ? "errors" : "apply"}-${width}-${javaScriptEnabled ? "js" : "no-js"}.png`
                 ),
                 fullPage: true,
               })
@@ -188,6 +191,22 @@ try {
               page.locator(`.site-menu a[href="${other}/docs/api/"]`).click(),
             ])
             assert.equal(new URL(page.url()).pathname, `${other}/docs/api/`)
+          }
+          // Read the new chapter through its actual links in both locales,
+          // including mobile widths and browsers without JavaScript.
+          await page.goto(`${origin + prefix}/docs/`)
+          for (const route of [
+            "/docs/effects/",
+            "/docs/effects/actions/",
+            "/docs/effects/errors/",
+            "/docs/api/effect/",
+          ]) {
+            const link = page.locator(`main a[href="${prefix}${route}"]`).first()
+            await Promise.all([
+              page.waitForURL(origin + prefix + route),
+              link.click(),
+            ])
+            assert.equal(new URL(page.url()).pathname, prefix + route)
           }
         }
       } finally {

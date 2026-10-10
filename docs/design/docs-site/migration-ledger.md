@@ -12,9 +12,10 @@
 - Docs: 目的と記法から同じ章・記事へ進む。
 - 関数と記法: 検索キー、再利用する条件、検索から表示への合成。
 - 文脈のある値: `<$>`で変換、`<*>`で引数を組み合わせ、`>>=`と`do`で依存する検索をつなぐ。
+- 処理と失敗: Effectを値として持ち、doで順番に動かす。純粋なEitherの検証をfromEitherで持ち込み、recoverで回復する。
 - API Reference: モジュール単位の宣言集。identity/namespace/kindから安定したanchorを生成する。
   signature、制約、instance、対象targetはcompiler metadata由来。旧API別記事は生成しない。
-  prelude/array/text/maybe/eitherには用途や使い分けと章への導線を添える。
+  prelude/array/text/maybe/either/effect/consoleには用途や使い分けと章への導線を添える。
 - Examples、First Run、Releases: 実行可能なsource、正式リリース、実在する配布手順。
 - すべて日英の対。ページ数はcatalogとmetadataから決まり、旧件数を目標にしない。
 
@@ -23,7 +24,7 @@
 使用しない1,570個の旧article/template/locale sourceと旧corpus向けcheckerを一括撤去。
 `reference-article.ssrg`、`reader-article.ssrg`、`explanation.ssrg`、
 `reference/editorial/model.ssrg`と旧symbol別catalogも含む。
-新しい公開catalogが使うSeseragi sourceは44ファイル。
+新しい公開catalogが使うSeseragi sourceは45ファイル。
 掲載しない971個の旧example/comparison/package filesも撤去し、掲載sourceだけを残した。
 SSG、typed blocks、compiler metadata、syntax highlight、実行環境、静的配信handlerを再利用。
 旧例の中から今の最初の章が使うsourceだけを公開チェックする。
@@ -34,7 +35,7 @@ SSG、typed blocks、compiler metadata、syntax highlight、実行環境、静�
 
 - Active siteのBiome/TypeScript。
 - 現行CLIとcompiler standard-library metadataのfreshness。
-- 実際に掲載する11例のstdoutと3負例の診断。各sourceを独立したfile entryで実行する。
+- 実際に掲載する13例のstdoutと3負例の診断。各sourceを独立したfile entryで実行する。
 - renderer protocol、内部リンク/fragment、静的配信、4GiB監視・cleanupの既存回帰。
 - 本番SSGの全locale対・重複route/id・内部リンクと全artifact hash。
 - 2回の完全buildの同一manifest。
@@ -48,6 +49,6 @@ SSG、typed blocks、compiler metadata、syntax highlight、実行環境、静�
 
 作者の美学レビューと初見読者の理解は未確認。agentによる通読・実行・表示確認で
 それを承認済みとはしない。本文の制作・公開は継続できる。
-Effect/Signal、型・パターン、プロジェクト/interop等の新しい章と、難解APIの追加usageは継続対象。
+Signal、Effectの環境・resource・並列処理、型・パターン、プロジェクト/interop等の新しい章と、難解APIの追加usageは継続対象。
 検索と記事内編集・実行・型hoverは#768の追加体験。
 root Playgroundの配信切替は#631の別作業で、このDocs公開では実施しない。
