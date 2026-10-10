@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>Match and patterns · Seseragi</title>
+  <meta name="description" content="Matching, guards and exhaustiveness."/>
+  <link href="https://seseragi-docs.vercel.app/reference/match/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/reference/match/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a aria-current="page" href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/reference/match/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a aria-current="page" href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/reference/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main"><div class="container reference-layout"><aside class="doc-sidebar ref-side"><div class="desktop-side"><div class="side-group">LANGUAGE REFERENCE</div><nav aria-label="Reference navigation"><a href="/reference/" >Overview</a><a href="/reference/function-application/" >Function application</a><a href="/reference/match/" aria-current="page">Match and patterns</a><a href="/docs/" >Guided reading</a><a href="/examples/" >Examples</a></nav></div><details class="mobile-docs-menu"><summary>Reference <span class="menu-current">match</span></summary><div class="mobile-docs-items"><nav aria-label="Reference navigation"><a href="/reference/" >Overview</a><a href="/reference/function-application/" >Function application</a><a href="/reference/match/" aria-current="page">Match and patterns</a><a href="/docs/" >Guided reading</a><a href="/examples/" >Examples</a></nav></div></details></aside><article class="reference-main ref-article"><div class="crumbs"><a href="/reference/">Language Reference</a> / match</div><p class="kicker">EXPRESSIONS §3.10</p><h1>match and patterns</h1><p class="reference-lead">A <code>match</code> expression produces a value. Here are the matching order, exhaustiveness rules and guard semantics.</p><nav class="ref-page-toc"><a href="#arms">Syntax</a><a href="#exhaustive">Exhaustiveness</a><a href="#patterns">Patterns</a><a href="#sources">Source</a></nav><h2 id="arms">Arms are checked in order</h2><p>Arms are tested top to bottom. The expression from the first matching pattern and guard is evaluated. Every arm must have the same result type.</p><div class="ref-syntax"><div><code>match expression { pattern -&gt; result }</code><span>The selected arm produces the match value</span></div><div><code>Failed error when retryable error -&gt; "retry"</code><span>A Bool guard is checked after the pattern</span></div></div><h2 id="exhaustive">Exhaustiveness and unreachable arms</h2><p>All cases must be covered. Missing cases and unreachable arms are compile errors. Guarded arms do not count towards exhaustiveness because their Bool condition may be false.</p><h2 id="patterns">Pattern forms</h2><p>Patterns may nest literals, bindings, <code>_</code>, constructors, tuples, records, structs, arrays and lists. A name cannot be bound twice within the same pattern.</p><p>This complete example matches a tuple of remainders from division by 3 and 5; all arms return a String.</p><div class="code-window ref-code"><div class="code-head"><span class="file">fizzbuzz/main.ssrg</span><div class="code-tools"><button class="copy-code" type="button" aria-label="Copy source">Copy</button><a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20(number%20%25%203%2C%20number%20%25%205)%20%7B%0A%20%20%20%20(0%2C%200)%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20(0%2C%20_)%20-%3E%20%22Fizz%22%0A%20%20%20%20(_%2C%200)%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A" target="_blank" rel="noopener noreferrer">Try in Playground ↗</a></div></div><pre><code>fn fizzBuzz number: Int -&gt; String =
+  // A tuple lets one match classify both divisibility rules.
+  match (number % 3, number % 5) {
+    (0, 0) -&gt; &quot;FizzBuzz&quot;
+    (0, _) -&gt; &quot;Fizz&quot;
+    (_, 0) -&gt; &quot;Buzz&quot;
+    _ -&gt; `${number}`
+  }
+
+pub effect fn main = for number &lt;- 1 ..= 30 {
+  println $ fizzBuzz number
+}</code></pre><div class="code-result"><span>Output</span><b>1
+2
+Fizz
+4
+Buzz
+…</b></div></div><p class="ref-source"><a target="_blank" rel="noopener noreferrer" href="https://github.com/KentaroMorishita/seseragi/blob/main/examples/samples/fizzbuzz/main.ssrg">Original complete source ↗</a></p><section class="ref-normative" id="sources"><h2>Normative source</h2><p>For the normative matching, guard, and exhaustiveness rules, consult §3.10.</p><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md" target="_blank" rel="noopener noreferrer">Specification §3.10 match and patterns ↗</a></section><p class="ref-next"><a href="/reference/function-application/">← Function application</a><a href="/reference/">Back to reference →</a></p></article></div></main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

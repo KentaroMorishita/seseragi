@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>matchとパターン · Seseragi</title>
+  <meta name="description" content="Matching, guards and exhaustiveness."/>
+  <link href="https://seseragi-docs.vercel.app/ja/reference/match/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/reference/match/" hreflang="en" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   本文へスキップ
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/ja/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/ja/docs/">
+      Docs
+     </a>
+     <a href="/ja/examples/">
+      Examples
+     </a>
+     <a aria-current="page" href="/ja/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/reference/match/" lang="en">
+     EN
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      メニュー
+     </summary>
+     <nav aria-label="メニュー">
+      <a href="/ja/">
+       ホーム
+      </a>
+      <a href="/ja/docs/">
+       Docs
+      </a>
+      <a href="/ja/examples/">
+       Examples
+      </a>
+      <a aria-current="page" href="/ja/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/reference/">
+       English
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main"><div class="container reference-layout"><aside class="doc-sidebar ref-side"><div class="desktop-side"><div class="side-group">LANGUAGE REFERENCE</div><nav aria-label="リファレンスナビゲーション"><a href="/ja/reference/" >概要</a><a href="/ja/reference/function-application/" >関数適用・部分適用</a><a href="/ja/reference/match/" aria-current="page">matchとパターン</a><a href="/ja/docs/" >ガイドで学ぶ</a><a href="/ja/examples/" >Examples</a></nav></div><details class="mobile-docs-menu"><summary>Reference <span class="menu-current">match</span></summary><div class="mobile-docs-items"><nav aria-label="リファレンスナビゲーション"><a href="/ja/reference/" >概要</a><a href="/ja/reference/function-application/" >関数適用・部分適用</a><a href="/ja/reference/match/" aria-current="page">matchとパターン</a><a href="/ja/docs/" >ガイドで学ぶ</a><a href="/ja/examples/" >Examples</a></nav></div></details></aside><article class="reference-main ref-article"><div class="crumbs"><a href="/ja/reference/">言語リファレンス</a> / match</div><p class="kicker">EXPRESSIONS §3.10</p><h1>match とパターン</h1><p class="reference-lead"><code>match</code> は値を分岐する式。どのパターンに一致したかによって、式全体の値が決まる。ここでは評価の順序、網羅性、guardのルールまで確認する。</p><nav class="ref-page-toc"><a href="#arms">構文と評価</a><a href="#exhaustive">網羅性</a><a href="#patterns">パターン</a><a href="#sources">仕様出典</a></nav><h2 id="arms">パターンを上から照合する</h2><p>最初にpatternとguardが一致した枝を選んで、その右側の式を評価する。すべての枝の結果型は一致しなければならない。</p><div class="ref-syntax"><div><code>match expression { pattern -&gt; result }</code><span>一致した枝の結果がmatch全体の値になる</span></div><div><code>Failed error when retryable error -&gt; "retry"</code><span>patternが一致してからBoolのguardを評価</span></div></div><h2 id="exhaustive">網羅性と到達不能な枝</h2><p><strong>すべての場合を覆う必要がある。</strong> 足りないケースがあればコンパイルエラー。すでに必ず一致する枝の後にある到達不能な枝もエラー。guard付きの枝は、条件がFalseになる可能性があるため網羅性には数えない。</p><h2 id="patterns">組み合わせられるパターン</h2><p>リテラル、変数束縛、<code>_</code>、constructor、tuple、record、struct、Array、Listのパターンを入れ子にできる。同じpattern内では同じ名前を二度束縛できない。</p><p>3と5で割った余りをタプルとして照合する完全な例はこちら。各枝は文字列を返す。</p><div class="code-window ref-code"><div class="code-head"><span class="file">fizzbuzz/main.ssrg</span><div class="code-tools"><button class="copy-code" type="button" aria-label="ソースをコピー">コピー</button><a href="https://seseragi.vercel.app/?source=fn%20fizzBuzz%20number%3A%20Int%20-%3E%20String%20%3D%0A%20%20%2F%2F%20A%20tuple%20lets%20one%20match%20classify%20both%20divisibility%20rules.%0A%20%20match%20(number%20%25%203%2C%20number%20%25%205)%20%7B%0A%20%20%20%20(0%2C%200)%20-%3E%20%22FizzBuzz%22%0A%20%20%20%20(0%2C%20_)%20-%3E%20%22Fizz%22%0A%20%20%20%20(_%2C%200)%20-%3E%20%22Buzz%22%0A%20%20%20%20_%20-%3E%20%60%24%7Bnumber%7D%60%0A%20%20%7D%0A%0Apub%20effect%20fn%20main%20%3D%20for%20number%20%3C-%201%20..%3D%2030%20%7B%0A%20%20println%20%24%20fizzBuzz%20number%0A%7D%0A" target="_blank" rel="noopener noreferrer">Playgroundで試す ↗</a></div></div><pre><code>fn fizzBuzz number: Int -&gt; String =
+  // A tuple lets one match classify both divisibility rules.
+  match (number % 3, number % 5) {
+    (0, 0) -&gt; &quot;FizzBuzz&quot;
+    (0, _) -&gt; &quot;Fizz&quot;
+    (_, 0) -&gt; &quot;Buzz&quot;
+    _ -&gt; `${number}`
+  }
+
+pub effect fn main = for number &lt;- 1 ..= 30 {
+  println $ fizzBuzz number
+}</code></pre><div class="code-result"><span>実行結果</span><b>1
+2
+Fizz
+4
+Buzz
+…</b></div></div><p class="ref-source"><a target="_blank" rel="noopener noreferrer" href="https://github.com/KentaroMorishita/seseragi/blob/main/examples/samples/fizzbuzz/main.ssrg">完全な元ソース ↗</a></p><section class="ref-normative" id="sources"><h2>仕様出典</h2><p>照合、guard、網羅性の厳密な規則は言語仕様 §3.10 を参照。</p><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md" target="_blank" rel="noopener noreferrer">仕様 §3.10 match と pattern ↗</a></section><p class="ref-next"><a href="/ja/reference/function-application/">← 関数適用</a><a href="/ja/reference/">リファレンスへ戻る →</a></p></article></div></main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · 実験的なプログラミング言語
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

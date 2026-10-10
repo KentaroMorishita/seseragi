@@ -26,7 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
         item.hidden = !show;
         if (show) count++;
       }
-      if (empty) empty.hidden = count !== 0;
+      for (const group of document.querySelectorAll('[data-ref-group]')) {
+  const rows = [...group.querySelectorAll('[data-search-item]')];
+  group.hidden = !!q && !rows.some(row => !row.hidden);
+ }
+ if (empty) empty.hidden = count !== 0;
       if (status) status.textContent = q ? (document.documentElement.lang === 'ja' ? `${count}件` : `${count} found`) : '';
     };
     input.addEventListener('input', update);

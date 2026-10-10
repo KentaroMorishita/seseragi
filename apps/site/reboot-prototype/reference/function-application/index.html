@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#fcfdfc" name="theme-color"/>
+  <title>Function application · Seseragi</title>
+  <meta name="description" content="Application, currying, evaluation and type rules."/>
+  <link href="https://seseragi-docs.vercel.app/reference/function-application/" rel="canonical"/>
+  <link href="https://seseragi-docs.vercel.app/ja/reference/function-application/" hreflang="ja" rel="alternate"/>
+  <link href="/assets/site.css" rel="stylesheet"/>
+  <script defer="" src="/assets/site.js">
+  </script>
+ </head>
+ <body>
+  <a class="skip" href="#main">
+   Skip to content
+  </a>
+  <header class="site-header">
+   <div class="container header-inner">
+    <a aria-label="Seseragi" class="brand" href="/">
+     <img alt="Seseragi" height="46" src="/assets/seseragi-logo.svg" width="153"/>
+    </a>
+    <nav aria-label="Main navigation" class="desktop-nav">
+     <a href="/docs/">
+      Docs
+     </a>
+     <a href="/examples/">
+      Examples
+     </a>
+     <a aria-current="page" href="/reference/">
+      Reference
+     </a>
+    </nav>
+    <a class="lang-switch" href="/ja/reference/function-application/" lang="ja">
+     日本語
+    </a>
+    <a class="top-action" href="https://seseragi.vercel.app/">
+     Playground
+     <span aria-hidden="true">
+      ↗
+     </span>
+    </a>
+    <details class="mobile-menu">
+     <summary>
+      Menu
+     </summary>
+     <nav aria-label="Menu">
+      <a href="/">
+       Home
+      </a>
+      <a href="/docs/">
+       Docs
+      </a>
+      <a href="/examples/">
+       Examples
+      </a>
+      <a aria-current="page" href="/reference/">
+       Reference
+      </a>
+      <a href="https://seseragi.vercel.app/">
+       Playground ↗
+      </a>
+      <a href="/ja/reference/">
+       日本語
+      </a>
+     </nav>
+    </details>
+   </div>
+  </header>
+  <main id="main"><div class="container reference-layout"><aside class="doc-sidebar ref-side"><div class="desktop-side"><div class="side-group">LANGUAGE REFERENCE</div><nav aria-label="Reference navigation"><a href="/reference/" >Overview</a><a href="/reference/function-application/" aria-current="page">Function application</a><a href="/reference/match/" >Match and patterns</a><a href="/docs/" >Guided reading</a><a href="/examples/" >Examples</a></nav></div><details class="mobile-docs-menu"><summary>Reference <span class="menu-current">Application</span></summary><div class="mobile-docs-items"><nav aria-label="Reference navigation"><a href="/reference/" >Overview</a><a href="/reference/function-application/" aria-current="page">Function application</a><a href="/reference/match/" >Match and patterns</a><a href="/docs/" >Guided reading</a><a href="/examples/" >Examples</a></nav></div></details></aside><article class="reference-main ref-article"><div class="crumbs"><a href="/reference/">Language Reference</a> / Function application</div><p class="kicker">SYNTAX §1.4 · TYPES §2.7 · EVALUATION §3.1</p><h1>Function application</h1><p class="reference-lead">Function application puts an expression after the function with whitespace. Look up association, partial application, types and evaluation here.</p><nav class="ref-page-toc" aria-label="On this page"><a href="#syntax">Syntax</a><a href="#partial">Types and currying</a><a href="#evaluation">Evaluation</a><a href="#unit">Unit and type arguments</a><a href="#sources">Sources</a></nav><h2 id="syntax">Syntax and association</h2><p><code>add 1 2</code> means <code>(add 1) 2</code>. A comma-separated <code>add(1, 2)</code> is not the language's multi-argument call syntax.</p><div class="ref-syntax"><div><code>f value</code><span>Apply one value to a function</span></div><div><code>add 1 2</code><span>Left associative — (add 1) 2</span></div><div><code>identity&lt;String&gt; value</code><span>Type arguments attach to the callee</span></div></div><h2 id="partial">Types and partial application</h2><p>Supplying only part of the arguments leaves a function waiting for the rest. <code>add</code> has type <code>Int -&gt; Int -&gt; Int</code>; <code>add 1</code> has type <code>Int -&gt; Int</code>. That follows from nested one-argument functions.</p><p>The complete program compares a direct call with a partially applied function.</p><div class="code-window ref-code"><div class="code-head"><span class="file">pilot-currying.ssrg</span><div class="code-tools"><button class="copy-code" type="button" aria-label="Copy source">Copy</button><a href="https://seseragi.vercel.app/?source=fn%20add%20left%3A%20Int%20-%3E%20right%3A%20Int%20-%3E%20Int%20%3D%20left%20%2B%20right%0A%0Alet%20direct%20%3D%20add%201%202%0Alet%20addOne%20%3D%20add%201%0Alet%20answer%20%3D%20addOne%202%0A%0Apub%20effect%20fn%20main%20%3D%20println%20%60%24%7Bdirect%7D%2C%20%24%7Banswer%7D%60%0A" target="_blank" rel="noopener noreferrer">Try in Playground ↗</a></div></div><pre><code>fn add left: Int -&gt; right: Int -&gt; Int = left + right
+
+let direct = add 1 2
+let addOne = add 1
+let answer = addOne 2
+
+pub effect fn main = println `${direct}, ${answer}`</code></pre><div class="code-result"><span>Output</span><b>3, 3</b></div></div><p class="ref-source"><a target="_blank" rel="noopener noreferrer" href="https://github.com/KentaroMorishita/seseragi/blob/main/apps/site/examples/src/language/pilot-currying.ssrg">Original complete source ↗</a></p><h2 id="evaluation">Evaluation order</h2><p>Arguments are evaluated once, from left to right. A function body is evaluated when applied. An Effect's execution boundary is a separate concept.</p><h2 id="unit">Unit and type arguments</h2><p>A declaration such as <code>fn clock -&gt; Instant = ...</code> has an unnamed <code>Unit</code> parameter; call it with <code>clock ()</code>. Type arguments attach to a name without whitespace, as in <code>identity&lt;String&gt; value</code>.</p><section class="ref-normative" id="sources"><h2>Normative sources</h2><p>This is a reader-facing reference grounded in the normative language specification.</p><ul><li><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/01-syntax.md" target="_blank" rel="noopener noreferrer">§1.4 Function application</a></li><li><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md" target="_blank" rel="noopener noreferrer">§2.7 Function types and currying</a></li><li><a href="https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/03-data-and-expressions.md" target="_blank" rel="noopener noreferrer">§3.1 Evaluation</a></li></ul></section><p class="ref-next"><a href="/reference/">← Back to reference</a><a href="/reference/match/">Next: match →</a></p></article></div></main>
+  <footer class="site-footer">
+   <div class="container footer-inner">
+    <span>
+     Seseragi · An experimental programming language
+    </span>
+    <span>
+     <a href="https://github.com/KentaroMorishita/seseragi">
+      GitHub ↗
+     </a>
+     <span aria-hidden="true">
+      ·
+     </span>
+     <a href="https://seseragi.vercel.app/">
+      Playground ↗
+     </a>
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+
