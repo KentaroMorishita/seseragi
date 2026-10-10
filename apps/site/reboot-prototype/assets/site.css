@@ -93,3 +93,46 @@
 .ref-item.ref-draft span{font-weight:500}.ref-item.ref-draft small{color:#697e7c}
 .ref-normative ul{padding-left:24px;color:#43585b;line-height:2;font-size:13px}
 .ref-normative li{margin:8px 0}.ref-normative code{font:500 .9em var(--mono);color:#076c73;background:#e8f2f0;padding:2px 4px}
+
+
+/* Composition and Effect conceptual models — semantic, responsive, and JS-free. */
+.context-rows{display:grid;gap:10px}
+.context-row{display:grid;grid-template-columns:110px minmax(0,1fr) 105px minmax(0,1fr);align-items:center;gap:10px;background:#fff;border:1px solid #d3e4e3;padding:13px 12px;border-radius:5px}
+.context-row small{color:#66797a;font-size:11px}
+.context-row code,.context-case code{font:600 12px/1.7 var(--mono);color:#14636a;overflow-wrap:anywhere}
+.context-row .lane-arrow{font:600 11px/1.7 var(--mono);text-align:center;color:#467c81}
+.context-case{display:flex;align-items:center;justify-content:center;gap:20px;padding:6px 0;font-size:12px}
+.context-case span{color:#63888b}.concept-definitions{display:grid;gap:0;margin:16px 0 0}
+.concept-definitions>div{display:grid;grid-template-columns:85px minmax(0,1fr);gap:10px;padding:17px 5px;border-bottom:1px solid #d5e3e1}
+.concept-definitions dt code{font:700 14px/1.5 var(--mono);color:#006e78}
+.concept-definitions dd{margin:0;font-size:13px;line-height:1.95;color:#405b5d}
+.concept-definitions dd strong{color:#193f43}
+.effect-type{border:1px solid #c7dedb;border-radius:5px;padding:23px 16px;background:#fff;margin:13px 0 17px;text-align:center}
+.effect-type>code{font:750 clamp(18px,2.4vw,24px)/1.6 var(--mono);color:#076e76}
+.effect-parameters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:18px}
+.effect-parameters div{display:flex;flex-direction:column;gap:4px;padding:10px;background:#f3f8f7}
+.effect-parameters strong{font:800 16px/1.5 var(--mono);color:#137782}
+.effect-parameters span{font-size:11px;color:#456164}
+.effect-stages{display:flex;justify-content:space-between;align-items:stretch;gap:10px;margin:21px 0 0}
+.effect-stage{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;border:1px solid #c9e0dc;border-radius:5px;background:#fff;padding:14px 10px}
+.effect-stage.selected{background:#e3f4f2;border-color:#69b5b5}.effect-stage>b{font:700 11px var(--mono);color:#15838a}
+.effect-stage>span{font-size:12px;font-weight:700;color:#354f51}
+.effect-stage>code{font:550 11px/1.5 var(--mono);color:#176a71;overflow-wrap:anywhere}
+.effect-arrow{align-self:center;font:750 20px var(--mono);color:#5f9697}
+.do-equivalence{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);align-items:center;gap:10px}
+.do-equivalence>div{background:#fff;border:1px solid #d4e4e1;padding:15px;min-width:0}
+.do-equivalence>span{text-align:center;font-size:18px;font-weight:700;color:#257780}
+.do-equivalence small{font-size:11px;color:#6b7d7e}
+.do-equivalence pre{overflow-x:auto;font:600 12px/1.85 var(--mono);color:#185d66;margin:10px 0 0}
+@media(max-width:700px){
+ .context-row{grid-template-columns:1fr 1fr;gap:6px 10px}
+ .context-row small{grid-column:1/-1}
+ .context-row .lane-arrow{grid-column:2;grid-row:2;text-align:right}
+ .context-row code:last-child{grid-column:1/-1;grid-row:3;text-align:center}
+ .context-case{gap:9px}.context-case code{font-size:10px}
+ .concept-definitions>div{grid-template-columns:69px 1fr}.concept-definitions dd{font-size:12px}
+ .effect-parameters div{padding:9px 5px}.effect-parameters span{font-size:9px}
+ .effect-stages{display:grid;justify-content:stretch;gap:5px}
+ .effect-stage{padding:11px 13px}.effect-arrow{transform:rotate(90deg);line-height:1;text-align:center}
+ .do-equivalence{grid-template-columns:1fr;gap:7px}.do-equivalence>span{transform:rotate(90deg)}
+}
