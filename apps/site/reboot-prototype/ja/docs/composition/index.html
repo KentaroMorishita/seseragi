@@ -148,215 +148,56 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/ja/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      言語ガイド
-     </div>
-     <span class="kicker">
-      03 / COMPOSITION
-     </span>
-     <h1>
-      関数を組み合わせる
-     </h1>
-     <p class="lead">
-      合成にはいくつも書き方がある。
-      <code class="inline-code">
-       |&gt;
-      </code>
-      だけが答えではない。どこから読むと自然か、どんな値を扱っているかで選んでみよう。
-     </p>
-     <h2 id="three">
-      同じ処理を、違う記法で。
-     </h2>
-     <p>
-      候補を検索して、その結果に表示用の
-      <code class="inline-code">
-       badge
-      </code>
-      を付ける。短くするために検索条件を
-      <code class="inline-code">
-       pick
-      </code>
-      へ切り出した。残る3行は同じ結果になる。わざと全部を一つの記法へ揃える必要はない。
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        syntax-reader-pipelines.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="コピー syntax-reader-pipelines.ssrg" class="copy-code" type="button">
-         コピー
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
-         Playgroundで試す ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> pick = arrays.filter (matches <span class="st">"b"</span>)
-<span class="kw">let</span> nested = map badge (pick commands)
-<span class="kw">let</span> compact = map badge <span class="op">$</span> pick commands
-<span class="kw">let</span> choices = commands <span class="op">|&gt;</span> pick <span class="op">|&gt;</span> map badge</code></pre>
-     </div>
-     <p>
-      通常適用は関数の入れ子。
-      <code class="inline-code">
-       $
-      </code>
-      は右側の式をまとめて左に渡す。
-      <code class="inline-code">
-       |&gt;
-      </code>
-      は値から処理の流れを左から追える。
-      <strong>
-       違いは、見せたい構造
-      </strong>
-      なんだ。
-     </p>
-     <h2 id="maybe">
-      見つからない結果は、消さなくていい。
-     </h2>
-     <p>
-      <code class="inline-code">
-       arrays.find
-      </code>
-      は候補が無い場合もある。その結果に無理やり
-      <code class="inline-code">
-       badge
-      </code>
-      を適用する代わりに、
-      <code class="inline-code">
-       &lt;$&gt;
-      </code>
-      を使える。
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        find-and-map.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="コピー find-and-map.ssrg" class="copy-code" type="button">
-         コピー
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
-         Playgroundで試す ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> picked = arrays.find (matches <span class="st">"b"</span>) commands
-<span class="kw">let</span> suggestion = badge <span class="op">&lt;$&gt;</span> picked
-<span class="kw">let</span> missing = arrays.find (matches <span class="st">"z"</span>) commands
-<span class="kw">let</span> absentLabel = badge <span class="op">&lt;$&gt;</span> missing</code></pre>
-     </div>
-     <p>
-      <code class="inline-code">
-       badge &lt;$&gt; picked
-      </code>
-      は、値があれば
-      <code class="inline-code">
-       badge
-      </code>
-      を適用し、無ければ不在のままにする。ここでは
-      <code class="inline-code">
-       &lt;$&gt;
-      </code>
-      の意味があるから使っている。
-     </p>
-     <div class="inline-action-row">
-      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A">
-       全部の書き方をPlaygroundで比較する ↗
-      </a>
-      <a class="text-link subtle" href="/ja/reference/">
-       記法だけを調べる →
-      </a>
-     </div>
-     <details class="rule-note" id="rules">
-      <summary>
-       演算子の役割を並べて見る
-      </summary>
-      <p>
-       <code class="inline-code">
-        $
-       </code>
-       は低優先順位の適用、
-       <code class="inline-code">
-        |&gt;
-       </code>
-       はパイプ、
-       <code class="inline-code">
-        &lt;$&gt;
-       </code>
-       は文脈のある値への写像。
-       <code class="inline-code">
-        &lt;*&gt;
-       </code>
-       ・
-       <code class="inline-code">
-        &gt;&gt;=
-       </code>
-       ・
-       <code class="inline-code">
-        do
-       </code>
-       は別の合成を扱う。記号は見た目ではなく意味で選ぼう。
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/ja/docs/patterns/">
-       <span class="step-flag">
-        前に読む
-       </span>
-       <strong>
-        ← データとmatch
-       </strong>
-      </a>
-      <a class="step-link" href="/ja/docs/effects/">
-       <span class="step-flag">
-        次に読む
-       </span>
-       <strong>
-        Effectとdo →
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="このページの内容" class="right-index">
-     <p class="side-group">
-      このページの内容
-     </p>
-     <a href="#three">
-      適用・$・|&gt;
-     </a>
-     <a href="#maybe">
-      &lt;$&gt;で扱う
-     </a>
-     <a href="#rules">
-      記法のメモ
-     </a>
-    </nav>
+    <article class="article deep-guide"><div class="crumbs"><a href="/ja/docs/">Guide</a> / 関数の合成</div><span class="kicker">03 / COMPOSITION &amp; CONTEXT</span><h1>関数の形より、値の流れを見よう。</h1><p class="lead">Seseragiには <code>$</code>、<code>|&gt;</code>、<code>&lt;$&gt;</code>、<code>&lt;*&gt;</code>、<code>&gt;&gt;=</code> といった記法がある。でも、記号を全部覚えて使うことが目的じゃない。<strong>何を合成しているのか</strong>によって、書き方の意味が変わるところが面白い。</p>
+<h2 id="ordinary">まず、ただの関数適用。</h2>
+<p>コマンド名の検索を続けよう。検索した候補に、画面表示用の <code>badge</code> を付ける。ここで扱うのは、まだ通常の関数と配列だ。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / 抜粋：同じ結果を3通りで</span><div class="code-tools"><button type="button" class="copy-code">コピー</button></div></div><pre><code>fn badge name: String -&gt; String = &quot;&gt; &quot; + key name
+
+let nested = map badge (arrays.filter (matches &quot;b&quot;) commands)
+let compact = map badge $ arrays.filter (matches &quot;b&quot;) commands
+let choices = commands |&gt; arrays.filter (matches &quot;b&quot;) |&gt; map badge</code></pre></div>
+<p>3つは同じ結果になる。ただし「どれが一番短いか」を競っているわけじゃない。<code>map badge (…)</code> は関数の入れ子をそのまま読む。<code>$</code> は右側の式をまとめて渡すための低優先順位の適用。<code>|&gt;</code> は値が左から右へ渡っていく順番を示す。<strong>どれも通常の関数適用を表せる</strong>けれど、見せたい構造が違う。</p>
+<p>たとえば右側に <code>if</code> や <code>match</code> が続くなら、<code>$</code> で括弧を減らせることがある。処理の流れを追いたいなら <code>|&gt;</code> が読みやすい。でも毎回無理にパイプを作る必要はない。</p>
+<h2 id="context">値が「あるかもしれない」とき。</h2>
+<p>次は検索結果が一件だけ欲しいとき。<code>arrays.find</code> は候補が見つからない可能性を <code>Maybe&lt;String&gt;</code> という型で表す。<code>String</code> を受け取る <code>badge</code> に、そのまま <code>Maybe&lt;String&gt;</code> を渡すことはできない。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">02 / 抜粋：Maybeを保ったまま変換する</span><div class="code-tools"><button type="button" class="copy-code">コピー</button></div></div><pre><code>let picked = arrays.find (matches &quot;b&quot;) commands
+let suggestion = badge &lt;$&gt; picked
+
+let missing = badge &lt;$&gt; arrays.find (matches &quot;z&quot;) commands</code></pre></div>
+<figure class="concept-figure context-figure" aria-label="通常の関数適用とMaybeの内側への写像の比較"><figcaption><span class="concept-kicker">WHAT CHANGES — AND WHAT STAYS</span><strong>値の場所が変わると、合成の仕方も変わる。</strong></figcaption><div class="context-rows"><div class="context-row"><small>ふつうの値</small><code>String</code><span class="lane-arrow">— badge →</span><code>String</code></div><div class="context-row"><small>Maybeの値</small><code>Maybe&lt;String&gt;</code><span class="lane-arrow">— badge &lt;$&gt; →</span><code>Maybe&lt;String&gt;</code></div><div class="context-case"><code>Just "build"</code><span>→</span><code>Just "&gt; build"</code></div><div class="context-case"><code>Nothing</code><span>→</span><code>Nothing</code></div></div><p><code>&lt;$&gt;</code> はMaybeの外側を壊さず、内側の値に関数を適用する。値が無ければ <code>Nothing</code> のまま。関数が成功しなかったのではなく、そもそも適用する値が無いんだ。</p></figure>
+<p>ここでの <code>&lt;$&gt;</code> は、「値が入っていたら中身へ関数を適用し、外側の文脈は保つ」という操作。一般にはFunctorの <code>map</code> に相当する。配列への変換と似た顔をしているけど、<strong>何を保つかは型構築子によって違う</strong>。</p>
+<h2 id="differences">では、ほかの記号は何を表す？</h2>
+<div class="concept-figure compare-figure"><div class="concept-kicker">THREE DIFFERENT QUESTIONS</div><dl class="concept-definitions"><div><dt><code>&lt;$&gt;</code></dt><dd><strong>中身を変えたい。</strong> <code>F&lt;A&gt;</code> に <code>A → B</code> の関数を適用し、<code>F&lt;B&gt;</code> にする。</dd></div><div><dt><code>&lt;*&gt;</code></dt><dd><strong>別々の文脈付き引数を合わせたい。</strong> Applicativeの適用。入力同士の依存関係を必要としない。</dd></div><div><dt><code>&gt;&gt;=</code></dt><dd><strong>前の結果を見て、次の計算を決めたい。</strong> Monadのbind。次の計算が前の値に依存する。</dd></div></dl><p>ここでの「独立」は、必ず並列実行するという意味ではない。どんな順序・効果を持つかは、その型とinstanceの意味に従う。</p></div>
+<p><code>do</code> は <code>&gt;&gt;=</code> による合成を読みやすく書く記法。Effect専用というわけではない。この違いを知っておくと、処理や失敗を扱う章で急に別物が出てきたようには感じなくなるはず。</p>
+<h2 id="full">完全なコードで確かめる。</h2>
+<p>ここまでの抜粋には <code>key</code> や <code>commands</code> の定義が省略されている。実行できるプログラム全体では、3つの通常の書き方が同じ結果になることと、<code>Maybe</code> に <code>&lt;$&gt;</code> を使うとどうなるかを両方試せる。</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">syntax-reader-pipelines.ssrg / 完全なプログラム</span><div class="code-tools"><button type="button" class="copy-code">コピー</button><a href="https://seseragi.vercel.app/?source=import%20*%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20*%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20(key%20query)%20(key%20name)%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20(arrays.filter%20(matches%20%22b%22)%20commands)%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20(matches%20%22b%22)%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20(matches%20%22b%22)%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20(matches%20%22b%22)%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20(matches%20%22z%22)%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20(show%20choices)%0A%20%20println%20(show%20same)%0A%20%20println%20(show%20suggestion)%0A%20%20println%20(show%20missing)%0A%7D" target="_blank" rel="noopener noreferrer">Playgroundで動かす ↗</a></div></div><pre><code>import * as text from &quot;std/text&quot;
+import * as arrays from &quot;std/array&quot;
+
+fn key name: String -&gt; String = name |&gt; text.trim |&gt; text.toLower
+fn matches query: String -&gt; name: String -&gt; Bool =
+  text.startsWith (key query) (key name)
+fn badge name: String -&gt; String = &quot;&gt; &quot; + key name
+
+let commands = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let nested = map badge (arrays.filter (matches &quot;b&quot;) commands)
+let compact = map badge $ arrays.filter (matches &quot;b&quot;) commands
+let choices = commands |&gt; arrays.filter (matches &quot;b&quot;) |&gt; map badge
+let same = nested == compact &amp;&amp; compact == choices
+let picked = arrays.find (matches &quot;b&quot;) commands
+let suggestion = badge &lt;$&gt; picked
+let missing = badge &lt;$&gt; arrays.find (matches &quot;z&quot;) commands
+
+pub effect fn main = do {
+  println (show choices)
+  println (show same)
+  println (show suggestion)
+  println (show missing)
+}</code></pre></div>
+<details class="deep-aside"><summary>少し数学の寄り道：Functorの法則</summary><p>Functorのmapは好き勝手に変換できるわけじゃない。同じ値を返す関数を写しても元の文脈が変わらないこと、関数を合成してから写すのと順に写すのが一致することが大切だ。だから <code>&lt;$&gt;</code> は単なる省略記号ではなく、型をまたいで使える意味を持った操作になる。</p></details>
+<div class="deep-inline-reference"><strong>記法ごとの規則を確認する</strong><p>今のサイトでは、関数適用の結合と評価の規則を直接確認できる。ほかの記法も、GitHubへ飛ばすのではなく、このサイトに本文を書き足していく。</p><a href="/ja/reference/function-application/">関数適用のリファレンス →</a></div>
+<nav class="article-steps" aria-label="記事の移動"><a class="step-link" href="/ja/docs/patterns/"><span class="step-flag">前に読む</span><strong>← データとmatch</strong></a><a class="step-link" href="/ja/docs/effects/"><span class="step-flag">次に読む</span><strong>Effectとdo →</strong></a></nav></article>
+    <nav aria-label="この記事の内容" class="right-index"><p class="side-group">このページの内容</p><a href="#ordinary">通常の関数適用</a><a href="#context">MaybeとFunctor</a><a href="#differences">合成の意味の違い</a><a href="#full">完全なプログラム</a></nav>
    </div>
   </main>
   <footer class="site-footer">

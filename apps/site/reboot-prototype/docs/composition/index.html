@@ -148,199 +148,56 @@
       </div>
      </details>
     </aside>
-    <article class="article">
-     <div class="crumbs">
-      <a href="/docs/">
-       Docs
-      </a>
-      <span aria-hidden="true">
-       /
-      </span>
-      Language guide
-     </div>
-     <span class="kicker">
-      03 / COMPOSITION
-     </span>
-     <h1>
-      Composing functions
-     </h1>
-     <p class="lead">
-      There are several ways to compose functions. A pipeline is not the only answer. Choose the notation that makes the structure easiest to follow.
-     </p>
-     <h2 id="three">
-      One calculation, three shapes.
-     </h2>
-     <p>
-      Search for commands and add a display badge. After naming the filter
-      <code class="inline-code">
-       pick
-      </code>
-      , these three expressions produce the same value — and emphasize different reading directions.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        syntax-reader-pipelines.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy syntax-reader-pipelines.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> pick = arrays.filter (matches <span class="st">"b"</span>)
-<span class="kw">let</span> nested = map badge (pick commands)
-<span class="kw">let</span> compact = map badge <span class="op">$</span> pick commands
-<span class="kw">let</span> choices = commands <span class="op">|&gt;</span> pick <span class="op">|&gt;</span> map badge</code></pre>
-     </div>
-     <p>
-      Ordinary application nests function calls.
-      <code class="inline-code">
-       $
-      </code>
-      groups an expression on the right.
-      <code class="inline-code">
-       |&gt;
-      </code>
-      puts a value first, then follows its transformations. Choose by meaning, not by a pipeline quota.
-     </p>
-     <h2 id="maybe">
-      An absent result can stay absent.
-     </h2>
-     <p>
-      <code class="inline-code">
-       arrays.find
-      </code>
-      may not find anything.
-      <code class="inline-code">
-       &lt;$&gt;
-      </code>
-      lets you apply
-      <code class="inline-code">
-       badge
-      </code>
-      only when there is a value.
-     </p>
-     <div class="code-window compact">
-      <div class="code-head">
-       <span aria-hidden="true" class="dots">
-        <i>
-        </i>
-        <i>
-        </i>
-        <i>
-        </i>
-       </span>
-       <span class="file">
-        find-and-map.ssrg
-       </span>
-       <div class="code-tools">
-        <button aria-label="Copy find-and-map.ssrg" class="copy-code" type="button">
-         Copy
-        </button>
-        <a href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A" rel="noopener noreferrer">
-         Try in Playground ↗
-        </a>
-       </div>
-      </div>
-      <pre><code><span class="kw">let</span> picked = arrays.find (matches <span class="st">"b"</span>) commands
-<span class="kw">let</span> suggestion = badge <span class="op">&lt;$&gt;</span> picked
-<span class="kw">let</span> missing = arrays.find (matches <span class="st">"z"</span>) commands
-<span class="kw">let</span> absentLabel = badge <span class="op">&lt;$&gt;</span> missing</code></pre>
-     </div>
-     <p>
-      <code class="inline-code">
-       badge &lt;$&gt; picked
-      </code>
-      transforms the value when present, preserving absence otherwise. That is why
-      <code class="inline-code">
-       &lt;$&gt;
-      </code>
-      belongs in this example.
-     </p>
-     <div class="inline-action-row">
-      <a class="text-link" href="https://seseragi.vercel.app/?source=import%20%2A%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20%2A%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20%28key%20query%29%20%28key%20name%29%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20%28arrays.filter%20%28matches%20%22b%22%29%20commands%29%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20%28matches%20%22b%22%29%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20%28matches%20%22b%22%29%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20%28matches%20%22b%22%29%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20%28matches%20%22z%22%29%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20%28show%20choices%29%0A%20%20println%20%28show%20same%29%0A%20%20println%20%28show%20suggestion%29%0A%20%20println%20%28show%20missing%29%0A%7D%0A">
-       Compare all three in Playground ↗
-      </a>
-      <a class="text-link subtle" href="/reference/">
-       Look up notation →
-      </a>
-     </div>
-     <details class="rule-note" id="rules">
-      <summary>
-       Operator roles at a glance
-      </summary>
-      <p>
-       <code class="inline-code">
-        $
-       </code>
-       groups application,
-       <code class="inline-code">
-        |&gt;
-       </code>
-       pipelines values and
-       <code class="inline-code">
-        &lt;$&gt;
-       </code>
-       maps within a context.
-       <code class="inline-code">
-        &lt;*&gt;
-       </code>
-       ,
-       <code class="inline-code">
-        &gt;&gt;=
-       </code>
-       and
-       <code class="inline-code">
-        do
-       </code>
-       support other forms of composition.
-      </p>
-     </details>
-     <nav aria-label="Article navigation" class="article-steps">
-      <a class="step-link" href="/docs/patterns/">
-       <span class="step-flag">
-        Previous
-       </span>
-       <strong>
-        ← Data and match
-       </strong>
-      </a>
-      <a class="step-link" href="/docs/effects/">
-       <span class="step-flag">
-        Next
-       </span>
-       <strong>
-        Effect and do →
-       </strong>
-      </a>
-     </nav>
-    </article>
-    <nav aria-label="On this page" class="right-index">
-     <p class="side-group">
-      ON THIS PAGE
-     </p>
-     <a href="#three">
-      Application / $ / |&gt;
-     </a>
-     <a href="#maybe">
-      Mapping with &lt;$&gt;
-     </a>
-     <a href="#rules">
-      Notation
-     </a>
-    </nav>
+    <article class="article deep-guide"><div class="crumbs"><a href="/docs/">Guide</a> / Composition</div><span class="kicker">03 / COMPOSITION &amp; CONTEXT</span><h1>Follow the value, not just the punctuation.</h1><p class="lead">Seseragi gives you <code>$</code>, <code>|&gt;</code>, <code>&lt;$&gt;</code>, <code>&lt;*&gt;</code> and <code>&gt;&gt;=</code>. The goal isn't to use every symbol. Each one lets you express something about <strong>the kind of composition you're doing</strong>.</p>
+<h2 id="ordinary">Start with ordinary function application.</h2>
+<p>Take our command search. Once we've selected matching commands, we want to give them a label for display. We're still working with plain functions and an array.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">01 / Excerpt: three ways to express the same result</span><div class="code-tools"><button type="button" class="copy-code">Copy</button></div></div><pre><code>fn badge name: String -&gt; String = &quot;&gt; &quot; + key name
+
+let nested = map badge (arrays.filter (matches &quot;b&quot;) commands)
+let compact = map badge $ arrays.filter (matches &quot;b&quot;) commands
+let choices = commands |&gt; arrays.filter (matches &quot;b&quot;) |&gt; map badge</code></pre></div>
+<p>All three produce the same result. The point isn't which one uses fewer characters. <code>map badge (…)</code> makes nesting explicit. <code>$</code> groups the expression on the right for application. <code>|&gt;</code> reads as a value travelling through transformations from left to right. These describe ordinary application with different reading directions.</p>
+<p>If an <code>if</code> or <code>match</code> follows, <code>$</code> can help avoid extra parentheses. If a sequence of transformations is what matters, a pipeline may read better. Neither spelling needs to be forced onto every line.</p>
+<h2 id="context">Now the result might be missing.</h2>
+<p>Suppose we want one matching command. <code>arrays.find</code> represents the possibility of no result as <code>Maybe&lt;String&gt;</code>. Our <code>badge</code> function expects <code>String</code>, so we can't simply apply it to a Maybe value.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">02 / Excerpt: transform inside Maybe</span><div class="code-tools"><button type="button" class="copy-code">Copy</button></div></div><pre><code>let picked = arrays.find (matches &quot;b&quot;) commands
+let suggestion = badge &lt;$&gt; picked
+
+let missing = badge &lt;$&gt; arrays.find (matches &quot;z&quot;) commands</code></pre></div>
+<figure class="concept-figure context-figure" aria-label="Applying a function directly versus mapping within Maybe"><figcaption><span class="concept-kicker">WHAT CHANGES — AND WHAT STAYS</span><strong>A value's context changes how we compose.</strong></figcaption><div class="context-rows"><div class="context-row"><small>Plain value</small><code>String</code><span class="lane-arrow">— badge →</span><code>String</code></div><div class="context-row"><small>Maybe value</small><code>Maybe&lt;String&gt;</code><span class="lane-arrow">— badge &lt;$&gt; →</span><code>Maybe&lt;String&gt;</code></div><div class="context-case"><code>Just "build"</code><span>→</span><code>Just "&gt; build"</code></div><div class="context-case"><code>Nothing</code><span>→</span><code>Nothing</code></div></div><p><code>&lt;$&gt;</code> applies a function inside Maybe without stripping the context away. Nothing stays Nothing because there is no value to transform.</p></figure>
+<p><code>&lt;$&gt;</code> maps a function over a value inside a context, keeping that context intact. This is the Functor map operation. The similarity to mapping over an array is useful, but what gets preserved depends on the type constructor involved.</p>
+<h2 id="differences">So what about the other symbols?</h2>
+<div class="concept-figure compare-figure"><div class="concept-kicker">THREE DIFFERENT QUESTIONS</div><dl class="concept-definitions"><div><dt><code>&lt;$&gt;</code></dt><dd><strong>Transform what is inside.</strong> Map an <code>A → B</code> function over <code>F&lt;A&gt;</code> to get <code>F&lt;B&gt;</code>.</dd></div><div><dt><code>&lt;*&gt;</code></dt><dd><strong>Combine context-bearing inputs.</strong> Applicative application does not need one input to decide what the next computation will be.</dd></div><div><dt><code>&gt;&gt;=</code></dt><dd><strong>Choose the next computation from the previous result.</strong> Monad bind expresses value-dependent composition.</dd></div></dl><p>Independent inputs do not imply automatic parallel execution. Scheduling and effects depend on the type and its instance.</p></div>
+<p><code>do</code> is syntax for reading Monad-style composition. It is not exclusive to Effect. Keeping that distinction in mind will make effects and typed failures easier to understand in the next chapter.</p>
+<h2 id="full">Try the complete program.</h2>
+<p>The earlier excerpts left out definitions such as <code>key</code> and <code>commands</code>. This runnable program lets you compare the three ordinary forms and map into a Maybe result.</p>
+<div class="code-window editorial-code"><div class="code-head"><span class="file">syntax-reader-pipelines.ssrg / complete program</span><div class="code-tools"><button type="button" class="copy-code">Copy</button><a href="https://seseragi.vercel.app/?source=import%20*%20as%20text%20from%20%22std%2Ftext%22%0Aimport%20*%20as%20arrays%20from%20%22std%2Farray%22%0A%0Afn%20key%20name%3A%20String%20-%3E%20String%20%3D%20name%20%7C%3E%20text.trim%20%7C%3E%20text.toLower%0Afn%20matches%20query%3A%20String%20-%3E%20name%3A%20String%20-%3E%20Bool%20%3D%0A%20%20text.startsWith%20(key%20query)%20(key%20name)%0Afn%20badge%20name%3A%20String%20-%3E%20String%20%3D%20%22%3E%20%22%20%2B%20key%20name%0A%0Alet%20commands%20%3D%20%5B%22%20Build%20%22%2C%20%22bundle%22%2C%20%22CHECK%22%2C%20%22run%22%5D%0Alet%20nested%20%3D%20map%20badge%20(arrays.filter%20(matches%20%22b%22)%20commands)%0Alet%20compact%20%3D%20map%20badge%20%24%20arrays.filter%20(matches%20%22b%22)%20commands%0Alet%20choices%20%3D%20commands%20%7C%3E%20arrays.filter%20(matches%20%22b%22)%20%7C%3E%20map%20badge%0Alet%20same%20%3D%20nested%20%3D%3D%20compact%20%26%26%20compact%20%3D%3D%20choices%0Alet%20picked%20%3D%20arrays.find%20(matches%20%22b%22)%20commands%0Alet%20suggestion%20%3D%20badge%20%3C%24%3E%20picked%0Alet%20missing%20%3D%20badge%20%3C%24%3E%20arrays.find%20(matches%20%22z%22)%20commands%0A%0Apub%20effect%20fn%20main%20%3D%20do%20%7B%0A%20%20println%20(show%20choices)%0A%20%20println%20(show%20same)%0A%20%20println%20(show%20suggestion)%0A%20%20println%20(show%20missing)%0A%7D" target="_blank" rel="noopener noreferrer">Run in Playground ↗</a></div></div><pre><code>import * as text from &quot;std/text&quot;
+import * as arrays from &quot;std/array&quot;
+
+fn key name: String -&gt; String = name |&gt; text.trim |&gt; text.toLower
+fn matches query: String -&gt; name: String -&gt; Bool =
+  text.startsWith (key query) (key name)
+fn badge name: String -&gt; String = &quot;&gt; &quot; + key name
+
+let commands = [&quot; Build &quot;, &quot;bundle&quot;, &quot;CHECK&quot;, &quot;run&quot;]
+let nested = map badge (arrays.filter (matches &quot;b&quot;) commands)
+let compact = map badge $ arrays.filter (matches &quot;b&quot;) commands
+let choices = commands |&gt; arrays.filter (matches &quot;b&quot;) |&gt; map badge
+let same = nested == compact &amp;&amp; compact == choices
+let picked = arrays.find (matches &quot;b&quot;) commands
+let suggestion = badge &lt;$&gt; picked
+let missing = badge &lt;$&gt; arrays.find (matches &quot;z&quot;) commands
+
+pub effect fn main = do {
+  println (show choices)
+  println (show same)
+  println (show suggestion)
+  println (show missing)
+}</code></pre></div>
+<details class="deep-aside"><summary>A mathematical detour: Functor laws</summary><p>Functor mapping obeys useful laws. Mapping the identity function changes nothing. Mapping a composed function is equivalent to mapping its parts in sequence. That's why <code>&lt;$&gt;</code> carries a reliable meaning rather than being mere punctuation.</p></details>
+<div class="deep-inline-reference"><strong>Looking for the exact application rules?</strong><p>Function application, precedence and evaluation can already be checked here. Other notation entries will be written in this site rather than redirecting to an engineering specification.</p><a href="/reference/function-application/">Function application reference →</a></div>
+<nav class="article-steps" aria-label="Article navigation"><a class="step-link" href="/docs/patterns/"><span class="step-flag">PREVIOUS</span><strong>← Data and match</strong></a><a class="step-link" href="/docs/effects/"><span class="step-flag">NEXT</span><strong>Effect and do →</strong></a></nav></article>
+    <nav aria-label="On this page" class="right-index"><p class="side-group">ON THIS PAGE</p><a href="#ordinary">Ordinary application</a><a href="#context">Maybe and Functor</a><a href="#differences">Different compositions</a><a href="#full">Complete program</a></nav>
    </div>
   </main>
   <footer class="site-footer">
