@@ -1,8 +1,12 @@
 # Seseragi Reference Content Map
 
-This file defines what each documentation leaf must explain. It is a coverage
-ledger, not a list of marketing-page headings. The specification remains the
-review source, while every documentation leaf must be readable on its own.
+This file maps semantic obligations to existing or planned routes. It is a
+provenance ledger, not an editorial policy or a published-route inventory.
+[editorial-contract.md](editorial-contract.md) owns prose and composition;
+[migration-ledger.md](migration-ledger.md) distinguishes live implementation
+from planned-only rows. The specification remains the semantic review source.
+Mapped/Outlined/Verified below are historical coverage states, not Docs Reboot
+reader or author acceptance. Retain rules when moving or merging their owner.
 
 ## Coverage states
 
@@ -22,7 +26,7 @@ This ledger covers the Language Reference and its related reference surfaces.
 The Tour owns the interactive course; the Docs also explain purpose, appeal,
 basic concepts and a practical first run without requiring that course. See
 [site architecture](site-architecture.md#12-entrance-and-pilot-page-map) for the
-#697 entrance/pilot assignments. Introductory and first-run task pages do not
+current Reboot entrance/pilot assignments. Introductory and first-run task pages do not
 create additional normative coverage rows here. CLI, project, Web, and tooling
 topics enter this map as independently useful reference contracts, not steps in
 a duplicated course. Keep each existing route and its full semantic obligations

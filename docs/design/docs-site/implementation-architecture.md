@@ -7,8 +7,10 @@ language entrance, Language Reference, Standard Library, Examples and Releases.
 Playground remains an independent application, and its Tour owns the interactive
 course. The Docs also own the introduction, local concept explanations and
 practical first-run path defined in `site-architecture.md`; none requires a
-Tour visit. The #697 page map is a design input, not a claim that the first-run
-page is already implemented.
+Tour visit. The current first-run page is implemented. Its old verification history is
+migration evidence, not Docs Reboot acceptance. Editorial policy is owned solely
+by [editorial-contract.md](editorial-contract.md); the route and template
+retirement plan is [migration-ledger.md](migration-ledger.md).
 
 The former `apps/docs` implementation is removed. The new application does not
 keep compatibility readers, copied CSS, a second renderer or a second content
@@ -53,8 +55,12 @@ src/pages/language/syntax/function-application/
 - `ApiReference`
 
 Inline content is also typed as words, inline code, internal links, external
-links, emphasis and strong text. Adding a documentation pattern means adding a
-model constructor and a reusable component, not inventing per-page HTML.
+links, emphasis and strong text. Pages choose their own ordered typed blocks.
+Reuse existing constructors/components first; add a new semantic constructor only
+when the current model cannot express the content. Do not require uniform prose
+fields, heading counts or an entry-function explanation on every page. #764
+replaces the fixed authoring helpers while retaining this single renderer; #765
+and #767 remove each temporary adapter after its last verified consumer migrates.
 
 ## Locale ownership
 

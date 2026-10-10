@@ -1,68 +1,46 @@
-# Official Docs rebuild design
+# Docs Reboot design and evidence
 
-This directory records the information architecture and visual
-direction for [#601](https://github.com/KentaroMorishita/seseragi/issues/601).
-It is the design input for building `apps/site`; it is not a second language
-specification.
+[#601](https://github.com/KentaroMorishita/seseragi/issues/601) is the single
+entry point for dependencies and acceptance. Begin with #763; the old leaf
+issues and orchestration order are implementation history, not a work queue.
 
-## Decisions
+## Authoritative documents
 
-- English keeps the unprefixed canonical route; Japanese mirrors the same page
-  identity below `/ja/`. Author public explanations Japanese-first, then English
-  with the same meaning, examples and constraints.
-- Documentation uses a persistent expandable tree on desktop and a compact
-  drawer on mobile.
-- The tree has real hierarchy: area, subject group, article, module, symbol
-  group, and API symbol where applicable.
-- The Docs site must explain Seseragi's purpose, appeal, basic concepts and
-  detailed rules without requiring the Tour. Write for everyday TypeScript
-  developers; the [reader contract](reader-contract.md) defines their baseline.
-  Links to `docs/spec` establish provenance but never replace explanations.
-- Human-authored content is a typed Seseragi page module. Page-specific English
-  and Japanese copy lives beside that page as `en.ssrg` and `ja.ssrg`.
-- Rendering, layouts, navigation and semantic documentation components remain
-  a first-party Seseragi application using pure Html and process-target SSG.
-- Compiler-owned metadata remains the source of truth for API signatures and
-  public symbol identity.
+- [Editorial contract](editorial-contract.md): the sole policy for audience,
+  conversational prose, code aesthetics, article/chapter composition, API depth
+  and visual direction. Start every new Docs batch here.
+- [Migration ledger](migration-ledger.md) and [route snapshot](migration-inventory.tsv):
+  KEEP/REWRITE/RETIRE/MERGE decisions, source/route owners, replacement and deletion
+  prerequisites, compatibility and validation evidence.
+- [Reader review protocol](reader-contract.md): how to distinguish technical
+  checks, author decisions, agent self-review and actual reader understanding.
+- [Site architecture](site-architecture.md): global surfaces and navigation,
+  with the new [entrance/pilot map](site-architecture.md#12-entrance-and-pilot-page-map).
+- [Implementation architecture](implementation-architecture.md): typed Seseragi
+  pages/locales, pure Html/process SSG, Compiler Reference, external-source and
+  build/deployment boundaries.
+- [Reference content map](reference-content-map.md): semantic provenance for
+  existing and planned routes; not a published-corpus or prose-acceptance claim.
 
-## Site map and page contracts
+Language meaning remains in `docs/spec/`; symbol identity and signatures remain
+compiler-owned. Executable canonical/site sources ground all behavior claims.
+English keeps unprefixed routes and Japanese mirrors the same identity under
+`/ja/`. Site content, navigation, layout and rendering remain Seseragi-owned;
+TypeScript bridges external build/browser data. Playground remains independent.
 
-- [Site architecture](site-architecture.md) defines the global destinations,
-  expandable sidebar groups, documentation shell and article contract. Its
-  [entrance and pilot map](site-architecture.md#12-entrance-and-pilot-page-map)
-  defines #697's design input for #698–#702, including a practical first-run page
-  and six existing values/functions articles; these changes are not yet rendered
-  or accepted merely because this design is recorded.
-- [Reference content map](reference-content-map.md) maps every normative
-  specification section to a stable reader-facing leaf and defines what the
-  leaf must explain.
-- The current map covers every H2 section in `docs/spec/00-language.md` through
-  `docs/spec/17-sqlite-package.md`, plus the grammar appendix and generated
-  Standard Library symbol pages.
+## Previous results and mockups
 
-## Approved mockups
+`reader-review.md`, `*-verification.md`, `*-work-item.md` and previous reading
+sessions retain their recorded source, execution, feedback and implementation
+history. They are not new dispatch instructions or blanket Docs Reboot approval.
+Do not erase unfinished work or reinterpret an old checkbox as new acceptance.
 
-- `seseragi-home.png`: main language-site entrance.
-- `docs-language-function-application.png`: nested Guide/Language article.
-- `docs-standard-library-get.png`: nested generated API symbol page.
+`seseragi-home.png`, `docs-language-function-application.png` and
+`docs-standard-library-get.png` are historical design references. Their hierarchy
+and reusable UI ideas may inform #764/#766; they do not override the editorial
+contract or certify the new Hero/content composition.
 
-The lower-page mockups intentionally demonstrate two different tree depths:
-
-```text
-Language Reference
-└─ Syntax and operators
-   └─ Function application
-
-Standard Library
-└─ Collections
-   └─ std/array
-      └─ Functions
-         └─ get
-```
-
-## Implementation boundary
-
-See [implementation architecture](implementation-architecture.md). The rebuild
-keeps the proven deterministic SSG, safe-route, canonical-example, compiler
-Reference, no-JavaScript, SEO and accessibility contracts. There is no Markdown,
-MDX, JSON page array or legacy renderer in the active application.
+The first quality model is #765 Functions/Notation, after #763 and the necessary
+#764 composition. #766 uses that example; #767 bulk migration follows the accepted
+chapter. #768 adds optional interaction and does not block the chapter/home.
+#702/#706/#740/#631 remain independent gates under #601.
