@@ -74,7 +74,7 @@ mod tests {
 
     #[test]
     fn lint_reports_only_unreferenced_local_bindings() {
-        let source = "fn value -> Int = {\n  let unused = 1\n  let used = 2\n  let _intentional = 3\n  used\n}\n";
+        let source = "pub fn value -> Int = {\n  let unused = 1\n  let used = 2\n  let _intentional = 3\n  used\n}\n";
         let analysis = analyze_module(CompileInput::new("main.ssrg", "lint/local", source));
         assert!(analysis.diagnostics.diagnostics.is_empty());
         let lint = analysis.lint_diagnostics();
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn lint_does_not_guess_when_semantic_analysis_has_errors() {
-        let source = "fn value -> Int = {\n  let unused = missing\n  1\n}\n";
+        let source = "pub fn value -> Int = {\n  let unused = missing\n  1\n}\n";
         let analysis = analyze_module(CompileInput::new("main.ssrg", "lint/errors", source));
         assert!(analysis
             .diagnostics

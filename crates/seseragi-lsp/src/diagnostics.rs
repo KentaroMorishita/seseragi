@@ -44,6 +44,8 @@ struct LspLocation {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 struct LspDiagnosticData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    lint: Option<seseragi_syntax::LintEvidence>,
     message_key: String,
     notes: Vec<String>,
     helps: Vec<String>,
@@ -95,6 +97,7 @@ pub fn convert(
                     })
                     .collect::<Result<Vec<_>, LineIndexError>>()?,
                 data: LspDiagnosticData {
+                    lint: diagnostic.lint_evidence(),
                     message_key: diagnostic.message_key.clone(),
                     notes: diagnostic.notes(),
                     helps: diagnostic.helps(),

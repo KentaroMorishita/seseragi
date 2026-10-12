@@ -1351,10 +1351,17 @@ fn workspace_operations_preserve_namespaces_reexports_scopes_traits_and_operator
     let messages = run_server(&input);
     for uri in [&main_uri, &domain_uri, &operators_uri, &instances_uri] {
         let diagnostics = &published(&messages, uri)["params"]["diagnostics"];
-        assert!(
-            diagnostics.as_array().is_some_and(Vec::is_empty),
-            "{uri}: {diagnostics:#?}"
-        );
+        let facts = diagnostics.as_array().unwrap();
+        if uri == &domain_uri {
+            assert_eq!(facts.len(), 1, "{uri}: {diagnostics:#?}");
+            assert_eq!(facts[0]["code"], "SES-L0303");
+            assert!(facts[0]["relatedInformation"][0]["message"]
+                .as_str()
+                .unwrap()
+                .contains("shadow"));
+        } else {
+            assert!(facts.is_empty(), "{uri}: {diagnostics:#?}");
+        }
     }
 
     let type_references = response(&messages, 2)["result"].as_array().unwrap();
@@ -2062,7 +2069,7 @@ fn binary_exposes_canonical_array_index_result() {
 #[test]
 fn binary_exposes_canonical_char_literal_result() {
     let workspace = TempWorkspace::new();
-    let source = "let values = ['a', '瀬']\npub let total: Char = 'λ'\n";
+    let source = "let _values = ['a', '瀬']\npub let total: Char = 'λ'\n";
     workspace.write("main.ssrg", source);
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));

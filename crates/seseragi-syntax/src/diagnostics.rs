@@ -38,6 +38,8 @@ pub struct Diagnostic {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 struct DiagnosticWire {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    lint: Option<LintEvidence>,
     id: String,
     code: String,
     severity: DiagnosticSeverity,
@@ -59,6 +61,7 @@ impl From<Diagnostic> for DiagnosticWire {
     fn from(diagnostic: Diagnostic) -> Self {
         let (expected_type, actual_type) = diagnostic.expected_actual_types();
         Self {
+            lint: diagnostic.lint_evidence(),
             message: diagnostic.message(),
             labels: diagnostic.related.clone(),
             notes: diagnostic.notes(),
@@ -77,7 +80,36 @@ impl From<Diagnostic> for DiagnosticWire {
     }
 }
 
+/// Machine-readable authoring policy; evidence remains in `related` with UTF-8 ranges.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LintEvidence {
+    pub rule_id: String,
+    pub category: &'static str,
+    pub confidence: &'static str,
+    pub fix_safety: &'static str,
+    pub non_fixable_reason: &'static str,
+}
+
 impl Diagnostic {
+    pub fn lint_evidence(&self) -> Option<LintEvidence> {
+        let non_fixable_reason = match self.message_key.as_str() {
+            "lint.unused-local-binding" | "lint.unused-private-declaration" => "Removing initialization or evaluation may change observable behavior.",
+            "lint.unused-import" => "Removing an import may remove observable module initialization or instance availability.",
+            "lint.discarded-effect" => "Executing a discarded Effect or deleting its construction requires author intent.",
+            "lint.discarded-resource" => "Resource lifetime and release location require author intent.",
+            "lint.constant-condition" => "Removing a branch can remove type checking evidence or comments; no automatic edit is offered.",
+            _ => return None,
+        };
+        Some(LintEvidence {
+            rule_id: self.code.clone(),
+            category: "deterministic",
+            confidence: "proven",
+            fix_safety: "non-fixable",
+            non_fixable_reason,
+        })
+    }
+
     pub fn message(&self) -> String {
         match self.message_key.as_str() {
             "name.unresolved" => "Name could not be resolved".to_owned(),
@@ -162,6 +194,17 @@ impl Diagnostic {
                 "This event control has no matching handler".to_owned()
             }
             "lint.unused-local-binding" => "Local binding is never referenced".to_owned(),
+            "lint.unused-import" => "Imported binding is never referenced".to_owned(),
+            "lint.unused-private-declaration" => {
+                "Private declaration is never referenced outside its declaration".to_owned()
+            }
+            "lint.discarded-effect" => {
+                "Cold Effect value is discarded without execution".to_owned()
+            }
+            "lint.discarded-resource" => "Resource ownership handle is discarded".to_owned(),
+            "lint.constant-condition" => {
+                "Constant Bool condition leaves an unreachable branch".to_owned()
+            }
             _ => humanize_message_key(&self.message_key),
         }
     }
@@ -257,6 +300,11 @@ impl Diagnostic {
             "web.html.event-control-without-handler" => {
                 "Add `onClick`, or remove the unused event control prop."
             }
+            "lint.unused-import" => "Remove the binding only after checking module initialization and instance use.",
+            "lint.unused-private-declaration" => "Remove the declaration only after checking initialization and entrypoint intent.",
+            "lint.discarded-effect" => "Bind the Effect in do, return it, or intentionally remove its construction.",
+            "lint.discarded-resource" => "Retain the ownership handle and release it at the intended lifetime boundary.",
+            "lint.constant-condition" => "Keep only the selected branch if the constant condition is intentional.",
             "lint.unused-local-binding" => {
                 "Use the binding, or prefix its name with `_` if the non-use is intentional."
             }

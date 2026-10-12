@@ -13,6 +13,7 @@ use seseragi_syntax::{
 use std::collections::{BTreeMap, BTreeSet};
 
 mod completion;
+mod lint;
 
 use completion::collect_completion_contexts;
 
@@ -192,6 +193,8 @@ pub struct AnalysisDocument {
     pub standard_library: Vec<AnalysisReferenceItem>,
     #[serde(skip)]
     scopes: Vec<crate::ResolvedScope>,
+    #[serde(skip)]
+    lint_facts: Vec<Diagnostic>,
 }
 
 impl AnalysisDocument {
@@ -261,6 +264,13 @@ impl AnalysisDocument {
             }
             if symbol.definition.start == symbol.definition.end
                 || referenced_symbols.contains(&symbol.id)
+                || self.lint_facts.iter().any(|fact| {
+                    matches!(fact.code.as_str(), "SES-L0304" | "SES-L0305")
+                        && fact.related.iter().any(|evidence| {
+                            evidence.primary.start == symbol.definition.start
+                                && evidence.primary.end == symbol.definition.end
+                        })
+                })
             {
                 continue;
             }
@@ -282,6 +292,7 @@ impl AnalysisDocument {
                 type_difference: None,
             });
         }
+        artifact.diagnostics.extend(self.lint_facts.clone());
         artifact.diagnostics.sort_by(|left, right| {
             (left.primary.start, left.primary.end, &left.code).cmp(&(
                 right.primary.start,
@@ -540,8 +551,10 @@ pub fn analysis_document(
         },
     ));
 
+    let lint_facts = lint::collect(&resolved, typed);
     AnalysisDocument {
         schema: 1,
+        lint_facts,
         source: resolved.source.clone(),
         module: resolved.module.clone(),
         diagnostics,
@@ -572,6 +585,7 @@ pub fn diagnostics_only_analysis(
         completion_contexts: Vec::new(),
         standard_library: standard_library_catalog(),
         scopes: Vec::new(),
+        lint_facts: Vec::new(),
     }
 }
 
