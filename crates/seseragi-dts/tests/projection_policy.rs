@@ -221,3 +221,96 @@ fn handwritten_and_edited_semantic_files_survive_conversion_and_policy_removal()
     );
     assert!(package.join("generated/api.semantic.json").is_file());
 }
+
+#[cfg(feature = "filesystem")]
+#[test]
+fn removed_and_renamed_policy_outputs_remain_on_disk_but_cannot_be_imported() {
+    use std::fs;
+    let directory = tempfile::tempdir().unwrap();
+    let package = directory.path();
+    fs::create_dir_all(package.join("host")).unwrap();
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::write(package.join("seseragi.toml"), "[package]\nname='fixture/policy-ownership'\nversion='1.0.0'\nlanguage='^0.1.0'\n[layout]\ngenerated='generated'\n[run]\nentry='main'\n[foreign.typescript]\nresolver='node'\nmanifest='host/package.json'\nlockfile='host/bun.lock'\nbindings='bindings.toml'\n").unwrap();
+    fs::write(package.join("host/package.json"), "{}").unwrap();
+    fs::write(package.join("host/bun.lock"), "{}").unwrap();
+    fs::write(package.join("host/api.d.ts"), SOURCE).unwrap();
+    let request = ConvertRequest {
+        package_root: package.into(),
+        generated_root: package.join("generated"),
+        bindings: "bindings.toml".into(),
+        host_manifest: "host/package.json".into(),
+        entry: None,
+    };
+    let publish = |settings: &str| {
+        fs::write(package.join("bindings.toml"), settings).unwrap();
+        let graph = interpret_declaration(SOURCE, "host/api.d.ts", settings).unwrap();
+        fs::write(
+            package.join("host/api.policy.json"),
+            serde_json::to_string(&policy(&graph)).unwrap(),
+        )
+        .unwrap();
+        let outcome = convert_package(&request).unwrap();
+        assert!(!outcome.has_errors(), "{:?}", outcome.diagnostics);
+    };
+    publish(SETTINGS);
+    let main = package.join("src/main.ssrg");
+    fs::write(
+        &main,
+        "import {decodeUser} from \"gen/api/semantic\"\npub let main = decodeUser\n",
+    )
+    .unwrap();
+    assert!(seseragi_project::load_local_project(package).is_ok());
+    let old_semantic = package.join("generated/api/semantic.ssrg");
+    let old_source = fs::read_to_string(&old_semantic).unwrap();
+    fs::write(package.join("bindings.toml"), "schema=1\n[entries]\n").unwrap();
+    let removed = seseragi_project::load_local_project(package).unwrap_err();
+    assert_eq!(removed.code(), "SES-F0103");
+    assert!(removed.to_string().contains("removed entry"));
+    assert_eq!(fs::read_to_string(&old_semantic).unwrap(), old_source);
+    publish(&SETTINGS.replace("output='api'", "output='next'"));
+    let renamed = seseragi_project::load_local_project(package).unwrap_err();
+    assert_eq!(renamed.code(), "SES-F0103");
+    assert!(renamed.to_string().contains("renamed output"));
+    assert_eq!(fs::read_to_string(&old_semantic).unwrap(), old_source);
+    fs::write(
+        &main,
+        "import {decodeUser} from \"gen/next/semantic\"\npub let main = decodeUser\n",
+    )
+    .unwrap();
+    assert!(seseragi_project::load_local_project(package).is_ok());
+    let current_semantic = package.join("generated/next/semantic.ssrg");
+    let current_source = fs::read_to_string(&current_semantic).unwrap();
+    fs::write(
+        &current_semantic,
+        format!("{current_source}\n// manual edit\n"),
+    )
+    .unwrap();
+    let edited = seseragi_project::load_local_project(package).unwrap_err();
+    assert_eq!(edited.code(), "SES-F0103");
+    assert!(edited.to_string().contains("has been edited"));
+    fs::write(&current_semantic, current_source).unwrap();
+    // User-written generated modules carry no converter ownership claim.
+    fs::write(
+        package.join("generated/manual.ssrg"),
+        "pub let value: Int = 7\n",
+    )
+    .unwrap();
+    fs::write(
+        &main,
+        "import {value} from \"gen/manual\"\npub let main = value\n",
+    )
+    .unwrap();
+    assert!(seseragi_project::load_local_project(package).is_ok());
+    // An old raw generated binding also cannot bypass the removed entry check.
+    fs::write(
+        &main,
+        "import * as api from \"gen/api\"\npub let main: Int = 1\n",
+    )
+    .unwrap();
+    assert_eq!(
+        seseragi_project::load_local_project(package)
+            .unwrap_err()
+            .code(),
+        "SES-F0103"
+    );
+}

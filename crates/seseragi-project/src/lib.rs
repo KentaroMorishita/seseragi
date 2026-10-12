@@ -10,6 +10,7 @@ pub use foreign_virtual::{
     VirtualRuntimeBundle, VirtualRuntimeImport, VirtualRuntimeModule,
 };
 mod binding_linkage;
+mod generated_binding_ownership;
 mod generated_bindings;
 pub use binding_linkage::{
     validate_binding_runtime_linkage, validate_binding_runtime_linkage_inputs,
