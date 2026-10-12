@@ -39,6 +39,7 @@ import {
 } from "./runtime/browser-execution"
 import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import { discoverGroups, samples } from "./samples"
+import { createCompatibilityView } from "./ui/compatibility-report"
 import { connectInteropInspector } from "./ui/interop-inspector"
 import { inspectWorkspaceBindings } from "./workspace/binding-inspection"
 import {
@@ -493,6 +494,12 @@ const interopInspector = connectInteropInspector({
   button: interopInspectorButton,
   dialog: requiredElement("#interop-inspector", HTMLDialogElement),
   navigate: navigateWorkspaceDiagnostic,
+  views: [
+    createCompatibilityView((path, range) => {
+      requiredElement("#interop-inspector", HTMLDialogElement).close()
+      navigateWorkspaceDiagnostic(path, range)
+    }),
+  ],
 })
 renderWorkspaceChrome()
 if (initialSample !== undefined) {

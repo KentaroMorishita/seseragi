@@ -7,11 +7,13 @@
 mod linkage;
 mod model;
 mod normalize;
+mod report;
 mod validate;
 
 pub use linkage::*;
 pub use model::*;
 pub use normalize::NormalizationBudget;
+pub use report::*;
 pub use validate::{ValidationError, ValidationIssue};
 
 use sha2::{Digest, Sha256};

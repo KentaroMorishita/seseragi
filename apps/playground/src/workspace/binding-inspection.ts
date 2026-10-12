@@ -1,3 +1,7 @@
+import {
+  inspectCompatibilityReport,
+  type CompatibilityInspection,
+} from "./compatibility-report"
 import type { WorkspaceDiagnostic } from "../diagnostics/workspace-diagnostics"
 import {
   type BindingRequest,
@@ -31,6 +35,7 @@ export type BindingInspection = Readonly<{
   bindings: readonly InspectedBinding[]
   diagnostics: readonly WorkspaceDiagnostic[]
   semantics: readonly SemanticInspection[]
+  compatibility?: readonly CompatibilityInspection[]
 }>
 
 function record(json: string, kind: string): Record<string, unknown> {
@@ -59,7 +64,17 @@ export function inspectWorkspaceBindings(
     request.revision !== workspaceBindingRequest(state, request.entry).revision
   )
     throw new Error("Inspector result does not match its workspace snapshot")
+  const semantics = (response.semantic ?? []).map(({ id, graph }) =>
+    inspectSemanticGraph(id, graph, request.files)
+  )
+  const compatibility = (response.compatibility ?? []).map(({ id, report }) => {
+    const semantic = semantics.find((entry) => entry.id === id)
+    if (!semantic)
+      throw new Error("Compatibility report has no matching semantic graph")
+    return inspectCompatibilityReport(id, report, semantic, request.files)
+  })
   return {
+    compatibility,
     inputRevision: workspaceBindingInputRevision(state),
     status: response.status,
     inputs: request.files
@@ -93,9 +108,7 @@ export function inspectWorkspaceBindings(
       }
     }),
     diagnostics: bindingDiagnostics(request, response),
-    semantics: (response.semantic ?? []).map(({ id, graph }) =>
-      inspectSemanticGraph(id, graph, request.files)
-    ),
+    semantics,
   }
 }
 
