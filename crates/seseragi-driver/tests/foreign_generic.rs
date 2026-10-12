@@ -96,3 +96,18 @@ fn primitive_foreign_codec_selection_covers_the_documented_scalar_domain() {
     let result = compile(&source);
     assert!(!result.generated.typescript.contains("unsupported"));
 }
+
+#[test]
+fn foreign_binder_names_shadow_backend_primitives_without_changing_call_codecs() {
+    let result = compile(
+        r#"foreign "typescript" from "./api.mjs" {
+  pure fn echo<String> value: String -> String
+}
+pub fn value unit: Unit -> Bool = echo<Bool> True
+"#,
+    );
+    let ts = result.generated.typescript;
+    assert!(ts.contains("<String,>(value: String)"), "{ts}");
+    assert!(ts.contains("_ssrg_foreign_invokePure<String>"), "{ts}");
+    assert!(ts.contains("(\"bool\")"), "{ts}");
+}
