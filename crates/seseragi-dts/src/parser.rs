@@ -46,16 +46,38 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
     let mut local = BTreeMap::<String, Vec<Declaration>>::new();
     let mut exported = Vec::new();
     let mut aliases = Vec::<(String, String, Span)>::new();
+    let mut explicit_export_list = false;
     let mut cursor = container.walk();
     for child in container.named_children(&mut cursor) {
         if child.kind() == "export_statement" {
+            let default = (0..child.child_count())
+                .filter_map(|index| child.child(index))
+                .find(|token| token.kind() == "default");
+            explicit_export_list |= default.is_some() || child.child_by_field_name("declaration").is_none();
             if let Some(declaration) = child.child_by_field_name("declaration") {
                 for declaration in parse_declaration(declaration, source)? {
                     local
                         .entry(declaration.original_name().to_owned())
                         .or_default()
                         .push(declaration.clone());
-                    exported.push(declaration);
+                    exported.push(if let Some(default) = default {
+                        declaration
+                            .with_export_alias("default".to_owned(), Span::from_node(default))
+                    } else {
+                        declaration
+                    });
+                }
+            } else if let (Some(default), Some(value)) =
+                (default, child.child_by_field_name("value"))
+            {
+                if value.kind() == "identifier" {
+                    aliases.push((
+                        node_text(value, source).to_owned(),
+                        "default".to_owned(),
+                        Span::from_node(default),
+                    ));
+                } else {
+                    return Err(ParseError { message: "default export expression requires an explicit declaration/runtime interpretation".to_owned(), span: Span::from_node(value) });
                 }
             } else {
                 collect_export_aliases(child, source, &mut aliases);
@@ -79,6 +101,11 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
                 .iter()
                 .map(|declaration| declaration.with_export_alias(public.clone(), span)),
         );
+    }
+    // Ambient declaration scopes implicitly export their members unless an
+    // explicit export list/default assignment supplies the public surface.
+    if !explicit_export_list {
+        exported.extend(local.iter().filter(|(name, _)| !exported.iter().any(|decl| decl.original_name() == name.as_str())).flat_map(|(_, declarations)| declarations.clone()).collect::<Vec<_>>());
     }
     Ok(Scope {
         private_declarations: local

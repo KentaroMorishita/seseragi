@@ -444,6 +444,44 @@ fn nominal_visibility_and_static_readonly_flags_are_not_erased() {
 }
 
 #[test]
+fn default_export_aliases_keep_the_original_identity_and_public_root() {
+    for source in [
+        "export declare class Emitter {} export default Emitter;",
+        "declare class Emitter {} export default Emitter;",
+        "export default class Emitter {}",
+    ] {
+        let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+        assert_eq!(graph.symbols["default"].declaration_name, "Emitter");
+        assert!(!graph.private_symbols.contains("default"));
+        assert!(
+            matches!(&graph.types[&graph.symbols["default"].type_ref], SemanticType::Nominal { identity, .. } if identity == "Emitter")
+        );
+        assert!(project_graph(&graph, SETTINGS, "api")
+            .unwrap()
+            .source
+            .unwrap()
+            .contains("opaque type Default"));
+    }
+}
+
+#[test]
+fn binary_boundaries_emit_their_required_standard_import() {
+    let graph = interpret_declaration("export declare function encode(value: Uint8Array): string; export declare function decode(value: string): Uint8Array;", "api.d.ts", SETTINGS).unwrap();
+    let output = project_graph(&graph, SETTINGS, "api")
+        .unwrap()
+        .source
+        .unwrap();
+    assert!(
+        output.starts_with("import { Bytes } from \"std/bytes\"\n"),
+        "{output}"
+    );
+    assert!(
+        output.contains("encode value: Bytes -> String")
+            && output.contains("decode value: String -> Bytes")
+    );
+}
+
+#[test]
 fn generic_constraints_defaults_and_lexical_scopes_survive_json_and_projection() {
     let source = "export declare function identity<T extends string = string>(value: T): T; export declare function other<T extends number>(value: T): T;";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();

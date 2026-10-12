@@ -325,6 +325,7 @@ fn render_entry(
         diagnostics: Vec::new(),
         symbols: Vec::new(),
         uses_big_int: false,
+        uses_bytes: false,
         active_types: BTreeSet::new(),
         included: projection_subset(graph, entry),
     };
@@ -349,6 +350,9 @@ fn render_entry(
     if context.uses_big_int {
         source.push_str("import { BigInt } from \"std/big-int\"\n\n");
     }
+    if context.uses_bytes {
+        source.push_str("import { Bytes } from \"std/bytes\"\n\n");
+    }
     source.push_str(&format!(
         "pub foreign \"typescript\" from {:?} {{\n",
         entry.specifier
@@ -369,6 +373,7 @@ struct RenderContext<'a> {
     diagnostics: Vec<ConversionDiagnostic>,
     symbols: Vec<GeneratedSymbol>,
     uses_big_int: bool,
+    uses_bytes: bool,
     active_types: BTreeSet<TypeId>,
     included: Option<BTreeSet<String>>,
 }
@@ -1113,7 +1118,10 @@ fn render_type_node(
             PrimitiveDomain::Object => Some("Js.Object".to_owned()),
             PrimitiveDomain::Null => Some("Js.Null".to_owned()),
             PrimitiveDomain::Undefined => Some("Js.Undefined".to_owned()),
-            PrimitiveDomain::Binary => Some("Bytes".to_owned()),
+            PrimitiveDomain::Binary => {
+                context.uses_bytes = true;
+                Some("Bytes".to_owned())
+            }
             PrimitiveDomain::Dynamic if symbol.unsafe_any => {
                 context.diagnostics.push(diagnostic(
                     "SES-F0101",
@@ -1376,6 +1384,9 @@ fn unsupported_type(
 }
 
 fn validate_override(value: &str, span: Span, context: &mut RenderContext<'_>) -> Option<String> {
+    if value == "Bytes" {
+        context.uses_bytes = true;
+    }
     if matches!(
         value,
         "Int" | "Char" | "Float" | "String" | "Bool" | "Bytes"
