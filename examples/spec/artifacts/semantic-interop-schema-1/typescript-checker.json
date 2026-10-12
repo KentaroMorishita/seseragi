@@ -7,11 +7,16 @@
       "compilerDigest": "dd17428736a07e1db1a138d8a14295ddb2699ba780ee15038acdd2c6da5373a0",
       "fixtures": {
         "domains": {
-          "sourceDigest": "f9363f4d4ca0f3bafe5832829d12411babeb2e6752fb87e8d5527a1c3677ce45",
+          "sourceDigest": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4",
           "exports": [
             {
               "name": "Dynamic",
               "type": "any",
+              "flags": 524288
+            },
+            {
+              "name": "Fraction",
+              "type": "0.1",
               "flags": 524288
             },
             {
@@ -22,6 +27,11 @@
             {
               "name": "NullOrUndefined",
               "type": "string | null | undefined",
+              "flags": 524288
+            },
+            {
+              "name": "OutsideInt64",
+              "type": "100000000000000000000",
               "flags": 524288
             },
             {
@@ -37,6 +47,16 @@
             {
               "name": "ReadonlyTuple",
               "type": "readonly [string, number]",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedNegative",
+              "type": "-9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedPositive",
+              "type": "9007199254740992",
               "flags": 524288
             },
             {
@@ -187,11 +207,16 @@
       "compilerDigest": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
       "fixtures": {
         "domains": {
-          "sourceDigest": "f9363f4d4ca0f3bafe5832829d12411babeb2e6752fb87e8d5527a1c3677ce45",
+          "sourceDigest": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4",
           "exports": [
             {
               "name": "Dynamic",
               "type": "any",
+              "flags": 524288
+            },
+            {
+              "name": "Fraction",
+              "type": "0.1",
               "flags": 524288
             },
             {
@@ -202,6 +227,11 @@
             {
               "name": "NullOrUndefined",
               "type": "string | null | undefined",
+              "flags": 524288
+            },
+            {
+              "name": "OutsideInt64",
+              "type": "100000000000000000000",
               "flags": 524288
             },
             {
@@ -217,6 +247,16 @@
             {
               "name": "ReadonlyTuple",
               "type": "readonly [string, number]",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedNegative",
+              "type": "-9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedPositive",
+              "type": "9007199254740992",
               "flags": 524288
             },
             {
