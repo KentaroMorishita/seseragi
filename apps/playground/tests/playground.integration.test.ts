@@ -2393,7 +2393,10 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
     ).text()
 
     expect(driver).toContain("compileProject(singleFileRequest(source))")
-    expect(driver).toContain("analyzeProject(singleFileRequest(source))")
+    expect(driver).toContain("analyzeProjectEditor(singleFileRequest(source))")
+    expect(driver).toContain(
+      "return analyzeProject({ ...request, editorRecovery: true })"
+    )
     expect(driver).toMatch(
       /formatProjectFile\(\s*singleFileRequest\(source\),\s*"main\.ssrg"/
     )
