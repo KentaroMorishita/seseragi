@@ -104,6 +104,12 @@
       "runners": ["cli-dts"],
       "evidence": ["crates/seseragi-cli/tests/dts.rs"]
     },
+    "dts-generic-schema": {
+      "availability": "current",
+      "phase": "run",
+      "runners": ["cli-dts", "cli-build", "cli-run"],
+      "evidence": ["crates/seseragi-cli/tests/generic_schema.rs"]
+    },
     "dts-namespace-runtime": {
       "availability": "current",
       "phase": "convert",
