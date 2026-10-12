@@ -382,5 +382,6 @@ fn valid_adapter_name(name: &str) -> bool {
                 | "import"
                 | "from"
                 | "json"
+                | "decodeJson"
         )
 }

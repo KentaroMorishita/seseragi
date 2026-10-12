@@ -367,3 +367,11 @@ fn literal_escape_and_nullary_tag_variants_generate_valid_native_source() {
     ))
     .unwrap();
 }
+
+#[test]
+fn adapter_names_cannot_shadow_the_standard_decoder_used_by_generated_code() {
+    let graph = graph();
+    let mut set = policies(&graph);
+    set.policies[0].function_name = "decodeJson".to_owned();
+    assert!(generate_adapters(&graph, &set).is_err());
+}

@@ -330,3 +330,26 @@ fn dependency_is_used_for_analysis_but_not_linted() {
                 .is_some_and(|entries| entries.iter().any(|entry| entry["severity"] == "Error"))
     }));
 }
+
+#[test]
+fn malformed_expression_never_passes_cli_lint_or_reaches_runtime() {
+    let fixture = Fixture::new();
+    let source = "pub fn same value: Int -> Int = (fn inputValue: Int => inputValue) value\npub effect fn main -> Unit with Console fails ConsoleError = println $ show (same 7)\n";
+    let path = fixture.write("malformed.ssrg", source);
+    let lint = fixture.run(&["--diagnostic-format", "json"], &path);
+    assert_eq!(lint.status.code(), Some(2));
+    let diagnostic: serde_json::Value = serde_json::from_slice(&lint.stderr).unwrap();
+    assert!(diagnostic["diagnostics"][0]["diagnostics"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|entry| entry["code"] == "SES-P0001"));
+    let run = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&path)
+        .output()
+        .unwrap();
+    assert_eq!(run.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&run.stderr).contains("SES-P0001"));
+    assert!(!String::from_utf8_lossy(&run.stderr).contains("runtime-defect"));
+}
