@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.26] - 2026-10-12
+
+### Fixed
+
+- Keep Playground and Tour editing responsive by running compiler work in a Web Worker and retaining only the latest pending live analysis.
+- Defer the Playground Reference catalog's highlighted cards until it is opened, and release them when it closes.
+- Give editor diagnostic popups an opaque background when they share a tooltip with type information.
+
 ## [0.61.25] - 2026-10-08
 
 ### Fixed
