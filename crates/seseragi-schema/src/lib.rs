@@ -95,6 +95,7 @@ pub fn interpret_schema(
             .definitions
             .insert(format!("#/$defs/{}", pointer(name)), symbol.clone());
         // Forward references are indexed before any declaration is interpreted.
+        builder.graph.private_symbols.insert(symbol.clone());
         builder.graph.symbols.insert(
             symbol.clone(),
             SemanticSymbol {

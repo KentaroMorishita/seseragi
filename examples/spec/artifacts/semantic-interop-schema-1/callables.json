@@ -3,14 +3,16 @@
     "counts": [
       {
         "classification": "direct",
-        "count": 6,
+        "count": 8,
         "symbols": [
           "ThisReceiver",
           "asynchronous",
           "callback",
           "constrained",
           "identity",
-          "tools"
+          "tools",
+          "tools.count",
+          "tools.normalize"
         ]
       },
       {
@@ -56,10 +58,12 @@
         "constrained",
         "identity",
         "overloaded",
-        "tools"
+        "tools",
+        "tools.count",
+        "tools.normalize"
       ]
     },
-    "graphDigest": "c0fcc7c7cec7a2b4b8c7375f737c0b44d1d03faf6d27ad8a11da3ef40482535c",
+    "graphDigest": "bf9a2351d68ad32270bd8d006c6035b7e5b7e533cfd8438047633328a8e655b2",
     "identity": {
       "frontend": {
         "name": "seseragi-dts",
@@ -815,6 +819,30 @@
             "start": 406
           },
           {
+            "end": 456,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 414
+          },
+          {
+            "end": 456,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 414
+          },
+          {
+            "end": 446,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 440
+          },
+          {
+            "end": 455,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 449
+          },
+          {
             "end": 524,
             "rule": "declaration",
             "source": "callables.d.ts",
@@ -825,6 +853,30 @@
             "rule": "public-name",
             "source": "callables.d.ts",
             "start": 476
+          },
+          {
+            "end": 522,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 484
+          },
+          {
+            "end": 522,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 484
+          },
+          {
+            "end": 512,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 506
+          },
+          {
+            "end": 521,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 515
           }
         ],
         "projectionClassification": null,
@@ -835,14 +887,212 @@
             "policy": null,
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
+            "typeRef": 26
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 27
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 28
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
             "typeRef": 29
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 30
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 31
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
           }
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
         "typeRef": 29,
         "types": [
-          29
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ]
+      },
+      "tools.count": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 522,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 484
+          },
+          {
+            "end": 522,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 484
+          },
+          {
+            "end": 498,
+            "rule": "public-name",
+            "source": "callables.d.ts",
+            "start": 493
+          },
+          {
+            "end": 512,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 506
+          },
+          {
+            "end": 521,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 515
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "count",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 30
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 31
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          },
+          {
+            "classification": "runtime-abi-unresolved",
+            "policy": null,
+            "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+            "rule": "runtime-binding-evidence",
+            "typeRef": 32
+          }
+        ],
+        "runtimeAbiUnresolved": true,
+        "semanticClassification": "direct",
+        "typeRef": 32,
+        "types": [
+          30,
+          31,
+          32
+        ]
+      },
+      "tools.normalize": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 456,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 414
+          },
+          {
+            "end": 456,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 414
+          },
+          {
+            "end": 432,
+            "rule": "public-name",
+            "source": "callables.d.ts",
+            "start": 423
+          },
+          {
+            "end": 446,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 440
+          },
+          {
+            "end": 455,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 449
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "normalize",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 26
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 27
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 28
+          },
+          {
+            "classification": "runtime-abi-unresolved",
+            "policy": null,
+            "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+            "rule": "runtime-binding-evidence",
+            "typeRef": 28
+          }
+        ],
+        "runtimeAbiUnresolved": true,
+        "semanticClassification": "direct",
+        "typeRef": 28,
+        "types": [
+          26,
+          27,
+          28
         ]
       }
     },
@@ -1257,6 +1507,72 @@
           }
         ]
       },
+      "26": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 446,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 440
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 26
+          }
+        ]
+      },
+      "27": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 455,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 449
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 27
+          }
+        ]
+      },
+      "28": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 456,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 414
+          },
+          {
+            "end": 456,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 414
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 28
+          }
+        ]
+      },
       "29": {
         "classification": "direct",
         "origins": [
@@ -1300,6 +1616,72 @@
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
             "typeRef": 3
+          }
+        ]
+      },
+      "30": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 512,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 506
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 30
+          }
+        ]
+      },
+      "31": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 521,
+            "rule": "type-interpretation",
+            "source": "callables.d.ts",
+            "start": 515
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 31
+          }
+        ]
+      },
+      "32": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 522,
+            "rule": "callable-signature",
+            "source": "callables.d.ts",
+            "start": 484
+          },
+          {
+            "end": 522,
+            "rule": "declaration",
+            "source": "callables.d.ts",
+            "start": 484
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
           }
         ]
       },
@@ -1677,10 +2059,7 @@
         "rule": "declaration-interpretation"
       }
     ],
-    "privateSymbols": [
-      "tools.count",
-      "tools.normalize"
-    ],
+    "privateSymbols": [],
     "schema": 1,
     "sources": {
       "callables.d.ts": {
@@ -2547,7 +2926,10 @@
       },
       "29": {
         "kind": "namespace",
-        "members": {}
+        "members": {
+          "count": "tools.count",
+          "normalize": "tools.normalize"
+        }
       },
       "3": {
         "kind": "callable",
@@ -2601,7 +2983,9 @@
       },
       "33": {
         "kind": "namespace",
-        "members": {}
+        "members": {
+          "count": "tools.count"
+        }
       },
       "34": {
         "body": 37,

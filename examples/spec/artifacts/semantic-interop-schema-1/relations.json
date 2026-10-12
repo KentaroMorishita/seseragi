@@ -61,7 +61,7 @@
         "Template"
       ]
     },
-    "graphDigest": "e41ee6726d7f5d497eb5b6c54bfaf2797ee828e33c193588f8bc659ee30a33aa",
+    "graphDigest": "10f185df08b47f9c8a04c949f47fa011660d503a8f5d65e61454312f1aa44b50",
     "identity": {
       "frontend": {
         "name": "seseragi-dts",
@@ -303,7 +303,7 @@
           },
           {
             "end": 433,
-            "rule": "type-interpretation",
+            "rule": "typescript-binary64-literal",
             "source": "relations.d.ts",
             "start": 431
           },
@@ -332,10 +332,10 @@
             "typeRef": 43
           },
           {
-            "classification": "direct",
+            "classification": "normalized",
             "policy": null,
-            "reason": "meaning is represented directly by the validated shared semantic node",
-            "rule": "semantic-relationship",
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
             "typeRef": 45
           },
           {
@@ -838,7 +838,7 @@
           },
           {
             "end": 177,
-            "rule": "type-interpretation",
+            "rule": "typescript-binary64-literal",
             "source": "relations.d.ts",
             "start": 176
           },
@@ -1199,7 +1199,7 @@
           },
           {
             "end": 177,
-            "rule": "type-interpretation",
+            "rule": "typescript-binary64-literal",
             "source": "relations.d.ts",
             "start": 176
           },
@@ -1635,21 +1635,21 @@
         ]
       },
       "45": {
-        "classification": "direct",
+        "classification": "normalized",
         "origins": [
           {
             "end": 433,
-            "rule": "type-interpretation",
+            "rule": "typescript-binary64-literal",
             "source": "relations.d.ts",
             "start": 431
           }
         ],
         "reasons": [
           {
-            "classification": "direct",
+            "classification": "normalized",
             "policy": null,
-            "reason": "meaning is represented directly by the validated shared semantic node",
-            "rule": "semantic-relationship",
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
             "typeRef": 45
           }
         ]
@@ -1948,6 +1948,14 @@
       },
       {
         "classification": "normalized",
+        "inputs": [],
+        "output": 17,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 1 as binary64 bits 3ff0000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "normalized",
         "inputs": [
           17,
           18,
@@ -2003,6 +2011,14 @@
         "policy": null,
         "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
         "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [],
+        "output": 45,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
       },
       {
         "classification": "normalized",
@@ -2332,7 +2348,7 @@
       "17": [
         {
           "end": 177,
-          "rule": "type-interpretation",
+          "rule": "typescript-binary64-literal",
           "source": "relations.d.ts",
           "start": 176
         }
@@ -2610,7 +2626,7 @@
       "45": [
         {
           "end": 433,
-          "rule": "type-interpretation",
+          "rule": "typescript-binary64-literal",
           "source": "relations.d.ts",
           "start": 431
         }

@@ -36,6 +36,17 @@ fn actual_json_schema_constructs_source_neutral_graph_and_reuses_same_projector(
         "seseragi-json-schema"
     );
     assert!(graph.symbols.values().all(|s| s.runtime.is_none()));
+    assert_eq!(
+        graph.private_symbols,
+        std::collections::BTreeSet::from(["SchemaDef0".to_owned()])
+    );
+    assert_eq!(
+        SemanticCompatibilityReport::from_graph(&graph)
+            .unwrap()
+            .symbols
+            .len(),
+        1
+    );
     let output = seseragi_dts::project_graph(&graph, SETTINGS, "api").unwrap();
     assert!(output.diagnostics.is_empty(), "{:?}", output.diagnostics);
     let generated = output.source.unwrap();

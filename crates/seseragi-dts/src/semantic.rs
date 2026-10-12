@@ -98,6 +98,28 @@ pub(crate) fn interpret_scope(
 fn digest(source: &str) -> String {
     format!("{:x}", Sha256::digest(source.as_bytes()))
 }
+
+fn typescript_number_literal(raw: &str) -> Option<f64> {
+    let cleaned = raw.replace('_', "");
+    let (negative, unsigned) = cleaned
+        .strip_prefix('-')
+        .map_or((false, cleaned.as_str()), |text| (true, text));
+    let radix = [
+        ("0x", 16),
+        ("0X", 16),
+        ("0o", 8),
+        ("0O", 8),
+        ("0b", 2),
+        ("0B", 2),
+    ];
+    for (prefix, base) in radix {
+        if let Some(digits) = unsigned.strip_prefix(prefix) {
+            let number = u128::from_str_radix(digits, base).ok()? as f64;
+            return Some(if negative { -number } else { number });
+        }
+    }
+    cleaned.parse().ok()
+}
 fn path(namespace: &str, name: &str) -> String {
     if namespace.is_empty() {
         name.to_owned()
@@ -891,10 +913,25 @@ impl Builder {
             TypeKind::Literal(raw) => {
                 if let Some(domain) = primitive(raw) {
                     SemanticType::Primitive { domain }
-                } else if let Ok(integer) = raw.parse::<i64>() {
-                    SemanticType::Literal {
-                        value: LiteralValue::Integer(integer),
-                    }
+                } else if let Some(number) = typescript_number_literal(raw) {
+                    let integral = number.is_finite()
+                        && number.fract() == 0.0
+                        && number >= i64::MIN as f64
+                        && number < -(i64::MIN as f64);
+                    let node = if integral {
+                        SemanticType::Literal {
+                            value: LiteralValue::Integer(number as i64),
+                        }
+                    } else {
+                        SemanticType::Unresolved { reason: format!("TypeScript numeric literal has binary64 bits {:016x}; its exact numeric domain requires an explicit projection policy", number.to_bits()) }
+                    };
+                    let id = self.node(node, value.span, "typescript-binary64-literal");
+                    self.graph.normalizations.push(Normalization {
+                        output: id, inputs: vec![], rule: "typescript-binary64-literal".to_owned(),
+                        classification: if integral { SemanticClassification::Normalized } else { SemanticClassification::PolicyRequired },
+                        reason: format!("TypeScript interprets source literal {raw} as binary64 bits {:016x}; source spelling and byte origin are retained", number.to_bits()), policy: None,
+                    });
+                    return id;
                 } else if raw == "true" || raw == "false" {
                     SemanticType::Literal {
                         value: LiteralValue::Boolean(raw == "true"),

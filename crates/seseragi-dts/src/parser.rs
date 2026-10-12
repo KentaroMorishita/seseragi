@@ -53,7 +53,8 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
             let default = (0..child.child_count())
                 .filter_map(|index| child.child(index))
                 .find(|token| token.kind() == "default");
-            explicit_export_list |= default.is_some() || child.child_by_field_name("declaration").is_none();
+            explicit_export_list |=
+                default.is_some() || child.child_by_field_name("declaration").is_none();
             if let Some(declaration) = child.child_by_field_name("declaration") {
                 for declaration in parse_declaration(declaration, source)? {
                     local
@@ -105,7 +106,17 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
     // Ambient declaration scopes implicitly export their members unless an
     // explicit export list/default assignment supplies the public surface.
     if !explicit_export_list {
-        exported.extend(local.iter().filter(|(name, _)| !exported.iter().any(|decl| decl.original_name() == name.as_str())).flat_map(|(_, declarations)| declarations.clone()).collect::<Vec<_>>());
+        exported.extend(
+            local
+                .iter()
+                .filter(|(name, _)| {
+                    !exported
+                        .iter()
+                        .any(|decl| decl.original_name() == name.as_str())
+                })
+                .flat_map(|(_, declarations)| declarations.clone())
+                .collect::<Vec<_>>(),
+        );
     }
     Ok(Scope {
         private_declarations: local

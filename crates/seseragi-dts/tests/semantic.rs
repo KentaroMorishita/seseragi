@@ -233,7 +233,7 @@ fn finite_templates_and_mapped_shapes_keep_exact_domains_and_modifiers() {
 
 #[test]
 fn private_aliases_are_interpreted_but_never_exported_as_generated_bindings() {
-    let source = "type PrivateName = string; type Unused = number; export declare function read(name: PrivateName): PrivateName; export interface Keys { readonly id: string; } export type Key = keyof Keys;";
+    let source = "type PrivateName = string; type Unused = number; declare function read(name: PrivateName): PrivateName; interface Keys { readonly id: string; } type Key = keyof Keys; export { read, Keys, Key };";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
     assert_eq!(
         graph.private_symbols,
@@ -352,7 +352,7 @@ fn class_constructors_methods_statics_and_contextual_this_remain_distinct() {
 
 #[test]
 fn explicit_projection_subset_retains_type_dependencies_and_omitted_semantics() {
-    let source = "export interface Handle {} export declare function selected(value: Handle): Handle; export declare function other<T extends string>(value: T): T; type Private = string;";
+    let source = "export interface Handle {} export declare function selected(value: Handle): Handle; export declare function other<T extends string>(value: T): T; type Private = string; export { Handle as SelectedHandle };";
     let settings = format!("{SETTINGS}include = ['selected']\n");
     let graph = interpret_declaration(source, "api.d.ts", &settings).unwrap();
     assert!(graph.symbols.contains_key("other"));
@@ -781,4 +781,87 @@ fn declaration_interpretation_is_deterministic_and_retains_byte_provenance() {
         .unwrap()
         .source
         .contains("task fn read value: Js.UndefinedOr<Js.NullOr<String>> -> Array<Float>"));
+}
+
+#[test]
+fn ambient_members_follow_explicit_export_list_semantics() {
+    for (source, public, private) in [
+        (
+            "type A = string; export declare function f(a: A): A;",
+            vec!["A", "f"],
+            vec![],
+        ),
+        (
+            "type A = string; declare function f(a: A): A; export { f };",
+            vec!["f"],
+            vec!["A"],
+        ),
+        ("type A = string; export {};", vec![], vec!["A"]),
+        (
+            "export namespace N { type Local = string; export function f(a: Local): Local; }",
+            vec!["N", "N.Local", "N.f"],
+            vec![],
+        ),
+        (
+            "export default function pLimit(count: number): string;",
+            vec!["default"],
+            vec![],
+        ),
+    ] {
+        let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+        let actual = graph
+            .symbols
+            .keys()
+            .filter(|key| !graph.private_symbols.contains(*key))
+            .map(String::as_str)
+            .collect::<Vec<_>>();
+        assert_eq!(actual, public, "{source}");
+        assert_eq!(
+            graph
+                .private_symbols
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            private,
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn typescript_numeric_literals_use_binary64_before_integer_projection() {
+    for (raw, expected) in [
+        ("9007199254740993", 9007199254740992i64),
+        ("-9007199254740993", -9007199254740992),
+        ("-0", 0),
+        ("0x20000000000001", 9007199254740992),
+        ("1e3", 1000),
+    ] {
+        let source = format!("export type N = {raw};");
+        let graph = interpret_declaration(&source, "api.d.ts", SETTINGS).unwrap();
+        let id = graph.symbols["N"].type_ref;
+        assert_eq!(
+            graph.types[&id],
+            SemanticType::Literal {
+                value: LiteralValue::Integer(expected)
+            }
+        );
+        assert!(graph.normalizations.iter().any(|step| step.output == id
+            && step.rule == "typescript-binary64-literal"
+            && step.classification == SemanticClassification::Normalized));
+        assert_eq!(
+            SemanticGraph::from_json(&graph.to_json().unwrap()).unwrap(),
+            graph
+        );
+    }
+    for raw in ["1.25", "9223372036854775807", "1e400"] {
+        let graph = interpret_declaration(&format!("export type N = {raw};"), "api.d.ts", SETTINGS)
+            .unwrap();
+        let id = graph.symbols["N"].type_ref;
+        assert!(
+            matches!(&graph.types[&id], SemanticType::Unresolved { reason } if reason.contains("binary64 bits"))
+        );
+        assert!(graph.normalizations.iter().any(|step| step.output == id
+            && step.classification == SemanticClassification::PolicyRequired));
+    }
 }

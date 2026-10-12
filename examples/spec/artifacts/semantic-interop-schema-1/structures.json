@@ -3,8 +3,9 @@
     "counts": [
       {
         "classification": "direct",
-        "count": 2,
+        "count": 3,
         "symbols": [
+          "Hidden",
           "Recursive",
           "Union"
         ]
@@ -48,13 +49,14 @@
     "declarations": {
       "structures.d.ts": [
         "Container",
+        "Hidden",
         "Intersection",
         "Recursive",
         "Snapshot",
         "Union"
       ]
     },
-    "graphDigest": "22755e47940648f0037eac8cb9029a821a703e8f3c2f0f5f6f02e49a35c217fb",
+    "graphDigest": "f1c6d91267959f9ce7fd7b2b374ecc2316022fdcd0e9662786267340a9b4a015",
     "identity": {
       "frontend": {
         "name": "seseragi-dts",
@@ -346,6 +348,60 @@
           36,
           37,
           38
+        ]
+      },
+      "Hidden": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 41,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 0
+          },
+          {
+            "end": 16,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 10
+          },
+          {
+            "end": 41,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 17
+          },
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 32
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Hidden",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 39
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 40
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "typeRef": 40,
+        "types": [
+          39,
+          40
         ]
       },
       "Intersection": {
@@ -1555,7 +1611,7 @@
   },
   "projection": {
     "diagnostics": [],
-    "source": "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Container<A>\n  opaque type Intersection\n  opaque type Recursive\n  opaque type Snapshot\n  opaque type Union\n}\n"
+    "source": "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Container<A>\n  opaque type Hidden\n  opaque type Intersection\n  opaque type Recursive\n  opaque type Snapshot\n  opaque type Union\n}\n"
   },
   "semantic": {
     "identity": {
@@ -1609,9 +1665,7 @@
         "rule": "closed-semantic-relation"
       }
     ],
-    "privateSymbols": [
-      "Hidden"
-    ],
+    "privateSymbols": [],
     "schema": 1,
     "sources": {
       "structures.d.ts": {
