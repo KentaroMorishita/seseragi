@@ -551,7 +551,10 @@ fn rejects_one_element_and_trailing_comma_tuples() {
         let module = parse_surface_ast("main.ssrg", source);
         assert!(matches!(
             &module.declarations[0],
-            SurfaceDecl::Let { body: None, .. }
+            SurfaceDecl::Let {
+                body: Some(SurfaceExpr::Error { .. }),
+                ..
+            }
         ));
     }
 }
