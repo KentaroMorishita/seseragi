@@ -1,0 +1,44 @@
+[
+  {
+    "package": "nanoid",
+    "declaration": "non-secure/index.d.ts",
+    "specifier": "nanoid/non-secure",
+    "domains": ["function", "optional", "constrained-generic"],
+    "targets": ["web", "process"]
+  },
+  {
+    "package": "mitt",
+    "declaration": "index.d.ts",
+    "specifier": "mitt",
+    "domains": ["generic", "callback", "structural"],
+    "targets": ["web", "process"]
+  },
+  {
+    "package": "p-limit",
+    "declaration": "index.d.ts",
+    "specifier": "p-limit",
+    "domains": ["callback", "async", "higher-rank"],
+    "targets": ["web", "process"]
+  },
+  {
+    "package": "eventemitter3",
+    "declaration": "index.d.ts",
+    "specifier": "eventemitter3",
+    "domains": ["class", "this", "namespace", "overload"],
+    "targets": ["web", "process"]
+  },
+  {
+    "package": "type-fest",
+    "declaration": "source/promisable.d.ts",
+    "specifier": "type-fest",
+    "domains": ["generic", "union", "Promise"],
+    "targets": ["types-only"]
+  },
+  {
+    "package": "globby",
+    "declaration": "index.d.ts",
+    "specifier": "globby",
+    "domains": ["Node-only", "async", "host"],
+    "targets": ["process"]
+  }
+]

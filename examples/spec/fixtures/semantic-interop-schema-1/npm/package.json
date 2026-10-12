@@ -1,0 +1,12 @@
+{
+  "name": "seseragi-real-interop-corpus",
+  "private": true,
+  "dependencies": {
+    "eventemitter3": "5.0.1",
+    "globby": "14.1.0",
+    "mitt": "3.0.1",
+    "nanoid": "5.1.5",
+    "p-limit": "6.2.0",
+    "type-fest": "4.41.0"
+  }
+}

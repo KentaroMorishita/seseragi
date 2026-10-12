@@ -1,8 +1,8 @@
 /** Compare actual TS checker interpretation under both locked compiler versions. */
 import { createHash } from "node:crypto"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
-import path from "node:path"
 import { createRequire } from "node:module"
+import path from "node:path"
 import { fileURLToPath } from "node:url"
 import type * as TypeScript from "typescript"
 
