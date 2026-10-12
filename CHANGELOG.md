@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.24] - 2026-10-08
+
+### Added
+
+- Inspect Playground declaration inputs beside read-only generated bindings, conversion reports and navigable diagnostics; invalidate stale inspections when external inputs change (#473).
+
 ## [0.61.23] - 2026-10-08
 
 ### Added
