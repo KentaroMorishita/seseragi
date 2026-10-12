@@ -1,0 +1,18 @@
+import * as effects from "std/effect"
+import { make, read, select, Schema } from "gen/schema-api"
+type AppError deriving Show =
+  | ConsoleFailure ConsoleError
+  | ForeignFailure Js.Error
+pub effect fn main -> Unit with Console fails AppError = do {
+  let makeText = make<String>
+  let readText: Schema<String> -> Effect<{}, Js.Error, String> = read
+  let chooseText = select<String> "fallback"
+  textSchema <- makeText "linked" |> effects.mapError ForeignFailure
+  text <- readText textSchema |> effects.mapError ForeignFailure
+  println text |> effects.mapError ConsoleFailure
+  chosen <- chooseText textSchema |> effects.mapError ForeignFailure
+  println chosen |> effects.mapError ConsoleFailure
+  boolSchema <- make<Bool> True |> effects.mapError ForeignFailure
+  flag <- read<Bool> boolSchema |> effects.mapError ForeignFailure
+  println (show flag) |> effects.mapError ConsoleFailure
+}

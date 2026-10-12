@@ -236,6 +236,7 @@ fn typed_foreign_member(
 ) -> crate::TypedForeignMember {
     match member {
         SurfaceForeignMember::Function {
+            type_parameters,
             mode,
             call_kind,
             name,
@@ -245,6 +246,7 @@ fn typed_foreign_member(
             return_type,
             span,
         } => crate::TypedForeignMember::Function {
+            type_parameters: type_parameters.clone(),
             mode: *mode,
             call_kind: *call_kind,
             symbol: resolution
@@ -260,10 +262,12 @@ fn typed_foreign_member(
             origin: *span,
         },
         SurfaceForeignMember::OpaqueType {
+            type_parameters,
             name,
             name_span,
             span,
         } => crate::TypedForeignMember::OpaqueType {
+            type_parameters: type_parameters.clone(),
             symbol: resolution
                 .declaration_symbol(*name_span, crate::SymbolKind::Type)
                 .and_then(|symbol| symbol.canonical.clone())

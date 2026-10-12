@@ -95,7 +95,7 @@ pub(super) fn type_callable_value(
         return analysis;
     }
 
-    if signature.constraints.is_empty() {
+    if signature.constraints.is_empty() && foreign_template(context, &signature.symbol).is_none() {
         let semantic_type = if signature.parameters.is_empty() {
             application.result.key.clone()
         } else {
@@ -634,7 +634,7 @@ pub(crate) fn type_known_application_with_explicit(
         || signature.trait_identity.is_some()
         || concrete_partial_constraints
         || scoped_partial_evidence.is_some();
-    let evidence = if issue.is_none() && requires_evidence {
+    let mut evidence = if issue.is_none() && requires_evidence {
         match scoped_partial_evidence.map(Ok).unwrap_or_else(|| {
             if signature.trait_method.is_some() {
                 context.select_trait_call_evidence(
@@ -660,6 +660,46 @@ pub(crate) fn type_known_application_with_explicit(
     } else {
         Vec::new()
     };
+    if issue.is_none() {
+        if let Some(template) = foreign_template(context, &signature.symbol) {
+            let mut bindings = BTreeMap::new();
+            for (formal, actual) in template.parameters.iter().zip(&application.parameters) {
+                infer_type_parameters(
+                    formal,
+                    &actual.type_ref,
+                    &template.type_parameters,
+                    &mut bindings,
+                );
+            }
+            infer_type_parameters(
+                &template.result,
+                &application.result.type_ref,
+                &template.type_parameters,
+                &mut bindings,
+            );
+            for parameter in &template.type_parameters {
+                let value = bindings.get(&parameter.name);
+                if parameter.arity != 0 || !value.is_some_and(concrete_foreign_codec) {
+                    issue = Some(PureCallIssue::ForeignGenericCodecRequired {
+                        callee: callee_span,
+                    });
+                    break;
+                }
+                let value = value.unwrap().clone();
+                evidence.push(crate::TypedCallEvidence {
+                    constraint: crate::TypedConstraint {
+                        name: "ForeignCodec".into(),
+                        arguments: vec![value.clone()],
+                    },
+                    evidence: crate::TypedInstanceEvidence::Standard {
+                        identity: "@seseragi/foreign-codec".into(),
+                        type_arguments: vec![value],
+                        evidence_arguments: Vec::new(),
+                    },
+                });
+            }
+        }
+    }
     let type_ref = if issue.is_none() {
         instantiated_application_result_type(&application, arguments.len())
     } else {
@@ -1098,4 +1138,44 @@ fn contains_unresolved_type_parameter(
             .any(|operand| contains_unresolved_type_parameter(operand, parameters, resolved)),
         TypedType::Hole => true,
     }
+}
+
+// Resolve the original declaration scheme, including imported/reexported generic
+// foreign callables. An explicit instantiation may have cleared its local binder.
+fn foreign_template<'a>(
+    context: &'a PureExpressionContext<'_>,
+    symbol: &str,
+) -> Option<&'a TopLevelPureFunction> {
+    let resolved = context.resolution.resolved();
+    fn contains(members: &[seseragi_syntax::SurfaceForeignMember], origin: ByteSpan) -> bool {
+        members.iter().any(|member| match member {
+            seseragi_syntax::SurfaceForeignMember::Function {
+                name_span,
+                type_parameters,
+                ..
+            } => *name_span == origin && !type_parameters.is_empty(),
+            seseragi_syntax::SurfaceForeignMember::Namespace { members, .. } => {
+                contains(members, origin)
+            }
+            _ => false,
+        })
+    }
+    let target = resolved
+        .symbols
+        .iter()
+        .find(|target| target.canonical.as_deref() == Some(symbol))?;
+    let foreign = resolved
+        .foreign_modules
+        .iter()
+        .any(|module| contains(&module.members, target.origin))
+        || resolved.imports.iter().any(|import| {
+            import.export.symbol == symbol
+                && import.export.declaration_kind.as_deref() == Some("generic-foreign-function")
+        });
+    foreign
+        .then(|| context.resolution.callable(target.id))
+        .flatten()
+}
+fn concrete_foreign_codec(value: &TypedType) -> bool {
+    matches!(value, TypedType::Named { name, arguments } if arguments.is_empty() && matches!(name.as_str(), "Unit" | "Bool" | "Char" | "String" | "Int" | "Float" | "BigInt"))
 }

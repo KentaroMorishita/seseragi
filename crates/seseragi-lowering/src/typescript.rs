@@ -94,6 +94,8 @@ pub struct TypeScriptForeignNamespace {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptForeignOpaqueType {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<TypeParameter>,
     pub name: String,
     pub brand: String,
     pub origin: SourceSpan,
@@ -114,6 +116,8 @@ pub struct TypeScriptForeignValue {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptForeignMember {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<TypeParameter>,
     pub mode: seseragi_syntax::ForeignCallMode,
     pub call_kind: seseragi_syntax::ForeignCallKind,
     pub name: String,
@@ -704,6 +708,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 .iter()
                 .filter_map(|member| {
                     let CoreForeignMember::Function {
+                        type_parameters,
                         mode,
                         call_kind,
                         symbol,
@@ -717,7 +722,9 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                     else {
                         return None;
                     };
+                    let scoped_types = module_imports.type_names.with_parameters(type_parameters);
                     Some(TypeScriptForeignMember {
+                        type_parameters: type_parameters.clone(),
                         mode: *mode,
                         call_kind: *call_kind,
                         name: module_value_name(&module.module, symbol),
@@ -727,29 +734,24 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                             .iter()
                             .cloned()
                             .map(|parameter| {
-                                lower_core_parameter_to_typescript(
-                                    parameter,
-                                    &module_imports.type_names,
-                                    &[],
-                                )
+                                lower_core_parameter_to_typescript(parameter, &scoped_types, &[])
                             })
                             .collect(),
                         parameter_codecs: parameters
                             .iter()
                             .map(|parameter| {
-                                foreign_codec_from_core_type(
+                                foreign_codec_with_parameters(
                                     &parameter.type_ref,
                                     &foreign_opaque_names,
+                                    type_parameters,
                                 )
                             })
                             .collect(),
-                        return_type: types::type_ref_from_core_type(
-                            return_type,
-                            &module_imports.type_names,
-                        ),
-                        return_codec: foreign_codec_from_core_type(
+                        return_type: types::type_ref_from_core_type(return_type, &scoped_types),
+                        return_codec: foreign_codec_with_parameters(
                             return_type,
                             &foreign_opaque_names,
+                            type_parameters,
                         ),
                         origin: origin.clone(),
                     })
@@ -1019,6 +1021,29 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         bindings,
         functions,
     };
+    fn codecs(members: &mut [TypeScriptForeignMember]) {
+        for member in members {
+            member
+                .parameters
+                .extend(member.type_parameters.iter().map(|p| TypeScriptParameter {
+                    name: format!("__ssrg$foreign$codec${}", p.name),
+                    type_name: "import(\"@seseragi/runtime/foreign\").ForeignCodec".into(),
+                    implicit: true,
+                }));
+        }
+    }
+    fn namespace(value: &mut TypeScriptForeignNamespace) {
+        codecs(&mut value.members);
+        for value in &mut value.namespaces {
+            namespace(value);
+        }
+    }
+    for foreign in &mut typescript.foreign_modules {
+        codecs(&mut foreign.members);
+        for value in &mut foreign.namespaces {
+            namespace(value);
+        }
+    }
     freshen_runtime_imports(&mut typescript);
     Ok(typescript)
 }
@@ -1056,6 +1081,7 @@ fn lower_foreign_namespace(
             .iter()
             .filter_map(|member| {
                 let CoreForeignMember::Function {
+                    type_parameters,
                     mode,
                     call_kind,
                     symbol,
@@ -1069,7 +1095,9 @@ fn lower_foreign_namespace(
                 else {
                     return None;
                 };
+                let scoped_types = type_names.with_parameters(type_parameters);
                 Some(TypeScriptForeignMember {
+                    type_parameters: type_parameters.clone(),
                     mode: *mode,
                     call_kind: *call_kind,
                     name: module_value_name(module, symbol),
@@ -1079,17 +1107,25 @@ fn lower_foreign_namespace(
                         .iter()
                         .cloned()
                         .map(|parameter| {
-                            lower_core_parameter_to_typescript(parameter, type_names, &[])
+                            lower_core_parameter_to_typescript(parameter, &scoped_types, &[])
                         })
                         .collect(),
                     parameter_codecs: parameters
                         .iter()
                         .map(|parameter| {
-                            foreign_codec_from_core_type(&parameter.type_ref, foreign_opaque_names)
+                            foreign_codec_with_parameters(
+                                &parameter.type_ref,
+                                foreign_opaque_names,
+                                type_parameters,
+                            )
                         })
                         .collect(),
-                    return_type: types::type_ref_from_core_type(return_type, type_names),
-                    return_codec: foreign_codec_from_core_type(return_type, foreign_opaque_names),
+                    return_type: types::type_ref_from_core_type(return_type, &scoped_types),
+                    return_codec: foreign_codec_with_parameters(
+                        return_type,
+                        foreign_opaque_names,
+                        type_parameters,
+                    ),
                     origin: origin.clone(),
                 })
             })
@@ -1130,9 +1166,29 @@ fn lower_foreign_namespace(
 
 fn foreign_codec_from_core_type(
     type_ref: &crate::CoreType,
-    foreign_opaque_names: &std::collections::BTreeSet<String>,
+    opaque: &std::collections::BTreeSet<String>,
 ) -> String {
+    foreign_codec_with_parameters(type_ref, opaque, &[])
+}
+fn foreign_codec_with_parameters(
+    type_ref: &crate::CoreType,
+    foreign_opaque_names: &std::collections::BTreeSet<String>,
+    type_parameters: &[TypeParameter],
+) -> String {
+    if let crate::CoreType::Named { name, arguments } = type_ref {
+        if arguments.is_empty() && type_parameters.iter().any(|p| p.name == *name) {
+            return format!("__ssrg$foreign$codec${name}");
+        }
+    }
     match type_ref {
+        crate::CoreType::Named { name, .. } if foreign_opaque_names.contains(name) => {
+            "\"opaque\"".into()
+        }
+        crate::CoreType::ExternalNamed { canonical, .. }
+            if foreign_opaque_names.contains(canonical) =>
+        {
+            "\"opaque\"".into()
+        }
         crate::CoreType::Named { name, arguments } if arguments.is_empty() => match name.as_str() {
             name if foreign_opaque_names.contains(name) => "\"opaque\"".to_owned(),
             "Unit" => "\"unit\"".to_owned(),
@@ -1153,7 +1209,7 @@ fn foreign_codec_from_core_type(
         crate::CoreType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
             format!(
                 "{{ array: {} }}",
-                foreign_codec_from_core_type(&arguments[0], foreign_opaque_names)
+                foreign_codec_with_parameters(&arguments[0], foreign_opaque_names, type_parameters)
             )
         }
         crate::CoreType::Named { name, arguments }
@@ -1172,7 +1228,7 @@ fn foreign_codec_from_core_type(
             };
             format!(
                 "{{ {key}: {} }}",
-                foreign_codec_from_core_type(&arguments[0], foreign_opaque_names)
+                foreign_codec_with_parameters(&arguments[0], foreign_opaque_names, type_parameters)
             )
         }
         crate::CoreType::Named { name, arguments }
@@ -1235,7 +1291,7 @@ fn foreign_codec_from_core_type(
             };
             format!(
                 "{{ {key}: {} }}",
-                foreign_codec_from_core_type(&arguments[0], foreign_opaque_names)
+                foreign_codec_with_parameters(&arguments[0], foreign_opaque_names, type_parameters)
             )
         }
         crate::CoreType::ExternalNamed {
@@ -1252,18 +1308,26 @@ fn foreign_codec_from_core_type(
                 parameters
                     .iter()
                     .map(|parameter| {
-                        foreign_codec_from_core_type(parameter, foreign_opaque_names)
+                        foreign_codec_with_parameters(
+                            parameter,
+                            foreign_opaque_names,
+                            type_parameters,
+                        )
                     })
                     .collect::<Vec<_>>()
                     .join(", "),
-                foreign_codec_from_core_type(result, foreign_opaque_names)
+                foreign_codec_with_parameters(result, foreign_opaque_names, type_parameters)
             )
         }
         crate::CoreType::Tuple { elements } => format!(
             "{{ tuple: [{}] }}",
             elements
                 .iter()
-                .map(|element| foreign_codec_from_core_type(element, foreign_opaque_names))
+                .map(|element| foreign_codec_with_parameters(
+                    element,
+                    foreign_opaque_names,
+                    type_parameters
+                ))
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
@@ -1272,7 +1336,11 @@ fn foreign_codec_from_core_type(
             fields
                 .iter()
                 .map(|field| {
-                    let codec = foreign_codec_from_core_type(&field.type_ref, foreign_opaque_names);
+                    let codec = foreign_codec_with_parameters(
+                        &field.type_ref,
+                        foreign_opaque_names,
+                        type_parameters,
+                    );
                     let codec = if field.optional {
                         format!("{{ optional: {codec} }}")
                     } else {
@@ -1358,6 +1426,7 @@ fn lower_foreign_opaque_type(
     module: &str,
 ) -> Option<TypeScriptForeignOpaqueType> {
     let CoreForeignMember::OpaqueType {
+        type_parameters,
         symbol,
         name,
         origin,
@@ -1367,6 +1436,7 @@ fn lower_foreign_opaque_type(
     };
     let local = module_value_name(module, symbol);
     Some(TypeScriptForeignOpaqueType {
+        type_parameters: type_parameters.clone(),
         brand: format!("__ssrg$foreign$brand${}", local_name(name)),
         name: local,
         origin: origin.clone(),

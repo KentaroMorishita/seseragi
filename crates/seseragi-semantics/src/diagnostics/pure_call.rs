@@ -142,6 +142,10 @@ pub(super) fn call_diagnostic(
                 .to_owned(),
             None,
         ),
+        PureCallIssue::ForeignGenericCodecRequired { callee } => (
+            "SES-F0102", "foreign.generic-codec-policy-required", callee,
+            "generic foreign values require concrete supported ABI codec evidence; unresolved, higher-rank or structural forwarding needs an explicit codec boundary".to_owned(), None,
+        ),
         PureCallIssue::CallableTypeUnresolved { callee } => (
             "SES-T0101",
             "call.value-type-unresolved",

@@ -185,6 +185,7 @@ fn collects_external_types_used_only_in_foreign_declarations() {
         origin: origin(),
         members: vec![
             CoreForeignMember::Function {
+                type_parameters: Vec::new(),
                 mode: ForeignCallMode::Task,
                 call_kind: ForeignCallKind::Function,
                 symbol: "fixture/main::fetch".to_owned(),

@@ -135,7 +135,9 @@ impl SurfaceParser<'_> {
             }
             let name_index = self.next_significant_token(type_keyword + 1, end)?;
             let name = self.identifier_name_at(name_index)?;
+            let (type_parameters, _) = self.parse_optional_type_parameters(name_index + 1, end);
             return Some(SurfaceForeignMember::OpaqueType {
+                type_parameters,
                 name,
                 name_span: self.byte_span(name_index)?,
                 span: self.declaration_span(start, end)?,
@@ -193,12 +195,14 @@ impl SurfaceParser<'_> {
         }
         let name_index = self.next_significant_token(fn_keyword + 1, end)?;
         let name = self.identifier_name_at(name_index)?;
-        let equals = self.find_significant_token(name_index + 1, end, |kind| {
+        let (type_parameters, after_parameters) =
+            self.parse_optional_type_parameters(name_index + 1, end);
+        let equals = self.find_significant_token(after_parameters, end, |kind| {
             kind == TokenKind::OperatorEquals
         });
         let signature_end = equals.unwrap_or(end);
         let (parameters, return_type) =
-            self.parse_curried_signature(name_index + 1, signature_end)?;
+            self.parse_curried_signature(after_parameters, signature_end)?;
         let host_name = equals
             .and_then(|equals| self.next_significant_token(equals + 1, end))
             .filter(|index| self.kind_at(*index) == Some(TokenKind::LiteralString))
@@ -206,6 +210,7 @@ impl SurfaceParser<'_> {
             .map(super::unquote)
             .unwrap_or_else(|| name.clone());
         Some(SurfaceForeignMember::Function {
+            type_parameters,
             mode,
             call_kind,
             name,
@@ -238,6 +243,7 @@ fn foreign_member_declarations(
     };
     match member {
         SurfaceForeignMember::Function {
+            type_parameters,
             mode,
             name,
             name_span,
@@ -249,7 +255,7 @@ fn foreign_member_declarations(
             visibility,
             name: qualify(name),
             name_span: *name_span,
-            type_parameters: Vec::new(),
+            type_parameters: type_parameters.clone(),
             parameters: parameters.clone(),
             return_type: match mode {
                 ForeignCallMode::Pure => return_type.clone(),
@@ -260,6 +266,7 @@ fn foreign_member_declarations(
             span: *span,
         }],
         SurfaceForeignMember::OpaqueType {
+            type_parameters,
             name,
             name_span,
             span,
@@ -268,7 +275,7 @@ fn foreign_member_declarations(
             opaque: true,
             name: qualify(name),
             name_span: *name_span,
-            type_parameters: Vec::new(),
+            type_parameters: type_parameters.clone(),
             deriving: Vec::new(),
             fields: Vec::new(),
             span: *span,

@@ -274,8 +274,23 @@ fn render_foreign_opaque_type(
         output.push_str("export ");
     }
     output.push_str(&format!(
-        "type {} = object & {{ readonly [{}]: true }};\n",
-        foreign_type.name, foreign_type.brand
+        "type {}{} = object & {{ readonly [{}]: {} }};\n",
+        foreign_type.name,
+        render_type_parameters(&foreign_type.type_parameters),
+        foreign_type.brand,
+        if foreign_type.type_parameters.is_empty() {
+            "true".to_owned()
+        } else {
+            format!(
+                "readonly [{}]",
+                foreign_type
+                    .type_parameters
+                    .iter()
+                    .map(|p| p.name.as_str())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )
+        }
     ));
 }
 
@@ -378,13 +393,23 @@ fn foreign_function_body(
             member.return_codec,
         ),
     };
-    let body = member
-        .parameters
-        .iter()
-        .rev()
-        .fold(invocation, |body, parameter| {
-            format!("({}: {}) => {body}", parameter.name, parameter.type_name)
-        });
+    let body =
+        member
+            .parameters
+            .iter()
+            .enumerate()
+            .rev()
+            .fold(invocation, |body, (index, parameter)| {
+                let generic = if index == 0 {
+                    render_arrow_type_parameters(&member.type_parameters)
+                } else {
+                    String::new()
+                };
+                format!(
+                    "{generic}({}: {}) => {body}",
+                    parameter.name, parameter.type_name
+                )
+            });
     body
 }
 

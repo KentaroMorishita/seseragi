@@ -121,6 +121,29 @@ fn parse_unlinked_module_interface_inner(
         .iter()
         .flat_map(|declaration| exports_from_surface_decl(&module_name, declaration))
         .collect::<Vec<_>>();
+    fn mark(members: &[crate::SurfaceForeignMember], exports: &mut [InterfaceExport]) {
+        for member in members {
+            match member {
+                crate::SurfaceForeignMember::Function {
+                    type_parameters,
+                    span,
+                    ..
+                } if !type_parameters.is_empty() => {
+                    for export in exports
+                        .iter_mut()
+                        .filter(|export| export.declaration == *span && export.namespace == "value")
+                    {
+                        export.declaration_kind = Some("generic-foreign-function".into());
+                    }
+                }
+                crate::SurfaceForeignMember::Namespace { members, .. } => mark(members, exports),
+                _ => {}
+            }
+        }
+    }
+    for foreign in &surface_module.foreign_modules {
+        mark(&foreign.members, &mut exports);
+    }
     attach_inherent_methods(&module_name, &surface_module.declarations, &mut exports);
     let interface = ModuleInterface {
         schema: 1,

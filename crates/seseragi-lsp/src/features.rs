@@ -285,7 +285,7 @@ pub(crate) fn precise_symbol_range(
 
 pub(crate) fn workspace_symbol_kind(symbol: &AnalysisSymbol) -> u8 {
     match (symbol.namespace.as_str(), symbol.kind.as_str()) {
-        (_, "function" | "effect-function") => 12,
+        (_, "function" | "effect-function" | "generic-foreign-function") => 12,
         (_, "trait-method") => 6,
         (_, "constructor") => 9,
         ("type", _) => 23,
@@ -821,7 +821,7 @@ fn semantic_token_type(symbol: &AnalysisSymbol) -> usize {
         (_, "parameter" | "pattern-binding") => 7,
         (_, "constructor") => 10,
         (_, "trait-method") => 13,
-        (_, "function" | "effect-function" | "prelude") => 12,
+        (_, "function" | "effect-function" | "generic-foreign-function" | "prelude") => 12,
         _ if symbol.callable.is_some() => 12,
         _ => 8,
     }
