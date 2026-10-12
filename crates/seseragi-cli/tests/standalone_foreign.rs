@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
     process::{Command, Output},
 };
-#[path = "support/temporary.rs"]
+#[path = "../../test-support/temporary.rs"]
 mod temporary_support;
 
 fn temporary() -> PathBuf {

@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-#[path = "support/temporary.rs"]
+#[path = "../../test-support/temporary.rs"]
 mod temporary_support;
 
 struct Temporary(PathBuf);

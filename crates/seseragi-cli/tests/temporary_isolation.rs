@@ -4,7 +4,7 @@ use std::{
     sync::{Arc, Barrier},
 };
 
-#[path = "support/temporary.rs"]
+#[path = "../../test-support/temporary.rs"]
 mod temporary_support;
 
 #[test]

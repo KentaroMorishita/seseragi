@@ -5,7 +5,7 @@ use std::{
     process::{Command, Output},
 };
 
-#[path = "support/temporary.rs"]
+#[path = "../../test-support/temporary.rs"]
 mod temporary_support;
 
 fn cli(args: &[&str], package: &Path) -> Output {
