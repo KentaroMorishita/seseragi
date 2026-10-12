@@ -84,31 +84,31 @@ pub fn analyze_linked_module_recovering(
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
     let shallow = linked.interface.clone();
     let resolved = resolve::resolve_linked_module(linked, source);
-    let original_diagnostics = diagnostics.diagnostics.clone();
-    let mut diagnostics =
-        diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
-    if !original_diagnostics.is_empty() {
-        // The semantic collector normally receives syntax-checked input and
-        // replaces the artifact. Editor recovery must retain parser facts and
-        // avoid a redundant Invalid-expression cascade over those same spans.
-        diagnostics.diagnostics.retain(|diagnostic| {
-            diagnostic.message_key != "expression.invalid"
-                || !original_diagnostics.iter().any(|original| {
-                    original.severity == DiagnosticSeverity::Error
-                        && diagnostic.primary.start <= original.primary.end
-                        && original.primary.start <= diagnostic.primary.end
+    // A parser-invalid declaration may be absent or partially inferred in the
+    // recovered interface. Its users can then produce unrelated-looking type
+    // errors (for example Show<A> at a later call). Source-range filtering
+    // cannot distinguish those cascades from valid semantic diagnostics.
+    // Keep the parser artifact authoritative until the module parses, while
+    // retaining best-effort resolved/typed facts for interactive queries.
+    let diagnostics = if has_errors(&diagnostics) {
+        diagnostics
+    } else {
+        let original_diagnostics = diagnostics.diagnostics.clone();
+        let mut diagnostics =
+            diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
+        if !original_diagnostics.is_empty() {
+            diagnostics.diagnostics = original_diagnostics
+                .into_iter()
+                .chain(diagnostics.diagnostics)
+                .enumerate()
+                .map(|(index, mut diagnostic)| {
+                    diagnostic.id = format!("d{}", index + 1);
+                    diagnostic
                 })
-        });
-        diagnostics.diagnostics = original_diagnostics
-            .into_iter()
-            .chain(diagnostics.diagnostics)
-            .enumerate()
-            .map(|(index, mut diagnostic)| {
-                diagnostic.id = format!("d{}", index + 1);
-                diagnostic
-            })
-            .collect();
-    }
+                .collect();
+        }
+        diagnostics
+    };
     let (typed_hir, typed_interface) =
         typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
     Ok(AnalyzedModule {
