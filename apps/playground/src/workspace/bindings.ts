@@ -64,6 +64,26 @@ export function publishWorkspaceBindings(
     ...editable,
     generatedBindings: {
       inputRevision: workspaceBindingInputRevision(state),
+      artifacts: response.generated.flatMap(
+        ({ output, metadata, report, adapters }) => [
+          {
+            path: `${response.generatedRoot}/${output}.binding.json`,
+            source: metadata,
+          },
+          {
+            path: `${response.generatedRoot}/${output}.report.json`,
+            source: report,
+          },
+          ...(adapters === undefined
+            ? []
+            : [
+                {
+                  path: `${response.generatedRoot}/${output}.semantic.json`,
+                  source: JSON.stringify(adapters),
+                },
+              ]),
+        ]
+      ),
       files: response.generated.flatMap(({ output, source, adapters }) => {
         const files = [
           {

@@ -668,7 +668,7 @@ fn prepare_virtual_package(
                 path,
                 id,
                 module.source(),
-                format!("{}.js", identity.path().as_str()),
+                format!("{}.js", path.trim_end_matches(".ssrg")),
             )
             .with_package_scope(&package_scope),
         );
@@ -2020,6 +2020,26 @@ mod tests {
         let compiled: Value = serde_json::from_str(&compile_project(&input)).unwrap();
         assert_eq!(compiled["status"], "success", "{compiled}");
         assert_eq!(analyzed["status"], "success", "{analyzed}");
+        let main = compiled["modules"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|module| module["path"] == "main.ssrg")
+            .unwrap();
+        assert!(main["generated"]["typescript"]
+            .as_str()
+            .unwrap()
+            .contains("./custom/generated/sdk/api.js"));
+        let api = compiled["modules"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|module| module["path"] == "custom/generated/sdk/api.ssrg")
+            .unwrap();
+        assert!(api["generated"]["typescript"]
+            .as_str()
+            .unwrap()
+            .contains("./value.js"));
         for path in [
             "main.ssrg",
             "custom/generated/sdk/api.ssrg",

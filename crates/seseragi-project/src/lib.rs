@@ -6,10 +6,14 @@
 mod foreign;
 mod foreign_virtual;
 pub use foreign_virtual::{
-    resolve_browser_runtime_snapshot, runtime_import_specifiers, VirtualRuntimeBundle,
-    VirtualRuntimeImport, VirtualRuntimeModule,
+    resolve_browser_runtime_snapshot, resolve_runtime_snapshot_artifact, runtime_import_specifiers,
+    VirtualRuntimeBundle, VirtualRuntimeImport, VirtualRuntimeModule,
 };
+mod binding_linkage;
 mod generated_bindings;
+pub use binding_linkage::{
+    validate_binding_runtime_linkage, validate_binding_runtime_linkage_inputs,
+};
 mod graph;
 mod identity;
 mod link;
@@ -32,8 +36,9 @@ mod workspace;
 pub use web_assets::{load_web_assets, WebAsset, WebAssetError, WebAssets};
 
 pub use foreign::{
-    resolve_foreign_typescript_module, resolve_foreign_typescript_module_for_target,
-    validate_foreign_runtime_target, ResolvedForeignTypescriptModule,
+    resolve_foreign_runtime_artifact_for_target, resolve_foreign_typescript_module,
+    resolve_foreign_typescript_module_for_target, validate_foreign_runtime_target,
+    ResolvedForeignTypescriptModule,
 };
 pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{

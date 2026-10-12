@@ -92,6 +92,7 @@ fn file(files: &BTreeMap<String, String>, path: &str) -> Option<String> {
 struct Resolver<'a> {
     files: &'a BTreeMap<String, String>,
     host_root: &'a str,
+    target: RuntimeTarget,
 }
 impl Resolver<'_> {
     fn resolve(
@@ -147,8 +148,7 @@ impl Resolver<'_> {
                 ))
             })?;
         let manifest = &self.files[&format!("{root}/package.json")];
-        let selected =
-            select_package_export(manifest, &name, subpath.as_deref(), RuntimeTarget::Browser)?;
+        let selected = select_package_export(manifest, &name, subpath.as_deref(), self.target)?;
         let candidate = joined(&root, &selected.path)?;
         let path = file(self.files, &candidate).ok_or_else(|| {
             problem(format!(
@@ -188,6 +188,7 @@ pub fn resolve_browser_runtime_snapshot(
     let resolver = Resolver {
         files,
         host_root: &host_root,
+        target: RuntimeTarget::Browser,
     };
     let mut bundle = VirtualRuntimeBundle {
         snapshot_digest: String::new(),
@@ -348,4 +349,47 @@ fn statement_type_only(node: tree_sitter::Node<'_>) -> bool {
         }
     }
     found
+}
+
+/// Probe an individual runtime artifact from actual snapshot bytes. This does
+/// not execute code; browser closure availability remains a separate preflight.
+pub fn resolve_runtime_snapshot_artifact(
+    files: &BTreeMap<String, String>,
+    importer: &str,
+    specifier: &str,
+    host_root: &str,
+    target: RuntimeTarget,
+) -> Result<seseragi_interop::RuntimeArtifactIdentity, RuntimeLinkageDiagnostic> {
+    if specifier.starts_with("node:") && target != RuntimeTarget::Browser {
+        return Ok(seseragi_interop::RuntimeArtifactIdentity {
+            exact_identity: specifier.to_owned(),
+            content_digest: "sha256:builtin".into(),
+        });
+    }
+    for path in files.keys() {
+        if normalized(path)? != *path {
+            return Err(problem("noncanonical runtime snapshot path"));
+        }
+    }
+    if target == RuntimeTarget::Browser {
+        resolve_browser_runtime_snapshot(
+            files,
+            &[VirtualRuntimeImport {
+                importer: importer.to_owned(),
+                specifier: specifier.to_owned(),
+            }],
+            host_root,
+        )
+        .map_err(|mut errors| errors.remove(0))?;
+    }
+    let resolver = Resolver {
+        files,
+        host_root,
+        target,
+    };
+    let (path, exact_identity) = resolver.resolve(importer, specifier)?;
+    Ok(seseragi_interop::RuntimeArtifactIdentity {
+        exact_identity,
+        content_digest: format!("sha256:{:x}", Sha256::digest(files[&path].as_bytes())),
+    })
 }

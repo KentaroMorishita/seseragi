@@ -1065,11 +1065,14 @@ async function run(): Promise<void> {
     showIoOnSmallScreens()
     return
   }
-  const runtimeFiles = workspaceState.files.map(({ path, source }) => ({
+  const runtimeFiles = [
+    ...workspaceState.files,
+    ...(workspaceState.generatedBindings?.artifacts ?? []),
+  ].map(({ path, source }) => ({
     path,
     source,
   }))
-  const runtimeRevision = JSON.stringify(runtimeFiles)
+  const runtimeRevision = JSON.stringify(workspaceState.files)
   const requestedRevision = JSON.stringify(request)
   const requestedAnalysisRevision =
     workspaceAnalysisRevisionOrUndefined(workspaceState)

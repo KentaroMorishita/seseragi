@@ -93,6 +93,8 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
                 )
             },
         )?;
+        let artifacts = runtime_artifacts(request, entry);
+        crate::attach_runtime_linkage(&mut converted, entry, &artifacts)?;
         if let Some(path) = &entry.projection_policy {
             let source = read_utf8(&request.package_root.join(path), "projection policy")?;
             crate::apply_projection_policy(&mut converted, entry, &source)
@@ -310,11 +312,63 @@ pub fn validate_generated_bindings(
             });
         }
 
+        if let Ok(source) = fs::read_to_string(&metadata_path) {
+            let foreign = fs::read_to_string(package_root.join("seseragi.toml"))
+                .ok()
+                .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+                .and_then(|manifest| manifest.foreign_typescript);
+            for target in [
+                seseragi_interop::RuntimeTarget::Node,
+                seseragi_interop::RuntimeTarget::Bun,
+            ] {
+                if let Err(problems) = seseragi_project::validate_binding_runtime_linkage(
+                    &source,
+                    target,
+                    true,
+                    |specifier| {
+                        seseragi_project::resolve_foreign_runtime_artifact_for_target(
+                            package_root,
+                            foreign.as_ref(),
+                            &source_path,
+                            specifier,
+                            target,
+                        )
+                    },
+                ) {
+                    errors.extend(problems.into_iter().map(|problem| ValidationError {
+                        entry: id.clone(),
+                        message: format!("{problem}; run `seseragi dts convert`"),
+                    }));
+                }
+            }
+        }
+
         if let Some(policy) = &entry.projection_policy {
             let checked = (|| -> Result<(), String> {
                 let source = fs::read_to_string(&declaration_path).map_err(|e| e.to_string())?;
-                let graph = interpret_with_digest(&source, &entry.declaration, &settings_digest)
-                    .map_err(|e| e.to_string())?;
+                let mut converted =
+                    convert_entry_with_host(&id, &entry, &source, &settings_digest, None, || {
+                        host_module.clone().ok_or_else(|| {
+                            ConvertError::new("foreign host identity is unavailable")
+                        })
+                    })
+                    .map_err(|error| error.to_string())?;
+                let request = ConvertRequest {
+                    package_root: package_root.to_owned(),
+                    generated_root: generated_root.to_owned(),
+                    bindings: bindings.to_owned(),
+                    host_manifest: host_manifest.to_owned(),
+                    entry: Some(id.clone()),
+                };
+                crate::attach_runtime_linkage(
+                    &mut converted,
+                    &entry,
+                    &runtime_artifacts(&request, &entry),
+                )
+                .map_err(|error| error.to_string())?;
+                let graph = converted
+                    .semantic
+                    .ok_or("current declaration has no semantic graph")?;
                 let policies: seseragi_interop::ProjectionPolicySet = serde_json::from_str(
                     &fs::read_to_string(package_root.join(policy)).map_err(|e| e.to_string())?,
                 )
@@ -515,4 +569,35 @@ mod tests {
             assert!(!temporary.path().join("generated").exists());
         }
     }
+}
+
+fn runtime_artifacts(
+    request: &ConvertRequest,
+    entry: &EntryConfig,
+) -> BTreeMap<seseragi_interop::RuntimeTarget, seseragi_interop::RuntimeArtifactIdentity> {
+    let foreign = fs::read_to_string(request.package_root.join("seseragi.toml"))
+        .ok()
+        .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+        .and_then(|manifest| manifest.foreign_typescript);
+    let importer = request
+        .generated_root
+        .join(format!("{}.ssrg", entry.output));
+    [
+        seseragi_interop::RuntimeTarget::Browser,
+        seseragi_interop::RuntimeTarget::Node,
+        seseragi_interop::RuntimeTarget::Bun,
+    ]
+    .into_iter()
+    .filter_map(|target| {
+        seseragi_project::resolve_foreign_runtime_artifact_for_target(
+            &request.package_root,
+            foreign.as_ref(),
+            &importer,
+            &entry.specifier,
+            target,
+        )
+        .ok()
+        .map(|artifact| (target, artifact))
+    })
+    .collect()
 }

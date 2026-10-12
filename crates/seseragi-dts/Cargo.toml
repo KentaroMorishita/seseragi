@@ -7,9 +7,10 @@ repository.workspace = true
 
 [features]
 default = ["filesystem"]
-filesystem = []
+filesystem = ["dep:seseragi-project"]
 
 [dependencies]
+seseragi-project = { path = "../seseragi-project", optional = true }
 seseragi-interop = { path = "../seseragi-interop" }
 seseragi-projection = { path = "../seseragi-projection" }
 serde.workspace = true

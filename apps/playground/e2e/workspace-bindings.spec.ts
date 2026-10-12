@@ -233,7 +233,7 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   await expect(dialog.getByRole("tabpanel")).toContainText("Source provenance")
   await expect(dialog.getByRole("tabpanel")).toContainText("shape")
   await expect(dialog.getByRole("tabpanel")).toContainText(
-    "Structural shape with mutable-identity identity"
+    "Structural shape with readonly-snapshot identity"
   )
   await dialog
     .getByRole("button", { name: /host\/index\.d\.ts:.*declaration/ })

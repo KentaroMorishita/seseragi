@@ -277,19 +277,46 @@ fn portable_and_filesystem_artifacts_match_for_every_fixture_and_regeneration() 
                         .join(format!("{}.binding.json", entry.output)),
                 )
                 .ok();
-                memory.push(
-                    convert_entry(&ConversionInput {
-                        settings: &settings,
-                        entry: id,
-                        declaration: &declaration,
-                        host: HostMetadata {
-                            manifest: &host,
-                            resolved_package: dependency.as_deref(),
-                        },
-                        previous_metadata: previous.as_deref(),
-                    })
-                    .unwrap(),
-                );
+                let mut result = convert_entry(&ConversionInput {
+                    settings: &settings,
+                    entry: id,
+                    declaration: &declaration,
+                    host: HostMetadata {
+                        manifest: &host,
+                        resolved_package: dependency.as_deref(),
+                    },
+                    previous_metadata: previous.as_deref(),
+                })
+                .unwrap();
+                // Portable and filesystem adapters supply the same real host
+                // artifacts; declaration conversion alone has no runtime proof.
+                let foreign = fs::read_to_string(root.join("seseragi.toml"))
+                    .ok()
+                    .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+                    .and_then(|manifest| manifest.foreign_typescript);
+                let importer = request
+                    .generated_root
+                    .join(format!("{}.ssrg", entry.output));
+                let artifacts = [
+                    seseragi_interop::RuntimeTarget::Browser,
+                    seseragi_interop::RuntimeTarget::Node,
+                    seseragi_interop::RuntimeTarget::Bun,
+                ]
+                .into_iter()
+                .filter_map(|target| {
+                    seseragi_project::resolve_foreign_runtime_artifact_for_target(
+                        &root,
+                        foreign.as_ref(),
+                        &importer,
+                        &entry.specifier,
+                        target,
+                    )
+                    .ok()
+                    .map(|artifact| (target, artifact))
+                })
+                .collect();
+                seseragi_dts::attach_runtime_linkage(&mut result, entry, &artifacts).unwrap();
+                memory.push(result);
             }
             let disk = convert_package(&request).unwrap();
             assert_eq!(

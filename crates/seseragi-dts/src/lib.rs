@@ -12,7 +12,9 @@ mod model;
 mod parser;
 mod projection_policy;
 pub use projection_policy::{apply_projection_policy, refresh_compatibility_identity};
+mod runtime_linkage;
 mod semantic;
+pub use runtime_linkage::{attach_runtime_linkage, RuntimeLinkageEvidence};
 
 pub use semantic::{interpret_declaration, SemanticError};
 pub use seseragi_interop::{SemanticCompatibilityReport, SemanticGraph};

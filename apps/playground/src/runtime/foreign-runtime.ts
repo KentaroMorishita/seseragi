@@ -37,7 +37,12 @@ export class ForeignRuntimeError extends Error {
   readonly diagnostics: readonly ForeignRuntimeDiagnostic[]
   constructor(diagnostics: readonly ForeignRuntimeDiagnostic[]) {
     super(
-      diagnostics.map(({ code, reason }) => `${code}: ${reason}`).join("\n")
+      diagnostics
+        .map(
+          ({ code, target, reason }) =>
+            `${code}${target === undefined ? "" : ` [${target}]`}: ${reason}`
+        )
+        .join("\n")
     )
     this.name = "ForeignRuntimeError"
     this.diagnostics = diagnostics

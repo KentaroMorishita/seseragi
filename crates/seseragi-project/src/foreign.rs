@@ -250,6 +250,30 @@ pub fn validate_foreign_runtime_target(
                 target,
             );
             let result = resolved.and_then(|resolved| {
+                let metadata_path = module.source_path().with_extension("binding.json");
+                if let Ok(metadata) = fs::read_to_string(metadata_path) {
+                    crate::validate_binding_runtime_linkage(
+                        &metadata,
+                        target,
+                        target != RuntimeTarget::Browser,
+                        |specifier| {
+                            resolve_foreign_typescript_module_for_target(
+                                package.root(),
+                                package.manifest().foreign_typescript.as_ref(),
+                                module.source_path(),
+                                specifier,
+                                target,
+                            )
+                            .map(|artifact| {
+                                seseragi_interop::RuntimeArtifactIdentity {
+                                    exact_identity: artifact.exact_identity().to_owned(),
+                                    content_digest: artifact.content_digest().to_owned(),
+                                }
+                            })
+                        },
+                    )
+                    .map_err(|mut errors| errors.remove(0))?;
+                }
                 if target == RuntimeTarget::Browser {
                     validate_browser_closure(
                         package.root(),
@@ -308,4 +332,29 @@ fn validate_browser_closure(
         }
     }
     Ok(())
+}
+
+/// Supplies target availability from real host files. Browser availability also
+/// requires its complete static import closure, rather than a resolvable root.
+pub fn resolve_foreign_runtime_artifact_for_target(
+    package_root: &Path,
+    configuration: Option<&ManifestForeignTypescript>,
+    importer: &Path,
+    specifier: &str,
+    target: RuntimeTarget,
+) -> Result<seseragi_interop::RuntimeArtifactIdentity, RuntimeLinkageDiagnostic> {
+    let resolved = resolve_foreign_typescript_module_for_target(
+        package_root,
+        configuration,
+        importer,
+        specifier,
+        target,
+    )?;
+    if target == RuntimeTarget::Browser {
+        validate_browser_closure(package_root, configuration, resolved.source())?;
+    }
+    Ok(seseragi_interop::RuntimeArtifactIdentity {
+        exact_identity: resolved.exact_identity().to_owned(),
+        content_digest: resolved.content_digest().to_owned(),
+    })
 }

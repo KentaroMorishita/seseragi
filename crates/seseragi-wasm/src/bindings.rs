@@ -228,6 +228,40 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
             previous_metadata,
         })
         .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
+        let runtime_files = files
+            .iter()
+            .map(|(path, source)| (path.clone(), (*source).to_owned()))
+            .collect();
+        let importer = format!(
+            "{}/{}.ssrg",
+            manifest.layout.generated.as_str(),
+            entry.output
+        );
+        let host_root = foreign
+            .manifest
+            .as_str()
+            .rsplit_once('/')
+            .map_or("", |(parent, _)| parent);
+        let artifacts = [
+            seseragi_project::RuntimeTarget::Browser,
+            seseragi_project::RuntimeTarget::Node,
+            seseragi_project::RuntimeTarget::Bun,
+        ]
+        .into_iter()
+        .filter_map(|target| {
+            seseragi_project::resolve_runtime_snapshot_artifact(
+                &runtime_files,
+                &importer,
+                &entry.specifier,
+                host_root,
+                target,
+            )
+            .ok()
+            .map(|artifact| (target, artifact))
+        })
+        .collect();
+        seseragi_dts::attach_runtime_linkage(&mut converted, entry, &artifacts)
+            .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
         if let Some(policy) = &entry.projection_policy {
             let source = read(&files, policy)?;
             apply_projection_policy(&mut converted, entry, source)
@@ -319,7 +353,7 @@ mod tests {
             let mut semantic = vec![];
             let mut compatibility = vec![];
             for (id, entry) in config.entries {
-                let converted = convert_entry(&ConversionInput {
+                let mut converted = convert_entry(&ConversionInput {
                     settings,
                     entry: &id,
                     declaration: source(&request, &entry.declaration),
@@ -338,6 +372,37 @@ mod tests {
                     previous_metadata: None,
                 })
                 .unwrap();
+                let runtime_files = request["files"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|file| {
+                        (
+                            file["path"].as_str().unwrap().to_owned(),
+                            file["source"].as_str().unwrap().to_owned(),
+                        )
+                    })
+                    .collect();
+                let importer = format!(".seseragi/generated/{}.ssrg", entry.output);
+                let artifacts = [
+                    seseragi_project::RuntimeTarget::Browser,
+                    seseragi_project::RuntimeTarget::Node,
+                    seseragi_project::RuntimeTarget::Bun,
+                ]
+                .into_iter()
+                .filter_map(|target| {
+                    seseragi_project::resolve_runtime_snapshot_artifact(
+                        &runtime_files,
+                        &importer,
+                        &entry.specifier,
+                        "host",
+                        target,
+                    )
+                    .ok()
+                    .map(|artifact| (target, artifact))
+                })
+                .collect();
+                seseragi_dts::attach_runtime_linkage(&mut converted, &entry, &artifacts).unwrap();
                 if let Some(report) = converted.compatibility {
                     compatibility.push(json!({"id": id, "report": report}));
                 }

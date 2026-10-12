@@ -431,3 +431,80 @@ fn private_declarations_and_unknown_delivery_do_not_acquire_runtime_abi_by_assum
         .iter()
         .any(|d| d.reason.contains("delivery ABI")));
 }
+
+#[test]
+fn cancellation_requires_host_abort_signal_identity() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    if let SemanticType::Callable { parameters, .. } = graph.types.get_mut(&TypeId(2)).unwrap() {
+        parameters.push(CallParameter {
+            name: "signal".into(),
+            origins: vec![],
+            type_ref: TypeId(3),
+            optional: false,
+            rest: false,
+        });
+    }
+    let mut contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().cancellation =
+        CancellationAbi::AbortSignalParameter(0);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|error| error.code == "SES-F0202"));
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Opaque {
+            identity: "AbortSignal".into(),
+            arguments: vec![],
+        },
+    );
+    contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().cancellation =
+        CancellationAbi::AbortSignalParameter(0);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Opaque {
+            identity: "web:AbortSignal".into(),
+            arguments: vec![],
+        },
+    );
+    contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().cancellation =
+        CancellationAbi::AbortSignalParameter(0);
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+}
+
+#[test]
+fn runtime_package_must_match_declaration_name_and_version() {
+    let graph = graph();
+    for identity in ["npm:other@1.2.3/web.js", "npm:api@9.9.9/web.js"] {
+        let mut contract = make_contract(&graph);
+        let mut wrong = artifact();
+        wrong.exact_identity = identity.into();
+        contract
+            .exports
+            .get_mut("api::run")
+            .unwrap()
+            .targets
+            .insert(RuntimeTarget::Browser, wrong.clone());
+        let fresh = BTreeMap::from([("api::run".into(), wrong)]);
+        assert!(contract
+            .validate_for(&graph, RuntimeTarget::Browser, &fresh)
+            .unwrap_err()
+            .iter()
+            .any(|error| error.code == "SES-F0201" && error.reason.contains("package")));
+    }
+}

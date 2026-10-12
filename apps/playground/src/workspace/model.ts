@@ -13,6 +13,7 @@ export type WorkspaceFile = Readonly<{
 export type WorkspaceGeneratedBindings = Readonly<{
   inputRevision: string
   files: readonly Readonly<{ module: string; path: string; source: string }>[]
+  artifacts?: readonly WorkspaceFile[]
 }>
 
 export type WorkspaceExplorerState = Readonly<{
@@ -137,6 +138,16 @@ export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
       : {
           generatedBindings: {
             inputRevision: seed.generatedBindings.inputRevision,
+            ...(seed.generatedBindings.artifacts === undefined
+              ? {}
+              : {
+                  artifacts: seed.generatedBindings.artifacts.map(
+                    ({ path, source }) => ({
+                      path: workspaceFilePath(path),
+                      source,
+                    })
+                  ),
+                }),
             files: seed.generatedBindings.files.map(
               ({ module, path, source }) => ({
                 module: workspaceSourceIdentity(`${module}.ssrg`).module,
@@ -562,6 +573,11 @@ function freezeWorkspace(state: WorkspaceState): WorkspaceState {
     } else {
       for (const file of state.generatedBindings.files) Object.freeze(file)
       Object.freeze(state.generatedBindings.files)
+      if (state.generatedBindings.artifacts !== undefined) {
+        for (const artifact of state.generatedBindings.artifacts)
+          Object.freeze(artifact)
+        Object.freeze(state.generatedBindings.artifacts)
+      }
       Object.freeze(state.generatedBindings)
     }
   }

@@ -35,6 +35,14 @@ impl RuntimeTarget {
             }
     }
 }
+/// Portable persisted proof shared by declaration and schema adapters.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct RuntimeLinkageEvidence {
+    pub graph: SemanticGraph,
+    pub contract: RuntimeLinkageContract,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct RuntimeArtifactIdentity {
@@ -65,6 +73,7 @@ pub enum ReceiverAbi {
 #[serde(rename_all = "kebab-case")]
 pub enum CallbackLifetime {
     DuringCall,
+    UntilSettled,
     Retained,
 }
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -209,6 +218,13 @@ impl RuntimeLinkageContract {
         artifacts: &BTreeMap<String, RuntimeArtifactIdentity>,
     ) -> Result<(), Vec<RuntimeLinkageDiagnostic>> {
         let mut errors = Vec::new();
+        if let Err(error) = graph.validate() {
+            return Err(vec![RuntimeLinkageDiagnostic::new(
+                "SES-F0201",
+                Some(target),
+                format!("invalid linked semantic graph: {error}"),
+            )]);
+        }
         let mut declaration = graph.identity.clone();
         if let Some(identity) = &mut declaration {
             identity.runtime_contract_digest = None;
@@ -341,8 +357,10 @@ impl RuntimeLinkageContract {
                             callback.failure,
                             FailureBoundary::Rejection | FailureBoundary::ThrowOrRejection
                         )
-            }) || matches!(export.cancellation, CancellationAbi::AbortSignalParameter(index) if !index_valid(index))
-            {
+            }) || matches!(export.cancellation, CancellationAbi::AbortSignalParameter(index) if !index_valid(index) || !signatures.iter().all(|signature| match signature {
+                SemanticType::Callable { parameters, .. } => abort_signal_type(graph, parameters[index as usize].type_ref, &mut BTreeSet::new()),
+                _ => false,
+            })) {
                 errors.push(error(
                     "SES-F0202",
                     "callback or cancellation parameter ABI does not match callable signatures",
@@ -399,6 +417,14 @@ impl RuntimeLinkageContract {
                 ));
             }
             for (available, artifact) in &export.targets {
+                if artifact.exact_identity.starts_with("npm:")
+                    && !npm_package_matches(export, artifact)
+                {
+                    errors.push(error(
+                        "SES-F0201",
+                        "runtime package name/version differs from declaration module identity",
+                    ));
+                }
                 if !artifact_valid(artifact)
                     || *available == RuntimeTarget::Browser
                         && artifact.exact_identity.starts_with("node:")
@@ -813,4 +839,130 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
         }),
         _ => None,
     }
+}
+
+// Cancellation requires the host's explicit AbortSignal identity, not merely
+// a valid parameter position or a structurally similar user-defined object.
+fn abort_signal_type(graph: &SemanticGraph, id: TypeId, seen: &mut BTreeSet<TypeId>) -> bool {
+    if !seen.insert(id) {
+        return false;
+    }
+    match graph.types.get(&id) {
+        Some(SemanticType::Opaque {
+            identity,
+            arguments,
+        }) => identity == "web:AbortSignal" && arguments.is_empty(),
+        Some(SemanticType::Reference { symbol }) => graph
+            .symbols
+            .get(symbol)
+            .is_some_and(|symbol| abort_signal_type(graph, symbol.type_ref, seen)),
+        _ => false,
+    }
+}
+
+impl crate::SemanticCompatibilityReport {
+    /// Runtime proof is an independent per-symbol status. It never upgrades
+    /// interpreted or projected meaning, and a contract digest alone is no proof.
+    pub fn apply_runtime_linkage(
+        &mut self,
+        graph: &SemanticGraph,
+        contract: &RuntimeLinkageContract,
+        artifacts: &BTreeMap<RuntimeTarget, BTreeMap<String, RuntimeArtifactIdentity>>,
+    ) {
+        let checks = artifacts
+            .iter()
+            .map(|(target, artifacts)| {
+                (
+                    *target,
+                    contract
+                        .validate_for(graph, *target, artifacts)
+                        .err()
+                        .unwrap_or_default(),
+                )
+            })
+            .collect::<BTreeMap<_, _>>();
+        let owners = contract
+            .exports
+            .values()
+            .map(|export| export.semantic_owner.clone())
+            .collect::<BTreeSet<_>>();
+        for owner in owners {
+            let Some(symbol) = self.symbols.get_mut(&owner) else {
+                continue;
+            };
+            let keys = contract
+                .exports
+                .iter()
+                .filter(|(_, export)| export.semantic_owner == owner)
+                .map(|(key, _)| key)
+                .collect::<BTreeSet<_>>();
+            let errors = checks
+                .iter()
+                .flat_map(|(target, errors)| {
+                    errors
+                        .iter()
+                        .filter(|error| error.symbol.as_ref().is_none_or(|key| keys.contains(key)))
+                        .map(move |error| (*target, error))
+                })
+                .collect::<Vec<_>>();
+            symbol.runtime_abi_unresolved = artifacts.is_empty() || !errors.is_empty();
+            symbol.reasons.retain(|reason| {
+                reason.rule != "runtime-binding-evidence"
+                    && !reason.rule.starts_with("runtime-linkage-")
+            });
+            if errors.is_empty() && !artifacts.is_empty() {
+                symbol.reasons.push(crate::CompatibilityReason {
+                    type_ref: symbol.type_ref, classification: crate::SemanticClassification::Normalized,
+                    rule: "runtime-linkage-validated-artifacts".into(),
+                    reason: format!("declared runtime ABI and pinned host bytes validated for {}; target availability and actual host behavior remain execution boundaries", artifacts.keys().map(|target| target.as_str()).collect::<Vec<_>>().join(", ")),
+                    policy: None,
+                });
+            } else {
+                if artifacts.is_empty() {
+                    symbol.reasons.push(crate::CompatibilityReason {
+                        type_ref: symbol.type_ref,
+                        classification: crate::SemanticClassification::RuntimeAbiUnresolved,
+                        rule: "runtime-linkage-missing-artifacts".into(),
+                        reason: "no freshly resolved runtime target artifact was supplied".into(),
+                        policy: None,
+                    });
+                }
+                for (target, error) in errors {
+                    symbol.reasons.push(crate::CompatibilityReason {
+                        type_ref: symbol.type_ref,
+                        classification: crate::SemanticClassification::RuntimeAbiUnresolved,
+                        rule: format!("runtime-linkage-{}", target.as_str()),
+                        reason: format!("{}: {}", error.code, error.reason),
+                        policy: None,
+                    });
+                }
+            }
+        }
+    }
+}
+
+fn npm_package_matches(export: &RuntimeExportAbi, artifact: &RuntimeArtifactIdentity) -> bool {
+    let count = if export.specifier.starts_with('@') {
+        2
+    } else {
+        1
+    };
+    let package = export
+        .specifier
+        .split('/')
+        .take(count)
+        .collect::<Vec<_>>()
+        .join("/");
+    let prefix = format!("{package}@");
+    let Some(version) = export
+        .declaration_module_identity
+        .strip_prefix(&prefix)
+        .and_then(|rest| rest.split('/').next())
+        .filter(|version| !version.is_empty())
+    else {
+        return false;
+    };
+    artifact
+        .exact_identity
+        .starts_with(&format!("npm:{package}@{version}/"))
 }
