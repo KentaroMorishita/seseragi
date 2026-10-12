@@ -134,13 +134,57 @@ pub fn build_main_with_artifact_options(
     options: ProcessRunOptions,
     artifact_options: crate::artifact::ArtifactOptions,
 ) -> Result<(), BuildError> {
+    build_main_with_optional_source(
+        compiled,
+        output_directory,
+        target,
+        options,
+        artifact_options,
+        None,
+    )
+}
+pub fn build_main_with_source_context(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+    source: &super::SourceFileContext,
+) -> Result<(), BuildError> {
+    build_main_with_optional_source(
+        compiled,
+        output_directory,
+        target,
+        options,
+        artifact_options,
+        Some(source),
+    )
+}
+fn build_main_with_optional_source(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+    source: Option<&super::SourceFileContext>,
+) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     let id = compiled.generated.metadata.module.clone();
     let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
     let reachability = optimize_application(&mut application, &id, &contract);
     let compiled = application.get(&id).expect("application root retained");
+    let prepared = source
+        .map(|source| source.prepare(compiled, target == BuildTarget::Web))
+        .transpose()
+        .map_err(BuildError::Host)?;
+    let compiled = prepared
+        .as_ref()
+        .map_or(compiled, |prepared| &prepared.compiled);
     publish_build(output_directory, |staging| {
+        if let Some(prepared) = &prepared {
+            prepared.stage(staging, target == BuildTarget::Process)?;
+        }
         match target {
             BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
             BuildTarget::Web => stage_main_module(compiled, &staging)?,
@@ -183,6 +227,14 @@ pub fn build_main_with_artifact_options(
             && compiled.typescript_ir.foreign_modules.is_empty()
         {
             finish_process_release(staging, artifact_options)?;
+        }
+        if target == BuildTarget::Process && staging.join("entry.ts").exists() {
+            stage_process_javascript(
+                staging,
+                &["main.ts".to_owned(), "entry.ts".to_owned()],
+                artifact_options.source_map(&compiled.generated.metadata.profile)
+                    == crate::artifact::SourceMapPolicy::Emit,
+            )?;
         }
         if target == BuildTarget::Process
             && artifact_options.source_map(&compiled.generated.metadata.profile)
@@ -343,6 +395,21 @@ pub fn build_local_project_with_artifact_options(
                 .all(|module| module.typescript_ir.foreign_modules.is_empty())
         {
             finish_process_release(staging, artifact_options)?;
+        }
+        if target == BuildTarget::Process && staging.join("entry.ts").exists() {
+            let mut generated_paths = project
+                .compiled
+                .modules
+                .values()
+                .map(|module| module.generated.metadata.outputs.typescript.clone())
+                .collect::<Vec<_>>();
+            generated_paths.push("entry.ts".to_owned());
+            stage_process_javascript(
+                staging,
+                &generated_paths,
+                artifact_options.source_map(&entry.generated.metadata.profile)
+                    == crate::artifact::SourceMapPolicy::Emit,
+            )?;
         }
         if target == BuildTarget::Process
             && artifact_options.source_map(&entry.generated.metadata.profile)
@@ -872,6 +939,40 @@ fn optimize_application(
     roots.sort();
     roots.dedup();
     Some(seseragi_driver::retain_application_outputs(modules, &roots))
+}
+
+// Native Node cannot strip TypeScript under node_modules. Emit one shared
+// runtime module graph and retain generated module locations for foreign ABI.
+fn stage_process_javascript(
+    staging: &Path,
+    generated_paths: &[String],
+    emit_maps: bool,
+) -> Result<(), String> {
+    let result = Command::new("bun")
+        .args(["--eval", include_str!("build_process_packages.ts")])
+        .env(
+            "SESERAGI_GENERATED_TYPESCRIPT",
+            serde_json::to_string(generated_paths).map_err(|error| error.to_string())?,
+        )
+        .env(
+            "SESERAGI_PROCESS_SOURCE_MAP",
+            if emit_maps { "emit" } else { "omit" },
+        )
+        .current_dir(staging)
+        .output()
+        .map_err(|error| format!("failed to launch process JavaScript emitter: {error}"))?;
+    if !result.status.success() {
+        return Err(format!(
+            "process JavaScript emission failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        ));
+    }
+    if emit_maps {
+        for source in generated_paths {
+            crate::source_maps::compose(staging, &PathBuf::from(source).with_extension("js"))?;
+        }
+    }
+    Ok(())
 }
 
 fn finish_process_release(

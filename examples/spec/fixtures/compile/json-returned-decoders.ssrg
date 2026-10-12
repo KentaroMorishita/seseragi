@@ -1,0 +1,42 @@
+import * as json from "std/json"
+
+fn input text: String -> json.Json =
+  match json.parse text { Left _ -> json.JsonNull; Right value -> value }
+fn scalar value: Either<json.DecodeError, Int> -> String =
+  match value { Left _ -> "bad"; Right n -> show n }
+fn optional value: Either<json.DecodeError, Maybe<Int>> -> String =
+  match value { Left _ -> "bad"; Right Nothing -> "absent"; Right (Just n) -> show n }
+fn arrayResult value: Either<json.DecodeError, Array<Int>> -> String =
+  match value { Left _ -> "bad"; Right n -> json.encodeString n }
+fn recordResult value: Either<json.DecodeError, Array<(String, Int)>> -> String =
+  match value { Left _ -> "bad"; Right n -> json.encodeString n }
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $ scalar ((json.field<Int> "count" decodeJson<Int>) (input "{\"count\":7}"))
+  println $
+    optional ((json.optionalField<Int> "count" decodeJson<Int>) (input "{\"count\":7}"))
+  println $ optional ((json.optionalField<Int> "count" decodeJson<Int>) (input "{}"))
+  println $ scalar ((json.oneOf<Int> [decodeJson<Int>]) (input "7"))
+  println $ scalar ((json.oneOf<Int> []) (input "7"))
+  println $ scalar ((json.index<Int> 0 decodeJson<Int>) (input "[7]"))
+  println $ arrayResult ((json.array<Int> decodeJson<Int>) (input "[7,8]"))
+  println $
+    recordResult ((json.record<Int> [("count", decodeJson<Int>)]) (input "{\"count\":7}"))
+  println $ scalar ((json.map<Int, Int> (\n: Int -> n + 1) decodeJson<Int>) (input "7"))
+  println $
+    scalar (
+      (
+        json.flatMap<Int,
+        Int> (\n: Int -> json.field<Int> "other" decodeJson<Int>)
+          (json.field<Int> "count" decodeJson<Int>)
+      ) (input "{\"count\":7,\"other\":8}")
+    )
+  let partial: json.Decoder<Int> -> json.Decoder<Int> = json.field<Int> "count"
+  println $ scalar (partial decodeJson<Int> (input "{\"count\":9}"))
+  let factory: String -> json.Decoder<Int> -> json.Decoder<Int> = json.field<Int>
+    println $ scalar (factory "count" decodeJson<Int> (input "{\"count\":10}"))
+  let choiceFactory: Array<json.Decoder<Int>> -> json.Decoder<Int> = json.oneOf<Int>
+    println $ scalar (choiceFactory [decodeJson<Int>] (input "11"))
+  println $
+    scalar ((json.field<Int> "count" decodeJson<Int>) (input "{\"count\":\"bad\"}"))
+}

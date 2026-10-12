@@ -216,6 +216,7 @@ run_conformance_checks() {
   check_step "$BIOME" lint runtime/ts/src/benchmark.ts runtime/ts/src/benchmark-runner.ts runtime/ts/src/benchmark-baseline.ts runtime/ts/src/benchmark-host.ts runtime/ts/fixtures/benchmark-quality runtime/ts/tests/benchmark.test.ts runtime/ts/tests/benchmark-host.test.ts runtime/ts/tests/benchmark-quality.test.ts
   echo "Testing release output shapes..."
   check_step bun test scripts/release-shapes.test.ts
+  check_step bun scripts/check-semantic-corpus-drift.ts
   echo "Checking pinned Unicode data and text conformance..."
   check_step bun run unicode:check
   echo "Running canonical conformance fixtures..."

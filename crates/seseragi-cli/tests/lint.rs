@@ -2,7 +2,9 @@ use std::fs;
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static NEXT_FIXTURE: AtomicU64 = AtomicU64::new(0);
 
 struct Fixture {
     root: PathBuf,
@@ -10,10 +12,7 @@ struct Fixture {
 
 impl Fixture {
     fn new() -> Self {
-        let nonce = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_nanos();
+        let nonce = NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed);
         let root =
             std::env::temp_dir().join(format!("seseragi-lint-{}-{nonce}", std::process::id()));
         fs::create_dir_all(&root).unwrap();
@@ -90,7 +89,7 @@ fn single_file_lint_is_warn_only_unless_denied() {
     let fixture = Fixture::new();
     let path = fixture.write(
         "main.ssrg",
-        "fn value -> Int = {\n  let unused = 1\n  let used = 2\n  used\n}\n",
+        "pub fn value -> Int = {\n  let unused = 1\n  let used = 2\n  used\n}\n",
     );
     let default = fixture.run(&[], &path);
     assert_eq!(default.status.code(), Some(0));
@@ -126,12 +125,19 @@ fn single_file_lint_is_warn_only_unless_denied() {
 #[test]
 fn cli_json_and_lsp_publish_the_same_utf8_lint_fact() {
     let fixture = Fixture::new();
-    let source = "fn value -> Int = {\n  // 🙂\n  let unused = 1\n  1\n}\n";
+    let source = "import { abs } from \"std/int\"\nimport * as eff from \"std/effect\"\nimport * as signals from \"std/signal\"\nfn privateUnused -> Int = 0\npub fn value -> Int = {\n  // 🙂\n  let unused = 1\n  let lost = eff.succeed 1\n  if True then 1 else 2\n}\npub effect fn discard source: signals.Signal<Int> -> Unit =\n do {\n signals.subscribe (\\value -> eff.succeed ()) source\n eff.succeed ()\n }\n";
     let path = fixture.write("unicode.ssrg", source);
     let output = fixture.run(&["--diagnostic-format", "json"], &path);
-    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     let cli: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
-    let cli_diagnostic = &cli["diagnostics"][0]["diagnostics"]["diagnostics"][0];
+    let cli_diagnostics = cli["diagnostics"][0]["diagnostics"]["diagnostics"]
+        .as_array()
+        .unwrap();
 
     let uri = url::Url::from_file_path(&path).unwrap().to_string();
     let input = [
@@ -152,25 +158,31 @@ fn cli_json_and_lsp_publish_the_same_utf8_lint_fact() {
     let mut output = Vec::new();
     seseragi_lsp::run(Cursor::new(framed), &mut output).unwrap();
     let lsp = messages(&output);
-    let lsp_diagnostic = &lsp
+    let lsp_diagnostics = lsp
         .iter()
         .find(|message| message["method"] == "textDocument/publishDiagnostics")
-        .unwrap()["params"]["diagnostics"][0];
-
-    assert_eq!(lsp_diagnostic["code"], cli_diagnostic["code"]);
-    assert_eq!(lsp_diagnostic["severity"], 2);
-    assert_eq!(cli_diagnostic["severity"], "Warning");
-    assert_eq!(
-        lsp_diagnostic["data"]["messageKey"],
-        cli_diagnostic["messageKey"]
-    );
-    let start = cli_diagnostic["primary"]["start"].as_u64().unwrap() as usize;
-    let end = cli_diagnostic["primary"]["end"].as_u64().unwrap() as usize;
-    assert_eq!(
-        lsp_diagnostic["range"]["start"],
-        utf8_position(source, start)
-    );
-    assert_eq!(lsp_diagnostic["range"]["end"], utf8_position(source, end));
+        .unwrap()["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert_eq!(cli_diagnostics.len(), 6);
+    assert_eq!(lsp_diagnostics.len(), cli_diagnostics.len());
+    for (cli_diagnostic, lsp_diagnostic) in cli_diagnostics.iter().zip(lsp_diagnostics) {
+        assert_eq!(lsp_diagnostic["code"], cli_diagnostic["code"]);
+        assert_eq!(lsp_diagnostic["severity"], 2);
+        assert_eq!(cli_diagnostic["severity"], "Warning");
+        assert_eq!(
+            lsp_diagnostic["data"]["messageKey"],
+            cli_diagnostic["messageKey"]
+        );
+        assert_eq!(lsp_diagnostic["data"]["lint"], cli_diagnostic["lint"]);
+        let start = cli_diagnostic["primary"]["start"].as_u64().unwrap() as usize;
+        let end = cli_diagnostic["primary"]["end"].as_u64().unwrap() as usize;
+        assert_eq!(
+            lsp_diagnostic["range"]["start"],
+            utf8_position(source, start)
+        );
+        assert_eq!(lsp_diagnostic["range"]["end"], utf8_position(source, end));
+    }
 }
 
 #[test]
@@ -196,7 +208,7 @@ fn compiler_errors_are_not_downgraded_or_followed_by_speculative_lints() {
     let fixture = Fixture::new();
     let path = fixture.write(
         "broken.ssrg",
-        "fn value -> Int = {\n  let unused = missing\n  1\n}\n",
+        "pub fn value -> Int = {\n  let unused = missing\n  1\n}\n",
     );
     let output = fixture.run(&["--diagnostic-format", "json"], &path);
     assert_eq!(output.status.code(), Some(2));
@@ -317,4 +329,27 @@ fn dependency_is_used_for_analysis_but_not_linted() {
                 .as_array()
                 .is_some_and(|entries| entries.iter().any(|entry| entry["severity"] == "Error"))
     }));
+}
+
+#[test]
+fn malformed_expression_never_passes_cli_lint_or_reaches_runtime() {
+    let fixture = Fixture::new();
+    let source = "pub fn same value: Int -> Int = (fn inputValue: Int => inputValue) value\npub effect fn main -> Unit with Console fails ConsoleError = println $ show (same 7)\n";
+    let path = fixture.write("malformed.ssrg", source);
+    let lint = fixture.run(&["--diagnostic-format", "json"], &path);
+    assert_eq!(lint.status.code(), Some(2));
+    let diagnostic: serde_json::Value = serde_json::from_slice(&lint.stderr).unwrap();
+    assert!(diagnostic["diagnostics"][0]["diagnostics"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|entry| entry["code"] == "SES-P0001"));
+    let run = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&path)
+        .output()
+        .unwrap();
+    assert_eq!(run.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&run.stderr).contains("SES-P0001"));
+    assert!(!String::from_utf8_lossy(&run.stderr).contains("runtime-defect"));
 }

@@ -1,0 +1,7 @@
+schema = 1
+
+[entries.base64]
+declaration = "host/node_modules/base64-js/index.d.ts"
+specifier = "base64-js"
+output = "base64"
+evaluation = "task"

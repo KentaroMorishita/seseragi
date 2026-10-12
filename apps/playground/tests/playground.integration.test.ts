@@ -2280,6 +2280,60 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
     expect(compiled.problems).toEqual([])
   })
 
+  test("opts into editor query recovery while Analyze and Compile stay strict by default", async () => {
+    const source =
+      'import { double } from "./domain"\nfn broken value -> Int = value\nlet answer = double 21\npub effect fn main = println (show (broken 1))\n'
+    const request: ProjectRequest = {
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "domain.ssrg",
+          source: "pub fn double value: Int -> Int = value + value\n",
+        },
+        { path: "main.ssrg", source },
+      ],
+    }
+    const editorRequest: ProjectRequest = { ...request, editorRecovery: true }
+    const [strict, editor, compiled, editorCompiled] = await Promise.all([
+      analyzeProject(request),
+      analyzeProject(editorRequest),
+      compileProject(request),
+      compileProject(editorRequest),
+    ])
+    expect(strict.status).toBe("failure")
+    expect(compiled.status).toBe("failure")
+    expect(editorCompiled.status).toBe("failure")
+    expect(editor.status).toBe("success")
+    if (
+      strict.status !== "failure" ||
+      compiled.status !== "failure" ||
+      editorCompiled.status !== "failure" ||
+      editor.status !== "success"
+    )
+      return
+    expect(strict.diagnostics).toEqual(compiled.diagnostics)
+    expect(editorCompiled.diagnostics).toEqual(compiled.diagnostics)
+    const main = editor.documents.find(({ path }) => path === "main.ssrg")
+    expect(
+      main?.document.symbols.some(
+        ({ name, module }) =>
+          name === "double" && module === "playground/domain"
+      )
+    ).toBe(true)
+    expect(
+      main?.document.typeOccurrences.some(
+        ({ type: name }) => name === "Int -> Int"
+      )
+    ).toBe(true)
+    expect(main?.document.diagnostics).toEqual(
+      compiled.diagnostics.find(({ path }) => path === "main.ssrg")?.diagnostics
+    )
+    expect(
+      main?.document.diagnostics.diagnostics.map(({ messageKey }) => messageKey)
+    ).toEqual(["parser.function-annotations-required"])
+  })
+
   test("formats an active path through the same workspace request", async () => {
     const response = await formatProjectFile(
       {
@@ -2339,7 +2393,10 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
     ).text()
 
     expect(driver).toContain("compileProject(singleFileRequest(source))")
-    expect(driver).toContain("analyzeProject(singleFileRequest(source))")
+    expect(driver).toContain("analyzeProjectEditor(singleFileRequest(source))")
+    expect(driver).toContain(
+      "return analyzeProject({ ...request, editorRecovery: true })"
+    )
     expect(driver).toMatch(
       /formatProjectFile\(\s*singleFileRequest\(source\),\s*"main\.ssrg"/
     )

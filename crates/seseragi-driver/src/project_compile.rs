@@ -163,7 +163,7 @@ fn compile_project_inner(
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
     let inputs = validation::index_project_inputs(&order, input_iter)?;
-    let mut frontend = analyze_project_frontend(&graph, &order, &inputs, false)?;
+    let mut frontend = analyze_project_frontend(&graph, &order, &inputs, FrontendRecovery::None)?;
     let project_newtypes = frontend
         .analyzed
         .values()
@@ -249,7 +249,7 @@ pub fn analyze_project(
     graph: ModuleGraph<String>,
     input_iter: impl IntoIterator<Item = ProjectModuleInput>,
 ) -> Result<AnalyzedProject, ProjectCompileError> {
-    analyze_project_inner(graph, input_iter, None)
+    analyze_project_inner(graph, input_iter, None, FrontendRecovery::Semantic)
 }
 
 pub fn analyze_project_with_providers(
@@ -257,20 +257,55 @@ pub fn analyze_project_with_providers(
     input_iter: impl IntoIterator<Item = ProjectModuleInput>,
     configuration: ProjectProviderConfiguration,
 ) -> Result<AnalyzedProject, ProjectCompileError> {
-    analyze_project_inner(graph, input_iter, Some(configuration))
+    analyze_project_inner(
+        graph,
+        input_iter,
+        Some(configuration),
+        FrontendRecovery::Semantic,
+    )
+}
+
+/// Build editor query snapshots through syntax and semantic recovery. This
+/// retains diagnostics and invalid holes; it never lowers or generates code.
+pub fn analyze_project_recovering(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+) -> Result<AnalyzedProject, ProjectCompileError> {
+    analyze_project_inner(graph, input_iter, None, FrontendRecovery::SyntaxAndSemantic)
+}
+
+pub fn analyze_project_recovering_with_providers(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+    configuration: ProjectProviderConfiguration,
+) -> Result<AnalyzedProject, ProjectCompileError> {
+    analyze_project_inner(
+        graph,
+        input_iter,
+        Some(configuration),
+        FrontendRecovery::SyntaxAndSemantic,
+    )
+}
+
+#[derive(Clone, Copy, Eq, PartialEq)]
+enum FrontendRecovery {
+    None,
+    Semantic,
+    SyntaxAndSemantic,
 }
 
 fn analyze_project_inner(
     graph: ModuleGraph<String>,
     input_iter: impl IntoIterator<Item = ProjectModuleInput>,
     configuration: Option<ProjectProviderConfiguration>,
+    recovery: FrontendRecovery,
 ) -> Result<AnalyzedProject, ProjectCompileError> {
     let order = graph
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
     let inputs = validation::index_project_inputs(&order, input_iter)?;
-    let frontend = analyze_project_frontend(&graph, &order, &inputs, true)?;
-    if frontend.has_parse_errors {
+    let frontend = analyze_project_frontend(&graph, &order, &inputs, recovery)?;
+    if frontend.has_parse_errors && recovery != FrontendRecovery::SyntaxAndSemantic {
         return Err(ProjectCompileError::Diagnostics {
             modules: frontend.diagnostics,
         });
@@ -311,7 +346,7 @@ fn analyze_project_frontend(
     graph: &ModuleGraph<String>,
     order: &[String],
     inputs: &BTreeMap<String, ProjectModuleInput>,
-    retain_semantic_recovery: bool,
+    recovery: FrontendRecovery,
 ) -> Result<ProjectFrontend, ProjectCompileError> {
     let mut parsed = BTreeMap::new();
     let mut diagnostics_by_module = BTreeMap::new();
@@ -322,8 +357,10 @@ fn analyze_project_frontend(
         let diagnostics = parse_diagnostics(input.source_name.clone(), &input.source);
         if has_errors(&diagnostics) {
             has_parse_errors = true;
-            diagnostics_by_module.insert(module.clone(), diagnostics);
-            continue;
+            if recovery != FrontendRecovery::SyntaxAndSemantic {
+                diagnostics_by_module.insert(module.clone(), diagnostics);
+                continue;
+            }
         }
         let unlinked = parse_unlinked_module_interface(
             input.source_name.clone(),
@@ -399,7 +436,7 @@ fn analyze_project_frontend(
                 module: module.clone(),
                 errors,
             })?;
-        let analysis = if retain_semantic_recovery {
+        let analysis = if recovery != FrontendRecovery::None {
             analyze_linked_module_recovering(diagnostics, linked, &input.source)
         } else {
             analyze_linked_module(diagnostics, linked, &input.source)
@@ -1073,6 +1110,42 @@ mod tests {
             .typescript
             .contains("__ssrg$method$Box$map as map"));
         assert!(main.generated.typescript.contains("get(map(box(value))"));
+    }
+
+    #[test]
+    fn recovering_project_analysis_keeps_imported_query_facts_and_compile_stays_strict() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "editing/main".to_owned(),
+                [("./domain".to_owned(), "editing/domain".to_owned())],
+            )
+            .unwrap();
+        graph.add_module("editing/domain".to_owned(), []).unwrap();
+        let source =
+            "import { double } from \"./domain\"\nlet answer = double 21\nlet unfinished = 1 +\n";
+        let inputs = vec![
+            ProjectModuleInput::new(
+                "domain.ssrg",
+                "editing/domain",
+                "pub fn double value: Int -> Int = value + value\n",
+                "domain.js",
+            ),
+            ProjectModuleInput::new("main.ssrg", "editing/main", source, "main.js"),
+        ];
+        assert!(analyze_project(graph.clone(), inputs.clone()).is_err());
+        assert!(compile_project(graph.clone(), inputs.clone()).is_err());
+        let recovered = analyze_project_recovering(graph, inputs).unwrap();
+        let document = &recovered.documents["editing/main"];
+        let offset = source.find("double 21").unwrap();
+        assert_eq!(document.symbol_at(offset).unwrap().module, "editing/domain");
+        assert_eq!(document.type_at(offset).unwrap().type_name, "Int -> Int");
+        assert!(document
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error));
+        assert!(document.lint_diagnostics().diagnostics.is_empty());
     }
 
     #[test]

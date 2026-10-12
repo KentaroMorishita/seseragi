@@ -72,8 +72,9 @@ pub fn analyze_linked_module(
 }
 
 /// Resolves and types a linked module while retaining recovery HIR when
-/// semantic diagnostics are present. Interactive analysis needs that typed
-/// structure to answer expected-type queries at the invalid expression that
+/// syntax or semantic diagnostics are present. Recovery error expressions stay
+/// invalid holes; all original diagnostics remain in the snapshot. Interactive
+/// analysis needs that typed structure to answer expected-type queries at the invalid expression that
 /// the user is actively completing. Compile paths continue to use
 /// [`analyze_linked_module`] and stop before lowering on the same diagnostics.
 pub fn analyze_linked_module_recovering(
@@ -81,14 +82,33 @@ pub fn analyze_linked_module_recovering(
     linked: seseragi_project::LinkedModule,
     source: &str,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
-    if has_errors(&diagnostics) {
-        return Err(diagnostics);
-    }
-
     let shallow = linked.interface.clone();
     let resolved = resolve::resolve_linked_module(linked, source);
-    let diagnostics =
-        diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
+    // A parser-invalid declaration may be absent or partially inferred in the
+    // recovered interface. Its users can then produce unrelated-looking type
+    // errors (for example Show<A> at a later call). Source-range filtering
+    // cannot distinguish those cascades from valid semantic diagnostics.
+    // Keep the parser artifact authoritative until the module parses, while
+    // retaining best-effort resolved/typed facts for interactive queries.
+    let diagnostics = if has_errors(&diagnostics) {
+        diagnostics
+    } else {
+        let original_diagnostics = diagnostics.diagnostics.clone();
+        let mut diagnostics =
+            diagnostics::semantic_diagnostics_from_resolved(diagnostics, &resolved, source);
+        if !original_diagnostics.is_empty() {
+            diagnostics.diagnostics = original_diagnostics
+                .into_iter()
+                .chain(diagnostics.diagnostics)
+                .enumerate()
+                .map(|(index, mut diagnostic)| {
+                    diagnostic.id = format!("d{}", index + 1);
+                    diagnostic
+                })
+                .collect();
+        }
+        diagnostics
+    };
     let (typed_hir, typed_interface) =
         typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
     Ok(AnalyzedModule {

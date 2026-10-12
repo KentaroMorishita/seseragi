@@ -81,6 +81,57 @@ pub(crate) fn validate_generated_bindings(
             && metadata.input_digest == input_digest
             && source_path.is_file()
             && report_path.is_file();
+        if current {
+            let foreign = fs::read_to_string(package_root.join("seseragi.toml"))
+                .ok()
+                .and_then(|source| crate::parse_manifest(&source).ok())
+                .and_then(|manifest| manifest.foreign_typescript);
+            if let Ok(source) = fs::read_to_string(&metadata_path) {
+                let raw_source = fs::read_to_string(&source_path).ok();
+                if let Err(problems) = crate::validate_generated_binding_source(
+                    &source,
+                    raw_source.as_deref(),
+                    crate::RuntimeTarget::Node,
+                ) {
+                    errors.extend(problems.into_iter().map(|problem| {
+                        GeneratedBindingValidationError {
+                            entry: id.clone(),
+                            message: problem.to_string(),
+                        }
+                    }));
+                }
+
+                for target in [crate::RuntimeTarget::Node, crate::RuntimeTarget::Bun] {
+                    if let Err(problems) = crate::validate_binding_runtime_linkage(
+                        &source,
+                        target,
+                        true,
+                        |specifier| {
+                            crate::resolve_foreign_typescript_module_for_target(
+                                package_root,
+                                foreign.as_ref(),
+                                &source_path,
+                                specifier,
+                                target,
+                            )
+                            .map(|artifact| {
+                                seseragi_interop::RuntimeArtifactIdentity {
+                                    exact_identity: artifact.exact_identity().to_owned(),
+                                    content_digest: artifact.content_digest().to_owned(),
+                                }
+                            })
+                        },
+                    ) {
+                        errors.extend(problems.into_iter().map(|problem| {
+                            GeneratedBindingValidationError {
+                                entry: id.clone(),
+                                message: format!("{problem}; run `seseragi dts convert`"),
+                            }
+                        }));
+                    }
+                }
+            }
+        }
         if !current {
             errors.push(GeneratedBindingValidationError {
                 entry: id,

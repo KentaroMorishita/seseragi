@@ -1,0 +1,1642 @@
+{
+  "conversion": {
+    "compatibility": {
+      "counts": [
+        {
+          "classification": "direct",
+          "count": 0,
+          "symbols": []
+        },
+        {
+          "classification": "normalized",
+          "count": 0,
+          "symbols": []
+        },
+        {
+          "classification": "opaque-preserved",
+          "count": 0,
+          "symbols": []
+        },
+        {
+          "classification": "safe-boundary",
+          "count": 0,
+          "symbols": []
+        },
+        {
+          "classification": "policy-required",
+          "count": 2,
+          "symbols": [
+            "customAlphabet",
+            "nanoid"
+          ]
+        },
+        {
+          "classification": "runtime-abi-unresolved",
+          "count": 0,
+          "symbols": []
+        },
+        {
+          "classification": "uninterpreted",
+          "count": 0,
+          "symbols": []
+        }
+      ],
+      "declarations": {
+        "declaration.d.ts": [
+          "customAlphabet",
+          "nanoid"
+        ]
+      },
+      "graphDigest": "ab8aefab06d9a083a3619af1b4413289c27374e7a17abe849cc65e22cdd7f129",
+      "identity": {
+        "frontend": {
+          "name": "seseragi-dts",
+          "version": "0.61.26"
+        },
+        "runtimeContractDigest": null,
+        "settingsDigest": "b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54",
+        "sourceDigests": {
+          "declaration.d.ts": "5644171f3bf41e3fb461770107690ac099dda7e7ad82c1d14af7cd4ef84879fa"
+        }
+      },
+      "kind": "seseragi-interop-compatibility-report",
+      "schema": 1,
+      "symbols": {
+        "customAlphabet": {
+          "classification": "policy-required",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "callable-signature",
+              "source": "declaration.d.ts",
+              "start": 1425
+            },
+            {
+              "end": 1540,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 1425
+            },
+            {
+              "end": 1540,
+              "rule": "generic-binder",
+              "source": "declaration.d.ts",
+              "start": 1425
+            },
+            {
+              "end": 1448,
+              "rule": "public-name",
+              "source": "declaration.d.ts",
+              "start": 1434
+            },
+            {
+              "end": 1468,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1462
+            },
+            {
+              "end": 1489,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1483
+            },
+            {
+              "end": 1513,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1507
+            },
+            {
+              "end": 1540,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1517
+            },
+            {
+              "end": 1531,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1525
+            },
+            {
+              "end": 1540,
+              "rule": "lexical-type-parameter",
+              "source": "declaration.d.ts",
+              "start": 1536
+            }
+          ],
+          "projectionClassification": "policy-required",
+          "publicName": "customAlphabet",
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 5
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 6
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 7
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 8
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 9
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 10
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 11
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 12
+            },
+            {
+              "classification": "runtime-abi-unresolved",
+              "policy": null,
+              "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+              "rule": "runtime-binding-evidence",
+              "typeRef": 5
+            },
+            {
+              "classification": "policy-required",
+              "policy": {
+                "name": "seseragi-binding-settings",
+                "version": "sha256:b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54"
+              },
+              "reason": "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
+              "rule": "SES-F0102",
+              "typeRef": 5
+            },
+            {
+              "classification": "policy-required",
+              "policy": {
+                "name": "seseragi-binding-settings",
+                "version": "sha256:b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54"
+              },
+              "reason": "entry projection failed; atomic output was not emitted, even where candidate signatures were renderable",
+              "rule": "projection-not-published",
+              "typeRef": 5
+            }
+          ],
+          "runtimeAbiUnresolved": true,
+          "semanticClassification": "direct",
+          "semanticDigest": "27f13d46a2b83fe567d1814ef26895842d0d49df1f40401b780c12d883688b74",
+          "typeRef": 5,
+          "types": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ]
+        },
+        "nanoid": {
+          "classification": "policy-required",
+          "origins": [
+            {
+              "end": 848,
+              "rule": "callable-signature",
+              "source": "declaration.d.ts",
+              "start": 791
+            },
+            {
+              "end": 848,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 791
+            },
+            {
+              "end": 848,
+              "rule": "generic-binder",
+              "source": "declaration.d.ts",
+              "start": 791
+            },
+            {
+              "end": 806,
+              "rule": "public-name",
+              "source": "declaration.d.ts",
+              "start": 800
+            },
+            {
+              "end": 826,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 820
+            },
+            {
+              "end": 841,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 835
+            },
+            {
+              "end": 848,
+              "rule": "lexical-type-parameter",
+              "source": "declaration.d.ts",
+              "start": 844
+            }
+          ],
+          "projectionClassification": "policy-required",
+          "publicName": "nanoid",
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 0
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 1
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 2
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 3
+            },
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 4
+            },
+            {
+              "classification": "runtime-abi-unresolved",
+              "policy": null,
+              "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+              "rule": "runtime-binding-evidence",
+              "typeRef": 0
+            },
+            {
+              "classification": "policy-required",
+              "policy": {
+                "name": "seseragi-binding-settings",
+                "version": "sha256:b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54"
+              },
+              "reason": "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
+              "rule": "SES-F0102",
+              "typeRef": 0
+            },
+            {
+              "classification": "policy-required",
+              "policy": {
+                "name": "seseragi-binding-settings",
+                "version": "sha256:b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54"
+              },
+              "reason": "entry projection failed; atomic output was not emitted, even where candidate signatures were renderable",
+              "rule": "projection-not-published",
+              "typeRef": 0
+            }
+          ],
+          "runtimeAbiUnresolved": true,
+          "semanticClassification": "direct",
+          "semanticDigest": "d265955f96a3c93616ecd9e77f39f85e9023be5a5a996d0e1fd922f6b44a88d7",
+          "typeRef": 0,
+          "types": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      "types": {
+        "0": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 848,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 791
+            },
+            {
+              "end": 848,
+              "rule": "generic-binder",
+              "source": "declaration.d.ts",
+              "start": 791
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 0
+            }
+          ]
+        },
+        "1": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 841,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 835
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 1
+            }
+          ]
+        },
+        "2": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 848,
+              "rule": "lexical-type-parameter",
+              "source": "declaration.d.ts",
+              "start": 844
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 2
+            }
+          ]
+        },
+        "3": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 848,
+              "rule": "callable-signature",
+              "source": "declaration.d.ts",
+              "start": 791
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 3
+            }
+          ]
+        },
+        "4": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 826,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 820
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 4
+            }
+          ]
+        },
+        "5": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 1425
+            },
+            {
+              "end": 1540,
+              "rule": "generic-binder",
+              "source": "declaration.d.ts",
+              "start": 1425
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 5
+            }
+          ]
+        },
+        "6": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1489,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1483
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 6
+            }
+          ]
+        },
+        "7": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1513,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1507
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 7
+            }
+          ]
+        },
+        "8": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1531,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1525
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 8
+            }
+          ]
+        },
+        "9": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "lexical-type-parameter",
+              "source": "declaration.d.ts",
+              "start": 1536
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 9
+            }
+          ]
+        },
+        "10": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1517
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 10
+            }
+          ]
+        },
+        "11": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "callable-signature",
+              "source": "declaration.d.ts",
+              "start": 1425
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 11
+            }
+          ]
+        },
+        "12": {
+          "classification": "direct",
+          "origins": [
+            {
+              "end": 1468,
+              "rule": "type-interpretation",
+              "source": "declaration.d.ts",
+              "start": 1462
+            }
+          ],
+          "reasons": [
+            {
+              "classification": "direct",
+              "policy": null,
+              "reason": "meaning is represented directly by the validated shared semantic node",
+              "rule": "semantic-relationship",
+              "typeRef": 12
+            }
+          ]
+        }
+      }
+    },
+    "diagnostics": [
+      {
+        "code": "SES-F0102",
+        "end": 1540,
+        "file": "declaration.d.ts",
+        "message": "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
+        "severity": "Error",
+        "start": 1425,
+        "symbol": "customAlphabet"
+      },
+      {
+        "code": "SES-F0102",
+        "end": 848,
+        "file": "declaration.d.ts",
+        "message": "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
+        "severity": "Error",
+        "start": 791,
+        "symbol": "nanoid"
+      }
+    ],
+    "generated": null,
+    "semantic": {
+      "identity": {
+        "frontend": {
+          "name": "seseragi-dts",
+          "version": "0.61.26"
+        },
+        "runtimeContractDigest": null,
+        "settingsDigest": "b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54",
+        "sourceDigests": {
+          "declaration.d.ts": "5644171f3bf41e3fb461770107690ac099dda7e7ad82c1d14af7cd4ef84879fa"
+        }
+      },
+      "kind": "seseragi-interop-semantic-graph",
+      "normalizations": [],
+      "privateSymbols": [],
+      "schema": 1,
+      "sources": {
+        "declaration.d.ts": {
+          "byteLength": 1541,
+          "digest": "5644171f3bf41e3fb461770107690ac099dda7e7ad82c1d14af7cd4ef84879fa"
+        }
+      },
+      "symbols": {
+        "customAlphabet": {
+          "declarationName": "customAlphabet",
+          "kind": "callable",
+          "origins": [
+            {
+              "end": 1540,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 1425
+            },
+            {
+              "end": 1448,
+              "rule": "public-name",
+              "source": "declaration.d.ts",
+              "start": 1434
+            }
+          ],
+          "publicName": "customAlphabet",
+          "runtime": null,
+          "typeRef": 5
+        },
+        "nanoid": {
+          "declarationName": "nanoid",
+          "kind": "callable",
+          "origins": [
+            {
+              "end": 848,
+              "rule": "declaration",
+              "source": "declaration.d.ts",
+              "start": 791
+            },
+            {
+              "end": 806,
+              "rule": "public-name",
+              "source": "declaration.d.ts",
+              "start": 800
+            }
+          ],
+          "publicName": "nanoid",
+          "runtime": null,
+          "typeRef": 0
+        }
+      },
+      "typeOrigins": {
+        "0": [
+          {
+            "end": 848,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 791
+          },
+          {
+            "end": 848,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 791
+          }
+        ],
+        "1": [
+          {
+            "end": 841,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 835
+          }
+        ],
+        "2": [
+          {
+            "end": 848,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 844
+          }
+        ],
+        "3": [
+          {
+            "end": 848,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 791
+          }
+        ],
+        "4": [
+          {
+            "end": 826,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 820
+          }
+        ],
+        "5": [
+          {
+            "end": 1540,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 1425
+          },
+          {
+            "end": 1540,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 1425
+          }
+        ],
+        "6": [
+          {
+            "end": 1489,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1483
+          }
+        ],
+        "7": [
+          {
+            "end": 1513,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1507
+          }
+        ],
+        "8": [
+          {
+            "end": 1531,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1525
+          }
+        ],
+        "9": [
+          {
+            "end": 1540,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 1536
+          }
+        ],
+        "10": [
+          {
+            "end": 1540,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1517
+          }
+        ],
+        "11": [
+          {
+            "end": 1540,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 1425
+          }
+        ],
+        "12": [
+          {
+            "end": 1468,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1462
+          }
+        ]
+      },
+      "types": {
+        "0": {
+          "body": 3,
+          "kind": "generic",
+          "parameters": [
+            {
+              "constraint": 4,
+              "default": null,
+              "name": "Type"
+            }
+          ]
+        },
+        "1": {
+          "domain": "float64",
+          "kind": "primitive"
+        },
+        "2": {
+          "binder": 0,
+          "index": 0,
+          "kind": "parameter"
+        },
+        "3": {
+          "kind": "callable",
+          "parameters": [
+            {
+              "name": "size",
+              "optional": true,
+              "origins": [
+                {
+                  "end": 832,
+                  "rule": "parameter-name",
+                  "source": "declaration.d.ts",
+                  "start": 828
+                }
+              ],
+              "rest": false,
+              "typeRef": 1
+            }
+          ],
+          "receiver": null,
+          "result": 2
+        },
+        "4": {
+          "domain": "string",
+          "kind": "primitive"
+        },
+        "5": {
+          "body": 11,
+          "kind": "generic",
+          "parameters": [
+            {
+              "constraint": 12,
+              "default": null,
+              "name": "Type"
+            }
+          ]
+        },
+        "6": {
+          "domain": "string",
+          "kind": "primitive"
+        },
+        "7": {
+          "domain": "float64",
+          "kind": "primitive"
+        },
+        "8": {
+          "domain": "float64",
+          "kind": "primitive"
+        },
+        "9": {
+          "binder": 5,
+          "index": 0,
+          "kind": "parameter"
+        },
+        "10": {
+          "kind": "callable",
+          "parameters": [
+            {
+              "name": "size",
+              "optional": true,
+              "origins": [
+                {
+                  "end": 1522,
+                  "rule": "parameter-name",
+                  "source": "declaration.d.ts",
+                  "start": 1518
+                }
+              ],
+              "rest": false,
+              "typeRef": 8
+            }
+          ],
+          "receiver": null,
+          "result": 9
+        },
+        "11": {
+          "kind": "callable",
+          "parameters": [
+            {
+              "name": "alphabet",
+              "optional": false,
+              "origins": [
+                {
+                  "end": 1481,
+                  "rule": "parameter-name",
+                  "source": "declaration.d.ts",
+                  "start": 1473
+                }
+              ],
+              "rest": false,
+              "typeRef": 6
+            },
+            {
+              "name": "defaultSize",
+              "optional": true,
+              "origins": [
+                {
+                  "end": 1504,
+                  "rule": "parameter-name",
+                  "source": "declaration.d.ts",
+                  "start": 1493
+                }
+              ],
+              "rest": false,
+              "typeRef": 7
+            }
+          ],
+          "receiver": null,
+          "result": 10
+        },
+        "12": {
+          "domain": "string",
+          "kind": "primitive"
+        }
+      }
+    }
+  },
+  "interpretation": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 2,
+        "symbols": [
+          "customAlphabet",
+          "nanoid"
+        ]
+      },
+      {
+        "classification": "normalized",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 0,
+        "symbols": []
+      }
+    ],
+    "declarations": {
+      "declaration.d.ts": [
+        "customAlphabet",
+        "nanoid"
+      ]
+    },
+    "graphDigest": "ab8aefab06d9a083a3619af1b4413289c27374e7a17abe849cc65e22cdd7f129",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "b7a531f7beb0a54e03fef99072c80deb52e99f54fcb3a8d0abbbba536783df54",
+      "sourceDigests": {
+        "declaration.d.ts": "5644171f3bf41e3fb461770107690ac099dda7e7ad82c1d14af7cd4ef84879fa"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "customAlphabet": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1540,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 1425
+          },
+          {
+            "end": 1540,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 1425
+          },
+          {
+            "end": 1540,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 1425
+          },
+          {
+            "end": 1448,
+            "rule": "public-name",
+            "source": "declaration.d.ts",
+            "start": 1434
+          },
+          {
+            "end": 1468,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1462
+          },
+          {
+            "end": 1489,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1483
+          },
+          {
+            "end": 1513,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1507
+          },
+          {
+            "end": 1540,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1517
+          },
+          {
+            "end": 1531,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1525
+          },
+          {
+            "end": 1540,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 1536
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "customAlphabet",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          },
+          {
+            "classification": "runtime-abi-unresolved",
+            "policy": null,
+            "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+            "rule": "runtime-binding-evidence",
+            "typeRef": 5
+          }
+        ],
+        "runtimeAbiUnresolved": true,
+        "semanticClassification": "direct",
+        "semanticDigest": "27f13d46a2b83fe567d1814ef26895842d0d49df1f40401b780c12d883688b74",
+        "typeRef": 5,
+        "types": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      "nanoid": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 848,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 791
+          },
+          {
+            "end": 848,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 791
+          },
+          {
+            "end": 848,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 791
+          },
+          {
+            "end": 806,
+            "rule": "public-name",
+            "source": "declaration.d.ts",
+            "start": 800
+          },
+          {
+            "end": 826,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 820
+          },
+          {
+            "end": 841,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 835
+          },
+          {
+            "end": 848,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 844
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "nanoid",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          },
+          {
+            "classification": "runtime-abi-unresolved",
+            "policy": null,
+            "reason": "runtime linking, evaluation or failure evidence is unresolved; semantic interpretation alone does not prove runtime compatibility",
+            "rule": "runtime-binding-evidence",
+            "typeRef": 0
+          }
+        ],
+        "runtimeAbiUnresolved": true,
+        "semanticClassification": "direct",
+        "semanticDigest": "d265955f96a3c93616ecd9e77f39f85e9023be5a5a996d0e1fd922f6b44a88d7",
+        "typeRef": 0,
+        "types": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 848,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 791
+          },
+          {
+            "end": 848,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 791
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 841,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 835
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "2": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 848,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 844
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 848,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 791
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "4": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 826,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 820
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          }
+        ]
+      },
+      "5": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1540,
+            "rule": "declaration",
+            "source": "declaration.d.ts",
+            "start": 1425
+          },
+          {
+            "end": 1540,
+            "rule": "generic-binder",
+            "source": "declaration.d.ts",
+            "start": 1425
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          }
+        ]
+      },
+      "6": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1489,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1483
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1513,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1507
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1531,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1525
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1540,
+            "rule": "lexical-type-parameter",
+            "source": "declaration.d.ts",
+            "start": 1536
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      },
+      "10": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1540,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1517
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          }
+        ]
+      },
+      "11": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1540,
+            "rule": "callable-signature",
+            "source": "declaration.d.ts",
+            "start": 1425
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 1468,
+            "rule": "type-interpretation",
+            "source": "declaration.d.ts",
+            "start": 1462
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      }
+    }
+  },
+  "kind": "seseragi-real-package-interop-report",
+  "package": {
+    "author": "Andrey Sitnik <andrey@sitnik.ru>",
+    "bin": "./bin/nanoid.js",
+    "browser": {
+      "./index.js": "./index.browser.js"
+    },
+    "description": "A tiny (118 bytes), secure URL-friendly unique string ID generator",
+    "engines": {
+      "node": "^18 || >=20"
+    },
+    "exports": {
+      ".": {
+        "browser": "./index.browser.js",
+        "default": "./index.js",
+        "react-native": "./index.browser.js"
+      },
+      "./non-secure": "./non-secure/index.js",
+      "./package.json": "./package.json"
+    },
+    "funding": [
+      {
+        "type": "github",
+        "url": "https://github.com/sponsors/ai"
+      }
+    ],
+    "keywords": [
+      "uuid",
+      "random",
+      "id",
+      "url"
+    ],
+    "license": "MIT",
+    "name": "nanoid",
+    "react-native": {
+      "./index.js": "./index.browser.js"
+    },
+    "repository": "ai/nanoid",
+    "sideEffects": false,
+    "type": "module",
+    "types": "./index.d.ts",
+    "version": "5.1.5"
+  },
+  "schema": 1,
+  "specifier": "nanoid/non-secure",
+  "surfaceStatus": "interpreted-with-explicit-boundaries",
+  "checkerProvenance": {
+    "version": "5.8.3",
+    "exports": [
+      {
+        "name": "customAlphabet",
+        "declarationNames": [
+          "customAlphabet"
+        ]
+      },
+      {
+        "name": "nanoid",
+        "declarationNames": [
+          "nanoid"
+        ]
+      }
+    ],
+    "missingPublicRoots": [],
+    "diagnostics": []
+  },
+  "registryProvenance": {
+    "package": "nanoid",
+    "version": "5.1.5",
+    "integrity": "sha512-Ir/+ZpE9fDsNH0hQ3C68uyThDXzYcim2EqcZ8zn8Chtt1iylPT9xXJB0kPCnqzgcEGikO9RxSrh63MsmVCU7Fw==",
+    "declaration": "non-secure/index.d.ts",
+    "declarationDigest": "5644171f3bf41e3fb461770107690ac099dda7e7ad82c1d14af7cd4ef84879fa",
+    "domains": [
+      "function",
+      "optional",
+      "constrained-generic"
+    ],
+    "targets": [
+      "web",
+      "process"
+    ]
+  }
+}

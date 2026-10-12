@@ -31,6 +31,17 @@ private foreign blockを手書きの `pub fn` / `pub alias` で包みます。
 
 `from` のspecifierはTypeScript host resolverへ渡します。relative specifierはbinding fileから、
 bare specifierは `seseragi.toml` の `[foreign.typescript]` とhost package resolverから解決します。
+単独の `.ssrg` fileのrun / buildでは、明示した元source fileのparent directoryをhost adapterの
+rootとします。relative foreign moduleと、そこからliteral import / re-export / dynamic import / requireで
+参照されるhost fileだけを専用directoryへstageします。元directory全体をcopyせず、process artifactは
+元sourceを削除して移動しても実行できます。生成moduleのESM scopeとhostのpackage type scopeを分け、
+hostの最も近い `package.json` からは必要な `type` だけを保存します。
+
+単独fileのhost importは、明示したfile pathとsource parent内の依存に限ります。bare package、computed
+specifier、source root外のfile、symlink aliasやextensionを推測するpathは `SES-F0203` で拒否し、package
+resolver / 明示した別のasset policyを要求します。存在しないtask-load hostはunusedならloadせず、実行時は
+従来の `Js.Error` / ModuleLoad境界で失敗します。
+
 load identityはspecifier文字列ではなくresolverが返すexact host module identityです。異なるrelative spellingや
 re-export pathが同じidentityへ解決される場合も、一runtime内で一moduleとして扱います。
 
@@ -99,6 +110,33 @@ namespace functionはproperty callの暗黙receiverを渡さず、top-level func
 receiverが必要なhost operationは`method fn`と明示receiverを使います。opaque typeだけのnamespaceはruntime lookupを
 要求しません。`pure value`はpure-load binding初期化時にpathとmemberを一度読み、変換後の不変値を再利用します。
 root moduleのload mode、single-flight、failure memoizationはnested memberを平坦化した全体で決めます。
+
+### generic foreign call のcodec
+
+foreign functionとopaque typeは型parameterを保ちます。
+
+```seseragi
+pub foreign "typescript" from "schema-api" {
+  opaque type Schema<A>
+  task fn make<A> value: A -> Schema<A>
+  task fn read<A> schema: Schema<A> -> A
+}
+```
+
+`Schema<String>` と `Schema<Bool>` は異なる型です。runtimeではどちらも同じhost object identityを
+保持し、型argumentを理由にobjectのcopyやrecord化をしません。opaque型の生成brandは型argumentの
+静的な関係だけを保ち、host objectへpropertyを追加しません。
+
+現在のgeneric foreign呼び出しは、compilerがcall siteで全型parameterを具体的なrank-1の
+`Unit`、`Bool`、`Char`、`String`、`Int`、`Float`へ確定できる場合に限ります。
+compilerはその型の既存foreign codecを内部の引数としてwrapperへ渡します。この引数はhost functionへ
+渡さず、hostからの戻り値も同じcodecで検査します。たとえば`read<String>`がnumberを返せば、task
+callは`Js.Error`で失敗します。型argumentを消して任意値を通すことはしません。
+
+型が確定した関数の変数への保存と部分適用にも、このcodec選択を保持します。未確定のgeneric
+forwarding、構造型やhigher-kindedな型parameterを必要とする呼び出しは、生成前に
+`SES-F0102` / `foreign.generic-codec-policy-required`で拒否します。この範囲外を利用するには明示した
+別の境界policyが必要です。生成raw bindingのgeneric signature自体を特定の型へ書き換えません。
 
 ## 7.3 foreign call mode
 

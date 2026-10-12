@@ -15,6 +15,7 @@ pub struct ConvertRequest {
 pub struct ConversionOutcome {
     pub converted: Vec<ConvertedEntry>,
     pub diagnostics: Vec<ConversionDiagnostic>,
+    pub compatibility: BTreeMap<String, SemanticCompatibilityReport>,
 }
 
 impl ConversionOutcome {
@@ -59,6 +60,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
     let mut outcome = ConversionOutcome {
         converted: Vec::new(),
         diagnostics: Vec::new(),
+        compatibility: BTreeMap::new(),
     };
     for (id, entry) in &config.entries {
         if request
@@ -76,7 +78,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
                 .join(format!("{}.binding.json", entry.output)),
         )
         .ok();
-        let converted = convert_entry_with_host(
+        let mut converted = convert_entry_with_host(
             id,
             entry,
             &declaration,
@@ -91,7 +93,31 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
                 )
             },
         )?;
+        let artifacts = runtime_artifacts(request, entry);
+        crate::attach_runtime_linkage(&mut converted, entry, &artifacts)?;
+        if let Some(path) = &entry.projection_policy {
+            let source = read_utf8(&request.package_root.join(path), "projection policy")?;
+            crate::apply_projection_policy(&mut converted, entry, &source)
+                .map_err(ConvertError::new)?;
+        }
+        let semantic_path = request
+            .generated_root
+            .join(format!("{}/semantic.ssrg", entry.output));
+        let semantic_metadata_path = request
+            .generated_root
+            .join(format!("{}.semantic.json", entry.output));
+        let ownership = semantic_output_ownership(&semantic_path, &semantic_metadata_path);
+        if converted.generated.is_some()
+            && (matches!(ownership, SemanticOutputOwnership::ModifiedOwned)
+                || (entry.projection_policy.is_some()
+                    && matches!(ownership, SemanticOutputOwnership::Unowned)))
+        {
+            crate::projection_policy::reject_projection_output(&mut converted,semantic_path.strip_prefix(&request.package_root).unwrap_or(&semantic_path).to_string_lossy().into_owned(),"semantic output is edited or unowned; preserve it and choose another output or explicitly restore the matching generated source before conversion".into()).map_err(ConvertError::new)?;
+        }
         outcome.diagnostics.extend(converted.diagnostics);
+        if let Some(report) = converted.compatibility {
+            outcome.compatibility.insert(id.clone(), report);
+        }
         let Some(generated) = converted.generated else {
             continue;
         };
@@ -104,11 +130,35 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         let report_path = request
             .generated_root
             .join(format!("{}.report.json", entry.output));
-        atomic_write_set(&[
+        let semantic_metadata = generated.adapters.as_ref().map(json_text).transpose()?;
+        let mut writes: Vec<(&Path, &[u8])> = vec![
             (&source_path, generated.source.as_bytes()),
             (&metadata_path, generated.metadata.as_bytes()),
             (&report_path, generated.report.as_bytes()),
-        ])?;
+        ];
+        if let (Some(adapters), Some(metadata)) = (&generated.adapters, &semantic_metadata) {
+            writes.push((&semantic_path, adapters.semantic_source.as_bytes()));
+            writes.push((&semantic_metadata_path, metadata.as_bytes()));
+        }
+        atomic_write_set(&writes)?;
+        if generated.adapters.is_none()
+            && matches!(ownership, SemanticOutputOwnership::Owned)
+            && !config
+                .entries
+                .values()
+                .any(|other| other.output == format!("{}/semantic", entry.output))
+        {
+            for path in [&semantic_path, &semantic_metadata_path] {
+                if let Err(error) = fs::remove_file(path) {
+                    if error.kind() != std::io::ErrorKind::NotFound {
+                        return Err(ConvertError::new(format!(
+                            "failed to remove stale owned semantic artifact {}: {error}",
+                            path.display()
+                        )));
+                    }
+                }
+            }
+        }
         outcome.converted.push(ConvertedEntry {
             id: id.clone(),
             source: source_path,
@@ -117,6 +167,64 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         });
     }
     Ok(outcome)
+}
+
+#[derive(Clone, Copy)]
+enum SemanticOutputOwnership {
+    Absent,
+    Owned,
+    ModifiedOwned,
+    Unowned,
+}
+fn semantic_output_ownership(source: &Path, metadata: &Path) -> SemanticOutputOwnership {
+    // Symlink artifacts/parents are not owned just because their contents look
+    // like metadata. Never follow them for destructive cleanup.
+    let root = metadata.parent();
+    let linked_parent = source.parent().is_some_and(|parent| {
+        parent
+            .ancestors()
+            .take_while(|path| root.is_none_or(|root| path.starts_with(root)))
+            .any(|path| fs::symlink_metadata(path).is_ok_and(|m| m.file_type().is_symlink()))
+    });
+    if linked_parent
+        || [source, metadata]
+            .iter()
+            .any(|path| fs::symlink_metadata(path).is_ok_and(|m| m.file_type().is_symlink()))
+    {
+        return SemanticOutputOwnership::Unowned;
+    }
+    let actual = fs::read_to_string(source);
+    let meta = fs::read_to_string(metadata);
+    if actual
+        .as_ref()
+        .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+        && meta
+            .as_ref()
+            .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+    {
+        return SemanticOutputOwnership::Absent;
+    }
+    let Ok(previous) = meta.and_then(|text| {
+        serde_json::from_str::<seseragi_projection::SemanticAdapters>(&text)
+            .map_err(std::io::Error::other)
+    }) else {
+        return SemanticOutputOwnership::Unowned;
+    };
+    if previous.schema != 1
+        || previous.input_boundary != "std/json::Json"
+        || previous.graph_digest.len() != 64
+        || !previous
+            .graph_digest
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit())
+    {
+        return SemanticOutputOwnership::Unowned;
+    }
+    match actual {
+        Ok(actual) if actual == previous.semantic_source => SemanticOutputOwnership::Owned,
+        Ok(_) => SemanticOutputOwnership::ModifiedOwned,
+        Err(_) => SemanticOutputOwnership::Unowned,
+    }
 }
 
 pub fn validate_generated_bindings(
@@ -196,12 +304,107 @@ pub fn validate_generated_bindings(
             || !report_path.is_file()
         {
             errors.push(ValidationError {
-                entry: id,
+                entry: id.clone(),
                 message: format!(
                     "generated binding `{}` is stale; run `seseragi dts convert`",
                     entry.output
                 ),
             });
+        }
+
+        if let Ok(source) = fs::read_to_string(&metadata_path) {
+            let raw_source = fs::read_to_string(&source_path).ok();
+            if let Err(problems) = seseragi_project::validate_generated_binding_source(
+                &source,
+                raw_source.as_deref(),
+                seseragi_interop::RuntimeTarget::Node,
+            ) {
+                errors.extend(problems.into_iter().map(|problem| ValidationError {
+                    entry: id.clone(),
+                    message: problem.to_string(),
+                }));
+            }
+
+            let foreign = fs::read_to_string(package_root.join("seseragi.toml"))
+                .ok()
+                .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+                .and_then(|manifest| manifest.foreign_typescript);
+            for target in [
+                seseragi_interop::RuntimeTarget::Node,
+                seseragi_interop::RuntimeTarget::Bun,
+            ] {
+                if let Err(problems) = seseragi_project::validate_binding_runtime_linkage(
+                    &source,
+                    target,
+                    true,
+                    |specifier| {
+                        seseragi_project::resolve_foreign_runtime_artifact_for_target(
+                            package_root,
+                            foreign.as_ref(),
+                            &source_path,
+                            specifier,
+                            target,
+                        )
+                    },
+                ) {
+                    errors.extend(problems.into_iter().map(|problem| ValidationError {
+                        entry: id.clone(),
+                        message: format!("{problem}; run `seseragi dts convert`"),
+                    }));
+                }
+            }
+        }
+
+        if let Some(policy) = &entry.projection_policy {
+            let checked = (|| -> Result<(), String> {
+                let source = fs::read_to_string(&declaration_path).map_err(|e| e.to_string())?;
+                let mut converted =
+                    convert_entry_with_host(&id, &entry, &source, &settings_digest, None, || {
+                        host_module.clone().ok_or_else(|| {
+                            ConvertError::new("foreign host identity is unavailable")
+                        })
+                    })
+                    .map_err(|error| error.to_string())?;
+                let request = ConvertRequest {
+                    package_root: package_root.to_owned(),
+                    generated_root: generated_root.to_owned(),
+                    bindings: bindings.to_owned(),
+                    host_manifest: host_manifest.to_owned(),
+                    entry: Some(id.clone()),
+                };
+                crate::attach_runtime_linkage(
+                    &mut converted,
+                    &entry,
+                    &runtime_artifacts(&request, &entry),
+                )
+                .map_err(|error| error.to_string())?;
+                let graph = converted
+                    .semantic
+                    .ok_or("current declaration has no semantic graph")?;
+                let policies: seseragi_interop::ProjectionPolicySet = serde_json::from_str(
+                    &fs::read_to_string(package_root.join(policy)).map_err(|e| e.to_string())?,
+                )
+                .map_err(|e| e.to_string())?;
+                let expected = seseragi_projection::generate_adapters(&graph, &policies)?;
+                let actual_source = fs::read_to_string(
+                    generated_root.join(format!("{}/semantic.ssrg", entry.output)),
+                )
+                .map_err(|e| e.to_string())?;
+                let actual_metadata: seseragi_projection::SemanticAdapters = serde_json::from_str(
+                    &fs::read_to_string(
+                        generated_root.join(format!("{}.semantic.json", entry.output)),
+                    )
+                    .map_err(|e| e.to_string())?,
+                )
+                .map_err(|e| e.to_string())?;
+                if expected != actual_metadata || expected.semantic_source != actual_source {
+                    return Err("semantic adapter output differs from current policy".into());
+                }
+                Ok(())
+            })();
+            if let Err(message) = checked {
+                errors.push(ValidationError { entry: id.clone(),message:format!("semantic policy `{policy}` is missing/invalid/stale: {message}; run `seseragi dts convert`") });
+            }
         }
     }
     if errors.is_empty() {
@@ -378,4 +581,35 @@ mod tests {
             assert!(!temporary.path().join("generated").exists());
         }
     }
+}
+
+fn runtime_artifacts(
+    request: &ConvertRequest,
+    entry: &EntryConfig,
+) -> BTreeMap<seseragi_interop::RuntimeTarget, seseragi_interop::RuntimeArtifactIdentity> {
+    let foreign = fs::read_to_string(request.package_root.join("seseragi.toml"))
+        .ok()
+        .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+        .and_then(|manifest| manifest.foreign_typescript);
+    let importer = request
+        .generated_root
+        .join(format!("{}.ssrg", entry.output));
+    [
+        seseragi_interop::RuntimeTarget::Browser,
+        seseragi_interop::RuntimeTarget::Node,
+        seseragi_interop::RuntimeTarget::Bun,
+    ]
+    .into_iter()
+    .filter_map(|target| {
+        seseragi_project::resolve_foreign_runtime_artifact_for_target(
+            &request.package_root,
+            foreign.as_ref(),
+            &importer,
+            &entry.specifier,
+            target,
+        )
+        .ok()
+        .map(|artifact| (target, artifact))
+    })
+    .collect()
 }

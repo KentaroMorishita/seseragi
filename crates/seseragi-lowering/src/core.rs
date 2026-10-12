@@ -68,6 +68,8 @@ pub struct CoreForeignModule {
 )]
 pub enum CoreForeignMember {
     Function {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
         mode: ForeignCallMode,
         call_kind: ForeignCallKind,
         symbol: String,
@@ -86,6 +88,8 @@ pub enum CoreForeignMember {
         origin: SourceSpan,
     },
     OpaqueType {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
         symbol: String,
         name: String,
         origin: SourceSpan,
@@ -915,6 +919,7 @@ fn collect_foreign_declaration_identity(
 fn lower_foreign_member(source: &str, member: TypedForeignMember) -> CoreForeignMember {
     match member {
         TypedForeignMember::Function {
+            type_parameters,
             mode,
             call_kind,
             symbol,
@@ -924,6 +929,7 @@ fn lower_foreign_member(source: &str, member: TypedForeignMember) -> CoreForeign
             return_type,
             origin,
         } => CoreForeignMember::Function {
+            type_parameters: type_parameters,
             mode,
             call_kind,
             symbol,
@@ -934,10 +940,12 @@ fn lower_foreign_member(source: &str, member: TypedForeignMember) -> CoreForeign
             origin: source_span(source, origin),
         },
         TypedForeignMember::OpaqueType {
+            type_parameters,
             symbol,
             name,
             origin,
         } => CoreForeignMember::OpaqueType {
+            type_parameters: type_parameters,
             symbol,
             name,
             origin: source_span(source, origin),

@@ -16,7 +16,35 @@ mod tests;
 
 impl SurfaceParser<'_> {
     pub(super) fn parse_expression(&self, start: usize, end: usize) -> Option<SurfaceExpr> {
-        parse_expression_range(self.tokens, start, end)
+        parse_expression_range(self.tokens, start, end).or_else(|| {
+            let significant = self
+                .tokens
+                .get(start..end)
+                .unwrap_or(&[])
+                .iter()
+                .filter(|token| {
+                    !matches!(
+                        token.kind,
+                        TokenKind::TriviaSpace
+                            | TokenKind::TriviaNewline
+                            | TokenKind::TriviaComment
+                    )
+                })
+                .collect::<Vec<_>>();
+            let first = significant.first().copied();
+            let last = significant.last().copied();
+            let offset = first
+                .map(|token| token.start)
+                .or_else(|| self.tokens.get(start).map(|token| token.start))
+                .or_else(|| self.tokens.last().map(|token| token.end))
+                .unwrap_or(0);
+            Some(SurfaceExpr::Error {
+                span: ByteSpan {
+                    start: offset,
+                    end: last.map_or(offset, |token| token.end).max(offset),
+                },
+            })
+        })
     }
 }
 

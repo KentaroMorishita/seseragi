@@ -10,10 +10,11 @@ import type {
   ProjectRequest,
 } from "./compiler/types"
 import {
-  analyzeProject,
+  analyzeProjectEditor,
   compileProject,
   convertWorkspaceBindings,
   formatProjectFile,
+  resolveBrowserRuntimeModules,
 } from "./compiler/wasm-driver"
 import { renderWorkspaceDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
@@ -36,7 +37,9 @@ import {
   type BrowserExecution,
   startGeneratedProject,
 } from "./runtime/browser-execution"
+import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import { discoverGroups, samples } from "./samples"
+import { createCompatibilityView } from "./ui/compatibility-report"
 import { connectInteropInspector } from "./ui/interop-inspector"
 import { inspectWorkspaceBindings } from "./workspace/binding-inspection"
 import {
@@ -413,7 +416,7 @@ const liveAnalysis: LiveAnalysisController =
       const request = JSON.parse(identity) as WorkspaceAnalysisRequest
       return workspaceAnalysisResult(
         request,
-        await analyzeProject(request.project)
+        await analyzeProjectEditor(request.project)
       )
     },
     onPending: () => {
@@ -491,6 +494,12 @@ const interopInspector = connectInteropInspector({
   button: interopInspectorButton,
   dialog: requiredElement("#interop-inspector", HTMLDialogElement),
   navigate: navigateWorkspaceDiagnostic,
+  views: [
+    createCompatibilityView((path, range) => {
+      requiredElement("#interop-inspector", HTMLDialogElement).close()
+      navigateWorkspaceDiagnostic(path, range)
+    }),
+  ],
 })
 renderWorkspaceChrome()
 if (initialSample !== undefined) {
@@ -814,7 +823,11 @@ function applyWorkspaceChange(
     previousProjectRevision !== workspaceProjectRevisionOrUndefined(nextState)
   const analysisChanged =
     previousAnalysisRevision !== workspaceAnalysisRevisionOrUndefined(nextState)
-  if (projectChanged) cancelActiveExecution()
+  if (
+    projectChanged ||
+    JSON.stringify(previous.files) !== JSON.stringify(nextState.files)
+  )
+    cancelActiveExecution()
   if (switched) {
     setEditorWhitespaceVisible(editor, showWhitespace)
     editor.dispatch(setDiagnostics(editor.state, []))
@@ -836,6 +849,7 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     bindingConversion.invalidate()
+    cancelActiveExecution()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     interopInspector.sync(workspaceState)
     if (!wasDirty) renderWorkspaceChrome()
@@ -1051,6 +1065,15 @@ async function run(): Promise<void> {
     showIoOnSmallScreens()
     return
   }
+  const runtimeFiles = [
+    ...workspaceState.files,
+    ...(workspaceState.generatedBindings?.artifacts ?? []),
+    ...(workspaceState.generatedBindings?.files ?? []),
+  ].map(({ path, source }) => ({
+    path,
+    source,
+  }))
+  const runtimeRevision = JSON.stringify(workspaceState.files)
   const requestedRevision = JSON.stringify(request)
   const requestedAnalysisRevision =
     workspaceAnalysisRevisionOrUndefined(workspaceState)
@@ -1063,7 +1086,10 @@ async function run(): Promise<void> {
   try {
     const compiled = await compileProject(request)
     if (revision !== runRevision) return
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       setStatus("ready", "Project changed")
       return
     }
@@ -1107,12 +1133,31 @@ async function run(): Promise<void> {
       setOutputMode("text")
       return
     }
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       clearHtmlPreview()
       setOutputMode("text")
       setStatus("ready", "Project changed")
       return
     }
+    const generatedModules = compiled.modules.map(({ path, generated }) => ({
+      path,
+      typescript: generated.typescript,
+    }))
+    const foreignRuntime = await prepareBrowserForeignRuntime(
+      generatedModules,
+      runtimeFiles,
+      request.manifest,
+      resolveBrowserRuntimeModules,
+      compiled.entry.path
+    )
+    if (
+      revision !== runRevision ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    )
+      return
     const execution = await startGeneratedProject(
       compiled.modules.map(({ path, generated }) => ({
         path,
@@ -1122,6 +1167,7 @@ async function run(): Promise<void> {
       compiled.entry.contract,
       stdinInput.value,
       {
+        foreignRuntime,
         ...(domDocument === undefined ? {} : { domDocument }),
         onDomMounted: () => {
           if (revision !== runRevision) return
@@ -1157,7 +1203,10 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     if (revision !== runRevision) return
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       setStatus("ready", "Project changed")
       return
     }

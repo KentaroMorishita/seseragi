@@ -1,8 +1,8 @@
 //! Resolves converter inputs from an immutable virtual filesystem snapshot.
 use serde::{Deserialize, Serialize};
 use seseragi_dts::{
-    convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, DiagnosticSeverity,
-    GeneratedBinding, HostMetadata,
+    apply_projection_policy, convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput,
+    DiagnosticSeverity, GeneratedBinding, HostMetadata, SemanticCompatibilityReport, SemanticGraph,
 };
 use std::collections::BTreeMap;
 use unicode_normalization::UnicodeNormalization;
@@ -32,6 +32,19 @@ struct Response {
     generated: Vec<GeneratedBinding>,
     generated_root: Option<String>,
     diagnostics: Vec<ConversionDiagnostic>,
+    semantic: Vec<SemanticEntry>,
+    compatibility: Vec<CompatibilityEntry>,
+}
+#[derive(Serialize)]
+struct CompatibilityEntry {
+    id: String,
+    report: SemanticCompatibilityReport,
+}
+
+#[derive(Serialize)]
+struct SemanticEntry {
+    id: String,
+    graph: SemanticGraph,
 }
 
 #[wasm_bindgen]
@@ -43,6 +56,8 @@ pub fn convert_workspace_bindings(json: &str) -> String {
         generated: vec![],
         generated_root: None,
         diagnostics: vec![],
+        semantic: vec![],
+        compatibility: vec![],
     };
     let result = serde_json::from_str::<Request>(json)
         .map_err(|error| {
@@ -202,7 +217,7 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
         let previous_metadata = path(&previous_path)
             .ok()
             .and_then(|name| files.get(&name).copied());
-        let converted = convert_entry(&ConversionInput {
+        let mut converted = convert_entry(&ConversionInput {
             settings,
             entry: id,
             declaration,
@@ -213,7 +228,58 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
             previous_metadata,
         })
         .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
+        let runtime_files = files
+            .iter()
+            .map(|(path, source)| (path.clone(), (*source).to_owned()))
+            .collect();
+        let importer = format!(
+            "{}/{}.ssrg",
+            manifest.layout.generated.as_str(),
+            entry.output
+        );
+        let host_root = foreign
+            .manifest
+            .as_str()
+            .rsplit_once('/')
+            .map_or("", |(parent, _)| parent);
+        let artifacts = [
+            seseragi_project::RuntimeTarget::Browser,
+            seseragi_project::RuntimeTarget::Node,
+            seseragi_project::RuntimeTarget::Bun,
+        ]
+        .into_iter()
+        .filter_map(|target| {
+            seseragi_project::resolve_runtime_snapshot_artifact(
+                &runtime_files,
+                &importer,
+                &entry.specifier,
+                host_root,
+                target,
+            )
+            .ok()
+            .map(|artifact| (target, artifact))
+        })
+        .collect();
+        seseragi_dts::attach_runtime_linkage(&mut converted, entry, &artifacts)
+            .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
+        if let Some(policy) = &entry.projection_policy {
+            let source = read(&files, policy)?;
+            apply_projection_policy(&mut converted, entry, source)
+                .map_err(|error| (policy.clone(), error))?;
+        }
         response.diagnostics.extend(converted.diagnostics);
+        if let Some(report) = converted.compatibility {
+            response.compatibility.push(CompatibilityEntry {
+                id: id.to_owned(),
+                report,
+            });
+        }
+        if let Some(graph) = converted.semantic {
+            response.semantic.push(SemanticEntry {
+                id: id.to_owned(),
+                graph,
+            });
+        }
         if let Some(generated) = converted.generated {
             response.generated.push(generated);
         }
@@ -284,8 +350,10 @@ mod tests {
             let config = parse_bindings(settings).unwrap();
             let mut generated = vec![];
             let mut diagnostics = vec![];
+            let mut semantic = vec![];
+            let mut compatibility = vec![];
             for (id, entry) in config.entries {
-                let converted = convert_entry(&ConversionInput {
+                let mut converted = convert_entry(&ConversionInput {
                     settings,
                     entry: &id,
                     declaration: source(&request, &entry.declaration),
@@ -304,13 +372,52 @@ mod tests {
                     previous_metadata: None,
                 })
                 .unwrap();
+                let runtime_files = request["files"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|file| {
+                        (
+                            file["path"].as_str().unwrap().to_owned(),
+                            file["source"].as_str().unwrap().to_owned(),
+                        )
+                    })
+                    .collect();
+                let importer = format!(".seseragi/generated/{}.ssrg", entry.output);
+                let artifacts = [
+                    seseragi_project::RuntimeTarget::Browser,
+                    seseragi_project::RuntimeTarget::Node,
+                    seseragi_project::RuntimeTarget::Bun,
+                ]
+                .into_iter()
+                .filter_map(|target| {
+                    seseragi_project::resolve_runtime_snapshot_artifact(
+                        &runtime_files,
+                        &importer,
+                        &entry.specifier,
+                        "host",
+                        target,
+                    )
+                    .ok()
+                    .map(|artifact| (target, artifact))
+                })
+                .collect();
+                seseragi_dts::attach_runtime_linkage(&mut converted, &entry, &artifacts).unwrap();
+                if let Some(report) = converted.compatibility {
+                    compatibility.push(json!({"id": id, "report": report}));
+                }
                 generated.extend(converted.generated);
                 diagnostics.extend(converted.diagnostics);
+                if let Some(graph) = converted.semantic {
+                    semantic.push(json!({"id": id, "graph": graph}));
+                }
             }
             let actual = response(&request);
             assert_eq!(actual["revision"], "snapshot-1");
             assert_eq!(actual["generated"], json!(generated), "{name}");
             assert_eq!(actual["diagnostics"], json!(diagnostics), "{name}");
+            assert_eq!(actual["semantic"], json!(semantic), "{name}");
+            assert_eq!(actual["compatibility"], json!(compatibility), "{name}");
         }
     }
 
@@ -388,5 +495,56 @@ mod tests {
             .as_str()
             .unwrap()
             .contains("invalid workspace"));
+    }
+    #[test]
+    fn policy_artifact_emits_separate_semantic_api_and_stale_policy_fails_closed() {
+        let mut request = fixture("dts-basic-conversion");
+        let declaration = "export type User = { readonly name: string; readonly active: boolean };";
+        let settings = format!(
+            "{}\nprojection_policy='host/user.policy.json'\n",
+            source(&request, "seseragi.bindings.toml")
+        );
+        replace(&mut request, "host/index.d.ts", declaration);
+        replace(&mut request, "seseragi.bindings.toml", &settings);
+        let core = convert_entry(&ConversionInput {
+            settings: &settings,
+            entry: "api",
+            declaration,
+            host: HostMetadata {
+                manifest: source(&request, "host/package.json"),
+                resolved_package: None,
+            },
+            previous_metadata: None,
+        })
+        .unwrap();
+        let graph = core.semantic.unwrap();
+        let mut policy = json!({"schema":1,"kind":"seseragi-semantic-projection-policy","producer":{"name":"explicit-user-policy","version":"1"},"graphDigest":graph.digest().unwrap(),"artifactIdentity":graph.identity,"policies":[{"selector":{"kind":"symbol","symbol":"User"},"functionName":"decodeUser","mapping":{"kind":"json-snapshot"}}]});
+        request["files"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!({"path":"host/user.policy.json","source":policy.to_string()}));
+        let success = response(&request);
+        assert_eq!(success["status"], "success", "{success}");
+        assert!(success["generated"][0]["adapters"]["semanticSource"]
+            .as_str()
+            .unwrap()
+            .contains("pub fn decodeUser"));
+        assert_eq!(
+            success["compatibility"][0]["report"]["symbols"]["User"]["classification"],
+            "safe-boundary"
+        );
+        let artifact: Value =
+            serde_json::from_str(success["generated"][0]["report"].as_str().unwrap()).unwrap();
+        assert_eq!(
+            artifact["compatibility"],
+            success["compatibility"][0]["report"]
+        );
+        policy["graphDigest"] = json!("0".repeat(64));
+        replace(&mut request, "host/user.policy.json", &policy.to_string());
+        let failed = response(&request);
+        assert_eq!(failed["status"], "failure");
+        assert_eq!(failed["generated"], json!([]));
+        assert_eq!(failed["diagnostics"][0]["file"], "host/user.policy.json");
+        assert_eq!(failed["diagnostics"][0]["code"], "SES-F0105");
     }
 }

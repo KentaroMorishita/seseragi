@@ -9,6 +9,8 @@ mod application;
 pub use application::{retain_application_outputs, ApplicationReachability};
 mod compile;
 mod dependencies;
+mod foreign_outputs;
+pub use foreign_outputs::relocate_foreign_outputs;
 mod format;
 mod input;
 mod local_package;
@@ -40,9 +42,10 @@ pub use output_plan::{
     TypeScriptModuleOutput, TypeScriptOutputPlanError,
 };
 pub use project_compile::{
-    analyze_project, analyze_project_with_providers, compile_project,
-    compile_project_with_providers, AnalyzedProject, CompiledProject, ProjectCompileError,
-    ProjectModuleDiagnostics, ProjectModuleInput,
+    analyze_project, analyze_project_recovering, analyze_project_recovering_with_providers,
+    analyze_project_with_providers, compile_project, compile_project_with_providers,
+    AnalyzedProject, CompiledProject, ProjectCompileError, ProjectModuleDiagnostics,
+    ProjectModuleInput,
 };
 pub use provider_plan::{
     ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderDiagnosticDetails,

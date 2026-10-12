@@ -26,6 +26,7 @@ import type {
   DisplayDictionaryContract,
   EntryContract,
 } from "../compiler/types"
+import type { ForeignRuntimeBundle } from "./foreign-runtime"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
@@ -53,6 +54,7 @@ export type BrowserExecution = Readonly<{
 }>
 
 export type BrowserExecutionOptions = Readonly<{
+  readonly foreignRuntime?: ForeignRuntimeBundle
   readonly domDocument?: Document
   readonly onDomMounted?: () => void
 }>
@@ -124,7 +126,11 @@ export async function startGeneratedProject(
 ): Promise<BrowserExecution> {
   processHashSeed()
   const entryModulePath = generatedModulePath(entryPath)
-  const evaluated = await evaluateProject(modules, entryPath)
+  const evaluated = await evaluateProject(
+    modules,
+    entryPath,
+    options.foreignRuntime
+  )
   const generated = evaluated.modules.get(entryModulePath)
   if (generated === undefined) {
     throw new ProjectExecutionError(entryPath)
@@ -325,15 +331,51 @@ async function evaluate(source: string): Promise<ModuleExports> {
 
 async function evaluateProject(
   modules: readonly GeneratedProjectModule[],
-  entryPath: string
+  entryPath: string,
+  foreignRuntime?: ForeignRuntimeBundle
 ): Promise<Readonly<{ modules: ReadonlyMap<string, ModuleExports> }>> {
   const sources = new Map<string, string>()
   for (const module of modules) {
     const path = generatedModulePath(module.path)
+    if (
+      foreignRuntime?.generatedPaths !== undefined &&
+      !foreignRuntime.generatedPaths.includes(path)
+    )
+      continue
     if (sources.has(path)) {
       throw new Error(`duplicate generated project module: ${module.path}`)
     }
-    sources.set(path, await transpile(module.typescript))
+    sources.set(
+      path,
+      await transpile(module.typescript, (specifier) => {
+        const resolved = foreignRuntime?.roots[path]?.[specifier]
+        const artifact =
+          resolved === undefined ? undefined : foreignRuntime?.modules[resolved]
+        if (artifact === undefined)
+          throw new Error(
+            `SES-F0203: unresolved browser runtime identity: ${specifier}`
+          )
+        return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
+      })
+    )
+  }
+
+  for (const [path, module] of Object.entries(foreignRuntime?.modules ?? {})) {
+    if (sources.has(path))
+      throw new Error(`foreign runtime shadows generated module: ${path}`)
+    sources.set(
+      path,
+      await transpile(module.source, (specifier) => {
+        const resolved = module.imports[specifier]
+        const artifact =
+          resolved === undefined ? undefined : foreignRuntime?.modules[resolved]
+        if (artifact === undefined)
+          throw new Error(
+            `SES-F0203: unresolved browser runtime identity: ${specifier}`
+          )
+        return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
+      })
+    )
   }
 
   const evaluated = new Map<string, ModuleExports>()
@@ -355,6 +397,10 @@ async function evaluateProject(
       executeCommonJs(source, module, (specifier) => {
         const runtime = runtimeModules[specifier]
         if (runtime !== undefined) return runtime
+        const foreignPath =
+          foreignRuntime?.modules[path]?.imports[specifier] ??
+          foreignRuntime?.roots[path]?.[specifier]
+        if (foreignPath !== undefined) return load(foreignPath)
         if (!specifier.startsWith(".")) {
           throw new Error(`unsupported playground runtime module: ${specifier}`)
         }
@@ -375,9 +421,51 @@ async function evaluateProject(
   return Object.freeze({ modules: evaluated })
 }
 
-async function transpile(source: string): Promise<string> {
+async function transpile(
+  source: string,
+  resolveIdentity?: (specifier: string) => string
+): Promise<string> {
   const ts = await import("typescript")
   return ts.transpileModule(source, {
+    transformers:
+      resolveIdentity === undefined
+        ? undefined
+        : {
+            before: [
+              (context) => {
+                const visit = (
+                  node: import("typescript").Node
+                ): import("typescript").VisitResult<
+                  import("typescript").Node
+                > => {
+                  if (
+                    ts.isCallExpression(node) &&
+                    ts.isPropertyAccessExpression(node.expression) &&
+                    node.expression.name.text === "resolve" &&
+                    ts.isMetaProperty(node.expression.expression) &&
+                    node.expression.expression.keywordToken ===
+                      ts.SyntaxKind.ImportKeyword
+                  ) {
+                    const argument = node.arguments[0]
+                    if (
+                      node.arguments.length !== 1 ||
+                      argument === undefined ||
+                      !ts.isStringLiteral(argument)
+                    )
+                      throw new Error(
+                        "SES-F0203: computed import.meta.resolve has unresolved runtime identity"
+                      )
+                    return ts.factory.createStringLiteral(
+                      resolveIdentity(argument.text)
+                    )
+                  }
+                  return ts.visitEachChild(node, visit, context)
+                }
+                return (file) =>
+                  ts.visitNode(file, visit) as import("typescript").SourceFile
+              },
+            ],
+          },
     compilerOptions: {
       target: ts.ScriptTarget.ES2022,
       module: ts.ModuleKind.CommonJS,

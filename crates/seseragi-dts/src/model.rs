@@ -16,6 +16,7 @@ impl Span {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Scope {
     pub declarations: Vec<Declaration>,
+    pub private_declarations: Vec<Declaration>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -73,6 +74,8 @@ pub struct Interface {
     pub public_name: String,
     pub name_span: Span,
     pub span: Span,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
+    pub body: TypeRef,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -82,6 +85,18 @@ pub struct OpaqueDeclaration {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
+    pub surface: Option<ClassSurface>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClassSurface {
+    pub constructors: Vec<TypeRef>,
+    pub fields: Vec<Property>,
+    pub statics: Vec<Property>,
+    pub inherited: bool,
+    pub constructible: bool,
+    pub incomplete: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -91,6 +106,7 @@ pub struct TypeAlias {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
     pub type_ref: TypeRef,
 }
 
@@ -101,8 +117,16 @@ pub struct Function {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
     pub parameters: Vec<Parameter>,
     pub result: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TypeParameterRelation {
+    pub name: String,
+    pub constraint: Option<TypeRef>,
+    pub default: Option<TypeRef>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -141,10 +165,50 @@ pub enum TypeKind {
     MutableArray(Box<TypeRef>),
     Tuple(Vec<TypeRef>),
     Union(Vec<TypeRef>),
+    Intersection(Vec<TypeRef>),
+    Keys(Box<TypeRef>),
+    Member {
+        subject: Box<TypeRef>,
+        key: Box<TypeRef>,
+    },
+    Infer {
+        name: String,
+        constraint: Option<Box<TypeRef>>,
+    },
+    Conditional {
+        subject: Box<TypeRef>,
+        constraint: Box<TypeRef>,
+        matched: Box<TypeRef>,
+        unmatched: Box<TypeRef>,
+    },
+    Shape(Vec<Property>),
+    Mapped {
+        parameter: String,
+        domain: Box<TypeRef>,
+        value: Box<TypeRef>,
+        readonly: Option<bool>,
+        optional: Option<bool>,
+    },
+    Template(Vec<TemplatePart>),
     Function {
+        generics: Vec<TypeParameterRelation>,
         parameters: Vec<Parameter>,
         result: Box<TypeRef>,
     },
     Literal(String),
     Unsupported(String),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Property {
+    pub name: String,
+    pub readonly: bool,
+    pub optional: bool,
+    pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum TemplatePart {
+    Text(String),
+    Domain(TypeRef),
 }

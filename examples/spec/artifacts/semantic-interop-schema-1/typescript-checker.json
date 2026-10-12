@@ -1,0 +1,406 @@
+{
+  "schema": 1,
+  "kind": "seseragi-typescript-checker-drift",
+  "compilers": [
+    {
+      "version": "5.8.3",
+      "compilerDigest": "dd17428736a07e1db1a138d8a14295ddb2699ba780ee15038acdd2c6da5373a0",
+      "fixtures": {
+        "domains": {
+          "sourceDigest": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4",
+          "exports": [
+            {
+              "name": "Dynamic",
+              "type": "any",
+              "flags": 524288
+            },
+            {
+              "name": "Fraction",
+              "type": "0.1",
+              "flags": 524288
+            },
+            {
+              "name": "Mutable",
+              "type": "string[]",
+              "flags": 524288
+            },
+            {
+              "name": "NullOrUndefined",
+              "type": "string | null | undefined",
+              "flags": 524288
+            },
+            {
+              "name": "OutsideInt64",
+              "type": "100000000000000000000",
+              "flags": 524288
+            },
+            {
+              "name": "PrimitiveDomains",
+              "type": "[string, number, boolean, bigint, unknown, object, never, void]",
+              "flags": 524288
+            },
+            {
+              "name": "Readonly",
+              "type": "readonly string[]",
+              "flags": 524288
+            },
+            {
+              "name": "ReadonlyTuple",
+              "type": "readonly [string, number]",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedNegative",
+              "type": "-9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedPositive",
+              "type": "9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "Tuple",
+              "type": "[string, number]",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "relations": {
+          "sourceDigest": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f",
+          "exports": [
+            {
+              "name": "Element",
+              "type": "T extends (infer U)[] ? U : never",
+              "flags": 524288
+            },
+            {
+              "name": "Keys",
+              "type": "keyof T",
+              "flags": 524288
+            },
+            {
+              "name": "Literal",
+              "type": "true | \"ready\" | \"busy\" | 42",
+              "flags": 524288
+            },
+            {
+              "name": "Mapped",
+              "type": "{ readonly id?: string | undefined; readonly name?: string | undefined; }",
+              "flags": 524288
+            },
+            {
+              "name": "MappedOpen",
+              "type": "{ [K in keyof T]: T[K]; }",
+              "flags": 524288
+            },
+            {
+              "name": "Member",
+              "type": "T[K]",
+              "flags": 524288
+            },
+            {
+              "name": "Open",
+              "type": "T extends string ? string : number",
+              "flags": 524288
+            },
+            {
+              "name": "Selected",
+              "type": "string",
+              "flags": 524288
+            },
+            {
+              "name": "Template",
+              "type": "\"status:ready\" | \"status:busy\"",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "structures": {
+          "sourceDigest": "2d8f6dcec33fe218979001200d87abd2df7400a48713b86d1141a8539f70e380",
+          "exports": [
+            {
+              "name": "Container",
+              "type": "Container<T>",
+              "flags": 32
+            },
+            {
+              "name": "Hidden",
+              "type": "Hidden",
+              "flags": 64
+            },
+            {
+              "name": "Intersection",
+              "type": "{ readonly id: string; } & { readonly label: string; }",
+              "flags": 524288
+            },
+            {
+              "name": "Recursive",
+              "type": "{ readonly value: string; readonly next?: Recursive; }",
+              "flags": 524288
+            },
+            {
+              "name": "Snapshot",
+              "type": "Snapshot",
+              "flags": 64
+            },
+            {
+              "name": "Union",
+              "type": "{ readonly tag: \"a\"; readonly value: string; } | { readonly tag: \"b\"; readonly value: number; }",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "callables": {
+          "sourceDigest": "71582d93ca74101589ffd3f116c6caa84cdf689cf42fa41270030ee404ae71ec",
+          "exports": [
+            {
+              "name": "HigherRank",
+              "type": "<T>(value: T) => T",
+              "flags": 524288
+            },
+            {
+              "name": "ThisReceiver",
+              "type": "(this: { readonly id: string; }, value: string) => string",
+              "flags": 524288
+            },
+            {
+              "name": "asynchronous",
+              "type": "(value: string) => Promise<string>",
+              "flags": 16
+            },
+            {
+              "name": "callback",
+              "type": "(use: (value: string) => number) => number",
+              "flags": 16
+            },
+            {
+              "name": "constrained",
+              "type": "<T extends string = string>(value: T) => T",
+              "flags": 16
+            },
+            {
+              "name": "identity",
+              "type": "<T>(value: T) => T",
+              "flags": 16
+            },
+            {
+              "name": "overloaded",
+              "type": "{ (value: string): string; (value: number): number; }",
+              "flags": 16
+            },
+            {
+              "name": "tools",
+              "type": "typeof tools",
+              "flags": 512
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    },
+    {
+      "version": "5.9.3",
+      "compilerDigest": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+      "fixtures": {
+        "domains": {
+          "sourceDigest": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4",
+          "exports": [
+            {
+              "name": "Dynamic",
+              "type": "any",
+              "flags": 524288
+            },
+            {
+              "name": "Fraction",
+              "type": "0.1",
+              "flags": 524288
+            },
+            {
+              "name": "Mutable",
+              "type": "string[]",
+              "flags": 524288
+            },
+            {
+              "name": "NullOrUndefined",
+              "type": "string | null | undefined",
+              "flags": 524288
+            },
+            {
+              "name": "OutsideInt64",
+              "type": "100000000000000000000",
+              "flags": 524288
+            },
+            {
+              "name": "PrimitiveDomains",
+              "type": "[string, number, boolean, bigint, unknown, object, never, void]",
+              "flags": 524288
+            },
+            {
+              "name": "Readonly",
+              "type": "readonly string[]",
+              "flags": 524288
+            },
+            {
+              "name": "ReadonlyTuple",
+              "type": "readonly [string, number]",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedNegative",
+              "type": "-9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "RoundedPositive",
+              "type": "9007199254740992",
+              "flags": 524288
+            },
+            {
+              "name": "Tuple",
+              "type": "[string, number]",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "relations": {
+          "sourceDigest": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f",
+          "exports": [
+            {
+              "name": "Element",
+              "type": "T extends (infer U)[] ? U : never",
+              "flags": 524288
+            },
+            {
+              "name": "Keys",
+              "type": "keyof T",
+              "flags": 524288
+            },
+            {
+              "name": "Literal",
+              "type": "true | \"ready\" | \"busy\" | 42",
+              "flags": 524288
+            },
+            {
+              "name": "Mapped",
+              "type": "{ readonly id?: string | undefined; readonly name?: string | undefined; }",
+              "flags": 524288
+            },
+            {
+              "name": "MappedOpen",
+              "type": "{ [K in keyof T]: T[K]; }",
+              "flags": 524288
+            },
+            {
+              "name": "Member",
+              "type": "T[K]",
+              "flags": 524288
+            },
+            {
+              "name": "Open",
+              "type": "T extends string ? string : number",
+              "flags": 524288
+            },
+            {
+              "name": "Selected",
+              "type": "string",
+              "flags": 524288
+            },
+            {
+              "name": "Template",
+              "type": "\"status:ready\" | \"status:busy\"",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "structures": {
+          "sourceDigest": "2d8f6dcec33fe218979001200d87abd2df7400a48713b86d1141a8539f70e380",
+          "exports": [
+            {
+              "name": "Container",
+              "type": "Container<T>",
+              "flags": 32
+            },
+            {
+              "name": "Hidden",
+              "type": "Hidden",
+              "flags": 64
+            },
+            {
+              "name": "Intersection",
+              "type": "{ readonly id: string; } & { readonly label: string; }",
+              "flags": 524288
+            },
+            {
+              "name": "Recursive",
+              "type": "{ readonly value: string; readonly next?: Recursive; }",
+              "flags": 524288
+            },
+            {
+              "name": "Snapshot",
+              "type": "Snapshot",
+              "flags": 64
+            },
+            {
+              "name": "Union",
+              "type": "{ readonly tag: \"a\"; readonly value: string; } | { readonly tag: \"b\"; readonly value: number; }",
+              "flags": 524288
+            }
+          ],
+          "diagnostics": []
+        },
+        "callables": {
+          "sourceDigest": "71582d93ca74101589ffd3f116c6caa84cdf689cf42fa41270030ee404ae71ec",
+          "exports": [
+            {
+              "name": "HigherRank",
+              "type": "<T>(value: T) => T",
+              "flags": 524288
+            },
+            {
+              "name": "ThisReceiver",
+              "type": "(this: { readonly id: string; }, value: string) => string",
+              "flags": 524288
+            },
+            {
+              "name": "asynchronous",
+              "type": "(value: string) => Promise<string>",
+              "flags": 16
+            },
+            {
+              "name": "callback",
+              "type": "(use: (value: string) => number) => number",
+              "flags": 16
+            },
+            {
+              "name": "constrained",
+              "type": "<T extends string = string>(value: T) => T",
+              "flags": 16
+            },
+            {
+              "name": "identity",
+              "type": "<T>(value: T) => T",
+              "flags": 16
+            },
+            {
+              "name": "overloaded",
+              "type": "{ (value: string): string; (value: number): number; }",
+              "flags": 16
+            },
+            {
+              "name": "tools",
+              "type": "typeof tools",
+              "flags": 512
+            }
+          ],
+          "diagnostics": []
+        }
+      }
+    }
+  ]
+}

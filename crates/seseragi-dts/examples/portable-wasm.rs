@@ -21,6 +21,24 @@ pub extern "C" fn conversion_smoke() -> u32 {
     };
     let first = convert_entry(&input).unwrap();
     assert!(first.diagnostics.is_empty());
+    let graph = first.semantic.as_ref().unwrap();
+    let serialized = graph.to_json().unwrap();
+    let restored = seseragi_interop::SemanticGraph::from_json_for(
+        &serialized,
+        graph.identity.as_ref().unwrap(),
+    )
+    .unwrap();
+    assert_eq!(&restored, graph);
+    assert_eq!(
+        seseragi_dts::project_graph(&restored, input.settings, input.entry)
+            .unwrap()
+            .source
+            .as_deref(),
+        first
+            .generated
+            .as_ref()
+            .map(|binding| binding.source.as_str())
+    );
     let generated = first.generated.unwrap();
     assert_eq!(generated.source, include_str!("../../../examples/spec/fixtures/projects/dts-basic-conversion/expected/fixture-api.ssrg"));
     let metadata: serde_json::Value = serde_json::from_str(&generated.metadata).unwrap();

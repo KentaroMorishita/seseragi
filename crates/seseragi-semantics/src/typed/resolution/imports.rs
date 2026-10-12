@@ -55,7 +55,7 @@ pub(super) fn collect_imported_callables(
                         && !import.export.scheme.type_parameters.is_empty())
                     || matches!(
                         import.export.declaration_kind.as_deref(),
-                        Some("function" | "effect-function")
+                        Some("function" | "effect-function" | "generic-foreign-function")
                     ))
         })
         .filter_map(|import| {

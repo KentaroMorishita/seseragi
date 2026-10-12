@@ -1,6 +1,6 @@
 use crate::model::{
     Declaration, Function, Interface, Namespace, OpaqueDeclaration, Parameter, Scope, Span,
-    TypeAlias, TypeKind, TypeRef,
+    TypeAlias, TypeKind, TypeParameterRelation, TypeRef,
 };
 use std::collections::BTreeMap;
 use tree_sitter::{Node, Parser};
@@ -46,16 +46,39 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
     let mut local = BTreeMap::<String, Vec<Declaration>>::new();
     let mut exported = Vec::new();
     let mut aliases = Vec::<(String, String, Span)>::new();
+    let mut explicit_export_list = false;
     let mut cursor = container.walk();
     for child in container.named_children(&mut cursor) {
         if child.kind() == "export_statement" {
+            let default = (0..child.child_count())
+                .filter_map(|index| child.child(index))
+                .find(|token| token.kind() == "default");
+            explicit_export_list |=
+                default.is_some() || child.child_by_field_name("declaration").is_none();
             if let Some(declaration) = child.child_by_field_name("declaration") {
                 for declaration in parse_declaration(declaration, source)? {
                     local
                         .entry(declaration.original_name().to_owned())
                         .or_default()
                         .push(declaration.clone());
-                    exported.push(declaration);
+                    exported.push(if let Some(default) = default {
+                        declaration
+                            .with_export_alias("default".to_owned(), Span::from_node(default))
+                    } else {
+                        declaration
+                    });
+                }
+            } else if let (Some(default), Some(value)) =
+                (default, child.child_by_field_name("value"))
+            {
+                if value.kind() == "identifier" {
+                    aliases.push((
+                        node_text(value, source).to_owned(),
+                        "default".to_owned(),
+                        Span::from_node(default),
+                    ));
+                } else {
+                    return Err(ParseError { message: "default export expression requires an explicit declaration/runtime interpretation".to_owned(), span: Span::from_node(value) });
                 }
             } else {
                 collect_export_aliases(child, source, &mut aliases);
@@ -80,7 +103,27 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
                 .map(|declaration| declaration.with_export_alias(public.clone(), span)),
         );
     }
+    // Ambient declaration scopes implicitly export their members unless an
+    // explicit export list/default assignment supplies the public surface.
+    if !explicit_export_list {
+        exported.extend(
+            local
+                .iter()
+                .filter(|(name, _)| {
+                    !exported
+                        .iter()
+                        .any(|decl| decl.original_name() == name.as_str())
+                })
+                .flat_map(|(_, declarations)| declarations.clone())
+                .collect::<Vec<_>>(),
+        );
+    }
     Ok(Scope {
+        private_declarations: local
+            .into_iter()
+            .filter(|(name, _)| !exported.iter().any(|decl| decl.original_name() == name))
+            .flat_map(|(_, declarations)| declarations)
+            .collect(),
         declarations: exported,
     })
 }
@@ -143,6 +186,7 @@ fn parse_function(node: Node<'_>, source: &str) -> Result<Function, ParseError> 
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
         parameters: parse_parameters(parameters, source)?,
         result: parse_type(result, source)?,
     })
@@ -156,6 +200,20 @@ fn parse_interface(node: Node<'_>, source: &str) -> Result<Interface, ParseError
         public_name: name_text,
         name_span: Span::from_node(name),
         span: Span::from_node(node),
+        type_parameter_relations: parse_generic_relations(node, source)?,
+        body: if (0..node.named_child_count()).any(|i| {
+            node.named_child(i as u32)
+                .is_some_and(|n| n.kind() == "extends_type_clause")
+        }) {
+            TypeRef {
+                span: Span::from_node(node),
+                kind: TypeKind::Unsupported(
+                    "inherited structural fields require base relation resolution".to_owned(),
+                ),
+            }
+        } else {
+            parse_type(required_field(node, "body")?, source)?
+        },
     })
 }
 
@@ -171,7 +229,141 @@ fn parse_opaque(node: Node<'_>, source: &str) -> Result<OpaqueDeclaration, Parse
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
+        surface: if node.kind() == "enum_declaration" {
+            None
+        } else {
+            Some(parse_class_surface(node, source)?)
+        },
     })
+}
+
+fn parse_class_surface(
+    node: Node<'_>,
+    source: &str,
+) -> Result<crate::model::ClassSurface, ParseError> {
+    let mut surface = crate::model::ClassSurface {
+        constructible: node.kind() != "abstract_class_declaration",
+        incomplete: false,
+        constructors: vec![],
+        fields: vec![],
+        statics: vec![],
+        inherited: (0..node.named_child_count()).any(|i| {
+            node.named_child(i as u32)
+                .is_some_and(|n| n.kind() == "class_heritage")
+        }),
+    };
+    let body = required_field(node, "body")?;
+    let mut cursor = body.walk();
+    for member in body.named_children(&mut cursor) {
+        let mut cursor = member.walk();
+        if member.named_children(&mut cursor).any(|n| {
+            n.kind() == "accessibility_modifier"
+                && matches!(node_text(n, source), "private" | "protected")
+        }) {
+            if member
+                .child_by_field_name("name")
+                .is_some_and(|name| node_text(name, source) == "constructor")
+            {
+                surface.constructible = false;
+            }
+            continue;
+        }
+        let Some(name) = member.child_by_field_name("name") else {
+            surface.incomplete = true;
+            continue;
+        };
+        if !matches!(name.kind(), "property_identifier" | "string" | "number") {
+            surface.incomplete = true;
+            continue;
+        }
+        let name_text = unquote(node_text(name, source));
+        let span = Span::from_node(member);
+        let static_member = (0..member.child_count())
+            .any(|i| member.child(i).is_some_and(|n| n.kind() == "static"));
+        let accessor = (0..member.child_count()).any(|i| {
+            member
+                .child(i)
+                .is_some_and(|n| matches!(n.kind(), "get" | "set"))
+        });
+        let mut kind = if accessor {
+            TypeKind::Unsupported(
+                "accessor value and descriptor semantics require explicit ABI interpretation"
+                    .to_owned(),
+            )
+        } else if matches!(
+            member.kind(),
+            "method_signature" | "abstract_method_signature"
+        ) {
+            let parameters = parse_parameters(required_field(member, "parameters")?, source)?;
+            let result = member
+                .child_by_field_name("return_type")
+                .map(|ty| parse_type(ty, source))
+                .transpose()?
+                .unwrap_or(TypeRef {
+                    span,
+                    kind: TypeKind::Unsupported("implicit method result is unresolved".to_owned()),
+                });
+            TypeKind::Function {
+                generics: parse_generic_relations(member, source)?,
+                parameters,
+                result: Box::new(result),
+            }
+        } else if member.kind() == "public_field_definition" {
+            member
+                .child_by_field_name("type")
+                .map(|ty| parse_type(ty, source).map(|ty| ty.kind))
+                .transpose()?
+                .unwrap_or(TypeKind::Unsupported(
+                    "implicit field type is unresolved".to_owned(),
+                ))
+        } else {
+            TypeKind::Unsupported(
+                "class member kind requires explicit callable/property interpretation".to_owned(),
+            )
+        };
+        if name_text == "constructor" {
+            if let TypeKind::Function { result, .. } = &mut kind {
+                *result = Box::new(TypeRef {
+                    span,
+                    kind: {
+                        let name = node_text(required_field(node, "name")?, source).to_owned();
+                        let arguments = node
+                            .child_by_field_name("type_parameters")
+                            .map(|parameters| parse_type_parameters(parameters, source))
+                            .unwrap_or_default()
+                            .into_iter()
+                            .map(|name| TypeRef {
+                                span,
+                                kind: TypeKind::Named(name),
+                            })
+                            .collect::<Vec<_>>();
+                        if arguments.is_empty() {
+                            TypeKind::Named(name)
+                        } else {
+                            TypeKind::Generic { name, arguments }
+                        }
+                    },
+                });
+            }
+            surface.constructors.push(TypeRef { kind, span });
+            continue;
+        }
+        let property = crate::model::Property {
+            name: name_text,
+            readonly: (0..member.child_count())
+                .any(|i| member.child(i).is_some_and(|n| n.kind() == "readonly")),
+            optional: (0..member.child_count())
+                .any(|i| member.child(i).is_some_and(|n| n.kind() == "?")),
+            type_ref: TypeRef { kind, span },
+        };
+        if static_member {
+            surface.statics.push(property);
+        } else {
+            surface.fields.push(property);
+        }
+    }
+    Ok(surface)
 }
 
 fn parse_type_alias(node: Node<'_>, source: &str) -> Result<TypeAlias, ParseError> {
@@ -187,6 +379,7 @@ fn parse_type_alias(node: Node<'_>, source: &str) -> Result<TypeAlias, ParseErro
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
         type_ref: parse_type(value, source)?,
     })
 }
@@ -213,6 +406,35 @@ fn parse_type_parameters(node: Node<'_>, source: &str) -> Vec<String> {
         }
     }
     output
+}
+
+fn parse_generic_relations(
+    node: Node<'_>,
+    source: &str,
+) -> Result<Vec<TypeParameterRelation>, ParseError> {
+    let Some(parameters) = node.child_by_field_name("type_parameters") else {
+        return Ok(Vec::new());
+    };
+    let mut cursor = parameters.walk();
+    parameters
+        .named_children(&mut cursor)
+        .map(|parameter| {
+            let name = required_field(parameter, "name")?;
+            let constraint = parameter
+                .child_by_field_name("constraint")
+                .and_then(|node| node.named_child(0));
+            let default = parameter
+                .child_by_field_name("value")
+                .and_then(|node| node.named_child(0));
+            Ok(TypeParameterRelation {
+                name: node_text(name, source).to_owned(),
+                constraint: constraint
+                    .map(|node| parse_type(node, source))
+                    .transpose()?,
+                default: default.map(|node| parse_type(node, source)).transpose()?,
+            })
+        })
+        .collect()
 }
 
 fn parse_parameters(node: Node<'_>, source: &str) -> Result<Vec<Parameter>, ParseError> {
@@ -258,7 +480,7 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
     let span = Span::from_node(node);
     let kind = match node.kind() {
         "predefined_type" => TypeKind::Primitive(node_text(node, source).to_owned()),
-        "type_identifier" | "nested_type_identifier" | "identifier" => {
+        "type_identifier" | "nested_type_identifier" | "identifier" | "this_type" => {
             TypeKind::Named(node_text(node, source).to_owned())
         }
         "generic_type" => {
@@ -280,7 +502,7 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             let parsed = parse_type(child, source)?;
             match parsed.kind {
                 TypeKind::MutableArray(element) => TypeKind::ReadonlyArray(element),
-                _ => parsed.kind,
+                _ => TypeKind::Unsupported("readonly qualifier on a non-array type requires an identity-preserving interpretation".to_owned()),
             }
         }
         "array_type" => {
@@ -290,19 +512,145 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             })?;
             TypeKind::MutableArray(Box::new(parse_type(child, source)?))
         }
-        "union_type" => {
+        "union_type" | "intersection_type" => {
             let mut members = Vec::new();
             let mut cursor = node.walk();
             for child in node.named_children(&mut cursor) {
                 members.push(parse_type(child, source)?);
             }
-            TypeKind::Union(members)
+            if node.kind() == "union_type" {
+                TypeKind::Union(members)
+            } else {
+                TypeKind::Intersection(members)
+            }
+        }
+        "index_type_query" => {
+            TypeKind::Keys(Box::new(parse_type(node.named_child(0).unwrap(), source)?))
+        }
+        "lookup_type" => TypeKind::Member {
+            subject: Box::new(parse_type(node.named_child(0).unwrap(), source)?),
+            key: Box::new(parse_type(node.named_child(1).unwrap(), source)?),
+        },
+        "infer_type" => TypeKind::Infer {
+            name: node_text(node.named_child(0).unwrap(), source).to_owned(),
+            constraint: node
+                .named_child(1)
+                .map(|n| parse_type(n, source).map(Box::new))
+                .transpose()?,
+        },
+        "conditional_type" => TypeKind::Conditional {
+            subject: Box::new(parse_type(required_field(node, "left")?, source)?),
+            constraint: Box::new(parse_type(required_field(node, "right")?, source)?),
+            matched: Box::new(parse_type(required_field(node, "consequence")?, source)?),
+            unmatched: Box::new(parse_type(required_field(node, "alternative")?, source)?),
+        },
+        "object_type" | "interface_body" => {
+            if node.named_child_count() == 1 {
+                if let Some(index) = node
+                    .named_child(0)
+                    .filter(|n| n.kind() == "index_signature")
+                {
+                    let mut cursor = index.walk();
+                    let clause = index
+                        .named_children(&mut cursor)
+                        .find(|n| n.kind() == "mapped_type_clause");
+                    if let Some(clause) = clause {
+                        if clause.child_by_field_name("alias").is_some() {
+                            return Ok(TypeRef {
+                                span,
+                                kind: TypeKind::Unsupported(
+                                    "mapped key remapping requires a key identity policy"
+                                        .to_owned(),
+                                ),
+                            });
+                        }
+                        let annotation = required_field(index, "type")?;
+                        let text = node_text(index, source).trim_start();
+                        let readonly = if text.starts_with("-readonly") {
+                            Some(false)
+                        } else if text.starts_with("readonly") || text.starts_with("+readonly") {
+                            Some(true)
+                        } else {
+                            None
+                        };
+                        let optional = match annotation.kind() {
+                            "opting_type_annotation" | "adding_type_annotation" => Some(true),
+                            "omitting_type_annotation" => Some(false),
+                            _ => None,
+                        };
+                        return Ok(TypeRef {
+                            span,
+                            kind: TypeKind::Mapped {
+                                parameter: node_text(required_field(clause, "name")?, source)
+                                    .to_owned(),
+                                domain: Box::new(parse_type(
+                                    required_field(clause, "type")?,
+                                    source,
+                                )?),
+                                value: Box::new(parse_type(
+                                    annotation.named_child(0).unwrap_or(annotation),
+                                    source,
+                                )?),
+                                readonly,
+                                optional,
+                            },
+                        });
+                    }
+                }
+            }
+            let mut properties = Vec::new();
+            let mut cursor = node.walk();
+            for property in node.named_children(&mut cursor) {
+                if property.kind() != "property_signature" {
+                    return Ok(TypeRef { span, kind: TypeKind::Unsupported("object contains call/index/mapped members requiring explicit relation interpretation".to_owned()) });
+                }
+                let name = required_field(property, "name")?;
+                if !matches!(name.kind(), "property_identifier" | "string" | "number") {
+                    return Ok(TypeRef {
+                        span,
+                        kind: TypeKind::Unsupported(
+                            "computed property identity requires resolution".to_owned(),
+                        ),
+                    });
+                }
+                let ty = match property.child_by_field_name("type") {
+                    Some(ty) => parse_type(ty, source)?,
+                    None => TypeRef {
+                        span: Span::from_node(property),
+                        kind: TypeKind::Unsupported(
+                            "property has implicit dynamic type".to_owned(),
+                        ),
+                    },
+                };
+                properties.push(crate::model::Property {
+                    name: unquote(node_text(name, source)),
+                    readonly: (0..property.child_count())
+                        .any(|i| property.child(i).is_some_and(|n| n.kind() == "readonly")),
+                    optional: (0..property.child_count())
+                        .any(|i| property.child(i).is_some_and(|n| n.kind() == "?")),
+                    type_ref: ty,
+                });
+            }
+            TypeKind::Shape(properties)
+        }
+        "template_literal_type" => {
+            let mut parts = Vec::new();
+            let mut cursor = node.walk();
+            for part in node.named_children(&mut cursor) {
+                match part.kind() {
+                    "string_fragment" if !node_text(part, source).contains('\\') => parts.push(crate::model::TemplatePart::Text(node_text(part, source).to_owned())),
+                    "template_type" => parts.push(crate::model::TemplatePart::Domain(parse_type(part.named_child(0).unwrap(), source)?)),
+                    _ => return Ok(TypeRef { span, kind: TypeKind::Unsupported("template escape or interpolation cannot be normalized without additional domain evidence".to_owned()) }),
+                }
+            }
+            TypeKind::Template(parts)
         }
         "literal_type" => TypeKind::Literal(node_text(node, source).to_owned()),
         "function_type" => {
             let parameters = required_field(node, "parameters")?;
             let result = required_field(node, "return_type")?;
             TypeKind::Function {
+                generics: parse_generic_relations(node, source)?,
                 parameters: parse_parameters(parameters, source)?,
                 result: Box::new(parse_type(result, source)?),
             }

@@ -168,3 +168,63 @@ test("persistence restores owned artifacts only with the matching external input
   expect(corrupted.workspace.generatedBindings).toBeUndefined()
   expect(corrupted.workspace.files).toEqual(json.workspace.files)
 })
+
+test("checked semantic API is a separate owned module and policy edits invalidate it", () => {
+  const before = createWorkspace({
+    files: [
+      ...initial().files,
+      { path: "input.policy.json", source: "policy" },
+    ],
+    entryFile: "main.ssrg",
+    activeFile: "main.ssrg",
+    openFiles: ["main.ssrg"],
+  })
+  const request = workspaceBindingRequest(before)
+  const response: BindingResponse = {
+    schema: 1,
+    revision: request.revision,
+    status: "success",
+    generatedRoot: "generated",
+    diagnostics: [],
+    generated: [
+      {
+        id: "api",
+        output: "api",
+        source: "pub foreign raw",
+        metadata: "{}",
+        report: "{}",
+        adapters: {
+          schema: 1,
+          inputBoundary: "std/json::Json",
+          graphDigest: "a".repeat(64),
+          semanticSource: "pub fn decodeInput value: json.Json = value",
+          appliedPolicies: [{ functionName: "decodeInput" }],
+        },
+      },
+    ],
+  }
+  const state = publishWorkspaceBindings(before, request, response)
+  expect(state.generatedBindings?.files.map((file) => file.module)).toEqual([
+    "api",
+    "api/semantic",
+  ])
+  expect(state.generatedBindings?.files[1]?.source).toContain("decodeInput")
+  expect(
+    updateWorkspaceFileSource(state, "input.policy.json", "changed")
+      .generatedBindings
+  ).toBeUndefined()
+  expect(() =>
+    publishWorkspaceBindings(before, request, {
+      ...response,
+      generated: [
+        {
+          ...response.generated[0]!,
+          adapters: {
+            ...response.generated[0]!.adapters!,
+            inputBoundary: "raw JS object",
+          },
+        },
+      ],
+    })
+  ).toThrow("adapter artifact")
+})

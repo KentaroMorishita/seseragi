@@ -189,6 +189,8 @@ export type GeneratedBundle = {
 
 export type ProjectRequest = {
   readonly schema: 1
+  /** Editor query recovery only; compile/run ignore this opt-in. */
+  readonly editorRecovery?: boolean
   readonly manifest?: string
   /** @deprecated Compatibility fallback for manifestless single-file clients. */
   readonly entry?: string

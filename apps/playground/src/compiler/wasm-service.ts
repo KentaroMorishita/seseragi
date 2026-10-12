@@ -5,6 +5,7 @@ import init, {
   convert_workspace_bindings,
   format_project_file,
   format_project_file_with_options,
+  resolve_browser_runtime_modules,
 } from "../wasm/pkg/seseragi_wasm"
 import type { BindingRequest, BindingResponse } from "../workspace/bindings"
 import type {
@@ -49,7 +50,7 @@ export async function compileSingleFile(
 export async function analyzeSingleFile(
   source: string
 ): Promise<AnalysisDocument> {
-  const response = await analyzeProject(singleFileRequest(source))
+  const response = await analyzeProjectEditor(singleFileRequest(source))
   if (response.status === "success") {
     const entry = response.documents.find(
       (document) => document.path === "main.ssrg"
@@ -105,6 +106,13 @@ export async function analyzeProject(
   ) as ProjectAnalysisResponse
 }
 
+/** Retains query documents while the user edits syntax-invalid source. */
+async function analyzeProjectEditor(
+  request: ProjectRequest
+): Promise<ProjectAnalysisResponse> {
+  return analyzeProject({ ...request, editorRecovery: true })
+}
+
 export async function formatProjectFile(
   request: ProjectRequest,
   path: string,
@@ -144,4 +152,12 @@ export async function convertWorkspaceBindings(
   return JSON.parse(
     convert_workspace_bindings(JSON.stringify(request))
   ) as BindingResponse
+}
+
+export async function resolveBrowserRuntimeModules(
+  request: import("../runtime/foreign-runtime").BrowserRuntimeRequest
+): Promise<import("../runtime/foreign-runtime").BrowserRuntimeResponse> {
+  initialization ??= init()
+  await initialization
+  return JSON.parse(resolve_browser_runtime_modules(JSON.stringify(request)))
 }

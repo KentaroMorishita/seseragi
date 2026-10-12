@@ -63,3 +63,72 @@ pub effect fn main = do {
     let result = compile_module(CompileInput::new("main.ssrg", "regression/valid", source));
     assert!(result.is_ok(), "{result:?}");
 }
+
+#[test]
+fn parser_invalid_declarations_do_not_cascade_but_valid_editor_queries_survive() {
+    let source = "fn broken value -> Int = value\npub fn double value: Int -> Int = value + value\nlet answer = double 21\npub effect fn main = println (show (broken 1))\n";
+    let input = CompileInput::new("editing.ssrg", "regression/editing", source);
+    let analysis = analyze_module(input);
+    let parser = seseragi_syntax::parse_diagnostics("editing.ssrg", source);
+    assert_eq!(analysis.diagnostics, parser);
+    assert_eq!(compile_module(input).expect_err(source), parser);
+    let reference = source.find("double 21").unwrap();
+    assert_eq!(analysis.symbol_at(reference).unwrap().name, "double");
+    assert_eq!(analysis.type_at(reference).unwrap().type_name, "Int -> Int");
+    assert!(analysis.lint_diagnostics().diagnostics.is_empty());
+}
+
+#[test]
+fn linked_parser_invalid_declarations_keep_imported_queries_without_semantic_cascades() {
+    use seseragi_driver::{analyze_project_recovering, compile_project, ProjectModuleInput};
+    use seseragi_project::ModuleGraph;
+
+    let mut graph = ModuleGraph::new();
+    graph.add_module("editing/domain".to_owned(), []).unwrap();
+    graph
+        .add_module("editing/semantic-error".to_owned(), [])
+        .unwrap();
+    graph
+        .add_module(
+            "editing/main".to_owned(),
+            [("./domain".to_owned(), "editing/domain".to_owned())],
+        )
+        .unwrap();
+    let source = "import { double } from \"./domain\"\nfn broken value -> Int = value\nlet answer = double 21\npub effect fn main = println (show (broken 1))\n";
+    let inputs = vec![
+        ProjectModuleInput::new(
+            "semantic-error.ssrg",
+            "editing/semantic-error",
+            "pub fn invalid -> Int = absent\n",
+            "semantic-error.js",
+        ),
+        ProjectModuleInput::new(
+            "domain.ssrg",
+            "editing/domain",
+            "pub fn double value: Int -> Int = value + value\n",
+            "domain.js",
+        ),
+        ProjectModuleInput::new("main.ssrg", "editing/main", source, "main.js"),
+    ];
+    assert!(compile_project(graph.clone(), inputs.clone()).is_err());
+    let analysis = analyze_project_recovering(graph, inputs).unwrap();
+    let semantic_error = &analysis.documents["editing/semantic-error"];
+    assert!(!semantic_error.diagnostics.diagnostics.is_empty());
+    assert!(semantic_error
+        .diagnostics
+        .diagnostics
+        .iter()
+        .all(|diagnostic| !diagnostic.message_key.starts_with("parser.")));
+    let document = &analysis.documents["editing/main"];
+    assert_eq!(
+        document.diagnostics,
+        seseragi_syntax::parse_diagnostics("main.ssrg", source)
+    );
+    let reference = source.find("double 21").unwrap();
+    assert_eq!(
+        document.symbol_at(reference).unwrap().module,
+        "editing/domain"
+    );
+    assert_eq!(document.type_at(reference).unwrap().type_name, "Int -> Int");
+    assert!(document.lint_diagnostics().diagnostics.is_empty());
+}

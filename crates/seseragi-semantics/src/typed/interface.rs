@@ -79,6 +79,27 @@ pub(crate) fn typed_interface_from_modules(
             .collect::<Vec<_>>(),
     );
 
+    fn mark(members: &[crate::TypedForeignMember], exports: &mut [InterfaceExport]) {
+        for member in members {
+            match member {
+                crate::TypedForeignMember::Function {
+                    type_parameters,
+                    symbol,
+                    ..
+                } if !type_parameters.is_empty() => {
+                    for export in exports.iter_mut().filter(|export| export.symbol == *symbol) {
+                        export.declaration_kind = Some("generic-foreign-function".into());
+                    }
+                }
+                crate::TypedForeignMember::Namespace { members, .. } => mark(members, exports),
+                _ => {}
+            }
+        }
+    }
+    for foreign in &typed.foreign_modules {
+        mark(&foreign.members, &mut exports);
+    }
+
     // A final typed interface replaces shallow instance heads with canonical
     // evidence. Retaining both would expose one source declaration twice.
     let mut instances = Vec::new();

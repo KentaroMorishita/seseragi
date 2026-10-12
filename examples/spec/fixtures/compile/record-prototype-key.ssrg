@@ -1,0 +1,10 @@
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let value = { __proto__: "kept", constructor: "ctor", toString: "named" }
+  println value.__proto__
+  let nested = { __proto__: { name: "nested" } }
+  println nested.__proto__.name
+  let expanded = { ...value, extra: "spread" }
+  println expanded.__proto__
+  println expanded.constructor
+  println expanded.toString
+}

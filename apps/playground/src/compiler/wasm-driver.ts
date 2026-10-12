@@ -30,3 +30,11 @@ export const formatProjectFile: CompilerService["formatProjectFile"] = (
 ) => compiler.call("formatProjectFile", request, path, options)
 export const convertWorkspaceBindings: CompilerService["convertWorkspaceBindings"] =
   (request) => compiler.call("convertWorkspaceBindings", request)
+
+/** Retains query documents while the user edits syntax-invalid source. */
+export const analyzeProjectEditor: CompilerService["analyzeProject"] = (
+  request
+) => analyzeProject({ ...request, editorRecovery: true })
+
+export const resolveBrowserRuntimeModules: CompilerService["resolveBrowserRuntimeModules"] =
+  (request) => compiler.call("resolveBrowserRuntimeModules", request)

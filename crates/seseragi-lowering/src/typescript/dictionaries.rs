@@ -26,6 +26,26 @@ pub(super) fn local_dictionary_expression(
         evidence_arguments,
     } = evidence
     {
+        if identity == "@seseragi/foreign-codec" {
+            let [crate::CoreType::Named { name, arguments }] = type_arguments.as_slice() else {
+                return None;
+            };
+            if !arguments.is_empty() || !evidence_arguments.is_empty() {
+                return None;
+            }
+            let codec = match name.as_str() {
+                "Unit" => "unit",
+                "Bool" => "bool",
+                "Char" => "char",
+                "String" => "string",
+                "Int" => "int",
+                "Float" => "float",
+                _ => return None,
+            };
+            return Some(TypeScriptExpr::String {
+                value: codec.into(),
+            });
+        }
         let local_name = runtime_display_dictionary_for_identity(identity)
             .map(|dictionary| dictionary.local_name)
             .or_else(|| {

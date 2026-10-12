@@ -2,6 +2,7 @@ import {
   createWorkspace,
   type WorkspaceSeed,
   type WorkspaceState,
+  workspaceFilePath,
   workspaceSourceIdentity,
   workspaceSourcePath,
 } from "./model"
@@ -198,6 +199,29 @@ function parseGeneratedBindings(value: unknown, context: string) {
         snapshot.inputRevision,
         `${context}.generatedBindings.inputRevision`
       ),
+      ...(snapshot.artifacts === undefined
+        ? {}
+        : {
+            artifacts: (() => {
+              if (!Array.isArray(snapshot.artifacts))
+                throw new Error("generated artifacts must be an array")
+              return snapshot.artifacts.map((value, index) => {
+                const artifact = expectObject(
+                  value,
+                  `${context}.generatedBindings.artifacts[${index}]`
+                )
+                return {
+                  path: workspaceFilePath(
+                    expectString(artifact.path, "generated artifact path")
+                  ),
+                  source: expectString(
+                    artifact.source,
+                    "generated artifact source"
+                  ),
+                }
+              })
+            })(),
+          }),
       files: snapshot.files.map((value, index) => {
         const file = expectObject(
           value,

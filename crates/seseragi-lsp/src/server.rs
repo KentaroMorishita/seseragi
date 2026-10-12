@@ -1054,7 +1054,7 @@ mod tests {
     fn publishes_shared_standard_html_prop_diagnostics() {
         let source = r#"import * as html from "std/web/html"
 
-fn view -> html.Html<Never> =
+pub fn view -> html.Html<Never> =
   html.div { clas: "hero", children: "Typo" }
 "#;
         let published = publish(
@@ -1080,8 +1080,8 @@ fn view -> html.Html<Never> =
     #[test]
     fn publishes_and_clears_shared_lint_diagnostics_after_edits() {
         let uri = "file:///lint.ssrg";
-        let unused = "fn value -> Int = {\n  let unused = 1\n  let used = 2\n  used\n}\n";
-        let used = "fn value -> Int = {\n  let used = 1\n  used\n}\n";
+        let unused = "pub fn value -> Int = {\n  let unused = 1\n  let used = 2\n  used\n}\n";
+        let used = "pub fn value -> Int = {\n  let used = 1\n  used\n}\n";
         let mut state = State::default();
         state
             .handle(json!({
@@ -1132,7 +1132,7 @@ fn view -> html.Html<Never> =
             &DocumentState::analyze(
                 uri,
                 3,
-                "fn value -> Int = {\n  let unused = missing\n  1\n}\n".to_owned(),
+                "pub fn value -> Int = {\n  let unused = missing\n  1\n}\n".to_owned(),
             ),
             PositionEncoding::Utf8,
         )

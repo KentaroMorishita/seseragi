@@ -6,6 +6,7 @@
 
 use serde::{Deserialize, Serialize};
 use seseragi_project::BuildProfile;
+use std::path::Path;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SourceMapPolicy {
@@ -175,6 +176,7 @@ pub(crate) fn write_manifest<'a>(
             crate::BuildTarget::Process => {
                 file.path == "entry.js.map"
                     || file.path == "main.ts.map"
+                    || file.path == "main.js.map"
                     || modules.iter().any(|module| {
                         module
                             .generated
@@ -183,6 +185,14 @@ pub(crate) fn write_manifest<'a>(
                             .source_map
                             .trim_start_matches("./")
                             == file.path
+                            || format!(
+                                "{}.map",
+                                Path::new(&module.generated.metadata.outputs.typescript)
+                                    .with_extension("js")
+                                    .display()
+                            )
+                            .trim_start_matches("./")
+                                == file.path
                     })
             }
         })
@@ -195,7 +205,9 @@ pub(crate) fn write_manifest<'a>(
     } else {
         "entry.ts"
     };
-    let bundled_javascript_bytes = if executable.ends_with(".js") {
+    // A JavaScript entry can be an unbundled persistent module. Its extension
+    // does not prove that the application bundling stage ran.
+    let bundled_javascript_bytes = if target == crate::BuildTarget::Web || evidence.is_some() {
         Some(
             files
                 .iter()

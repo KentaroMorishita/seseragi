@@ -44,6 +44,12 @@ pub(crate) fn dts(arguments: &[String]) -> Result<i32, String> {
             diagnostic.file, diagnostic.start, diagnostic.end, diagnostic.code, diagnostic.message
         );
     }
+    for (id, report) in &outcome.compatibility {
+        println!(
+            "compatibility for dts entry `{id}`:\n{}",
+            report.render_text()
+        );
+    }
     if outcome.has_errors() {
         return Ok(1);
     }

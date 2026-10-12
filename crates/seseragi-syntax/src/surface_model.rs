@@ -132,6 +132,8 @@ pub enum ForeignCallKind {
 )]
 pub enum SurfaceForeignMember {
     Function {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
         mode: ForeignCallMode,
         call_kind: ForeignCallKind,
         name: String,
@@ -150,6 +152,8 @@ pub enum SurfaceForeignMember {
         span: ByteSpan,
     },
     OpaqueType {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
         name: String,
         name_span: ByteSpan,
         span: ByteSpan,

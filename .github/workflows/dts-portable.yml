@@ -6,14 +6,35 @@ on:
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
+      - ".cargo/config"
+      - ".cargo/config.toml"
+      - "crates/seseragi-source/**"
+      - "crates/seseragi-release/**"
+      - "crates/seseragi-formatter/**"
+      - "crates/seseragi-provider/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-project/**"
+      - "crates/seseragi-lowering/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-syntax/**"
+      - "crates/seseragi-runtime/**"
+      - "crates/seseragi-interop/**"
+      - "crates/seseragi-projection/**"
       - "crates/seseragi-dts/**"
       - "crates/seseragi-wasm/**"
       - "apps/playground/**"
+      - "runtime/ts/**"
+      - "runtime/providers/**"
+      - "runtime/unicode/LICENSE"
       - "crates/seseragi-cli/src/dts.rs"
       - "crates/seseragi-cli/tests/dts.rs"
       - "examples/spec/fixtures/projects/dts-*/**"
+      - "examples/spec/artifacts/provider-contract-schema-1/**"
+      - "examples/spec/artifacts/provider-manifest-schema-1/**"
       - "package.json"
+      - "bun.lock"
       - "scripts/check-dts-wasm.ts"
+      - "scripts/check-scoped.sh"
       - "scripts/portable-parser-environment.ts"
       - "scripts/run-portable-parser.ts"
       - "scripts/wasm-reproducibility.ts"
@@ -23,6 +44,12 @@ on:
       - ".github/workflows/dts-portable.yml"
       - ".github/actions/setup-wasi-sdk/**"
   workflow_dispatch:
+    inputs:
+      refresh_artifact:
+        description: "Produce the canonical Linux WASM artifact for review before updating a PR"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -42,6 +69,9 @@ jobs:
           toolchain: 1.97.1
           targets: wasm32-unknown-unknown
           components: rustfmt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.11
@@ -61,10 +91,15 @@ jobs:
       - name: Install the locked wasm-bindgen CLI
         run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
       - name: Verify canonical Linux browser artifact
-        if: runner.os == 'Linux'
+        if: runner.os == 'Linux' && !(github.event_name == 'workflow_dispatch' && inputs.refresh_artifact)
         env:
           SESERAGI_WASM_BUILD_EVIDENCE: ${{ runner.temp }}/dts-build-evidence/canonical
         run: bun run check:wasm
+      - name: Produce canonical Linux browser artifact
+        if: runner.os == 'Linux' && github.event_name == 'workflow_dispatch' && inputs.refresh_artifact
+        env:
+          SESERAGI_WASM_BUILD_EVIDENCE: ${{ runner.temp }}/dts-build-evidence/canonical
+        run: bun run build:playground:wasm
       - name: Verify macOS rebuild consistency
         if: runner.os == 'macOS'
         shell: bash
@@ -93,6 +128,14 @@ jobs:
         with:
           name: dts-conversion-results-${{ runner.os }}
           path: ${{ runner.temp }}/dts-results.json
+          retention-days: 7
+      - name: Save reviewed canonical browser artifact
+        if: runner.os == 'Linux' && github.event_name == 'workflow_dispatch' && inputs.refresh_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-playground-wasm-${{ github.sha }}
+          path: apps/playground/src/wasm/pkg
+          if-no-files-found: error
           retention-days: 7
       - name: Preserve compiler inputs and intermediate artifacts
         if: always()

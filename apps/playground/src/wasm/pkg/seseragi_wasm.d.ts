@@ -49,6 +49,8 @@ export function format_single_file(source_name: string, source: string): string;
  */
 export function format_single_file_with_options(source_name: string, source: string, line_width: number): string;
 
+export function resolve_browser_runtime_modules(request_json: string): string;
+
 /**
  * Returns stable metadata for the committed browser artifact.
  *
@@ -63,16 +65,17 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly memcmp: (a: number, b: number, c: number) => number;
+    readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
+    readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
+    readonly convert_workspace_bindings: (a: number, b: number) => [number, number];
+    readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
+    readonly resolve_browser_runtime_modules: (a: number, b: number) => [number, number];
+    readonly toolchain_version_json: () => [number, number];
     readonly analyze_project: (a: number, b: number) => [number, number];
     readonly compile_project: (a: number, b: number) => [number, number];
     readonly format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
     readonly format_project_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
-    readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
-    readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
-    readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
-    readonly format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
-    readonly toolchain_version_json: () => [number, number];
-    readonly convert_workspace_bindings: (a: number, b: number) => [number, number];
     readonly iswspace: (a: number) => number;
     readonly iswalpha: (a: number) => number;
     readonly iswdigit: (a: number) => number;

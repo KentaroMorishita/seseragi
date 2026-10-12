@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+import * as base64 from "gen/base64"
+
+type AppError deriving Show =
+  | ConsoleFailure ConsoleError
+  | ForeignFailure Js.Error
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    decoded <-
+      base64.toByteArray "SGVsbG8="
+        |> effects.mapError ForeignFailure
+
+    encoded <-
+      base64.fromByteArray decoded
+        |> effects.mapError ForeignFailure
+
+    length <-
+      base64.byteLength encoded
+        |> effects.mapError ForeignFailure
+
+    println `${encoded}:${length}` |> effects.mapError ConsoleFailure
+  }

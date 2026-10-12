@@ -1,5 +1,5 @@
 use crate::features::DocumentState;
-use seseragi_driver::{analyze_project, ProjectModuleInput};
+use seseragi_driver::{analyze_project_recovering as analyze_project, ProjectModuleInput};
 use seseragi_project::{
     load_local_project_with_overlays, load_workspace_project, logical_module_id,
     logical_package_scope, LoadedLocalProject, LoadedWorkspaceProject, ModuleGraph, ModuleIdentity,

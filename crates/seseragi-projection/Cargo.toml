@@ -1,0 +1,17 @@
+[package]
+name = "seseragi-projection"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+seseragi-interop = { path = "../seseragi-interop" }
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+seseragi-driver = { path = "../seseragi-driver" }
+seseragi-project = { path = "../seseragi-project" }
+seseragi-runtime = { path = "../seseragi-runtime" }
+tempfile = "3.20"

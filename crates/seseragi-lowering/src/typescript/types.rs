@@ -12,6 +12,7 @@ use crate::runtime_types::runtime_type_import_for_surface;
 pub(super) struct TypeScriptTypeContext {
     imported_names: Arc<BTreeMap<String, String>>,
     constructors: BTreeSet<String>,
+    value_parameters: BTreeSet<String>,
     arities: BTreeMap<String, u32>,
     private_struct_names: BTreeSet<String>,
     private_representation: bool,
@@ -23,6 +24,7 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
         Self {
             imported_names: Arc::new(imported_names),
             constructors: BTreeSet::new(),
+            value_parameters: BTreeSet::new(),
             arities: BTreeMap::new(),
             private_struct_names: BTreeSet::new(),
             private_representation: false,
@@ -96,8 +98,11 @@ impl TypeScriptTypeContext {
         for parameter in parameters {
             scoped.private_struct_names.remove(&parameter.name);
             scoped.constructors.remove(&parameter.name);
+            scoped.value_parameters.remove(&parameter.name);
             if parameter.is_constructor() {
                 scoped.constructors.insert(parameter.name.clone());
+            } else {
+                scoped.value_parameters.insert(parameter.name.clone());
             }
         }
         scoped
@@ -171,6 +176,11 @@ pub(super) fn type_ref_from_core_type_with_erasure(
     type_constructor_parameters: &[String],
 ) -> TypeScriptType {
     match type_ref {
+        CoreType::Named { name, arguments }
+            if arguments.is_empty() && imported_types.value_parameters.contains(name) =>
+        {
+            TypeScriptType::Reference { name: name.clone(), arguments: Vec::new() }
+        }
         // A source constructor is a kind, not a TypeScript value type. Erase
         // unsaturated heads wherever they occur, including nested nominal
         // arguments and dictionary instantiation, using declaration metadata.

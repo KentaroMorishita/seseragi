@@ -60,7 +60,7 @@ bun "$ROOT/scripts/run-portable-parser.ts" wasm-pack build "$ROOT/crates/seserag
   --out-name seseragi_wasm \
   --release \
   --no-opt \
-  -- "${BUILD_OPTIONS[@]}"
+  -- ${BUILD_OPTIONS[@]+"${BUILD_OPTIONS[@]}"}
 
 cp "$ROOT/runtime/unicode/LICENSE" "$OUT_DIR/UNICODE-LICENSE"
 

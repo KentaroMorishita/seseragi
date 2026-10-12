@@ -277,19 +277,46 @@ fn portable_and_filesystem_artifacts_match_for_every_fixture_and_regeneration() 
                         .join(format!("{}.binding.json", entry.output)),
                 )
                 .ok();
-                memory.push(
-                    convert_entry(&ConversionInput {
-                        settings: &settings,
-                        entry: id,
-                        declaration: &declaration,
-                        host: HostMetadata {
-                            manifest: &host,
-                            resolved_package: dependency.as_deref(),
-                        },
-                        previous_metadata: previous.as_deref(),
-                    })
-                    .unwrap(),
-                );
+                let mut result = convert_entry(&ConversionInput {
+                    settings: &settings,
+                    entry: id,
+                    declaration: &declaration,
+                    host: HostMetadata {
+                        manifest: &host,
+                        resolved_package: dependency.as_deref(),
+                    },
+                    previous_metadata: previous.as_deref(),
+                })
+                .unwrap();
+                // Portable and filesystem adapters supply the same real host
+                // artifacts; declaration conversion alone has no runtime proof.
+                let foreign = fs::read_to_string(root.join("seseragi.toml"))
+                    .ok()
+                    .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+                    .and_then(|manifest| manifest.foreign_typescript);
+                let importer = request
+                    .generated_root
+                    .join(format!("{}.ssrg", entry.output));
+                let artifacts = [
+                    seseragi_interop::RuntimeTarget::Browser,
+                    seseragi_interop::RuntimeTarget::Node,
+                    seseragi_interop::RuntimeTarget::Bun,
+                ]
+                .into_iter()
+                .filter_map(|target| {
+                    seseragi_project::resolve_foreign_runtime_artifact_for_target(
+                        &root,
+                        foreign.as_ref(),
+                        &importer,
+                        &entry.specifier,
+                        target,
+                    )
+                    .ok()
+                    .map(|artifact| (target, artifact))
+                })
+                .collect();
+                seseragi_dts::attach_runtime_linkage(&mut result, entry, &artifacts).unwrap();
+                memory.push(result);
             }
             let disk = convert_package(&request).unwrap();
             assert_eq!(
@@ -326,4 +353,72 @@ fn portable_and_filesystem_artifacts_match_for_every_fixture_and_regeneration() 
             }
         }
     }
+}
+
+#[test]
+fn actual_compatibility_distinguishes_opaque_omission_and_failed_public_output() {
+    use seseragi_dts::{interpret_declaration, SemanticCompatibilityReport};
+    use seseragi_interop::SemanticClassification as Class;
+    let declaration = "export interface Info { readonly name: string }; export declare function keep():string; export declare function omitted(value:any):any;";
+    let settings = SETTINGS.to_owned() + "\ninclude = ['Info', 'keep']\n";
+    // include belongs in the entry table in this single-entry fixture.
+    let result = convert_entry(&ConversionInput {
+        declaration,
+        settings: &settings,
+        ..input()
+    })
+    .unwrap();
+    assert!(result.generated.is_some(), "{:?}", result.diagnostics);
+    let graph = interpret_declaration(declaration, "host/index.d.ts", &settings).unwrap();
+    assert_eq!(
+        result.semantic.as_ref().unwrap(),
+        &graph,
+        "projection must not rewrite shared meaning"
+    );
+    let meaning = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    assert_eq!(meaning.symbols["Info"].classification, Class::Direct);
+    let report = result.compatibility.unwrap();
+    assert_eq!(
+        report.symbols["Info"].semantic_classification,
+        Class::Direct
+    );
+    assert_eq!(
+        report.symbols["Info"].classification,
+        Class::OpaquePreserved
+    );
+    assert_eq!(
+        report.symbols["keep"].projection_classification,
+        Some(Class::Normalized)
+    );
+    assert!(report.symbols["keep"].runtime_abi_unresolved);
+    assert_eq!(
+        report.symbols["omitted"].classification,
+        Class::PolicyRequired
+    );
+    assert!(report.symbols["omitted"]
+        .reasons
+        .iter()
+        .any(|r| r.rule == "explicit-projection-omission"));
+    let published: serde_json::Value =
+        serde_json::from_str(&result.generated.unwrap().report).unwrap();
+    assert_eq!(
+        published["compatibility"],
+        serde_json::to_value(&report).unwrap()
+    );
+    let failed = convert_entry(&ConversionInput {
+        declaration,
+        ..input()
+    })
+    .unwrap();
+    assert!(failed.generated.is_none());
+    let failed_report = failed.compatibility.unwrap();
+    assert_eq!(failed_report.symbols.len(), 3);
+    assert_eq!(
+        failed_report.symbols["Info"].projection_classification,
+        Some(Class::PolicyRequired)
+    );
+    assert!(failed_report.symbols.values().all(|s| s
+        .reasons
+        .iter()
+        .any(|r| r.rule == "projection-not-published")));
 }

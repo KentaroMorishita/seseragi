@@ -16,12 +16,21 @@ export type BindingResponse = Readonly<{
   revision: string
   status: "success" | "failure"
   generatedRoot?: string | null
+  semantic?: readonly Readonly<{ id: string; graph: unknown }>[]
+  compatibility?: readonly Readonly<{ id: string; report: unknown }>[]
   generated: readonly Readonly<{
     id: string
     output: string
     source: string
     metadata: string
     report: string
+    adapters?: Readonly<{
+      schema: 1
+      inputBoundary: string
+      graphDigest: string
+      semanticSource: string
+      appliedPolicies: readonly unknown[]
+    }> | null
   }>[]
   diagnostics: readonly Readonly<{
     code: string
@@ -55,11 +64,51 @@ export function publishWorkspaceBindings(
     ...editable,
     generatedBindings: {
       inputRevision: workspaceBindingInputRevision(state),
-      files: response.generated.map(({ output, source }) => ({
-        module: output,
-        path: `${response.generatedRoot}/${output}.ssrg`,
-        source,
-      })),
+      artifacts: response.generated.flatMap(
+        ({ output, metadata, report, adapters }) => [
+          {
+            path: `${response.generatedRoot}/${output}.binding.json`,
+            source: metadata,
+          },
+          {
+            path: `${response.generatedRoot}/${output}.report.json`,
+            source: report,
+          },
+          ...(adapters === undefined
+            ? []
+            : [
+                {
+                  path: `${response.generatedRoot}/${output}.semantic.json`,
+                  source: JSON.stringify(adapters),
+                },
+              ]),
+        ]
+      ),
+      files: response.generated.flatMap(({ output, source, adapters }) => {
+        const files = [
+          {
+            module: output,
+            path: `${response.generatedRoot}/${output}.ssrg`,
+            source,
+          },
+        ]
+        if (adapters) {
+          if (
+            adapters.schema !== 1 ||
+            adapters.inputBoundary !== "std/json::Json" ||
+            typeof adapters.semanticSource !== "string" ||
+            !/^[a-f0-9]{64}$/.test(adapters.graphDigest) ||
+            !Array.isArray(adapters.appliedPolicies)
+          )
+            throw new Error("Invalid semantic adapter artifact")
+          files.push({
+            module: `${output}/semantic`,
+            path: `${response.generatedRoot}/${output}/semantic.ssrg`,
+            source: adapters.semanticSource,
+          })
+        }
+        return files
+      }),
     },
   })
 }

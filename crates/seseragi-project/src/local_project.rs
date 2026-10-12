@@ -440,6 +440,29 @@ impl<'a> SourceDiscovery<'a> {
                     ),
                 });
             }
+            if dependency.root() == ModuleRoot::Generated {
+                let package = self
+                    .packages
+                    .package(dependency.package())
+                    .expect("resolved import belongs to a discovered package");
+                let generated_root = self
+                    .source_roots
+                    .get(&(dependency.package().clone(), ModuleRoot::Generated))
+                    .expect("generated root was checked above");
+                crate::generated_binding_ownership::validate_generated_import_owner(
+                    package.root(),
+                    generated_root,
+                    package.manifest().foreign_typescript.as_ref(),
+                    dependency.path(),
+                )
+                .map_err(|reason| LocalProjectLoadError::Import {
+                    module: Box::new(module.clone()),
+                    specifier: import.specifier.clone(),
+                    origin: import.span,
+                    code: "SES-F0103",
+                    reason,
+                })?;
+            }
             edges.insert(import.specifier, dependency.clone());
             if !self.modules.contains_key(&dependency) {
                 self.pending.insert(dependency);

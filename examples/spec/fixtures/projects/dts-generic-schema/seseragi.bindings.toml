@@ -1,0 +1,6 @@
+schema = 1
+[entries.api]
+declaration = "host/index.d.ts"
+specifier = "schema-api"
+output = "schema-api"
+evaluation = "task"

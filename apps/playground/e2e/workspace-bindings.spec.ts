@@ -229,6 +229,21 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   ).toBeFocused()
   await expect(dialog.getByRole("tabpanel")).toContainText("Added (4)")
   await expect(dialog.getByRole("tabpanel")).toContainText("Config")
+  await dialog.getByRole("tab", { name: "Semantic IR", exact: true }).click()
+  await expect(dialog.getByRole("tabpanel")).toContainText("Source provenance")
+  await expect(dialog.getByRole("tabpanel")).toContainText("shape")
+  await expect(dialog.getByRole("tabpanel")).toContainText(
+    "Structural shape with readonly-snapshot identity"
+  )
+  await dialog
+    .getByRole("button", { name: /host\/index\.d\.ts:.*declaration/ })
+    .first()
+    .click()
+  await expect(dialog).not.toBeVisible()
+  expect(
+    await page.evaluate(() => window.getSelection()?.toString())
+  ).toContain("interface Config")
+  await open.click()
   await page.keyboard.press("Escape")
   await expect(open).toBeFocused()
   const source =
@@ -239,6 +254,18 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
     "Cannot convert bindings"
   )
   await open.click()
+  await dialog.getByRole("tab", { name: "Semantic IR", exact: true }).click()
+  const typeOptions = dialog.getByLabel("Semantic type")
+  const dynamic = await typeOptions
+    .locator("option")
+    .evaluateAll((options) =>
+      options
+        .find((option) => option.textContent?.includes("primitive"))
+        ?.getAttribute("value")
+    )
+  await typeOptions.selectOption(dynamic!)
+  await expect(dialog.getByRole("tabpanel")).toContainText("policy-required")
+  await expect(dialog.getByRole("tabpanel")).toContainText("`any` requires")
   await dialog.getByRole("tab", { name: /^Diagnostics/ }).click()
   await dialog.locator(".diagnostic-card-location").first().click()
   await expect(dialog).not.toBeVisible()
@@ -260,6 +287,11 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   )
   await page.setViewportSize({ width: 390, height: 844 })
   await open.click()
+  await dialog.getByRole("tab", { name: "Semantic IR", exact: true }).click()
+  await expect(dialog.getByRole("tabpanel")).toContainText("frontend")
+  expect(
+    await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth)
+  ).toBe(true)
   await dialog.getByRole("tab", { name: "Bindings", exact: true }).click()
   await expect(dialog.locator("pre").nth(1)).toContainText("fresh")
   expect(

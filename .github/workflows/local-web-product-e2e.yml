@@ -70,7 +70,12 @@ jobs:
           bun install --cwd apps/playground --frozen-lockfile
           bun install --cwd extensions/seseragi --frozen-lockfile
       - name: Install Chromium
-        run: cd apps/playground && bunx playwright install --with-deps chromium
+        timeout-minutes: 10
+        run: |
+          sudo bash scripts/local-web-product-e2e-apt.sh
+          sudo apt-config dump Acquire::Retries Acquire::http::Timeout Acquire::https::Timeout
+          cd apps/playground
+          bunx playwright install --with-deps chromium
       - name: Build release-equivalent CLI, LSP, and VSIX
         run: |
           cargo build --locked --release -p seseragi-cli -p seseragi-lsp

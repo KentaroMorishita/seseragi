@@ -22,6 +22,8 @@ async function execute(request: CompilerRequest) {
       return service.formatProjectFile(...request.args)
     case "convertWorkspaceBindings":
       return service.convertWorkspaceBindings(...request.args)
+    case "resolveBrowserRuntimeModules":
+      return service.resolveBrowserRuntimeModules(...request.args)
   }
 }
 

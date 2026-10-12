@@ -1,5 +1,5 @@
 use crate::ManifestForeignTypescript;
-use serde_json::Value;
+use seseragi_interop::{select_package_export, RuntimeLinkageDiagnostic, RuntimeTarget};
 use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -31,6 +31,36 @@ pub fn resolve_foreign_typescript_module(
     importer: &Path,
     specifier: &str,
 ) -> Result<ResolvedForeignTypescriptModule, String> {
+    resolve_foreign_typescript_module_for_target(
+        package_root,
+        configuration,
+        importer,
+        specifier,
+        RuntimeTarget::Node,
+    )
+    .map_err(|error| error.to_string())
+}
+
+/// Resolves the same foreign module identity for the explicitly selected host.
+/// Conditional exports are selected before opening a file or executing code.
+pub fn resolve_foreign_typescript_module_for_target(
+    package_root: &Path,
+    configuration: Option<&ManifestForeignTypescript>,
+    importer: &Path,
+    specifier: &str,
+    target: RuntimeTarget,
+) -> Result<ResolvedForeignTypescriptModule, RuntimeLinkageDiagnostic> {
+    resolve_for_target(package_root, configuration, importer, specifier, target)
+        .map_err(|reason| RuntimeLinkageDiagnostic::new("SES-F0203", Some(target), reason))
+}
+
+fn resolve_for_target(
+    package_root: &Path,
+    configuration: Option<&ManifestForeignTypescript>,
+    importer: &Path,
+    specifier: &str,
+    target: RuntimeTarget,
+) -> Result<ResolvedForeignTypescriptModule, String> {
     let package_root = fs::canonicalize(package_root)
         .map_err(|error| format!("failed to resolve package root: {error}"))?;
     if specifier.starts_with('.') {
@@ -52,6 +82,11 @@ pub fn resolve_foreign_typescript_module(
         return resolved(format!("workspace:{relative}"), source);
     }
     if specifier.starts_with("node:") {
+        if target == RuntimeTarget::Browser {
+            return Err(format!(
+                "foreign runtime `{specifier}` is unavailable for browser target"
+            ));
+        }
         return Ok(ResolvedForeignTypescriptModule {
             exact_identity: specifier.to_owned(),
             source: PathBuf::new(),
@@ -80,24 +115,16 @@ pub fn resolve_foreign_typescript_module(
     let package_json_path = dependency_root.join("package.json");
     let package_json_source = fs::read_to_string(&package_json_path)
         .map_err(|error| format!("failed to read `{}`: {error}", package_json_path.display()))?;
-    let package_json: Value = serde_json::from_str(&package_json_source)
-        .map_err(|error| format!("invalid `{}`: {error}", package_json_path.display()))?;
-    let declared_name = package_json
-        .get("name")
-        .and_then(Value::as_str)
-        .unwrap_or(&package_name);
-    if declared_name != package_name {
-        return Err(format!(
-            "host package `{package_name}` declares a different name `{declared_name}`"
-        ));
-    }
-    let version = package_json
-        .get("version")
-        .and_then(Value::as_str)
-        .ok_or_else(|| format!("host package `{package_name}` has no version"))?;
-    let target = package_entry(&package_json, subpath.as_deref())
-        .ok_or_else(|| format!("host package `{package_name}` does not export `{specifier}`"))?;
-    let source = resolve_module_file(&dependency_root.join(target.trim_start_matches("./")))?;
+    let selected = select_package_export(
+        &package_json_source,
+        &package_name,
+        subpath.as_deref(),
+        target,
+    )
+    .map_err(|error| error.reason)?;
+    let version = &selected.version;
+    let target_path = &selected.path;
+    let source = resolve_module_file(&dependency_root.join(target_path.trim_start_matches("./")))?;
     if !source.starts_with(&dependency_root) {
         return Err(format!(
             "host package export `{specifier}` escapes its package"
@@ -161,40 +188,6 @@ fn split_bare_specifier(specifier: &str) -> Result<(String, Option<String>), Str
     Ok((package, subpath))
 }
 
-fn package_entry(package: &Value, subpath: Option<&str>) -> Option<String> {
-    let key = subpath.map_or(".".to_owned(), |subpath| format!("./{subpath}"));
-    if let Some(exports) = package.get("exports") {
-        let selected = if exports.is_string() || exports.get("import").is_some() {
-            (key == ".").then_some(exports)
-        } else {
-            exports.get(&key)
-        };
-        if let Some(value) = selected.and_then(export_target) {
-            return Some(value.to_owned());
-        }
-        return None;
-    }
-    if let Some(subpath) = subpath {
-        return Some(subpath.to_owned());
-    }
-    package
-        .get("module")
-        .or_else(|| package.get("main"))
-        .and_then(Value::as_str)
-        .map(str::to_owned)
-        .or_else(|| Some("index.js".to_owned()))
-}
-
-fn export_target(value: &Value) -> Option<&str> {
-    value.as_str().or_else(|| {
-        value
-            .get("import")
-            .or_else(|| value.get("browser"))
-            .or_else(|| value.get("default"))
-            .and_then(export_target)
-    })
-}
-
 fn resolve_module_file(path: &Path) -> Result<PathBuf, String> {
     let mut candidates = vec![path.to_owned()];
     if path.extension().is_none() {
@@ -231,4 +224,137 @@ fn portable_path(path: &Path) -> Result<String, String> {
         })
         .collect::<Result<Vec<_>, _>>()
         .map(|parts| parts.join("/"))
+}
+
+/// Target preflight over the already loaded package graph. This does not
+/// duplicate semantic conversion and does not run the foreign module.
+pub fn validate_foreign_runtime_target(
+    project: &crate::LoadedLocalProject,
+    target: RuntimeTarget,
+) -> Result<(), Vec<RuntimeLinkageDiagnostic>> {
+    let mut diagnostics = Vec::new();
+    for (identity, module) in project.modules() {
+        let Some(package) = project.packages().package(identity.package()) else {
+            continue;
+        };
+        let surface = seseragi_syntax::parse_surface_ast(
+            module.source_path().to_string_lossy(),
+            module.source(),
+        );
+        for foreign in surface.foreign_modules {
+            let resolved = resolve_foreign_typescript_module_for_target(
+                package.root(),
+                package.manifest().foreign_typescript.as_ref(),
+                module.source_path(),
+                &foreign.specifier,
+                target,
+            );
+            let result = resolved.and_then(|resolved| {
+                let metadata_path = module.source_path().with_extension("binding.json");
+                if let Ok(metadata) = fs::read_to_string(metadata_path) {
+                    crate::validate_binding_runtime_linkage(
+                        &metadata,
+                        target,
+                        target != RuntimeTarget::Browser,
+                        |specifier| {
+                            resolve_foreign_typescript_module_for_target(
+                                package.root(),
+                                package.manifest().foreign_typescript.as_ref(),
+                                module.source_path(),
+                                specifier,
+                                target,
+                            )
+                            .map(|artifact| {
+                                seseragi_interop::RuntimeArtifactIdentity {
+                                    exact_identity: artifact.exact_identity().to_owned(),
+                                    content_digest: artifact.content_digest().to_owned(),
+                                }
+                            })
+                        },
+                    )
+                    .map_err(|mut errors| errors.remove(0))?;
+                }
+                if target == RuntimeTarget::Browser {
+                    validate_browser_closure(
+                        package.root(),
+                        package.manifest().foreign_typescript.as_ref(),
+                        resolved.source(),
+                    )
+                } else {
+                    Ok(())
+                }
+            });
+            if let Err(mut diagnostic) = result {
+                diagnostic.symbol = Some(format!(
+                    "{}#{}-{}",
+                    module.source_path().display(),
+                    foreign.span.start,
+                    foreign.span.end
+                ));
+                diagnostics.push(diagnostic);
+            }
+        }
+    }
+    if diagnostics.is_empty() {
+        Ok(())
+    } else {
+        Err(diagnostics)
+    }
+}
+
+fn validate_browser_closure(
+    package_root: &Path,
+    configuration: Option<&ManifestForeignTypescript>,
+    source: &Path,
+) -> Result<(), RuntimeLinkageDiagnostic> {
+    let mut pending = vec![source.to_owned()];
+    let mut visited = std::collections::BTreeSet::new();
+    while let Some(path) = pending.pop() {
+        if !visited.insert(path.clone()) {
+            continue;
+        }
+        let source = fs::read_to_string(&path).map_err(|e| {
+            RuntimeLinkageDiagnostic::new(
+                "SES-F0203",
+                Some(RuntimeTarget::Browser),
+                format!("failed to read browser runtime {}: {e}", path.display()),
+            )
+        })?;
+        for specifier in crate::runtime_import_specifiers(&source)? {
+            let resolved = resolve_foreign_typescript_module_for_target(
+                package_root,
+                configuration,
+                &path,
+                &specifier,
+                RuntimeTarget::Browser,
+            )?;
+            pending.push(resolved.source().to_owned());
+        }
+    }
+    Ok(())
+}
+
+/// Supplies target availability from real host files. Browser availability also
+/// requires its complete static import closure, rather than a resolvable root.
+pub fn resolve_foreign_runtime_artifact_for_target(
+    package_root: &Path,
+    configuration: Option<&ManifestForeignTypescript>,
+    importer: &Path,
+    specifier: &str,
+    target: RuntimeTarget,
+) -> Result<seseragi_interop::RuntimeArtifactIdentity, RuntimeLinkageDiagnostic> {
+    let resolved = resolve_foreign_typescript_module_for_target(
+        package_root,
+        configuration,
+        importer,
+        specifier,
+        target,
+    )?;
+    if target == RuntimeTarget::Browser {
+        validate_browser_closure(package_root, configuration, resolved.source())?;
+    }
+    Ok(seseragi_interop::RuntimeArtifactIdentity {
+        exact_identity: resolved.exact_identity().to_owned(),
+        content_digest: resolved.content_digest().to_owned(),
+    })
 }

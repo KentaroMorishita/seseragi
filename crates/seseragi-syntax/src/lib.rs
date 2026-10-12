@@ -19,8 +19,8 @@ mod unicode_data;
 pub use cst::{parse_cst, parse_cst_from_tokens, CstArtifact, CstError, CstMissing, CstNode};
 pub use diagnostics::{
     parse_diagnostics, ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticEdit, DiagnosticFix,
-    DiagnosticSeverity, RelatedDiagnostic, TypeDifference, TypeDifferenceEntry, TypeDifferenceKind,
-    TypeDifferencePathSegment,
+    DiagnosticSeverity, LintEvidence, RelatedDiagnostic, TypeDifference, TypeDifferenceEntry,
+    TypeDifferenceKind, TypeDifferencePathSegment,
 };
 pub use documentation::{extract_document_tests, DocumentTestBlock, DocumentTestMode};
 pub use interface::{

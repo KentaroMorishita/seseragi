@@ -1,0 +1,5192 @@
+{
+  "compatibility": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "normalized",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 4,
+        "symbols": [
+          "Literal",
+          "Mapped",
+          "Selected",
+          "Template"
+        ]
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 5,
+        "symbols": [
+          "Element",
+          "Keys",
+          "MappedOpen",
+          "Member",
+          "Open"
+        ]
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 0,
+        "symbols": []
+      }
+    ],
+    "declarations": {
+      "relations.d.ts": [
+        "Element",
+        "Keys",
+        "Literal",
+        "Mapped",
+        "MappedOpen",
+        "Member",
+        "Open",
+        "Selected",
+        "Template"
+      ]
+    },
+    "graphDigest": "10f185df08b47f9c8a04c949f47fa011660d503a8f5d65e61454312f1aa44b50",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292",
+      "sourceDigests": {
+        "relations.d.ts": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "Element": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 152,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 109,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 102
+          },
+          {
+            "end": 116,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 151,
+            "rule": "extraction-binder",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 125
+          },
+          {
+            "end": 138,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 131
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Element",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 14
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 16
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 16
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 11
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "64582692bf57d0b7cc116d10ef3bed0e439a6fe7dca286aabda3b1087dba8f30",
+        "typeRef": 11,
+        "types": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      },
+      "Keys": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 30,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 30,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 16,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 12
+          },
+          {
+            "end": 29,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 22
+          },
+          {
+            "end": 29,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 28
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Keys",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 2
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 2
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 0
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "c476352ae7fe05b85512294e5486367f485f87956b739eef035367b95cc3ece7",
+        "typeRef": 0,
+        "types": [
+          0,
+          1,
+          2
+        ]
+      },
+      "Literal": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 441,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 397
+          },
+          {
+            "end": 409,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 402
+          },
+          {
+            "end": 419,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          },
+          {
+            "end": 428,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 422
+          },
+          {
+            "end": 433,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 431
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 436
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Literal",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 42
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 43
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 45
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 47
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 48
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 48
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "266818f3a5724d8ae523bad25c74ab45115647476cbab7217b7ddba2ce5d6e1a",
+        "typeRef": 48,
+        "types": [
+          42,
+          43,
+          45,
+          47,
+          48
+        ]
+      },
+      "Mapped": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 335,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 278
+          },
+          {
+            "end": 289,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 283
+          },
+          {
+            "end": 334,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 292
+          },
+          {
+            "end": 332,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 326
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Mapped",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 33
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 33
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "e598a081bae3a308cb4b6d24df7376ae27135a8c6dd7871f11ba77ca2c9a6af9",
+        "typeRef": 33,
+        "types": [
+          32,
+          33
+        ]
+      },
+      "MappedOpen": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 389,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 389,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 358,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 348
+          },
+          {
+            "end": 388,
+            "rule": "structural-key-binder",
+            "source": "relations.d.ts",
+            "start": 364
+          },
+          {
+            "end": 388,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 364
+          },
+          {
+            "end": 379,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 372
+          },
+          {
+            "end": 379,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 378
+          },
+          {
+            "end": 383,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 382
+          },
+          {
+            "end": 386,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 382
+          },
+          {
+            "end": 385,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 384
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "MappedOpen",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 36
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 36
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 38
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 39
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 41
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 41
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 34
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "a931c7d530bd1b17c4ae2020cf034d4c703e2d14e0a44ba60edc6301fa280b96",
+        "typeRef": 34,
+        "types": [
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ]
+      },
+      "Member": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 89,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 89,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 49,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 43
+          },
+          {
+            "end": 70,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 63
+          },
+          {
+            "end": 70,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 69
+          },
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 73
+          },
+          {
+            "end": 80,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 79
+          },
+          {
+            "end": 85,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 84
+          },
+          {
+            "end": 88,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 84
+          },
+          {
+            "end": 87,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 86
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Member",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 6
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 8
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 8
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 10
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 10
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 3
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "f3b9bcc8f52bf54c4ca16356c44f4ba2e454084607d3f2511937915bddb9ad2c",
+        "typeRef": 3,
+        "types": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "Open": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 270,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 270,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 229,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 225
+          },
+          {
+            "end": 236,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 269,
+            "rule": "open-domain-selection",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 251,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 245
+          },
+          {
+            "end": 260,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 254
+          },
+          {
+            "end": 269,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 263
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Open",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "domain selection cannot be proven from closed semantic evidence; operand relations remain available",
+            "rule": "open-domain-selection",
+            "typeRef": 27
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open conditional domain requires explicit semantic boundary policy",
+            "rule": "representation-safety",
+            "typeRef": 27
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 22
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "9a8fd3ca74207ab987e5ac98f3fbaac396579d822f3608cfefc91e748aa92a8c",
+        "typeRef": 22,
+        "types": [
+          22,
+          27
+        ]
+      },
+      "Selected": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 212,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 160
+          },
+          {
+            "end": 173,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 165
+          },
+          {
+            "end": 177,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 211,
+            "rule": "closed-domain-selection",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 192,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 186
+          },
+          {
+            "end": 201,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 195
+          },
+          {
+            "end": 211,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 204
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Selected",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal/primitive domain proves the selected result without checker heuristics",
+            "rule": "closed-domain-selection",
+            "typeRef": 21
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 21
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "0e1af59ca638c31c02e9315a830acfeefb7b277b9898ecdaa20aaa04ff5f5b55",
+        "typeRef": 21,
+        "types": [
+          21
+        ]
+      },
+      "Template": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 494,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 449
+          },
+          {
+            "end": 462,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 454
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-domain",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 491,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 475
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Template",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 52
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 53
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal domains produce a bounded exact template domain",
+            "rule": "finite-template-domain",
+            "typeRef": 54
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 54
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "30b2c67f9ad58f7b6b5d43dfd26d7c437fafa7c1b7fa8fc838766ac636614b7d",
+        "typeRef": 54,
+        "types": [
+          52,
+          53,
+          54
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 30,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 30,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 7
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 29,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 28
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "10": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 73
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 10
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 10
+          }
+        ]
+      },
+      "11": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 152,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 97
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 116,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      },
+      "13": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "extraction-binder",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          }
+        ]
+      },
+      "14": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 138,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 131
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 14
+          }
+        ]
+      },
+      "15": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 125
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          }
+        ]
+      },
+      "16": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 16
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 16
+          }
+        ]
+      },
+      "2": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 29,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 22
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 2
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 2
+          }
+        ]
+      },
+      "21": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 212,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 160
+          },
+          {
+            "end": 177,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 211,
+            "rule": "closed-domain-selection",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 192,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 186
+          },
+          {
+            "end": 201,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 195
+          },
+          {
+            "end": 211,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 204
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal/primitive domain proves the selected result without checker heuristics",
+            "rule": "closed-domain-selection",
+            "typeRef": 21
+          }
+        ]
+      },
+      "22": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 270,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 270,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 220
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          }
+        ]
+      },
+      "27": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 236,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 269,
+            "rule": "open-domain-selection",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 251,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 245
+          },
+          {
+            "end": 260,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 254
+          },
+          {
+            "end": 269,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 263
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "domain selection cannot be proven from closed semantic evidence; operand relations remain available",
+            "rule": "open-domain-selection",
+            "typeRef": 27
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open conditional domain requires explicit semantic boundary policy",
+            "rule": "representation-safety",
+            "typeRef": 27
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 89,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 89,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 38
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "32": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 332,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 326
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          }
+        ]
+      },
+      "33": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 335,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 278
+          },
+          {
+            "end": 334,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 292
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 33
+          }
+        ]
+      },
+      "34": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 389,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 389,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 343
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          }
+        ]
+      },
+      "35": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 379,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 378
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          }
+        ]
+      },
+      "36": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 379,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 372
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 36
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 36
+          }
+        ]
+      },
+      "37": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 388,
+            "rule": "structural-key-binder",
+            "source": "relations.d.ts",
+            "start": 364
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
+          }
+        ]
+      },
+      "38": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 383,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 382
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 38
+          }
+        ]
+      },
+      "39": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 385,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 384
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 39
+          }
+        ]
+      },
+      "4": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 85,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 84
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          }
+        ]
+      },
+      "40": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 386,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 382
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 40
+          }
+        ]
+      },
+      "41": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 388,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 364
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 41
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 41
+          }
+        ]
+      },
+      "42": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 419,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 42
+          }
+        ]
+      },
+      "43": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 428,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 422
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 43
+          }
+        ]
+      },
+      "45": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 433,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 431
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 45
+          }
+        ]
+      },
+      "47": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 436
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 47
+          }
+        ]
+      },
+      "48": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 441,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 397
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 48
+          }
+        ]
+      },
+      "5": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 87,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 86
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          }
+        ]
+      },
+      "52": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 52
+          }
+        ]
+      },
+      "53": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 53
+          }
+        ]
+      },
+      "54": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 494,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 449
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-domain",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 491,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 475
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal domains produce a bounded exact template domain",
+            "rule": "finite-template-domain",
+            "typeRef": 54
+          }
+        ]
+      },
+      "6": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 88,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 84
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 6
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 70,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 69
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 70,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 63
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 8
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 79
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      }
+    }
+  },
+  "interpretation": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "normalized",
+        "count": 4,
+        "symbols": [
+          "Literal",
+          "Mapped",
+          "Selected",
+          "Template"
+        ]
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 5,
+        "symbols": [
+          "Element",
+          "Keys",
+          "MappedOpen",
+          "Member",
+          "Open"
+        ]
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 0,
+        "symbols": []
+      }
+    ],
+    "declarations": {
+      "relations.d.ts": [
+        "Element",
+        "Keys",
+        "Literal",
+        "Mapped",
+        "MappedOpen",
+        "Member",
+        "Open",
+        "Selected",
+        "Template"
+      ]
+    },
+    "graphDigest": "10f185df08b47f9c8a04c949f47fa011660d503a8f5d65e61454312f1aa44b50",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292",
+      "sourceDigests": {
+        "relations.d.ts": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "Element": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 152,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 109,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 102
+          },
+          {
+            "end": 116,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 151,
+            "rule": "extraction-binder",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 115
+          },
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 125
+          },
+          {
+            "end": 138,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 131
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Element",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 14
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 16
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 16
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "64582692bf57d0b7cc116d10ef3bed0e439a6fe7dca286aabda3b1087dba8f30",
+        "typeRef": 11,
+        "types": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ]
+      },
+      "Keys": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 30,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 30,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 16,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 12
+          },
+          {
+            "end": 29,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 22
+          },
+          {
+            "end": 29,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 28
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Keys",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 2
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 2
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "c476352ae7fe05b85512294e5486367f485f87956b739eef035367b95cc3ece7",
+        "typeRef": 0,
+        "types": [
+          0,
+          1,
+          2
+        ]
+      },
+      "Literal": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 441,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 397
+          },
+          {
+            "end": 409,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 402
+          },
+          {
+            "end": 419,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          },
+          {
+            "end": 428,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 422
+          },
+          {
+            "end": 433,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 431
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 436
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Literal",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 42
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 43
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 45
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 47
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 48
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "266818f3a5724d8ae523bad25c74ab45115647476cbab7217b7ddba2ce5d6e1a",
+        "typeRef": 48,
+        "types": [
+          42,
+          43,
+          45,
+          47,
+          48
+        ]
+      },
+      "Mapped": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 335,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 278
+          },
+          {
+            "end": 289,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 283
+          },
+          {
+            "end": 334,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 292
+          },
+          {
+            "end": 332,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 326
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Mapped",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 33
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "e598a081bae3a308cb4b6d24df7376ae27135a8c6dd7871f11ba77ca2c9a6af9",
+        "typeRef": 33,
+        "types": [
+          32,
+          33
+        ]
+      },
+      "MappedOpen": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 389,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 389,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 358,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 348
+          },
+          {
+            "end": 388,
+            "rule": "structural-key-binder",
+            "source": "relations.d.ts",
+            "start": 364
+          },
+          {
+            "end": 388,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 364
+          },
+          {
+            "end": 379,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 372
+          },
+          {
+            "end": 379,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 378
+          },
+          {
+            "end": 383,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 382
+          },
+          {
+            "end": 386,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 382
+          },
+          {
+            "end": 385,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 384
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "MappedOpen",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 36
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 36
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 38
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 39
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 41
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 41
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "a931c7d530bd1b17c4ae2020cf034d4c703e2d14e0a44ba60edc6301fa280b96",
+        "typeRef": 34,
+        "types": [
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ]
+      },
+      "Member": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 89,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 89,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 49,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 43
+          },
+          {
+            "end": 70,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 63
+          },
+          {
+            "end": 70,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 69
+          },
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 73
+          },
+          {
+            "end": 80,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 79
+          },
+          {
+            "end": 85,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 84
+          },
+          {
+            "end": 88,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 84
+          },
+          {
+            "end": 87,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 86
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Member",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 6
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 8
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 8
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 10
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 10
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "f3b9bcc8f52bf54c4ca16356c44f4ba2e454084607d3f2511937915bddb9ad2c",
+        "typeRef": 3,
+        "types": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "Open": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 270,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 270,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 229,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 225
+          },
+          {
+            "end": 236,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 269,
+            "rule": "open-domain-selection",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 251,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 245
+          },
+          {
+            "end": 260,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 254
+          },
+          {
+            "end": 269,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 263
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Open",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "domain selection cannot be proven from closed semantic evidence; operand relations remain available",
+            "rule": "open-domain-selection",
+            "typeRef": 27
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open conditional domain requires explicit semantic boundary policy",
+            "rule": "representation-safety",
+            "typeRef": 27
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "9a8fd3ca74207ab987e5ac98f3fbaac396579d822f3608cfefc91e748aa92a8c",
+        "typeRef": 22,
+        "types": [
+          22,
+          27
+        ]
+      },
+      "Selected": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 212,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 160
+          },
+          {
+            "end": 173,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 165
+          },
+          {
+            "end": 177,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 211,
+            "rule": "closed-domain-selection",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 192,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 186
+          },
+          {
+            "end": 201,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 195
+          },
+          {
+            "end": 211,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 204
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Selected",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal/primitive domain proves the selected result without checker heuristics",
+            "rule": "closed-domain-selection",
+            "typeRef": 21
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "0e1af59ca638c31c02e9315a830acfeefb7b277b9898ecdaa20aaa04ff5f5b55",
+        "typeRef": 21,
+        "types": [
+          21
+        ]
+      },
+      "Template": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 494,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 449
+          },
+          {
+            "end": 462,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 454
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-domain",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 491,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 475
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Template",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 52
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 53
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal domains produce a bounded exact template domain",
+            "rule": "finite-template-domain",
+            "typeRef": 54
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "30b2c67f9ad58f7b6b5d43dfd26d7c437fafa7c1b7fa8fc838766ac636614b7d",
+        "typeRef": 54,
+        "types": [
+          52,
+          53,
+          54
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 30,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 30,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 7
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 29,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 28
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "10": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 73
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 10
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 10
+          }
+        ]
+      },
+      "11": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 152,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 97
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 116,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      },
+      "13": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "extraction-binder",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          }
+        ]
+      },
+      "14": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 138,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 131
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 14
+          }
+        ]
+      },
+      "15": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 125
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          }
+        ]
+      },
+      "16": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 115
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 16
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 16
+          }
+        ]
+      },
+      "2": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 29,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 22
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 2
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 2
+          }
+        ]
+      },
+      "21": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 212,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 160
+          },
+          {
+            "end": 177,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 211,
+            "rule": "closed-domain-selection",
+            "source": "relations.d.ts",
+            "start": 176
+          },
+          {
+            "end": 192,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 186
+          },
+          {
+            "end": 201,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 195
+          },
+          {
+            "end": 211,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 204
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal/primitive domain proves the selected result without checker heuristics",
+            "rule": "closed-domain-selection",
+            "typeRef": 21
+          }
+        ]
+      },
+      "22": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 270,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 270,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 220
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          }
+        ]
+      },
+      "27": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 236,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 269,
+            "rule": "open-domain-selection",
+            "source": "relations.d.ts",
+            "start": 235
+          },
+          {
+            "end": 251,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 245
+          },
+          {
+            "end": 260,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 254
+          },
+          {
+            "end": 269,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 263
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "domain selection cannot be proven from closed semantic evidence; operand relations remain available",
+            "rule": "open-domain-selection",
+            "typeRef": 27
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open conditional domain requires explicit semantic boundary policy",
+            "rule": "representation-safety",
+            "typeRef": 27
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 89,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 89,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 38
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "32": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 332,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 326
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          }
+        ]
+      },
+      "33": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 335,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 278
+          },
+          {
+            "end": 334,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 292
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 33
+          }
+        ]
+      },
+      "34": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 389,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 389,
+            "rule": "generic-binder",
+            "source": "relations.d.ts",
+            "start": 343
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          }
+        ]
+      },
+      "35": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 379,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 378
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          }
+        ]
+      },
+      "36": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 379,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 372
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 36
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 36
+          }
+        ]
+      },
+      "37": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 388,
+            "rule": "structural-key-binder",
+            "source": "relations.d.ts",
+            "start": 364
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
+          }
+        ]
+      },
+      "38": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 383,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 382
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 38
+          }
+        ]
+      },
+      "39": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 385,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 384
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 39
+          }
+        ]
+      },
+      "4": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 85,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 84
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          }
+        ]
+      },
+      "40": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 386,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 382
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 40
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 40
+          }
+        ]
+      },
+      "41": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 388,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 364
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 41
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 41
+          }
+        ]
+      },
+      "42": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 419,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 42
+          }
+        ]
+      },
+      "43": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 428,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 422
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 43
+          }
+        ]
+      },
+      "45": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 433,
+            "rule": "typescript-binary64-literal",
+            "source": "relations.d.ts",
+            "start": 431
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 45
+          }
+        ]
+      },
+      "47": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 436
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 47
+          }
+        ]
+      },
+      "48": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 441,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 397
+          },
+          {
+            "end": 440,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 412
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 48
+          }
+        ]
+      },
+      "5": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 87,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 86
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          }
+        ]
+      },
+      "52": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 52
+          }
+        ]
+      },
+      "53": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 493,
+            "rule": "finite-template-member",
+            "source": "relations.d.ts",
+            "start": 465
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 53
+          }
+        ]
+      },
+      "54": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 494,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 449
+          },
+          {
+            "end": 493,
+            "rule": "finite-template-domain",
+            "source": "relations.d.ts",
+            "start": 465
+          },
+          {
+            "end": 491,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 475
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed literal domains produce a bounded exact template domain",
+            "rule": "finite-template-domain",
+            "typeRef": 54
+          }
+        ]
+      },
+      "6": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 88,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 84
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 6
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 70,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 69
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 70,
+            "rule": "type-interpretation",
+            "source": "relations.d.ts",
+            "start": 63
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+            "rule": "declaration-interpretation",
+            "typeRef": 8
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "open semantic relation retained; projection requires normalization or explicit policy",
+            "rule": "representation-safety",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "lexical-type-parameter",
+            "source": "relations.d.ts",
+            "start": 79
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      }
+    }
+  },
+  "projection": {
+    "diagnostics": [],
+    "source": "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Element<A>\n  opaque type Keys<A>\n  opaque type Literal\n  opaque type Mapped\n  opaque type MappedOpen<A>\n  opaque type Member<A, B>\n  opaque type Open<A>\n  opaque type Selected\n  opaque type Template\n}\n"
+  },
+  "semantic": {
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "69969fe7f334a931555eb79f5bd6e6fc8f5da97cde8f62bcd46da8ee891d4292",
+      "sourceDigests": {
+        "relations.d.ts": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f"
+      }
+    },
+    "kind": "seseragi-interop-semantic-graph",
+    "normalizations": [
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 2,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 6,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 8,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 10,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 16,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [],
+        "output": 17,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 1 as binary64 bits 3ff0000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "output": 21,
+        "policy": null,
+        "reason": "closed literal/primitive domain proves the selected result without checker heuristics",
+        "rule": "closed-domain-selection"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [
+          23,
+          24,
+          25,
+          26
+        ],
+        "output": 27,
+        "policy": null,
+        "reason": "domain selection cannot be proven from closed semantic evidence; operand relations remain available",
+        "rule": "open-domain-selection"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 55,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 36,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 40,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 41,
+        "policy": null,
+        "reason": "relation is preserved without widening; closed normalization or explicit boundary policy is required",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [],
+        "output": 45,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 42 as binary64 bits 4045000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          51
+        ],
+        "output": 54,
+        "policy": null,
+        "reason": "closed literal domains produce a bounded exact template domain",
+        "rule": "finite-template-domain"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          55
+        ],
+        "output": 33,
+        "policy": null,
+        "reason": "closed domain or structural evidence resolves this relation without widening",
+        "rule": "closed-semantic-relation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          56
+        ],
+        "output": 46,
+        "policy": null,
+        "reason": "closed domain or structural evidence resolves this relation without widening",
+        "rule": "closed-semantic-relation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          57
+        ],
+        "output": 48,
+        "policy": null,
+        "reason": "closed domain or structural evidence resolves this relation without widening",
+        "rule": "closed-semantic-relation"
+      }
+    ],
+    "privateSymbols": [],
+    "schema": 1,
+    "sources": {
+      "relations.d.ts": {
+        "byteLength": 495,
+        "digest": "5e5d1a8d0fa2f2f85b70a17992f2a4813f70ff4db14facd8aea3e18d2e39a66f"
+      }
+    },
+    "symbols": {
+      "Element": {
+        "declarationName": "Element",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 97
+          },
+          {
+            "end": 109,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 102
+          }
+        ],
+        "publicName": "Element",
+        "runtime": null,
+        "typeRef": 11
+      },
+      "Keys": {
+        "declarationName": "Keys",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 30,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 7
+          },
+          {
+            "end": 16,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 12
+          }
+        ],
+        "publicName": "Keys",
+        "runtime": null,
+        "typeRef": 0
+      },
+      "Literal": {
+        "declarationName": "Literal",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 441,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 397
+          },
+          {
+            "end": 409,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 402
+          }
+        ],
+        "publicName": "Literal",
+        "runtime": null,
+        "typeRef": 48
+      },
+      "Mapped": {
+        "declarationName": "Mapped",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 335,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 278
+          },
+          {
+            "end": 289,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 283
+          }
+        ],
+        "publicName": "Mapped",
+        "runtime": null,
+        "typeRef": 33
+      },
+      "MappedOpen": {
+        "declarationName": "MappedOpen",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 389,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 343
+          },
+          {
+            "end": 358,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 348
+          }
+        ],
+        "publicName": "MappedOpen",
+        "runtime": null,
+        "typeRef": 34
+      },
+      "Member": {
+        "declarationName": "Member",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 89,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 38
+          },
+          {
+            "end": 49,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 43
+          }
+        ],
+        "publicName": "Member",
+        "runtime": null,
+        "typeRef": 3
+      },
+      "Open": {
+        "declarationName": "Open",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 270,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 220
+          },
+          {
+            "end": 229,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 225
+          }
+        ],
+        "publicName": "Open",
+        "runtime": null,
+        "typeRef": 22
+      },
+      "Selected": {
+        "declarationName": "Selected",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 212,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 160
+          },
+          {
+            "end": 173,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 165
+          }
+        ],
+        "publicName": "Selected",
+        "runtime": null,
+        "typeRef": 21
+      },
+      "Template": {
+        "declarationName": "Template",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 494,
+            "rule": "declaration",
+            "source": "relations.d.ts",
+            "start": 449
+          },
+          {
+            "end": 462,
+            "rule": "public-name",
+            "source": "relations.d.ts",
+            "start": 454
+          }
+        ],
+        "publicName": "Template",
+        "runtime": null,
+        "typeRef": 54
+      }
+    },
+    "typeOrigins": {
+      "0": [
+        {
+          "end": 30,
+          "rule": "generic-binder",
+          "source": "relations.d.ts",
+          "start": 7
+        },
+        {
+          "end": 30,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 7
+        }
+      ],
+      "1": [
+        {
+          "end": 29,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 28
+        }
+      ],
+      "10": [
+        {
+          "end": 80,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 73
+        }
+      ],
+      "11": [
+        {
+          "end": 152,
+          "rule": "generic-binder",
+          "source": "relations.d.ts",
+          "start": 97
+        },
+        {
+          "end": 152,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 97
+        }
+      ],
+      "12": [
+        {
+          "end": 116,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 115
+        }
+      ],
+      "13": [
+        {
+          "end": 151,
+          "rule": "extraction-binder",
+          "source": "relations.d.ts",
+          "start": 115
+        }
+      ],
+      "14": [
+        {
+          "end": 138,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 131
+        }
+      ],
+      "15": [
+        {
+          "end": 139,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 125
+        }
+      ],
+      "16": [
+        {
+          "end": 151,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 115
+        }
+      ],
+      "17": [
+        {
+          "end": 177,
+          "rule": "typescript-binary64-literal",
+          "source": "relations.d.ts",
+          "start": 176
+        }
+      ],
+      "18": [
+        {
+          "end": 192,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 186
+        }
+      ],
+      "19": [
+        {
+          "end": 201,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 195
+        }
+      ],
+      "2": [
+        {
+          "end": 29,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 22
+        }
+      ],
+      "20": [
+        {
+          "end": 211,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 204
+        }
+      ],
+      "21": [
+        {
+          "end": 211,
+          "rule": "closed-domain-selection",
+          "source": "relations.d.ts",
+          "start": 176
+        },
+        {
+          "end": 212,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 160
+        }
+      ],
+      "22": [
+        {
+          "end": 270,
+          "rule": "generic-binder",
+          "source": "relations.d.ts",
+          "start": 220
+        },
+        {
+          "end": 270,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 220
+        }
+      ],
+      "23": [
+        {
+          "end": 236,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 235
+        }
+      ],
+      "24": [
+        {
+          "end": 251,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 245
+        }
+      ],
+      "25": [
+        {
+          "end": 260,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 254
+        }
+      ],
+      "26": [
+        {
+          "end": 269,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 263
+        }
+      ],
+      "27": [
+        {
+          "end": 269,
+          "rule": "open-domain-selection",
+          "source": "relations.d.ts",
+          "start": 235
+        }
+      ],
+      "28": [
+        {
+          "end": 313,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 309
+        }
+      ],
+      "29": [
+        {
+          "end": 322,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 316
+        }
+      ],
+      "3": [
+        {
+          "end": 89,
+          "rule": "generic-binder",
+          "source": "relations.d.ts",
+          "start": 38
+        },
+        {
+          "end": 89,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 38
+        }
+      ],
+      "30": [
+        {
+          "end": 322,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 309
+        }
+      ],
+      "31": [
+        {
+          "end": 334,
+          "rule": "structural-key-binder",
+          "source": "relations.d.ts",
+          "start": 292
+        }
+      ],
+      "32": [
+        {
+          "end": 332,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 326
+        }
+      ],
+      "33": [
+        {
+          "end": 334,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 292
+        },
+        {
+          "end": 335,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 278
+        }
+      ],
+      "34": [
+        {
+          "end": 389,
+          "rule": "generic-binder",
+          "source": "relations.d.ts",
+          "start": 343
+        },
+        {
+          "end": 389,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 343
+        }
+      ],
+      "35": [
+        {
+          "end": 379,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 378
+        }
+      ],
+      "36": [
+        {
+          "end": 379,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 372
+        }
+      ],
+      "37": [
+        {
+          "end": 388,
+          "rule": "structural-key-binder",
+          "source": "relations.d.ts",
+          "start": 364
+        }
+      ],
+      "38": [
+        {
+          "end": 383,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 382
+        }
+      ],
+      "39": [
+        {
+          "end": 385,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 384
+        }
+      ],
+      "4": [
+        {
+          "end": 85,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 84
+        }
+      ],
+      "40": [
+        {
+          "end": 386,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 382
+        }
+      ],
+      "41": [
+        {
+          "end": 388,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 364
+        }
+      ],
+      "42": [
+        {
+          "end": 419,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        }
+      ],
+      "43": [
+        {
+          "end": 428,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 422
+        }
+      ],
+      "44": [
+        {
+          "end": 428,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        }
+      ],
+      "45": [
+        {
+          "end": 433,
+          "rule": "typescript-binary64-literal",
+          "source": "relations.d.ts",
+          "start": 431
+        }
+      ],
+      "46": [
+        {
+          "end": 433,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        }
+      ],
+      "47": [
+        {
+          "end": 440,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 436
+        }
+      ],
+      "48": [
+        {
+          "end": 440,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        },
+        {
+          "end": 441,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 397
+        }
+      ],
+      "49": [
+        {
+          "end": 482,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 475
+        }
+      ],
+      "5": [
+        {
+          "end": 87,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 86
+        }
+      ],
+      "50": [
+        {
+          "end": 491,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 485
+        }
+      ],
+      "51": [
+        {
+          "end": 491,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 475
+        }
+      ],
+      "52": [
+        {
+          "end": 493,
+          "rule": "finite-template-member",
+          "source": "relations.d.ts",
+          "start": 465
+        }
+      ],
+      "53": [
+        {
+          "end": 493,
+          "rule": "finite-template-member",
+          "source": "relations.d.ts",
+          "start": 465
+        }
+      ],
+      "54": [
+        {
+          "end": 493,
+          "rule": "finite-template-domain",
+          "source": "relations.d.ts",
+          "start": 465
+        },
+        {
+          "end": 494,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 449
+        }
+      ],
+      "55": [
+        {
+          "end": 334,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 292
+        },
+        {
+          "end": 335,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 278
+        }
+      ],
+      "56": [
+        {
+          "end": 433,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        }
+      ],
+      "57": [
+        {
+          "end": 440,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 412
+        },
+        {
+          "end": 441,
+          "rule": "declaration",
+          "source": "relations.d.ts",
+          "start": 397
+        }
+      ],
+      "6": [
+        {
+          "end": 88,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 84
+        }
+      ],
+      "7": [
+        {
+          "end": 70,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 69
+        }
+      ],
+      "8": [
+        {
+          "end": 70,
+          "rule": "type-interpretation",
+          "source": "relations.d.ts",
+          "start": 63
+        }
+      ],
+      "9": [
+        {
+          "end": 80,
+          "rule": "lexical-type-parameter",
+          "source": "relations.d.ts",
+          "start": 79
+        }
+      ]
+    },
+    "types": {
+      "0": {
+        "body": 2,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          }
+        ]
+      },
+      "1": {
+        "binder": 0,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "10": {
+        "key": null,
+        "kind": "projection",
+        "relation": "keys",
+        "subject": 9
+      },
+      "11": {
+        "body": 16,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          }
+        ]
+      },
+      "12": {
+        "binder": 11,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "13": {
+        "body": 15,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "U"
+          }
+        ]
+      },
+      "14": {
+        "binder": 13,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "15": {
+        "element": 14,
+        "kind": "collection",
+        "mutable": true
+      },
+      "16": {
+        "key": 13,
+        "kind": "projection",
+        "relation": "extract",
+        "subject": 12
+      },
+      "17": {
+        "kind": "literal",
+        "value": {
+          "kind": "integer",
+          "value": "1"
+        }
+      },
+      "18": {
+        "domain": "float64",
+        "kind": "primitive"
+      },
+      "19": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "2": {
+        "key": null,
+        "kind": "projection",
+        "relation": "keys",
+        "subject": 1
+      },
+      "20": {
+        "domain": "boolean",
+        "kind": "primitive"
+      },
+      "21": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "22": {
+        "body": 27,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          }
+        ]
+      },
+      "23": {
+        "binder": 22,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "24": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "25": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "26": {
+        "domain": "float64",
+        "kind": "primitive"
+      },
+      "27": {
+        "kind": "unresolved",
+        "reason": "open conditional domain requires explicit semantic boundary policy"
+      },
+      "28": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "id"
+        }
+      },
+      "29": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "name"
+        }
+      },
+      "3": {
+        "body": 6,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          },
+          {
+            "constraint": 8,
+            "default": 10,
+            "name": "K"
+          }
+        ]
+      },
+      "30": {
+        "kind": "union",
+        "members": [
+          28,
+          29
+        ]
+      },
+      "31": {
+        "body": 32,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "K"
+          }
+        ]
+      },
+      "32": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "33": {
+        "fields": {
+          "id": {
+            "optional": true,
+            "readonly": true,
+            "typeRef": 32
+          },
+          "name": {
+            "optional": true,
+            "readonly": true,
+            "typeRef": 32
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "34": {
+        "body": 41,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          }
+        ]
+      },
+      "35": {
+        "binder": 34,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "36": {
+        "key": null,
+        "kind": "projection",
+        "relation": "keys",
+        "subject": 35
+      },
+      "37": {
+        "body": 40,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "K"
+          }
+        ]
+      },
+      "38": {
+        "binder": 34,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "39": {
+        "binder": 37,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "4": {
+        "binder": 3,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "40": {
+        "key": 39,
+        "kind": "projection",
+        "relation": "member",
+        "subject": 38
+      },
+      "41": {
+        "domain": 36,
+        "kind": "shape-transform",
+        "mapper": 37,
+        "optional": null,
+        "readonly": null
+      },
+      "42": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "ready"
+        }
+      },
+      "43": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "busy"
+        }
+      },
+      "44": {
+        "kind": "union",
+        "members": [
+          42,
+          43
+        ]
+      },
+      "45": {
+        "kind": "literal",
+        "value": {
+          "kind": "integer",
+          "value": "42"
+        }
+      },
+      "46": {
+        "kind": "union",
+        "members": [
+          42,
+          43,
+          45
+        ]
+      },
+      "47": {
+        "kind": "literal",
+        "value": {
+          "kind": "boolean",
+          "value": true
+        }
+      },
+      "48": {
+        "kind": "union",
+        "members": [
+          42,
+          43,
+          45,
+          47
+        ]
+      },
+      "49": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "ready"
+        }
+      },
+      "5": {
+        "binder": 3,
+        "index": 1,
+        "kind": "parameter"
+      },
+      "50": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "busy"
+        }
+      },
+      "51": {
+        "kind": "union",
+        "members": [
+          49,
+          50
+        ]
+      },
+      "52": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "status:busy"
+        }
+      },
+      "53": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "status:ready"
+        }
+      },
+      "54": {
+        "kind": "union",
+        "members": [
+          52,
+          53
+        ]
+      },
+      "55": {
+        "domain": 30,
+        "kind": "shape-transform",
+        "mapper": 31,
+        "optional": true,
+        "readonly": true
+      },
+      "56": {
+        "kind": "union",
+        "members": [
+          44,
+          45
+        ]
+      },
+      "57": {
+        "kind": "union",
+        "members": [
+          46,
+          47
+        ]
+      },
+      "6": {
+        "key": 5,
+        "kind": "projection",
+        "relation": "member",
+        "subject": 4
+      },
+      "7": {
+        "binder": 3,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "8": {
+        "key": null,
+        "kind": "projection",
+        "relation": "keys",
+        "subject": 7
+      },
+      "9": {
+        "binder": 3,
+        "index": 0,
+        "kind": "parameter"
+      }
+    }
+  }
+}

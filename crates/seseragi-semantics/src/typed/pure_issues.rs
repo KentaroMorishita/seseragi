@@ -48,6 +48,9 @@ pub(crate) enum PureCallIssue {
     LambdaParameterTypeUnresolved {
         parameter: ByteSpan,
     },
+    ForeignGenericCodecRequired {
+        callee: ByteSpan,
+    },
     CallableTypeUnresolved {
         callee: ByteSpan,
     },

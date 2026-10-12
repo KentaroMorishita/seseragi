@@ -10,6 +10,14 @@ mod config;
 mod convert;
 mod model;
 mod parser;
+mod projection_policy;
+pub use projection_policy::{apply_projection_policy, refresh_compatibility_identity};
+mod runtime_linkage;
+mod semantic;
+pub use runtime_linkage::{attach_runtime_linkage, RuntimeLinkageEvidence};
+
+pub use semantic::{interpret_declaration, SemanticError};
+pub use seseragi_interop::{SemanticCompatibilityReport, SemanticGraph};
 
 pub use config::{BindingsConfig, EntryConfig};
 #[cfg(feature = "filesystem")]
@@ -18,6 +26,7 @@ pub use convert::filesystem::{
     ConvertedEntry, ValidationError,
 };
 pub use convert::{
-    convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, ConversionResult,
-    ConvertError, DiagnosticSeverity, GeneratedBinding, HostMetadata,
+    convert_entry, parse_bindings, project_graph, ConversionDiagnostic, ConversionInput,
+    ConversionResult, ConvertError, DiagnosticSeverity, GeneratedBinding, HostMetadata,
+    ProjectionResult,
 };

@@ -457,6 +457,54 @@ versionに合わせて更新・消去します。local packageではroot package
 dependency moduleに新たなlint warningを出しません。CLI JSONとLSPのcode、severity、source range、
 message keyは同じ診断事実から投影し、editor専用ruleを別実装しません。
 
+### Proven lint rules and advisory policy
+
+The shared `AnalysisDocument` caches authoring facts from resolved symbol identity
+and typed HIR. CLI and LSP consume this same analysis after every document version;
+there is no independent editor rule implementation or generated-TypeScript scan.
+An Error suppresses all lint facts in that module. Compiler warnings retain their
+own codes and priority. Lint is never an implicit formatter action.
+
+| Stable rule | Proven trigger | Evidence |
+| --- | --- | --- |
+| SES-L0301 | Unused block/do pattern binding, excluding underscore names | Resolved binding identity and absence of references |
+| SES-L0302 | Explicit value/type/module import without resolved references | Import identity; excludes reexports and retained inherent members |
+| SES-L0303 | Private declaration with no references outside its own declaration | Visibility, identity, source range; self-recursion is not an external use |
+| SES-L0304 | Unused or wildcard binding containing a cold Effect | Typed Effect result and resolved binding uses |
+| SES-L0305 | An executed Effect discards a canonical std/signal::Subscription | Canonical nominal resource identity, not its display name |
+| SES-L0306 | Typed Bool literal condition in if | Literal value and the branch that cannot be selected |
+
+Every rule is a Warning. All are non-fixable: deletion can affect initialization,
+module loading, instance availability, type checking evidence or comments; choosing
+Effect execution or a resource lifetime requires author intent. The JSON diagnostic
+has an additive `lint` object with `ruleId`, `category: deterministic`,
+`confidence: proven`, `fixSafety: non-fixable`, and `nonFixableReason`.
+`related` carries the concrete reason and UTF-8 byte range. LSP preserves the same
+object under `data.lint` and converts only ranges to the negotiated position encoding.
+A discarded Effect or resource takes priority over unused-local for the same binding.
+`main` is an entrypoint root; public and underscore declarations are excluded from
+unused-private. Unused import diagnostics never claim safe deletion or DCE.
+
+Architecture advice is a separate review policy, not a build-breaking rule. Its
+candidate corpus and rejection criteria are:
+
+| Candidate | Review evidence needed | False positive / rejection case |
+| --- | --- | --- |
+| Bool/String/sentinel domain alternatives | Repeated domain state transitions and explicit distinct cases | Ordinary predicate, free-form text or externally fixed protocol |
+| Long same-shaped positional contract | At least four same-domain arguments and observed call-site swaps | Mathematical vectors, FFI contracts and named wrappers |
+| Broad Effect requirement / mixed host boundary | Resolved operations and a caller-visible narrower capability contract | Capability deliberately reserved for compatibility or indirect operations |
+| Public MutableSignal | Complete consumer/alias/host mutation and ownership evidence | Public consumer may mutate, unknown host code or callback escape |
+| Legacy selector binding | Proven same logical target, identity and lifecycle across renders | Dynamic selectors, multiple matching nodes or intentional external DOM ownership |
+
+These candidates have confidence `review-required` and no automatic fix; they
+cannot become canonical deterministic warnings on naming, argument count, or the
+absence of a local write alone. A corpus case must provide source, resolved/typed
+evidence, proposed guidance and a counterexample before promotion. The current
+canonical corpus intentionally emits no architecture warning for the rejection
+cases above. This separates proven semantic facts from taste and avoids a compiler
+or CI dependency on probabilistic external review.
+
+
 ## 12.14 type inference explanation
 
 通常のtype diagnosticは「期待型」「実型」「両者を要求した最小のsource span」を先に表示します。内部の型変数ID、

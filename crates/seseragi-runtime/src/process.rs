@@ -9,6 +9,8 @@ use crate::{main_contract, validate_target, ExecutionTarget, MainContract, Targe
 
 mod entry;
 mod local_package;
+mod source_file;
+pub use source_file::SourceFileContext;
 #[cfg(test)]
 mod startup_tests;
 mod web_entry;
@@ -16,7 +18,7 @@ mod web_entry;
 pub use build::{
     build_local_project, build_local_project_with_artifact_options,
     build_local_project_with_options, build_main, build_main_with_artifact_options,
-    build_main_with_options, BuildError, BuildTarget,
+    build_main_with_options, build_main_with_source_context, BuildError, BuildTarget,
 };
 use entry::entry_source;
 pub use local_package::{
@@ -110,10 +112,37 @@ pub fn run_main_with_options(
     compiled: &CompiledModule,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
+    run_main_with_optional_source(compiled, options, None)
+}
+
+pub fn run_main_with_source_context(
+    compiled: &CompiledModule,
+    options: ProcessRunOptions,
+    source: &SourceFileContext,
+) -> Result<RunOutcome, RunError> {
+    run_main_with_optional_source(compiled, options, Some(source))
+}
+fn run_main_with_optional_source(
+    compiled: &CompiledModule,
+    options: ProcessRunOptions,
+    source: Option<&SourceFileContext>,
+) -> Result<RunOutcome, RunError> {
     let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
-    let result = run_in_directory(compiled, &contract, &directory, options);
+    let result = (|| {
+        let prepared = source
+            .map(|source| source.prepare(compiled, false))
+            .transpose()
+            .map_err(RunError::Host)?;
+        if let Some(prepared) = &prepared {
+            prepared.stage(&directory, true).map_err(RunError::Host)?;
+        }
+        let compiled = prepared
+            .as_ref()
+            .map_or(compiled, |prepared| &prepared.compiled);
+        run_in_directory(compiled, &contract, &directory, options)
+    })();
     finish_run(result, &directory)
 }
 

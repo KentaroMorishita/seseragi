@@ -54,6 +54,8 @@ pub struct TypedForeignModule {
 )]
 pub enum TypedForeignMember {
     Function {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         mode: ForeignCallMode,
         call_kind: ForeignCallKind,
         symbol: String,
@@ -72,6 +74,8 @@ pub enum TypedForeignMember {
         origin: ByteSpan,
     },
     OpaqueType {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         symbol: String,
         name: String,
         origin: ByteSpan,

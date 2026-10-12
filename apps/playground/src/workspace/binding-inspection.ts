@@ -5,7 +5,15 @@ import {
   bindingDiagnostics,
   workspaceBindingRequest,
 } from "./bindings"
+import {
+  type CompatibilityInspection,
+  inspectCompatibilityReport,
+} from "./compatibility-report"
 import { type WorkspaceState, workspaceBindingInputRevision } from "./model"
+import {
+  inspectSemanticGraph,
+  type SemanticInspection,
+} from "./semantic-inspection"
 
 export type BindingReport = Readonly<{
   added: readonly string[]
@@ -19,6 +27,7 @@ export type InspectedBinding = Readonly<{
   path: string
   source: string
   report: BindingReport
+  adapters?: NonNullable<BindingResponse["generated"][number]["adapters"]>
 }>
 export type BindingInspection = Readonly<{
   inputRevision: string
@@ -26,6 +35,8 @@ export type BindingInspection = Readonly<{
   inputs: BindingRequest["files"]
   bindings: readonly InspectedBinding[]
   diagnostics: readonly WorkspaceDiagnostic[]
+  semantics: readonly SemanticInspection[]
+  compatibility?: readonly CompatibilityInspection[]
 }>
 
 function record(json: string, kind: string): Record<string, unknown> {
@@ -54,7 +65,17 @@ export function inspectWorkspaceBindings(
     request.revision !== workspaceBindingRequest(state, request.entry).revision
   )
     throw new Error("Inspector result does not match its workspace snapshot")
+  const semantics = (response.semantic ?? []).map(({ id, graph }) =>
+    inspectSemanticGraph(id, graph, request.files)
+  )
+  const compatibility = (response.compatibility ?? []).map(({ id, report }) => {
+    const semantic = semantics.find((entry) => entry.id === id)
+    if (!semantic)
+      throw new Error("Compatibility report has no matching semantic graph")
+    return inspectCompatibilityReport(id, report, semantic, request.files)
+  })
   return {
+    compatibility,
     inputRevision: workspaceBindingInputRevision(state),
     status: response.status,
     inputs: request.files
@@ -79,6 +100,7 @@ export function inspectWorkspaceBindings(
         declaration: metadata.declaration.normalize("NFC"),
         path: `${response.generatedRoot}/${binding.output}.ssrg`,
         source: binding.source,
+        ...(binding.adapters ? { adapters: binding.adapters } : {}),
         report: {
           added: strings(report.added, "added"),
           changed: strings(report.changed, "changed"),
@@ -88,6 +110,7 @@ export function inspectWorkspaceBindings(
       }
     }),
     diagnostics: bindingDiagnostics(request, response),
+    semantics,
   }
 }
 

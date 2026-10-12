@@ -1,0 +1,3652 @@
+{
+  "compatibility": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "normalized",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 7,
+        "symbols": [
+          "Mutable",
+          "NullOrUndefined",
+          "PrimitiveDomains",
+          "Readonly",
+          "RoundedNegative",
+          "RoundedPositive",
+          "Tuple"
+        ]
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 3,
+        "symbols": [
+          "Dynamic",
+          "Fraction",
+          "OutsideInt64"
+        ]
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 1,
+        "symbols": [
+          "ReadonlyTuple"
+        ]
+      }
+    ],
+    "declarations": {
+      "domains.d.ts": [
+        "Dynamic",
+        "Fraction",
+        "Mutable",
+        "NullOrUndefined",
+        "OutsideInt64",
+        "PrimitiveDomains",
+        "Readonly",
+        "ReadonlyTuple",
+        "RoundedNegative",
+        "RoundedPositive",
+        "Tuple"
+      ]
+    },
+    "graphDigest": "a7b1eae777043f5d0af9502d47706f2f710ddc5d040e80ce3b9726c04f247c13",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5",
+      "sourceDigests": {
+        "domains.d.ts": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "Dynamic": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 179,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 160
+          },
+          {
+            "end": 172,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 165
+          },
+          {
+            "end": 178,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 175
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Dynamic",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe boundary approval",
+            "rule": "declaration-interpretation",
+            "typeRef": 14
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe approval and cannot count as direct",
+            "rule": "representation-safety",
+            "typeRef": 14
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 14
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "25666fa1333e97396d6388b7e86b92e17130b7f9545bb9042f08b5a00c4338ba",
+        "typeRef": 14,
+        "types": [
+          14
+        ]
+      },
+      "Fraction": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 475,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 455
+          },
+          {
+            "end": 468,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 460
+          },
+          {
+            "end": 474,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 471
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Fraction",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 0.1 as binary64 bits 3fb999999999999a; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 25
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 3fb999999999999a; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 25
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 25
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "f879301a7a40350d97d8e408c40b05674609565dd97b72298caa4bb6bb48c18c",
+        "typeRef": 25,
+        "types": [
+          25
+        ]
+      },
+      "Mutable": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 211,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 187
+          },
+          {
+            "end": 199,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 192
+          },
+          {
+            "end": 208,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          },
+          {
+            "end": 210,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Mutable",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 16
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 16
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "1dad5bf02ff1844bd44903a310c59ed1c954e097de2d615c091a8216dbd84b33",
+        "typeRef": 16,
+        "types": [
+          15,
+          16
+        ]
+      },
+      "NullOrUndefined": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 103
+          },
+          {
+            "end": 123,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 108
+          },
+          {
+            "end": 132,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          },
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 135
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 142
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "NullOrUndefined",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 13
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 13
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "ce7f3ffa14356fb6975434d9249e18a3d0acd58185f08cea7c4cad056fa72a5c",
+        "typeRef": 13,
+        "types": [
+          9,
+          10,
+          12,
+          13
+        ]
+      },
+      "OutsideInt64": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 525,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 483
+          },
+          {
+            "end": 500,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 488
+          },
+          {
+            "end": 524,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 503
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "OutsideInt64",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 100000000000000000000 as binary64 bits 4415af1d78b58c40; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 26
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 4415af1d78b58c40; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 26
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 26
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "9e3c5546b56754d216e9da4fc9f2bccaac14384556019b75b5558d770beb596b",
+        "typeRef": 26,
+        "types": [
+          26
+        ]
+      },
+      "PrimitiveDomains": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 95,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 7
+          },
+          {
+            "end": 28,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 12
+          },
+          {
+            "end": 94,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 31
+          },
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 32
+          },
+          {
+            "end": 46,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 40
+          },
+          {
+            "end": 55,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 48
+          },
+          {
+            "end": 63,
+            "rule": "primitive-domain",
+            "source": "domains.d.ts",
+            "start": 57
+          },
+          {
+            "end": 72,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 65
+          },
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 74
+          },
+          {
+            "end": 87,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 82
+          },
+          {
+            "end": 93,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 89
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "PrimitiveDomains",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 8
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "3fadf6c370de88f4317c5fc3942e36870f36d8cefa83a51da97960bdc39c6d45",
+        "typeRef": 8,
+        "types": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "Readonly": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 257,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 219
+          },
+          {
+            "end": 232,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 224
+          },
+          {
+            "end": 256,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 235
+          },
+          {
+            "end": 255,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 249
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Readonly",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 17
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 18
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "9770407ccded55b7278e3f2ec1fe1389b661e54e6937d419e97a49cb2238f732",
+        "typeRef": 18,
+        "types": [
+          17,
+          18
+        ]
+      },
+      "ReadonlyTuple": {
+        "classification": "uninterpreted",
+        "origins": [
+          {
+            "end": 350,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 303
+          },
+          {
+            "end": 321,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 308
+          },
+          {
+            "end": 349,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 324
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "ReadonlyTuple",
+        "reasons": [
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type meaning is unresolved; no permissive fallback was applied",
+            "rule": "declaration-interpretation",
+            "typeRef": 22
+          },
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type expression requires semantic interpretation: readonly qualifier on a non-array type requires an identity-preserving interpretation",
+            "rule": "representation-safety",
+            "typeRef": 22
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 22
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "uninterpreted",
+        "semanticDigest": "90890fa049dde5e8362af404839f7c13fa87364265888b81b83bce67ada400aa",
+        "typeRef": 22,
+        "types": [
+          22
+        ]
+      },
+      "RoundedNegative": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 447,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 406
+          },
+          {
+            "end": 426,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 411
+          },
+          {
+            "end": 446,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 429
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "RoundedNegative",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal -9007199254740993 as binary64 bits c340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 24
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 24
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "a1360987fdaa32daa562955e2b483facff5596b89a3a89f50aa7a1a854e05a2b",
+        "typeRef": 24,
+        "types": [
+          24
+        ]
+      },
+      "RoundedPositive": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 398,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 358
+          },
+          {
+            "end": 378,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 363
+          },
+          {
+            "end": 397,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 381
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "RoundedPositive",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 9007199254740993 as binary64 bits 4340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 23
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 23
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "c4ef7e7f156398554a8da7e118d15dfc7353e04bc49dcc64a0f0be3dc3d1f9bc",
+        "typeRef": 23,
+        "types": [
+          23
+        ]
+      },
+      "Tuple": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 295,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 265
+          },
+          {
+            "end": 275,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 270
+          },
+          {
+            "end": 294,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 278
+          },
+          {
+            "end": 285,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 279
+          },
+          {
+            "end": 293,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 287
+          }
+        ],
+        "projectionClassification": "opaque-preserved",
+        "publicName": "Tuple",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": {
+              "name": "seseragi-binding-settings",
+              "version": "sha256:9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5"
+            },
+            "reason": "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter",
+            "rule": "opaque-foreign-type",
+            "typeRef": 21
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "41c7a9aadb08e0d7a0c72c4c64f2f34dcba7693c928275c61216af310f1a68b5",
+        "typeRef": 21,
+        "types": [
+          19,
+          20,
+          21
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 32
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 46,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 40
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "10": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 135
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 142
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      },
+      "13": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 103
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 13
+          }
+        ]
+      },
+      "14": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 179,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 160
+          },
+          {
+            "end": 178,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 175
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe boundary approval",
+            "rule": "declaration-interpretation",
+            "typeRef": 14
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe approval and cannot count as direct",
+            "rule": "representation-safety",
+            "typeRef": 14
+          }
+        ]
+      },
+      "15": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 208,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          }
+        ]
+      },
+      "16": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 211,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 187
+          },
+          {
+            "end": 210,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 16
+          }
+        ]
+      },
+      "17": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 255,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 249
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 17
+          }
+        ]
+      },
+      "18": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 257,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 219
+          },
+          {
+            "end": 256,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 235
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          }
+        ]
+      },
+      "19": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 285,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 279
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          }
+        ]
+      },
+      "2": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 55,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 48
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          }
+        ]
+      },
+      "20": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 293,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 287
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          }
+        ]
+      },
+      "21": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 295,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 265
+          },
+          {
+            "end": 294,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 278
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          }
+        ]
+      },
+      "22": {
+        "classification": "uninterpreted",
+        "origins": [
+          {
+            "end": 350,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 303
+          },
+          {
+            "end": 349,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 324
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type meaning is unresolved; no permissive fallback was applied",
+            "rule": "declaration-interpretation",
+            "typeRef": 22
+          },
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type expression requires semantic interpretation: readonly qualifier on a non-array type requires an identity-preserving interpretation",
+            "rule": "representation-safety",
+            "typeRef": 22
+          }
+        ]
+      },
+      "23": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 398,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 358
+          },
+          {
+            "end": 397,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 381
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 9007199254740993 as binary64 bits 4340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 23
+          }
+        ]
+      },
+      "24": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 447,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 406
+          },
+          {
+            "end": 446,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 429
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal -9007199254740993 as binary64 bits c340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 24
+          }
+        ]
+      },
+      "25": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 475,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 455
+          },
+          {
+            "end": 474,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 471
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 0.1 as binary64 bits 3fb999999999999a; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 25
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 3fb999999999999a; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 25
+          }
+        ]
+      },
+      "26": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 525,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 483
+          },
+          {
+            "end": 524,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 503
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 100000000000000000000 as binary64 bits 4415af1d78b58c40; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 26
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 4415af1d78b58c40; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 26
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 63,
+            "rule": "primitive-domain",
+            "source": "domains.d.ts",
+            "start": 57
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "4": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 72,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 65
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          }
+        ]
+      },
+      "5": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 74
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          }
+        ]
+      },
+      "6": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 87,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 82
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 93,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 89
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 95,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 7
+          },
+          {
+            "end": 94,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 31
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 132,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      }
+    }
+  },
+  "interpretation": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 4,
+        "symbols": [
+          "Mutable",
+          "PrimitiveDomains",
+          "Readonly",
+          "Tuple"
+        ]
+      },
+      {
+        "classification": "normalized",
+        "count": 3,
+        "symbols": [
+          "NullOrUndefined",
+          "RoundedNegative",
+          "RoundedPositive"
+        ]
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 3,
+        "symbols": [
+          "Dynamic",
+          "Fraction",
+          "OutsideInt64"
+        ]
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 1,
+        "symbols": [
+          "ReadonlyTuple"
+        ]
+      }
+    ],
+    "declarations": {
+      "domains.d.ts": [
+        "Dynamic",
+        "Fraction",
+        "Mutable",
+        "NullOrUndefined",
+        "OutsideInt64",
+        "PrimitiveDomains",
+        "Readonly",
+        "ReadonlyTuple",
+        "RoundedNegative",
+        "RoundedPositive",
+        "Tuple"
+      ]
+    },
+    "graphDigest": "a7b1eae777043f5d0af9502d47706f2f710ddc5d040e80ce3b9726c04f247c13",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5",
+      "sourceDigests": {
+        "domains.d.ts": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "Dynamic": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 179,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 160
+          },
+          {
+            "end": 172,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 165
+          },
+          {
+            "end": 178,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 175
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Dynamic",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe boundary approval",
+            "rule": "declaration-interpretation",
+            "typeRef": 14
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe approval and cannot count as direct",
+            "rule": "representation-safety",
+            "typeRef": 14
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "25666fa1333e97396d6388b7e86b92e17130b7f9545bb9042f08b5a00c4338ba",
+        "typeRef": 14,
+        "types": [
+          14
+        ]
+      },
+      "Fraction": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 475,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 455
+          },
+          {
+            "end": 468,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 460
+          },
+          {
+            "end": 474,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 471
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Fraction",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 0.1 as binary64 bits 3fb999999999999a; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 25
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 3fb999999999999a; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 25
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "f879301a7a40350d97d8e408c40b05674609565dd97b72298caa4bb6bb48c18c",
+        "typeRef": 25,
+        "types": [
+          25
+        ]
+      },
+      "Mutable": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 211,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 187
+          },
+          {
+            "end": 199,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 192
+          },
+          {
+            "end": 208,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          },
+          {
+            "end": 210,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Mutable",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 16
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "1dad5bf02ff1844bd44903a310c59ed1c954e097de2d615c091a8216dbd84b33",
+        "typeRef": 16,
+        "types": [
+          15,
+          16
+        ]
+      },
+      "NullOrUndefined": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 103
+          },
+          {
+            "end": 123,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 108
+          },
+          {
+            "end": 132,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          },
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 135
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 142
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "NullOrUndefined",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 13
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "ce7f3ffa14356fb6975434d9249e18a3d0acd58185f08cea7c4cad056fa72a5c",
+        "typeRef": 13,
+        "types": [
+          9,
+          10,
+          12,
+          13
+        ]
+      },
+      "OutsideInt64": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 525,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 483
+          },
+          {
+            "end": 500,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 488
+          },
+          {
+            "end": 524,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 503
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "OutsideInt64",
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 100000000000000000000 as binary64 bits 4415af1d78b58c40; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 26
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 4415af1d78b58c40; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 26
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "policy-required",
+        "semanticDigest": "9e3c5546b56754d216e9da4fc9f2bccaac14384556019b75b5558d770beb596b",
+        "typeRef": 26,
+        "types": [
+          26
+        ]
+      },
+      "PrimitiveDomains": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 95,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 7
+          },
+          {
+            "end": 28,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 12
+          },
+          {
+            "end": 94,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 31
+          },
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 32
+          },
+          {
+            "end": 46,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 40
+          },
+          {
+            "end": 55,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 48
+          },
+          {
+            "end": 63,
+            "rule": "primitive-domain",
+            "source": "domains.d.ts",
+            "start": 57
+          },
+          {
+            "end": 72,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 65
+          },
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 74
+          },
+          {
+            "end": 87,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 82
+          },
+          {
+            "end": 93,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 89
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "PrimitiveDomains",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "3fadf6c370de88f4317c5fc3942e36870f36d8cefa83a51da97960bdc39c6d45",
+        "typeRef": 8,
+        "types": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "Readonly": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 257,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 219
+          },
+          {
+            "end": 232,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 224
+          },
+          {
+            "end": 256,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 235
+          },
+          {
+            "end": 255,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 249
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Readonly",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 17
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "9770407ccded55b7278e3f2ec1fe1389b661e54e6937d419e97a49cb2238f732",
+        "typeRef": 18,
+        "types": [
+          17,
+          18
+        ]
+      },
+      "ReadonlyTuple": {
+        "classification": "uninterpreted",
+        "origins": [
+          {
+            "end": 350,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 303
+          },
+          {
+            "end": 321,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 308
+          },
+          {
+            "end": 349,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 324
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "ReadonlyTuple",
+        "reasons": [
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type meaning is unresolved; no permissive fallback was applied",
+            "rule": "declaration-interpretation",
+            "typeRef": 22
+          },
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type expression requires semantic interpretation: readonly qualifier on a non-array type requires an identity-preserving interpretation",
+            "rule": "representation-safety",
+            "typeRef": 22
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "uninterpreted",
+        "semanticDigest": "90890fa049dde5e8362af404839f7c13fa87364265888b81b83bce67ada400aa",
+        "typeRef": 22,
+        "types": [
+          22
+        ]
+      },
+      "RoundedNegative": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 447,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 406
+          },
+          {
+            "end": 426,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 411
+          },
+          {
+            "end": 446,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 429
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "RoundedNegative",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal -9007199254740993 as binary64 bits c340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 24
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "a1360987fdaa32daa562955e2b483facff5596b89a3a89f50aa7a1a854e05a2b",
+        "typeRef": 24,
+        "types": [
+          24
+        ]
+      },
+      "RoundedPositive": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 398,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 358
+          },
+          {
+            "end": 378,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 363
+          },
+          {
+            "end": 397,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 381
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "RoundedPositive",
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 9007199254740993 as binary64 bits 4340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 23
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "semanticDigest": "c4ef7e7f156398554a8da7e118d15dfc7353e04bc49dcc64a0f0be3dc3d1f9bc",
+        "typeRef": 23,
+        "types": [
+          23
+        ]
+      },
+      "Tuple": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 295,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 265
+          },
+          {
+            "end": 275,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 270
+          },
+          {
+            "end": 294,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 278
+          },
+          {
+            "end": 285,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 279
+          },
+          {
+            "end": 293,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 287
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Tuple",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "semanticDigest": "41c7a9aadb08e0d7a0c72c4c64f2f34dcba7693c928275c61216af310f1a68b5",
+        "typeRef": 21,
+        "types": [
+          19,
+          20,
+          21
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 32
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 46,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 40
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "10": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 139,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 135
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 142
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      },
+      "13": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 103
+          },
+          {
+            "end": 151,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 13
+          }
+        ]
+      },
+      "14": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 179,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 160
+          },
+          {
+            "end": 178,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 175
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe boundary approval",
+            "rule": "declaration-interpretation",
+            "typeRef": 14
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "dynamic domain requires explicit unsafe approval and cannot count as direct",
+            "rule": "representation-safety",
+            "typeRef": 14
+          }
+        ]
+      },
+      "15": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 208,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          }
+        ]
+      },
+      "16": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 211,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 187
+          },
+          {
+            "end": 210,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 202
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 16
+          }
+        ]
+      },
+      "17": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 255,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 249
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 17
+          }
+        ]
+      },
+      "18": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 257,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 219
+          },
+          {
+            "end": 256,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 235
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          }
+        ]
+      },
+      "19": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 285,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 279
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          }
+        ]
+      },
+      "2": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 55,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 48
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 2
+          }
+        ]
+      },
+      "20": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 293,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 287
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          }
+        ]
+      },
+      "21": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 295,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 265
+          },
+          {
+            "end": 294,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 278
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          }
+        ]
+      },
+      "22": {
+        "classification": "uninterpreted",
+        "origins": [
+          {
+            "end": 350,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 303
+          },
+          {
+            "end": 349,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 324
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type meaning is unresolved; no permissive fallback was applied",
+            "rule": "declaration-interpretation",
+            "typeRef": 22
+          },
+          {
+            "classification": "uninterpreted",
+            "policy": null,
+            "reason": "type expression requires semantic interpretation: readonly qualifier on a non-array type requires an identity-preserving interpretation",
+            "rule": "representation-safety",
+            "typeRef": 22
+          }
+        ]
+      },
+      "23": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 398,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 358
+          },
+          {
+            "end": 397,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 381
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 9007199254740993 as binary64 bits 4340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 23
+          }
+        ]
+      },
+      "24": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 447,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 406
+          },
+          {
+            "end": 446,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 429
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "TypeScript interprets source literal -9007199254740993 as binary64 bits c340000000000000; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 24
+          }
+        ]
+      },
+      "25": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 475,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 455
+          },
+          {
+            "end": 474,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 471
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 0.1 as binary64 bits 3fb999999999999a; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 25
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 3fb999999999999a; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 25
+          }
+        ]
+      },
+      "26": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 525,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 483
+          },
+          {
+            "end": 524,
+            "rule": "typescript-binary64-literal",
+            "source": "domains.d.ts",
+            "start": 503
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript interprets source literal 100000000000000000000 as binary64 bits 4415af1d78b58c40; source spelling and byte origin are retained",
+            "rule": "typescript-binary64-literal",
+            "typeRef": 26
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "TypeScript numeric literal has binary64 bits 4415af1d78b58c40; its exact numeric domain requires an explicit projection policy",
+            "rule": "representation-safety",
+            "typeRef": 26
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 63,
+            "rule": "primitive-domain",
+            "source": "domains.d.ts",
+            "start": 57
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "4": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 72,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 65
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 4
+          }
+        ]
+      },
+      "5": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 80,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 74
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 5
+          }
+        ]
+      },
+      "6": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 87,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 82
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 93,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 89
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 95,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 7
+          },
+          {
+            "end": 94,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 31
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 132,
+            "rule": "type-interpretation",
+            "source": "domains.d.ts",
+            "start": 126
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      }
+    }
+  },
+  "projection": {
+    "diagnostics": [],
+    "source": "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Dynamic\n  opaque type Fraction\n  opaque type Mutable\n  opaque type NullOrUndefined\n  opaque type OutsideInt64\n  opaque type PrimitiveDomains\n  opaque type Readonly\n  opaque type ReadonlyTuple\n  opaque type RoundedNegative\n  opaque type RoundedPositive\n  opaque type Tuple\n}\n"
+  },
+  "semantic": {
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "9422c0391c1ed097939f15107bd74f2b389f642603c81830410406cf6c503ff5",
+      "sourceDigests": {
+        "domains.d.ts": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4"
+      }
+    },
+    "kind": "seseragi-interop-semantic-graph",
+    "normalizations": [
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 14,
+        "policy": null,
+        "reason": "dynamic domain requires explicit unsafe boundary approval",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "uninterpreted",
+        "inputs": [],
+        "output": 22,
+        "policy": null,
+        "reason": "type meaning is unresolved; no permissive fallback was applied",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [],
+        "output": 23,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 9007199254740993 as binary64 bits 4340000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [],
+        "output": 24,
+        "policy": null,
+        "reason": "TypeScript interprets source literal -9007199254740993 as binary64 bits c340000000000000; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 25,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 0.1 as binary64 bits 3fb999999999999a; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 26,
+        "policy": null,
+        "reason": "TypeScript interprets source literal 100000000000000000000 as binary64 bits 4415af1d78b58c40; source spelling and byte origin are retained",
+        "rule": "typescript-binary64-literal"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          27
+        ],
+        "output": 13,
+        "policy": null,
+        "reason": "closed domain or structural evidence resolves this relation without widening",
+        "rule": "closed-semantic-relation"
+      }
+    ],
+    "privateSymbols": [],
+    "schema": 1,
+    "sources": {
+      "domains.d.ts": {
+        "byteLength": 526,
+        "digest": "560cb84350c923086cea494140e34fb8000a60e377e47e63f0a25ed5249f7ed4"
+      }
+    },
+    "symbols": {
+      "Dynamic": {
+        "declarationName": "Dynamic",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 179,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 160
+          },
+          {
+            "end": 172,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 165
+          }
+        ],
+        "publicName": "Dynamic",
+        "runtime": null,
+        "typeRef": 14
+      },
+      "Fraction": {
+        "declarationName": "Fraction",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 475,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 455
+          },
+          {
+            "end": 468,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 460
+          }
+        ],
+        "publicName": "Fraction",
+        "runtime": null,
+        "typeRef": 25
+      },
+      "Mutable": {
+        "declarationName": "Mutable",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 211,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 187
+          },
+          {
+            "end": 199,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 192
+          }
+        ],
+        "publicName": "Mutable",
+        "runtime": null,
+        "typeRef": 16
+      },
+      "NullOrUndefined": {
+        "declarationName": "NullOrUndefined",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 152,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 103
+          },
+          {
+            "end": 123,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 108
+          }
+        ],
+        "publicName": "NullOrUndefined",
+        "runtime": null,
+        "typeRef": 13
+      },
+      "OutsideInt64": {
+        "declarationName": "OutsideInt64",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 525,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 483
+          },
+          {
+            "end": 500,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 488
+          }
+        ],
+        "publicName": "OutsideInt64",
+        "runtime": null,
+        "typeRef": 26
+      },
+      "PrimitiveDomains": {
+        "declarationName": "PrimitiveDomains",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 95,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 7
+          },
+          {
+            "end": 28,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 12
+          }
+        ],
+        "publicName": "PrimitiveDomains",
+        "runtime": null,
+        "typeRef": 8
+      },
+      "Readonly": {
+        "declarationName": "Readonly",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 257,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 219
+          },
+          {
+            "end": 232,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 224
+          }
+        ],
+        "publicName": "Readonly",
+        "runtime": null,
+        "typeRef": 18
+      },
+      "ReadonlyTuple": {
+        "declarationName": "ReadonlyTuple",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 350,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 303
+          },
+          {
+            "end": 321,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 308
+          }
+        ],
+        "publicName": "ReadonlyTuple",
+        "runtime": null,
+        "typeRef": 22
+      },
+      "RoundedNegative": {
+        "declarationName": "RoundedNegative",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 447,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 406
+          },
+          {
+            "end": 426,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 411
+          }
+        ],
+        "publicName": "RoundedNegative",
+        "runtime": null,
+        "typeRef": 24
+      },
+      "RoundedPositive": {
+        "declarationName": "RoundedPositive",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 398,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 358
+          },
+          {
+            "end": 378,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 363
+          }
+        ],
+        "publicName": "RoundedPositive",
+        "runtime": null,
+        "typeRef": 23
+      },
+      "Tuple": {
+        "declarationName": "Tuple",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 295,
+            "rule": "declaration",
+            "source": "domains.d.ts",
+            "start": 265
+          },
+          {
+            "end": 275,
+            "rule": "public-name",
+            "source": "domains.d.ts",
+            "start": 270
+          }
+        ],
+        "publicName": "Tuple",
+        "runtime": null,
+        "typeRef": 21
+      }
+    },
+    "typeOrigins": {
+      "0": [
+        {
+          "end": 38,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 32
+        }
+      ],
+      "1": [
+        {
+          "end": 46,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 40
+        }
+      ],
+      "10": [
+        {
+          "end": 139,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 135
+        }
+      ],
+      "11": [
+        {
+          "end": 139,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 126
+        }
+      ],
+      "12": [
+        {
+          "end": 151,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 142
+        }
+      ],
+      "13": [
+        {
+          "end": 151,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 126
+        },
+        {
+          "end": 152,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 103
+        }
+      ],
+      "14": [
+        {
+          "end": 178,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 175
+        },
+        {
+          "end": 179,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 160
+        }
+      ],
+      "15": [
+        {
+          "end": 208,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 202
+        }
+      ],
+      "16": [
+        {
+          "end": 210,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 202
+        },
+        {
+          "end": 211,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 187
+        }
+      ],
+      "17": [
+        {
+          "end": 255,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 249
+        }
+      ],
+      "18": [
+        {
+          "end": 256,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 235
+        },
+        {
+          "end": 257,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 219
+        }
+      ],
+      "19": [
+        {
+          "end": 285,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 279
+        }
+      ],
+      "2": [
+        {
+          "end": 55,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 48
+        }
+      ],
+      "20": [
+        {
+          "end": 293,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 287
+        }
+      ],
+      "21": [
+        {
+          "end": 294,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 278
+        },
+        {
+          "end": 295,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 265
+        }
+      ],
+      "22": [
+        {
+          "end": 349,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 324
+        },
+        {
+          "end": 350,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 303
+        }
+      ],
+      "23": [
+        {
+          "end": 397,
+          "rule": "typescript-binary64-literal",
+          "source": "domains.d.ts",
+          "start": 381
+        },
+        {
+          "end": 398,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 358
+        }
+      ],
+      "24": [
+        {
+          "end": 446,
+          "rule": "typescript-binary64-literal",
+          "source": "domains.d.ts",
+          "start": 429
+        },
+        {
+          "end": 447,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 406
+        }
+      ],
+      "25": [
+        {
+          "end": 474,
+          "rule": "typescript-binary64-literal",
+          "source": "domains.d.ts",
+          "start": 471
+        },
+        {
+          "end": 475,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 455
+        }
+      ],
+      "26": [
+        {
+          "end": 524,
+          "rule": "typescript-binary64-literal",
+          "source": "domains.d.ts",
+          "start": 503
+        },
+        {
+          "end": 525,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 483
+        }
+      ],
+      "27": [
+        {
+          "end": 151,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 126
+        },
+        {
+          "end": 152,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 103
+        }
+      ],
+      "3": [
+        {
+          "end": 63,
+          "rule": "primitive-domain",
+          "source": "domains.d.ts",
+          "start": 57
+        }
+      ],
+      "4": [
+        {
+          "end": 72,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 65
+        }
+      ],
+      "5": [
+        {
+          "end": 80,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 74
+        }
+      ],
+      "6": [
+        {
+          "end": 87,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 82
+        }
+      ],
+      "7": [
+        {
+          "end": 93,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 89
+        }
+      ],
+      "8": [
+        {
+          "end": 94,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 31
+        },
+        {
+          "end": 95,
+          "rule": "declaration",
+          "source": "domains.d.ts",
+          "start": 7
+        }
+      ],
+      "9": [
+        {
+          "end": 132,
+          "rule": "type-interpretation",
+          "source": "domains.d.ts",
+          "start": 126
+        }
+      ]
+    },
+    "types": {
+      "0": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "1": {
+        "domain": "float64",
+        "kind": "primitive"
+      },
+      "10": {
+        "domain": "null",
+        "kind": "primitive"
+      },
+      "11": {
+        "kind": "union",
+        "members": [
+          9,
+          10
+        ]
+      },
+      "12": {
+        "domain": "undefined",
+        "kind": "primitive"
+      },
+      "13": {
+        "kind": "union",
+        "members": [
+          9,
+          10,
+          12
+        ]
+      },
+      "14": {
+        "domain": "dynamic",
+        "kind": "primitive"
+      },
+      "15": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "16": {
+        "element": 15,
+        "kind": "collection",
+        "mutable": true
+      },
+      "17": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "18": {
+        "element": 17,
+        "kind": "collection",
+        "mutable": false
+      },
+      "19": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "2": {
+        "domain": "boolean",
+        "kind": "primitive"
+      },
+      "20": {
+        "domain": "float64",
+        "kind": "primitive"
+      },
+      "21": {
+        "elements": [
+          19,
+          20
+        ],
+        "kind": "tuple"
+      },
+      "22": {
+        "kind": "unresolved",
+        "reason": "type expression requires semantic interpretation: readonly qualifier on a non-array type requires an identity-preserving interpretation"
+      },
+      "23": {
+        "kind": "literal",
+        "value": {
+          "kind": "integer",
+          "value": "9007199254740992"
+        }
+      },
+      "24": {
+        "kind": "literal",
+        "value": {
+          "kind": "integer",
+          "value": "-9007199254740992"
+        }
+      },
+      "25": {
+        "kind": "unresolved",
+        "reason": "TypeScript numeric literal has binary64 bits 3fb999999999999a; its exact numeric domain requires an explicit projection policy"
+      },
+      "26": {
+        "kind": "unresolved",
+        "reason": "TypeScript numeric literal has binary64 bits 4415af1d78b58c40; its exact numeric domain requires an explicit projection policy"
+      },
+      "27": {
+        "kind": "union",
+        "members": [
+          11,
+          12
+        ]
+      },
+      "3": {
+        "domain": "big-integer",
+        "kind": "primitive"
+      },
+      "4": {
+        "domain": "unknown",
+        "kind": "primitive"
+      },
+      "5": {
+        "domain": "object",
+        "kind": "primitive"
+      },
+      "6": {
+        "domain": "never",
+        "kind": "primitive"
+      },
+      "7": {
+        "domain": "unit",
+        "kind": "primitive"
+      },
+      "8": {
+        "elements": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "kind": "tuple"
+      },
+      "9": {
+        "domain": "string",
+        "kind": "primitive"
+      }
+    }
+  }
+}
