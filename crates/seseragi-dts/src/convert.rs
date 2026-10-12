@@ -4,7 +4,8 @@ use crate::config::{
 use crate::semantic::{interpret_with_digest, SemanticError};
 use serde::{Deserialize, Serialize};
 use seseragi_interop::{
-    PrimitiveDomain, SemanticGraph, SemanticSymbol, SemanticType, SymbolKind, TypeId,
+    PrimitiveDomain, ProducerIdentity, ProjectionEvidence, SemanticClassification,
+    SemanticCompatibilityReport, SemanticGraph, SemanticSymbol, SemanticType, SymbolKind, TypeId,
 };
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
@@ -79,6 +80,7 @@ pub struct ConversionResult {
     pub generated: Option<GeneratedBinding>,
     pub diagnostics: Vec<ConversionDiagnostic>,
     pub semantic: Option<SemanticGraph>,
+    pub compatibility: Option<SemanticCompatibilityReport>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -178,6 +180,7 @@ fn convert_entry_with_host(
             return Ok(ConversionResult {
                 generated: None,
                 semantic: None,
+                compatibility: None,
                 diagnostics: vec![diagnostic(
                     "SES-F0100",
                     DiagnosticSeverity::Error,
@@ -191,6 +194,7 @@ fn convert_entry_with_host(
         Err(error) => return Err(ConvertError::new(error.to_string())),
     };
     let rendered = render_entry(id, entry, &graph, &entry.declaration);
+    let compatibility = projection_report(&graph, entry, &rendered, settings_digest)?;
     if rendered
         .diagnostics
         .iter()
@@ -200,6 +204,7 @@ fn convert_entry_with_host(
             generated: None,
             diagnostics: rendered.diagnostics,
             semantic: Some(graph),
+            compatibility: Some(compatibility),
         });
     }
     let previous = previous.and_then(|text| serde_json::from_str(text).ok());
@@ -220,7 +225,13 @@ fn convert_entry_with_host(
         settings_digest: settings_digest.to_owned(),
         symbols: rendered.symbols,
     };
-    let report = build_report(id, previous.as_ref(), &metadata, &rendered.diagnostics);
+    let report = build_report(
+        id,
+        previous.as_ref(),
+        &metadata,
+        &rendered.diagnostics,
+        &compatibility,
+    );
     Ok(ConversionResult {
         generated: Some(GeneratedBinding {
             id: id.to_owned(),
@@ -231,7 +242,112 @@ fn convert_entry_with_host(
         }),
         diagnostics: rendered.diagnostics,
         semantic: Some(graph),
+        compatibility: Some(compatibility),
     })
+}
+
+/// Projection evidence is separate from the immutable interpreted graph. A
+/// rendered raw signature never proves a canonical structural adapter or ABI.
+fn projection_report(
+    graph: &SemanticGraph,
+    entry: &EntryConfig,
+    rendered: &RenderedEntry,
+    settings_digest: &str,
+) -> Result<SemanticCompatibilityReport, ConvertError> {
+    let included = projection_subset(graph, entry);
+    let failed = rendered
+        .diagnostics
+        .iter()
+        .any(|d| d.severity == DiagnosticSeverity::Error);
+    let policy = Some(ProducerIdentity {
+        name: "seseragi-binding-settings".to_owned(),
+        version: format!("sha256:{settings_digest}"),
+    });
+    let mut evidence = Vec::new();
+    for (key, symbol) in graph
+        .symbols
+        .iter()
+        .filter(|(key, _)| !graph.private_symbols.contains(*key))
+    {
+        let selected = included.as_ref().is_none_or(|set| {
+            set.contains(key)
+                || set
+                    .iter()
+                    .any(|child| child.starts_with(&format!("{key}.")))
+        });
+        let mut add = |classification, rule: &str, reason: String| {
+            evidence.push(ProjectionEvidence {
+                symbol: key.clone(),
+                classification,
+                rule: rule.to_owned(),
+                reason,
+                policy: policy.clone(),
+            })
+        };
+        if !selected {
+            add(SemanticClassification::PolicyRequired, "explicit-projection-omission", "public meaning remains in the report; this export is omitted by the explicit include policy and has no generated binding".to_owned());
+            continue;
+        }
+        if failed {
+            let diagnostics = rendered.diagnostics.iter().filter(|d| {
+                d.severity == DiagnosticSeverity::Error
+                    && d.symbol
+                        .as_ref()
+                        .is_some_and(|name| name == key || key.starts_with(&format!("{name}.")))
+            });
+            for diagnostic in diagnostics {
+                add(
+                    SemanticClassification::PolicyRequired,
+                    &diagnostic.code,
+                    diagnostic.message.clone(),
+                );
+            }
+            add(SemanticClassification::PolicyRequired, "projection-not-published", "entry projection failed; atomic output was not emitted, even where candidate signatures were renderable".to_owned());
+            continue;
+        }
+        let generated = rendered
+            .symbols
+            .iter()
+            .filter(|generated| generated.public_path == *key)
+            .collect::<Vec<_>>();
+        if generated.is_empty() {
+            add(
+                SemanticClassification::PolicyRequired,
+                "missing-projection-evidence",
+                "public export has no emitted projection evidence".to_owned(),
+            );
+            continue;
+        }
+        for generated in generated {
+            let (classification, reason) = if generated.kind == "opaque-type" {
+                (SemanticClassification::OpaquePreserved, "emitted raw opaque identity; interpreted structure is not a generated canonical structural adapter")
+            } else if generated.kind == "namespace" {
+                (
+                    SemanticClassification::Normalized,
+                    "emitted namespace paths preserve the selected foreign export organization",
+                )
+            } else {
+                (SemanticClassification::Normalized, "emitted raw foreign callable signature; declaration/evaluation mapping does not prove runtime ABI or safe canonical structural conversion")
+            };
+            add(classification, &generated.rule, reason.to_owned());
+        }
+        if symbol.kind == SymbolKind::Callable {
+            if let Some(config) = entry.symbols.get(key) {
+                if config.unsafe_any
+                    || !config.parameters.is_empty()
+                    || config.result.is_some()
+                    || config.union.is_some()
+                {
+                    add(SemanticClassification::PolicyRequired, "explicit-domain-override", "configured unsafe/domain/union overrides are applied input policy; they do not prove lossless source-domain compatibility or a safe structural adapter".to_owned());
+                }
+                if !config.callbacks.is_empty() {
+                    add(SemanticClassification::SafeBoundary, "explicit-callback-contract", "configured lifetime/invocation/release policy is present; runtime ABI proof remains a separate report state".to_owned());
+                }
+            }
+        }
+    }
+    SemanticCompatibilityReport::from_projection(graph, &evidence)
+        .map_err(|error| ConvertError::new(format!("invalid compatibility evidence: {error}")))
 }
 
 fn resolve_host_metadata(
@@ -1832,6 +1948,7 @@ struct ConversionReport {
     removed: Vec<String>,
     unsupported: Vec<String>,
     warnings: Vec<ConversionDiagnostic>,
+    compatibility: SemanticCompatibilityReport,
 }
 
 fn build_report(
@@ -1839,6 +1956,7 @@ fn build_report(
     previous: Option<&BindingMetadata>,
     current: &BindingMetadata,
     diagnostics: &[ConversionDiagnostic],
+    compatibility: &SemanticCompatibilityReport,
 ) -> ConversionReport {
     let before = previous
         .map(|metadata| {
@@ -1877,6 +1995,7 @@ fn build_report(
         changed,
         removed,
         unsupported: Vec::new(),
+        compatibility: compatibility.clone(),
         warnings: diagnostics
             .iter()
             .filter(|diagnostic| diagnostic.severity == DiagnosticSeverity::Warning)

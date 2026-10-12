@@ -15,6 +15,7 @@ pub struct ConvertRequest {
 pub struct ConversionOutcome {
     pub converted: Vec<ConvertedEntry>,
     pub diagnostics: Vec<ConversionDiagnostic>,
+    pub compatibility: BTreeMap<String, SemanticCompatibilityReport>,
 }
 
 impl ConversionOutcome {
@@ -59,6 +60,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
     let mut outcome = ConversionOutcome {
         converted: Vec::new(),
         diagnostics: Vec::new(),
+        compatibility: BTreeMap::new(),
     };
     for (id, entry) in &config.entries {
         if request
@@ -92,6 +94,9 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
             },
         )?;
         outcome.diagnostics.extend(converted.diagnostics);
+        if let Some(report) = converted.compatibility {
+            outcome.compatibility.insert(id.clone(), report);
+        }
         let Some(generated) = converted.generated else {
             continue;
         };

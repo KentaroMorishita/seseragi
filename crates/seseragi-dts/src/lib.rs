@@ -13,7 +13,7 @@ mod parser;
 mod semantic;
 
 pub use semantic::{interpret_declaration, SemanticError};
-pub use seseragi_interop::SemanticGraph;
+pub use seseragi_interop::{SemanticCompatibilityReport, SemanticGraph};
 
 pub use config::{BindingsConfig, EntryConfig};
 #[cfg(feature = "filesystem")]

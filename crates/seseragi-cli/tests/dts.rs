@@ -51,6 +51,28 @@ fn run(arguments: &[&str]) -> Output {
         .unwrap()
 }
 
+fn expected_conversion_stdout(package: &Path, entries: &[(&str, &str)]) -> String {
+    let mut output = String::new();
+    for (id, name) in entries {
+        let report: Value = serde_json::from_slice(
+            &fs::read(package.join(format!(".seseragi/generated/{name}.report.json"))).unwrap(),
+        )
+        .unwrap();
+        let compatibility: seseragi_dts::SemanticCompatibilityReport =
+            serde_json::from_value(report["compatibility"].clone()).unwrap();
+        output.push_str(&format!(
+            "compatibility for dts entry `{id}`:\n{}\n",
+            compatibility.render_text()
+        ));
+    }
+    for (id, name) in entries {
+        output.push_str(&format!(
+            "converted dts entry `{id}` to .seseragi/generated/{name}.ssrg\n"
+        ));
+    }
+    output
+}
+
 #[test]
 fn executes_every_dts_fixture_through_the_cli_product_route() {
     for (name, output) in [
@@ -149,7 +171,7 @@ fn converts_a_configured_entry_and_writes_the_three_deterministic_artifacts() {
     assert_eq!(String::from_utf8_lossy(&first.stderr), "");
     assert_eq!(
         String::from_utf8_lossy(&first.stdout),
-        "converted dts entry `api` to .seseragi/generated/fixture-api.ssrg\n"
+        expected_conversion_stdout(&package, &[("api", "fixture-api")])
     );
 
     let generated = package.join(".seseragi/generated");
@@ -269,10 +291,7 @@ fn converts_all_entries_or_only_the_selected_entry_in_stable_id_order() {
     );
     assert_eq!(
         String::from_utf8_lossy(&all.stdout),
-        concat!(
-            "converted dts entry `alpha` to .seseragi/generated/extra-api.ssrg\n",
-            "converted dts entry `api` to .seseragi/generated/fixture-api.ssrg\n",
-        )
+        expected_conversion_stdout(&package, &[("alpha", "extra-api"), ("api", "fixture-api")])
     );
     assert!(generated.join("extra-api.ssrg").is_file());
     fs::remove_dir_all(directory).unwrap();
@@ -295,7 +314,13 @@ fn reports_precise_conversion_errors_without_replacing_any_entry_artifact() {
 
     let output = run(&["dts", "convert", package.to_str().unwrap()]);
     assert_eq!(output.status.code(), Some(1));
-    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let human = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        human.contains("compatibility for dts entry `api`"),
+        "{human}"
+    );
+    assert!(human.contains("policy-required"), "{human}");
+    assert!(human.contains("projection-not-published"), "{human}");
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("host/index.d.ts:38:41: error[SES-F0101]"));
     assert!(stderr.contains("`any` requires an explicit unsafe fallback"));

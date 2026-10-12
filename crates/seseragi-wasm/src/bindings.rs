@@ -2,7 +2,7 @@
 use serde::{Deserialize, Serialize};
 use seseragi_dts::{
     convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, DiagnosticSeverity,
-    GeneratedBinding, HostMetadata, SemanticGraph,
+    GeneratedBinding, HostMetadata, SemanticCompatibilityReport, SemanticGraph,
 };
 use std::collections::BTreeMap;
 use unicode_normalization::UnicodeNormalization;
@@ -33,6 +33,12 @@ struct Response {
     generated_root: Option<String>,
     diagnostics: Vec<ConversionDiagnostic>,
     semantic: Vec<SemanticEntry>,
+    compatibility: Vec<CompatibilityEntry>,
+}
+#[derive(Serialize)]
+struct CompatibilityEntry {
+    id: String,
+    report: SemanticCompatibilityReport,
 }
 
 #[derive(Serialize)]
@@ -51,6 +57,7 @@ pub fn convert_workspace_bindings(json: &str) -> String {
         generated_root: None,
         diagnostics: vec![],
         semantic: vec![],
+        compatibility: vec![],
     };
     let result = serde_json::from_str::<Request>(json)
         .map_err(|error| {
@@ -222,6 +229,12 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
         })
         .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
         response.diagnostics.extend(converted.diagnostics);
+        if let Some(report) = converted.compatibility {
+            response.compatibility.push(CompatibilityEntry {
+                id: id.to_owned(),
+                report,
+            });
+        }
         if let Some(graph) = converted.semantic {
             response.semantic.push(SemanticEntry {
                 id: id.to_owned(),
@@ -299,6 +312,7 @@ mod tests {
             let mut generated = vec![];
             let mut diagnostics = vec![];
             let mut semantic = vec![];
+            let mut compatibility = vec![];
             for (id, entry) in config.entries {
                 let converted = convert_entry(&ConversionInput {
                     settings,
@@ -319,6 +333,9 @@ mod tests {
                     previous_metadata: None,
                 })
                 .unwrap();
+                if let Some(report) = converted.compatibility {
+                    compatibility.push(json!({"id": id, "report": report}));
+                }
                 generated.extend(converted.generated);
                 diagnostics.extend(converted.diagnostics);
                 if let Some(graph) = converted.semantic {
@@ -330,6 +347,7 @@ mod tests {
             assert_eq!(actual["generated"], json!(generated), "{name}");
             assert_eq!(actual["diagnostics"], json!(diagnostics), "{name}");
             assert_eq!(actual["semantic"], json!(semantic), "{name}");
+            assert_eq!(actual["compatibility"], json!(compatibility), "{name}");
         }
     }
 
