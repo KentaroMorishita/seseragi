@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use seseragi_driver::{
-    analyze_project as analyze_driver_project, analyze_project_with_providers,
+    analyze_project_recovering as analyze_driver_project,
+    analyze_project_recovering_with_providers as analyze_project_with_providers,
     compile_project as compile_driver_project, compile_project_with_providers, format_module,
     format_module_with_options, CandidateVisibility, CompilerFeatureRequirement, ContractVersion,
     FormatOptions, LinkedCompileError, ProjectCompileError, ProjectModuleInput,
@@ -393,7 +394,7 @@ impl ProjectFailure {
 /// Compiles an in-memory browser workspace through the shared project driver.
 #[wasm_bindgen]
 pub fn compile_project(request: &str) -> String {
-    let response = match prepare_project(request) {
+    let response = match prepare_project(request, false) {
         Ok(project) => compile_prepared_project(project),
         Err(failure) => ProjectCompileResponse::Failure {
             schema: PROJECT_SCHEMA,
@@ -408,7 +409,7 @@ pub fn compile_project(request: &str) -> String {
 /// local imports to the same typed public interfaces used by compilation.
 #[wasm_bindgen]
 pub fn analyze_project(request: &str) -> String {
-    let response = match prepare_project(request) {
+    let response = match prepare_project(request, true) {
         Ok(project) => analyze_prepared_project(project),
         Err(failure) => ProjectAnalysisResponse::Failure {
             schema: PROJECT_SCHEMA,
@@ -583,7 +584,7 @@ fn analyze_prepared_project(project: BrowserProject) -> ProjectAnalysisResponse 
     }
 }
 
-fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
+fn prepare_project(request: &str, recover_syntax: bool) -> Result<BrowserProject, ProjectFailure> {
     let request = parse_request(request)?;
     if request.files.is_empty() {
         return Err(ProjectFailure::problem(ProjectProblem::workspace(
@@ -622,13 +623,14 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
     )
     .map_err(virtual_package_failure)?;
 
-    prepare_virtual_package(package, provider, legacy_workspace)
+    prepare_virtual_package(package, provider, legacy_workspace, recover_syntax)
 }
 
 fn prepare_virtual_package(
     package: LoadedVirtualPackage,
     provider: Option<ProjectProviderRequest>,
     legacy_workspace: bool,
+    recover_syntax: bool,
 ) -> Result<BrowserProject, ProjectFailure> {
     let package_scope = if legacy_workspace {
         PACKAGE_SCOPE.to_owned()
@@ -647,7 +649,7 @@ fn prepare_virtual_package(
             .diagnostics
             .iter()
             .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error);
-        let dependencies = if has_parse_errors {
+        let dependencies = if has_parse_errors && !recover_syntax {
             Vec::new()
         } else {
             package
@@ -1557,6 +1559,39 @@ mod tests {
     }
 
     #[test]
+    fn editor_analysis_retains_linked_queries_with_an_invalid_tail_but_compile_rejects_it() {
+        let source =
+            "import { double } from \"./domain\"\nlet answer = double 21\nlet unfinished = 1 +\n";
+        let input = request(
+            json!([
+                {"path":"domain.ssrg","source":"pub fn double value: Int -> Int = value + value\n"},
+                {"path":"main.ssrg","source":source}
+            ]),
+            "main.ssrg",
+        );
+        let analyzed: Value = serde_json::from_str(&analyze_project(&input)).unwrap();
+        assert_eq!(analyzed["status"], "success", "{analyzed}");
+        let main = analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|document| document["path"] == "main.ssrg")
+            .unwrap();
+        assert!(main["document"]["symbols"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|symbol| symbol["name"] == "double" && symbol["module"] == "playground/domain"));
+        assert!(!main["document"]["diagnostics"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .is_empty());
+        let compiled: Value = serde_json::from_str(&compile_project(&input)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert!(compiled.get("modules").is_none());
+    }
+
+    #[test]
     fn uses_manifest_package_identity_for_virtual_workspace_modules() {
         let request = json!({
             "schema": 1,
@@ -1878,9 +1913,10 @@ mod tests {
             "main.ssrg",
         );
         let invalid: Value = serde_json::from_str(&analyze_project(&invalid)).unwrap();
-        assert_eq!(invalid["diagnostics"][0]["path"], "main.ssrg");
+        assert_eq!(invalid["status"], "success");
+        assert_eq!(invalid["documents"][0]["path"], "main.ssrg");
         assert!(
-            invalid["diagnostics"][0]["diagnostics"]["diagnostics"][0]["primary"]["end"]
+            invalid["documents"][0]["document"]["diagnostics"]["diagnostics"][0]["primary"]["end"]
                 .as_u64()
                 .is_some()
         );
@@ -2087,7 +2123,7 @@ mod tests {
     }
 
     #[test]
-    fn aggregates_parser_and_semantic_diagnostics_for_analysis_and_compile() {
+    fn recovering_editor_documents_preserve_every_strict_compile_diagnostic() {
         let request = request(
             json!([
                 {
@@ -2104,9 +2140,13 @@ mod tests {
 
         let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
         let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
-        assert_eq!(analyzed["status"], "failure");
+        assert_eq!(analyzed["status"], "success");
         assert_eq!(compiled["status"], "failure");
-        assert_eq!(compiled["diagnostics"], analyzed["diagnostics"]);
+        let editor_diagnostics = analyzed["documents"].as_array().unwrap().iter()
+            .filter(|document| !document["document"]["diagnostics"]["diagnostics"].as_array().unwrap().is_empty())
+            .map(|document| json!({"path": document["path"], "diagnostics": document["document"]["diagnostics"]}))
+            .collect::<Vec<_>>();
+        assert_eq!(compiled["diagnostics"], json!(editor_diagnostics));
         assert_eq!(
             compiled["diagnostics"]
                 .as_array()

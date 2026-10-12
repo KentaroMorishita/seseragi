@@ -2264,3 +2264,41 @@ fn range_formatting_negotiates_positions_and_preserves_neighbors() {
         );
     }
 }
+
+#[test]
+fn imported_hover_survives_an_incomplete_tail_in_the_open_workspace() {
+    let workspace = TempWorkspace::new();
+    let source =
+        "import { double } from \"./domain\"\nlet answer = double 21\nlet unfinished = 1 +\n";
+    workspace.write("main.ssrg", source);
+    workspace.write(
+        "domain.ssrg",
+        "pub fn double value: Int -> Int = value + value\n",
+    );
+    let root = file_uri(workspace.path());
+    let uri = file_uri(&workspace.path().join("main.ssrg"));
+    let input = [
+        json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{},"workspaceFolders":[{"uri":root,"name":"editing"}]}}),
+        json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        json!({"jsonrpc":"2.0","id":2,"method":"textDocument/hover","params":{"textDocument":{"uri":uri},"position":{"line":1,"character":15}}}),
+        json!({"jsonrpc":"2.0","id":3,"method":"textDocument/definition","params":{"textDocument":{"uri":uri},"position":{"line":1,"character":15}}}),
+        json!({"jsonrpc":"2.0","id":4,"method":"shutdown"}),
+        json!({"jsonrpc":"2.0","method":"exit"}),
+    ];
+    let messages = run_server(&input);
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(
+        hover.contains("double") && hover.contains("Int") && hover.contains("workspace/domain"),
+        "{hover}"
+    );
+    assert_eq!(
+        response(&messages, 3)["result"]["uri"],
+        file_uri(&workspace.path().join("domain.ssrg"))
+    );
+    assert!(!published(&messages, &uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap()
+        .is_empty());
+}

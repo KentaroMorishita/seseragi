@@ -128,6 +128,17 @@ mod tests {
                 2,
                 "{tail}"
             );
+            let parser = seseragi_syntax::parse_diagnostics("editing.ssrg", &source);
+            assert!(
+                parser.diagnostics.iter().all(|original| analysis
+                    .diagnostics
+                    .diagnostics
+                    .iter()
+                    .any(|retained| original.code == retained.code
+                        && original.message_key == retained.message_key
+                        && original.primary == retained.primary)),
+                "parser diagnostics must survive recovery: {tail}"
+            );
             assert!(analysis.lint_diagnostics().diagnostics.is_empty(), "{tail}");
             assert!(
                 crate::compile_module(input).is_err(),
