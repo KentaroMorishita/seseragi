@@ -664,6 +664,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-schema"
+version = "0.61.26"
+dependencies = [
+ "serde",
+ "serde_json",
+ "seseragi-dts",
+ "seseragi-interop",
+ "sha2",
+]
+
+[[package]]
 name = "seseragi-semantics"
 version = "0.61.26"
 dependencies = [

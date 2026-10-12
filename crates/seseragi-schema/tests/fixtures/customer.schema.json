@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Customer snapshot",
+  "$defs": { "Status": { "enum": ["active", "pending"] } },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string" },
+    "nickname": { "type": ["string", "null"] },
+    "status": { "$ref": "#/$defs/Status" },
+    "tags": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["id", "status"]
+}
