@@ -98,6 +98,20 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
             crate::apply_projection_policy(&mut converted, entry, &source)
                 .map_err(ConvertError::new)?;
         }
+        let semantic_path = request
+            .generated_root
+            .join(format!("{}/semantic.ssrg", entry.output));
+        let semantic_metadata_path = request
+            .generated_root
+            .join(format!("{}.semantic.json", entry.output));
+        let ownership = semantic_output_ownership(&semantic_path, &semantic_metadata_path);
+        if converted.generated.is_some()
+            && (matches!(ownership, SemanticOutputOwnership::ModifiedOwned)
+                || (entry.projection_policy.is_some()
+                    && matches!(ownership, SemanticOutputOwnership::Unowned)))
+        {
+            crate::projection_policy::reject_projection_output(&mut converted,semantic_path.strip_prefix(&request.package_root).unwrap_or(&semantic_path).to_string_lossy().into_owned(),"semantic output is edited or unowned; preserve it and choose another output or explicitly restore the matching generated source before conversion".into()).map_err(ConvertError::new)?;
+        }
         outcome.diagnostics.extend(converted.diagnostics);
         if let Some(report) = converted.compatibility {
             outcome.compatibility.insert(id.clone(), report);
@@ -114,12 +128,6 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         let report_path = request
             .generated_root
             .join(format!("{}.report.json", entry.output));
-        let semantic_path = request
-            .generated_root
-            .join(format!("{}/semantic.ssrg", entry.output));
-        let semantic_metadata_path = request
-            .generated_root
-            .join(format!("{}.semantic.json", entry.output));
         let semantic_metadata = generated.adapters.as_ref().map(json_text).transpose()?;
         let mut writes: Vec<(&Path, &[u8])> = vec![
             (&source_path, generated.source.as_bytes()),
@@ -132,6 +140,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         }
         atomic_write_set(&writes)?;
         if generated.adapters.is_none()
+            && matches!(ownership, SemanticOutputOwnership::Owned)
             && !config
                 .entries
                 .values()
@@ -156,6 +165,64 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         });
     }
     Ok(outcome)
+}
+
+#[derive(Clone, Copy)]
+enum SemanticOutputOwnership {
+    Absent,
+    Owned,
+    ModifiedOwned,
+    Unowned,
+}
+fn semantic_output_ownership(source: &Path, metadata: &Path) -> SemanticOutputOwnership {
+    // Symlink artifacts/parents are not owned just because their contents look
+    // like metadata. Never follow them for destructive cleanup.
+    let root = metadata.parent();
+    let linked_parent = source.parent().is_some_and(|parent| {
+        parent
+            .ancestors()
+            .take_while(|path| root.is_none_or(|root| path.starts_with(root)))
+            .any(|path| fs::symlink_metadata(path).is_ok_and(|m| m.file_type().is_symlink()))
+    });
+    if linked_parent
+        || [source, metadata]
+            .iter()
+            .any(|path| fs::symlink_metadata(path).is_ok_and(|m| m.file_type().is_symlink()))
+    {
+        return SemanticOutputOwnership::Unowned;
+    }
+    let actual = fs::read_to_string(source);
+    let meta = fs::read_to_string(metadata);
+    if actual
+        .as_ref()
+        .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+        && meta
+            .as_ref()
+            .is_err_and(|error| error.kind() == std::io::ErrorKind::NotFound)
+    {
+        return SemanticOutputOwnership::Absent;
+    }
+    let Ok(previous) = meta.and_then(|text| {
+        serde_json::from_str::<seseragi_projection::SemanticAdapters>(&text)
+            .map_err(std::io::Error::other)
+    }) else {
+        return SemanticOutputOwnership::Unowned;
+    };
+    if previous.schema != 1
+        || previous.input_boundary != "std/json::Json"
+        || previous.graph_digest.len() != 64
+        || !previous
+            .graph_digest
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit())
+    {
+        return SemanticOutputOwnership::Unowned;
+    }
+    match actual {
+        Ok(actual) if actual == previous.semantic_source => SemanticOutputOwnership::Owned,
+        Ok(_) => SemanticOutputOwnership::ModifiedOwned,
+        Err(_) => SemanticOutputOwnership::Unowned,
+    }
 }
 
 pub fn validate_generated_bindings(

@@ -160,3 +160,64 @@ fn filesystem_publication_freshness_and_policy_removal_preserve_owned_boundary()
     assert!(!package.join("generated/api/semantic.ssrg").exists());
     assert!(!package.join("generated/api.semantic.json").exists());
 }
+
+#[cfg(feature = "filesystem")]
+#[test]
+fn handwritten_and_edited_semantic_files_survive_conversion_and_policy_removal() {
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path();
+    std::fs::create_dir_all(package.join("host")).unwrap();
+    std::fs::create_dir_all(package.join("generated/api")).unwrap();
+    std::fs::write(package.join("host/api.d.ts"), SOURCE).unwrap();
+    std::fs::write(package.join("host/package.json"), "{}").unwrap();
+    let without_policy = SETTINGS.replace("projection_policy='host/api.policy.json'\n", "");
+    std::fs::write(package.join("bindings.toml"), &without_policy).unwrap();
+    let semantic = package.join("generated/api/semantic.ssrg");
+    std::fs::write(&semantic, "handwritten module\n").unwrap();
+    let request = ConvertRequest {
+        package_root: package.into(),
+        generated_root: package.join("generated"),
+        bindings: "bindings.toml".into(),
+        host_manifest: "host/package.json".into(),
+        entry: None,
+    };
+    assert!(!convert_package(&request).unwrap().has_errors());
+    assert_eq!(
+        std::fs::read_to_string(&semantic).unwrap(),
+        "handwritten module\n"
+    );
+    std::fs::write(package.join("bindings.toml"), SETTINGS).unwrap();
+    let set = policy(convert_entry(&input()).unwrap().semantic.as_ref().unwrap());
+    std::fs::write(
+        package.join("host/api.policy.json"),
+        serde_json::to_string(&set).unwrap(),
+    )
+    .unwrap();
+    let collision = convert_package(&request).unwrap();
+    assert!(collision.has_errors());
+    assert!(collision
+        .diagnostics
+        .iter()
+        .any(|error| error.code == "SES-F0106"));
+    assert_eq!(
+        std::fs::read_to_string(&semantic).unwrap(),
+        "handwritten module\n"
+    );
+    // Removing our test's handwritten file permits the first owned publication.
+    std::fs::remove_file(&semantic).unwrap();
+    assert!(!convert_package(&request).unwrap().has_errors());
+    std::fs::write(&semantic, "edited owned module\n").unwrap();
+    assert!(convert_package(&request).unwrap().has_errors());
+    assert_eq!(
+        std::fs::read_to_string(&semantic).unwrap(),
+        "edited owned module\n"
+    );
+    std::fs::write(package.join("bindings.toml"), without_policy).unwrap();
+    let removed = convert_package(&request).unwrap();
+    assert!(removed.has_errors());
+    assert_eq!(
+        std::fs::read_to_string(&semantic).unwrap(),
+        "edited owned module\n"
+    );
+    assert!(package.join("generated/api.semantic.json").is_file());
+}

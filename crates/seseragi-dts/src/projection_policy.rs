@@ -71,6 +71,41 @@ pub fn apply_projection_policy(
     refresh_compatibility_identity(result)
 }
 
+/// Publication conflicts are observable failures, never permission to overwrite
+/// edited or unowned files. Preserve interpreted meaning and explain nonpublication.
+pub(crate) fn reject_projection_output(
+    result: &mut ConversionResult,
+    file: String,
+    message: String,
+) -> Result<(), String> {
+    result.diagnostics.push(ConversionDiagnostic {
+        code: "SES-F0106".into(),
+        severity: DiagnosticSeverity::Error,
+        message: message.clone(),
+        file,
+        start: 0,
+        end: 0,
+        symbol: None,
+    });
+    if let (Some(graph), Some(report)) = (result.semantic.as_ref(), result.compatibility.as_mut()) {
+        let evidence = graph
+            .symbols
+            .keys()
+            .filter(|id| !graph.private_symbols.contains(*id))
+            .map(|id| ProjectionEvidence {
+                symbol: id.clone(),
+                classification: SemanticClassification::PolicyRequired,
+                rule: "semantic-output-collision".into(),
+                reason: message.clone(),
+                policy: None,
+            })
+            .collect::<Vec<_>>();
+        merge_evidence(report, graph, &evidence)?;
+    }
+    result.generated = None;
+    Ok(())
+}
+
 fn merge_evidence(
     report: &mut SemanticCompatibilityReport,
     graph: &seseragi_interop::SemanticGraph,
