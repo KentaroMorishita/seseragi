@@ -44,7 +44,7 @@ fn artifact() -> RuntimeArtifactIdentity {
         content_digest: format!("sha256:{}", "b".repeat(64)),
     }
 }
-fn contract(graph: &SemanticGraph) -> RuntimeLinkageContract {
+fn make_contract(graph: &SemanticGraph) -> RuntimeLinkageContract {
     let mut contract = RuntimeLinkageContract::new(graph).unwrap();
     contract.exports.insert(
         "api::run".into(),
@@ -57,8 +57,8 @@ fn contract(graph: &SemanticGraph) -> RuntimeLinkageContract {
             convention: CallingConvention::Function,
             receiver: ReceiverAbi::None,
             evaluation: Evaluation::Effectful,
-            delivery: RuntimeDelivery::Promise,
-            failure: FailureBoundary::ThrowOrRejection,
+            delivery: RuntimeDelivery::Synchronous,
+            failure: FailureBoundary::Throw,
             cancellation: CancellationAbi::Unsupported,
             callbacks: vec![],
             targets: BTreeMap::from([(RuntimeTarget::Browser, artifact())]),
@@ -69,7 +69,7 @@ fn contract(graph: &SemanticGraph) -> RuntimeLinkageContract {
 #[test]
 fn binds_declarations_and_runtime_bytes_without_digest_cycle() {
     let mut graph = graph();
-    let contract = contract(&graph);
+    let contract = make_contract(&graph);
     let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
     graph.identity.as_mut().unwrap().runtime_contract_digest = Some(contract.digest().unwrap());
     contract
@@ -99,7 +99,7 @@ fn binds_declarations_and_runtime_bytes_without_digest_cycle() {
 #[test]
 fn distinguishes_abi_target_and_semantic_boundaries() {
     let graph = graph();
-    let mut contract = contract(&graph);
+    let mut contract = make_contract(&graph);
     let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
     assert_eq!(
         contract
@@ -120,10 +120,12 @@ fn distinguishes_abi_target_and_semantic_boundaries() {
 }
 #[test]
 fn requires_method_receiver_and_synchronous_constructor() {
-    let graph = graph();
-    let mut contract = contract(&graph);
+    let graph = nominal_graph(true);
+    let mut contract = make_contract(&graph);
     let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
     let abi = contract.exports.get_mut("api::run").unwrap();
+    abi.semantic_owner = "api::Widget".into();
+    abi.semantic_type = TypeId(14);
     abi.convention = CallingConvention::Method;
     assert!(contract
         .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
@@ -133,14 +135,14 @@ fn requires_method_receiver_and_synchronous_constructor() {
         .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
         .unwrap();
     let abi = contract.exports.get_mut("api::run").unwrap();
+    abi.semantic_type = TypeId(11);
     abi.convention = CallingConvention::Constructor;
     abi.receiver = ReceiverAbi::None;
+    abi.delivery = RuntimeDelivery::Promise;
     assert!(contract
         .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
         .is_err());
-    let abi = contract.exports.get_mut("api::run").unwrap();
-    abi.delivery = RuntimeDelivery::Synchronous;
-    abi.failure = FailureBoundary::Throw;
+    contract.exports.get_mut("api::run").unwrap().delivery = RuntimeDelivery::Synchronous;
     contract
         .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
         .unwrap();
@@ -195,7 +197,7 @@ fn unsupported_paths_and_host_conditions_fail_without_polyfills() {
 }
 #[test]
 fn wire_contract_rejects_unknown_abi_fields() {
-    let mut value = serde_json::to_value(contract(&graph())).unwrap();
+    let mut value = serde_json::to_value(make_contract(&graph())).unwrap();
     value["exports"]["api::run"]["cancellation"]["hidden"] = true.into();
     assert!(serde_json::from_value::<RuntimeLinkageContract>(value).is_err());
 }
@@ -203,7 +205,7 @@ fn wire_contract_rejects_unknown_abi_fields() {
 #[test]
 fn callback_and_cancellation_indices_must_match_real_callable_signatures() {
     let graph = graph();
-    let mut contract = contract(&graph);
+    let mut contract = make_contract(&graph);
     let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
     contract
         .exports
@@ -229,4 +231,203 @@ fn callback_and_cancellation_indices_must_match_real_callable_signatures() {
         .unwrap_err()
         .iter()
         .any(|d| d.reason.contains("parameter ABI")));
+}
+
+fn nominal_graph(constructible: bool) -> SemanticGraph {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(10),
+        SemanticType::Shape {
+            identity: ShapeIdentity::MutableIdentity,
+            fields: BTreeMap::from([(
+                "run".into(),
+                ShapeField {
+                    type_ref: TypeId(14),
+                    optional: false,
+                    readonly: false,
+                },
+            )]),
+        },
+    );
+    graph.types.insert(
+        TypeId(11),
+        SemanticType::Callable {
+            parameters: vec![],
+            result: TypeId(12),
+            receiver: None,
+        },
+    );
+    graph.types.insert(
+        TypeId(12),
+        SemanticType::Nominal {
+            identity: "api.Widget".into(),
+            instance: TypeId(10),
+            constructors: vec![TypeId(11)],
+            constructible,
+            static_members: BTreeMap::new(),
+        },
+    );
+    graph.types.insert(
+        TypeId(14),
+        SemanticType::Callable {
+            parameters: vec![],
+            result: TypeId(1),
+            receiver: Some(TypeId(12)),
+        },
+    );
+    graph.symbols.insert(
+        "api::Widget".into(),
+        SemanticSymbol {
+            public_name: "Widget".into(),
+            declaration_name: "Widget".into(),
+            kind: SymbolKind::Type,
+            type_ref: TypeId(12),
+            origins: vec![],
+            runtime: None,
+        },
+    );
+    graph.validate().unwrap();
+    graph
+}
+#[test]
+fn ownership_rejects_unrelated_callable_and_inaccessible_constructor() {
+    let graph = nominal_graph(true);
+    let mut contract = make_contract(&graph);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    contract.exports.get_mut("api::run").unwrap().semantic_type = TypeId(11);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|d| d.reason.contains("owned")));
+    let hidden = nominal_graph(false);
+    let mut contract = make_contract(&hidden);
+    let abi = contract.exports.get_mut("api::run").unwrap();
+    abi.semantic_owner = "api::Widget".into();
+    abi.semantic_type = TypeId(11);
+    abi.convention = CallingConvention::Constructor;
+    assert!(contract
+        .validate_for(&hidden, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|d| d.reason.contains("owned")));
+}
+#[test]
+fn callback_parameter_and_delivery_must_match_actual_declared_callable() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    if let Some(SemanticType::Callable { parameters, .. }) = graph.types.get_mut(&TypeId(2)) {
+        parameters.push(CallParameter {
+            name: "cb".into(),
+            origins: vec![],
+            type_ref: TypeId(3),
+            optional: false,
+            rest: false,
+        });
+    }
+    let mut contract = make_contract(&graph);
+    contract
+        .exports
+        .get_mut("api::run")
+        .unwrap()
+        .callbacks
+        .push(CallbackAbi {
+            parameter_index: 0,
+            delivery: RuntimeDelivery::Synchronous,
+            lifetime: CallbackLifetime::DuringCall,
+            failure: FailureBoundary::Throw,
+        });
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|d| d.reason.contains("resolved callable parameter")));
+    graph.types.insert(
+        TypeId(4),
+        SemanticType::Callable {
+            parameters: vec![],
+            result: TypeId(1),
+            receiver: None,
+        },
+    );
+    if let Some(SemanticType::Callable { parameters, .. }) = graph.types.get_mut(&TypeId(2)) {
+        parameters[0].type_ref = TypeId(4);
+    }
+    contract = make_contract(&graph);
+    contract
+        .exports
+        .get_mut("api::run")
+        .unwrap()
+        .callbacks
+        .push(CallbackAbi {
+            parameter_index: 0,
+            delivery: RuntimeDelivery::Promise,
+            lifetime: CallbackLifetime::DuringCall,
+            failure: FailureBoundary::ThrowOrRejection,
+        });
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    contract.exports.get_mut("api::run").unwrap().callbacks[0].delivery =
+        RuntimeDelivery::Synchronous;
+    contract.exports.get_mut("api::run").unwrap().callbacks[0].failure = FailureBoundary::Throw;
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+}
+#[test]
+fn delivery_is_bidirectional_for_resolved_sync_and_async_results() {
+    let mut graph = graph();
+    let mut contract = make_contract(&graph);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    contract.exports.get_mut("api::run").unwrap().delivery = RuntimeDelivery::Promise;
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    graph
+        .types
+        .insert(TypeId(3), SemanticType::Async { value: TypeId(1) });
+    if let Some(SemanticType::Callable { result, .. }) = graph.types.get_mut(&TypeId(2)) {
+        *result = TypeId(3);
+    }
+    contract = make_contract(&graph);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    contract.exports.get_mut("api::run").unwrap().delivery = RuntimeDelivery::Promise;
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+}
+
+#[test]
+fn private_declarations_and_unknown_delivery_do_not_acquire_runtime_abi_by_assumption() {
+    let mut graph = graph();
+    graph.private_symbols.insert("api::run".into());
+    let contract = make_contract(&graph);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|d| d.reason.contains("private")));
+    graph.private_symbols.clear();
+    graph.types.insert(
+        TypeId(1),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::Unknown,
+        },
+    );
+    let contract = make_contract(&graph);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|d| d.reason.contains("delivery ABI")));
 }

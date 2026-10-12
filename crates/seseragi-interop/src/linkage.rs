@@ -248,6 +248,24 @@ impl RuntimeLinkageContract {
                     "runtime linkage refers to missing semantic owner or type",
                 ));
             }
+            if graph.private_symbols.contains(&export.semantic_owner) {
+                errors.push(error(
+                    "SES-F0202",
+                    "runtime ABI cannot expose a private semantic declaration",
+                ));
+            }
+            let owner_type = graph
+                .symbols
+                .get(&export.semantic_owner)
+                .map(|owner| owner.type_ref);
+            if !owner_type.is_some_and(|owner| {
+                owned_role(graph, owner, export.semantic_type, export.convention)
+            }) {
+                errors.push(error(
+                    "SES-F0202",
+                    "runtime signature is not an owned callable/value surface for this convention",
+                ));
+            }
             if export.specifier.trim().is_empty()
                 || export.declaration_module_identity.trim().is_empty()
                 || !path_valid(&export.export_path)
@@ -300,22 +318,7 @@ impl RuntimeLinkageContract {
                     "constructor ABI must return synchronously",
                 ));
             }
-            let mut pending = vec![export.semantic_type];
-            let mut seen = BTreeSet::new();
-            let mut signatures = Vec::new();
-            while let Some(id) = pending.pop() {
-                if !seen.insert(id) {
-                    continue;
-                }
-                match graph.types.get(&id) {
-                    Some(SemanticType::Generic { body, .. }) => pending.push(*body),
-                    Some(SemanticType::Overload { signatures }) => pending.extend(signatures),
-                    Some(SemanticType::Callable {
-                        parameters, result, ..
-                    }) => signatures.push((parameters.len(), *result)),
-                    _ => {}
-                }
-            }
+            let signatures = callable_types(graph, export.semantic_type);
             if export.convention != CallingConvention::Value && signatures.is_empty() {
                 errors.push(error(
                     "SES-F0202",
@@ -324,9 +327,12 @@ impl RuntimeLinkageContract {
             }
             let index_valid = |index: u32| {
                 !signatures.is_empty()
-                    && signatures
-                        .iter()
-                        .all(|(count, _)| (index as usize) < *count)
+                    && signatures.iter().all(|signature| match signature {
+                        SemanticType::Callable { parameters, .. } => {
+                            (index as usize) < parameters.len()
+                        }
+                        _ => false,
+                    })
             };
             if export.callbacks.iter().any(|callback| {
                 !index_valid(callback.parameter_index)
@@ -342,14 +348,43 @@ impl RuntimeLinkageContract {
                     "callback or cancellation parameter ABI does not match callable signatures",
                 ));
             }
-            if signatures.iter().any(|(_, result)| {
-                matches!(graph.types.get(result), Some(SemanticType::Async { .. }))
-            }) && export.delivery != RuntimeDelivery::Promise
+            if export.convention != CallingConvention::Value
+                && signatures.iter().any(|signature| match signature {
+                    SemanticType::Callable {
+                        result, receiver, ..
+                    } => {
+                        delivery_for(graph, *result) != Some(export.delivery)
+                            || export.convention == CallingConvention::Method && receiver.is_none()
+                            || export.convention != CallingConvention::Method && receiver.is_some()
+                    }
+                    _ => true,
+                })
             {
-                errors.push(error(
-                    "SES-F0202",
-                    "async callable result requires Promise delivery ABI",
-                ));
+                errors.push(error("SES-F0202", "runtime receiver or delivery ABI differs from the resolved declaration signature"));
+            }
+            for callback in &export.callbacks {
+                let compatible = signatures.iter().all(|signature| {
+                    let SemanticType::Callable { parameters, .. } = signature else {
+                        return false;
+                    };
+                    let Some(parameter) = parameters.get(callback.parameter_index as usize) else {
+                        return false;
+                    };
+                    let callback_types = callable_types(graph, parameter.type_ref);
+                    !callback_types.is_empty()
+                        && callback_types.iter().all(|signature| match signature {
+                            SemanticType::Callable {
+                                result, receiver, ..
+                            } => {
+                                receiver.is_none()
+                                    && delivery_for(graph, *result) == Some(callback.delivery)
+                            }
+                            _ => false,
+                        })
+                });
+                if !compatible {
+                    errors.push(error("SES-F0202", "callback ABI does not match a resolved callable parameter and result delivery"));
+                }
             }
             let mut callback_indices = BTreeSet::new();
             if export
@@ -619,4 +654,163 @@ pub fn select_package_export(
         version: version.to_owned(),
         path,
     })
+}
+
+// Deliberately follow only callable wrappers, never parameters/results or the
+// graph's general reference closure: those edges do not establish ownership.
+fn callable_closure(graph: &SemanticGraph, root: TypeId) -> BTreeSet<TypeId> {
+    let mut seen = BTreeSet::new();
+    let mut pending = vec![root];
+    while let Some(id) = pending.pop() {
+        if !seen.insert(id) {
+            continue;
+        }
+        match graph.types.get(&id) {
+            Some(SemanticType::Generic { body, .. }) => pending.push(*body),
+            Some(SemanticType::Overload { signatures }) => pending.extend(signatures),
+            Some(SemanticType::Reference { symbol }) => {
+                if let Some(symbol) = graph.symbols.get(symbol) {
+                    pending.push(symbol.type_ref);
+                }
+            }
+            _ => {}
+        }
+    }
+    seen
+}
+fn callable_types(graph: &SemanticGraph, root: TypeId) -> Vec<&SemanticType> {
+    callable_closure(graph, root)
+        .into_iter()
+        .filter_map(|id| graph.types.get(&id))
+        .filter(|node| matches!(node, SemanticType::Callable { .. }))
+        .collect()
+}
+fn owner_roots(graph: &SemanticGraph, root: TypeId) -> Vec<TypeId> {
+    callable_closure(graph, root)
+        .into_iter()
+        .filter(|id| {
+            !matches!(
+                graph.types.get(id),
+                Some(
+                    SemanticType::Generic { .. }
+                        | SemanticType::Reference { .. }
+                        | SemanticType::Overload { .. }
+                )
+            )
+        })
+        .collect()
+}
+fn owned_role(
+    graph: &SemanticGraph,
+    owner: TypeId,
+    selected: TypeId,
+    convention: CallingConvention,
+) -> bool {
+    if matches!(
+        convention,
+        CallingConvention::Function | CallingConvention::Value
+    ) && callable_closure(graph, owner).contains(&selected)
+    {
+        if convention == CallingConvention::Value || !callable_types(graph, selected).is_empty() {
+            return true;
+        }
+    }
+    for root in owner_roots(graph, owner) {
+        let Some(SemanticType::Nominal {
+            instance,
+            constructors,
+            constructible,
+            static_members,
+            ..
+        }) = graph.types.get(&root)
+        else {
+            continue;
+        };
+        match convention {
+            CallingConvention::Constructor if *constructible => {
+                if constructors
+                    .iter()
+                    .any(|signature| callable_closure(graph, *signature).contains(&selected))
+                {
+                    return true;
+                }
+            }
+            CallingConvention::Method => {
+                let instance_members = owner_roots(graph, *instance)
+                    .into_iter()
+                    .filter_map(|id| match graph.types.get(&id) {
+                        Some(SemanticType::Shape { fields, .. }) => Some(fields.values()),
+                        _ => None,
+                    })
+                    .flatten();
+                if instance_members
+                    .chain(static_members.values())
+                    .any(|field| {
+                        callable_closure(graph, field.type_ref).contains(&selected)
+                            && !callable_types(graph, selected).is_empty()
+                    })
+                {
+                    return true;
+                }
+            }
+            CallingConvention::Function => {
+                if static_members.values().any(|field| {
+                    callable_closure(graph, field.type_ref).contains(&selected)
+                        && !callable_types(graph, selected).is_empty()
+                }) {
+                    return true;
+                }
+            }
+            CallingConvention::Value => {
+                if static_members
+                    .values()
+                    .any(|field| field.type_ref == selected)
+                {
+                    return true;
+                }
+            }
+            _ => {}
+        }
+    }
+    false
+}
+fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> {
+    let mut pending = vec![root];
+    let mut seen = BTreeSet::new();
+    let mut deliveries = BTreeSet::new();
+    while let Some(id) = pending.pop() {
+        if !seen.insert(id) {
+            continue;
+        }
+        match graph.types.get(&id)? {
+            SemanticType::Async { .. } => {
+                deliveries.insert(true);
+            }
+            SemanticType::Reference { symbol } => {
+                pending.push(graph.symbols.get(symbol)?.type_ref);
+            }
+            SemanticType::Union { members } => pending.extend(members),
+            SemanticType::Primitive {
+                domain:
+                    crate::PrimitiveDomain::Unknown
+                    | crate::PrimitiveDomain::Dynamic
+                    | crate::PrimitiveDomain::Object,
+            }
+            | SemanticType::Unresolved { .. }
+            | SemanticType::Parameter { .. }
+            | SemanticType::Projection { .. }
+            | SemanticType::Apply { .. } => return None,
+            _ => {
+                deliveries.insert(false);
+            }
+        }
+    }
+    match deliveries.len() {
+        1 => Some(if deliveries.contains(&true) {
+            RuntimeDelivery::Promise
+        } else {
+            RuntimeDelivery::Synchronous
+        }),
+        _ => None,
+    }
 }
