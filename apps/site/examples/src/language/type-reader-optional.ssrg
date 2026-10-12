@@ -1,7 +1,0 @@
-alias Person = { name: String, nickname ?: String }
-
-fn displayName person: Person -> String = person.nickname ?? person.name
-
-let ordinary: Person = { name: "Aki" }
-let nicknamed: Person = { name: "Aki", nickname: "A" }
-pub effect fn main = println `${displayName ordinary}\n${displayName nicknamed}`

@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { sequenceEditorial } from "../../sequence-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  sequenceEditorial "std/array::zip" "array" "sequence-array-zip" "[(Aki, 80), (Mio, 95)]\n[(80, Aki), (95, Mio)]\n[]\n[]" (en.copy ()) (ja.copy ())

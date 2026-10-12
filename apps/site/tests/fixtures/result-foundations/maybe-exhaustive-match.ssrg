@@ -1,4 +1,0 @@
-fn display value: Maybe<String> -> String = match value {
-  Just name -> name
-}
-pub effect fn main = println (display Nothing)

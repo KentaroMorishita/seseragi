@@ -52,8 +52,8 @@ pub fn renderBatch request: RenderRequest
     else if request.mode == "render" then
       if request.offset < 0
       || request.count < 1
-      || request.count > 32 then
-        Left "A render request requires a nonnegative offset and 1 to 32 pages"
+      || request.count > 64 then
+        Left "A render request requires a nonnegative offset and 1 to 64 pages"
       else if request.offset > total
       || request.count > total - request.offset then
         Left "The requested page range is outside the catalog"

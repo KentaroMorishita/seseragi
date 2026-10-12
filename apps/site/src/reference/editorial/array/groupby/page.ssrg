@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::groupBy" "array-groupby" "[1, 0]\nJust [3, 5, 7]\nJust [2, 4]\n0" (en.copy ()) (ja.copy ())

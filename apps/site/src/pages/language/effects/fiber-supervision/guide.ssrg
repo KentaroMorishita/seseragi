@@ -1,6 +1,0 @@
-import { Explanation, makeExplanation, ArticleExample } from "../../explanation"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn explanation -> Explanation =
-  makeExplanation (ArticleExample "lifecycle-reader-fibers") (en.explanation ()) (ja.explanation ())

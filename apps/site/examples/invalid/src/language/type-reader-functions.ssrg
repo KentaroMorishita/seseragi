@@ -1,2 +1,0 @@
-fn duplicate<A> value: A -> (A, A) = (value, value)
-let pair = duplicate<String> 21

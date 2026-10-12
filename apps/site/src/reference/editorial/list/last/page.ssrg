@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { listEditorial } from "../../list-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  listEditorial "std/list::last" "list-last" "last: 30\nlast: 10\nempty input" (en.copy ()) (ja.copy ())

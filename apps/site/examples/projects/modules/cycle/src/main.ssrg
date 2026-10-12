@@ -1,3 +1,0 @@
-import { a } from "./shared-a"
-
-pub effect fn main = println (show a)

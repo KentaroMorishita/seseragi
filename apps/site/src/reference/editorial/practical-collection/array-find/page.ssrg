@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { practicalCollectionEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  practicalCollectionEditorial "std/array::find" "array-find-task" (en.copy ()) (ja.copy ())

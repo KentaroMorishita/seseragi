@@ -1,2 +1,0 @@
-fn identity<A> value: A -> A = value
-let wrong = identity<String> 42

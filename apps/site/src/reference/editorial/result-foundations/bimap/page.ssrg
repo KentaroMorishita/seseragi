@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { resultFoundationEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  resultFoundationEditorial "std/either::bimap" "value" "function" "either" "bimap" "OK: seats=2\nError: form: seats must be positive" (en.copy ()) (ja.copy ())

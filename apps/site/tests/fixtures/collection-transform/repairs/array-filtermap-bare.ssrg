@@ -1,5 +1,0 @@
-import * as json from "std/json"
-import * as items from "std/array"
-pub fn valid -> Array<Int> = items.filterMap (\n -> Just (n + 1)) [1, 2]
-
-pub effect fn main = println (json.encodeString [n | n <- (valid ())])

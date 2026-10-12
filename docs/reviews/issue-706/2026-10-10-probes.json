@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "baselineHead": "0601ba3ccbbed07ee9be34db019320356590eb5c",
+  "bun": "1.3.11 (af24e281)",
+  "cliVersion": "0.61.23",
+  "cliCommit": "0601ba3ccbbe",
+  "cliProfile": "optimized release build",
+  "host": "Linux x86_64",
+  "input": {
+    "examples": 965,
+    "modules": 63,
+    "symbols": 1812,
+    "routes": 3976,
+    "bytes": 9270596,
+    "sha256": "7ed1d3a9c882bd285e0936f1c21877d808aa443daf4d6603f6222f40569bcf65"
+  },
+  "sampling": {
+    "intervalMs": 50,
+    "limitMiB": 4096,
+    "scope": "fresh process group including compile descendants"
+  },
+  "runs": {
+    "baseline-compile": {
+      "elapsedMs": 40049,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 422948,
+      "perPidPeakRssKiB": {
+        "2586": 311680,
+        "2641": 111320,
+        "2646": 95080
+      }
+    },
+    "input-prepare": {
+      "elapsedMs": 1632,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 396800,
+      "perPidPeakRssKiB": {
+        "2844": 396800
+      }
+    },
+    "baseline-plan": {
+      "elapsedMs": 2967,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1391028,
+      "perPidPeakRssKiB": {
+        "2865": 1391028
+      }
+    },
+    "baseline-first": {
+      "elapsedMs": 4013,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1276356,
+      "perPidPeakRssKiB": {
+        "2992": 1276356
+      }
+    },
+    "baseline-middle": {
+      "elapsedMs": 3541,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1366864,
+      "perPidPeakRssKiB": {
+        "3010": 1366864
+      }
+    },
+    "baseline-last": {
+      "elapsedMs": 3593,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1265248,
+      "perPidPeakRssKiB": {
+        "3045": 1265248
+      }
+    },
+    "reuse-compile": {
+      "elapsedMs": 51147,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 434204,
+      "perPidPeakRssKiB": {
+        "3523": 311848,
+        "3670": 111728,
+        "3675": 122360
+      }
+    },
+    "reuse-plan": {
+      "elapsedMs": 3531,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1173548,
+      "perPidPeakRssKiB": {
+        "3707": 1173548
+      }
+    },
+    "reuse-first": {
+      "elapsedMs": 3550,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1455800,
+      "perPidPeakRssKiB": {
+        "3742": 1455800
+      }
+    },
+    "reuse-middle": {
+      "elapsedMs": 3778,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1307856,
+      "perPidPeakRssKiB": {
+        "3755": 1307856
+      }
+    },
+    "reuse-last": {
+      "elapsedMs": 3636,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1391928,
+      "perPidPeakRssKiB": {
+        "3770": 1391928
+      }
+    },
+    "64-compile": {
+      "elapsedMs": 42428,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 425868,
+      "perPidPeakRssKiB": {
+        "4349": 311804,
+        "4439": 114184,
+        "4444": 110992
+      }
+    },
+    "64-first": {
+      "elapsedMs": 4577,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1321104,
+      "perPidPeakRssKiB": {
+        "4644": 1321104
+      }
+    },
+    "64-middle": {
+      "elapsedMs": 3674,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1603412,
+      "perPidPeakRssKiB": {
+        "4756": 1603412
+      }
+    },
+    "64-last": {
+      "elapsedMs": 3952,
+      "exitCode": 0,
+      "stopReason": null,
+      "peakTreeRssKiB": 1420864,
+      "perPidPeakRssKiB": {
+        "4775": 1420864
+      }
+    },
+    "baseline-phases": [
+      {
+        "phase": "decode",
+        "elapsedMs": 3612.359419
+      },
+      {
+        "phase": "catalog",
+        "elapsedMs": 395.76168400000006
+      },
+      {
+        "phase": "render",
+        "elapsedMs": 632.8044300000001
+      },
+      {
+        "phase": "encode",
+        "elapsedMs": 470.7566590000006
+      }
+    ],
+    "reuse-phases": [
+      {
+        "phase": "decode",
+        "elapsedMs": 3309.248931
+      },
+      {
+        "phase": "catalog",
+        "elapsedMs": 249.0525230000003
+      },
+      {
+        "phase": "render",
+        "elapsedMs": 436.1284289999994
+      },
+      {
+        "phase": "encode",
+        "elapsedMs": 51.690121999999974
+      }
+    ]
+  },
+  "equivalence": {
+    "probes": ["0+64", "2016+64", "3912+64"],
+    "comparedWith": "unchanged baseline 32+32",
+    "exactPageRecords": 192
+  },
+  "completeSiteAcceptance": "pending; representative probes do not prove the full host+child peak or complete determinism"
+}

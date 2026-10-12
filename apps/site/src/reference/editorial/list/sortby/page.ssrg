@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { listEditorial } from "../../list-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  listEditorial "std/list::sortBy" "list-sortby" "`[{ name: Mio, score: 1 }, { name: Aki, score: 2 }, { name: Ren, score: 2 }]\n`[{ name: Aki, score: 2 }, { name: Mio, score: 1 }, { name: Ren, score: 2 }]\n`[]" (en.copy ()) (ja.copy ())

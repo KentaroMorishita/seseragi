@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { effectSequencingEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  effectSequencingEditorial "std/effect::forEachUntil" "value" "effect-function" "foreach-until" "visit: one\nvisit: stop\nCompleted\nvisit: one\nvisit: two\nCompleted\nCompleted\nvisit: stop\nCompleted\nvisit: one\nvisit: bad\nRejected: bad label\n" (en.copy ()) (ja.copy ())

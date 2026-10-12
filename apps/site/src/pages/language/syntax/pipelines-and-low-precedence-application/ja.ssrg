@@ -1,42 +1,56 @@
-import { ExplanationCopy } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
+import { ArticleCopy } from "../../../../model/article"
 
-pub fn copy -> ReaderCopy = ReaderCopy {
+pub fn copy -> ArticleCopy = ArticleCopy {
   title: "パイプラインと低優先順位の適用",
-  summary: (explanation ()).summary,
-  exampleTitle: "二倍して1を足す流れを左から読む",
-  purpose: [
-    "複数の関数を順に使うとき、前の結果を次へ渡す流れを左から書けるのがパイプラインです。x |> fはf xという普通の関数呼び出しと同じ意味です。",
-    "例では整数3をdoubleで二倍し、addOneで1を加えます。普通の括弧による呼び出しや、右側を引数としてまとめる$とも比較します。",
-  ],
-  reading: [
-    "doubleとaddOneは、どちらもIntという整数型の値を受け取り、整数を返します。fnの後が関数名、value: Intが引数とその型、最後の-> Intが戻り値の型です。",
-    "pipedの3 |> doubleはdouble 3を呼び、6になります。次の行の|> addOneが6を渡すので、結果は7です。実際のソースも、|>を行頭に置いて複数行に分けています。",
-    "nestedのaddOne (double 3)は、括弧の内側の6をaddOneへ渡します。withoutParenthesesのaddOne $ double 3も、右側のdouble 3を一つの引数にまとめます。",
-    "mainは三つの値を改行で分けて出力します。どの書き方も同じ関数へ同じ値を渡すので、7が三行出ます。",
-  ],
-  rules: [
-    "|>は左からまとまります。x |> f |> gはg (f x)です。複数の引数を取る関数では、先の引数をあらかじめ渡すと、パイプラインの左側の値がその次の引数になります。残りの引数まで自動で補うわけではありません。",
-    "$は右からまとまります。f $ g $ xはf (g x)です。Signalへ値を書き込む:=を除く二項演算子は$より強くまとまるため、f $ x + 1ではx + 1全体がfの引数です。",
-    "パイプラインは$より強くまとまります。render $ values |> transformはrender (transform values)です。この読み方ではtransformを一引数の関数とし、まずvaluesを変換してからrenderへ渡します。",
-    "どちらも、普通の関数呼び出しと同じ型検査と評価順序です。渡す値の型は受け取る引数の型に合う必要があります。関数と引数を評価してから本体を呼びます。|>や$だけで計算が遅延したり、並列になったり、Effectの処理が実行されたりはしません。",
-  ],
-  mistakes: [
-    "下のdecorateはStringを受け取るのに、3というIntを渡しているためSES-T0101になります。文字列を渡すか、show 3 |> decorateのように先に文字列へ変換してください。",
-    "単独の|はパイプラインではありません。型の選択肢などで使う別の記号です。また、$は固定の呼び出し構文で、上書きできる演算子や関数値ではありません。($)を引数として渡すことはできません。",
-  ],
-  related: [
-    "先にいくつかの引数を渡して、次の値を受け取る関数を作る方法を確認できます。",
-    "パイプラインを改行しても同じ式になる条件を確認できます。",
-    "$や|>が算術演算子などと混ざる場合のまとまり方を一覧で確認できます。",
-  ],
+  summary: "コマンドの絞り込みと表示を、普通の適用・$・|>でつなぐ。見つからない可能性は、<$>で残したまま扱おう。"
 }
 
 pub fn title -> String = (copy ()).title
 
-pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "変換の流れを左から右へ読むには",
-  summary: "|>は左側の値を右側の関数へ渡します。$は右側の式を引数としてまとめます。",
-  reading: "どちらも、普通の関数呼び出しを読みやすく書く方法です。まず一引数の関数で流れを追います。",
-  result: "同じ3を二倍して1を足すため、パイプライン、括弧、$のどれでも7になります。",
-}
+pub fn opening -> String =
+  "検索する関数ができた。今度は、合う候補だけを残し、表示用のラベルへ変換しよう。下の入れ子、$、パイプラインは、同じデータを同じ関数へ渡している。この作業が読みやすくなる形を選べばいい。"
+
+pub fn flow -> String =
+  "choicesはコマンドの集まりから始まり、条件に合うものを残して、残った名前をbadgeで表示用にする。各段に仕事があるので、ここではパイプラインが読みやすい。keyの中も、空白を取り、小文字にする同じ小さな流れ。|>そのものが新しい関数型や実行動作を追加するわけではない。"
+
+pub fn choice -> String =
+  "nestedは、絞り込んだ候補の集まりを括弧でまとめて渡す。compactの$は、右側の式をmap badgeへの引数としてまとめる。三つの結果が一致するのでsameはTrue。matches \"b\"のような短い呼び出しは、そのままで十分読める。何でもパイプラインへ直すと、記号が増えるだけだね。"
+
+pub fn maybe -> String =
+  "findの結果はMaybe<String>。候補が見つかればJustにラベルが入り、なければNothingになる。badge <$> pickedなら、見つかった場合のラベルだけを変換し、その「ないかもしれない」は残す。\"z\"の検索は見つからないので、badgeを写してもNothingのまま。pickedを直接badgeへ渡すと、String引数には合わない。"
+
+pub fn effects -> String =
+  "mainのdoは、四つの出力処理を順につなぐために使っている。検索とラベル作りはpureな計算のまま。doがEffectをつなぎ、返されたEffectを実行機構が実行する。printlnを飾るための構文でも、前の配列処理をeffectに変えるものでもない。"
+
+pub fn pipelineRules -> String =
+  "|>は左からまとまる。x |> f |> gはg (f x)。引数が複数ある関数なら、arrays.filter (matches \"b\")のように先の引数を渡しておく。左の値は次の引数になり、残りを自動で補うことはない。"
+
+pub fn dollarRules -> String =
+  "$は右からまとまる。f $ g $ xはf (g x)。Signalへの代入:=を除く二項演算子は$より強くまとまるので、f $ x + 1ではx + 1全体をfへ渡す。|>も$より強い。render $ values |> transformはrender (transform values)になる。"
+
+pub fn evaluation -> String =
+  "$は左の関数を一度、次に右の引数を一度評価し、関数適用を一度行う。|>は左の値を一度、次に右の関数を一度評価し、その関数適用を一度行う。型検査はどちらも普通の適用と同じ。これらの記号だけで遅延計算、並列実行、Effectの実行が始まることはない。"
+
+pub fn dollarShapes -> String =
+  "$の直後では改行でき、右辺にif、match、do、ラムダを括弧なしで置ける。下の例では、if式全体がtext.toUpperの引数だ。status Trueは\"ready\"を選び、\"READY\"を返す。Falseにすると\"WAITING\"になるよ。"
+
+pub fn rejected -> String =
+  "下の例はStringを受け取るdecorateへIntを渡すので、SES-T0101になる。Stringを渡すか、show 3で明示的に文字列へ変えてからdecorateを使おう。パイプラインが型変換を補うことはない。"
+
+pub fn syntaxBoundary -> String =
+  "単独の|はパイプラインではない。$も固定の適用構文で、上書きや($)としての引数渡しはできない。短絡評価などの構文専用の記号も、何でも関数値になるわけではない。sectionとして使う前に、演算子のReferenceを確認しよう。"
+
+pub fn bridge -> String =
+  "この章の出口だけど、合成の終点ではない。<$>は文脈を保って中の値を変換する。<*>は文脈の中にある関数と引数を組み合わせる。>>=は中の結果を、次の文脈を返す処理へ渡す。最後の依存関係は、doで結果に名前を付けても書ける。次の入力が独立なのか、前の結果を必要とするのかで選ぼう。詳しい操作はリンク先で。圏論の予習は要らないよ。"
+
+pub fn previousExit -> String = "：章の前のページ。matches \"b\"が返す関数を確認する。"
+
+pub fn layoutExit -> String = "：改行したパイプラインが同じ式として続く条件を調べる。"
+
+pub fn precedenceExit -> String = "：演算子が混ざった式のまとまり方を一覧で調べる。"
+
+pub fn startExit -> String = "：章の見取り図と、小さなkey関数へ戻る。"
+
+pub fn doExit -> String = "：pureな文脈も含め、doをbindの列として読む。"
+
+pub fn operatorsExit -> String = "：入力同士の依存関係から、<$>・<*>・>>=を選ぶ。"

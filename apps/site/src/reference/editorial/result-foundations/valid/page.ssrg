@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { resultFoundationEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  resultFoundationEditorial "std/validation::Valid" "value" "constructor" "validation" "valid" "Accepted: [Ada]\nAccepted: []" (en.copy ()) (ja.copy ())

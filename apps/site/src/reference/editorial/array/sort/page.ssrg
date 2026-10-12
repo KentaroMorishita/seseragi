@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::sort" "array-sort" "[2, 2, 10, 30]\n[30, 2, 10, 2]\n[]" (en.copy ()) (ja.copy ())

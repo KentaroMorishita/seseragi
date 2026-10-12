@@ -1,0 +1,23 @@
+import * as arrays from "std/array"
+import * as signals from "std/signal"
+
+fn remember<A> history: signals.MutableSignal<Array<A>> -> value: A -> Task<Unit> =
+  signals.update (\items: Array<A> -> arrays.concat [
+    items,
+    [value]
+  ]) history
+
+pub effect fn main = do {
+  let empty: Array<Int> = []
+  history <- signals.make empty
+  count <- signals.make 0
+  subscription <- signals.subscribe (remember history) (signals.distinct count)
+  count := 0
+  count := 1
+  signals.unsubscribe subscription
+  count := 2
+  observed <- *history
+  println (show observed)
+  current <- *count
+  println ("current: " + show current)
+}

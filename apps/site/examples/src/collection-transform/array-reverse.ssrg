@@ -1,9 +1,0 @@
-import * as items from "std/array"
-import * as json from "std/json"
-
-let oldestFirst = ["Read", "Review", "Ship"]
-
-pub effect fn main = do {
-  _ <- println (json.encodeString [value | value <- (items.reverse oldestFirst)])
-  println (json.encodeString [value | value <- oldestFirst])
-}

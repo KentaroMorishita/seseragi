@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { webReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  webReaderEditorial "std/web/html::ElementProps" "type" "alias" "elementprops" "<p>Release details</p>\n<p class=\"release-detail\" title=\"Read release notes\">Release details</p>\n<p hidden>Release details</p>" "" "" "" "" (en.copy ()) (ja.copy ())

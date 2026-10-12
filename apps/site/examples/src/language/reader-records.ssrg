@@ -1,6 +1,0 @@
-fn nameOf person: { name: String } -> String = person.name
-
-let original = { name: "Aki", score: 10 }
-let updated = { ...original, score: 42 }
-
-pub effect fn main = println `${original.score}\n${updated.score}\n${nameOf updated}`

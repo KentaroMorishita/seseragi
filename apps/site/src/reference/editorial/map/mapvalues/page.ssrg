@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { mapEditorial } from "../../map-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  mapEditorial "std/map::mapValues" "map-mapvalues" "[[\"tea\",200],[\"cake\",500]]\n[[\"tea\",2],[\"cake\",5]]\n[]" (en.copy ()) (ja.copy ())

@@ -1,9 +1,0 @@
-newtype Distance = Int
-
-impl Distance {
-  operator + self -> other: Distance -> Distance = match (self, other) {
-    (Distance left, Distance right) -> Distance (left + right)
-  }
-}
-
-let total = Distance 20 + Distance 22

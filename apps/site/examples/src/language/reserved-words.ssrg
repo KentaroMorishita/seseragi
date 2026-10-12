@@ -1,7 +1,0 @@
-type Reading =
-  | Sample Int
-
-fn describe reading: Reading -> String =
-  match reading {
-    Sample value -> show value
-  }

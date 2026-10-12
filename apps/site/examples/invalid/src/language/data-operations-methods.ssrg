@@ -1,5 +1,0 @@
-struct Progress { completed: Int }
-impl Progress {
-  fn count progress: Progress -> Int = progress.completed
-}
-pub effect fn main = println (Progress { completed: 2 }.count)

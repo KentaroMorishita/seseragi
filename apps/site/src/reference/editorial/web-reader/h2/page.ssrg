@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { webReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  webReaderEditorial "std/web/html::h2" "value" "function" "h2" "<h2>Release &lt;notes&gt;</h2>" "" "" "" "" (en.copy ()) (ja.copy ())

@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+
+fn invocation command: String -> target: String -> String = command + " " + target
+
+fn parse args: Array<String> -> Maybe<String> =
+  invocation
+  <$> arrays.get 0 args
+  <*> arrays.get 1 args
+
+pub effect fn main = do {
+  println (show (parse ["build", "site"]))
+  println (show (parse ["build"]))
+  println (show (parse []))
+}

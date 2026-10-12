@@ -1,6 +1,0 @@
-import * as text from "std/text"
-
-pub effect fn main = do {
-  _ <- println ("[" + text.concat ["A", "B", ""] + "]")
-  println ("[" + text.concat [] + "]")
-}

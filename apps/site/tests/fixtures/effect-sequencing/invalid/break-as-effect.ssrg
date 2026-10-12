@@ -1,3 +1,0 @@
-import * as effects from "std/effect"
-let wrong: Effect<{}, Never, effects.LoopControl> = effects.Break
-pub effect fn main = effects.succeed ()

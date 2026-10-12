@@ -1,7 +1,0 @@
-alias Named<A> = { label: String, value: A }
-
-fn readValue<A> item: Named<A> -> A = item.value
-
-let count: Named<Int> = { label: "count", value: 42 }
-let state: Named<String> = { label: "state", value: "ready" }
-pub effect fn main = println `${readValue count}\n${readValue state}`

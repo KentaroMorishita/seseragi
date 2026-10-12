@@ -1,2 +1,0 @@
-import * as lists from "std/list"
-pub effect fn main = println (show (lists.get 0 `[10]))

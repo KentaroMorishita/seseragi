@@ -1,3 +1,0 @@
-import * as signals from "std/signal"
-let source = signals.constant 1
-let selected = source >>= (\value: Int -> signals.constant (value + 1))

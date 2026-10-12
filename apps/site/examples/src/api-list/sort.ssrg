@@ -1,7 +1,0 @@
-import * as lists from "std/list"
-let numbers = `[30, 2, 10, 2]
-pub effect fn main = do {
-  println (show (lists.sort numbers))
-  println (show numbers)
-  println (show (lists.sort (lists.empty<Int> ())))
-}

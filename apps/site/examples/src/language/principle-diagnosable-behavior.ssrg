@@ -1,5 +1,0 @@
-fn empty<A> -> List<A> = `[]
-
-let values: List<Int> = empty ()
-
-pub effect fn main = println (show values)

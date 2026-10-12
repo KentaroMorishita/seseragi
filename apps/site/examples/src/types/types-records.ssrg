@@ -1,0 +1,17 @@
+alias Command = { name: String, target: String }
+
+fn label command: Command -> String = {
+  let { name, target } = command
+  name + " " + target
+}
+
+fn at target: String -> command: Command -> Command = { ...command, target }
+
+let build = { name: "build", target: "site" }
+let tests = at "tests" build
+
+pub effect fn main = do {
+  println (label build)
+  println (label tests)
+  println (label { name: "check", target: "types", quiet: True })
+}

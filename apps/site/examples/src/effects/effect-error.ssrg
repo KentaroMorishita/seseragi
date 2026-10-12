@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+import * as text from "std/text"
+
+type InputError deriving Show =
+  | Blank
+
+fn name raw: String -> Either<InputError, String> = {
+  let value = text.trim raw
+  if value == "" then Left Blank else Right value
+}
+
+fn greet name: String -> String = "Hello, " + name + "."
+
+fn greeting raw: String -> Effect<{}, InputError, String> =
+  greet <$> effects.fromEither (name raw)
+
+fn fallback error: InputError -> Task<String> =
+  effects.succeed ("No name: " + show error)
+
+pub effect fn main = do {
+  okay <- effects.recover fallback (greeting " Aki ")
+  println okay
+  blank <- effects.recover fallback (greeting " ")
+  println blank
+}

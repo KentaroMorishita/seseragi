@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { filesystemReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  filesystemReaderEditorial "std/fs::FileTextError" "type" "opaque-type" "strict-utf8" "access: FileNotFound\ndecode: InvalidUtf8 { offset: 1 }\nBOM preserved: True" "strict-utf8" "access: ENOENT\ndecode: TypeError (no byte offset)\nBOM preserved: true" (en.copy ()) (ja.copy ())

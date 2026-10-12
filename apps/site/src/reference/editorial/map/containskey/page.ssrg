@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { mapEditorial } from "../../map-model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  mapEditorial "std/map::containsKey" "map-containskey" "true\nfalse\nfalse" (en.copy ()) (ja.copy ())

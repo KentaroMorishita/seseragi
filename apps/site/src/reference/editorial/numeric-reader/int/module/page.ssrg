@@ -1,6 +1,0 @@
-import { Editorial } from "../../../model"
-import { numericReaderEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  numericReaderEditorial "std/int" "std/int" "int-module" "total: 17\ninvalid count\ncount too large" "total: 17\ninvalid count\ncount too large" (en.copy ()) (ja.copy ())

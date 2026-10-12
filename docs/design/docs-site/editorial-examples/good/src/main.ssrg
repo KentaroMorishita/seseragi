@@ -1,0 +1,6 @@
+fn price unit: Int -> count: Int -> Int = unit * count
+
+let notebook = price 120
+let total = notebook 3
+
+pub effect fn main = println (show total)

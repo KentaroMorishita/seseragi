@@ -1,3 +1,0 @@
-struct Box<A> { value: A }
-let number = Box { value: 42 }
-let changed = Box { ...number, value: "ready" }

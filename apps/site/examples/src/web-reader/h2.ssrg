@@ -1,5 +1,0 @@
-import * as html from "std/web/html"
-
-fn heading -> html.Html<Unit> = html.h2 { children: "Release <notes>" }
-
-pub effect fn main = println (html.renderToString (heading ()))

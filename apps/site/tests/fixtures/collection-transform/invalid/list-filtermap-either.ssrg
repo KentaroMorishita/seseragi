@@ -1,3 +1,0 @@
-import * as items from "std/list"
-import * as ints from "std/int"
-pub fn invalid -> List<Int> = items.filterMap ints.parse `["2"]

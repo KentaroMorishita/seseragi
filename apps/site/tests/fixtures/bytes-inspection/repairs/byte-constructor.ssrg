@@ -1,9 +1,0 @@
-import * as bytes from "std/bytes"
-
-fn describe value: Int -> String = match bytes.byte value {
-  Left (bytes.ByteOutOfRange invalid) -> `Out of range: ${invalid}`
-  Right checked -> `Byte: ${bytes.toInt checked}`
-}
-pub effect fn main = for value <- [0, 255, -1, 256] {
-  println (describe value)
-}

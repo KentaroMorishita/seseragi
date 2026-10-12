@@ -1,3 +1,0 @@
-import { greet } from "docs/greetings"
-
-pub effect fn main = println (greet "Aki")

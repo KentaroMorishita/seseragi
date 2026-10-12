@@ -1,0 +1,299 @@
+import { localized } from "../model/locale"
+import {
+  Article,
+  BulletList,
+  CodeExample,
+  DocumentationLanding,
+  ExternalLink,
+  FlatSection,
+  Heading,
+  InlineCode,
+  InternalLink,
+  NavigationArea,
+  NavigationGroup,
+  NavigationSection,
+  PageDefinition,
+  Paragraph,
+  Terminal,
+  Words
+} from "../model/page"
+pub fn overview -> PageDefinition = PageDefinition {
+  id: "composition.overview",
+  path: "/docs/composition/",
+  kind: DocumentationLanding,
+  title: localized "Values with a context" "文脈のある値を組み合わせる",
+  summary: localized
+    "A search might find nothing. A command might need two arguments. Keep those possibilities in the type while putting small functions together."
+    "検索で何も見つからないことも、コマンドの引数が足りないこともある。その可能性を型に残したまま、小さな関数を組み合わせよう。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "We will start with one search result, build a command from two optional arguments, then look up help using the command we found. These are three different jobs; the notation follows the job."
+    "ひとつの検索結果を加工し、二つの引数からコマンドを組み立て、見つかったコマンドでヘルプを探す。作業が違うから、選ぶ記法も違ってくる。"
+      )]
+    ),
+    BulletList [
+      [InternalLink (
+        localized "<$> — transform what you found" "<$> — 見つかった値を変える",
+        "/docs/composition/transform/"
+      )],
+      [InternalLink (
+        localized "<*> — bring two arguments together" "<*> — 二つの引数を組み合わせる",
+        "/docs/composition/apply/"
+      )],
+      [InternalLink (
+        localized ">>= and do — let the next step depend on the result"
+    ">>=とdo — 結果で次の計算を決める",
+        "/docs/composition/bind/"
+      )]
+    ],
+    Paragraph (
+      [InternalLink (
+        localized "Need the basics of function application?" "関数適用の基本から読みたいときは",
+        "/docs/language/syntax/function-application/"
+      )]
+    )
+  ]
+}
+
+pub fn transform -> PageDefinition = PageDefinition {
+  id: "composition.transform",
+  path: "/docs/composition/transform/",
+  kind: Article,
+  title: localized "<$> — transform what you found" "<$> — 見つかった値を変える",
+  summary: localized "A missing search result stays missing. A found name gets a badge."
+    "見つからなかった結果は、そのまま。見つかった名前には目印を付けよう。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "A search does not promise a name. arrays.find returns Maybe<String>: Just name when a match exists, Nothing otherwise. Our badge function only needs a String. How can we use it without throwing away the missing case?"
+    "検索では、名前が必ず返るとは限らない。arrays.findの結果はMaybe<String>で、見つかればJust name、なければNothing。badgeが受け取るのはStringだけだ。見つからない場合を消さずに、この関数を使ってみよう。"
+      )]
+    ),
+    CodeExample
+    ("composition-transform", localized "The same badge, three contexts" "同じ目印を、三つの文脈で"),
+    Terminal (localized "Output" "実行結果", "Just > build\nNothing\n[> build, > check]"),
+    Heading ("map", localized "Change the value; keep the context" "値を変えて、文脈は残す"),
+    Paragraph (
+      [
+        InlineCode "badge <$> found",
+        Words (
+          localized
+    " reads as applying badge inside found. When found is Just name, the result is Just (badge name). When it is Nothing, there is no name to pass to badge, so the result stays Nothing."
+    "は、foundの中の値にbadgeを適用すると読める。foundがJust nameならJust (badge name)。Nothingには渡す名前がないので、結果もNothingのままだ。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The last line uses exactly the same notation on an Array. This time there can be several names, and badge transforms each one. Maybe keeps presence or absence; Array keeps the collection. This shared operation is called map, and types that support it have a Functor instance."
+    "最後の行では、同じ記法をArrayに使っている。今度は名前がいくつもあり、badgeで一つずつ変わる。Maybeは値の有無を、Arrayはコレクションを保つ。この共通の操作がmapで、それを使える型にはFunctorのinstanceがある。"
+      )]
+    ),
+    Heading ("rules", localized "The type behind the notation" "記法の裏にある型"),
+    Terminal (
+      localized "Functor.map" "Functor.map",
+      "map<F<_>, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F<_>>"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "F is the context: Maybe or Array in this example. A can change to B without changing F. <$> uses Functor.map; it does not unwrap a value and it does not choose a fallback. To handle absence explicitly, match Just/Nothing or use Maybe's ?? syntax."
+    "Fが文脈で、この例ではMaybeやArrayに当たる。AからBへ値の型が変わっても、Fは変わらない。<$>はFunctor.mapを使う記法で、値を取り出したり、代わりの値を選んだりはしない。欠如を処理したいときはJust/Nothingをmatchするか、Maybeの??を使う。"
+      )]
+    ),
+    Heading ("try", localized "Try a different context" "文脈を変えて試す"),
+    Paragraph (
+      [Words (
+        localized
+    "Change commands to an empty array. There is nothing to badge, so the mapped array is empty too. Now change badge's result to an Int, such as the length of the name: the outer Maybe or Array remains."
+    "commandsを空の配列にしてみよう。目印を付ける名前がないので、変換後の配列も空になる。次はbadgeの結果を、名前の長さのようなIntに変える。外側のMaybeやArrayは残ったままだ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Bring two optional arguments together with <*>" "<*>で二つの引数を組み合わせる",
+        "/docs/composition/apply/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Exact signatures in std/prelude" "std/preludeの正確な宣言",
+        "/docs/api/prelude/"
+      )]
+    )
+  ]
+}
+
+pub fn apply -> PageDefinition = PageDefinition {
+  id: "composition.apply",
+  path: "/docs/composition/apply/",
+  kind: Article,
+  title: localized "<*> — bring two arguments together" "<*> — 二つの引数を組み合わせる",
+  summary: localized "Build an invocation when both the command and its target exist."
+    "コマンド名と対象がそろったら、呼び出しを組み立てる。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Suppose the arguments are [\"build\", \"site\"]. invocation joins a command and a target, but arrays.get returns a Maybe for each position. Both inputs can be missing. A plain function call has nowhere to put that possibility."
+    "引数が[\"build\", \"site\"]だとしよう。invocationはコマンドと対象をつなぐ関数。でもarrays.getは、それぞれの位置についてMaybeを返す。どちらも欠ける可能性があり、普通の関数呼び出しにはその可能性を置く場所がない。"
+      )]
+    ),
+    CodeExample
+    ("composition-apply", localized "Two arguments, one result" "二つの引数から、ひとつの結果へ"),
+    Terminal (localized "Output" "実行結果", "Just build site\nNothing\nNothing"),
+    Heading ("apply", localized "A function waiting inside Just" "Justの中で待つ関数"),
+    Paragraph (
+      [
+        InlineCode "invocation <$> arrays.get 0 args",
+        Words (
+          localized
+    " supplies the first argument. Because invocation is curried, the value inside Just is now a function waiting for a target. <*> applies that wrapped function to the wrapped second argument."
+    "で、最初の引数を渡している。invocationはカリー化された関数だから、Justの中には対象を待つ関数が残る。<*>が、その包まれた関数に、包まれた二つ目の引数を適用する。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "For Maybe, the result is Just only when both sides are Just. Missing either argument produces Nothing. The two lookups use known positions; neither lookup needs the result of the other. That is what makes this an applicative combination."
+    "Maybeでは、両側がJustなら結果もJust。どちらかの引数が欠ければNothingになる。二つの検索位置は最初から決まっていて、一方を調べるために他方の結果は必要ない。こういう組み合わせをApplicativeで表せる。"
+      )]
+    ),
+    Heading ("rules", localized "What <*> promises" "<*>の型と範囲"),
+    Terminal (
+      localized "Applicative.apply" "Applicative.apply",
+      "apply<F<_>, A, B> arg1: F<(A -> B)> -> arg2: F<A> -> F<B> where Applicative<F<_>>"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The function and argument must use the same F. <$> and <*> associate to the left, so the example means (invocation <$> first) <*> second. Do not read <*> as parallel execution: each instance defines how its context combines. With Array, it combines every function with every argument; it does not zip positions."
+    "関数と引数は、同じFの中にある必要がある。<$>と<*>は左結合なので、例は(invocation <$> first) <*> secondというまとまり。<*>は並列実行を約束する記号ではなく、文脈の組み合わせ方はinstanceが決める。Arrayでは各関数と各引数の全組み合わせになり、同じ位置をzipする操作ではない。"
+      )]
+    ),
+    Heading ("try", localized "Give it another argument" "引数をもうひとつ渡してみる"),
+    Paragraph (
+      [Words (
+        localized
+    "Try [\"check\", \"types\"], then [\"\", \"site\"]. An empty String still exists, so it is Just, not Nothing. Presence and validity are different questions; validation needs its own function."
+    "[\"check\", \"types\"]、次に[\"\", \"site\"]を渡してみよう。空のStringも値として存在するので、Nothingにはならない。「あるか」と「有効か」は別の問いで、検証には別の関数が必要だ。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "Use the found command to choose the next lookup" "見つかったコマンドで、次の検索を選ぶ",
+        "/docs/composition/bind/"
+      )]
+    ),
+    Paragraph (
+      [InternalLink (
+        localized "arrays.get and its return type" "arrays.getの戻り値を調べる",
+        "/docs/api/array/"
+      )]
+    )
+  ]
+}
+
+pub fn bind -> PageDefinition = PageDefinition {
+  id: "composition.bind",
+  path: "/docs/composition/bind/",
+  kind: Article,
+  title: localized ">>= and do — let the result choose the next step"
+    ">>=とdo — 結果で次の計算を決める",
+  summary: localized "Find the command first. Only then can you look up its help."
+    "まずコマンドを見つける。その結果があって初めて、ヘルプを探せる。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Now the next lookup needs the command itself. help takes a String and returns Maybe<String>, because an unknown command has no help entry. Mapping it over another Maybe would leave a Maybe inside a Maybe."
+    "今度は、次の検索にコマンドの名前そのものが必要だ。helpはStringを受け取ってMaybe<String>を返す。知らないコマンドにはヘルプがないからだ。これを別のMaybeにmapすると、Maybeの中にMaybeが残る。"
+      )]
+    ),
+    CodeExample
+    ("composition-bind", localized "A dependent lookup, two ways" "結果に依存する検索を、二つの書き方で"),
+    Terminal (
+      localized "Output" "実行結果",
+      "Just Just Compile the project.\nJust Compile the project.\nJust Check the types.\nNothing\nNothing"
+    ),
+    Heading ("bind", localized "Continue only when there is a value" "値があれば、その先へ"),
+    Paragraph (
+      [Words (
+        localized
+    "The first output shows the nesting from <$>. >>= instead passes the command to help and keeps help's Maybe as the result. If the first lookup is Nothing, help is not called. If help returns Nothing, the whole lookup is Nothing. There is one shared missing case. This operation is called bind, supplied by Monad.flatMap."
+    "最初の出力には、<$>でできた入れ子が見える。>>=はコマンドをhelpへ渡し、helpが返したMaybeをそのまま結果にする。最初の検索がNothingなら、helpは呼ばれない。helpがNothingを返した場合も、全体がNothingになる。欠如のケースを一つにまとめるこの操作がbindで、Monad.flatMapが担っている。"
+      )]
+    ),
+    Heading ("do", localized "Give the intermediate value a name" "途中の値に名前を付ける"),
+    Paragraph (
+      [
+        InlineCode "command <- arrays.get 0 args",
+        Words (
+          localized
+    " names the value inside Just for the remaining expressions. The last expression, help command, already returns a Maybe. This do block and lookup perform the same dependent composition. A <- binding differs from let command = ...: ordinary let keeps the whole Maybe."
+    "で、Justの中の値を残りの式でcommandと呼べるようにしている。最後のhelp commandは、すでにMaybeを返す。このdoとlookupは同じ依存関係の合成だ。<-はlet command = ...とは違い、普通のletならMaybe全体に名前が付く。"
+        )
+      ]
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The outer do in main combines printing Effects; explained combines Maybes. do belongs to a Monad context, not just to I/O, and a sequence of binds does not introduce parallelism."
+    "mainの外側のdoは、出力するEffectをつないでいる。一方、explainedがつなぐのはMaybeだ。doはI/O専用ではなくMonadの文脈の記法で、bindを並べても並列実行にはならない。"
+      )]
+    ),
+    Heading ("rules", localized "Read >>= in value-first order" "値から読む>>="),
+    Terminal (
+      localized "Monad.flatMap" "Monad.flatMap",
+      "flatMap<M<_>, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M<_>>"
+    ),
+    Paragraph (
+      [Words (
+        localized
+    "The named function takes the callback first; >>= writes the wrapped value first. Both sides keep the same M. Choose <$> when your function returns an ordinary value, <*> to combine wrapped inputs, and >>= when the next wrapped computation depends on a previous value. do gives the last case names and room to grow."
+    "名前付きのflatMapは関数が先、>>=では包まれた値が先に来る。両側は同じMを使う。関数が普通の値を返すなら<$>、包まれた入力を組み合わせるなら<*>、前の値によって次の計算が決まるなら>>=。最後のケースに名前を付けて、段階を増やせるのがdoだ。"
+      )]
+    ),
+    Heading ("try", localized "Add a command you know" "知っているコマンドを増やす"),
+    Paragraph (
+      [Words (
+        localized
+    "Add a run branch to help. Both lookup and explained can use it without changing their composition. Then compare an empty argument array with an unknown command: they reach Nothing by different paths. If you need to keep that reason, Either is a better context than Maybe."
+    "helpにrunの分岐を加えてみよう。lookupもexplainedも、合成の部分を変えずにその分岐を使える。次に、引数が空の場合と未知のコマンドを比べる。Nothingに着く道筋は違う。理由も残したいなら、MaybeよりEitherが向いている。"
+      )]
+    ),
+    Paragraph (
+      [InternalLink
+    (localized "Browse Either's API" "EitherのAPIを調べる", "/docs/api/either/")]
+    ),
+    Paragraph (
+      [InternalLink
+    (localized "Return to the chapter map" "章の見取り図へ戻る", "/docs/composition/")]
+    )
+  ]
+}
+
+pub fn pages -> Array<PageDefinition> = [overview (), transform (), apply (), bind ()]
+pub fn area -> NavigationArea = NavigationArea {
+  id: "composition",
+  title: localized "Values with a context" "文脈のある値",
+  description: localized "Transform, combine, and sequence Maybe values."
+    "Maybeの値を変え、組み合わせ、次の計算へ渡す。",
+  landing: overview (),
+  groups: [NavigationGroup {
+    id: "composition",
+    title: localized "Three kinds of composition" "三つの組み合わせ方",
+    sections: [NavigationSection {
+      id: "composition",
+      title: localized "<$>, <*>, >>=, do" "<$>・<*>・>>=・do",
+      kind: FlatSection,
+      overview: transform (),
+      pages: [apply (), bind ()]
+    }]
+  }]
+}

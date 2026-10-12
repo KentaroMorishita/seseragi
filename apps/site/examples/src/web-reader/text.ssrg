@@ -1,9 +1,0 @@
-import * as html from "std/web/html"
-
-fn sentence -> html.Html<Unit> = {
-  let prefix: html.Html<Unit> = html.text "Updated <today>: "
-  let version: html.Html<Unit> = html.span { children: "v0.61 & later" }
-  html.p { children: [prefix, version] }
-}
-
-pub effect fn main = println (html.renderToString (sentence ()))

@@ -14,6 +14,7 @@ import { dirname, join, relative, resolve } from "node:path"
 import { validateInternalLinks } from "../scripts/build"
 import {
   collectRenderedPages,
+  RENDER_BATCH_SIZE,
   type RenderSelection,
   renderGenerator,
 } from "../scripts/render-generator"
@@ -123,8 +124,37 @@ test("batch collection follows the complete inventory without changing order", (
       ["render", 3, 1],
     ]
   )
-  for (const invalid of [0, -1, 33, 1.5, Number.NaN])
+  for (const invalid of [0, -1, RENDER_BATCH_SIZE + 1, 1.5, Number.NaN])
     expect(() => collectRenderedPages(fake, invalid)).toThrow("batch size")
+})
+
+test("the finite batch cap keeps a complete final partial batch", () => {
+  const inventory = Array.from(
+    { length: RENDER_BATCH_SIZE + 1 },
+    (_, index) => `/page-${index}/`
+  )
+  const calls: RenderSelection[] = []
+  const pages = collectRenderedPages((selection) => {
+    calls.push(selection)
+    return {
+      schema: 1,
+      mode: selection.mode,
+      offset: selection.offset,
+      total: inventory.length,
+      routes: selection.mode === "plan" ? inventory : [],
+      pages:
+        selection.mode === "plan"
+          ? []
+          : inventory
+              .slice(selection.offset, selection.offset + selection.count)
+              .map((route) => ({ route, html: route })),
+    }
+  })
+  expect(pages.map(({ route }) => route)).toEqual(inventory)
+  expect(calls.slice(1).map(({ offset, count }) => [offset, count])).toEqual([
+    [0, RENDER_BATCH_SIZE],
+    [RENDER_BATCH_SIZE, 1],
+  ])
 })
 
 test("batch collection rejects malformed plans and incomplete or reordered output", () => {
@@ -338,7 +368,7 @@ test("typed protocol preserves full navigation and exact HTML across batch sizes
       { schema: 1, mode: "plan", offset: 0, count: 1 },
       { schema: 1, mode: "render", offset: -1, count: 1 },
       { schema: 1, mode: "render", offset: 0, count: 0 },
-      { schema: 1, mode: "render", offset: 0, count: 33 },
+      { schema: 1, mode: "render", offset: 0, count: RENDER_BATCH_SIZE + 1 },
       { schema: 1, mode: "render", offset: 5, count: 2 },
     ]) {
       const result = spawnSync("bun", [entry], {
@@ -354,9 +384,10 @@ test("typed protocol preserves full navigation and exact HTML across batch sizes
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
-  // This test compiles both the protocol and independent direct-render entries.
-  // Canonical CLI 0.61.19 exceeded 120s on macOS; each CLI step remains capped at 90s.
-}, 180_000)
+  // Four independently capped CLI steps (lock/build/lock/run) took 186s in
+  // current-source Cloud verification. Cover their 4 * 90s budgets plus the
+  // transport assertions; preserve each CLI cap and the full-site 420s cap.
+}, 390_000)
 
 test("transport removes request/output files after malformed output or a child failure", () => {
   const directory = mkdtempSync(join(tmpdir(), "seseragi-render-transport-"))

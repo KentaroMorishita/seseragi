@@ -1,2 +1,0 @@
-fn half value: Float -> Float = value / 2.0
-let result = half 42

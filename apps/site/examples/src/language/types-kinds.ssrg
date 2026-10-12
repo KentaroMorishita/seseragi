@@ -1,5 +1,0 @@
-alias Wrapped<M<_>, A> = M<A>
-
-fn keep value: Wrapped<Maybe, Int> -> Maybe<Int> = value
-
-let answer = keep (Just 42)

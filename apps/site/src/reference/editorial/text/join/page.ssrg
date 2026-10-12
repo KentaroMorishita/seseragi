@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { textEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  textEditorial "std/text::join" "text-join" "[A,,B]\n[]\n[AB]" (en.copy ()) (ja.copy ())

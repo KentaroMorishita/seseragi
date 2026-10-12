@@ -1,2 +1,0 @@
-import * as arrays from "std/array"
-pub fn rejected unit: Unit -> Maybe<Int> = arrays.get 0 `[10]

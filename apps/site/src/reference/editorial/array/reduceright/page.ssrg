@@ -1,6 +1,0 @@
-import { Editorial, apiEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  apiEditorial "std/array::reduceRight" "array-reduceright" "2\n10" (en.copy ()) (ja.copy ())

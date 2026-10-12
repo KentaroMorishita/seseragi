@@ -1,7 +1,0 @@
-import * as html from "std/web/html"
-
-fn description -> html.Html<Unit> = html.p {
-  children: "Search & navigation improvements"
-}
-
-pub effect fn main = println (html.renderToString (description ()))

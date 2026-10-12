@@ -1,3 +1,0 @@
-newtype UserId = Int
-fn raw value: Int -> Int = value
-let wrong = raw (UserId 42)

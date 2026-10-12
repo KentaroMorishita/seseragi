@@ -1,8 +1,0 @@
-import { localized } from "../../../../model/locale"
-import { Editorial } from "../../model"
-import { charTextEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  charTextEditorial "std/text/unicode::isMark" "char-text-ismark" "acute accent: True\nU+093E mark: True\nU+20DD mark: True\nA mark: False\né mark: False\n🏽 mark: False\nU+200D mark: False" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "acute accent: true\nU+093E mark: true\nU+20DD mark: true\nA mark: false\né mark: false\n🏽 mark: false\nU+200D mark: false"

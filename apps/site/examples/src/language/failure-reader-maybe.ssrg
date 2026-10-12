@@ -1,7 +1,0 @@
-fn displayName value: Maybe<String> -> String = value ?? "anonymous"
-
-let named = displayName (Just "Aki")
-let missing = displayName Nothing
-let empty = displayName (Just "")
-
-pub effect fn main = println `${named}\n${missing}\nempty:${empty}`

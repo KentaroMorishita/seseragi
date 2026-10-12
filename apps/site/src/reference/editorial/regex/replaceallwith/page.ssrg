@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { regexEditorial } from "../../regex-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  regexEditorial "std/regex::replaceAllWith" "replaceallwith" "[12] [absent] [3]\nnothing to replace\nempty: []" "[12] [absent] [3]\nnothing to replace\nempty: []" (en.copy ()) (ja.copy ())

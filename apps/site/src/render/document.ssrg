@@ -67,6 +67,7 @@ pub fn renderDocument input: BuildInput
               alternateResource "en" (input.origin + localizedRoute En page.path),
               alternateResource "ja" (input.origin + localizedRoute Ja page.path),
               alternateResource "x-default" (input.origin + page.path),
+              resource "icon" "/favicon.ico",
               resource "stylesheet" "/assets/site.css"
             ]
           },

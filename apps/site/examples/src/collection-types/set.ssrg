@@ -1,9 +1,0 @@
-import * as sets from "std/set"
-pub effect fn main = do {
-  let tags: sets.Set<String> = sets.fromIterable ["work", "home", "work"]
-  let updated = sets.insert "travel" tags
-  println (show (sets.toArray tags))
-  println (show (sets.toArray updated))
-  println (tags == sets.fromIterable ["home", "work"])
-  println (sets.size (sets.empty<String> ()))
-}

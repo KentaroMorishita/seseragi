@@ -1,7 +1,0 @@
-let bonus = 2
-let scores = [10, 20, 30]
-let adjusted = map (\score: Int -> score + bonus) scores
-let add: Int -> Int -> Int = \left right -> left + right
-let addFive = add 5
-
-pub effect fn main = println `${show adjusted}\n${addFive 3}`

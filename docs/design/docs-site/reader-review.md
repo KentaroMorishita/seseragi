@@ -1,5 +1,10 @@
 # Core reference reader-review ledger
 
+Docs Reboot note: this file preserves historical results at their recorded
+commits. New editorial policy is [editorial-contract.md](editorial-contract.md).
+Old checked boxes, local work items and leaf issue order do not accept the new
+corpus or schedule work; #601 and [migration-ledger.md](migration-ledger.md) do.
+
 Scope: 106 mapped core-language routes, each reviewed in English and Japanese.
 This is **reader acceptance**, not route, translation-module or compilation coverage.
 All entries were reopened after the corpus-wide reader feedback. Checked entries

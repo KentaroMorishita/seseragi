@@ -1,2 +1,0 @@
-let numbers: Array<Int> = [10, "20", 30]
-pub effect fn main = println (show numbers)

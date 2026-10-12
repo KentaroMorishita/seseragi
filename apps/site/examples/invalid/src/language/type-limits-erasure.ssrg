@@ -1,1 +1,0 @@
-fn inspect<A> value: A -> A = A

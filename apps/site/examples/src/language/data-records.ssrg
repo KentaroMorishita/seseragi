@@ -1,5 +1,0 @@
-let base = { name: "Aki", score: 10 }
-let updated = { ...base, score: 42, active: True }
-
-fn nameOf value: { name: String } -> String = value.name
-let name = nameOf updated

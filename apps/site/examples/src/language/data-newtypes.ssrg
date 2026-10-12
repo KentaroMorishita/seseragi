@@ -1,8 +1,0 @@
-newtype UserId = Int
-
-fn raw value: UserId -> Int = match value {
-  UserId number -> number
-}
-
-let identifier = UserId 42
-let number = raw identifier

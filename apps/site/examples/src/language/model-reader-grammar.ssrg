@@ -1,4 +1,0 @@
-let count: Int = 3
-let next = count + 1
-
-pub effect fn main = println `${count}, ${next}`

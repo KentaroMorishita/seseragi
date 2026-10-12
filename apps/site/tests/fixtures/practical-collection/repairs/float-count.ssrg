@@ -1,4 +1,0 @@
-import * as lists from "std/list"
-import * as json from "std/json"
-pub effect fn main =
-  println (json.encodeString [value | value <- lists.take 1 `[10, 20]])

@@ -1,8 +1,0 @@
-import * as arrays from "std/array"
-
-let values = [1, 2, 3, 4]
-let result = values
-  |> map (\value -> value * 2)
-  |> arrays.filter (\value -> value > 4)
-
-let rendered = show $ result

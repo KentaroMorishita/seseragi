@@ -1,0 +1,7 @@
+import * as text from "std/text"
+
+fn status ready: Bool -> String = text.toUpper $
+  // Pick the label before uppercasing it.
+  if ready then "ready" else "waiting"
+
+pub effect fn main = println (status True)

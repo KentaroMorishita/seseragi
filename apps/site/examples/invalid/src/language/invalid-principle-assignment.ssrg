@@ -1,5 +1,0 @@
-let original = { score: 10 }
-pub effect fn main = {
-  original.score = 11
-  println (show original.score)
-}

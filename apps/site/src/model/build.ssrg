@@ -2,8 +2,6 @@ import * as json from "std/json"
 
 pub struct HighlightPart deriving JsonDecode { text: String, className: String }
 
-pub struct ReferenceReading deriving JsonDecode { en: String, ja: String }
-
 pub struct ExampleSource deriving JsonDecode {
   id: String,
   sourcePath: String,
@@ -20,11 +18,8 @@ pub struct ReferenceSymbol deriving JsonDecode {
   category: String,
   namespace: String,
   itemKind: String,
+  anchor: String,
   signature: String,
-  description: String,
-  descriptionEn: String,
-  descriptionJa: String,
-  reading: ReferenceReading,
   typeParameters: Array<String>,
   constraints: Array<String>,
   instanceClass: String,

@@ -1,5 +1,0 @@
-struct Counter { value: Int }
-impl Counter {
-  fn add counter: Counter -> amount: Int -> Counter = Counter { value: counter.value + amount }
-}
-pub effect fn main = println 0

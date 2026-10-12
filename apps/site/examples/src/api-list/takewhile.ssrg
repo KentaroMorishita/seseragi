@@ -1,8 +1,0 @@
-import * as lists from "std/list"
-fn positive value: Int -> Bool = value > 0
-pub effect fn main = do {
-  println (show (lists.takeWhile positive `[1, 2, 0, 3]))
-  println (show (lists.takeWhile positive `[0, 3]))
-  println (show (lists.takeWhile positive `[1, 2]))
-  println (show (lists.takeWhile positive (lists.empty<Int> ())))
-}

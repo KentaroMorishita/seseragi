@@ -1,7 +1,0 @@
-fn identity<A> value: A -> A = value
-fn empty<A> -> List<A> = `[]
-
-let number = identity 42
-let text = identity<String> "hello"
-let values: List<Int> = empty ()
-let explicit = empty<Int> ()

@@ -1,3 +1,0 @@
-import * as json from "std/json"
-pub fn same left: json.JsonReadError -> right: json.JsonReadError -> Bool =
-  left == right

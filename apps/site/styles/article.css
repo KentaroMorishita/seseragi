@@ -63,6 +63,28 @@
   padding: 26px;
 }
 
+.module-signatures .api-reference {
+  margin-top: 20px;
+  scroll-margin-top: 90px;
+}
+
+.module-signatures h3,
+.api-reference-identity {
+  overflow-wrap: anywhere;
+}
+
+.module-signatures h3 {
+  margin-top: 0;
+}
+
+.symbol-index ul {
+  columns: 2 220px;
+}
+
+.symbol-index li {
+  break-inside: avoid;
+}
+
 .api-reference-heading {
   display: flex;
   align-items: start;

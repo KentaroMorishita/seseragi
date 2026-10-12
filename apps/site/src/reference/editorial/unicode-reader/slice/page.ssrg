@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { unicodeEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  unicodeEditorial "std/text/grapheme::slice" "unicode-slice" "preview: [A👍🏽]\npreview: [👍🏽é]\npreview: []\ninvalid: InvalidGraphemeRange { start: 0, end: 4, length: 3 }\ninvalid: InvalidGraphemeRange { start: 2, end: 1, length: 3 }\ninvalid: InvalidGraphemeRange { start: -1, end: 2, length: 3 }\npreview: []" "std/text/grapheme" (en.copy ()) (ja.copy ())

@@ -46,7 +46,7 @@ pub fn homeLayout<Action> input: BuildInput
                   anchor
                     (translate locale (localized (firstEn.title ()) (firstJa.title ())))
                     (localizedRoute locale "/docs/first-run/") "primary-action",
-                  anchor messages.playground input.playgroundUrl "secondary-action"
+                  anchor (translate locale (localized "Read the first chapter" "最初の章を読む")) (localizedRoute locale "/docs/language/syntax/function-application/") "secondary-action"
                 ]
               }
             ]

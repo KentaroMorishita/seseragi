@@ -1,8 +1,0 @@
-import * as floats from "std/float"
-
-pub effect fn main = do {
-  let total: Int = 5
-  let packages: Int = 2
-  let perPackage: Float = floats.fromInt total / floats.fromInt packages
-  println ("per package: " + floats.format perPackage)
-}

@@ -1,7 +1,0 @@
-import { Editorial } from "../../../model"
-import { numericReaderEditorial } from "../../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  numericReaderEditorial "std/float::format" "std/float" "float-format" "12.5\n12.0\n-0.0\n1e21\nNaN\nInfinity\n-Infinity" "12.5\n12\n0\n1e+21\nNaN\nInfinity\n-Infinity" (en.copy ()) (ja.copy ())

@@ -1,8 +1,0 @@
-import { localized } from "../../../../model/locale"
-import { Editorial } from "../../model"
-import { charTextEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  charTextEditorial "std/text/unicode::isDecimalDigit" "char-text-isdecimaldigit" "3 decimal: True\n٣ decimal: True\n３ decimal: True\n² decimal: False\nⅣ decimal: False" "std/text/unicode" (en.copy ()) (ja.copy ()) (localized (en.comparison ()) (ja.comparison ())) (localized (en.comparisonBoundary ()) (ja.comparisonBoundary ())) "3 decimal: true\n٣ decimal: true\n３ decimal: true\n² decimal: false\nⅣ decimal: false"

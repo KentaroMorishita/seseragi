@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { collectionTransformEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  collectionTransformEditorial "std/list::reverse" "list-reverse" (en.copy ()) (ja.copy ())

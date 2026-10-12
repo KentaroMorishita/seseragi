@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { urlReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  urlReaderEditorial "std/web/navigation::setQuery" "value" "function" "replace-filter" "q=tea&tag=sale&page=3\nq=tea&tag=books&page=3&tag=music\n" (en.copy ()) (ja.copy ())

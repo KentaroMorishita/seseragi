@@ -1,6 +1,0 @@
-import * as effects from "std/effect"
-
-fn lineTotal price: Int -> quantity: Int -> Int = price * quantity
-
-pub fn plannedTotal price: Int -> quantity: Int -> Task<Int> =
-  effects.succeed (lineTotal price quantity)

@@ -1,0 +1,48 @@
+import { localized } from "../model/locale"
+import {
+  BulletList,
+  Heading,
+  InternalLink,
+  PageDefinition,
+  Paragraph,
+  Search,
+  SiteLanding,
+  Words
+} from "../model/page"
+
+pub fn page -> PageDefinition = PageDefinition {
+  id: "docs.search",
+  path: "/docs/search/",
+  kind: SiteLanding,
+  title: localized "Find an article or a declaration" "記事や宣言を探す",
+  summary: localized "Search by a topic, function, type, or module name."
+    "話題・関数・型・モジュール名から、読みたいところへ。",
+  blocks: [
+    Paragraph (
+      [Words (
+        localized
+    "Try a term such as subscribe or match. Add a module name to distinguish functions with the same name: std/signal map. Articles use the language of this page; API names and types keep their spelling."
+    "subscribeやmatchのような言葉で試してみよう。同じ名前の関数を絞るなら、std/signal mapのようにモジュール名を添える。記事はこのページの言語で、APIの名前や型はそのまま検索できる。"
+      )]
+    ),
+    Search,
+    Heading ("browse", localized "Browse by chapter or module" "章やモジュールから辿る"),
+    Paragraph (
+      [Words (
+        localized "These links work even with JavaScript turned off."
+    "JavaScriptを切っていても、ここから読める。"
+      )]
+    ),
+    BulletList [
+      [InternalLink (localized "Functions and notation" "関数と記法", "/docs/language/")],
+      [InternalLink (localized "Types and patterns" "型とパターン", "/docs/types/")],
+      [InternalLink (localized "Values with a context" "文脈のある値", "/docs/composition/")],
+      [InternalLink (localized "Jobs and failures" "処理と失敗", "/docs/effects/")],
+      [InternalLink (localized "Changing values" "変わっていく値", "/docs/signals/")],
+      [InternalLink (
+        localized "API Reference — module index" "API Reference — モジュール索引",
+        "/docs/api/"
+      )]
+    ]
+  ]
+}

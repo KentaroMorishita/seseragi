@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { urlReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  urlReaderEditorial "std/web/navigation::resolveUrl" "value" "function" "resolve-search-link" "https://example.test/search?tag=books\nhttps://example.test/catalog/search?tag=books\n" (en.copy ()) (ja.copy ())

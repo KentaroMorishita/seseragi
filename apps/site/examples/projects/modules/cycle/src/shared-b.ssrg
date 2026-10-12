@@ -1,3 +1,0 @@
-import { a } from "./shared-a"
-
-pub let b: Int = a + 1

@@ -1,1 +1,0 @@
-pub effect fn main = println "Saved 3 files"

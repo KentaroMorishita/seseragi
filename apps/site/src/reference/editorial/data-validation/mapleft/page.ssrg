@@ -1,6 +1,0 @@
-import { Editorial } from "../../model"
-import { dataValidationEditorial } from "../../data-validation-model"
-import * as en from "./en"
-import * as ja from "./ja"
-pub fn editorial -> Editorial =
-  dataValidationEditorial "std/either::mapLeft" "mapleft" "Cannot book: seats field: seats must be positive\nSeats: 2" (en.copy ()) (ja.copy ())

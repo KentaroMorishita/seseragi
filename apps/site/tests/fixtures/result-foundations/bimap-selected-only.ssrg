@@ -1,9 +1,0 @@
-import * as either from "std/either"
-fn broken n: Int -> Int = n / 0
-fn unchanged n: Int -> Int = n
-pub effect fn main = do {
-  let left: Either<Int, Int> = Left 7
-  let right: Either<Int, Int> = Right 8
-  println (show (either.bimap unchanged broken left))
-  println (show (either.bimap broken unchanged right))
-}

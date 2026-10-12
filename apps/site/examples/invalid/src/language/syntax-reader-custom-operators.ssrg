@@ -1,2 +1,0 @@
-operator infixl 4 ^ left: Int -> right: Int -> Int = left + right
-pub effect fn main = println 1

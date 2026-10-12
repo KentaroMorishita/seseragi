@@ -9,6 +9,7 @@ import {
   writeFileSync,
 } from "node:fs"
 import { dirname, join } from "node:path"
+import { sitePhase } from "./profile"
 
 export type RenderedPage = { route: string; html: string }
 export type RenderSelection = {
@@ -25,7 +26,9 @@ type RenderResponse = {
   routes: string[]
   pages: RenderedPage[]
 }
-export const RENDER_BATCH_SIZE = 32
+// The matching Seseragi range guard is in render/batch.ssrg. Full-input 64-page
+// probes and complete builds are measured under a 4 GiB process-tree ceiling.
+export const RENDER_BATCH_SIZE = 64
 const requestTimeout = 90_000
 const routePattern = /^\/(?:[a-z0-9-]+\/)*$/u
 
@@ -75,7 +78,7 @@ export function collectRenderedPages(
     Number.isSafeInteger(batchSize) &&
       batchSize > 0 &&
       batchSize <= RENDER_BATCH_SIZE,
-    "Render batch size must be 1 to 32"
+    "Render batch size must be 1 to 64"
   )
   const selection: RenderSelection = {
     schema: 1,
@@ -134,40 +137,49 @@ export function renderGenerator(
 ): RenderedPage[] {
   // Serialize external input once: every process gets precisely the same full
   // metadata. Fresh processes release per-batch typed JSON/HTML allocations.
-  const encodedInput = JSON.stringify(input)
+  const encodedInput = sitePhase("serialize", () => JSON.stringify(input))
   const temporary = mkdtempSync(join(dirname(entry), ".render-"))
   const inputPath = join(temporary, "render-input.jsonl")
   const outputPath = join(temporary, "rendered-batch.json")
   try {
-    return collectRenderedPages((selection) => {
-      writeFileSync(
-        inputPath,
-        `${JSON.stringify(selection).slice(0, -1)},"input":${encodedInput}}\n`
-      )
-      let inputDescriptor: number | undefined
-      let outputDescriptor: number | undefined
-      try {
-        inputDescriptor = openSync(inputPath, "r")
-        outputDescriptor = openSync(outputPath, "wx")
-        const result = spawnSync("bun", [entry], {
-          cwd: dirname(entry),
-          encoding: "utf8",
-          stdio: [inputDescriptor, outputDescriptor, "pipe"],
-          timeout: requestTimeout,
-        })
-        assert.equal(
-          result.status,
-          0,
-          `${selection.mode} ${selection.offset}+${selection.count}: ${result.stderr?.toString() || result.error?.message || `generator status ${result.status}, signal ${result.signal}`}`
-        )
-        return JSON.parse(readFileSync(outputPath, "utf8")) as unknown
-      } finally {
-        if (inputDescriptor !== undefined) closeSync(inputDescriptor)
-        if (outputDescriptor !== undefined) closeSync(outputDescriptor)
-        rmSync(inputPath, { force: true })
-        if (outputDescriptor !== undefined) rmSync(outputPath, { force: true })
-      }
-    }, batchSize)
+    return collectRenderedPages(
+      (selection) =>
+        sitePhase(
+          selection.mode,
+          () => {
+            writeFileSync(
+              inputPath,
+              `${JSON.stringify(selection).slice(0, -1)},"input":${encodedInput}}\n`
+            )
+            let inputDescriptor: number | undefined
+            let outputDescriptor: number | undefined
+            try {
+              inputDescriptor = openSync(inputPath, "r")
+              outputDescriptor = openSync(outputPath, "wx")
+              const result = spawnSync("bun", [entry], {
+                cwd: dirname(entry),
+                encoding: "utf8",
+                stdio: [inputDescriptor, outputDescriptor, "pipe"],
+                timeout: requestTimeout,
+              })
+              assert.equal(
+                result.status,
+                0,
+                `${selection.mode} ${selection.offset}+${selection.count}: ${result.stderr?.toString() || result.error?.message || `generator status ${result.status}, signal ${result.signal}`}`
+              )
+              return JSON.parse(readFileSync(outputPath, "utf8")) as unknown
+            } finally {
+              if (inputDescriptor !== undefined) closeSync(inputDescriptor)
+              if (outputDescriptor !== undefined) closeSync(outputDescriptor)
+              rmSync(inputPath, { force: true })
+              if (outputDescriptor !== undefined)
+                rmSync(outputPath, { force: true })
+            }
+          },
+          { offset: selection.offset, count: selection.count }
+        ),
+      batchSize
+    )
   } finally {
     rmSync(temporary, { recursive: true, force: true })
   }

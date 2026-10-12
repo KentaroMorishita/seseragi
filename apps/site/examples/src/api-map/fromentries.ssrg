@@ -1,9 +1,0 @@
-import * as maps from "std/map"
-import * as json from "std/json"
-
-pub effect fn main = do {
-  let values = maps.fromEntries [("b", 2), ("a", 1), ("b", 9)]
-  let noPairs: Array<(String, Int)> = []
-  println (json.encodeString (maps.entries values))
-  println (json.encodeString (maps.entries (maps.fromEntries noPairs)))
-}

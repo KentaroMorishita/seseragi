@@ -1,2 +1,0 @@
-import * as effects from "std/effect"
-fn failed -> Task<Int> = effects.fail "missing"

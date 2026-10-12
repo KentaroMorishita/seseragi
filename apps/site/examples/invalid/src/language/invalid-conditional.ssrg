@@ -1,2 +1,0 @@
-fn invalid value: Int -> String =
-  if value then "yes" else "no"

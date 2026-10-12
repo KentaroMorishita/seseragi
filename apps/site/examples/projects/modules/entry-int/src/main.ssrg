@@ -1,3 +1,0 @@
-import * as effects from "std/effect"
-
-pub effect fn main = effects.succeed 42

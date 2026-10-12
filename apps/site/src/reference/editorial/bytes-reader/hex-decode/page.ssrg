@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { bytesReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  bytesReaderEditorial "std/bytes/hex::decode" "value" "function" "read-hexadecimal-payload" (en.copy ()) (ja.copy ())

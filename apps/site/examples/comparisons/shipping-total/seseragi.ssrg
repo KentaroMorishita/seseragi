@@ -1,8 +1,0 @@
-fn totalWithShipping freeFrom: Int -> fee: Int -> subtotal: Int -> Int =
-  if subtotal >= freeFrom then subtotal else subtotal + fee
-
-let standardTotal = totalWithShipping 5000 500
-let smallOrder = standardTotal 3200
-let largeOrder = standardTotal 5000
-
-pub effect fn main = println `${smallOrder}, ${largeOrder}`

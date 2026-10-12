@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { terminalReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  terminalReaderEditorial "std/process::ProcessError" "type" "opaque-type" "process-failure" (en.copy ()) (ja.copy ())

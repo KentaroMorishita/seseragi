@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { urlReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  urlReaderEditorial "std/web/navigation::queryEntries" "value" "function" "read-selected-tags" "books, music\nMissing count: 0\nEmpty count: 1\ntag=books | q=tea cake | tag=music | empty=\n" (en.copy ()) (ja.copy ())

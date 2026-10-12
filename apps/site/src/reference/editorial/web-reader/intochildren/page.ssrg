@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { webReaderEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  webReaderEditorial "std/web/html::trait(IntoChildren)" "trait" "trait" "intochildren" "<section>Release</section>\n<section></section>\n<section><p>Details</p></section>\n<section><h2>Release</h2><p>Details</p></section>\n<section><h2>Release</h2><p>Details</p></section>\n<section>Release<p>Details</p></section>" "" "" "" "" (en.copy ()) (ja.copy ())

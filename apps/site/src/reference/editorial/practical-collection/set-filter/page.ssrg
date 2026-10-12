@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { practicalCollectionEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  practicalCollectionEditorial "std/set::filter" "set-filter-ids" (en.copy ()) (ja.copy ())

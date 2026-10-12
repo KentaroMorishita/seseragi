@@ -1,39 +1,55 @@
-import { ExplanationCopy } from "../../explanation"
-import { ReaderCopy } from "../../reader-article"
+import { ArticleCopy } from "../../../../model/article"
 
-pub fn copy -> ReaderCopy = ReaderCopy {
+pub fn copy -> ArticleCopy = ArticleCopy {
   title: "Function types and currying",
-  summary: (explanation ()).summary,
-  purpose: [
-    "When some inputs are always the same, create a function that accepts only the remaining inputs instead of writing the fixed input each time. addOne can add 1 to any integer it receives. This is useful when configuring a calculation for repeated use.",
-    "In TypeScript, an arrow function such as const addOne = (value: number) => add(1, value) expresses the same use. Seseragi’s ordinary call syntax also creates a function with some inputs fixed. This comparison limits the inputs to integers."
-  ],
-  exampleTitle: "Compare a complete call with a function given 1 in advance",
-  reading: [
-    "Int -> Int means a function receiving one integer and returning an integer. This is addOne’s type. add’s Int -> Int -> Int groups as Int -> (Int -> Int): receiving the first integer returns a function receiving the next integer.",
-    "Supplying only some arguments is partial application. Arranging functions to accept arguments one at a time is called currying. Ordinary multi-parameter functions already have this form, so they do not need a special rewrite.",
-    "The final pub effect fn main is the public execution entry. effect fn returns an Effect describing work such as output, which the runner executes. println writes text and a newline. ${direct} and ${answer} within the backticks insert their displayed values."
-  ],
-  rules: [
-    "Function types group to the right. Int -> Int -> Int differs from (Int -> Int) -> Int. The latter receives a function of type Int -> Int, rather than an integer, and returns an integer. Use explicit parentheses when a function itself is a parameter.",
-    "Arguments are supplied from left to right and checked one at a time against the required type at that step. If arguments remain, the result is a function. For add, an integer result arrives only after all required arguments. Passing one tuple with add (1, 2) is a different parameter type and call.",
-    "This is the language’s function type and calling model, not a change made later by an optimizer. Functions whose types are chosen at each use may retain unresolved types or conditions on supported operations, called trait constraints. Remaining arguments or the type required where the result is used can determine them later.",
-    "Even fn answer -> Int = 42, with no named parameter, has type Unit -> Int. Unit represents an input with no payload and has the sole value (). Call answer () to obtain 42. answer alone is a function, and merely declaring it does not execute the body.",
-    "Editor hovers show right-grouped signatures and the function type remaining after partial application. For an error, check which individual argument failed rather than treating every parameter as one combined call."
-  ],
-  mistakes: ["add 1 below is a function of type Int -> Int, so it does not satisfy an annotation requiring Int. SES-T0101 reports expected Int and actual Int -> Int. To obtain 3, supply the rest with add 1 2. To keep a function, write let addOne = add 1 and call addOne 2 later."],
-  related: [
-    "Check complete calls and the role of parentheses.",
-    "Find where to write parameter and result types.",
-    "Look up functions whose types can be chosen at each use."
-  ],
-}
-
-pub fn explanation -> ExplanationCopy = ExplanationCopy {
-  question: "How do I fix the number to add at 1 and supply the other number later?",
-  summary: "add 1 2 is an ordinary call supplying two integers. Supply just one with add 1 and the result is a function waiting for the remaining integer.",
-  reading: "fn declares a function. add’s left: Int and right: Int are its two integer parameters; the intermediate -> continues to the next parameter and the final -> Int specifies an integer result. The body after = computes left + right. First, add 1 2 returns 3, named direct.",
-  result: "let addOne = add 1 supplies only left with 1 and names the function waiting for right addOne. It is not yet an integer result. The next call, addOne 2, supplies the remaining 2, so answer is also 3 and the output is 3, 3."
+  summary: "Configure a command search with partial application, pass functions to filter and map, and read the type that remains."
 }
 
 pub fn title -> String = (copy ()).title
+
+pub fn opening -> String =
+  "The search text is \"b\" for now. We could pass it with every command name, but watch what happens when matches receives only that first argument. We get a condition we can hand to filter, for the full command list and for our shortcuts."
+
+pub fn partial -> String =
+  "matches takes a query, then a name, and returns Bool. matches \"b\" therefore has type String -> Bool. builds is that function, not a search result. arrays.filter calls it for each label to decide what to keep. The first output preserves the spaces and spelling from commands; the second filters the shortcut list with the same condition."
+
+pub fn effects -> String =
+  "The do block in main sequences these two output Effects. main returns the combined Effect, which the runner executes to print the command choices and then the shortcuts. The filtering itself is a pure calculation."
+
+pub fn lambda -> String =
+  "For a separate small exercise, count the text in the labels after trimming it. This calculation is independent of the search above. The lambda beginning with \\label is a one-off function that measures one label; map gives us the lengths as Array<Int>. These lengths count Unicode scalars, not terminal display columns."
+
+pub fn section -> String =
+  "An operator can be a function value too: (+) is the curried addition function. reduce 0 (+) combines the lengths into their total, 19. This parenthesized operator reference is an operator section. Passing a function to filter, map or reduce is what makes those operations higher-order functions."
+
+pub fn arrows -> String =
+  "Function arrows group to the right: String -> String -> Bool means String -> (String -> Bool). A higher-order parameter needs its own grouping: (String -> Bool) is one predicate argument. This is part of the language semantics, not an optimization that turns an ordinary call into something different."
+
+pub fn argumentTypes -> String =
+  "Arguments arrive from the left, one at a time, and each is checked against the next parameter. Until the last argument arrives, the result is a function. The small integer program below isolates the same rule: direct and addOne 2 both produce 3. Passing a tuple with add (1, 2) instead would pass one tuple, not two Int arguments."
+
+pub fn generic -> String =
+  "A generic function can still have unresolved type parameters or trait constraints after partial application. The remaining arguments or expected result type supply the missing information. Inspect the remaining function type rather than guessing from the final value you intend to get."
+
+pub fn unit -> String =
+  "Even a declaration without named parameters takes Unit. fn answer -> Int = 42 has type Unit -> Int; answer () obtains 42, while answer by itself is still a function. Declaring the function does not run its body."
+
+pub fn rejected -> String =
+  "Here add 1 has type Int -> Int, but the annotation asks for Int, so the compiler reports SES-T0101. Add the remaining argument with add 1 2 if you need the value 3, or retain the function with let addOne = add 1 if you plan to call it later."
+
+pub fn previousExit -> String = " — chapter start: how key is declared and called."
+
+pub fn nextExit -> String =
+  " — next: connect filtering to display, and handle a missing match."
+
+pub fn lambdaExit -> String =
+  " — look up lambda parameters and scope without reading the chapter again."
+
+pub fn annotationsExit -> String =
+  " — check where to put a type on a function-valued argument."
+
+pub fn genericExit -> String =
+  " — inspect type parameters and constraints left by partial application."
+
+pub fn operatorExit -> String =
+  " — look up which operator references are available and their fixities."

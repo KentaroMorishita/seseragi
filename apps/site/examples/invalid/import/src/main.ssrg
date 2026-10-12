@@ -1,3 +1,0 @@
-import { functionThatDoesNotExist } from "std/array"
-
-let value = functionThatDoesNotExist [1, 2, 3]

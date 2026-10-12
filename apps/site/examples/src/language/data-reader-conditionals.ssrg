@@ -1,6 +1,0 @@
-fn shipping subtotal: Int -> Int = if subtotal >= 5000 then 0 else 500
-
-let small = shipping 3200
-let threshold = shipping 5000
-
-pub effect fn main = println `${small}\n${threshold}`

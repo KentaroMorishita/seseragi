@@ -1,3 +1,0 @@
-pub effect fn announceAll messages: Array<String> = for message <- messages {
-  println message
-}

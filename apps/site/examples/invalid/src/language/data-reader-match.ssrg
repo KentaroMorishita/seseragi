@@ -1,7 +1,0 @@
-type Delivery =
-  | Pending
-  | Shipped String
-
-fn label delivery: Delivery -> String = match delivery {
-  Shipped tracking -> tracking
-}

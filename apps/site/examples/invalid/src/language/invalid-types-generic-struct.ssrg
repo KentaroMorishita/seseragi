@@ -1,2 +1,0 @@
-struct Box<A> { value: A, }
-let wrong = Box<Int> { value: "hello" }

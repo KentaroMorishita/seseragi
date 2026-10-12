@@ -1,4 +1,0 @@
-import * as maps from "std/map"
-fn keep quantity: Int -> sku: String -> Bool = quantity > 0 && sku != "hold"
-let stock: maps.Map<String, Int> = maps.fromEntries [("tea", 2)]
-pub fn rejected unit: Unit -> maps.Map<String, Int> = maps.filter keep stock

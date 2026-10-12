@@ -1,6 +1,0 @@
-struct User {
-  id: Int,
-  name: String,
-}
-
-let invalid = User { id: 1 }

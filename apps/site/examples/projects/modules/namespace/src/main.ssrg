@@ -1,3 +1,0 @@
-import * as words from "./greeting"
-
-pub effect fn main = println (words.greet "Aki")

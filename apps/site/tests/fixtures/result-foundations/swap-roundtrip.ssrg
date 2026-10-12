@@ -1,9 +1,0 @@
-import * as either from "std/either"
-pub effect fn main = do {
-  let left: Either<String, Int> = Left "bad"
-  let right: Either<String, Int> = Right 8
-  println (show (either.swap left))
-  println (show (either.swap right))
-  println (show (either.swap (either.swap left)))
-  println (show (either.swap (either.swap right)))
-}

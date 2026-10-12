@@ -1,7 +1,0 @@
-import * as text from "std/text"
-
-pub effect fn main = do {
-  _ <- println ("[" + text.join "," ["A", "", "B"] + "]")
-  _ <- println ("[" + text.join "," [] + "]")
-  println ("[" + text.join "" ["A", "B"] + "]")
-}

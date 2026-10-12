@@ -1,17 +1,8 @@
 import assert from "node:assert/strict"
+import { createHash } from "node:crypto"
 import { readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { highlightSeseragi } from "../../playground/src/editor/seseragi-language"
-import { bytesInspectionReading } from "./bytes-inspection-reading"
-import { bytesReaderReading } from "./bytes-reader-reading"
-import { effectSequencingReading } from "./effect-sequencing-reading"
-import { filesystemReaderReading } from "./filesystem-reader-reading"
-import { jsonReaderReading } from "./json-reader-reading"
-import { referenceDescription } from "./reference-copy"
-import { resultFoundationReading } from "./result-foundation-reading"
-import { signatureReading } from "./signature-reading"
-import { stdinReaderReading } from "./stdin-reader-reading"
-import { terminalReaderReading } from "./terminal-reader-reading"
 
 const root = resolve(import.meta.dir, "../../..")
 const referencePath = join(
@@ -251,7 +242,6 @@ function compilerReferenceInstances(): Array<
         )
       })
   )
-  assert.equal(instances.length, 357, "Unexpected compiler instance count")
   assert.equal(
     new Set(instances.map(({ identity }) => identity)).size,
     instances.length,
@@ -332,10 +322,6 @@ export function compilerReferenceModules() {
       targets: module.targets,
       items: module.items.map((item) => {
         assert.equal(item.module, module.specifier, item.identity)
-        const description =
-          item.description === ""
-            ? { en: "", ja: "" }
-            : referenceDescription(item.description)
         return {
           identity: item.identity,
           name: item.name,
@@ -343,40 +329,8 @@ export function compilerReferenceModules() {
           category: item.category,
           namespace: item.namespace,
           itemKind: item.kind,
+          anchor: `symbol-${createHash("sha256").update(`${item.identity}\u0000${item.namespace}\u0000${item.kind}`).digest("hex").slice(0, 20)}`,
           signature: item.signature,
-          description: item.description,
-          descriptionEn: description.en,
-          descriptionJa: description.ja,
-          reading: bytesInspectionReading(
-            item,
-            stdinReaderReading(
-              item,
-              terminalReaderReading(
-                item,
-                bytesReaderReading(
-                  item,
-                  jsonReaderReading(
-                    item,
-                    effectSequencingReading(
-                      item,
-                      filesystemReaderReading(
-                        item,
-                        resultFoundationReading(
-                          item,
-                          signatureReading(
-                            item.signature,
-                            item.kind,
-                            item.typeParameters,
-                            item.constraints
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          ),
           typeParameters: item.typeParameters,
           constraints: item.constraints,
           instanceClass: item.instanceClass ?? "",

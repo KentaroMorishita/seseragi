@@ -1,3 +1,0 @@
-import * as bytes from "std/bytes"
-import * as hex from "std/bytes/hex"
-pub effect fn main = println (hex.encode (bytes.fromInts [65]))

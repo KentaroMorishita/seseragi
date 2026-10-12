@@ -1,3 +1,0 @@
-let quantity: Int = "3"
-
-pub effect fn main = println (show quantity)

@@ -1,0 +1,12 @@
+fn preview<A> value: Maybe<A> -> String where Show<A> = match value {
+  Just item -> show item
+  Nothing -> "(empty)"
+}
+
+let missing: Maybe<Int> = Nothing
+
+pub effect fn main = do {
+  println (preview (Just "build"))
+  println (preview (Just 3))
+  println (preview missing)
+}

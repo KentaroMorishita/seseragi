@@ -1,5 +1,0 @@
-operator infixr 4 <+>
-  left: String -> right: String -> String =
-  append left right
-
-let label = "Seseragi" <+> " docs"

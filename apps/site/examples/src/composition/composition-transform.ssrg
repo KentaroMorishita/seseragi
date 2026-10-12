@@ -1,0 +1,14 @@
+import * as arrays from "std/array"
+import * as text from "std/text"
+
+fn badge name: String -> String = "> " + text.trim name
+
+let commands = [" build ", "check"]
+let found = arrays.find (text.startsWith " build") commands
+let missing = arrays.find (text.startsWith "run") commands
+
+pub effect fn main = do {
+  println (show (badge <$> found))
+  println (show (badge <$> missing))
+  println (show (badge <$> commands))
+}

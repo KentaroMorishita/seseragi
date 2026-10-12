@@ -3,8 +3,7 @@ import * as html from "std/web/html"
 import { Messages } from "../i18n/model"
 import { BuildInput, ExampleSource, ReferenceSymbol } from "../model/build"
 import { Locale, LocalizedText, localized, translate } from "../model/locale"
-import { referenceSummary } from "../reference/catalog"
-import { referenceKindLabel } from "../reference/labels"
+import { symbolSignature } from "./module-signatures"
 import { anchor } from "./primitives"
 
 fn exampleMatches id: String -> example: ExampleSource -> Bool = example.id == id
@@ -17,19 +16,6 @@ fn referenceMatches identity: String
   reference.identity == identity
   && reference.namespace == namespace
   && reference.itemKind == itemKind
-
-fn renderValues locale: Locale -> values: Array<String> -> String =
-  if arrays.length values == 0 then
-    translate locale (localized "None" "なし")
-  else
-    join ", " values
-
-fn referenceDescription<Action> locale: Locale
-  -> reference: ReferenceSymbol
-  -> html.Html<Action> =
-  html.p {
-  children: translate locale (referenceSummary reference)
-}
 
 fn renderExample<Action> messages: Messages
   -> locale: Locale
@@ -76,67 +62,6 @@ pub fn codeExample<Action> input: BuildInput
     Just example -> renderExample messages locale title example
   }
 
-fn renderReference<Action> locale: Locale
-  -> reference: ReferenceSymbol
-  -> html.Html<Action> =
-  html.section {
-    class: "api-reference",
-    children: [
-      html.div {
-        class: "api-reference-heading",
-        children: [html.div {
-          children: [
-            html.p {
-              class: "api-reference-kind",
-              children: translate locale (referenceKindLabel reference)
-            },
-            html.h2 { children: reference.name }
-          ]
-        }]
-      },
-      html.p { class: "api-reference-identity", children: reference.identity },
-      html.div {
-        class: "api-reference-metadata",
-        children: [
-          html.p {
-            children: [
-              html.strong { children: translate locale (localized "Module" "モジュール") },
-              html.code { children: reference.module }
-            ]
-          },
-          html.p {
-            children: [
-              html.strong {
-                children: translate locale (localized "Type parameters" "型パラメーター")
-              },
-              html.code { children: renderValues locale reference.typeParameters }
-            ]
-          },
-          html.p {
-            children: [
-              html.strong { children: translate locale (localized "Constraints" "制約") },
-              html.code { children: renderValues locale reference.constraints }
-            ]
-          }
-        ]
-      },
-      html.pre {
-        children: [html.code {
-          class: "seseragi-highlight",
-          children: [html.span { class: part.className, children: part.text } | part <- reference.highlighted]
-        }]
-      },
-      referenceDescription locale reference,
-      html.h3 {
-        children: translate locale (localized "How to read this declaration" "この宣言の読み方")
-      },
-      html.p {
-        class: "reference-reading",
-        children: translate locale (localized reference.reading.en reference.reading.ja)
-      }
-    ]
-  }
-
 pub fn apiReference<Action> input: BuildInput
   -> locale: Locale
   -> identity: String
@@ -148,5 +73,5 @@ pub fn apiReference<Action> input: BuildInput
       class: "site-build-error",
       children: "Missing compiler reference: " + identity + " · " + namespace + " · " + itemKind
     }
-    Just reference -> renderReference locale reference
+    Just reference -> symbolSignature locale reference
   }

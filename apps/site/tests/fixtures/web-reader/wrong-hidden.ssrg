@@ -1,3 +1,0 @@
-import * as html from "std/web/html"
-fn card -> html.Html<Unit> = html.section { hidden: "false", children: "Release" }
-pub effect fn main = println (html.renderToString (card ()))

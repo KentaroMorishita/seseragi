@@ -1,7 +1,0 @@
-let count: Int = 3
-let price: Float = 2.5
-let active: Bool = True
-let initial: Char = 'S'
-let label: String = "Seseragi"
-
-pub effect fn main = println `${count}, ${price}, ${active}, ${initial}, ${label}`

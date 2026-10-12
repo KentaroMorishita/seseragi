@@ -1,7 +1,0 @@
-import { Editorial } from "../../model"
-import { unicodeEditorial } from "../model"
-import * as en from "./en"
-import * as ja from "./ja"
-
-pub fn editorial -> Editorial =
-  unicodeEditorial "std/text/unicode::isNormalized" "unicode-isnormalized" "before: False\nafter: True\noriginal still decomposed: True\nempty: True" "std/text/unicode" (en.copy ()) (ja.copy ())

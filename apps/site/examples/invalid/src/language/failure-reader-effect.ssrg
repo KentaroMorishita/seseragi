@@ -1,2 +1,0 @@
-import * as effects from "std/effect"
-let wrong: Int = effects.succeed 42

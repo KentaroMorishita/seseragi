@@ -1,4 +1,0 @@
-import * as paths from "std/path"
-
-let report: paths.Path = "report.txt"
-pub effect fn main = println (paths.render report)
