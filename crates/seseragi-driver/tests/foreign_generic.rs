@@ -52,6 +52,15 @@ fn bad<A> x: A -> A = echo<A> x"#,
         r#"foreign "typescript" from "./api.mjs" {
   pure fn echo<A> value: A -> A
 }
+fn bad<String> x: String -> String = echo<String> x"#,
+        r#"foreign "typescript" from "./api.mjs" {
+  pure fn echo<A> value: A -> A
+}
+type String = | UserString
+fn bad x: String -> String = echo<String> x"#,
+        r#"foreign "typescript" from "./api.mjs" {
+  pure fn echo<A> value: A -> A
+}
 fn bad x: {x: String} -> {x: String} = echo<{x: String}> x"#,
         r#"foreign "typescript" from "./api.mjs" {
   pure fn echo<F<_>, A> value: F<A> -> F<A>
@@ -72,4 +81,18 @@ fn bad x: Array<String> -> Array<String> = echo<Array, String> x"#,
             "{error:?}"
         );
     }
+}
+
+#[test]
+fn primitive_foreign_codec_selection_covers_the_documented_scalar_domain() {
+    let source = format!(
+        "foreign \"typescript\" from \"./api.mjs\" {{\n  pure fn echo<A> value: A -> A\n}}\n{}",
+        ["Unit", "Bool", "Char", "String", "Int", "Float"]
+            .into_iter()
+            .enumerate()
+            .map(|(i, name)| format!("fn scalar{i} value: {name} -> {name} = echo<{name}> value\n"))
+            .collect::<String>()
+    );
+    let result = compile(&source);
+    assert!(!result.generated.typescript.contains("unsupported"));
 }

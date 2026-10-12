@@ -117,7 +117,7 @@ pub foreign "typescript" from "schema-api" {
 静的な関係だけを保ち、host objectへpropertyを追加しません。
 
 現在のgeneric foreign呼び出しは、compilerがcall siteで全型parameterを具体的なrank-1の
-`Unit`、`Bool`、`Char`、`String`、`Int`、`Float`、`BigInt`へ確定できる場合に限ります。
+`Unit`、`Bool`、`Char`、`String`、`Int`、`Float`へ確定できる場合に限ります。
 compilerはその型の既存foreign codecを内部の引数としてwrapperへ渡します。この引数はhost functionへ
 渡さず、hostからの戻り値も同じcodecで検査します。たとえば`read<String>`がnumberを返せば、task
 callは`Js.Error`で失敗します。型argumentを消して任意値を通すことはしません。

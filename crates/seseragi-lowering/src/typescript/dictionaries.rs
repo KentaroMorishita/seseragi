@@ -40,7 +40,6 @@ pub(super) fn local_dictionary_expression(
                 "String" => "string",
                 "Int" => "int",
                 "Float" => "float",
-                "BigInt" => "bigint",
                 _ => return None,
             };
             return Some(TypeScriptExpr::String {

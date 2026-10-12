@@ -679,7 +679,9 @@ pub(crate) fn type_known_application_with_explicit(
             );
             for parameter in &template.type_parameters {
                 let value = bindings.get(&parameter.name);
-                if parameter.arity != 0 || !value.is_some_and(concrete_foreign_codec) {
+                if parameter.arity != 0
+                    || !value.is_some_and(|value| concrete_foreign_codec(value, context))
+                {
                     issue = Some(PureCallIssue::ForeignGenericCodecRequired {
                         callee: callee_span,
                     });
@@ -1176,6 +1178,23 @@ fn foreign_template<'a>(
         .then(|| context.resolution.callable(target.id))
         .flatten()
 }
-fn concrete_foreign_codec(value: &TypedType) -> bool {
-    matches!(value, TypedType::Named { name, arguments } if arguments.is_empty() && matches!(name.as_str(), "Unit" | "Bool" | "Char" | "String" | "Int" | "Float" | "BigInt"))
+fn concrete_foreign_codec(value: &TypedType, context: &PureExpressionContext<'_>) -> bool {
+    let TypedType::Named { name, arguments } = value else {
+        return false;
+    };
+    arguments.is_empty()
+        && matches!(
+            name.as_str(),
+            "Unit" | "Bool" | "Char" | "String" | "Int" | "Float"
+        )
+        && !context.lexical_type_parameters.contains_key(name)
+        && matches!(
+            context
+                .hydrate_semantic_value(SemanticValueType {
+                    type_ref: value.clone(),
+                    key: SemanticTypeKey::Other,
+                })
+                .key,
+            SemanticTypeKey::Other
+        )
 }
