@@ -408,6 +408,18 @@ fn render_foreign_namespace(
     ));
 }
 
+// Quoting __proto__ still invokes JavaScript's object-literal prototype setter.
+// Computed property syntax always creates an ordinary own data property.
+fn object_property_key(name: &str, quoted: bool) -> String {
+    if name == "__proto__" {
+        format!("[{name:?}]")
+    } else if quoted {
+        format!("{name:?}")
+    } else {
+        name.to_owned()
+    }
+}
+
 fn foreign_namespace_expression(
     namespace: &TypeScriptForeignNamespace,
     module_index: usize,
@@ -416,17 +428,25 @@ fn foreign_namespace_expression(
 ) -> String {
     let mut fields = Vec::new();
     for value in &namespace.values {
-        fields.push(format!("{}: {}", value.field_name, value.name));
+        fields.push(format!(
+            "{}: {}",
+            object_property_key(&value.field_name, false),
+            value.name
+        ));
     }
     for member in &namespace.members {
-        fields.push(format!("{}: {}", member.field_name, member.name));
+        fields.push(format!(
+            "{}: {}",
+            object_property_key(&member.field_name, false),
+            member.name
+        ));
     }
     for child in &namespace.namespaces {
         let mut child_path = path.to_vec();
         child_path.push(child.host_name.clone());
         fields.push(format!(
             "{}: Object.freeze({})",
-            child.name,
+            object_property_key(&child.name, false),
             foreign_namespace_expression(child, module_index, loader, &child_path)
         ));
     }
@@ -849,8 +869,11 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 items
                     .iter()
                     .map(|item| match item {
-                        TypeScriptRecordValueItem::Field { name, value } =>
-                            format!("{}: {}", format!("{name:?}"), render_typescript_expr(value)),
+                        TypeScriptRecordValueItem::Field { name, value } => format!(
+                            "{}: {}",
+                            object_property_key(name, true),
+                            render_typescript_expr(value)
+                        ),
                         TypeScriptRecordValueItem::Spread { value } => {
                             format!("...{}", render_typescript_expr(value))
                         }
