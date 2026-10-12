@@ -21,6 +21,9 @@ pub struct EntryConfig {
     /// Explicit projection subset; omitted exports remain in semantic reports.
     #[serde(default)]
     pub include: Option<Vec<String>>,
+    /// Logical package-relative JSON artifact, separate from declaration meaning.
+    #[serde(default)]
+    pub projection_policy: Option<String>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq)]

@@ -1,7 +1,3 @@
-import {
-  inspectCompatibilityReport,
-  type CompatibilityInspection,
-} from "./compatibility-report"
 import type { WorkspaceDiagnostic } from "../diagnostics/workspace-diagnostics"
 import {
   type BindingRequest,
@@ -9,6 +5,10 @@ import {
   bindingDiagnostics,
   workspaceBindingRequest,
 } from "./bindings"
+import {
+  type CompatibilityInspection,
+  inspectCompatibilityReport,
+} from "./compatibility-report"
 import { type WorkspaceState, workspaceBindingInputRevision } from "./model"
 import {
   inspectSemanticGraph,
@@ -27,6 +27,7 @@ export type InspectedBinding = Readonly<{
   path: string
   source: string
   report: BindingReport
+  adapters?: NonNullable<BindingResponse["generated"][number]["adapters"]>
 }>
 export type BindingInspection = Readonly<{
   inputRevision: string
@@ -99,6 +100,7 @@ export function inspectWorkspaceBindings(
         declaration: metadata.declaration.normalize("NFC"),
         path: `${response.generatedRoot}/${binding.output}.ssrg`,
         source: binding.source,
+        ...(binding.adapters ? { adapters: binding.adapters } : {}),
         report: {
           added: strings(report.added, "added"),
           changed: strings(report.changed, "changed"),

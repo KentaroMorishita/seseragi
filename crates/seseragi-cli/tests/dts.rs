@@ -431,3 +431,70 @@ fn runs_a_generated_binding_through_the_normal_foreign_typescript_pipeline() {
     );
     fs::remove_dir_all(directory).unwrap();
 }
+
+#[test]
+fn explicit_json_policy_runs_a_separate_checked_api_and_rejects_stale_policy() {
+    let directory = test_directory("semantic-policy");
+    let package = directory.join("package");
+    copy_directory(&fixture("dts-basic-conversion"), &package);
+    let manifest_path = package.join("seseragi.toml");
+    fs::write(
+        &manifest_path,
+        format!(
+            "{}\n[run]\nentry='main'\ntarget='process'\n",
+            fs::read_to_string(&manifest_path).unwrap()
+        ),
+    )
+    .unwrap();
+    let settings_path = package.join("seseragi.bindings.toml");
+    let settings = format!(
+        "{}\nprojection_policy='host/user.policy.json'\n",
+        fs::read_to_string(&settings_path).unwrap()
+    );
+    fs::write(&settings_path, &settings).unwrap();
+    let declaration = "export type User = { readonly name: string; readonly active: boolean };";
+    fs::write(package.join("host/index.d.ts"), declaration).unwrap();
+    let graph =
+        seseragi_dts::interpret_declaration(declaration, "host/index.d.ts", &settings).unwrap();
+    let policy = serde_json::json!({"schema":1,"kind":"seseragi-semantic-projection-policy","producer":{"name":"explicit-user-policy","version":"1"},"graphDigest":graph.digest().unwrap(),"artifactIdentity":graph.identity,"policies":[{"selector":{"kind":"symbol","symbol":"User"},"functionName":"decodeUser","mapping":{"kind":"json-snapshot"}}]});
+    fs::write(package.join("host/user.policy.json"), policy.to_string()).unwrap();
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::write(package.join("src/main.ssrg"),r#"import * as json from "std/json"
+import {decodeUser} from "gen/fixture-api/semantic"
+fn input text: String -> json.Json = match json.parse text { Left _ -> json.JsonNull; Right value -> value }
+fn decoded text: String -> String = match decodeUser (input text) { Left _ -> "rejected"; Right user -> user.name }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println $ decoded "{\"name\":\"Ada\",\"active\":true}"
+  println $ decoded "{\"name\":3,\"active\":true}"
+}
+"#).unwrap();
+    let converted = run(&["dts", "convert", package.to_str().unwrap()]);
+    assert_eq!(
+        converted.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&converted.stderr)
+    );
+    assert!(String::from_utf8_lossy(&converted.stdout).contains("applied-semantic-json-policy"));
+    let locked = run(&["lock", "update", package.to_str().unwrap()]);
+    assert!(
+        locked.status.success(),
+        "{}",
+        String::from_utf8_lossy(&locked.stderr)
+    );
+    let executed = run(&["run", package.to_str().unwrap()]);
+    assert_eq!(
+        executed.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&executed.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&executed.stdout), "Ada\nrejected\n");
+    let mut stale = policy;
+    stale["graphDigest"] = serde_json::json!("0".repeat(64));
+    fs::write(package.join("host/user.policy.json"), stale.to_string()).unwrap();
+    let failed = run(&["dts", "convert", package.to_str().unwrap()]);
+    assert_eq!(failed.status.code(), Some(1));
+    assert!(String::from_utf8_lossy(&failed.stderr).contains("SES-F0105"));
+    fs::remove_dir_all(directory).unwrap();
+}

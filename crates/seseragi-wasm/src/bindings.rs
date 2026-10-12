@@ -1,8 +1,8 @@
 //! Resolves converter inputs from an immutable virtual filesystem snapshot.
 use serde::{Deserialize, Serialize};
 use seseragi_dts::{
-    convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, DiagnosticSeverity,
-    GeneratedBinding, HostMetadata, SemanticCompatibilityReport, SemanticGraph,
+    apply_projection_policy, convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput,
+    DiagnosticSeverity, GeneratedBinding, HostMetadata, SemanticCompatibilityReport, SemanticGraph,
 };
 use std::collections::BTreeMap;
 use unicode_normalization::UnicodeNormalization;
@@ -217,7 +217,7 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
         let previous_metadata = path(&previous_path)
             .ok()
             .and_then(|name| files.get(&name).copied());
-        let converted = convert_entry(&ConversionInput {
+        let mut converted = convert_entry(&ConversionInput {
             settings,
             entry: id,
             declaration,
@@ -228,6 +228,11 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
             previous_metadata,
         })
         .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
+        if let Some(policy) = &entry.projection_policy {
+            let source = read(&files, policy)?;
+            apply_projection_policy(&mut converted, entry, source)
+                .map_err(|error| (policy.clone(), error))?;
+        }
         response.diagnostics.extend(converted.diagnostics);
         if let Some(report) = converted.compatibility {
             response.compatibility.push(CompatibilityEntry {
@@ -425,5 +430,56 @@ mod tests {
             .as_str()
             .unwrap()
             .contains("invalid workspace"));
+    }
+    #[test]
+    fn policy_artifact_emits_separate_semantic_api_and_stale_policy_fails_closed() {
+        let mut request = fixture("dts-basic-conversion");
+        let declaration = "export type User = { readonly name: string; readonly active: boolean };";
+        let settings = format!(
+            "{}\nprojection_policy='host/user.policy.json'\n",
+            source(&request, "seseragi.bindings.toml")
+        );
+        replace(&mut request, "host/index.d.ts", declaration);
+        replace(&mut request, "seseragi.bindings.toml", &settings);
+        let core = convert_entry(&ConversionInput {
+            settings: &settings,
+            entry: "api",
+            declaration,
+            host: HostMetadata {
+                manifest: source(&request, "host/package.json"),
+                resolved_package: None,
+            },
+            previous_metadata: None,
+        })
+        .unwrap();
+        let graph = core.semantic.unwrap();
+        let mut policy = json!({"schema":1,"kind":"seseragi-semantic-projection-policy","producer":{"name":"explicit-user-policy","version":"1"},"graphDigest":graph.digest().unwrap(),"artifactIdentity":graph.identity,"policies":[{"selector":{"kind":"symbol","symbol":"User"},"functionName":"decodeUser","mapping":{"kind":"json-snapshot"}}]});
+        request["files"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!({"path":"host/user.policy.json","source":policy.to_string()}));
+        let success = response(&request);
+        assert_eq!(success["status"], "success", "{success}");
+        assert!(success["generated"][0]["adapters"]["semanticSource"]
+            .as_str()
+            .unwrap()
+            .contains("pub fn decodeUser"));
+        assert_eq!(
+            success["compatibility"][0]["report"]["symbols"]["User"]["classification"],
+            "safe-boundary"
+        );
+        let artifact: Value =
+            serde_json::from_str(success["generated"][0]["report"].as_str().unwrap()).unwrap();
+        assert_eq!(
+            artifact["compatibility"],
+            success["compatibility"][0]["report"]
+        );
+        policy["graphDigest"] = json!("0".repeat(64));
+        replace(&mut request, "host/user.policy.json", &policy.to_string());
+        let failed = response(&request);
+        assert_eq!(failed["status"], "failure");
+        assert_eq!(failed["generated"], json!([]));
+        assert_eq!(failed["diagnostics"][0]["file"], "host/user.policy.json");
+        assert_eq!(failed["diagnostics"][0]["code"], "SES-F0105");
     }
 }

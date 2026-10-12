@@ -10,6 +10,8 @@ mod config;
 mod convert;
 mod model;
 mod parser;
+mod projection_policy;
+pub use projection_policy::{apply_projection_policy, refresh_compatibility_identity};
 mod semantic;
 
 pub use semantic::{interpret_declaration, SemanticError};

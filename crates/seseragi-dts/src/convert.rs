@@ -134,6 +134,8 @@ pub struct GeneratedBinding {
     pub source: String,
     pub metadata: String,
     pub report: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub adapters: Option<seseragi_projection::SemanticAdapters>,
 }
 
 /// Parse and validate settings with the same rules as native conversion.
@@ -239,6 +241,7 @@ fn convert_entry_with_host(
             source: rendered.source,
             metadata: json_text(&metadata)?,
             report: json_text(&report)?,
+            adapters: None,
         }),
         diagnostics: rendered.diagnostics,
         semantic: Some(graph),
@@ -1806,6 +1809,9 @@ fn validate_config(config: &BindingsConfig) -> Result<(), ConvertError> {
         }
         validate_relative_path("declaration", &entry.declaration)?;
         validate_relative_path("output", &entry.output)?;
+        if let Some(path) = &entry.projection_policy {
+            validate_relative_path("projection_policy", path)?;
+        }
         if Path::new(&entry.output).extension().is_some() {
             return Err(ConvertError::new(format!(
                 "binding output `{}` must be a module path without an extension",
@@ -1834,6 +1840,20 @@ fn validate_config(config: &BindingsConfig) -> Result<(), ConvertError> {
                 "binding output `{}` is used by more than one entry",
                 entry.output
             )));
+        }
+    }
+    for (id, entry) in &config.entries {
+        if entry.projection_policy.is_some() {
+            let semantic_output = format!("{}/semantic", entry.output);
+            if config
+                .entries
+                .iter()
+                .any(|(other, candidate)| other != id && candidate.output == semantic_output)
+            {
+                return Err(ConvertError::new(format!(
+                    "semantic output `{semantic_output}` conflicts with another binding entry"
+                )));
+            }
         }
     }
     Ok(())

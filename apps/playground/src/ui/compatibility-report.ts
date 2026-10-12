@@ -29,6 +29,27 @@ export function createCompatibilityView(
         )
         return
       }
+      for (const item of inspection.bindings.filter(
+        (item) => !binding || item.id === binding.id
+      )) {
+        if (!item.adapters) continue
+        container.append(element("h3", `Checked semantic API · ${item.id}`))
+        container.append(
+          element(
+            "p",
+            `${item.adapters.inputBoundary} input · raw foreign bindings remain separate. Applied policy artifacts:`
+          )
+        )
+        container.append(
+          element("pre", JSON.stringify(item.adapters.appliedPolicies, null, 2))
+        )
+        const source = element("details")
+        source.append(
+          element("summary", "Generated checked semantic adapter source")
+        )
+        source.append(element("pre", item.adapters.semanticSource))
+        container.append(source)
+      }
       for (const report of reports) {
         container.append(element("h3", `Semantic compatibility · ${report.id}`))
         container.append(

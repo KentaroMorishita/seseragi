@@ -71,3 +71,30 @@ The integration tests compile generated ordinary Seseragi code, build it with
 the native runtime boundary, then execute with Bun. They cover readonly
 snapshots, absent/null/present optional values, nullable `Maybe`, finite tagged
 ADT success, bad fields/tags, and stale/unsafe policy rejection.
+
+## Declaration host integration
+
+A binding entry may explicitly name a separate policy JSON artifact:
+
+```toml
+[entries.api]
+declaration = "host/api.d.ts"
+specifier = "./api.js"
+output = "api"
+projection_policy = "host/api.policy.json"
+```
+
+The policy uses `ProjectionPolicySet` schema 1 and the exact declaration graph
+and artifact identity, including these settings. `apply_projection_policy`
+validates it after interpretation. CLI and virtual workspace adapters read the
+same logical artifact. Invalid/stale policies produce `SES-F0105` at that JSON
+source and publish no partial entry output. Changing the JSON policy invalidates
+a previously generated semantic API even when the settings file did not change.
+
+The raw `gen/api` binding remains separate from the checked `gen/api/semantic`
+API. The latter consumes `std/json::Json`, validates through decoder failures,
+and never casts a raw host object or installs an implicit foreign-call adapter.
+Applied selector/function/mapping/producer/source provenance is included in its
+semantic artifact and the shared compatibility report. The Playground Inspector
+shows these policies and generated source; CLI text renders the same reasons.
+Removing a policy removes only that entry's owned semantic source/provenance.

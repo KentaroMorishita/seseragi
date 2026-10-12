@@ -78,7 +78,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
                 .join(format!("{}.binding.json", entry.output)),
         )
         .ok();
-        let converted = convert_entry_with_host(
+        let mut converted = convert_entry_with_host(
             id,
             entry,
             &declaration,
@@ -93,6 +93,11 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
                 )
             },
         )?;
+        if let Some(path) = &entry.projection_policy {
+            let source = read_utf8(&request.package_root.join(path), "projection policy")?;
+            crate::apply_projection_policy(&mut converted, entry, &source)
+                .map_err(ConvertError::new)?;
+        }
         outcome.diagnostics.extend(converted.diagnostics);
         if let Some(report) = converted.compatibility {
             outcome.compatibility.insert(id.clone(), report);
@@ -109,11 +114,40 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         let report_path = request
             .generated_root
             .join(format!("{}.report.json", entry.output));
-        atomic_write_set(&[
+        let semantic_path = request
+            .generated_root
+            .join(format!("{}/semantic.ssrg", entry.output));
+        let semantic_metadata_path = request
+            .generated_root
+            .join(format!("{}.semantic.json", entry.output));
+        let semantic_metadata = generated.adapters.as_ref().map(json_text).transpose()?;
+        let mut writes: Vec<(&Path, &[u8])> = vec![
             (&source_path, generated.source.as_bytes()),
             (&metadata_path, generated.metadata.as_bytes()),
             (&report_path, generated.report.as_bytes()),
-        ])?;
+        ];
+        if let (Some(adapters), Some(metadata)) = (&generated.adapters, &semantic_metadata) {
+            writes.push((&semantic_path, adapters.semantic_source.as_bytes()));
+            writes.push((&semantic_metadata_path, metadata.as_bytes()));
+        }
+        atomic_write_set(&writes)?;
+        if generated.adapters.is_none()
+            && !config
+                .entries
+                .values()
+                .any(|other| other.output == format!("{}/semantic", entry.output))
+        {
+            for path in [&semantic_path, &semantic_metadata_path] {
+                if let Err(error) = fs::remove_file(path) {
+                    if error.kind() != std::io::ErrorKind::NotFound {
+                        return Err(ConvertError::new(format!(
+                            "failed to remove stale owned semantic artifact {}: {error}",
+                            path.display()
+                        )));
+                    }
+                }
+            }
+        }
         outcome.converted.push(ConvertedEntry {
             id: id.clone(),
             source: source_path,
@@ -201,12 +235,43 @@ pub fn validate_generated_bindings(
             || !report_path.is_file()
         {
             errors.push(ValidationError {
-                entry: id,
+                entry: id.clone(),
                 message: format!(
                     "generated binding `{}` is stale; run `seseragi dts convert`",
                     entry.output
                 ),
             });
+        }
+
+        if let Some(policy) = &entry.projection_policy {
+            let checked = (|| -> Result<(), String> {
+                let source = fs::read_to_string(&declaration_path).map_err(|e| e.to_string())?;
+                let graph = interpret_with_digest(&source, &entry.declaration, &settings_digest)
+                    .map_err(|e| e.to_string())?;
+                let policies: seseragi_interop::ProjectionPolicySet = serde_json::from_str(
+                    &fs::read_to_string(package_root.join(policy)).map_err(|e| e.to_string())?,
+                )
+                .map_err(|e| e.to_string())?;
+                let expected = seseragi_projection::generate_adapters(&graph, &policies)?;
+                let actual_source = fs::read_to_string(
+                    generated_root.join(format!("{}/semantic.ssrg", entry.output)),
+                )
+                .map_err(|e| e.to_string())?;
+                let actual_metadata: seseragi_projection::SemanticAdapters = serde_json::from_str(
+                    &fs::read_to_string(
+                        generated_root.join(format!("{}.semantic.json", entry.output)),
+                    )
+                    .map_err(|e| e.to_string())?,
+                )
+                .map_err(|e| e.to_string())?;
+                if expected != actual_metadata || expected.semantic_source != actual_source {
+                    return Err("semantic adapter output differs from current policy".into());
+                }
+                Ok(())
+            })();
+            if let Err(message) = checked {
+                errors.push(ValidationError { entry: id.clone(),message:format!("semantic policy `{policy}` is missing/invalid/stale: {message}; run `seseragi dts convert`") });
+            }
         }
     }
     if errors.is_empty() {

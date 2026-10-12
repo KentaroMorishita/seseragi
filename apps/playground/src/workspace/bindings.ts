@@ -24,6 +24,13 @@ export type BindingResponse = Readonly<{
     source: string
     metadata: string
     report: string
+    adapters?: Readonly<{
+      schema: 1
+      inputBoundary: string
+      graphDigest: string
+      semanticSource: string
+      appliedPolicies: readonly unknown[]
+    }> | null
   }>[]
   diagnostics: readonly Readonly<{
     code: string
@@ -57,11 +64,31 @@ export function publishWorkspaceBindings(
     ...editable,
     generatedBindings: {
       inputRevision: workspaceBindingInputRevision(state),
-      files: response.generated.map(({ output, source }) => ({
-        module: output,
-        path: `${response.generatedRoot}/${output}.ssrg`,
-        source,
-      })),
+      files: response.generated.flatMap(({ output, source, adapters }) => {
+        const files = [
+          {
+            module: output,
+            path: `${response.generatedRoot}/${output}.ssrg`,
+            source,
+          },
+        ]
+        if (adapters) {
+          if (
+            adapters.schema !== 1 ||
+            adapters.inputBoundary !== "std/json::Json" ||
+            typeof adapters.semanticSource !== "string" ||
+            !/^[a-f0-9]{64}$/.test(adapters.graphDigest) ||
+            !Array.isArray(adapters.appliedPolicies)
+          )
+            throw new Error("Invalid semantic adapter artifact")
+          files.push({
+            module: `${output}/semantic`,
+            path: `${response.generatedRoot}/${output}/semantic.ssrg`,
+            source: adapters.semanticSource,
+          })
+        }
+        return files
+      }),
     },
   })
 }
