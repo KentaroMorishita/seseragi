@@ -38,7 +38,7 @@ describe("live analysis scheduling", () => {
     expect(applied).toEqual(["latest"])
   })
 
-  test("drops an older asynchronous result after a newer revision wins", async () => {
+  test("coalesces edits during analysis and drops the older result", async () => {
     const resolvers = new Map<string, (analysis: AnalysisDocument) => void>()
     const applied: string[] = []
     const controller = createLiveAnalysis({
@@ -52,12 +52,17 @@ describe("live analysis scheduling", () => {
 
     controller.schedule("old")
     await Bun.sleep(5)
+    controller.schedule("intermediate")
+    await Bun.sleep(5)
     controller.schedule("new")
     await Bun.sleep(5)
-    resolvers.get("new")?.(document("new"))
-    await Bun.sleep(1)
+    expect([...resolvers.keys()]).toEqual(["old"])
     resolvers.get("old")?.(document("old"))
-    await Bun.sleep(1)
+    await Bun.sleep(5)
+    expect([...resolvers.keys()]).toEqual(["old", "new"])
+    expect(applied).toEqual([])
+    resolvers.get("new")?.(document("new"))
+    await Bun.sleep(5)
 
     expect(applied).toEqual(["new"])
   })
@@ -118,10 +123,10 @@ describe("live analysis scheduling", () => {
     await Bun.sleep(5)
     controller.schedule("same source", "two.ssrg")
     await Bun.sleep(5)
-    resolvers[1]?.(document("same source"))
-    await Bun.sleep(1)
     resolvers[0]?.(document("same source"))
-    await Bun.sleep(1)
+    await Bun.sleep(5)
+    resolvers[1]?.(document("same source"))
+    await Bun.sleep(5)
 
     expect(applied).toEqual(["two.ssrg"])
   })
