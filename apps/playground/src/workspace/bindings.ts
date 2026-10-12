@@ -16,6 +16,7 @@ export type BindingResponse = Readonly<{
   revision: string
   status: "success" | "failure"
   generatedRoot?: string | null
+  semantic?: readonly Readonly<{ id: string; graph: unknown }>[]
   generated: readonly Readonly<{
     id: string
     output: string

@@ -95,9 +95,19 @@ pub struct Origin {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SemanticSymbol {
     pub public_name: String,
+    pub declaration_name: String,
+    pub kind: SymbolKind,
     pub type_ref: TypeId,
     pub origins: Vec<Origin>,
     pub runtime: Option<RuntimeBinding>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SymbolKind {
+    Type,
+    Callable,
+    Namespace,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -159,6 +169,12 @@ pub enum SemanticType {
         result: TypeId,
         receiver: Option<TypeId>,
     },
+    Overload {
+        signatures: Vec<TypeId>,
+    },
+    Namespace {
+        members: BTreeMap<String, String>,
+    },
     Projection {
         relation: ProjectionRelation,
         subject: TypeId,
@@ -180,6 +196,12 @@ pub enum PrimitiveDomain {
     Integer,
     Float64,
     BigInteger,
+    Unknown,
+    Object,
+    Null,
+    Undefined,
+    Dynamic,
+    Binary,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -216,6 +238,8 @@ pub struct GenericParameter {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CallParameter {
+    pub name: String,
+    pub origins: Vec<Origin>,
     pub type_ref: TypeId,
     pub optional: bool,
     pub rest: bool,

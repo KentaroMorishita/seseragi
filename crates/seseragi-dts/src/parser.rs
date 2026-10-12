@@ -1,6 +1,6 @@
 use crate::model::{
     Declaration, Function, Interface, Namespace, OpaqueDeclaration, Parameter, Scope, Span,
-    TypeAlias, TypeKind, TypeRef,
+    TypeAlias, TypeKind, TypeParameterRelation, TypeRef,
 };
 use std::collections::BTreeMap;
 use tree_sitter::{Node, Parser};
@@ -143,6 +143,7 @@ fn parse_function(node: Node<'_>, source: &str) -> Result<Function, ParseError> 
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
         parameters: parse_parameters(parameters, source)?,
         result: parse_type(result, source)?,
     })
@@ -156,6 +157,7 @@ fn parse_interface(node: Node<'_>, source: &str) -> Result<Interface, ParseError
         public_name: name_text,
         name_span: Span::from_node(name),
         span: Span::from_node(node),
+        type_parameter_relations: parse_generic_relations(node, source)?,
     })
 }
 
@@ -171,6 +173,7 @@ fn parse_opaque(node: Node<'_>, source: &str) -> Result<OpaqueDeclaration, Parse
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
     })
 }
 
@@ -187,6 +190,7 @@ fn parse_type_alias(node: Node<'_>, source: &str) -> Result<TypeAlias, ParseErro
             .child_by_field_name("type_parameters")
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
+        type_parameter_relations: parse_generic_relations(node, source)?,
         type_ref: parse_type(value, source)?,
     })
 }
@@ -213,6 +217,35 @@ fn parse_type_parameters(node: Node<'_>, source: &str) -> Vec<String> {
         }
     }
     output
+}
+
+fn parse_generic_relations(
+    node: Node<'_>,
+    source: &str,
+) -> Result<Vec<TypeParameterRelation>, ParseError> {
+    let Some(parameters) = node.child_by_field_name("type_parameters") else {
+        return Ok(Vec::new());
+    };
+    let mut cursor = parameters.walk();
+    parameters
+        .named_children(&mut cursor)
+        .map(|parameter| {
+            let name = required_field(parameter, "name")?;
+            let constraint = parameter
+                .child_by_field_name("constraint")
+                .and_then(|node| node.named_child(0));
+            let default = parameter
+                .child_by_field_name("value")
+                .and_then(|node| node.named_child(0));
+            Ok(TypeParameterRelation {
+                name: node_text(name, source).to_owned(),
+                constraint: constraint
+                    .map(|node| parse_type(node, source))
+                    .transpose()?,
+                default: default.map(|node| parse_type(node, source)).transpose()?,
+            })
+        })
+        .collect()
 }
 
 fn parse_parameters(node: Node<'_>, source: &str) -> Result<Vec<Parameter>, ParseError> {

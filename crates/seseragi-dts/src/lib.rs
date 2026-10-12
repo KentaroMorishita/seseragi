@@ -10,6 +10,10 @@ mod config;
 mod convert;
 mod model;
 mod parser;
+mod semantic;
+
+pub use semantic::{interpret_declaration, SemanticError};
+pub use seseragi_interop::SemanticGraph;
 
 pub use config::{BindingsConfig, EntryConfig};
 #[cfg(feature = "filesystem")]
@@ -18,6 +22,7 @@ pub use convert::filesystem::{
     ConvertedEntry, ValidationError,
 };
 pub use convert::{
-    convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, ConversionResult,
-    ConvertError, DiagnosticSeverity, GeneratedBinding, HostMetadata,
+    convert_entry, parse_bindings, project_graph, ConversionDiagnostic, ConversionInput,
+    ConversionResult, ConvertError, DiagnosticSeverity, GeneratedBinding, HostMetadata,
+    ProjectionResult,
 };

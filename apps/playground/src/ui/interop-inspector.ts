@@ -29,6 +29,7 @@ export function connectInteropInspector(options: {
   let selectedEntry = ""
   let selectedView = "bindings"
   let selectedSource = ""
+  let selectedType = ""
   let invalidated = false
   const element = <T extends keyof HTMLElementTagNameMap>(
     tag: T,
@@ -150,6 +151,94 @@ export function connectInteropInspector(options: {
       },
     },
     {
+      id: "semantic",
+      label: "Semantic IR",
+      render: (container, snapshot) => {
+        const semantic = snapshot.semantics.find(
+          (entry) => entry.id === selectedEntry
+        )
+        if (!semantic) {
+          container.append(
+            element("p", "No semantic graph is available for this conversion.")
+          )
+          return
+        }
+        container.append(element("h3", `Semantic graph · ${semantic.id}`))
+        const select = element("select")
+        select.setAttribute("aria-label", "Semantic type")
+        for (const node of semantic.nodes) {
+          const option = element(
+            "option",
+            `${node.id} · ${String(node.node.kind)}`
+          )
+          option.value = node.id
+          select.append(option)
+        }
+        if (!semantic.nodes.some((node) => node.id === selectedType))
+          selectedType = semantic.nodes[0]?.id ?? ""
+        select.value = selectedType
+        select.addEventListener("change", () => {
+          selectedType = select.value
+          render()
+          content
+            .querySelector<HTMLSelectElement>('[aria-label="Semantic type"]')
+            ?.focus()
+        })
+        const label = element("label", "Type relation ")
+        label.append(select)
+        container.append(label)
+        const node = semantic.nodes.find((node) => node.id === selectedType)
+        if (!node) return
+        container.append(
+          codePanel(
+            "Type meaning · read only",
+            `type:${node.id}`,
+            JSON.stringify(node.node, null, 2)
+          )
+        )
+        for (const decision of node.decisions)
+          container.append(
+            element(
+              "p",
+              `${decision.classification} · ${decision.reason} (${decision.rule})`
+            )
+          )
+        container.append(element("h4", "Source provenance"))
+        for (const origin of node.origins) {
+          const open = element(
+            "button",
+            `${origin.source}:${origin.start}–${origin.end} · ${origin.rule}`
+          )
+          open.type = "button"
+          open.addEventListener("click", () => navigate(origin.source, origin))
+          container.append(open)
+          const related = snapshot.diagnostics.filter(
+            (diagnostic) =>
+              diagnostic.path === origin.source &&
+              diagnostic.diagnostic.primary.start <= origin.end &&
+              diagnostic.diagnostic.primary.end >= origin.start
+          )
+          if (related.length)
+            renderWorkspaceDiagnosticCards(container, related, navigate)
+        }
+        if (!node.origins.length)
+          container.append(
+            element("p", "No source span is attached to this type.")
+          )
+        container.append(
+          codePanel(
+            "Symbols and artifact identity · read only",
+            "schema 1",
+            JSON.stringify(
+              { symbols: semantic.symbols, identity: semantic.identity },
+              null,
+              2
+            )
+          )
+        )
+      },
+    },
+    {
       id: "diagnostics",
       label: "Diagnostics",
       render: (container, snapshot) => {
@@ -202,8 +291,13 @@ export function connectInteropInspector(options: {
       return
     }
     const snapshot = inspection
-    if (!snapshot.bindings.some((binding) => binding.id === selectedEntry))
-      selectedEntry = snapshot.bindings[0]?.id ?? ""
+    const entryIds = [
+      ...new Set([
+        ...snapshot.bindings.map((binding) => binding.id),
+        ...snapshot.semantics.map((entry) => entry.id),
+      ]),
+    ]
+    if (!entryIds.includes(selectedEntry)) selectedEntry = entryIds[0] ?? ""
     const binding = snapshot.bindings.find(
       (binding) => binding.id === selectedEntry
     )
@@ -216,19 +310,20 @@ export function connectInteropInspector(options: {
     status.className = "interop-result-status"
     status.setAttribute("role", "status")
     content.append(status)
-    if (snapshot.bindings.length) {
+    if (entryIds.length) {
       const label = element("label", "Binding entry ")
       const select = element("select")
       select.setAttribute("aria-label", "Binding entry")
-      for (const entry of snapshot.bindings) {
-        const option = element("option", entry.id)
-        option.value = entry.id
+      for (const id of entryIds) {
+        const option = element("option", id)
+        option.value = id
         select.append(option)
       }
       select.value = selectedEntry
       select.addEventListener("change", () => {
         selectedEntry = select.value
         selectedSource = ""
+        selectedType = ""
         render()
         content
           .querySelector<HTMLSelectElement>('[aria-label="Binding entry"]')

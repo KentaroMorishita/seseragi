@@ -73,6 +73,7 @@ pub struct Interface {
     pub public_name: String,
     pub name_span: Span,
     pub span: Span,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -82,6 +83,7 @@ pub struct OpaqueDeclaration {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -91,6 +93,7 @@ pub struct TypeAlias {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
     pub type_ref: TypeRef,
 }
 
@@ -101,8 +104,16 @@ pub struct Function {
     pub name_span: Span,
     pub span: Span,
     pub type_parameters: Vec<String>,
+    pub type_parameter_relations: Vec<TypeParameterRelation>,
     pub parameters: Vec<Parameter>,
     pub result: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TypeParameterRelation {
+    pub name: String,
+    pub constraint: Option<TypeRef>,
+    pub default: Option<TypeRef>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

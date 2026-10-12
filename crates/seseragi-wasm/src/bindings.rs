@@ -2,7 +2,7 @@
 use serde::{Deserialize, Serialize};
 use seseragi_dts::{
     convert_entry, parse_bindings, ConversionDiagnostic, ConversionInput, DiagnosticSeverity,
-    GeneratedBinding, HostMetadata,
+    GeneratedBinding, HostMetadata, SemanticGraph,
 };
 use std::collections::BTreeMap;
 use unicode_normalization::UnicodeNormalization;
@@ -32,6 +32,13 @@ struct Response {
     generated: Vec<GeneratedBinding>,
     generated_root: Option<String>,
     diagnostics: Vec<ConversionDiagnostic>,
+    semantic: Vec<SemanticEntry>,
+}
+
+#[derive(Serialize)]
+struct SemanticEntry {
+    id: String,
+    graph: SemanticGraph,
 }
 
 #[wasm_bindgen]
@@ -43,6 +50,7 @@ pub fn convert_workspace_bindings(json: &str) -> String {
         generated: vec![],
         generated_root: None,
         diagnostics: vec![],
+        semantic: vec![],
     };
     let result = serde_json::from_str::<Request>(json)
         .map_err(|error| {
@@ -214,6 +222,12 @@ fn convert(request: &Request, response: &mut Response) -> Result<(), Problem> {
         })
         .map_err(|error| (host_diagnostic_path.to_owned(), error.to_string()))?;
         response.diagnostics.extend(converted.diagnostics);
+        if let Some(graph) = converted.semantic {
+            response.semantic.push(SemanticEntry {
+                id: id.to_owned(),
+                graph,
+            });
+        }
         if let Some(generated) = converted.generated {
             response.generated.push(generated);
         }
@@ -284,6 +298,7 @@ mod tests {
             let config = parse_bindings(settings).unwrap();
             let mut generated = vec![];
             let mut diagnostics = vec![];
+            let mut semantic = vec![];
             for (id, entry) in config.entries {
                 let converted = convert_entry(&ConversionInput {
                     settings,
@@ -306,11 +321,15 @@ mod tests {
                 .unwrap();
                 generated.extend(converted.generated);
                 diagnostics.extend(converted.diagnostics);
+                if let Some(graph) = converted.semantic {
+                    semantic.push(json!({"id": id, "graph": graph}));
+                }
             }
             let actual = response(&request);
             assert_eq!(actual["revision"], "snapshot-1");
             assert_eq!(actual["generated"], json!(generated), "{name}");
             assert_eq!(actual["diagnostics"], json!(diagnostics), "{name}");
+            assert_eq!(actual["semantic"], json!(semantic), "{name}");
         }
     }
 

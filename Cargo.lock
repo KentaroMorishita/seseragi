@@ -565,6 +565,7 @@ version = "0.61.24"
 dependencies = [
  "serde",
  "serde_json",
+ "seseragi-interop",
  "sha2",
  "tempfile",
  "toml",

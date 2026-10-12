@@ -6,6 +6,10 @@ import {
   workspaceBindingRequest,
 } from "./bindings"
 import { type WorkspaceState, workspaceBindingInputRevision } from "./model"
+import {
+  inspectSemanticGraph,
+  type SemanticInspection,
+} from "./semantic-inspection"
 
 export type BindingReport = Readonly<{
   added: readonly string[]
@@ -26,6 +30,7 @@ export type BindingInspection = Readonly<{
   inputs: BindingRequest["files"]
   bindings: readonly InspectedBinding[]
   diagnostics: readonly WorkspaceDiagnostic[]
+  semantics: readonly SemanticInspection[]
 }>
 
 function record(json: string, kind: string): Record<string, unknown> {
@@ -88,6 +93,9 @@ export function inspectWorkspaceBindings(
       }
     }),
     diagnostics: bindingDiagnostics(request, response),
+    semantics: (response.semantic ?? []).map(({ id, graph }) =>
+      inspectSemanticGraph(id, graph, request.files)
+    ),
   }
 }
 

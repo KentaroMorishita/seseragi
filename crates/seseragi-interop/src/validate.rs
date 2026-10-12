@@ -51,6 +51,19 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
             }
         }
         match node {
+            SemanticType::Namespace { members } => {
+                if members
+                    .iter()
+                    .any(|(name, target)| name.is_empty() || !graph.symbols.contains_key(target))
+                {
+                    issue(subject, "namespace contains an invalid member identity");
+                }
+            }
+            SemanticType::Overload { signatures } => {
+                if signatures.is_empty() || signatures.iter().any(|id| !callable(graph, *id)) {
+                    issue(subject, "overload set requires callable signatures");
+                }
+            }
             SemanticType::Reference { symbol } if !graph.symbols.contains_key(symbol) => {
                 issue(subject, "missing referenced symbol")
             }
@@ -96,6 +109,17 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
             SemanticType::Callable { parameters, .. } => {
                 let mut optional = false;
                 for (index, parameter) in parameters.iter().enumerate() {
+                    if parameter.name.is_empty()
+                        || parameter
+                            .origins
+                            .iter()
+                            .any(|origin| !valid_origin(graph, origin))
+                    {
+                        issue(
+                            subject.clone(),
+                            "invalid callable parameter name/provenance",
+                        );
+                    }
                     if parameter.rest && index + 1 != parameters.len() {
                         issue(subject.clone(), "rest parameter must be last");
                     }
@@ -112,11 +136,22 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
         }
     }
     for (id, symbol) in &graph.symbols {
-        if id.is_empty() || symbol.public_name.is_empty() {
+        if id.is_empty() || symbol.public_name.is_empty() || symbol.declaration_name.is_empty() {
             issue(id.clone(), "symbol identity/name is empty");
         }
         if !graph.types.contains_key(&symbol.type_ref) {
             issue(id.clone(), "missing symbol type");
+        }
+        if symbol.kind == SymbolKind::Callable && !callable_set(graph, symbol.type_ref) {
+            issue(id.clone(), "callable symbol has no callable signature");
+        }
+        if symbol.kind == SymbolKind::Namespace
+            && !matches!(
+                graph.types.get(&symbol.type_ref),
+                Some(SemanticType::Namespace { .. })
+            )
+        {
+            issue(id.clone(), "namespace symbol has no member ownership table");
         }
         for origin in &symbol.origins {
             match graph.sources.get(&origin.source) {
@@ -135,6 +170,58 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
                 issue(id.clone(), "incomplete runtime identity");
             }
         }
+    }
+    // Ownership is a finite tree. Type references may be recursive, while
+    // namespace containment must never cause recursive emission or aliasing.
+    let mut indegree = graph
+        .symbols
+        .keys()
+        .map(|key| (key.clone(), 0usize))
+        .collect::<std::collections::BTreeMap<_, _>>();
+    let mut edges = std::collections::BTreeMap::new();
+    for (key, symbol) in &graph.symbols {
+        if let Some(SemanticType::Namespace { members }) = graph.types.get(&symbol.type_ref) {
+            for (name, target) in members {
+                if let Some(child) = graph.symbols.get(target) {
+                    if child.public_name != *name {
+                        issue(
+                            key.clone(),
+                            "namespace member name differs from exported symbol",
+                        );
+                    }
+                }
+                if let Some(degree) = indegree.get_mut(target) {
+                    *degree += 1;
+                }
+            }
+            edges.insert(key.clone(), members.values().cloned().collect::<Vec<_>>());
+        }
+    }
+    if indegree.values().any(|degree| *degree > 1) {
+        issue(
+            "ownership".to_owned(),
+            "symbol has multiple namespace owners",
+        );
+    }
+    let mut pending = indegree
+        .iter()
+        .filter(|(_, degree)| **degree == 0)
+        .map(|(key, _)| key.clone())
+        .collect::<Vec<_>>();
+    let mut count = 0;
+    while let Some(key) = pending.pop() {
+        count += 1;
+        for target in edges.get(&key).into_iter().flatten() {
+            if let Some(degree) = indegree.get_mut(target) {
+                *degree -= 1;
+                if *degree == 0 {
+                    pending.push(target.clone());
+                }
+            }
+        }
+    }
+    if count != graph.symbols.len() {
+        issue("ownership".to_owned(), "cyclic namespace ownership");
     }
     for (id, source) in &graph.sources {
         if id.is_empty()
@@ -212,6 +299,26 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
     }
 }
 
+fn callable(graph: &SemanticGraph, mut id: TypeId) -> bool {
+    let mut seen = BTreeSet::new();
+    while seen.insert(id) {
+        match graph.types.get(&id) {
+            Some(SemanticType::Generic { body, .. }) => id = *body,
+            Some(SemanticType::Callable { .. }) => return true,
+            _ => return false,
+        }
+    }
+    false
+}
+fn callable_set(graph: &SemanticGraph, id: TypeId) -> bool {
+    match graph.types.get(&id) {
+        Some(SemanticType::Overload { signatures }) => {
+            !signatures.is_empty() && signatures.iter().all(|id| callable(graph, *id))
+        }
+        _ => callable(graph, id),
+    }
+}
+
 fn valid_origin(graph: &SemanticGraph, origin: &Origin) -> bool {
     graph.sources.get(&origin.source).is_some_and(|source| {
         origin.start <= origin.end && origin.end <= source.byte_length && !origin.rule.is_empty()
@@ -279,6 +386,7 @@ fn references(node: &SemanticType) -> Vec<TypeId> {
         SemanticType::Shape { fields, .. } => fields.values().map(|f| f.type_ref).collect(),
         SemanticType::Opaque { arguments, .. } => arguments.clone(),
         SemanticType::Tuple { elements } => elements.clone(),
+        SemanticType::Overload { signatures } => signatures.clone(),
         SemanticType::Union { members } | SemanticType::Intersection { members } => members.clone(),
         SemanticType::Collection { element, .. } => vec![*element],
         SemanticType::Nullable { value }

@@ -1,9 +1,11 @@
 use crate::config::{
     BindingsConfig, CallbackInvocation, CallbackLifetime, EntryConfig, Evaluation, SymbolConfig,
 };
-use crate::model::{Declaration, Function, Namespace, Scope, Span, TypeKind, TypeRef};
-use crate::parser::parse_declarations;
+use crate::semantic::{interpret_with_digest, SemanticError};
 use serde::{Deserialize, Serialize};
+use seseragi_interop::{
+    PrimitiveDomain, SemanticGraph, SemanticSymbol, SemanticType, SymbolKind, TypeId,
+};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -76,6 +78,50 @@ pub struct ConversionInput<'a> {
 pub struct ConversionResult {
     pub generated: Option<GeneratedBinding>,
     pub diagnostics: Vec<ConversionDiagnostic>,
+    pub semantic: Option<SemanticGraph>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+pub struct ProjectionResult {
+    pub source: Option<String>,
+    pub diagnostics: Vec<ConversionDiagnostic>,
+}
+
+/// Project a validated common graph without parsing TypeScript declarations.
+/// This bridge retains the existing opaque declaration policy; canonical
+/// structural/nominal/ADT reconstruction is a separate projection contract.
+pub fn project_graph(
+    graph: &SemanticGraph,
+    settings: &str,
+    id: &str,
+) -> Result<ProjectionResult, ConvertError> {
+    graph
+        .validate()
+        .map_err(|error| ConvertError::new(error.to_string()))?;
+    let config = parse_bindings(settings)?;
+    let entry = config.entries.get(id).ok_or_else(|| {
+        ConvertError::new(format!(
+            "binding entry `{id}` does not exist in binding settings"
+        ))
+    })?;
+    if graph
+        .identity
+        .as_ref()
+        .is_some_and(|identity| identity.settings_digest != sha256(settings))
+    {
+        return Err(ConvertError::new(
+            "semantic graph was interpreted with different binding settings",
+        ));
+    }
+    let rendered = render_entry(id, entry, graph, &entry.declaration);
+    let failed = rendered
+        .diagnostics
+        .iter()
+        .any(|d| d.severity == DiagnosticSeverity::Error);
+    Ok(ProjectionResult {
+        source: (!failed).then_some(rendered.source),
+        diagnostics: rendered.diagnostics,
+    })
 }
 
 /// Text artifacts ready to publish under `output` in a generated workspace.
@@ -122,23 +168,29 @@ fn convert_entry_with_host(
     previous: Option<&str>,
     host: impl FnOnce() -> Result<HostModuleIdentity, ConvertError>,
 ) -> Result<ConversionResult, ConvertError> {
-    let scope = match parse_declarations(declaration) {
-        Ok(scope) => scope,
-        Err(error) => {
+    let graph = match interpret_with_digest(declaration, &entry.declaration, settings_digest) {
+        Ok(graph) => graph,
+        Err(SemanticError::Parse {
+            message,
+            start,
+            end,
+        }) => {
             return Ok(ConversionResult {
                 generated: None,
+                semantic: None,
                 diagnostics: vec![diagnostic(
                     "SES-F0100",
                     DiagnosticSeverity::Error,
-                    error.message,
+                    message,
                     &entry.declaration,
-                    error.span,
+                    Span { start, end },
                     None,
                 )],
-            })
+            });
         }
+        Err(error) => return Err(ConvertError::new(error.to_string())),
     };
-    let rendered = render_entry(id, entry, &scope, &entry.declaration);
+    let rendered = render_entry(id, entry, &graph, &entry.declaration);
     if rendered
         .diagnostics
         .iter()
@@ -147,6 +199,7 @@ fn convert_entry_with_host(
         return Ok(ConversionResult {
             generated: None,
             diagnostics: rendered.diagnostics,
+            semantic: Some(graph),
         });
     }
     let previous = previous.and_then(|text| serde_json::from_str(text).ok());
@@ -177,6 +230,7 @@ fn convert_entry_with_host(
             report: json_text(&report)?,
         }),
         diagnostics: rendered.diagnostics,
+        semantic: Some(graph),
     })
 }
 
@@ -258,16 +312,38 @@ struct RenderedEntry {
     diagnostics: Vec<ConversionDiagnostic>,
 }
 
-fn render_entry(_id: &str, entry: &EntryConfig, scope: &Scope, file: &str) -> RenderedEntry {
+fn render_entry(
+    _id: &str,
+    entry: &EntryConfig,
+    graph: &SemanticGraph,
+    file: &str,
+) -> RenderedEntry {
     let mut context = RenderContext {
         entry,
         file,
+        graph,
         diagnostics: Vec::new(),
         symbols: Vec::new(),
         uses_big_int: false,
+        active_types: BTreeSet::new(),
     };
-    validate_symbol_settings(scope, &mut context);
-    let body = render_scope(scope, &mut context, &[], 1);
+    validate_symbol_settings(graph, &mut context);
+    let owned = graph
+        .types
+        .values()
+        .filter_map(|node| match node {
+            SemanticType::Namespace { members } => Some(members.values()),
+            _ => None,
+        })
+        .flatten()
+        .collect::<BTreeSet<_>>();
+    let roots = graph
+        .symbols
+        .iter()
+        .filter(|(key, _)| !owned.contains(key))
+        .map(|(key, symbol)| (symbol.public_name.clone(), key.clone()))
+        .collect();
+    let body = render_scope(&roots, &mut context, &[], 1);
     let mut source = String::new();
     if context.uses_big_int {
         source.push_str("import { BigInt } from \"std/big-int\"\n\n");
@@ -288,147 +364,219 @@ fn render_entry(_id: &str, entry: &EntryConfig, scope: &Scope, file: &str) -> Re
 struct RenderContext<'a> {
     entry: &'a EntryConfig,
     file: &'a str,
+    graph: &'a SemanticGraph,
     diagnostics: Vec<ConversionDiagnostic>,
     symbols: Vec<GeneratedSymbol>,
     uses_big_int: bool,
+    active_types: BTreeSet<TypeId>,
+}
+
+#[derive(Clone, Copy)]
+struct Span {
+    start: usize,
+    end: usize,
+}
+
+fn symbol_span(symbol: &SemanticSymbol, rule: &str) -> Span {
+    let origin = symbol
+        .origins
+        .iter()
+        .find(|origin| origin.rule == rule)
+        .or_else(|| symbol.origins.first());
+    origin.map_or(Span { start: 0, end: 0 }, |origin| Span {
+        start: origin.start,
+        end: origin.end,
+    })
+}
+fn type_span(graph: &SemanticGraph, id: TypeId) -> Span {
+    graph
+        .type_origins
+        .get(&id)
+        .and_then(|origins| origins.first())
+        .map_or(Span { start: 0, end: 0 }, |origin| Span {
+            start: origin.start,
+            end: origin.end,
+        })
+}
+
+struct Function {
+    original_name: String,
+    public_name: String,
+    name_span: Span,
+    span: Span,
+    type_parameters: Vec<String>,
+    parameters: Vec<seseragi_interop::CallParameter>,
+    result: TypeId,
+}
+fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> Option<Function> {
+    let (type_parameters, body) = match &graph.types[&id] {
+        SemanticType::Generic { parameters, body } => {
+            (parameters.iter().map(|p| p.name.clone()).collect(), *body)
+        }
+        _ => (Vec::new(), id),
+    };
+    let SemanticType::Callable {
+        parameters, result, ..
+    } = &graph.types[&body]
+    else {
+        return None;
+    };
+    let span = type_span(graph, body);
+    // Each overload's callable origin owns its exact declaration range.
+    let name_span = symbol
+        .origins
+        .iter()
+        .filter(|origin| origin.rule == "public-name")
+        .find(|origin| origin.start >= span.start && origin.end <= span.end)
+        .map_or(symbol_span(symbol, "public-name"), |origin| Span {
+            start: origin.start,
+            end: origin.end,
+        });
+    Some(Function {
+        original_name: symbol.declaration_name.clone(),
+        public_name: symbol.public_name.clone(),
+        name_span,
+        span,
+        type_parameters,
+        parameters: parameters.clone(),
+        result: *result,
+    })
 }
 
 fn render_scope(
-    scope: &Scope,
+    members: &BTreeMap<String, String>,
     context: &mut RenderContext<'_>,
     namespace: &[String],
     indent: usize,
 ) -> String {
-    let mut declarations = scope.declarations.clone();
-    declarations.sort_by_key(declaration_sort_key);
-    let mut types = BTreeMap::<String, Declaration>::new();
-    let mut functions = BTreeMap::<String, Vec<Function>>::new();
-    let mut namespaces = BTreeMap::<String, Namespace>::new();
-    for declaration in declarations {
-        match declaration {
-            Declaration::Function(function) => functions
-                .entry(function.public_name.clone())
-                .or_default()
-                .push(function),
-            Declaration::Namespace(value) => {
-                namespaces.entry(value.public_name.clone()).or_insert(value);
-            }
-            other => {
-                types
-                    .entry(other.original_name().to_owned())
-                    .or_insert(other);
-            }
-        }
-    }
     let pad = "  ".repeat(indent);
+    let mut declarations = members
+        .values()
+        .map(|key| context.graph.symbols[key].clone())
+        .collect::<Vec<_>>();
+    declarations.sort_by_key(|symbol| {
+        (
+            match symbol.kind {
+                SymbolKind::Type => 0,
+                SymbolKind::Callable => 1,
+                SymbolKind::Namespace => 2,
+            },
+            if symbol.kind == SymbolKind::Type {
+                symbol.declaration_name.clone()
+            } else {
+                symbol.public_name.clone()
+            },
+        )
+    });
     let mut sections = Vec::new();
-    if !types.is_empty() {
-        let mut lines = Vec::new();
-        for declaration in types.into_values() {
-            let (public, original, span, parameters) = match declaration {
-                Declaration::Interface(value) => {
-                    (value.public_name, value.name, value.name_span, Vec::new())
-                }
-                Declaration::Class(value) | Declaration::Enum(value) => (
-                    value.public_name,
-                    value.name,
-                    value.name_span,
-                    value.type_parameters,
-                ),
-                Declaration::TypeAlias(value) => (
-                    value.public_name,
-                    value.name,
-                    value.name_span,
-                    value.type_parameters,
-                ),
-                _ => continue,
-            };
-            let path = symbol_path(namespace, &public);
-            let local = generated_name(
-                &public,
-                NameKind::Type,
-                &context.entry.specifier,
-                &symbol_path(namespace, &original),
-                &path,
-            );
-            let generic = render_type_parameter_names(&parameters);
-            lines.push(format!("{pad}opaque type {local}{generic}"));
-            context.symbols.push(GeneratedSymbol {
-                identity: symbol_identity(
+    let mut types = Vec::new();
+    let mut functions = Vec::new();
+    let mut namespaces = Vec::new();
+    for symbol in declarations {
+        let public_path = symbol_path(namespace, &symbol.public_name);
+        let original_path = symbol_path(namespace, &symbol.declaration_name);
+        match symbol.kind {
+            SymbolKind::Type => {
+                let local = generated_name(
+                    &symbol.public_name,
+                    NameKind::Type,
                     &context.entry.specifier,
-                    &symbol_path(namespace, &original),
-                    "type",
-                ),
-                public_path: path,
-                local_name: local,
-                host_name: public,
-                kind: "opaque-type".to_owned(),
-                signature: format!("opaque{generic}"),
-                source: SourceSpan {
-                    file: context.file.to_owned(),
-                    start: span.start,
-                    end: span.end,
-                },
-                rule: "opaque-foreign-type".to_owned(),
-            });
+                    &original_path,
+                    &public_path,
+                );
+                let parameters = match &context.graph.types[&symbol.type_ref] {
+                    SemanticType::Generic { parameters, .. } => parameters
+                        .iter()
+                        .map(|p| p.name.clone())
+                        .collect::<Vec<_>>(),
+                    _ => Vec::new(),
+                };
+                let generic = render_type_parameter_names(&parameters);
+                types.push(format!("{pad}opaque type {local}{generic}"));
+                let span = symbol_span(&symbol, "public-name");
+                context.symbols.push(GeneratedSymbol {
+                    identity: symbol_identity(&context.entry.specifier, &original_path, "type"),
+                    public_path,
+                    local_name: local,
+                    host_name: symbol.public_name,
+                    kind: "opaque-type".to_owned(),
+                    signature: format!("opaque{generic}"),
+                    source: SourceSpan {
+                        file: context.file.to_owned(),
+                        start: span.start,
+                        end: span.end,
+                    },
+                    rule: "opaque-foreign-type".to_owned(),
+                });
+            }
+            SymbolKind::Callable => {
+                let signatures = match &context.graph.types[&symbol.type_ref] {
+                    SemanticType::Overload { signatures } => signatures.clone(),
+                    _ => vec![symbol.type_ref],
+                };
+                let overloads = signatures
+                    .iter()
+                    .filter_map(|id| function_view(context.graph, &symbol, *id))
+                    .collect::<Vec<_>>();
+                functions.extend(render_overloads(
+                    &symbol.public_name,
+                    &overloads,
+                    context,
+                    namespace,
+                    indent,
+                ));
+            }
+            SymbolKind::Namespace => {
+                let SemanticType::Namespace { members } = &context.graph.types[&symbol.type_ref]
+                else {
+                    continue;
+                };
+                let members = members.clone();
+                let local = generated_name(
+                    &symbol.public_name,
+                    NameKind::Value,
+                    &context.entry.specifier,
+                    &original_path,
+                    &public_path,
+                );
+                let host = if local == symbol.public_name {
+                    String::new()
+                } else {
+                    format!(" = {:?}", symbol.public_name)
+                };
+                let mut nested = namespace.to_vec();
+                nested.push(symbol.public_name.clone());
+                let body = render_scope(&members, context, &nested, indent + 1);
+                namespaces.push(format!("{pad}namespace {local}{host} {{\n{body}{pad}}}"));
+                let span = symbol_span(&symbol, "public-name");
+                context.symbols.push(GeneratedSymbol {
+                    identity: symbol_identity(
+                        &context.entry.specifier,
+                        &original_path,
+                        "namespace",
+                    ),
+                    public_path,
+                    local_name: local,
+                    host_name: symbol.public_name,
+                    kind: "namespace".to_owned(),
+                    signature: "namespace".to_owned(),
+                    source: SourceSpan {
+                        file: context.file.to_owned(),
+                        start: span.start,
+                        end: span.end,
+                    },
+                    rule: "merged-namespace".to_owned(),
+                });
+            }
         }
-        sections.push(lines.join("\n"));
     }
-    if !functions.is_empty() {
-        let mut lines = Vec::new();
-        for (public_name, overloads) in functions {
-            lines.extend(render_overloads(
-                &public_name,
-                &overloads,
-                context,
-                namespace,
-                indent,
-            ));
-        }
+    for lines in [types, functions] {
         if !lines.is_empty() {
             sections.push(lines.join("\n"));
         }
     }
     if !namespaces.is_empty() {
-        let mut blocks = Vec::new();
-        for value in namespaces.into_values() {
-            let public_path = symbol_path(namespace, &value.public_name);
-            let local = generated_name(
-                &value.public_name,
-                NameKind::Value,
-                &context.entry.specifier,
-                &symbol_path(namespace, &value.original_name),
-                &public_path,
-            );
-            let host = if local == value.public_name {
-                String::new()
-            } else {
-                format!(" = {:?}", value.public_name)
-            };
-            let mut next_namespace = namespace.to_vec();
-            next_namespace.push(value.public_name.clone());
-            let nested = render_scope(&value.scope, context, &next_namespace, indent + 1);
-            blocks.push(format!("{pad}namespace {local}{host} {{\n{nested}{pad}}}"));
-            context.symbols.push(GeneratedSymbol {
-                identity: symbol_identity(
-                    &context.entry.specifier,
-                    &symbol_path(namespace, &value.original_name),
-                    "namespace",
-                ),
-                public_path,
-                local_name: local,
-                host_name: value.public_name,
-                kind: "namespace".to_owned(),
-                signature: "namespace".to_owned(),
-                source: SourceSpan {
-                    file: context.file.to_owned(),
-                    start: value.name_span.start,
-                    end: value.name_span.end,
-                },
-                rule: "merged-namespace".to_owned(),
-            });
-        }
-        sections.push(blocks.join("\n\n"));
+        sections.push(namespaces.join("\n\n"));
     }
     if sections.is_empty() {
         String::new()
@@ -557,10 +705,10 @@ fn render_function(
         .cloned()
         .zip(type_names.iter().cloned())
         .collect::<BTreeMap<_, _>>();
-    let returns_promise = is_promise(&function.result);
+    let returns_promise = is_promise(context.graph, function.result);
     let mut parameters = Vec::new();
     for parameter in &function.parameters {
-        if let TypeKind::Function { result, .. } = &parameter.type_ref.kind {
+        if let SemanticType::Callable { result, .. } = &context.graph.types[&parameter.type_ref] {
             if let Some(callback) = config.callbacks.get(&parameter.name) {
                 if callback.lifetime == CallbackLifetime::Retained && callback.release.is_none() {
                     context.diagnostics.push(diagnostic(
@@ -571,7 +719,13 @@ fn render_function(
                             parameter.name
                         ),
                         context.file,
-                        parameter.name_span,
+                        parameter
+                            .origins
+                            .first()
+                            .map_or(Span { start: 0, end: 0 }, |o| Span {
+                                start: o.start,
+                                end: o.end,
+                            }),
                         Some(public_path.clone()),
                     ));
                     return None;
@@ -585,12 +739,20 @@ fn render_function(
                             parameter.name
                         ),
                         context.file,
-                        parameter.name_span,
+                        parameter
+                            .origins
+                            .first()
+                            .map_or(Span { start: 0, end: 0 }, |o| Span {
+                                start: o.start,
+                                end: o.end,
+                            }),
                         Some(public_path.clone()),
                     ));
                     return None;
                 }
-                if callback.invocation == CallbackInvocation::Promise && !is_promise(result) {
+                if callback.invocation == CallbackInvocation::Promise
+                    && !is_promise(context.graph, *result)
+                {
                     context.diagnostics.push(diagnostic(
                         "SES-F0102",
                         DiagnosticSeverity::Error,
@@ -599,7 +761,13 @@ fn render_function(
                             parameter.name
                         ),
                         context.file,
-                        parameter.name_span,
+                        parameter
+                            .origins
+                            .first()
+                            .map_or(Span { start: 0, end: 0 }, |o| Span {
+                                start: o.start,
+                                end: o.end,
+                            }),
                         Some(public_path.clone()),
                     ));
                     return None;
@@ -608,10 +776,14 @@ fn render_function(
         }
         let override_type = config.parameters.get(&parameter.name);
         let mut rendered = if let Some(override_type) = override_type {
-            validate_override(&override_type.type_name, parameter.type_ref.span, context)?
+            validate_override(
+                &override_type.type_name,
+                type_span(context.graph, parameter.type_ref),
+                context,
+            )?
         } else {
             render_type(
-                &parameter.type_ref,
+                parameter.type_ref,
                 &type_map,
                 config,
                 Some(&parameter.name),
@@ -625,9 +797,13 @@ fn render_function(
         let rest = if parameter.rest { "..." } else { "" };
         parameters.push(format!("{rest}{}: {rendered}", parameter.name));
     }
-    let result_ref = promise_inner(&function.result).unwrap_or(&function.result);
+    let result_ref = promise_inner(context.graph, function.result).unwrap_or(function.result);
     let result = if let Some(override_type) = &config.result {
-        validate_override(&override_type.type_name, result_ref.span, context)?
+        validate_override(
+            &override_type.type_name,
+            type_span(context.graph, result_ref),
+            context,
+        )?
     } else {
         render_type(result_ref, &type_map, config, None, context, &public_path)?
     };
@@ -681,89 +857,131 @@ fn render_function(
 }
 
 fn render_type(
-    type_ref: &TypeRef,
+    id: TypeId,
     type_parameters: &BTreeMap<String, String>,
     symbol: &SymbolConfig,
     callback_parameter: Option<&str>,
     context: &mut RenderContext<'_>,
     symbol_path: &str,
 ) -> Option<String> {
-    match &type_ref.kind {
-        TypeKind::Primitive(name) => match name.as_str() {
-            "boolean" => Some("Bool".to_owned()),
-            "string" => Some("String".to_owned()),
-            "number" => Some("Float".to_owned()),
-            "bigint" => {
+    if context.active_types.len() >= 256 || !context.active_types.insert(id) {
+        return unsupported_type(
+            id,
+            "recursive or excessively deep inline type requires an explicit opaque boundary",
+            context,
+            symbol_path,
+        );
+    }
+    let result = render_type_node(
+        id,
+        type_parameters,
+        symbol,
+        callback_parameter,
+        context,
+        symbol_path,
+    );
+    context.active_types.remove(&id);
+    result
+}
+
+fn render_type_node(
+    id: TypeId,
+    type_parameters: &BTreeMap<String, String>,
+    symbol: &SymbolConfig,
+    callback_parameter: Option<&str>,
+    context: &mut RenderContext<'_>,
+    symbol_path: &str,
+) -> Option<String> {
+    // A bridge projection of the existing supported subset. Every input node
+    // is interpreted by the frontend first; no TypeScript AST is visible here.
+    let node = context.graph.types[&id].clone();
+    match node {
+        SemanticType::Primitive { domain } => match domain {
+            PrimitiveDomain::Unit => Some("Unit".to_owned()),
+            PrimitiveDomain::Never => Some("Never".to_owned()),
+            PrimitiveDomain::Boolean => Some("Bool".to_owned()),
+            PrimitiveDomain::String => Some("String".to_owned()),
+            PrimitiveDomain::Float64 => Some("Float".to_owned()),
+            PrimitiveDomain::Integer => Some("Int".to_owned()),
+            PrimitiveDomain::BigInteger => {
                 context.uses_big_int = true;
                 Some("BigInt".to_owned())
             }
-            "never" => Some("Never".to_owned()),
-            "unknown" => Some("Js.Unknown".to_owned()),
-            "object" => Some("Js.Object".to_owned()),
-            "null" => Some("Js.Null".to_owned()),
-            "undefined" => Some("Js.Undefined".to_owned()),
-            "void" => Some("Unit".to_owned()),
-            "any" if symbol.unsafe_any => {
+            PrimitiveDomain::Unknown => Some("Js.Unknown".to_owned()),
+            PrimitiveDomain::Object => Some("Js.Object".to_owned()),
+            PrimitiveDomain::Null => Some("Js.Null".to_owned()),
+            PrimitiveDomain::Undefined => Some("Js.Undefined".to_owned()),
+            PrimitiveDomain::Binary => Some("Bytes".to_owned()),
+            PrimitiveDomain::Dynamic if symbol.unsafe_any => {
                 context.diagnostics.push(diagnostic(
                     "SES-F0101",
                     DiagnosticSeverity::Warning,
                     "explicit unsafe any fallback maps to Js.Unknown",
                     context.file,
-                    type_ref.span,
+                    type_span(context.graph, id),
                     Some(symbol_path.to_owned()),
                 ));
                 Some("Js.Unknown".to_owned())
             }
-            "any" => unsupported_type(
-                type_ref,
+            PrimitiveDomain::Dynamic => unsupported_type(
+                id,
                 "`any` requires an explicit unsafe fallback",
                 context,
                 symbol_path,
             ),
-            other => unsupported_type(
-                type_ref,
-                &format!("unsupported TypeScript primitive `{other}`"),
+        },
+        SemanticType::Parameter { binder, index } => {
+            let SemanticType::Generic { parameters, .. } = &context.graph.types[&binder] else {
+                return None;
+            };
+            type_parameters
+                .get(&parameters[index as usize].name)
+                .cloned()
+        }
+        SemanticType::Reference { symbol: target } => {
+            Some(generated_name_simple(&target, NameKind::Type))
+        }
+        SemanticType::Opaque {
+            identity,
+            arguments,
+        } => {
+            let name = generated_name_simple(&identity, NameKind::Type);
+            if arguments.is_empty() {
+                Some(name)
+            } else {
+                let args = arguments
+                    .into_iter()
+                    .map(|arg| {
+                        render_type(
+                            arg,
+                            type_parameters,
+                            symbol,
+                            callback_parameter,
+                            context,
+                            symbol_path,
+                        )
+                    })
+                    .collect::<Option<Vec<_>>>()?;
+                Some(format!("{name}<{}>", args.join(", ")))
+            }
+        }
+        SemanticType::Apply {
+            constructor,
+            arguments,
+        } => {
+            let name = render_type(
+                constructor,
+                type_parameters,
+                symbol,
+                callback_parameter,
                 context,
                 symbol_path,
-            ),
-        },
-        TypeKind::Named(name) => match name.as_str() {
-            "bigint" => {
-                context.uses_big_int = true;
-                Some("BigInt".to_owned())
-            }
-            "Uint8Array" => Some("Bytes".to_owned()),
-            _ => Some(
-                type_parameters
-                    .get(name)
-                    .cloned()
-                    .unwrap_or_else(|| generated_name_simple(name, NameKind::Type)),
-            ),
-        },
-        TypeKind::Generic { name, arguments } => {
-            if matches!(name.as_str(), "Promise" | "PromiseLike") {
-                let Some(argument) = arguments.first() else {
-                    return unsupported_type(
-                        type_ref,
-                        "Promise requires one type argument",
-                        context,
-                        symbol_path,
-                    );
-                };
-                return render_type(
-                    argument,
-                    type_parameters,
-                    symbol,
-                    callback_parameter,
-                    context,
-                    symbol_path,
-                );
-            }
-            let rendered = arguments
-                .iter()
-                .map(|argument| {
+            )?;
+            let args = arguments
+                .into_iter()
+                .map(|arg| {
                     render_type(
-                        argument,
+                        arg,
                         type_parameters,
                         symbol,
                         callback_parameter,
@@ -772,14 +990,17 @@ fn render_type(
                     )
                 })
                 .collect::<Option<Vec<_>>>()?;
-            let name = match name.as_str() {
-                "ReadonlyArray" => "Array".to_owned(),
-                "Array" => "Js.MutableArray".to_owned(),
-                other => generated_name_simple(other, NameKind::Type),
-            };
-            Some(format!("{name}<{}>", rendered.join(", ")))
+            Some(format!("{name}<{}>", args.join(", ")))
         }
-        TypeKind::ReadonlyArray(element) => render_type(
+        SemanticType::Async { value } => render_type(
+            value,
+            type_parameters,
+            symbol,
+            callback_parameter,
+            context,
+            symbol_path,
+        ),
+        SemanticType::Collection { element, mutable } => render_type(
             element,
             type_parameters,
             symbol,
@@ -787,21 +1008,17 @@ fn render_type(
             context,
             symbol_path,
         )
-        .map(|element| format!("Array<{element}>")),
-        TypeKind::MutableArray(element) => render_type(
-            element,
-            type_parameters,
-            symbol,
-            callback_parameter,
-            context,
-            symbol_path,
-        )
-        .map(|element| format!("Js.MutableArray<{element}>")),
-        TypeKind::Tuple(members) => members
-            .iter()
-            .map(|member| {
+        .map(|value| {
+            format!(
+                "{}<{value}>",
+                if mutable { "Js.MutableArray" } else { "Array" }
+            )
+        }),
+        SemanticType::Tuple { elements } => elements
+            .into_iter()
+            .map(|id| {
                 render_type(
-                    member,
+                    id,
                     type_parameters,
                     symbol,
                     callback_parameter,
@@ -810,37 +1027,39 @@ fn render_type(
                 )
             })
             .collect::<Option<Vec<_>>>()
-            .map(|members| format!("({})", members.join(", "))),
-        TypeKind::Union(members) => {
+            .map(|parts| format!("({})", parts.join(", "))),
+        SemanticType::Union { members } => {
             let mut value = None;
-            let mut has_null = false;
-            let mut has_undefined = false;
+            let mut null = false;
+            let mut undefined = false;
             for member in members {
-                match &member.kind {
-                    TypeKind::Literal(literal) if literal == "null" => has_null = true,
-                    TypeKind::Literal(literal) if literal == "undefined" => has_undefined = true,
-                    TypeKind::Primitive(literal) if literal == "null" => has_null = true,
-                    TypeKind::Primitive(literal) if literal == "undefined" => has_undefined = true,
+                match context.graph.types[&member] {
+                    SemanticType::Primitive {
+                        domain: PrimitiveDomain::Null,
+                    } => null = true,
+                    SemanticType::Primitive {
+                        domain: PrimitiveDomain::Undefined,
+                    } => undefined = true,
                     _ if value.is_none() => value = Some(member),
                     _ => {
                         return unsupported_type(
-                            type_ref,
+                            id,
                             "arbitrary unions require an explicit discriminated-union adapter",
                             context,
                             symbol_path,
-                        );
+                        )
                     }
                 }
             }
             let Some(value) = value else {
                 return unsupported_type(
-                    type_ref,
+                    id,
                     "nullish union has no value type",
                     context,
                     symbol_path,
                 );
             };
-            let mut rendered = render_type(
+            let mut result = render_type(
                 value,
                 type_parameters,
                 symbol,
@@ -848,21 +1067,23 @@ fn render_type(
                 context,
                 symbol_path,
             )?;
-            if has_null {
-                rendered = format!("Js.NullOr<{rendered}>");
+            if null {
+                result = format!("Js.NullOr<{result}>");
             }
-            if has_undefined {
-                rendered = format!("Js.UndefinedOr<{rendered}>");
+            if undefined {
+                result = format!("Js.UndefinedOr<{result}>");
             }
-            Some(rendered)
+            Some(result)
         }
-        TypeKind::Function { parameters, result } => {
+        SemanticType::Callable {
+            parameters, result, ..
+        } => {
             let callback = callback_parameter.and_then(|name| symbol.callbacks.get(name));
-            let arguments = parameters
-                .iter()
-                .map(|parameter| {
+            let args = parameters
+                .into_iter()
+                .map(|p| {
                     render_type(
-                        &parameter.type_ref,
+                        p.type_ref,
                         type_parameters,
                         symbol,
                         None,
@@ -871,43 +1092,33 @@ fn render_type(
                     )
                 })
                 .collect::<Option<Vec<_>>>()?;
-            let result_ref = promise_inner(result).unwrap_or(result);
-            let result = render_type(
-                result_ref,
-                type_parameters,
-                symbol,
-                None,
-                context,
-                symbol_path,
-            )?;
+            let result = promise_inner(context.graph, result).unwrap_or(result);
+            let result = render_type(result, type_parameters, symbol, None, context, symbol_path)?;
             if callback.is_some() {
                 let mut signature = result;
-                for argument in arguments.into_iter().rev() {
+                for argument in args.into_iter().rev() {
                     signature = format!("{argument} -> {signature}");
                 }
                 Some(format!("({signature})"))
             } else {
-                let args = match arguments.as_slice() {
+                let args = match args.as_slice() {
                     [] => "Unit".to_owned(),
-                    [single] => single.clone(),
-                    _ => format!("({})", arguments.join(", ")),
+                    [one] => one.clone(),
+                    _ => format!("({})", args.join(", ")),
                 };
                 Some(format!("Js.Callback<{args}, {result}>"))
             }
         }
-        TypeKind::Literal(value) if value == "null" => Some("Js.Null".to_owned()),
-        TypeKind::Literal(value) if value == "undefined" => Some("Js.Undefined".to_owned()),
-        TypeKind::Literal(_) | TypeKind::Unsupported(_) => unsupported_type(
-            type_ref,
+        _ => unsupported_type(
+            id,
             "unsupported TypeScript type requires an explicit adapter",
             context,
             symbol_path,
         ),
     }
 }
-
 fn unsupported_type(
-    type_ref: &TypeRef,
+    id: TypeId,
     message: &str,
     context: &mut RenderContext<'_>,
     symbol: &str,
@@ -917,7 +1128,7 @@ fn unsupported_type(
         DiagnosticSeverity::Error,
         message,
         context.file,
-        type_ref.span,
+        type_span(context.graph, id),
         Some(symbol.to_owned()),
     ));
     None
@@ -942,11 +1153,9 @@ fn validate_override(value: &str, span: Span, context: &mut RenderContext<'_>) -
     }
 }
 
-fn validate_symbol_settings(scope: &Scope, context: &mut RenderContext<'_>) {
-    let mut paths = BTreeSet::new();
-    collect_symbol_paths(scope, &[], &mut paths);
+fn validate_symbol_settings(graph: &SemanticGraph, context: &mut RenderContext<'_>) {
     for key in context.entry.symbols.keys() {
-        if !paths.contains(key) {
+        if !graph.symbols.contains_key(key) {
             context.diagnostics.push(diagnostic(
                 "SES-F0104",
                 DiagnosticSeverity::Error,
@@ -958,39 +1167,12 @@ fn validate_symbol_settings(scope: &Scope, context: &mut RenderContext<'_>) {
         }
     }
 }
-
-fn collect_symbol_paths(scope: &Scope, namespace: &[String], output: &mut BTreeSet<String>) {
-    for declaration in &scope.declarations {
-        let name = match declaration {
-            Declaration::Function(value) => &value.public_name,
-            Declaration::Namespace(value) => &value.public_name,
-            Declaration::Interface(value) => &value.public_name,
-            Declaration::Class(value) | Declaration::Enum(value) => &value.public_name,
-            Declaration::TypeAlias(value) => &value.public_name,
-        };
-        output.insert(symbol_path(namespace, name));
-        if let Declaration::Namespace(value) = declaration {
-            let mut nested = namespace.to_vec();
-            nested.push(name.clone());
-            collect_symbol_paths(&value.scope, &nested, output);
-        }
-    }
+fn is_promise(graph: &SemanticGraph, id: TypeId) -> bool {
+    matches!(graph.types[&id], SemanticType::Async { .. })
 }
-
-fn is_promise(type_ref: &TypeRef) -> bool {
-    matches!(
-        &type_ref.kind,
-        TypeKind::Generic { name, .. } if matches!(name.as_str(), "Promise" | "PromiseLike")
-    )
-}
-
-fn promise_inner(type_ref: &TypeRef) -> Option<&TypeRef> {
-    match &type_ref.kind {
-        TypeKind::Generic { name, arguments }
-            if matches!(name.as_str(), "Promise" | "PromiseLike") =>
-        {
-            arguments.first()
-        }
+fn promise_inner(graph: &SemanticGraph, id: TypeId) -> Option<TypeId> {
+    match graph.types[&id] {
+        SemanticType::Async { value } => Some(value),
         _ => None,
     }
 }
@@ -1183,18 +1365,6 @@ fn symbol_path(namespace: &[String], name: &str) -> String {
     } else {
         format!("{}.{}", namespace.join("."), name)
     }
-}
-
-fn declaration_sort_key(declaration: &Declaration) -> (u8, String) {
-    let kind = match declaration {
-        Declaration::Interface(_)
-        | Declaration::Class(_)
-        | Declaration::Enum(_)
-        | Declaration::TypeAlias(_) => 0,
-        Declaration::Function(_) => 1,
-        Declaration::Namespace(_) => 2,
-    };
-    (kind, declaration.original_name().to_owned())
 }
 
 fn diagnostic(
