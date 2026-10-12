@@ -1,5 +1,9 @@
 use seseragi_project::*;
 use std::collections::BTreeMap;
+
+#[path = "../../test-support/temporary.rs"]
+mod temporary_support;
+
 #[test]
 fn snapshot_runtime_identity_and_transitive_imports_match_shared_selector() {
     let files=BTreeMap::from([
@@ -77,15 +81,7 @@ fn native_resolver_rejects_builtins_for_browser_before_access_or_execution() {
 struct TempProject(std::path::PathBuf);
 impl TempProject {
     fn new() -> Self {
-        let root = std::env::temp_dir().join(format!(
-            "seseragi-interop-host-{}-{}",
-            std::process::id(),
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_nanos()
-        ));
-        std::fs::create_dir_all(&root).unwrap();
+        let root = temporary_support::temporary_directory("seseragi-interop-host");
         Self(root)
     }
     fn write(&self, path: &str, source: &str) {

@@ -3,8 +3,10 @@ use std::{
     fs,
     path::{Path, PathBuf},
     process::{Command, Output},
-    time::{SystemTime, UNIX_EPOCH},
 };
+
+#[path = "../../test-support/temporary.rs"]
+mod temporary_support;
 
 fn cli(args: &[&str], package: &Path) -> Output {
     Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -34,14 +36,7 @@ fn copy(source: &Path, target: &Path) {
     }
 }
 fn fixture() -> PathBuf {
-    let nonce = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_nanos();
-    let package = std::env::temp_dir().join(format!(
-        "seseragi-generic-schema-{}-{nonce}",
-        std::process::id()
-    ));
+    let package = temporary_support::temporary_directory("seseragi-generic-schema");
     copy(
         &Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/projects/dts-generic-schema"),

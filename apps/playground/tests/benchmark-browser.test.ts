@@ -133,7 +133,7 @@ test("portable benchmark kernel measures reactive DOM and tears its host down", 
     expect(await page.locator("main").count()).toBe(0)
   } finally {
     await browser?.close()
-    server?.stop(true)
+    await server?.stop(true)
     await rm(temporary, { recursive: true, force: true })
   }
 }, 30000)

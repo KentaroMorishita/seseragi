@@ -3,19 +3,12 @@ use std::{
     fs,
     path::{Path, PathBuf},
     process::{Command, Output},
-    time::{SystemTime, UNIX_EPOCH},
 };
+#[path = "../../test-support/temporary.rs"]
+mod temporary_support;
+
 fn temporary() -> PathBuf {
-    let nonce = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_nanos();
-    let root = std::env::temp_dir().join(format!(
-        "seseragi-standalone-host-{}-{nonce}",
-        std::process::id()
-    ));
-    fs::create_dir_all(&root).unwrap();
-    root
+    temporary_support::temporary_directory("seseragi-standalone-host")
 }
 fn cli(args: &[&str], cwd: &Path) -> Output {
     Command::new(env!("CARGO_BIN_EXE_seseragi"))
