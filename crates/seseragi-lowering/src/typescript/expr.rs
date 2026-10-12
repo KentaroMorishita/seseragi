@@ -9,7 +9,7 @@ use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
-use crate::json_ops::runtime_json_operation;
+use crate::json_ops::{json_decoder_factory_arity, runtime_json_operation};
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
 use crate::provider_service_ops::{
@@ -261,7 +261,8 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
                 .or_else(|| {
                     runtime_json_operation(&name).map(|operation| {
-                        let arity = core_function_arity(&type_ref);
+                        let arity = json_decoder_factory_arity(&name)
+                            .unwrap_or_else(|| core_function_arity(&type_ref));
                         if arity > 1 {
                             TypeScriptExpr::CurriedRuntimeReference {
                                 name: operation.local_name.to_owned(),
@@ -651,13 +652,57 @@ pub(super) fn lower_core_expr_to_typescript(
                     None,
                 )
             } else if let Some(operation) = runtime_json_operation(&callee) {
+                let factory_arity = json_decoder_factory_arity(&callee);
+                let supplied = arguments.len();
+                let returned_arguments = factory_arity
+                    .filter(|arity| supplied > *arity)
+                    .map(|arity| arguments.split_off(arity))
+                    .unwrap_or_default();
                 arguments.extend(evidence.iter().map(|selected| {
                     local_dictionary_expression(&selected.evidence, imported_values, imported_types)
                         .expect("JSON operation requires materializable codec evidence")
                 }));
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
+                if let Some(arity) = factory_arity {
+                    let call = lower_uncurried_runtime_call(
+                        operation.local_name.to_owned(),
+                        arguments,
+                        &type_ref,
+                        imported_types,
+                        "json",
+                        Vec::new(),
+                        Some(arity.saturating_sub(supplied)),
+                    );
+                    if returned_arguments.is_empty() {
+                        call
+                    } else {
+                        let name = "__ssrg$json$returned".to_owned();
+                        let callable_type = checked_argument_types[arity..].iter().rev().fold(
+                            type_ref_from_core_type(&type_ref, imported_types),
+                            |result, parameter| super::TypeScriptType::Function {
+                                parameter: Box::new(parameter.clone()),
+                                result: Box::new(result),
+                            },
+                        );
+                        TypeScriptExpr::Sequence {
+                            statements: vec![TypeScriptStatement::PureLet {
+                                type_parameters: Vec::new(),
+                                name: name.clone(),
+                                type_ref: callable_type,
+                                initializer: call,
+                                origin,
+                            }],
+                            result: Box::new(TypeScriptExpr::Call {
+                                callee: name,
+                                arguments: returned_arguments,
+                                checked_callee_type: None,
+                            }),
+                        }
+                    }
+                } else {
+                    TypeScriptExpr::RuntimeCall {
+                        callee: operation.local_name.to_owned(),
+                        arguments,
+                    }
                 }
             } else if let Some(operation) = runtime_numeric_operation(&callee) {
                 lower_uncurried_runtime_call(

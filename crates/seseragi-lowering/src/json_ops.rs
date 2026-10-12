@@ -103,6 +103,20 @@ pub(crate) fn runtime_json_operation(canonical: &str) -> Option<RuntimeJsonOpera
         .find(|operation| operation.canonical == canonical)
 }
 
+// Only declaration parameters belong to the uncurried host factory. Decoder
+// result parameters are subsequent ordinary callable applications.
+pub(crate) fn json_decoder_factory_arity(canonical: &str) -> Option<usize> {
+    match canonical {
+        "std/json::field"
+        | "std/json::optionalField"
+        | "std/json::index"
+        | "std/json::map"
+        | "std/json::flatMap" => Some(2),
+        "std/json::array" | "std/json::record" | "std/json::oneOf" => Some(1),
+        _ => None,
+    }
+}
+
 pub(crate) fn runtime_json_operation_for_feature(feature: &str) -> Option<RuntimeJsonOperation> {
     OPERATIONS
         .iter()
