@@ -185,7 +185,12 @@ pub fn build_main_with_artifact_options(
             finish_process_release(staging, artifact_options)?;
         }
         if target == BuildTarget::Process && staging.join("entry.ts").exists() {
-            stage_process_javascript(staging, &["main.ts".to_owned(), "entry.ts".to_owned()])?;
+            stage_process_javascript(
+                staging,
+                &["main.ts".to_owned(), "entry.ts".to_owned()],
+                artifact_options.source_map(&compiled.generated.metadata.profile)
+                    == crate::artifact::SourceMapPolicy::Emit,
+            )?;
         }
         if target == BuildTarget::Process
             && artifact_options.source_map(&compiled.generated.metadata.profile)
@@ -355,7 +360,12 @@ pub fn build_local_project_with_artifact_options(
                 .map(|module| module.generated.metadata.outputs.typescript.clone())
                 .collect::<Vec<_>>();
             generated_paths.push("entry.ts".to_owned());
-            stage_process_javascript(staging, &generated_paths)?;
+            stage_process_javascript(
+                staging,
+                &generated_paths,
+                artifact_options.source_map(&entry.generated.metadata.profile)
+                    == crate::artifact::SourceMapPolicy::Emit,
+            )?;
         }
         if target == BuildTarget::Process
             && artifact_options.source_map(&entry.generated.metadata.profile)
@@ -889,12 +899,20 @@ fn optimize_application(
 
 // Native Node cannot strip TypeScript under node_modules. Emit one shared
 // runtime module graph and retain generated module locations for foreign ABI.
-fn stage_process_javascript(staging: &Path, generated_paths: &[String]) -> Result<(), String> {
+fn stage_process_javascript(
+    staging: &Path,
+    generated_paths: &[String],
+    emit_maps: bool,
+) -> Result<(), String> {
     let result = Command::new("bun")
         .args(["--eval", include_str!("build_process_packages.ts")])
         .env(
             "SESERAGI_GENERATED_TYPESCRIPT",
             serde_json::to_string(generated_paths).map_err(|error| error.to_string())?,
+        )
+        .env(
+            "SESERAGI_PROCESS_SOURCE_MAP",
+            if emit_maps { "emit" } else { "omit" },
         )
         .current_dir(staging)
         .output()
@@ -904,6 +922,11 @@ fn stage_process_javascript(staging: &Path, generated_paths: &[String]) -> Resul
             "process JavaScript emission failed: {}",
             String::from_utf8_lossy(&result.stderr)
         ));
+    }
+    if emit_maps {
+        for source in generated_paths {
+            crate::source_maps::compose(staging, &PathBuf::from(source).with_extension("js"))?;
+        }
     }
     Ok(())
 }

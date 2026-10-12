@@ -1,5 +1,5 @@
 import { readdir, readFile, writeFile } from "node:fs/promises"
-import { join } from "node:path"
+import { basename, dirname, join } from "node:path"
 
 const root = process.cwd()
 const packages = ["node_modules/@seseragi/runtime", "node_modules/seseragi"]
@@ -24,7 +24,8 @@ const result = await Bun.build({
     entry: "[dir]/[name].js",
     chunk: "node_modules/@seseragi/runtime/.chunks/[hash].js",
   },
-  sourcemap: "none",
+  sourcemap:
+    process.env.SESERAGI_PROCESS_SOURCE_MAP === "emit" ? "linked" : "none",
 })
 if (!result.success)
   throw new AggregateError(result.logs, "runtime JS build failed")
@@ -61,8 +62,27 @@ for (const relative of applications) {
     throw new Error(
       `Generated JavaScript output collides with staged input: ${relative}`
     )
-  await writeFile(
-    javascript,
-    transpiler.transformSync(await readFile(path, "utf8"))
-  )
+  if (process.env.SESERAGI_PROCESS_SOURCE_MAP === "emit") {
+    const result = Bun.spawnSync(
+      [
+        process.execPath,
+        "build",
+        basename(path),
+        "--external=*",
+        "--target=node",
+        `--outfile=${basename(javascript)}`,
+        "--sourcemap=linked",
+      ],
+      { cwd: dirname(path), stdout: "pipe", stderr: "pipe" }
+    )
+    if (result.exitCode !== 0)
+      throw new Error(
+        `Generated JavaScript emission failed: ${new TextDecoder().decode(result.stderr)}`
+      )
+  } else {
+    await writeFile(
+      javascript,
+      transpiler.transformSync(await readFile(path, "utf8"))
+    )
+  }
 }
