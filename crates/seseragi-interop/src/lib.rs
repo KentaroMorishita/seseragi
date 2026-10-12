@@ -7,12 +7,14 @@
 mod linkage;
 mod model;
 mod normalize;
+mod projection;
 mod report;
 mod validate;
 
 pub use linkage::*;
 pub use model::*;
 pub use normalize::NormalizationBudget;
+pub use projection::*;
 pub use report::*;
 pub use validate::{ValidationError, ValidationIssue};
 
