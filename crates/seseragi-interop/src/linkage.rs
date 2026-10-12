@@ -816,6 +816,21 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
                 pending.push(graph.symbols.get(symbol)?.type_ref);
             }
             SemanticType::Union { members } => pending.extend(members),
+            SemanticType::Parameter { binder, index } => {
+                let SemanticType::Generic { parameters, .. } = graph.types.get(binder)? else {
+                    return None;
+                };
+                // Defaults choose a fallback; only a declared upper bound can
+                // constrain every admissible instantiation's transport.
+                if !primitive_constraint(
+                    graph,
+                    parameters.get(*index as usize)?.constraint?,
+                    &mut BTreeSet::new(),
+                ) {
+                    return None;
+                }
+                deliveries.insert(false);
+            }
             SemanticType::Primitive {
                 domain:
                     crate::PrimitiveDomain::Unknown
@@ -823,7 +838,6 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
                     | crate::PrimitiveDomain::Object,
             }
             | SemanticType::Unresolved { .. }
-            | SemanticType::Parameter { .. }
             | SemanticType::Projection { .. }
             | SemanticType::Apply { .. } => return None,
             _ => {
@@ -839,6 +853,46 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
         }),
         _ => None,
     }
+}
+
+// Structural object bounds may admit thenables. Only closed primitive bounds
+// prove every admissible generic instantiation cannot deliver a Promise.
+fn primitive_constraint(graph: &SemanticGraph, id: TypeId, seen: &mut BTreeSet<TypeId>) -> bool {
+    if !seen.insert(id) {
+        return false;
+    }
+    let answer = match graph.types.get(&id) {
+        Some(SemanticType::Primitive { domain }) => !matches!(
+            domain,
+            crate::PrimitiveDomain::Unknown
+                | crate::PrimitiveDomain::Dynamic
+                | crate::PrimitiveDomain::Object
+        ),
+        Some(SemanticType::Literal { .. }) => true,
+        Some(SemanticType::Reference { symbol }) => graph
+            .symbols
+            .get(symbol)
+            .is_some_and(|symbol| primitive_constraint(graph, symbol.type_ref, seen)),
+        Some(SemanticType::Union { members }) => {
+            !members.is_empty()
+                && members
+                    .iter()
+                    .all(|member| primitive_constraint(graph, *member, seen))
+        }
+        Some(SemanticType::Nullable { value } | SemanticType::Optional { value }) => {
+            primitive_constraint(graph, *value, seen)
+        }
+        Some(SemanticType::Parameter { binder, index }) => match graph.types.get(binder) {
+            Some(SemanticType::Generic { parameters, .. }) => parameters
+                .get(*index as usize)
+                .and_then(|parameter| parameter.constraint)
+                .is_some_and(|constraint| primitive_constraint(graph, constraint, seen)),
+            _ => false,
+        },
+        _ => false,
+    };
+    seen.remove(&id);
+    answer
 }
 
 // Cancellation requires the host's explicit AbortSignal identity, not merely

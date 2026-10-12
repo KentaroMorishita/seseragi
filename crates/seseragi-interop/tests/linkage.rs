@@ -508,3 +508,76 @@ fn runtime_package_must_match_declaration_name_and_version() {
             .any(|error| error.code == "SES-F0201" && error.reason.contains("package")));
     }
 }
+
+#[test]
+fn generic_transport_requires_an_upper_bound_and_ignores_default_only_parameters() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    graph.types.insert(
+        TypeId(4),
+        SemanticType::Parameter {
+            binder: TypeId(5),
+            index: 0,
+        },
+    );
+    graph.types.insert(
+        TypeId(5),
+        SemanticType::Generic {
+            parameters: vec![GenericParameter {
+                name: "T".into(),
+                constraint: Some(TypeId(3)),
+                default: Some(TypeId(3)),
+            }],
+            body: TypeId(2),
+        },
+    );
+    graph.symbols.get_mut("api::run").unwrap().type_ref = TypeId(5);
+    if let SemanticType::Callable { result, .. } = graph.types.get_mut(&TypeId(2)).unwrap() {
+        *result = TypeId(4);
+    }
+    let contract = make_contract(&graph);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Shape {
+            fields: BTreeMap::new(),
+            identity: ShapeIdentity::MutableIdentity,
+        },
+    );
+    assert!(
+        make_contract(&graph)
+            .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+            .is_err(),
+        "object upper bounds admit Promise/thenable values"
+    );
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    if let SemanticType::Generic { parameters, .. } = graph.types.get_mut(&TypeId(5)).unwrap() {
+        parameters[0].constraint = None;
+    }
+    let contract = make_contract(&graph);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap_err()
+        .iter()
+        .any(|error| error.code == "SES-F0202"));
+    if let SemanticType::Generic { parameters, .. } = graph.types.get_mut(&TypeId(5)).unwrap() {
+        parameters[0].default = None;
+    }
+    let contract = make_contract(&graph);
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+}
