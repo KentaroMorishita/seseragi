@@ -1,5 +1,6 @@
 import * as effects from "std/effect"
-import { make, read, select, Schema } from "gen/schema-api"
+import { make, read, select, Schema } from "./api"
+import * as facade from "./api"
 type AppError deriving Show =
   | ConsoleFailure ConsoleError
   | ForeignFailure Js.Error
@@ -14,5 +15,7 @@ pub effect fn main -> Unit with Console fails AppError = do {
   println chosen |> effects.mapError ConsoleFailure
   boolSchema <- make<Bool> True |> effects.mapError ForeignFailure
   flag <- read<Bool> boolSchema |> effects.mapError ForeignFailure
+  echoed <- facade.raw.nested.echo<String> "nested" |> effects.mapError ForeignFailure
+  println echoed |> effects.mapError ConsoleFailure
   println (show flag) |> effects.mapError ConsoleFailure
 }
