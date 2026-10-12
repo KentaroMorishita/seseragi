@@ -11,6 +11,7 @@ export const compile_single_file: (a: number, b: number, c: number, d: number, e
 export const format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
 export const format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
 export const toolchain_version_json: () => [number, number];
+export const resolve_browser_runtime_modules: (a: number, b: number) => [number, number];
 export const convert_workspace_bindings: (a: number, b: number) => [number, number];
 export const iswspace: (a: number) => number;
 export const iswalpha: (a: number) => number;
