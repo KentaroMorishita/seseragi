@@ -413,6 +413,20 @@ textarea {
   color: #d8b4fe;
   font-size: 11px;
 }
+.cm-tooltip-lint {
+  max-width: min(520px, calc(100vw - 36px));
+  border: 1px solid #315047;
+  border-radius: 10px;
+  color: #dce9e4;
+  background: #101b17;
+  box-shadow: 0 12px 36px #000a;
+  overflow-wrap: anywhere;
+}
+.cm-tooltip-lint .cm-diagnostic {
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
 .analysis-hover-signature .tok-keyword {
   color: var(--seseragi-syntax-keyword);
   font-weight: 600;

@@ -2389,7 +2389,7 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
 
   test("routes the single-file adapter through the project boundary", async () => {
     const driver = await Bun.file(
-      new URL("../src/compiler/wasm-driver.ts", import.meta.url)
+      new URL("../src/compiler/wasm-service.ts", import.meta.url)
     ).text()
 
     expect(driver).toContain("compileProject(singleFileRequest(source))")

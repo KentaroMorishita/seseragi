@@ -79,8 +79,14 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
 
   const setCatalog = (items: readonly AnalysisReferenceItem[]): void => {
     catalog = items
+    // Live analysis updates this even while Reference is closed. Keep its
+    // thousands of highlighted cards off the editor's input path.
+    if (elements.dialog.open) renderCatalog()
+  }
+
+  const renderCatalog = (): void => {
     const selected = elements.category.value
-    const categories = [...new Set(items.map((item) => item.category))].sort(
+    const categories = [...new Set(catalog.map((item) => item.category))].sort(
       (left, right) => left.localeCompare(right)
     )
     elements.category.replaceChildren(
@@ -104,6 +110,7 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
     button.addEventListener("click", () => {
       opener = button
       elements.dialog.showModal()
+      renderCatalog()
       button.setAttribute("aria-expanded", "true")
       elements.search.focus()
     })
@@ -113,6 +120,7 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
     if (event.target === elements.dialog) elements.dialog.close()
   })
   elements.dialog.addEventListener("close", () => {
+    elements.results.replaceChildren()
     opener?.setAttribute("aria-expanded", "false")
     opener?.focus()
     opener = undefined
