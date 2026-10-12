@@ -89,6 +89,7 @@ fn declaration_only_conversion_preserves_artifacts_without_runtime_claim() {
     attach_runtime_linkage(&mut result, &entry, &BTreeMap::new()).unwrap();
     assert_eq!(result, original);
 }
+#[cfg(feature = "filesystem")]
 #[test]
 fn actual_native_host_bytes_are_pinned_and_changed_bytes_are_stale() {
     use std::{fs, path::Path};
@@ -240,6 +241,7 @@ fn conditional_generic_delivery_keeps_explicit_call_site_report_requirement() {
         .any(|warning| warning["code"] == "SES-F0202"));
 }
 
+#[cfg(feature = "filesystem")]
 #[test]
 fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_change() {
     use seseragi_interop::{
