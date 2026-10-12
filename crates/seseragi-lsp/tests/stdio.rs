@@ -105,6 +105,83 @@ fn binary_reports_its_distribution_contract() {
 }
 
 #[test]
+fn readonly_signal_parameter_facts_follow_document_versions_and_encoding() {
+    let source = "// 🙂\nimport * as signals from \"std/signal\"\npub fn snapshot source: signals.MutableSignal<Int> -> Task<Int> = signals.read source\n";
+    let mutation = source.replace(
+        "Task<Int> = signals.read source",
+        "Task<Unit> = signals.set 1 source",
+    );
+    let restored = format!("// moved 🙂\n{source}");
+    let broken = format!("{restored}\npub let invalid: Int = missing\n");
+    let uri = "file:///readonly-signal.ssrg";
+    for (encoding_name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let mut input = vec![
+            json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"capabilities":{"general":{"positionEncodings":[encoding_name]}}}}),
+            json!({"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":uri,"languageId":"seseragi","version":1,"text":source}}}),
+        ];
+        for (version, text) in [
+            (2, mutation.as_str()),
+            (3, restored.as_str()),
+            (4, broken.as_str()),
+            (5, source),
+        ] {
+            input.push(json!({"jsonrpc":"2.0","method":"textDocument/didChange","params":{"textDocument":{"uri":uri,"version":version},"contentChanges":[{"text":text}]}}));
+        }
+        input.push(json!({"jsonrpc":"2.0","id":2,"method":"shutdown"}));
+        input.push(json!({"jsonrpc":"2.0","method":"exit"}));
+        let output = run_server(&input);
+        let updates = output
+            .iter()
+            .filter(|message| {
+                message["method"] == "textDocument/publishDiagnostics"
+                    && message["params"]["uri"] == uri
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(updates.len(), 5, "{output:#?}");
+        for (index, text) in [(0, source), (2, restored.as_str()), (4, source)] {
+            let update = &updates[index]["params"];
+            assert_eq!(update["version"], index + 1);
+            let facts = update["diagnostics"].as_array().unwrap();
+            assert_eq!(facts.len(), 1, "{update:#}");
+            let fact = &facts[0];
+            assert_eq!(fact["code"], "SES-L0307");
+            assert_eq!(fact["severity"], 2);
+            assert_eq!(fact["data"]["lint"]["confidence"], "proven");
+            assert_eq!(fact["data"]["lint"]["fixSafety"], "non-fixable");
+            let offset = text.find("source:").unwrap();
+            let start = LineIndex::new(text)
+                .try_locate_encoded(offset, encoding)
+                .unwrap();
+            let end = LineIndex::new(text)
+                .try_locate_encoded(offset + "source".len(), encoding)
+                .unwrap();
+            assert_eq!(
+                fact["range"]["start"],
+                json!({"line":start.line,"character":start.character})
+            );
+            assert_eq!(
+                fact["range"]["end"],
+                json!({"line":end.line,"character":end.character})
+            );
+            assert_eq!(fact["relatedInformation"].as_array().unwrap().len(), 3);
+        }
+        assert!(updates[1]["params"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .is_empty());
+        assert_eq!(updates[3]["params"]["version"], 4);
+        let errors = updates[3]["params"]["diagnostics"].as_array().unwrap();
+        assert!(!errors.is_empty());
+        assert!(errors
+            .iter()
+            .all(|fact| fact["severity"] == 1 && fact["code"] != "SES-L0307"));
+    }
+}
+
+#[test]
 fn binary_accepts_explicit_stdio_transport() {
     let input = [
         json!({

@@ -473,6 +473,7 @@ own codes and priority. Lint is never an implicit formatter action.
 | SES-L0304 | Unused or wildcard binding containing a cold Effect | Typed Effect result and resolved binding uses |
 | SES-L0305 | An executed Effect discards a canonical std/signal::Subscription | Canonical nominal resource identity, not its display name |
 | SES-L0306 | Typed Bool literal condition in if | Literal value and the branch that cannot be selected |
+| SES-L0307 | A public canonical MutableSignal<A> parameter is consumed only by direct canonical read calls | Unique resolved parameter identity; all reference spans equal the proved read argument spans; same complete payload A |
 
 Every rule is a Warning. All are non-fixable: deletion can affect initialization,
 module loading, instance availability, type checking evidence or comments; choosing
@@ -485,6 +486,25 @@ A discarded Effect or resource takes priority over unused-local for the same bin
 `main` is an entrypoint root; public and underscore declarations are excluded from
 unused-private. Unused import diagnostics never claim safe deletion or DCE.
 
+`SES-L0307` proves only the input capability consumed by this public function's
+implementation. Every reference to the parameter must be the direct variable
+argument of canonical `std/signal::read` outside a lambda or local function. The
+prefix `*source` has the same typed canonical call. Canonically resolved import
+renames and type aliases qualify; user types or functions with similar names do
+not. At least one read and a complete matching payload are required; underscore
+parameters are intentionally excluded. Aliasing, forwarding to any other callable,
+storing or returning the signal, writes, change planning, closure captures and
+unmapped/ambiguous references reject this initial proof. A mixed read and captured
+read also rejects it. Compiler errors retain the module-wide lint suppression.
+
+The evidence carries the parameter's precise name range, public declaration range,
+read call ranges and complete resolved use count. The canonical read consumes
+`Signal<A>` through the one-way, same-payload `MutableSignal<A>` coercion; other
+owners may still mutate it. This is not a deep immutability or lifecycle claim.
+The guidance is to consider `Signal<A>` after reviewing the exported callable
+contract. Changing a public function type requires consumer/compatibility intent,
+so no automatic annotation edit or global API compatibility promise is offered.
+
 Architecture advice is a separate review policy, not a build-breaking rule. Its
 candidate corpus and rejection criteria are:
 
@@ -493,7 +513,7 @@ candidate corpus and rejection criteria are:
 | Bool/String/sentinel domain alternatives | Repeated domain state transitions and explicit distinct cases | Ordinary predicate, free-form text or externally fixed protocol |
 | Long same-shaped positional contract | At least four same-domain arguments and observed call-site swaps | Mathematical vectors, FFI contracts and named wrappers |
 | Broad Effect requirement / mixed host boundary | Resolved operations and a caller-visible narrower capability contract | Capability deliberately reserved for compatibility or indirect operations |
-| Public MutableSignal | Complete consumer/alias/host mutation and ownership evidence | Public consumer may mutate, unknown host code or callback escape |
+| Public MutableSignal beyond the proved direct-read input rule | Complete consumer/alias/host mutation and ownership evidence | Public consumer may mutate, unknown host code or callback escape |
 | Legacy selector binding | Proven same logical target, identity and lifecycle across renders | Dynamic selectors, multiple matching nodes or intentional external DOM ownership |
 
 These candidates have confidence `review-required` and no automatic fix; they
