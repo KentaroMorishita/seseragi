@@ -1,0 +1,8 @@
+{
+  "name": "fixture-base64-host",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "base64-js": "1.5.1"
+  }
+}

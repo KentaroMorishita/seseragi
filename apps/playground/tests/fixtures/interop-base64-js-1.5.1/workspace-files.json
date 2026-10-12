@@ -1,0 +1,38 @@
+[
+  {
+    "path": "host/node_modules/base64-js/package.json",
+    "fixture": "vendor/base64-js/package.json"
+  },
+  {
+    "path": "host/node_modules/base64-js/index.js",
+    "fixture": "vendor/base64-js/index.js"
+  },
+  {
+    "path": "host/node_modules/base64-js/index.d.ts",
+    "fixture": "vendor/base64-js/index.d.ts"
+  },
+  {
+    "path": "host/node_modules/base64-js/LICENSE",
+    "fixture": "vendor/base64-js/LICENSE"
+  },
+  {
+    "path": "seseragi.toml",
+    "fixture": "seseragi.toml"
+  },
+  {
+    "path": "seseragi.bindings.toml",
+    "fixture": "seseragi.bindings.toml"
+  },
+  {
+    "path": "main.ssrg",
+    "fixture": "main.ssrg"
+  },
+  {
+    "path": "host/package.json",
+    "fixture": "host/package.json"
+  },
+  {
+    "path": "host/bun.lock",
+    "fixture": "host/bun.lock"
+  }
+]
