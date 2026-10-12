@@ -1,0 +1,1753 @@
+{
+  "compatibility": {
+    "counts": [
+      {
+        "classification": "direct",
+        "count": 2,
+        "symbols": [
+          "Recursive",
+          "Union"
+        ]
+      },
+      {
+        "classification": "normalized",
+        "count": 2,
+        "symbols": [
+          "Intersection",
+          "Snapshot"
+        ]
+      },
+      {
+        "classification": "opaque-preserved",
+        "count": 1,
+        "symbols": [
+          "Container"
+        ]
+      },
+      {
+        "classification": "safe-boundary",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "policy-required",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "runtime-abi-unresolved",
+        "count": 0,
+        "symbols": []
+      },
+      {
+        "classification": "uninterpreted",
+        "count": 0,
+        "symbols": []
+      }
+    ],
+    "declarations": {
+      "structures.d.ts": [
+        "Container",
+        "Intersection",
+        "Recursive",
+        "Snapshot",
+        "Union"
+      ]
+    },
+    "graphDigest": "2544f81fb08387aa047ba50837b309e67b6aed69e4dd5db13c75603f67c995b3",
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "b215d5647118a30b6bc1e5ad65df35eedab46efbcb131f13d0643fa00e2eb211",
+      "sourceDigests": {
+        "structures.d.ts": "2d8f6dcec33fe218979001200d87abd2df7400a48713b86d1141a8539f70e380"
+      }
+    },
+    "kind": "seseragi-interop-compatibility-report",
+    "schema": 1,
+    "symbols": {
+      "Container": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 594,
+            "rule": "generic-binder",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 594,
+            "rule": "generic-parameter",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 594,
+            "rule": "opaque-identity",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 483,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 474
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Container",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": null,
+            "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
+            "rule": "declaration-interpretation",
+            "typeRef": 23
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": null,
+            "reason": "nominal identity retained without structural projection proof",
+            "rule": "representation-safety",
+            "typeRef": 23
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "opaque-preserved",
+        "typeRef": 21,
+        "types": [
+          21,
+          22,
+          23
+        ]
+      },
+      "Intersection": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 373,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 300
+          },
+          {
+            "end": 317,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 305
+          },
+          {
+            "end": 372,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 320
+          },
+          {
+            "end": 341,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 335
+          },
+          {
+            "end": 370,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 364
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Intersection",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 17
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "typeRef": 17,
+        "types": [
+          13,
+          15,
+          17
+        ]
+      },
+      "Recursive": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 452,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 381
+          },
+          {
+            "end": 395,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 386
+          },
+          {
+            "end": 451,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 398
+          },
+          {
+            "end": 422,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 416
+          },
+          {
+            "end": 449,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 440
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Recursive",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "typeRef": 20,
+        "types": [
+          18,
+          19,
+          20
+        ]
+      },
+      "Snapshot": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 41,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 0
+          },
+          {
+            "end": 41,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 17
+          },
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 32
+          },
+          {
+            "end": 123,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 49
+          },
+          {
+            "end": 67,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 59
+          },
+          {
+            "end": 123,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 68
+          },
+          {
+            "end": 92,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 86
+          },
+          {
+            "end": 120,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 113
+          },
+          {
+            "end": 177,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 131
+          },
+          {
+            "end": 177,
+            "rule": "merged-declaration",
+            "source": "structures.d.ts",
+            "start": 131
+          },
+          {
+            "end": 149,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 141
+          },
+          {
+            "end": 177,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 150
+          },
+          {
+            "end": 174,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 168
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Snapshot",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          },
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "compatible structural declarations merge all fields and preserve readonly/mutable identity",
+            "rule": "declaration-merge",
+            "typeRef": 2
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 24
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 25
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "normalized",
+        "typeRef": 2,
+        "types": [
+          0,
+          1,
+          2,
+          3,
+          24,
+          25
+        ]
+      },
+      "Union": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 292,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 185
+          },
+          {
+            "end": 195,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 190
+          },
+          {
+            "end": 243,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 198
+          },
+          {
+            "end": 291,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 198
+          },
+          {
+            "end": 217,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 214
+          },
+          {
+            "end": 241,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 235
+          },
+          {
+            "end": 291,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 246
+          },
+          {
+            "end": 265,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 262
+          },
+          {
+            "end": 289,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 283
+          }
+        ],
+        "projectionClassification": null,
+        "publicName": "Union",
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ],
+        "runtimeAbiUnresolved": false,
+        "semanticClassification": "direct",
+        "typeRef": 12,
+        "types": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      }
+    },
+    "types": {
+      "0": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 92,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 86
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 0
+          }
+        ]
+      },
+      "1": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 120,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 113
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 1
+          }
+        ]
+      },
+      "10": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 289,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 283
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 10
+          }
+        ]
+      },
+      "11": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 291,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 246
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 11
+          }
+        ]
+      },
+      "12": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 292,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 185
+          },
+          {
+            "end": 291,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 198
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 12
+          }
+        ]
+      },
+      "13": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 341,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 335
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 13
+          }
+        ]
+      },
+      "15": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 370,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 364
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 15
+          }
+        ]
+      },
+      "17": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 373,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 300
+          },
+          {
+            "end": 372,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 320
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "closed domain or structural evidence resolves this relation without widening",
+            "rule": "closed-semantic-relation",
+            "typeRef": 17
+          }
+        ]
+      },
+      "18": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 422,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 416
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 18
+          }
+        ]
+      },
+      "19": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 449,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 440
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 19
+          }
+        ]
+      },
+      "2": {
+        "classification": "normalized",
+        "origins": [
+          {
+            "end": 123,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 49
+          },
+          {
+            "end": 123,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 68
+          },
+          {
+            "end": 177,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 131
+          },
+          {
+            "end": 177,
+            "rule": "merged-declaration",
+            "source": "structures.d.ts",
+            "start": 131
+          },
+          {
+            "end": 177,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 150
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "normalized",
+            "policy": null,
+            "reason": "compatible structural declarations merge all fields and preserve readonly/mutable identity",
+            "rule": "declaration-merge",
+            "typeRef": 2
+          }
+        ]
+      },
+      "20": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 452,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 381
+          },
+          {
+            "end": 451,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 398
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 20
+          }
+        ]
+      },
+      "21": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 594,
+            "rule": "generic-binder",
+            "source": "structures.d.ts",
+            "start": 468
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 21
+          }
+        ]
+      },
+      "22": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "generic-parameter",
+            "source": "structures.d.ts",
+            "start": 468
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 22
+          }
+        ]
+      },
+      "23": {
+        "classification": "opaque-preserved",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "opaque-identity",
+            "source": "structures.d.ts",
+            "start": 468
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "opaque-preserved",
+            "policy": null,
+            "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
+            "rule": "declaration-interpretation",
+            "typeRef": 23
+          },
+          {
+            "classification": "opaque-preserved",
+            "policy": null,
+            "reason": "nominal identity retained without structural projection proof",
+            "rule": "representation-safety",
+            "typeRef": 23
+          }
+        ]
+      },
+      "24": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 38,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 32
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 24
+          }
+        ]
+      },
+      "25": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 41,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 0
+          },
+          {
+            "end": 41,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 17
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 25
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 174,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 168
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "6": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 217,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 214
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 6
+          }
+        ]
+      },
+      "7": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 241,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 235
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 7
+          }
+        ]
+      },
+      "8": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 243,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 198
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 8
+          }
+        ]
+      },
+      "9": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 265,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 262
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 9
+          }
+        ]
+      }
+    }
+  },
+  "projection": {
+    "diagnostics": [],
+    "source": "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Container<A>\n  opaque type Intersection\n  opaque type Recursive\n  opaque type Snapshot\n  opaque type Union\n}\n"
+  },
+  "semantic": {
+    "identity": {
+      "frontend": {
+        "name": "seseragi-dts",
+        "version": "0.61.26"
+      },
+      "runtimeContractDigest": null,
+      "settingsDigest": "b215d5647118a30b6bc1e5ad65df35eedab46efbcb131f13d0643fa00e2eb211",
+      "sourceDigests": {
+        "structures.d.ts": "2d8f6dcec33fe218979001200d87abd2df7400a48713b86d1141a8539f70e380"
+      }
+    },
+    "kind": "seseragi-interop-semantic-graph",
+    "normalizations": [
+      {
+        "classification": "normalized",
+        "inputs": [
+          5,
+          4
+        ],
+        "output": 2,
+        "policy": null,
+        "reason": "compatible structural declarations merge all fields and preserve readonly/mutable identity",
+        "rule": "declaration-merge"
+      },
+      {
+        "classification": "opaque-preserved",
+        "inputs": [],
+        "output": 23,
+        "policy": null,
+        "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
+        "rule": "declaration-interpretation"
+      },
+      {
+        "classification": "normalized",
+        "inputs": [
+          26
+        ],
+        "output": 17,
+        "policy": null,
+        "reason": "closed domain or structural evidence resolves this relation without widening",
+        "rule": "closed-semantic-relation"
+      }
+    ],
+    "privateSymbols": [
+      "Hidden"
+    ],
+    "schema": 1,
+    "sources": {
+      "structures.d.ts": {
+        "byteLength": 595,
+        "digest": "2d8f6dcec33fe218979001200d87abd2df7400a48713b86d1141a8539f70e380"
+      }
+    },
+    "symbols": {
+      "Container": {
+        "declarationName": "Container",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 483,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 474
+          }
+        ],
+        "publicName": "Container",
+        "runtime": null,
+        "typeRef": 21
+      },
+      "Hidden": {
+        "declarationName": "Hidden",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 41,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 0
+          },
+          {
+            "end": 16,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 10
+          }
+        ],
+        "publicName": "Hidden",
+        "runtime": null,
+        "typeRef": 25
+      },
+      "Intersection": {
+        "declarationName": "Intersection",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 373,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 300
+          },
+          {
+            "end": 317,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 305
+          }
+        ],
+        "publicName": "Intersection",
+        "runtime": null,
+        "typeRef": 17
+      },
+      "Recursive": {
+        "declarationName": "Recursive",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 452,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 381
+          },
+          {
+            "end": 395,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 386
+          }
+        ],
+        "publicName": "Recursive",
+        "runtime": null,
+        "typeRef": 20
+      },
+      "Snapshot": {
+        "declarationName": "Snapshot",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 123,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 49
+          },
+          {
+            "end": 67,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 59
+          },
+          {
+            "end": 177,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 131
+          },
+          {
+            "end": 149,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 141
+          }
+        ],
+        "publicName": "Snapshot",
+        "runtime": null,
+        "typeRef": 2
+      },
+      "Union": {
+        "declarationName": "Union",
+        "kind": "type",
+        "origins": [
+          {
+            "end": 292,
+            "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 185
+          },
+          {
+            "end": 195,
+            "rule": "public-name",
+            "source": "structures.d.ts",
+            "start": 190
+          }
+        ],
+        "publicName": "Union",
+        "runtime": null,
+        "typeRef": 12
+      }
+    },
+    "typeOrigins": {
+      "0": [
+        {
+          "end": 92,
+          "rule": "declaration-reference",
+          "source": "structures.d.ts",
+          "start": 86
+        }
+      ],
+      "1": [
+        {
+          "end": 120,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 113
+        }
+      ],
+      "10": [
+        {
+          "end": 289,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 283
+        }
+      ],
+      "11": [
+        {
+          "end": 291,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 246
+        }
+      ],
+      "12": [
+        {
+          "end": 291,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 198
+        },
+        {
+          "end": 292,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 185
+        }
+      ],
+      "13": [
+        {
+          "end": 341,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 335
+        }
+      ],
+      "14": [
+        {
+          "end": 343,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 320
+        }
+      ],
+      "15": [
+        {
+          "end": 370,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 364
+        }
+      ],
+      "16": [
+        {
+          "end": 372,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 346
+        }
+      ],
+      "17": [
+        {
+          "end": 372,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 320
+        },
+        {
+          "end": 373,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 300
+        }
+      ],
+      "18": [
+        {
+          "end": 422,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 416
+        }
+      ],
+      "19": [
+        {
+          "end": 449,
+          "rule": "declaration-reference",
+          "source": "structures.d.ts",
+          "start": 440
+        }
+      ],
+      "2": [
+        {
+          "end": 123,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 68
+        },
+        {
+          "end": 123,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 49
+        },
+        {
+          "end": 177,
+          "rule": "merged-declaration",
+          "source": "structures.d.ts",
+          "start": 131
+        }
+      ],
+      "20": [
+        {
+          "end": 451,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 398
+        },
+        {
+          "end": 452,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 381
+        }
+      ],
+      "21": [
+        {
+          "end": 594,
+          "rule": "generic-binder",
+          "source": "structures.d.ts",
+          "start": 468
+        },
+        {
+          "end": 594,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 468
+        }
+      ],
+      "22": [
+        {
+          "end": 594,
+          "rule": "generic-parameter",
+          "source": "structures.d.ts",
+          "start": 468
+        }
+      ],
+      "23": [
+        {
+          "end": 594,
+          "rule": "opaque-identity",
+          "source": "structures.d.ts",
+          "start": 468
+        }
+      ],
+      "24": [
+        {
+          "end": 38,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 32
+        }
+      ],
+      "25": [
+        {
+          "end": 41,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 17
+        },
+        {
+          "end": 41,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 0
+        }
+      ],
+      "26": [
+        {
+          "end": 372,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 320
+        },
+        {
+          "end": 373,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 300
+        }
+      ],
+      "3": [
+        {
+          "end": 174,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 168
+        }
+      ],
+      "4": [
+        {
+          "end": 177,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 150
+        },
+        {
+          "end": 177,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 131
+        }
+      ],
+      "6": [
+        {
+          "end": 217,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 214
+        }
+      ],
+      "7": [
+        {
+          "end": 241,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 235
+        }
+      ],
+      "8": [
+        {
+          "end": 243,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 198
+        }
+      ],
+      "9": [
+        {
+          "end": 265,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 262
+        }
+      ]
+    },
+    "types": {
+      "0": {
+        "kind": "reference",
+        "symbol": "Hidden"
+      },
+      "1": {
+        "domain": "boolean",
+        "kind": "primitive"
+      },
+      "10": {
+        "domain": "float64",
+        "kind": "primitive"
+      },
+      "11": {
+        "fields": {
+          "tag": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 9
+          },
+          "value": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 10
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "12": {
+        "kind": "union",
+        "members": [
+          8,
+          11
+        ]
+      },
+      "13": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "14": {
+        "fields": {
+          "id": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 13
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "15": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "16": {
+        "fields": {
+          "label": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 15
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "17": {
+        "fields": {
+          "id": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 13
+          },
+          "label": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 15
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "18": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "19": {
+        "kind": "reference",
+        "symbol": "Recursive"
+      },
+      "2": {
+        "fields": {
+          "enabled": {
+            "optional": true,
+            "readonly": true,
+            "typeRef": 1
+          },
+          "label": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 3
+          },
+          "value": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 0
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "20": {
+        "fields": {
+          "next": {
+            "optional": true,
+            "readonly": true,
+            "typeRef": 19
+          },
+          "value": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 18
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "21": {
+        "body": 23,
+        "kind": "generic",
+        "parameters": [
+          {
+            "constraint": null,
+            "default": null,
+            "name": "T"
+          }
+        ]
+      },
+      "22": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "23": {
+        "arguments": [
+          22
+        ],
+        "identity": "Container",
+        "kind": "opaque"
+      },
+      "24": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "25": {
+        "fields": {
+          "id": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 24
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "26": {
+        "kind": "intersection",
+        "members": [
+          14,
+          16
+        ]
+      },
+      "3": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "4": {
+        "fields": {
+          "label": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 3
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "5": {
+        "fields": {
+          "enabled": {
+            "optional": true,
+            "readonly": true,
+            "typeRef": 1
+          },
+          "value": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 0
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "6": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "a"
+        }
+      },
+      "7": {
+        "domain": "string",
+        "kind": "primitive"
+      },
+      "8": {
+        "fields": {
+          "tag": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 6
+          },
+          "value": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 7
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "9": {
+        "kind": "literal",
+        "value": {
+          "kind": "string",
+          "value": "b"
+        }
+      }
+    }
+  }
+}
