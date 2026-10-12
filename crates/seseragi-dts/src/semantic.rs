@@ -317,7 +317,26 @@ impl Builder {
                         .extend(origins);
                 } else {
                     // Do not silently pretend declaration merging is understood.
-                    self.decision(root, SemanticClassification::Uninterpreted, "cross-kind declaration merging requires an explicit semantic interpretation");
+                    self.graph
+                        .symbols
+                        .get_mut(&key)
+                        .unwrap()
+                        .origins
+                        .extend(origins);
+                    let merged_origin = self.origin(span, "merged-declaration");
+                    self.graph
+                        .type_origins
+                        .entry(previous.type_ref)
+                        .or_default()
+                        .push(merged_origin);
+                    self.graph.normalizations.push(Normalization {
+                        output: previous.type_ref,
+                        inputs: vec![root],
+                        rule: "declaration-merge".to_owned(),
+                        classification: SemanticClassification::Uninterpreted,
+                        reason: "declaration identity and all source origins are retained; merged structural meaning still requires interpretation".to_owned(),
+                        policy: None,
+                    });
                 }
             } else {
                 self.graph.symbols.insert(

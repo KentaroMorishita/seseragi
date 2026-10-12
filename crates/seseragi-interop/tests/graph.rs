@@ -187,6 +187,9 @@ fn incompatible_schema_unknown_fields_and_invalid_provenance_fail_closed() {
     let mut json: serde_json::Value = serde_json::from_str(&graph.to_json().unwrap()).unwrap();
     json["schema"] = 2.into();
     assert!(SemanticGraph::from_json(&json.to_string()).is_err());
+    let mut literal = serde_json::to_value(SemanticGraph::default()).unwrap();
+    literal["types"]["0"] = serde_json::json!({"kind":"literal", "value":{"kind":"string", "value":"x", "unknownMandatory":true}});
+    assert!(SemanticGraph::from_json(&literal.to_string()).is_err());
     json["schema"] = 1.into();
     json["mandatoryButUnknown"] = true.into();
     assert!(SemanticGraph::from_json(&json.to_string()).is_err());
@@ -391,4 +394,38 @@ fn namespace_ownership_cycles_and_non_callable_overloads_fail_closed() {
         .unwrap_err()
         .to_string()
         .contains("callable signatures"));
+}
+
+#[test]
+fn integer_literal_wire_values_preserve_precision_on_javascript_hosts() {
+    for value in [
+        i64::MIN,
+        -9_007_199_254_740_993,
+        0,
+        9_007_199_254_740_993,
+        i64::MAX,
+    ] {
+        let mut graph = SemanticGraph::default();
+        graph.types.insert(
+            TypeId(0),
+            SemanticType::Literal {
+                value: LiteralValue::Integer(value),
+            },
+        );
+        let json = graph.to_json().unwrap();
+        let raw: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(raw["types"]["0"]["value"]["value"], value.to_string());
+        assert_eq!(SemanticGraph::from_json(&json).unwrap(), graph);
+    }
+    let mut raw = serde_json::to_value(SemanticGraph::default()).unwrap();
+    for value in [
+        serde_json::json!(1),
+        serde_json::json!("01"),
+        serde_json::json!("-0"),
+        serde_json::json!("9223372036854775808"),
+    ] {
+        raw["types"]["0"] =
+            serde_json::json!({"kind":"literal", "value":{"kind":"integer", "value":value}});
+        assert!(SemanticGraph::from_json(&raw.to_string()).is_err());
+    }
 }

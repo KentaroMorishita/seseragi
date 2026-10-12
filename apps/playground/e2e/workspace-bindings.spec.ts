@@ -232,6 +232,9 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   await dialog.getByRole("tab", { name: "Semantic IR", exact: true }).click()
   await expect(dialog.getByRole("tabpanel")).toContainText("Source provenance")
   await expect(dialog.getByRole("tabpanel")).toContainText("opaque")
+  await expect(dialog.getByRole("tabpanel")).toContainText(
+    "Opaque identity: Config"
+  )
   await expect(dialog.getByRole("tabpanel")).toContainText("opaque-preserved")
   await dialog
     .getByRole("button", { name: /host\/index\.d\.ts:.*opaque-identity/ })

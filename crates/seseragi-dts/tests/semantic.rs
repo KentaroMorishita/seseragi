@@ -109,6 +109,41 @@ fn overloads_namespaces_and_export_aliases_have_semantic_ownership() {
 }
 
 #[test]
+fn merged_declarations_keep_every_source_and_explain_the_remaining_structural_gap() {
+    let source = "export interface User { readonly id: bigint; }\nexport interface User { readonly name: string; }";
+    let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+    let symbol = &graph.symbols["User"];
+    assert_eq!(
+        symbol
+            .origins
+            .iter()
+            .filter(|origin| origin.rule == "declaration")
+            .count(),
+        2
+    );
+    let origins = graph.origins_for_type(symbol.type_ref);
+    assert!(origins
+        .iter()
+        .any(|origin| source[origin.start..origin.end].contains("readonly id")));
+    assert!(origins
+        .iter()
+        .any(|origin| source[origin.start..origin.end].contains("readonly name")));
+    assert!(graph
+        .normalizations
+        .iter()
+        .any(|step| step.output == symbol.type_ref
+            && !step.inputs.is_empty()
+            && step.classification == SemanticClassification::Uninterpreted));
+    assert_eq!(
+        project_graph(&graph, SETTINGS, "api")
+            .unwrap()
+            .source
+            .unwrap(),
+        "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type User\n}\n"
+    );
+}
+
+#[test]
 fn recursive_aliases_and_uninterpreted_types_are_not_erased_or_widened() {
     let source = "export type Recursive<T> = readonly Recursive<T>[]; export type Conditional<T> = T extends string ? string : number; export declare function unknownExternal(x: Missing): any;";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();

@@ -1,5 +1,8 @@
 import { expect, test } from "bun:test"
-import { inspectSemanticGraph } from "../src/workspace/semantic-inspection"
+import {
+  describeSemanticNode,
+  inspectSemanticGraph,
+} from "../src/workspace/semantic-inspection"
 
 const source = "// 日本語\nexport type Name = string;"
 const files = [{ path: "api.d.ts", source }]
@@ -57,6 +60,41 @@ test("semantic inspection keeps relations, reasons and transitive Unicode byte p
   expect(result.symbols).toEqual(graph().symbols)
 })
 
+test("semantic units explain binder constraints, callable boundaries and exact literal domains", () => {
+  expect(
+    describeSemanticNode({
+      kind: "generic",
+      parameters: [{ name: "T", constraint: 2, default: 3 }],
+      body: 1,
+    })
+  ).toEqual({
+    meaning: "Generic binder: T.",
+    relations: [
+      { label: "T constraint", target: "2" },
+      { label: "T default", target: "3" },
+      { label: "Body", target: "1" },
+    ],
+  })
+  const callable = describeSemanticNode({
+    kind: "callable",
+    parameters: [{ name: "values", typeRef: 1, optional: true, rest: true }],
+    result: 2,
+    receiver: null,
+  })
+  expect(callable.meaning).toContain("runtime contract")
+  expect(callable.relations).toEqual([
+    { label: "values (optional) (rest)", target: "1" },
+    { label: "Result", target: "2" },
+  ])
+  expect(
+    describeSemanticNode({
+      kind: "literal",
+      value: { kind: "integer", value: "9223372036854775807" },
+    }).meaning
+  ).toContain("9223372036854775807")
+  expect(() => describeSemanticNode({ kind: "unknown" })).toThrow("type kind")
+})
+
 test("incompatible graphs, missing source snapshots and invalid UTF-8 boundaries are rejected", () => {
   expect(() =>
     inspectSemanticGraph("api", { ...graph(), schema: 2 }, files)
@@ -90,6 +128,16 @@ test("missing symbol, normalization and provenance nodes fail before navigation"
     "decision input"
   )
   malformed.normalizations[0]!.inputs = [0]
+  expect(() =>
+    inspectSemanticGraph(
+      "api",
+      {
+        ...malformed,
+        types: { ...malformed.types, "1": { kind: "nullable", value: 999 } },
+      },
+      files
+    )
+  ).toThrow("type relation")
   expect(() =>
     inspectSemanticGraph(
       "api",

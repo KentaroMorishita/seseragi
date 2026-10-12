@@ -5,6 +5,7 @@ import type {
 } from "../workspace/binding-inspection"
 import { currentBindingInspection } from "../workspace/binding-inspection"
 import type { WorkspaceState } from "../workspace/model"
+import { describeSemanticNode } from "../workspace/semantic-inspection"
 
 export type InteropView = Readonly<{
   id: string
@@ -189,6 +190,23 @@ export function connectInteropInspector(options: {
         container.append(label)
         const node = semantic.nodes.find((node) => node.id === selectedType)
         if (!node) return
+        const description = describeSemanticNode(node.node)
+        container.append(element("p", description.meaning))
+        for (const relation of description.relations) {
+          const link = element(
+            "button",
+            `${relation.label} → type:${relation.target}`
+          )
+          link.type = "button"
+          link.addEventListener("click", () => {
+            selectedType = relation.target
+            render()
+            content
+              .querySelector<HTMLSelectElement>('[aria-label="Semantic type"]')
+              ?.focus()
+          })
+          container.append(link)
+        }
         container.append(
           codePanel(
             "Type meaning · read only",

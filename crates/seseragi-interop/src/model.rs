@@ -205,11 +205,36 @@ pub enum PrimitiveDomain {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(tag = "kind", content = "value", rename_all = "kebab-case")]
+#[serde(
+    tag = "kind",
+    content = "value",
+    rename_all = "kebab-case",
+    deny_unknown_fields
+)]
 pub enum LiteralValue {
     String(String),
     Boolean(bool),
-    Integer(i64),
+    // JSON consumers include JavaScript hosts. Decimal text preserves the
+    // complete domain instead of rounding integers beyond binary64 precision.
+    Integer(#[serde(with = "integer_text")] i64),
+}
+
+mod integer_text {
+    use serde::{Deserialize, Deserializer, Serializer};
+
+    pub fn serialize<S: Serializer>(value: &i64, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_str(&value.to_string())
+    }
+    pub fn deserialize<'de, D: Deserializer<'de>>(deserializer: D) -> Result<i64, D::Error> {
+        let text = String::deserialize(deserializer)?;
+        let value = text.parse::<i64>().map_err(serde::de::Error::custom)?;
+        if value.to_string() != text {
+            return Err(serde::de::Error::custom(
+                "integer literal requires canonical decimal text",
+            ));
+        }
+        Ok(value)
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

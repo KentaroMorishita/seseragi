@@ -22,6 +22,137 @@ export type SemanticInspection = Readonly<{
   identity: unknown
 }>
 
+export function describeSemanticNode(
+  node: Readonly<Record<string, unknown>>
+): Readonly<{
+  meaning: string
+  relations: readonly Readonly<{ label: string; target: string }>[]
+}> {
+  const relations: { label: string; target: string }[] = []
+  const relation = (label: string, value: unknown) => {
+    if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0)
+      relations.push({ label, target: String(value) })
+  }
+  const list = (label: string, value: unknown) => {
+    if (Array.isArray(value))
+      value.forEach((target, index) =>
+        relation(`${label} ${index + 1}`, target)
+      )
+  }
+  let meaning: string
+  switch (node.kind) {
+    case "primitive":
+      meaning = `Value domain: ${String(node.domain)}.`
+      break
+    case "literal":
+      meaning = `Literal domain: ${JSON.stringify(node.value)}.`
+      break
+    case "parameter":
+      meaning = `Generic parameter ${Number(node.index) + 1}, owned by its lexical binder.`
+      relation("Binder", node.binder)
+      break
+    case "generic": {
+      const parameters = Array.isArray(node.parameters)
+        ? node.parameters.map(object)
+        : []
+      meaning = `Generic binder: ${parameters.map((parameter) => String(parameter.name)).join(", ")}.`
+      for (const parameter of parameters) {
+        relation(`${String(parameter.name)} constraint`, parameter.constraint)
+        relation(`${String(parameter.name)} default`, parameter.default)
+      }
+      relation("Body", node.body)
+      break
+    }
+    case "apply":
+      meaning =
+        "Apply a type constructor to the declared argument relationships."
+      relation("Constructor", node.constructor)
+      list("Argument", node.arguments)
+      break
+    case "callable": {
+      const parameters = Array.isArray(node.parameters)
+        ? node.parameters.map(object)
+        : []
+      meaning = `Callable with ${parameters.length} parameter(s); evaluation and failure guarantees belong to its runtime contract.`
+      for (const parameter of parameters)
+        relation(
+          `${String(parameter.name)}${parameter.optional ? " (optional)" : ""}${parameter.rest ? " (rest)" : ""}`,
+          parameter.typeRef
+        )
+      relation("Result", node.result)
+      relation("Receiver", node.receiver)
+      break
+    }
+    case "collection":
+      meaning = node.mutable
+        ? "Collection with mutable identity."
+        : "Readonly collection domain; a foreign snapshot still requires a boundary contract."
+      relation("Element", node.element)
+      break
+    case "async":
+      meaning =
+        "Asynchronous result; cancellation and failure remain runtime contract decisions."
+      relation("Value", node.value)
+      break
+    case "nullable":
+    case "optional":
+      meaning =
+        node.kind === "nullable"
+          ? "Value domain extended with null."
+          : "Optional value domain."
+      relation("Value", node.value)
+      break
+    case "opaque":
+      meaning = `Opaque identity: ${String(node.identity)}. Structural operations require their own interpretation.`
+      list("Argument", node.arguments)
+      break
+    case "reference":
+      meaning = `Declaration reference: ${String(node.symbol)}.`
+      break
+    case "tuple":
+      meaning = "Ordered tuple element domains."
+      list("Element", node.elements)
+      break
+    case "union":
+    case "intersection":
+      meaning =
+        node.kind === "union"
+          ? "Union of the listed value domains."
+          : "Intersection of the listed type relationships."
+      list("Member", node.members)
+      break
+    case "overload":
+      meaning =
+        "Overload signatures; runtime selection must be explicitly approved."
+      list("Signature", node.signatures)
+      break
+    case "projection":
+      meaning = `Type projection relation: ${String(node.relation)}.`
+      relation("Subject", node.subject)
+      relation("Key", node.key)
+      break
+    case "shape":
+      meaning = `Structural shape with ${String(node.identity)} identity.`
+      for (const [name, raw] of Object.entries(object(node.fields))) {
+        const field = object(raw)
+        relation(
+          `${name}${field.optional ? " (optional)" : ""}${field.readonly ? " (readonly)" : ""}`,
+          field.typeRef
+        )
+      }
+      break
+    case "namespace":
+      meaning = `Member ownership: ${Object.keys(object(node.members)).join(", ")}.`
+      break
+    case "unresolved":
+      meaning = `Meaning remains unresolved: ${String(node.reason)}.`
+      break
+    default:
+      throw new Error("Unsupported semantic type kind")
+  }
+  return { meaning, relations }
+}
+
 function object(value: unknown): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value))
     throw new Error("Invalid semantic graph object")
@@ -124,6 +255,11 @@ export function inspectSemanticGraph(
       if (!/^\d+$/.test(id)) throw new Error("Invalid semantic type identity")
       const node = object(raw)
       text(node.kind)
+      const description = describeSemanticNode(node)
+      if (description.relations.some((relation) => !(relation.target in types)))
+        throw new Error("Missing semantic type relation")
+      if (node.kind === "reference" && !(text(node.symbol) in symbols))
+        throw new Error("Missing semantic declaration reference")
       // Include transitive origins of interpretation steps without hiding the
       // direct node's own provenance or following cyclic relations forever.
       const seen = new Set<string>()
