@@ -4,6 +4,11 @@
 //! from diagnostic source labels or process working directories.
 
 mod foreign;
+mod foreign_virtual;
+pub use foreign_virtual::{
+    resolve_browser_runtime_snapshot, runtime_import_specifiers, VirtualRuntimeBundle,
+    VirtualRuntimeImport, VirtualRuntimeModule,
+};
 mod generated_bindings;
 mod graph;
 mod identity;
@@ -26,11 +31,15 @@ mod web_assets;
 mod workspace;
 pub use web_assets::{load_web_assets, WebAsset, WebAssetError, WebAssets};
 
-pub use foreign::{resolve_foreign_typescript_module, ResolvedForeignTypescriptModule};
+pub use foreign::{
+    resolve_foreign_typescript_module, resolve_foreign_typescript_module_for_target,
+    validate_foreign_runtime_target, ResolvedForeignTypescriptModule,
+};
 pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{
     ModuleIdentity, ModuleRoot, PackageIdentity, PackageSourceIdentity, SourceIdentityError,
 };
+pub use seseragi_interop::{RuntimeLinkageDiagnostic, RuntimeTarget};
 pub fn logical_package_scope(package: &PackageIdentity) -> String {
     format!("{}@{}", package.name().as_str(), package.version())
 }

@@ -15,6 +15,8 @@ use seseragi_syntax::DiagnosticArtifact;
 use wasm_bindgen::prelude::*;
 
 mod bindings;
+mod runtime_linkage;
+pub use runtime_linkage::resolve_browser_runtime_modules;
 mod project;
 pub use bindings::convert_workspace_bindings;
 

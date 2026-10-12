@@ -99,6 +99,12 @@ fn compile_path_inner(
     let lockfile = lockfile.map_err(|error| format!("{}: {error}", error.code()))?;
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
+    // Explicit targets and dev defaults can be checked before semantic compile.
+    if let Some(target) =
+        invocation_target.or((command == ProjectCommand::Dev).then_some(ProjectTarget::Web))
+    {
+        preflight_foreign_runtime(&project, target, diagnostic_format)?;
+    }
     let process_run_options = project_run_options(&project);
     let baseline = match render_compile_result(
         &project,
@@ -129,6 +135,7 @@ fn compile_path_inner(
         infer_from_capabilities.then_some(compatible_targets.as_slice()),
     )
     .map_err(|error| error.to_string())?;
+    preflight_foreign_runtime(&project, selection.target, diagnostic_format)?;
     let (result, provider_target) = match selection.target {
         ProjectTarget::Process => {
             let configuration = seseragi_runtime::bun_process_provider_configuration()?;
@@ -311,4 +318,31 @@ fn render_compile_result(
             ))
         }
     }
+}
+
+fn preflight_foreign_runtime(
+    project: &seseragi_project::LoadedLocalProject,
+    target: ProjectTarget,
+    format: DiagnosticFormat,
+) -> Result<(), String> {
+    // Process module-load failures are part of the lazy foreign Effect ABI
+    // (#344), including declaration-only bindings not reached by a program.
+    // Preserve that phase; the Web target must reject unavailable host APIs
+    // before bundling or execution rather than manufacture browser polyfills.
+    if target == ProjectTarget::Process {
+        return Ok(());
+    }
+    let host = seseragi_project::RuntimeTarget::Browser;
+    seseragi_project::validate_foreign_runtime_target(project, host).map_err(|diagnostics| {
+        match format {
+            DiagnosticFormat::Text => diagnostics
+                .iter()
+                .map(ToString::to_string)
+                .collect::<Vec<_>>()
+                .join("\n"),
+            DiagnosticFormat::Json => {
+                serde_json::json!({"schema":1,"diagnostics":diagnostics}).to_string()
+            }
+        }
+    })
 }

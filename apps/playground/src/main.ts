@@ -14,6 +14,7 @@ import {
   compileProject,
   convertWorkspaceBindings,
   formatProjectFile,
+  resolveBrowserRuntimeModules,
 } from "./compiler/wasm-driver"
 import { renderWorkspaceDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
@@ -36,6 +37,7 @@ import {
   type BrowserExecution,
   startGeneratedProject,
 } from "./runtime/browser-execution"
+import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import { discoverGroups, samples } from "./samples"
 import { connectInteropInspector } from "./ui/interop-inspector"
 import { inspectWorkspaceBindings } from "./workspace/binding-inspection"
@@ -814,7 +816,11 @@ function applyWorkspaceChange(
     previousProjectRevision !== workspaceProjectRevisionOrUndefined(nextState)
   const analysisChanged =
     previousAnalysisRevision !== workspaceAnalysisRevisionOrUndefined(nextState)
-  if (projectChanged) cancelActiveExecution()
+  if (
+    projectChanged ||
+    JSON.stringify(previous.files) !== JSON.stringify(nextState.files)
+  )
+    cancelActiveExecution()
   if (switched) {
     setEditorWhitespaceVisible(editor, showWhitespace)
     editor.dispatch(setDiagnostics(editor.state, []))
@@ -836,6 +842,7 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     bindingConversion.invalidate()
+    cancelActiveExecution()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     interopInspector.sync(workspaceState)
     if (!wasDirty) renderWorkspaceChrome()
@@ -1051,6 +1058,11 @@ async function run(): Promise<void> {
     showIoOnSmallScreens()
     return
   }
+  const runtimeFiles = workspaceState.files.map(({ path, source }) => ({
+    path,
+    source,
+  }))
+  const runtimeRevision = JSON.stringify(runtimeFiles)
   const requestedRevision = JSON.stringify(request)
   const requestedAnalysisRevision =
     workspaceAnalysisRevisionOrUndefined(workspaceState)
@@ -1063,7 +1075,10 @@ async function run(): Promise<void> {
   try {
     const compiled = await compileProject(request)
     if (revision !== runRevision) return
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       setStatus("ready", "Project changed")
       return
     }
@@ -1107,12 +1122,31 @@ async function run(): Promise<void> {
       setOutputMode("text")
       return
     }
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       clearHtmlPreview()
       setOutputMode("text")
       setStatus("ready", "Project changed")
       return
     }
+    const generatedModules = compiled.modules.map(({ path, generated }) => ({
+      path,
+      typescript: generated.typescript,
+    }))
+    const foreignRuntime = await prepareBrowserForeignRuntime(
+      generatedModules,
+      runtimeFiles,
+      request.manifest,
+      resolveBrowserRuntimeModules,
+      compiled.entry.path
+    )
+    if (
+      revision !== runRevision ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    )
+      return
     const execution = await startGeneratedProject(
       compiled.modules.map(({ path, generated }) => ({
         path,
@@ -1122,6 +1156,7 @@ async function run(): Promise<void> {
       compiled.entry.contract,
       stdinInput.value,
       {
+        foreignRuntime,
         ...(domDocument === undefined ? {} : { domDocument }),
         onDomMounted: () => {
           if (revision !== runRevision) return
@@ -1157,7 +1192,10 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     if (revision !== runRevision) return
-    if (!workspaceProjectIsCurrent(requestedRevision)) {
+    if (
+      !workspaceProjectIsCurrent(requestedRevision) ||
+      JSON.stringify(workspaceState.files) !== runtimeRevision
+    ) {
       setStatus("ready", "Project changed")
       return
     }

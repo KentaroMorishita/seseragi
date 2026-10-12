@@ -4,10 +4,12 @@
 //! type relationships, generic scopes and explicit runtime boundaries. It has
 //! no dependency on a parser, compiler AST, filesystem or host module loader.
 
+mod linkage;
 mod model;
 mod normalize;
 mod validate;
 
+pub use linkage::*;
 pub use model::*;
 pub use normalize::NormalizationBudget;
 pub use validate::{ValidationError, ValidationIssue};

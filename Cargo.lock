@@ -623,9 +623,12 @@ dependencies = [
  "semver",
  "serde",
  "serde_json",
+ "seseragi-interop",
  "seseragi-syntax",
  "sha2",
  "toml",
+ "tree-sitter",
+ "tree-sitter-typescript",
  "unicode-normalization",
 ]
 

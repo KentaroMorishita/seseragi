@@ -5,6 +5,7 @@ import init, {
   convert_workspace_bindings,
   format_project_file,
   format_project_file_with_options,
+  resolve_browser_runtime_modules,
 } from "../wasm/pkg/seseragi_wasm"
 import type { BindingRequest, BindingResponse } from "../workspace/bindings"
 import type {
@@ -144,4 +145,12 @@ export async function convertWorkspaceBindings(
   return JSON.parse(
     convert_workspace_bindings(JSON.stringify(request))
   ) as BindingResponse
+}
+
+export async function resolveBrowserRuntimeModules(
+  request: import("../runtime/foreign-runtime").BrowserRuntimeRequest
+): Promise<import("../runtime/foreign-runtime").BrowserRuntimeResponse> {
+  initialization ??= init()
+  await initialization
+  return JSON.parse(resolve_browser_runtime_modules(JSON.stringify(request)))
 }
