@@ -106,6 +106,9 @@ fn persistent_node_bun_keep_lazy_foreign_paths_origin_and_composed_map_policy() 
                 serde_json::from_slice(&fs::read(out.join("artifact-manifest.json")).unwrap())
                     .unwrap();
             assert_eq!(artifact["sourceMap"]["policy"], policy);
+            assert!(artifact["bundles"].is_null());
+            assert!(artifact["sizes"]["bundledJavascriptBytes"].is_null());
+            assert!(artifact["sizes"]["minifiedJavascriptBytes"].is_null());
             let map_path = format!("{js}.map");
             if policy == "emit" {
                 assert!(

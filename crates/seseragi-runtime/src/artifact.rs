@@ -205,7 +205,9 @@ pub(crate) fn write_manifest<'a>(
     } else {
         "entry.ts"
     };
-    let bundled_javascript_bytes = if executable.ends_with(".js") {
+    // A JavaScript entry can be an unbundled persistent module. Its extension
+    // does not prove that the application bundling stage ran.
+    let bundled_javascript_bytes = if target == crate::BuildTarget::Web || evidence.is_some() {
         Some(
             files
                 .iter()
