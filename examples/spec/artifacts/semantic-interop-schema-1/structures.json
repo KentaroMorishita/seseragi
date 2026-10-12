@@ -337,6 +337,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "policy-required",
+        "semanticDigest": "21d0898933ee18d7650a4daf6b08f77ba1bf150a5a56c0dd5abd31c657fee7ec",
         "typeRef": 21,
         "types": [
           21,
@@ -417,6 +418,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "c35e9460e7cce0e58d0bbe54054a6010ac20e2ad7824b878c6f4431f0a069a91",
         "typeRef": 40,
         "types": [
           39,
@@ -494,6 +496,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "normalized",
+        "semanticDigest": "cf19c669229a3bf5ce74c15335138c0bc2ef149c61674ebb2bbef7e931fea462",
         "typeRef": 17,
         "types": [
           13,
@@ -572,6 +575,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "f259bfc723648e08a11661b5158184cd465b16cc0c87a985666fe0f557904359",
         "typeRef": 20,
         "types": [
           18,
@@ -719,6 +723,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "normalized",
+        "semanticDigest": "f51bda9d86f432e35b3d0cf3543f2bf83dc89f12ba6469ded9d24f7333e7493a",
         "typeRef": 2,
         "types": [
           0,
@@ -852,6 +857,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "30eb42415b3722cf70090aca4037dd899459a7a95a28d82ee3adc7beeddd46ed",
         "typeRef": 12,
         "types": [
           6,
@@ -1997,6 +2003,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "policy-required",
+        "semanticDigest": "21d0898933ee18d7650a4daf6b08f77ba1bf150a5a56c0dd5abd31c657fee7ec",
         "typeRef": 21,
         "types": [
           21,
@@ -2067,6 +2074,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "c35e9460e7cce0e58d0bbe54054a6010ac20e2ad7824b878c6f4431f0a069a91",
         "typeRef": 40,
         "types": [
           39,
@@ -2134,6 +2142,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "normalized",
+        "semanticDigest": "cf19c669229a3bf5ce74c15335138c0bc2ef149c61674ebb2bbef7e931fea462",
         "typeRef": 17,
         "types": [
           13,
@@ -2202,6 +2211,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "f259bfc723648e08a11661b5158184cd465b16cc0c87a985666fe0f557904359",
         "typeRef": 20,
         "types": [
           18,
@@ -2339,6 +2349,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "normalized",
+        "semanticDigest": "f51bda9d86f432e35b3d0cf3543f2bf83dc89f12ba6469ded9d24f7333e7493a",
         "typeRef": 2,
         "types": [
           0,
@@ -2462,6 +2473,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "30eb42415b3722cf70090aca4037dd899459a7a95a28d82ee3adc7beeddd46ed",
         "typeRef": 12,
         "types": [
           6,

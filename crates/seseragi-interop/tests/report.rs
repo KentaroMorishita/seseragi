@@ -330,3 +330,83 @@ fn known_open_policy_remains_distinct_from_uninterpreted_and_forged_direct() {
         SemanticClassification::Uninterpreted
     );
 }
+
+#[test]
+fn same_classification_and_ids_still_report_a_changed_value_domain() {
+    let mut graph = graph();
+    let before = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    graph.types.insert(
+        TypeId(0),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::Boolean,
+        },
+    );
+    let after = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    assert_eq!(
+        before.symbols["Text"].classification,
+        after.symbols["Text"].classification
+    );
+    assert_ne!(
+        before.symbols["Text"].semantic_digest,
+        after.symbols["Text"].semantic_digest
+    );
+    assert_eq!(after.diff(&before).changed, vec!["Text"]);
+    graph.types.insert(
+        TypeId(99),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::BigInteger,
+        },
+    );
+    let orphan = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    assert_eq!(
+        orphan.symbols["Text"].semantic_digest,
+        after.symbols["Text"].semantic_digest
+    );
+    assert!(orphan.diff(&after).changed.is_empty());
+}
+
+#[test]
+fn reference_target_edges_change_digest_even_when_reachable_node_set_is_equal() {
+    let mut graph = graph();
+    graph.private_symbols.insert("Text".into());
+    graph.types.insert(
+        TypeId(1),
+        SemanticType::Reference {
+            symbol: "Text".into(),
+        },
+    );
+    graph.types.insert(
+        TypeId(2),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::Boolean,
+        },
+    );
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Shape {
+            identity: ShapeIdentity::ReadonlySnapshot,
+            fields: [("a", 0), ("b", 2), ("alias", 1)]
+                .into_iter()
+                .map(|(name, id)| {
+                    (
+                        name.to_owned(),
+                        ShapeField {
+                            type_ref: TypeId(id),
+                            optional: false,
+                            readonly: true,
+                        },
+                    )
+                })
+                .collect(),
+        },
+    );
+    symbol(&mut graph, "Public", TypeId(3));
+    let before = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    graph.symbols.get_mut("Text").unwrap().type_ref = TypeId(2);
+    let after = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    assert_eq!(
+        before.symbols["Public"].types,
+        after.symbols["Public"].types
+    );
+    assert_eq!(after.diff(&before).changed, vec!["Public"]);
+}

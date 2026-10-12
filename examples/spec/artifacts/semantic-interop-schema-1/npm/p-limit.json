@@ -118,6 +118,7 @@
           ],
           "runtimeAbiUnresolved": false,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "dbd01c3cc8f4b8df47c5c8b64951210ab0bd1e83f603b1a8c8bc8aeb82d86b9b",
           "typeRef": 0,
           "types": [
             0
@@ -175,6 +176,7 @@
           ],
           "runtimeAbiUnresolved": false,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "571a587b45e2eec6313a3249eced9b04a79a724f77351c7749427c0ec2d82c64",
           "typeRef": 4,
           "types": [
             4
@@ -284,6 +286,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "252752db876750f7ff5bb640b48247075d9955c281dac89e83048fccfde6dc60",
           "typeRef": 3,
           "types": [
             0,
@@ -562,6 +565,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "1aad9365e867d70b2ce0a539cb1c61967bd86120770074219d763a749ee5d10d",
           "typeRef": 5,
           "types": [
             4,
@@ -1642,6 +1646,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "dbd01c3cc8f4b8df47c5c8b64951210ab0bd1e83f603b1a8c8bc8aeb82d86b9b",
         "typeRef": 0,
         "types": [
           0
@@ -1689,6 +1694,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "571a587b45e2eec6313a3249eced9b04a79a724f77351c7749427c0ec2d82c64",
         "typeRef": 4,
         "types": [
           4
@@ -1788,6 +1794,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "252752db876750f7ff5bb640b48247075d9955c281dac89e83048fccfde6dc60",
         "typeRef": 3,
         "types": [
           0,
@@ -2046,6 +2053,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "1aad9365e867d70b2ce0a539cb1c61967bd86120770074219d763a749ee5d10d",
         "typeRef": 5,
         "types": [
           4,

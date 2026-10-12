@@ -259,6 +259,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "7b2a70679c9002d0cea767618bdeae13e92a066cfbdeb403a7a89892eb68bc87",
           "typeRef": 57,
           "types": [
             0,
@@ -453,6 +454,7 @@
           ],
           "runtimeAbiUnresolved": false,
           "semanticClassification": "direct",
+          "semanticDigest": "32f7e974e3f53f42947ba4f8d85eb8e743ea7861948064a3c2d345b603861f8a",
           "typeRef": 21,
           "types": [
             3,
@@ -1355,6 +1357,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "9612d64515136e32107619afa32e6fa569799dc27ca0d63427a4a6ef050d9d55",
           "typeRef": 36,
           "types": [
             0,
@@ -1494,6 +1497,7 @@
           ],
           "runtimeAbiUnresolved": false,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "284dab30468e3de27db3de52ddc97a4778f4c7a3384e94010089a3d9281291b3",
           "typeRef": 2,
           "types": [
             0,
@@ -1598,6 +1602,7 @@
           ],
           "runtimeAbiUnresolved": false,
           "semanticClassification": "direct",
+          "semanticDigest": "4465287de2a997ade8191ae39d252c6421e076e9dbb28eb4106e5ee3beef413f",
           "typeRef": 3,
           "types": [
             3,
@@ -1973,6 +1978,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "runtime-abi-unresolved",
+          "semanticDigest": "7d6bcc5f3191e06bf45a28be1cdbfccb7fe655c24217d42f5fd0ae923d8e83ff",
           "typeRef": 27,
           "types": [
             8,
@@ -2235,6 +2241,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "runtime-abi-unresolved",
+          "semanticDigest": "6637290895561577744af7315f13444bc983347dee8fc9cbc138747de197e352",
           "typeRef": 8,
           "types": [
             8,
@@ -3416,6 +3423,7 @@
           ],
           "runtimeAbiUnresolved": true,
           "semanticClassification": "uninterpreted",
+          "semanticDigest": "4b119a8cbccaac53ebd0bbcd39caf6155fe18615a3ecdc27da00108b2a0d70ac",
           "typeRef": 63,
           "types": [
             0,
@@ -6865,6 +6873,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "7b2a70679c9002d0cea767618bdeae13e92a066cfbdeb403a7a89892eb68bc87",
         "typeRef": 57,
         "types": [
           0,
@@ -7049,6 +7058,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "32f7e974e3f53f42947ba4f8d85eb8e743ea7861948064a3c2d345b603861f8a",
         "typeRef": 21,
         "types": [
           3,
@@ -7941,6 +7951,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "9612d64515136e32107619afa32e6fa569799dc27ca0d63427a4a6ef050d9d55",
         "typeRef": 36,
         "types": [
           0,
@@ -8070,6 +8081,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "284dab30468e3de27db3de52ddc97a4778f4c7a3384e94010089a3d9281291b3",
         "typeRef": 2,
         "types": [
           0,
@@ -8164,6 +8176,7 @@
         ],
         "runtimeAbiUnresolved": false,
         "semanticClassification": "direct",
+        "semanticDigest": "4465287de2a997ade8191ae39d252c6421e076e9dbb28eb4106e5ee3beef413f",
         "typeRef": 3,
         "types": [
           3,
@@ -8529,6 +8542,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "runtime-abi-unresolved",
+        "semanticDigest": "7d6bcc5f3191e06bf45a28be1cdbfccb7fe655c24217d42f5fd0ae923d8e83ff",
         "typeRef": 27,
         "types": [
           8,
@@ -8781,6 +8795,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "runtime-abi-unresolved",
+        "semanticDigest": "6637290895561577744af7315f13444bc983347dee8fc9cbc138747de197e352",
         "typeRef": 8,
         "types": [
           8,
@@ -9942,6 +9957,7 @@
         ],
         "runtimeAbiUnresolved": true,
         "semanticClassification": "uninterpreted",
+        "semanticDigest": "4b119a8cbccaac53ebd0bbcd39caf6155fe18615a3ecdc27da00108b2a0d70ac",
         "typeRef": 63,
         "types": [
           0,

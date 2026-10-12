@@ -1,6 +1,7 @@
 //! Deterministic public-surface coverage. History/orphan nodes never inflate counts.
 use crate::*;
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -26,6 +27,8 @@ pub struct ClassificationCount {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct SymbolCompatibility {
     pub public_name: String,
+    /// Exact reachable type meaning, excluding unrelated history/source identity.
+    pub semantic_digest: String,
     pub type_ref: TypeId,
     pub classification: SemanticClassification,
     pub semantic_classification: SemanticClassification,
@@ -132,6 +135,31 @@ impl SemanticCompatibilityReport {
                     _ => {}
                 }
             }
+            let nodes = reachable
+                .iter()
+                .map(|id| (*id, &graph.types[id]))
+                .collect::<BTreeMap<_, _>>();
+            let mut references = BTreeMap::new();
+            for node in nodes.values() {
+                match node {
+                    SemanticType::Reference { symbol } => {
+                        references.insert(symbol.clone(), graph.symbols[symbol].type_ref);
+                    }
+                    SemanticType::Namespace { members } => {
+                        for identity in members.values() {
+                            references.insert(identity.clone(), graph.symbols[identity].type_ref);
+                        }
+                    }
+                    _ => {}
+                }
+            }
+            let semantic_digest = format!(
+                "{:x}",
+                Sha256::digest(
+                    serde_json::to_vec(&(symbol.kind, symbol.type_ref, nodes, references))
+                        .expect("validated graph nodes serialize")
+                )
+            );
             let mut reasons = Vec::new();
             let mut classification = SemanticClassification::Direct;
             for id in &reachable {
@@ -176,6 +204,7 @@ impl SemanticCompatibilityReport {
                 identity.clone(),
                 SymbolCompatibility {
                     public_name: symbol.public_name.clone(),
+                    semantic_digest,
                     type_ref: symbol.type_ref,
                     classification,
                     semantic_classification: classification,
