@@ -68,7 +68,8 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
         );
     }
     let options = invocation.apply(ProcessRunOptions::default())?;
-    seseragi_runtime::run_main_with_options(&compiled, options)
+    let source_context = seseragi_runtime::SourceFileContext::new(path)?;
+    seseragi_runtime::run_main_with_source_context(&compiled, options, &source_context)
         .map(|outcome| outcome.exit_code)
         .map_err(|error| error.to_string())
 }

@@ -126,7 +126,8 @@ fn build_file(
         target.is_none().then_some(compatible.as_slice()),
     )
     .map_err(|error| error.to_string())?;
-    seseragi_runtime::build_main_with_artifact_options(
+    let source_context = seseragi_runtime::SourceFileContext::new(path)?;
+    seseragi_runtime::build_main_with_source_context(
         &compiled,
         output_directory,
         build_target(selection.target),
@@ -135,6 +136,7 @@ fn build_file(
             source_map,
             minify: None,
         },
+        &source_context,
     )
     .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());

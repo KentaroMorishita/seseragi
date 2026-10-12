@@ -134,13 +134,57 @@ pub fn build_main_with_artifact_options(
     options: ProcessRunOptions,
     artifact_options: crate::artifact::ArtifactOptions,
 ) -> Result<(), BuildError> {
+    build_main_with_optional_source(
+        compiled,
+        output_directory,
+        target,
+        options,
+        artifact_options,
+        None,
+    )
+}
+pub fn build_main_with_source_context(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+    source: &super::SourceFileContext,
+) -> Result<(), BuildError> {
+    build_main_with_optional_source(
+        compiled,
+        output_directory,
+        target,
+        options,
+        artifact_options,
+        Some(source),
+    )
+}
+fn build_main_with_optional_source(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+    source: Option<&super::SourceFileContext>,
+) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     let id = compiled.generated.metadata.module.clone();
     let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
     let reachability = optimize_application(&mut application, &id, &contract);
     let compiled = application.get(&id).expect("application root retained");
+    let prepared = source
+        .map(|source| source.prepare(compiled, target == BuildTarget::Web))
+        .transpose()
+        .map_err(BuildError::Host)?;
+    let compiled = prepared
+        .as_ref()
+        .map_or(compiled, |prepared| &prepared.compiled);
     publish_build(output_directory, |staging| {
+        if let Some(prepared) = &prepared {
+            prepared.stage(staging, target == BuildTarget::Process)?;
+        }
         match target {
             BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
             BuildTarget::Web => stage_main_module(compiled, &staging)?,

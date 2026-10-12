@@ -31,6 +31,17 @@ private foreign blockを手書きの `pub fn` / `pub alias` で包みます。
 
 `from` のspecifierはTypeScript host resolverへ渡します。relative specifierはbinding fileから、
 bare specifierは `seseragi.toml` の `[foreign.typescript]` とhost package resolverから解決します。
+単独の `.ssrg` fileのrun / buildでは、明示した元source fileのparent directoryをhost adapterの
+rootとします。relative foreign moduleと、そこからliteral import / re-export / dynamic import / requireで
+参照されるhost fileだけを専用directoryへstageします。元directory全体をcopyせず、process artifactは
+元sourceを削除して移動しても実行できます。生成moduleのESM scopeとhostのpackage type scopeを分け、
+hostの最も近い `package.json` からは必要な `type` だけを保存します。
+
+単独fileのhost importは、明示したfile pathとsource parent内の依存に限ります。bare package、computed
+specifier、source root外のfile、symlink aliasやextensionを推測するpathは `SES-F0203` で拒否し、package
+resolver / 明示した別のasset policyを要求します。存在しないtask-load hostはunusedならloadせず、実行時は
+従来の `Js.Error` / ModuleLoad境界で失敗します。
+
 load identityはspecifier文字列ではなくresolverが返すexact host module identityです。異なるrelative spellingや
 re-export pathが同じidentityへ解決される場合も、一runtime内で一moduleとして扱います。
 

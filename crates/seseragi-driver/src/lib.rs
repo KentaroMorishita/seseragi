@@ -9,6 +9,8 @@ mod application;
 pub use application::{retain_application_outputs, ApplicationReachability};
 mod compile;
 mod dependencies;
+mod foreign_outputs;
+pub use foreign_outputs::relocate_foreign_outputs;
 mod format;
 mod input;
 mod local_package;
