@@ -5,14 +5,23 @@
 //! no dependency on a parser, compiler AST, filesystem or host module loader.
 
 mod model;
+mod normalize;
 mod validate;
 
 pub use model::*;
+pub use normalize::NormalizationBudget;
 pub use validate::{ValidationError, ValidationIssue};
 
 use sha2::{Digest, Sha256};
 
 impl SemanticGraph {
+    /// Closed relations are normalized by the shared semantic core, using a
+    /// finite work budget. No source-language parser or host checker is needed.
+    pub fn normalize_closed(&mut self, budget: NormalizationBudget) -> Result<(), ValidationError> {
+        self.validate()?;
+        normalize::normalize(self, budget);
+        self.validate()
+    }
     pub fn validate(&self) -> Result<(), ValidationError> {
         validate::validate(self)
     }

@@ -408,6 +408,7 @@ struct Function {
     parameters: Vec<seseragi_interop::CallParameter>,
     result: TypeId,
     generic_binder: Option<TypeId>,
+    receiver: Option<TypeId>,
 }
 fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> Option<Function> {
     let (type_parameters, body) = match &graph.types[&id] {
@@ -417,7 +418,9 @@ fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> 
         _ => (Vec::new(), id),
     };
     let SemanticType::Callable {
-        parameters, result, ..
+        parameters,
+        result,
+        receiver,
     } = &graph.types[&body]
     else {
         return None;
@@ -442,6 +445,7 @@ fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> 
         parameters: parameters.clone(),
         result: *result,
         generic_binder: matches!(graph.types[&id], SemanticType::Generic { .. }).then_some(id),
+        receiver: *receiver,
     })
 }
 
@@ -679,6 +683,17 @@ fn render_function(
     indent: usize,
 ) -> Option<String> {
     let public_path = symbol_path(namespace, &function.public_name);
+    if function.receiver.is_some() {
+        context.diagnostics.push(diagnostic(
+            "SES-F0102",
+            DiagnosticSeverity::Error,
+            "contextual receiver requires an explicit bound-method ABI adapter",
+            context.file,
+            function.span,
+            Some(public_path),
+        ));
+        return None;
+    }
     if function.generic_binder.is_some_and(|binder| matches!(&context.graph.types[&binder], SemanticType::Generic { parameters, .. } if parameters.iter().any(|parameter| parameter.constraint.is_some() || parameter.default.is_some()))) {
         context.diagnostics.push(diagnostic("SES-F0102", DiagnosticSeverity::Error,
             "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
@@ -1095,8 +1110,18 @@ fn render_type_node(
             Some(result)
         }
         SemanticType::Callable {
-            parameters, result, ..
+            parameters,
+            result,
+            receiver,
         } => {
+            if receiver.is_some() {
+                return unsupported_type(
+                    id,
+                    "contextual receiver requires an explicit bound-method ABI adapter",
+                    context,
+                    symbol_path,
+                );
+            }
             let callback = callback_parameter.and_then(|name| symbol.callbacks.get(name));
             let args = parameters
                 .into_iter()
@@ -1127,6 +1152,15 @@ fn render_type_node(
                 };
                 Some(format!("Js.Callback<{args}, {result}>"))
             }
+        }
+        SemanticType::Nullable { value } | SemanticType::Optional { value } => {
+            let wrapper = if matches!(context.graph.types[&id], SemanticType::Nullable { .. }) {
+                "Js.NullOr"
+            } else {
+                "Js.UndefinedOr"
+            };
+            render_type(value, type_parameters, symbol, None, context, symbol_path)
+                .map(|inner| format!("{wrapper}<{inner}>"))
         }
         _ => unsupported_type(
             id,

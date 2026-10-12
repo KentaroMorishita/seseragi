@@ -313,7 +313,7 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             let parsed = parse_type(child, source)?;
             match parsed.kind {
                 TypeKind::MutableArray(element) => TypeKind::ReadonlyArray(element),
-                _ => parsed.kind,
+                _ => TypeKind::Unsupported("readonly qualifier on a non-array type requires an identity-preserving interpretation".to_owned()),
             }
         }
         "array_type" => {
@@ -323,19 +323,81 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             })?;
             TypeKind::MutableArray(Box::new(parse_type(child, source)?))
         }
-        "union_type" => {
+        "union_type" | "intersection_type" => {
             let mut members = Vec::new();
             let mut cursor = node.walk();
             for child in node.named_children(&mut cursor) {
                 members.push(parse_type(child, source)?);
             }
-            TypeKind::Union(members)
+            if node.kind() == "union_type" {
+                TypeKind::Union(members)
+            } else {
+                TypeKind::Intersection(members)
+            }
+        }
+        "index_type_query" => {
+            TypeKind::Keys(Box::new(parse_type(node.named_child(0).unwrap(), source)?))
+        }
+        "lookup_type" => TypeKind::Member {
+            subject: Box::new(parse_type(node.named_child(0).unwrap(), source)?),
+            key: Box::new(parse_type(node.named_child(1).unwrap(), source)?),
+        },
+        "infer_type" => TypeKind::Infer {
+            name: node_text(node.named_child(0).unwrap(), source).to_owned(),
+            constraint: node
+                .named_child(1)
+                .map(|n| parse_type(n, source).map(Box::new))
+                .transpose()?,
+        },
+        "conditional_type" => TypeKind::Conditional {
+            subject: Box::new(parse_type(required_field(node, "left")?, source)?),
+            constraint: Box::new(parse_type(required_field(node, "right")?, source)?),
+            matched: Box::new(parse_type(required_field(node, "consequence")?, source)?),
+            unmatched: Box::new(parse_type(required_field(node, "alternative")?, source)?),
+        },
+        "object_type" => {
+            let mut properties = Vec::new();
+            let mut cursor = node.walk();
+            for property in node.named_children(&mut cursor) {
+                if property.kind() != "property_signature" {
+                    return Ok(TypeRef { span, kind: TypeKind::Unsupported("object contains call/index/mapped members requiring explicit relation interpretation".to_owned()) });
+                }
+                let name = required_field(property, "name")?;
+                if !matches!(name.kind(), "property_identifier" | "string" | "number") {
+                    return Ok(TypeRef {
+                        span,
+                        kind: TypeKind::Unsupported(
+                            "computed property identity requires resolution".to_owned(),
+                        ),
+                    });
+                }
+                let text = node_text(property, source);
+                let ty = match property.child_by_field_name("type") {
+                    Some(ty) => parse_type(ty, source)?,
+                    None => TypeRef {
+                        span: Span::from_node(property),
+                        kind: TypeKind::Unsupported(
+                            "property has implicit dynamic type".to_owned(),
+                        ),
+                    },
+                };
+                properties.push(crate::model::Property {
+                    name: unquote(node_text(name, source)),
+                    readonly: text.trim_start().starts_with("readonly "),
+                    optional: source[name.end_byte()..property.end_byte()]
+                        .trim_start()
+                        .starts_with('?'),
+                    type_ref: ty,
+                });
+            }
+            TypeKind::Shape(properties)
         }
         "literal_type" => TypeKind::Literal(node_text(node, source).to_owned()),
         "function_type" => {
             let parameters = required_field(node, "parameters")?;
             let result = required_field(node, "return_type")?;
             TypeKind::Function {
+                generics: parse_generic_relations(node, source)?,
                 parameters: parse_parameters(parameters, source)?,
                 result: Box::new(parse_type(result, source)?),
             }

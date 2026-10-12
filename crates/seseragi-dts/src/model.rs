@@ -152,10 +152,36 @@ pub enum TypeKind {
     MutableArray(Box<TypeRef>),
     Tuple(Vec<TypeRef>),
     Union(Vec<TypeRef>),
+    Intersection(Vec<TypeRef>),
+    Keys(Box<TypeRef>),
+    Member {
+        subject: Box<TypeRef>,
+        key: Box<TypeRef>,
+    },
+    Infer {
+        name: String,
+        constraint: Option<Box<TypeRef>>,
+    },
+    Conditional {
+        subject: Box<TypeRef>,
+        constraint: Box<TypeRef>,
+        matched: Box<TypeRef>,
+        unmatched: Box<TypeRef>,
+    },
+    Shape(Vec<Property>),
     Function {
+        generics: Vec<TypeParameterRelation>,
         parameters: Vec<Parameter>,
         result: Box<TypeRef>,
     },
     Literal(String),
     Unsupported(String),
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Property {
+    pub name: String,
+    pub readonly: bool,
+    pub optional: bool,
+    pub type_ref: TypeRef,
 }
