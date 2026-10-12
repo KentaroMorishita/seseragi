@@ -5,7 +5,23 @@
 ### Added
 
 - Route declaration conversion through a portable, source-independent semantic graph with lexical generic relations, recursive identities, overloads, namespace ownership, strict schema validation and source provenance (#475, #476, #477).
-- Inspect semantic type relations, interpretation reasons and navigable source origins beside Playground conversion diagnostics (#491).
+- Preserve TypeScript constraints, projections, class identity and overload ownership, with bounded normalization and explicit reasons for unresolved meanings (#478–481).
+- Generate separate checked JSON snapshot, nullable and tagged-union APIs from fresh explicit policies, without treating opaque or mutable host values as records (#482–484).
+- Persist runtime artifact and ABI evidence, validate browser/Node/Bun package selection, and execute a pinned published npm package through normal generated imports in CLI and Playground (#485–487, #490).
+- Report interpreted and projected compatibility separately; verify semantic and pinned npm corpora and show navigable meaning, policies and provenance in Inspector (#488, #489, #491).
+- Reuse the common graph and projector from a bounded JSON Schema frontend with no TypeScript frontend in its production dependencies (#492).
+- Share evidence-backed lint diagnostics between the official CLI and LSP for unused imports/private declarations, discarded effects/subscriptions and unreachable literal-Boolean branches (#611).
+
+### Fixed
+
+- Reject malformed expression bodies before compilation while retaining useful linked editor queries and original parser diagnostics during incomplete edits (#783).
+- Preserve the returned-function boundary of JSON decoder factories (#784).
+- Emit persistent process runtime and generated modules as executable JavaScript for Node and Bun, preserving lazy imports, composed source maps and truthful artifact measurements (#785).
+- Retain generic foreign binders and opaque type arguments, selecting checked primitive codecs for concrete calls and rejecting unresolved forwarding (#786).
+- Preserve `__proto__` as an ordinary record field, including generated checked JSON APIs (#787).
+- Stage the declared relative host import closure for standalone run and process builds, preserving lazy failures, host package scope and relocatable artifacts (#788).
+- Reject modified generated bindings and imports of retained outputs whose entry or projection policy has been removed (#476).
+- Produce canonical Linux WASM before updating PR artifacts while keeping normal PR freshness verification strict.
 
 ## [0.61.25] - 2026-10-08
 

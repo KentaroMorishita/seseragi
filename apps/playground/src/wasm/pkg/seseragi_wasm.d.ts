@@ -71,11 +71,11 @@ export interface InitOutput {
     readonly format_project_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
+    readonly convert_workspace_bindings: (a: number, b: number) => [number, number];
     readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
     readonly format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
-    readonly toolchain_version_json: () => [number, number];
     readonly resolve_browser_runtime_modules: (a: number, b: number) => [number, number];
-    readonly convert_workspace_bindings: (a: number, b: number) => [number, number];
+    readonly toolchain_version_json: () => [number, number];
     readonly iswspace: (a: number) => number;
     readonly iswalpha: (a: number) => number;
     readonly iswdigit: (a: number) => number;
