@@ -206,7 +206,10 @@ fn unresolved_declared_delivery_keeps_explicit_report_reason_after_pinning() {
 
 #[test]
 fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_change() {
-    use seseragi_interop::{ProducerIdentity, ProjectionPolicySet, PROJECTION_POLICY_KIND};
+    use seseragi_interop::{
+        AdapterMapping, ProducerIdentity, ProjectionPolicy, ProjectionPolicySet,
+        ProjectionSelector, SemanticClassification, PROJECTION_POLICY_KIND,
+    };
     use std::{fs, path::Path};
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../apps/playground/tests/fixtures/interop-base64-js-1.5.1");
@@ -219,6 +222,17 @@ fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_ch
         fs::create_dir_all(destination.parent().unwrap()).unwrap();
         fs::copy(fixture.join(file["fixture"].as_str().unwrap()), destination).unwrap();
     }
+    // This controlled local declaration adds a snapshot type to the callable
+    // fixture; no claim is made that this type is published by base64-js.
+    let declaration_path = temp.path().join("host/node_modules/base64-js/index.d.ts");
+    fs::write(
+        &declaration_path,
+        format!(
+            "{}\nexport type User = {{ readonly name: string; readonly active: boolean }};\n",
+            fs::read_to_string(&declaration_path).unwrap()
+        ),
+    )
+    .unwrap();
     let settings_path = temp.path().join("seseragi.bindings.toml");
     let settings = format!(
         "{}\nprojection_policy = \"host/checked.policy.json\"\n",
@@ -251,7 +265,13 @@ fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_ch
         },
         graph_digest: report.graph_digest.clone(),
         artifact_identity: report.identity.clone().unwrap(),
-        policies: vec![],
+        policies: vec![ProjectionPolicy {
+            selector: ProjectionSelector::Symbol {
+                symbol: "User".into(),
+            },
+            function_name: "decodeUser".into(),
+            mapping: AdapterMapping::JsonSnapshot,
+        }],
     };
     fs::write(
         temp.path().join("host/checked.policy.json"),
@@ -260,6 +280,23 @@ fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_ch
     .unwrap();
     let converted = seseragi_dts::convert_package(&request).unwrap();
     assert!(!converted.has_errors(), "{:?}", converted.diagnostics);
+    assert_eq!(
+        converted.compatibility["base64"].symbols["User"].classification,
+        SemanticClassification::SafeBoundary
+    );
+    assert!(!converted.compatibility["base64"].symbols["byteLength"].runtime_abi_unresolved);
+    let adapters: seseragi_projection::SemanticAdapters = serde_json::from_str(
+        &fs::read_to_string(request.generated_root.join("base64.semantic.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        adapters.graph_digest,
+        converted.compatibility["base64"].graph_digest
+    );
+    assert!(adapters.semantic_source.contains("pub fn decodeUser"));
+    let checked_source =
+        fs::read_to_string(request.generated_root.join("base64/semantic.ssrg")).unwrap();
+    assert_eq!(checked_source, adapters.semantic_source);
     seseragi_dts::validate_generated_bindings(
         temp.path(),
         &request.generated_root,
@@ -280,6 +317,23 @@ fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_ch
     )
     .unwrap();
     let stale = seseragi_dts::convert_package(&request).unwrap();
+    assert!(stale.converted.is_empty());
+    assert_ne!(
+        stale.compatibility["base64"].graph_digest,
+        policy.graph_digest
+    );
+    assert_ne!(
+        stale.compatibility["base64"]
+            .identity
+            .as_ref()
+            .unwrap()
+            .runtime_contract_digest,
+        policy.artifact_identity.runtime_contract_digest
+    );
+    assert_eq!(
+        fs::read_to_string(request.generated_root.join("base64/semantic.ssrg")).unwrap(),
+        checked_source
+    );
     assert!(stale
         .diagnostics
         .iter()
