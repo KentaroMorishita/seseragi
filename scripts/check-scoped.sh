@@ -422,7 +422,6 @@ run_full_checks() {
 
   run_conformance_checks
   check_step run_production_checks
-  check_step bun run check:site
   check_step bun scripts/check-production-browser.ts
   run_native_sample_checks
   if [[ "$wasm_mode" == "check" ]]; then

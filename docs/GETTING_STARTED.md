@@ -6,9 +6,10 @@ production buildを作るまでの最短経路です。project固有のpackage m
 
 ## 1. toolchainをinstallする
 
-hostにはSeseragi CLIとBunが必要です。未導入の場合は
-[最初のプログラムを実行する](https://seseragi-docs.vercel.app/ja/docs/first-run/)
-から、公開済みCLIの導入方法と、検証済みのOS・versionを確認してください。
+hostにはSeseragi CLIとBunが必要です。CLIは
+[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)から
+OS / CPUに合うnative archiveを取得し、展開した`seseragi`をPATHの通った場所へ配置します。
+Bunは[公式のインストール手順](https://bun.sh/docs/installation)に従って導入してください。
 native archiveを使う場合、Rustは不要です。Rustが必要なのはCLIをsourceからbuildする場合です。
 すでに導入済みなら、同じ端末で両方のversionを確認して次へ進みます。
 
