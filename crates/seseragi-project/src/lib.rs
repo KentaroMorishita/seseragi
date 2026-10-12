@@ -14,6 +14,7 @@ mod generated_binding_ownership;
 mod generated_bindings;
 pub use binding_linkage::{
     validate_binding_runtime_linkage, validate_binding_runtime_linkage_inputs,
+    validate_generated_binding_source,
 };
 mod graph;
 mod identity;

@@ -87,6 +87,20 @@ pub(crate) fn validate_generated_bindings(
                 .and_then(|source| crate::parse_manifest(&source).ok())
                 .and_then(|manifest| manifest.foreign_typescript);
             if let Ok(source) = fs::read_to_string(&metadata_path) {
+                let raw_source = fs::read_to_string(&source_path).ok();
+                if let Err(problems) = crate::validate_generated_binding_source(
+                    &source,
+                    raw_source.as_deref(),
+                    crate::RuntimeTarget::Node,
+                ) {
+                    errors.extend(problems.into_iter().map(|problem| {
+                        GeneratedBindingValidationError {
+                            entry: id.clone(),
+                            message: problem.to_string(),
+                        }
+                    }));
+                }
+
                 for target in [crate::RuntimeTarget::Node, crate::RuntimeTarget::Bun] {
                     if let Err(problems) = crate::validate_binding_runtime_linkage(
                         &source,

@@ -1068,6 +1068,7 @@ async function run(): Promise<void> {
   const runtimeFiles = [
     ...workspaceState.files,
     ...(workspaceState.generatedBindings?.artifacts ?? []),
+    ...(workspaceState.generatedBindings?.files ?? []),
   ].map(({ path, source }) => ({
     path,
     source,

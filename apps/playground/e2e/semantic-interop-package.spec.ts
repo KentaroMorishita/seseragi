@@ -120,6 +120,26 @@ test("#487 real npm declarations convert through Inspector and generated imports
     })
   ).toEqual(published)
 
+  // Persisted raw artifacts retain their source proof across reloads.
+  await page.evaluate(() => {
+    const key = "seseragi.playground.workspace.schema-1"
+    const saved = JSON.parse(localStorage.getItem(key)!)
+    saved.workspace.generatedBindings.files[0].source += "\n"
+    localStorage.setItem(key, JSON.stringify(saved))
+  })
+  await page.reload()
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toContainText("SES-F0201")
+  await expect(page.locator("#output")).toContainText(
+    "generated binding source"
+  )
+  await convert.click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Converted 1 binding(s)"
+  )
+  await page.locator("#run-button").click()
+  await expect(page.locator("#output")).toHaveText("SGVsbG8=:5.0")
+
   // Changed inputs revoke the Inspector snapshot and generated binding until
   // the actual declaration is converted again; undo cannot revive old evidence.
   const declaration = seed.workspace.files.find(({ path }) =>

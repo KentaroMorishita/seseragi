@@ -91,6 +91,11 @@ fn resolve(request: Request) -> Result<VirtualRuntimeBundle, Vec<RuntimeLinkageD
             .rsplit_once('.')
             .map_or(import.importer.as_str(), |(stem, _)| stem);
         if let Some(metadata) = files.get(&format!("{stem}.binding.json")) {
+            seseragi_project::validate_generated_binding_source(
+                metadata,
+                files.get(&format!("{stem}.ssrg")).map(String::as_str),
+                RuntimeTarget::Browser,
+            )?;
             if foreign
                 .as_ref()
                 .is_some_and(|foreign| foreign.bindings.is_some())
@@ -159,6 +164,7 @@ mod tests {
             conversion["generatedRoot"].as_str().unwrap()
         );
         files.push(serde_json::json!({"path":format!("{}/base64.binding.json",conversion["generatedRoot"].as_str().unwrap()),"source":generated["metadata"]}));
+        files.push(serde_json::json!({"path":format!("{}/base64.ssrg",conversion["generatedRoot"].as_str().unwrap()),"source":generated["source"]}));
         let request = serde_json::json!({"schema":1,"files":files,"manifest":manifest,"imports":[{"importer":importer,"specifier":"base64-js"}]});
         let answer = |request: &serde_json::Value| {
             serde_json::from_str::<serde_json::Value>(&resolve_browser_runtime_modules(
@@ -171,6 +177,7 @@ mod tests {
             "host/node_modules/base64-js/index.js",
             "host/node_modules/base64-js/index.d.ts",
             "seseragi.bindings.toml",
+            ".seseragi/generated/base64.ssrg",
         ] {
             let mut changed = request.clone();
             let file = changed["files"]
@@ -187,6 +194,35 @@ mod tests {
                 "{path}: {response}"
             );
         }
+        let mut missing_settings = request.clone();
+        missing_settings["files"]
+            .as_array_mut()
+            .unwrap()
+            .retain(|file| file["path"] != "seseragi.bindings.toml");
+        assert_eq!(
+            answer(&missing_settings)["diagnostics"][0]["code"],
+            "SES-F0201"
+        );
+        let files_map = request["files"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|file| {
+                (
+                    file["path"].as_str().unwrap().to_owned(),
+                    file["source"].as_str().unwrap().to_owned(),
+                )
+            })
+            .collect();
+        assert!(seseragi_project::validate_binding_runtime_linkage_inputs(
+            generated["metadata"].as_str().unwrap(),
+            &files_map,
+            None,
+            RuntimeTarget::Browser
+        )
+        .unwrap_err()
+        .iter()
+        .any(|error| error.code == "SES-F0201"));
         let mut node_only = request;
         let file = node_only["files"]
             .as_array_mut()

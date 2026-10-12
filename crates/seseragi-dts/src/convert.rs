@@ -223,6 +223,7 @@ fn convert_entry_with_host(
         specifier: entry.specifier.clone(),
         host_module: host()?,
         evaluation: evaluation_name(entry.evaluation).to_owned(),
+        source_digest: Some(sha256(&rendered.source)),
         input_digest: sha256(declaration),
         settings_digest: settings_digest.to_owned(),
         symbols: rendered.symbols,
@@ -1921,6 +1922,8 @@ struct BindingMetadata {
     evaluation: String,
     input_digest: String,
     settings_digest: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    source_digest: Option<String>,
     symbols: Vec<GeneratedSymbol>,
 }
 

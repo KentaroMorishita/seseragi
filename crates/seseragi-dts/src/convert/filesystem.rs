@@ -313,6 +313,18 @@ pub fn validate_generated_bindings(
         }
 
         if let Ok(source) = fs::read_to_string(&metadata_path) {
+            let raw_source = fs::read_to_string(&source_path).ok();
+            if let Err(problems) = seseragi_project::validate_generated_binding_source(
+                &source,
+                raw_source.as_deref(),
+                seseragi_interop::RuntimeTarget::Node,
+            ) {
+                errors.extend(problems.into_iter().map(|problem| ValidationError {
+                    entry: id.clone(),
+                    message: problem.to_string(),
+                }));
+            }
+
             let foreign = fs::read_to_string(package_root.join("seseragi.toml"))
                 .ok()
                 .and_then(|source| seseragi_project::parse_manifest(&source).ok())

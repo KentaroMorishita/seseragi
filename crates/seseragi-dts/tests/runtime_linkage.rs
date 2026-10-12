@@ -112,6 +112,24 @@ fn actual_native_host_bytes_are_pinned_and_changed_bytes_are_stale() {
     };
     let converted = seseragi_dts::convert_package(&request).unwrap();
     assert!(!converted.has_errors(), "{:?}", converted.diagnostics);
+    let raw_path = &converted.converted[0].source;
+    let original_raw = fs::read_to_string(raw_path).unwrap();
+    fs::write(
+        raw_path,
+        format!("{original_raw}\npub fn injected value: String -> String = value\n"),
+    )
+    .unwrap();
+    assert!(
+        seseragi_dts::validate_generated_bindings(
+            temp.path(),
+            &request.generated_root,
+            &request.bindings,
+            &request.host_manifest
+        )
+        .is_err(),
+        "hand-edited generated source must not bypass persisted ABI"
+    );
+    fs::write(raw_path, original_raw).unwrap();
     let text = fs::read_to_string(&converted.converted[0].metadata).unwrap();
     let value: serde_json::Value = serde_json::from_str(&text).unwrap();
     let evidence: RuntimeLinkageEvidence =

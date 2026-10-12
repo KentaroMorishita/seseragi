@@ -85,13 +85,79 @@ pub fn validate_binding_runtime_linkage_inputs(
             )));
         }
     }
-    if settings.is_some_and(|source| {
-        format!("{:x}", Sha256::digest(source.as_bytes()))
-            != evidence.contract.declaration.settings_digest
-    }) {
+    if settings
+        .map(|source| format!("{:x}", Sha256::digest(source.as_bytes())))
+        .as_ref()
+        != Some(&evidence.contract.declaration.settings_digest)
+    {
         return Err(stale(
-            "runtime linkage binding settings changed; regenerate bindings".into(),
+            "runtime linkage binding settings changed or are missing; regenerate bindings".into(),
         ));
     }
     Ok(())
+}
+
+/// A generated source is part of the verified artifact, not editable input.
+/// Older declaration-only metadata has no digest and keeps its prior behavior.
+pub fn validate_generated_binding_source(
+    metadata: &str,
+    source: Option<&str>,
+    target: RuntimeTarget,
+) -> Result<(), Vec<RuntimeLinkageDiagnostic>> {
+    use sha2::{Digest, Sha256};
+    let stale = |reason: &str| {
+        vec![RuntimeLinkageDiagnostic::new(
+            "SES-F0201",
+            Some(target),
+            reason,
+        )]
+    };
+    let metadata: serde_json::Value = serde_json::from_str(metadata)
+        .map_err(|_| stale("generated binding metadata is invalid"))?;
+    let expected = metadata
+        .get("sourceDigest")
+        .and_then(serde_json::Value::as_str);
+    if metadata.get("sourceDigest").is_none() && metadata.get("runtimeLinkage").is_none() {
+        return Ok(());
+    }
+    let actual = source.map(|source| format!("{:x}", Sha256::digest(source.as_bytes())));
+    if expected.is_none() || actual.as_deref() != expected {
+        return Err(stale(
+            "generated binding source changed or is missing; regenerate bindings",
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn generated_source_digest_preserves_legacy_and_rejects_missing_rich_proof() {
+        use sha2::{Digest, Sha256};
+        let source = "pub fn api x = x\n";
+        let metadata =
+            serde_json::json!({"sourceDigest":format!("{:x}",Sha256::digest(source.as_bytes()))})
+                .to_string();
+        assert!(
+            validate_generated_binding_source(&metadata, Some(source), RuntimeTarget::Browser)
+                .is_ok()
+        );
+        assert!(validate_generated_binding_source(
+            &metadata,
+            Some("edited"),
+            RuntimeTarget::Browser
+        )
+        .is_err());
+        assert!(
+            validate_generated_binding_source(&metadata, None, RuntimeTarget::Browser).is_err()
+        );
+        assert!(validate_generated_binding_source("{}", None, RuntimeTarget::Browser).is_ok());
+        assert!(validate_generated_binding_source(
+            r#"{"runtimeLinkage":{}}"#,
+            Some(source),
+            RuntimeTarget::Browser
+        )
+        .is_err());
+    }
 }
