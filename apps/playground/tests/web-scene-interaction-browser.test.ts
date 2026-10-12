@@ -48,7 +48,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await browser?.close()
-  server?.stop(true)
+  await server?.stop(true)
 }, 30_000)
 
 test("runs SVG drag, cancellation, wheel, pinch, resize, and cleanup", async () => {

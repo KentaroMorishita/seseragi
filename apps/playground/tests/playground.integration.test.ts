@@ -666,7 +666,7 @@ describe("Playground project compiler boundary", () => {
       response.entry.path,
       response.entry.contract
     )
-    server.stop(true)
+    await server.stop(true)
     expect(execution).toEqual({
       stdout: "browser providers: seseragi",
       debug: "()",

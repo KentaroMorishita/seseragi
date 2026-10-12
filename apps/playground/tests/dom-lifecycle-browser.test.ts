@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, expect, test } from "bun:test"
 import { mkdtemp, readFile, rm } from "node:fs/promises"
+import { createConnection } from "node:net"
 import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -10,6 +11,19 @@ import { ensureSeseragiCli, runCommand } from "./cli-test-support"
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 let browser: Browser | undefined
 let lifecycleJavascript = ""
+
+function probeFixtureListener(port: number): Promise<string> {
+  return new Promise((resolve) => {
+    const socket = createConnection({ host: "127.0.0.1", port })
+    const finish = (result: string) => {
+      socket.destroy()
+      resolve(result)
+    }
+    socket.once("connect", () => finish("connected"))
+    socket.once("error", (error) => finish(error.message))
+    socket.setTimeout(2_000, () => finish("timeout"))
+  })
+}
 
 beforeAll(async () => {
   const build = await Bun.build({
@@ -153,6 +167,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
   }
   const pages: Page[] = []
   const pageErrors: string[] = []
+  const failedRequests: string[] = []
   const fixtureBrowser = browser
   const openPage = async () => {
     const page = await fixtureBrowser.newPage()
@@ -160,6 +175,11 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     page.setDefaultTimeout(15_000)
     page.setDefaultNavigationTimeout(15_000)
     page.on("pageerror", (error) => pageErrors.push(error.message))
+    page.on("requestfailed", (request) => {
+      failedRequests.push(
+        `${request.url()}: ${request.failure()?.errorText ?? "unknown"}`
+      )
+    })
     return page
   }
   mark("start")
@@ -184,6 +204,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     reactive: resolve(directory, "reactive"),
   }
   let fixtureServer: ReturnType<typeof Bun.serve> | undefined
+  let expectedFixturePort: number | undefined
   try {
     mark("build CLI")
     const cli = await ensureSeseragiCli()
@@ -264,6 +285,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(Number.isInteger(fixturePort)).toBe(true)
     expect(fixturePort).toBeGreaterThan(0)
     expect(fixturePort).toBeLessThan(65_536)
+    expectedFixturePort = fixturePort
     const fixtureOrigin = `http://127.0.0.1:${fixturePort}`
 
     mark("hydration new page")
@@ -272,6 +294,8 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     hydrationPage.on("pageerror", (error) =>
       hydrationErrors.push(error.message)
     )
+    mark("hydration navigation")
+    expect(fixtureServer.port).toBe(fixturePort)
     await hydrationPage.goto(`${fixtureOrigin}/hydration/`)
     await hydrationPage.waitForFunction(
       () => document.documentElement.dataset.seseragiStatus === "completed"
@@ -282,11 +306,14 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(hydrationErrors).toEqual([])
     mark("hydration complete")
     await hydrationPage.close()
+    expect(fixtureServer.port).toBe(fixturePort)
 
     mark("signal new page")
     const signalPage = await openPage()
     const signalErrors: string[] = []
     signalPage.on("pageerror", (error) => signalErrors.push(error.message))
+    mark("signal navigation")
+    expect(fixtureServer.port).toBe(fixturePort)
     await signalPage.goto(`${fixtureOrigin}/signal/`)
     await signalPage.locator("#count").waitFor()
     await signalPage.locator("#increment").click()
@@ -302,11 +329,14 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(signalErrors).toEqual([])
     mark("signal complete")
     await signalPage.close()
+    expect(fixtureServer.port).toBe(fixturePort)
 
     mark("reactive new page")
     const reactivePage = await openPage()
     const reactiveErrors: string[] = []
     reactivePage.on("pageerror", (error) => reactiveErrors.push(error.message))
+    mark("reactive navigation")
+    expect(fixtureServer.port).toBe(fixturePort)
     await reactivePage.goto(`${fixtureOrigin}/reactive/`)
     await reactivePage.locator("#count").waitFor()
     await reactivePage.evaluate(() => {
@@ -479,9 +509,20 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(reactiveErrors).toEqual([])
     mark("reactive complete")
     await reactivePage.close()
+    expect(fixtureServer.port).toBe(fixturePort)
   } catch (error) {
+    const listener = {
+      expectedPort: expectedFixturePort ?? null,
+      actualPort: fixtureServer?.port ?? null,
+      pendingRequests: fixtureServer?.pendingRequests ?? null,
+      pendingWebSockets: fixtureServer?.pendingWebSockets ?? null,
+      tcp:
+        expectedFixturePort === undefined
+          ? "not started"
+          : await probeFixtureListener(expectedFixturePort),
+    }
     throw new Error(
-      `DOM lifecycle fixture failed during ${currentStage}; page errors: ${JSON.stringify(pageErrors)}`,
+      `DOM lifecycle fixture failed during ${currentStage}; listener: ${JSON.stringify(listener)}; page errors: ${JSON.stringify(pageErrors)}; failed requests: ${JSON.stringify(failedRequests)}`,
       { cause: error }
     )
   } finally {
