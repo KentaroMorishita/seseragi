@@ -193,7 +193,7 @@ test("Inspector consumes core metadata and reports, rejects stale results and tr
   expect(inspection.bindings[0]?.source).toContain("Config")
   expect(inspection.semantics[0]?.id).toBe("api")
   expect(
-    inspection.semantics[0]?.nodes.some((node) => node.node.kind === "opaque")
+    inspection.semantics[0]?.nodes.some((node) => node.node.kind === "shape")
   ).toBe(true)
   expect(
     inspection.semantics[0]?.nodes.some((node) =>

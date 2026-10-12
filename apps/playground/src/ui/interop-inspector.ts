@@ -175,8 +175,13 @@ export function connectInteropInspector(options: {
           option.value = node.id
           select.append(option)
         }
-        if (!semantic.nodes.some((node) => node.id === selectedType))
-          selectedType = semantic.nodes[0]?.id ?? ""
+        if (!semantic.nodes.some((node) => node.id === selectedType)) {
+          const firstSymbol = Object.entries(semantic.symbols).find(([key]) => !semantic.privateSymbols?.includes(key))?.[1]
+          const root = firstSymbol && typeof firstSymbol === "object" && "typeRef" in firstSymbol
+            ? String(firstSymbol.typeRef)
+            : ""
+          selectedType = semantic.nodes.find((node) => node.id === root)?.id ?? semantic.nodes[0]?.id ?? ""
+        }
         select.value = selectedType
         select.addEventListener("change", () => {
           selectedType = select.value

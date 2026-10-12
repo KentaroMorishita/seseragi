@@ -232,6 +232,49 @@ fn finite_templates_and_mapped_shapes_keep_exact_domains_and_modifiers() {
 }
 
 #[test]
+fn private_aliases_are_interpreted_but_never_exported_as_generated_bindings() {
+    let source = "type PrivateName = string; type Unused = number; export declare function read(name: PrivateName): PrivateName; export interface Keys { readonly id: string; } export type Key = keyof Keys;";
+    let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+    assert_eq!(
+        graph.private_symbols,
+        std::collections::BTreeSet::from(["PrivateName".to_owned(), "Unused".to_owned()])
+    );
+    assert_eq!(
+        graph.types[&graph.symbols["Key"].type_ref],
+        SemanticType::Literal {
+            value: LiteralValue::String("id".to_owned())
+        }
+    );
+    let projected = project_graph(&graph, SETTINGS, "api").unwrap();
+    let output = projected.source.unwrap();
+    assert!(output.contains("read name: String -> String"), "{output}");
+    assert!(!output.contains("PrivateName") && !output.contains("Unused"));
+    assert_eq!(
+        SemanticGraph::from_json(&graph.to_json().unwrap()).unwrap(),
+        graph
+    );
+}
+
+#[test]
+fn conflicting_merged_properties_do_not_choose_a_source_order_winner() {
+    let source = "export interface Value { readonly id: string; } export interface Value { readonly id: number; } export type Key = Value['id'];";
+    let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+    assert!(
+        matches!(&graph.types[&graph.symbols["Value"].type_ref], SemanticType::Unresolved { reason } if reason.contains("conflict"))
+    );
+    assert!(matches!(
+        graph.types[&graph.symbols["Key"].type_ref],
+        SemanticType::Projection { .. }
+    ));
+    assert!(graph
+        .normalizations
+        .iter()
+        .any(|step| step.output == graph.symbols["Value"].type_ref
+            && step.classification == SemanticClassification::PolicyRequired
+            && step.inputs.len() == 2));
+}
+
+#[test]
 fn generic_constraints_defaults_and_lexical_scopes_survive_json_and_projection() {
     let source = "export declare function identity<T extends string = string>(value: T): T; export declare function other<T extends number>(value: T): T;";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
@@ -334,7 +377,7 @@ fn overloads_namespaces_and_export_aliases_have_semantic_ownership() {
 }
 
 #[test]
-fn merged_declarations_keep_every_source_and_explain_the_remaining_structural_gap() {
+fn merged_declarations_keep_every_source_and_combine_compatible_structural_fields() {
     let source = "export interface User { readonly id: bigint; }\nexport interface User { readonly name: string; }";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
     let symbol = &graph.symbols["User"];
@@ -358,7 +401,14 @@ fn merged_declarations_keep_every_source_and_explain_the_remaining_structural_ga
         .iter()
         .any(|step| step.output == symbol.type_ref
             && !step.inputs.is_empty()
-            && step.classification == SemanticClassification::Uninterpreted));
+            && step.classification == SemanticClassification::Normalized));
+    let SemanticType::Shape { fields, .. } = &graph.types[&symbol.type_ref] else {
+        panic!()
+    };
+    assert_eq!(
+        fields.keys().map(String::as_str).collect::<Vec<_>>(),
+        ["id", "name"]
+    );
     assert_eq!(
         project_graph(&graph, SETTINGS, "api")
             .unwrap()

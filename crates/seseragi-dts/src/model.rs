@@ -16,6 +16,7 @@ impl Span {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Scope {
     pub declarations: Vec<Declaration>,
+    pub private_declarations: Vec<Declaration>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -74,6 +75,7 @@ pub struct Interface {
     pub name_span: Span,
     pub span: Span,
     pub type_parameter_relations: Vec<TypeParameterRelation>,
+    pub body: TypeRef,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

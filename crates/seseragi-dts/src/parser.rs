@@ -81,6 +81,11 @@ fn parse_scope(container: Node<'_>, source: &str) -> Result<Scope, ParseError> {
         );
     }
     Ok(Scope {
+        private_declarations: local
+            .into_iter()
+            .filter(|(name, _)| !exported.iter().any(|decl| decl.original_name() == name))
+            .flat_map(|(_, declarations)| declarations)
+            .collect(),
         declarations: exported,
     })
 }
@@ -158,6 +163,19 @@ fn parse_interface(node: Node<'_>, source: &str) -> Result<Interface, ParseError
         name_span: Span::from_node(name),
         span: Span::from_node(node),
         type_parameter_relations: parse_generic_relations(node, source)?,
+        body: if (0..node.named_child_count()).any(|i| {
+            node.named_child(i as u32)
+                .is_some_and(|n| n.kind() == "extends_type_clause")
+        }) {
+            TypeRef {
+                span: Span::from_node(node),
+                kind: TypeKind::Unsupported(
+                    "inherited structural fields require base relation resolution".to_owned(),
+                ),
+            }
+        } else {
+            parse_type(required_field(node, "body")?, source)?
+        },
     })
 }
 
@@ -355,7 +373,7 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             matched: Box::new(parse_type(required_field(node, "consequence")?, source)?),
             unmatched: Box::new(parse_type(required_field(node, "alternative")?, source)?),
         },
-        "object_type" => {
+        "object_type" | "interface_body" => {
             if node.named_child_count() == 1 {
                 if let Some(index) = node
                     .named_child(0)

@@ -340,7 +340,7 @@ fn render_entry(
     let roots = graph
         .symbols
         .iter()
-        .filter(|(key, _)| !owned.contains(key))
+        .filter(|(key, _)| !owned.contains(key) && !graph.private_symbols.contains(*key))
         .map(|(key, symbol)| (symbol.public_name.clone(), key.clone()))
         .collect();
     let body = render_scope(&roots, &mut context, &[], 1);
@@ -973,7 +973,18 @@ fn render_type_node(
                 .cloned()
         }
         SemanticType::Reference { symbol: target } => {
-            Some(generated_name_simple(&target, NameKind::Type))
+            if context.graph.private_symbols.contains(&target) {
+                render_type(
+                    context.graph.symbols[&target].type_ref,
+                    type_parameters,
+                    symbol,
+                    callback_parameter,
+                    context,
+                    symbol_path,
+                )
+            } else {
+                Some(generated_name_simple(&target, NameKind::Type))
+            }
         }
         SemanticType::Opaque {
             identity,

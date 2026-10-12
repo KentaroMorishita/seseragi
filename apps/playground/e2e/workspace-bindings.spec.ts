@@ -231,13 +231,12 @@ test("Inspector compares readonly artifacts, reports and navigates Unicode diagn
   await expect(dialog.getByRole("tabpanel")).toContainText("Config")
   await dialog.getByRole("tab", { name: "Semantic IR", exact: true }).click()
   await expect(dialog.getByRole("tabpanel")).toContainText("Source provenance")
-  await expect(dialog.getByRole("tabpanel")).toContainText("opaque")
+  await expect(dialog.getByRole("tabpanel")).toContainText("shape")
   await expect(dialog.getByRole("tabpanel")).toContainText(
-    "Opaque identity: Config"
+    "Structural shape with mutable-identity identity"
   )
-  await expect(dialog.getByRole("tabpanel")).toContainText("opaque-preserved")
   await dialog
-    .getByRole("button", { name: /host\/index\.d\.ts:.*opaque-identity/ })
+    .getByRole("button", { name: /host\/index\.d\.ts:.*declaration/ })
     .first()
     .click()
   await expect(dialog).not.toBeVisible()

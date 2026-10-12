@@ -177,6 +177,16 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
             }
         }
     }
+    if graph
+        .private_symbols
+        .iter()
+        .any(|key| !graph.symbols.contains_key(key))
+    {
+        issue(
+            "visibility".to_owned(),
+            "private declaration set contains a missing identity",
+        );
+    }
     // Ownership is a finite tree. Type references may be recursive, while
     // namespace containment must never cause recursive emission or aliasing.
     let mut indegree = graph

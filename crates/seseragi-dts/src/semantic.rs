@@ -85,7 +85,7 @@ pub(crate) fn interpret_scope(
         source_digests: BTreeMap::from([(file.to_owned(), source_digest)]),
         runtime_contract_digest: None,
     });
-    builder.index(scope, "");
+    builder.index(scope, "", false);
     builder.scope(scope, "");
     builder.graph.validate().map_err(SemanticError::Invalid)?;
     builder
@@ -145,22 +145,30 @@ impl Builder {
             policy: None,
         });
     }
-    fn index(&mut self, scope: &Scope, namespace: &str) {
-        for declaration in &scope.declarations {
+    fn index(&mut self, scope: &Scope, namespace: &str, internal: bool) {
+        for (declaration, private) in scope
+            .declarations
+            .iter()
+            .map(|d| (d, internal))
+            .chain(scope.private_declarations.iter().map(|d| (d, true)))
+        {
             let public = public_name(declaration);
+            if private {
+                self.graph.private_symbols.insert(path(namespace, public));
+            }
             self.names
                 .entry(path(namespace, declaration.original_name()))
                 .or_insert_with(|| path(namespace, public));
             self.names
                 .insert(path(namespace, public), path(namespace, public));
             if let Declaration::Namespace(value) = declaration {
-                self.index(&value.scope, &path(namespace, public));
+                self.index(&value.scope, &path(namespace, public), private);
             }
         }
     }
     fn scope(&mut self, scope: &Scope, namespace: &str) -> BTreeMap<String, String> {
         let mut members = BTreeMap::new();
-        for declaration in &scope.declarations {
+        for declaration in scope.declarations.iter().chain(&scope.private_declarations) {
             let public = public_name(declaration);
             let key = path(namespace, public);
             let (span, name_span, relations, kind) = match declaration {
@@ -223,6 +231,7 @@ impl Builder {
                     )
                 }
                 Declaration::TypeAlias(value) => self.ty(&value.type_ref, namespace, &parameters),
+                Declaration::Interface(value) => self.ty(&value.body, namespace, &parameters),
                 Declaration::Namespace(value) => {
                     let nested = self.scope(&value.scope, &key);
                     self.node(
@@ -291,6 +300,11 @@ impl Builder {
                 self.origin(span, "declaration"),
                 self.origin(name_span, "public-name"),
             ];
+            self.graph
+                .type_origins
+                .entry(root)
+                .or_default()
+                .push(origins[0].clone());
             if let Some(previous) = self.graph.symbols.get(&key).cloned() {
                 if kind == SymbolKind::Callable && previous.kind == SymbolKind::Callable {
                     let mut signatures = match self.graph.types.get(&previous.type_ref) {
@@ -326,7 +340,24 @@ impl Builder {
                         .origins
                         .extend(origins);
                 } else {
-                    // Do not silently pretend declaration merging is understood.
+                    let old = self.graph.types[&previous.type_ref].clone();
+                    let combined = merge_shapes(&self.graph, &old, &self.graph.types[&root]);
+                    let normalized = combined.is_some();
+                    let inputs = if let Some(combined) = combined {
+                        let snapshot = self.reserve();
+                        self.graph.types.insert(snapshot, old);
+                        self.graph.types.insert(previous.type_ref, combined);
+                        vec![snapshot, root]
+                    } else if matches!(old, SemanticType::Shape { .. })
+                        && matches!(self.graph.types[&root], SemanticType::Shape { .. })
+                    {
+                        let snapshot = self.reserve();
+                        self.graph.types.insert(snapshot, old);
+                        self.graph.types.insert(previous.type_ref, SemanticType::Unresolved { reason: "merged property types or modifiers conflict; no source-order winner was selected".to_owned() });
+                        vec![snapshot, root]
+                    } else {
+                        vec![root]
+                    };
                     self.graph
                         .symbols
                         .get_mut(&key)
@@ -341,10 +372,10 @@ impl Builder {
                         .push(merged_origin);
                     self.graph.normalizations.push(Normalization {
                         output: previous.type_ref,
-                        inputs: vec![root],
+                        inputs,
                         rule: "declaration-merge".to_owned(),
-                        classification: SemanticClassification::Uninterpreted,
-                        reason: "declaration identity and all source origins are retained; merged structural meaning still requires interpretation".to_owned(),
+                        classification: if normalized { SemanticClassification::Normalized } else { SemanticClassification::PolicyRequired },
+                        reason: if normalized { "compatible structural declarations merge all fields and preserve readonly/mutable identity" } else { "declaration identity and all source origins are retained; conflicting or generic merged meaning requires explicit policy" }.to_owned(),
                         policy: None,
                     });
                 }
@@ -361,7 +392,9 @@ impl Builder {
                     },
                 );
             }
-            members.insert(public.to_owned(), key);
+            if !self.graph.private_symbols.contains(&key) {
+                members.insert(public.to_owned(), key);
+            }
         }
         members
     }
@@ -855,6 +888,44 @@ fn public_name(declaration: &Declaration) -> &str {
         Declaration::TypeAlias(v) => &v.public_name,
         Declaration::Namespace(v) => &v.public_name,
     }
+}
+
+fn merge_shapes(graph: &SemanticGraph, a: &SemanticType, b: &SemanticType) -> Option<SemanticType> {
+    let (
+        SemanticType::Shape {
+            identity: ai,
+            fields: a,
+        },
+        SemanticType::Shape {
+            identity: bi,
+            fields: b,
+        },
+    ) = (a, b)
+    else {
+        return None;
+    };
+    let mut fields = a.clone();
+    for (name, field) in b {
+        if let Some(previous) = fields.get(name) {
+            if previous.optional != field.optional
+                || previous.readonly != field.readonly
+                || graph.types[&previous.type_ref] != graph.types[&field.type_ref]
+            {
+                return None;
+            }
+        }
+        fields.insert(name.clone(), field.clone());
+    }
+    Some(SemanticType::Shape {
+        identity: if *ai == ShapeIdentity::ReadonlySnapshot
+            && *bi == ShapeIdentity::ReadonlySnapshot
+        {
+            ShapeIdentity::ReadonlySnapshot
+        } else {
+            ShapeIdentity::MutableIdentity
+        },
+        fields,
+    })
 }
 
 fn literal_string(raw: &str) -> Option<String> {

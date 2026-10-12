@@ -15,6 +15,10 @@ pub struct SemanticGraph {
     pub kind: String,
     pub types: BTreeMap<TypeId, SemanticType>,
     pub symbols: BTreeMap<String, SemanticSymbol>,
+    /// Frontend-local declaration identities used to interpret public types.
+    /// They are retained for resolution but are not an exported ABI surface.
+    #[serde(default)]
+    pub private_symbols: std::collections::BTreeSet<String>,
     pub sources: BTreeMap<String, SourceIdentity>,
     pub type_origins: BTreeMap<TypeId, Vec<Origin>>,
     pub normalizations: Vec<Normalization>,
@@ -28,6 +32,7 @@ impl Default for SemanticGraph {
             kind: SEMANTIC_KIND.to_owned(),
             types: BTreeMap::new(),
             symbols: BTreeMap::new(),
+            private_symbols: std::collections::BTreeSet::new(),
             sources: BTreeMap::new(),
             type_origins: BTreeMap::new(),
             normalizations: Vec::new(),

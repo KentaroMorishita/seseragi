@@ -112,12 +112,11 @@ fn closed_keys(
             domain: PrimitiveDomain::Never,
         });
     }
-    let mut next = graph.types.keys().next_back()?.0.checked_add(1)?;
+    let next = graph.types.keys().next_back()?.0.checked_add(1)?;
     next.checked_add(names.len() as u32)?;
     let mut members = Vec::new();
-    for name in names {
-        let key = TypeId(next);
-        next += 1;
+    for (offset, name) in names.into_iter().enumerate() {
+        let key = TypeId(next + offset as u32);
         graph.types.insert(
             key,
             SemanticType::Literal {

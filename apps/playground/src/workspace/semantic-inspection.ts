@@ -19,6 +19,7 @@ export type SemanticInspection = Readonly<{
   id: string
   nodes: readonly SemanticNodeInspection[]
   symbols: Readonly<Record<string, unknown>>
+  privateSymbols?: readonly string[]
   identity: unknown
 }>
 
@@ -252,9 +253,14 @@ export function inspectSemanticGraph(
   })
   for (const key of Object.keys(typeOrigins))
     if (!(key in types)) throw new Error("Missing semantic provenance type")
+  const rawPrivateSymbols = graph.privateSymbols ?? []
+  if (!Array.isArray(rawPrivateSymbols)) throw new Error("Invalid private semantic declaration set")
+  const privateSymbols = rawPrivateSymbols.map(text)
+  if (privateSymbols.some((symbol) => !(symbol in symbols))) throw new Error("Missing private semantic declaration")
   return {
     id,
     symbols,
+    privateSymbols,
     identity: graph.identity,
     nodes: Object.entries(types).map(([id, raw]) => {
       if (!/^\d+$/.test(id)) throw new Error("Invalid semantic type identity")
