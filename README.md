@@ -37,7 +37,7 @@ TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構
 
 - **[Playground](https://seseragi.vercel.app/)** — browser上で編集・型検査・実行・HTML Preview
 - **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello worldからEffect、Signal、Web UIまで順に試す
-- **[First program](https://seseragi-docs.vercel.app/ja/docs/first-run/)** — 公開済みCLIの導入から、自分のファイルの型検査・実行まで
+- **[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)** — OS / CPU別のCLI、LSP、VS Code拡張の配布
 - **[Local Web Getting Started](./docs/GETTING_STARTED.md)** — project作成からVS Code、dev、production buildまで
 - **[Runnable samples](./examples/samples/README.md)** — 現行compilerで実行されるsample catalog
 - **[VS Code extension](./extensions/seseragi/README.md)** — syntax highlight、hover、completion、diagnostic、formatter
@@ -102,10 +102,10 @@ Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffect
 
 ## Quick start
 
-初めて実行する場合は、[最初のプログラムを実行する](https://seseragi-docs.vercel.app/ja/docs/first-run/)
-へ進んでください。公開済みのCLIとBunを導入し、自分の`main.ssrg`を作成して型検査・実行する、
-repositoryのcheckoutが不要な手順です。検証したOS・versionと、未検証の配布先を区別しています。
-コンパイル済みのnative archiveを使う場合、Rustは不要です。
+CLIは[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)から
+OS / CPUに合うnative archiveを取得してください。archiveにはCLIとLSPが含まれます。
+生成したprogramの実行にはBunも必要です。コンパイル済みのnative archiveを使う場合、
+Rustは不要です。
 
 Web appを作る場合は、別の[Local Web Getting Started](./docs/GETTING_STARTED.md)を使います。
 project作成、VS Code、development server、production buildを扱う手順です。
