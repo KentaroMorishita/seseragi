@@ -81,25 +81,31 @@ function connectResizer(options: ResizerOptions): void {
       ? options.container.getBoundingClientRect().width
       : options.container.getBoundingClientRect().height
 
-  const apply = (nextRatio: number, persist: boolean): void => {
-    ratio = clampPanelRatio(
+  const apply = (
+    nextRatio: number,
+    persist: boolean,
+    remember = true
+  ): void => {
+    const appliedRatio = clampPanelRatio(
       nextRatio,
       size(),
       options.minBefore,
       options.minAfter
     )
+    // Temporary narrow or hidden containers must not replace the preferred size.
+    if (remember) ratio = appliedRatio
     options.container.style.setProperty(
       options.cssProperty,
-      `${(ratio * 100).toFixed(2)}%`
+      `${(appliedRatio * 100).toFixed(2)}%`
     )
     options.resizer.setAttribute(
       "aria-valuenow",
-      String(Math.round(ratio * 100))
+      String(Math.round(appliedRatio * 100))
     )
     if (persist) writeStoredRatio(options.storageKey, ratio)
   }
 
-  apply(ratio, false)
+  apply(ratio, false, false)
 
   options.resizer.addEventListener("pointerdown", (event) => {
     if (!isDesktopLayout()) return
@@ -129,9 +135,15 @@ function connectResizer(options: ResizerOptions): void {
     const decreaseKey = options.axis === "horizontal" ? "ArrowLeft" : "ArrowUp"
     const increaseKey =
       options.axis === "horizontal" ? "ArrowRight" : "ArrowDown"
+    const currentRatio = clampPanelRatio(
+      ratio,
+      size(),
+      options.minBefore,
+      options.minAfter
+    )
     let nextRatio: number | undefined
-    if (event.key === decreaseKey) nextRatio = ratio - KEYBOARD_STEP
-    if (event.key === increaseKey) nextRatio = ratio + KEYBOARD_STEP
+    if (event.key === decreaseKey) nextRatio = currentRatio - KEYBOARD_STEP
+    if (event.key === increaseKey) nextRatio = currentRatio + KEYBOARD_STEP
     if (event.key === "Home") nextRatio = 0
     if (event.key === "End") nextRatio = 1
     if (event.key === "Enter") nextRatio = options.defaultRatio
@@ -139,7 +151,7 @@ function connectResizer(options: ResizerOptions): void {
     event.preventDefault()
     apply(nextRatio, true)
   })
-  window.addEventListener("resize", () => apply(ratio, false))
+  window.addEventListener("resize", () => apply(ratio, false, false))
 }
 
 function isDesktopLayout(): boolean {
