@@ -35,7 +35,20 @@
             "kind": "complete-declaration",
             "startToken": 0,
             "endToken": 10,
-            "children": []
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 0,
+                "endToken": 10,
+                "children": []
+              },
+              {
+                "kind": "complete-error",
+                "startToken": 10,
+                "endToken": 10,
+                "children": []
+              }
+            ]
           }
         ]
       }
