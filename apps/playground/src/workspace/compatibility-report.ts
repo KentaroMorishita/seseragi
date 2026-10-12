@@ -102,17 +102,30 @@ export function inspectCompatibilityReport(
     decoder.decode(bytes.slice(0, end))
     return { source, start, end, rule: string(item.rule) }
   }
+  const privateSymbols = new Set(semantic.privateSymbols ?? [])
+  const publicSymbols = Object.keys(semantic.symbols).filter(
+    (identity) => !privateSymbols.has(identity)
+  )
   const symbols: Record<string, CompatibilitySymbol> = Object.create(null)
   for (const [identity, raw] of Object.entries(object(report.symbols))) {
-    if (!Object.hasOwn(semantic.symbols, identity))
+    if (
+      !Object.hasOwn(semantic.symbols, identity) ||
+      privateSymbols.has(identity)
+    )
       throw new Error("Unknown compatibility symbol")
     const item = object(raw)
+    const declared = object(semantic.symbols[identity])
+    if (
+      item.publicName !== declared.publicName ||
+      item.typeRef !== declared.typeRef
+    )
+      throw new Error("Compatibility symbol differs from its semantic root")
     const types = array(item.types).map(type)
     if (new Set(types).size !== types.length)
       throw new Error("Duplicate compatibility type")
     const status = classification(item.classification)
     if (
-      status === "direct" &&
+      (status === "direct" || status === "normalized") &&
       types.some((id) => {
         const node = nodes.get(id)
         return (
@@ -122,13 +135,31 @@ export function inspectCompatibilityReport(
       })
     )
       throw new Error("Unsafe meaning cannot count as direct compatibility")
+    const semanticStatus = classification(item.semanticClassification)
+    const projectionStatus =
+      item.projectionClassification === null
+        ? null
+        : classification(item.projectionClassification)
+    if (
+      compatibilityClasses.indexOf(status) <
+        compatibilityClasses.indexOf(semanticStatus) ||
+      (projectionStatus !== null &&
+        compatibilityClasses.indexOf(status) <
+          compatibilityClasses.indexOf(projectionStatus))
+    )
+      throw new Error(
+        "Compatibility status hides a semantic or projection boundary"
+      )
     if (typeof item.runtimeAbiUnresolved !== "boolean")
       throw new Error("Missing compatibility ABI state")
     const reasons = array(item.reasons).map((raw): CompatibilityReason => {
       const reason = object(raw)
       const policy = reason.policy === null ? null : object(reason.policy)
+      const typeRef = type(reason.typeRef)
+      if (!types.includes(typeRef))
+        throw new Error("Compatibility reason belongs to another symbol")
       return {
-        typeRef: type(reason.typeRef),
+        typeRef,
         classification: classification(reason.classification),
         rule: string(reason.rule),
         reason: string(reason.reason),
@@ -139,6 +170,11 @@ export function inspectCompatibilityReport(
       }
     })
     if (!reasons.length) throw new Error("Compatibility symbol has no evidence")
+    if (
+      status === "safe-boundary" &&
+      !reasons.some((reason) => reason.policy !== null)
+    )
+      throw new Error("Safe compatibility boundary has no applied policy")
     const typeRef = type(item.typeRef)
     if (!types.includes(typeRef))
       throw new Error("Compatibility root is missing")
@@ -146,11 +182,8 @@ export function inspectCompatibilityReport(
       publicName: string(item.publicName),
       typeRef,
       classification: status,
-      semanticClassification: classification(item.semanticClassification),
-      projectionClassification:
-        item.projectionClassification === null
-          ? null
-          : classification(item.projectionClassification),
+      semanticClassification: semanticStatus,
+      projectionClassification: projectionStatus,
       runtimeAbiUnresolved: item.runtimeAbiUnresolved,
       types,
       reasons,
@@ -176,7 +209,8 @@ export function inspectCompatibilityReport(
   })
   if (
     counts.length !== compatibilityClasses.length ||
-    counted.size !== Object.keys(symbols).length
+    counted.size !== Object.keys(symbols).length ||
+    Object.keys(symbols).length !== publicSymbols.length
   )
     throw new Error("Incomplete semantic compatibility counts")
   return { id, graphDigest, counts, symbols }
