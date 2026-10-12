@@ -119,7 +119,8 @@ fn persistent_node_bun_keep_lazy_foreign_paths_origin_and_composed_map_policy() 
                         .as_array()
                         .unwrap()
                         .iter()
-                        .any(|s| s.as_str().unwrap().ends_with("main.ssrg")),
+                        .any(|s| s.as_str().unwrap()
+                            == "seseragi://fixture/foreign-task-load@0.0.0::main"),
                     "JS map must reach Seseragi rather than stop at generated TS: {map}"
                 );
                 assert!(
