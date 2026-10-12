@@ -2,6 +2,9 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+#[path = "support/temporary.rs"]
+mod temporary_support;
+
 struct Temporary(PathBuf);
 impl Drop for Temporary {
     fn drop(&mut self) {
@@ -11,10 +14,9 @@ impl Drop for Temporary {
 
 #[test]
 fn diagnoses_generic_storage_before_build_or_execution() {
-    let temporary = Temporary(
-        std::env::temp_dir().join(format!("seseragi-generic-storage-{}", std::process::id())),
-    );
-    fs::create_dir_all(&temporary.0).unwrap();
+    let temporary = Temporary(temporary_support::temporary_directory(
+        "seseragi-generic-storage",
+    ));
     let source = temporary.0.join("main.ssrg");
     fs::write(&source, "fn identity<A> value: A -> A = value\nlet stored = [identity]\npub effect fn main = println \"unexpected\"\n").unwrap();
     for command in ["lint", "build", "run"] {
