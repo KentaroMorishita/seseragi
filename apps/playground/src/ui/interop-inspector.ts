@@ -218,8 +218,11 @@ export function connectInteropInspector(options: {
               diagnostic.diagnostic.primary.start <= origin.end &&
               diagnostic.diagnostic.primary.end >= origin.start
           )
-          if (related.length)
-            renderWorkspaceDiagnosticCards(container, related, navigate)
+          if (related.length) {
+            const diagnostics = element("div")
+            renderWorkspaceDiagnosticCards(diagnostics, related, navigate)
+            container.append(diagnostics)
+          }
         }
         if (!node.origins.length)
           container.append(

@@ -407,6 +407,7 @@ struct Function {
     type_parameters: Vec<String>,
     parameters: Vec<seseragi_interop::CallParameter>,
     result: TypeId,
+    generic_binder: Option<TypeId>,
 }
 fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> Option<Function> {
     let (type_parameters, body) = match &graph.types[&id] {
@@ -440,6 +441,7 @@ fn function_view(graph: &SemanticGraph, symbol: &SemanticSymbol, id: TypeId) -> 
         type_parameters,
         parameters: parameters.clone(),
         result: *result,
+        generic_binder: matches!(graph.types[&id], SemanticType::Generic { .. }).then_some(id),
     })
 }
 
@@ -516,8 +518,19 @@ fn render_scope(
                 };
                 let overloads = signatures
                     .iter()
-                    .filter_map(|id| function_view(context.graph, &symbol, *id))
-                    .collect::<Vec<_>>();
+                    .map(|id| function_view(context.graph, &symbol, *id))
+                    .collect::<Option<Vec<_>>>();
+                let Some(overloads) = overloads else {
+                    context.diagnostics.push(diagnostic(
+                        "SES-F0101",
+                        DiagnosticSeverity::Error,
+                        "nested generic callable requires an explicit semantic projection policy",
+                        context.file,
+                        symbol_span(&symbol, "declaration"),
+                        Some(public_path),
+                    ));
+                    continue;
+                };
                 functions.extend(render_overloads(
                     &symbol.public_name,
                     &overloads,
@@ -666,6 +679,12 @@ fn render_function(
     indent: usize,
 ) -> Option<String> {
     let public_path = symbol_path(namespace, &function.public_name);
+    if function.generic_binder.is_some_and(|binder| matches!(&context.graph.types[&binder], SemanticType::Generic { parameters, .. } if parameters.iter().any(|parameter| parameter.constraint.is_some() || parameter.default.is_some()))) {
+        context.diagnostics.push(diagnostic("SES-F0102", DiagnosticSeverity::Error,
+            "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
+            context.file, function.span, Some(public_path)));
+        return None;
+    }
     let local = configured_local.map(str::to_owned).unwrap_or_else(|| {
         generated_name(
             &function.public_name,

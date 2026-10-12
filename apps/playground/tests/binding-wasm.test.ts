@@ -191,6 +191,15 @@ test("Inspector consumes core metadata and reports, rejects stale results and tr
     ".seseragi/generated/fixture-api.ssrg"
   )
   expect(inspection.bindings[0]?.source).toContain("Config")
+  expect(inspection.semantics[0]?.id).toBe("api")
+  expect(
+    inspection.semantics[0]?.nodes.some((node) => node.node.kind === "opaque")
+  ).toBe(true)
+  expect(
+    inspection.semantics[0]?.nodes.some((node) =>
+      node.origins.some((origin) => origin.source === "host/index.d.ts")
+    )
+  ).toBe(true)
   expect(inspection.bindings[0]?.report.added).toContain(
     "fixture-api::Config::type"
   )

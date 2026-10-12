@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.26] - 2026-10-12
+
+### Added
+
+- Route declaration conversion through a portable, source-independent semantic graph with lexical generic relations, recursive identities, overloads, namespace ownership, strict schema validation and source provenance (#475, #476, #477).
+- Inspect semantic type relations, interpretation reasons and navigable source origins beside Playground conversion diagnostics (#491).
+
 ## [0.61.25] - 2026-10-08
 
 ### Fixed

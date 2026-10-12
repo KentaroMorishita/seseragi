@@ -346,3 +346,49 @@ fn deep_and_cyclic_type_graphs_do_not_recurse_on_the_host_stack() {
         graph
     );
 }
+
+#[test]
+fn namespace_ownership_cycles_and_non_callable_overloads_fail_closed() {
+    let mut graph = SemanticGraph::default();
+    graph.types.insert(
+        TypeId(0),
+        SemanticType::Namespace {
+            members: BTreeMap::from([("owner".to_owned(), "owner".to_owned())]),
+        },
+    );
+    graph.symbols.insert(
+        "owner".to_owned(),
+        SemanticSymbol {
+            public_name: "owner".to_owned(),
+            declaration_name: "owner".to_owned(),
+            kind: SymbolKind::Namespace,
+            type_ref: TypeId(0),
+            origins: vec![],
+            runtime: None,
+        },
+    );
+    assert!(graph
+        .validate()
+        .unwrap_err()
+        .to_string()
+        .contains("cyclic namespace ownership"));
+    graph.symbols.clear();
+    graph.types.clear();
+    graph.types.insert(
+        TypeId(0),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    graph.types.insert(
+        TypeId(1),
+        SemanticType::Overload {
+            signatures: vec![TypeId(0)],
+        },
+    );
+    assert!(graph
+        .validate()
+        .unwrap_err()
+        .to_string()
+        .contains("callable signatures"));
+}

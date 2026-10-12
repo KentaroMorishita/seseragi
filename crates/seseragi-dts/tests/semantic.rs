@@ -48,7 +48,25 @@ fn generic_constraints_defaults_and_lexical_scopes_survive_json_and_projection()
     );
     let json = graph.to_json().unwrap();
     let restored = SemanticGraph::from_json_for(&json, graph.identity.as_ref().unwrap()).unwrap();
-    assert_eq!(project_graph(&restored, SETTINGS, "api").unwrap().source.unwrap(), "pub foreign \"typescript\" from \"./api.js\" {\n  pure fn identity<A> value: A -> A\n  pure fn other<A> value: A -> A\n}\n");
+    let projection = project_graph(&restored, SETTINGS, "api").unwrap();
+    assert!(projection.source.is_none());
+    assert!(projection
+        .diagnostics
+        .iter()
+        .all(|diagnostic| diagnostic.message.contains("erase their meaning")));
+    let unconstrained = interpret_declaration(
+        "export declare function identity<T>(value: T): T;",
+        "api.d.ts",
+        SETTINGS,
+    )
+    .unwrap();
+    assert_eq!(
+        project_graph(&unconstrained, SETTINGS, "api")
+            .unwrap()
+            .source
+            .unwrap(),
+        "pub foreign \"typescript\" from \"./api.js\" {\n  pure fn identity<A> value: A -> A\n}\n"
+    );
     let changed = SETTINGS.replace("evaluation = 'pure'", "evaluation = 'task'");
     assert!(project_graph(&restored, &changed, "api")
         .unwrap_err()
@@ -171,6 +189,47 @@ fn common_graph_can_be_constructed_and_projected_without_a_typescript_source() {
         projection.source.unwrap(),
         "pub foreign \"typescript\" from \"./api.js\" {\n  pure fn read -> String\n}\n"
     );
+}
+
+#[test]
+fn recursive_inline_graph_requires_an_explicit_boundary_instead_of_recursing_forever() {
+    let graph = SemanticGraph {
+        types: BTreeMap::from([
+            (
+                TypeId(0),
+                SemanticType::Collection {
+                    element: TypeId(0),
+                    mutable: false,
+                },
+            ),
+            (
+                TypeId(1),
+                SemanticType::Callable {
+                    parameters: vec![],
+                    result: TypeId(0),
+                    receiver: None,
+                },
+            ),
+        ]),
+        symbols: BTreeMap::from([(
+            "read".to_owned(),
+            SemanticSymbol {
+                public_name: "read".to_owned(),
+                declaration_name: "read".to_owned(),
+                kind: SymbolKind::Callable,
+                type_ref: TypeId(1),
+                origins: vec![],
+                runtime: None,
+            },
+        )]),
+        ..SemanticGraph::default()
+    };
+    let projection = project_graph(&graph, SETTINGS, "api").unwrap();
+    assert!(projection.source.is_none());
+    assert!(projection
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.message.contains("explicit opaque boundary")));
 }
 
 #[test]

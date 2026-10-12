@@ -40,7 +40,17 @@ cargo test --locked -p seseragi-interop
 cargo check --locked -p seseragi-interop --target wasm32-unknown-unknown
 ```
 
-This initial foundation belongs to #475/#476. Converter migration (#477),
-projection (#482), compatibility reports and Inspector wiring remain separate
-integration work. Library tests alone do not complete those Issues or prove
-the complete Semantic Interop product.
+`seseragi-dts::interpret_declaration` emits this graph with source/settings
+identity. CLI and browser conversion consume it through a bridge projection;
+`seseragi-dts::project_graph` also accepts a independently constructed graph
+without any source parser. Conversion responses retain graphs even when
+projection fails, allowing the Playground Inspector to display meaning,
+interpretation decisions and source navigation alongside diagnostics.
+
+The bridge preserves the existing opaque declaration policy and supported
+binding output. Generic constraints/defaults remain explicit; projection
+rejects them while the appropriate target policy is unavailable. Semantic
+normalization of additional TypeScript relations (#478–#481), canonical
+projection (#482–#484), runtime ABI integration (#485–#486), compatibility
+reports/corpora and another source frontend remain integration work. These
+boundaries are not completed by passing graph library tests.
