@@ -382,3 +382,41 @@ fn policy_reuses_reported_final_identity_and_stales_when_actual_runtime_bytes_ch
     )
     .is_err());
 }
+
+#[test]
+fn explicit_non_generic_specialization_cannot_claim_compiler_selected_codec_slots() {
+    let settings = "schema=1\n[entries.api]\ndeclaration=\"api.d.ts\"\nspecifier=\"api\"\noutput=\"api\"\n[entries.api.symbols.run.parameters.value]\ntype=\"String\"\n[entries.api.symbols.run.result]\ntype=\"String\"\n";
+    let mut result = convert_entry(&ConversionInput {
+        settings,
+        entry: "api",
+        declaration: "export declare function run<T>(value: T): T;",
+        host: HostMetadata {
+            manifest: "{\"name\":\"api\",\"version\":\"1.0.0\"}",
+            resolved_package: None,
+        },
+        previous_metadata: None,
+    })
+    .unwrap();
+    let entry = parse_bindings(settings)
+        .unwrap()
+        .entries
+        .remove("api")
+        .unwrap();
+    attach_runtime_linkage(
+        &mut result,
+        &entry,
+        &BTreeMap::from([(RuntimeTarget::Node, artifact())]),
+    )
+    .unwrap();
+    let generated = result.generated.as_ref().unwrap();
+    assert!(!generated.source.contains("run<T>"));
+    let metadata: serde_json::Value = serde_json::from_str(&generated.metadata).unwrap();
+    let evidence: RuntimeLinkageEvidence =
+        serde_json::from_value(metadata["runtimeLinkage"].clone()).unwrap();
+    assert!(evidence
+        .contract
+        .exports
+        .values()
+        .all(|export| export.delivery != seseragi_interop::RuntimeDelivery::CodecSelected));
+    assert!(result.compatibility.as_ref().unwrap().symbols["run"].runtime_abi_unresolved);
+}

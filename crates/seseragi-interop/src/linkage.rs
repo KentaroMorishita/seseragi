@@ -811,6 +811,26 @@ pub fn runtime_export_delivery(
     owner: &str,
     selected: TypeId,
 ) -> Option<RuntimeDelivery> {
+    let mut delivery = None;
+    let mut found = false;
+    for id in callable_closure(graph, selected) {
+        if !matches!(graph.types.get(&id), Some(SemanticType::Callable { .. })) {
+            continue;
+        }
+        let current = runtime_callable_delivery(graph, owner, id)?;
+        if delivery.is_some_and(|previous| previous != current) {
+            return None;
+        }
+        delivery = Some(current);
+        found = true;
+    }
+    found.then_some(delivery).flatten()
+}
+fn runtime_callable_delivery(
+    graph: &SemanticGraph,
+    owner: &str,
+    selected: TypeId,
+) -> Option<RuntimeDelivery> {
     let SemanticType::Callable { result, .. } = graph.types.get(&selected)? else {
         return None;
     };

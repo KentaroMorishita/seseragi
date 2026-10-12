@@ -78,8 +78,22 @@ pub fn attach_runtime_linkage(
                 "emitted function has no resolved callable signature",
             ));
         };
-        let delivery = seseragi_interop::runtime_export_delivery(graph, owner, selected)
-            .unwrap_or(RuntimeDelivery::Synchronous);
+        let declared_delivery = seseragi_interop::runtime_export_delivery(graph, owner, selected);
+        let compiler_codec_wrapper =
+            generated_symbol["signature"]
+                .as_str()
+                .is_some_and(|signature| {
+                    let local = generated_symbol["localName"].as_str().unwrap_or_default();
+                    signature.starts_with(&format!("task fn {local}<"))
+                        || signature.starts_with(&format!("pure fn {local}<"))
+                });
+        let delivery = match declared_delivery {
+            Some(RuntimeDelivery::CodecSelected) if !compiler_codec_wrapper => {
+                RuntimeDelivery::Synchronous
+            }
+            Some(delivery) => delivery,
+            None => RuntimeDelivery::Synchronous,
+        };
         if delivery == RuntimeDelivery::CodecSelected {
             converted.diagnostics.push(crate::ConversionDiagnostic {
                 code: "SES-F0202".into(), severity: crate::DiagnosticSeverity::Warning,

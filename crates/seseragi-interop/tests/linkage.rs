@@ -710,3 +710,47 @@ fn applied_generic_declared_body_controls_promise_delivery_and_rejects_wrong_ari
         "standalone generic bodies must not fall through to synchronous"
     );
 }
+
+#[test]
+fn wrapper_selected_callable_abi_keeps_homogeneous_overloads_and_rejects_mixed_delivery() {
+    let mut graph = graph();
+    graph
+        .types
+        .insert(TypeId(3), graph.types[&TypeId(2)].clone());
+    graph.types.insert(
+        TypeId(4),
+        SemanticType::Overload {
+            signatures: vec![TypeId(2), TypeId(3)],
+        },
+    );
+    graph.symbols.get_mut("api::run").unwrap().type_ref = TypeId(4);
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    let mut contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().semantic_type = TypeId(4);
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+    graph.types.insert(
+        TypeId(5),
+        SemanticType::Generic {
+            parameters: vec![GenericParameter {
+                name: "A".into(),
+                constraint: None,
+                default: None,
+            }],
+            body: TypeId(4),
+        },
+    );
+    graph.symbols.get_mut("api::run").unwrap().type_ref = TypeId(5);
+    assert_eq!(
+        runtime_export_delivery(&graph, "api::run", TypeId(5)),
+        Some(RuntimeDelivery::Synchronous)
+    );
+    graph
+        .types
+        .insert(TypeId(6), SemanticType::Async { value: TypeId(1) });
+    if let SemanticType::Callable { result, .. } = graph.types.get_mut(&TypeId(3)).unwrap() {
+        *result = TypeId(6);
+    }
+    assert_eq!(runtime_export_delivery(&graph, "api::run", TypeId(5)), None);
+}
