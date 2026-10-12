@@ -33,7 +33,7 @@ fn analyze_module_frontend_with(
     retain_semantic_recovery: bool,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
     let mut diagnostics = parse_diagnostics(input.source_name(), input.source());
-    if has_errors(&diagnostics) {
+    if has_errors(&diagnostics) && !retain_semantic_recovery {
         return Err(diagnostics);
     }
 
@@ -96,6 +96,44 @@ mod tests {
             .iter()
             .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error));
         assert!(analysis.lint_diagnostics().diagnostics.is_empty());
+    }
+
+    #[test]
+    fn syntax_recovery_keeps_valid_queries_without_compiling_invalid_expressions() {
+        for tail in [
+            "let page = html.\n",
+            "let broken = 1 +\n",
+            "fn broken -> Int = +\n",
+        ] {
+            let source = format!("import * as html from \"std/web/html\"\nfn add left: Int -> right: Int -> Int = left + right\nlet addOne = add 1\n{tail}");
+            let input = CompileInput::new("editing.ssrg", "analysis/editing", &source);
+            let analysis = analyze_module(input);
+            assert!(
+                analysis
+                    .diagnostics
+                    .diagnostics
+                    .iter()
+                    .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error),
+                "{tail}"
+            );
+            let reference = source.find("add 1").unwrap();
+            assert_eq!(analysis.symbol_at(reference).unwrap().name, "add", "{tail}");
+            assert_eq!(
+                analysis.type_at(reference).unwrap().type_name,
+                "Int -> Int -> Int",
+                "{tail}"
+            );
+            assert_eq!(
+                analysis.callable_at(reference).unwrap().parameters.len(),
+                2,
+                "{tail}"
+            );
+            assert!(analysis.lint_diagnostics().diagnostics.is_empty(), "{tail}");
+            assert!(
+                crate::compile_module(input).is_err(),
+                "{tail} must stay invalid for compilation"
+            );
+        }
     }
 
     #[test]
@@ -708,7 +746,7 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
-    fn invalid_source_still_returns_shared_diagnostics_and_catalog() {
+    fn invalid_source_retains_declared_binding_and_shared_diagnostics_and_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
             "analysis/invalid",
@@ -716,7 +754,12 @@ let result = configure { host: "localhost" } { secure: true }
         ));
 
         assert!(!analysis.diagnostics.diagnostics.is_empty());
-        assert!(analysis.symbols.is_empty());
+        // The declaration name and explicit annotation remain useful while its
+        // missing initializer is diagnosed; this is an editor query snapshot.
+        let symbol = analysis.symbol_at("pub let ".len()).unwrap();
+        assert_eq!(symbol.name, "broken");
+        assert_eq!(symbol.type_name.as_deref(), Some("Int"));
+        assert!(analysis.lint_diagnostics().diagnostics.is_empty());
         assert!(analysis
             .standard_library_catalog()
             .iter()

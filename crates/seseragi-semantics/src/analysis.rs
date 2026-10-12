@@ -72,8 +72,9 @@ pub fn analyze_linked_module(
 }
 
 /// Resolves and types a linked module while retaining recovery HIR when
-/// semantic diagnostics are present. Interactive analysis needs that typed
-/// structure to answer expected-type queries at the invalid expression that
+/// syntax or semantic diagnostics are present. Recovery error expressions stay
+/// invalid holes; all original diagnostics remain in the snapshot. Interactive
+/// analysis needs that typed structure to answer expected-type queries at the invalid expression that
 /// the user is actively completing. Compile paths continue to use
 /// [`analyze_linked_module`] and stop before lowering on the same diagnostics.
 pub fn analyze_linked_module_recovering(
@@ -81,10 +82,6 @@ pub fn analyze_linked_module_recovering(
     linked: seseragi_project::LinkedModule,
     source: &str,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
-    if has_errors(&diagnostics) {
-        return Err(diagnostics);
-    }
-
     let shallow = linked.interface.clone();
     let resolved = resolve::resolve_linked_module(linked, source);
     let diagnostics =
