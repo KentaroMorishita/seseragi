@@ -581,3 +581,132 @@ fn generic_transport_requires_an_upper_bound_and_ignores_default_only_parameters
         .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
         .is_err());
 }
+
+#[test]
+fn conditional_codec_delivery_requires_owned_rank_one_result_and_stays_unresolved_in_report() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Parameter {
+            binder: TypeId(4),
+            index: 0,
+        },
+    );
+    graph.types.insert(
+        TypeId(4),
+        SemanticType::Generic {
+            parameters: vec![GenericParameter {
+                name: "A".into(),
+                constraint: None,
+                default: None,
+            }],
+            body: TypeId(2),
+        },
+    );
+    graph.symbols.get_mut("api::run").unwrap().type_ref = TypeId(4);
+    if let SemanticType::Callable { result, .. } = graph.types.get_mut(&TypeId(2)).unwrap() {
+        *result = TypeId(3);
+    }
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    assert!(make_contract(&graph)
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    let mut contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().delivery = RuntimeDelivery::CodecSelected;
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+    let mut report = SemanticCompatibilityReport::from_graph(&graph).unwrap();
+    report.apply_runtime_linkage(
+        &graph,
+        &contract,
+        &BTreeMap::from([(RuntimeTarget::Browser, artifacts.clone())]),
+    );
+    assert!(report.symbols["api::run"].runtime_abi_unresolved);
+    assert!(report.symbols["api::run"]
+        .reasons
+        .iter()
+        .any(|reason| reason.rule == "runtime-linkage-codec-selection"));
+    contract.exports.get_mut("api::run").unwrap().failure = FailureBoundary::ThrowOrRejection;
+    assert!(
+        contract
+            .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+            .is_err(),
+        "conditional primitive transport cannot promise rejection"
+    );
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Primitive {
+            domain: PrimitiveDomain::String,
+        },
+    );
+    assert!(
+        contract
+            .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+            .is_err(),
+        "a non-parameter cannot acquire codec-selected delivery"
+    );
+}
+
+#[test]
+fn applied_generic_declared_body_controls_promise_delivery_and_rejects_wrong_arity() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Generic {
+            parameters: vec![GenericParameter {
+                name: "A".into(),
+                constraint: None,
+                default: None,
+            }],
+            body: TypeId(4),
+        },
+    );
+    graph.types.insert(
+        TypeId(4),
+        SemanticType::Shape {
+            identity: ShapeIdentity::MutableIdentity,
+            fields: BTreeMap::new(),
+        },
+    );
+    graph.types.insert(
+        TypeId(5),
+        SemanticType::Apply {
+            constructor: TypeId(3),
+            arguments: vec![TypeId(1)],
+        },
+    );
+    if let SemanticType::Callable { result, .. } = graph.types.get_mut(&TypeId(2)).unwrap() {
+        *result = TypeId(5);
+    }
+    let artifacts = BTreeMap::from([("api::run".into(), artifact())]);
+    make_contract(&graph)
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+    graph
+        .types
+        .insert(TypeId(4), SemanticType::Async { value: TypeId(1) });
+    assert!(make_contract(&graph)
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    let mut contract = make_contract(&graph);
+    contract.exports.get_mut("api::run").unwrap().delivery = RuntimeDelivery::Promise;
+    contract.exports.get_mut("api::run").unwrap().failure = FailureBoundary::ThrowOrRejection;
+    contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .unwrap();
+    if let SemanticType::Apply { arguments, .. } = graph.types.get_mut(&TypeId(5)).unwrap() {
+        arguments.clear();
+    }
+    assert!(contract
+        .validate_for(&graph, RuntimeTarget::Browser, &artifacts)
+        .is_err());
+    if let SemanticType::Callable { result, .. } = graph.types.get_mut(&TypeId(2)).unwrap() {
+        *result = TypeId(3);
+    }
+    assert_eq!(
+        runtime_export_delivery(&graph, "api::run", TypeId(2)),
+        Some(RuntimeDelivery::Promise),
+        "standalone generic bodies must not fall through to synchronous"
+    );
+}

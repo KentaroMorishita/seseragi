@@ -6,7 +6,7 @@ pub use seseragi_interop::RuntimeLinkageEvidence;
 use seseragi_interop::{
     CallbackAbi, CallbackLifetime, CallingConvention, CancellationAbi, Evaluation, FailureBoundary,
     ReceiverAbi, RuntimeArtifactIdentity, RuntimeDelivery, RuntimeExportAbi,
-    RuntimeLinkageContract, RuntimeTarget, SemanticGraph, SemanticType, TypeId,
+    RuntimeLinkageContract, RuntimeTarget, SemanticType,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -70,15 +70,23 @@ pub fn attach_runtime_linkage(
         }
         let Some(SemanticType::Callable {
             parameters,
-            result,
             receiver,
+            ..
         }) = graph.types.get(&selected)
         else {
             return Err(ConvertError::new(
                 "emitted function has no resolved callable signature",
             ));
         };
-        let delivery = result_delivery(graph, *result);
+        let delivery = seseragi_interop::runtime_export_delivery(graph, owner, selected)
+            .unwrap_or(RuntimeDelivery::Synchronous);
+        if delivery == RuntimeDelivery::CodecSelected {
+            converted.diagnostics.push(crate::ConversionDiagnostic {
+                code: "SES-F0202".into(), severity: crate::DiagnosticSeverity::Warning,
+                message: "conditional generic delivery requires a compiler-selected checked primitive ForeignCodec at every concrete call".into(),
+                file: entry.declaration.clone(), start: 0, end: 0, symbol: Some(owner.to_owned()),
+            });
+        }
         let pure = generated_symbol["rule"] == "pure-function";
         let mut callbacks = Vec::new();
         for (index, parameter) in parameters.iter().enumerate() {
@@ -218,20 +226,4 @@ fn pretty(value: &impl Serialize) -> Result<String, ConvertError> {
     serde_json::to_string_pretty(value)
         .map(|value| format!("{value}\n"))
         .map_err(|error| ConvertError::new(error.to_string()))
-}
-fn result_delivery(graph: &SemanticGraph, mut id: TypeId) -> RuntimeDelivery {
-    let mut seen = BTreeSet::new();
-    while seen.insert(id) {
-        match graph.types.get(&id) {
-            Some(SemanticType::Async { .. }) => return RuntimeDelivery::Promise,
-            Some(SemanticType::Reference { symbol }) => {
-                let Some(symbol) = graph.symbols.get(symbol) else {
-                    break;
-                };
-                id = symbol.type_ref;
-            }
-            _ => break,
-        }
-    }
-    RuntimeDelivery::Synchronous
 }

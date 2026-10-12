@@ -56,6 +56,10 @@ pub struct RuntimeArtifactIdentity {
 pub enum RuntimeDelivery {
     Synchronous,
     Promise,
+    /// Host delivery is conditional on a compiler-selected, checked primitive
+    /// ForeignCodec slot. Loading proves this protocol; a concrete call proves
+    /// its substitution. It never asserts a generic declaration is synchronous.
+    CodecSelected,
 }
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
@@ -315,12 +319,13 @@ impl RuntimeLinkageContract {
                     "method receiver ABI is missing or attached to a non-method export",
                 ));
             }
-            if export.delivery == RuntimeDelivery::Synchronous
-                && matches!(
-                    export.failure,
-                    FailureBoundary::Rejection | FailureBoundary::ThrowOrRejection
-                )
-            {
+            if matches!(
+                export.delivery,
+                RuntimeDelivery::Synchronous | RuntimeDelivery::CodecSelected
+            ) && matches!(
+                export.failure,
+                FailureBoundary::Rejection | FailureBoundary::ThrowOrRejection
+            ) {
                 errors.push(error(
                     "SES-F0202",
                     "synchronous export cannot declare Promise rejection ABI",
@@ -368,10 +373,9 @@ impl RuntimeLinkageContract {
             }
             if export.convention != CallingConvention::Value
                 && signatures.iter().any(|signature| match signature {
-                    SemanticType::Callable {
-                        result, receiver, ..
-                    } => {
-                        delivery_for(graph, *result) != Some(export.delivery)
+                    SemanticType::Callable { receiver, .. } => {
+                        runtime_export_delivery(graph, &export.semantic_owner, export.semantic_type)
+                            != Some(export.delivery)
                             || export.convention == CallingConvention::Method && receiver.is_none()
                             || export.convention != CallingConvention::Method && receiver.is_some()
                     }
@@ -800,6 +804,60 @@ fn owned_role(
     }
     false
 }
+/// Declared result delivery for an owned callable. Conditional codec delivery
+/// is available only to a direct lexical parameter of that callable's binder.
+pub fn runtime_export_delivery(
+    graph: &SemanticGraph,
+    owner: &str,
+    selected: TypeId,
+) -> Option<RuntimeDelivery> {
+    let SemanticType::Callable { result, .. } = graph.types.get(&selected)? else {
+        return None;
+    };
+    if let Some(delivery) = delivery_for(graph, *result) {
+        return Some(delivery);
+    }
+    let mut result = *result;
+    let mut seen = BTreeSet::new();
+    while seen.insert(result) {
+        match graph.types.get(&result)? {
+            SemanticType::Reference { symbol } => result = graph.symbols.get(symbol)?.type_ref,
+            SemanticType::Parameter { binder, index } => {
+                let SemanticType::Generic { parameters, .. } = graph.types.get(binder)? else {
+                    return None;
+                };
+                let parameter = parameters.get(*index as usize)?;
+                if parameter.constraint.is_some() || parameter.default.is_some() {
+                    return None;
+                }
+                let mut owned = vec![graph.symbols.get(owner)?.type_ref];
+                let mut seen = BTreeSet::new();
+                while let Some(id) = owned.pop() {
+                    if !seen.insert(id) {
+                        continue;
+                    }
+                    match graph.types.get(&id)? {
+                        SemanticType::Generic { body, .. } => {
+                            if id == *binder && callable_closure(graph, *body).contains(&selected) {
+                                return Some(RuntimeDelivery::CodecSelected);
+                            }
+                            owned.push(*body);
+                        }
+                        SemanticType::Reference { symbol } => {
+                            owned.push(graph.symbols.get(symbol)?.type_ref)
+                        }
+                        SemanticType::Overload { signatures } => owned.extend(signatures),
+                        _ => {}
+                    }
+                }
+                return None;
+            }
+            _ => return None,
+        }
+    }
+    None
+}
+
 fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> {
     let mut pending = vec![root];
     let mut seen = BTreeSet::new();
@@ -816,6 +874,39 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
                 pending.push(graph.symbols.get(symbol)?.type_ref);
             }
             SemanticType::Union { members } => pending.extend(members),
+            SemanticType::Generic { body, .. } => pending.push(*body),
+            SemanticType::Apply {
+                constructor,
+                arguments,
+            } => {
+                let mut constructor = *constructor;
+                let mut constructor_seen = BTreeSet::new();
+                loop {
+                    if !constructor_seen.insert(constructor) {
+                        return None;
+                    }
+                    match graph.types.get(&constructor)? {
+                        SemanticType::Reference { symbol } => {
+                            constructor = graph.symbols.get(symbol)?.type_ref
+                        }
+                        SemanticType::Generic { parameters, body } => {
+                            // Constraints/defaults require an instantiation proof;
+                            // this protocol only accepts the exact open rank-one
+                            // constructors whose arguments the frontend retains.
+                            if parameters.len() != arguments.len()
+                                || parameters.iter().any(|parameter| {
+                                    parameter.constraint.is_some() || parameter.default.is_some()
+                                })
+                            {
+                                return None;
+                            }
+                            pending.push(*body);
+                            break;
+                        }
+                        _ => return None,
+                    }
+                }
+            }
             SemanticType::Parameter { binder, index } => {
                 let SemanticType::Generic { parameters, .. } = graph.types.get(binder)? else {
                     return None;
@@ -838,8 +929,7 @@ fn delivery_for(graph: &SemanticGraph, root: TypeId) -> Option<RuntimeDelivery> 
                     | crate::PrimitiveDomain::Object,
             }
             | SemanticType::Unresolved { .. }
-            | SemanticType::Projection { .. }
-            | SemanticType::Apply { .. } => return None,
+            | SemanticType::Projection { .. } => return None,
             _ => {
                 deliveries.insert(false);
             }
@@ -959,11 +1049,23 @@ impl crate::SemanticCompatibilityReport {
                         .map(move |error| (*target, error))
                 })
                 .collect::<Vec<_>>();
-            symbol.runtime_abi_unresolved = artifacts.is_empty() || !errors.is_empty();
+            let conditional = keys
+                .iter()
+                .any(|key| contract.exports[*key].delivery == RuntimeDelivery::CodecSelected);
+            symbol.runtime_abi_unresolved =
+                artifacts.is_empty() || !errors.is_empty() || conditional;
             symbol.reasons.retain(|reason| {
                 reason.rule != "runtime-binding-evidence"
                     && !reason.rule.starts_with("runtime-linkage-")
             });
+            if conditional {
+                symbol.reasons.push(crate::CompatibilityReason {
+                    type_ref: symbol.type_ref, classification: crate::SemanticClassification::RuntimeAbiUnresolved,
+                    rule: "runtime-linkage-codec-selection".into(),
+                    reason: "SES-F0202: conditional delivery requires a compiler-selected checked primitive ForeignCodec at every concrete call; declaration-level generic delivery remains unresolved".into(),
+                    policy: None,
+                });
+            }
             if errors.is_empty() && !artifacts.is_empty() {
                 symbol.reasons.push(crate::CompatibilityReason {
                     type_ref: symbol.type_ref, classification: crate::SemanticClassification::Normalized,

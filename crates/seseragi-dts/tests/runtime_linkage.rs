@@ -195,7 +195,7 @@ fn actual_native_host_bytes_are_pinned_and_changed_bytes_are_stale() {
 }
 
 #[test]
-fn unresolved_declared_delivery_keeps_explicit_report_reason_after_pinning() {
+fn conditional_generic_delivery_keeps_explicit_call_site_report_requirement() {
     let (mut result, entry) = converted("export declare function run<T>(value: T): T;");
     attach_runtime_linkage(
         &mut result,
@@ -204,15 +204,33 @@ fn unresolved_declared_delivery_keeps_explicit_report_reason_after_pinning() {
     )
     .unwrap();
     assert!(result.generated.is_some());
+    let metadata: serde_json::Value =
+        serde_json::from_str(&result.generated.as_ref().unwrap().metadata).unwrap();
+    let evidence: RuntimeLinkageEvidence =
+        serde_json::from_value(metadata["runtimeLinkage"].clone()).unwrap();
+    assert!(evidence
+        .contract
+        .exports
+        .values()
+        .all(|export| export.delivery == seseragi_interop::RuntimeDelivery::CodecSelected));
+    let fresh = evidence
+        .contract
+        .exports
+        .keys()
+        .map(|key| (key.clone(), artifact()))
+        .collect();
+    evidence
+        .contract
+        .validate_for(&evidence.graph, RuntimeTarget::Node, &fresh)
+        .unwrap();
+    assert!(result.generated.is_some());
     let symbol = &result.compatibility.as_ref().unwrap().symbols["run"];
     assert!(symbol.runtime_abi_unresolved);
-    assert!(
-        symbol
-            .reasons
-            .iter()
-            .any(|reason| reason.rule == "runtime-linkage-node"
-                && reason.reason.contains("SES-F0202"))
-    );
+    assert!(symbol
+        .reasons
+        .iter()
+        .any(|reason| reason.rule == "runtime-linkage-codec-selection"
+            && reason.reason.contains("SES-F0202")));
     let report: serde_json::Value =
         serde_json::from_str(&result.generated.as_ref().unwrap().report).unwrap();
     assert!(report["warnings"]
