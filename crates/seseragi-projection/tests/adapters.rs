@@ -375,3 +375,112 @@ fn adapter_names_cannot_shadow_the_standard_decoder_used_by_generated_code() {
     set.policies[0].function_name = "decodeJson".to_owned();
     assert!(generate_adapters(&graph, &set).is_err());
 }
+
+#[test]
+fn checked_json_snapshot_preserves_underscore_and_prototype_keys_on_both_hosts() {
+    let mut graph = graph();
+    let fields = ["__proto__", "_id", "constructor", "toString"]
+        .into_iter()
+        .map(|name| {
+            (
+                name.to_owned(),
+                ShapeField {
+                    type_ref: TypeId(0),
+                    optional: false,
+                    readonly: true,
+                },
+            )
+        })
+        .collect();
+    graph.types.insert(
+        TypeId(3),
+        SemanticType::Shape {
+            identity: ShapeIdentity::ReadonlySnapshot,
+            fields,
+        },
+    );
+    let mut policy = policies(&graph);
+    policy.policies.truncate(1);
+    let generated = generate_adapters(&graph, &policy).unwrap();
+    let program = format!(
+        "{}\n{}",
+        generated.semantic_source,
+        r#"
+fn input text: String -> json.Json = match json.parse text { Left _ -> json.JsonNull; Right value -> value }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  match decodeCustomer (input "{\"__proto__\":\"kept\",\"_id\":\"user-1\",\"constructor\":\"ctor\",\"toString\":\"named\"}") {
+    Left _ -> println "unexpected rejection"
+    Right value -> do { println value.__proto__; println value._id; println value.constructor; println value.toString }
+  }
+  match decodeCustomer (input "{\"__proto__\":{},\"_id\":\"user-1\",\"constructor\":\"ctor\",\"toString\":\"named\"}") {
+    Left _ -> println "rejected"
+    Right _ -> println "unexpected acceptance"
+  }
+}
+"#
+    );
+    for profile in [
+        seseragi_project::BuildProfile::Development,
+        seseragi_project::BuildProfile::Release,
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new(
+                "prototype-adapter.ssrg",
+                "fixture/prototype-adapter",
+                &program,
+            )
+            .with_profile(profile),
+        )
+        .unwrap_or_else(|error| panic!("{error:?}\n{program}"));
+        assert!(compiled.generated.typescript.contains("[\"__proto__\"]:"));
+        let directory = tempfile::tempdir().unwrap();
+        seseragi_runtime::build_main(
+            &compiled,
+            directory.path(),
+            seseragi_runtime::BuildTarget::Process,
+        )
+        .unwrap();
+        let manifest: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(directory.path().join("artifact-manifest.json")).unwrap(),
+        )
+        .unwrap();
+        for host in ["node", "bun"] {
+            let output = std::process::Command::new(host)
+                .arg(manifest["entry"].as_str().unwrap())
+                .current_dir(directory.path())
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{profile:?}/{host}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&output.stdout),
+                "kept\nuser-1\nctor\nnamed\nrejected\n",
+                "{profile:?}/{host}"
+            );
+        }
+    }
+    // The bare wildcard and code-bearing spellings remain unrepresentable.
+    for name in ["_", "_x; injected", "_x-y"] {
+        let mut invalid = graph.clone();
+        invalid.types.insert(
+            TypeId(3),
+            SemanticType::Shape {
+                identity: ShapeIdentity::ReadonlySnapshot,
+                fields: BTreeMap::from([(
+                    name.to_owned(),
+                    ShapeField {
+                        type_ref: TypeId(0),
+                        optional: false,
+                        readonly: true,
+                    },
+                )]),
+            },
+        );
+        let mut rejected_policy = policies(&invalid);
+        rejected_policy.policies.truncate(1);
+        assert!(generate_adapters(&invalid, &rejected_policy).is_err());
+    }
+}

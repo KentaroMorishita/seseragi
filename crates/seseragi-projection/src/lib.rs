@@ -292,7 +292,11 @@ fn quote(value: &str) -> Result<String, String> {
 }
 fn safe_field(name: &str) -> bool {
     name.len() <= 80
-        && name.as_bytes().first().is_some_and(u8::is_ascii_lowercase)
+        && name != "_"
+        && name
+            .as_bytes()
+            .first()
+            .is_some_and(|c| c.is_ascii_lowercase() || *c == b'_')
         && name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
         && !matches!(
             name,

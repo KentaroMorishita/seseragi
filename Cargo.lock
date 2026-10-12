@@ -642,6 +642,7 @@ dependencies = [
  "serde_json",
  "seseragi-driver",
  "seseragi-interop",
+ "seseragi-project",
  "seseragi-runtime",
  "tempfile",
 ]
