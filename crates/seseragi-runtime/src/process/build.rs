@@ -184,6 +184,9 @@ pub fn build_main_with_artifact_options(
         {
             finish_process_release(staging, artifact_options)?;
         }
+        if target == BuildTarget::Process && staging.join("entry.ts").exists() {
+            stage_process_javascript(staging, &["main.ts".to_owned(), "entry.ts".to_owned()])?;
+        }
         if target == BuildTarget::Process
             && artifact_options.source_map(&compiled.generated.metadata.profile)
                 == crate::artifact::SourceMapPolicy::Omit
@@ -343,6 +346,16 @@ pub fn build_local_project_with_artifact_options(
                 .all(|module| module.typescript_ir.foreign_modules.is_empty())
         {
             finish_process_release(staging, artifact_options)?;
+        }
+        if target == BuildTarget::Process && staging.join("entry.ts").exists() {
+            let mut generated_paths = project
+                .compiled
+                .modules
+                .values()
+                .map(|module| module.generated.metadata.outputs.typescript.clone())
+                .collect::<Vec<_>>();
+            generated_paths.push("entry.ts".to_owned());
+            stage_process_javascript(staging, &generated_paths)?;
         }
         if target == BuildTarget::Process
             && artifact_options.source_map(&entry.generated.metadata.profile)
@@ -872,6 +885,27 @@ fn optimize_application(
     roots.sort();
     roots.dedup();
     Some(seseragi_driver::retain_application_outputs(modules, &roots))
+}
+
+// Native Node cannot strip TypeScript under node_modules. Emit one shared
+// runtime module graph and retain generated module locations for foreign ABI.
+fn stage_process_javascript(staging: &Path, generated_paths: &[String]) -> Result<(), String> {
+    let result = Command::new("bun")
+        .args(["--eval", include_str!("build_process_packages.ts")])
+        .env(
+            "SESERAGI_GENERATED_TYPESCRIPT",
+            serde_json::to_string(generated_paths).map_err(|error| error.to_string())?,
+        )
+        .current_dir(staging)
+        .output()
+        .map_err(|error| format!("failed to launch process JavaScript emitter: {error}"))?;
+    if !result.status.success() {
+        return Err(format!(
+            "process JavaScript emission failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        ));
+    }
+    Ok(())
 }
 
 fn finish_process_release(
