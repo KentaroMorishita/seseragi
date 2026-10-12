@@ -5,6 +5,7 @@ members = [
   "crates/seseragi-driver",
   "crates/seseragi-dts",
   "crates/seseragi-formatter",
+  "crates/seseragi-interop",
   "crates/seseragi-lowering",
   "crates/seseragi-lsp",
   "crates/seseragi-provider",

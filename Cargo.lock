@@ -580,6 +580,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-interop"
+version = "0.61.24"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "seseragi-lowering"
 version = "0.61.24"
 dependencies = [
