@@ -25,6 +25,7 @@ on:
       - "apps/playground/**"
       - "runtime/ts/**"
       - "runtime/providers/**"
+      - "runtime/unicode/LICENSE"
       - "crates/seseragi-cli/src/dts.rs"
       - "crates/seseragi-cli/tests/dts.rs"
       - "examples/spec/fixtures/projects/dts-*/**"
