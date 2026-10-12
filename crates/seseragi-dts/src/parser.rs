@@ -356,6 +356,59 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
             unmatched: Box::new(parse_type(required_field(node, "alternative")?, source)?),
         },
         "object_type" => {
+            if node.named_child_count() == 1 {
+                if let Some(index) = node
+                    .named_child(0)
+                    .filter(|n| n.kind() == "index_signature")
+                {
+                    let mut cursor = index.walk();
+                    let clause = index
+                        .named_children(&mut cursor)
+                        .find(|n| n.kind() == "mapped_type_clause");
+                    if let Some(clause) = clause {
+                        if clause.child_by_field_name("alias").is_some() {
+                            return Ok(TypeRef {
+                                span,
+                                kind: TypeKind::Unsupported(
+                                    "mapped key remapping requires a key identity policy"
+                                        .to_owned(),
+                                ),
+                            });
+                        }
+                        let annotation = required_field(index, "type")?;
+                        let text = node_text(index, source).trim_start();
+                        let readonly = if text.starts_with("-readonly") {
+                            Some(false)
+                        } else if text.starts_with("readonly") || text.starts_with("+readonly") {
+                            Some(true)
+                        } else {
+                            None
+                        };
+                        let optional = match annotation.kind() {
+                            "opting_type_annotation" | "adding_type_annotation" => Some(true),
+                            "omitting_type_annotation" => Some(false),
+                            _ => None,
+                        };
+                        return Ok(TypeRef {
+                            span,
+                            kind: TypeKind::Mapped {
+                                parameter: node_text(required_field(clause, "name")?, source)
+                                    .to_owned(),
+                                domain: Box::new(parse_type(
+                                    required_field(clause, "type")?,
+                                    source,
+                                )?),
+                                value: Box::new(parse_type(
+                                    annotation.named_child(0).unwrap_or(annotation),
+                                    source,
+                                )?),
+                                readonly,
+                                optional,
+                            },
+                        });
+                    }
+                }
+            }
             let mut properties = Vec::new();
             let mut cursor = node.walk();
             for property in node.named_children(&mut cursor) {
@@ -371,7 +424,6 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
                         ),
                     });
                 }
-                let text = node_text(property, source);
                 let ty = match property.child_by_field_name("type") {
                     Some(ty) => parse_type(ty, source)?,
                     None => TypeRef {
@@ -383,14 +435,26 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
                 };
                 properties.push(crate::model::Property {
                     name: unquote(node_text(name, source)),
-                    readonly: text.trim_start().starts_with("readonly "),
-                    optional: source[name.end_byte()..property.end_byte()]
-                        .trim_start()
-                        .starts_with('?'),
+                    readonly: (0..property.child_count())
+                        .any(|i| property.child(i).is_some_and(|n| n.kind() == "readonly")),
+                    optional: (0..property.child_count())
+                        .any(|i| property.child(i).is_some_and(|n| n.kind() == "?")),
                     type_ref: ty,
                 });
             }
             TypeKind::Shape(properties)
+        }
+        "template_literal_type" => {
+            let mut parts = Vec::new();
+            let mut cursor = node.walk();
+            for part in node.named_children(&mut cursor) {
+                match part.kind() {
+                    "string_fragment" if !node_text(part, source).contains('\\') => parts.push(crate::model::TemplatePart::Text(node_text(part, source).to_owned())),
+                    "template_type" => parts.push(crate::model::TemplatePart::Domain(parse_type(part.named_child(0).unwrap(), source)?)),
+                    _ => return Ok(TypeRef { span, kind: TypeKind::Unsupported("template escape or interpolation cannot be normalized without additional domain evidence".to_owned()) }),
+                }
+            }
+            TypeKind::Template(parts)
         }
         "literal_type" => TypeKind::Literal(node_text(node, source).to_owned()),
         "function_type" => {

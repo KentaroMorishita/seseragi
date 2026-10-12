@@ -73,6 +73,7 @@ pub(crate) fn normalize(graph: &mut SemanticGraph, mut budget: NormalizationBudg
                         | SemanticType::Apply { .. }
                         | SemanticType::Union { .. }
                         | SemanticType::Intersection { .. }
+                        | SemanticType::ShapeTransform { .. }
                 ) {
                     graph.normalizations.push(Normalization { output: *id, inputs: vec![], rule: "normalization-budget".to_owned(), classification: SemanticClassification::PolicyRequired, reason: "finite semantic normalization work budget exhausted; relation retained without a fallback".to_owned(), policy: None });
                 }
@@ -159,6 +160,88 @@ fn closed(
     budget: &mut NormalizationBudget,
 ) -> Option<SemanticType> {
     match node {
+        SemanticType::ShapeTransform {
+            domain,
+            mapper,
+            readonly,
+            optional,
+        } => {
+            let (domain_id, domain) = resolved(graph, *domain, budget)?;
+            // Homomorphic transforms preserve input optional/readonly flags.
+            // Once Keys is reduced to literals, its trace is still authoritative.
+            if (readonly.is_none() || optional.is_none())
+                && graph.normalizations.iter().any(|step| {
+                    step.output == domain_id
+                        && step.inputs.iter().any(|id| {
+                            matches!(
+                                graph.types[id],
+                                SemanticType::Projection {
+                                    relation: ProjectionRelation::Keys,
+                                    ..
+                                }
+                            )
+                        })
+                })
+            {
+                return None;
+            }
+            let members = match domain {
+                SemanticType::Literal { .. } => vec![domain_id],
+                SemanticType::Union { members } => members.clone(),
+                _ => return None,
+            };
+            if members.len() > budget.domain_members {
+                return None;
+            }
+            let (binder, SemanticType::Generic { parameters, body }) =
+                resolved(graph, *mapper, budget)?
+            else {
+                return None;
+            };
+            if parameters.len() != 1
+                || parameters[0].constraint.is_some()
+                || parameters[0].default.is_some()
+            {
+                return None;
+            }
+            let (_, mapped) = resolved(graph, *body, budget)?;
+            let mut fields = std::collections::BTreeMap::new();
+            for member in members {
+                let (
+                    key,
+                    SemanticType::Literal {
+                        value: LiteralValue::String(name),
+                    },
+                ) = resolved(graph, member, budget)?
+                else {
+                    return None;
+                };
+                let value = match mapped {
+                    SemanticType::Parameter {
+                        binder: b,
+                        index: 0,
+                    } if *b == binder => key,
+                    SemanticType::Primitive { .. } | SemanticType::Literal { .. } => *body,
+                    _ => return None,
+                };
+                fields.insert(
+                    name.clone(),
+                    ShapeField {
+                        type_ref: value,
+                        readonly: readonly.unwrap_or(false),
+                        optional: optional.unwrap_or(false),
+                    },
+                );
+            }
+            Some(SemanticType::Shape {
+                identity: if readonly == &Some(true) {
+                    ShapeIdentity::ReadonlySnapshot
+                } else {
+                    ShapeIdentity::MutableIdentity
+                },
+                fields,
+            })
+        }
         SemanticType::Projection {
             relation: ProjectionRelation::Member,
             subject,

@@ -174,6 +174,64 @@ fn contextual_receiver_never_becomes_an_unbound_plain_function_or_callback() {
 }
 
 #[test]
+fn finite_templates_and_mapped_shapes_keep_exact_domains_and_modifiers() {
+    let source = "export type Events = `on${'read' | 'write'}${1 | 2}`; export type Flags = { readonly [K in 'id' | 'name']?: string }; export type Names = { [K in 'id' | 'name']: K }; export type Open<T> = { readonly [K in keyof T]: T[K] }; export type Homomorphic = { [K in keyof { readonly id?: string }]: string }; export type Large = `prefix${string}`; export type Quoted = 'it\\'s \\\"fine\\\"';";
+    let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+    let SemanticType::Union { members } = &graph.types[&graph.symbols["Events"].type_ref] else {
+        panic!()
+    };
+    let actual = members
+        .iter()
+        .map(|id| match &graph.types[id] {
+            SemanticType::Literal {
+                value: LiteralValue::String(text),
+            } => text.as_str(),
+            _ => panic!(),
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(actual, ["onread1", "onread2", "onwrite1", "onwrite2"]);
+    let SemanticType::Shape { identity, fields } = &graph.types[&graph.symbols["Flags"].type_ref]
+    else {
+        panic!()
+    };
+    assert_eq!(*identity, ShapeIdentity::ReadonlySnapshot);
+    assert!(fields
+        .values()
+        .all(|field| field.readonly && field.optional));
+    let SemanticType::Shape { identity, fields } = &graph.types[&graph.symbols["Names"].type_ref]
+    else {
+        panic!()
+    };
+    assert_eq!(*identity, ShapeIdentity::MutableIdentity);
+    for (key, field) in fields {
+        assert_eq!(
+            graph.types[&field.type_ref],
+            SemanticType::Literal {
+                value: LiteralValue::String(key.clone())
+            }
+        );
+    }
+    assert!(matches!(
+        graph.types[&graph.symbols["Homomorphic"].type_ref],
+        SemanticType::ShapeTransform { .. }
+    ));
+    assert!(matches!(
+        graph.types[&graph.symbols["Large"].type_ref],
+        SemanticType::Unresolved { .. }
+    ));
+    assert_eq!(
+        graph.types[&graph.symbols["Quoted"].type_ref],
+        SemanticType::Literal {
+            value: LiteralValue::String("it's \"fine\"".to_owned())
+        }
+    );
+    assert_eq!(
+        SemanticGraph::from_json(&graph.to_json().unwrap()).unwrap(),
+        graph
+    );
+}
+
+#[test]
 fn generic_constraints_defaults_and_lexical_scopes_survive_json_and_projection() {
     let source = "export declare function identity<T extends string = string>(value: T): T; export declare function other<T extends number>(value: T): T;";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();

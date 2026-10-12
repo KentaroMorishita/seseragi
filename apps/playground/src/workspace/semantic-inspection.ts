@@ -63,6 +63,11 @@ export function describeSemanticNode(
       relation("Body", node.body)
       break
     }
+    case "shape-transform":
+      meaning = "Structural transform over a key domain; the mapper owns its lexical key parameter and preserves unspecified modifiers."
+      relation("Key domain", node.domain)
+      relation("Mapper", node.mapper)
+      break
     case "apply":
       meaning =
         "Apply a type constructor to the declared argument relationships."

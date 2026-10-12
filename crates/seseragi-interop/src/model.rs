@@ -180,6 +180,15 @@ pub enum SemanticType {
         subject: TypeId,
         key: Option<TypeId>,
     },
+    /// A structural transform over a finite/open key domain. The mapper is a
+    /// lexical generic with one key parameter; modifiers are explicit changes
+    /// or preservation requests, never a source-language syntax tree.
+    ShapeTransform {
+        domain: TypeId,
+        mapper: TypeId,
+        readonly: Option<bool>,
+        optional: Option<bool>,
+    },
     /// Explicit, reason-bearing state; never masquerades as Any/Unknown.
     Unresolved {
         reason: String,

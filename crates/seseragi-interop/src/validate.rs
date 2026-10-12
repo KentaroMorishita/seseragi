@@ -101,6 +101,12 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
             {
                 issue(subject, "projection key does not match its relation")
             }
+            SemanticType::ShapeTransform { mapper, .. } if !matches!(graph.types.get(mapper), Some(SemanticType::Generic { parameters, .. }) if parameters.len() == 1) => {
+                issue(
+                    subject,
+                    "structural transform requires a single lexical key binder",
+                )
+            }
             SemanticType::Union { members } | SemanticType::Intersection { members }
                 if members.is_empty() =>
             {
@@ -405,6 +411,7 @@ fn references(node: &SemanticType) -> Vec<TypeId> {
         SemanticType::Projection { subject, key, .. } => {
             std::iter::once(*subject).chain(*key).collect()
         }
+        SemanticType::ShapeTransform { domain, mapper, .. } => vec![*domain, *mapper],
         _ => vec![],
     }
 }

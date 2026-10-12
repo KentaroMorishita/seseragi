@@ -169,6 +169,14 @@ pub enum TypeKind {
         unmatched: Box<TypeRef>,
     },
     Shape(Vec<Property>),
+    Mapped {
+        parameter: String,
+        domain: Box<TypeRef>,
+        value: Box<TypeRef>,
+        readonly: Option<bool>,
+        optional: Option<bool>,
+    },
+    Template(Vec<TemplatePart>),
     Function {
         generics: Vec<TypeParameterRelation>,
         parameters: Vec<Parameter>,
@@ -184,4 +192,10 @@ pub struct Property {
     pub readonly: bool,
     pub optional: bool,
     pub type_ref: TypeRef,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum TemplatePart {
+    Text(String),
+    Domain(TypeRef),
 }

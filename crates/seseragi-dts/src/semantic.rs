@@ -486,6 +486,127 @@ impl Builder {
                     fields,
                 }
             }
+            TypeKind::Mapped {
+                parameter,
+                domain,
+                value: body,
+                readonly,
+                optional,
+            } => {
+                let domain = self.ty(domain, namespace, parameters);
+                let binder = self.reserve();
+                let mut local = parameters.clone();
+                local.insert(parameter.clone(), (binder, 0));
+                let body = self.ty(body, namespace, &local);
+                self.graph.types.insert(
+                    binder,
+                    SemanticType::Generic {
+                        parameters: vec![GenericParameter {
+                            name: parameter.clone(),
+                            constraint: None,
+                            default: None,
+                        }],
+                        body,
+                    },
+                );
+                self.graph.type_origins.insert(
+                    binder,
+                    vec![self.origin(value.span, "structural-key-binder")],
+                );
+                SemanticType::ShapeTransform {
+                    domain,
+                    mapper: binder,
+                    readonly: *readonly,
+                    optional: *optional,
+                }
+            }
+            TypeKind::Template(parts) => {
+                let mut texts = vec![String::new()];
+                let mut inputs = Vec::new();
+                for part in parts {
+                    let fragments = match part {
+                        crate::model::TemplatePart::Text(text) => vec![text.clone()],
+                        crate::model::TemplatePart::Domain(ty) => {
+                            let id = self.ty(ty, namespace, parameters);
+                            inputs.push(id);
+                            match finite_literal_texts(&self.graph, id, 256) {
+                                Some(texts) => texts,
+                                None => {
+                                    let id = self.node(
+                                        SemanticType::Unresolved {
+                                            reason:
+                                                "template relation has an open or unresolved domain"
+                                                    .to_owned(),
+                                        },
+                                        value.span,
+                                        "template-domain",
+                                    );
+                                    self.graph.normalizations.push(Normalization { output: id, inputs, rule: "template-domain".to_owned(), classification: SemanticClassification::PolicyRequired, reason: "finite template expansion is not proven; no String fallback was applied".to_owned(), policy: None });
+                                    return id;
+                                }
+                            }
+                        }
+                    };
+                    if texts.len().saturating_mul(fragments.len()) > 256
+                        || texts.iter().any(|text| {
+                            fragments
+                                .iter()
+                                .any(|part| text.len().saturating_add(part.len()) > 16_384)
+                        })
+                    {
+                        let id = self.node(
+                            SemanticType::Unresolved {
+                                reason: "finite template domain exceeds the expansion budget"
+                                    .to_owned(),
+                            },
+                            value.span,
+                            "template-budget",
+                        );
+                        self.graph.normalizations.push(Normalization { output: id, inputs, rule: "template-budget".to_owned(), classification: SemanticClassification::PolicyRequired, reason: "template expansion is bounded to 256 members and 16384 bytes per member".to_owned(), policy: None });
+                        return id;
+                    }
+                    texts = texts
+                        .iter()
+                        .flat_map(|prefix| {
+                            fragments
+                                .iter()
+                                .map(move |suffix| format!("{prefix}{suffix}"))
+                        })
+                        .collect();
+                }
+                texts.sort();
+                texts.dedup();
+                let members = texts
+                    .into_iter()
+                    .map(|text| {
+                        self.node(
+                            SemanticType::Literal {
+                                value: LiteralValue::String(text),
+                            },
+                            value.span,
+                            "finite-template-member",
+                        )
+                    })
+                    .collect::<Vec<_>>();
+                let node = match members.as_slice() {
+                    [] => SemanticType::Primitive {
+                        domain: PrimitiveDomain::Never,
+                    },
+                    [id] => self.graph.types[id].clone(),
+                    _ => SemanticType::Union { members },
+                };
+                let id = self.node(node, value.span, "finite-template-domain");
+                self.graph.normalizations.push(Normalization {
+                    output: id,
+                    inputs,
+                    rule: "finite-template-domain".to_owned(),
+                    classification: SemanticClassification::Normalized,
+                    reason: "closed literal domains produce a bounded exact template domain"
+                        .to_owned(),
+                    policy: None,
+                });
+                return id;
+            }
             TypeKind::Infer { name, .. } => SemanticType::Unresolved {
                 reason: format!(
                     "inferred parameter {name} is outside a supported extraction relation"
@@ -628,7 +749,7 @@ impl Builder {
                     SemanticType::Literal {
                         value: LiteralValue::Boolean(raw == "true"),
                     }
-                } else if let Ok(text) = serde_json::from_str::<String>(raw) {
+                } else if let Some(text) = literal_string(raw) {
                     SemanticType::Literal {
                         value: LiteralValue::String(text),
                     }
@@ -656,7 +777,7 @@ impl Builder {
                 SemanticClassification::PolicyRequired,
                 "dynamic domain requires explicit unsafe boundary approval",
             ),
-            Some(SemanticType::Projection { .. }) => self.decision(id, SemanticClassification::PolicyRequired, "relation is preserved without widening; closed normalization or explicit boundary policy is required"),
+            Some(SemanticType::Projection { .. } | SemanticType::ShapeTransform { .. }) => self.decision(id, SemanticClassification::PolicyRequired, "relation is preserved without widening; closed normalization or explicit boundary policy is required"),
             _ => {}
         }
         id
@@ -734,6 +855,31 @@ fn public_name(declaration: &Declaration) -> &str {
         Declaration::TypeAlias(v) => &v.public_name,
         Declaration::Namespace(v) => &v.public_name,
     }
+}
+
+fn literal_string(raw: &str) -> Option<String> {
+    if raw.starts_with('"') {
+        return serde_json::from_str(raw).ok();
+    }
+    let inner = raw.strip_prefix('\'')?.strip_suffix('\'')?;
+    let mut json = String::from("\"");
+    let mut chars = inner.chars();
+    while let Some(c) = chars.next() {
+        match c {
+            '\\' => match chars.next()? {
+                '\'' => json.push('\''),
+                escaped => {
+                    json.push('\\');
+                    json.push(escaped);
+                }
+            },
+            '"' => json.push_str("\\\""),
+            '\'' => return None,
+            other => json.push(other),
+        }
+    }
+    json.push('"');
+    serde_json::from_str(&json).ok()
 }
 fn primitive(name: &str) -> Option<PrimitiveDomain> {
     Some(match name {
@@ -823,4 +969,40 @@ fn closed_assignability(
         ),
         _ => None,
     }
+}
+
+fn finite_literal_texts(graph: &SemanticGraph, root: TypeId, limit: usize) -> Option<Vec<String>> {
+    let mut pending = vec![root];
+    let mut seen = std::collections::BTreeSet::new();
+    let mut values = Vec::new();
+    while let Some(id) = pending.pop() {
+        if !seen.insert(id) {
+            continue;
+        }
+        if seen.len() > limit * 2 {
+            return None;
+        }
+        match &graph.types[&id] {
+            SemanticType::Literal {
+                value: LiteralValue::String(text),
+            } => values.push(text.clone()),
+            SemanticType::Literal {
+                value: LiteralValue::Integer(value),
+            } => values.push(value.to_string()),
+            SemanticType::Literal {
+                value: LiteralValue::Boolean(value),
+            } => values.push(value.to_string()),
+            SemanticType::Union { members } => pending.extend(members),
+            SemanticType::Primitive {
+                domain: PrimitiveDomain::Never,
+            } => {}
+            _ => return None,
+        }
+        if values.len() > limit {
+            return None;
+        }
+    }
+    values.sort();
+    values.dedup();
+    Some(values)
 }
