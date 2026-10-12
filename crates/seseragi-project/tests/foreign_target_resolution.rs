@@ -204,3 +204,13 @@ fn closure_digest_changes_when_only_a_transitive_dependency_changes() {
     );
     assert_ne!(initial.snapshot_digest, changed.snapshot_digest);
 }
+
+#[test]
+fn type_only_named_imports_and_commented_type_statements_do_not_resolve_host_modules() {
+    let source="import {type Foo} from 'node:fs'; import /* comment */ type {Bar} from 'node:fs'; export {type Baz} from 'node:fs'; import {type Foo, actual} from 'api';";
+    assert_eq!(runtime_import_specifiers(source).unwrap(), vec!["api"]);
+    assert_eq!(
+        runtime_import_specifiers("const name = import.meta.resolve('api');").unwrap(),
+        vec!["api"]
+    );
+}

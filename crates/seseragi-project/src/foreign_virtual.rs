@@ -256,9 +256,8 @@ pub fn runtime_import_specifiers(source: &str) -> Result<Vec<String>, RuntimeLin
     let mut pending = vec![tree.root_node()];
     let mut imports = BTreeSet::new();
     while let Some(node) = pending.pop() {
-        let raw = node.utf8_text(source.as_bytes()).unwrap_or_default();
         if matches!(node.kind(), "import_statement" | "export_statement") {
-            if raw.starts_with("import type ") || raw.starts_with("export type ") {
+            if statement_type_only(node) {
                 continue;
             }
             if let Some(value) = node.child_by_field_name("source") {
@@ -270,7 +269,7 @@ pub fn runtime_import_specifiers(source: &str) -> Result<Vec<String>, RuntimeLin
                 .child_by_field_name("function")
                 .and_then(|node| node.utf8_text(source.as_bytes()).ok())
                 .unwrap_or_default();
-            if matches!(function, "import" | "require") {
+            if matches!(function, "import" | "require" | "import.meta.resolve") {
                 let arguments = node
                     .child_by_field_name("arguments")
                     .ok_or_else(|| problem("runtime import has no arguments"))?;
@@ -310,4 +309,43 @@ fn string_literal(
         ));
     }
     Ok(value.to_owned())
+}
+
+fn has_type_keyword(node: tree_sitter::Node<'_>) -> bool {
+    let mut cursor = node.walk();
+    let type_only = node
+        .children(&mut cursor)
+        .any(|child| child.kind() == "type");
+    type_only
+}
+fn statement_type_only(node: tree_sitter::Node<'_>) -> bool {
+    if has_type_keyword(node) {
+        return true;
+    }
+    let mut cursor = node.walk();
+    let clause = node
+        .named_children(&mut cursor)
+        .find(|child| matches!(child.kind(), "import_clause" | "export_clause"));
+    let Some(clause) = clause else {
+        return false;
+    };
+    let mut pending = vec![clause];
+    let mut found = false;
+    while let Some(node) = pending.pop() {
+        match node.kind() {
+            "import_specifier" | "export_specifier" => {
+                if !has_type_keyword(node) {
+                    return false;
+                }
+                found = true;
+            }
+            "identifier" | "namespace_import" | "namespace_export" => return false,
+            "comment" => {}
+            _ => {
+                let mut cursor = node.walk();
+                pending.extend(node.named_children(&mut cursor));
+            }
+        }
+    }
+    found
 }
