@@ -20,6 +20,7 @@
 - Retain generic foreign binders and opaque type arguments, selecting checked primitive codecs for concrete calls and rejecting unresolved forwarding (#786).
 - Preserve `__proto__` as an ordinary record field, including generated checked JSON APIs (#787).
 - Stage the declared relative host import closure for standalone run and process builds, preserving lazy failures, host package scope and relocatable artifacts (#788).
+- Retain preferred Playground pane sizes across temporary narrow or short viewports, while keeping explicit resize controls and persistence clamped to the current layout (#790).
 - Reject modified generated bindings and imports of retained outputs whose entry or projection policy has been removed (#476).
 - Produce canonical Linux WASM before updating PR artifacts while keeping normal PR freshness verification strict.
 
