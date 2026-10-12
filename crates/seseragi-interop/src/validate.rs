@@ -93,6 +93,18 @@ pub(crate) fn validate(graph: &SemanticGraph) -> Result<(), ValidationError> {
             SemanticType::Opaque { identity, .. } if identity.is_empty() => {
                 issue(subject, "opaque identity is empty")
             }
+            SemanticType::Nominal {
+                identity,
+                constructors,
+                ..
+            } => {
+                if identity.is_empty() || constructors.iter().any(|id| !callable(graph, *id)) {
+                    issue(
+                        subject,
+                        "nominal identity and constructor callables must be valid",
+                    );
+                }
+            }
             SemanticType::Unresolved { reason } if reason.trim().is_empty() => {
                 issue(subject, "unresolved meaning requires a reason")
             }
@@ -386,7 +398,7 @@ fn scope(
     }
 }
 
-fn references(node: &SemanticType) -> Vec<TypeId> {
+pub(crate) fn references(node: &SemanticType) -> Vec<TypeId> {
     match node {
         SemanticType::Generic { parameters, body } => parameters
             .iter()
@@ -401,6 +413,15 @@ fn references(node: &SemanticType) -> Vec<TypeId> {
             .collect(),
         SemanticType::Shape { fields, .. } => fields.values().map(|f| f.type_ref).collect(),
         SemanticType::Opaque { arguments, .. } => arguments.clone(),
+        SemanticType::Nominal {
+            instance,
+            constructors,
+            static_members,
+            ..
+        } => std::iter::once(*instance)
+            .chain(constructors.iter().copied())
+            .chain(static_members.values().map(|field| field.type_ref))
+            .collect(),
         SemanticType::Tuple { elements } => elements.clone(),
         SemanticType::Overload { signatures } => signatures.clone(),
         SemanticType::Union { members } | SemanticType::Intersection { members } => members.clone(),

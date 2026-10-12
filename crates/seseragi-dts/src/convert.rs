@@ -326,6 +326,7 @@ fn render_entry(
         symbols: Vec::new(),
         uses_big_int: false,
         active_types: BTreeSet::new(),
+        included: projection_subset(graph, entry),
     };
     validate_symbol_settings(graph, &mut context);
     let owned = graph
@@ -369,6 +370,78 @@ struct RenderContext<'a> {
     symbols: Vec<GeneratedSymbol>,
     uses_big_int: bool,
     active_types: BTreeSet<TypeId>,
+    included: Option<BTreeSet<String>>,
+}
+
+fn projection_subset(graph: &SemanticGraph, entry: &EntryConfig) -> Option<BTreeSet<String>> {
+    let include = entry.include.as_ref()?;
+    let mut selected = include.iter().cloned().collect::<BTreeSet<_>>();
+    // Selecting a namespace explicitly includes its exported descendants.
+    for key in graph.symbols.keys() {
+        if include
+            .iter()
+            .any(|parent| key.starts_with(&format!("{parent}.")))
+        {
+            selected.insert(key.clone());
+        }
+    }
+    let mut pending = selected
+        .iter()
+        .filter_map(|key| graph.symbols.get(key).map(|symbol| symbol.type_ref))
+        .collect::<Vec<_>>();
+    let mut seen = BTreeSet::new();
+    while let Some(id) = pending.pop() {
+        if !seen.insert(id) {
+            continue;
+        }
+        if let Some(SemanticType::Reference { symbol }) = graph.types.get(&id) {
+            if !graph.private_symbols.contains(symbol)
+                && graph.symbols[symbol].kind == SymbolKind::Type
+            {
+                selected.insert(symbol.clone());
+            }
+        }
+        pending.extend(graph.related_types(id));
+    }
+    Some(selected)
+}
+
+fn binding_type_name(context: &RenderContext<'_>, target: &str) -> String {
+    let symbol = &context.graph.symbols[target];
+    let mut parts = Vec::new();
+    let segments = target.split('.').collect::<Vec<_>>();
+    for count in 1..segments.len() {
+        let prefix = segments[..count].join(".");
+        if let Some(owner) = context.graph.symbols.get(&prefix) {
+            let parent = &segments[..count - 1];
+            parts.push(generated_name(
+                &owner.public_name,
+                NameKind::Value,
+                &context.entry.specifier,
+                &parent
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(owner.declaration_name.as_str()))
+                    .collect::<Vec<_>>()
+                    .join("."),
+                &prefix,
+            ));
+        }
+    }
+    let original = segments[..segments.len() - 1]
+        .iter()
+        .copied()
+        .chain(std::iter::once(symbol.declaration_name.as_str()))
+        .collect::<Vec<_>>()
+        .join(".");
+    parts.push(generated_name(
+        &symbol.public_name,
+        NameKind::Type,
+        &context.entry.specifier,
+        &original,
+        target,
+    ));
+    parts.join(".")
 }
 
 #[derive(Clone, Copy)]
@@ -458,6 +531,14 @@ fn render_scope(
     let pad = "  ".repeat(indent);
     let mut declarations = members
         .values()
+        .filter(|key| {
+            context.included.as_ref().is_none_or(|included| {
+                included.contains(*key)
+                    || included
+                        .iter()
+                        .any(|selected| selected.starts_with(&format!("{key}.")))
+            })
+        })
         .map(|key| context.graph.symbols[key].clone())
         .collect::<Vec<_>>();
     declarations.sort_by_key(|symbol| {
@@ -694,7 +775,8 @@ fn render_function(
         ));
         return None;
     }
-    if function.generic_binder.is_some_and(|binder| matches!(&context.graph.types[&binder], SemanticType::Generic { parameters, .. } if parameters.iter().any(|parameter| parameter.constraint.is_some() || parameter.default.is_some()))) {
+    let specialized = explicit_specialization(function, config, context.graph);
+    if !specialized && function.generic_binder.is_some_and(|binder| matches!(&context.graph.types[&binder], SemanticType::Generic { parameters, .. } if parameters.iter().any(|parameter| parameter.constraint.is_some() || parameter.default.is_some()))) {
         context.diagnostics.push(diagnostic("SES-F0102", DiagnosticSeverity::Error,
             "generic constraints and defaults require a semantic projection policy; emitting unconstrained parameters would erase their meaning",
             context.file, function.span, Some(public_path)));
@@ -732,7 +814,11 @@ fn render_function(
         ));
         return None;
     }
-    let type_names = canonical_type_parameters(&function.type_parameters);
+    let type_names = if specialized {
+        vec![]
+    } else {
+        canonical_type_parameters(&function.type_parameters)
+    };
     let type_map = function
         .type_parameters
         .iter()
@@ -825,7 +911,7 @@ fn render_function(
                 &public_path,
             )?
         };
-        if parameter.optional {
+        if parameter.optional && !override_type.is_some_and(|policy| policy.required) {
             rendered = format!("Js.UndefinedOr<{rendered}>");
         }
         let rest = if parameter.rest { "..." } else { "" };
@@ -833,6 +919,17 @@ fn render_function(
     }
     let result_ref = promise_inner(context.graph, function.result).unwrap_or(function.result);
     let result = if let Some(override_type) = &config.result {
+        if override_type.required {
+            context.diagnostics.push(diagnostic(
+                "SES-F0104",
+                DiagnosticSeverity::Error,
+                "required is only a parameter input policy",
+                context.file,
+                function.span,
+                Some(public_path),
+            ));
+            return None;
+        }
         validate_override(
             &override_type.type_name,
             type_span(context.graph, result_ref),
@@ -918,6 +1015,77 @@ fn render_type(
     result
 }
 
+fn explicit_specialization(
+    function: &Function,
+    config: &SymbolConfig,
+    graph: &SemanticGraph,
+) -> bool {
+    let Some(binder) = function.generic_binder else {
+        return false;
+    };
+    let Some(result) = &config.result else {
+        return false;
+    };
+    if function
+        .parameters
+        .iter()
+        .any(|parameter| !config.parameters.contains_key(&parameter.name))
+    {
+        return false;
+    }
+    let mut bindings = BTreeMap::new();
+    for (id, name) in function
+        .parameters
+        .iter()
+        .map(|parameter| {
+            (
+                parameter.type_ref,
+                config.parameters[&parameter.name].type_name.as_str(),
+            )
+        })
+        .chain(std::iter::once((
+            promise_inner(graph, function.result).unwrap_or(function.result),
+            result.type_name.as_str(),
+        )))
+    {
+        let node = &graph.types[&id];
+        let expected = match node {
+            SemanticType::Parameter {
+                binder: owner,
+                index,
+            } if *owner == binder => {
+                if let Some(previous) = bindings.insert(*index, name) {
+                    if previous != name {
+                        return false;
+                    }
+                }
+                let SemanticType::Generic { parameters, .. } = &graph.types[&binder] else {
+                    return false;
+                };
+                match parameters[*index as usize].constraint {
+                    Some(id) => &graph.types[&id],
+                    None => continue,
+                }
+            }
+            other => other,
+        };
+        let SemanticType::Primitive { domain } = expected else {
+            return false;
+        };
+        if !matches!(
+            (domain, name),
+            (PrimitiveDomain::String, "String" | "Char")
+                | (PrimitiveDomain::Boolean, "Bool")
+                | (PrimitiveDomain::Float64, "Float" | "Int")
+                | (PrimitiveDomain::Integer, "Int")
+                | (PrimitiveDomain::Binary, "Bytes")
+        ) {
+            return false;
+        }
+    }
+    true
+}
+
 fn render_type_node(
     id: TypeId,
     type_parameters: &BTreeMap<String, String>,
@@ -983,13 +1151,22 @@ fn render_type_node(
                     symbol_path,
                 )
             } else {
-                Some(generated_name_simple(&target, NameKind::Type))
+                Some(binding_type_name(context, &target))
             }
         }
         SemanticType::Opaque {
             identity,
             arguments,
         } => {
+            if !context.graph.symbols.iter().any(|(key, declaration)| {
+                !context.graph.private_symbols.contains(key)
+                    && declaration.kind == SymbolKind::Type
+                    && (key == &identity || declaration.declaration_name == identity)
+            }) {
+                context.diagnostics.push(diagnostic("SES-F0110", DiagnosticSeverity::Error,
+                    format!("opaque external identity `{identity}` has no declared binding or resolved runtime ABI"), context.file, type_span(context.graph, id), Some(symbol_path.to_owned())));
+                return None;
+            }
             let name = generated_name_simple(&identity, NameKind::Type);
             if arguments.is_empty() {
                 Some(name)
@@ -1218,6 +1395,30 @@ fn validate_override(value: &str, span: Span, context: &mut RenderContext<'_>) -
 }
 
 fn validate_symbol_settings(graph: &SemanticGraph, context: &mut RenderContext<'_>) {
+    if let Some(include) = &context.entry.include {
+        if include.is_empty() || include.iter().collect::<BTreeSet<_>>().len() != include.len() {
+            context.diagnostics.push(diagnostic(
+                "SES-F0104",
+                DiagnosticSeverity::Error,
+                "projection include must be a nonempty set of distinct exported symbols",
+                context.file,
+                Span { start: 0, end: 0 },
+                None,
+            ));
+        }
+        for key in include {
+            if !graph.symbols.contains_key(key) || graph.private_symbols.contains(key) {
+                context.diagnostics.push(diagnostic(
+                    "SES-F0104",
+                    DiagnosticSeverity::Error,
+                    format!("projection include refers to missing or private symbol `{key}`"),
+                    context.file,
+                    Span { start: 0, end: 0 },
+                    Some(key.clone()),
+                ));
+            }
+        }
+    }
     for key in context.entry.symbols.keys() {
         if !graph.symbols.contains_key(key) {
             context.diagnostics.push(diagnostic(

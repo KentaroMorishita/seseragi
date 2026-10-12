@@ -192,7 +192,140 @@ fn parse_opaque(node: Node<'_>, source: &str) -> Result<OpaqueDeclaration, Parse
             .map(|parameters| parse_type_parameters(parameters, source))
             .unwrap_or_default(),
         type_parameter_relations: parse_generic_relations(node, source)?,
+        surface: if node.kind() == "enum_declaration" {
+            None
+        } else {
+            Some(parse_class_surface(node, source)?)
+        },
     })
+}
+
+fn parse_class_surface(
+    node: Node<'_>,
+    source: &str,
+) -> Result<crate::model::ClassSurface, ParseError> {
+    let mut surface = crate::model::ClassSurface {
+        constructible: node.kind() != "abstract_class_declaration",
+        incomplete: false,
+        constructors: vec![],
+        fields: vec![],
+        statics: vec![],
+        inherited: (0..node.named_child_count()).any(|i| {
+            node.named_child(i as u32)
+                .is_some_and(|n| n.kind() == "class_heritage")
+        }),
+    };
+    let body = required_field(node, "body")?;
+    let mut cursor = body.walk();
+    for member in body.named_children(&mut cursor) {
+        let mut cursor = member.walk();
+        if member.named_children(&mut cursor).any(|n| {
+            n.kind() == "accessibility_modifier"
+                && matches!(node_text(n, source), "private" | "protected")
+        }) {
+            if member
+                .child_by_field_name("name")
+                .is_some_and(|name| node_text(name, source) == "constructor")
+            {
+                surface.constructible = false;
+            }
+            continue;
+        }
+        let Some(name) = member.child_by_field_name("name") else {
+            surface.incomplete = true;
+            continue;
+        };
+        if !matches!(name.kind(), "property_identifier" | "string" | "number") {
+            surface.incomplete = true;
+            continue;
+        }
+        let name_text = unquote(node_text(name, source));
+        let span = Span::from_node(member);
+        let static_member = (0..member.child_count())
+            .any(|i| member.child(i).is_some_and(|n| n.kind() == "static"));
+        let accessor = (0..member.child_count()).any(|i| {
+            member
+                .child(i)
+                .is_some_and(|n| matches!(n.kind(), "get" | "set"))
+        });
+        let mut kind = if accessor {
+            TypeKind::Unsupported(
+                "accessor value and descriptor semantics require explicit ABI interpretation"
+                    .to_owned(),
+            )
+        } else if matches!(
+            member.kind(),
+            "method_signature" | "abstract_method_signature"
+        ) {
+            let parameters = parse_parameters(required_field(member, "parameters")?, source)?;
+            let result = member
+                .child_by_field_name("return_type")
+                .map(|ty| parse_type(ty, source))
+                .transpose()?
+                .unwrap_or(TypeRef {
+                    span,
+                    kind: TypeKind::Unsupported("implicit method result is unresolved".to_owned()),
+                });
+            TypeKind::Function {
+                generics: parse_generic_relations(member, source)?,
+                parameters,
+                result: Box::new(result),
+            }
+        } else if member.kind() == "public_field_definition" {
+            member
+                .child_by_field_name("type")
+                .map(|ty| parse_type(ty, source).map(|ty| ty.kind))
+                .transpose()?
+                .unwrap_or(TypeKind::Unsupported(
+                    "implicit field type is unresolved".to_owned(),
+                ))
+        } else {
+            TypeKind::Unsupported(
+                "class member kind requires explicit callable/property interpretation".to_owned(),
+            )
+        };
+        if name_text == "constructor" {
+            if let TypeKind::Function { result, .. } = &mut kind {
+                *result = Box::new(TypeRef {
+                    span,
+                    kind: {
+                        let name = node_text(required_field(node, "name")?, source).to_owned();
+                        let arguments = node
+                            .child_by_field_name("type_parameters")
+                            .map(|parameters| parse_type_parameters(parameters, source))
+                            .unwrap_or_default()
+                            .into_iter()
+                            .map(|name| TypeRef {
+                                span,
+                                kind: TypeKind::Named(name),
+                            })
+                            .collect::<Vec<_>>();
+                        if arguments.is_empty() {
+                            TypeKind::Named(name)
+                        } else {
+                            TypeKind::Generic { name, arguments }
+                        }
+                    },
+                });
+            }
+            surface.constructors.push(TypeRef { kind, span });
+            continue;
+        }
+        let property = crate::model::Property {
+            name: name_text,
+            readonly: (0..member.child_count())
+                .any(|i| member.child(i).is_some_and(|n| n.kind() == "readonly")),
+            optional: (0..member.child_count())
+                .any(|i| member.child(i).is_some_and(|n| n.kind() == "?")),
+            type_ref: TypeRef { kind, span },
+        };
+        if static_member {
+            surface.statics.push(property);
+        } else {
+            surface.fields.push(property);
+        }
+    }
+    Ok(surface)
 }
 
 fn parse_type_alias(node: Node<'_>, source: &str) -> Result<TypeAlias, ParseError> {
@@ -309,7 +442,7 @@ fn parse_type(node: Node<'_>, source: &str) -> Result<TypeRef, ParseError> {
     let span = Span::from_node(node);
     let kind = match node.kind() {
         "predefined_type" => TypeKind::Primitive(node_text(node, source).to_owned()),
-        "type_identifier" | "nested_type_identifier" | "identifier" => {
+        "type_identifier" | "nested_type_identifier" | "identifier" | "this_type" => {
             TypeKind::Named(node_text(node, source).to_owned())
         }
         "generic_type" => {

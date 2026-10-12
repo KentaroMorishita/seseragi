@@ -15,6 +15,18 @@ pub use validate::{ValidationError, ValidationIssue};
 use sha2::{Digest, Sha256};
 
 impl SemanticGraph {
+    pub fn related_types(&self, id: TypeId) -> Vec<TypeId> {
+        let Some(node) = self.types.get(&id) else {
+            return vec![];
+        };
+        let mut relations = validate::references(node);
+        if let SemanticType::Reference { symbol } = node {
+            if let Some(symbol) = self.symbols.get(symbol) {
+                relations.push(symbol.type_ref);
+            }
+        }
+        relations
+    }
     /// Closed relations are normalized by the shared semantic core, using a
     /// finite work budget. No source-language parser or host checker is needed.
     pub fn normalize_closed(&mut self, budget: NormalizationBudget) -> Result<(), ValidationError> {

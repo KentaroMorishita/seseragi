@@ -232,6 +232,9 @@ impl Builder {
                 }
                 Declaration::TypeAlias(value) => self.ty(&value.type_ref, namespace, &parameters),
                 Declaration::Interface(value) => self.ty(&value.body, namespace, &parameters),
+                Declaration::Class(value) if value.surface.is_some() => {
+                    self.nominal(value, namespace, &parameters)
+                }
                 Declaration::Namespace(value) => {
                     let nested = self.scope(&value.scope, &key);
                     self.node(
@@ -411,6 +414,120 @@ impl Builder {
             optional: value.optional,
             rest: value.rest,
         }
+    }
+    fn nominal(
+        &mut self,
+        value: &crate::model::OpaqueDeclaration,
+        namespace: &str,
+        parameters: &BTreeMap<String, (TypeId, u32)>,
+    ) -> TypeId {
+        let surface = value.surface.as_ref().unwrap();
+        let receiver = self.named(&value.name, value.span, namespace, parameters);
+        let fields = self.nominal_members(&surface.fields, receiver, namespace, parameters);
+        let fields_id = self.node(
+            SemanticType::Shape {
+                identity: ShapeIdentity::MutableIdentity,
+                fields,
+            },
+            value.span,
+            "nominal-instance-members",
+        );
+        let instance = if surface.inherited || surface.incomplete {
+            let id = self.node(SemanticType::Unresolved { reason: "inherited or computed instance surface requires base/member identity and compatibility checking".to_owned() }, value.span, "inherited-instance");
+            self.graph.normalizations.push(Normalization { output: id, inputs: vec![fields_id], rule: "inherited-instance".to_owned(), classification: SemanticClassification::PolicyRequired, reason: "declared members are retained but do not claim a complete inherited public surface".to_owned(), policy: None });
+            id
+        } else {
+            fields_id
+        };
+        let static_members =
+            self.nominal_members(&surface.statics, receiver, namespace, parameters);
+        let constructors = surface
+            .constructors
+            .iter()
+            .map(|ty| self.ty(ty, namespace, parameters))
+            .collect();
+        let id = self.node(
+            SemanticType::Nominal {
+                identity: path(namespace, &value.name),
+                instance,
+                constructors,
+                constructible: surface.constructible,
+                static_members,
+            },
+            value.span,
+            "nominal-host-identity",
+        );
+        self.decision(id, SemanticClassification::OpaquePreserved, "class identity and constructor/instance/static surfaces are separate; opaque raw binding preserves identity until an ABI adapter is explicitly approved");
+        id
+    }
+    fn nominal_members(
+        &mut self,
+        properties: &[crate::model::Property],
+        receiver: TypeId,
+        namespace: &str,
+        parameters: &BTreeMap<String, (TypeId, u32)>,
+    ) -> BTreeMap<String, ShapeField> {
+        let mut fields: BTreeMap<String, ShapeField> = BTreeMap::new();
+        for property in properties {
+            let mut id = self.ty(&property.type_ref, namespace, parameters);
+            let body = match self.graph.types[&id] {
+                SemanticType::Generic { body, .. } => body,
+                _ => id,
+            };
+            if let Some(SemanticType::Callable { receiver: slot, .. }) =
+                self.graph.types.get_mut(&body)
+            {
+                if slot.is_none() {
+                    *slot = Some(receiver);
+                }
+            }
+            if let Some(previous) = fields.get(&property.name) {
+                let previous_body = match self.graph.types[&previous.type_ref] {
+                    SemanticType::Generic { body, .. } => body,
+                    _ => previous.type_ref,
+                };
+                if matches!(
+                    self.graph.types[&previous_body],
+                    SemanticType::Callable { .. } | SemanticType::Overload { .. }
+                ) && matches!(self.graph.types[&body], SemanticType::Callable { .. })
+                {
+                    let mut signatures = match &self.graph.types[&previous_body] {
+                        SemanticType::Overload { signatures } => signatures.clone(),
+                        _ => vec![previous.type_ref],
+                    };
+                    signatures.push(id);
+                    id = self.node(
+                        SemanticType::Overload { signatures },
+                        property.type_ref.span,
+                        "method-overload-set",
+                    );
+                    self.decision(id, SemanticClassification::PolicyRequired, "method overload selection requires explicit signature and receiver ABI policy");
+                } else {
+                    id = self.node(
+                        SemanticType::Unresolved {
+                            reason: "duplicate nominal member requires compatibility checking"
+                                .to_owned(),
+                        },
+                        property.type_ref.span,
+                        "nominal-member-conflict",
+                    );
+                    self.decision(
+                        id,
+                        SemanticClassification::PolicyRequired,
+                        "duplicate member identities cannot be selected by source order",
+                    );
+                }
+            }
+            fields.insert(
+                property.name.clone(),
+                ShapeField {
+                    type_ref: id,
+                    readonly: property.readonly,
+                    optional: property.optional,
+                },
+            );
+        }
+        fields
     }
     fn ty(
         &mut self,
@@ -840,6 +957,11 @@ impl Builder {
                 span,
                 "lexical-type-parameter",
             );
+        }
+        if name == "this" {
+            let id = self.node(SemanticType::Unresolved { reason: "polymorphic contextual this result requires receiver-subtype relation policy".to_owned() }, span, "polymorphic-receiver");
+            self.decision(id, SemanticClassification::PolicyRequired, "contextual receiver identity is retained; it cannot be replaced by a plain class or function result");
+            return id;
         }
         if name == "Uint8Array" {
             return self.node(

@@ -108,6 +108,12 @@ export function describeSemanticNode(
           : "Optional value domain."
       relation("Value", node.value)
       break
+    case "nominal":
+      meaning = `Host identity: ${String(node.identity)}. Constructors, instance receivers, and static members have separate ABI surfaces.`
+      relation("Instance", node.instance)
+      list("Constructor", node.constructors)
+      for (const [name, raw] of Object.entries(object(node.staticMembers))) relation(`Static ${name}`, object(raw).typeRef)
+      break
     case "opaque":
       meaning = `Opaque identity: ${String(node.identity)}. Structural operations require their own interpretation.`
       list("Argument", node.arguments)

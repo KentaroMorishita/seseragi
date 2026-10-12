@@ -18,6 +18,9 @@ pub struct EntryConfig {
     pub evaluation: Evaluation,
     #[serde(default)]
     pub symbols: BTreeMap<String, SymbolConfig>,
+    /// Explicit projection subset; omitted exports remain in semantic reports.
+    #[serde(default)]
+    pub include: Option<Vec<String>>,
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq)]
@@ -60,6 +63,8 @@ pub struct OverloadConfig {
 pub struct TypeOverride {
     #[serde(rename = "type")]
     pub type_name: String,
+    #[serde(default)]
+    pub required: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq)]

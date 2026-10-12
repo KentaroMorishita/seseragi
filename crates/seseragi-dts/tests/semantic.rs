@@ -275,6 +275,175 @@ fn conflicting_merged_properties_do_not_choose_a_source_order_winner() {
 }
 
 #[test]
+fn missing_external_type_identity_cannot_generate_a_dangling_binding_type() {
+    let graph = interpret_declaration(
+        "export declare function read(value: Missing): string;",
+        "api.d.ts",
+        SETTINGS,
+    )
+    .unwrap();
+    let projection = project_graph(&graph, SETTINGS, "api").unwrap();
+    assert!(projection.source.is_none());
+    assert!(
+        projection
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-F0110"
+                && diagnostic.message.contains("Missing"))
+    );
+}
+
+#[test]
+fn class_constructors_methods_statics_and_contextual_this_remain_distinct() {
+    let source = "export declare class Store { constructor(name: string); readonly name: string; read(key: string): string; read(key: number): number; static create(name: string): Store; chain(): this; private hidden(): void; }";
+    let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
+    let SemanticType::Nominal {
+        instance,
+        constructors,
+        static_members,
+        ..
+    } = &graph.types[&graph.symbols["Store"].type_ref]
+    else {
+        panic!()
+    };
+    assert_eq!(constructors.len(), 1);
+    assert!(matches!(
+        graph.types[&constructors[0]],
+        SemanticType::Callable { receiver: None, .. }
+    ));
+    assert!(matches!(
+        graph.types[&static_members["create"].type_ref],
+        SemanticType::Callable {
+            receiver: Some(_),
+            ..
+        }
+    ));
+    let SemanticType::Shape { identity, fields } = &graph.types[instance] else {
+        panic!()
+    };
+    assert_eq!(*identity, ShapeIdentity::MutableIdentity);
+    assert!(fields["name"].readonly && !fields.contains_key("hidden"));
+    assert!(matches!(
+        graph.types[&fields["read"].type_ref],
+        SemanticType::Overload { .. }
+    ));
+    let SemanticType::Callable {
+        result, receiver, ..
+    } = graph.types[&fields["chain"].type_ref]
+    else {
+        panic!()
+    };
+    assert!(receiver.is_some());
+    assert!(
+        matches!(&graph.types[&result], SemanticType::Unresolved { reason } if reason.contains("polymorphic"))
+    );
+    assert_eq!(
+        SemanticGraph::from_json(&graph.to_json().unwrap()).unwrap(),
+        graph
+    );
+    assert_eq!(
+        project_graph(&graph, SETTINGS, "api")
+            .unwrap()
+            .source
+            .unwrap(),
+        "pub foreign \"typescript\" from \"./api.js\" {\n  opaque type Store\n}\n"
+    );
+}
+
+#[test]
+fn explicit_projection_subset_retains_type_dependencies_and_omitted_semantics() {
+    let source = "export interface Handle {} export declare function selected(value: Handle): Handle; export declare function other<T extends string>(value: T): T; type Private = string;";
+    let settings = format!("{SETTINGS}include = ['selected']\n");
+    let graph = interpret_declaration(source, "api.d.ts", &settings).unwrap();
+    assert!(graph.symbols.contains_key("other"));
+    let projected = project_graph(&graph, &settings, "api")
+        .unwrap()
+        .source
+        .unwrap();
+    assert!(
+        projected.contains("opaque type Handle")
+            && projected.contains("selected value: Handle -> Handle")
+    );
+    assert!(!projected.contains("other") && !projected.contains("Private"));
+    for include in [
+        "[]",
+        "['selected', 'selected']",
+        "['Private']",
+        "['missing']",
+    ] {
+        let settings = format!("{SETTINGS}include = {include}\n");
+        let graph = interpret_declaration(source, "api.d.ts", &settings).unwrap();
+        assert!(project_graph(&graph, &settings, "api")
+            .unwrap()
+            .source
+            .is_none());
+    }
+}
+
+#[test]
+fn explicit_fixed_generic_projection_requires_compatible_primitive_constraints() {
+    let source = "export declare function id<T extends string>(size?: number): T;";
+    let settings = format!("{SETTINGS}\n[entries.api.symbols.id.parameters.size]\ntype = 'Int'\nrequired = true\n[entries.api.symbols.id.result]\ntype = 'String'\n");
+    let graph = interpret_declaration(source, "api.d.ts", &settings).unwrap();
+    let projected = project_graph(&graph, &settings, "api")
+        .unwrap()
+        .source
+        .unwrap();
+    assert!(projected.contains("id size: Int -> String"), "{projected}");
+    assert!(!projected.contains("<A>"));
+    let wrong = settings.replace("type = 'String'", "type = 'Int'");
+    let graph = interpret_declaration(source, "api.d.ts", &wrong).unwrap();
+    assert!(project_graph(&graph, &wrong, "api")
+        .unwrap()
+        .source
+        .is_none());
+    let relation = "export declare function id<T extends string>(size: T): T;";
+    let graph = interpret_declaration(relation, "api.d.ts", &settings).unwrap();
+    assert!(project_graph(&graph, &settings, "api")
+        .unwrap()
+        .source
+        .is_none());
+}
+
+#[test]
+fn nominal_visibility_and_static_readonly_flags_are_not_erased() {
+    let graph = interpret_declaration("export abstract class Abstract { constructor(name: string); } export class Private { private constructor(); } export class Generic<T> { constructor(value: T); static readonly version: string; read(key: string): string; read(key: number): number; read(key: boolean): boolean; }", "api.d.ts", SETTINGS).unwrap();
+    for name in ["Abstract", "Private"] {
+        assert!(matches!(
+            graph.types[&graph.symbols[name].type_ref],
+            SemanticType::Nominal {
+                constructible: false,
+                ..
+            }
+        ));
+    }
+    let SemanticType::Generic { body, .. } = graph.types[&graph.symbols["Generic"].type_ref] else {
+        panic!()
+    };
+    let SemanticType::Nominal {
+        instance,
+        static_members,
+        constructors,
+        ..
+    } = &graph.types[&body]
+    else {
+        panic!()
+    };
+    assert!(static_members["version"].readonly);
+    let SemanticType::Callable { result, .. } = graph.types[&constructors[0]] else {
+        panic!()
+    };
+    assert!(matches!(graph.types[&result], SemanticType::Apply { .. }));
+    let SemanticType::Shape { fields, .. } = &graph.types[instance] else {
+        panic!()
+    };
+    let SemanticType::Overload { signatures } = &graph.types[&fields["read"].type_ref] else {
+        panic!()
+    };
+    assert_eq!(signatures.len(), 3);
+}
+
+#[test]
 fn generic_constraints_defaults_and_lexical_scopes_survive_json_and_projection() {
     let source = "export declare function identity<T extends string = string>(value: T): T; export declare function other<T extends number>(value: T): T;";
     let graph = interpret_declaration(source, "api.d.ts", SETTINGS).unwrap();
@@ -455,10 +624,7 @@ fn recursive_aliases_and_uninterpreted_types_are_not_erased_or_widened() {
     .unwrap();
     assert!(converted.generated.is_none());
     assert_eq!(converted.semantic, Some(graph));
-    assert!(converted
-        .diagnostics
-        .iter()
-        .any(|d| d.message.contains("`any` requires")));
+    assert!(converted.diagnostics.iter().any(|d| d.code == "SES-F0110"));
 }
 
 #[test]

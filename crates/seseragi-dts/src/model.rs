@@ -86,6 +86,17 @@ pub struct OpaqueDeclaration {
     pub span: Span,
     pub type_parameters: Vec<String>,
     pub type_parameter_relations: Vec<TypeParameterRelation>,
+    pub surface: Option<ClassSurface>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ClassSurface {
+    pub constructors: Vec<TypeRef>,
+    pub fields: Vec<Property>,
+    pub statics: Vec<Property>,
+    pub inherited: bool,
+    pub constructible: bool,
+    pub incomplete: bool,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

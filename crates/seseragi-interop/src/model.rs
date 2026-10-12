@@ -147,6 +147,16 @@ pub enum SemanticType {
         identity: String,
         arguments: Vec<TypeId>,
     },
+    /// Host identity with distinct instance and constructor/static surfaces.
+    /// Member callables retain receivers; no snapshot semantics are implied.
+    Nominal {
+        identity: String,
+        instance: TypeId,
+        constructors: Vec<TypeId>,
+        constructible: bool,
+        #[serde(rename = "staticMembers")]
+        static_members: BTreeMap<String, ShapeField>,
+    },
     Tuple {
         elements: Vec<TypeId>,
     },
