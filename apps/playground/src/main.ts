@@ -10,7 +10,7 @@ import type {
   ProjectRequest,
 } from "./compiler/types"
 import {
-  analyzeProject,
+  analyzeProjectEditor,
   compileProject,
   convertWorkspaceBindings,
   formatProjectFile,
@@ -416,7 +416,7 @@ const liveAnalysis: LiveAnalysisController =
       const request = JSON.parse(identity) as WorkspaceAnalysisRequest
       return workspaceAnalysisResult(
         request,
-        await analyzeProject(request.project)
+        await analyzeProjectEditor(request.project)
       )
     },
     onPending: () => {

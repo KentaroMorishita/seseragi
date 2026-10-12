@@ -50,7 +50,7 @@ export async function compileSingleFile(
 export async function analyzeSingleFile(
   source: string
 ): Promise<AnalysisDocument> {
-  const response = await analyzeProject(singleFileRequest(source))
+  const response = await analyzeProjectEditor(singleFileRequest(source))
   if (response.status === "success") {
     const entry = response.documents.find(
       (document) => document.path === "main.ssrg"
@@ -104,6 +104,13 @@ export async function analyzeProject(
   return JSON.parse(
     analyze_project(JSON.stringify(request))
   ) as ProjectAnalysisResponse
+}
+
+/** Retains query documents while the user edits syntax-invalid source. */
+export async function analyzeProjectEditor(
+  request: ProjectRequest
+): Promise<ProjectAnalysisResponse> {
+  return analyzeProject({ ...request, editorRecovery: true })
 }
 
 export async function formatProjectFile(
