@@ -19,10 +19,8 @@
       },
       {
         "classification": "opaque-preserved",
-        "count": 1,
-        "symbols": [
-          "Container"
-        ]
+        "count": 0,
+        "symbols": []
       },
       {
         "classification": "safe-boundary",
@@ -31,8 +29,10 @@
       },
       {
         "classification": "policy-required",
-        "count": 0,
-        "symbols": []
+        "count": 1,
+        "symbols": [
+          "Container"
+        ]
       },
       {
         "classification": "runtime-abi-unresolved",
@@ -54,7 +54,7 @@
         "Union"
       ]
     },
-    "graphDigest": "2544f81fb08387aa047ba50837b309e67b6aed69e4dd5db13c75603f67c995b3",
+    "graphDigest": "22755e47940648f0037eac8cb9029a821a703e8f3c2f0f5f6f02e49a35c217fb",
     "identity": {
       "frontend": {
         "name": "seseragi-dts",
@@ -70,11 +70,17 @@
     "schema": 1,
     "symbols": {
       "Container": {
-        "classification": "opaque-preserved",
+        "classification": "policy-required",
         "origins": [
           {
             "end": 594,
             "rule": "declaration",
+            "source": "structures.d.ts",
+            "start": 468
+          },
+          {
+            "end": 594,
+            "rule": "declaration-reference",
             "source": "structures.d.ts",
             "start": 468
           },
@@ -86,13 +92,13 @@
           },
           {
             "end": 594,
-            "rule": "generic-parameter",
+            "rule": "nominal-host-identity",
             "source": "structures.d.ts",
             "start": 468
           },
           {
             "end": 594,
-            "rule": "opaque-identity",
+            "rule": "nominal-instance-members",
             "source": "structures.d.ts",
             "start": 468
           },
@@ -101,6 +107,84 @@
             "rule": "public-name",
             "source": "structures.d.ts",
             "start": 474
+          },
+          {
+            "end": 508,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 491
+          },
+          {
+            "end": 533,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 512
+          },
+          {
+            "end": 533,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 512
+          },
+          {
+            "end": 533,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 512
+          },
+          {
+            "end": 532,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 531
+          },
+          {
+            "end": 564,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 537
+          },
+          {
+            "end": 560,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 548
+          },
+          {
+            "end": 560,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 548
+          },
+          {
+            "end": 559,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 558
+          },
+          {
+            "end": 564,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 563
+          },
+          {
+            "end": 591,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 568
+          },
+          {
+            "end": 584,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 583
+          },
+          {
+            "end": 591,
+            "rule": "polymorphic-receiver",
+            "source": "structures.d.ts",
+            "start": 587
           }
         ],
         "projectionClassification": null,
@@ -121,27 +205,147 @@
             "typeRef": 22
           },
           {
-            "classification": "opaque-preserved",
+            "classification": "direct",
             "policy": null,
-            "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
-            "rule": "declaration-interpretation",
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
             "typeRef": 23
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 24
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 25
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 26
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 27
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 28
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 29
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "contextual receiver identity is retained; it cannot be replaced by a plain class or function result",
+            "rule": "declaration-interpretation",
+            "typeRef": 30
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "polymorphic contextual this result requires receiver-subtype relation policy",
+            "rule": "representation-safety",
+            "typeRef": 30
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 31
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 33
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 36
+          },
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
           },
           {
             "classification": "opaque-preserved",
             "policy": null,
-            "reason": "nominal identity retained without structural projection proof",
-            "rule": "representation-safety",
-            "typeRef": 23
+            "reason": "class identity and constructor/instance/static surfaces are separate; opaque raw binding preserves identity until an ABI adapter is explicitly approved",
+            "rule": "declaration-interpretation",
+            "typeRef": 38
           }
         ],
         "runtimeAbiUnresolved": false,
-        "semanticClassification": "opaque-preserved",
+        "semanticClassification": "policy-required",
         "typeRef": 21,
         "types": [
           21,
           22,
-          23
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38
         ]
       },
       "Intersection": {
@@ -398,14 +602,14 @@
             "policy": null,
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
-            "typeRef": 24
+            "typeRef": 39
           },
           {
             "classification": "direct",
             "policy": null,
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
-            "typeRef": 25
+            "typeRef": 40
           }
         ],
         "runtimeAbiUnresolved": false,
@@ -416,8 +620,8 @@
           1,
           2,
           3,
-          24,
-          25
+          39,
+          40
         ]
       },
       "Union": {
@@ -859,7 +1063,7 @@
         "origins": [
           {
             "end": 594,
-            "rule": "generic-parameter",
+            "rule": "declaration-reference",
             "source": "structures.d.ts",
             "start": 468
           }
@@ -875,11 +1079,338 @@
         ]
       },
       "23": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 508,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 491
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 23
+          }
+        ]
+      },
+      "24": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 559,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 558
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 24
+          }
+        ]
+      },
+      "25": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 560,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 548
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 25
+          }
+        ]
+      },
+      "26": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 560,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 548
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 26
+          }
+        ]
+      },
+      "27": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 564,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 563
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 27
+          }
+        ]
+      },
+      "28": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 564,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 537
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 28
+          }
+        ]
+      },
+      "29": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 584,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 583
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 29
+          }
+        ]
+      },
+      "3": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 174,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 168
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 3
+          }
+        ]
+      },
+      "30": {
+        "classification": "policy-required",
+        "origins": [
+          {
+            "end": 591,
+            "rule": "polymorphic-receiver",
+            "source": "structures.d.ts",
+            "start": 587
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "contextual receiver identity is retained; it cannot be replaced by a plain class or function result",
+            "rule": "declaration-interpretation",
+            "typeRef": 30
+          },
+          {
+            "classification": "policy-required",
+            "policy": null,
+            "reason": "polymorphic contextual this result requires receiver-subtype relation policy",
+            "rule": "representation-safety",
+            "typeRef": 30
+          }
+        ]
+      },
+      "31": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 591,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 568
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 31
+          }
+        ]
+      },
+      "32": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 594,
+            "rule": "nominal-instance-members",
+            "source": "structures.d.ts",
+            "start": 468
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 32
+          }
+        ]
+      },
+      "33": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 532,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 531
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 33
+          }
+        ]
+      },
+      "34": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 533,
+            "rule": "lexical-type-parameter",
+            "source": "structures.d.ts",
+            "start": 512
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 34
+          }
+        ]
+      },
+      "35": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 533,
+            "rule": "declaration-reference",
+            "source": "structures.d.ts",
+            "start": 512
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 35
+          }
+        ]
+      },
+      "36": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 533,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 512
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 36
+          }
+        ]
+      },
+      "37": {
+        "classification": "direct",
+        "origins": [
+          {
+            "end": 533,
+            "rule": "type-interpretation",
+            "source": "structures.d.ts",
+            "start": 512
+          }
+        ],
+        "reasons": [
+          {
+            "classification": "direct",
+            "policy": null,
+            "reason": "meaning is represented directly by the validated shared semantic node",
+            "rule": "semantic-relationship",
+            "typeRef": 37
+          }
+        ]
+      },
+      "38": {
         "classification": "opaque-preserved",
         "origins": [
           {
             "end": 594,
-            "rule": "opaque-identity",
+            "rule": "nominal-host-identity",
             "source": "structures.d.ts",
             "start": 468
           }
@@ -888,20 +1419,13 @@
           {
             "classification": "opaque-preserved",
             "policy": null,
-            "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
+            "reason": "class identity and constructor/instance/static surfaces are separate; opaque raw binding preserves identity until an ABI adapter is explicitly approved",
             "rule": "declaration-interpretation",
-            "typeRef": 23
-          },
-          {
-            "classification": "opaque-preserved",
-            "policy": null,
-            "reason": "nominal identity retained without structural projection proof",
-            "rule": "representation-safety",
-            "typeRef": 23
+            "typeRef": 38
           }
         ]
       },
-      "24": {
+      "39": {
         "classification": "direct",
         "origins": [
           {
@@ -917,11 +1441,11 @@
             "policy": null,
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
-            "typeRef": 24
+            "typeRef": 39
           }
         ]
       },
-      "25": {
+      "40": {
         "classification": "direct",
         "origins": [
           {
@@ -943,27 +1467,7 @@
             "policy": null,
             "reason": "meaning is represented directly by the validated shared semantic node",
             "rule": "semantic-relationship",
-            "typeRef": 25
-          }
-        ]
-      },
-      "3": {
-        "classification": "direct",
-        "origins": [
-          {
-            "end": 174,
-            "rule": "type-interpretation",
-            "source": "structures.d.ts",
-            "start": 168
-          }
-        ],
-        "reasons": [
-          {
-            "classification": "direct",
-            "policy": null,
-            "reason": "meaning is represented directly by the validated shared semantic node",
-            "rule": "semantic-relationship",
-            "typeRef": 3
+            "typeRef": 40
           }
         ]
       },
@@ -1079,17 +1583,25 @@
         "rule": "declaration-merge"
       },
       {
+        "classification": "policy-required",
+        "inputs": [],
+        "output": 30,
+        "policy": null,
+        "reason": "contextual receiver identity is retained; it cannot be replaced by a plain class or function result",
+        "rule": "declaration-interpretation"
+      },
+      {
         "classification": "opaque-preserved",
         "inputs": [],
-        "output": 23,
+        "output": 38,
         "policy": null,
-        "reason": "declaration identity is retained; structural and constructor interpretation requires a separate boundary policy",
+        "reason": "class identity and constructor/instance/static surfaces are separate; opaque raw binding preserves identity until an ABI adapter is explicitly approved",
         "rule": "declaration-interpretation"
       },
       {
         "classification": "normalized",
         "inputs": [
-          26
+          41
         ],
         "output": 17,
         "policy": null,
@@ -1148,7 +1660,7 @@
         ],
         "publicName": "Hidden",
         "runtime": null,
-        "typeRef": 25
+        "typeRef": 40
       },
       "Intersection": {
         "declarationName": "Intersection",
@@ -1407,53 +1919,65 @@
       "22": [
         {
           "end": 594,
-          "rule": "generic-parameter",
+          "rule": "declaration-reference",
           "source": "structures.d.ts",
           "start": 468
         }
       ],
       "23": [
         {
-          "end": 594,
-          "rule": "opaque-identity",
+          "end": 508,
+          "rule": "lexical-type-parameter",
           "source": "structures.d.ts",
-          "start": 468
+          "start": 491
         }
       ],
       "24": [
         {
-          "end": 38,
-          "rule": "type-interpretation",
+          "end": 559,
+          "rule": "lexical-type-parameter",
           "source": "structures.d.ts",
-          "start": 32
+          "start": 558
         }
       ],
       "25": [
         {
-          "end": 41,
-          "rule": "type-interpretation",
+          "end": 560,
+          "rule": "declaration-reference",
           "source": "structures.d.ts",
-          "start": 17
-        },
-        {
-          "end": 41,
-          "rule": "declaration",
-          "source": "structures.d.ts",
-          "start": 0
+          "start": 548
         }
       ],
       "26": [
         {
-          "end": 372,
+          "end": 560,
           "rule": "type-interpretation",
           "source": "structures.d.ts",
-          "start": 320
-        },
+          "start": 548
+        }
+      ],
+      "27": [
         {
-          "end": 373,
-          "rule": "declaration",
+          "end": 564,
+          "rule": "lexical-type-parameter",
           "source": "structures.d.ts",
-          "start": 300
+          "start": 563
+        }
+      ],
+      "28": [
+        {
+          "end": 564,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 537
+        }
+      ],
+      "29": [
+        {
+          "end": 584,
+          "rule": "lexical-type-parameter",
+          "source": "structures.d.ts",
+          "start": 583
         }
       ],
       "3": [
@@ -1462,6 +1986,86 @@
           "rule": "type-interpretation",
           "source": "structures.d.ts",
           "start": 168
+        }
+      ],
+      "30": [
+        {
+          "end": 591,
+          "rule": "polymorphic-receiver",
+          "source": "structures.d.ts",
+          "start": 587
+        }
+      ],
+      "31": [
+        {
+          "end": 591,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 568
+        }
+      ],
+      "32": [
+        {
+          "end": 594,
+          "rule": "nominal-instance-members",
+          "source": "structures.d.ts",
+          "start": 468
+        }
+      ],
+      "33": [
+        {
+          "end": 532,
+          "rule": "lexical-type-parameter",
+          "source": "structures.d.ts",
+          "start": 531
+        }
+      ],
+      "34": [
+        {
+          "end": 533,
+          "rule": "lexical-type-parameter",
+          "source": "structures.d.ts",
+          "start": 512
+        }
+      ],
+      "35": [
+        {
+          "end": 533,
+          "rule": "declaration-reference",
+          "source": "structures.d.ts",
+          "start": 512
+        }
+      ],
+      "36": [
+        {
+          "end": 533,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 512
+        }
+      ],
+      "37": [
+        {
+          "end": 533,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 512
+        }
+      ],
+      "38": [
+        {
+          "end": 594,
+          "rule": "nominal-host-identity",
+          "source": "structures.d.ts",
+          "start": 468
+        }
+      ],
+      "39": [
+        {
+          "end": 38,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 32
         }
       ],
       "4": [
@@ -1476,6 +2080,34 @@
           "rule": "declaration",
           "source": "structures.d.ts",
           "start": 131
+        }
+      ],
+      "40": [
+        {
+          "end": 41,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 17
+        },
+        {
+          "end": 41,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 0
+        }
+      ],
+      "41": [
+        {
+          "end": 372,
+          "rule": "type-interpretation",
+          "source": "structures.d.ts",
+          "start": 320
+        },
+        {
+          "end": 373,
+          "rule": "declaration",
+          "source": "structures.d.ts",
+          "start": 300
         }
       ],
       "6": [
@@ -1639,7 +2271,7 @@
         "kind": "shape"
       },
       "21": {
-        "body": 23,
+        "body": 38,
         "kind": "generic",
         "parameters": [
           {
@@ -1650,40 +2282,149 @@
         ]
       },
       "22": {
+        "kind": "reference",
+        "symbol": "Container"
+      },
+      "23": {
         "binder": 21,
         "index": 0,
         "kind": "parameter"
       },
-      "23": {
-        "arguments": [
-          22
-        ],
-        "identity": "Container",
-        "kind": "opaque"
-      },
       "24": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "25": {
+        "kind": "reference",
+        "symbol": "Container"
+      },
+      "26": {
+        "arguments": [
+          24
+        ],
+        "constructor": 25,
+        "kind": "apply"
+      },
+      "27": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "28": {
+        "kind": "callable",
+        "parameters": [],
+        "receiver": 26,
+        "result": 27
+      },
+      "29": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "3": {
         "domain": "string",
         "kind": "primitive"
       },
-      "25": {
+      "30": {
+        "kind": "unresolved",
+        "reason": "polymorphic contextual this result requires receiver-subtype relation policy"
+      },
+      "31": {
+        "kind": "callable",
+        "parameters": [
+          {
+            "name": "value",
+            "optional": false,
+            "origins": [
+              {
+                "end": 581,
+                "rule": "parameter-name",
+                "source": "structures.d.ts",
+                "start": 576
+              }
+            ],
+            "rest": false,
+            "typeRef": 29
+          }
+        ],
+        "receiver": 22,
+        "result": 30
+      },
+      "32": {
         "fields": {
-          "id": {
+          "read": {
+            "optional": false,
+            "readonly": false,
+            "typeRef": 28
+          },
+          "replace": {
+            "optional": false,
+            "readonly": false,
+            "typeRef": 31
+          },
+          "value": {
             "optional": false,
             "readonly": true,
-            "typeRef": 24
+            "typeRef": 23
           }
         },
-        "identity": "readonly-snapshot",
+        "identity": "mutable-identity",
         "kind": "shape"
       },
-      "26": {
-        "kind": "intersection",
-        "members": [
-          14,
-          16
-        ]
+      "33": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
       },
-      "3": {
+      "34": {
+        "binder": 21,
+        "index": 0,
+        "kind": "parameter"
+      },
+      "35": {
+        "kind": "reference",
+        "symbol": "Container"
+      },
+      "36": {
+        "arguments": [
+          34
+        ],
+        "constructor": 35,
+        "kind": "apply"
+      },
+      "37": {
+        "kind": "callable",
+        "parameters": [
+          {
+            "name": "value",
+            "optional": false,
+            "origins": [
+              {
+                "end": 529,
+                "rule": "parameter-name",
+                "source": "structures.d.ts",
+                "start": 524
+              }
+            ],
+            "rest": false,
+            "typeRef": 33
+          }
+        ],
+        "receiver": null,
+        "result": 36
+      },
+      "38": {
+        "constructible": true,
+        "constructors": [
+          37
+        ],
+        "identity": "Container",
+        "instance": 32,
+        "kind": "nominal",
+        "staticMembers": {}
+      },
+      "39": {
         "domain": "string",
         "kind": "primitive"
       },
@@ -1697,6 +2438,24 @@
         },
         "identity": "readonly-snapshot",
         "kind": "shape"
+      },
+      "40": {
+        "fields": {
+          "id": {
+            "optional": false,
+            "readonly": true,
+            "typeRef": 39
+          }
+        },
+        "identity": "readonly-snapshot",
+        "kind": "shape"
+      },
+      "41": {
+        "kind": "intersection",
+        "members": [
+          14,
+          16
+        ]
       },
       "5": {
         "fields": {

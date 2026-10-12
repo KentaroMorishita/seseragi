@@ -296,3 +296,37 @@ fn nominal_or_open_relations_cannot_be_forged_as_direct_by_producer_steps() {
         SemanticClassification::OpaquePreserved
     );
 }
+
+#[test]
+fn known_open_policy_remains_distinct_from_uninterpreted_and_forged_direct() {
+    let mut graph = graph();
+    graph.types.insert(
+        TypeId(0),
+        SemanticType::Unresolved {
+            reason: "open conditional retains operand evidence".to_owned(),
+        },
+    );
+    graph.normalizations.push(Normalization {
+        output: TypeId(0),
+        inputs: vec![],
+        rule: "open-domain-selection".to_owned(),
+        classification: SemanticClassification::PolicyRequired,
+        reason: "requires explicit conditional policy".to_owned(),
+        policy: None,
+    });
+    assert_eq!(
+        SemanticCompatibilityReport::from_graph(&graph)
+            .unwrap()
+            .symbols["Text"]
+            .classification,
+        SemanticClassification::PolicyRequired
+    );
+    graph.normalizations[0].classification = SemanticClassification::Direct;
+    assert_eq!(
+        SemanticCompatibilityReport::from_graph(&graph)
+            .unwrap()
+            .symbols["Text"]
+            .classification,
+        SemanticClassification::Uninterpreted
+    );
+}

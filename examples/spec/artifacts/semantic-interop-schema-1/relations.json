@@ -28,12 +28,13 @@
       },
       {
         "classification": "policy-required",
-        "count": 4,
+        "count": 5,
         "symbols": [
           "Element",
           "Keys",
           "MappedOpen",
-          "Member"
+          "Member",
+          "Open"
         ]
       },
       {
@@ -43,10 +44,8 @@
       },
       {
         "classification": "uninterpreted",
-        "count": 1,
-        "symbols": [
-          "Open"
-        ]
+        "count": 0,
+        "symbols": []
       }
     ],
     "declarations": {
@@ -738,7 +737,7 @@
         ]
       },
       "Open": {
-        "classification": "uninterpreted",
+        "classification": "policy-required",
         "origins": [
           {
             "end": 270,
@@ -807,7 +806,7 @@
             "typeRef": 27
           },
           {
-            "classification": "uninterpreted",
+            "classification": "policy-required",
             "policy": null,
             "reason": "open conditional domain requires explicit semantic boundary policy",
             "rule": "representation-safety",
@@ -815,7 +814,7 @@
           }
         ],
         "runtimeAbiUnresolved": false,
-        "semanticClassification": "uninterpreted",
+        "semanticClassification": "policy-required",
         "typeRef": 22,
         "types": [
           22,
@@ -1266,7 +1265,7 @@
         ]
       },
       "27": {
-        "classification": "uninterpreted",
+        "classification": "policy-required",
         "origins": [
           {
             "end": 236,
@@ -1308,7 +1307,7 @@
             "typeRef": 27
           },
           {
-            "classification": "uninterpreted",
+            "classification": "policy-required",
             "policy": null,
             "reason": "open conditional domain requires explicit semantic boundary policy",
             "rule": "representation-safety",

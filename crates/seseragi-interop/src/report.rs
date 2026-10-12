@@ -362,7 +362,20 @@ fn type_status(graph: &SemanticGraph, id: TypeId) -> TypeCompatibility {
     // a forged "direct" normalization cannot hide dynamic/unresolved meaning.
     let guard = match &graph.types[&id] {
         SemanticType::Unresolved { reason } => {
-            Some((SemanticClassification::Uninterpreted, reason.as_str()))
+            let classified_policy = reasons
+                .iter()
+                .any(|reason| reason.classification == SemanticClassification::PolicyRequired)
+                && !reasons
+                    .iter()
+                    .any(|reason| reason.classification == SemanticClassification::Uninterpreted);
+            Some((
+                if classified_policy {
+                    SemanticClassification::PolicyRequired
+                } else {
+                    SemanticClassification::Uninterpreted
+                },
+                reason.as_str(),
+            ))
         }
         SemanticType::Primitive {
             domain: PrimitiveDomain::Dynamic,
