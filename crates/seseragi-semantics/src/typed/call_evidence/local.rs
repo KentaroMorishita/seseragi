@@ -368,20 +368,28 @@ fn match_derived_display(
     {
         return None;
     }
-    let [TypedType::Named {
-        name: actual,
-        arguments,
-    }] = constraint.arguments.as_slice()
-    else {
-        return None;
-    };
-    if actual != name || arguments.len() != type_parameters.len() {
-        return None;
-    }
     let canonical = resolution
         .declaration_symbol(name_span, crate::SymbolKind::Type)?
         .canonical
         .as_deref()?;
+    let [actual] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    let arguments = match actual {
+        TypedType::Named {
+            name: actual,
+            arguments,
+        } if actual == name => arguments,
+        TypedType::ExternalNamed {
+            canonical: actual,
+            arguments,
+            ..
+        } if actual == canonical => arguments,
+        _ => return None,
+    };
+    if arguments.len() != type_parameters.len() {
+        return None;
+    }
     let substitutions = type_parameters
         .iter()
         .zip(arguments)

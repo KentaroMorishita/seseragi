@@ -10,6 +10,7 @@ struct ActiveBindings {
 }
 #[derive(Deserialize)]
 struct ActiveEntry {
+    declaration: String,
     output: String,
     projection_policy: Option<String>,
 }
@@ -63,32 +64,61 @@ pub(crate) fn validate_generated_import_owner(
         // Handwritten modules without converter ownership metadata remain legal.
         return Ok(());
     }
-    let active = foreign
+    let settings_source = foreign
         .and_then(|foreign| foreign.bindings.as_ref())
-        .and_then(|bindings| fs::read_to_string(package_root.join(bindings.as_str())).ok())
-        .and_then(|source| toml::from_str::<ActiveBindings>(&source).ok())
+        .and_then(|bindings| fs::read_to_string(package_root.join(bindings.as_str())).ok());
+    let active = settings_source
+        .as_deref()
+        .and_then(|source| toml::from_str::<ActiveBindings>(source).ok())
         .filter(|settings| settings.schema == 1);
     let entries = active.as_ref().map(|settings| &settings.entries);
-    if raw.as_ref().is_some_and(|owner| {
+    if let Some(entry) = raw.as_ref().and_then(|owner| {
         entries
             .and_then(|entries| entries.get(&owner.entry))
-            .is_some_and(|entry| entry.output == path)
+            .filter(|entry| entry.output == path)
     }) {
-        return Ok(());
+        return validate_projection_owner(
+            package_root,
+            generated_root,
+            settings_source.as_deref().unwrap(),
+            entry,
+        );
     }
     if let Some(owner) = semantic {
-        if entries.is_some_and(|entries| {
-            entries.values().any(|entry| {
+        if let Some(entry) = entries.and_then(|entries| {
+            entries.values().find(|entry| {
                 Some(entry.output.as_str()) == semantic_output && entry.projection_policy.is_some()
             })
         }) {
             let source = fs::read_to_string(generated_root.join(format!("{path}.ssrg")))
                 .map_err(|error| error.to_string())?;
             if source == owner.semantic_source {
-                return Ok(());
+                return validate_projection_owner(
+                    package_root,
+                    generated_root,
+                    settings_source.as_deref().unwrap(),
+                    entry,
+                );
             }
             return Err(format!("generated semantic module `gen/{path}` has been edited; regenerate it from the active projection policy"));
         }
     }
     Err(format!("generated module `gen/{path}` belongs to a removed entry, renamed output, or removed semantic policy; update the import and regenerate bindings (retained files were preserved)"))
+}
+
+fn validate_projection_owner(
+    package_root: &Path,
+    generated_root: &Path,
+    settings: &str,
+    entry: &ActiveEntry,
+) -> Result<(), String> {
+    let Some(policy) = &entry.projection_policy else {
+        return Ok(());
+    };
+    let metadata =
+        fs::read_to_string(generated_root.join(format!("{}.binding.json", entry.output)))
+            .map_err(|error| format!("missing semantic adapter binding metadata: {error}"))?;
+    crate::generated_projection::validate_generated_projection(
+        package_root, generated_root, settings, &entry.output, &entry.declaration, policy, &metadata,
+    ).map_err(|error| format!("semantic policy `{policy}` is missing/invalid/stale: {error}; run `seseragi dts convert`"))
 }

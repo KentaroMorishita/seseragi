@@ -535,6 +535,28 @@ fn canonical_semantic_value(
                     .join(",")
             ))
         }
+        SemanticTypeKey::Record(values) => {
+            let TypedType::Record { closed, fields } = &value.type_ref else {
+                return None;
+            };
+            let mut fields = fields
+                .iter()
+                .map(|field| {
+                    Some(format!(
+                        "{}{}:{}",
+                        field.name,
+                        if field.optional { "?" } else { "" },
+                        canonical_semantic_value(values.get(&field.name)?, resolution)?
+                    ))
+                })
+                .collect::<Option<Vec<_>>>()?;
+            fields.sort();
+            Some(format!(
+                "{}{{{}}}",
+                if *closed { "" } else { "open" },
+                fields.join(",")
+            ))
+        }
         SemanticTypeKey::Other => canonical_other_type(&value.type_ref, resolution),
         SemanticTypeKey::Invalid
         | SemanticTypeKey::TypeParameter(_)

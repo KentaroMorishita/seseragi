@@ -9,6 +9,16 @@ pub(super) fn collect_match_diagnostics(issues: &[MatchIssue], diagnostics: &mut
 
 pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
     match issue {
+        MatchIssue::CoverageLimit { expression } => Diagnostic {
+            type_difference: None,
+            id: String::new(),
+            code: "SES-T0303".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "match.coverage-limit".to_owned(),
+            primary: byte_range(*expression),
+            related: Vec::new(),
+            fixes: Vec::new(),
+        },
         MatchIssue::PatternMismatch { pattern, message } => Diagnostic {
             type_difference: None,
             id: String::new(),

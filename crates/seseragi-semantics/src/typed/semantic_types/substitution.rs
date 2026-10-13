@@ -279,6 +279,34 @@ fn substitute_semantic_type_parameters(
                 },
             }
         }
+        (TypedType::Record { closed, fields }, SemanticTypeKey::Record(keys)) => {
+            let values = keys
+                .iter()
+                .map(|(name, value)| {
+                    (
+                        name.clone(),
+                        substitute_semantic_type_parameters(value, substitutions),
+                    )
+                })
+                .collect::<std::collections::BTreeMap<_, _>>();
+            SemanticValueType {
+                type_ref: TypedType::Record {
+                    closed: *closed,
+                    fields: fields
+                        .iter()
+                        .map(|field| crate::TypedRecordField {
+                            name: field.name.clone(),
+                            optional: field.optional,
+                            type_ref: values.get(&field.name).map_or_else(
+                                || field.type_ref.clone(),
+                                |value| value.type_ref.clone(),
+                            ),
+                        })
+                        .collect(),
+                },
+                key: SemanticTypeKey::Record(values),
+            }
+        }
         (TypedType::Tuple { elements: types }, SemanticTypeKey::Tuple(keys)) => {
             let elements = types
                 .iter()
@@ -497,6 +525,13 @@ fn collect_substitutions(
         ) if template_name == actual_name && templates.len() == arguments.len() => {
             for (template, argument) in templates.iter().zip(arguments) {
                 collect_substitutions(&template.key, argument, substitutions);
+            }
+        }
+        (SemanticTypeKey::Record(templates), SemanticTypeKey::Record(actuals)) => {
+            for (name, template) in templates {
+                if let Some(actual) = actuals.get(name) {
+                    collect_substitutions(&template.key, actual, substitutions);
+                }
             }
         }
         (SemanticTypeKey::Tuple(templates), SemanticTypeKey::Tuple(actuals))

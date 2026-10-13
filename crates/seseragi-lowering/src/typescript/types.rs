@@ -17,6 +17,7 @@ pub(super) struct TypeScriptTypeContext {
     private_struct_names: BTreeSet<String>,
     private_representation: bool,
     erased_newtypes: BTreeSet<String>,
+    foreign_scalar_results: BTreeMap<String, (usize, usize, usize)>,
 }
 
 impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
@@ -29,14 +30,61 @@ impl From<BTreeMap<String, String>> for TypeScriptTypeContext {
             private_struct_names: BTreeSet::new(),
             private_representation: false,
             erased_newtypes: BTreeSet::new(),
+            foreign_scalar_results: BTreeMap::new(),
         }
     }
 }
 
 impl TypeScriptTypeContext {
+    pub(super) fn with_runtime_type_name(mut self, canonical: String, name: String) -> Self {
+        Arc::make_mut(&mut self.imported_names).insert(canonical, name);
+        self
+    }
+
     pub(super) fn with_erased_newtypes(mut self, constructors: BTreeSet<String>) -> Self {
         self.erased_newtypes = constructors;
         self
+    }
+
+    /// Only an actual foreign declaration can bind a result to a codec slot.
+    /// Matching a result display name or an unrelated argument codec is insufficient.
+    pub(super) fn foreign_scalar_result(
+        &self,
+        callee: &str,
+        argument_count: usize,
+        result_type: &CoreType,
+        evidence: &[crate::CoreCallEvidence],
+    ) -> Option<CoreType> {
+        let &(arity, slot, codec_count) = self.foreign_scalar_results.get(callee)?;
+        if argument_count != arity || evidence.len() != codec_count {
+            return None;
+        }
+        let selected = evidence.get(slot)?;
+        let crate::CoreInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } = &selected.evidence
+        else {
+            return None;
+        };
+        let [result @ CoreType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        }] = type_arguments.as_slice()
+        else {
+            return None;
+        };
+        (identity == "@seseragi/foreign-codec"
+            && selected.constraint.name == "ForeignCodec"
+            && selected.constraint.arguments.as_slice() == type_arguments.as_slice()
+            && evidence_arguments.is_empty()
+            && arguments.is_empty()
+            && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String")
+            && canonical == &format!("std/prelude::{name}")
+            && matches!(result_type, CoreType::Named {name: actual, arguments} if actual == name && arguments.is_empty()))
+            .then(|| result.clone())
     }
 
     pub(super) fn is_erased_newtype(&self, constructor: &str) -> bool {
@@ -44,7 +92,91 @@ impl TypeScriptTypeContext {
     }
 
     pub(super) fn with_module(mut self, module: &crate::CoreModule) -> Self {
+        fn collect(
+            members: &[crate::CoreForeignMember],
+            results: &mut BTreeMap<String, (usize, usize, usize)>,
+        ) {
+            for member in members {
+                match member {
+                    crate::CoreForeignMember::Function {
+                        symbol,
+                        mode: seseragi_syntax::ForeignCallMode::Pure,
+                        type_parameters,
+                        parameters,
+                        return_type: CoreType::Named { name, arguments },
+                        ..
+                    } if arguments.is_empty() => {
+                        if let Some(index) = type_parameters
+                            .iter()
+                            .position(|parameter| parameter.name == *name && parameter.arity == 0)
+                        {
+                            results.insert(
+                                symbol.clone(),
+                                (parameters.len(), index, type_parameters.len()),
+                            );
+                        }
+                    }
+                    crate::CoreForeignMember::Namespace { members, .. } => {
+                        collect(members, results)
+                    }
+                    _ => {}
+                }
+            }
+        }
+        for foreign in &module.foreign_modules {
+            collect(&foreign.members, &mut self.foreign_scalar_results);
+        }
+        for import in module
+            .module_dependencies
+            .iter()
+            .flat_map(|dependency| &dependency.imports)
+        {
+            if let Some(proof) = &import.foreign_scalar_result {
+                if proof.parameter_count == 0
+                    || proof.type_parameter_index >= proof.type_parameter_count
+                {
+                    self.foreign_scalar_results
+                        .insert(import.canonical.clone(), (0, 0, 0));
+                } else {
+                    let incoming = (
+                        proof.parameter_count,
+                        proof.type_parameter_index,
+                        proof.type_parameter_count,
+                    );
+                    match self.foreign_scalar_results.get(&import.canonical) {
+                        Some(previous) if *previous != incoming => {
+                            self.foreign_scalar_results
+                                .insert(import.canonical.clone(), (0, 0, 0));
+                        }
+                        None => {
+                            self.foreign_scalar_results
+                                .insert(import.canonical.clone(), incoming);
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+        for (symbol, arity) in module
+            .structs
+            .iter()
+            .map(|item| (&item.symbol, item.type_parameters.len()))
+            .chain(
+                module
+                    .adts
+                    .iter()
+                    .map(|item| (&item.symbol, item.type_parameters.len())),
+            )
+        {
+            self.arities.insert(symbol.clone(), arity as u32);
+        }
         if module.structs.iter().any(|structure| structure.opaque) {
+            self.private_struct_names.extend(
+                module
+                    .structs
+                    .iter()
+                    .map(|structure| structure.symbol.clone()),
+            );
             self.private_struct_names.extend(
                 module
                     .structs
@@ -74,7 +206,9 @@ impl TypeScriptTypeContext {
                     .map(|item| (&item.name, item.type_parameters.len())),
             )
         {
-            self.arities.insert(name.clone(), count as u32);
+            if seseragi_semantics::prelude_type_constructor_arity(name).is_none() {
+                self.arities.insert(name.clone(), count as u32);
+            }
         }
         self
     }
@@ -256,12 +390,14 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             }
         }
         CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
-            TypeScriptType::List {
-                element: Box::new(type_ref_from_core_type_with_erasure(
-                    &arguments[0],
-                    imported_types,
-                    type_constructor_parameters,
-                )),
+            let element = type_ref_from_core_type_with_erasure(
+                &arguments[0], imported_types, type_constructor_parameters,
+            );
+            match imported_types.imported_names.get("std/prelude::List") {
+                Some(alias) if alias != "List" => TypeScriptType::Reference {
+                    name: alias.clone(), arguments: vec![element],
+                },
+                _ => TypeScriptType::List {element: Box::new(element)},
             }
         }
         CoreType::Named { name, arguments }
@@ -306,6 +442,30 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 })
                 .collect(),
         },
+        CoreType::ExternalNamed {name, canonical, arguments}
+            if imported_types.private_representation && imported_types.private_struct_names.contains(canonical) =>
+        {
+            TypeScriptType::Reference {
+                name: private_representation_name(&local_name(name)),
+                arguments: arguments.iter().map(|argument| type_ref_from_core_type_with_erasure(argument, imported_types, type_constructor_parameters)).collect(),
+            }
+        }
+        // Instance selection can preserve primitive identity canonically when
+        // its display name is shadowed. These builtins need no external import,
+        // and must bypass lexical nominal/type-parameter name translation.
+        CoreType::ExternalNamed { name, canonical, arguments }
+            if arguments.is_empty()
+                && canonical == &format!("std/prelude::{name}")
+                && matches!(name.as_str(), "Bool" | "Int" | "Float" | "Char" | "String" | "Unit") =>
+        {
+            match name.as_str() {
+                "Bool" => TypeScriptType::Boolean,
+                "Int" | "Float" => TypeScriptType::Number,
+                "Char" | "String" => TypeScriptType::String,
+                "Unit" => TypeScriptType::Undefined,
+                _ => unreachable!(),
+            }
+        }
         CoreType::ExternalNamed {
             name,
             canonical,
@@ -464,11 +624,123 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn foreign_scalar_result_uses_only_the_declared_codec_slot_and_exact_proof() {
+        let context = super::TypeScriptTypeContext {
+            foreign_scalar_results: [("fixture::pick".to_owned(), (2, 1, 2))]
+                .into_iter()
+                .collect(),
+            ..Default::default()
+        };
+        let scalar = |name: &str| crate::CoreType::ExternalNamed {
+            name: name.into(),
+            canonical: format!("std/prelude::{name}"),
+            arguments: Vec::new(),
+        };
+        let evidence = |name: &str| crate::CoreCallEvidence {
+            constraint: crate::CoreInstanceConstraint {
+                name: "ForeignCodec".into(),
+                trait_identity: None,
+                arguments: vec![scalar(name)],
+            },
+            evidence: crate::CoreInstanceEvidence::Standard {
+                identity: "@seseragi/foreign-codec".into(),
+                type_arguments: vec![scalar(name)],
+                evidence_arguments: Vec::new(),
+            },
+        };
+        let selected = vec![evidence("String"), evidence("Bool")];
+        let result = crate::CoreType::Named {
+            name: "Bool".into(),
+            arguments: Vec::new(),
+        };
+        assert_eq!(
+            context.foreign_scalar_result("fixture::pick", 2, &result, &selected),
+            Some(scalar("Bool"))
+        );
+        assert!(context
+            .foreign_scalar_result("fixture::pick", 1, &result, &selected)
+            .is_none());
+        assert!(context
+            .foreign_scalar_result("fixture::unknown", 2, &result, &selected)
+            .is_none());
+        assert!(context
+            .foreign_scalar_result("fixture::pick", 2, &result, &selected[..1])
+            .is_none());
+        let wrong_result = crate::CoreType::Named {
+            name: "String".into(),
+            arguments: Vec::new(),
+        };
+        assert!(context
+            .foreign_scalar_result("fixture::pick", 2, &wrong_result, &selected)
+            .is_none());
+        let mut forged = selected.clone();
+        let crate::CoreInstanceEvidence::Standard { identity, .. } = &mut forged[1].evidence else {
+            unreachable!()
+        };
+        *identity = "user::ForeignCodec".into();
+        assert!(context
+            .foreign_scalar_result("fixture::pick", 2, &result, &forged)
+            .is_none());
+        let mut mismatched = selected;
+        mismatched[1].constraint.arguments = vec![scalar("String")];
+        assert!(context
+            .foreign_scalar_result("fixture::pick", 2, &result, &mismatched)
+            .is_none());
+    }
+
     use super::{
         lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_type,
         CoreParameter, CoreType,
     };
     use crate::TypeScriptType;
+
+    #[test]
+    fn canonical_primitive_evidence_types_lower_without_external_imports() {
+        for (name, expected) in [
+            ("Bool", TypeScriptType::Boolean),
+            ("Int", TypeScriptType::Number),
+            ("Float", TypeScriptType::Number),
+            ("Char", TypeScriptType::String),
+            ("String", TypeScriptType::String),
+            ("Unit", TypeScriptType::Undefined),
+        ] {
+            let ty = CoreType::ExternalNamed {
+                name: name.into(),
+                canonical: format!("std/prelude::{name}"),
+                arguments: Vec::new(),
+            };
+            assert_eq!(type_ref_from_core_type(&ty, &Default::default()), expected);
+        }
+    }
+
+    #[test]
+    fn external_evidence_types_cannot_claim_a_mismatched_or_parameterized_primitive() {
+        for (name, canonical, arguments) in [
+            ("Float", "malicious/prelude::Float", Vec::new()),
+            ("Bool", "std/prelude::Float", Vec::new()),
+            (
+                "Float",
+                "std/prelude::Float",
+                vec![CoreType::Named {
+                    name: "Int".into(),
+                    arguments: Vec::new(),
+                }],
+            ),
+            ("Unknown", "std/prelude::Unknown", Vec::new()),
+        ] {
+            let ty = CoreType::ExternalNamed {
+                name: name.into(),
+                canonical: canonical.into(),
+                arguments,
+            };
+            assert!(
+                std::panic::catch_unwind(|| type_ref_from_core_type(&ty, &Default::default()))
+                    .is_err(),
+                "{ty:?}"
+            );
+        }
+    }
 
     #[test]
     fn renders_qualified_nominal_types_with_local_backend_names() {

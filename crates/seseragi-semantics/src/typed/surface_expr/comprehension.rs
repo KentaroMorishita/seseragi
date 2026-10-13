@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 
 use super::pattern::type_pattern;
 use super::{
-    named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
+    primitive_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 
 #[derive(Clone, Copy)]
@@ -132,7 +132,9 @@ fn type_comprehension(
             SurfaceComprehensionClause::Guard { condition, span } => {
                 let guard = type_surface_expression(condition, &current_context);
                 let actual = inferred_type_from_expr(&guard.value);
-                if !typed_type_contains_hole(&actual) && !named_type_is(&actual, "Bool") {
+                if !typed_type_contains_hole(&actual)
+                    && !primitive_type_is(&actual, &guard.semantic_type, "Bool")
+                {
                     match_issues.push(crate::typed::pure_issues::MatchIssue::GuardNotBool {
                         guard: condition.span(),
                         actual,

@@ -7,8 +7,9 @@ use super::TypedResolution;
 mod generic;
 
 pub(crate) use generic::{
-    infer_type_parameters, instantiated_application, instantiated_application_indexed,
-    instantiated_application_result_type, substitute_type_parameters, InstantiatedApplication,
+    evidence_type, infer_type_parameters, instantiated_application,
+    instantiated_application_indexed, instantiated_application_result_type,
+    substitute_type_parameters, InstantiatedApplication,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]

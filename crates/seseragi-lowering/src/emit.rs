@@ -773,14 +773,27 @@ fn render_tail_recursive_body(
         .map(|parameter| parameter.type_name.as_str())
         .collect::<Vec<_>>()
         .join(", ");
-    let assignments = parameters
+    let initial_arguments = parameters
+        .iter()
+        .map(|parameter| parameter.name.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
+    // Curried arguments belong to the reusable outer closures, and closures
+    // created by the body must retain the values of their own iteration.
+    // Keep mutable loop state separate from both sets of lexical bindings.
+    let iteration_bindings = parameters
         .iter()
         .enumerate()
-        .map(|(index, parameter)| format!("{} = $ssrg$arguments[{index}];", parameter.name))
+        .map(|(index, parameter)| {
+            format!(
+                "const {}: {} = $ssrg$loopArguments[{index}];",
+                parameter.name, parameter.type_name
+            )
+        })
         .collect::<Vec<_>>()
         .join(" ");
     format!(
-        "{{ const $ssrg$tail = Symbol(); while (true) {{ const $ssrg$result = {rendered_body}; const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === \"object\" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) {{ const $ssrg$arguments = ($ssrg$tailResult as {{ readonly [$ssrg$tail]: readonly [{argument_types}] }})[$ssrg$tail]; {assignments} continue; }} return $ssrg$result; }} }}"
+        "{{ const $ssrg$tail = Symbol(); let $ssrg$loopArguments: readonly [{argument_types}] = [{initial_arguments}]; while (true) {{ {iteration_bindings} const $ssrg$result = {rendered_body}; const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === \"object\" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) {{ const $ssrg$arguments = ($ssrg$tailResult as {{ readonly [$ssrg$tail]: readonly [{argument_types}] }})[$ssrg$tail]; $ssrg$loopArguments = $ssrg$arguments; continue; }} return $ssrg$result; }} }}"
     )
 }
 

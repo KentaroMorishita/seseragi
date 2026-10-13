@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "case": "tail-currying",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/tail-currying",
+    "export": "tailCurryingWorks",
+    "compiledModule": "../../schema-1/tail-currying/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": {
+      "result": "json"
+    }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int",
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int.subtract",
+      "core.int.add",
+      "core.unit"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

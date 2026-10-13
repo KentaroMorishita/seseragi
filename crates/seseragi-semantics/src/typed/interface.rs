@@ -16,7 +16,7 @@ pub(crate) fn typed_interface_from_modules(
     typed: &TypedModule,
     dependency_instances: &[ResolvedDependencyInstance],
 ) -> TypedModuleInterface {
-    let types = InterfaceTypes::new(&typed.external_type_bindings);
+    let types = InterfaceTypes::new(&typed.external_type_bindings).with_local_nominals(typed);
     let local_symbol_prefix = format!("{}::", shallow.module);
     let mut exports = shallow
         .exports
@@ -28,6 +28,19 @@ pub(crate) fn typed_interface_from_modules(
         })
         .collect::<Vec<_>>();
     for declaration in &typed.declarations {
+        let parameters = match declaration {
+            TypedDecl::Adt {
+                type_parameters, ..
+            }
+            | TypedDecl::Struct {
+                type_parameters, ..
+            }
+            | TypedDecl::Alias {
+                type_parameters, ..
+            } => type_parameters.as_slice(),
+            _ => &[],
+        };
+        let types = types.with_parameters(parameters);
         match declaration {
             TypedDecl::Alias {
                 symbol,
@@ -132,6 +145,7 @@ fn interface_instance_from_typed(
     module: &str,
     types: &InterfaceTypes<'_>,
 ) -> InterfaceInstance {
+    let types = types.with_parameters(&instance.type_parameters);
     InterfaceInstance {
         identity: Some(instance.identity.clone()),
         provider_module: Some(module.to_owned()),
@@ -227,6 +241,15 @@ fn typed_value_export(
     module: &str,
     types: &InterfaceTypes<'_>,
 ) -> Option<InterfaceExport> {
+    let parameters = match declaration {
+        TypedDecl::Fn { scheme, .. } => scheme.type_parameters.as_slice(),
+        TypedDecl::EffectFn {
+            type_parameters, ..
+        } => type_parameters.as_slice(),
+        _ => &[],
+    };
+    let scoped_types = types.with_parameters(parameters);
+    let types = &scoped_types;
     match declaration {
         TypedDecl::Alias { .. } | TypedDecl::Adt { .. } | TypedDecl::Let { .. } => None,
         TypedDecl::Fn {
@@ -345,6 +368,7 @@ fn interface_scheme_from_typed_scheme(
     scheme: &TypedScheme,
     types: &InterfaceTypes<'_>,
 ) -> InterfaceScheme {
+    let types = &types.with_parameters(&scheme.type_parameters);
     InterfaceScheme {
         type_parameters: scheme.type_parameters.clone(),
         constraints: scheme

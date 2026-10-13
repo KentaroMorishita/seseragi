@@ -9,6 +9,7 @@ repository.workspace = true
 tree-sitter.workspace = true
 tree-sitter-typescript.workspace = true
 seseragi-interop = { path = "../seseragi-interop" }
+seseragi-projection = { path = "../seseragi-projection" }
 semver.workspace = true
 serde.workspace = true
 serde_json.workspace = true

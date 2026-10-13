@@ -153,6 +153,8 @@ pub struct CoreModuleImport {
     pub imported: String,
     pub local: String,
     pub canonical: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub foreign_scalar_result: Option<seseragi_semantics::ForeignScalarResultCodec>,
     pub origin: SourceSpan,
 }
 
@@ -664,6 +666,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     imported: import.imported,
                     local: import.local,
                     canonical: import.canonical,
+                    foreign_scalar_result: import.foreign_scalar_result,
                     origin: source_span(&module.source, import.origin),
                 })
                 .collect(),

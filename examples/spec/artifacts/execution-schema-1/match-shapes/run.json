@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "case": "match-shapes",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/match-shapes",
+    "export": "matchShapesWork",
+    "compiledModule": "../../schema-1/match-shapes/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": {
+      "result": "json"
+    }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.adt",
+      "core.int",
+      "core.int.add",
+      "core.unit",
+      "core.bool",
+      "core.int.eq-dictionary",
+      "core.int.subtract"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

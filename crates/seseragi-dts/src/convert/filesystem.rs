@@ -57,6 +57,7 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
     let settings_digest = sha256(&settings_source);
     let host_manifest_path = request.package_root.join(&request.host_manifest);
     let host_manifest_source = read_utf8(&host_manifest_path, "foreign host manifest")?;
+    validate_publication_paths(request, &config, &host_manifest_source)?;
     let mut outcome = ConversionOutcome {
         converted: Vec::new(),
         diagnostics: Vec::new(),
@@ -167,6 +168,247 @@ pub fn convert_package(request: &ConvertRequest) -> Result<ConversionOutcome, Co
         });
     }
     Ok(outcome)
+}
+
+/// Check the complete configuration before publishing any entry. Inputs to a
+/// later/shared entry remain authored inputs even when one entry is selected.
+fn validate_publication_paths(
+    request: &ConvertRequest,
+    config: &BindingsConfig,
+    host_manifest_source: &str,
+) -> Result<(), ConvertError> {
+    let mut inputs = BTreeMap::new();
+    let mut protect = |path: PathBuf| -> Result<(), ConvertError> {
+        inputs.insert(publication_identity(&path)?, path);
+        Ok(())
+    };
+    protect(request.package_root.join(&request.bindings))?;
+    protect(request.package_root.join(&request.host_manifest))?;
+    let manifest_path = request.package_root.join("seseragi.toml");
+    let foreign = fs::read_to_string(&manifest_path)
+        .ok()
+        .and_then(|source| seseragi_project::parse_manifest(&source).ok())
+        .and_then(|manifest| manifest.foreign_typescript);
+    if manifest_path.is_file() {
+        protect(manifest_path)?;
+    }
+    if let Some(foreign) = &foreign {
+        protect(request.package_root.join(foreign.manifest.as_str()))?;
+        protect(request.package_root.join(foreign.lockfile.as_str()))?;
+    }
+    for entry in config.entries.values() {
+        protect(request.package_root.join(&entry.declaration))?;
+        if let Some(policy) = &entry.projection_policy {
+            protect(request.package_root.join(policy))?;
+        }
+        // Raw declaration identity reads this manifest even when there is no
+        // executable package export (the runtime failure remains lazy).
+        if !entry.specifier.starts_with("./") && !entry.specifier.starts_with("../") {
+            let package_name = if entry.specifier.starts_with('@') {
+                entry
+                    .specifier
+                    .split('/')
+                    .take(2)
+                    .collect::<Vec<_>>()
+                    .join("/")
+            } else {
+                entry
+                    .specifier
+                    .split('/')
+                    .next()
+                    .unwrap_or(&entry.specifier)
+                    .to_owned()
+            };
+            let root_name = serde_json::from_str::<serde_json::Value>(host_manifest_source)
+                .ok()
+                .and_then(|manifest| {
+                    manifest
+                        .get("name")
+                        .and_then(|name| name.as_str())
+                        .map(str::to_owned)
+                });
+            if root_name.as_deref() != Some(&package_name) {
+                protect(
+                    request
+                        .package_root
+                        .join(&request.host_manifest)
+                        .parent()
+                        .expect("manifest has a package-relative parent")
+                        .join("node_modules")
+                        .join(package_name)
+                        .join("package.json"),
+                )?;
+            }
+        }
+        // Runtime evidence reads the selected host files and browser import
+        // closure. Never let publication replace those authored host inputs.
+        let mut pending = Vec::new();
+        for target in [
+            seseragi_project::RuntimeTarget::Node,
+            seseragi_project::RuntimeTarget::Bun,
+            seseragi_project::RuntimeTarget::Browser,
+        ] {
+            if let Ok(module) = seseragi_project::resolve_foreign_typescript_module_for_target(
+                &request.package_root,
+                foreign.as_ref(),
+                &request
+                    .generated_root
+                    .join(format!("{}.ssrg", entry.output)),
+                &entry.specifier,
+                target,
+            ) {
+                if module.source().is_file() {
+                    if let Some(manifest) = module.package_manifest() {
+                        protect(manifest.to_owned())?;
+                    }
+                    pending.push((module.source().to_owned(), target));
+                }
+            }
+        }
+        let mut visited = BTreeSet::new();
+        while let Some((path, target)) = pending.pop() {
+            if !visited.insert((path.clone(), target)) {
+                continue;
+            }
+            protect(path.clone())?;
+            if let Some(imports) = fs::read_to_string(&path)
+                .ok()
+                .and_then(|source| seseragi_project::runtime_import_specifiers(&source).ok())
+            {
+                for specifier in imports {
+                    if let Ok(module) =
+                        seseragi_project::resolve_foreign_typescript_module_for_target(
+                            &request.package_root,
+                            foreign.as_ref(),
+                            &path,
+                            &specifier,
+                            target,
+                        )
+                    {
+                        if module.source().is_file() {
+                            if let Some(manifest) = module.package_manifest() {
+                                protect(manifest.to_owned())?;
+                            }
+                            pending.push((module.source().to_owned(), target));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let mut outputs = BTreeMap::new();
+    for (id, entry) in &config.entries {
+        if request
+            .entry
+            .as_deref()
+            .is_some_and(|selected| selected != id)
+        {
+            continue;
+        }
+        let mut paths = [
+            format!("{}.ssrg", entry.output),
+            format!("{}.binding.json", entry.output),
+            format!("{}.report.json", entry.output),
+        ]
+        .map(|path| request.generated_root.join(path))
+        .to_vec();
+        let semantic = request
+            .generated_root
+            .join(format!("{}/semantic.ssrg", entry.output));
+        let semantic_metadata = request
+            .generated_root
+            .join(format!("{}.semantic.json", entry.output));
+        if entry.projection_policy.is_some()
+            || (matches!(
+                semantic_output_ownership(&semantic, &semantic_metadata),
+                SemanticOutputOwnership::Owned
+            ) && !config
+                .entries
+                .values()
+                .any(|other| other.output == format!("{}/semantic", entry.output)))
+        {
+            paths.extend([semantic, semantic_metadata]);
+        }
+        for path in paths {
+            for path in [path.clone(), temporary_artifact_path(&path)] {
+                let identity = publication_identity(&path)?;
+                if let Some(input) = inputs.get(&identity) {
+                    return Err(ConvertError::new(format!("generated artifact {} collides with authored input {}; no entry was published", path.display(), input.display())));
+                }
+                if let Some(previous) = outputs.insert(identity, path.clone()) {
+                    return Err(ConvertError::new(format!(
+                        "generated artifact {} aliases another output {}; no entry was published",
+                        path.display(),
+                        previous.display()
+                    )));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+// Resolve existing symlink aliases, including generated-root parent aliases.
+// Missing outputs keep their suffix below the nearest canonical ancestor.
+fn publication_identity(path: &Path) -> Result<PathBuf, ConvertError> {
+    let mut ancestor = if path.is_absolute() {
+        path.to_owned()
+    } else {
+        std::env::current_dir()
+            .map_err(|error| {
+                ConvertError::new(format!("failed to resolve publication directory: {error}"))
+            })?
+            .join(path)
+    };
+    let mut missing = Vec::new();
+    loop {
+        match fs::canonicalize(&ancestor) {
+            Ok(mut canonical) => {
+                for component in missing.into_iter().rev() {
+                    if component == std::ffi::OsStr::new("..") {
+                        canonical.pop();
+                    } else if component != std::ffi::OsStr::new(".") {
+                        canonical.push(component);
+                    }
+                }
+                return Ok(canonical);
+            }
+            Err(error)
+                if error.kind() == std::io::ErrorKind::NotFound
+                    && fs::symlink_metadata(&ancestor).is_err() =>
+            {
+                missing.push(
+                    ancestor
+                        .components()
+                        .next_back()
+                        .map(|component| component.as_os_str())
+                        .ok_or_else(|| {
+                            ConvertError::new("artifact path has no canonical ancestor")
+                        })?
+                        .to_os_string(),
+                );
+                if !ancestor.pop() {
+                    return Err(ConvertError::new("artifact path has no canonical ancestor"));
+                }
+            }
+            Err(error) => {
+                return Err(ConvertError::new(format!(
+                    "failed to resolve publication path {}: {error}",
+                    path.display()
+                )))
+            }
+        }
+    }
+}
+
+fn temporary_artifact_path(path: &Path) -> PathBuf {
+    let nonce = format!("{}.tmp", std::process::id());
+    let extension = path
+        .extension()
+        .and_then(|value| value.to_str())
+        .map(|value| format!("{value}.{nonce}"))
+        .unwrap_or(nonce);
+    path.with_extension(extension)
 }
 
 #[derive(Clone, Copy)]
@@ -475,7 +717,6 @@ fn read_utf8(path: &Path, label: &str) -> Result<String, ConvertError> {
 }
 
 fn atomic_write_set(entries: &[(&Path, &[u8])]) -> Result<(), ConvertError> {
-    let nonce = format!("{}.tmp", std::process::id());
     let mut temporary = Vec::new();
     for (path, bytes) in entries {
         if let Some(parent) = path.parent() {
@@ -483,12 +724,7 @@ fn atomic_write_set(entries: &[(&Path, &[u8])]) -> Result<(), ConvertError> {
                 ConvertError::new(format!("failed to create {}: {error}", parent.display()))
             })?;
         }
-        let extension = path
-            .extension()
-            .and_then(|value| value.to_str())
-            .map(|value| format!("{value}.{nonce}"))
-            .unwrap_or_else(|| nonce.clone());
-        let temp = path.with_extension(extension);
+        let temp = temporary_artifact_path(path);
         fs::write(&temp, bytes).map_err(|error| {
             ConvertError::new(format!("failed to write {}: {error}", temp.display()))
         })?;

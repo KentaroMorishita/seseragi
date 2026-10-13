@@ -118,6 +118,237 @@ fn native_fixture() -> TempProject {
     );
     project
 }
+
+#[test]
+fn nested_package_versions_and_exports_match_node_and_browser_snapshots() {
+    for name in ["inner", "@scope/inner"] {
+        let project = TempProject::new();
+        let specifier = format!("{name}/feature");
+        let nested = format!("host/node_modules/outer/node_modules/{name}");
+        let top = format!("host/node_modules/{name}");
+        let manifest = "[package]\nname='fixture/nested-host'\nversion='1.0.0'\nlanguage='^0.1.0'\n[run]\nentry='main'\n[foreign.typescript]\nresolver='node'\nmanifest='host/package.json'\nlockfile='host/bun.lock'\n";
+        let mut files = BTreeMap::from([
+            ("seseragi.toml".into(), manifest.into()),
+            (
+                "host/package.json".into(),
+                r#"{"name":"nested-host","version":"1.0.0"}"#.into(),
+            ),
+            ("host/bun.lock".into(), "{}".into()),
+            (
+                "host/node_modules/outer/package.json".into(),
+                r#"{"name":"outer","version":"1.0.0","type":"module","exports":"./index.js"}"#
+                    .into(),
+            ),
+            (
+                "host/node_modules/outer/index.js".into(),
+                format!(
+                    "import {{value}} from '{specifier}'; export function label(){{return value;}}"
+                ),
+            ),
+            (
+                format!("{nested}/package.json"),
+                format!(
+                    r#"{{"name":"{name}","version":"2.0.0","type":"module","exports":{{"./feature":{{"browser":"./web.js","node":"./native.js"}}}}}}"#
+                ),
+            ),
+            (
+                format!("{nested}/native.js"),
+                "export const value = 'nested native';".into(),
+            ),
+            (
+                format!("{nested}/web.js"),
+                "export const value = 'nested browser';".into(),
+            ),
+            (
+                format!("{top}/package.json"),
+                format!(
+                    r#"{{"name":"{name}","version":"1.0.0","type":"module","exports":{{"./feature":{{"browser":"./web.js","node":"./native.js"}}}}}}"#
+                ),
+            ),
+            (
+                format!("{top}/native.js"),
+                "export const value = 'wrong top-level';".into(),
+            ),
+            (
+                format!("{top}/web.js"),
+                "import fs from 'node:fs'; export const value = fs;".into(),
+            ),
+        ]);
+        for (path, source) in &files {
+            project.write(path, source);
+        }
+        let config = parse_manifest(manifest).unwrap();
+        let importer = project.0.join("host/node_modules/outer/index.js");
+        for target in [
+            RuntimeTarget::Node,
+            RuntimeTarget::Bun,
+            RuntimeTarget::Browser,
+        ] {
+            let resolved = resolve_foreign_typescript_module_for_target(
+                &project.0,
+                config.foreign_typescript.as_ref(),
+                &importer,
+                &specifier,
+                target,
+            )
+            .unwrap();
+            let selected = if target == RuntimeTarget::Browser {
+                "web.js"
+            } else {
+                "native.js"
+            };
+            assert_eq!(
+                resolved.exact_identity(),
+                format!("npm:{name}@2.0.0/{selected}")
+            );
+        }
+        let imports = [VirtualRuntimeImport {
+            importer: "generated/api.js".into(),
+            specifier: "outer".into(),
+        }];
+        let snapshot = resolve_browser_runtime_snapshot(&files, &imports, "host").unwrap();
+        assert_eq!(
+            snapshot.modules["host/node_modules/outer/index.js"].imports[&specifier],
+            format!("{nested}/web.js")
+        );
+        assert_eq!(
+            snapshot.modules[&format!("{nested}/web.js")].exact_identity,
+            format!("npm:{name}@2.0.0/web.js")
+        );
+        assert!(resolve_foreign_runtime_artifact_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &project.0.join("generated/api.js"),
+            "outer",
+            RuntimeTarget::Browser
+        )
+        .is_ok());
+        // The host engine independently establishes which installed version a
+        // real nested ESM import uses; the shared resolver must select the same.
+        let node = std::process::Command::new("node").args(["--input-type=module", "--eval", "import {pathToFileURL} from 'node:url'; const api = await import(pathToFileURL(process.argv[1]).href); console.log(api.label());"]).arg(&importer).output().unwrap();
+        assert!(
+            node.status.success(),
+            "{}",
+            String::from_utf8_lossy(&node.stderr)
+        );
+        assert_eq!(String::from_utf8_lossy(&node.stdout), "nested native\n");
+        // In the inverse layout, a safe top-level package must not hide a
+        // Node-only dependency actually selected by the nested import.
+        files.insert(
+            format!("{nested}/web.js"),
+            "import fs from 'node:fs'; export const value = fs;".into(),
+        );
+        files.insert(
+            format!("{top}/web.js"),
+            "export const value = 'safe but wrong';".into(),
+        );
+        for path in [format!("{nested}/web.js"), format!("{top}/web.js")] {
+            project.write(&path, &files[&path]);
+        }
+        let native_error = resolve_foreign_runtime_artifact_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &project.0.join("generated/api.js"),
+            "outer",
+            RuntimeTarget::Browser,
+        )
+        .unwrap_err();
+        assert_eq!(native_error.code, "SES-F0203");
+        assert!(native_error.reason.contains("node:fs"));
+        let virtual_error = resolve_browser_runtime_snapshot(&files, &imports, "host").unwrap_err();
+        assert_eq!(virtual_error[0].code, "SES-F0203");
+        assert!(virtual_error[0].reason.contains("node:fs"));
+        // ESM package traversal includes this intermediate ancestor. Check it
+        // against the host engine rather than assuming CommonJS lookup rules.
+        std::fs::remove_dir_all(project.0.join(&nested)).unwrap();
+        files.retain(|path, _| !path.starts_with(&format!("{nested}/")));
+        let decoy = format!("host/node_modules/node_modules/{name}");
+        files.insert(format!("{decoy}/package.json"), format!(r#"{{"name":"{name}","version":"99.0.0","type":"module","exports":{{"./feature":"./index.js"}}}}"#));
+        files.insert(
+            format!("{decoy}/index.js"),
+            "import fs from 'node:fs'; export const value = 'decoy';".into(),
+        );
+        files.insert(
+            format!("{top}/web.js"),
+            "export const value = 'hoisted browser';".into(),
+        );
+        files.insert(
+            format!("{top}/native.js"),
+            "export const value = 'hoisted native';".into(),
+        );
+        for (path, source) in &files {
+            project.write(path, source);
+        }
+        let intermediate = resolve_foreign_typescript_module_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &importer,
+            &specifier,
+            RuntimeTarget::Node,
+        )
+        .unwrap();
+        assert_eq!(
+            intermediate.exact_identity(),
+            format!("npm:{name}@99.0.0/index.js")
+        );
+        assert!(
+            resolve_browser_runtime_snapshot(&files, &imports, "host").unwrap_err()[0]
+                .reason
+                .contains("node:fs")
+        );
+        assert!(resolve_foreign_runtime_artifact_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &project.0.join("generated/api.js"),
+            "outer",
+            RuntimeTarget::Browser,
+        )
+        .unwrap_err()
+        .reason
+        .contains("node:fs"));
+        let node = std::process::Command::new("node").args(["--input-type=module", "--eval", "import {pathToFileURL} from 'node:url'; const api = await import(pathToFileURL(process.argv[1]).href); console.log(api.label());"]).arg(&importer).output().unwrap();
+        assert!(
+            node.status.success(),
+            "{}",
+            String::from_utf8_lossy(&node.stderr)
+        );
+        assert_eq!(String::from_utf8_lossy(&node.stdout), "decoy\n");
+        std::fs::remove_dir_all(project.0.join(&decoy)).unwrap();
+        files.retain(|path, _| !path.starts_with(&format!("{decoy}/")));
+        let hoisted = resolve_foreign_typescript_module_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &importer,
+            &specifier,
+            RuntimeTarget::Node,
+        )
+        .unwrap();
+        assert_eq!(
+            hoisted.exact_identity(),
+            format!("npm:{name}@1.0.0/native.js")
+        );
+        let browser = resolve_browser_runtime_snapshot(&files, &imports, "host").unwrap();
+        assert_eq!(
+            browser.modules["host/node_modules/outer/index.js"].imports[&specifier],
+            format!("{top}/web.js")
+        );
+        assert!(resolve_foreign_runtime_artifact_for_target(
+            &project.0,
+            config.foreign_typescript.as_ref(),
+            &project.0.join("generated/api.js"),
+            "outer",
+            RuntimeTarget::Browser
+        )
+        .is_ok());
+        let node = std::process::Command::new("node").args(["--input-type=module", "--eval", "import {pathToFileURL} from 'node:url'; const api = await import(pathToFileURL(process.argv[1]).href); console.log(api.label());"]).arg(&importer).output().unwrap();
+        assert!(
+            node.status.success(),
+            "{}",
+            String::from_utf8_lossy(&node.stderr)
+        );
+        assert_eq!(String::from_utf8_lossy(&node.stdout), "hoisted native\n");
+    }
+}
 #[test]
 fn native_node_and_bun_share_binding_identity_browser_selects_its_declared_export() {
     let fixture = native_fixture();

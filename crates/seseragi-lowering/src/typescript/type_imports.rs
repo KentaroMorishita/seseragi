@@ -37,6 +37,7 @@ pub(super) fn collect_module_type_imports(
         }
     }
     for binding in &module.bindings {
+        expr::collect_binding_type_imports(&binding.value, &type_bindings, requirements, imports);
         expr::collect_expr_type_imports(&binding.value, &type_bindings, requirements, imports);
     }
     for function in &module.functions {
@@ -136,7 +137,11 @@ fn collect_type_imports(
 ) {
     match type_ref {
         CoreType::Named { name, arguments } => {
-            if let Some(type_import) = unambiguous_runtime_type(name, bindings) {
+            if let Some(type_import) = if name == "List" && arguments.len() == 1 {
+                runtime_type_import("std/prelude::List")
+            } else {
+                unambiguous_runtime_type(name, bindings)
+            } {
                 push_unique(requirements, type_import.runtime_feature);
                 push_type_import_unique(
                     imports,

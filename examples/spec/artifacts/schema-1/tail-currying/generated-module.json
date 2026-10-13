@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "artifact/tail-currying",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.int",
+      "core.int.eq-dictionary",
+      "core.bool",
+      "core.int.subtract",
+      "core.int.add",
+      "core.unit"
+    ]
+  },
+  "exports": [
+    "tailCurryingWorks"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

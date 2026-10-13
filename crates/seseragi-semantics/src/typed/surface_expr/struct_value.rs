@@ -168,13 +168,14 @@ pub(super) fn type_struct(
                     if struct_type.type_parameters.contains(parameter)
             )
     });
-    let expected_type = TypedType::Named {
-        name: struct_type.name.clone(),
-        arguments: arguments
+    let expected_type = context.resolution.nominal_type_ref(
+        owner,
+        &struct_type.name,
+        arguments
             .iter()
             .map(|argument| argument.type_ref.clone())
             .collect(),
-    };
+    );
     let fields = arity_issue
         .is_none()
         .then(|| {

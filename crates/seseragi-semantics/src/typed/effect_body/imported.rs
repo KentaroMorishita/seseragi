@@ -25,12 +25,7 @@ pub(super) fn type_imported_effect_application(
         expression.span(),
         context,
         |argument, argument_context| {
-            let value =
-                super::type_effect_expression(argument, argument_context, resolution, issues);
-            let semantic_type = argument_context
-                .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
-                .key;
-            SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+            super::type_effect_expression_analysis(argument, argument_context, resolution, issues)
         },
     );
 

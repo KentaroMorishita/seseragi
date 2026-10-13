@@ -4,6 +4,25 @@ use seseragi_semantics::ExternalTypeBinding;
 use super::super::TypeScriptTypeImport;
 use super::collect_type_imports;
 
+/// Top-level bindings have an explicit annotation even when a list expression
+/// would otherwise infer its result from the runtime constructor.
+pub(super) fn collect_binding_type_imports(
+    expr: &CoreExpr,
+    bindings: &[ExternalTypeBinding],
+    requirements: &mut Vec<String>,
+    imports: &mut Vec<TypeScriptTypeImport>,
+) {
+    match expr {
+        CoreExpr::List { type_ref, .. } | CoreExpr::ListComprehension { type_ref, .. } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+        }
+        CoreExpr::Sequence { result, .. } => {
+            collect_binding_type_imports(result, bindings, requirements, imports);
+        }
+        _ => {}
+    }
+}
+
 pub(super) fn collect_expr_type_imports(
     expr: &CoreExpr,
     bindings: &[ExternalTypeBinding],

@@ -7,7 +7,7 @@ use crate::{TypedExpr, TypedMatchArm, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceMatchArm};
 
 use super::{
-    named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
+    primitive_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 
 mod coverage;
@@ -59,7 +59,9 @@ pub(crate) fn type_match_with(
         });
         if let Some(guard) = &guard {
             let guard_type = inferred_type_from_expr(&guard.value);
-            if !typed_type_contains_hole(&guard_type) && !named_type_is(&guard_type, "Bool") {
+            if !typed_type_contains_hole(&guard_type)
+                && !primitive_type_is(&guard_type, &guard.semantic_type, "Bool")
+            {
                 issues.push(MatchIssue::GuardNotBool {
                     guard: arm.guard.as_ref().expect("guard analysis exists").span(),
                     actual: guard_type,
@@ -114,21 +116,22 @@ pub(crate) fn type_match_with(
         || typed_type_contains_hole(&expected.type_ref)
         || expected.key == SemanticTypeKey::Invalid;
     if !suppress_coverage {
-        if let Some(coverage) =
-            analyze_coverage(&expected.key, context.semantic_types(), &coverage_arms)
-        {
-            coverage_proves_total = coverage.missing.is_empty() && coverage.unreachable.is_empty();
-            for index in coverage.unreachable {
-                issues.push(MatchIssue::Unreachable {
-                    arm: arms[index].span,
-                });
-            }
-            if !coverage.missing.is_empty() {
-                issues.push(MatchIssue::NonExhaustive {
-                    expression: span,
-                    missing: coverage.missing,
-                });
-            }
+        let coverage = analyze_coverage(&expected, context, &coverage_arms);
+        coverage_proves_total =
+            !coverage.limited && coverage.missing.is_empty() && coverage.unreachable.is_empty();
+        if coverage.limited {
+            issues.push(MatchIssue::CoverageLimit { expression: span });
+        }
+        for index in coverage.unreachable {
+            issues.push(MatchIssue::Unreachable {
+                arm: arms[index].span,
+            });
+        }
+        if !coverage.missing.is_empty() {
+            issues.push(MatchIssue::NonExhaustive {
+                expression: span,
+                missing: coverage.missing,
+            });
         }
     }
 

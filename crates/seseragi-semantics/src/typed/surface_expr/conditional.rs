@@ -2,7 +2,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{
-    named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
+    primitive_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::ConditionalIssue;
 use crate::typed::semantic_types::SemanticTypeKey;
@@ -51,7 +51,7 @@ pub(crate) fn type_if_with(
         || typed_type_contains_hole(&else_type);
     let conditional_issue = if typed_type_contains_hole(&condition_type) {
         None
-    } else if !named_type_is(&condition_type, "Bool") {
+    } else if !primitive_type_is(&condition_type, &condition.semantic_type, "Bool") {
         Some(ConditionalIssue::ConditionNotBool {
             condition: condition_span,
             actual: condition_type,

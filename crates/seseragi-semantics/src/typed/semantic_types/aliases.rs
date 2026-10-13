@@ -166,9 +166,12 @@ impl AliasCatalog {
                         canonical,
                         arguments,
                     },
-                    None => TypedType::Named {
-                        name: name.clone(),
-                        arguments,
+                    None => match target {
+                        Some(owner) => super::nominal_type_ref(resolved, owner, name, arguments),
+                        None => TypedType::Named {
+                            name: name.clone(),
+                            arguments,
+                        },
                     },
                 }
             }
@@ -465,10 +468,19 @@ fn external_canonical(resolved: &ResolvedModule, symbol: SymbolId) -> Option<Str
         .iter()
         .any(|import| {
             (import.symbol == symbol || import.export.symbol == canonical)
-                && matches!(
+                && (matches!(
                     import.export.declaration_kind.as_deref(),
                     Some("opaque-type" | "struct" | "opaque-struct")
-                )
+                ) || (matches!(
+                    import.export.declaration_kind.as_deref(),
+                    Some("type" | "newtype")
+                ) && (super::is_shadowing_builtin(
+                    &import.export.name,
+                    &import.export.symbol,
+                ) || super::is_shadowing_builtin(
+                    &import.local_name,
+                    &import.export.symbol,
+                ))))
         })
         .then_some(canonical)
 }

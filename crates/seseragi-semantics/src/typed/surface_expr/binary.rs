@@ -2,7 +2,7 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{standard_operator, ByteSpan, StandardOperatorKind, SurfaceExpr};
 
 use super::{
-    named_type, named_type_is, type_surface_expression, PureExpressionContext,
+    named_type, named_type_is, primitive_type_is, type_surface_expression, PureExpressionContext,
     SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::{PureCallIssue, RangeIssue};
@@ -29,6 +29,16 @@ pub(super) fn type_binary(
     let right = type_surface_expression(right, &operand_context);
     let left_type = inferred_type_from_expr(&left.value);
     let right_type = inferred_type_from_expr(&right.value);
+    let left_evidence_type =
+        context.evidence_type(&crate::typed::semantic_types::SemanticValueType {
+            type_ref: left_type.clone(),
+            key: left.semantic_type.clone(),
+        });
+    let right_evidence_type =
+        context.evidence_type(&crate::typed::semantic_types::SemanticValueType {
+            type_ref: right_type.clone(),
+            key: right.semantic_type.clone(),
+        });
     let mut missing_instance = None;
     let standard = standard_operator(operator);
     let (result_type, evidence) = if let Some(standard) =
@@ -36,8 +46,8 @@ pub(super) fn type_binary(
     {
         match context.select_binary_operator_evidence(
             standard.trait_name,
-            left_type.clone(),
-            right_type.clone(),
+            left_evidence_type.clone(),
+            right_evidence_type.clone(),
         ) {
             Ok((output, evidence)) => (output, vec![evidence]),
             Err(constraint) => {
@@ -68,8 +78,8 @@ pub(super) fn type_binary(
         } else {
             match context.select_binary_same_type_evidence(
                 standard.trait_name,
-                left_type.clone(),
-                right_type.clone(),
+                left_evidence_type.clone(),
+                right_evidence_type.clone(),
             ) {
                 Ok(evidence) => (named_type("Bool"), vec![evidence]),
                 Err(constraint) => {
@@ -85,14 +95,18 @@ pub(super) fn type_binary(
         }
     } else if matches!(operator, "&&" | "||") {
         let bool_type = named_type("Bool");
-        missing_instance = if left_type != TypedType::Hole && left_type != bool_type {
+        missing_instance = if left_type != TypedType::Hole
+            && !primitive_type_is(&left_type, &left.semantic_type, "Bool")
+        {
             Some(PureCallIssue::ArgumentType {
                 argument: left_span,
                 index: 0,
                 expected: bool_type.clone(),
                 actual: left_type.clone(),
             })
-        } else if right_type != TypedType::Hole && right_type != bool_type {
+        } else if right_type != TypedType::Hole
+            && !primitive_type_is(&right_type, &right.semantic_type, "Bool")
+        {
             Some(PureCallIssue::ArgumentType {
                 argument: right_span,
                 index: 1,
@@ -110,6 +124,26 @@ pub(super) fn type_binary(
     let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
     let semantic_type = if missing_instance.is_some() || result_type == TypedType::Hole {
         crate::typed::semantic_types::SemanticTypeKey::Invalid
+    } else if standard.is_some_and(|operator| {
+        matches!(
+            operator.kind,
+            StandardOperatorKind::Equality | StandardOperatorKind::Comparison
+        )
+    }) || matches!(operator, "&&" | "||")
+        || (standard.is_some_and(|operator| operator.kind == StandardOperatorKind::Arithmetic)
+            && evidence.iter().any(|selected| {
+                matches!(
+                    selected.evidence,
+                    crate::TypedInstanceEvidence::Standard { .. }
+                )
+            })
+            && matches!(&result_type, TypedType::Named { name, arguments }
+                if arguments.is_empty()
+                    && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String")))
+    {
+        // Selected standard operations produce primitive values by contract.
+        // Local/imported dictionaries still resolve their own nominal output.
+        crate::typed::semantic_types::SemanticTypeKey::Other
     } else {
         context.semantic_value_from_typed_type(&result_type).key
     };

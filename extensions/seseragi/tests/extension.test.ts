@@ -44,6 +44,9 @@ function extensionHarness(
     }
     legacyFormatterValues?: Record<string, string>
     serverVersion?: typeof version
+    versionReader?: () => Promise<typeof version>
+    initializeVersion?: string
+    startHook?: () => Promise<void>
   } = {}
 ) {
   const lines: string[] = []
@@ -152,7 +155,10 @@ function extensionHarness(
   class MockLanguageClient {
     static instances: MockLanguageClient[] = []
     initializeResult = {
-      serverInfo: { name: "seseragi-lsp", version: manifest.version },
+      serverInfo: {
+        name: "seseragi-lsp",
+        version: options.initializeVersion ?? manifest.version,
+      },
       capabilities: {
         positionEncoding: "utf-8",
         renameProvider: { prepareProvider: true },
@@ -163,6 +169,9 @@ function extensionHarness(
       },
     }
     running = false
+    starting = false
+    startPromise?: Promise<void>
+    onStartJoined?: () => void
     listener?: (event: { newState: number }) => void
     stopped = false
 
@@ -181,13 +190,31 @@ function extensionHarness(
     }
 
     async start() {
-      this.listener?.({ newState: State.Starting })
-      this.running = true
-      this.listener?.({ newState: State.Running })
+      if (this.startPromise) {
+        this.onStartJoined?.()
+        return this.startPromise
+      }
+      const attempt = (async () => {
+        this.starting = true
+        this.listener?.({ newState: State.Starting })
+        try {
+          await options.startHook?.()
+          this.running = true
+          this.listener?.({ newState: State.Running })
+        } finally {
+          this.starting = false
+        }
+      })()
+      this.startPromise = attempt
+      try {
+        await attempt
+      } finally {
+        if (this.startPromise === attempt) this.startPromise = undefined
+      }
     }
 
     needsStop() {
-      return this.running
+      return this.starting || this.running
     }
 
     isRunning() {
@@ -195,6 +222,9 @@ function extensionHarness(
     }
 
     async stop() {
+      // vscode-languageclient cannot shut down a connection still starting.
+      if (this.starting)
+        throw new Error("Client is not running and can't be stopped")
       this.running = false
       this.stopped = true
       this.listener?.({ newState: State.Stopped })
@@ -216,7 +246,8 @@ function extensionHarness(
         throw new Error("EACCES: permission denied")
       }
     },
-    versionReader: async () => options.serverVersion ?? version,
+    versionReader:
+      options.versionReader ?? (async () => options.serverVersion ?? version),
     platform: "darwin",
     arch: "arm64",
   })
@@ -342,9 +373,7 @@ describe("official VS Code extension contract", () => {
     expect(harness.MockLanguageClient.instances).toHaveLength(0)
     expect(harness.errors.join("\n")).toContain("is not executable at")
     expect(harness.errors.join("\n")).toContain(bundledServerPath)
-    expect(harness.lines.join("\n")).toContain(
-      `command: ${bundledServerPath}`
-    )
+    expect(harness.lines.join("\n")).toContain(`command: ${bundledServerPath}`)
   })
 
   test("reports a wrong-architecture binary before starting a language client", async () => {
@@ -356,9 +385,7 @@ describe("official VS Code extension contract", () => {
     expect(harness.MockLanguageClient.instances).toHaveLength(0)
     expect(harness.errors.join("\n")).toContain("target mismatch")
     expect(harness.errors.join("\n")).toContain("aarch64-apple-darwin")
-    expect(harness.lines.join("\n")).toContain(
-      `command: ${bundledServerPath}`
-    )
+    expect(harness.lines.join("\n")).toContain(`command: ${bundledServerPath}`)
   })
 
   test("migrates only explicit language-scoped legacy formatter settings", async () => {
@@ -398,6 +425,8 @@ describe("official VS Code extension contract", () => {
       "legacy Seseragi extension is active"
     )
     expect(harness.status.tooltip).toContain("legacy extension needs migration")
+    await harness.commands.get("seseragi.restartLanguageServer")?.()
+    expect(harness.MockLanguageClient.instances).toHaveLength(0)
   })
 
   test("starts the official LSP alongside the legacy migration stub", async () => {
@@ -457,6 +486,112 @@ describe("official VS Code extension contract", () => {
       harness.MockLanguageClient.instances[0].initializeResult.capabilities
     expect(capabilities.renameProvider).toEqual({ prepareProvider: true })
     expect(capabilities.workspaceSymbolProvider).toBe(true)
+  })
+
+  test("overlapping manual restarts leave exactly one running language server", async () => {
+    const harness = extensionHarness()
+    await harness.controller.activate(harness.context)
+    const restart = harness.commands.get("seseragi.restartLanguageServer")!
+    await Promise.all([restart(), restart()])
+    expect(harness.errors).toEqual([])
+    expect(
+      harness.MockLanguageClient.instances.filter((client) => client.running)
+    ).toHaveLength(1)
+    await harness.controller.deactivate()
+    expect(
+      harness.MockLanguageClient.instances.filter((client) => client.running)
+    ).toHaveLength(0)
+  })
+
+  test("deactivation during version inspection prevents a late server start", async () => {
+    let releaseVersion!: (value: typeof version) => void
+    let inspectionStarted!: () => void
+    const inspected = new Promise<void>((resolve) => {
+      inspectionStarted = resolve
+    })
+    const pendingVersion = new Promise<typeof version>((resolve) => {
+      releaseVersion = resolve
+    })
+    const harness = extensionHarness({
+      versionReader: () => {
+        inspectionStarted()
+        return pendingVersion
+      },
+    })
+    const activation = harness.controller.activate(harness.context)
+    await inspected
+    const deactivation = harness.controller.deactivate()
+    releaseVersion(version)
+    await Promise.all([activation, deactivation])
+    expect(harness.errors).toEqual([])
+    expect(harness.MockLanguageClient.instances).toHaveLength(0)
+  })
+
+  test("deactivation during startup awaits and stops the pending client", async () => {
+    let releaseStart!: () => void
+    let startEntered!: () => void
+    const entered = new Promise<void>((resolve) => {
+      startEntered = resolve
+    })
+    const pendingStart = new Promise<void>((resolve) => {
+      releaseStart = resolve
+    })
+    const harness = extensionHarness({
+      startHook: () => {
+        startEntered()
+        return pendingStart
+      },
+    })
+    const activation = harness.controller.activate(harness.context)
+    await entered
+    const deactivation = harness.controller.deactivate()
+    releaseStart()
+    await Promise.all([activation, deactivation])
+    expect(harness.errors).toEqual([])
+    expect(harness.MockLanguageClient.instances).toHaveLength(1)
+    expect(harness.MockLanguageClient.instances[0].stopped).toBe(true)
+    expect(harness.MockLanguageClient.instances[0].running).toBe(false)
+  })
+
+  test("a rejected initialize contract stops the already started server", async () => {
+    const harness = extensionHarness({ initializeVersion: "0.0.0" })
+    await harness.controller.activate(harness.context)
+    expect(harness.errors).toHaveLength(1)
+    expect(harness.errors[0]).toContain("extension/server version mismatch")
+    expect(harness.MockLanguageClient.instances[0].stopped).toBe(true)
+    expect(harness.MockLanguageClient.instances[0].running).toBe(false)
+  })
+
+  test("deactivation also joins an automatic client restart before stopping it", async () => {
+    const options: { startHook?: () => Promise<void> } = {}
+    const harness = extensionHarness(options)
+    await harness.controller.activate(harness.context)
+    const client = harness.MockLanguageClient.instances[0]
+    let releaseStart!: () => void
+    const pendingStart = new Promise<void>((resolve) => {
+      releaseStart = resolve
+    })
+    options.startHook = () => pendingStart
+    let joinStarted!: () => void
+    const joined = new Promise<"joined">((resolve) => {
+      joinStarted = () => resolve("joined")
+    })
+    client.onStartJoined = joinStarted
+    client.running = false
+    // The client library initiates this recovery itself, outside the controller queue.
+    const automaticStart = client.start()
+    const deactivation = harness.controller.deactivate().then(
+      () => undefined,
+      (error: Error) => error
+    )
+    const boundary = await Promise.race([joined, deactivation])
+    releaseStart()
+    await automaticStart
+    const error = await deactivation
+    expect(boundary).toBe("joined")
+    expect(error).toBeUndefined()
+    expect(client.stopped).toBe(true)
+    expect(client.running).toBe(false)
   })
 
   test("surfaces a missing bundled server instead of failing silently", async () => {

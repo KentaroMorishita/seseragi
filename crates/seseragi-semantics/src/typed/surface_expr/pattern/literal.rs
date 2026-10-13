@@ -24,7 +24,11 @@ pub(super) fn type_integer_pattern(
             type_ref: expected.type_ref.clone(),
             origin: span,
         },
-        LiteralPattern::Integer(raw.to_owned()),
+        LiteralPattern::Integer(
+            raw.replace('_', "")
+                .parse::<i64>()
+                .map_or_else(|_| raw.to_owned(), |value| value.to_string()),
+        ),
         "Int",
         span,
         expected,
@@ -100,7 +104,9 @@ fn type_literal_pattern(
     span: ByteSpan,
     expected: &SemanticValueType,
 ) -> PatternAnalysis {
-    if !super::super::named_type_is(&expected.type_ref, expected_name) {
+    if expected.key != crate::typed::semantic_types::SemanticTypeKey::Other
+        || !super::super::named_type_is(&expected.type_ref, expected_name)
+    {
         return invalid(
             span,
             format!("{expected_name} literal pattern does not match the scrutinee type"),

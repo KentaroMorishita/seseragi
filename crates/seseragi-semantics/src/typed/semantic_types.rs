@@ -38,6 +38,7 @@ pub(crate) enum SemanticTypeKey {
         arguments: Vec<SemanticValueType>,
     },
     Tuple(Vec<SemanticTypeKey>),
+    Record(BTreeMap<String, SemanticValueType>),
     Other,
     Invalid,
 }
@@ -46,6 +47,74 @@ pub(crate) enum SemanticTypeKey {
 pub(crate) struct SemanticValueType {
     pub(crate) type_ref: TypedType,
     pub(crate) key: SemanticTypeKey,
+}
+
+pub(super) fn is_shadowing_builtin(name: &str, canonical: &str) -> bool {
+    crate::prelude::type_constructor_arity(name).is_some()
+        && canonical != format!("std/prelude::{name}")
+        && !crate::prelude::SUM_TYPES
+            .iter()
+            .any(|sum| sum.name == name && sum.canonical == canonical)
+}
+
+/// Disambiguate only an actual local nominal declaration whose spelling is a
+/// backend primitive. Type parameters, primitive values and ordinary names are
+/// unchanged; the resolved owner, rather than the spelling, proves identity.
+pub(crate) fn nominal_type_ref(
+    resolved: &ResolvedModule,
+    owner: SymbolId,
+    name: &str,
+    arguments: Vec<TypedType>,
+) -> TypedType {
+    fn foreign_owner(
+        members: &[seseragi_syntax::SurfaceForeignMember],
+        origin: seseragi_syntax::ByteSpan,
+    ) -> bool {
+        members.iter().any(|member| match member {
+            seseragi_syntax::SurfaceForeignMember::OpaqueType { name_span, .. } => {
+                *name_span == origin
+            }
+            seseragi_syntax::SurfaceForeignMember::Namespace { members, .. } => {
+                foreign_owner(members, origin)
+            }
+            _ => false,
+        })
+    }
+    let symbol = resolved.symbols.iter().find(|symbol| symbol.id == owner);
+    let nominal = symbol.is_some_and(|symbol| {
+        symbol.kind == SymbolKind::Type
+            && symbol.spelling == name
+            && (resolved
+                .foreign_modules
+                .iter()
+                .any(|foreign| foreign_owner(&foreign.members, symbol.origin))
+                || resolved
+                    .declarations
+                    .iter()
+                    .any(|declaration| match declaration {
+                        seseragi_syntax::SurfaceDecl::Type { name_span, .. }
+                        | seseragi_syntax::SurfaceDecl::Newtype { name_span, .. }
+                        | seseragi_syntax::SurfaceDecl::Struct { name_span, .. } => {
+                            *name_span == symbol.origin
+                        }
+                        _ => false,
+                    }))
+    });
+    if nominal {
+        if let Some(canonical) = symbol.and_then(|symbol| symbol.canonical.clone()) {
+            if is_shadowing_builtin(name, &canonical) {
+                return TypedType::ExternalNamed {
+                    name: name.into(),
+                    canonical,
+                    arguments,
+                };
+            }
+        }
+    }
+    TypedType::Named {
+        name: name.into(),
+        arguments,
+    }
 }
 
 pub(crate) fn semantic_values_are_compatible(
@@ -66,7 +135,17 @@ pub(crate) fn semantic_values_are_compatible(
         },
     ) = (&expected.type_ref, &actual.type_ref)
     {
-        return record_is_compatible(expected_fields, actual_fields);
+        return record_is_compatible(expected_fields, actual_fields)
+            && match (&expected.key, &actual.key) {
+                (SemanticTypeKey::Record(expected), SemanticTypeKey::Record(actual)) => {
+                    expected.iter().all(|(name, value)| {
+                        actual
+                            .get(name)
+                            .is_none_or(|actual| semantic_values_have_same_identity(value, actual))
+                    })
+                }
+                _ => true,
+            };
     }
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => true,
@@ -288,6 +367,16 @@ pub(crate) fn semantic_values_have_same_identity(
         | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
             structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
+        (SemanticTypeKey::Record(expected_fields), SemanticTypeKey::Record(actual_fields)) => {
+            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
+                && expected_fields.len() == actual_fields.len()
+                && expected_fields.iter().all(|(name, value)| {
+                    actual_fields
+                        .get(name)
+                        .is_some_and(|actual| semantic_values_have_same_identity(value, actual))
+                })
+        }
+        (SemanticTypeKey::Record(_), _) | (_, SemanticTypeKey::Record(_)) => false,
         (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
             let (
                 TypedType::Tuple {
@@ -767,7 +856,10 @@ impl SemanticTypeCatalog {
                 *owner,
                 SemanticAdt {
                     name: name.clone(),
-                    external_canonical: None,
+                    external_canonical: match nominal_type_ref(resolved, *owner, name, Vec::new()) {
+                        TypedType::ExternalNamed { canonical, .. } => Some(canonical),
+                        _ => None,
+                    },
                     type_parameters: parameters.clone(),
                     type_parameter_names: parameter_names
                         .iter()
@@ -777,6 +869,14 @@ impl SemanticTypeCatalog {
                 },
             );
         }
+        // Local fields and constructor payloads must use the same resolved sum
+        // owners as later function annotations. Register only the verified
+        // prelude contracts before caching their nested semantic keys.
+        catalog.collect_prelude_sum_types(resolved);
+        let owners = owners
+            .into_iter()
+            .chain(catalog.adts.keys().copied())
+            .collect::<BTreeSet<_>>();
         for (owner, name, parameters, parameter_names, fields) in struct_declarations {
             let fields = fields
                 .iter()
@@ -864,7 +964,6 @@ impl SemanticTypeCatalog {
                 adt.variants = semantic_variants;
             }
         }
-        catalog.collect_prelude_sum_types(resolved);
         // Register both imported owner families before fixing nested payload
         // keys. A constructor may carry an imported struct, and an imported
         // struct field may carry an imported ADT from the same dependency.
@@ -1000,9 +1099,23 @@ impl SemanticTypeCatalog {
                     .collect(),
             ),
             TypedType::Hole => SemanticTypeKey::Invalid,
-            TypedType::Record { .. }
-            | TypedType::Function { .. }
-            | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
+            TypedType::Record { fields, .. } => SemanticTypeKey::Record(
+                fields
+                    .iter()
+                    .map(|field| {
+                        (
+                            field.name.clone(),
+                            SemanticValueType {
+                                type_ref: field.type_ref.clone(),
+                                key: self.key_from_typed_type(resolved, &field.type_ref),
+                            },
+                        )
+                    })
+                    .collect(),
+            ),
+            TypedType::Function { .. } | TypedType::RequirementMerge { .. } => {
+                SemanticTypeKey::Other
+            }
         }
     }
 
@@ -1164,9 +1277,27 @@ fn semantic_key_from_type_ref(
                 .collect(),
         ),
         TypeRef::Hole { .. } => SemanticTypeKey::Invalid,
-        TypeRef::Record { .. } | TypeRef::Function { .. } | TypeRef::RequirementMerge { .. } => {
-            SemanticTypeKey::Other
-        }
+        TypeRef::Record { fields, .. } => SemanticTypeKey::Record(
+            fields
+                .iter()
+                .map(|field| {
+                    (
+                        field.name.clone(),
+                        SemanticValueType {
+                            type_ref: aliases.expand(resolved, &field.type_ref),
+                            key: semantic_key_from_type_ref(
+                                resolved,
+                                owners,
+                                struct_owners,
+                                aliases,
+                                &field.type_ref,
+                            ),
+                        },
+                    )
+                })
+                .collect(),
+        ),
+        TypeRef::Function { .. } | TypeRef::RequirementMerge { .. } => SemanticTypeKey::Other,
     }
 }
 
@@ -1219,9 +1350,26 @@ fn semantic_key_from_expanded_type(
                 .collect(),
         ),
         TypedType::Hole => SemanticTypeKey::Invalid,
-        TypedType::Record { .. }
-        | TypedType::Function { .. }
-        | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
+        TypedType::Record { fields, .. } => SemanticTypeKey::Record(
+            fields
+                .iter()
+                .map(|field| {
+                    (
+                        field.name.clone(),
+                        SemanticValueType {
+                            type_ref: field.type_ref.clone(),
+                            key: semantic_key_from_expanded_type(
+                                resolved,
+                                owners,
+                                struct_owners,
+                                &field.type_ref,
+                            ),
+                        },
+                    )
+                })
+                .collect(),
+        ),
+        TypedType::Function { .. } | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
     }
 }
 

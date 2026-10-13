@@ -168,6 +168,9 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
         names: BTreeSet::new(),
         external: BTreeSet::new(),
     };
+    for alias in &module.aliases {
+        collect_type_names(&alias.target, &mut references);
+    }
     for foreign in &module.foreign_modules {
         collect_foreign_type_names(&foreign.members, &mut references);
     }

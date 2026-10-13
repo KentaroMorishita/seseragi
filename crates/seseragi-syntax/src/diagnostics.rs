@@ -157,7 +157,11 @@ impl Diagnostic {
                 "Effect body requires an environment not provided by with".to_owned()
             }
             "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
+            "match.coverage-limit" => {
+                "Match coverage exceeded its source-complexity limit".to_owned()
+            }
             "parser.expected-expression" => "Expected an expression here".to_owned(),
+            "parser.expected-pattern" => "Expected a pattern here".to_owned(),
             "parser.module-expression-statement" => {
                 "Module top level only permits declarations".to_owned()
             }
@@ -335,6 +339,8 @@ impl Diagnostic {
             "match.non-exhaustive" => {
                 "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."
             }
+            "match.coverage-limit" => "Simplify the patterns or split this match into smaller matches.",
+            "parser.expected-pattern" => "Complete the pattern at the highlighted location.",
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
             }
@@ -520,11 +526,6 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         &artifact.diagnostics,
     );
     append_diagnostics(&mut artifact, surface_diagnostics);
-    let mut surface_error_context = artifact.diagnostics.clone();
-    surface_error_context.extend(template_diagnostics.iter().cloned());
-    let nested_surface_diagnostics =
-        surface_errors::diagnostics(&surface.declarations, &surface_error_context);
-    append_diagnostics(&mut artifact, nested_surface_diagnostics);
     let declaration_diagnostics = crate::surface::declaration_diagnostics(&source_tokens, &surface)
         .into_iter()
         .filter(|diagnostic| {
@@ -533,7 +534,13 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
                 .iter()
                 .any(|existing| existing.primary == diagnostic.primary)
         })
-        .collect();
+        .collect::<Vec<_>>();
+    let mut surface_error_context = artifact.diagnostics.clone();
+    surface_error_context.extend(template_diagnostics.iter().cloned());
+    surface_error_context.extend(declaration_diagnostics.iter().cloned());
+    let nested_surface_diagnostics =
+        surface_errors::diagnostics(&surface.declarations, &surface_error_context);
+    append_diagnostics(&mut artifact, nested_surface_diagnostics);
     append_diagnostics(&mut artifact, declaration_diagnostics);
     append_diagnostics(&mut artifact, template_diagnostics);
     append_diagnostics(&mut artifact, literal_diagnostics);

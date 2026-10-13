@@ -87,8 +87,9 @@ fn instantiates_generic_payload_constructor_from_resolved_argument_type() {
         variants[1].scheme.type_ref,
         TypedType::Function {
             parameter: Box::new(named("A")),
-            result: Box::new(TypedType::Named {
+            result: Box::new(TypedType::ExternalNamed {
                 name: "Maybe".to_owned(),
+                canonical: "artifact/maybe::Maybe".to_owned(),
                 arguments: vec![named("A")],
             }),
         }
@@ -102,14 +103,16 @@ fn instantiates_generic_payload_constructor_from_resolved_argument_type() {
         TypedExpr::Call {
             callee,
             arguments,
-            type_ref: TypedType::Named {
+            type_ref: TypedType::ExternalNamed {
                 name,
+                canonical,
                 arguments: result_arguments,
             },
             ..
         } if callee == "artifact/maybe::Just"
             && arguments.len() == 1
             && name == "Maybe"
+            && canonical == "artifact/maybe::Maybe"
             && result_arguments == &vec![named("String")]
     ));
 }
@@ -129,8 +132,9 @@ fn keeps_nullary_generic_constructor_polymorphic_instead_of_hole() {
         &TypedExpr::Variable {
             name: "artifact/maybe::Nothing".to_owned(),
             evidence: Vec::new(),
-            type_ref: TypedType::Named {
+            type_ref: TypedType::ExternalNamed {
                 name: "Maybe".to_owned(),
+                canonical: "artifact/maybe::Maybe".to_owned(),
                 arguments: vec![named("A")],
             },
             origin: seseragi_syntax::ByteSpan { start: 74, end: 81 },

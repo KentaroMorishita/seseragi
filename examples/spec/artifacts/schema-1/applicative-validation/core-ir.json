@@ -494,7 +494,7 @@
                   }
                 }
               ],
-              "exhaustive": false,
+              "exhaustive": true,
               "type": {
                 "kind": "named",
                 "name": "Validation",
@@ -1398,7 +1398,7 @@
                   }
                 }
               ],
-              "exhaustive": false,
+              "exhaustive": true,
               "type": {
                 "kind": "named",
                 "name": "Validation",
@@ -1836,7 +1836,7 @@
             }
           }
         ],
-        "exhaustive": false,
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "Errors",
@@ -2922,7 +2922,7 @@
             }
           }
         ],
-        "exhaustive": false,
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
@@ -3115,7 +3115,7 @@
             }
           }
         ],
-        "exhaustive": false,
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
@@ -3312,7 +3312,7 @@
             }
           }
         ],
-        "exhaustive": false,
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",

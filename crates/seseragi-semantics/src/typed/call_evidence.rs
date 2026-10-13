@@ -513,6 +513,17 @@ fn select_contextual_standard_instance(
     let [type_ref] = constraint.arguments.as_slice() else {
         return select_standard_instance(Some(trait_identity), constraint);
     };
+    // Primitive heads also occur in the special (non-generic) registry. A
+    // lexical nominal with that display name must not reach either registry.
+    if matches!(type_ref, TypedType::Named {name, arguments} if arguments.is_empty() && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"))
+        && (primitive_display_parameter_is_shadowed(type_ref, resolution)
+            || !matches!(
+                resolution.semantic_value_from_typed_type(type_ref).key,
+                super::semantic_types::SemanticTypeKey::Other
+            ))
+    {
+        return None;
+    }
     if let Some(identity) =
         crate::prelude::structural_standard_instance_identity(trait_identity, type_ref)
     {
@@ -584,6 +595,9 @@ fn contextual_standard_type_ref(
     type_ref: &TypedType,
     resolution: &TypedResolution<'_>,
 ) -> TypedType {
+    if let Some(primitive) = canonical_primitive_type_ref(type_ref) {
+        return primitive;
+    }
     let (name, arguments) = match type_ref {
         TypedType::Named { name, arguments }
         | TypedType::ExternalNamed {
@@ -625,6 +639,26 @@ pub(super) fn select_standard_instance(
     trait_identity: Option<&str>,
     constraint: &TypedConstraint,
 ) -> Option<TypedInstanceEvidence> {
+    let canonical_constraint;
+    let constraint = if constraint
+        .arguments
+        .iter()
+        .any(|argument| canonical_primitive_type_ref(argument).is_some())
+    {
+        canonical_constraint = TypedConstraint {
+            name: constraint.name.clone(),
+            arguments: constraint
+                .arguments
+                .iter()
+                .map(|argument| {
+                    canonical_primitive_type_ref(argument).unwrap_or_else(|| argument.clone())
+                })
+                .collect(),
+        };
+        &canonical_constraint
+    } else {
+        constraint
+    };
     if let Some(identity) = crate::standard::standard_module_instance(trait_identity, constraint) {
         return Some(standard_evidence(identity.to_owned()));
     }
@@ -670,6 +704,94 @@ pub(super) fn select_standard_instance(
     (crate::prelude::special_standard_instance(constraint).is_some()
         || crate::prelude::standard_instance_by_identity(&identity).is_some())
     .then(|| standard_evidence(identity))
+}
+
+// Canonical primitive evidence was selected from an inferred semantic value,
+// not from a lexical name. Normalize only for the standard registry's ABI head;
+// local/imported matching continues to see the exact canonical identity.
+fn canonical_primitive_type_ref(type_ref: &TypedType) -> Option<TypedType> {
+    let TypedType::ExternalNamed {
+        name,
+        canonical,
+        arguments,
+    } = type_ref
+    else {
+        return None;
+    };
+    (arguments.is_empty()
+        && matches!(
+            name.as_str(),
+            "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"
+        )
+        && canonical == &format!("std/prelude::{name}"))
+        .then(|| TypedType::Named {
+            name: name.clone(),
+            arguments: Vec::new(),
+        })
+}
+
+/// Retain canonical primitive evidence only where a lexical relookup would
+/// change its already inferred identity. Ordinary programs keep their existing
+/// typed evidence shape. The caller must supply identity-encoded evidence types,
+/// never infer a primitive from a bare display name here.
+pub(crate) fn preserve_evidence_identity(
+    type_ref: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> TypedType {
+    if let Some(primitive) = canonical_primitive_type_ref(type_ref) {
+        let parameter_shadow = matches!(&primitive, TypedType::Named {name, ..} if resolution.resolved().symbols.iter().any(|symbol| symbol.kind == crate::SymbolKind::TypeParameter && symbol.spelling == *name));
+        return if !parameter_shadow
+            && resolution.semantic_value_from_typed_type(&primitive).key
+                == super::semantic_types::SemanticTypeKey::Other
+        {
+            primitive
+        } else {
+            type_ref.clone()
+        };
+    }
+    match type_ref {
+        TypedType::Named { name, arguments } => TypedType::Named {
+            name: name.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| preserve_evidence_identity(argument, resolution))
+                .collect(),
+        },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => TypedType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| preserve_evidence_identity(argument, resolution))
+                .collect(),
+        },
+        TypedType::Tuple { elements } => TypedType::Tuple {
+            elements: elements
+                .iter()
+                .map(|element| preserve_evidence_identity(element, resolution))
+                .collect(),
+        },
+        TypedType::Record { closed, fields } => TypedType::Record {
+            closed: *closed,
+            fields: fields
+                .iter()
+                .map(|field| crate::TypedRecordField {
+                    name: field.name.clone(),
+                    optional: field.optional,
+                    type_ref: preserve_evidence_identity(&field.type_ref, resolution),
+                })
+                .collect(),
+        },
+        TypedType::Function { parameter, result } => TypedType::Function {
+            parameter: Box::new(preserve_evidence_identity(parameter, resolution)),
+            result: Box::new(preserve_evidence_identity(result, resolution)),
+        },
+        _ => type_ref.clone(),
+    }
 }
 
 fn select_structural_standard_instance(
@@ -782,6 +904,9 @@ fn standard_type_is_shadowed(
     type_ref: &TypedType,
     resolution: &TypedResolution<'_>,
 ) -> bool {
+    if primitive_display_parameter_is_shadowed(type_ref, resolution) {
+        return true;
+    }
     let owner = match resolution.semantic_value_from_typed_type(type_ref).key {
         super::semantic_types::SemanticTypeKey::Adt { owner, .. }
         | super::semantic_types::SemanticTypeKey::Struct { owner, .. } => owner,
@@ -795,6 +920,13 @@ fn standard_type_is_shadowed(
         .symbol(owner)
         .and_then(|symbol| symbol.canonical.as_deref())
         != Some(expected.as_str())
+}
+
+fn primitive_display_parameter_is_shadowed(
+    type_ref: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    matches!(type_ref, TypedType::Named {name, arguments} if arguments.is_empty() && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String") && resolution.resolved().symbols.iter().any(|symbol| symbol.kind == crate::SymbolKind::TypeParameter && symbol.spelling == *name))
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
@@ -974,6 +1106,15 @@ pub(crate) fn select_binary_operator_evidence(
                     evidence,
                 },
             ));
+        }
+    }
+    for value in [&left, &right] {
+        if matches!(value, TypedType::Named {name, arguments} if arguments.is_empty() && matches!(name.as_str(), "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"))
+            && (primitive_display_parameter_is_shadowed(value, resolution)
+                || resolution.semantic_value_from_typed_type(value).key
+                    != super::semantic_types::SemanticTypeKey::Other)
+        {
+            return Err(missing());
         }
     }
     let output = standard_binary_output(trait_name, &left, &right).ok_or_else(missing)?;
@@ -1158,10 +1299,12 @@ pub(crate) fn standard_binary_output(
     left: &TypedType,
     right: &TypedType,
 ) -> Option<TypedType> {
+    let left = canonical_primitive_type_ref(left).unwrap_or_else(|| left.clone());
+    let right = canonical_primitive_type_ref(right).unwrap_or_else(|| right.clone());
     standard_binary_heads(trait_name)
         .into_iter()
         .find(|[candidate_left, candidate_right, _]| {
-            candidate_left == left && candidate_right == right
+            candidate_left == &left && candidate_right == &right
         })
         .map(|[_, _, output]| output)
 }
@@ -1198,12 +1341,14 @@ pub(crate) fn select_binary_same_type_evidence(
         return Err(missing());
     }
     let constraint = missing();
-    let evidence = trait_identity
-        .and_then(|trait_identity| {
-            select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
-        })
-        .or_else(|| select_standard_instance(trait_identity, &constraint))
-        .ok_or_else(|| constraint.clone())?;
+    let fallback_identity = format!("std/prelude::{trait_name}");
+    let evidence = select_resolved_evidence(
+        &constraint,
+        trait_identity.unwrap_or(&fallback_identity),
+        resolution,
+        scoped,
+    )
+    .ok_or_else(|| constraint.clone())?;
     Ok(TypedCallEvidence {
         constraint,
         evidence,

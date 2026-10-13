@@ -256,12 +256,11 @@ fn type_collection_pattern(
     expected: &SemanticValueType,
     context: &PureExpressionContext<'_>,
 ) -> PatternAnalysis {
-    let expected_element = match &expected.type_ref {
-        TypedType::Named { name, arguments }
-        | TypedType::ExternalNamed {
-            name, arguments, ..
-        } if name == kind.name() && arguments.len() == 1 => {
-            context.semantic_value_from_typed_type(&arguments[0])
+    let expected_element = match &expected.key {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == kind.name() && arguments.len() == 1 =>
+        {
+            arguments[0].clone()
         }
         _ => {
             return invalid(

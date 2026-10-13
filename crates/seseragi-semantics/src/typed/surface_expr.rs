@@ -232,20 +232,148 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
-        let hydrated = self.semantic_value_from_typed_type(&value.type_ref);
-        // Recover nested imported identities without replacing a canonical ADT owner
-        // with the weaker spelling-based key used by standard named generics.
-        if hydrated.key != SemanticTypeKey::Other
+        // A resolved primitive identity is already complete. Re-reading its
+        // display name in this lexical scope can capture an unrelated nominal
+        // declaration; annotated nominal values have their own non-Other key.
+        if ["Unit", "Bool", "Int", "Float", "Char", "String"]
+            .iter()
+            .any(|name| primitive_type_is(&value.type_ref, &value.key, name))
+        {
+            return value;
+        }
+        let mut hydrated = self.semantic_value_from_typed_type(&value.type_ref);
+        // Imported signatures and partially instantiated constructors can have
+        // weak keys. Keep the existing owner-recovery rule, then reconcile
+        // their children without recapturing proven primitive identities.
+        let mut recovered_key = if hydrated.key != SemanticTypeKey::Other
             && (!matches!(hydrated.key, SemanticTypeKey::NamedGeneric { .. })
                 || matches!(
                     value.key,
                     SemanticTypeKey::Other | SemanticTypeKey::NamedGeneric { .. }
-                ))
-        {
-            hydrated
+                )) {
+            hydrated.key.clone()
         } else {
-            value
+            value.key.clone()
+        };
+        if let (
+            SemanticTypeKey::NamedGeneric { name, .. },
+            SemanticTypeKey::Adt { owner, .. } | SemanticTypeKey::Struct { owner, .. },
+        ) = (&value.key, &hydrated.key)
+        {
+            let is_prelude_sum_owner = self
+                .resolution
+                .resolved()
+                .symbols
+                .iter()
+                .find(|symbol| symbol.id == *owner)
+                .is_some_and(|symbol| {
+                    crate::prelude::SUM_TYPES.iter().any(|sum| {
+                        sum.name == name && symbol.canonical.as_deref() == Some(sum.canonical)
+                    })
+                });
+            if crate::prelude::is_standalone_symbol(SymbolNamespace::Type, name)
+                && !is_prelude_sum_owner
+            {
+                // Builtin collection/constructor identities cannot be captured
+                // by a local nominal declaration. Prelude sum keys may still
+                // be upgraded to their verified canonical ADT owner.
+                recovered_key = value.key.clone();
+            }
         }
+        let reconcile = |previous: &SemanticValueType, type_ref: &TypedType| {
+            if previous.type_ref != *type_ref
+                && matches!(
+                    previous.key,
+                    SemanticTypeKey::Other
+                        | SemanticTypeKey::Invalid
+                        | SemanticTypeKey::SchemeParameter(_)
+                        | SemanticTypeKey::TypeParameter(_)
+                )
+            {
+                self.semantic_value_from_typed_type(type_ref)
+            } else {
+                self.hydrate_semantic_value(SemanticValueType {
+                    type_ref: type_ref.clone(),
+                    key: previous.key.clone(),
+                })
+            }
+        };
+        let key = match (&value.type_ref, &value.key) {
+            (TypedType::Tuple { elements }, SemanticTypeKey::Tuple(keys))
+                if elements.len() == keys.len() =>
+            {
+                SemanticTypeKey::Tuple(
+                    elements
+                        .iter()
+                        .zip(keys)
+                        .map(|(type_ref, key)| {
+                            self.hydrate_semantic_value(SemanticValueType {
+                                type_ref: type_ref.clone(),
+                                key: key.clone(),
+                            })
+                            .key
+                        })
+                        .collect(),
+                )
+            }
+            (TypedType::Record { fields, .. }, SemanticTypeKey::Record(values)) => {
+                SemanticTypeKey::Record(
+                    fields
+                        .iter()
+                        .map(|field| {
+                            let value = values
+                                .get(&field.name)
+                                .map(|previous| reconcile(previous, &field.type_ref))
+                                .unwrap_or_else(|| {
+                                    self.semantic_value_from_typed_type(&field.type_ref)
+                                });
+                            (field.name.clone(), value)
+                        })
+                        .collect(),
+                )
+            }
+            (
+                TypedType::Named {
+                    arguments: types, ..
+                }
+                | TypedType::ExternalNamed {
+                    arguments: types, ..
+                },
+                SemanticTypeKey::Adt { arguments, .. }
+                | SemanticTypeKey::Struct { arguments, .. }
+                | SemanticTypeKey::ExternalNominal { arguments, .. }
+                | SemanticTypeKey::NamedGeneric { arguments, .. },
+            ) if arguments.len() == types.len() => {
+                let arguments = arguments
+                    .iter()
+                    .zip(types)
+                    .map(|(value, type_ref)| reconcile(value, type_ref))
+                    .collect::<Vec<_>>();
+                let mut key = recovered_key;
+                match &mut key {
+                    SemanticTypeKey::Adt {
+                        arguments: slots, ..
+                    }
+                    | SemanticTypeKey::Struct {
+                        arguments: slots, ..
+                    }
+                    | SemanticTypeKey::ExternalNominal {
+                        arguments: slots, ..
+                    }
+                    | SemanticTypeKey::NamedGeneric {
+                        arguments: slots, ..
+                    } => *slots = arguments,
+                    _ => {}
+                }
+                key
+            }
+            _ => recovered_key,
+        };
+        hydrated = SemanticValueType {
+            type_ref: value.type_ref,
+            key,
+        };
+        hydrated
     }
 
     pub(super) fn semantic_value_from_type_ref(
@@ -310,13 +438,20 @@ impl<'a> PureExpressionContext<'a> {
         .map(|(element, _)| element)
     }
 
+    pub(super) fn evidence_type(&self, value: &SemanticValueType) -> TypedType {
+        super::call_evidence::preserve_evidence_identity(
+            &super::functions::evidence_type(value),
+            self.resolution,
+        )
+    }
+
     pub(super) fn select_show_evidence(
         &self,
-        value: TypedType,
+        value: SemanticValueType,
     ) -> Result<(String, crate::TypedCallEvidence), TypedConstraint> {
         let constraint = TypedConstraint {
             name: "Show".to_owned(),
-            arguments: vec![value],
+            arguments: vec![self.evidence_type(&value)],
         };
         let trait_identity = self
             .trait_identity("Show")
@@ -916,11 +1051,14 @@ fn type_unary(
         "-" => context
             .expected()
             .filter(|expected| {
-                named_type_is(&expected.type_ref, "Int")
-                    || named_type_is(&expected.type_ref, "Float")
+                primitive_type_is(&expected.type_ref, &expected.key, "Int")
+                    || primitive_type_is(&expected.type_ref, &expected.key, "Float")
             })
             .cloned(),
-        "!" => Some(context.semantic_value_from_typed_type(&named_type("Bool"))),
+        "!" => Some(SemanticValueType {
+            type_ref: named_type("Bool"),
+            key: SemanticTypeKey::Other,
+        }),
         _ => None,
     };
     let operand_analysis =
@@ -928,7 +1066,23 @@ fn type_unary(
     let operand_type = super::type_ref::inferred_type_from_expr(&operand_analysis.value);
     let result_type = allowed
         .iter()
-        .find(|candidate| **candidate == operand_type)
+        .find(|candidate| {
+            **candidate == operand_type
+                && match operator {
+                    "!" => {
+                        primitive_type_is(&operand_type, &operand_analysis.semantic_type, "Bool")
+                    }
+                    "-" => {
+                        primitive_type_is(&operand_type, &operand_analysis.semantic_type, "Int")
+                            || primitive_type_is(
+                                &operand_type,
+                                &operand_analysis.semantic_type,
+                                "Float",
+                            )
+                    }
+                    _ => false,
+                }
+        })
         .cloned()
         .unwrap_or(TypedType::Hole);
     let issue = (result_type == TypedType::Hole && operand_type != TypedType::Hole).then(|| {
@@ -939,7 +1093,13 @@ fn type_unary(
             actual: operand_type,
         }
     });
-    let semantic_type = context.semantic_value_from_typed_type(&result_type).key;
+    let semantic_type = if operator == "!" && result_type != TypedType::Hole {
+        SemanticTypeKey::Other
+    } else if operator == "-" && result_type != TypedType::Hole {
+        operand_analysis.semantic_type.clone()
+    } else {
+        context.semantic_value_from_typed_type(&result_type).key
+    };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Unary {
             operator: operator.to_owned(),
@@ -976,7 +1136,10 @@ fn type_template(
             SurfaceTemplatePart::Interpolation { value, span } => {
                 let analysis = type_surface_expression(value, &context.without_expected());
                 let type_ref = super::type_ref::inferred_type_from_expr(&analysis.value);
-                let selected = context.select_show_evidence(type_ref.clone());
+                let selected = context.select_show_evidence(SemanticValueType {
+                    type_ref: type_ref.clone(),
+                    key: analysis.semantic_type.clone(),
+                });
                 let (trait_identity, evidence) = match selected {
                     Ok(selected) => (selected.0, Some(selected.1)),
                     Err(constraint) => {
@@ -1233,6 +1396,15 @@ pub(super) fn named_type(name: &str) -> TypedType {
 
 pub(super) fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, .. } if name == expected)
+}
+
+pub(super) fn primitive_type_is(
+    type_ref: &TypedType,
+    key: &SemanticTypeKey,
+    expected: &str,
+) -> bool {
+    *key == SemanticTypeKey::Other
+        && matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
 }
 
 fn unquote_string(raw: &str) -> String {

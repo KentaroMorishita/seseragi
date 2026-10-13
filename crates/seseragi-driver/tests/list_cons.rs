@@ -27,6 +27,7 @@ fn cons_rejects_invalid_tail_and_nominal_shadowing() {
         "let bad = True : `[1]",
         "struct List<A> { value: A }\nfn bad head: Int -> tail: List<Int> -> List<Int> = head : tail",
         "fn bad<List> head: Int -> tail: List<Int> -> List<Int> = head : tail",
+        "fn bad<A, B> head: Maybe<A> -> tail: List<Maybe<B>> -> List<Maybe<B>> = head : tail",
         "operator infixr 4 : head: Int -> tail: Int -> Int = head",
     ] {
         let result = compile_module(CompileInput::new("bad.ssrg", "fixture/cons", source));

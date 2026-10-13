@@ -12,6 +12,7 @@ pub use foreign_virtual::{
 mod binding_linkage;
 mod generated_binding_ownership;
 mod generated_bindings;
+mod generated_projection;
 pub use binding_linkage::{
     validate_binding_runtime_linkage, validate_binding_runtime_linkage_inputs,
     validate_generated_binding_source,

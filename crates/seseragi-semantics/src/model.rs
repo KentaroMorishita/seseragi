@@ -132,7 +132,19 @@ pub struct TypedModuleImport {
     pub imported: String,
     pub local: String,
     pub canonical: String,
+    /// Proven by the linked original generic foreign declaration; ordinary
+    /// imports do not carry this target annotation evidence.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub foreign_scalar_result: Option<ForeignScalarResultCodec>,
     pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ForeignScalarResultCodec {
+    pub parameter_count: usize,
+    pub type_parameter_index: usize,
+    pub type_parameter_count: usize,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

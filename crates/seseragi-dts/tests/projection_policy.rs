@@ -64,6 +64,10 @@ fn separate_policy_emits_checked_api_and_shared_evidence_without_changing_meanin
         .any(|reason| reason.rule == "applied-semantic-json-policy"
             && reason.policy.as_ref().unwrap().name == "explicit-fixture-policy"));
     let generated = result.generated.unwrap();
+    let metadata: serde_json::Value = serde_json::from_str(&generated.metadata).unwrap();
+    let persisted: seseragi_projection::ProjectionArtifactEvidence =
+        serde_json::from_value(metadata["projectionEvidence"].clone()).unwrap();
+    assert_eq!(persisted.graph, graph);
     assert!(generated.source.contains("opaque type User"));
     let adapters = generated.adapters.unwrap();
     assert_eq!(adapters.input_boundary, "std/json::Json");
@@ -71,6 +75,137 @@ fn separate_policy_emits_checked_api_and_shared_evidence_without_changing_meanin
     assert!(!adapters.semantic_source.contains("foreign \"typescript\""));
     let json: serde_json::Value = serde_json::from_str(&generated.report).unwrap();
     assert_eq!(json["compatibility"], serde_json::to_value(report).unwrap());
+}
+
+#[cfg(feature = "filesystem")]
+#[test]
+fn native_project_loader_revalidates_current_policy_and_checked_artifacts() {
+    use sha2::{Digest, Sha256};
+    use std::fs;
+    let root = tempfile::tempdir().unwrap();
+    let package = root.path();
+    fs::create_dir(package.join("host")).unwrap();
+    fs::create_dir(package.join("src")).unwrap();
+    fs::write(package.join("seseragi.toml"), "[package]\nname='fixture/policy-freshness'\nversion='1.0.0'\nlanguage='^0.1.0'\n[layout]\ngenerated='generated'\n[run]\nentry='main'\n[foreign.typescript]\nresolver='node'\nmanifest='host/package.json'\nlockfile='host/bun.lock'\nbindings='bindings.toml'\n").unwrap();
+    fs::write(package.join("host/package.json"), "{}").unwrap();
+    fs::write(package.join("host/bun.lock"), "{}").unwrap();
+    fs::write(package.join("bindings.toml"), SETTINGS).unwrap();
+    fs::write(package.join("host/api.d.ts"), SOURCE).unwrap();
+    fs::write(
+        package.join("src/main.ssrg"),
+        "import {decodeUser} from \"gen/api/semantic\"\npub let main = decodeUser\n",
+    )
+    .unwrap();
+    let graph = interpret_declaration(SOURCE, "host/api.d.ts", SETTINGS).unwrap();
+    let original_policy = serde_json::to_string(&policy(&graph)).unwrap();
+    let policy_path = package.join("host/api.policy.json");
+    fs::write(&policy_path, &original_policy).unwrap();
+    let request = ConvertRequest {
+        package_root: package.into(),
+        generated_root: package.join("generated"),
+        bindings: "bindings.toml".into(),
+        host_manifest: "host/package.json".into(),
+        entry: None,
+    };
+    assert!(!convert_package(&request).unwrap().has_errors());
+    let metadata_path = package.join("generated/api.binding.json");
+    let original_metadata = fs::read_to_string(&metadata_path).unwrap();
+    let original_source = fs::read_to_string(package.join("generated/api/semantic.ssrg")).unwrap();
+    let original_adapters =
+        fs::read_to_string(package.join("generated/api.semantic.json")).unwrap();
+    assert!(seseragi_project::load_local_project(package).is_ok());
+    let rejected = || {
+        let error = seseragi_project::load_local_project(package).unwrap_err();
+        assert_eq!(error.code(), "SES-F0103");
+        assert!(error.to_string().contains("semantic policy"), "{error}");
+        assert_eq!(
+            fs::read_to_string(package.join("generated/api/semantic.ssrg")).unwrap(),
+            original_source
+        );
+    };
+    for mutate in ["graphDigest", "functionName", "mapping", "schema"] {
+        let mut changed: serde_json::Value = serde_json::from_str(&original_policy).unwrap();
+        match mutate {
+            "graphDigest" => changed["graphDigest"] = serde_json::json!("0".repeat(64)),
+            "functionName" => {
+                changed["policies"][0]["functionName"] = serde_json::json!("decodeOther")
+            }
+            "mapping" => {
+                changed["policies"][0]["mapping"] =
+                    serde_json::json!({"kind":"resource-acquisition"})
+            }
+            _ => changed["schema"] = serde_json::json!(2),
+        }
+        let changed = changed.to_string();
+        fs::write(&policy_path, &changed).unwrap();
+        rejected();
+        // Updating only a claimed input hash does not authorize a different
+        // mapping, schema, graph, or retained generated function.
+        let mut metadata: serde_json::Value = serde_json::from_str(&original_metadata).unwrap();
+        metadata["projectionEvidence"]["policySourceDigest"] =
+            serde_json::json!(format!("{:x}", Sha256::digest(changed.as_bytes())));
+        fs::write(&metadata_path, metadata.to_string()).unwrap();
+        rejected();
+        fs::write(&metadata_path, &original_metadata).unwrap();
+    }
+    fs::remove_file(&policy_path).unwrap();
+    rejected();
+    fs::write(&policy_path, &original_policy).unwrap();
+    let mut metadata: serde_json::Value = serde_json::from_str(&original_metadata).unwrap();
+    metadata
+        .as_object_mut()
+        .unwrap()
+        .remove("projectionEvidence");
+    fs::write(&metadata_path, metadata.to_string()).unwrap();
+    rejected();
+    fs::write(&metadata_path, &original_metadata).unwrap();
+    for mutation in ["settings", "sourceLength", "origin"] {
+        let mut metadata: serde_json::Value = serde_json::from_str(&original_metadata).unwrap();
+        let mut evidence: seseragi_projection::ProjectionArtifactEvidence =
+            serde_json::from_value(metadata["projectionEvidence"].clone()).unwrap();
+        match mutation {
+            "settings" => {
+                evidence.graph.identity.as_mut().unwrap().settings_digest = "0".repeat(64)
+            }
+            "sourceLength" => {
+                evidence
+                    .graph
+                    .sources
+                    .get_mut("host/api.d.ts")
+                    .unwrap()
+                    .byte_length += 1
+            }
+            _ => evidence.graph.symbols.get_mut("User").unwrap().origins[0].end = SOURCE.len() + 1,
+        }
+        metadata["projectionEvidence"] = serde_json::to_value(evidence).unwrap();
+        fs::write(&metadata_path, metadata.to_string()).unwrap();
+        rejected();
+    }
+    fs::write(&metadata_path, &original_metadata).unwrap();
+    fs::write(package.join("host/api.d.ts"), format!("{SOURCE}\n")).unwrap();
+    let changed_declaration = seseragi_project::load_local_project(package).unwrap_err();
+    assert!(changed_declaration.to_string().contains("stale"));
+    fs::write(package.join("host/api.d.ts"), SOURCE).unwrap();
+    let mut adapters: serde_json::Value = serde_json::from_str(&original_adapters).unwrap();
+    let edited = format!("{original_source}\n// edited together with metadata");
+    adapters["semanticSource"] = serde_json::json!(edited);
+    fs::write(
+        package.join("generated/api.semantic.json"),
+        adapters.to_string(),
+    )
+    .unwrap();
+    fs::write(package.join("generated/api/semantic.ssrg"), &edited).unwrap();
+    let tampered = seseragi_project::load_local_project(package).unwrap_err();
+    assert!(tampered
+        .to_string()
+        .contains("semantic adapter output differs"));
+    fs::write(
+        package.join("generated/api.semantic.json"),
+        original_adapters,
+    )
+    .unwrap();
+    fs::write(package.join("generated/api/semantic.ssrg"), original_source).unwrap();
+    assert!(seseragi_project::load_local_project(package).is_ok());
 }
 #[test]
 fn stale_or_invalid_policy_has_its_own_source_diagnostic_and_no_partial_output() {

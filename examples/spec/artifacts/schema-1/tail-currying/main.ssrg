@@ -1,0 +1,17 @@
+fn advance count: Int -> value: Int -> Int =
+  if count == 0 then value else advance (count - 1) (value + 1)
+
+fn capture count: Int -> saved: (Unit -> Int) -> (Unit -> Int) =
+  if count == 0 then saved else capture (count - 1) (\_ -> count)
+
+fn repeat<A> count: Int -> value: A -> A =
+  if count == 0 then value else repeat (count - 1) value
+
+pub fn tailCurryingWorks -> Bool = {
+  let partial = advance 2
+  let first = partial 0
+  let second = partial 0
+  let saved = capture 3 (\_ -> 99)
+  let repeated: Int -> Int = repeat 100000
+  first == 2 && second == 2 && saved () == 1 && repeated 42 == 42
+}
