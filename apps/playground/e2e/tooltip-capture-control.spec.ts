@@ -104,6 +104,24 @@ async function recordPhase(page: Page, cdp: CDPSession, label: string) {
     if (!nodeId) throw new Error(`CDP cannot resolve ${selector}`)
     platformFonts[name] = await cdp.send("CSS.getPlatformFontsForNode", { nodeId })
   }
+  // Query nodes with direct text children; container-only font queries can be empty.
+  for (const [name, selector] of [
+    ["firstLineTextNodes", "#editor .cm-content .cm-line:first-child, #editor .cm-content .cm-line:first-child *"],
+    ["gutterTextNodes", "#editor .cm-lineNumbers .cm-gutterElement"],
+  ]) {
+    const { nodeIds } = await cdp.send("DOM.querySelectorAll", { nodeId: root.nodeId, selector })
+    if (nodeIds.length === 0) throw new Error(`CDP cannot resolve rendered ${name}`)
+    const records = []
+    for (const nodeId of nodeIds) {
+      const { node } = await cdp.send("DOM.describeNode", { nodeId, depth: 0 })
+      const fonts = await cdp.send("CSS.getPlatformFontsForNode", { nodeId })
+      records.push({ nodeName: node.nodeName, attributes: node.attributes, ...fonts })
+    }
+    if (!records.some((record) => record.fonts.some((font) => font.glyphCount > 0))) {
+      throw new Error(`CDP returned no rendered glyph font for ${name}`)
+    }
+    platformFonts[name] = records
+  }
   return { label, geometry, platformFonts, layoutMetrics: await cdp.send("Page.getLayoutMetrics") }
 }
 
