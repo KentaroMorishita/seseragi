@@ -51,12 +51,12 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.update_reason == '' }}
         working-directory: apps/playground
         run: bun run test:visual
-      - name: Update reviewed Web UI baselines
+      - name: Run focused tooltip capture control
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.update_reason != '' }}
         working-directory: apps/playground
         env:
           BASELINE_REASON: ${{ inputs.update_reason }}
-        run: bun run test:visual:update -- "$BASELINE_REASON"
+        run: bunx playwright test e2e/tooltip-capture-control.spec.ts
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
