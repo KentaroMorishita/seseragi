@@ -2130,6 +2130,7 @@
             }
           }
         ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",

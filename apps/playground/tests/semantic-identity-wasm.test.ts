@@ -149,6 +149,12 @@ test("WASM emits valid nominal annotations beside genuine scalar values", async 
           .join("\n")}\n${genuine}`,
       },
     ],
+    [
+      {
+        path: "main.ssrg",
+        source: `let values = Nothing : \`[Just 1]\nlet tuples = (Nothing, 1) : \`[(Just 2, 3)]\nlet records = {value: Nothing} : \`[{value: Just 2}]\n${genuine}`,
+      },
+    ],
   ]
   for (const files of cases) {
     const result = compileFiles(files)
@@ -217,6 +223,24 @@ test("WASM executes signed and nested collection patterns", async () => {
     ""
   )
   expect(executed.stdout).toBe("-1")
+})
+
+test("WASM forwards prelude sum payloads through local wrappers", async () => {
+  const result = compile(
+    "type Wrapped = | Wrap (Either<Int, String>) | Empty (Maybe<Int>)\nfn consume value: Either<Int, String> -> Int = match value { Left amount -> amount; Right _ -> 0 }\nfn unwrap value: Wrapped -> Int = match value { Wrap payload -> consume payload; Empty payload -> match payload { Just amount -> amount; Nothing -> 0 } }\npub effect fn main = do {println (show (unwrap (Wrap (Left 42)))); println (show (unwrap (Empty (Just 7))))}\n"
+  )
+  expect(result.status).toBe("success")
+  if (result.status !== "success") throw new Error(JSON.stringify(result))
+  const executed = await executeGeneratedProject(
+    result.modules.map(({ path, generated }) => ({
+      path,
+      typescript: generated.typescript,
+    })),
+    result.entry.path,
+    result.entry.contract!,
+    ""
+  )
+  expect(executed.stdout).toBe("42\n7")
 })
 
 test("WASM preserves genuine and nominal succeed values through effect binds", async () => {

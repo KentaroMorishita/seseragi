@@ -119,7 +119,23 @@ pub(crate) fn instantiated_application_indexed(
         }
     }
     let mut evidence_substitutions = substitutions.clone();
-    evidence_substitutions.extend(evidence_bindings);
+    for (name, inferred) in evidence_bindings {
+        // The expected result can select the read-only Signal constructor
+        // before a MutableSignal argument is checked. Its dictionary must use
+        // that selected constructor, while ordinary evidence substitutions
+        // still retain canonical identities of primitive and fixed-prefix
+        // arguments. Only the verified standard coercion permits this choice.
+        let selected_read_only_constructor = signature
+            .type_parameters
+            .iter()
+            .any(|parameter| parameter.name == name && parameter.arity > 0)
+            && substitutions.get(&name).is_some_and(|selected| {
+                crate::standard::standard_type_coercion(selected, &inferred)
+            });
+        if !selected_read_only_constructor {
+            evidence_substitutions.insert(name, inferred);
+        }
+    }
     let evidence_constraints = signature
         .constraints
         .iter()

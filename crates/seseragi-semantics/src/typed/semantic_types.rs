@@ -869,6 +869,14 @@ impl SemanticTypeCatalog {
                 },
             );
         }
+        // Local fields and constructor payloads must use the same resolved sum
+        // owners as later function annotations. Register only the verified
+        // prelude contracts before caching their nested semantic keys.
+        catalog.collect_prelude_sum_types(resolved);
+        let owners = owners
+            .into_iter()
+            .chain(catalog.adts.keys().copied())
+            .collect::<BTreeSet<_>>();
         for (owner, name, parameters, parameter_names, fields) in struct_declarations {
             let fields = fields
                 .iter()
@@ -956,7 +964,6 @@ impl SemanticTypeCatalog {
                 adt.variants = semantic_variants;
             }
         }
-        catalog.collect_prelude_sum_types(resolved);
         // Register both imported owner families before fixing nested payload
         // keys. A constructor may carry an imported struct, and an imported
         // struct field may carry an imported ADT from the same dependency.

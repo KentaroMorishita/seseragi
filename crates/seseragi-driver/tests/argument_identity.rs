@@ -59,3 +59,23 @@ fn unconstrained_generic_calls_reject_mixed_primitive_and_nominal_arguments_in_b
         }
     }
 }
+
+#[test]
+fn local_wrapper_payloads_keep_nested_prelude_sum_identity_when_forwarded() {
+    for source in [
+        "type Wrapped = | Wrap (Either<Maybe<Int>, String>)\nfn consume value: Either<Maybe<Int>, String> -> Int = match value { Left (Just n) -> n; Left Nothing -> 0; Right _ -> 0 }\nfn inspect value: Wrapped -> Int = match value { Wrap payload -> consume payload }\npub fn main -> Int = inspect (Wrap (Left (Just 42)))\n",
+        "type Wrapped = | Wrap (Maybe<Either<Int, String>>)\nfn consume value: Maybe<Either<Int, String>> -> Int = match value { Just (Left n) -> n; Just (Right _) -> 0; Nothing -> 0 }\nfn inspect value: Wrapped -> Int = match value { Wrap payload -> consume payload }\npub fn main -> Int = inspect (Wrap (Just (Left 42)))\n",
+    ] {
+        compile_module(input(source)).unwrap_or_else(|errors| panic!("{source}\n{errors:#?}"));
+    }
+}
+
+#[test]
+fn prelude_sum_payloads_do_not_erase_same_display_nominal_leaf_identity() {
+    let declaration = "struct Bool {value: Int}\ntype Wrapped = | Wrap (Either<Bool, Int>)\n";
+    reject(&format!(
+        "{declaration}pub fn main -> Wrapped = Wrap (Left True)\n"
+    ));
+    let source = format!("{declaration}pub fn main -> Wrapped = Wrap (Left (Bool {{value: 1}}))\n");
+    compile_module(input(&source)).unwrap_or_else(|errors| panic!("{source}\n{errors:#?}"));
+}

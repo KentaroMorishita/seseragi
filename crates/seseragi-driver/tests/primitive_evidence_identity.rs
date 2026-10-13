@@ -248,6 +248,53 @@ fn generic_evidence_inference_does_not_merge_primitive_and_nominal_arguments() {
 }
 
 #[test]
+fn expected_readonly_signal_constructor_keeps_functor_evidence_for_mutable_input() {
+    let source = r#"
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+fn double value: Int -> Int = value * 2
+pub effect fn main = do {
+  source <- signals.make 21
+  let named = signals.map double source
+  let operator: Signal<Int> = double <$> source
+  namedValue <- signals.read named
+  operatorValue <- signals.read operator
+  println `map: ${namedValue}`
+  println `<$>: ${operatorValue}`
+}
+"#;
+    let body = evidence(source);
+    let mut found = Vec::new();
+    identities(&body, &mut found);
+    assert!(
+        found
+            .iter()
+            .any(|identity| identity == "std/signal::Functor"),
+        "{found:?}"
+    );
+    fn verify_functor_argument(value: &Value) -> bool {
+        match value {
+            Value::Object(fields) => {
+                if fields.get("name").and_then(Value::as_str) == Some("Functor") {
+                    return fields
+                        .get("arguments")
+                        .and_then(Value::as_array)
+                        .is_some_and(|arguments| {
+                            arguments.len() == 1
+                                && arguments[0].get("canonical").and_then(Value::as_str)
+                                    == Some("std/signal::Signal")
+                        });
+                }
+                fields.values().any(verify_functor_argument)
+            }
+            Value::Array(values) => values.iter().any(verify_functor_argument),
+            _ => false,
+        }
+    }
+    assert!(verify_functor_argument(&body), "{body}");
+}
+
+#[test]
 fn imported_scalar_codec_result_is_not_captured_by_a_caller_generic_binder() {
     use seseragi_driver::{compile_project, ProjectModuleInput};
     use seseragi_project::ModuleGraph;
