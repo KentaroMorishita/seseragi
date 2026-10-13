@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "Fix unintended viewport-height tooltip container; preserve approved Showcase UI and full-page surface checks",
+  "reason": "Fix tooltip-induced page height and settle sample analysis before captures; preserve approved Showcase UI and full-page surface checks",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
