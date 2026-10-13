@@ -26,6 +26,11 @@ import {
   type BrowserExecution,
   startGeneratedModule,
 } from "../runtime/browser-execution"
+import {
+  isPreviewNavigationCancellation,
+  loadPreviewDocument,
+  previewNavigationCancelled,
+} from "../runtime/preview-navigation"
 import "../styles.css"
 import {
   deepDiveArticles,
@@ -222,6 +227,7 @@ let latestAnalysis: AnalysisDocument | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
 let htmlPreviewUrl: string | undefined
+let activePreviewPreparation: AbortController | undefined
 let navigationBackgroundScrollTop = 0
 const expandedCategoryIds = new Set<string>([currentLesson.categoryId])
 const expandedChapterIds = new Set<string>([currentLesson.chapterId])
@@ -1153,15 +1159,19 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     if (revision !== runRevision) return
+    if (isPreviewNavigationCancellation(error)) return
     showTextOutput(error instanceof Error ? error.message : String(error))
     setStatus("error", "Execution failed")
   } finally {
-    runButton.disabled = false
+    if (revision === runRevision) runButton.disabled = false
   }
 }
 
 function cancelActiveExecution(): void {
   runRevision += 1
+  activePreviewPreparation?.abort()
+  activePreviewPreparation = undefined
+  runButton.disabled = false
   const execution = activeExecution
   activeExecution = undefined
   if (execution !== undefined) void execution.cancel()
@@ -1221,51 +1231,51 @@ function renderHtmlPreview(html: string): void {
 
 async function prepareInteractivePreview(): Promise<Document> {
   clearHtmlPreview()
+  const preparation = new AbortController()
+  activePreviewPreparation = preparation
   const url = new URL(
     `${import.meta.env.BASE_URL}runtime-preview.html`,
     window.location.origin
   ).href
-  const loaded = new Promise<void>((resolve, reject) => {
-    const onLoad = () => {
-      if (htmlPreview.contentWindow?.location.href !== url) return
-      htmlPreview.removeEventListener("load", onLoad)
-      htmlPreview.removeEventListener("error", onError)
-      resolve()
+  try {
+    const document = await loadPreviewDocument(
+      htmlPreview,
+      url,
+      preparation.signal
+    )
+    // A load can resolve just before a workspace switch in the same event turn.
+    if (
+      preparation.signal.aborted ||
+      activePreviewPreparation !== preparation
+    ) {
+      throw previewNavigationCancelled()
     }
-    const onError = () => {
-      htmlPreview.removeEventListener("load", onLoad)
-      htmlPreview.removeEventListener("error", onError)
-      reject(new Error("interactive preview failed to load"))
-    }
-    htmlPreview.addEventListener("load", onLoad)
-    htmlPreview.addEventListener("error", onError)
-  })
-  htmlPreview.src = url
-  await loaded
-  const previewDocument = htmlPreview.contentDocument
-  if (previewDocument === null) {
-    throw new Error("interactive preview document is unavailable")
+    const template = new DOMParser().parseFromString(
+      createPreviewDocument('<div id="app"></div>'),
+      "text/html"
+    )
+    document.documentElement.lang = template.documentElement.lang
+    document.head.replaceChildren(
+      ...[...template.head.childNodes].map((node) =>
+        document.importNode(node, true)
+      )
+    )
+    document.body.replaceChildren(
+      ...[...template.body.childNodes].map((node) =>
+        document.importNode(node, true)
+      )
+    )
+    setOutputMode("html")
+    return document
+  } finally {
+    if (activePreviewPreparation === preparation)
+      activePreviewPreparation = undefined
   }
-  const template = new DOMParser().parseFromString(
-    createPreviewDocument('<div id="app"></div>'),
-    "text/html"
-  )
-  previewDocument.documentElement.lang = template.documentElement.lang
-  previewDocument.head.replaceChildren(
-    ...[...template.head.childNodes].map((node) =>
-      previewDocument.importNode(node, true)
-    )
-  )
-  previewDocument.body.replaceChildren(
-    ...[...template.body.childNodes].map((node) =>
-      previewDocument.importNode(node, true)
-    )
-  )
-  setOutputMode("html")
-  return previewDocument
 }
 
 function clearHtmlPreview(): void {
+  activePreviewPreparation?.abort()
+  activePreviewPreparation = undefined
   if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
   htmlPreviewUrl = undefined
   htmlPreview.removeAttribute("src")

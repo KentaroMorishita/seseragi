@@ -1,5 +1,20 @@
 # Change Log
 
+## [0.61.29] - 2026-10-13
+
+### Fixed
+
+- Prove match coverage for recursive types and large product domains without eagerly enumerating values, retain nested collection/product identity, and report bounded analysis limits instead of accepting unproved matches (#793).
+- Accept signed integer and nested rest patterns, reject malformed patterns before compilation, and distinguish nominal `Bool` values from primitive Boolean predicates (#794, #803).
+- Preserve primitive and nominal type identities through trait evidence selection so a same-name user type cannot replace a standard dictionary (#804).
+- Check semantic argument identity even when display types match, rejecting primitive/nominal argument confusion before execution (#805).
+- Preserve nominal primitive-spelling types in generated TypeScript annotations and constructors instead of rendering them as builtin scalar types (#806).
+- Keep reusable tail-recursive partial functions and captured iteration closures independent while preserving constant-stack execution (#795).
+- Revalidate generated semantic adapters against current policy and input evidence, and prevent declaration conversion from overwriting authored inputs (#796, #802).
+- Resolve nested npm dependencies from their actual importer ancestry consistently with virtual browser resolution and Node ESM (#797).
+- Cancel pending Playground and Tour preview preparation completely, restore Run after cancellation, and allow an explicit retry after transient WASM initialization failure (#798, #799).
+- Serialize official extension LSP restarts, stop pending or rejected startup safely, retain the legacy migration gate, and accept workspace child names beginning with two dots (#800, #801).
+
 ## [0.61.28] - 2026-10-13
 
 ### Added

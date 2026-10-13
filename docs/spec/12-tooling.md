@@ -380,6 +380,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-T0202 | Error    | trait instanceがambiguous                   |
 | SES-T0301 | Error    | matchがnon-exhaustive                       |
 | SES-T0302 | Error    | 到達不能なmatch arm                         |
+| SES-T0303 | Error    | match coverageのsource complexity上限を超過 |
 | SES-T0401 | Error    | derivingとexplicit instanceが重複           |
 | SES-T0501 | Error    | requirement mergeを許可されない型位置で使用 |
 | SES-T0502 | Error    | trait instanceを`impl`で宣言                |
@@ -550,6 +551,10 @@ non-exhaustive matchはErrorで、専用codeと不足constructorの一覧を持�
 追加し、各bodyをcompile errorになるplaceholder `todo "handle Constructor"` にします。ADT constructorはqualified
 name、BoolはFalse / True、Maybe / Eitherはstandard constructor、有限tuple / record patternは既存armから必要な
 深さだけ展開します。Int、Stringなど無限domainにconstructor列挙fixを出しません。
+
+再帰型や大きな有限domainもpatternの構造に沿って検証します。source patternの複雑さが解析上限を超えた
+場合は`SES-T0303`を報告し、網羅性を証明できたとはみなしません。patternを簡略化するかmatchを分割して
+再検証します。
 
 既存のcatch-all `_` または変数patternがある場合はnon-exhaustive errorではありません。guard付きarmだけでは
 constructorをcoverしたとみなさず、fixはunguarded armを追加します。`_ -> todo ...` 一件を追加する別fixを提供して

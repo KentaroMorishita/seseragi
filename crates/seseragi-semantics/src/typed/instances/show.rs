@@ -340,14 +340,30 @@ fn typed_instance(
         trait_identity: candidate.trait_name.clone(),
         trait_name: candidate.trait_name.clone(),
         type_parameters: candidate.type_parameters.clone(),
-        arguments: vec![TypedType::Named {
-            name: candidate.name,
-            arguments: candidate
-                .type_parameters
-                .iter()
-                .map(|parameter| named(&parameter.name))
-                .collect(),
-        }],
+        arguments: vec![resolution
+            .resolved()
+            .symbols
+            .iter()
+            .find(|symbol| symbol.canonical.as_deref() == Some(candidate.symbol.as_str()))
+            .map(|symbol| {
+                resolution.nominal_type_ref(
+                    symbol.id,
+                    &candidate.name,
+                    candidate
+                        .type_parameters
+                        .iter()
+                        .map(|parameter| named(&parameter.name))
+                        .collect(),
+                )
+            })
+            .unwrap_or_else(|| TypedType::Named {
+                name: candidate.name.clone(),
+                arguments: candidate
+                    .type_parameters
+                    .iter()
+                    .map(|parameter| named(&parameter.name))
+                    .collect(),
+            })],
         argument_identities: vec![canonical_head.clone()],
         type_identity: Some(canonical_head),
         constraint_identities: requirements

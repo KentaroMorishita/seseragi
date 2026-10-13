@@ -691,6 +691,37 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     let mut imports = Vec::new();
     let mut type_imports = Vec::new();
     collect_module_type_imports(&module, &mut runtime_requirements, &mut type_imports);
+    // A runtime List and an actual nominal List may coexist. Keep the nominal
+    // source alias and freshen only the runtime annotation import.
+    let mut used_type_names = module
+        .structs
+        .iter()
+        .map(|item| item.name.clone())
+        .chain(module.adts.iter().map(|item| item.name.clone()))
+        .chain(
+            module_imports
+                .imports
+                .iter()
+                .flat_map(|item| item.bindings.iter().map(|binding| binding.local.clone())),
+        )
+        .collect::<std::collections::BTreeSet<_>>();
+    used_type_names.extend(foreign_opaque_type_names(&module.foreign_modules));
+    for import in &mut type_imports {
+        if import.feature == "core.list" {
+            if used_type_names.contains(&import.local) {
+                let mut alias = "__ssrg$List".to_owned();
+                while used_type_names.contains(&alias) {
+                    alias.push('_');
+                }
+                import.local = alias;
+            }
+            used_type_names.insert(import.local.clone());
+            module_imports.type_names = module_imports
+                .type_names
+                .with_runtime_type_name("std/prelude::List".into(), import.local.clone());
+        }
+    }
+
     let foreign_modules = module
         .foreign_modules
         .iter()
@@ -1361,8 +1392,9 @@ fn foreign_opaque_type_names(
     fn collect(members: &[CoreForeignMember], names: &mut std::collections::BTreeSet<String>) {
         for member in members {
             match member {
-                CoreForeignMember::OpaqueType { name, .. } => {
+                CoreForeignMember::OpaqueType { name, symbol, .. } => {
                     names.insert(name.clone());
+                    names.insert(symbol.clone());
                 }
                 CoreForeignMember::Namespace { members, .. } => collect(members, names),
                 CoreForeignMember::Function { .. } | CoreForeignMember::Value { .. } => {}

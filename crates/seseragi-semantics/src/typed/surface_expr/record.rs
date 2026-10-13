@@ -23,6 +23,7 @@ pub(super) fn type_record(
     let mut seen = BTreeSet::new();
     let mut typed_items = Vec::with_capacity(items.len());
     let mut field_types = BTreeMap::new();
+    let mut field_values = BTreeMap::new();
     let mut children = Vec::with_capacity(items.len());
     let mut issue = None;
 
@@ -40,9 +41,15 @@ pub(super) fn type_record(
                         name: name.clone(),
                     });
                 }
-                let expected = expected
-                    .get(name.as_str())
-                    .map(|type_ref| context.semantic_value_from_typed_type(type_ref));
+                let expected = expected.get(name.as_str()).map(|type_ref| {
+                    match context.expected().map(|value| &value.key) {
+                        Some(SemanticTypeKey::Record(fields)) => fields
+                            .get(name)
+                            .cloned()
+                            .unwrap_or_else(|| context.semantic_value_from_typed_type(type_ref)),
+                        _ => context.semantic_value_from_typed_type(type_ref),
+                    }
+                });
                 let analysis = type_surface_expression(value, &context.with_expected(expected));
                 let type_ref = inferred_type_from_expr(&analysis.value);
                 typed_items.push(TypedRecordValueItem::Field {
@@ -58,6 +65,13 @@ pub(super) fn type_record(
                         type_ref,
                     },
                 );
+                field_values.insert(
+                    name.clone(),
+                    SemanticValueType {
+                        type_ref: inferred_type_from_expr(&analysis.value),
+                        key: analysis.semantic_type.clone(),
+                    },
+                );
                 children.push(analysis);
             }
             SurfaceRecordItem::Spread { value, span } => {
@@ -67,6 +81,14 @@ pub(super) fn type_record(
                     TypedType::Record { fields, .. } => {
                         for field in fields {
                             field_types.insert(field.name.clone(), field.clone());
+                            let value = match &analysis.semantic_type {
+                                SemanticTypeKey::Record(values) => values.get(&field.name).cloned(),
+                                _ => None,
+                            }
+                            .unwrap_or_else(|| {
+                                context.semantic_value_from_typed_type(&field.type_ref)
+                            });
+                            field_values.insert(field.name.clone(), value);
                         }
                     }
                     TypedType::Hole => {}
@@ -98,7 +120,7 @@ pub(super) fn type_record(
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::Other
+            SemanticTypeKey::Record(field_values)
         },
     );
     result.record_issue = issue;
@@ -184,14 +206,28 @@ pub(super) fn type_member(
                         name: "Maybe".to_owned(),
                         arguments: vec![found.type_ref.clone()],
                     };
-                    (
-                        context.semantic_value_from_typed_type(&type_ref),
-                        true,
-                        None,
-                    )
+                    let argument = match &receiver_analysis.semantic_type {
+                        SemanticTypeKey::Record(values) => values.get(field).cloned(),
+                        _ => None,
+                    }
+                    .unwrap_or_else(|| context.semantic_value_from_typed_type(&found.type_ref));
+                    let mut value = context.semantic_value_from_typed_type(&type_ref);
+                    match &mut value.key {
+                        SemanticTypeKey::Adt { arguments, .. }
+                        | SemanticTypeKey::NamedGeneric { arguments, .. }
+                        | SemanticTypeKey::ExternalNominal { arguments, .. } => {
+                            *arguments = vec![argument]
+                        }
+                        _ => {}
+                    }
+                    (value, true, None)
                 }
                 Some(found) => (
-                    context.semantic_value_from_typed_type(&found.type_ref),
+                    match &receiver_analysis.semantic_type {
+                        SemanticTypeKey::Record(values) => values.get(field).cloned(),
+                        _ => None,
+                    }
+                    .unwrap_or_else(|| context.semantic_value_from_typed_type(&found.type_ref)),
                     false,
                     None,
                 ),

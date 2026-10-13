@@ -15,6 +15,16 @@ pub struct SemanticAdapters {
     pub applied_policies: Vec<AppliedProjectionPolicy>,
 }
 
+/// Persist the inputs that authorized a checked adapter independently of the
+/// raw foreign ABI. Loaders can revalidate the policy without invoking a source
+/// frontend or trusting a retained generated module as proof of freshness.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ProjectionArtifactEvidence {
+    pub policy_source_digest: String,
+    pub graph: SemanticGraph,
+}
+
 pub fn generate_adapters(
     graph: &SemanticGraph,
     policies: &ProjectionPolicySet,

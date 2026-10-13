@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 use super::pure_issues::{
     ArrayIssue, ConditionalIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
+use super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::surface_expr::{
     analyze_resolved_expression, application, ensure_recovery_hole_issue, named_type,
     PureExpressionContext, SurfaceExpressionAnalysis,
@@ -25,6 +26,7 @@ use operation_contract::operation_effect;
 
 pub(crate) struct EffectBodyAnalysis {
     pub(crate) value: TypedExpr,
+    pub(crate) semantic_type: SemanticTypeKey,
     pub(crate) conditional_issues: Vec<ConditionalIssue>,
     pub(crate) call_issues: Vec<PureCallIssue>,
     pub(crate) array_issues: Vec<ArrayIssue>,
@@ -64,7 +66,7 @@ pub(crate) fn analyze_effect_body_in_context(
     let mut record_issues = Vec::new();
     let mut range_issues = Vec::new();
     let mut pattern_issues = Vec::new();
-    let value = type_effect_expression(
+    let analysis = type_effect_expression_analysis(
         body,
         &context,
         resolution,
@@ -77,7 +79,8 @@ pub(crate) fn analyze_effect_body_in_context(
             patterns: &mut pattern_issues,
         },
     );
-    let mut final_analysis = SurfaceExpressionAnalysis::valid(value);
+    let semantic_type = analysis.semantic_type;
+    let mut final_analysis = SurfaceExpressionAnalysis::valid(analysis.value);
     if conditional_issues.is_empty()
         && call_issues.is_empty()
         && array_issues.is_empty()
@@ -92,6 +95,7 @@ pub(crate) fn analyze_effect_body_in_context(
     }
     EffectBodyAnalysis {
         value: final_analysis.value,
+        semantic_type,
         conditional_issues,
         call_issues,
         array_issues,
@@ -116,8 +120,17 @@ fn type_effect_expression(
     resolution: &TypedResolution<'_>,
     issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
+    type_effect_expression_analysis(expression, context, resolution, issues).value
+}
+
+fn type_effect_expression_analysis(
+    expression: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+    resolution: &TypedResolution<'_>,
+    issues: &mut EffectBodyIssues<'_>,
+) -> SurfaceExpressionAnalysis {
     if let SurfaceExpr::Grouped { value, .. } = expression {
-        return type_effect_expression(value, context, resolution, issues);
+        return type_effect_expression_analysis(value, context, resolution, issues);
     }
 
     if let SurfaceExpr::Lambda {
@@ -132,14 +145,10 @@ fn type_effect_expression(
             *span,
             context,
             |body, body_context| {
-                let value = type_effect_expression(body, body_context, resolution, issues);
-                let semantic_type = body_context
-                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
-                    .key;
-                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+                type_effect_expression_analysis(body, body_context, resolution, issues)
             },
         );
-        return finish_expression_analysis(analysis, issues);
+        return finish_effect_expression_analysis(analysis, issues);
     }
 
     if let SurfaceExpr::EffectfulFor {
@@ -156,22 +165,14 @@ fn type_effect_expression(
             *span,
             context,
             |body, body_context| {
-                let value = type_effect_expression(body, body_context, resolution, issues);
-                let semantic_type = body_context
-                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
-                    .key;
-                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+                type_effect_expression_analysis(body, body_context, resolution, issues)
             },
         );
-        return finish_expression_analysis(analysis, issues);
+        return finish_effect_expression_analysis(analysis, issues);
     }
 
     let mut type_branch = |body: &SurfaceExpr, branch_context: &PureExpressionContext<'_>| {
-        let value = type_effect_expression(body, branch_context, resolution, issues);
-        let semantic_type = branch_context
-            .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
-            .key;
-        SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+        type_effect_expression_analysis(body, branch_context, resolution, issues)
     };
     let branch_analysis = match expression {
         SurfaceExpr::Match {
@@ -212,25 +213,48 @@ fn type_effect_expression(
         _ => None,
     };
     if let Some(analysis) = branch_analysis {
-        return finish_expression_analysis(analysis, issues);
+        return finish_effect_expression_analysis(analysis, issues);
     }
 
-    if let Some((operation, arguments)) =
+    if let Some((operation, arguments, success_semantic)) =
         effect_application(expression, context, resolution, issues)
     {
         let effect = operation_effect(operation, &arguments);
-        return TypedExpr::EffectCall {
+        let success_semantic = success_semantic.or_else(|| {
+            (operation.success_type_arguments.is_empty()
+                && matches!(
+                    operation.success_type,
+                    "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"
+                )
+                && effect.success == named_type(operation.success_type))
+            .then(|| SemanticValueType {
+                type_ref: effect.success.clone(),
+                key: SemanticTypeKey::Other,
+            })
+        });
+        let value = TypedExpr::EffectCall {
             operation: operation.semantic_name.to_owned(),
             effect,
             arguments,
             origin: expression.span(),
         };
+        let mut key = context
+            .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+            .key;
+        if let (Some(success), SemanticTypeKey::NamedGeneric { name, arguments }) =
+            (success_semantic, &mut key)
+        {
+            if name == "Effect" && arguments.len() == 3 {
+                arguments[2] = success;
+            }
+        }
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(value, key);
     }
 
     if let Some(analysis) =
         imported::type_imported_effect_application(expression, context, resolution, issues)
     {
-        return finish_expression_analysis(analysis, issues);
+        return finish_effect_expression_analysis(analysis, issues);
     }
 
     if let SurfaceExpr::Do {
@@ -247,17 +271,13 @@ fn type_effect_expression(
             expression,
             context,
             |argument, argument_context| {
-                let value = type_effect_expression(argument, argument_context, resolution, issues);
-                let semantic_type = argument_context
-                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
-                    .key;
-                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+                type_effect_expression_analysis(argument, argument_context, resolution, issues)
             },
         );
-        return finish_expression_analysis(analysis, issues);
+        return finish_effect_expression_analysis(analysis, issues);
     }
 
-    type_pure_expression(expression, context, issues)
+    finish_effect_expression_analysis(analyze_resolved_expression(expression, context), issues)
 }
 
 fn effect_application(
@@ -265,7 +285,11 @@ fn effect_application(
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
     issues: &mut EffectBodyIssues<'_>,
-) -> Option<(KnownEffectOperation, Vec<TypedExpr>)> {
+) -> Option<(
+    KnownEffectOperation,
+    Vec<TypedExpr>,
+    Option<SemanticValueType>,
+)> {
     let (callee, argument_nodes) = flatten_application(expression);
     let SurfaceExpr::Name { span, .. } = callee else {
         return None;
@@ -279,7 +303,23 @@ fn effect_application(
     if operation.surface_name == "mapError" && argument_nodes.len() != 2 {
         return None;
     }
-    let mut arguments = if operation.surface_name == "mapError" {
+    let mut print_value_semantic = None;
+    let mut success_semantic = None;
+    let mut arguments = if operation.surface_name == "printValue" && argument_nodes.len() == 1 {
+        let analysis = analyze_resolved_expression(argument_nodes[0], context);
+        print_value_semantic = Some(super::semantic_types::SemanticValueType {
+            type_ref: inferred_type_from_expr(&analysis.value),
+            key: analysis.semantic_type.clone(),
+        });
+        vec![finish_expression_analysis(analysis, issues)]
+    } else if operation.surface_name == "succeed" && argument_nodes.len() == 1 {
+        let analysis = analyze_resolved_expression(argument_nodes[0], context);
+        success_semantic = Some(SemanticValueType {
+            type_ref: inferred_type_from_expr(&analysis.value),
+            key: analysis.semantic_type.clone(),
+        });
+        vec![finish_expression_analysis(analysis, issues)]
+    } else if operation.surface_name == "mapError" {
         vec![
             type_pure_expression(argument_nodes[0], context, issues),
             type_effect_expression(argument_nodes[1], context, resolution, issues),
@@ -292,8 +332,9 @@ fn effect_application(
     };
     if operation.surface_name == "printValue" {
         if let [value] = arguments.as_slice() {
-            let type_ref = inferred_type_from_expr(value);
-            let (trait_identity, evidence) = match context.select_show_evidence(type_ref) {
+            let value_semantic =
+                print_value_semantic.expect("single printValue argument was analyzed");
+            let (trait_identity, evidence) = match context.select_show_evidence(value_semantic) {
                 Ok((trait_identity, evidence)) => (trait_identity, Some(evidence)),
                 Err(constraint) => {
                     issues.calls.push(PureCallIssue::MissingInstance {
@@ -322,7 +363,7 @@ fn effect_application(
     {
         arguments.clear();
     }
-    Some((operation, arguments))
+    Some((operation, arguments, success_semantic))
 }
 
 fn type_do_block(
@@ -332,7 +373,7 @@ fn type_do_block(
     base_context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
     issues: &mut EffectBodyIssues<'_>,
-) -> TypedExpr {
+) -> SurfaceExpressionAnalysis {
     let mut locals = BTreeMap::new();
     let mut inferred_callables = BTreeMap::new();
     let mut statements = Vec::new();
@@ -352,9 +393,14 @@ fn type_do_block(
                 value,
                 span,
             } => {
-                let value = type_effect_expression(value, &context, resolution, issues);
-                let type_ref = effect_success_type_from_expr(&value);
-                let input = resolution.semantic_value_from_typed_type(&type_ref);
+                let analysis = type_effect_expression_analysis(value, &context, resolution, issues);
+                let success = effect_success_semantic(&analysis);
+                let input = success.cloned().unwrap_or_else(|| {
+                    resolution.semantic_value_from_typed_type(&effect_success_type_from_expr(
+                        &analysis.value,
+                    ))
+                });
+                let value = analysis.value;
                 let pattern_analysis =
                     super::surface_expr::pattern::type_pattern(pattern, &input, &context);
                 if pattern_analysis.is_refutable() {
@@ -383,14 +429,7 @@ fn type_do_block(
                     value,
                     &context,
                     |value, value_context| {
-                        let value =
-                            type_effect_expression(value, value_context, resolution, issues);
-                        let semantic_type = value_context
-                            .semantic_value_from_typed_type(&application_argument_type_from_expr(
-                                &value,
-                            ))
-                            .key;
-                        SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+                        type_effect_expression_analysis(value, value_context, resolution, issues)
                     },
                 );
                 if let Some(issue) = binding.mismatch {
@@ -452,15 +491,47 @@ fn type_do_block(
         .with_locals(locals)
         .with_inferred_callables(inferred_callables);
     let result = result
-        .map(|result| type_effect_expression(result, &context, resolution, issues))
-        .unwrap_or_else(|| TypedExpr::Unit {
-            type_ref: unit_type(),
-            origin: insertion_point(origin),
+        .map(|result| type_effect_expression_analysis(result, &context, resolution, issues))
+        .unwrap_or_else(|| {
+            SurfaceExpressionAnalysis::valid(TypedExpr::Unit {
+                type_ref: unit_type(),
+                origin: insertion_point(origin),
+            })
         });
-    TypedExpr::DoBlock {
+    let success = effect_success_semantic(&result)
+        .cloned()
+        .unwrap_or_else(|| SemanticValueType {
+            type_ref: inferred_type_from_expr(&result.value),
+            key: result.semantic_type.clone(),
+        });
+    let value = TypedExpr::DoBlock {
         statements,
-        result: Box::new(result),
+        result: Box::new(result.value),
         origin,
+    };
+    let mut key = context
+        .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+        .key;
+    if let SemanticTypeKey::NamedGeneric { name, arguments } = &mut key {
+        if name == "Effect" && arguments.len() == 3 {
+            arguments[2] = success;
+        }
+    }
+    SurfaceExpressionAnalysis::valid_with_semantic_type(value, key)
+}
+
+fn effect_success_semantic(analysis: &SurfaceExpressionAnalysis) -> Option<&SemanticValueType> {
+    match &analysis.semantic_type {
+        SemanticTypeKey::NamedGeneric { name, arguments }
+            if name == "Effect" && arguments.len() == 3 =>
+        {
+            arguments.get(2)
+        }
+        SemanticTypeKey::ExternalNominal {
+            canonical,
+            arguments,
+        } if canonical == "std/prelude::Effect" && arguments.len() == 3 => arguments.get(2),
+        _ => None,
     }
 }
 
@@ -493,6 +564,18 @@ fn finish_expression_analysis(
     }
     issues.patterns.extend(analysis.match_issues);
     analysis.value
+}
+
+fn finish_effect_expression_analysis(
+    analysis: SurfaceExpressionAnalysis,
+    issues: &mut EffectBodyIssues<'_>,
+) -> SurfaceExpressionAnalysis {
+    // Effect analysis accumulates diagnostics externally, but callers still
+    // need the inferred identity. Reconstructing it from a display type can
+    // capture a same-name nominal declaration.
+    let semantic_type = analysis.semantic_type.clone();
+    let value = finish_expression_analysis(analysis, issues);
+    SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
 }
 
 fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceExpr>) {

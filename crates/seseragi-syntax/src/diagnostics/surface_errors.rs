@@ -1,7 +1,7 @@
 use super::{ByteRange, Diagnostic, DiagnosticFix, DiagnosticSeverity, RelatedDiagnostic};
 use crate::{
     SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr,
-    SurfaceTemplatePart,
+    SurfaceImplMember, SurfacePattern, SurfaceTemplatePart,
 };
 use std::collections::BTreeSet;
 
@@ -9,32 +9,103 @@ pub(super) fn diagnostics(
     declarations: &[SurfaceDecl],
     existing: &[Diagnostic],
 ) -> Vec<Diagnostic> {
-    let mut spans = Vec::new();
+    let mut spans = Errors::default();
     for declaration in declarations {
         match declaration {
-            SurfaceDecl::Let {
-                body: Some(body), ..
+            SurfaceDecl::Let { pattern, body, .. } => {
+                collect_pattern_errors(pattern, &mut spans);
+                if let Some(body) = body {
+                    collect_expression_errors(body, &mut spans);
+                }
             }
-            | SurfaceDecl::Fn {
+            SurfaceDecl::Fn {
                 body: Some(body), ..
             }
             | SurfaceDecl::EffectFn {
                 body: Some(body), ..
+            }
+            | SurfaceDecl::Operator {
+                body: Some(body), ..
             } => collect_expression_errors(body, &mut spans),
+            SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {
+                for method in methods {
+                    if let Some(body) = &method.body {
+                        collect_expression_errors(body, &mut spans);
+                    }
+                }
+            }
+            SurfaceDecl::Impl { members, .. } => {
+                for member in members {
+                    let body = match member {
+                        SurfaceImplMember::Method { method, .. } => method.body.as_ref(),
+                        SurfaceImplMember::Operator { body, .. } => body.as_ref(),
+                    };
+                    if let Some(body) = body {
+                        collect_expression_errors(body, &mut spans);
+                    }
+                }
+            }
             _ => {}
         }
     }
 
     let mut seen = BTreeSet::new();
     spans
+        .expressions
         .into_iter()
-        .filter(|range| seen.insert((range.start, range.end)))
-        .filter(|range| !covered_by_existing_error(*range, existing))
         .map(expected_expression)
+        .chain(spans.patterns.into_iter().map(expected_pattern))
+        .filter(|diagnostic| seen.insert((diagnostic.primary.start, diagnostic.primary.end)))
+        .filter(|diagnostic| !covered_by_existing_error(diagnostic.primary, existing))
         .collect()
 }
 
-fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRange>) {
+#[derive(Default)]
+struct Errors {
+    expressions: Vec<ByteRange>,
+    patterns: Vec<ByteRange>,
+}
+
+fn collect_pattern_errors(pattern: &SurfacePattern, errors: &mut Errors) {
+    match pattern {
+        SurfacePattern::Error { span } => errors.patterns.push(ByteRange {
+            start: span.start,
+            end: span.end,
+        }),
+        SurfacePattern::Constructor { argument, .. } => {
+            if let Some(argument) = argument {
+                collect_pattern_errors(argument, errors);
+            }
+        }
+        SurfacePattern::Tuple { elements, .. } => {
+            for element in elements {
+                collect_pattern_errors(element, errors);
+            }
+        }
+        SurfacePattern::Array { elements, rest, .. }
+        | SurfacePattern::List { elements, rest, .. } => {
+            for element in elements {
+                collect_pattern_errors(element, errors);
+            }
+            if let Some(rest) = rest {
+                collect_pattern_errors(rest, errors);
+            }
+        }
+        SurfacePattern::Record { fields, .. } | SurfacePattern::Struct { fields, .. } => {
+            for field in fields {
+                collect_pattern_errors(&field.pattern, errors);
+            }
+        }
+        SurfacePattern::Integer { .. }
+        | SurfacePattern::String { .. }
+        | SurfacePattern::Char { .. }
+        | SurfacePattern::Boolean { .. }
+        | SurfacePattern::Name { .. }
+        | SurfacePattern::Wildcard { .. } => {}
+    }
+}
+
+fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Errors) {
     match expression {
         SurfaceExpr::Application {
             function, argument, ..
@@ -81,7 +152,12 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
             collect_expression_errors(element, errors);
             for clause in clauses {
                 let expression = match clause {
-                    SurfaceComprehensionClause::Generator { source, .. } => source,
+                    SurfaceComprehensionClause::Generator {
+                        pattern, source, ..
+                    } => {
+                        collect_pattern_errors(pattern, errors);
+                        source
+                    }
                     SurfaceComprehensionClause::Guard { condition, .. } => condition,
                 };
                 collect_expression_errors(expression, errors);
@@ -112,6 +188,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         } => {
             collect_expression_errors(scrutinee, errors);
             for arm in arms {
+                collect_pattern_errors(&arm.pattern, errors);
                 if let Some(guard) = &arm.guard {
                     collect_expression_errors(guard, errors);
                 }
@@ -121,8 +198,11 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         SurfaceExpr::Block { items, result, .. } => {
             for item in items {
                 let value = match item {
-                    SurfaceBlockItem::Let { value, .. }
-                    | SurfaceBlockItem::Function { value, .. } => value,
+                    SurfaceBlockItem::Let { pattern, value, .. } => {
+                        collect_pattern_errors(pattern, errors);
+                        value
+                    }
+                    SurfaceBlockItem::Function { value, .. } => value,
                 };
                 collect_expression_errors(value, errors);
             }
@@ -131,9 +211,12 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         SurfaceExpr::Do { items, result, .. } => {
             for item in items {
                 let value = match item {
-                    SurfaceDoItem::Bind { value, .. }
-                    | SurfaceDoItem::Let { value, .. }
-                    | SurfaceDoItem::Expression { value, .. } => value,
+                    SurfaceDoItem::Bind { pattern, value, .. }
+                    | SurfaceDoItem::Let { pattern, value, .. } => {
+                        collect_pattern_errors(pattern, errors);
+                        value
+                    }
+                    SurfaceDoItem::Expression { value, .. } => value,
                 };
                 collect_expression_errors(value, errors);
             }
@@ -143,11 +226,17 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         }
         SurfaceExpr::Grouped { value, .. } => collect_expression_errors(value, errors),
         SurfaceExpr::Lambda { body, .. } => collect_expression_errors(body, errors),
-        SurfaceExpr::EffectfulFor { source, body, .. } => {
+        SurfaceExpr::EffectfulFor {
+            pattern,
+            source,
+            body,
+            ..
+        } => {
+            collect_pattern_errors(pattern, errors);
             collect_expression_errors(source, errors);
             collect_expression_errors(body, errors);
         }
-        SurfaceExpr::Error { span } => errors.push(ByteRange {
+        SurfaceExpr::Error { span } => errors.expressions.push(ByteRange {
             start: span.start,
             end: span.end,
         }),
@@ -180,4 +269,10 @@ fn expected_expression(primary: ByteRange) -> Diagnostic {
         related: Vec::<RelatedDiagnostic>::new(),
         fixes: Vec::<DiagnosticFix>::new(),
     }
+}
+
+fn expected_pattern(primary: ByteRange) -> Diagnostic {
+    let mut diagnostic = expected_expression(primary);
+    diagnostic.message_key = "parser.expected-pattern".to_owned();
+    diagnostic
 }

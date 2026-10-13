@@ -14,8 +14,49 @@ pub(super) fn lower_external_type_imports(
     imports: &mut Vec<TypeScriptSourceImport>,
     used_types: &mut BTreeSet<String>,
 ) -> Result<BTreeMap<String, String>, TypeScriptLoweringError> {
+    fn opaque_names(
+        members: &[crate::CoreForeignMember],
+        module: &str,
+        out: &mut Vec<(String, String)>,
+    ) {
+        for member in members {
+            match member {
+                crate::CoreForeignMember::OpaqueType { symbol, .. } => out.push((
+                    symbol.clone(),
+                    super::super::names::module_value_name(module, symbol),
+                )),
+                crate::CoreForeignMember::Namespace { members, .. } => {
+                    opaque_names(members, module, out)
+                }
+                _ => {}
+            }
+        }
+    }
+    let mut local_opaque = Vec::new();
+    for foreign in &module.foreign_modules {
+        opaque_names(&foreign.members, &module.module, &mut local_opaque);
+    }
     let mut names = BTreeMap::new();
     for canonical in referenced {
+        let locals = module
+            .structs
+            .iter()
+            .map(|item| (&item.symbol, &item.name))
+            .chain(module.adts.iter().map(|item| (&item.symbol, &item.name)))
+            .filter(|(symbol, _)| *symbol == canonical)
+            .collect::<Vec<_>>();
+        if let [(_, name)] = locals.as_slice() {
+            names.insert(canonical.clone(), safe_identifier(name));
+            continue;
+        }
+        let opaque = local_opaque
+            .iter()
+            .filter(|(symbol, _)| symbol == canonical)
+            .collect::<Vec<_>>();
+        if let [(_, name)] = opaque.as_slice() {
+            names.insert(canonical.clone(), name.clone());
+            continue;
+        }
         if let Some(type_import) = runtime_type_import(canonical) {
             names.insert(canonical.clone(), safe_identifier(type_import.export_name));
             continue;

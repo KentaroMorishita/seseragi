@@ -139,7 +139,7 @@ impl<'a> TypedResolution<'a> {
                 parameters,
                 semantic_parameters,
                 result,
-                semantic_result: SemanticTypeKey::Other,
+                semantic_result: analysis.semantic_type,
             },
         ))
     }
@@ -375,6 +375,15 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn module_dependencies(&self) -> Vec<TypedModuleDependency> {
         module_dependencies::collect_module_dependencies(self.resolved)
+    }
+
+    pub(crate) fn nominal_type_ref(
+        &self,
+        owner: SymbolId,
+        name: &str,
+        arguments: Vec<TypedType>,
+    ) -> TypedType {
+        super::semantic_types::nominal_type_ref(self.resolved, owner, name, arguments)
     }
 
     pub(crate) fn semantic_value_from_type_ref(&self, type_ref: &TypeRef) -> SemanticValueType {
@@ -1206,13 +1215,70 @@ fn standard_trait_method_callable(
         symbol: method.canonical.to_owned(),
         trait_identity: Some(trait_spec.canonical.to_owned()),
         trait_method: Some(method.name.to_owned()),
+        semantic_parameters: signature
+            .parameters
+            .iter()
+            .map(|parameter| standard_scheme_value(parameter, &signature.type_parameters).key)
+            .collect(),
+        semantic_result: standard_scheme_value(&signature.result, &signature.type_parameters).key,
         type_parameters: signature.type_parameters,
         constraints,
         constraint_identities,
-        semantic_parameters: vec![SemanticTypeKey::Other; signature.parameters.len()],
         parameters: signature.parameters,
         result: signature.result,
-        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_scheme_value(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> SemanticValueType {
+    let child = |value: &TypedType| standard_scheme_value(value, parameters);
+    let key = match type_ref {
+        TypedType::Named { name, arguments }
+            if parameters.iter().any(|parameter| parameter.name == *name) =>
+        {
+            if arguments.is_empty() {
+                SemanticTypeKey::SchemeParameter(name.clone())
+            } else {
+                SemanticTypeKey::Application {
+                    constructor: Box::new(SemanticValueType {
+                        type_ref: named_type(name),
+                        key: SemanticTypeKey::SchemeParameter(name.clone()),
+                    }),
+                    arguments: arguments.iter().map(child).collect(),
+                }
+            }
+        }
+        TypedType::Named { name, arguments } if !arguments.is_empty() => {
+            SemanticTypeKey::NamedGeneric {
+                name: name.clone(),
+                arguments: arguments.iter().map(child).collect(),
+            }
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => SemanticTypeKey::ExternalNominal {
+            canonical: canonical.clone(),
+            arguments: arguments.iter().map(child).collect(),
+        },
+        TypedType::Tuple { elements } => {
+            SemanticTypeKey::Tuple(elements.iter().map(|value| child(value).key).collect())
+        }
+        TypedType::Record { fields, .. } => SemanticTypeKey::Record(
+            fields
+                .iter()
+                .map(|field| (field.name.clone(), child(&field.type_ref)))
+                .collect(),
+        ),
+        TypedType::Hole => SemanticTypeKey::Invalid,
+        _ => SemanticTypeKey::Other,
+    };
+    SemanticValueType {
+        type_ref: type_ref.clone(),
+        key,
     }
 }
 

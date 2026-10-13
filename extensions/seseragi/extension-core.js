@@ -242,6 +242,9 @@ function createExtensionController({
   let status
   let context
   let restartCount = 0
+  let active = false
+  let serverAllowed = false
+  let startSequence = Promise.resolve()
 
   const log = (message) => output?.appendLine(`[Seseragi] ${message}`)
 
@@ -277,14 +280,25 @@ function createExtensionController({
   }
 
   async function stopClient() {
-    if (client?.needsStop?.() || client?.isRunning?.()) {
-      await client.stop()
+    const current = client
+    if (current?.needsStop?.() && !current?.isRunning?.()) {
+      // Library-managed crash recovery can start outside our explicit queue.
+      // start() joins its existing startup; stop() only accepts a running client.
+      try {
+        await current.start()
+      } catch (error) {
+        log(`pending server startup failed: ${error.message || error}`)
+      }
     }
-    client = undefined
+    if (current?.needsStop?.() || current?.isRunning?.()) {
+      await current.stop()
+    }
+    if (client === current) client = undefined
   }
 
   async function startClient() {
     await stopClient()
+    if (!active) return
     updateStatus("starting")
 
     const configuredPath = vscode.workspace
@@ -310,6 +324,7 @@ function createExtensionController({
       await versionReader(server.command),
       expectedTarget
     )
+    if (!active) return
     log(
       `binary: ${version.name} ${version.version}; target ` +
         `${version.target ?? "unknown"}; protocol ${version.protocolVersion}; ` +
@@ -344,6 +359,7 @@ function createExtensionController({
           return { action: ErrorAction.Continue }
         },
         closed() {
+          if (!active) return { action: CloseAction.DoNotRestart }
           restartCount += 1
           if (restartCount <= RESTART_LIMIT) {
             log(`server exited; restarting (${restartCount}/${RESTART_LIMIT})`)
@@ -363,30 +379,56 @@ function createExtensionController({
       },
     }
 
-    client = new LanguageClient(
+    const started = new LanguageClient(
       "seseragi",
       "Seseragi Language Server",
       serverOptions,
       clientOptions
     )
-    context.subscriptions.push(client)
+    client = started
+    context.subscriptions.push(started)
     context.subscriptions.push(
-      client.onDidChangeState(({ newState }) => {
+      started.onDidChangeState(({ newState }) => {
+        if (!active || client !== started) return
         if (newState === State.Starting) updateStatus("starting")
         if (newState === State.Running) updateStatus("ready")
         if (newState === State.Stopped) updateStatus("stopped")
       })
     )
-    await client.start()
-    validateInitializeResult(client.initializeResult)
+    try {
+      await started.start()
+      if (!active) {
+        await stopClient()
+        return
+      }
+      validateInitializeResult(started.initializeResult)
+    } catch (error) {
+      await stopClient()
+      throw error
+    }
     restartCount = 0
     const encoding =
-      client.initializeResult?.capabilities?.positionEncoding || "utf-16"
+      started.initializeResult?.capabilities?.positionEncoding || "utf-16"
     log(`initialized; position encoding ${encoding}`)
     updateStatus("ready", `${version.version}; ${encoding}`)
   }
 
+  function queueStart() {
+    const start = async () => {
+      if (!active || !serverAllowed) return
+      try {
+        await startClient()
+      } catch (error) {
+        if (active) await reportFailure(error)
+      }
+    }
+    startSequence = startSequence.then(start, start)
+    return startSequence
+  }
+
   async function activate(activationContext) {
+    active = true
+    serverAllowed = false
     context = activationContext
     output = vscode.window.createOutputChannel("Seseragi Language Server")
     status = vscode.window.createStatusBarItem(
@@ -422,11 +464,7 @@ function createExtensionController({
         "seseragi.restartLanguageServer",
         async () => {
           log("manual restart requested")
-          try {
-            await startClient()
-          } catch (error) {
-            await reportFailure(error)
-          }
+          await queueStart()
         }
       )
     )
@@ -435,15 +473,14 @@ function createExtensionController({
       updateStatus("stopped", "legacy extension needs migration")
       return
     }
-    try {
-      await startClient()
-    } catch (error) {
-      await reportFailure(error)
-    }
+    serverAllowed = true
+    await queueStart()
   }
 
   async function deactivate() {
+    active = false
     await projectCommands.deactivate()
+    await startSequence
     await stopClient()
   }
 

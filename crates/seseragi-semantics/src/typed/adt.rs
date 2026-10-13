@@ -21,9 +21,13 @@ pub(super) fn typed_adt_decl(
     let symbol = resolution
         .declaration_symbol(input.name_span, SymbolKind::Type)
         .and_then(|symbol| symbol.canonical.clone())?;
-    let result = TypedType::Named {
-        name: input.name.clone(),
-        arguments: input
+    let owner = resolution
+        .declaration_symbol(input.name_span, SymbolKind::Type)?
+        .id;
+    let result = resolution.nominal_type_ref(
+        owner,
+        &input.name,
+        input
             .type_parameters
             .iter()
             .map(|parameter| TypedType::Named {
@@ -31,7 +35,7 @@ pub(super) fn typed_adt_decl(
                 arguments: Vec::new(),
             })
             .collect(),
-    };
+    );
     let variants = input
         .variants
         .into_iter()

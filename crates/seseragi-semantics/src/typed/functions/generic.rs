@@ -4,7 +4,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
 use crate::typed::semantic_types::{
-    instantiate_callable_indexed, substitute_remaining_scheme_parameters, SemanticValueType,
+    instantiate_callable_indexed, substitute_remaining_scheme_parameters, SemanticTypeKey,
+    SemanticValueType,
 };
 use crate::typed::type_ref::typed_type_contains_hole;
 
@@ -13,6 +14,7 @@ pub(crate) struct InstantiatedApplication {
     pub(crate) parameters: Vec<SemanticValueType>,
     pub(crate) result: SemanticValueType,
     pub(crate) constraints: Vec<TypedConstraint>,
+    pub(crate) evidence_constraints: Vec<TypedConstraint>,
     pub(crate) constraint_identities: Vec<Option<String>>,
     pub(crate) resolved_type_parameters: BTreeSet<String>,
 }
@@ -22,6 +24,7 @@ pub(crate) fn instantiated_application(
     expected_application: Option<&SemanticValueType>,
     application_argument_count: usize,
     arguments: &[SemanticValueType],
+    evidence_type: &impl Fn(&SemanticValueType) -> TypedType,
 ) -> InstantiatedApplication {
     let indexed_arguments = arguments.iter().cloned().enumerate().collect::<Vec<_>>();
     instantiated_application_indexed(
@@ -29,6 +32,7 @@ pub(crate) fn instantiated_application(
         expected_application,
         application_argument_count,
         &indexed_arguments,
+        evidence_type,
     )
 }
 
@@ -37,6 +41,7 @@ pub(crate) fn instantiated_application_indexed(
     expected_application: Option<&SemanticValueType>,
     application_argument_count: usize,
     arguments: &[(usize, SemanticValueType)],
+    evidence_type: &impl Fn(&SemanticValueType) -> TypedType,
 ) -> InstantiatedApplication {
     let mut substitutions = BTreeMap::new();
     if let Some(expected_application) = expected_application {
@@ -99,6 +104,34 @@ pub(crate) fn instantiated_application_indexed(
         .map(|parameter| substitute_type_parameters(parameter, &substitutions))
         .collect::<Vec<_>>();
     let result_type = substitute_type_parameters(&signature.result, &substitutions);
+    // Parameters/results keep their ordinary display types. Instance matching
+    // needs the already inferred identity: looking a primitive's display name
+    // up again can capture an unrelated local nominal type with the same name.
+    let mut evidence_bindings = BTreeMap::new();
+    for (index, argument) in arguments {
+        if let Some(parameter) = signature.parameters.get(*index) {
+            infer_type_parameters(
+                parameter,
+                &evidence_type(argument),
+                &signature.type_parameters,
+                &mut evidence_bindings,
+            );
+        }
+    }
+    let mut evidence_substitutions = substitutions.clone();
+    evidence_substitutions.extend(evidence_bindings);
+    let evidence_constraints = signature
+        .constraints
+        .iter()
+        .map(|constraint| TypedConstraint {
+            name: constraint.name.clone(),
+            arguments: constraint
+                .arguments
+                .iter()
+                .map(|argument| substitute_type_parameters(argument, &evidence_substitutions))
+                .collect(),
+        })
+        .collect();
     let constraints = signature
         .constraints
         .iter()
@@ -125,9 +158,105 @@ pub(crate) fn instantiated_application_indexed(
             key: semantic_result.key,
         },
         constraints,
+        evidence_constraints,
         constraint_identities: signature.constraint_identities.clone(),
         resolved_type_parameters: substitutions.keys().cloned().collect(),
     }
+}
+
+pub(crate) fn evidence_type(value: &SemanticValueType) -> TypedType {
+    match (&value.type_ref, &value.key) {
+        (TypedType::Named { name, arguments }, SemanticTypeKey::Other)
+            if arguments.is_empty()
+                && matches!(
+                    name.as_str(),
+                    "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"
+                ) =>
+        {
+            TypedType::ExternalNamed {
+                name: name.clone(),
+                canonical: format!("std/prelude::{name}"),
+                arguments: Vec::new(),
+            }
+        }
+        (
+            TypedType::Named {
+                name,
+                arguments: actual_arguments,
+            },
+            SemanticTypeKey::Adt { arguments, .. }
+            | SemanticTypeKey::Struct { arguments, .. }
+            | SemanticTypeKey::NamedGeneric { arguments, .. },
+        ) => TypedType::Named {
+            name: name.clone(),
+            arguments: evidence_arguments(actual_arguments, arguments),
+        },
+        (
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                arguments: actual_arguments,
+            },
+            SemanticTypeKey::Adt { arguments, .. }
+            | SemanticTypeKey::Struct { arguments, .. }
+            | SemanticTypeKey::ExternalNominal { arguments, .. },
+        ) => TypedType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: evidence_arguments(actual_arguments, arguments),
+        },
+        (TypedType::Tuple { elements }, SemanticTypeKey::Tuple(keys))
+            if elements.len() == keys.len() =>
+        {
+            TypedType::Tuple {
+                elements: elements
+                    .iter()
+                    .zip(keys)
+                    .map(|(type_ref, key)| {
+                        evidence_type(&SemanticValueType {
+                            type_ref: type_ref.clone(),
+                            key: key.clone(),
+                        })
+                    })
+                    .collect(),
+            }
+        }
+        (TypedType::Record { closed, fields }, SemanticTypeKey::Record(values)) => {
+            TypedType::Record {
+                closed: *closed,
+                fields: fields
+                    .iter()
+                    .map(|field| TypedRecordField {
+                        name: field.name.clone(),
+                        optional: field.optional,
+                        type_ref: values
+                            .get(&field.name)
+                            .filter(|value| value.type_ref == field.type_ref)
+                            .map(evidence_type)
+                            .unwrap_or_else(|| field.type_ref.clone()),
+                    })
+                    .collect(),
+            }
+        }
+        _ => value.type_ref.clone(),
+    }
+}
+
+fn evidence_arguments(actual: &[TypedType], inferred: &[SemanticValueType]) -> Vec<TypedType> {
+    if actual.len() != inferred.len() {
+        return actual.to_vec();
+    }
+    actual
+        .iter()
+        .zip(inferred)
+        .map(|(actual, inferred)| {
+            if actual == &inferred.type_ref {
+                evidence_type(inferred)
+            } else {
+                actual.clone()
+            }
+        })
+        .collect()
 }
 
 fn expected_final_result(
@@ -758,7 +887,8 @@ mod tests {
             key: crate::typed::semantic_types::SemanticTypeKey::Other,
         };
 
-        let application = instantiated_application(&signature, Some(&expected), 1, &[increment]);
+        let application =
+            instantiated_application(&signature, Some(&expected), 1, &[increment], &evidence_type);
 
         assert_eq!(application.parameters[1].type_ref, maybe_int.clone());
         assert_eq!(application.result.type_ref, maybe_int);

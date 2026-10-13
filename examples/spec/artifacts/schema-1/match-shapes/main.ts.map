@@ -1,0 +1,50 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/match-shapes"
+  ],
+  "sourcesContent": [
+    "type Tree = | Leaf Int | Branch Tree\ntype Flag = | On | Off\n\nfn value tree: Tree -> Int = match tree {\n  Leaf number -> number\n  Branch child -> value child\n}\n\nfn signed number: Int -> Int = match number {\n  -1 -> 10\n  _ -> 20\n}\n\nfn pair values: Array<(Flag, Int)> -> Int = match values {\n  [] -> 0\n  [(On, number), ...tail] -> number\n  [(Off, number), ...tail] -> number + 1\n}\n\nfn nested values: Array<Array<Int>> -> Int = match values {\n  [] -> 0\n  [[], ...tail] -> 1\n  [[head, ...rest], ...tail] -> head\n}\n\npub fn matchShapesWork -> Bool =\n  value (Branch (Leaf 3)) == 3 && signed (-1) == 10 &&\n  pair [(On, 5)] == 5 && pair [(Off, 5)] == 6 &&\n  nested [[7, 8]] == 7\n"
+  ],
+  "names": [
+    "Tree",
+    "Leaf",
+    "Branch",
+    "Flag",
+    "On",
+    "Off",
+    "value",
+    "number",
+    "child",
+    "value",
+    "signed",
+    "pair",
+    "number",
+    "tail",
+    "number",
+    "tail",
+    "add",
+    "nested",
+    "tail",
+    "head",
+    "rest",
+    "tail",
+    "matchShapesWork",
+    "intEq",
+    "value",
+    "Branch",
+    "Leaf",
+    "intEq",
+    "signed",
+    "subtract",
+    "intEq",
+    "pair",
+    "intEq",
+    "pair",
+    "intEq",
+    "nested"
+  ],
+  "mappings": ";;;;;AAAAA;;;AAAcC;AAAWC;AACzBC;;;AAAcC;AAAKC;AAEnBC;AAKAI;AAKAC;AAMAM;AAMAK"
+}

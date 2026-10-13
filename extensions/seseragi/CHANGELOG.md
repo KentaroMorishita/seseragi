@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.61.29
+
+- Serialize overlapping language-server restarts and prevent late startup after
+  deactivation; stop a server whose initialize contract is rejected and preserve
+  the legacy extension migration gate during manual restart.
+- Accept valid workspace child directories whose names begin with two dots.
+
 ## 0.4.7
 
 - Adds project Run, Web Build, Development Server, Stop, and Open Browser

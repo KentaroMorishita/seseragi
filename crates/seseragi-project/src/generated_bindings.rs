@@ -46,9 +46,10 @@ pub(crate) fn validate_generated_bindings(
         let metadata_path = generated_root.join(format!("{}.binding.json", entry.output));
         let source_path = generated_root.join(format!("{}.ssrg", entry.output));
         let report_path = generated_root.join(format!("{}.report.json", entry.output));
-        let metadata = fs::read_to_string(&metadata_path)
-            .ok()
-            .and_then(|source| serde_json::from_str::<BindingMetadata>(&source).ok());
+        let metadata_source = fs::read_to_string(&metadata_path).ok();
+        let metadata = metadata_source
+            .as_deref()
+            .and_then(|source| serde_json::from_str::<BindingMetadata>(source).ok());
         let Some(metadata) = metadata else {
             errors.push(GeneratedBindingValidationError {
                 entry: id,
@@ -86,10 +87,29 @@ pub(crate) fn validate_generated_bindings(
                 .ok()
                 .and_then(|source| crate::parse_manifest(&source).ok())
                 .and_then(|manifest| manifest.foreign_typescript);
-            if let Ok(source) = fs::read_to_string(&metadata_path) {
+            {
+                let source = metadata_source
+                    .as_deref()
+                    .expect("parsed metadata has its original source");
+                if let Some(policy) = &entry.projection_policy {
+                    if let Err(message) = crate::generated_projection::validate_generated_projection(
+                        package_root,
+                        generated_root,
+                        &settings_source,
+                        &entry.output,
+                        &entry.declaration,
+                        policy,
+                        source,
+                    ) {
+                        errors.push(GeneratedBindingValidationError {
+                            entry: id.clone(),
+                            message: format!("semantic policy `{policy}` is missing/invalid/stale: {message}; run `seseragi dts convert`"),
+                        });
+                    }
+                }
                 let raw_source = fs::read_to_string(&source_path).ok();
                 if let Err(problems) = crate::validate_generated_binding_source(
-                    &source,
+                    source,
                     raw_source.as_deref(),
                     crate::RuntimeTarget::Node,
                 ) {
@@ -102,11 +122,8 @@ pub(crate) fn validate_generated_bindings(
                 }
 
                 for target in [crate::RuntimeTarget::Node, crate::RuntimeTarget::Bun] {
-                    if let Err(problems) = crate::validate_binding_runtime_linkage(
-                        &source,
-                        target,
-                        true,
-                        |specifier| {
+                    if let Err(problems) =
+                        crate::validate_binding_runtime_linkage(source, target, true, |specifier| {
                             crate::resolve_foreign_typescript_module_for_target(
                                 package_root,
                                 foreign.as_ref(),
@@ -120,8 +137,8 @@ pub(crate) fn validate_generated_bindings(
                                     content_digest: artifact.content_digest().to_owned(),
                                 }
                             })
-                        },
-                    ) {
+                        })
+                    {
                         errors.extend(problems.into_iter().map(|problem| {
                             GeneratedBindingValidationError {
                                 entry: id.clone(),
@@ -215,6 +232,7 @@ struct FreshnessEntry {
     declaration: String,
     specifier: String,
     output: String,
+    projection_policy: Option<String>,
     #[serde(default)]
     evaluation: Evaluation,
 }

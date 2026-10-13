@@ -452,21 +452,73 @@ fn explicit_json_policy_runs_a_separate_checked_api_and_rejects_stale_policy() {
         fs::read_to_string(&settings_path).unwrap()
     );
     fs::write(&settings_path, &settings).unwrap();
-    let declaration = "export type User = { readonly name: string; readonly active: boolean };";
+    let declaration = "export type User = { readonly name: string; readonly active: boolean }; export declare function touch(): void;";
     fs::write(package.join("host/index.d.ts"), declaration).unwrap();
-    let graph =
-        seseragi_dts::interpret_declaration(declaration, "host/index.d.ts", &settings).unwrap();
+    let host = package.join("host/node_modules/fixture-api");
+    fs::create_dir_all(&host).unwrap();
+    fs::write(
+        host.join("package.json"),
+        r#"{"name":"fixture-api","version":"1.0.0","type":"module","exports":"./index.js"}"#,
+    )
+    .unwrap();
+    let marker = directory.join("host-executed.txt");
+    let marker_literal = serde_json::to_string(marker.to_str().unwrap()).unwrap();
+    fs::write(host.join("index.js"), format!("import fs from 'node:fs'; fs.appendFileSync({marker_literal}, 'module loaded\\n'); export function touch() {{ fs.appendFileSync({marker_literal}, 'function called\\n'); }}")).unwrap();
+    let host_manifest = fs::read_to_string(package.join("host/package.json")).unwrap();
+    let mut interpreted = seseragi_dts::convert_entry(&seseragi_dts::ConversionInput {
+        settings: &settings,
+        entry: "api",
+        declaration,
+        host: seseragi_dts::HostMetadata {
+            manifest: &host_manifest,
+            resolved_package: None,
+        },
+        previous_metadata: None,
+    })
+    .unwrap();
+    let entry = seseragi_dts::parse_bindings(&settings)
+        .unwrap()
+        .entries
+        .remove("api")
+        .unwrap();
+    let manifest =
+        seseragi_project::parse_manifest(&fs::read_to_string(&manifest_path).unwrap()).unwrap();
+    let artifacts = [
+        seseragi_project::RuntimeTarget::Node,
+        seseragi_project::RuntimeTarget::Bun,
+        seseragi_project::RuntimeTarget::Browser,
+    ]
+    .into_iter()
+    .filter_map(|target| {
+        seseragi_project::resolve_foreign_runtime_artifact_for_target(
+            &package,
+            manifest.foreign_typescript.as_ref(),
+            &package.join(".seseragi/generated/fixture-api.ssrg"),
+            "fixture-api",
+            target,
+        )
+        .ok()
+        .map(|artifact| (target, artifact))
+    })
+    .collect();
+    seseragi_dts::attach_runtime_linkage(&mut interpreted, &entry, &artifacts).unwrap();
+    let graph = interpreted.semantic.unwrap();
     let policy = serde_json::json!({"schema":1,"kind":"seseragi-semantic-projection-policy","producer":{"name":"explicit-user-policy","version":"1"},"graphDigest":graph.digest().unwrap(),"artifactIdentity":graph.identity,"policies":[{"selector":{"kind":"symbol","symbol":"User"},"functionName":"decodeUser","mapping":{"kind":"json-snapshot"}}]});
     fs::write(package.join("host/user.policy.json"), policy.to_string()).unwrap();
     fs::create_dir_all(package.join("src")).unwrap();
     fs::write(package.join("src/main.ssrg"),r#"import * as json from "std/json"
+import * as effects from "std/effect"
+import {touch} from "gen/fixture-api"
 import {decodeUser} from "gen/fixture-api/semantic"
 fn input text: String -> json.Json = match json.parse text { Left _ -> json.JsonNull; Right value -> value }
 fn decoded text: String -> String = match decodeUser (input text) { Left _ -> "rejected"; Right user -> user.name }
-pub effect fn main -> Unit with Console fails ConsoleError = do {
-  println $ decoded "{\"name\":\"Ada\",\"active\":true}"
-  println $ decoded "{\"name\":3,\"active\":true}"
+type AppError deriving Show = | ConsoleFailure ConsoleError | ForeignFailure Js.Error
+pub effect fn main -> Unit with Console fails AppError = do {
+  touch () |> effects.mapError ForeignFailure
+  println (decoded "{\"name\":\"Ada\",\"active\":true}") |> effects.mapError ConsoleFailure
+  println (decoded "{\"name\":3,\"active\":true}") |> effects.mapError ConsoleFailure
 }
+
 "#).unwrap();
     let converted = run(&["dts", "convert", package.to_str().unwrap()]);
     assert_eq!(
@@ -490,11 +542,105 @@ pub effect fn main -> Unit with Console fails ConsoleError = do {
         String::from_utf8_lossy(&executed.stderr)
     );
     assert_eq!(String::from_utf8_lossy(&executed.stdout), "Ada\nrejected\n");
+    assert_eq!(
+        fs::read_to_string(&marker).unwrap(),
+        "module loaded\nfunction called\n"
+    );
+    for profile in ["development", "release"] {
+        let artifact = directory.join(profile);
+        let built = run(&[
+            "build",
+            package.to_str().unwrap(),
+            "--profile",
+            profile,
+            "--out-dir",
+            artifact.to_str().unwrap(),
+        ]);
+        assert!(
+            built.status.success(),
+            "{}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+    }
+    fs::remove_file(&marker).unwrap();
     let mut stale = policy;
     stale["graphDigest"] = serde_json::json!("0".repeat(64));
     fs::write(package.join("host/user.policy.json"), stale.to_string()).unwrap();
+    for arguments in [
+        vec!["run"],
+        vec!["build"],
+        vec!["build", "--profile", "release"],
+        vec!["lock", "update"],
+    ] {
+        let mut arguments = arguments;
+        let artifact = directory.join("stale-artifact");
+        if arguments[0] == "build" {
+            arguments.extend(["--out-dir", artifact.to_str().unwrap()]);
+        }
+        arguments.push(package.to_str().unwrap());
+        let rejected = run(&arguments);
+        assert!(
+            !rejected.status.success(),
+            "{arguments:?} executed a stale checked API"
+        );
+        assert!(
+            String::from_utf8_lossy(&rejected.stderr).contains("semantic policy"),
+            "{}",
+            String::from_utf8_lossy(&rejected.stderr)
+        );
+        assert!(!String::from_utf8_lossy(&rejected.stdout).contains("Ada"));
+        assert!(!artifact.exists());
+        assert!(
+            !marker.exists(),
+            "stale policy executed a host module or function"
+        );
+    }
     let failed = run(&["dts", "convert", package.to_str().unwrap()]);
     assert_eq!(failed.status.code(), Some(1));
     assert!(String::from_utf8_lossy(&failed.stderr).contains("SES-F0105"));
+    fs::remove_file(package.join("host/user.policy.json")).unwrap();
+    let missing = run(&["run", package.to_str().unwrap()]);
+    assert!(!missing.status.success());
+    assert!(String::from_utf8_lossy(&missing.stderr).contains("semantic policy"));
+    assert!(missing.stdout.is_empty());
+    assert!(!marker.exists());
     fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn conversion_never_overwrites_another_entries_policy_or_partially_publishes() {
+    for selected in [false, true] {
+        let directory = test_directory("authored-policy-collision");
+        let package = directory.join("package");
+        copy_directory(&fixture("dts-basic-conversion"), &package);
+        let settings_path = package.join("seseragi.bindings.toml");
+        let settings = fs::read_to_string(&settings_path).unwrap() + "\n[entries.other]\ndeclaration='host/user.d.ts'\nspecifier='./data.js'\noutput='user'\nprojection_policy='.seseragi/generated/fixture-api.binding.json'\n";
+        fs::write(&settings_path, &settings).unwrap();
+        let declaration = "export type User = { readonly name: string };";
+        fs::write(package.join("host/user.d.ts"), declaration).unwrap();
+        let graph =
+            seseragi_dts::interpret_declaration(declaration, "host/user.d.ts", &settings).unwrap();
+        let policy = serde_json::json!({"schema":1,"kind":"seseragi-semantic-projection-policy","producer":{"name":"explicit-authored-policy","version":"1"},"graphDigest":graph.digest().unwrap(),"artifactIdentity":graph.identity,"policies":[{"selector":{"kind":"symbol","symbol":"User"},"functionName":"decodeUser","mapping":{"kind":"json-snapshot"}}]}).to_string();
+        let authored = package.join(".seseragi/generated/fixture-api.binding.json");
+        fs::create_dir_all(authored.parent().unwrap()).unwrap();
+        fs::write(&authored, &policy).unwrap();
+        let mut arguments = vec!["dts", "convert", package.to_str().unwrap()];
+        if selected {
+            arguments.extend(["--entry", "api"]);
+        }
+        let rejected = run(&arguments);
+        assert_eq!(rejected.status.code(), Some(2));
+        assert!(String::from_utf8_lossy(&rejected.stderr).contains("collides with authored input"));
+        assert!(rejected.stdout.is_empty());
+        assert_eq!(fs::read_to_string(&authored).unwrap(), policy);
+        for output in [
+            "fixture-api.ssrg",
+            "fixture-api.report.json",
+            "user.ssrg",
+            "user.binding.json",
+        ] {
+            assert!(!package.join(".seseragi/generated").join(output).exists());
+        }
+        fs::remove_dir_all(directory).unwrap();
+    }
 }

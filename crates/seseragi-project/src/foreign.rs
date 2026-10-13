@@ -9,6 +9,7 @@ pub struct ResolvedForeignTypescriptModule {
     exact_identity: String,
     source: PathBuf,
     content_digest: String,
+    package_manifest: Option<PathBuf>,
 }
 
 impl ResolvedForeignTypescriptModule {
@@ -22,6 +23,10 @@ impl ResolvedForeignTypescriptModule {
 
     pub fn content_digest(&self) -> &str {
         &self.content_digest
+    }
+
+    pub fn package_manifest(&self) -> Option<&Path> {
+        self.package_manifest.as_deref()
     }
 }
 
@@ -61,6 +66,9 @@ fn resolve_for_target(
     specifier: &str,
     target: RuntimeTarget,
 ) -> Result<ResolvedForeignTypescriptModule, String> {
+    let importer_directory = importer
+        .parent()
+        .and_then(canonical_directory_with_missing_tail);
     let package_root = fs::canonicalize(package_root)
         .map_err(|error| format!("failed to resolve package root: {error}"))?;
     if specifier.starts_with('.') {
@@ -79,7 +87,7 @@ fn resolve_for_target(
                 .strip_prefix(&package_root)
                 .expect("resolved source is inside package root"),
         )?;
-        return resolved(format!("workspace:{relative}"), source);
+        return resolved(format!("workspace:{relative}"), source, None);
     }
     if specifier.starts_with("node:") {
         if target == RuntimeTarget::Browser {
@@ -91,6 +99,7 @@ fn resolve_for_target(
             exact_identity: specifier.to_owned(),
             source: PathBuf::new(),
             content_digest: "sha256:builtin".to_owned(),
+            package_manifest: None,
         });
     }
 
@@ -109,7 +118,23 @@ fn resolve_for_target(
     )?;
 
     let (package_name, subpath) = split_bare_specifier(specifier)?;
-    let dependency_root = host_root.join("node_modules").join(&package_name);
+    // A host dependency can have its own installed dependency version. Follow
+    // the importing file's Node package ancestry before the configured host
+    // root fallback, instead of resolving every import from the same root.
+    let mut candidates = Vec::new();
+    if let Some(mut directory) = importer_directory.filter(|path| path.starts_with(&package_root)) {
+        loop {
+            candidates.push(directory.join("node_modules").join(&package_name));
+            if directory == package_root || !directory.pop() {
+                break;
+            }
+        }
+    }
+    candidates.push(host_root.join("node_modules").join(&package_name));
+    let dependency_root = candidates
+        .into_iter()
+        .find(|root| root.join("package.json").is_file())
+        .ok_or_else(|| format!("failed to resolve host package `{package_name}`"))?;
     let dependency_root = fs::canonicalize(&dependency_root)
         .map_err(|error| format!("failed to resolve host package `{package_name}`: {error}"))?;
     let package_json_path = dependency_root.join("package.json");
@@ -135,12 +160,37 @@ fn resolve_for_target(
             .strip_prefix(&dependency_root)
             .expect("resolved export is inside package root"),
     )?;
-    resolved(format!("npm:{package_name}@{version}/{relative}"), source)
+    resolved(
+        format!("npm:{package_name}@{version}/{relative}"),
+        source,
+        Some(package_json_path),
+    )
+}
+
+// Conversion resolves hosts before the generated importer exists. Canonicalize
+// its nearest existing ancestor and preserve the missing relative suffix, so
+// symlinked /tmp roots and not-yet-created generated directories behave alike.
+fn canonical_directory_with_missing_tail(directory: &Path) -> Option<PathBuf> {
+    let mut ancestor = directory.to_owned();
+    let mut missing = Vec::new();
+    loop {
+        if let Ok(mut resolved) = fs::canonicalize(&ancestor) {
+            for name in missing.into_iter().rev() {
+                resolved.push(name);
+            }
+            return Some(resolved);
+        }
+        missing.push(ancestor.file_name()?.to_os_string());
+        if !ancestor.pop() {
+            return None;
+        }
+    }
 }
 
 fn resolved(
     exact_identity: String,
     source: PathBuf,
+    package_manifest: Option<PathBuf>,
 ) -> Result<ResolvedForeignTypescriptModule, String> {
     let bytes = fs::read(&source).map_err(|error| {
         format!(
@@ -152,6 +202,7 @@ fn resolved(
         exact_identity,
         source,
         content_digest: format!("sha256:{:x}", Sha256::digest(bytes)),
+        package_manifest,
     })
 }
 

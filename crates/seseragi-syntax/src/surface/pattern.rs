@@ -103,6 +103,16 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
             span,
         };
     }
+    if significant.len() == 2
+        && tokens[first].kind == TokenKind::OperatorArithmetic
+        && tokens[first].raw == "-"
+        && tokens[last].kind == TokenKind::LiteralInteger
+    {
+        return SurfacePattern::Integer {
+            raw: format!("-{}", tokens[last].raw),
+            span,
+        };
+    }
     if significant.len() != 1 {
         return SurfacePattern::Error { span };
     }
@@ -171,12 +181,6 @@ fn parse_collection_pattern(
             }
             rest = Some(Box::new(rest_pattern));
             continue;
-        }
-        if significant
-            .iter()
-            .any(|index| tokens[*index].kind == TokenKind::PunctuationEllipsis)
-        {
-            return SurfacePattern::Error { span };
         }
         let element = parse_pattern_range(tokens, start, end);
         if matches!(element, SurfacePattern::Error { .. }) {

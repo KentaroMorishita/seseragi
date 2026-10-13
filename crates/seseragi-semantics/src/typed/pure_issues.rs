@@ -218,6 +218,9 @@ pub(crate) enum ConditionalIssue {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum MatchIssue {
+    CoverageLimit {
+        expression: ByteSpan,
+    },
     PatternMismatch {
         pattern: ByteSpan,
         message: String,

@@ -3,7 +3,7 @@
 //! selects required dictionaries before a binding acquires a scheme.
 use super::PureExpressionContext;
 use crate::typed::functions::{substitute_type_parameters, TopLevelPureFunction};
-use crate::typed::semantic_types::SemanticTypeKey;
+use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
 use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 use crate::{SymbolId, TypedConstraint, TypedRecordField, TypedType};
 use seseragi_syntax::{
@@ -53,12 +53,72 @@ impl InferredLambda {
             constraint_identities: self.identities.clone(),
             semantic_parameters: parameters
                 .iter()
-                .map(|value| context.semantic_value_from_typed_type(value).key)
+                .map(|value| self.semantic_value(value, context).key)
                 .collect(),
             parameters,
-            semantic_result: context.semantic_value_from_typed_type(&result).key,
+            semantic_result: self.semantic_value(&result, context).key,
             result,
         }
+    }
+
+    fn semantic_value(
+        &self,
+        type_ref: &TypedType,
+        context: &PureExpressionContext<'_>,
+    ) -> SemanticValueType {
+        let mut value = context.semantic_value_from_typed_type(type_ref);
+        value.key = match type_ref {
+            TypedType::Named { name, arguments }
+                if arguments.is_empty()
+                    && self
+                        .parameters
+                        .iter()
+                        .any(|parameter| parameter.name == *name) =>
+            {
+                SemanticTypeKey::SchemeParameter(name.clone())
+            }
+            TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
+                elements
+                    .iter()
+                    .map(|element| self.semantic_value(element, context).key)
+                    .collect(),
+            ),
+            TypedType::Record { fields, .. } => SemanticTypeKey::Record(
+                fields
+                    .iter()
+                    .map(|field| {
+                        (
+                            field.name.clone(),
+                            self.semantic_value(&field.type_ref, context),
+                        )
+                    })
+                    .collect(),
+            ),
+            TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| self.semantic_value(argument, context))
+                    .collect::<Vec<_>>();
+                match value.key {
+                    SemanticTypeKey::Adt { owner, .. } => SemanticTypeKey::Adt { owner, arguments },
+                    SemanticTypeKey::Struct { owner, .. } => {
+                        SemanticTypeKey::Struct { owner, arguments }
+                    }
+                    SemanticTypeKey::ExternalNominal { canonical, .. } => {
+                        SemanticTypeKey::ExternalNominal {
+                            canonical,
+                            arguments,
+                        }
+                    }
+                    SemanticTypeKey::NamedGeneric { name, .. } => {
+                        SemanticTypeKey::NamedGeneric { name, arguments }
+                    }
+                    key => key,
+                }
+            }
+            _ => value.key,
+        };
+        value
     }
 }
 pub(crate) fn infer(

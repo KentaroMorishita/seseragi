@@ -810,6 +810,12 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 }
             } else {
+                let foreign_result = imported_types.foreign_scalar_result(
+                    &callee,
+                    arguments.len(),
+                    &type_ref,
+                    &evidence,
+                );
                 let evidence = evidence
                     .iter()
                     .map(|selected| {
@@ -846,7 +852,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 } else {
                     let has_evidence = !evidence.is_empty();
                     let checked_result = type_ref_from_core_type_with_erasure(
-                        &type_ref,
+                        foreign_result.as_ref().unwrap_or(&type_ref),
                         imported_types,
                         &deferred_evidence_type_constructor_parameters,
                     );
@@ -1026,8 +1032,10 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::List {
             elements, type_ref, ..
         } => {
-            let element_type = match type_ref_from_core_type(&type_ref, imported_types) {
-                super::TypeScriptType::List { element } => *element,
+            let element_type = match &type_ref {
+                CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
+                    type_ref_from_core_type(&arguments[0], imported_types)
+                }
                 _ => super::TypeScriptType::Unknown,
             };
             let operation = runtime_list_literal_operation();
@@ -1502,12 +1510,14 @@ fn list_cons_element_type(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
 ) -> super::TypeScriptType {
-    let mut result = type_ref_from_core_type(type_ref, imported_types);
-    while let super::TypeScriptType::Function { result: next, .. } = result {
-        result = *next;
+    let mut result = type_ref;
+    while let CoreType::Function { result: next, .. } = result {
+        result = next;
     }
     match result {
-        super::TypeScriptType::List { element } => *element,
+        CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
+            type_ref_from_core_type(&arguments[0], imported_types)
+        }
         _ => unreachable!("checked List cons must return a List"),
     }
 }

@@ -132,6 +132,25 @@ impl ImportedTypeContext {
                 name,
                 canonical,
                 arguments,
+            } if canonical == format!("std/prelude::{name}")
+                && ((matches!(
+                    name.as_str(),
+                    "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"
+                ) && arguments.is_empty())
+                    || (matches!(name.as_str(), "Array" | "List") && arguments.len() == 1)) =>
+            {
+                TypedType::Named {
+                    name,
+                    arguments: arguments
+                        .into_iter()
+                        .map(|argument| self.localize(argument, module, type_parameters, bindings))
+                        .collect(),
+                }
+            }
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
             } => TypedType::ExternalNamed {
                 name: self
                     .canonical_names
@@ -229,6 +248,34 @@ impl ImportedTypeContext {
                 }
             }
             InterfaceType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+                ..
+            } if canonical == &format!("std/prelude::{name}")
+                && ((matches!(
+                    name.as_str(),
+                    "Unit" | "Bool" | "Int" | "Float" | "Char" | "String"
+                ) && arguments.is_empty())
+                    || (matches!(name.as_str(), "Array" | "List") && arguments.len() == 1)) =>
+            {
+                let arguments = arguments
+                    .iter()
+                    .cloned()
+                    .map(|argument| {
+                        self.semantic_value(argument, module, type_parameters, bindings)
+                    })
+                    .collect::<Option<Vec<_>>>()?;
+                Some(if arguments.is_empty() {
+                    SemanticTypeKey::Other
+                } else {
+                    SemanticTypeKey::NamedGeneric {
+                        name: name.clone(),
+                        arguments,
+                    }
+                })
+            }
+            InterfaceType::ExternalNamed {
                 canonical,
                 arguments,
                 ..
@@ -254,11 +301,26 @@ impl ImportedTypeContext {
                     .map(|element| self.semantic_key(element, module, type_parameters, bindings))
                     .collect::<Option<Vec<_>>>()?,
             )),
+            InterfaceType::Record { fields, .. } => Some(SemanticTypeKey::Record(
+                fields
+                    .iter()
+                    .map(|field| {
+                        Some((
+                            field.name.clone(),
+                            self.semantic_value(
+                                field.type_ref.clone(),
+                                module,
+                                type_parameters,
+                                bindings,
+                            )?,
+                        ))
+                    })
+                    .collect::<Option<_>>()?,
+            )),
             InterfaceType::Hole => Some(SemanticTypeKey::Invalid),
             InterfaceType::Function { .. }
             | InterfaceType::TypeConstructor { .. }
             | InterfaceType::Apply { .. }
-            | InterfaceType::Record { .. }
             | InterfaceType::RequirementMerge { .. } => Some(SemanticTypeKey::Other),
         }
     }

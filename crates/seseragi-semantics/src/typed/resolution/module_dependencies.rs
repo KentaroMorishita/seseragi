@@ -22,11 +22,64 @@ pub(super) fn collect_module_dependencies(resolved: &ResolvedModule) -> Vec<Type
                     imported: import.export.name.clone(),
                     local: import.local_name.clone(),
                     canonical: import.export.symbol.clone(),
+                    foreign_scalar_result: foreign_scalar_result(&import.export),
                     origin: import.origin,
                 })
                 .collect(),
         })
         .collect()
+}
+
+fn foreign_scalar_result(
+    export: &seseragi_syntax::InterfaceExport,
+) -> Option<crate::ForeignScalarResultCodec> {
+    use seseragi_syntax::InterfaceType;
+    if export.namespace != "value"
+        || export.declaration_kind.as_deref() != Some("generic-foreign-function")
+        || !export.scheme.constraints.is_empty()
+        || export.scheme.type_parameters.is_empty()
+        || export
+            .scheme
+            .type_parameters
+            .iter()
+            .any(|parameter| parameter.arity != 0)
+    {
+        return None;
+    }
+    let mut result = &export.scheme.type_ref;
+    let mut parameter_count = 0;
+    while let InterfaceType::Function { result: next, .. } = result {
+        parameter_count += 1;
+        result = next;
+    }
+    // Task returns an Effect; an unapplied result binder can only be a pure
+    // foreign return. A returned callable has no direct scalar result proof.
+    let InterfaceType::Named { name, arguments } = result else {
+        return None;
+    };
+    if parameter_count == 0
+        || !arguments.is_empty()
+        || export
+            .call_arity
+            .is_some_and(|arity| arity != parameter_count)
+    {
+        return None;
+    }
+    let matching = export
+        .scheme
+        .type_parameters
+        .iter()
+        .enumerate()
+        .filter(|(_, parameter)| parameter.name == *name)
+        .collect::<Vec<_>>();
+    let [(type_parameter_index, _)] = matching.as_slice() else {
+        return None;
+    };
+    Some(crate::ForeignScalarResultCodec {
+        parameter_count,
+        type_parameter_index: *type_parameter_index,
+        type_parameter_count: export.scheme.type_parameters.len(),
+    })
 }
 
 #[cfg(test)]
@@ -66,6 +119,56 @@ mod tests {
 
         assert_eq!(dependencies.len(), 1);
         assert!(dependencies[0].imports.is_empty());
+    }
+
+    #[test]
+    fn scalar_result_descriptor_requires_original_pure_foreign_binder_proof() {
+        let interface = seseragi_syntax::parse_unlinked_module_interface("foreign.ssrg", "fixture::foreign", "pub foreign \"typescript\" from \"./host.mjs\" {\n pure fn choose<A, B> left: A -> right: B -> B\n}\n").interface;
+        let export = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "choose")
+            .unwrap();
+        assert_eq!(
+            foreign_scalar_result(export),
+            Some(crate::ForeignScalarResultCodec {
+                parameter_count: 2,
+                type_parameter_index: 1,
+                type_parameter_count: 2
+            })
+        );
+        let mut ordinary = export.clone();
+        ordinary.declaration_kind = Some("function".into());
+        assert!(foreign_scalar_result(&ordinary).is_none());
+        let mut arity = export.clone();
+        arity.call_arity = Some(1);
+        assert!(foreign_scalar_result(&arity).is_none());
+        let mut abstract_slot = export.clone();
+        abstract_slot.scheme.type_parameters[1].arity = 1;
+        assert!(foreign_scalar_result(&abstract_slot).is_none());
+        let mut duplicate = export.clone();
+        duplicate
+            .scheme
+            .type_parameters
+            .push(seseragi_syntax::TypeParameter::value("B"));
+        assert!(foreign_scalar_result(&duplicate).is_none());
+        let task = seseragi_syntax::parse_unlinked_module_interface(
+            "foreign.ssrg",
+            "fixture::foreign",
+            "pub foreign \"typescript\" from \"./host.mjs\" {\n task fn echo<A> value: A -> A\n}\n",
+        )
+        .interface;
+        assert!(task.exports.iter().any(|export| export.name == "echo"));
+        assert!(task
+            .exports
+            .iter()
+            .all(|export| foreign_scalar_result(export).is_none()));
+        let wrapped = seseragi_syntax::parse_unlinked_module_interface("foreign.ssrg", "fixture::foreign", "pub foreign \"typescript\" from \"./host.mjs\" {\n opaque type Schema<A>\n pure fn echo<A> value: A -> Schema<A>\n}\n").interface;
+        assert!(wrapped.exports.iter().any(|export| export.name == "echo"));
+        assert!(wrapped
+            .exports
+            .iter()
+            .all(|export| foreign_scalar_result(export).is_none()));
     }
 
     fn dependency(specifier: &str, module: &str) -> InterfaceDependency {

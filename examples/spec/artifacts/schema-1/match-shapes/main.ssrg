@@ -1,0 +1,29 @@
+type Tree = | Leaf Int | Branch Tree
+type Flag = | On | Off
+
+fn value tree: Tree -> Int = match tree {
+  Leaf number -> number
+  Branch child -> value child
+}
+
+fn signed number: Int -> Int = match number {
+  -1 -> 10
+  _ -> 20
+}
+
+fn pair values: Array<(Flag, Int)> -> Int = match values {
+  [] -> 0
+  [(On, number), ...tail] -> number
+  [(Off, number), ...tail] -> number + 1
+}
+
+fn nested values: Array<Array<Int>> -> Int = match values {
+  [] -> 0
+  [[], ...tail] -> 1
+  [[head, ...rest], ...tail] -> head
+}
+
+pub fn matchShapesWork -> Bool =
+  value (Branch (Leaf 3)) == 3 && signed (-1) == 10 &&
+  pair [(On, 5)] == 5 && pair [(Off, 5)] == 6 &&
+  nested [[7, 8]] == 7

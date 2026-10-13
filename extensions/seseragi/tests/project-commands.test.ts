@@ -189,18 +189,16 @@ describe("VS Code project command integration", () => {
       version: manifest.version,
       target: "aarch64-apple-darwin",
     }
-    expect(validateCliVersion(version, "aarch64-apple-darwin")).toEqual(
-      version
-    )
+    expect(validateCliVersion(version, "aarch64-apple-darwin")).toEqual(version)
     expect(() =>
       validateCliVersion({ ...version, name: "seseragi-lsp" })
     ).toThrow("not the Seseragi CLI")
-    expect(() =>
-      validateCliVersion({ ...version, version: "0.3.0" })
-    ).toThrow("extension/CLI version mismatch")
-    expect(() =>
-      validateCliVersion(version, "x86_64-apple-darwin")
-    ).toThrow("extension/CLI target mismatch")
+    expect(() => validateCliVersion({ ...version, version: "0.3.0" })).toThrow(
+      "extension/CLI version mismatch"
+    )
+    expect(() => validateCliVersion(version, "x86_64-apple-darwin")).toThrow(
+      "extension/CLI target mismatch"
+    )
   })
 
   test("resolves the nearest manifest inside the owning workspace", () => {
@@ -221,6 +219,22 @@ describe("VS Code project command integration", () => {
         workspaceFolders: [{ uri: { fsPath: workspace } }],
       })
     ).toThrow("outside the open workspace")
+  })
+
+  test("accepts a child directory beginning with two dots and rejects a sibling", () => {
+    const workspace = path.resolve("/workspace")
+    const project = path.join(workspace, "..cache", "project")
+    const resolve = (resourcePath: string) =>
+      resolveProjectRoot({
+        resourcePath,
+        workspaceFolders: [{ uri: { fsPath: workspace } }],
+        existsSync: (candidate: string) =>
+          candidate === path.join(project, "seseragi.toml"),
+      })
+    expect(resolve(path.join(project, "src", "main.ssrg"))).toBe(project)
+    expect(() => resolve(path.resolve("/workspace-other/main.ssrg"))).toThrow(
+      "outside the open workspace"
+    )
   })
 
   test("registers commands and runs canonical CLI processes without terminals", async () => {
@@ -266,10 +280,7 @@ describe("VS Code project command integration", () => {
     await harness.controller.activate(harness.context)
     await harness.commands.get("seseragi.startDevelopmentServer")?.()
     const child = harness.children[0]
-    expect(harness.spawns[0].arguments).toEqual([
-      "dev",
-      harness.project,
-    ])
+    expect(harness.spawns[0].arguments).toEqual(["dev", harness.project])
     child.stdout.write("Built web app (100 ms; reload 1)\n")
     child.stdout.write("Dev server: http://127.0.0.1:3000/\n")
     expect(harness.status.text).toContain("Seseragi Dev")

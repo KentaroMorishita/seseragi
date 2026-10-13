@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/tail-currying"
+  ],
+  "sourcesContent": [
+    "fn advance count: Int -> value: Int -> Int =\n  if count == 0 then value else advance (count - 1) (value + 1)\n\nfn capture count: Int -> saved: (Unit -> Int) -> (Unit -> Int) =\n  if count == 0 then saved else capture (count - 1) (\\_ -> count)\n\nfn repeat<A> count: Int -> value: A -> A =\n  if count == 0 then value else repeat (count - 1) value\n\npub fn tailCurryingWorks -> Bool = {\n  let partial = advance 2\n  let first = partial 0\n  let second = partial 0\n  let saved = capture 3 (\\_ -> 99)\n  let repeated: Int -> Int = repeat 100000\n  first == 2 && second == 2 && saved () == 1 && repeated 42 == 42\n}\n"
+  ],
+  "names": [
+    "advance",
+    "intEq",
+    "advance",
+    "subtract",
+    "add",
+    "capture",
+    "intEq",
+    "capture",
+    "subtract",
+    "repeat",
+    "intEq",
+    "repeat",
+    "subtract",
+    "tailCurryingWorks",
+    "partial",
+    "advance",
+    "first",
+    "partial",
+    "second",
+    "partial",
+    "saved",
+    "capture",
+    "repeated",
+    "repeat",
+    "intEq",
+    "intEq",
+    "intEq",
+    "saved",
+    "intEq",
+    "repeated"
+  ],
+  "mappings": ";;;;;AAAAA;AAGAK;AAGAI;AAGAI"
+}

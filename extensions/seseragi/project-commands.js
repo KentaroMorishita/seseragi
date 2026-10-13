@@ -58,7 +58,12 @@ function validateCliVersion(version, expectedTarget) {
 
 function isInside(candidate, root) {
   const relative = path.relative(root, candidate)
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))
+  return (
+    relative === "" ||
+    (relative !== ".." &&
+      !relative.startsWith(`..${path.sep}`) &&
+      !path.isAbsolute(relative))
+  )
 }
 
 function resolveProjectRoot({
@@ -66,14 +71,18 @@ function resolveProjectRoot({
   workspaceFolders = [],
   existsSync = fs.existsSync,
 }) {
-  const roots = workspaceFolders.map((folder) => path.resolve(folder.uri.fsPath))
+  const roots = workspaceFolders.map((folder) =>
+    path.resolve(folder.uri.fsPath)
+  )
   if (resourcePath) {
     const resource = path.resolve(resourcePath)
     const workspace = roots
       .filter((root) => isInside(resource, root))
       .sort((left, right) => right.length - left.length)[0]
     if (!workspace) {
-      throw new Error("The selected Seseragi file is outside the open workspace.")
+      throw new Error(
+        "The selected Seseragi file is outside the open workspace."
+      )
     }
     let current = path.extname(resource) ? path.dirname(resource) : resource
     while (isInside(current, workspace)) {
@@ -131,7 +140,9 @@ function createProjectCommandController({
       detail ? `; ${detail}` : ""
     }`
     status.command =
-      state === "running" ? "seseragi.openInBrowser" : "seseragi.showProjectOutput"
+      state === "running"
+        ? "seseragi.openInBrowser"
+        : "seseragi.showProjectOutput"
   }
 
   function configuredCli() {
@@ -141,7 +152,10 @@ function createProjectCommandController({
       .trim()
     return override
       ? { command: override, source: "seseragi.cli.path" }
-      : { command: platform === "win32" ? "seseragi.exe" : "seseragi", source: "PATH" }
+      : {
+          command: platform === "win32" ? "seseragi.exe" : "seseragi",
+          source: "PATH",
+        }
   }
 
   async function checkedCli() {
@@ -286,7 +300,10 @@ function createProjectCommandController({
       devRoot = undefined
       devUrl = undefined
       if (code === 0 || signal) {
-        updateStatus("idle", stoppedRoot ? path.basename(stoppedRoot) : undefined)
+        updateStatus(
+          "idle",
+          stoppedRoot ? path.basename(stoppedRoot) : undefined
+        )
         log("development server stopped")
       } else {
         void reportFailure(

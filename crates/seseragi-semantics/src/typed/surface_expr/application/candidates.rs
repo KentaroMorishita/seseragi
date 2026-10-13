@@ -43,6 +43,7 @@ pub(super) fn select_trait_method_candidate(
                 context.expected(),
                 argument_nodes.len(),
                 &semantic_arguments,
+                &|value| context.evidence_type(value),
             );
             for parameter in &mut application.parameters {
                 *parameter = context.hydrate_semantic_value(parameter.clone());

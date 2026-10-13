@@ -64,7 +64,9 @@ impl SemanticTypeCatalog {
                 SemanticAdt {
                     name: owner_import.local_name.clone(),
                     external_canonical: (owner_import.export.declaration_kind.as_deref()
-                        == Some("opaque-type"))
+                        == Some("opaque-type")
+                        || super::is_shadowing_builtin(&owner_import.export.name, owner_canonical)
+                        || super::is_shadowing_builtin(&owner_import.local_name, owner_canonical))
                     .then(|| owner_canonical.clone()),
                     type_parameters: type_parameters
                         .iter()
@@ -213,6 +215,21 @@ impl SemanticTypeCatalog {
                     .map(|element| {
                         self.value_with_type_parameters(resolved, element, parameters)
                             .key
+                    })
+                    .collect(),
+            ),
+            TypedType::Record { fields, .. } => SemanticTypeKey::Record(
+                fields
+                    .iter()
+                    .map(|field| {
+                        (
+                            field.name.clone(),
+                            self.value_with_type_parameters(
+                                resolved,
+                                field.type_ref.clone(),
+                                parameters,
+                            ),
+                        )
                     })
                     .collect(),
             ),

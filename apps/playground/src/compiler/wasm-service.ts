@@ -22,6 +22,18 @@ import type {
 
 let initialization: Promise<unknown> | undefined
 
+async function initialize(): Promise<void> {
+  initialization ??= init()
+  const attempt = initialization
+  try {
+    await attempt
+  } catch (error) {
+    // Concurrent waiters may outlive a later explicit retry.
+    if (initialization === attempt) initialization = undefined
+    throw error
+  }
+}
+
 export async function compileSingleFile(
   source: string
 ): Promise<CompileResponse> {
@@ -60,8 +72,7 @@ export async function analyzeSingleFile(
   }
   // Syntax-invalid sources cannot form a project graph. Preserve the existing
   // recovery document (including the standard-library catalog) for that case.
-  initialization ??= init()
-  await initialization
+  await initialize()
   return JSON.parse(
     analyze_single_file("main.ssrg", "playground/main", source)
   ) as AnalysisDocument
@@ -89,8 +100,7 @@ export async function formatSingleFile(
 export async function compileProject(
   request: ProjectRequest
 ): Promise<ProjectCompileResponse> {
-  initialization ??= init()
-  await initialization
+  await initialize()
   return JSON.parse(
     compile_project(JSON.stringify(request))
   ) as ProjectCompileResponse
@@ -99,8 +109,7 @@ export async function compileProject(
 export async function analyzeProject(
   request: ProjectRequest
 ): Promise<ProjectAnalysisResponse> {
-  initialization ??= init()
-  await initialization
+  await initialize()
   return JSON.parse(
     analyze_project(JSON.stringify(request))
   ) as ProjectAnalysisResponse
@@ -118,8 +127,7 @@ export async function formatProjectFile(
   path: string,
   options?: FormatOptions
 ): Promise<ProjectFormatResponse> {
-  initialization ??= init()
-  await initialization
+  await initialize()
   const serialized = JSON.stringify(request)
   return JSON.parse(
     options === undefined
@@ -147,8 +155,7 @@ function firstDiagnostics(
 export async function convertWorkspaceBindings(
   request: BindingRequest
 ): Promise<BindingResponse> {
-  initialization ??= init()
-  await initialization
+  await initialize()
   return JSON.parse(
     convert_workspace_bindings(JSON.stringify(request))
   ) as BindingResponse
@@ -157,7 +164,6 @@ export async function convertWorkspaceBindings(
 export async function resolveBrowserRuntimeModules(
   request: import("../runtime/foreign-runtime").BrowserRuntimeRequest
 ): Promise<import("../runtime/foreign-runtime").BrowserRuntimeResponse> {
-  initialization ??= init()
-  await initialization
+  await initialize()
   return JSON.parse(resolve_browser_runtime_modules(JSON.stringify(request)))
 }

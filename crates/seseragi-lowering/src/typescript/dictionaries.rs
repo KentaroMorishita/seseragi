@@ -27,8 +27,14 @@ pub(super) fn local_dictionary_expression(
     } = evidence
     {
         if identity == "@seseragi/foreign-codec" {
-            let [crate::CoreType::Named { name, arguments }] = type_arguments.as_slice() else {
-                return None;
+            let (name, arguments) = match type_arguments.as_slice() {
+                [crate::CoreType::Named { name, arguments }] => (name, arguments),
+                [crate::CoreType::ExternalNamed {
+                    name,
+                    canonical,
+                    arguments,
+                }] if canonical == &format!("std/prelude::{name}") => (name, arguments),
+                _ => return None,
             };
             if !arguments.is_empty() || !evidence_arguments.is_empty() {
                 return None;

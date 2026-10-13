@@ -4,6 +4,7 @@ use seseragi_interop::{
     ProjectionEvidence, ProjectionPolicySet, SemanticClassification, SemanticCompatibilityReport,
     SymbolKind,
 };
+use sha2::{Digest, Sha256};
 
 /// The adapter consumes checked std/json::Json data. It never changes raw ABI
 /// signatures or silently installs conversion into a foreign function call.
@@ -66,6 +67,18 @@ pub fn apply_projection_policy(
         merge_evidence(report, graph, &evidence)?;
     }
     if let Some(generated) = result.generated.as_mut() {
+        let mut metadata: serde_json::Value =
+            serde_json::from_str(&generated.metadata).map_err(|error| error.to_string())?;
+        metadata["projectionEvidence"] =
+            serde_json::to_value(seseragi_projection::ProjectionArtifactEvidence {
+                policy_source_digest: format!("{:x}", Sha256::digest(source.as_bytes())),
+                graph: graph.clone(),
+            })
+            .map_err(|error| error.to_string())?;
+        generated.metadata = format!(
+            "{}\n",
+            serde_json::to_string_pretty(&metadata).map_err(|error| error.to_string())?
+        );
         generated.adapters = Some(adapters);
     }
     refresh_compatibility_identity(result)

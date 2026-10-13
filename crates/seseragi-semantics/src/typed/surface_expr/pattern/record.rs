@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use crate::typed::semantic_types::SemanticValueType;
+use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
 use crate::{TypedPattern, TypedRecordPatternField, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceRecordPatternField};
 
@@ -50,7 +50,11 @@ pub(super) fn type_record_pattern(
                 ),
             );
         }
-        let nested_expected = context.semantic_value_from_typed_type(&available.type_ref);
+        let nested_expected = match &expected.key {
+            SemanticTypeKey::Record(values) => values.get(&field.name).cloned(),
+            _ => None,
+        }
+        .unwrap_or_else(|| context.semantic_value_from_typed_type(&available.type_ref));
         children.push((
             field,
             type_pattern(&field.pattern, &nested_expected, context),

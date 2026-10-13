@@ -255,6 +255,7 @@ mod tests {
                     imported: "increment".to_owned(),
                     local: "next".to_owned(),
                     canonical: "fixture/game::domain::increment".to_owned(),
+                    foreign_scalar_result: None,
                     origin: ByteSpan { start: 22, end: 26 },
                 }],
             }],
@@ -837,7 +838,11 @@ pub fn sum current: Int -> total: Int -> Int =
         ));
         assert!(bundle
             .typescript
-            .contains("current = $ssrg$arguments[0]; total = $ssrg$arguments[1]; continue;"));
+            .contains("const current: number = $ssrg$loopArguments[0]; const total: number = $ssrg$loopArguments[1];"));
+        assert!(bundle
+            .typescript
+            .contains("$ssrg$loopArguments = $ssrg$arguments; continue;"));
+        assert!(!bundle.typescript.contains("current = $ssrg$arguments[0]"));
     }
 
     #[test]
@@ -1785,6 +1790,35 @@ fails ConsoleError =
             .typescript
             .contains("export const inverted: boolean = !(true);"));
         assert!(!bundle.typescript.contains(" = _;"));
+    }
+
+    #[test]
+    fn imports_runtime_list_for_inferred_top_level_binding_annotations() {
+        for (declaration, name) in [
+            ("", "List"),
+            ("struct List<A> { value: A }\n", "__ssrg$List"),
+        ] {
+            let source = format!(
+                "{declaration}let direct = `[1]\nlet nested = {{let item = 1; `[item]}}\nlet comprehension = `[value | value <- `[1]]\n"
+            );
+            let typed = type_module("artifact/list-bindings/main.ssrg", &source);
+            let core = lower_typed_module(typed);
+            let typescript = lower_core_module_to_typescript_ir(core);
+            assert!(typescript
+                .type_imports
+                .iter()
+                .any(|import| import.feature == "core.list" && import.local == name));
+            let bundle = emit_typescript_module(typescript, &source);
+            for binding in ["direct", "nested", "comprehension"] {
+                assert!(
+                    bundle
+                        .typescript
+                        .contains(&format!("const {binding}: {name}<number>")),
+                    "{}",
+                    bundle.typescript
+                );
+            }
+        }
     }
 
     #[test]

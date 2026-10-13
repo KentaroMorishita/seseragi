@@ -1,13 +1,69 @@
 use crate::{ExternalTypeBinding, TypedParameter, TypedRecordField, TypedType};
 use seseragi_syntax::{InterfaceRecordField, InterfaceType};
 
+#[derive(Clone)]
 pub(super) struct InterfaceTypes<'a> {
     bindings: &'a [ExternalTypeBinding],
+    parameters: std::collections::BTreeSet<String>,
+    local_nominals: std::collections::BTreeMap<String, (String, String)>,
 }
 
 impl<'a> InterfaceTypes<'a> {
     pub(super) fn new(bindings: &'a [ExternalTypeBinding]) -> Self {
-        Self { bindings }
+        Self {
+            bindings,
+            parameters: Default::default(),
+            local_nominals: Default::default(),
+        }
+    }
+
+    pub(super) fn with_local_nominals(mut self, module: &crate::TypedModule) -> Self {
+        for declaration in &module.declarations {
+            if let crate::TypedDecl::Struct { symbol, name, .. }
+            | crate::TypedDecl::Adt { symbol, name, .. } = declaration
+            {
+                if crate::prelude::type_constructor_arity(name).is_some()
+                    && symbol != &format!("std/prelude::{name}")
+                    && !crate::prelude::SUM_TYPES
+                        .iter()
+                        .any(|sum| sum.name == *name && sum.canonical == *symbol)
+                {
+                    self.local_nominals
+                        .insert(symbol.clone(), (module.module.clone(), name.clone()));
+                }
+            }
+        }
+        fn collect(
+            members: &[crate::TypedForeignMember],
+            module: &str,
+            out: &mut std::collections::BTreeMap<String, (String, String)>,
+        ) {
+            for member in members {
+                match member {
+                    crate::TypedForeignMember::OpaqueType { symbol, name, .. }
+                        if crate::prelude::type_constructor_arity(name).is_some() =>
+                    {
+                        out.insert(symbol.clone(), (module.into(), name.clone()));
+                    }
+                    crate::TypedForeignMember::Namespace { members, .. } => {
+                        collect(members, module, out)
+                    }
+                    _ => {}
+                }
+            }
+        }
+        for foreign in &module.foreign_modules {
+            collect(&foreign.members, &module.module, &mut self.local_nominals);
+        }
+        self
+    }
+
+    pub(super) fn with_parameters(&self, parameters: &[seseragi_syntax::TypeParameter]) -> Self {
+        let mut scoped = self.clone();
+        scoped
+            .parameters
+            .extend(parameters.iter().map(|parameter| parameter.name.clone()));
+        scoped
     }
 
     pub(super) fn convert(&self, type_ref: &TypedType) -> InterfaceType {
@@ -17,6 +73,24 @@ impl<'a> InterfaceTypes<'a> {
                     .iter()
                     .map(|argument| self.convert(argument))
                     .collect();
+                let primitive_or_collection = matches!(
+                    name.as_str(),
+                    "Unit" | "Bool" | "Int" | "Float" | "Char" | "String" | "Array" | "List"
+                );
+                let collision = self.local_nominals.values().any(|(_, local)| local == name)
+                    || self.bindings.iter().any(|binding| {
+                        binding.spelling == *name
+                            && binding.canonical != format!("std/prelude::{name}")
+                    });
+                if primitive_or_collection && collision && !self.parameters.contains(name) {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: format!("std/prelude::{name}"),
+                        provider_module: "std/prelude".into(),
+                        provider_export: name.clone(),
+                        arguments,
+                    };
+                }
                 match self.unique_provider_binding(name) {
                     Some(binding) => {
                         let provider = binding
@@ -42,6 +116,19 @@ impl<'a> InterfaceTypes<'a> {
                 canonical,
                 arguments,
             } => {
+                if let Some((provider_module, provider_export)) = self.local_nominals.get(canonical)
+                {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        provider_module: provider_module.clone(),
+                        provider_export: provider_export.clone(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.convert(argument))
+                            .collect(),
+                    };
+                }
                 let provider = self
                     .bindings
                     .iter()

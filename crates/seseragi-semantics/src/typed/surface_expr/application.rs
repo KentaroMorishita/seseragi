@@ -50,7 +50,10 @@ pub(super) fn type_callable_value(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let mut application = instantiated_application(signature, context.expected(), 0, &[]);
+    let mut application =
+        instantiated_application(signature, context.expected(), 0, &[], &|value| {
+            context.evidence_type(value)
+        });
     refine_collection_parameters(&mut application, signature, context);
     for parameter in &mut application.parameters {
         *parameter = context.hydrate_semantic_value(parameter.clone());
@@ -452,6 +455,7 @@ pub(crate) fn type_known_application_with_explicit(
             expected_application,
             argument_nodes.len(),
             &indexed_arguments,
+            &|value| context.evidence_type(value),
         );
         refine_collection_parameters(&mut partial_application, &signature, context);
         for parameter in &mut partial_application.parameters {
@@ -499,6 +503,7 @@ pub(crate) fn type_known_application_with_explicit(
         expected_application,
         argument_nodes.len(),
         &indexed_arguments,
+        &|value| context.evidence_type(value),
     );
     refine_collection_parameters(&mut application, &signature, context);
     for parameter in &mut application.parameters {
@@ -558,6 +563,7 @@ pub(crate) fn type_known_application_with_explicit(
             expected_application,
             argument_nodes.len(),
             &other_arguments,
+            &|value| context.evidence_type(value),
         );
         for (argument, parameter) in argument_nodes.iter().zip(&callback_application.parameters) {
             let mut value = *argument;
@@ -598,6 +604,24 @@ pub(crate) fn type_known_application_with_explicit(
                 callee: expression_span,
             });
         }
+    }
+    // Inferred primitive keys must reach dictionary matching without being
+    // recaptured by a same-name lexical nominal declaration.
+    for (constraint, inferred) in application
+        .constraints
+        .iter_mut()
+        .zip(&application.evidence_constraints)
+    {
+        constraint.arguments = inferred
+            .arguments
+            .iter()
+            .map(|argument| {
+                crate::typed::call_evidence::preserve_evidence_identity(
+                    argument,
+                    context.resolution,
+                )
+            })
+            .collect();
     }
     let saturated = arguments.len() >= declared_arity;
     let concrete_partial_constraints = !saturated
@@ -666,14 +690,14 @@ pub(crate) fn type_known_application_with_explicit(
             for (formal, actual) in template.parameters.iter().zip(&application.parameters) {
                 infer_type_parameters(
                     formal,
-                    &actual.type_ref,
+                    &crate::typed::functions::evidence_type(actual),
                     &template.type_parameters,
                     &mut bindings,
                 );
             }
             infer_type_parameters(
                 &template.result,
-                &application.result.type_ref,
+                &crate::typed::functions::evidence_type(&application.result),
                 &template.type_parameters,
                 &mut bindings,
             );
@@ -687,7 +711,13 @@ pub(crate) fn type_known_application_with_explicit(
                     });
                     break;
                 }
-                let value = value.unwrap().clone();
+                // Preserve canonical primitive type arguments where a caller
+                // nominal or generic binder would recapture their display name.
+                // The runtime codec continues to use the same scalar string ABI.
+                let value = crate::typed::call_evidence::preserve_evidence_identity(
+                    value.unwrap(),
+                    context.resolution,
+                );
                 evidence.push(crate::TypedCallEvidence {
                     constraint: crate::TypedConstraint {
                         name: "ForeignCodec".into(),
@@ -841,7 +871,11 @@ fn refine_collection_parameters(
     }
     let refined = substitute_type_parameters(&application.result.type_ref, &substitutions);
     application.result = context.semantic_value_from_typed_type(&refined);
-    for constraint in &mut application.constraints {
+    for constraint in application
+        .constraints
+        .iter_mut()
+        .chain(&mut application.evidence_constraints)
+    {
         for argument in &mut constraint.arguments {
             *argument = substitute_type_parameters(argument, &substitutions);
         }
@@ -989,7 +1023,6 @@ fn call_issue(
             |(index, (((argument, actual_semantic), expected), source))| {
                 let actual = application_argument_type_from_expr(argument);
                 (!typed_type_contains_hole(&actual)
-                    && expected.type_ref != actual
                     && !semantic_values_are_compatible(expected, actual_semantic))
                 .then(|| PureCallIssue::ArgumentType {
                     argument: source.span(),
@@ -1179,6 +1212,19 @@ fn foreign_template<'a>(
         .flatten()
 }
 fn concrete_foreign_codec(value: &TypedType, context: &PureExpressionContext<'_>) -> bool {
+    if let TypedType::ExternalNamed {
+        name,
+        canonical,
+        arguments,
+    } = value
+    {
+        return arguments.is_empty()
+            && matches!(
+                name.as_str(),
+                "Unit" | "Bool" | "Char" | "String" | "Int" | "Float"
+            )
+            && canonical == &format!("std/prelude::{name}");
+    }
     let TypedType::Named { name, arguments } = value else {
         return false;
     };
@@ -1189,12 +1235,7 @@ fn concrete_foreign_codec(value: &TypedType, context: &PureExpressionContext<'_>
         )
         && !context.lexical_type_parameters.contains_key(name)
         && matches!(
-            context
-                .hydrate_semantic_value(SemanticValueType {
-                    type_ref: value.clone(),
-                    key: SemanticTypeKey::Other,
-                })
-                .key,
+            context.semantic_value_from_typed_type(value).key,
             SemanticTypeKey::Other
         )
 }
