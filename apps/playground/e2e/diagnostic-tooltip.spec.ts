@@ -42,5 +42,13 @@ test("a match diagnostic stays opaque beside its type hover", async ({
   const bounds = await diagnostic.boundingBox()
   expect(bounds?.x).toBeGreaterThanOrEqual(0)
   expect((bounds?.x ?? 0) + (bounds?.width ?? 0)).toBeLessThanOrEqual(393)
+  const pageHeight = await page.evaluate(() => ({
+    body: document.body.scrollHeight,
+    viewport: window.innerHeight,
+    editor: document.querySelector(".cm-editor")?.getBoundingClientRect()
+      .height,
+  }))
+  expect(pageHeight.body).toBeLessThanOrEqual(pageHeight.viewport)
+  expect(pageHeight.editor).toBeGreaterThan(0)
   await page.screenshot({ path: "/tmp/seseragi-diagnostic-tooltip-fixed.png" })
 })

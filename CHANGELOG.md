@@ -6,6 +6,10 @@
 
 - Warn when every resolved use of a public `MutableSignal<A>` parameter is a direct canonical read, sharing the same evidence between CLI and LSP (#611). The warning suggests reviewing `Signal<A>` for the input contract and excludes writes, aliases, forwarding and closure captures; it does not automatically change public signatures or claim deep immutability.
 
+### Fixed
+
+- Keep the Playground editor height rule off its tooltip container, preventing an extra viewport of page height and unstable preview scroll during full-page browser captures.
+
 ## [0.61.27] - 2026-10-12
 
 ### Added
