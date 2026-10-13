@@ -102,6 +102,8 @@ async function select(page: Page, entry: MatrixSample): Promise<void> {
   await expect(dialog).toBeVisible()
   await dialog.locator(`[data-sample-id="${entry.id}"]`).click()
   await expect(dialog).toBeHidden()
+  // Run cancels live analysis, so settle it before capturing the sample.
+  await expect(page.locator("#status-text")).toHaveText("Analysis ready")
 }
 
 async function run(page: Page, entry: MatrixSample): Promise<FrameLocator> {

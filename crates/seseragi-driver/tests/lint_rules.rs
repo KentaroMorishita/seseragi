@@ -179,3 +179,106 @@ fn unused_adt_import_is_one_binding_warning_across_namespaces() {
     assert_eq!(facts.diagnostics.len(), 1, "{facts:?}");
     assert_eq!(facts.diagnostics[0].code, "SES-L0302");
 }
+
+fn readonly_signal_facts(source: &str) -> Vec<seseragi_syntax::Diagnostic> {
+    diagnostics(source)
+        .into_iter()
+        .filter(|fact| fact.code == "SES-L0307")
+        .collect()
+}
+
+#[test]
+fn public_signal_input_proves_direct_reads_by_identity_and_same_payload() {
+    for body in ["signals.read source", "*source"] {
+        let source = format!("import * as signals from \"std/signal\"\npub fn snapshot source: signals.MutableSignal<Int> -> Task<Int> = {body}\n");
+        let facts = readonly_signal_facts(&source);
+        assert_eq!(facts.len(), 1, "{body}: {facts:?}");
+        assert_eq!(
+            &source[facts[0].primary.start..facts[0].primary.end],
+            "source"
+        );
+        assert!(facts[0].related[0].message.contains("All 1 resolved uses"));
+        assert_eq!(
+            &source[facts[0].related[2].primary.start..facts[0].related[2].primary.end],
+            body
+        );
+        assert!(facts[0].fixes.is_empty());
+        let wire = serde_json::to_value(&facts[0]).unwrap();
+        assert_eq!(wire["lint"]["ruleId"], "SES-L0307");
+        assert_eq!(wire["lint"]["confidence"], "proven");
+        assert_eq!(wire["lint"]["fixSafety"], "non-fixable");
+        assert!(wire["lint"]["nonFixableReason"]
+            .as_str()
+            .unwrap()
+            .contains("public callable"));
+    }
+    let renamed = "import { MutableSignal as Writable, read as snapshotRead } from \"std/signal\"\npub fn snapshot<A> source: Writable<A> -> Task<A> = snapshotRead source\n";
+    assert_eq!(readonly_signal_facts(renamed).len(), 1);
+    let alias = "import * as signals from \"std/signal\"\nalias Writable = signals.MutableSignal<Int>\npub fn snapshot source: Writable -> Task<Int> = signals.read source\n";
+    assert_eq!(readonly_signal_facts(alias).len(), 1);
+    let branches = "import * as signals from \"std/signal\"\npub fn snapshot enabled: Bool -> source: signals.MutableSignal<Int> -> Task<Int> = if enabled then signals.read source else *source\n";
+    assert!(readonly_signal_facts(branches)[0].related[0]
+        .message
+        .contains("All 2 resolved uses"));
+}
+
+#[test]
+fn public_effect_reads_count_all_uses_and_distinguish_parameters() {
+    let source = "import * as signals from \"std/signal\"\nimport * as eff from \"std/effect\"\npub effect fn snapshot first: signals.MutableSignal<Int> -> second: signals.MutableSignal<Int> -> Int = do {\n a <- signals.read first\n b <- *first\n c <- signals.read second\n eff.succeed (a + b + c)\n}\n";
+    let facts = readonly_signal_facts(source);
+    assert_eq!(facts.len(), 2, "{facts:?}");
+    assert_eq!(
+        &source[facts[0].primary.start..facts[0].primary.end],
+        "first"
+    );
+    assert_eq!(
+        &source[facts[1].primary.start..facts[1].primary.end],
+        "second"
+    );
+    assert!(facts[0].related[0].message.contains("All 2 resolved uses"));
+    assert_eq!(facts[0].related.len(), 4);
+    assert_eq!(facts[1].related.len(), 3);
+}
+
+#[test]
+fn public_signal_input_rejects_alias_escape_write_and_captured_reads() {
+    let prefix = "import * as signals from \"std/signal\"\n";
+    for declaration in [
+        "pub fn retain source: signals.MutableSignal<Int> -> signals.MutableSignal<Int> = source",
+        "pub fn aliased source: signals.MutableSignal<Int> -> Task<Int> = {\n let retained = source\n signals.read retained\n}",
+        "pub fn store source: signals.MutableSignal<Int> -> { value: signals.MutableSignal<Int> } = { value: source }",
+        "pub fn callback source: signals.MutableSignal<Int> -> (Unit -> Task<Int>) = \\_ -> signals.read source",
+        "pub fn nested source: signals.MutableSignal<Int> -> Task<Int> = {\n fn later -> Task<Int> = signals.read source\n later ()\n}",
+        "pub fn mixedLambda source: signals.MutableSignal<Int> -> Task<Int> = {\n let _callback: (Unit -> Task<Int>) = \\_ -> signals.read source\n signals.read source\n}",
+        "pub fn mixedLocal source: signals.MutableSignal<Int> -> Task<Int> = {\n fn later -> Task<Int> = signals.read source\n let _callback = later\n signals.read source\n}",
+        "pub fn writes source: signals.MutableSignal<Int> -> Task<Unit> = signals.set 1 source",
+        "pub fn updates source: signals.MutableSignal<Int> -> Task<Unit> = signals.update (\\value -> value + 1) source",
+        "pub fn plan source: signals.MutableSignal<Int> -> signals.SignalChange = signals.planSet 1 source",
+        "pub fn pass source: signals.MutableSignal<Int> -> Task<Int> = helper source\nfn helper source: signals.MutableSignal<Int> -> Task<Int> = signals.read source",
+        "pub fn reader source: signals.Signal<Int> -> Task<Int> = signals.read source",
+        "fn privateRead source: signals.MutableSignal<Int> -> Task<Int> = signals.read source",
+        "pub fn unused source: signals.MutableSignal<Int> -> Int = 1",
+        "pub fn ignored _source: signals.MutableSignal<Int> -> Task<Int> = signals.read _source",
+        "pub fn shadow source: signals.MutableSignal<Int> -> Task<Int> = {\n let source = signals.constant 1\n signals.read source\n}",
+        "pub fn dynamicRead source: signals.MutableSignal<Int> -> Task<Int> = {\n let reader = signals.read\n reader source\n}",
+    ] {
+        let source = format!("{prefix}{declaration}\n");
+        assert!(readonly_signal_facts(&source).is_empty(), "{source}");
+    }
+    let mixed = "import * as signals from \"std/signal\"\nimport * as eff from \"std/effect\"\npub effect fn mixed source: signals.MutableSignal<Int> -> Int = do {\n value <- signals.read source\n signals.set value source\n eff.succeed value\n}\n";
+    assert!(readonly_signal_facts(mixed).is_empty());
+    let fake = "struct MutableSignal { value: Int }\nfn read source: MutableSignal -> Int = source.value\npub fn snapshot source: MutableSignal -> Int = read source\n";
+    assert!(readonly_signal_facts(fake).is_empty());
+    let host = "import * as signals from \"std/signal\"\nforeign \"typescript\" from \"./host.mjs\" {\n pure fn inspect source: signals.MutableSignal<Int> -> Int\n}\npub fn handToHost source: signals.MutableSignal<Int> -> Task<Int> = {\n let _host = inspect source\n signals.read source\n}\n";
+    assert!(readonly_signal_facts(host).is_empty());
+}
+
+#[test]
+fn signal_parameter_proof_does_not_confuse_shadowed_symbol_or_error_recovery() {
+    let source = "import * as signals from \"std/signal\"\npub fn snapshot source: signals.MutableSignal<Int> -> Task<Int> = {\n fn shadow source: signals.MutableSignal<Int> -> Task<Int> = signals.read source\n let _ignored = shadow\n signals.read source\n}\n";
+    assert_eq!(readonly_signal_facts(source).len(), 1);
+    let broken = format!("{source}\npub let invalid: Int = missing\n");
+    let analyzed = analyze_module(CompileInput::new("lint.ssrg", "lint/rules", &broken));
+    assert!(!analyzed.diagnostics.diagnostics.is_empty());
+    assert!(analyzed.lint_diagnostics().diagnostics.is_empty());
+}

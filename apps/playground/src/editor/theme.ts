@@ -27,11 +27,13 @@ export const seseragiEditorTheme = [
   EditorView.theme(
     {
       "&": {
-        height: "100%",
         color: colors.text,
         backgroundColor: "#0d1513",
         fontSize: "16px",
         lineHeight: "var(--cm-line-height, 1.4)",
+      },
+      "&.cm-editor": {
+        height: "100%",
       },
       ".cm-content": {
         caretColor: colors.accent,

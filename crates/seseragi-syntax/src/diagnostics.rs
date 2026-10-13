@@ -99,6 +99,7 @@ impl Diagnostic {
             "lint.discarded-effect" => "Executing a discarded Effect or deleting its construction requires author intent.",
             "lint.discarded-resource" => "Resource lifetime and release location require author intent.",
             "lint.constant-condition" => "Removing a branch can remove type checking evidence or comments; no automatic edit is offered.",
+            "lint.readonly-signal-parameter" => "Changing a public callable type requires consumer and compatibility intent; no automatic annotation edit is offered.",
             _ => return None,
         };
         Some(LintEvidence {
@@ -205,6 +206,9 @@ impl Diagnostic {
             "lint.constant-condition" => {
                 "Constant Bool condition leaves an unreachable branch".to_owned()
             }
+            "lint.readonly-signal-parameter" => {
+                "Public MutableSignal parameter is only used for canonical reads".to_owned()
+            }
             _ => humanize_message_key(&self.message_key),
         }
     }
@@ -305,6 +309,7 @@ impl Diagnostic {
             "lint.discarded-effect" => "Bind the Effect in do, return it, or intentionally remove its construction.",
             "lint.discarded-resource" => "Retain the ownership handle and release it at the intended lifetime boundary.",
             "lint.constant-condition" => "Keep only the selected branch if the constant condition is intentional.",
+            "lint.readonly-signal-parameter" => "Consider Signal<A> after reviewing the public callable contract; this proof concerns its input reads, not other owners or API compatibility.",
             "lint.unused-local-binding" => {
                 "Use the binding, or prefix its name with `_` if the non-use is intentional."
             }

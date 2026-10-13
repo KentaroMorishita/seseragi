@@ -94,6 +94,7 @@ pub(super) fn collect(resolved: &ResolvedModule, typed: &TypedModule) -> Vec<Dia
         }
     }
     for declaration in &typed.declarations {
+        readonly_signal_parameters(declaration, resolved, &references_by_symbol, &mut facts);
         let (identities, visibility, origin, body) = match declaration {
             TypedDecl::Fn {
                 symbol,
@@ -199,6 +200,208 @@ pub(super) fn collect(resolved: &ResolvedModule, typed: &TypedModule) -> Vec<Dia
         }
     }
     facts
+}
+
+fn complete_type(value: &TypedType) -> bool {
+    match value {
+        TypedType::Hole => false,
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            arguments.iter().all(complete_type)
+        }
+        TypedType::Record { fields, .. } => {
+            fields.iter().all(|field| complete_type(&field.type_ref))
+        }
+        TypedType::Tuple { elements } => elements.iter().all(complete_type),
+        TypedType::Function { parameter, result } => {
+            complete_type(parameter) && complete_type(result)
+        }
+        TypedType::RequirementMerge { operands } => operands.iter().all(complete_type),
+    }
+}
+
+/// Prove the input capability consumed by this implementation, not the intent or
+/// compatibility of arbitrary public consumers. Every resolved use must be a
+/// direct canonical read; absence of a locally visible write is insufficient.
+fn readonly_signal_parameters(
+    declaration: &TypedDecl,
+    resolved: &ResolvedModule,
+    references: &BTreeMap<SymbolId, Vec<ByteSpan>>,
+    facts: &mut Vec<Diagnostic>,
+) {
+    let (parameters, body, declaration_origin) = match declaration {
+        TypedDecl::Fn {
+            visibility: Visibility::Public,
+            parameters,
+            body,
+            origin,
+            ..
+        }
+        | TypedDecl::EffectFn {
+            visibility: Visibility::Public,
+            parameters,
+            body,
+            origin,
+            ..
+        } => (parameters, body, *origin),
+        _ => return,
+    };
+    let eligible = parameters.iter().filter(|parameter| {
+        matches!(parameter, crate::TypedParameter::Named { name, type_ref: TypedType::ExternalNamed { canonical, arguments, .. }, .. }
+            if !name.starts_with('_') && canonical == "std/signal::MutableSignal"
+            && arguments.len() == 1 && complete_type(&arguments[0]))
+    }).collect::<Vec<_>>();
+    if eligible.is_empty() {
+        return;
+    }
+    // Index once per eligible function; duplicate/ambiguous spans stay unproven.
+    let mut reference_targets = BTreeMap::new();
+    for reference in &resolved.references {
+        if reference.namespace != SymbolNamespace::Value {
+            continue;
+        }
+        let target = if reference.candidates.is_empty() {
+            reference.target
+        } else {
+            None
+        };
+        reference_targets
+            .entry((reference.origin.start, reference.origin.end))
+            .and_modify(|existing| *existing = None)
+            .or_insert(target);
+    }
+    // The shared exhaustive walker covers every TypedExpr variant, but flattens
+    // ancestry. Collect closure boundaries first so their reads cannot masquerade
+    // as direct parameter consumption by the enclosing function.
+    let mut captures = Vec::new();
+    super::walk_expression(body, &mut |expression| match expression {
+        TypedExpr::Lambda { origin, .. } => captures.push(*origin),
+        TypedExpr::Block { statements, .. } => {
+            for statement in statements {
+                if let crate::TypedBlockStatement::Function { origin, .. } = statement {
+                    captures.push(*origin);
+                }
+            }
+        }
+        _ => {}
+    });
+    for parameter in eligible {
+        let crate::TypedParameter::Named {
+            name,
+            type_ref,
+            origin,
+        } = parameter
+        else {
+            continue;
+        };
+        let TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } = type_ref
+        else {
+            continue;
+        };
+        let symbols = resolved
+            .symbols
+            .iter()
+            .filter(|symbol| {
+                symbol.kind == crate::SymbolKind::Parameter
+                    && symbol.namespace == SymbolNamespace::Value
+                    && symbol.origin == *origin
+            })
+            .collect::<Vec<_>>();
+        let [symbol] = symbols.as_slice() else {
+            continue;
+        };
+        let Some(uses) = references.get(&symbol.id) else {
+            continue;
+        };
+        if uses.is_empty()
+            || uses.iter().any(|range| {
+                !(declaration_origin.start <= range.start && range.end <= declaration_origin.end)
+                    || captures
+                        .iter()
+                        .any(|capture| capture.start <= range.start && range.end <= capture.end)
+            })
+        {
+            continue;
+        }
+        let all_uses = uses
+            .iter()
+            .map(|range| (range.start, range.end))
+            .collect::<BTreeSet<_>>();
+        let mut reads = BTreeMap::new();
+        super::walk_expression(body, &mut |expression| {
+            let TypedExpr::Call {
+                callee,
+                arguments: call_arguments,
+                evidence,
+                deferred_evidence_parameters,
+                deferred_evidence_type_constructor_parameters,
+                evidence_argument_index,
+                trait_dispatch,
+                type_ref: result_type,
+                origin: call_origin,
+            } = expression
+            else {
+                return;
+            };
+            if callee != "std/signal::read"
+                || !evidence.is_empty()
+                || !deferred_evidence_parameters.is_empty()
+                || !deferred_evidence_type_constructor_parameters.is_empty()
+                || evidence_argument_index.is_some()
+                || trait_dispatch.is_some()
+            {
+                return;
+            }
+            let [TypedExpr::Variable {
+                type_ref: argument_type,
+                origin: argument_origin,
+                evidence: argument_evidence,
+                ..
+            }] = call_arguments.as_slice()
+            else {
+                return;
+            };
+            let TypedType::ExternalNamed {
+                canonical: argument_canonical,
+                arguments: argument_payload,
+                ..
+            } = argument_type
+            else {
+                return;
+            };
+            if argument_canonical != canonical
+                || argument_payload != arguments
+                || !argument_evidence.is_empty()
+                || !crate::standard::standard_signal_read_call(argument_type)
+                    .is_some_and(|read| &read.result == result_type)
+            {
+                return;
+            }
+            let span = (argument_origin.start, argument_origin.end);
+            if reference_targets.get(&span) == Some(&Some(symbol.id)) {
+                reads.insert(span, *call_origin);
+            }
+        });
+        if reads.is_empty() || reads.keys().copied().collect::<BTreeSet<_>>() != all_uses {
+            continue;
+        }
+        let mut fact = warning("SES-L0307", "lint.readonly-signal-parameter", *origin,
+            format!("All {} resolved uses of public parameter `{name}` are direct canonical std/signal::read calls. Its {} input needs only Signal with the same payload; review the public callable contract before changing it.", all_uses.len(), super::render_type(type_ref)));
+        fact.related.push(RelatedDiagnostic {
+            message: "This public declaration exposes the callable contract; no automatic signature edit is offered.".to_owned(),
+            primary: ByteRange { start: declaration_origin.start, end: declaration_origin.end },
+        });
+        for call in reads.values() {
+            fact.related.push(RelatedDiagnostic {
+                message: "Canonical std/signal::read consumes Signal<A>; the one-way MutableSignal<A> to Signal<A> coercion preserves the same payload and signal identity. Other owners may still mutate it.".to_owned(),
+                primary: ByteRange { start: call.start, end: call.end },
+            });
+        }
+        facts.push(fact);
+    }
 }
 
 fn is_discarded(pattern: &TypedPattern, used: &BTreeSet<SymbolId>) -> bool {
