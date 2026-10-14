@@ -69,3 +69,16 @@ Full gateをpassとは記録しない。main merge / canonical release / local d
 `.github/workflows/rust-backend.yml`でLinuxのshared frontend、runtime / native backend、
 CLIのTS比較を固定する。既存Portable DTS workflowの`refresh_artifact`でcanonical Linux WASMを
 生成し、source SHAとartifactの対応を確認してから取り込む。CI結果はPR / runで別途確認する。
+
+## artifact取り込み後の確認
+
+[Portable DTS converter CI](https://github.com/KentaroMorishita/seseragi/actions/runs/38500736181)は
+`92373a3f31c1f1c40331026766eb7fb718dcc50a`でLinux freshness、macOSの独立再build、
+browser converter、host間比較まで成功した。
+[同commitのRust backend CI](https://github.com/KentaroMorishita/seseragi/actions/runs/38500736192)も成功した。
+
+Release contract CIでprovider fixtureの旧version lockを検出したため、0.61.30の公式CLIで
+providerを使う14 fixtureの`seseragi lock update`を実行した。変更はproviderのpackage version / source
+表記のみで、package / artifact digest、provider選択、backend、ABI、依存関係は変えていない。
+PostgreSQL / SQLiteの該当build testを再実行して成功した。logは
+`target/rust-backend-foundation/provider-builds.log`に保存している。
