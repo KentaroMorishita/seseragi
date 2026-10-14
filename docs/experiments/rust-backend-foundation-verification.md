@@ -45,12 +45,26 @@ release helperのsourceは変更していない。
 
 4はmacOSで再生成したWASMとcommitted artifactの相違。正規生成hostはLinux x64であり、
 macOS生成binaryは`target/rust-backend-foundation/macos-wasm/`へ保存して、committed fileを元に戻した。
-Linux canonical artifactの再生成 / freshness確認がmain統合前に必要となる。
+この境界は下記Linux CIで生成した正式artifactへ置換し、PRのfreshness gateで再確認する。
 
 Full gateをpassとは記録しない。main merge / canonical release / local dogfoodは行っていない。
 ローカルlogは`target/rust-backend-foundation/{rust-lane,native-cli,capture,full-gate}.log`に保存した。
 
 ## CI
+
+- [Rust backend Linux CI](https://github.com/KentaroMorishita/seseragi/actions/runs/38499304447)が
+  `e91be6c1e6860e8de041a1216ee87f512c61a48f` / 0.61.30で成功。frontend boundary、
+  runtime 4 test、native 8 test、CLI 2 testを確認した。
+- [canonical Linux WASM生成](https://github.com/KentaroMorishita/seseragi/actions/runs/38499358281)の
+  `convert (ubuntu-24.04)`が成功。同じsource SHAからrepo scriptで生成した
+  `canonical-playground-wasm-e91be6c1e6860e8de041a1216ee87f512c61a48f`を取り込んだ。
+  変換器のmemory-only boundary、browser converter / workspace tests、TypeScript check、
+  browser binding E2Eも同jobで成功。これはプログラムのRust→WASM生成ではなく、既存compiler adapterの確認。
+- version bump直後のcommitではCargo.lockの同期が漏れて`--locked` CIが失敗した。
+  `cargo update --workspace --offline`でworkspace crateのみを同期し、上記success SHAで修正を確認した。
+- [draft PR #808](https://github.com/KentaroMorishita/seseragi/pull/808)に設計・実験・実装を保存している。
+  main merge / tag / releaseは実行していない。
+
 
 `.github/workflows/rust-backend.yml`でLinuxのshared frontend、runtime / native backend、
 CLIのTS比較を固定する。既存Portable DTS workflowの`refresh_artifact`でcanonical Linux WASMを
