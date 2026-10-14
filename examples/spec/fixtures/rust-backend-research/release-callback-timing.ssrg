@@ -1,0 +1,14 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  log <- refs.make 0
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> {
+        let overflow = 9007199254740991 + 1
+        refs.set overflow log
+        }
+    )
+    println "body before release defect"
+  }
+}

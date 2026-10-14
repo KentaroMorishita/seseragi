@@ -17,6 +17,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "examples/spec/fixtures/rust-backend/**"
+      - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
   push:
     branches: [main]
@@ -35,6 +36,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "examples/spec/fixtures/rust-backend/**"
+      - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
   workflow_dispatch:
 
@@ -63,3 +65,11 @@ jobs:
         run: cargo test --locked -p seseragi-backend-rust
       - name: Compare the CLI Rust target with TypeScript execution
         run: cargo test --locked -p seseragi-cli --test rust_backend
+      - name: Verify opt-in cycle collection and resource research
+        run: cargo test --locked -p seseragi-backend-rust --example native_lifetimes
+      - name: Compare checked Effect and Ref sources with TypeScript
+        run: |
+          cargo build --locked -p seseragi-backend-rust --example native_lifetimes
+          python3 crates/seseragi-backend-rust/examples/native_lifetimes/verify.py \
+            --emitter target/debug/examples/native_lifetimes \
+            --cli target/debug/seseragi --bun bun

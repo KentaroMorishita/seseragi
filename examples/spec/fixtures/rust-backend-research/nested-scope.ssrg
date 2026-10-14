@@ -1,0 +1,24 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+effect fn record digit: Int -> log: Ref<Int> -> Unit = do {
+  old <- refs.get log
+  refs.set (old * 10 + digit) log
+}
+
+pub effect fn main = do {
+  log <- refs.make 0
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> record 1 log)
+    effects.scoped $ do {
+      effects.acquireRelease (effects.succeed ()) (\_: Unit -> record 2 log)
+      effects.acquireRelease (effects.succeed ()) (\_: Unit -> record 3 log)
+      effects.succeed ()
+    }
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> record 4 log)
+    effects.succeed ()
+  }
+  result <- refs.get log
+  println $ `order: ${result}`
+}

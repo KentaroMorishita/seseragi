@@ -1,5 +1,8 @@
 # Rustバックエンドの設計と最初の実装
 
+後続の[寿命管理とEffectの研究](../experiments/native-lifetimes.md)では、循環回収と同期Effect / Refの
+opt-in生成経路を、同じSeseragiソースのTS実行と照合した。製品ABIへの統合はまだ行っていない。
+
 ## 判断と実装境界
 
 Rustソース生成を第二のbackendとして段階的に実装する。Seseragiの型検査、instance選択、
