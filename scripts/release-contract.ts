@@ -11,6 +11,7 @@ const PACKAGE_MANIFESTS = [
   "extensions/seseragi-legacy/package.json",
 ]
 const RUST_MANIFESTS = [
+  "crates/seseragi-backend-rust/Cargo.toml",
   "crates/seseragi-cli/Cargo.toml",
   "crates/seseragi-conformance/Cargo.toml",
   "crates/seseragi-driver/Cargo.toml",

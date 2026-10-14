@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.30] - 2026-10-14
+
+### Added
+
+- Add an experimental pure Rust backend from checked CoreIr, with `experimental emit-rust` and `experimental build-native` commands for standalone source generation and Bun-free native execution (#808). Effects, cyclic memory reclamation, package linking, foreign/provider ABI and Wasm program output remain outside this initial slice.
+- Share source-arity, closed local evidence and free-variable analysis between backend implementations; use direct saturated calls, lazy dictionary sharing, explicit closure environments and iterative value destruction in the Rust target (#808). TypeScript performance probes and native ownership fixtures record the implementation boundaries without claiming full-language or cross-backend speed guarantees.
+
 ## [0.61.29] - 2026-10-13
 
 ### Fixed
