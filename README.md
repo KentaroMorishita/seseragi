@@ -155,6 +155,7 @@ Playgroundの順序付き学習は`examples/tour/`を正本とするTour、目�
 
 - compiler / runtimeはRust再実装の縦sliceを継続中
 - CLI、LSP、formatter、WASM Playgroundは同じcompiler driverへ接続済み
+- [実験的Rustバックエンド](./docs/architecture/rust-backend.md)は純粋計算のRustコード生成とnative実行を検証中
 - ADT、match、Effect、Signal、SSR / DOMの実行可能範囲をsampleとconformance fixtureで固定
 - TypeScript interop、filesystem / HTTP、Stream、hydration等は未着手または部分実装
 - release前のため、構文・型・runtime contractは変更される可能性あり

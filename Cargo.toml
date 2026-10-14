@@ -1,6 +1,7 @@
 [workspace]
 members = [
   "crates/seseragi-cli",
+  "crates/seseragi-backend-rust",
   "crates/seseragi-conformance",
   "crates/seseragi-driver",
   "crates/seseragi-dts",

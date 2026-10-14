@@ -1,0 +1,65 @@
+name: Experimental Rust backend
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/rust-backend.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "crates/seseragi-backend-rust/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-lowering/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-syntax/**"
+      - "crates/seseragi-cli/src/experimental.rs"
+      - "crates/seseragi-cli/src/main.rs"
+      - "crates/seseragi-cli/Cargo.toml"
+      - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "examples/spec/fixtures/rust-backend/**"
+      - "runtime/ts/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/rust-backend.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "crates/seseragi-backend-rust/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-lowering/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-syntax/**"
+      - "crates/seseragi-cli/src/experimental.rs"
+      - "crates/seseragi-cli/src/main.rs"
+      - "crates/seseragi-cli/Cargo.toml"
+      - "crates/seseragi-cli/tests/rust_backend.rs"
+      - "examples/spec/fixtures/rust-backend/**"
+      - "runtime/ts/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - name: Install the comparison runtime
+        run: bun install --frozen-lockfile
+      - name: Check Rust formatting
+        run: cargo fmt --all -- --check
+      - name: Verify shared frontend boundary
+        run: cargo test --locked -p seseragi-driver --lib core_compile::tests
+      - name: Verify native values, captures, dictionaries, and teardown
+        run: cargo test --locked -p seseragi-backend-rust
+      - name: Compare the CLI Rust target with TypeScript execution
+        run: cargo test --locked -p seseragi-cli --test rust_backend

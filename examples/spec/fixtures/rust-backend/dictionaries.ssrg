@@ -1,0 +1,38 @@
+type Box<A> = | Box A
+
+trait Read<A> {
+  fn read value: A -> Int
+}
+
+instance Read<Int> {
+  fn read value: Int -> Int = value + 7
+}
+
+instance<A> Read<Box<A>> where Read<A> {
+  fn read value: Box<A> -> Int = match value { Box inner -> read inner }
+}
+
+fn captured<A> value: A -> (Unit -> Int) where Read<A> = \_ -> read value
+
+pub fn concrete seed: Int -> Int = read seed
+
+pub fn nested seed: Int -> Int = read (Box (Box seed))
+
+pub fn returned seed: Int -> Int = {
+  let later = captured (Box (Box seed))
+  later () + later ()
+}
+
+pub fn nestedEscaping seed: Int -> (Unit -> Int) = captured (Box (Box seed))
+
+pub fn specializedEscaping seed: Int -> (Unit -> Int) = \_ -> seed + 7
+
+pub fn parameterized<A> value: A -> Int where Read<A> = read (Box value)
+
+type Other = | Other Int
+
+instance Read<Other> {
+  fn read value: Other -> Int = match value { Other seed -> seed + 17 }
+}
+
+pub fn other seed: Int -> Int = parameterized (Other seed)

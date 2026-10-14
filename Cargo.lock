@@ -513,11 +513,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "seseragi-backend-rust"
+version = "0.61.29"
+dependencies = [
+ "serde",
+ "serde_json",
+ "seseragi-driver",
+ "seseragi-lowering",
+]
+
+[[package]]
 name = "seseragi-cli"
 version = "0.61.29"
 dependencies = [
  "ctrlc",
  "serde_json",
+ "seseragi-backend-rust",
  "seseragi-driver",
  "seseragi-dts",
  "seseragi-lsp",

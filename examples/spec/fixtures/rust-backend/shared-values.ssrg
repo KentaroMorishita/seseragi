@@ -1,0 +1,11 @@
+type Box<A> = | Box A
+
+fn constant<A> value: A -> (Unit -> A) = \_ -> value
+
+fn read box: Box<String> -> String = match box { Box text -> text }
+
+pub fn probe -> (String, String, String) = {
+  let box = Box "shared"
+  let later = constant box
+  (read (later ()), read (later ()), read box)
+}

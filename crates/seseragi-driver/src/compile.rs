@@ -1,7 +1,7 @@
-use crate::{analyze::analyze_module_frontend, CompileInput, CompiledModule};
+use crate::{CompileInput, CompiledModule, CoreCompilation};
 use seseragi_lowering::{
-    emit_typescript_module, emit_typescript_module_with_output_paths, lower_typed_module,
-    GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
+    emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedOutputPaths,
+    TypeScriptLoweringError, TypeScriptOutputPlan,
 };
 use seseragi_semantics::{analyze_linked_module, AnalyzedModule};
 use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
@@ -10,14 +10,8 @@ use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 /// pure single-module pipeline. Compiler-owned standard modules are linked by
 /// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
-    let analyzed = analyze_module_frontend(input)?;
-    Ok(finish_compilation(
-        analyzed.diagnostics,
-        analyzed.typed_hir,
-        analyzed.typed_interface,
-        input.source(),
-        input.profile(),
-    ))
+    let core = crate::compile_core_module(input)?;
+    Ok(finish_compilation(core, input.source(), input.profile()))
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -73,7 +67,8 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
     profile: seseragi_project::BuildProfile,
     project_newtypes: &std::collections::BTreeSet<String>,
 ) -> Result<CompiledModule, TypeScriptLoweringError> {
-    let core_ir = lower_typed_module(analyzed.typed_hir.clone());
+    let analyzed = crate::lower_analyzed_module(analyzed);
+    let core_ir = analyzed.core_ir;
     let options = lowering_options(&core_ir, profile, project_newtypes);
     let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
         core_ir.clone(),
@@ -101,13 +96,16 @@ pub(crate) fn compile_analyzed_module_with_output_paths(
 }
 
 fn finish_compilation(
-    diagnostics: DiagnosticArtifact,
-    typed_hir: seseragi_semantics::TypedModule,
-    typed_interface: seseragi_semantics::TypedModuleInterface,
+    core: CoreCompilation,
     source: &str,
     profile: seseragi_project::BuildProfile,
 ) -> CompiledModule {
-    let core_ir = lower_typed_module(typed_hir.clone());
+    let CoreCompilation {
+        diagnostics,
+        typed_hir,
+        typed_interface,
+        core_ir,
+    } = core;
     let options = lowering_options(&core_ir, profile, &std::collections::BTreeSet::new());
     let typescript_ir = seseragi_lowering::lower_core_module_to_typescript_ir_with_options(
         core_ir.clone(),
