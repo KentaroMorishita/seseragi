@@ -1,0 +1,15 @@
+type Chain =
+  | End
+  | Link (Int, Chain)
+
+fn total chain: Chain -> Int = match chain {
+  End -> 0
+  Link (value, rest) -> value + total rest
+}
+
+pub fn probe -> (Int, Int) = {
+  let tail = Link (2, End)
+  let first = Link (1, tail)
+  let second = Link (3, tail)
+  (total first, total second)
+}

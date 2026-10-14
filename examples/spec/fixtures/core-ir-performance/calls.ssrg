@@ -1,0 +1,17 @@
+fn add left: Int -> right: Int -> Int = left + right
+
+pub fn saturated seed: Int -> Int = add seed 7
+
+pub fn partial seed: Int -> Int = {
+  let step = add seed
+  step 7
+}
+
+pub fn immediateLambda seed: Int -> Int = {
+  let step = \value: Int -> value + seed
+  step 7
+}
+
+pub fn escaping seed: Int -> (Unit -> Int) = \_ -> seed + 7
+
+pub fn captureOne seed: Int -> unused: Array<Int> -> (Unit -> Int) = \_ -> seed

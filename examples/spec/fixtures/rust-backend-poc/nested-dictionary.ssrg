@@ -1,0 +1,20 @@
+type Box<A> = | Box A
+
+trait Read<A> {
+  fn read value: A -> Int
+}
+
+instance Read<Int> {
+  fn read value: Int -> Int = value
+}
+
+instance<A> Read<Box<A>> where Read<A> {
+  fn read value: Box<A> -> Int = match value { Box inner -> read inner }
+}
+
+fn captured<A> value: A -> (Unit -> Int) where Read<A> = \_ -> read value
+
+pub fn probe -> (Int, Int) = {
+  let reader = captured (Box (Box 42))
+  (reader (), reader ())
+}
