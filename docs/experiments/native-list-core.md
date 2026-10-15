@@ -100,3 +100,17 @@ head/rest traversal advances one node per iteration. Physical heap counts on TS
 and root CPU costs have not been measured, so generated shape alone is not an
 allocation or timing claim. ADT representation/drop counterfactual #830 remains
 research-only.
+
+## Allocation profile and tracked follow-up
+
+In a separate non-timed CountingSystem harness, kernel(10000) allocates 10,000
+managed nodes and makes 20,000 host allocation/free calls, requesting a cumulative
+560,000 bytes; final managed-live is zero. This includes one managed cons and
+one type-erased drop-queue Box per node. It does not establish a CPU bottleneck
+or a TS physical allocation count. Source/raw samples and both complete
+harnesses: https://github.com/KentaroMorishita/seseragi/issues/816#issuecomment-6203840033 .
+
+Wide-prefix projection reuse is tracked independently in #836 and has not been
+implemented. The canonical v0.61.35 compiler TS body matches the measured
+v0.61.34 output byte for byte. Final installed CLI/public compiler body identity
+and the distribution handoff remain pending on #834.
