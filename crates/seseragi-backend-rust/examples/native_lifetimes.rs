@@ -16,8 +16,8 @@ use std::time::Instant;
 fn main() -> Result<(), String> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
     if !args.is_empty() {
-        if args.len() != 3 || !["emit", "dump"].contains(&args[0].as_str()) {
-            return Err("native_lifetimes [emit|dump source.ssrg output]".into());
+        if args.len() != 3 || !["emit", "dump", "emit-wasm"].contains(&args[0].as_str()) {
+            return Err("native_lifetimes [emit|dump|emit-wasm source.ssrg output]".into());
         }
         let source = std::fs::read_to_string(&args[1]).map_err(|e| e.to_string())?;
         let checked = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
@@ -28,6 +28,41 @@ fn main() -> Result<(), String> {
         .map_err(|e| format!("{e:?}"))?;
         let output = if args[0] == "dump" {
             serde_json::to_string_pretty(&checked.core_ir).unwrap()
+        } else if args[0] == "emit-wasm" {
+            use seseragi_lowering::{CoreExpr, CoreType};
+            let probe = checked
+                .core_ir
+                .functions
+                .iter()
+                .find(|f| f.symbol.ends_with("::probe"))
+                .ok_or("missing probe")?;
+            let ty = match &probe.body {
+                CoreExpr::Variable { type_ref, .. } | CoreExpr::Lambda { type_ref, .. } => type_ref,
+                _ => return Err("scalar research entry must return an Int -> Int function".into()),
+            };
+            let int = |ty: &CoreType| matches!(ty, CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty());
+            if !matches!(ty, CoreType::Function { parameter, result } if int(parameter) && int(result))
+            {
+                return Err("scalar research entry must return an Int -> Int function".into());
+            }
+            // Only the existing checked pure ABI is used. The typed bridge is
+            // scalar-only; no managed handle can escape the WASM instance.
+            let artifact = seseragi_backend_rust::emit_rust_module(&checked.core_ir, "probe")
+                .map_err(|e| e.to_string())?;
+            let end = artifact
+                .source
+                .rfind("\nfn main()")
+                .ok_or("inspection entry not found")?;
+            let symbol = format!(
+                "v_{}",
+                artifact
+                    .metadata
+                    .entry
+                    .bytes()
+                    .map(|b| format!("{b:02x}"))
+                    .collect::<String>()
+            );
+            format!("{}\n#[no_mangle]\npub extern \"C\" fn compute(input: i64) -> i64 {{ let value = {symbol}(vec![]).apply(V::Unit).apply(checked_int(input)); let V::Int(result) = value else {{ panic!(\"scalar research ABI\") }}; clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0); result }}\n", &artifact.source[..end])
         } else {
             core_emit::emit(&checked.core_ir)?
         };

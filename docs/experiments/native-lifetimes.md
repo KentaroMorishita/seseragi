@@ -1,5 +1,8 @@
 # Rust targetの寿命管理とEffectの研究
 
+この文書は10月14日時点の検証記録。10月15日の[反復実行とprogram WASMの研究](./native-execution-and-wasm.md)で、
+長いEffect chain、TS runtimeのdefer修正、SeseragiのUIとWASM計算の混在を追加検証した。
+
 2026-10-14。実験の基点はRust backend foundationの`76519837aa3a9e780d9a525fc17a727ae670268d`。
 製品のpure ABI、CLI、TS runtime、driver、CoreIr、Playground WASMは変更していない。
 opt-in exampleへ二つの回収方式と同期Effectの小さな生成経路を実装した。

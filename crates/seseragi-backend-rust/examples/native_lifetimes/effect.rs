@@ -1,10 +1,37 @@
-//! Synchronous, cold Effect / Ref / resource research slice. No fibers or I/O.
+//! Cold Effect instruction machine. All managed continuations are explicit roots.
 use super::{
-    heap::{Handle, Heap},
+    heap::{EffectCode, Handle, Heap},
     scope::Exit,
 };
+type Outcome = Result<Handle, Exit>;
 
-#[derive(Default)]
+#[derive(Clone, Copy)]
+pub enum Instruction {
+    Native(EffectCode),
+    Bind,
+    Scoped,
+    AcquireRelease,
+    Recover,
+    Release,
+    Defer,
+}
+
+enum Frame {
+    Bind(Handle),
+    Recover(Handle),
+    Register(Handle),
+    Scope,
+    Cleanup {
+        original: Outcome,
+        defects: Vec<String>,
+        previous_mask: bool,
+    },
+}
+enum State {
+    Evaluate(Handle),
+    Return(Outcome),
+}
+
 pub struct Context {
     frames: Vec<Vec<Handle>>,
     pub output: Vec<String>,
@@ -13,48 +40,194 @@ pub struct Context {
     pub checkpoints: usize,
     pub reclaimed: usize,
     pub candidate_collection: bool,
+    pub gc_every: usize,
+    pub peak_frames: usize,
+}
+impl Default for Context {
+    fn default() -> Self {
+        Self {
+            frames: Vec::new(),
+            output: Vec::new(),
+            cancelled: false,
+            masked: false,
+            checkpoints: 0,
+            reclaimed: 0,
+            candidate_collection: false,
+            gc_every: 1,
+            peak_frames: 0,
+        }
+    }
 }
 impl Context {
     pub fn checkpoint(&mut self, heap: &Heap) -> Result<(), Exit> {
         self.checkpoints += 1;
-        // Deliberately stress roots at EVERY checkpoint, including release.
-        self.reclaimed += (if self.candidate_collection {
-            heap.collect_candidates()
-        } else {
-            heap.collect()
-        })
-        .map_err(|e| Exit::Defect(vec![e.into()]))?
-        .reclaimed;
+        if self.gc_every > 0 && self.checkpoints % self.gc_every == 0 {
+            self.reclaimed += (if self.candidate_collection {
+                heap.collect_candidates()
+            } else {
+                heap.collect()
+            })
+            .map_err(|e| Exit::Defect(vec![e.into()]))?
+            .reclaimed;
+        }
         if self.cancelled && !self.masked {
             Err(Exit::Cancelled)
         } else {
             Ok(())
         }
     }
-    fn finish(&mut self, heap: &Heap, original: Result<Handle, Exit>) -> Result<Handle, Exit> {
-        let previous = std::mem::replace(&mut self.masked, true);
-        let mut defects = Vec::new();
+    pub fn root(&mut self, heap: &Heap, effect: &Handle) -> Outcome {
+        assert!(
+            self.frames.is_empty(),
+            "native leaf cannot recursively enter the interpreter"
+        );
+        self.frames.push(Vec::new());
+        let initial = match self.checkpoint(heap) {
+            Ok(()) => State::Evaluate(effect.clone()),
+            Err(exit) => State::Return(Err(exit)),
+        };
+        self.run(heap, initial, vec![Frame::Scope])
+    }
+    fn run(&mut self, heap: &Heap, mut state: State, mut stack: Vec<Frame>) -> Outcome {
         loop {
-            let next = self.frames.last_mut().expect("active scope").pop();
-            let Some(finalizer) = next else { break };
-            match finalizer.execute(heap, self) {
-                Ok(_) => {}
-                Err(Exit::Defect(errors)) => defects.extend(errors),
-                Err(_) => defects.push("finalizer produced failure/cancellation".into()),
-            }
-        }
-        self.frames.pop();
-        self.masked = previous;
-        if defects.is_empty() {
-            original
-        } else {
-            Err(Exit::Defect(defects))
+            self.peak_frames = self.peak_frames.max(stack.len());
+            state = match state {
+                State::Evaluate(effect) => {
+                    match effect.plan() {
+                        Err(error) => State::Return(Err(error)),
+                        Ok((c, instruction)) => match instruction {
+                            Instruction::Native(code) => {
+                                let result =
+                                    self.checkpoint(heap).and_then(|_| code(heap, &c, self));
+                                State::Return(result)
+                            }
+                            Instruction::Bind => {
+                                stack.push(Frame::Bind(c[1].clone()));
+                                State::Evaluate(c[0].clone())
+                            }
+                            Instruction::Recover => {
+                                stack.push(Frame::Recover(c[0].clone()));
+                                State::Evaluate(c[1].clone())
+                            }
+                            Instruction::Scoped => {
+                                self.frames.push(Vec::new());
+                                stack.push(Frame::Scope);
+                                State::Evaluate(c[0].clone())
+                            }
+                            Instruction::AcquireRelease => {
+                                stack.push(Frame::Register(c[1].clone()));
+                                State::Evaluate(c[0].clone())
+                            }
+                            Instruction::Release => {
+                                // The callback's pure prefix runs at FINALIZATION.
+                                match c[0].call(heap, c[1].clone()) {
+                                    Ok(plan) => State::Evaluate(plan),
+                                    Err(exit) => State::Return(Err(exit)),
+                                }
+                            }
+                            Instruction::Defer => match self
+                                .checkpoint(heap)
+                                .and_then(|_| c[0].call(heap, heap.unit()))
+                            {
+                                Ok(plan) => State::Evaluate(plan),
+                                Err(exit) => State::Return(Err(exit)),
+                            },
+                        },
+                    }
+                }
+                State::Return(result) => {
+                    let Some(frame) = stack.pop() else {
+                        return result;
+                    };
+                    match frame {
+                        Frame::Bind(next) => match result {
+                            Ok(value) => {
+                                match self.checkpoint(heap).and_then(|_| next.call(heap, value)) {
+                                    Ok(plan) => State::Evaluate(plan),
+                                    Err(exit) => State::Return(Err(exit)),
+                                }
+                            }
+                            Err(exit) => State::Return(Err(exit)),
+                        },
+                        Frame::Recover(handler) => match result {
+                            Err(Exit::Failure(error)) => {
+                                match self
+                                    .checkpoint(heap)
+                                    .and_then(|_| handler.call(heap, heap.text(&error)))
+                                {
+                                    Ok(plan) => State::Evaluate(plan),
+                                    Err(exit) => State::Return(Err(exit)),
+                                }
+                            }
+                            result => State::Return(result),
+                        },
+                        Frame::Register(release) => match result {
+                            Ok(resource) => {
+                                let finalizer = heap.instruction(
+                                    Instruction::Release,
+                                    vec![release, resource.clone()],
+                                );
+                                self.frames
+                                    .last_mut()
+                                    .expect("owning scope")
+                                    .push(finalizer);
+                                // No checkpoint between acquisition and registration.
+                                State::Return(self.checkpoint(heap).map(|_| resource))
+                            }
+                            Err(exit) => State::Return(Err(exit)),
+                        },
+                        Frame::Scope => {
+                            let previous_mask = std::mem::replace(&mut self.masked, true);
+                            self.cleanup(heap, &mut stack, result, Vec::new(), previous_mask)
+                        }
+                        Frame::Cleanup {
+                            original,
+                            mut defects,
+                            previous_mask,
+                        } => {
+                            match result {
+                                Ok(_) => {}
+                                Err(Exit::Defect(errors)) => defects.extend(errors),
+                                Err(_) => {
+                                    defects.push("finalizer produced failure/cancellation".into())
+                                }
+                            }
+                            self.cleanup(heap, &mut stack, original, defects, previous_mask)
+                        }
+                    }
+                }
+            };
         }
     }
-    pub fn root(&mut self, heap: &Heap, effect: &Handle) -> Result<Handle, Exit> {
-        self.frames.push(Vec::new());
-        let result = effect.execute(heap, self);
-        self.finish(heap, result)
+    fn cleanup(
+        &mut self,
+        _heap: &Heap,
+        stack: &mut Vec<Frame>,
+        original: Outcome,
+        defects: Vec<String>,
+        previous_mask: bool,
+    ) -> State {
+        let next = self.frames.last_mut().expect("owning scope").pop();
+        if let Some(finalizer) = next {
+            stack.push(Frame::Cleanup {
+                original,
+                defects,
+                previous_mask,
+            });
+            State::Evaluate(finalizer)
+        } else {
+            self.frames.pop();
+            self.masked = previous_mask;
+            State::Return(if defects.is_empty() {
+                original
+            } else {
+                Err(Exit::Defect(defects))
+            })
+        }
+    }
+    #[cfg(test)]
+    fn finish(&mut self, heap: &Heap, original: Outcome) -> Outcome {
+        self.run(heap, State::Return(original), vec![Frame::Scope])
     }
 }
 
@@ -72,27 +245,10 @@ pub fn operation(heap: &Heap, name: &str, args: Vec<Handle>) -> Result<Handle, E
             c[1].write(c[0].clone());
             Ok(h.unit())
         }),
-        ("std/effect::scoped", 1) => heap.effect(args, |h, c, ctx| {
-            ctx.frames.push(Vec::new());
-            let result = c[0].execute(h, ctx);
-            ctx.finish(h, result)
-        }),
-        ("std/effect::acquireRelease", 2) => heap.effect(args, |h, c, ctx| {
-            let resource = c[0].execute(h, ctx)?;
-            // Invoke the user's release callback during finalization, not
-            // during acquisition. Its pure prefix may itself produce a defect.
-            let release = h.effect(vec![c[1].clone(), resource.clone()], |h, c, ctx| {
-                c[0].call(h, c[1].clone())?.execute(h, ctx)
-            });
-            ctx.frames.last_mut().expect("active scope").push(release);
-            // Registration happened before cancellation can be observed.
-            ctx.checkpoint(h)?;
-            Ok(resource)
-        }),
-        ("std/effect::recover", 2) => heap.effect(args, |h, c, ctx| match c[1].execute(h, ctx) {
-            Err(Exit::Failure(error)) => c[0].call(h, h.text(&error))?.execute(h, ctx),
-            result => result,
-        }),
+        ("std/effect::scoped", 1) => heap.instruction(Instruction::Scoped, args),
+        ("std/effect::acquireRelease", 2) => heap.instruction(Instruction::AcquireRelease, args),
+        ("std/effect::recover", 2) => heap.instruction(Instruction::Recover, args),
+        ("std/effect::defer", 1) => heap.instruction(Instruction::Defer, args),
         ("std/prelude::println" | "console.println", 1) => heap.effect(args, |h, c, ctx| {
             ctx.output.push(c[0].show());
             Ok(h.unit())
@@ -180,5 +336,81 @@ mod tests {
         assert!(context.frames.is_empty());
         drop(order);
         assert_eq!(heap.live(), 0);
+    }
+
+    #[test]
+    fn long_bind_and_scope_chains_run_on_a_small_stack() {
+        std::thread::Builder::new()
+            .stack_size(256 * 1024)
+            .spawn(|| {
+                for kind in ["left-bind", "nested-scope", "defer"] {
+                    let h = Heap::default();
+                    let mut plan = operation(&h, "std/effect::succeed", vec![h.int(42)])
+                        .unwrap_or_else(|e| panic!("{e:?}"));
+                    let next = h.callable(vec![], |h, _, value| {
+                        operation(h, "std/effect::succeed", vec![value])
+                    });
+                    for _ in 0..100_000 {
+                        plan = match kind {
+                            "left-bind" => h.bind(plan, next.clone()),
+                            "nested-scope" => h.instruction(Instruction::Scoped, vec![plan]),
+                            _ => {
+                                let thunk = h.callable(vec![plan], |_, c, _| Ok(c[0].clone()));
+                                h.instruction(Instruction::Defer, vec![thunk])
+                            }
+                        };
+                    }
+                    // Stress graph-sized GC separately. This test isolates stack
+                    // depth; its immutable original plan retains the whole chain.
+                    let mut ctx = Context {
+                        gc_every: usize::MAX,
+                        ..Context::default()
+                    };
+                    assert_eq!(
+                        ctx.root(&h, &plan)
+                            .unwrap_or_else(|e| panic!("{e:?}"))
+                            .integer(),
+                        42
+                    );
+                    assert!(ctx.frames.is_empty());
+                    drop(plan);
+                    drop(next);
+                    h.collect().unwrap();
+                    assert_eq!(h.live(), 0, "{kind}");
+                }
+            })
+            .unwrap()
+            .join()
+            .unwrap();
+    }
+
+    #[test]
+    fn continuation_roots_survive_gc_and_cancellation_skips_them() {
+        for candidates in [false, true] {
+            let h = Heap::default();
+            let tail = h.text("retained");
+            let next = h.callable(vec![tail.clone()], |h, c, _| {
+                operation(h, "std/effect::succeed", vec![c[0].clone()])
+            });
+            let source = operation(&h, "std/effect::succeed", vec![h.unit()])
+                .unwrap_or_else(|e| panic!("{e:?}"));
+            let plan = h.bind(source, next);
+            drop(tail);
+            let mut ctx = Context {
+                candidate_collection: candidates,
+                ..Context::default()
+            };
+            assert_eq!(
+                ctx.root(&h, &plan)
+                    .unwrap_or_else(|e| panic!("{e:?}"))
+                    .show(),
+                "retained"
+            );
+            ctx.cancelled = true;
+            assert!(matches!(ctx.root(&h, &plan), Err(Exit::Cancelled)));
+            drop(plan);
+            h.collect().unwrap();
+            assert_eq!(h.live(), 0);
+        }
     }
 }

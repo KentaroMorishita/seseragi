@@ -47,15 +47,21 @@ def main():
                                      ("nested-scope", "order: 3241\n"),
                                      ("escaped-callback", "escaped: 42\n"),
                                      ("failure-scope", "failure released: 42\n")]]
+    cases.append(("deep-effect", ROOT / "examples/spec/fixtures/rust-backend-research/deep-effect.ssrg", "deep: 42\n"))
     for name, source, expected in cases:
         rust = output / f"{name}.rs"
         binary = output / (name + (".exe" if os.name == "nt" else ""))
         core = output / f"{name}.core.json"
         command([emitter, "dump", source, core])
         command([emitter, "emit", source, rust])
+        if name == "deep-effect":
+            text = rust.read_text().replace("\nfn main() {", "\nfn checked_program() {", 1)
+            text += '\nfn main() { std::thread::Builder::new().stack_size(256 * 1024).spawn(checked_program).unwrap().join().unwrap(); }\n'
+            rust.write_text(text)
         command([args.rustc, "--edition=2021", "-O", rust, "-o", binary])
-        native = command([binary], env=dict(os.environ, PATH=""))
-        candidate = command([binary], env=dict(os.environ, PATH="", SESERAGI_RESEARCH_GC="candidates"))
+        interval = "128" if name == "deep-effect" else "1"
+        native = command([binary], env=dict(os.environ, PATH="", SESERAGI_RESEARCH_GC_EVERY=interval))
+        candidate = command([binary], env=dict(os.environ, PATH="", SESERAGI_RESEARCH_GC="candidates", SESERAGI_RESEARCH_GC_EVERY=interval))
         ts = command([cli, "run", source], env=env)
         assert native.stdout == candidate.stdout == ts.stdout == expected, name
         assert re.search(r'live=0 registry=0 checkpoints=\d+ reclaimed=\d+', native.stderr), native.stderr
@@ -66,6 +72,8 @@ def main():
                                       "coreHash": digest(core), "rustHash": digest(rust),
                                       "stdout": native.stdout, "lifetime": native.stderr.strip(),
                                       "candidateLifetime": candidate.stderr.strip()})
+        if name == "deep-effect":
+            report["sourceCases"][-1]["stackBytes"] = 256 * 1024
     source = ROOT / "examples/spec/fixtures/rust-backend-research/release-callback-timing.ssrg"
     rust = output / "release-callback-timing.rs"
     binary = output / ("release-callback-timing.exe" if os.name == "nt" else "release-callback-timing")

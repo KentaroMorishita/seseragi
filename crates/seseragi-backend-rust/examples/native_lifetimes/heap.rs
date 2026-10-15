@@ -66,20 +66,16 @@ impl Handle {
         };
         code(heap, &captures, input)
     }
-    pub fn execute(
-        &self,
-        heap: &Heap,
-        context: &mut super::effect::Context,
-    ) -> Result<Handle, super::scope::Exit> {
-        let (captures, code) = {
-            let value = self.node().value.borrow();
-            let Some(Value::Effect { captures, code }) = &*value else {
-                return Err(super::scope::Exit::Defect(vec!["expected Effect".into()]));
-            };
-            (captures.clone(), *code)
+    pub fn plan(&self) -> Result<(Vec<Handle>, super::effect::Instruction), super::scope::Exit> {
+        let value = self.node().value.borrow();
+        let Some(Value::Effect {
+            captures,
+            instruction,
+        }) = &*value
+        else {
+            return Err(super::scope::Exit::Defect(vec!["expected Effect".into()]));
         };
-        context.checkpoint(heap)?;
-        code(heap, &captures, context)
+        Ok((captures.clone(), *instruction))
     }
     pub fn boolean(&self) -> bool {
         let value = self.node().value.borrow();
@@ -160,11 +156,11 @@ enum Value {
     },
     Effect {
         captures: Vec<Handle>,
-        code: EffectCode,
+        instruction: super::effect::Instruction,
     },
 }
 type CallableCode = fn(&Heap, &[Handle], Handle) -> Result<Handle, super::scope::Exit>;
-type EffectCode =
+pub type EffectCode =
     fn(&Heap, &[Handle], &mut super::effect::Context) -> Result<Handle, super::scope::Exit>;
 impl Value {
     fn edges(&self) -> &[Handle] {
@@ -223,7 +219,20 @@ impl Heap {
         self.allocate(Value::Callable { captures, code })
     }
     pub fn effect(&self, captures: Vec<Handle>, code: EffectCode) -> Handle {
-        self.allocate(Value::Effect { captures, code })
+        self.instruction(super::effect::Instruction::Native(code), captures)
+    }
+    pub fn instruction(
+        &self,
+        instruction: super::effect::Instruction,
+        captures: Vec<Handle>,
+    ) -> Handle {
+        self.allocate(Value::Effect {
+            captures,
+            instruction,
+        })
+    }
+    pub fn bind(&self, source: Handle, next: Handle) -> Handle {
+        self.instruction(super::effect::Instruction::Bind, vec![source, next])
     }
     pub fn sequence(&self, children: Vec<Handle>) -> Handle {
         self.allocate(Value::Sequence(children))

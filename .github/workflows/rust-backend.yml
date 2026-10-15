@@ -52,11 +52,18 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.11
       - name: Install the comparison runtime
         run: bun install --frozen-lockfile
+      - name: Verify deferred Effect stack safety on Bun and Node
+        run: |
+          mkdir -p target
+          bun build runtime/ts/probes/effect-defer-stack.ts --target=node --outfile target/effect-defer-stack.mjs
+          node target/effect-defer-stack.mjs
+          bun target/effect-defer-stack.mjs
       - name: Check Rust formatting
         run: cargo fmt --all -- --check
       - name: Verify shared frontend boundary
@@ -73,3 +80,15 @@ jobs:
           python3 crates/seseragi-backend-rust/examples/native_lifetimes/verify.py \
             --emitter target/debug/examples/native_lifetimes \
             --cli target/debug/seseragi --bun bun
+      - name: Verify program WASM and the mixed Seseragi UI build
+        run: |
+          python3 crates/seseragi-backend-rust/examples/native_lifetimes/verify_wasm.py \
+            --emitter target/debug/examples/native_lifetimes \
+            --cli target/debug/seseragi --bun bun
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-backend-research
+          path: |
+            target/native-lifetimes/report.json
+            target/native-wasm/report.json
+            target/native-wasm/compute.wasm

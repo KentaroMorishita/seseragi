@@ -84,6 +84,7 @@ fn main() {{
     let plan = {}(&h).and_then(|f| f.call(&h, h.unit())).expect("checked entry");
     let mut context = effect::Context::default();
     context.candidate_collection = std::env::var("SESERAGI_RESEARCH_GC").as_deref() == Ok("candidates");
+    context.gc_every = std::env::var("SESERAGI_RESEARCH_GC_EVERY").ok().map(|n| n.parse::<usize>().expect("GC interval")).unwrap_or(1);
     let result = context.root(&h, &plan);
     for line in &context.output {{ println!("{{line}}"); }}
     let exit = match result {{ Ok(value) => scope::Exit::Success(value.show()), Err(exit) => exit }};
@@ -120,6 +121,7 @@ fn operation(name: &str, args: &[CoreExpr], scope: &Scope) -> Result<String> {
         | "std/ref::make"
         | "std/ref::get"
         | "std/effect::scoped"
+        | "std/effect::defer"
         | "std/prelude::println"
         | "console.println" => 1,
         "std/ref::set" | "std/effect::acquireRelease" | "std/effect::recover" => 2,
@@ -228,15 +230,13 @@ fn effect_step(
 ) -> Result<String> {
     let value = expr(value, scope)?;
     let (captures, setup) = capture(scope);
-    let separator = if captures.is_empty() { "" } else { "," };
-    let index = scope.len();
     let mut nested = scope.clone();
     let run = if let Some(name) = name {
         nested.insert(name.into());
-        format!("let {} = c[{index}].execute(h,ctx)?;", id(name))
+        format!("let {} = input;", id(name))
     } else {
-        format!("drop(c[{index}].execute(h,ctx)?);")
+        "drop(input);".into()
     };
     let continuation = sequence(rest, result, &nested)?;
-    Ok(format!("{{ let input_effect = {value}; h.effect(vec![{captures}{separator}input_effect], |h,c,ctx| {{ {setup} {run} {continuation}.execute(h,ctx) }}) }}"))
+    Ok(format!("{{ let input_effect = {value}; let next = h.callable(vec![{captures}], |h,c,input| {{ {setup} {run} Ok({continuation}) }}); h.bind(input_effect, next) }}"))
 }
