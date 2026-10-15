@@ -64,3 +64,37 @@ sampled binary64 coverage, not an exhaustive enumeration of all bit patterns.
 
 Canonical source CI, Release, dogfood and distributed-program acceptance are
 recorded in #832; local scoped checks alone do not complete that handoff.
+
+## Ordinary program measurements
+
+The half-step sum kernel below uses an Int loop counter and a Float accumulator.
+The current shared scalar-loop analysis does not recognize Float slots. This
+measurement invokes normal generated bodies, without a counterfactual rewrite.
+
+```seseragi
+fn sum remaining: Int -> total: Float -> Float =
+  if remaining <= 0 then total else sum (remaining - 1) (total + 0.5)
+pub fn kernel remaining: Int -> Float = sum remaining 0.0
+pub fn probe -> Float = kernel 20000
+```
+
+| Runtime | Median ms/call |
+| --- | ---: |
+| Native Rust | 0.687609 |
+| Bun | 2.399197 |
+| Node | 4.403361 |
+
+Inputs are 20000 through 20019: 20 calls/sample, 6 fresh processes per variant,
+5 samples/process, at least 3 warmups and 1 second/process before recording,
+with balanced rotating order. Checksum is 200095 and final native managed-live
+is zero. Compilation, bundling, loading, startup and checksum validation are
+excluded. Host: macOS arm64, Rust1.97.1, Bun1.3.11 and Node24.14.0.
+
+TS uses the development compiler-WASM output. It was measured with the official
+v0.61.33 compiler, then verified byte-identical to canonical v0.61.34 output.
+Previous native v0.61.33 rejects Float, so there is no old-native timing.
+[Full source, raw samples and reproduction harness](https://github.com/KentaroMorishita/seseragi/issues/816#issuecomment-6202268865)
+are retained. This is one kernel, not an application-wide or TS release-profile
+speed claim. Extending the shared scalar proof to Float slots is a subsequent
+candidate; this slice neither implements that optimization nor changes Float
+operation order.

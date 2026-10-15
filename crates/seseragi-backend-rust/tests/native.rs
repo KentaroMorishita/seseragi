@@ -137,6 +137,60 @@ pub fn probe -> Float = match plus (Mark 1.0) (Mark 2.0) { Mark value -> value }
 }
 
 #[test]
+fn float_canonical_dispatch_rejects_another_trait_or_method() {
+    let core = compile_core_module(CompileInput::new(
+        "float.ssrg",
+        "native/main",
+        "pub fn probe -> String = show 1.0\n",
+    ))
+    .unwrap()
+    .core_ir;
+    for method in [false, true] {
+        let mut changed = core.clone();
+        let CoreExpr::Call {
+            trait_dispatch: Some(dispatch),
+            ..
+        } = &mut changed.functions[0].body
+        else {
+            panic!("dispatch")
+        };
+        if method {
+            dispatch.method = "debug".into()
+        } else {
+            dispatch.trait_identity = "user::Show".into()
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(error.origin.is_some());
+    }
+}
+
+#[test]
+fn float_dictionary_arithmetic_preserves_a_user_methods_first_source_stage() {
+    let artifact = emit(
+        r#"
+type Mark = | Mark Int
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = {
+    let bad = 9007199254740991 + 1
+    \right -> Mark 0
+  }
+}
+pub fn probe -> Mark = (Mark 0) + (Mark (9007199254740991 * 9007199254740991))
+"#,
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(!output.status.success());
+    // The method's first stage raises the safe-range defect, before the
+    // second source argument can raise its different i64 multiplication defect.
+    assert!(String::from_utf8_lossy(&output.stderr).contains("Seseragi Int overflow"));
+}
+
+#[test]
 fn integer_bases_patterns_and_safe_boundaries_use_shared_canonical_values() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/integer-literals.ssrg"),
