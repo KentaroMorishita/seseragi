@@ -689,6 +689,7 @@ pub(super) fn lower_core_expr_to_typescript(
                                 name: name.clone(),
                                 type_ref: callable_type,
                                 initializer: call,
+                                initializer_in_outer_scope: false,
                                 origin,
                             }],
                             result: Box::new(TypeScriptExpr::Call {
@@ -1821,6 +1822,18 @@ fn lower_core_statement_to_typescript(
             value,
             origin,
         } => TypeScriptStatement::PureLet {
+            // Non-recursive let initializers resolve before introducing the
+            // new binding. A JS const would otherwise capture outer references
+            // with the same name in its temporal dead zone, including lambdas.
+            initializer_in_outer_scope: crate::core_free_variables(&value).map_or(true, |free| {
+                free.names.iter().any(|reference| {
+                    imported_values
+                        .get(reference)
+                        .cloned()
+                        .unwrap_or_else(|| local_name(reference))
+                        == safe_identifier(&name)
+                })
+            }),
             type_ref: type_ref_from_core_type(
                 &type_ref,
                 &imported_types.with_parameters(&type_parameters),

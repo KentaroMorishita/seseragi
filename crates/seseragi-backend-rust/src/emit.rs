@@ -10,6 +10,8 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod tail;
+
 type Scope = BTreeSet<String>;
 type Result<T> = std::result::Result<T, RustBackendError>;
 
@@ -41,6 +43,7 @@ pub fn emit(module: &CoreModule, entry: &str) -> Result<RustArtifact> {
             .collect(),
         serial: 0,
         direct_calls: 0,
+        self_tail_calls: 0,
         closed_dictionary_sites: 0,
         capabilities: BTreeSet::new(),
     };
@@ -107,16 +110,7 @@ pub fn emit(module: &CoreModule, entry: &str) -> Result<RustArtifact> {
         for parameter in &function.parameters {
             scope.insert(parameter.id.clone());
         }
-        let direct_body = backend.expr(&function.body, &scope)?;
-        let parameters = function
-            .parameters
-            .iter()
-            .map(|p| format!(", {}: V", id(&p.id)))
-            .collect::<String>();
-        output.push_str(&format!(
-            "\nfn {}_direct(dicts: Vec<V>{parameters}) -> V {{ {setup} {direct_body} }}\n",
-            id(&function.symbol)
-        ));
+        output.push_str(&backend.direct_function(function, &setup, &scope)?);
     }
     if entry.is_effect {
         output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {}(vec![]).apply(V::Unit), {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
@@ -139,6 +133,7 @@ pub fn emit(module: &CoreModule, entry: &str) -> Result<RustArtifact> {
             entry: entry.symbol.clone(),
             edition: "2021".into(),
             direct_calls: backend.direct_calls,
+            self_tail_calls: backend.self_tail_calls,
             closed_dictionary_sites: backend.closed_dictionary_sites,
             entry_kind: if entry.is_effect { "effect" } else { "pure" }.into(),
             capabilities: backend.capabilities.into_iter().collect(),
@@ -162,6 +157,7 @@ struct Backend<'a> {
     constructors: BTreeMap<String, bool>,
     serial: usize,
     direct_calls: usize,
+    self_tail_calls: usize,
     closed_dictionary_sites: usize,
     capabilities: BTreeSet<String>,
 }

@@ -1,0 +1,4 @@
+fn sum remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else sum (remaining - 1) (total + remaining)
+
+pub fn probe -> Int = sum 1000000 0

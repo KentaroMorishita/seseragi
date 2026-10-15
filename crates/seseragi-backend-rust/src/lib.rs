@@ -43,6 +43,7 @@ pub struct RustMetadata {
     pub entry: String,
     pub edition: String,
     pub direct_calls: usize,
+    pub self_tail_calls: usize,
     pub closed_dictionary_sites: usize,
     pub entry_kind: String,
     pub capabilities: Vec<String>,

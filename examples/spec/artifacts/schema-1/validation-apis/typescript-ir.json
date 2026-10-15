@@ -2125,6 +2125,7 @@
                 }
               ]
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 2437,
@@ -2180,6 +2181,7 @@
                 }
               ]
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 2518,

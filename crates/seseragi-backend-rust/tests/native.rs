@@ -105,6 +105,10 @@ fn checked_fixtures_execute_without_bun_or_ts() {
             include_str!("../../../examples/spec/fixtures/rust-backend/nested-dictionary.ssrg"),
             "(42, 42)",
         ),
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/let-shadowing.ssrg"),
+            "(42, 42, 42, 42)",
+        ),
     ];
     for (source, expected) in cases {
         run(source, expected);
@@ -286,4 +290,44 @@ fn checked_effect_programs_run_on_a_small_stack_and_release_the_native_heap() {
         );
         assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
     }
+}
+
+#[test]
+fn pure_tail_recursion_preserves_snapshots_partial_calls_and_changing_evidence() {
+    for (source, expected) in [
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/tail-recursion.ssrg"),
+            "500000500000",
+        ),
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/tail-capture.ssrg"),
+            "(100009, 100019)",
+        ),
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/tail-evidence.ssrg"),
+            "(35, 42)",
+        ),
+    ] {
+        let artifact = emit(source);
+        assert_eq!(artifact.metadata.self_tail_calls, 1);
+        let main = artifact.source.rfind("fn main()").unwrap();
+        let generated = format!(
+            "{}\nfn main() {{ std::thread::Builder::new().stack_size(256 * 1024).spawn(|| {{ let result = {}(vec![]).apply(V::Unit); assert_eq!(result.render(), {expected:?}); drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0); }}).unwrap().join().unwrap(); }}",
+            &artifact.source[..main], rust_id(&artifact.metadata.entry),
+        );
+        let scratch = Scratch::new();
+        let output = Command::new(scratch.compile(&generated))
+            .env("PATH", "")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+    // Returning a lambda is not a tail call at the point of constructing it.
+    let artifact = emit("fn later n: Int -> (Unit -> Int) = \\_ -> if n == 0 then 42 else later (n - 1) ()\npub fn probe -> Int = later 5 ()\n");
+    assert_eq!(artifact.metadata.self_tail_calls, 0);
+    run("fn later n: Int -> (Unit -> Int) = \\_ -> if n == 0 then 42 else later (n - 1) ()\npub fn probe -> Int = later 5 ()\n", "42");
 }

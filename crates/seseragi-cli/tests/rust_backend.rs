@@ -39,6 +39,10 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "structural-record",
         "higher-kinded",
         "nested-dictionary",
+        "tail-recursion",
+        "tail-capture",
+        "tail-evidence",
+        "let-shadowing",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -83,13 +87,20 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         );
         let oracle_path = scratch.0.join(format!("{name}-oracle.ssrg"));
         fs::write(&oracle_path, source).unwrap();
-        let ts = cli().arg("run").arg(&oracle_path).output().unwrap();
-        assert!(
-            ts.status.success(),
-            "{}",
-            String::from_utf8_lossy(&ts.stderr)
-        );
-        assert_eq!(native.stdout, ts.stdout, "{name}");
+        for profile in ["development", "release"] {
+            let ts = cli()
+                .arg("run")
+                .arg(&oracle_path)
+                .args(["--profile", profile])
+                .output()
+                .unwrap();
+            assert!(
+                ts.status.success(),
+                "{name}/{profile}: {}",
+                String::from_utf8_lossy(&ts.stderr)
+            );
+            assert_eq!(native.stdout, ts.stdout, "{name}/{profile}");
+        }
     }
 }
 

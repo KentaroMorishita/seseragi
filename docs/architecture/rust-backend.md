@@ -67,13 +67,21 @@ Rustの既知関数の完全適用はdirect helperへ落とす。部分適用・
 通常のcallは各stageを適用してから次の引数を評価する。たとえば`returned a b`では、`returned a`の
 bodyが実行されてから`b`を評価する。隠れたevidenceの挿入が必要なstagingは未対応として診断する。
 
+純粋関数の直接の自己末尾callは、if / decision / pure sequenceの末尾を辿ってloopへ落とす。
+次のdictionaryと全引数を左から右へ評価した後、freshなloop storageへ代入する。各周回のsource
+parameterはimmutable snapshotなので、closureが前の値を保持でき、letによるshadowingもstorageへ
+干渉しない。部分適用と返却関数のABIは維持する。返却lambda内のcall、alias経由、相互再帰、
+非末尾callをこの変換の対象にしない。Effectは別の明示的frameでstackを管理する。
+
 dictionaryはthread内cacheで遅延共有する。static local factoryも入れ子のclosed factoryも共有し、
 parameter-dependent factoryは共有しない。cache keyはinstance identity、type arguments、依存evidenceを
 含めた選択済みCore evidenceに基づく。factory evaluation中はcacheをborrowしない。harness終了時に
 明示的にcacheを空にする。TLS破棄時のcache teardownも検証する。
 
 [TS実測](../experiments/core-ir-performance.md)で改善が見えた二つの処理をこの分析へ戻した。
-TS backendはまだ新しい分析による最適化を使用していない。測定用TSコピーの改善率を、この実装の
+TS backendはfree-variable分析を非再帰letのinitializer scope判定へ使う。同名の外側の値を
+参照するinitializerは新しいbindingのscope外で評価し、JSのTDZに捕捉される不具合を防ぐ（#820）。
+direct call / dictionary最適化はまだTSへ適用していない。測定用TSコピーの改善率を、この実装の
 RustやTSの製品性能として扱わない。TSへの適用はhidden evidence / import ABI / defect timingを
 同じfixtureで検証する次の独立sliceとする。
 
@@ -91,7 +99,8 @@ resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/c
 record spread、複雑なpattern、standard dictionaryの値としてのmaterialization、derived instance、
 supertrait / method constraints、deferred callable evidence、package / source module linking、
 foreign / provider ABI、並列runtime、標準のprogram WASM target、source map、一般のDefect provenance。
-純粋再帰callはRust stackを使い、TCOの保証はない。深い値の破棄と深い関数callは別の境界である。
+直接の純粋自己末尾call以外はRust stackを使う。一般の再帰・相互再帰のconstant-stack保証はない。
+深い値の破棄と深い関数callは別の境界である。
 
 未対応CoreIrは`SES-RUST-0001`とsource byte rangeを持つtarget errorへする。frontendの型エラーは
 既存診断を維持する。target検査に失敗した場合はRust sourceやnative outputを作らない。
@@ -119,15 +128,18 @@ env PATH="" target/rust-native-ownership/program
 
 `build-native`は`program.rs`、`rust-backend.json`、`program`（Windowsは`.exe`）を保存する。
 metadataは生成sourceのbackend、experimental status、ABI、logical module、entry、edition、
-生成code内のdirect call / closed dictionary site数を記録する。速度やallocation削減の証明ではない。
+生成code内のdirect call / self tail call / closed dictionary site数を記録する。
+速度やallocation削減の証明ではない。
 このmetadataは既存production artifact-manifest契約へまだ統合しない。
 
 ## 検証と次のslice
 
 新backendのunit/runtime testsとnative execution fixturesをRust workspace gateへ組み込んだ。
-CLI testは6 fixtureをTSとnativeで実行してstdout一致を確認する。native実行のPATHは空にする。
-backend testは各fixtureを1万回反復し、cacheがwarmした後のlive node数が一定で、明示的な
-cache teardown後に0となることを確認する。counterは管理ノードのみを数え、RSSではない。
+CLI testはpure 10 fixtureとEffect 14 fixtureをTSとnativeで実行し、stdout / exitとDefect以外の
+stderrを比較する。native実行のPATHは空にする。所有権 / dictionary fixtureは1万回反復し、
+cacheがwarmした後のlive node数が一定で、明示的なcache teardown後に0となることを確認する。
+自己末尾再帰は100万段のsum、再利用した部分適用と各周回のclosure snapshot、generic辞書を
+入れ替える再帰を256 KiB stackで検証する。counterは管理ノードのみを数え、RSSではない。
 
 ```sh
 cargo test --locked -p seseragi-backend-rust
@@ -140,7 +152,6 @@ shared driver / compiler基盤とCLIを変更するため、scoped testsの後�
 WASMの正式生成物はLinux x64で再生成して確認する。macOS生成物をcanonicalとして上書きしない。
 実際のgate結果と未検証境界は作業の検証記録に残す。
 
-次の順序は、(1)このpure targetのconformanceとartifact契約を広げる、(2)共通分析をTSへ適用して
-再測定、(3)再帰call / closure / collectionのnative性能を計測、(4)trace可能なメモリ管理契約と
-cold Effect runtimeを実装する、(5)provider / foreign ABI、package linking、WASMを追加する。
-全言語対応やstable化はこの最初のsliceの完了条件ではない。
+次の範囲と受入条件は[#809](https://github.com/KentaroMorishita/seseragi/issues/809)に集約する。
+基本言語機能、stdlib / package、async provider、foreign ABI、program WASM、実測とCoreIr改善、
+標準の開発経路と配布を別Issueで追跡する。全言語対応やstable化を現在のsliceの完了と混同しない。

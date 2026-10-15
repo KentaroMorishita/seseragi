@@ -1,0 +1,14 @@
+fn walk remaining: Int -> seed: Int -> callback: (Unit -> Int) -> Int =
+  match remaining {
+    0 -> callback ()
+    n -> {
+      let snapshot = \_ -> seed
+      let seed = seed + 1
+      walk (n - 1) seed snapshot
+    }
+  }
+
+pub fn probe -> (Int, Int) = {
+  let shared = walk 100000
+  (shared 10 (\_ -> -1), shared 20 (\_ -> -1))
+}

@@ -245,6 +245,53 @@ pub effect fn main = do {
 }
 
 #[test]
+fn non_recursive_let_initializers_keep_outer_scope_in_every_sequence() {
+    let temporary = Temporary::new();
+    let source = format!(
+        "{}\n{}",
+        include_str!("../../../examples/spec/fixtures/rust-backend/let-shadowing.ssrg"),
+        r#"
+fn monadic seed: Int -> Maybe<Int> = do {
+  let seed = seed + 1
+  Just seed
+}
+effect fn shadowed seed: Int -> Int = do {
+  value <- succeed seed
+  do {
+    let value = value + 1
+    succeed value
+  }
+}
+pub effect fn main = do {
+  println (show (probe ()))
+  println (show (monadic 41))
+  value <- shadowed 41
+  println (show value)
+  let identity = \item -> item
+  do {
+    let identity = \item -> identity item
+    println (identity "polymorphic")
+    println (show (identity 42))
+  }
+}
+"#
+    );
+    fs::write(temporary.0.join("main.ssrg"), source).unwrap();
+    for profile in ["development", "release"] {
+        assert_eq!(
+            success(cli(
+                &["run", "main.ssrg", "--profile", profile],
+                &temporary.0
+            )),
+            "(42, 42, 42, 42)\nJust 42\n42\npolymorphic\n42\n"
+        );
+        let inspection = temporary.0.join(format!("inspection-{profile}"));
+        inspect_compiler_outputs(&temporary.0, &inspection, profile);
+        check_types(&inspection);
+    }
+}
+
+#[test]
 fn nested_newtypes_and_effect_pattern_binds_preserve_payloads() {
     let temporary = Temporary::new();
     fs::write(

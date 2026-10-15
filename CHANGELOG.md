@@ -1,15 +1,18 @@
 # Change Log
 
-## [0.61.30] - 2026-10-14
+## [0.61.30] - 2026-10-15
 
 ### Added
 
 - Add an experimental Rust backend from checked CoreIr, with `experimental emit-rust` and `experimental build-native` commands for standalone source generation and Bun-free native execution (#808). The synchronous slice supports cold Effects, typed failure/recovery, Ref, Console and resource scopes with cycle collection; async providers, package linking, foreign ABI and standard Wasm program output remain outside this slice (#810).
 - Share source-arity, closed local evidence and free-variable analysis between backend implementations; use direct saturated calls, lazy dictionary sharing, explicit closure environments and iterative value destruction in the Rust target (#808). TypeScript performance probes and native ownership fixtures record the implementation boundaries without claiming full-language or cross-backend speed guarantees.
+- Compile direct pure self tail calls to loops while preserving per-iteration closure snapshots, reusable partial applications, lexical shadowing and changing generic dictionaries (#811).
 
 ### Fixed
 
 - Execute deeply deferred Effects through the TypeScript runtime's instruction loop, preserving coldness, replay and failure identity without relying on JavaScript engine tail-call support. Verify 100,000 deferred steps on Bun and Node (#808).
+- Select the standard Show dictionary for canonical external ConsoleError and StdinError main contracts without accepting unrelated same-name user types (#819).
+- Evaluate shadowed non-recursive let initializers in their outer scope in generated TypeScript, including closure captures and polymorphic bindings in pure, Effect and monad sequences (#820).
 
 ## [0.61.29] - 2026-10-13
 

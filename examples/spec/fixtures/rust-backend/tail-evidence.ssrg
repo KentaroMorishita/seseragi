@@ -1,0 +1,19 @@
+type Box = | Box Int
+
+trait Read<A> {
+  fn read value: A -> Int
+}
+
+instance Read<Int> {
+  fn read value: Int -> Int = value
+}
+
+instance Read<Box> {
+  fn read value: Box -> Int = match value { Box n -> n + 7 }
+}
+
+fn alternate<A, B> remaining: Int -> left: A -> right: B -> Int where Read<A>, Read<B> =
+  if remaining == 0 then read left else alternate (remaining - 1) right left
+
+pub fn probe -> (Int, Int) =
+  (alternate 200000 35 (Box 35), alternate 199999 35 (Box 35))

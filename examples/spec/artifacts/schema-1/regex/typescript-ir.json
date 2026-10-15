@@ -1143,6 +1143,7 @@
                 }
               ]
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 1535,
@@ -1425,6 +1426,7 @@
                 }
               ]
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 2075,

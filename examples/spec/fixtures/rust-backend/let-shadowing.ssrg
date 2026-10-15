@@ -1,0 +1,30 @@
+fn grow seed: Int -> Int = {
+  let seed = seed + 1
+  seed
+}
+
+fn captured seed: Int -> Int = {
+  let seed = \_ -> seed + 1
+  seed ()
+}
+
+fn globalSeed -> Int = 40
+
+fn globalShadow -> Int = {
+  let globalSeed = globalSeed ()
+  globalSeed + 1
+}
+
+pub fn probe -> (Int, Int, Int, Int) = {
+  let value = 40
+  let result = {
+    let value = value + 1
+    value + 1
+  }
+  let identity = \item -> item
+  let echoed = {
+    let identity = \item -> identity item
+    identity 42
+  }
+  (grow (globalShadow ()), captured 41, result, echoed)
+}

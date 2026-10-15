@@ -67,6 +67,11 @@ pending I/O、fairness、parallel cleanupとはまだ接続していない。
   compound値の直接出力は診断する。通常はshow / std/console.printValueで文字列化する。
 - qualified Console APIのfailureがcanonicalな外部ConsoleErrorになると、TSのmain contractが
   標準Showを選べなかった。exact canonical identityの選択を追加し、同名の外部型を拒否する。
+- [#820](https://github.com/KentaroMorishita/seseragi/issues/820)：末尾再帰fixtureの
+  `let seed = seed + 1`がTSだけDefectになった。新しいconstのTDZがinitializerのouter参照を
+  捕捉していた。共有CoreIr free-variable分析を使い、同名参照がある場合と解析できない場合は
+  initializerをbindingの外で評価する。closure / polymorphic letを含め、pure / Effect / monad
+  sequenceと両profileで比較し、生成TSのstrict typecheckも行う。
 
 ## 検証
 
@@ -87,3 +92,23 @@ cargo test --locked -p seseragi-runtime --lib contract::tests
 full gateの実行理由はnative runtime / compiler backend基盤と共通main contractの変更である。
 実行結果、CI SHA、未検証境界はIssue / PRへ記録する。正式WASM freshnessはLinux生成で確認し、
 macOS生成物でcommitted版を置き換えない。
+
+## 自己末尾再帰の追加
+
+[#811](https://github.com/KentaroMorishita/seseragi/issues/811)の最初の範囲として、純粋関数の
+直接の自己末尾callをloopへ生成する。if / decision / pure sequenceの末尾だけを辿り、
+lambda内、alias、返却関数への追加適用、非末尾callは通常のclosure / callを維持する。
+
+hidden dictionaryと全引数を一旦temporaryへ評価し、次のloop storageへまとめて代入する。
+周回中のsource parameterはimmutable snapshotで、let shadowingとclosureの捕捉が次の周回の
+storageと混ざらない。generic再帰で型引数の順序が変わればdictionaryの順序も更新する。
+
+100万段のsum、部分適用を異なるseedで再利用する10万段のclosure捕捉、二つの異なるRead
+instanceを入れ替える20万段の再帰を、checked sourceから生成して256 KiB stackで実行する。
+終了後はdictionaryを含めたmanaged liveが0であることを確認する。これは自己末尾callの検証であり、
+相互再帰やaliasを経由した再帰までconstant-stackと主張しない。
+
+初回のcanonical Linux gateはa5524be44でcommitted WASMの更新を検出した。成功扱いせず、同じ
+run 38722519017のLinux生成artifactからWASMを更新した。glueと宣言はbyte一致、WASMは
+12,962,232 bytes / SHA-256 `45454a0459182bc59a8cf09e0529ef0bc8fcdf721dc7e2b82eeafa35d0e5f3ce`。
+この更新を含む次のSHAで厳密なfreshnessとsource gateを再実行する。
