@@ -1,9 +1,9 @@
-// Experimental single-thread runtime. Only the documented pure slice is supported.
+// Single-thread native values. Captures and mutable edges are always explicit.
 use std::{
     any::Any,
     cell::{Cell, RefCell},
     collections::BTreeMap,
-    rc::Rc,
+    rc::{Rc, Weak},
 };
 
 thread_local! {
@@ -16,29 +16,48 @@ thread_local! {
     static SHARES: Cell<usize> = const { Cell::new(0) };
 }
 
-struct Node<T> {
+struct Node<T: TraceValue> {
     value: T,
 }
-impl<T> Drop for Node<T> {
+impl<T: TraceValue> Drop for Node<T> {
     fn drop(&mut self) {
         let _ = LIVE.try_with(|n| n.set(n.get() - 1));
+        if CYCLE_TRACKING.try_with(Cell::get).unwrap_or(false) {
+            let id = self as *const Self as usize;
+            let _ = NODES.try_with(|nodes| nodes.borrow_mut().remove(&id));
+        }
     }
 }
-struct Shared<T: 'static>(Option<Rc<Node<T>>>);
-impl<T: 'static> Shared<T> {
+struct Shared<T: TraceValue + 'static>(Option<Rc<Node<T>>>);
+impl<T: TraceValue + 'static> Shared<T> {
     fn new(value: T) -> Self {
+        // Initialize teardown dependencies before dictionaries can own nodes.
+        DROP_QUEUE.with(|_| {});
+        DRAINING.with(|_| {});
         LIVE.with(|n| {
             n.set(n.get() + 1);
             PEAK.with(|p| p.set(p.get().max(n.get())));
         });
         ALLOCATIONS.with(|n| n.set(n.get() + 1));
-        Self(Some(Rc::new(Node { value })))
+        let node = Rc::new(Node { value });
+        if CYCLE_TRACKING.with(Cell::get) {
+            let erased: Rc<dyn TraceNode> = node.clone();
+            NODES.with(|nodes| {
+                nodes
+                    .borrow_mut()
+                    .insert(Rc::as_ptr(&node) as usize, Rc::downgrade(&erased));
+            });
+        }
+        Self(Some(node))
     }
     fn get(&self) -> &T {
         &self.0.as_ref().expect("live shared handle").value
     }
+    fn id(&self) -> usize {
+        Rc::as_ptr(self.0.as_ref().expect("live shared handle")) as usize
+    }
 }
-impl<T: 'static> Clone for Shared<T> {
+impl<T: TraceValue + 'static> Clone for Shared<T> {
     fn clone(&self) -> Self {
         SHARES.with(|n| n.set(n.get() + 1));
         Self(Some(Rc::clone(
@@ -49,7 +68,7 @@ impl<T: 'static> Clone for Shared<T> {
 
 // Destroy last owners through a work queue. Dropping a parent can enqueue
 // children, but cannot recurse through a long immutable value graph.
-impl<T: 'static> Drop for Shared<T> {
+impl<T: TraceValue + 'static> Drop for Shared<T> {
     fn drop(&mut self) {
         let node = self.0.take().expect("live shared handle");
         if Rc::strong_count(&node) != 1 {
@@ -106,6 +125,8 @@ enum V {
     Adt(Shared<(String, V)>),
     Fun(Shared<Function>),
     Dict(Shared<BTreeMap<String, V>>),
+    Reference(Shared<RefCell<V>>),
+    Effect(Shared<EffectPlan>),
 }
 
 struct Function {
@@ -214,6 +235,8 @@ impl V {
                 }
                 V::Fun(_) => output.push_str("<function>"),
                 V::Dict(_) => output.push_str("<dictionary>"),
+                V::Reference(_) => output.push_str("<ref>"),
+                V::Effect(_) => output.push_str("<effect>"),
             }
         }
         output

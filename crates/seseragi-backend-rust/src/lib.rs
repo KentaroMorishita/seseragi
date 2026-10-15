@@ -1,4 +1,4 @@
-//! Experimental pure Rust target. Checked CoreIr is the semantic authority;
+//! Experimental Rust target. Checked CoreIr is the semantic authority;
 //! rustc validates generated implementation code, not Seseragi source types.
 mod emit;
 use serde::{Deserialize, Serialize};
@@ -44,6 +44,8 @@ pub struct RustMetadata {
     pub edition: String,
     pub direct_calls: usize,
     pub closed_dictionary_sites: usize,
+    pub entry_kind: String,
+    pub capabilities: Vec<String>,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RustArtifact {
@@ -52,8 +54,8 @@ pub struct RustArtifact {
 }
 
 /// Emits a self-contained executable source file. The explicit entry must be
-/// an unconstrained pure Unit function. This inspection harness prints its
-/// result; it does not synthesize a Console Effect or claim Effect support.
+/// an unconstrained Unit function. Pure entries print an inspection result;
+/// Effect entries execute the cold synchronous plan with native resource scopes.
 pub fn emit_rust_module(
     module: &CoreModule,
     entry: &str,
@@ -63,4 +65,8 @@ pub fn emit_rust_module(
 
 #[cfg(test)]
 #[allow(dead_code)]
-mod runtime;
+mod runtime {
+    include!("runtime.rs");
+    include!("runtime_trace.rs");
+    include!("runtime_effect.rs");
+}

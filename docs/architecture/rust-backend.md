@@ -1,7 +1,9 @@
 # Rustバックエンドの設計と最初の実装
 
-後続の[寿命管理とEffectの研究](../experiments/native-lifetimes.md)では、循環回収と同期Effect / Refの
-opt-in生成経路を、同じSeseragiソースのTS実行と照合した。製品ABIへの統合はまだ行っていない。
+[寿命管理とEffectの研究](../experiments/native-lifetimes.md)から、同期Effect / Ref / scopeと
+循環回収をexperimental CLIへ統合する実装を進めている。現在の範囲と検証は
+[native runtime統合](../experiments/native-runtime-integration.md)、全体の進捗は
+[実用化Issue](https://github.com/KentaroMorishita/seseragi/issues/809)で追跡する。
 
 ## 判断と実装境界
 
@@ -9,9 +11,9 @@ Rustソース生成を第二のbackendとして段階的に実装する。Sesera
 評価順序の authority は既存frontendとCoreIrに置く。ユーザーにRustの所有権注釈を要求しない。
 生成されたプログラムはRust標準ライブラリのみを使い、実行時にBun、Node、TS runtimeを必要としない。
 
-最初のsliceはexperimentalな単一moduleの純粋計算である。既存`process` / `web` targetの意味は
-変えず、CLIでは`experimental`配下から明示的に選ぶ。純粋entryの結果を表示するinspection
-harnessを付ける。これはConsole / Show / Effectのnative実装を代替する契約ではない。
+experimentalな単一moduleのpure / 同期Effectを扱う。既存`process` / `web` targetの意味は
+変えず、CLIでは`experimental`配下から明示的に選ぶ。純粋entryは結果をinspection表示し、
+Effect entryはnativeの実行loopとresource scopeで実行する。
 
 ```text
 Source → shared frontend → TypedHir → CoreCompilation / CoreIr
@@ -27,7 +29,7 @@ Rust側は`RustArtifact`、`RustMetadata`、`RustBackendError`を返す。
 
 ## 値、closure、メモリ
 
-ABI名は`rust-erased-pure-v1`。まず型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
+pure ABI名は`rust-erased-pure-v1`、同期Effectは`rust-erased-sync-v2`。型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
 再現する必要をなくす。Unit / Int / Boolは即値、文字列・collection・ADT・関数・dictionaryは
 immutableな共有ノードを使う。Intは既存言語のsafe integer範囲を維持し、算術で検査する。
 
@@ -39,15 +41,14 @@ hidden dictionaryだけを捕捉し、不明な式はscope全体へ保守的に�
 親の破棄で発生する子の破棄もキューへ積む。これにより深いADT・collection・captureの破棄が
 Rustのcall stackを再帰的に消費しない。inspection表示も明示的なstackで走査する。
 
-このsliceにRef、Signal、callback登録、local recursive closure、foreign objectはない。
-構築済みimmutable値の捕捉とglobal関数へのcallだけでは、ユーザー値の強参照循環を構築できない。
-参照カウント単独で全言語を実装できる、という判断ではない。
+pure programは通常のRCを使う。Refを使うmoduleでは実行前にweak registryを有効にし、
+全container、closure、dictionary、Effect captureのedgeをtraceする。外部rootは強参照数から
+内部edgeとcollectorのsnapshotを差し引いて求める。到達不能なRefのedgeを切り、反復Dropで回収する。
 
-次のmutable / Effect sliceに入る前に、実際のowner→callback→owner graphをtraceするruntimeへ
-進める。候補は明示的edgeを利用した循環検出付きRCとtracing GCである。一般の捕捉をWeakへ変えて
-寿命を変える案は採らない。collection、closure captures、dictionaryの全edgeを走査できること、
-外部rootの扱い、finalizer / cancellationとの順序を先に契約化する。性能だけでcollectorを選ばず、
-強参照循環、深いgraph、返却closure、異常終了、長時間反復で回収を検証する。
+この回収方法は「現在作れる循環はRefを経由する」ことを前提とする。local recursive closureや
+opaque foreign capture、Signalはまだ未対応。callback captureをWeakへ変えない。
+collectorはlanguage finalizerを実行せず、finalizerはscopeの所有物として実行loopが管理する。
+full scanを512 checkpointごととroot終了時に行う。停止時間の上限やasync schedulerは未実装。
 
 ## CoreIrで共有する分析
 
@@ -78,21 +79,25 @@ RustやTSの製品性能として扱わない。TSへの適用はhidden evidence
 
 ## 対応範囲と診断
 
-対応するのは、pure function、返却closure、部分適用、generic / HKTの型消去、local user instance
+対応するのは、pure / 同期Effect function、返却closure、部分適用、generic / HKTの型消去、local user instance
 とnested dictionary、Int / Bool / String、Tuple / Array / field-only Record、local ADT、
-if、constructor / Int / Bool decision、pure let sequence、限定したchecked Int演算と文字列加算。
+if、constructor / Int / Bool decision、let / effect sequence、非再帰・制約なしlocal function、
+限定したchecked Int演算と文字列加算、primitive / local Showによるtemplate。
+Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
+resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
 全source moduleを検査し、未使用の未対応declarationも黙って消さない。
 
-現在の未対応範囲：Effect、全stdlib、Float / Char / List、top-level let、local function、
+現在の未対応範囲：async Effect、全stdlib、Float / Char / List、top-level let、再帰・制約付きlocal function、
 record spread、複雑なpattern、standard dictionaryの値としてのmaterialization、derived instance、
 supertrait / method constraints、deferred callable evidence、package / source module linking、
-foreign / provider ABI、並列runtime、WASM target、source map、言語Defectのnative表現。
+foreign / provider ABI、並列runtime、標準のprogram WASM target、source map、一般のDefect provenance。
 純粋再帰callはRust stackを使い、TCOの保証はない。深い値の破棄と深い関数callは別の境界である。
 
 未対応CoreIrは`SES-RUST-0001`とsource byte rangeを持つtarget errorへする。frontendの型エラーは
 既存診断を維持する。target検査に失敗した場合はRust sourceやnative outputを作らない。
-生成コードのABI違反とInt defectは現在Rust panicとなる。Effect内で捕捉できる言語Defectや
-非同期境界のfailureとしてはまだ実装していない。
+pure inspectionのInt defectはRust panicとなる。Effect実行中のpanicはDefectへ移し、scopeを閉じて
+から報告する。typed failureのpayloadは任意の`V`をそのまま保持し、recover / mapErrorへ渡す。
+entryで未処理の一般のuser-defined errorに選択済みShowを適用することとsource frameの報告は残る。
 
 ## CLIと再現
 

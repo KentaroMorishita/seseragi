@@ -479,6 +479,8 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             arguments,
             ..
         } if arguments.is_empty() => match canonical.as_str() {
+            "std/prelude::ConsoleError" => Some(dictionary("consoleErrorShow")),
+            "std/prelude::StdinError" => Some(dictionary("stdinErrorShow")),
             "std/prelude::Js.Error" => Some(dictionary("jsErrorShow")),
             "std/stdin::StdinConfigError" => Some(dictionary("stdinConfigErrorShow")),
             "std/log::LogError" => Some(dictionary("logErrorShow")),
@@ -576,6 +578,40 @@ fails DomRuntimeError<Never> =
                 if module == "@seseragi/runtime/show" && export == "intShow"
                     && arguments.is_empty()
         ));
+    }
+
+    #[test]
+    fn qualified_console_operations_keep_the_standard_failure_renderer() {
+        let source =
+            include_str!("../../../examples/spec/fixtures/rust-backend/qualified-console.ssrg");
+        let compiled = compile_module(CompileInput::new("main.ssrg", "test/main", source)).unwrap();
+        let failure = super::main_effect(&compiled).unwrap().1;
+        let contract =
+            main_contract(&compiled).unwrap_or_else(|error| panic!("{error}: {failure:?}"));
+        assert!(
+            matches!(contract.failure_renderer, FailureRenderer::Show { ref export, .. } if export == "consoleErrorShow")
+        );
+    }
+
+    #[test]
+    fn external_standard_errors_require_the_exact_canonical_identity() {
+        for (name, export) in [
+            ("ConsoleError", "consoleErrorShow"),
+            ("StdinError", "stdinErrorShow"),
+        ] {
+            let standard = TypedType::ExternalNamed {
+                name: name.into(),
+                canonical: format!("std/prelude::{name}"),
+                arguments: Vec::new(),
+            };
+            assert_eq!(standard_show_dictionary(&standard).unwrap().export, export);
+            let unrelated = TypedType::ExternalNamed {
+                name: name.into(),
+                canonical: format!("app/errors::{name}"),
+                arguments: Vec::new(),
+            };
+            assert!(standard_show_dictionary(&unrelated).is_none());
+        }
     }
 
     #[test]

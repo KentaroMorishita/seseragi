@@ -204,14 +204,15 @@ fn unsupported_features_have_target_codes_and_source_ranges() {
         let origin = error.origin.unwrap();
         assert!(origin.end > origin.start);
     }
-    let source = "pub effect fn probe = println \"unsupported\"\n";
+    let source =
+        "import * as effects from \"std/effect\"\npub effect fn probe = effects.yieldNow ()\n";
     let core = compile_core_module(CompileInput::new("bad.ssrg", "native/bad", source))
         .unwrap()
         .core_ir;
     assert!(emit_rust_module(&core, "probe")
         .unwrap_err()
         .message
-        .contains("Effect"));
+        .contains("yieldNow"));
 }
 
 #[test]
@@ -259,4 +260,30 @@ fn closed_fact_excludes_parameter_evidence() {
         .unwrap()
         .evidence_parameters
         .contains(&0));
+}
+
+#[test]
+fn checked_effect_programs_run_on_a_small_stack_and_release_the_native_heap() {
+    for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend-research/deep-effect.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend-research/ref-cycle.ssrg"),
+    ] {
+        let core =
+            compile_core_module(CompileInput::new("main.ssrg", "native/main", source)).unwrap();
+        let artifact = emit_rust_module(&core.core_ir, "main").unwrap();
+        let main = artifact.source.rfind("fn main()").unwrap();
+        let generated = format!("{}\nfn main() {{ let code = std::thread::Builder::new().stack_size(256 * 1024).spawn(|| run_native_entry(|| {}(vec![]).apply(V::Unit), {})).unwrap().join().unwrap(); assert_eq!(code, 0); }}", &artifact.source[..main], rust_id(&artifact.metadata.entry), artifact.metadata.capabilities.iter().any(|x| x == "ref"));
+        let scratch = Scratch::new();
+        let output = Command::new(scratch.compile(&generated))
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+    }
 }

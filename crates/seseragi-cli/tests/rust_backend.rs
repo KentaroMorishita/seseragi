@@ -137,3 +137,196 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     assert_eq!(collision.status.code(), Some(2));
     assert_eq!(fs::read(source_path).unwrap(), original);
 }
+
+#[test]
+fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
+    let scratch = Scratch::new();
+    let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
+    for (name, relative, expected, exit) in [
+        (
+            "resource-lesson",
+            "lessons/18-resource-scope.ssrg",
+            "released: True\n",
+            0,
+        ),
+        (
+            "ref-cycle",
+            "fixtures/rust-backend-research/ref-cycle.ssrg",
+            "answer: 42\n",
+            0,
+        ),
+        (
+            "cold-effect",
+            "fixtures/rust-backend-research/cold-effect.ssrg",
+            "before: 0\nafter: 2\n",
+            0,
+        ),
+        (
+            "nested-scope",
+            "fixtures/rust-backend-research/nested-scope.ssrg",
+            "order: 3241\n",
+            0,
+        ),
+        (
+            "escaped-callback",
+            "fixtures/rust-backend-research/escaped-callback.ssrg",
+            "escaped: 42\n",
+            0,
+        ),
+        (
+            "failure-scope",
+            "fixtures/rust-backend-research/failure-scope.ssrg",
+            "failure released: 42\n",
+            0,
+        ),
+        (
+            "deep-effect",
+            "fixtures/rust-backend-research/deep-effect.ssrg",
+            "deep: 42\n",
+            0,
+        ),
+        (
+            "typed-payload",
+            "fixtures/rust-backend/typed-effect-failure.ssrg",
+            "typed payload: 42\n",
+            0,
+        ),
+        (
+            "ref-modify",
+            "fixtures/rust-backend/ref-modify.ssrg",
+            "modify: 41, 42\n",
+            0,
+        ),
+        (
+            "effect-evidence",
+            "fixtures/rust-backend/effect-evidence.ssrg",
+            "42\nbox 42\n",
+            0,
+        ),
+        (
+            "release-defect",
+            "fixtures/rust-backend-research/release-callback-timing.ssrg",
+            "body before release defect\n",
+            70,
+        ),
+        (
+            "console-values",
+            "fixtures/rust-backend/console-values.ssrg",
+            "true\n42\nhello\nundefined\nTrue\n",
+            0,
+        ),
+        (
+            "qualified-console",
+            "fixtures/rust-backend/qualified-console.ssrg",
+            "True\n",
+            0,
+        ),
+        (
+            "unhandled-failure",
+            "fixtures/rust-backend/unhandled-effect-failure.ssrg",
+            "",
+            1,
+        ),
+    ] {
+        let path = fixtures.join(relative);
+        let destination = scratch.0.join(name);
+        let built = cli()
+            .args(["experimental", "build-native"])
+            .arg(&path)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&destination)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        let program = destination.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        });
+        let native = Command::new(&program)
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1")
+            .output()
+            .unwrap();
+        assert_eq!(
+            native.status.code(),
+            Some(exit),
+            "{name}: {}",
+            String::from_utf8_lossy(&native.stderr)
+        );
+        assert_eq!(String::from_utf8_lossy(&native.stdout), expected, "{name}");
+        assert!(
+            String::from_utf8_lossy(&native.stderr).contains("managed-live=0"),
+            "{name}: {}",
+            String::from_utf8_lossy(&native.stderr)
+        );
+        let ts = cli().arg("run").arg(&path).output().unwrap();
+        assert_eq!(
+            ts.status.code(),
+            Some(exit),
+            "{name}: {}",
+            String::from_utf8_lossy(&ts.stderr)
+        );
+        assert_eq!(native.stdout, ts.stdout, "{name}");
+        if exit != 70 {
+            let native_error = String::from_utf8_lossy(&native.stderr)
+                .lines()
+                .filter(|line| !line.starts_with("native managed-live="))
+                .collect::<Vec<_>>()
+                .join("\n");
+            assert_eq!(
+                native_error,
+                String::from_utf8_lossy(&ts.stderr).trim_end(),
+                "{name}"
+            );
+        }
+        if name == "cold-effect" {
+            let ordinary = Command::new(&program)
+                .env("PATH", "")
+                .env_remove("SESERAGI_NATIVE_METRICS")
+                .output()
+                .unwrap();
+            assert!(ordinary.status.success());
+            assert!(ordinary.stderr.is_empty());
+            assert_eq!(ordinary.stdout, ts.stdout);
+        }
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&fs::read(destination.join("rust-backend.json")).unwrap())
+                .unwrap();
+        assert_eq!(metadata["abi"], "rust-erased-sync-v2");
+        assert_eq!(metadata["entryKind"], "effect");
+    }
+}
+
+#[test]
+fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
+    let scratch = Scratch::new();
+    let path = scratch.0.join("async.ssrg");
+    fs::write(
+        &path,
+        "import * as effects from \"std/effect\"\npub effect fn main = effects.yieldNow ()\n",
+    )
+    .unwrap();
+    let output = scratch.0.join("unsupported.rs");
+    let result = cli()
+        .env("PATH", "")
+        .args(["experimental", "emit-rust"])
+        .arg(&path)
+        .args(["--entry", "main", "--output"])
+        .arg(&output)
+        .output()
+        .unwrap();
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert_eq!(result.status.code(), Some(2));
+    assert!(
+        error.contains("SES-RUST-0001") && error.contains("yieldNow"),
+        "{error}"
+    );
+    assert!(error.contains("async.ssrg:"), "{error}");
+    assert!(!output.exists());
+    assert!(!output.with_extension("rust-backend.json").exists());
+}

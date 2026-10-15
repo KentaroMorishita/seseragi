@@ -10,6 +10,7 @@ on:
       - "crates/seseragi-backend-rust/**"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
+      - "crates/seseragi-runtime/**"
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-cli/src/experimental.rs"
@@ -29,6 +30,7 @@ on:
       - "crates/seseragi-backend-rust/**"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-lowering/**"
+      - "crates/seseragi-runtime/**"
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-cli/src/experimental.rs"
@@ -39,6 +41,11 @@ on:
       - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
   workflow_dispatch:
+    inputs:
+      integration:
+        description: Verify canonical Linux WASM and the repository-wide source gate
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -65,7 +72,9 @@ jobs:
           node target/effect-defer-stack.mjs
           bun target/effect-defer-stack.mjs
       - name: Check Rust formatting
-        run: cargo fmt --all -- --check
+        run: |
+          cargo fmt --all -- --check
+          rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs
       - name: Verify shared frontend boundary
         run: cargo test --locked -p seseragi-driver --lib core_compile::tests
       - name: Verify native values, captures, dictionaries, and teardown
@@ -92,3 +101,80 @@ jobs:
             target/native-lifetimes/report.json
             target/native-wasm/report.json
             target/native-wasm/compute.wasm
+
+  canonical-wasm:
+    if: github.event_name == 'workflow_dispatch' && inputs.integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CARGO_INCREMENTAL: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: v0.15.0
+      - uses: ./.github/actions/setup-wasi-sdk
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - name: Verify canonical Linux WASM freshness
+        run: |
+          bun install --frozen-lockfile
+          bun run check:wasm
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rust-native-integration-wasm
+          path: apps/playground/src/wasm/pkg
+
+  integration-source-gate:
+    if: github.event_name == 'workflow_dispatch' && inputs.integration
+    needs: [native, canonical-wasm]
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      CARGO_INCREMENTAL: "0"
+      CARGO_PROFILE_DEV_DEBUG: "0"
+      CARGO_PROFILE_TEST_DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.11
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: v0.15.0
+      - uses: ./.github/actions/setup-wasi-sdk
+      - name: Install the locked wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
+      - name: Install Chromium for browser integration
+        run: |
+          cd apps/playground
+          bun install --frozen-lockfile
+          bunx playwright install chromium
+      - name: Verify the repository-wide source gate
+        shell: bash
+        run: |
+          mkdir -p target
+          echo "Integration reason: native Effect/Ref runtime and shared main failure contract changed."
+          ./scripts/check-scoped.sh release-gate-after-wasm 2>&1 | tee target/native-integration-source-gate.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rust-native-integration-source-gate
+          path: target/native-integration-source-gate.log
