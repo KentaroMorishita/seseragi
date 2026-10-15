@@ -21,6 +21,8 @@ on:
       - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
       - "scripts/scalar-tail-probe.ts"
+      - "scripts/char-probe.ts"
+      - "scripts/char-probe.mjs"
   push:
     branches: [main]
     paths:
@@ -42,6 +44,8 @@ on:
       - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
       - "scripts/scalar-tail-probe.ts"
+      - "scripts/char-probe.ts"
+      - "scripts/char-probe.mjs"
   workflow_dispatch:
     inputs:
       integration:

@@ -68,6 +68,7 @@ pub fn emit_rust_module(
 #[allow(dead_code)]
 mod runtime {
     include!("runtime.rs");
+    include!("runtime_char.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
 }

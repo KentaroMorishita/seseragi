@@ -45,6 +45,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "let-shadowing",
         "scalar-tail-loop",
         "scalar-tail-operators",
+        "char-unicode",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -107,6 +108,44 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
 }
 
 #[test]
+fn unicode_character_fixture_agrees_on_bun_and_node() {
+    let scratch = Scratch::new();
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/char-unicode.ssrg");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("main.ssrg", "chars/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let directory = scratch.0.join(name);
+        fs::create_dir_all(&directory).unwrap();
+        let emitted = directory.join("generated.ts");
+        fs::write(&emitted, compiled.generated.typescript).unwrap();
+        let output = Command::new("bun")
+            .arg(root.join("scripts/char-probe.ts"))
+            .arg(&emitted)
+            .current_dir(&root)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"unicodeCodePoints\":1114113")
+                .count(),
+            2
+        );
+    }
+}
+
+#[test]
 fn scalar_tail_loops_preserve_primitive_traces_on_bun_and_node() {
     let scratch = Scratch::new();
     let source = include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-loop.ssrg");
@@ -164,19 +203,30 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         String::from_utf8_lossy(&output.stderr)
     );
     assert!(output_path.exists());
-    let bad_path = scratch.0.join("bad.ssrg");
-    fs::write(&bad_path, "pub fn answer -> Float = 1.5\n").unwrap();
-    let bad_output = scratch.0.join("unsupported.rs");
-    let bad = cli()
-        .args(["experimental", "emit-rust"])
-        .arg(&bad_path)
-        .args(["--entry", "answer", "--output"])
-        .arg(&bad_output)
-        .output()
-        .unwrap();
-    assert_eq!(bad.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&bad.stderr).contains("SES-RUST-0001"));
-    assert!(!bad_output.exists());
+    for (name, source) in [
+        ("float", "pub fn answer -> Float = 1.5\n"),
+        ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
+    ] {
+        let bad_path = scratch.0.join(format!("{name}.ssrg"));
+        fs::write(&bad_path, source).unwrap();
+        let bad_output = scratch.0.join(format!("{name}.rs"));
+        let bad = cli()
+            .args(["experimental", "emit-rust"])
+            .arg(&bad_path)
+            .args(["--entry", "answer", "--output"])
+            .arg(&bad_output)
+            .output()
+            .unwrap();
+        assert_eq!(bad.status.code(), Some(2));
+        let diagnostic = String::from_utf8_lossy(&bad.stderr);
+        assert!(diagnostic.contains("SES-RUST-0001"), "{name}: {diagnostic}");
+        assert!(
+            diagnostic.contains(&format!("{name}.ssrg:")),
+            "{diagnostic}"
+        );
+        assert!(!bad_output.exists());
+        assert!(!bad_output.with_extension("rust-backend.json").exists());
+    }
     let original = fs::read(&source_path).unwrap();
     let collision = cli()
         .args(["experimental", "emit-rust"])
@@ -252,6 +302,18 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             "effect-evidence",
             "fixtures/rust-backend/effect-evidence.ssrg",
             "42\nbox 42\n",
+            0,
+        ),
+        (
+            "char-console",
+            "fixtures/rust-backend/char-console.ssrg",
+            "🙂\nλ\n",
+            0,
+        ),
+        (
+            "char-effects",
+            "fixtures/rust-backend/char-effects.ssrg",
+            "chars: λ -> 🙂\nrecovered: 128578\n🙂\n'λ'\nreleased: λ\n",
             0,
         ),
         (

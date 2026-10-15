@@ -73,7 +73,7 @@ impl TraceValue for EffectPlan {
 impl V {
     fn node_id(&self) -> Option<usize> {
         Some(match self {
-            Self::Unit | Self::Int(_) | Self::Bool(_) => return None,
+            Self::Unit | Self::Int(_) | Self::Bool(_) | Self::Char(_) => return None,
             Self::Text(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
             Self::Record(v) | Self::Dict(v) => v.id(),
