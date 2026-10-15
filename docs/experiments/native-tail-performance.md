@@ -51,6 +51,11 @@ macOS 26.2 arm64、Rust 1.97.1、Bun 1.3.11、Node 24.14.0。
 このkernelではBunが現行nativeより速い。Rust生成だから常に高速とは結論しない。
 手書きcontrolは製品の性能ではないが、scalar表現を直接扱う経路を検討する根拠になる。
 
+timingとは別のnative実行をmacOS `sample`で1秒間観測した。top-of-stackの集計では汎用`binary`が
+380、Vのdrop glueが211、VのCloneが152 sampleだった。単一の短いprofileから正確な内訳比率は
+主張しないが、型消去した演算・clone / drop経路を調べる根拠が得られた。
+raw profileは同じdirectoryの`native-sample.txt`へ保存した。
+
 ## 判断できること
 
 このkernelにはRef、Effect実行、collection、foreign callがない。native counterが数えるのは

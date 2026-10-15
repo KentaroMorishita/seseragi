@@ -9,6 +9,7 @@ on:
       - "Cargo.toml"
       - "CHANGELOG.md"
       - "crates/seseragi-cli/**"
+      - "crates/seseragi-backend-rust/**"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-formatter/**"
       - "crates/seseragi-lowering/**"

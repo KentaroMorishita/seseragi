@@ -8,6 +8,8 @@ export const USER_VISIBLE_SURFACES = [
   {
     name: "compiler",
     prefixes: [
+      "crates/seseragi-backend-rust/src/",
+      "crates/seseragi-backend-rust/Cargo.toml",
       "crates/seseragi-driver/",
       "crates/seseragi-formatter/",
       "crates/seseragi-lowering/",

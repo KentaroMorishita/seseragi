@@ -81,6 +81,48 @@ describe("release readiness", () => {
     expect(result.userVisibleFiles).toEqual([])
   })
 
+  test("requires a release for Rust backend production changes", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    const backend = path.join(root, "crates", "seseragi-backend-rust", "src")
+    await mkdir(backend, { recursive: true })
+    await writeFile(path.join(backend, "emit.rs"), "// native behavior\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "change native code generation")
+    expect(() => pullRequestReleaseBoundary(base, "HEAD", root)).toThrow(
+      "canonical version 0.3.0 is not newer"
+    )
+
+    await setVersion(root, "0.3.1")
+    await writeFile(path.join(root, "CHANGELOG.md"), "## [0.3.1]\n\n- Rust.\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "prepare native compiler release")
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleSurfaces
+    ).toEqual(["compiler"])
+  })
+
+  test("keeps opt-in Rust research outside the product release boundary", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    const examples = path.join(
+      root,
+      "crates",
+      "seseragi-backend-rust",
+      "examples"
+    )
+    await mkdir(examples, { recursive: true })
+    await writeFile(
+      path.join(examples, "measure.rs"),
+      "// opt-in measurement\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "adjust native research")
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+  })
+
   test("allows test-only changes under a shipped surface", async () => {
     const root = await repository()
     const base = git(root, "rev-parse", "HEAD")
@@ -224,6 +266,7 @@ describe("release readiness", () => {
     expect(workflow).toContain("bun scripts/release-readiness.ts check")
     for (const surface of [
       "crates/seseragi-cli/**",
+      "crates/seseragi-backend-rust/**",
       "crates/seseragi-lsp/**",
       "crates/seseragi-provider/**",
       "runtime/ts/**",
