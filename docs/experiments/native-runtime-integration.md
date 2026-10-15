@@ -72,6 +72,9 @@ pending I/O、fairness、parallel cleanupとはまだ接続していない。
   捕捉していた。共有CoreIr free-variable分析を使い、同名参照がある場合と解析できない場合は
   initializerをbindingの外で評価する。closure / polymorphic letを含め、pure / Effect / monad
   sequenceと両profileで比較し、生成TSのstrict typecheckも行う。
+- [#821](https://github.com/KentaroMorishita/seseragi/issues/821)：CIの既存dev回復testで、
+  compile失敗とgraph refresh成功の間にmanifestが修復される競合を検出した。
+  ビルド前のsnapshotだけを確認済みにし、ビルド中の編集・修復を次のpollへ残す。既存dev 7 testsが成功した。
 
 ## 検証
 
@@ -112,3 +115,9 @@ instanceを入れ替える20万段の再帰を、checked sourceから生成し�
 run 38722519017のLinux生成artifactからWASMを更新した。glueと宣言はbyte一致、WASMは
 12,962,232 bytes / SHA-256 `45454a0459182bc59a8cf09e0529ef0bc8fcdf721dc7e2b82eeafa35d0e5f3ce`。
 この更新を含む次のSHAで厳密なfreshnessとsource gateを再実行する。
+
+let修正を含む13da264bbのLinux run 38724743261でも生成物を取得した。WASMは
+12,974,111 bytes / SHA-256 `47fe0e2575b37b33c7cd103ee1533ba1269cd280e497a36f44045bfbcdd84205`。
+同じSHAのnative jobは、runtime / backend / CLI、研究用16 tests、8 source / 7 trace比較、
+program WASMと混在UIの検証をすべて通過した。追加のconformance差分は専用writerで再生成し、
+このWASM更新とdev修正を含むSHAをrepository-wide source gateへ進める。

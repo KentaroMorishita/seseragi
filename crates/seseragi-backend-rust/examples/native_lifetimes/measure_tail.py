@@ -52,26 +52,50 @@ pub effect fn main = println (show (probe ()))
     generated = (stage / "native/program.rs").read_text()
     expected = sum(n * (n + 1) // 2 for n in range(200000, 200020))
     harness = r'''
+// Handwritten comparison only: this function is not compiler output.
+fn scalar_control(mut remaining: i64) -> i64 {
+    fn checked(value: i64) -> i64 {
+        assert!((-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value));
+        value
+    }
+    let mut total = 0_i64;
+    while remaining != 0 {
+        let next = checked(remaining.checked_sub(1).unwrap());
+        let value = checked(total.checked_add(remaining).unwrap());
+        remaining = next;
+        total = value;
+    }
+    total
+}
 fn main() {
     let kernel = <KERNEL>(vec![]);
+    let control = std::env::args().any(|value| value == "--scalar-control");
+    let allocations = ALLOCATIONS.with(Cell::get);
     let mut samples = Vec::new();
-    for round in 0..8 {
+    let warmup = std::time::Instant::now();
+    let mut warmups = 0;
+    while samples.len() < 5 {
+        let recording = warmups >= 3 && warmup.elapsed().as_secs_f64() >= 1.0;
         let now = std::time::Instant::now();
         let mut checksum = 0_i64;
         for i in 0..20 {
-            match kernel.apply(V::Int(std::hint::black_box(200000 + i))) {
-                V::Int(value) => checksum += value,
-                _ => panic!("expected Int"),
-            }
+            let input = std::hint::black_box(200000 + i);
+            checksum += if control { scalar_control(input) } else {
+                match kernel.apply(V::Int(input)) {
+                    V::Int(value) => value,
+                    _ => panic!("expected Int"),
+                }
+            };
         }
         let elapsed = now.elapsed().as_nanos();
         assert_eq!(checksum, <CHECKSUM>);
-        if round >= 3 { samples.push(elapsed); }
+        if recording { samples.push(elapsed); } else { warmups += 1; }
     }
     drop(kernel);
     clear_dictionaries();
     assert_eq!(LIVE.with(Cell::get), 0);
-    println!("{{\"samplesNs\":{:?},\"checksum\":{}}}", samples, <CHECKSUM>_i64);
+    let allocations = ALLOCATIONS.with(Cell::get) - allocations;
+    println!("{{\"samplesNs\":{:?},\"checksum\":{},\"managedAllocations\":{},\"warmups\":{}}}", samples, <CHECKSUM>_i64, allocations, warmups);
 }
 '''.replace("<KERNEL>", rust_id).replace("<CHECKSUM>", str(expected))
     rust_source = stage / "measure.rs"
@@ -81,24 +105,28 @@ fn main() {
     js = stage / "measure.mjs"
     js.write_text('''import { kernel } from "./module.mjs";
 const samplesNs = [];
-for (let round = 0; round < 8; round++) {
+const warmup = process.hrtime.bigint();
+let warmups = 0;
+while (samplesNs.length < 5) {
+  const recording = warmups >= 3 && process.hrtime.bigint() - warmup >= 1000000000n;
   const start = process.hrtime.bigint();
   let checksum = 0;
   for (let i = 0; i < 20; i++) checksum += kernel(200000 + i);
   const ns = Number(process.hrtime.bigint() - start);
   if (checksum !== <CHECKSUM>) throw Error(`checksum ${checksum}`);
-  if (round >= 3) samplesNs.push(ns);
+  if (recording) samplesNs.push(ns); else warmups++;
 }
-console.log(JSON.stringify({ samplesNs, checksum: <CHECKSUM> }));
+console.log(JSON.stringify({ samplesNs, checksum: <CHECKSUM>, warmups }));
 '''.replace("<CHECKSUM>", str(expected)))
-    commands = {"native": [str(native)], "bun": [args.bun, str(js)], "node": [args.node, str(js)]}
+    commands = {"native": [str(native)], "bun": [args.bun, str(js)],
+                "node": [args.node, str(js)], "native-i64-control": [str(native), "--scalar-control"]}
     results = {name: [] for name in commands}
     names = list(commands)
-    for process in range(3):
-        # Rotate order; every runtime gets three independent fresh processes.
+    for process in range(4):
+        # Rotate order; every runtime gets four independent fresh processes.
         for name in names[process:] + names[:process]:
             env = dict(os.environ)
-            if name == "native":
+            if name.startswith("native"):
                 env["PATH"] = ""
             result = json.loads(run(commands[name], env=env))
             assert result["checksum"] == expected
@@ -108,7 +136,8 @@ console.log(JSON.stringify({ samplesNs, checksum: <CHECKSUM> }));
                for name, rows in results.items()}
     report = {
         "scope": "scalar self tail recursion; 200000..200019 steps per call",
-        "timing": "20 calls/sample; 3 warmups then 5 samples/process; 3 fresh processes/runtime",
+        "control": "native-i64-control is handwritten checked i64, not compiler output",
+        "timing": "20 calls/sample; >=3 warmups and >=1s before 5 samples/process; 4 fresh processes/runtime",
         "excluded": ["source compilation", "module loading", "process startup", "verification"],
         "host": platform.platform(), "machine": platform.machine(),
         "inputSha256": hashlib.sha256(source.read_bytes()).hexdigest(),

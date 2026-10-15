@@ -13,6 +13,7 @@
 - Execute deeply deferred Effects through the TypeScript runtime's instruction loop, preserving coldness, replay and failure identity without relying on JavaScript engine tail-call support. Verify 100,000 deferred steps on Bun and Node (#808).
 - Select the standard Show dictionary for canonical external ConsoleError and StdinError main contracts without accepting unrelated same-name user types (#819).
 - Evaluate shadowed non-recursive let initializers in their outer scope in generated TypeScript, including closure captures and polymorphic bindings in pure, Effect and monad sequences (#820).
+- Retain edits and manifest repairs made during a dev build as pending changes, so graph refresh cannot consume them before a successful rebuild (#821).
 
 ## [0.61.29] - 2026-10-13
 
