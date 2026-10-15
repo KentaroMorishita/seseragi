@@ -44,6 +44,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "tail-evidence",
         "let-shadowing",
         "scalar-tail-loop",
+        "scalar-tail-operators",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"

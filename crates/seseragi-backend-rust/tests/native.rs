@@ -55,6 +55,25 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn scalar_loop_operators_preserve_nested_arguments_ordering_and_negation() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-operators.ssrg");
+    let artifact = emit(source);
+    let walk = rust_id("native/main::walk");
+    let direct = artifact
+        .source
+        .lines()
+        .find(|line| line.starts_with(&format!("fn {walk}_direct(")))
+        .unwrap();
+    assert!(!direct.contains(".clone()"));
+    assert!(direct.contains("int_less_equal_value("));
+    assert!(direct.contains("int_less_value("));
+    assert!(direct.contains("int_multiply_value("));
+    assert!(direct.contains(".checked_neg()"));
+    run(source, "(4, -4, 9007199254740991)");
+}
+
+#[test]
 fn scalar_tail_helpers_preserve_abi_checked_boundaries_and_primitive_order() {
     let source = include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-loop.ssrg");
     let artifact = emit(source);
@@ -102,6 +121,7 @@ fn outcome(f: fn(Vec<V>, V, V) -> V, n: i64, seed: i64) -> (Result<i64, String>,
  };
  (outcome, TRACE.with(|t| t.borrow().clone()))
 }
+
 fn main() {
  std::panic::set_hook(Box::new(|_| {}));
  const MAX: i64 = 9_007_199_254_740_991;

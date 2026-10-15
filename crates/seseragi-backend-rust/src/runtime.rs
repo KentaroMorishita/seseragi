@@ -274,9 +274,15 @@ fn int_subtract_value(a: i64, b: i64) -> i64 {
 fn int_multiply_value(a: i64, b: i64) -> i64 {
     checked_int_value(a.checked_mul(b).expect("Int overflow"))
 }
-fn int_equal_value(a: i64, b: i64) -> bool { a == b }
-fn int_less_value(a: i64, b: i64) -> bool { a < b }
-fn int_less_equal_value(a: i64, b: i64) -> bool { a <= b }
+fn int_equal_value(a: i64, b: i64) -> bool {
+    a == b
+}
+fn int_less_value(a: i64, b: i64) -> bool {
+    a < b
+}
+fn int_less_equal_value(a: i64, b: i64) -> bool {
+    a <= b
+}
 fn binary(op: &str, a: V, b: V) -> V {
     match (op, a, b) {
         ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value(a, b)),
