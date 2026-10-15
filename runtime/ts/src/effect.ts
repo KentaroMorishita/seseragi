@@ -330,19 +330,35 @@ export function succeed<Success>(
 export function defer<Environment, Failure, Success>(
   thunk: (unit: Unit) => Effect<Environment, Failure, Success>
 ): Effect<Environment, Failure, Success> {
-  return (environment, context) => thunk(unit)(environment, context)
+  const deferred: Effect<Environment, Failure, Success> = (
+    environment,
+    context
+  ) =>
+    interpretBinds(
+      deferred as ErasedEffect,
+      environment,
+      context ?? createEffectExecution().context
+    ) as Promise<Success>
+  Object.defineProperty(deferred, deferPlan, {
+    value: thunk as (unit: Unit) => ErasedEffect,
+  })
+  return deferred
 }
 
 // Bind plans are internal and owned by their callable Effect value.
-// Interpreting both left- and right-associated chains avoids one host frame per
-// bind while keeping every callback cold and every value checkpoint in order.
+// Interpret binds and deferred construction in one loop. Neither association
+// nor engine-specific tail calls may determine stack safety.
 type ErasedEffect = Effect<unknown, unknown, unknown>
 type BindPlan = {
   readonly source: ErasedEffect
   readonly next: (value: unknown) => ErasedEffect
 }
 const bindPlan = Symbol("seseragi.effect-bind")
-type PlannedEffect = ErasedEffect & { readonly [bindPlan]?: BindPlan }
+const deferPlan = Symbol("seseragi.effect-defer")
+type PlannedEffect = ErasedEffect & {
+  readonly [bindPlan]?: BindPlan
+  readonly [deferPlan]?: (unit: Unit) => ErasedEffect
+}
 
 async function interpretBinds(
   initial: ErasedEffect,
@@ -352,11 +368,19 @@ async function interpretBinds(
   const continuations: BindPlan["next"][] = []
   let current = initial
   while (true) {
-    let plan = (current as PlannedEffect)[bindPlan]
-    while (plan !== undefined) {
-      continuations.push(plan.next)
-      current = plan.source
-      plan = (current as PlannedEffect)[bindPlan]
+    while (true) {
+      const plan = (current as PlannedEffect)[bindPlan]
+      if (plan !== undefined) {
+        continuations.push(plan.next)
+        current = plan.source
+        continue
+      }
+      const thunk = (current as PlannedEffect)[deferPlan]
+      if (thunk !== undefined) {
+        current = thunk(unit)
+        continue
+      }
+      break
     }
     const value = await awaitWithCancellation(
       current(environment, context),

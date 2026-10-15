@@ -2,6 +2,7 @@ import { expect, test } from "bun:test"
 import {
   acquireRelease,
   createEffectExecution,
+  defer,
   type Effect,
   EffectCancellation,
   fail,
@@ -10,6 +11,21 @@ import {
   scoped,
   succeed,
 } from "../src/effect"
+
+test("100,000 deferred sources are cold and repeatable", async () => {
+  let calls = 0
+  const descend = (remaining: number): Effect<unknown, never, number> =>
+    defer(() => {
+      calls++
+      return remaining === 0 ? succeed(42) : descend(remaining - 1)
+    })
+  const work = descend(100_000)
+  expect(calls).toBe(0)
+  expect(await run(work, {})).toEqual({ kind: "success", value: 42 })
+  expect(calls).toBe(100_001)
+  expect(await run(work, {})).toEqual({ kind: "success", value: 42 })
+  expect(calls).toBe(200_002)
+})
 
 test("100,000 left-associated binds are cold, repeatable and stack safe", async () => {
   let calls = 0

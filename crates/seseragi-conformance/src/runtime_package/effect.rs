@@ -2,6 +2,47 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+pub(super) fn check_effect_defer_stack_boundary(root: &Path) -> Result<(), String> {
+    let directory = root.join("target/seseragi-conformance/runtime-package");
+    fs::create_dir_all(&directory).map_err(|e| e.to_string())?;
+    let bundle = directory.join("effect-defer-stack.mjs");
+    let output = Command::new("bun")
+        .args([
+            "build",
+            "runtime/ts/probes/effect-defer-stack.ts",
+            "--target=node",
+            "--outfile",
+        ])
+        .arg(&bundle)
+        .current_dir(root)
+        .output()
+        .map_err(|e| e.to_string())?;
+    if !output.status.success() {
+        return Err(format!(
+            "failed to bundle Effect defer probe: {}",
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    for engine in ["bun", "node"] {
+        let output = Command::new(engine)
+            .arg(&bundle)
+            .current_dir(root)
+            .output()
+            .map_err(|e| format!("{engine} defer probe: {e}"))?;
+        if !output.status.success()
+            || output.stdout
+                != b"defer coldness, replay, stack, failure, defect, cancellation: ok\n"
+        {
+            return Err(format!(
+                "{engine} defer stack probe failed\nstdout: {}\nstderr: {}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            ));
+        }
+    }
+    Ok(())
+}
+
 pub(super) fn check_effect_concurrency_boundary(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("probes/effect-concurrency.ts")
