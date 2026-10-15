@@ -2,6 +2,7 @@ mod cst;
 mod declaration;
 mod diagnostics;
 mod documentation;
+mod integer_literal;
 mod interface;
 mod interface_model;
 mod lexer;
@@ -23,6 +24,7 @@ pub use diagnostics::{
     TypeDifferenceKind, TypeDifferencePathSegment,
 };
 pub use documentation::{extract_document_tests, DocumentTestBlock, DocumentTestMode};
+pub use integer_literal::{decode_integer_literal, IntegerLiteralError};
 pub use interface::{
     parse_import_free_module_interface, parse_module_interface, parse_unlinked_module_interface,
     ImportOccurrence, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,

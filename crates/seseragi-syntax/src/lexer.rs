@@ -202,6 +202,27 @@ impl Lexer<'_> {
 
     fn scan_number(&mut self) {
         let start = self.cursor;
+        if matches!(
+            self.source.get(start..start + 2),
+            Some("0b" | "0B" | "0o" | "0O" | "0x" | "0X")
+        ) {
+            self.cursor += 2;
+            self.scan_numeric_suffix();
+            // Invalid prefixed fractions/exponents must not become applications
+            // of several shorter, individually valid numeric tokens.
+            if self.number_has_decimal_point() || self.has_hex_float_fraction() {
+                self.take_char();
+                self.scan_numeric_suffix();
+            }
+            if self.source[start..self.cursor].ends_with(['p', 'P'])
+                && matches!(self.peek_char(), Some('+' | '-'))
+            {
+                self.take_char();
+                self.scan_numeric_suffix();
+            }
+            self.push(TokenKind::LiteralInteger, start, self.cursor);
+            return;
+        }
         let mut is_float = false;
 
         if self.peek_char() == Some('.') {
@@ -209,14 +230,7 @@ impl Lexer<'_> {
             self.take_char();
         } else {
             self.scan_decimal_digits();
-            if self.peek_char() == Some('.')
-                && !self.starts_with("..")
-                && self
-                    .source
-                    .get(self.cursor + 1..)
-                    .and_then(|rest| rest.chars().next())
-                    .is_none_or(|next| next != '_' && !is_xid_start(next))
-            {
+            if self.number_has_decimal_point() {
                 is_float = true;
                 self.take_char();
             }
@@ -233,6 +247,7 @@ impl Lexer<'_> {
             }
             self.scan_decimal_digits();
         }
+        self.scan_numeric_suffix();
 
         self.push(
             if is_float {
@@ -243,6 +258,41 @@ impl Lexer<'_> {
             start,
             self.cursor,
         );
+    }
+
+    fn number_has_decimal_point(&self) -> bool {
+        self.peek_char() == Some('.')
+            && !self.starts_with("..")
+            && self
+                .source
+                .get(self.cursor + 1..)
+                .and_then(|rest| rest.chars().next())
+                .is_none_or(|next| next != '_' && !is_xid_start(next))
+    }
+
+    fn has_hex_float_fraction(&self) -> bool {
+        let Some(fraction) = self.source[self.cursor..].strip_prefix('.') else {
+            return false;
+        };
+        // Keep ordinary member access (including .face) separate. A hex
+        // fraction followed by p/P is an unsupported hexadecimal Float.
+        let exponent =
+            fraction.trim_start_matches(|char: char| char.is_ascii_hexdigit() || char == '_');
+        fraction.len() > exponent.len()
+            && exponent.starts_with(['p', 'P'])
+            && exponent[1..]
+                .chars()
+                .next()
+                .is_some_and(|char| char.is_ascii_digit() || matches!(char, '+' | '-'))
+    }
+
+    fn scan_numeric_suffix(&mut self) {
+        while self
+            .peek_char()
+            .is_some_and(|char| is_xid_continue(char) || char == '\'')
+        {
+            self.take_char();
+        }
     }
 
     fn scan_decimal_digits(&mut self) {

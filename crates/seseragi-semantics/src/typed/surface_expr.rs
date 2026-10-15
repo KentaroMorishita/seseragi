@@ -765,7 +765,8 @@ pub(super) fn type_surface_expression(
         }),
         SurfaceExpr::Integer { raw, span } => {
             SurfaceExpressionAnalysis::valid(TypedExpr::Integer {
-                value: raw.clone(),
+                value: seseragi_syntax::decode_integer_literal(raw)
+                    .map_or_else(|_| raw.clone(), |value| value.to_string()),
                 type_ref: named_type("Int"),
                 origin: *span,
             })

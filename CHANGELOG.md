@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.33] - 2026-10-16
+
+### Fixed
+
+- Accept the specified binary, octal and hexadecimal Int literal spellings through the shared frontend. Diagnose complete malformed numeric tokens and safe-range overflow, normalize equivalent signed patterns and typed integer values for both TypeScript and Rust, and preserve source spelling in the formatter (#826).
+
 ## [0.61.32] - 2026-10-16
 
 ### Added
