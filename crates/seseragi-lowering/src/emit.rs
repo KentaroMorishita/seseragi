@@ -17,6 +17,7 @@ mod instances;
 mod metadata;
 #[cfg(test)]
 mod precedence_tests;
+mod scalar_tail;
 mod source_map;
 
 use imports::render_import_lines;
@@ -148,6 +149,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 exported,
                 is_async,
                 is_effect,
+                scalar_tail_loop,
                 name,
                 type_parameters,
                 constraints,
@@ -166,6 +168,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     *is_async,
                     *is_effect,
                     Some(name),
+                    *scalar_tail_loop,
                 );
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
@@ -684,6 +687,7 @@ fn render_function_body(
     is_async: bool,
     is_effect: bool,
     self_name: Option<&str>,
+    scalar_tail_loop: bool,
 ) -> String {
     render_function_body_with_return(
         type_parameters,
@@ -693,6 +697,7 @@ fn render_function_body(
         is_effect,
         self_name,
         None,
+        scalar_tail_loop,
     )
 }
 
@@ -704,13 +709,20 @@ fn render_function_body_with_return(
     is_effect: bool,
     self_name: Option<&str>,
     return_type: Option<&crate::TypeScriptType>,
+    scalar_tail_loop: bool,
 ) -> String {
     let rendered_body = self_name
         .filter(|_| !is_effect)
         .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
         .map_or_else(
             || render_typescript_expr(body),
-            |name| render_tail_recursive_body(body, name, parameters),
+            |name| {
+                if scalar_tail_loop {
+                    scalar_tail::render(body, name, parameters)
+                } else {
+                    render_tail_recursive_body(body, name, parameters)
+                }
+            },
         );
     let Some((last, leading)) = parameters.split_last() else {
         return rendered_body;
@@ -1229,7 +1241,8 @@ fn recursive_group_prefix(statements: &[TypeScriptStatement]) -> Option<(String,
                 false,
                 false,
                 Some(name),
-                return_type.as_ref()
+                return_type.as_ref(),
+                false,
             )
         ));
     }
@@ -1291,7 +1304,15 @@ fn render_monad_sequence(
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false, false, Some(name))
+                render_function_body(
+                    type_parameters,
+                    &parameters,
+                    body,
+                    false,
+                    false,
+                    Some(name),
+                    false
+                )
             )
         }
     }
@@ -1359,7 +1380,15 @@ fn render_effect_sequence_with_result_renderer(
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false, false, Some(name))
+                render_function_body(
+                    type_parameters,
+                    &parameters,
+                    body,
+                    false,
+                    false,
+                    Some(name),
+                    false
+                )
             )
         }
     }

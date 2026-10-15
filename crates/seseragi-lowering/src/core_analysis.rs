@@ -1,6 +1,9 @@
 //! Conservative target-independent facts, without rewriting CoreIr or ABI.
 use crate::{CoreExpr, CoreInstanceEvidence, CoreInstanceImplementation, CoreModule, SourceSpan};
 
+mod scalar;
+pub use scalar::{scalar_self_tail_loop, CoreScalarKind, CoreScalarTailLoop};
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CoreCallShape {
     Partial,

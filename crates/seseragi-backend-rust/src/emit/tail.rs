@@ -14,6 +14,9 @@ impl Backend<'_> {
         setup: &str,
         scope: &Scope,
     ) -> Result<String> {
+        if let Some(plan) = seseragi_lowering::scalar_self_tail_loop(function) {
+            return self.scalar_direct_function(function, &plan);
+        }
         let target = TailTarget {
             symbol: &function.symbol,
             slots: function.parameters.iter().map(|_| self.fresh()).collect(),

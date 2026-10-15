@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.31] - 2026-10-15
+
+### Added
+
+- Recognize checked scalar self-tail loops through shared typed CoreIr analysis. Generate TypeScript statement loops without per-step markers or argument arrays, and specialize private native helpers to Int / Bool while preserving curried calls, reusable partial applications, selected standard evidence and overflow evaluation order (#822). Record cross-backend boundary checks and measured results for the supported scalar kernel.
+
 ## [0.61.30] - 2026-10-15
 
 ### Added

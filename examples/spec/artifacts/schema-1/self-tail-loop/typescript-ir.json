@@ -33,6 +33,7 @@
     {
       "kind": "const-function",
       "exported": false,
+      "scalarTailLoop": true,
       "name": "sumTo",
       "parameters": [
         {

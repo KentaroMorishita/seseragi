@@ -322,6 +322,9 @@ pub enum TypeScriptFunction {
         /// stable; deserialized artifacts conservatively default to `false`.
         #[serde(skip)]
         is_effect: bool,
+        /// Certified on typed CoreIr, before scalar identity is erased.
+        #[serde(default, skip_serializing_if = "is_false")]
+        scalar_tail_loop: bool,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
@@ -981,6 +984,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         .functions
         .into_iter()
         .map(|function| {
+            let scalar_tail_loop = crate::scalar_self_tail_loop(&function).is_some();
             let scoped_types = module_imports
                 .type_names
                 .with_parameters(&function.type_parameters);
@@ -1006,6 +1010,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
                 is_effect: function.is_effect,
+                scalar_tail_loop,
                 name: module_value_name(&module.module, &function.symbol),
                 type_parameters: function.type_parameters,
                 constraints: function

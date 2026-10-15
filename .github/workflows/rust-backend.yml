@@ -20,6 +20,7 @@ on:
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
+      - "scripts/scalar-tail-probe.ts"
   push:
     branches: [main]
     paths:
@@ -40,6 +41,7 @@ on:
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "runtime/ts/**"
+      - "scripts/scalar-tail-probe.ts"
   workflow_dispatch:
     inputs:
       integration:
@@ -171,7 +173,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p target
-          echo "Integration reason: native Effect/Ref runtime and shared main failure contract changed."
+          echo "Integration reason: native backend, shared CoreIr analysis, and TypeScript lowering changed."
           ./scripts/check-scoped.sh release-gate-after-wasm 2>&1 | tee target/native-integration-source-gate.log
       - uses: actions/upload-artifact@v4
         if: always()
