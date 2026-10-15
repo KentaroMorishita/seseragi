@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.32] - 2026-10-16
+
+### Added
+
+- Execute Unicode scalar Char values through the experimental Rust target, including standard conversions, checked patterns, Eq / Ord / Show / Debug evidence, reusable closed Char partials and synchronous Ref / Effect payloads (#825). Verify the full scalar domain and compare generated TypeScript on Bun and Node.
+
+### Fixed
+
+- Type the web-file pending byte buffer to accept stream chunks in strict TypeScript consumers without changing emitted runtime behavior (#827).
+
 ## [0.61.31] - 2026-10-15
 
 ### Added

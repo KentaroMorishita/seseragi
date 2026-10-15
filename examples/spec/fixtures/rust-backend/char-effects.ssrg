@@ -1,0 +1,26 @@
+import * as char from "std/char"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn failChar value: Char -> Int fails Char = effects.fail value
+
+pub effect fn main = do {
+  cell <- refs.make 'λ'
+  before <- refs.get cell
+  refs.set '🙂' cell
+  after <- refs.get cell
+  println ("chars: " + show before + " -> " + show after)
+  recovered <- effects.recover (\value: Char -> effects.succeed (char.codePoint value)) (failChar after)
+  println ("recovered: " + show recovered)
+  releaseCell <- refs.make '\0'
+  effects.scoped $ do {
+    acquired <- effects.acquireRelease (effects.succeed 'λ') (\value: Char -> refs.set value releaseCell)
+    refs.set acquired cell
+    effects.succeed ()
+  }
+  println (show after)
+  current <- refs.get cell
+  println (debug current)
+  released <- refs.get releaseCell
+  println ("released: " + show released)
+}

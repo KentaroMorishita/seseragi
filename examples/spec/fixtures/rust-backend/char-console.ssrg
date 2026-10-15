@@ -1,0 +1,8 @@
+import * as console from "std/console"
+
+pub effect fn main = do {
+  console.printValue '🙂'
+  console.println ""
+  console.printValue 'λ'
+  console.println ""
+}

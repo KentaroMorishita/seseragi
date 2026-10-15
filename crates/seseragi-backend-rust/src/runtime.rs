@@ -117,6 +117,7 @@ fn clear_dictionaries() {
 enum V {
     Unit,
     Int(i64),
+    Char(char),
     Bool(bool),
     Text(Shared<String>),
     Tuple(Shared<Vec<V>>),
@@ -204,6 +205,7 @@ impl V {
             match value {
                 V::Unit => output.push_str("()"),
                 V::Int(n) => output.push_str(&n.to_string()),
+                V::Char(c) => output.push(*c),
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
                 V::Text(v) => output.push_str(v.get()),
                 V::Tuple(v) | V::Array(v) => {

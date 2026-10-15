@@ -327,7 +327,7 @@ fn console_text(value: &V) -> String {
     match value {
         V::Unit => "undefined".into(),
         V::Bool(value) => value.to_string(),
-        V::Text(_) | V::Int(_) => value.render(),
+        V::Text(_) | V::Int(_) | V::Char(_) => value.render(),
         _ => panic!("Rust ABI: render non-scalar Console values with Show"),
     }
 }

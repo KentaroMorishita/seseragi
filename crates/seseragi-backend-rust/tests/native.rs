@@ -55,6 +55,162 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn unicode_character_program_preserves_scalar_operations_patterns_and_dictionaries() {
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/char-unicode.ssrg");
+    run(
+        source,
+        r#"[0, 955, 128578, 1114111, 0, 55295, -1, -1, 57344, 1114111, -1, -1, -1, 955, -1, 0, 1, 2, 3, 4, 2, True, False, True, True, True, True, True, True, True, True, λ, 🙂, 🙂, '\0', '\b', '\f', '\u{1F}', '\u{7F}', '\u{9F}', '\'', '\\', '\n', '́', '🙂']"#,
+    );
+}
+
+#[test]
+fn char_intrinsics_preserve_the_full_domain_without_per_call_callable_nodes() {
+    let artifact = emit(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/char-unicode.ssrg"
+    ));
+    let name = rust_id("native/main::pointRoundtrip");
+    let direct = artifact
+        .source
+        .lines()
+        .find(|line| line.starts_with(&format!("fn {name}_direct(")))
+        .unwrap();
+    assert!(direct.contains("native_char_from_code_point("));
+    assert!(!direct.contains("V::fun("));
+    let end = artifact.source.rfind("fn main()").unwrap();
+    let harness = r#"
+fn main() {
+ let before=ALLOCATIONS.with(Cell::get);
+ let mut checksum=0_i64;
+ for point in 0..=0x110000_i64 {
+  let expected=if point <= 0x10ffff && !(0xd800..=0xdfff).contains(&point) { point } else {-1};
+  let value=<ROUNDTRIP>_direct(vec![],checked_int(point));
+  let V::Int(value)=value else {panic!("wrong return type")};
+  assert_eq!(value,expected,"point={point:X}");
+  checksum+=value;
+ }
+ assert_eq!(checksum,<CHECKSUM>);
+ // At most the result Maybe node; no transient callable node for each intrinsic.
+ assert!(ALLOCATIONS.with(Cell::get)-before <= 0x110001);
+ clear_dictionaries(); assert_eq!(LIVE.with(Cell::get),0);
+}
+"#
+    .replace("<ROUNDTRIP>", &name)
+    .replace("<CHECKSUM>", "620506872831");
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&(artifact.source[..end].to_owned() + &harness)))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+#[test]
+fn generic_character_comparisons_use_the_selected_user_dictionary() {
+    run(
+        r#"
+type Mark = | Mark Int
+instance Eq<Mark> {
+  fn eq left: Mark -> right: Mark -> Bool = True
+}
+fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
+pub fn probe -> Bool = same (Mark 1) (Mark 2)
+"#,
+        "True",
+    );
+}
+
+#[test]
+fn character_partial_binding_rejects_unproven_staging_and_source_arity() {
+    let source = "fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right\npub fn probe -> Bool = { let partial = same 'λ'; partial 'λ' }\n";
+    let core = compile_core_module(CompileInput::new("char.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    assert!(emit_rust_module(&core, "probe").is_ok());
+    for mutation in 0..5 {
+        let mut changed = core.clone();
+        let function = changed
+            .functions
+            .iter_mut()
+            .find(|function| function.symbol.ends_with("::probe"))
+            .unwrap();
+        let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+            panic!("expected sequence")
+        };
+        let seseragi_lowering::CoreStatement::PureLet { value, .. } = &mut statements[0] else {
+            panic!("expected partial binding")
+        };
+        let CoreExpr::Call {
+            callee,
+            arguments,
+            evidence,
+            deferred_evidence_parameters,
+            deferred_evidence_type_constructor_parameters,
+            origin,
+            ..
+        } = value
+        else {
+            panic!("expected partial call")
+        };
+        match mutation {
+            0 => deferred_evidence_parameters.push(seseragi_lowering::CoreType::Named {
+                name: "Char".into(),
+                arguments: vec![],
+            }),
+            1 => deferred_evidence_type_constructor_parameters.push("F".into()),
+            2 => evidence[0].constraint.trait_identity = Some("user::Eq".into()),
+            3 => *callee = "unknown::same".into(),
+            _ => arguments.push(CoreExpr::Char {
+                value: "λ".into(),
+                origin: origin.clone(),
+            }),
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "mutation={mutation}");
+        assert!(error.origin.is_some());
+    }
+}
+
+#[test]
+fn malformed_char_values_and_nominal_standard_evidence_are_rejected() {
+    let mut core = compile_core_module(CompileInput::new(
+        "char.ssrg",
+        "native/main",
+        "pub fn probe -> Char = 'λ'\n",
+    ))
+    .unwrap()
+    .core_ir;
+    let CoreExpr::Char { value, .. } = &mut core.functions[0].body else {
+        panic!("expected Char")
+    };
+    *value = "e\u{301}".into();
+    let error = emit_rust_module(&core, "probe").unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(error.origin.is_some());
+    let mut core = compile_core_module(CompileInput::new(
+        "char.ssrg",
+        "native/main",
+        "pub fn probe -> String = show 'λ'\n",
+    ))
+    .unwrap()
+    .core_ir;
+    let CoreExpr::Call { evidence, .. } = &mut core.functions[0].body else {
+        panic!("expected call")
+    };
+    evidence[0].constraint.arguments[0] = seseragi_lowering::CoreType::ExternalNamed {
+        name: "Char".into(),
+        canonical: "user::Char".into(),
+        arguments: vec![],
+    };
+    let error = emit_rust_module(&core, "probe").unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(error.message.contains("canonical Char"));
+}
+
+#[test]
 fn scalar_loop_operators_preserve_nested_arguments_ordering_and_negation() {
     let source =
         include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-operators.ssrg");

@@ -126,7 +126,7 @@ export function readChunks(
   return fromPull<EmptyEnvironment, BlobReadError, Bytes>(
     async (_environment, context) => {
       const reader = blob[BLOB].stream().getReader()
-      let pending = new Uint8Array()
+      let pending: Uint8Array = new Uint8Array()
       let closed = false
       const close = async (): Promise<void> => {
         if (closed) return

@@ -1,0 +1,95 @@
+import * as char from "std/char"
+
+type StoredChar = | StoredChar Char
+fn restoredChar value: StoredChar -> Char = match value { StoredChar scalar -> scalar }
+
+fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
+fn different<A> left: A -> right: A -> Bool where Eq<A> = left != right
+fn before<A> left: A -> right: A -> Bool where Ord<A> = left < right
+
+fn savedShow<A> value: A -> (Unit -> String) where Show<A> = \_ -> show value
+
+fn decode value: Maybe<Char> -> Int = match value {
+  Just scalar -> char.codePoint scalar
+  Nothing -> -1
+}
+
+fn classify value: Char -> Int = match value {
+  '\0' -> 0
+  'λ' -> 1
+  '🙂' -> 2
+  other when other > '\u{FFFF}' -> 3
+  _ -> 4
+}
+
+fn classifyText value: String -> Int = match value {
+  "λ" -> 1
+  "e\u{0301}" -> 2
+  _ -> 3
+}
+
+pub fn pointRoundtrip value: Int -> Int = decode (char.fromCodePoint value)
+pub fn scalarBefore left: Char -> right: Char -> Bool = before left right
+pub fn scalarSame left: Char -> right: Char -> Bool = same left right
+pub fn displayChar value: Char -> String = debug value
+
+pub fn probe -> Array<String> = {
+  let equalSmile = same '🙂'
+  let inspect = savedShow '🙂'
+  let point = char.codePoint
+  let fromPoint = char.fromCodePoint
+  let sourceScalar = 'λ'
+  let scalar = {
+    let sourceScalar = sourceScalar
+    let stored = { pair: (sourceScalar, '🙂'), tagged: StoredChar sourceScalar }
+    let first = match stored.pair { (value, _) -> value }
+    if first == restoredChar stored.tagged then first else '\0'
+  }
+  [
+    show (point '\0'),
+    show (point 'λ'),
+    show (point '🙂'),
+    show (point '\u{10FFFF}'),
+    show (decode (fromPoint 0)),
+    show (decode (fromPoint 55295)),
+    show (decode (fromPoint 55296)),
+    show (decode (fromPoint 57343)),
+    show (decode (fromPoint 57344)),
+    show (decode (fromPoint 1114111)),
+    show (decode (fromPoint 1114112)),
+    show (decode (fromPoint (-1))),
+    show (decode (fromPoint 9007199254740991)),
+    show (decode (Just scalar)),
+    show (decode Nothing),
+    show (classify '\0'),
+    show (classify scalar),
+    show (classify '🙂'),
+    show (classify '\u{10000}'),
+    show (classify 'e'),
+    show (classifyText "e\u{0301}"),
+    show (equalSmile '🙂'),
+    show (equalSmile 'λ'),
+    show (different scalar '🙂'),
+    show (before '\u{E000}' '\u{10000}'),
+    show ('\u{FFFF}' < '\u{10000}'),
+    show ('\u{FFFF}' <= '\u{10000}'),
+    show ('\u{10000}' > '\u{FFFF}'),
+    show ('\u{10000}' >= '\u{10000}'),
+    show ('λ' == scalar),
+    show ('λ' != '🙂'),
+    char.toString scalar,
+    inspect (),
+    inspect (),
+    debug '\0',
+    debug '\u{8}',
+    debug '\u{C}',
+    debug '\u{1F}',
+    debug '\u{7F}',
+    debug '\u{9F}',
+    debug '\'',
+    debug '\\',
+    debug '\n',
+    debug '\u{0301}',
+    debug '🙂'
+  ]
+}

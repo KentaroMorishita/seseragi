@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, expect, test } from "bun:test"
-import { mkdtemp, readFile, rm } from "node:fs/promises"
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { createConnection } from "node:net"
 import { tmpdir } from "node:os"
 import { dirname, resolve } from "node:path"
@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url"
 import type { Browser, Page } from "playwright"
 import { launchTestBrowser } from "./browser-test-support"
 import { ensureSeseragiCli, runCommand } from "./cli-test-support"
+import { startFixtureServer } from "./fixture-server-support"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..")
 let browser: Browser | undefined
@@ -203,7 +204,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     signal: resolve(directory, "signal"),
     reactive: resolve(directory, "reactive"),
   }
-  let fixtureServer: ReturnType<typeof Bun.serve> | undefined
+  let fixtureServer: Awaited<ReturnType<typeof startFixtureServer>> | undefined
   let expectedFixturePort: number | undefined
   try {
     mark("build CLI")
@@ -246,40 +247,9 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       signal: signalIndex,
       reactive: reactiveIndex,
     }
-    fixtureServer = Bun.serve({
-      hostname: "127.0.0.1",
-      port: 0,
-      async fetch(request) {
-        const url = new URL(request.url)
-        const match = /^\/(hydration|signal|reactive)(\/.*)?$/.exec(
-          url.pathname
-        )
-        if (match === null) return new Response("Not found", { status: 404 })
-        const fixture = match[1] as keyof typeof outputs
-        const relative =
-          match[2] === undefined || match[2] === "/"
-            ? "index.html"
-            : match[2].slice(1)
-        if (relative === "index.html") {
-          return new Response(indexes[fixture], {
-            headers: { "content-type": "text/html; charset=utf-8" },
-          })
-        }
-        const file = resolve(outputs[fixture], relative)
-        if (!file.startsWith(`${outputs[fixture]}/`)) {
-          return new Response("Forbidden", { status: 403 })
-        }
-        return new Response(await readFile(file), {
-          headers: {
-            "content-type": relative.endsWith(".js")
-              ? "text/javascript; charset=utf-8"
-              : relative.endsWith(".css")
-                ? "text/css; charset=utf-8"
-                : "application/octet-stream",
-          },
-        })
-      },
-    })
+    const configuration = resolve(directory, "fixture-server.json")
+    await writeFile(configuration, JSON.stringify({ outputs, indexes }))
+    fixtureServer = await startFixtureServer(configuration)
 
     const fixturePort = fixtureServer.port
     expect(Number.isInteger(fixturePort)).toBe(true)
@@ -295,7 +265,7 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       hydrationErrors.push(error.message)
     )
     mark("hydration navigation")
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
     await hydrationPage.goto(`${fixtureOrigin}/hydration/`)
     await hydrationPage.waitForFunction(
       () => document.documentElement.dataset.seseragiStatus === "completed"
@@ -306,14 +276,14 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(hydrationErrors).toEqual([])
     mark("hydration complete")
     await hydrationPage.close()
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
 
     mark("signal new page")
     const signalPage = await openPage()
     const signalErrors: string[] = []
     signalPage.on("pageerror", (error) => signalErrors.push(error.message))
     mark("signal navigation")
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
     await signalPage.goto(`${fixtureOrigin}/signal/`)
     await signalPage.locator("#count").waitFor()
     await signalPage.locator("#increment").click()
@@ -329,14 +299,14 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(signalErrors).toEqual([])
     mark("signal complete")
     await signalPage.close()
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
 
     mark("reactive new page")
     const reactivePage = await openPage()
     const reactiveErrors: string[] = []
     reactivePage.on("pageerror", (error) => reactiveErrors.push(error.message))
     mark("reactive navigation")
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
     await reactivePage.goto(`${fixtureOrigin}/reactive/`)
     await reactivePage.locator("#count").waitFor()
     await reactivePage.evaluate(() => {
@@ -509,13 +479,15 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     expect(reactiveErrors).toEqual([])
     mark("reactive complete")
     await reactivePage.close()
-    expect(fixtureServer.port).toBe(fixturePort)
+    expect((await fixtureServer.status()).port).toBe(fixturePort)
   } catch (error) {
+    const state = await fixtureServer?.status().catch(() => undefined)
     const listener = {
       expectedPort: expectedFixturePort ?? null,
-      actualPort: fixtureServer?.port ?? null,
-      pendingRequests: fixtureServer?.pendingRequests ?? null,
-      pendingWebSockets: fixtureServer?.pendingWebSockets ?? null,
+      actualPort: state?.port ?? null,
+      pendingRequests: state?.pendingRequests ?? null,
+      pendingWebSockets: state?.pendingWebSockets ?? null,
+      worker: fixtureServer?.diagnostics(),
       tcp:
         expectedFixturePort === undefined
           ? "not started"
@@ -526,12 +498,18 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       { cause: error }
     )
   } finally {
-    await Promise.all(
-      pages.filter((page) => !page.isClosed()).map((page) => page.close())
-    )
-    mark("cleanup server")
-    await fixtureServer?.stop(true)
-    mark("cleanup server complete")
-    await rm(directory, { recursive: true, force: true })
+    try {
+      await Promise.all(
+        pages.filter((page) => !page.isClosed()).map((page) => page.close())
+      )
+    } finally {
+      mark("cleanup server")
+      try {
+        await fixtureServer?.stop()
+        mark("cleanup server complete")
+      } finally {
+        await rm(directory, { recursive: true, force: true })
+      }
+    }
   }
 }, 120_000)
