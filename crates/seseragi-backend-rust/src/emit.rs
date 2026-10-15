@@ -10,6 +10,7 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod scalar;
 mod tail;
 
 type Scope = BTreeSet<String>;

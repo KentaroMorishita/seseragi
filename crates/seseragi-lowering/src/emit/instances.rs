@@ -487,6 +487,7 @@ fn render_user_defined_instance(
                     method.is_async,
                     false,
                     None,
+                    false,
                 )
             )
         }))

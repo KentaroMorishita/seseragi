@@ -43,6 +43,8 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "tail-capture",
         "tail-evidence",
         "let-shadowing",
+        "scalar-tail-loop",
+        "scalar-tail-operators",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -101,6 +103,44 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
             );
             assert_eq!(native.stdout, ts.stdout, "{name}/{profile}");
         }
+    }
+}
+
+#[test]
+fn scalar_tail_loops_preserve_primitive_traces_on_bun_and_node() {
+    let scratch = Scratch::new();
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-loop.ssrg");
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("main.ssrg", "scalar/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let directory = scratch.0.join(name);
+        fs::create_dir_all(&directory).unwrap();
+        let emitted = directory.join("generated.ts");
+        fs::write(&emitted, compiled.generated.typescript).unwrap();
+        let output = Command::new("bun")
+            .arg(root.join("scripts/scalar-tail-probe.ts"))
+            .arg(&emitted)
+            .current_dir(&root)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&output.stdout)
+                .matches("\"cases\":69")
+                .count(),
+            2
+        );
     }
 }
 

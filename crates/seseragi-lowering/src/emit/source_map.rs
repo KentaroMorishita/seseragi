@@ -572,6 +572,7 @@ mod tests {
                 exported: true,
                 is_async: false,
                 is_effect: false,
+                scalar_tail_loop: false,
                 name: "run".to_owned(),
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),

@@ -1,0 +1,17 @@
+fn walk remaining: Int -> total: Int -> enabled: Bool -> Int =
+  if remaining <= 0 then
+    if enabled then
+      total
+    else
+      -total
+  else
+    walk (remaining - 1) (if remaining < 3 then
+      total * remaining
+    else
+      total - remaining) (if enabled then
+        False
+      else
+        True)
+
+pub fn probe -> (Int, Int, Int) =
+  (walk 5 10 True, walk 5 10 False, walk 0 (-9007199254740991) False)

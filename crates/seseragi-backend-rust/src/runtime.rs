@@ -250,11 +250,14 @@ fn apply(mut f: V, args: Vec<V>) -> V {
     f
 }
 fn checked_int(value: i64) -> V {
+    V::Int(checked_int_value(value))
+}
+fn checked_int_value(value: i64) -> i64 {
     assert!(
         (-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value),
         "Seseragi Int overflow"
     );
-    V::Int(value)
+    value
 }
 fn negate(value: V) -> V {
     match value {
@@ -262,14 +265,32 @@ fn negate(value: V) -> V {
         _ => panic!("Rust ABI: expected Int"),
     }
 }
+fn int_add_value(a: i64, b: i64) -> i64 {
+    checked_int_value(a.checked_add(b).expect("Int overflow"))
+}
+fn int_subtract_value(a: i64, b: i64) -> i64 {
+    checked_int_value(a.checked_sub(b).expect("Int overflow"))
+}
+fn int_multiply_value(a: i64, b: i64) -> i64 {
+    checked_int_value(a.checked_mul(b).expect("Int overflow"))
+}
+fn int_equal_value(a: i64, b: i64) -> bool {
+    a == b
+}
+fn int_less_value(a: i64, b: i64) -> bool {
+    a < b
+}
+fn int_less_equal_value(a: i64, b: i64) -> bool {
+    a <= b
+}
 fn binary(op: &str, a: V, b: V) -> V {
     match (op, a, b) {
-        ("+", V::Int(a), V::Int(b)) => checked_int(a.checked_add(b).expect("Int overflow")),
-        ("-", V::Int(a), V::Int(b)) => checked_int(a.checked_sub(b).expect("Int overflow")),
-        ("*", V::Int(a), V::Int(b)) => checked_int(a.checked_mul(b).expect("Int overflow")),
-        ("==", V::Int(a), V::Int(b)) => V::Bool(a == b),
-        ("<", V::Int(a), V::Int(b)) => V::Bool(a < b),
-        ("<=", V::Int(a), V::Int(b)) => V::Bool(a <= b),
+        ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value(a, b)),
+        ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value(a, b)),
+        ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
+        ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
+        ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
+        ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
         ("+", V::Text(a), V::Text(b)) => V::Text(Shared::new(format!("{}{}", a.get(), b.get()))),
         _ => panic!("Rust ABI: unsupported binary operation"),
     }

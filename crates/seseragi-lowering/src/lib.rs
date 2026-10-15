@@ -4,7 +4,7 @@ mod core;
 mod core_analysis;
 pub use core_analysis::{
     core_expr_origin, core_free_variables, is_closed_local_evidence, known_pure_call_shape,
-    CoreCallShape, CoreFreeVariables,
+    scalar_self_tail_loop, CoreCallShape, CoreFreeVariables, CoreScalarKind, CoreScalarTailLoop,
 };
 mod display_ops;
 mod effect_ops;
@@ -836,18 +836,37 @@ pub fn sum current: Int -> total: Int -> Int =
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
-        assert!(bundle.typescript.contains("const $ssrg$tail = Symbol();"));
+        assert!(!bundle.typescript.contains("const $ssrg$tail = Symbol();"));
         assert!(bundle.typescript.contains("while (true)"));
         assert!(bundle.typescript.contains(
-            "({ [$ssrg$tail]: [_ssrg_int_subtract(current, 1), _ssrg_int_add(total, current)] } as never)"
+            "const $ssrg$scalarNext0 = _ssrg_int_subtract(current, 1);const $ssrg$scalarNext1 = _ssrg_int_add(total, current);"
         ));
-        assert!(bundle
+        assert!(bundle.typescript.contains(
+            "const current: number = $ssrg$scalarSlot0;const total: number = $ssrg$scalarSlot1;"
+        ));
+        assert!(bundle.typescript.contains(
+            "$ssrg$scalarSlot0 = $ssrg$scalarNext0;$ssrg$scalarSlot1 = $ssrg$scalarNext1;continue;"
+        ));
+        assert!(!bundle.typescript.contains("$ssrg$loopArguments"));
+    }
+
+    #[test]
+    fn older_typescript_ir_uses_the_conservative_tail_loop() {
+        let source = "pub fn sum n: Int -> total: Int -> Int = if n == 0 then total else sum (n - 1) (total + n)\n";
+        let typed = type_module("artifact/older-tail/main.ssrg", source);
+        let mut typescript = lower_core_module_to_typescript_ir(lower_typed_module(typed));
+        let mut serialized = serde_json::to_value(&typescript.functions[0]).unwrap();
+        let function = serialized.as_object_mut().unwrap();
+        assert_eq!(
+            function.remove("scalarTailLoop"),
+            Some(serde_json::json!(true))
+        );
+        typescript.functions[0] = serde_json::from_value(serialized).unwrap();
+        let generated = emit_typescript_module(typescript, source);
+        assert!(generated
             .typescript
-            .contains("const current: number = $ssrg$loopArguments[0]; const total: number = $ssrg$loopArguments[1];"));
-        assert!(bundle
-            .typescript
-            .contains("$ssrg$loopArguments = $ssrg$arguments; continue;"));
-        assert!(!bundle.typescript.contains("current = $ssrg$arguments[0]"));
+            .contains("const $ssrg$tail = Symbol();"));
+        assert!(!generated.typescript.contains("$ssrg$scalarSlot"));
     }
 
     #[test]

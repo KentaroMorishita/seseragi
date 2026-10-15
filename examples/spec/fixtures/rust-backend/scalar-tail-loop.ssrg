@@ -1,0 +1,29 @@
+pub fn sum remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else sum (remaining - 1) (total + remaining)
+
+pub fn retained remaining: Int -> total: Int -> Int = {
+  let current = remaining
+  if current == 0 then total else retained (current - 1) (total + current)
+}
+
+fn flag remaining: Int -> answer: Bool -> Bool =
+  if remaining == 0 then answer else flag (remaining - 1) answer
+
+fn swap remaining: Int -> left: Int -> right: Int -> Int =
+  if remaining == 0 then left else swap (remaining - 1) right left
+
+fn product remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else product (remaining - 1) (total * remaining)
+
+pub fn probe -> (Int, Int, Int, Bool, Int, Int, Int) = {
+  let partial = sum 40
+  (
+    partial 1,
+    partial 2,
+    retained 40 1,
+    flag 100000 True,
+    swap 20 35 42,
+    swap 21 35 42,
+    product 10 1
+  )
+}
