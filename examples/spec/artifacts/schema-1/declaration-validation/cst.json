@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 72,
+    "endToken": 71,
     "children": [
       {
         "kind": "top-decl",
@@ -74,29 +74,29 @@
       {
         "kind": "top-decl",
         "startToken": 41,
-        "endToken": 50,
+        "endToken": 49,
         "children": [
           {
             "kind": "let-decl",
             "startToken": 41,
-            "endToken": 50,
+            "endToken": 49,
             "children": []
           },
           {
             "kind": "complete-declaration",
             "startToken": 41,
-            "endToken": 49,
+            "endToken": 48,
             "children": [
               {
                 "kind": "complete-signature",
                 "startToken": 41,
-                "endToken": 48,
+                "endToken": 47,
                 "children": []
               },
               {
                 "kind": "complete-expression",
-                "startToken": 48,
-                "endToken": 49,
+                "startToken": 47,
+                "endToken": 48,
                 "children": []
               }
             ]
@@ -105,86 +105,86 @@
       },
       {
         "kind": "top-decl",
-        "startToken": 50,
-        "endToken": 58,
+        "startToken": 49,
+        "endToken": 57,
         "children": [
           {
             "kind": "let-decl",
-            "startToken": 50,
+            "startToken": 49,
+            "endToken": 57,
+            "children": []
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 49,
+            "endToken": 56,
+            "children": [
+              {
+                "kind": "complete-signature",
+                "startToken": 49,
+                "endToken": 55,
+                "children": []
+              },
+              {
+                "kind": "complete-expression",
+                "startToken": 55,
+                "endToken": 56,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 57,
+        "endToken": 71,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 57,
             "endToken": 58,
             "children": []
           },
           {
-            "kind": "complete-declaration",
-            "startToken": 50,
-            "endToken": 57,
-            "children": [
-              {
-                "kind": "complete-signature",
-                "startToken": 50,
-                "endToken": 56,
-                "children": []
-              },
-              {
-                "kind": "complete-expression",
-                "startToken": 56,
-                "endToken": 57,
-                "children": []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "kind": "top-decl",
-        "startToken": 58,
-        "endToken": 72,
-        "children": [
-          {
-            "kind": "decl-modifiers",
-            "startToken": 58,
-            "endToken": 59,
-            "children": []
-          },
-          {
             "kind": "effect-fn-decl",
-            "startToken": 60,
-            "endToken": 72,
-            "children": [
-              {
-                "kind": "effect-signature",
-                "startToken": 60,
-                "endToken": 72,
-                "children": []
-              }
-            ]
-          },
-          {
-            "kind": "complete-declaration",
-            "startToken": 58,
+            "startToken": 59,
             "endToken": 71,
             "children": [
               {
+                "kind": "effect-signature",
+                "startToken": 59,
+                "endToken": 71,
+                "children": []
+              }
+            ]
+          },
+          {
+            "kind": "complete-declaration",
+            "startToken": 57,
+            "endToken": 70,
+            "children": [
+              {
                 "kind": "complete-signature",
-                "startToken": 58,
-                "endToken": 68,
+                "startToken": 57,
+                "endToken": 67,
                 "children": []
               },
               {
                 "kind": "complete-expression",
-                "startToken": 68,
-                "endToken": 71,
+                "startToken": 67,
+                "endToken": 70,
                 "children": [
                   {
                     "kind": "complete-expression",
-                    "startToken": 68,
-                    "endToken": 69,
+                    "startToken": 67,
+                    "endToken": 68,
                     "children": []
                   },
                   {
                     "kind": "complete-expression",
-                    "startToken": 70,
-                    "endToken": 71,
+                    "startToken": 69,
+                    "endToken": 70,
                     "children": []
                   }
                 ]
