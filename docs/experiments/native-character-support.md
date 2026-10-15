@@ -58,6 +58,7 @@ positioned unsupported diagnostics.
   in development/release on fresh Bun and Node processes. Each checks all
   1114113 inputs, 1112064 valid scalars, 324 comparison pairs, Debug boundaries
   and the reusable partial/capture fixture.
+- The pure fixture roundtrips Char through a record, tuple and user ADT.
 - CLI fixtures compare pure Char values plus Ref, typed failure/recovery,
   resource release and qualified Console behavior against TS. Existing scalar
   loop, closure, dictionary and Effect cases remain in the same suite.

@@ -1,5 +1,8 @@
 import * as char from "std/char"
 
+type StoredChar = | StoredChar Char
+fn restoredChar value: StoredChar -> Char = match value { StoredChar scalar -> scalar }
+
 fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right
 fn different<A> left: A -> right: A -> Bool where Eq<A> = left != right
 fn before<A> left: A -> right: A -> Bool where Ord<A> = left < right
@@ -36,7 +39,12 @@ pub fn probe -> Array<String> = {
   let point = char.codePoint
   let fromPoint = char.fromCodePoint
   let sourceScalar = 'λ'
-  let scalar = { let sourceScalar = sourceScalar; sourceScalar }
+  let scalar = {
+    let sourceScalar = sourceScalar
+    let stored = { pair: (sourceScalar, '🙂'), tagged: StoredChar sourceScalar }
+    let first = match stored.pair { (value, _) -> value }
+    if first == restoredChar stored.tagged then first else '\0'
+  }
   [
     show (point '\0'),
     show (point 'λ'),
