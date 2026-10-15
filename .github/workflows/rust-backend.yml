@@ -177,7 +177,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p target
-          echo "Integration reason: native backend, shared CoreIr analysis, and TypeScript lowering changed."
+          echo "Integration reason: verify native backend, runtime and browser contracts before queue integration."
           ./scripts/check-scoped.sh release-gate-after-wasm 2>&1 | tee target/native-integration-source-gate.log
       - uses: actions/upload-artifact@v4
         if: always()
