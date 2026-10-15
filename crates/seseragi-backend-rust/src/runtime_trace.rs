@@ -48,6 +48,13 @@ impl TraceValue for (String, V) {
         Ok(())
     }
 }
+impl TraceValue for ListCell {
+    fn edges(&self, visit: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
+        visit(&self.head);
+        visit(&self.tail);
+        Ok(())
+    }
+}
 impl TraceValue for Function {
     fn edges(&self, visit: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
         self.captures.edges(visit)
@@ -73,11 +80,15 @@ impl TraceValue for EffectPlan {
 impl V {
     fn node_id(&self) -> Option<usize> {
         Some(match self {
-            Self::Unit | Self::Int(_) | Self::Float(_) | Self::Bool(_) | Self::Char(_) => {
-                return None
-            }
+            Self::Unit
+            | Self::Int(_)
+            | Self::Float(_)
+            | Self::Bool(_)
+            | Self::Char(_)
+            | Self::ListEmpty => return None,
             Self::Text(v) => v.id(),
             Self::Tuple(v) | Self::Array(v) => v.id(),
+            Self::List(v) => v.id(),
             Self::Record(v) | Self::Dict(v) => v.id(),
             Self::Adt(v) => v.id(),
             Self::Fun(v) => v.id(),

@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod characters;
 mod floats;
+mod lists;
 mod scalar;
 mod tail;
 
@@ -66,6 +67,7 @@ pub fn emit(module: &CoreModule, entry: &str) -> Result<RustArtifact> {
     output.push_str(include_str!("runtime_char.rs"));
     output.push_str(include_str!("runtime_float_display.rs"));
     output.push_str(include_str!("runtime_float.rs"));
+    output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     for (symbol, payload) in &backend.constructors {
@@ -222,6 +224,14 @@ impl Backend<'_> {
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
+            if let Some(dictionary) = self.list_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
+            if let Some(dictionary) = lists::primitive_display(selected) {
+                values.push(dictionary?);
+                continue;
+            }
             if let Some(dictionary) = floats::float_dictionary(selected) {
                 self.capabilities.insert("float".into());
                 values.push(dictionary?);
@@ -265,10 +275,6 @@ impl Backend<'_> {
                     } else {
                         factory
                     }
-                }
-                CoreInstanceEvidence::Standard { identity, .. } if primitive_show(identity) => {
-                    "V::dict(vec![(\"show\", V::fun(vec![], |_, value| V::text(&value.render())))])"
-                        .into()
                 }
                 other => {
                     return Err(format!("Rust backend: unsupported dictionary {other:?}").into())
@@ -316,6 +322,22 @@ impl Backend<'_> {
                 "({dictionary}).remove(0).field({})",
                 quoted(method)
             ))
+        } else if let Some(arity) = lists::list_operation_arity(name) {
+            if !evidence.is_empty() {
+                return Err("Rust backend: List operation with unsupported evidence".into());
+            }
+            self.capabilities.insert("list".into());
+            let names: Vec<_> = (0..arity).map(|i| format!("\0list_argument_{i}")).collect();
+            let arguments = names
+                .iter()
+                .map(|n| format!("{}.clone()", id(n)))
+                .collect::<Vec<_>>()
+                .join(",");
+            let mut body = format!("native_list_operation({}, vec![{arguments}])", quoted(name));
+            for i in (0..arity).rev() {
+                body = Self::closure(&names[i], &body, &names[..i].iter().cloned().collect());
+            }
+            Ok(body)
         } else if let Some(value) = characters::character_reference(name) {
             if !evidence.is_empty() {
                 return Err("Rust backend: Char operation with unsupported evidence".into());
@@ -497,6 +519,21 @@ impl Backend<'_> {
                     && evidence.is_empty()
                     && deferred_evidence_parameters.is_empty()
                     && evidence_argument_index.is_none()
+                    && lists::list_operation_arity(callee) == Some(arguments.len())
+                {
+                    self.capabilities.insert("list".into());
+                    self.direct_calls += 1;
+                    return Ok(format!(
+                        "native_list_operation({}, vec![{}])",
+                        quoted(callee),
+                        self.expressions(arguments, scope)?
+                    ));
+                }
+                if trait_dispatch.is_none()
+                    && !scope.contains(callee)
+                    && evidence.is_empty()
+                    && deferred_evidence_parameters.is_empty()
+                    && evidence_argument_index.is_none()
                     && floats::float_operation_arity(callee) == Some(arguments.len())
                 {
                     self.capabilities.insert("float".into());
@@ -547,6 +584,13 @@ impl Backend<'_> {
                             "Rust backend: mismatched canonical Float trait dispatch".into()
                         );
                     }
+                    if !lists::valid_display_dispatch(
+                        &evidence[0],
+                        &dispatch.trait_identity,
+                        &dispatch.method,
+                    ) {
+                        return Err("Rust backend: mismatched canonical display dispatch".into());
+                    }
                     let dictionary = self.evidence(evidence, scope)?;
                     format!(
                         "({dictionary}).remove(0).field({})",
@@ -578,6 +622,18 @@ impl Backend<'_> {
                 "V::Array(Shared::new(vec![{}]))",
                 self.expressions(elements, scope)?
             ),
+            CoreExpr::List {
+                elements, type_ref, ..
+            } => {
+                if lists::list_element(type_ref).is_none() {
+                    return Err("Rust backend: List literal requires canonical List type".into());
+                }
+                self.capabilities.insert("list".into());
+                format!(
+                    "V::list_from_values(vec![{}])",
+                    self.expressions(elements, scope)?
+                )
+            }
             CoreExpr::FieldAccess {
                 receiver, field, ..
             } => format!("({}).field({})", self.expr(receiver, scope)?, quoted(field)),
@@ -603,8 +659,23 @@ impl Backend<'_> {
                 left,
                 right,
                 evidence,
+                type_ref,
                 ..
             } => {
+                if operator == ":" {
+                    if !evidence.is_empty() || lists::list_element(type_ref).is_none() {
+                        return Err(
+                            "Rust backend: cons requires canonical List type and no evidence"
+                                .into(),
+                        );
+                    }
+                    self.capabilities.insert("list".into());
+                    return Ok(format!(
+                        "V::list_cons({}, {})",
+                        self.expr(left, scope)?,
+                        self.expr(right, scope)?
+                    ));
+                }
                 if floats::float_binary(evidence, operator) {
                     self.capabilities.insert("float".into());
                     return Ok(format!(
@@ -858,6 +929,12 @@ impl Backend<'_> {
                 CoreDecisionProjection::RecordField { name } => {
                     format!("({value}).field({})", quoted(name))
                 }
+                CoreDecisionProjection::ListElement { index } => {
+                    format!("({value}).list_element({index})")
+                }
+                CoreDecisionProjection::ListRest { start } => {
+                    format!("({value}).list_rest({start})")
+                }
                 _ => return Err("Rust backend: unsupported decision projection".into()),
             };
         }
@@ -889,20 +966,20 @@ impl Backend<'_> {
                 Self::project(root, path)?,
                 quoted(value)
             ),
+            CoreDecisionTest::ListLength {
+                path,
+                length,
+                minimum,
+                ..
+            } => format!(
+                "({}).list_length_matches({length}, {minimum})",
+                Self::project(root, path)?
+            ),
             _ => return Err("Rust backend: unsupported decision test".into()),
         })
     }
 }
 
-fn primitive_show(identity: &str) -> bool {
-    matches!(
-        identity,
-        "Show<std/prelude::Unit>"
-            | "Show<std/prelude::Int>"
-            | "Show<std/prelude::Bool>"
-            | "Show<std/prelude::String>"
-    )
-}
 fn dictionary_arithmetic<'a>(evidence: &[CoreCallEvidence], operator: &'a str) -> Option<&'a str> {
     let (name, method) = match operator {
         "+" => ("Add", "add"),

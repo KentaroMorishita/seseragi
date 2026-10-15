@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.35] - 2026-10-16
+
+### Added
+
+- Execute persistent List literals, cons function values, checked prefix/rest patterns, selected Show / Debug dictionaries and bounded list operations through the experimental Rust target (#834). Share tails without copying, preserve Float / Char / String display and callback order, and trace List edges through Ref cycles and synchronous Effect scopes. Verify deep construction, traversal and destruction on a small native stack. Collection typeclass instances, comprehension and remaining list APIs remain outside this slice.
+
 ## [0.61.34] - 2026-10-16
 
 ### Added

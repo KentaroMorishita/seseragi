@@ -1,0 +1,85 @@
+import * as lists from "std/list"
+import * as arrays from "std/array"
+import * as floats from "std/float"
+
+type Label = | Label Int
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "label=" + show n }
+}
+
+fn selected<A> values: List<A> -> String where Show<A> = show values
+
+fn number value: Maybe<Int> -> Int = match value {
+  Nothing -> -1
+  Just n -> n
+}
+
+fn remainder values: List<Int> -> List<Int> = match values {
+  `[] -> `[]
+  `[head, ...tail] -> tail
+}
+
+fn shape values: List<Int> -> Int = match values {
+  `[] -> 0
+  `[one] -> one
+  `[1, 2, ...tail] -> 20 + lists.length tail
+  `[first, ...tail] -> first
+}
+
+pub fn probe -> Array<String> = {
+  let empty: List<Int> = lists.empty ()
+  let values = 1: 2: `[3, 4]
+  let prepend: Int -> List<Int> -> List<Int> = (:)
+  let withZero = prepend 0
+  let getSecond: List<Int> -> Maybe<Int> = lists.get 1
+  let keep = lists.filter (\n: Int -> 2 <= n)
+  let closure = \_ -> remainder values
+  let nested = `[`[1, 2], `[], `[3]]
+  let unpacked = match ({ items: nested }) {
+    { items: `[`[1, ...tail], ...rest] } -> show tail + "/" + show rest
+    _ -> "miss"
+  }
+  [show values, show (withZero values), show (withZero empty), show (closure ()), show
+      (lists.singleton 9), show (lists.isEmpty empty), show (lists.isEmpty values), show
+      (lists.length values), show (number (lists.head empty)), show
+      (number (lists.head values)), show (number (getSecond values)), show
+      (number (lists.get (-1) values)), show
+      (number (lists.get 9007199254740991 values)), show (match lists.tail values { Nothing -> empty
+        Just tail -> tail }), show (match lists.tail empty { Nothing -> True
+        Just tail -> False }), show (lists.take (-2) values), show (lists.take 2 values), show (lists.take 9007199254740991 values), show (lists.drop (-2) values), show (lists.drop 2 values), show (lists.drop 9007199254740991 values), show (lists.append `[
+          8,
+          9
+        ] values), show (lists.reverse values), show (arrays.toList (lists.toArray values)), show (keep values), show (number (lists.find (\n: Int -> 3 <= n) values)), show (number (lists.find (\n: Int -> 9 <= n) values)), show (shape empty), show (shape `[7]), show (shape `[
+          1,
+          2
+        ]), show (shape values), unpacked, selected `[
+          Label 4,
+          Label 5
+        ], debug `[
+          'λ',
+          '\0',
+          '🙂'
+        ], debug `[
+          "line\n",
+          "\"\\\0\u{7F}",
+          "🙂"
+        ], debug `[
+          -0.0,
+          floats.nan (),
+          floats.positiveInfinity ()
+        ], debug `[
+          True,
+          False
+        ], debug `[
+          (),
+          ()
+        ], debug `[
+          1,
+          -2
+        ], show `[
+          `['λ'],
+          `['🙂']
+        ],
+  ]
+}

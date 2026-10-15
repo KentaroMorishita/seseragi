@@ -48,6 +48,8 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "char-unicode",
         "integer-literals",
         "float-values",
+        "list-core",
+        "list-tail",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -105,6 +107,50 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
                 String::from_utf8_lossy(&ts.stderr)
             );
             assert_eq!(native.stdout, ts.stdout, "{name}/{profile}");
+        }
+    }
+}
+
+#[test]
+fn list_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    for fixture in ["list-core", "list-tail"] {
+        let fixture_path = root.join(format!(
+            "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
+        ));
+        let source = fs::read_to_string(&fixture_path).unwrap();
+        for (name, profile) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let compiled = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new("main.ssrg", "lists/main", &source)
+                    .with_profile(profile),
+            )
+            .unwrap();
+            let directory = scratch.0.join(format!("{fixture}-{name}"));
+            fs::create_dir_all(&directory).unwrap();
+            let emitted = directory.join("generated.ts");
+            fs::write(&emitted, compiled.generated.typescript).unwrap();
+            let output = Command::new("bun")
+                .arg(root.join("scripts/list-probe.ts"))
+                .arg(&emitted)
+                .arg(fixture_path.with_extension("stdout"))
+                .current_dir(&root)
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{fixture}/{name}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&output.stdout)
+                    .matches("\"normalBody\":true")
+                    .count(),
+                2
+            );
         }
     }
 }
@@ -445,6 +491,10 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n"),
         ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
+        ("list-eq", "pub fn answer -> Bool = `[1] == `[1]\n"),
+        ("list-sort", "import * as lists from \"std/list\"\npub fn answer -> List<Int> = lists.sort `[2, 1]\n"),
+        ("list-comprehension", "pub fn answer -> List<Int> = `[n | n <- `[1, 2]]\n"),
+        ("list-functor", "pub fn answer -> List<Int> = map (\\n: Int -> n + 1) `[1, 2]\n"),
     ] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
         fs::write(&bad_path, source).unwrap();
@@ -514,6 +564,12 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "list-effects",
+            "fixtures/rust-backend/list-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/list-effects.stdout"),
+            0,
+        ),
         (
             "resource-lesson",
             "lessons/18-resource-scope.ssrg",

@@ -25,6 +25,8 @@ on:
       - "scripts/char-probe.mjs"
       - "scripts/float-probe.ts"
       - "scripts/float-probe.mjs"
+      - "scripts/list-probe.ts"
+      - "scripts/list-probe.mjs"
   push:
     branches: [main]
     paths:
@@ -50,6 +52,8 @@ on:
       - "scripts/char-probe.mjs"
       - "scripts/float-probe.ts"
       - "scripts/float-probe.mjs"
+      - "scripts/list-probe.ts"
+      - "scripts/list-probe.mjs"
   workflow_dispatch:
     inputs:
       integration:
