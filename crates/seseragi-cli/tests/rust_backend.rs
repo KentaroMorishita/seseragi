@@ -47,6 +47,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "scalar-tail-operators",
         "char-unicode",
         "integer-literals",
+        "float-values",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -143,6 +144,114 @@ fn unicode_character_fixture_agrees_on_bun_and_node() {
                 .count(),
             2
         );
+    }
+}
+
+#[test]
+fn float_normal_bodies_typecheck_and_match_bun_node_across_binary64_values() {
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/float-values.ssrg");
+    let core = seseragi_driver::compile_core_module(seseragi_driver::CompileInput::new(
+        "floats.ssrg",
+        "floats/main",
+        source,
+    ))
+    .unwrap();
+    let artifact = seseragi_backend_rust::emit_rust_module(&core.core_ir, "probe").unwrap();
+    let display = format!(
+        "v_{}_direct",
+        "floats/main::display"
+            .bytes()
+            .map(|b| format!("{b:02x}"))
+            .collect::<String>()
+    );
+    // Invoke the unchanged generated callable. Only the standalone test entry
+    // is replaced, so the compiler's Float body and runtime are the product's.
+    let harness = r#"
+fn main() {
+ let mut state=0x5eed6123_u64; let mut digest=0xcbf29ce484222325_u64;
+ let mut cases=0;
+ let mut check=|bits| {
+  let text=<DISPLAY>(vec![],V::Float(f64::from_bits(bits))).render();
+  for byte in text.bytes().chain(std::iter::once(0)) {
+   digest=(digest ^ byte as u64).wrapping_mul(0x100000001b3);
+  }
+  cases+=1;
+ };
+ for _ in 0..100000 { state^=state<<13;state^=state>>7;state^=state<<17;check(state); }
+ for exponent in -1074..=1023 {
+  let bits=if exponent < -1022 {1_u64 << (exponent+1074)} else {((exponent+1023) as u64)<<52};
+  check(bits);check(bits+1);check(bits-1);
+ }
+ clear_dictionaries();assert_eq!(LIVE.with(Cell::get),0);
+ println!("{{\"formatCases\":{},\"digest\":\"{:x}\"}}",cases,digest);
+}
+"#
+    .replace("<DISPLAY>", &display);
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let rust = scratch.0.join("format.rs");
+    fs::write(&rust, artifact.source[..main].to_owned() + &harness).unwrap();
+    let executable = scratch.0.join(if cfg!(windows) {
+        "format.exe"
+    } else {
+        "format"
+    });
+    let compiled = Command::new("rustc")
+        .args(["--edition=2021", "-O", "-o"])
+        .arg(&executable)
+        .arg(&rust)
+        .output()
+        .unwrap();
+    assert!(
+        compiled.status.success(),
+        "{}",
+        String::from_utf8_lossy(&compiled.stderr)
+    );
+    let native = Command::new(&executable).env("PATH", "").output().unwrap();
+    assert!(
+        native.status.success(),
+        "{}",
+        String::from_utf8_lossy(&native.stderr)
+    );
+    let expected: serde_json::Value = serde_json::from_slice(&native.stdout).unwrap();
+    assert_eq!(expected["formatCases"], 106294);
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("floats.ssrg", "floats/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let directory = scratch.0.join(name);
+        fs::create_dir_all(&directory).unwrap();
+        let emitted = directory.join("generated.ts");
+        fs::write(&emitted, compiled.generated.typescript).unwrap();
+        let output = Command::new("bun")
+            .arg(root.join("scripts/float-probe.ts"))
+            .arg(&emitted)
+            .current_dir(&root)
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{name}: {}{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let lines = String::from_utf8(output.stdout).unwrap();
+        let lines = lines.lines().collect::<Vec<_>>();
+        assert_eq!(lines.len(), 2);
+        for line in lines {
+            let (_, json) = line.split_once(": ").unwrap();
+            assert_eq!(
+                serde_json::from_str::<serde_json::Value>(json).unwrap(),
+                expected,
+                "{name}: {line}"
+            );
+        }
     }
 }
 
@@ -330,7 +439,11 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     );
     assert!(output_path.exists());
     for (name, source) in [
-        ("float", "pub fn answer -> Float = 1.5\n"),
+        ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n"),
+        ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n"),
+        ("float-parse", "import * as floats from \"std/float\"\npub fn answer -> Either<floats.FloatParseError, Float> = floats.parse \"1.5\"\n"),
+        ("float-rounding", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Float = floats.roundIntegral numbers.HalfEven 1.5\n"),
+        ("float-convert", "import * as floats from \"std/float\"\nimport * as numbers from \"std/number\"\npub fn answer -> Either<floats.FloatConversionError, Int> = floats.toInt numbers.HalfEven 1.5\n"),
         ("hash-char", "pub fn answer -> Int = hash 'λ'\n"),
     ] {
         let bad_path = scratch.0.join(format!("{name}.ssrg"));
@@ -363,6 +476,37 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
         .unwrap();
     assert_eq!(collision.status.code(), Some(2));
     assert_eq!(fs::read(source_path).unwrap(), original);
+}
+
+#[test]
+fn float_does_not_acquire_eq_ord_or_hash_through_native_emission() {
+    let scratch = Scratch::new();
+    for (name, source) in [
+        ("eq", "pub fn answer -> Bool = 1.0 == 1.0\n"),
+        ("ord", "pub fn answer -> Bool = 1.0 < 2.0\n"),
+        ("hash", "pub fn answer -> Int = hash 1.0\n"),
+    ] {
+        let path = scratch.0.join(format!("{name}.ssrg"));
+        fs::write(&path, source).unwrap();
+        let output = scratch.0.join(format!("{name}.rs"));
+        let result = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&path)
+            .args(["--entry", "answer", "--output"])
+            .arg(&output)
+            .output()
+            .unwrap();
+        assert_eq!(result.status.code(), Some(2));
+        let diagnostic = String::from_utf8_lossy(&result.stderr);
+        assert!(diagnostic.contains("SES-T0201"), "{name}: {diagnostic}");
+        assert!(
+            diagnostic.contains(&format!("{name}.ssrg:")),
+            "{diagnostic}"
+        );
+        assert!(!output.exists());
+        assert!(!output.with_extension("rust-backend.json").exists());
+    }
 }
 
 #[test]
@@ -440,6 +584,18 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             "char-effects",
             "fixtures/rust-backend/char-effects.ssrg",
             "chars: λ -> 🙂\nrecovered: 128578\n🙂\n'λ'\nreleased: λ\n",
+            0,
+        ),
+        (
+            "float-effects",
+            "fixtures/rust-backend/float-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/float-effects.stdout"),
+            0,
+        ),
+        (
+            "float-console",
+            "fixtures/rust-backend/float-console.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/float-console.stdout"),
             0,
         ),
         (

@@ -1,0 +1,29 @@
+import * as floats from "std/float"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn failFloat value: Float -> Bool fails Float = effects.fail value
+
+pub effect fn main = do {
+  cell <- refs.make (-0.0)
+  before <- refs.get cell
+  refs.set (floats.nan ()) cell
+  after <- refs.get cell
+  println ("floats: " + show before + " -> " + debug after)
+  recovered <- effects.recover (\value: Float -> effects.succeed (floats.isNaN value)) (failFloat after)
+  println ("recovered: " + show recovered)
+  releaseCell <- refs.make 1.0
+  effects.scoped $ do {
+    acquired <- effects.acquireRelease (effects.succeed before) (\value: Float -> refs.set value releaseCell)
+    refs.set acquired cell
+    effects.succeed ()
+  }
+  current <- refs.get cell
+  println ("current: " + show current)
+  released <- refs.get releaseCell
+  println ("released: " + show released)
+  println released
+  println 1.0
+  println 1e21
+  println (floats.positiveInfinity ())
+}

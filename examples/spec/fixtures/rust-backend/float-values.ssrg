@@ -1,0 +1,98 @@
+import * as floats from "std/float"
+
+type StoredFloat = | StoredFloat Float
+fn restore value: StoredFloat -> Float = match value { StoredFloat scalar -> scalar }
+fn add<A> left: A -> right: A -> A where Add<A, A, A> = left + right
+fn apply<A> function: (A -> A -> A) -> left: A -> right: A -> A = function left right
+fn savedShow<A> value: A -> (Unit -> String) where Show<A> = \_ -> show value
+fn order left: Float -> right: Float -> String = match floats.totalCompare left right {
+  Less -> "Less"
+  Equal -> "Equal"
+  Greater -> "Greater"
+}
+fn optional value: Maybe<Float> -> String = match value {
+  Nothing -> "Nothing"
+  Just scalar -> floats.format scalar
+}
+fn floatZero -> Float = zero ()
+fn floatOne -> Float = one ()
+fn sign value: Float -> String = match floats.sign value {
+  Nothing -> "Nothing"
+  Just integer -> show integer
+}
+
+pub fn display value: Float -> String = floats.format value
+pub fn probe -> Array<String> = {
+  let nan = floats.nan ()
+  let inf = floats.positiveInfinity ()
+  let negative = floats.negativeInfinity ()
+  let plus = add 1.5
+  let stored = { tuple: (-0.0, 1.25), tagged: StoredFloat nan }
+  let signed = match stored.tuple { (first, _) -> first }
+  let saved = savedShow signed
+  let lessThanZero = floats.totalCompare (-0.0)
+  [
+    show (plus 2.25),
+    show (plus 3.25),
+    show (apply (+) 1.5 2.25),
+    show (1.5 + 2.25),
+    show (4.0 - 1.5),
+    show (2.5 * 4.0),
+    show (1.0 / 0.0),
+    show (1.0 / signed),
+    show (0.0 / 0.0),
+    show ((-4.0) % 2.0),
+    show (-signed),
+    show (floatZero ()),
+    show (floatOne ()),
+    floats.format (floats.fromInt 9007199254740991),
+    show (floats.isNaN (restore stored.tagged)),
+    show (floats.isFinite 1.0),
+    show (floats.isFinite inf),
+    show (floats.isInfinite negative),
+    show (floats.isNegativeZero signed),
+    show (floats.isNegativeZero (-signed)),
+    show (floats.ieeeEq nan nan),
+    show (floats.ieeeEq signed 0.0),
+    order nan inf,
+    order inf nan,
+    order nan nan,
+    order signed 0.0,
+    order 0.0 signed,
+    order negative (-1.0),
+    (match lessThanZero 0.0 { Less -> "Less";
+      Equal -> "Equal";
+      Greater -> "Greater" }),
+    show (floats.minimumNumber 0.0 signed),
+    show (floats.minimumNumber signed 0.0),
+    show (floats.maximumNumber 0.0 signed),
+    show (floats.maximumNumber signed 0.0),
+    show (floats.minimumNumber nan 42.0),
+    show (floats.maximumNumber 42.0 nan),
+    show (floats.minimumNumber nan nan),
+    optional (floats.clampNumber (-1.0) 1.0 2.0),
+    optional (floats.clampNumber 0.0 signed 0.0),
+    optional (floats.clampNumber signed 0.0 signed),
+    optional (floats.clampNumber nan 1.0 0.0),
+    show (floats.abs signed),
+    show (floats.abs negative),
+    sign nan,
+    sign negative,
+    sign signed,
+    sign inf,
+    saved (),
+    saved (),
+    debug signed,
+    debug nan,
+    floats.format 705360935656145.25,
+    floats.format 2.98023223876953125e-8,
+    floats.format 5.9604644775390625e-8,
+    floats.format 0.000001,
+    floats.format 0.0000001,
+    floats.format 100000000000000000000.0,
+    floats.format 1e21,
+    floats.format 5e-324,
+    floats.format 1.7976931348623157e308,
+    floats.format 1_2.5_0e+0_1
+  ]
+}
