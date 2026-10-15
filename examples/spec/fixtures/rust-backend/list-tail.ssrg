@@ -1,0 +1,14 @@
+fn build remaining: Int -> values: List<Int> -> List<Int> =
+  if remaining <= 0 then values else build (remaining - 1) (remaining: values)
+
+fn sum total: Int -> values: List<Int> -> Int = match values {
+  `[] -> total
+  `[head, ...tail] -> sum (total + head) tail
+}
+
+pub fn kernel count: Int -> Int = {
+  let values = build count `[]
+  sum 0 values
+}
+
+pub fn probe -> Int = kernel 100000

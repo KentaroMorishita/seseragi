@@ -62,11 +62,15 @@ fn native_char_dictionary(identity: &'static str) -> V {
     cached(identity, || match identity {
         "Show<std/prelude::Char>" => V::dict(vec![(
             "show",
-            V::fun(vec![], |_, value| native_char_to_string(value)),
+            V::fun(vec![], |_, value| {
+                native_display(|| native_char_to_string(value))
+            }),
         )]),
         "Debug<std/prelude::Char>" => V::dict(vec![(
             "debug",
-            V::fun(vec![], |_, value| native_char_debug(value)),
+            V::fun(vec![], |_, value| {
+                native_display(|| native_char_debug(value))
+            }),
         )]),
         "std/char::Eq" | "std/char::Ord" => {
             let eq = V::fun(vec![], |_, left| {

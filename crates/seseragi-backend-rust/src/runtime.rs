@@ -123,6 +123,8 @@ enum V {
     Text(Shared<String>),
     Tuple(Shared<Vec<V>>),
     Array(Shared<Vec<V>>),
+    ListEmpty,
+    List(Shared<ListCell>),
     Record(Shared<BTreeMap<String, V>>),
     Adt(Shared<(String, V)>),
     Fun(Shared<Function>),
@@ -192,11 +194,22 @@ impl V {
         enum Task<'a> {
             Value(&'a V),
             Text(String),
+            ListTail(&'a V),
         }
         let mut work = vec![Task::Value(self)];
         let mut output = String::new();
         while let Some(task) = work.pop() {
             let value = match task {
+                Task::ListTail(cursor) => {
+                    if let Some(cell) = cursor.list_cell() {
+                        output.push_str(", ");
+                        work.push(Task::ListTail(&cell.tail));
+                        work.push(Task::Value(&cell.head));
+                    } else {
+                        output.push(']');
+                    }
+                    continue;
+                }
                 Task::Text(text) => {
                     output.push_str(&text);
                     continue;
@@ -210,6 +223,12 @@ impl V {
                 V::Char(c) => output.push(*c),
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
                 V::Text(v) => output.push_str(v.get()),
+                V::ListEmpty => output.push_str("`[]"),
+                V::List(v) => {
+                    output.push_str("`[");
+                    work.push(Task::ListTail(&v.get().tail));
+                    work.push(Task::Value(&v.get().head));
+                }
                 V::Tuple(v) | V::Array(v) => {
                     let array = matches!(value, V::Array(_));
                     output.push_str(if array { "[" } else { "(" });

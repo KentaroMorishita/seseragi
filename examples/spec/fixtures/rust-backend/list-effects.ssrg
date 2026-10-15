@@ -1,0 +1,35 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as lists from "std/list"
+
+effect fn failing -> Unit fails List<Int> = effects.fail `[7, 8]
+
+pub effect fn main = do {
+  cell <- refs.make `[\n: Int -> effects.succeed n]
+  let callback = \n: Int -> do {
+    previous <- refs.get cell
+    effects.succeed (n + lists.length previous)
+  }
+  refs.set `[callback, callback] cell
+  callbacks <- refs.get cell
+  value <- match callbacks {
+    `[first, ...tail] -> first 40
+    `[] -> effects.succeed (-1)
+  }
+  println ("callback: " + show value)
+  snapshot <- refs.make `[1, 2, 3]
+  before <- refs.get snapshot
+  refs.set `[4, 5] snapshot
+  println ("snapshot: " + show before)
+  released <- refs.make `[0]
+  recovered <- effects.recover (\values: List<Int> -> effects.succeed values) $
+    effects.scoped $
+    do {
+    effects.acquireRelease (effects.succeed before) (\values: List<Int> -> refs.set values released)
+    failing ()
+    effects.succeed `[9]
+  }
+  after <- refs.get released
+  println ("recovered: " + show recovered)
+  println ("released: " + show after)
+}
