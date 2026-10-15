@@ -141,7 +141,7 @@ fn rejects_safe_range_overflow_in_each_base_including_very_long_tokens() {
 
 #[test]
 fn numeric_tokens_preserve_range_member_operator_and_float_boundaries() {
-    let source = "0x1..0x3 0b1..=0o7 0xFF.face 42.member 0x1e+2 -0o52 1e+2 1.0suffix 1e2e3";
+    let source = "0x1..0x3 0b1..=0o7 0xFF.face 0xFF.pow 0xFF.fpow 42.member 0x1e+2 -0o52 1e+2 1.0suffix 1e2e3";
     let stream = lex("boundaries.ssrg", source);
     let raw = stream
         .tokens
@@ -161,6 +161,12 @@ fn numeric_tokens_preserve_range_member_operator_and_float_boundaries() {
             "0xFF",
             ".",
             "face",
+            "0xFF",
+            ".",
+            "pow",
+            "0xFF",
+            ".",
+            "fpow",
             "42",
             ".",
             "member",

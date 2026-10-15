@@ -276,9 +276,14 @@ impl Lexer<'_> {
         };
         // Keep ordinary member access (including .face) separate. A hex
         // fraction followed by p/P is an unsupported hexadecimal Float.
-        fraction
-            .trim_start_matches(|char: char| char.is_ascii_hexdigit() || char == '_')
-            .starts_with(['p', 'P'])
+        let exponent =
+            fraction.trim_start_matches(|char: char| char.is_ascii_hexdigit() || char == '_');
+        fraction.len() > exponent.len()
+            && exponent.starts_with(['p', 'P'])
+            && exponent[1..]
+                .chars()
+                .next()
+                .is_some_and(|char| char.is_ascii_digit() || matches!(char, '+' | '-'))
     }
 
     fn scan_numeric_suffix(&mut self) {
