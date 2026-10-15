@@ -113,8 +113,7 @@ impl SurfaceParser<'_> {
                         || self.raw_at(name_index).is_some_and(is_reserved)
                     {
                         let mut span = self.byte_span(name_index).expect("name token");
-                        // A digit-leading word is two lexical tokens. Highlight
-                        // the whole invalid spelling instead of just its digit.
+                        // Include adjacent recovery tokens in the name range.
                         let mut next = name_index + 1;
                         while next < header_end
                             && self.tokens[next].start == span.end
@@ -277,7 +276,9 @@ impl SurfaceParser<'_> {
 }
 
 fn validate_pattern(pattern: &SurfacePattern, diagnostics: &mut Vec<Diagnostic>) {
-    if matches!(pattern, SurfacePattern::Error { .. }) {
+    if matches!(pattern, SurfacePattern::Error { .. })
+        || matches!(pattern, SurfacePattern::Integer { raw, .. } if crate::decode_integer_literal(raw.strip_prefix('-').unwrap_or(raw)) == Err(crate::IntegerLiteralError::InvalidSpelling))
+    {
         diagnostics.push(error("parser.invalid-declaration-name", pattern.span()));
         return;
     }

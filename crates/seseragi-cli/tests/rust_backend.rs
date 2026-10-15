@@ -46,6 +46,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "scalar-tail-loop",
         "scalar-tail-operators",
         "char-unicode",
+        "integer-literals",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -141,6 +142,131 @@ fn unicode_character_fixture_agrees_on_bun_and_node() {
                 .matches("\"unicodeCodePoints\":1114113")
                 .count(),
             2
+        );
+    }
+}
+
+#[test]
+fn integer_literal_fixture_typechecks_and_executes_on_bun_and_node() {
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/integer-literals.ssrg");
+    let expected: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/integer-literals.stdout"
+    ))
+    .unwrap();
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let compiled = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new("numbers.ssrg", "numbers/main", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let directory = scratch.0.join(name);
+        fs::create_dir_all(&directory).unwrap();
+        let emitted = directory.join("generated.ts");
+        fs::write(&emitted, compiled.generated.typescript).unwrap();
+        let checked = Command::new("bun")
+            .arg(root.join("node_modules/typescript/bin/tsc"))
+            .args([
+                "--noEmit",
+                "--strict",
+                "--skipLibCheck",
+                "--target",
+                "ES2022",
+                "--module",
+                "ESNext",
+                "--moduleResolution",
+                "bundler",
+            ])
+            .arg(&emitted)
+            .current_dir(&root)
+            .output()
+            .unwrap();
+        assert!(
+            checked.status.success(),
+            "{name}: {}{}",
+            String::from_utf8_lossy(&checked.stdout),
+            String::from_utf8_lossy(&checked.stderr)
+        );
+        let harness = directory.join("harness.ts");
+        fs::write(
+            &harness,
+            "import { probe } from './generated'; console.log(JSON.stringify(probe()));\n",
+        )
+        .unwrap();
+        let module = directory.join("harness.mjs");
+        let built = Command::new("bun")
+            .arg("build")
+            .arg(&harness)
+            .args(["--target", "node", "--outfile"])
+            .arg(&module)
+            .current_dir(&root)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        for runtime in ["bun", "node"] {
+            let output = Command::new(runtime).arg(&module).output().unwrap();
+            assert!(
+                output.status.success(),
+                "{name}/{runtime}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert!(output.stderr.is_empty());
+            assert_eq!(
+                serde_json::from_slice::<serde_json::Value>(&output.stdout).unwrap(),
+                expected,
+                "{name}/{runtime}"
+            );
+        }
+    }
+}
+
+#[test]
+fn invalid_numeric_spellings_reject_before_rust_emission_or_execution() {
+    let scratch = Scratch::new();
+    for (index, raw) in [
+        "0b102",
+        "0o78",
+        "0xFFz",
+        "0x_FF",
+        "1__0",
+        "42suffix",
+        "0x1.fp+2",
+        "0x20000000000000",
+        "-0b100000000000000000000000000000000000000000000000000000",
+    ]
+    .iter()
+    .enumerate()
+    {
+        let source = scratch.0.join(format!("bad-{index}.ssrg"));
+        fs::write(&source, format!("pub fn probe -> Int = {raw}\n")).unwrap();
+        let destination = scratch.0.join(format!("bad-{index}.rs"));
+        let output = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&source)
+            .args(["--entry", "probe", "--output"])
+            .arg(&destination)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{raw}");
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains("SES-P0203"),
+            "{raw}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(output.stdout.is_empty(), "{raw}");
+        assert!(!destination.exists(), "{raw}");
+        assert!(
+            !destination.with_extension("rust-backend.json").exists(),
+            "{raw}"
         );
     }
 }

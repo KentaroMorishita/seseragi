@@ -132,6 +132,7 @@ impl Diagnostic {
             "literal.int-outside-range" => {
                 "Integer literal is outside the Int safe range".to_owned()
             }
+            "literal.int-invalid" => "Integer literal has an invalid spelling".to_owned(),
             "function.return-type-mismatch"
             | "let.type-mismatch"
             | "if.branch-type-mismatch"
@@ -257,6 +258,9 @@ impl Diagnostic {
             }
             "literal.int-outside-range" => {
                 "Use a value from -9007199254740991 through 9007199254740991, or use BigInt."
+            }
+            "literal.int-invalid" => {
+                "Use decimal digits or a 0b, 0o, or 0x prefix; place each underscore between two digits of the same base."
             }
             "call.arity-mismatch" => {
                 "Add or remove arguments so the call matches the function signature."
@@ -543,6 +547,16 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     append_diagnostics(&mut artifact, nested_surface_diagnostics);
     append_diagnostics(&mut artifact, declaration_diagnostics);
     append_diagnostics(&mut artifact, template_diagnostics);
+    let literal_diagnostics = literal_diagnostics
+        .into_iter()
+        .filter(|diagnostic| {
+            diagnostic.code != "SES-P0203"
+                || !artifact.diagnostics.iter().any(|existing| {
+                    existing.message_key == "parser.invalid-declaration-name"
+                        && existing.primary == diagnostic.primary
+                })
+        })
+        .collect();
     append_diagnostics(&mut artifact, literal_diagnostics);
     artifact
 }
@@ -872,15 +886,22 @@ fn malformed_pure_body_range(
 fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
     tokens
         .iter()
-        .enumerate()
-        .filter(|(_, token)| token.kind == TokenKind::LiteralInteger)
-        .filter(|(_, token)| !integer_literal_is_in_range(&token.raw))
-        .map(|(_, token)| Diagnostic {
+        .filter(|token| token.kind == TokenKind::LiteralInteger)
+        .filter_map(|token| {
+            crate::decode_integer_literal(&token.raw)
+                .err()
+                .map(|error| (token, error))
+        })
+        .map(|(token, error)| Diagnostic {
             type_difference: None,
             id: String::new(),
             code: "SES-P0203".to_owned(),
             severity: DiagnosticSeverity::Error,
-            message_key: "literal.int-outside-range".to_owned(),
+            message_key: match error {
+                crate::IntegerLiteralError::InvalidSpelling => "literal.int-invalid",
+                crate::IntegerLiteralError::OutsideSafeRange => "literal.int-outside-range",
+            }
+            .to_owned(),
             primary: ByteRange {
                 start: token.start,
                 end: token.end,
@@ -889,18 +910,6 @@ fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
             fixes: Vec::new(),
         })
         .collect()
-}
-
-fn integer_literal_is_in_range(raw: &str) -> bool {
-    if !valid_decimal_digits(raw) || (raw.starts_with('0') && raw.len() > 1) {
-        return false;
-    }
-    let normalized = raw.replace('_', "");
-    let Ok(value) = normalized.parse::<u128>() else {
-        return false;
-    };
-    const MAX_SAFE_INTEGER: u128 = 9_007_199_254_740_991;
-    value <= MAX_SAFE_INTEGER
 }
 
 fn float_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {

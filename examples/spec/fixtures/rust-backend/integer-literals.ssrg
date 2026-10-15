@@ -1,0 +1,30 @@
+fn classify value: Int -> Int = match value {
+  -0x2_A -> 1
+  0b1010_10 -> 2
+  0O755 -> 3
+  0x1F_FFFF_FFFF_FFFF -> 4
+  _ -> 0
+}
+
+fn sum remaining: Int -> total: Int -> Int =
+  if remaining <= 0b0 then total else sum (remaining - 0x1) (total + remaining)
+
+pub fn probe -> Array<Int> = [
+  0b1010_0110,
+  0B1010_0110,
+  0o755,
+  0O7_55,
+  0xFF_00,
+  0Xff_00,
+  1_000_000,
+  0x1F_FFFF_FFFF_FFFF,
+  -0b11111111111111111111111111111111111111111111111111111,
+  0o377777777777777777,
+  -0o0,
+  classify (-0o52),
+  classify 42,
+  classify 0b111101101,
+  classify 9007199254740991,
+  classify 0x2B,
+  sum 0x10 0b0,
+]

@@ -18,17 +18,18 @@ pub(super) fn type_integer_pattern(
     span: ByteSpan,
     expected: &SemanticValueType,
 ) -> PatternAnalysis {
+    let unsigned = raw.strip_prefix('-').unwrap_or(raw);
+    let Ok(value) = seseragi_syntax::decode_integer_literal(unsigned) else {
+        return invalid(span, "Integer pattern requires a valid Int literal");
+    };
+    let value = if raw.starts_with('-') { -value } else { value }.to_string();
     type_literal_pattern(
         TypedPattern::Integer {
-            value: raw.to_owned(),
+            value: value.clone(),
             type_ref: expected.type_ref.clone(),
             origin: span,
         },
-        LiteralPattern::Integer(
-            raw.replace('_', "")
-                .parse::<i64>()
-                .map_or_else(|_| raw.to_owned(), |value| value.to_string()),
-        ),
+        LiteralPattern::Integer(value),
         "Int",
         span,
         expected,

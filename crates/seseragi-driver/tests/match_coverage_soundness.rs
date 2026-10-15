@@ -121,7 +121,15 @@ fn record_and_struct_fields_retain_nested_products_and_adt_identity() {
 
 #[test]
 fn runtime_equivalent_integer_patterns_are_unreachable_with_original_ranges() {
-    for (first, second) in [("1000", "1_000"), ("0", "-0"), ("-1000", "-1_000")] {
+    for (first, second) in [
+        ("1000", "1_000"),
+        ("0", "-0"),
+        ("-1000", "-1_000"),
+        ("42", "0x2A"),
+        ("0b101010", "0o52"),
+        ("-0x2A", "-42"),
+        ("0x0", "-0b0"),
+    ] {
         let source = format!("pub fn value input: Int -> Int = match input {{ {first} -> 1; {second} -> 2; _ -> 3 }}\n");
         rejects(&source, "match.unreachable-arm");
         let diagnostics = compile_module(input(&source)).unwrap_err();

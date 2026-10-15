@@ -64,6 +64,15 @@ fn unicode_character_program_preserves_scalar_operations_patterns_and_dictionari
 }
 
 #[test]
+fn integer_bases_patterns_and_safe_boundaries_use_shared_canonical_values() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/integer-literals.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/integer-literals.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
 fn char_intrinsics_preserve_the_full_domain_without_per_call_callable_nodes() {
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/char-unicode.ssrg"
