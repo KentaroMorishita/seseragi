@@ -69,6 +69,8 @@ pub fn emit_rust_module(
 mod runtime {
     include!("runtime.rs");
     include!("runtime_char.rs");
+    include!("runtime_float_display.rs");
+    include!("runtime_float.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
 }

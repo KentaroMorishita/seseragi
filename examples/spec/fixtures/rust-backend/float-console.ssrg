@@ -1,0 +1,11 @@
+import * as floats from "std/float"
+import * as console from "std/console"
+
+pub effect fn main = do {
+  console.printValue (-0.0)
+  console.println ""
+  console.printValue (floats.nan ())
+  console.println ""
+  console.printValue (floats.positiveInfinity ())
+  console.println ""
+}

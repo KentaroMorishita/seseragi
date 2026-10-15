@@ -117,6 +117,7 @@ fn clear_dictionaries() {
 enum V {
     Unit,
     Int(i64),
+    Float(f64),
     Char(char),
     Bool(bool),
     Text(Shared<String>),
@@ -205,6 +206,7 @@ impl V {
             match value {
                 V::Unit => output.push_str("()"),
                 V::Int(n) => output.push_str(&n.to_string()),
+                V::Float(n) => output.push_str(&native_float_format(*n)),
                 V::Char(c) => output.push(*c),
                 V::Bool(v) => output.push_str(if *v { "True" } else { "False" }),
                 V::Text(v) => output.push_str(v.get()),
@@ -264,6 +266,7 @@ fn checked_int_value(value: i64) -> i64 {
 fn negate(value: V) -> V {
     match value {
         V::Int(n) => checked_int(n.checked_neg().expect("Int overflow")),
+        V::Float(n) => V::Float(-n),
         _ => panic!("Rust ABI: expected Int"),
     }
 }

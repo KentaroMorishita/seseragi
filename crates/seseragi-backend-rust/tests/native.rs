@@ -64,6 +64,79 @@ fn unicode_character_program_preserves_scalar_operations_patterns_and_dictionari
 }
 
 #[test]
+fn float_values_preserve_ieee_arithmetic_selected_evidence_and_canonical_display() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/float-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/float-values.stdout").trim_end(),
+    );
+}
+
+#[test]
+fn float_evidence_rejects_mismatched_canonical_constraints() {
+    let core = compile_core_module(CompileInput::new(
+        "float.ssrg",
+        "native/main",
+        "pub fn probe -> Float = 1.25 + 2.5\n",
+    ))
+    .unwrap()
+    .core_ir;
+    assert!(emit_rust_module(&core, "probe").is_ok());
+    for mutation in 0..5 {
+        let mut changed = core.clone();
+        let CoreExpr::Binary { evidence, .. } = &mut changed.functions[0].body else {
+            panic!("binary")
+        };
+        match mutation {
+            0 => {
+                evidence[0].constraint.arguments[0] = seseragi_lowering::CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                }
+            }
+            1 => evidence[0].constraint.trait_identity = Some("user::Add".into()),
+            2 => evidence[0].constraint.name = "Sub".into(),
+            3 => {
+                let seseragi_lowering::CoreInstanceEvidence::Standard { type_arguments, .. } =
+                    &mut evidence[0].evidence
+                else {
+                    panic!("standard")
+                };
+                type_arguments.push(seseragi_lowering::CoreType::Named {
+                    name: "Float".into(),
+                    arguments: vec![],
+                });
+            }
+            _ => {
+                let seseragi_lowering::CoreInstanceEvidence::Standard { identity, .. } =
+                    &mut evidence[0].evidence
+                else {
+                    panic!("standard")
+                };
+                *identity = "std/float::Sub".into();
+            }
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(error.origin.is_some());
+    }
+}
+
+#[test]
+fn generic_arithmetic_uses_the_selected_user_method() {
+    run(
+        r#"
+type Mark = | Mark Float
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> right: Mark -> Mark = Mark 42.0
+}
+fn plus<A> left: A -> right: A -> A where Add<A, A, A> = left + right
+pub fn probe -> Float = match plus (Mark 1.0) (Mark 2.0) { Mark value -> value }
+"#,
+        "42.0",
+    );
+}
+
+#[test]
 fn integer_bases_patterns_and_safe_boundaries_use_shared_canonical_values() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/integer-literals.ssrg"),
@@ -133,8 +206,11 @@ pub fn probe -> Bool = same (Mark 1) (Mark 2)
 }
 
 #[test]
-fn character_partial_binding_rejects_unproven_staging_and_source_arity() {
-    let source = "fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right\npub fn probe -> Bool = { let partial = same 'λ'; partial 'λ' }\n";
+fn primitive_partial_binding_rejects_unproven_staging_and_source_arity() {
+    for source in [
+        "fn same<A> left: A -> right: A -> Bool where Eq<A> = left == right\npub fn probe -> Bool = { let partial = same 'λ'; partial 'λ' }\n",
+        "fn same<A> left: A -> right: A -> A where Add<A, A, A> = left + right\npub fn probe -> Float = { let partial = same 1.25; partial 2.5 }\n",
+    ] {
     let core = compile_core_module(CompileInput::new("char.ssrg", "native/main", source))
         .unwrap()
         .core_ir;
@@ -181,6 +257,7 @@ fn character_partial_binding_rejects_unproven_staging_and_source_arity() {
         assert_eq!(error.code, "SES-RUST-0001", "mutation={mutation}");
         assert!(error.origin.is_some());
     }
+}
 }
 
 #[test]
@@ -471,7 +548,7 @@ fn escaped_callback_does_not_retain_an_unused_array() {
 #[test]
 fn unsupported_features_have_target_codes_and_source_ranges() {
     for source in [
-        "pub fn probe -> Float = 1.5\n",
+        "pub fn probe -> Float = 1.5 ** 2.0\n",
         "pub fn probe -> List<Int> = `[1, 2]\n",
     ] {
         let core = compile_core_module(CompileInput::new("bad.ssrg", "native/bad", source))

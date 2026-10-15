@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.34] - 2026-10-16
+
+### Added
+
+- Execute binary64 Float values, selected arithmetic / Show / Debug / Zero / One evidence, deterministic comparison and classification APIs through the experimental Rust target. Preserve NaN, infinity, negative zero, reusable partials, and Float payloads in Ref / synchronous Effect scopes. Match canonical TypeScript display across decimal midpoints and exponent boundaries without a JavaScript runtime (#832). Power, parsing and rounding conversions remain outside this slice.
+
 ## [0.61.33] - 2026-10-16
 
 ### Fixed
