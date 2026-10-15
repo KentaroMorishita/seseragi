@@ -1,0 +1,9 @@
+fn label row: { name: String } -> String = row.name
+
+fn later<A> value: A -> (Unit -> A) = \_ -> value
+
+pub fn probe -> (String, String) = {
+  let row = { name: "row", score: 42 }
+  let captured = later row
+  (label (captured ()), label row)
+}

@@ -720,6 +720,7 @@ mod tests {
             statements: vec![TypeScriptStatement::PureLet {
                 type_parameters: vec![],
                 name: "outer".to_owned(),
+                initializer_in_outer_scope: true,
                 type_ref: TypeScriptType::Bigint,
                 initializer: TypeScriptExpr::Identifier {
                     name: "outer".to_owned(),

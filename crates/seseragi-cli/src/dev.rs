@@ -106,7 +106,11 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
             build_available = rebuilt || build_available;
             watch_roots = refreshed_roots;
             if refresh_succeeded {
-                files = watch_snapshot(&watch_roots)?;
+                // Only acknowledge what this attempt observed before building.
+                // A repair/edit during compilation or graph refresh still needs
+                // another build, even when it leaves the package roots unchanged.
+                // Newly discovered roots likewise remain visible to the next poll.
+                files = next;
             }
         }
         std::thread::sleep(WATCH_INTERVAL);

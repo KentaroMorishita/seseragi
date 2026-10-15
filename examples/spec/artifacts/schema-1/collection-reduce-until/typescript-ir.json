@@ -2056,6 +2056,7 @@
                 }
               ]
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 2660,

@@ -1,0 +1,16 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  counter <- refs.make 0
+  let increment = do {
+    old <- refs.get counter
+    refs.set (old + 1) counter
+  }
+  before <- refs.get counter
+  println $ `before: ${before}`
+  increment
+  increment
+  after <- refs.get counter
+  println $ `after: ${after}`
+}

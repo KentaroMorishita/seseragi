@@ -1260,12 +1260,15 @@ fn render_monad_sequence(
             name,
             type_ref,
             initializer,
+            initializer_in_outer_scope,
             ..
-        } => format!(
-            "(() => {{ const {name}: {}{} = {}; return {continuation}; }})()",
-            render_type_parameters(type_parameters),
-            render_typescript_type(type_ref),
-            render_generic_initializer(initializer, type_parameters)
+        } => render_pure_let(
+            name,
+            type_parameters,
+            type_ref,
+            initializer,
+            *initializer_in_outer_scope,
+            &continuation,
         ),
         TypeScriptStatement::Const {
             name,
@@ -1325,12 +1328,15 @@ fn render_effect_sequence_with_result_renderer(
             name,
             type_ref,
             initializer,
+            initializer_in_outer_scope,
             ..
-        } => format!(
-            "(() => {{ const {name}: {}{} = {}; return {continuation}; }})()",
-            render_type_parameters(type_parameters),
-            render_typescript_type(type_ref),
-            render_generic_initializer(initializer, type_parameters)
+        } => render_pure_let(
+            name,
+            type_parameters,
+            type_ref,
+            initializer,
+            *initializer_in_outer_scope,
+            &continuation,
         ),
         TypeScriptStatement::Const {
             name,
@@ -1356,6 +1362,29 @@ fn render_effect_sequence_with_result_renderer(
                 render_function_body(type_parameters, &parameters, body, false, false, Some(name))
             )
         }
+    }
+}
+
+fn render_pure_let(
+    name: &str,
+    type_parameters: &[seseragi_syntax::TypeParameter],
+    type_ref: &crate::TypeScriptType,
+    initializer: &TypeScriptExpr,
+    initializer_in_outer_scope: bool,
+    continuation: &str,
+) -> String {
+    let annotation = format!(
+        "{}{}",
+        render_type_parameters(type_parameters),
+        render_typescript_type(type_ref)
+    );
+    let value = render_generic_initializer(initializer, type_parameters);
+    if initializer_in_outer_scope {
+        // Arguments are evaluated in the outer lexical environment. The new
+        // parameter is immutable and exists only in the continuation's scope.
+        format!("(({name}: {annotation}) => {{ return {continuation}; }})({value})")
+    } else {
+        format!("(() => {{ const {name}: {annotation} = {value}; return {continuation}; }})()")
     }
 }
 const ERASED_EVIDENCE_TYPE: &str = "Readonly<Record<string, (...args: any[]) => any>>";

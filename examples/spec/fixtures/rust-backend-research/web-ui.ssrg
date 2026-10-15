@@ -1,0 +1,27 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+foreign "typescript" from "./wasm-host.ts" {
+  pure fn compute input: Int -> Int
+}
+
+type Action =
+  | Increment
+  | Reset
+
+fn view input: Int -> html.Html<Action> = html.main {
+  children: [
+    html.h1 { children: "Seseragi × WASM" },
+    html.p { id: "input", children: `入力: ${input}` },
+    html.p { id: "result", children: `結果: ${compute input}` },
+    html.button { id: "increment", onClick: Increment, children: "+1" },
+    html.button { id: "reset", onClick: Reset, children: "リセット" }
+  ]
+}
+
+fn update action: Action -> input: Int -> Int = match action {
+  Increment -> input + 1
+  Reset -> 2
+}
+
+pub effect fn main = dom.app { target: "#app", initial: 2, update, view }

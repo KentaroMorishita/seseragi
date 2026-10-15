@@ -1,0 +1,19 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type AppError = | Failed (Ref<Int>, Int)
+
+effect fn failing cell: Ref<Int> -> Unit fails AppError = effects.fail (Failed (
+  cell,
+  42
+))
+
+pub effect fn main = do {
+  cell <- refs.make 0
+  effects.recover (\error: AppError -> match error {
+      Failed (same, value) -> refs.set value same
+  }) (failing cell)
+  value <- refs.get cell
+  println $ `typed payload: ${value}`
+}

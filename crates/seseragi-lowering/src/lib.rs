@@ -1,6 +1,11 @@
 mod bytes_ops;
 mod collection_ops;
 mod core;
+mod core_analysis;
+pub use core_analysis::{
+    core_expr_origin, core_free_variables, is_closed_local_evidence, known_pure_call_shape,
+    CoreCallShape, CoreFreeVariables,
+};
 mod display_ops;
 mod effect_ops;
 mod emit;

@@ -1,0 +1,11 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  cell <- refs.make 40
+  let update = refs.update (\value: Int -> value + 1)
+  update cell
+  old <- refs.modify (\value: Int -> (value, value + 1)) cell
+  current <- refs.get cell
+  println $ `modify: ${old}, ${current}`
+}

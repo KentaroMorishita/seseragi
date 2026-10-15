@@ -1,0 +1,12 @@
+import * as effects from "std/effect"
+
+effect fn descend remaining: Int -> Int =
+  effects.defer (\_: Unit -> if remaining == 0 then
+    effects.succeed 42
+  else
+    descend (remaining - 1))
+
+pub effect fn main = do {
+  value <- descend 100000
+  println $ `deep: ${value}`
+}

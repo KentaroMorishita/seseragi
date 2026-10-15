@@ -1,0 +1,8 @@
+import * as console from "std/console"
+
+pub effect fn main = do {
+  console.printValue True
+  console.println ""
+  console.errorLine "warning"
+  console.flush ()
+}

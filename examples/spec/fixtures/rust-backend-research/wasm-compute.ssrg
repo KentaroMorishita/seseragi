@@ -1,0 +1,3 @@
+fn score input: Int -> Int = input * input + 7
+
+pub fn probe -> (Int -> Int) = score

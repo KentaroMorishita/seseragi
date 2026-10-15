@@ -8,6 +8,8 @@ mod analyze;
 mod application;
 pub use application::{retain_application_outputs, ApplicationReachability};
 mod compile;
+mod core_compile;
+pub use core_compile::{compile_core_module, lower_analyzed_module, CoreCompilation};
 mod dependencies;
 mod foreign_outputs;
 pub use foreign_outputs::relocate_foreign_outputs;

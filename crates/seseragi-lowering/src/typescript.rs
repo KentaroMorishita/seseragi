@@ -631,6 +631,8 @@ pub enum TypeScriptStatement {
         #[serde(rename = "type")]
         type_ref: TypeScriptType,
         initializer: TypeScriptExpr,
+        #[serde(default, skip_serializing_if = "is_false")]
+        initializer_in_outer_scope: bool,
         origin: SourceSpan,
     },
     Const {

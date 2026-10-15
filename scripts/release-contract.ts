@@ -11,6 +11,7 @@ const PACKAGE_MANIFESTS = [
   "extensions/seseragi-legacy/package.json",
 ]
 const RUST_MANIFESTS = [
+  "crates/seseragi-backend-rust/Cargo.toml",
   "crates/seseragi-cli/Cargo.toml",
   "crates/seseragi-conformance/Cargo.toml",
   "crates/seseragi-driver/Cargo.toml",
@@ -63,7 +64,10 @@ export function releaseTag(version: string): string {
   return `v${version}`
 }
 
-export function replaceManifestVersion(source: string, version: string): string {
+export function replaceManifestVersion(
+  source: string,
+  version: string
+): string {
   assertSemver(version)
   const matches = source.match(/^([ \t]*"version"\s*:\s*)"[^"]+"/mu)
   if (!matches) fail("package manifest is missing version")
@@ -73,7 +77,10 @@ export function replaceManifestVersion(source: string, version: string): string 
   )
 }
 
-export function replaceWorkspaceVersion(source: string, version: string): string {
+export function replaceWorkspaceVersion(
+  source: string,
+  version: string
+): string {
   workspaceVersion(source)
   const header = /^\[workspace\.package\]\s*$/mu.exec(source)
   if (!header || header.index === undefined) {
@@ -110,8 +117,13 @@ async function text(root: string, relative: string): Promise<string> {
   return readFile(path.join(root, relative), "utf8")
 }
 
-async function manifestVersion(root: string, relative: string): Promise<string> {
-  const manifest = JSON.parse(await text(root, relative)) as { version?: unknown }
+async function manifestVersion(
+  root: string,
+  relative: string
+): Promise<string> {
+  const manifest = JSON.parse(await text(root, relative)) as {
+    version?: unknown
+  }
   if (typeof manifest.version !== "string") {
     fail(`${relative} has no string version`)
   }
@@ -135,7 +147,9 @@ export async function readReleaseContract(
   return { version, tag: releaseTag(version) }
 }
 
-export async function syncReleaseVersions(root = repositoryRoot): Promise<string[]> {
+export async function syncReleaseVersions(
+  root = repositoryRoot
+): Promise<string[]> {
   const { version } = await readReleaseContract(root)
   const updated: string[] = []
   for (const relative of PACKAGE_MANIFESTS) {
@@ -149,7 +163,9 @@ export async function syncReleaseVersions(root = repositoryRoot): Promise<string
   return updated
 }
 
-export async function checkReleaseContract(root = repositoryRoot): Promise<void> {
+export async function checkReleaseContract(
+  root = repositoryRoot
+): Promise<void> {
   const { version } = await readReleaseContract(root)
   const failures: string[] = []
 
@@ -288,7 +304,9 @@ async function main(): Promise<void> {
       return
     case "check-tag":
       await checkReleaseTag(argument || process.env.GITHUB_REF_NAME)
-      console.log(`Release tag ${argument || process.env.GITHUB_REF_NAME} is valid.`)
+      console.log(
+        `Release tag ${argument || process.env.GITHUB_REF_NAME} is valid.`
+      )
       return
     case "notes": {
       const notes = releaseNotes(
@@ -299,7 +317,9 @@ async function main(): Promise<void> {
         const output = path.resolve(repositoryRoot, argument)
         await mkdir(path.dirname(output), { recursive: true })
         await writeFile(output, notes)
-        console.log(`Wrote release notes to ${path.relative(repositoryRoot, output)}.`)
+        console.log(
+          `Wrote release notes to ${path.relative(repositoryRoot, output)}.`
+        )
       } else {
         console.log(notes)
       }

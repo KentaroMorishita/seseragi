@@ -57,6 +57,19 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 - Preserve unrelated worktree changes and never edit generated `dist/`
   artifacts by hand.
 
+## Worktree and build-output cleanup
+
+- Cleanup is part of completing work. After saving the changes and needed
+  verification evidence, remove or archive dedicated worktrees that are no
+  longer needed and remove their disposable build outputs.
+- Check ownership, saved/merged changes, and active processes before cleanup.
+  Preserve unfinished or unrelated work and report the reason when a worktree
+  must remain. Reuse an appropriate active checkout rather than accumulating
+  a new worktree for every step.
+- Keep evidence outside disposable Cargo profile directories. For large
+  integration runs without useful incremental reuse, use `CARGO_INCREMENTAL=0`
+  and inspect disk usage across related worktrees before and after the run.
+
 ## Release and local dogfood handoff
 
 - After a CLI, LSP, or official VS Code extension change is merged to `main`,

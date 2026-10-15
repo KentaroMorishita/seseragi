@@ -1,0 +1,22 @@
+import * as effects from "std/effect"
+
+type Box = | Box Int
+
+instance Show<Box> {
+  fn show value: Box -> String = match value {
+    Box n -> `box ${n}`
+  }
+}
+
+effect fn report<A> value: A -> Unit with Console fails ConsoleError where Show<A> =
+  println (show value)
+
+pub effect fn main = {
+  let seed = 40
+  effect fn captured -> Int = effects.succeed (seed + 2)
+  do {
+    result <- captured ()
+    report result
+    report (Box result)
+  }
+}

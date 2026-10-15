@@ -1,0 +1,14 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  cell <- refs.make (\n: Int -> effects.succeed n)
+  let callback = \n: Int -> do {
+    previous <- refs.get cell
+    effects.succeed (n + 1)
+  }
+  refs.set callback cell
+  current <- refs.get cell
+  value <- current 41
+  println $ `answer: ${value}`
+}

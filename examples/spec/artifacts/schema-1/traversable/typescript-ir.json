@@ -382,6 +382,7 @@
                 }
               }
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 269,
@@ -462,6 +463,7 @@
                 }
               }
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 334,
@@ -568,6 +570,7 @@
                 }
               }
             },
+            "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
               "start": 404,
