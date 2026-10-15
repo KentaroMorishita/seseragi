@@ -110,8 +110,20 @@ WASM targetとNodeも必要。結果は`target/native-lifetimes/report.json`、
 TS runtime typecheck、defer/bindのBun tests、resource / concurrency / temporal probe、
 Rust conformance crateのcheckはlocalで成功した。
 
-製品runtimeを変更したため`bun run check`も実行したが、Rust workspaceのcompile中にディスクが
-埋まり、ENOSPCで未成功。後続testにも領域不足が波及した。今回のgateが新しく生成した実行binaryと
-実験のincremental cacheだけを識別して削除し、編集ファイルの完全性と対象checksを再確認した。
-共有cache全体の削除、他worktreeの変更、canonical WASMの置換は行っていない。
-全体gateを通過したとは扱わず、mainへのmerge / release / dogfoodは未実施。
+製品runtimeを変更したため`bun run check`も実行した。当初はRust workspaceのcompile中に
+ディスクが埋まり、ENOSPCで未成功だった。容量監査では、このcheckoutのincremental cacheが
+約33 GiB、過去の4 worktreeにも合計約83 GiB残っていた。実行中のbuildがないこと、対象path、
+HEADとsource statusを確認してincrementalだけを削除した。source、worktree本体、検証記録、
+Cargo registry / toolchainは保持した。再build後も空きは約71 GiB、incrementalは0 B。
+
+`CARGO_INCREMENTAL=0 bun run check`で再実行し、macOSのRust test artifact 129本、
+全conformance、production artifact 6 fixture、production browser、native samples、
+Playground 636 tests / typecheck / build、native archiveとVSIXのpackage / smokeが成功した。
+容量不足は再発していない。logは`target/native-lifetimes/full-gate-after-cleanup-20261015.log`。
+
+全体gateの終了値は1。Bunの子process IOを含む4 test groupとcommitted WASM freshnessの
+計5項目が失敗した。このlocal環境のBun 1.3.11では、test内の
+`Bun.spawnSync(["/bin/echo", "ok"])`も出力なし・終了値1となり、通常のscript実行では成功する。
+この再現だけで上流の原因までは確定しない。macOSで再生成したWASMもcommitted binaryと異なり、
+生成物を別途保存してcommitted版へ戻した。freshnessを通過したとは扱わない。
+容量問題とこれらの未解決項目を区別し、mainへのmerge / release / dogfoodは未実施。
