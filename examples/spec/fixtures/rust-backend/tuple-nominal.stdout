@@ -1,0 +1,1 @@
+[(selected-int, 42), (debug-float, 1.5), (selected-bool, True), (debug-char, 'λ'), (box=1.5, box=selected-float, box=42, box=selected-int), ((selected-float, selected-bool), `[selected-int, selected-int])]

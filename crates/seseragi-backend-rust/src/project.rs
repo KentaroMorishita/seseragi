@@ -29,9 +29,30 @@ pub(crate) fn emit(
     let mut seen = BTreeSet::new();
     let mut owners = BTreeMap::new();
     let mut symbols = BTreeSet::new();
+    let mut type_names = BTreeMap::new();
     for module in modules {
         if module.module.starts_with("std/") || !seen.insert(module.module.clone()) {
             return Err("Rust backend: duplicate or reserved source module identity".into());
+        }
+        // A local nominal type may shadow a prelude spelling such as Float.
+        // Resolve its checked declaration symbol before imported/builtin names.
+        for (name, symbol) in module
+            .adts
+            .iter()
+            .map(|item| (&item.name, &item.symbol))
+            .chain(module.structs.iter().map(|item| (&item.name, &item.symbol)))
+            .chain(module.aliases.iter().map(|item| (&item.name, &item.symbol)))
+        {
+            type_names.insert((module.module.clone(), name.clone()), symbol.clone());
+        }
+        for binding in &module.external_type_bindings {
+            let key = (module.module.clone(), binding.spelling.clone());
+            if type_names
+                .insert(key, binding.canonical.clone())
+                .is_some_and(|old| old != binding.canonical)
+            {
+                return Err("Rust backend: ambiguous canonical type binding".into());
+            }
         }
         for dependency in &module.module_dependencies {
             if !dependency.module.starts_with("std/")
@@ -107,7 +128,7 @@ pub(crate) fn emit(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = emit::emit(&linked, entry, &owners, &scalar_globals)?;
+    let mut artifact = emit::emit(&linked, entry, &owners, &scalar_globals, &type_names)?;
     artifact.metadata.modules = initialization;
     Ok(artifact)
 }

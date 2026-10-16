@@ -1,5 +1,20 @@
 # Change Log
 
+## [0.61.40] - 2026-10-16
+
+### Added
+
+- Execute the selected tuple Show and Debug dictionaries in native programs,
+  including custom, generic and higher-kinded element instances, saved closures
+  and closed partial calls. Preserve child evaluation order, the shared display
+  depth bound and Ref/Effect resource lifetimes across modules and path packages.
+
+### Fixed
+
+- Respect an ADT's type parameter scope when generating TypeScript payloads
+  and constructors, so higher-kinded parameters use the existing erased type
+  representation and value parameters keep their own identity.
+
 ## [0.61.39] - 2026-10-16
 
 ### Fixed

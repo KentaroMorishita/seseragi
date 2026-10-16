@@ -1,0 +1,50 @@
+type Int = | NominalInt
+type Float = | NominalFloat
+type Bool = | NominalBool
+type Char = | NominalChar
+type Box<A> = | Box A
+
+instance Show<Int> {
+  fn show value: Int -> String = "selected-int"
+}
+
+instance Debug<Int> {
+  fn debug value: Int -> String = "debug-int"
+}
+
+instance Show<Float> {
+  fn show value: Float -> String = "selected-float"
+}
+
+instance Debug<Float> {
+  fn debug value: Float -> String = "debug-float"
+}
+
+instance Show<Bool> {
+  fn show value: Bool -> String = "selected-bool"
+}
+
+instance Debug<Bool> {
+  fn debug value: Bool -> String = "debug-bool"
+}
+
+instance Show<Char> {
+  fn show value: Char -> String = "selected-char"
+}
+
+instance Debug<Char> {
+  fn debug value: Char -> String = "debug-char"
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> `box=${show item}` }
+}
+
+pub fn probe -> Array<String> = [
+  show (NominalInt, 42),
+  debug (NominalFloat, 1.5),
+  show (NominalBool, True),
+  debug (NominalChar, 'λ'),
+  show (Box 1.5, Box NominalFloat, Box 42, Box NominalInt),
+  show ((NominalFloat, NominalBool), `[NominalInt, NominalInt])
+]

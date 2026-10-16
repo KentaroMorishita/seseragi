@@ -32,7 +32,12 @@ fn cli() -> Command {
 #[test]
 fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
     let scratch = Scratch::new();
-    for (fixture, count) in [("linked", 5), ("globals", 4), ("scalar-globals", 4)] {
+    for (fixture, count) in [
+        ("linked", 5),
+        ("globals", 4),
+        ("scalar-globals", 4),
+        ("tuple-display", 3),
+    ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
             .join(fixture);
@@ -250,6 +255,8 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "float-values",
         "list-core",
         "list-tail",
+        "tuple-display",
+        "tuple-nominal",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -312,10 +319,10 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
 }
 
 #[test]
-fn list_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
+fn list_and_tuple_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
     let scratch = Scratch::new();
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    for fixture in ["list-core", "list-tail"] {
+    for fixture in ["list-core", "list-tail", "tuple-display", "tuple-nominal"] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
         ));
@@ -774,6 +781,18 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "tuple-effects",
+            "fixtures/rust-backend/tuple-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/tuple-effects.stdout"),
+            0,
+        ),
+        (
+            "tuple-defect",
+            "fixtures/rust-backend/tuple-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/tuple-defect.stdout"),
+            70,
+        ),
         (
             "list-effects",
             "fixtures/rust-backend/list-effects.ssrg",

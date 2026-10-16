@@ -1,0 +1,62 @@
+import * as floats from "std/float"
+
+type Label = | Label Int
+type Box<A> = | Box A
+type Higher<F<_>> = | Higher (F<Int>)
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "label=" + show n }
+}
+
+instance Debug<Label> {
+  fn debug value: Label -> String = match value { Label n -> "Label{" + show n + "}" }
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+instance<A> Debug<Box<A>> where Debug<A> {
+  fn debug value: Box<A> -> String =
+    match value { Box item -> "Box{" + debug item + "}" }
+}
+
+instance<F<_>> Show<Higher<F>> where Show<F<Int>> {
+  fn show value: Higher<F> -> String =
+    match value { Higher item -> "higher=" + show item }
+}
+
+fn selected<A> value: A -> String where Show<A> = show (value, True)
+
+fn higher<F<_>> value: F<Int> -> String where Show<F<Int>> = show (value, 7)
+
+fn retained<A> value: A -> (Int -> String) where Show<A> = \n -> show (value, n)
+
+fn withPrefix<A> value: A -> prefix: String -> String where Show<A> =
+  prefix + show value
+
+pub fn probe -> Array<String> = {
+  let saved = retained (Label 9)
+  let display: (Int, Bool) -> String = show
+  let partial = withPrefix (Label 8, False)
+  let wrapped: Higher<Box> = Higher (Box 17)
+  [
+    show (wrapped, True),
+    show (1, True),
+    debug ("x\n", 'λ'),
+    show ((), False, -7, "text", '🙂'),
+    debug ((), False, -7, "\"\\\0\u{7F}\u{9F}", '\0'),
+    show ((Label 1, Label 2), `[Label 3, Label 4]),
+    debug (`[(Label 5, "line\n"), (Label 6, "🙂")], Box (Label 7, True)),
+    selected (Label 10),
+    higher (Box 11),
+    selected (Box (Label 12)),
+    saved 13,
+    saved 14,
+    display (15, False),
+    partial "tuple=",
+    show (-0.0, floats.nan (), floats.positiveInfinity (), floats.negativeInfinity ()),
+    debug (1e21, 1e-7, 1.0, -0.0),
+    `interpolation=${(Label 16, True)}`
+  ]
+}
