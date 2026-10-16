@@ -36,7 +36,9 @@ typeclasses. It adds no standard Float Eq, Ord or Hash instance and makes no
 performance improvement claim.
 
 The shared frontend also retains resolved nominal owners in local instance-head
-matching. Checked builtin types inferred for literals cannot be rebound to a
-same-named local ADT in the semantic type catalog. The nominal Array fixture
+matching. Array evidence carries the inferred prelude identity when a lexical
+relookup would select a same-named declaration or type parameter. The standard
+registry normalizes that identity only at its existing ABI boundary; scalar
+and derived-instance matching retain their existing type-catalog behavior. The nominal Array fixture
 mixes a user's Array and Int with literal arrays and integers; both targets
 must select the corresponding user or standard methods.

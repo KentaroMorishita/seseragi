@@ -119,8 +119,14 @@ pub fn probe -> String = show [Box [1, 2]]
     else {
         panic!("box")
     };
-    let CoreType::Named { arguments, .. } = &type_arguments[0] else {
-        panic!("builtin array")
+    let arguments = match &type_arguments[0] {
+        CoreType::Named { name, arguments } if name == "Array" => arguments,
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/prelude::Array" => arguments,
+        _ => panic!("builtin array"),
     };
     type_arguments[0] = CoreType::ExternalNamed {
         name: "Array".into(),

@@ -11,8 +11,9 @@
 
 ### Fixed
 
-- Match local instance heads using resolved nominal types, so a user type
-  named Array cannot replace the standard literal-array display dictionary.
+- Match local instance heads using resolved nominal types and retain inferred
+  Array evidence under type and parameter shadows, so a user type named Array
+  cannot replace the standard literal-array display dictionary.
 
 ## [0.61.41] - 2026-10-17
 

@@ -68,6 +68,18 @@ fn primitive_show_and_interpolation_ignore_nominal_shadow_but_nominal_values_use
 }
 
 #[test]
+fn literal_array_evidence_keeps_identity_under_derived_and_parameter_shadows() {
+    let program = Program::new("struct Array<A> deriving Show {value: A}\nfn tricky<Array> value: Array -> String where Show<Array> = show [1, 2]\npub effect fn main = do {println (show [1, 2]); println (show [Array {value: True}]); println (tricky True)}\n");
+    for profile in ["development", "release"] {
+        assert_eq!(
+            program.run(profile),
+            "[1, 2]\n[Array { value: True }]\n[1, 2]\n",
+            "{profile}"
+        );
+    }
+}
+
+#[test]
 fn primitive_equality_under_derived_shadow_uses_standard_values_and_nominal_equality_uses_fields() {
     for (name, left, right, same, field_type, field_left, field_right) in [
         ("Bool", "True", "False", false, "Int", "1", "2"),
