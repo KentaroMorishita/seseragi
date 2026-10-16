@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.42] - 2026-10-17
+
+### Added
+
+- Execute native Array Show and Debug with the selected element dictionary,
+  including user, generic and higher-kinded instances, saved closures and
+  closed partial calls across modules and path packages. Preserve element
+  order, the shared display depth bound and Ref/Effect resource lifetimes.
+
+### Fixed
+
+- Match local instance heads using resolved nominal types, so a user type
+  named Array cannot replace the standard literal-array display dictionary.
+
 ## [0.61.41] - 2026-10-17
 
 ### Fixed

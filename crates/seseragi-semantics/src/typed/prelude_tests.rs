@@ -368,6 +368,25 @@ fn retains_concrete_generic_call_results_across_top_level_bindings() {
 }
 
 #[test]
+fn nominal_array_instance_cannot_replace_a_literal_arrays_standard_dictionary() {
+    let typed = type_module(
+        "artifact/nominal-array/main.ssrg",
+        "type Array<A> = | LocalArray A\ninstance<A> Show<Array<A>> where Show<A> { fn show value: Array<A> -> String = \"local\" }\npub fn probe -> String = show [1, 2]\n",
+    );
+    let body = typed
+        .declarations
+        .iter()
+        .find_map(|declaration| match declaration {
+            TypedDecl::Fn { body, .. } => Some(body),
+            _ => None,
+        })
+        .expect("probe");
+    assert!(matches!(body, TypedExpr::Call { evidence, .. }
+        if matches!(&evidence[0].evidence, TypedInstanceEvidence::Standard { identity, .. }
+            if identity == "std/array::Show")));
+}
+
+#[test]
 fn composes_array_show_from_a_scoped_element_dictionary() {
     let typed = type_module(
         "artifact/scoped-array-show/main.ssrg",

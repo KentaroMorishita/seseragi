@@ -1003,12 +1003,19 @@ impl SemanticTypeCatalog {
         match type_ref {
             TypedType::Named { name, arguments } => {
                 let matches_local_name = |symbol: &crate::ResolvedSymbol| {
-                    symbol.spelling == *name
-                        || resolved.imports.iter().any(|import| {
-                            import.in_scope
-                                && import.symbol == symbol.id
-                                && import.local_name == *name
-                        })
+                    // Resolved nominal shadows carry ExternalNamed identity.
+                    // A checked Named builtin (for example an Array literal)
+                    // cannot be rebound to that declaration by its spelling.
+                    !symbol
+                        .canonical
+                        .as_deref()
+                        .is_some_and(|canonical| is_shadowing_builtin(name, canonical))
+                        && (symbol.spelling == *name
+                            || resolved.imports.iter().any(|import| {
+                                import.in_scope
+                                    && import.symbol == symbol.id
+                                    && import.local_name == *name
+                            }))
                 };
                 let mut owners = resolved
                     .symbols

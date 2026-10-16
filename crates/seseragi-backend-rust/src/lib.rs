@@ -90,6 +90,7 @@ mod runtime {
     include!("runtime_float.rs");
     include!("runtime_list.rs");
     include!("runtime_tuple.rs");
+    include!("runtime_array.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
 }

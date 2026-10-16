@@ -1,0 +1,67 @@
+import * as floats from "std/float"
+
+type Label = | Label Int
+type Box<A> = | Box A
+type Higher<F<_>> = | Higher (F<Int>)
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "label=" + show n }
+}
+
+instance Debug<Label> {
+  fn debug value: Label -> String = match value { Label n -> "Label{" + show n + "}" }
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+instance<A> Debug<Box<A>> where Debug<A> {
+  fn debug value: Box<A> -> String =
+    match value { Box item -> "Box{" + debug item + "}" }
+}
+
+instance<F<_>> Show<Higher<F>> where Show<F<Int>> {
+  fn show value: Higher<F> -> String =
+    match value { Higher item -> "higher=" + show item }
+}
+
+fn selected<A> value: A -> String where Show<A> = show [value, value]
+
+fn higher<F<_>> value: F<Int> -> String where Show<F<Int>> = show [value]
+
+fn retained<A> value: A -> (Int -> String) where Show<A> = \n -> show [(value, n)]
+
+fn withPrefix<A> value: A -> prefix: String -> String where Show<A> =
+  prefix + show value
+
+pub fn probe -> Array<String> = {
+  let empty: Array<Label> = []
+  let saved = retained (Label 9)
+  let display: Array<Label> -> String = show
+  let partial = withPrefix [Label 8]
+  let wrapped: Higher<Box> = Higher (Box 17)
+  [
+    show empty,
+    debug empty,
+    show [wrapped],
+    show [1, -2, 3],
+    debug ["x\n", "λ", "\"\\\0\u{7F}\u{9F}"],
+    show ['λ', '🙂'],
+    debug ['\0', '\'', '🙂'],
+    show [(), ()],
+    show [True, False],
+    show [[Label 1, Label 2], [], [Label 3]],
+    debug [(`[(Label 4, "line\n")], Box (Label 5, True))],
+    show `[[Label 6], [Label 7]],
+    selected (Box (Label 10)),
+    higher (Box 11),
+    saved 12,
+    saved 13,
+    display [Label 14, Label 15],
+    partial "array=",
+    show [-0.0, floats.nan (), floats.positiveInfinity (), floats.negativeInfinity ()],
+    debug [1e21, 1e-7, 1.0, -0.0],
+    `interpolation=${[Label 16, Label 17]}`
+  ]
+}

@@ -1,0 +1,1 @@
+[[box=label=42, box=label=42], [box=7], [Box{Label{3}}, Box{Label{4}}], [(`[(box=label=5, False)], True)], [nominal-float=20, nominal-float=21]]
