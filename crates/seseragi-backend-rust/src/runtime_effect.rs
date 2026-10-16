@@ -347,6 +347,12 @@ fn write_native_console(writer: &mut impl std::io::Write, text: &str) -> NativeO
 }
 
 fn run_native_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
+    run_native_program(entry, trace, true)
+}
+fn run_native_pure_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
+    run_native_program(entry, trace, false)
+}
+fn run_native_program(entry: impl FnOnce() -> V, trace: bool, effect: bool) -> i32 {
     // This executable owns its single-thread runtime. Defects are reported
     // after managed scope cleanup, without the host panic hook printing early.
     let previous_hook = std::panic::take_hook();
@@ -355,7 +361,15 @@ fn run_native_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
         enable_cycle_collection();
     }
     let mut context = NativeContext::default();
-    let result = catch_native(|| Ok(entry())).and_then(|plan| context.root(plan));
+    let result = catch_native(|| {
+        let value = entry();
+        if effect {
+            context.root(value)
+        } else {
+            println!("{}", value.render());
+            Ok(V::Unit)
+        }
+    });
     let code = match &result {
         Ok(_) => 0,
         Err(NativeExit::Failure(error)) => {
@@ -382,6 +396,9 @@ fn run_native_entry(entry: impl FnOnce() -> V, trace: bool) -> i32 {
     };
     drop(result);
     drop(context);
+    // Global roots outlive scope finalizers and returned values, including on
+    // initialization failure. Only then can Ref cycles become unreachable.
+    clear_globals();
     clear_dictionaries();
     let collection = collect_cycles().expect("native root released its Ref borrows");
     if std::env::var_os("SESERAGI_NATIVE_METRICS").is_some() {

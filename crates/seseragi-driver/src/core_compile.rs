@@ -96,4 +96,42 @@ mod tests {
         ))
         .is_err());
     }
+    #[test]
+    fn imported_monomorphic_callable_values_keep_canonical_identity() {
+        for (import, call) in [
+            ("import * as remote from \"./lib\"", "remote.callback 20 22"),
+            (
+                "import { callback as renamed } from \"./lib\"",
+                "renamed 20 22",
+            ),
+        ] {
+            let mut graph = seseragi_project::ModuleGraph::new();
+            graph.add_module("graph/lib".to_owned(), []).unwrap();
+            graph
+                .add_module(
+                    "graph/main".to_owned(),
+                    [("./lib".to_owned(), "graph/lib".to_owned())],
+                )
+                .unwrap();
+            let inputs = vec![
+                crate::ProjectModuleInput::new("lib.ssrg", "graph/lib", "fn returned n: Int -> (Int -> Int) = \\m -> n + m\npub let callback: Int -> (Int -> Int) = returned\n", "lib.js"),
+                crate::ProjectModuleInput::new("main.ssrg", "graph/main", format!("{import}\npub fn probe -> Int = {call}\n"), "main.js"),
+            ];
+            let core = crate::compile_core_project(graph.clone(), inputs.clone()).unwrap();
+            let ts = crate::compile_project(graph, inputs).unwrap();
+            let main = &core.modules["graph/main"].core_ir;
+            let seseragi_lowering::CoreExpr::Call {
+                callee, arguments, ..
+            } = &main.functions[0].body
+            else {
+                panic!("expected imported value call");
+            };
+            assert_eq!(callee, "graph/lib::callback");
+            assert_eq!(arguments.len(), 2);
+            assert_eq!(main, &ts.modules["graph/main"].core_ir);
+            // A function-valued binding has no declaration arity proof. Both
+            // targets must retain ordinary staged application of its value.
+            assert!(seseragi_lowering::known_pure_call_shape(main, callee, 2).is_none());
+        }
+    }
 }

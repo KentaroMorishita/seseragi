@@ -24,6 +24,7 @@ pub(crate) fn emit(
     linked.structs.clear();
     linked.instances.clear();
     linked.functions.clear();
+    linked.bindings.clear();
     linked.module_dependencies.clear();
     let mut seen = BTreeSet::new();
     let mut owners = BTreeMap::new();
@@ -43,13 +44,6 @@ pub(crate) fn emit(
                 ));
             }
         }
-        if let Some(binding) = module.bindings.first() {
-            return Err(at(
-                "Rust backend: top-level bindings are unsupported",
-                &binding.origin,
-                &module.module,
-            ));
-        }
         if let Some(foreign) = module.foreign_modules.first() {
             return Err(at(
                 "Rust backend: foreign modules are unsupported",
@@ -61,6 +55,7 @@ pub(crate) fn emit(
             .functions
             .iter()
             .map(|f| (&f.symbol, &f.origin))
+            .chain(module.bindings.iter().map(|b| (&b.symbol, &b.origin)))
             .chain(
                 module
                     .adts
@@ -97,6 +92,8 @@ pub(crate) fn emit(
         linked.structs.extend(module.structs.clone());
         linked.instances.extend(module.instances.clone());
         linked.functions.extend(module.functions.clone());
+        // The checked graph is dependency ordered; bindings retain source order.
+        linked.bindings.extend(module.bindings.clone());
     }
     let mut artifact = emit::emit(&linked, entry, &owners)?;
     artifact.metadata.modules = modules.iter().map(|m| m.module.clone()).collect();

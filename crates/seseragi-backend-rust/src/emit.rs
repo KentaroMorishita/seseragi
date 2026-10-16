@@ -34,14 +34,20 @@ pub fn emit(
     entry: &str,
     owners: &BTreeMap<String, String>,
 ) -> Result<RustArtifact> {
-    if !module.foreign_modules.is_empty() || !module.bindings.is_empty() {
-        return Err("Rust backend: foreign modules and top-level bindings are unsupported".into());
+    if !module.foreign_modules.is_empty() {
+        return Err("Rust backend: foreign modules are unsupported".into());
     }
     let mut backend = Backend {
         module,
         owners,
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
+        globals: module
+            .bindings
+            .iter()
+            .enumerate()
+            .map(|(i, b)| (b.symbol.clone(), i))
+            .collect(),
         constructors: module
             .adts
             .iter()
@@ -80,6 +86,22 @@ pub fn emit(
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    let mut initialization = String::new();
+    for (index, binding) in module.bindings.iter().enumerate() {
+        backend.owner = &owners[&binding.symbol];
+        if !binding.type_parameters.is_empty() {
+            return Err(crate::project::at(
+                "Rust backend: polymorphic global bindings are unsupported",
+                &binding.origin,
+                backend.owner,
+            ));
+        }
+        let value = backend.expr(&binding.value, &Scope::new())?;
+        initialization.push_str(&format!("set_global({index}, {value});\n"));
+    }
+    output.push_str(&format!(
+        "\nfn initialize_globals() {{ {initialization} }}\n"
+    ));
     for (symbol, payload) in &backend.constructors {
         let value = if *payload {
             format!(
@@ -129,6 +151,13 @@ pub fn emit(
     }
     for function in &module.functions {
         backend.owner = &owners[&function.symbol];
+        if function.parameters.is_empty() {
+            return Err(crate::project::at(
+                "Rust backend: constrained global values without source parameters are unsupported",
+                &function.origin,
+                backend.owner,
+            ));
+        }
         if function.is_effect {
             backend.capabilities.insert("effect-sync".into());
         }
@@ -145,9 +174,9 @@ pub fn emit(
         output.push_str(&backend.direct_function(function, &setup, &scope)?);
     }
     if entry.is_effect {
-        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {}(vec![]).apply(V::Unit), {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
+        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
     } else {
-        output.push_str(&format!("\nfn main() {{ let result = {}(vec![]).apply(V::Unit); println!(\"{{}}\", result.render()); drop(result); clear_dictionaries(); }}\n", id(&entry.symbol)));
+        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
     }
     Ok(RustArtifact {
         source: output,
@@ -189,6 +218,7 @@ struct Backend<'a> {
     owners: &'a BTreeMap<String, String>,
     owner: &'a str,
     functions: BTreeSet<String>,
+    globals: BTreeMap<String, usize>,
     constructors: BTreeMap<String, bool>,
     serial: usize,
     direct_calls: usize,
@@ -338,6 +368,17 @@ impl Backend<'_> {
                 );
             }
             Ok(format!("{}.clone()", id(name)))
+        } else if let Some(index) = self.globals.get(name).or_else(|| {
+            // CoreIr also uses module-local spellings for let-bound values and
+            // generated pattern temporaries. Resolve those only in their owner.
+            (!name.contains("::"))
+                .then(|| self.globals.get(&format!("{}::{name}", self.owner)))
+                .flatten()
+        }) {
+            if !evidence.is_empty() {
+                return Err("Rust backend: global binding evidence is unsupported".into());
+            }
+            Ok(format!("get_global({index})"))
         } else if self.functions.contains(name) {
             let args = self.evidence(evidence, scope)?;
             Ok(format!("{}({args})", id(name)))

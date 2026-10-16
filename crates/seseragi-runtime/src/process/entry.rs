@@ -59,7 +59,7 @@ pub(super) fn entry_source(
         );
         imports.push("import { readFileSync } from \"node:fs\";".to_owned());
         imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
-        setup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
+        startup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
     }
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
@@ -659,6 +659,24 @@ pub(super) fn entry_source(
     } else {
         "process.exitCode = processShutdown.exitCode() ?? 130;"
     };
+    // Application initialization precedes provider/root setup. A rejected
+    // dynamic import must still use the language's Defect exit contract, and
+    // must not continue into main or acquire any entry resources.
+    let initialization_defect = if options.diagnostic_format == DiagnosticFormat::Json {
+        "renderRuntimeDefectDiagnostic(runtimeDefect, readDiagnosticSource) + \"\\n\""
+    } else {
+        "\"seseragi: runtime defect during module initialization: \" + String(runtimeDefect) + \"\\n\""
+    };
+    startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
+    let application_imports = application_imports
+        .iter()
+        .map(|line| {
+            format!(
+                "{}.catch(reportApplicationImportDefect);",
+                line.trim_end_matches(';')
+            )
+        })
+        .collect::<Vec<_>>();
     format!(
         "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet runtimeDefect;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else {{ hasRuntimeDefect = true; runtimeDefect = runDefect; }}\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (cleanupDefect) {{\n  hasRuntimeDefect = true;\n  runtimeDefect ??= cleanupDefect;\n}}\nif (hasRuntimeDefect) {{\n  {}\n}} else if (wasCancelled) {{\n  {}\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
         format!("{}\n{}\n{}", imports.join("\n"), startup.join("\n"), application_imports.join("\n")),

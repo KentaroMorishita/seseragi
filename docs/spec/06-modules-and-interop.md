@@ -210,6 +210,7 @@ backendは同一moduleの関数runtime bindingをすべて確立してから、t
 module初期化中にその関数を呼ばない場合は遅延された参照として許可します。
 
 同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。
+初期化中のDefectは後続の初期化とentry実行を停止します。process targetは10章のruntime Defectと同じ終了code 70を使い、JSON診断を指定した場合はDefect診断を出します。
 
 foreign moduleのruntime codeはparser、type checker、formatter、language server、document generatorが評価しては
 なりません。runtime buildでpure-loadと判定されたhost moduleだけは、7.2の保証に基づきSeseragi module初期化中に

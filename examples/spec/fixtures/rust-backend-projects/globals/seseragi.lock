@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-globals@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/global-model@1.0.0#path:vendor/model"
+name = "fixture/global-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:b731d691e75186fb13e8382cec1ceca3cb9de68be9e2e5653facb03f5f21f840"
+content_digest = "sha256:9bd3ad4ef0abe3171f4827adb3bd6d607c2f98730a91b2b0f336e9fa494ee326"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-globals@0.0.0#workspace:."
+name = "fixture/native-globals"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:818d175feb05c8f888cdc40813192b1eca56c58888cb167e6d136ec34b00cfe6"
+content_digest = "sha256:96a82fe5163234004015504017dd020482b05e8499136f1db800cde5b8b8b39d"
+dependencies = [
+  { import = "model", package = "fixture/global-model@1.0.0#path:vendor/model" },
+]
