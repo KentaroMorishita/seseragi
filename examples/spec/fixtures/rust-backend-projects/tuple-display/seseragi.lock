@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-tuple@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-tuple@0.0.0#workspace:."
+name = "fixture/native-tuple"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:bc2d5362be8d8e33211c24c5f3ac335d9d448be85e81ae917400bf9afcf3191e"
+content_digest = "sha256:9c356d3e863130e6be58abeede518a824b726d199d8b477f38abfbb098b86e1d"
+dependencies = [
+  { import = "model", package = "fixture/tuple-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/tuple-model@1.0.0#path:vendor/model"
+name = "fixture/tuple-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:50b0eac6077ff70c4c9a9d04bcd8fec23e1bd3ca116a73a0cb11adb9b48342c4"
+content_digest = "sha256:a286f8f3fd46fbc4a23efee1287f04679144e968c37be53faf6af87896d5f4f4"
+dependencies = []

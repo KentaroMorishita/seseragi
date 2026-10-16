@@ -26,7 +26,7 @@ pub(super) fn list_operation_arity(name: &str) -> Option<usize> {
     })
 }
 
-fn standard_trait(selected: &CoreCallEvidence, name: &str, ty: &CoreType) -> bool {
+pub(super) fn standard_trait(selected: &CoreCallEvidence, name: &str, ty: &CoreType) -> bool {
     selected.constraint.name == name
         && selected.constraint.arguments == [ty.clone()]
         && selected
@@ -121,8 +121,10 @@ pub(super) fn valid_display_dispatch(
     else {
         return true;
     };
-    if !matches!(dictionary.as_str(), "std/list::Show" | "std/list::Debug")
-        && primitive_display(selected).is_none()
+    if !matches!(
+        dictionary.as_str(),
+        "std/list::Show" | "std/list::Debug" | "std/tuple::Show" | "std/tuple::Debug"
+    ) && primitive_display(selected).is_none()
     {
         return true;
     }

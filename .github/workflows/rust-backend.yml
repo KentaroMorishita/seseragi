@@ -96,6 +96,11 @@ jobs:
         run: |
           cargo fmt --all -- --check
           rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs
+      - name: Verify tuple display order and shared depth on Bun and Node
+        run: |
+          bun build runtime/ts/probes/tuple-display.ts --target=node --outfile target/tuple-display.mjs
+          node target/tuple-display.mjs
+          bun target/tuple-display.mjs
       - name: Verify shared frontend boundary
         run: |
           cargo test --locked -p seseragi-driver --lib core_compile::tests

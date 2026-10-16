@@ -1,0 +1,46 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+type Label = | Label Int
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "selected=" + show n }
+}
+
+effect fn failing -> Unit fails (Label, String) = effects.fail (Label 7, "payload")
+
+pub effect fn main = do {
+  values <- refs.make (Label 1, "before")
+  let display = \n: Int -> do {
+    current <- refs.get values
+    println (show (current, n))
+  }
+  callbacks <- refs.make (display, display)
+  let after = \n: Int -> do {
+    (first, second) <- refs.get callbacks
+    first n
+    second (n + 1)
+  }
+  refs.set (after, after) callbacks
+  // Keep the first closure, then cut the callback cycle through its Ref.
+  (saved, _) <- refs.get callbacks
+  refs.set (display, display) callbacks
+  let cold = saved 2
+  println "cold"
+  cold
+  refs.set (Label 4, "after") values
+  cold
+  released <- refs.make (Label 0, "unset")
+  recovered <- effects.recover (\payload: (Label, String) -> effects.succeed payload) $
+    effects.scoped $
+    do {
+    before <- refs.get values
+    effects.acquireRelease (effects.succeed before) (\value: (Label, String) -> refs.set value released)
+    failing ()
+    effects.succeed (Label 99, "unreachable")
+  }
+  println ("recovered: " + show recovered)
+  last <- refs.get released
+  println ("released: " + show last)
+  refs.set (after, after) callbacks
+}

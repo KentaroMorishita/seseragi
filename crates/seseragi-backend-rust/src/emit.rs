@@ -15,6 +15,7 @@ mod floats;
 mod lists;
 mod scalar;
 mod tail;
+mod tuples;
 
 type Scope = BTreeSet<String>;
 type Result<T> = std::result::Result<T, RustBackendError>;
@@ -34,6 +35,7 @@ pub fn emit(
     entry: &str,
     owners: &BTreeMap<String, String>,
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
+    type_names: &BTreeMap<(String, String), String>,
 ) -> Result<RustArtifact> {
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
@@ -42,6 +44,7 @@ pub fn emit(
         module,
         owners,
         scalar_globals,
+        type_names,
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
         globals: module
@@ -63,6 +66,7 @@ pub fn emit(
         direct_calls: 0,
         self_tail_calls: 0,
         closed_dictionary_sites: 0,
+        dictionary_constraints: vec![],
         capabilities: BTreeSet::new(),
     };
     let entry = module
@@ -86,6 +90,7 @@ pub fn emit(
     output.push_str(include_str!("runtime_float_display.rs"));
     output.push_str(include_str!("runtime_float.rs"));
     output.push_str(include_str!("runtime_list.rs"));
+    output.push_str(include_str!("runtime_tuple.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     let mut initialization = String::new();
@@ -117,6 +122,7 @@ pub fn emit(
     }
     for instance in &module.instances {
         backend.owner = &owners[&instance.identity];
+        backend.dictionary_constraints = instance.constraints.clone();
         if instance.supertrait_count != 0 {
             return Err(crate::project::at(
                 "Rust backend: supertraits are unsupported",
@@ -153,6 +159,7 @@ pub fn emit(
     }
     for function in &module.functions {
         backend.owner = &owners[&function.symbol];
+        backend.dictionary_constraints = function.constraints.clone();
         if function.parameters.is_empty() {
             return Err(crate::project::at(
                 "Rust backend: constrained global values without source parameters are unsupported",
@@ -222,11 +229,13 @@ struct Backend<'a> {
     functions: BTreeSet<String>,
     globals: BTreeMap<String, usize>,
     scalar_globals: &'a seseragi_lowering::CoreScalarGlobals,
+    type_names: &'a BTreeMap<(String, String), String>,
     constructors: BTreeMap<String, bool>,
     serial: usize,
     direct_calls: usize,
     self_tail_calls: usize,
     closed_dictionary_sites: usize,
+    dictionary_constraints: Vec<seseragi_lowering::CoreInstanceConstraint>,
     capabilities: BTreeSet<String>,
 }
 
@@ -284,6 +293,10 @@ impl Backend<'_> {
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
+            if let Some(dictionary) = self.tuple_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -589,6 +602,12 @@ impl Backend<'_> {
                         evidence,
                         deferred_evidence_parameters,
                     ) || floats::closed_float_partial(
+                        self.module,
+                        callee,
+                        arguments.len(),
+                        evidence,
+                        deferred_evidence_parameters,
+                    ) || tuples::closed_tuple_partial(
                         self.module,
                         callee,
                         arguments.len(),
