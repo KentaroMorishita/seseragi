@@ -19,6 +19,7 @@
     {
       "module": "fixture/imported-newtype::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "UserId",

@@ -200,7 +200,17 @@ impl<'a> PureExpressionContext<'a> {
             return None;
         }
         Some(TopLevelPureFunction {
-            symbol: symbol.spelling.clone(),
+            // A monomorphic imported function value is not in the callable
+            // scheme table. Preserve its resolved identity here just as for
+            // a bare imported value; spelling loses namespace/rename context.
+            symbol: if symbol.kind == SymbolKind::Imported {
+                symbol
+                    .canonical
+                    .clone()
+                    .unwrap_or_else(|| symbol.spelling.clone())
+            } else {
+                symbol.spelling.clone()
+            },
             trait_identity: None,
             trait_method: None,
             type_parameters: Vec::new(),

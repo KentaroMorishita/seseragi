@@ -1,0 +1,26 @@
+// 依存先の初期化と辞書を保持するglobal closure。
+pub type Box<A> = | Box A
+
+pub trait Read<A> {
+  fn read value: A -> Int
+}
+
+instance Read<Int> {
+  fn read value: Int -> Int = value
+}
+
+instance<A> Read<Box<A>> where Read<A> {
+  fn read value: Box<A> -> Int = match value { Box inner -> read inner }
+}
+
+let seed: Int = 42
+
+fn capture<A> value: A -> (Unit -> Int) where Read<A> = \_ -> read value + seed - 42
+
+pub let reader: Unit -> Int = capture (Box (Box 42))
+pub let digits: List<Int> = `[2, 0]
+pub let (first, second): (Int, Int) = (20, 22)
+
+fn returned n: Int -> (Int -> Int) = \m -> n + m
+
+pub let both: Int -> (Int -> Int) = returned

@@ -10,6 +10,7 @@
     {
       "module": "fixture/namespace-call::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Hand",

@@ -858,3 +858,109 @@ fn pure_tail_recursion_preserves_snapshots_partial_calls_and_changing_evidence()
     assert_eq!(artifact.metadata.self_tail_calls, 0);
     run("fn later n: Int -> (Unit -> Int) = \\_ -> if n == 0 then 42 else later (n - 1) ()\npub fn probe -> Int = later 5 ()\n", "42");
 }
+
+#[test]
+fn monomorphic_globals_keep_values_patterns_closures_and_source_arity() {
+    let artifact = emit(
+        r#"
+struct Pair { left: Int, right: Int }
+let base: Int = laterFunction ()
+let (left, right): (Int, Int) = (20, 22)
+let pair: Pair = Pair { left: left, right: right }
+let retained: Unit -> Int = \_ -> later
+let partial: Int -> Int = returned pair.left
+let later: Int = 42
+fn laterFunction -> Int = 7
+fn returned n: Int -> (Int -> Int) = \m -> n + m
+pub fn probe -> (Int, Int, Int) = (base, retained (), partial pair.right)
+"#,
+    );
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"(7, 42, 42)\n");
+    assert!(String::from_utf8_lossy(&output.stderr).contains("managed-live=0"));
+}
+
+#[test]
+fn globals_reject_unproved_polymorphism_before_emission() {
+    let source = "let identity = \\x -> x\npub fn probe -> Int = identity 42\n";
+    let core =
+        compile_core_module(CompileInput::new("global.ssrg", "native/main", source)).unwrap();
+    let error = emit_rust_module(&core.core_ir, "probe").err().unwrap();
+    assert!(error.message.contains("global"), "{error:?}");
+    assert!(error.origin.is_some());
+    // The shared frontend eta-expands constrained callable aliases. Those keep
+    // their source parameters and evidence ABI; zero-parameter values don't.
+    let source = "fn render<A> value: A -> String where Show<A> = show value\nlet retainedValue = render\npub fn probe -> String = retainedValue 42\n";
+    let mut core = compile_core_module(CompileInput::new("global.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "probe").unwrap();
+    let scratch = Scratch::new();
+    let output = Command::new(scratch.compile(&artifact.source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert_eq!(output.stdout, b"42\n");
+    core.functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::retainedValue"))
+        .unwrap()
+        .parameters
+        .clear();
+    assert!(emit_rust_module(&core, "probe")
+        .err()
+        .unwrap()
+        .message
+        .contains("without source parameters"));
+}
+
+#[test]
+fn global_cleanup_handles_partial_initialization_and_deep_ref_graphs() {
+    let artifact = emit("pub fn probe -> Int = 42\n");
+    let main = artifact.source.rfind("fn main()").unwrap();
+    let harness = r#"
+fn main() {
+    std::thread::Builder::new().stack_size(256 * 1024).spawn(|| {
+        let code = run_native_pure_entry(|| {
+            let mut chain = V::Unit;
+            for _ in 0..100_000 { chain = V::adt("node", chain); }
+            set_global(0, chain);
+            let cell = V::reference(V::Unit);
+            cell.write_reference(V::fun(vec![cell.clone()], |c, _| c[0].clone()));
+            set_global(1, cell);
+            assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+            panic!("initializer stopped");
+        }, true);
+        assert_eq!(code, 70);
+        assert_eq!(LIVE.with(Cell::get), 0);
+        assert!(GLOBALS.with(|v| v.borrow().is_empty()));
+        assert_eq!(run_native_pure_entry(|| { set_global(0, V::text("again")); get_global(0) }, true), 0);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }).unwrap().join().unwrap();
+}
+"#;
+    let scratch = Scratch::new();
+    let source = format!("{}\n{harness}", &artifact.source[..main]);
+    let output = Command::new(scratch.compile(&source))
+        .env("PATH", "")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"again\n");
+    assert!(String::from_utf8_lossy(&output.stderr).contains("initializer stopped"));
+}

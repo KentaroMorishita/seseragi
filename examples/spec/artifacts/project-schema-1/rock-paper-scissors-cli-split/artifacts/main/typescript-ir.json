@@ -110,6 +110,7 @@
     {
       "module": "fixture/rps-cli-split::input",
       "specifier": "./input.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "InputError",

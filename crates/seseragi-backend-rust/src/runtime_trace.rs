@@ -209,6 +209,19 @@ fn collect_cycles() -> Result<CycleCollection, &'static str> {
 mod trace_tests {
     use super::*;
     #[test]
+    fn global_roots_retain_cycles_until_the_program_releases_them() {
+        enable_cycle_collection();
+        let cell = V::reference(V::Unit);
+        let callback = V::fun(vec![cell.clone()], |c, _| c[0].clone());
+        cell.write_reference(callback);
+        set_global(0, cell);
+        assert_eq!(collect_cycles().unwrap().reclaimed, 0);
+        assert!(matches!(get_global(0).read_reference(), V::Fun(_)));
+        clear_globals();
+        assert_eq!(collect_cycles().unwrap().reclaimed, 2);
+        assert_eq!(LIVE.with(Cell::get), 0);
+    }
+    #[test]
     fn rooted_callbacks_keep_cycles_and_duplicate_edges_alive() {
         enable_cycle_collection();
         let cell = V::reference(V::Unit);

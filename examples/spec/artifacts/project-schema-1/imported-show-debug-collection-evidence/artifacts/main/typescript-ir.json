@@ -22,6 +22,7 @@
     {
       "module": "fixture/imported-show-debug-collection-evidence::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Badge",

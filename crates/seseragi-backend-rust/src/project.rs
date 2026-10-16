@@ -1,5 +1,5 @@
 use crate::{emit, RustArtifact, RustBackendError};
-use seseragi_lowering::{CoreModule, SourceSpan};
+use seseragi_lowering::{core_module_initialization_order, CoreModule, SourceSpan};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) fn at(message: &str, origin: &SourceSpan, module: &str) -> RustBackendError {
@@ -24,6 +24,7 @@ pub(crate) fn emit(
     linked.structs.clear();
     linked.instances.clear();
     linked.functions.clear();
+    linked.bindings.clear();
     linked.module_dependencies.clear();
     let mut seen = BTreeSet::new();
     let mut owners = BTreeMap::new();
@@ -43,13 +44,6 @@ pub(crate) fn emit(
                 ));
             }
         }
-        if let Some(binding) = module.bindings.first() {
-            return Err(at(
-                "Rust backend: top-level bindings are unsupported",
-                &binding.origin,
-                &module.module,
-            ));
-        }
         if let Some(foreign) = module.foreign_modules.first() {
             return Err(at(
                 "Rust backend: foreign modules are unsupported",
@@ -61,6 +55,7 @@ pub(crate) fn emit(
             .functions
             .iter()
             .map(|f| (&f.symbol, &f.origin))
+            .chain(module.bindings.iter().map(|b| (&b.symbol, &b.origin)))
             .chain(
                 module
                     .adts
@@ -98,7 +93,19 @@ pub(crate) fn emit(
         linked.instances.extend(module.instances.clone());
         linked.functions.extend(module.functions.clone());
     }
+    let initialization = core_module_initialization_order(modules, entry_module)
+        .ok_or("Rust backend: invalid source initialization graph")?;
+    if initialization.len() != modules.len() {
+        return Err("Rust backend: source module is outside the entry dependency graph".into());
+    }
+    for identity in &initialization {
+        let module = modules
+            .iter()
+            .find(|m| &m.module == identity)
+            .expect("checked initialization owner");
+        linked.bindings.extend(module.bindings.clone());
+    }
     let mut artifact = emit::emit(&linked, entry, &owners)?;
-    artifact.metadata.modules = modules.iter().map(|m| m.module.clone()).collect();
+    artifact.metadata.modules = initialization;
     Ok(artifact)
 }

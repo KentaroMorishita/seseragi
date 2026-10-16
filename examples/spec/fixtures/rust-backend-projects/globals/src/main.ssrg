@@ -1,0 +1,51 @@
+import * as branch from "./lib"
+import { left } from "./left"
+import { first, second, both } from "model"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+let seed: Int = 7
+let total: Int = laterFunction ()
+fn laterFunction -> Int = first + second
+fn returned a: Int -> (Int -> Int) = \b -> a + b
+let sum: Int -> Int = returned first
+let delayed: Unit -> Int = \_ -> after
+let after: Int = seed
+
+effect fn announce -> Unit with Console fails ConsoleError = println "cold"
+let cold = announce ()
+let allocate = refs.make (\n: Int -> effects.succeed n)
+
+effect fn release cell: refs.Ref<Int
+  -> Effect<{}, Never, Int>>
+  -> log: refs.Ref<Int>
+  -> Unit =
+  do {
+    current <- refs.get cell
+    n <- current 0
+    refs.set (n + left () - 42) log
+  }
+
+pub fn probe -> (Int, Int, Int, Int, Int) =
+  (left (), branch.right (), total + both first second - 42, sum second, delayed ())
+
+pub effect fn main = do {
+  let (a, b, c, d, e) = probe ()
+  println `(${a}, ${b}, ${c}, ${d}, ${e})`
+  cold
+  cold
+  cell <- allocate
+  let callback = \n: Int -> do {
+    previous <- refs.get cell
+    effects.succeed (n + left ())
+  }
+  refs.set callback cell
+  released <- refs.make 0
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> release cell released)
+    value <- callback 0
+    println ("value: " + show value)
+  }
+  afterRelease <- refs.get released
+  println ("release: " + show afterRelease)
+}

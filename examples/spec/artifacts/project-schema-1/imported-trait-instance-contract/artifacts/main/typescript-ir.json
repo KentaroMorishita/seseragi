@@ -11,6 +11,7 @@
     {
       "module": "fixture/imported-trait-instance-contract::contract",
       "specifier": "./contract.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Prefix",

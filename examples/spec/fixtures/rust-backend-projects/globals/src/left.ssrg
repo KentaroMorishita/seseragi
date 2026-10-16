@@ -1,0 +1,2 @@
+import { reader } from "model"
+pub let left: Unit -> Int = reader

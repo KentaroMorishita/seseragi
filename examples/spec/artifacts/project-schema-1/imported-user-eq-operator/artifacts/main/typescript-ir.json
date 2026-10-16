@@ -18,6 +18,7 @@
     {
       "module": "fixture/imported-user-eq-operator::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Ready",

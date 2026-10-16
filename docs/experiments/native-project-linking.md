@@ -53,7 +53,29 @@ are rejected. Target diagnostics carry the logical owner separately from the
 portable CoreIr source name; the CLI maps it to the loaded physical source and
 keeps the original byte range, even when basenames coincide.
 
-Top-level bindings and their initialization / global-root semantics remain
+Top-level initialization uses shared CoreIr analysis of source-import DFS
+postorder, distinct from checking order, and source order within each module. Monomorphic values, structural and algebraic data,
+closures, and cold synchronous Effect plans are evaluated once before entry.
+Function references remain callable before value initialization; delayed reads
+inside functions use the stored global value. Lexical bindings take precedence,
+and module-local CoreIr spellings resolve only against their original owner.
+
+Global values remain roots through entry execution and all scope finalizers.
+Both pure and Effect entry runners release partial initialization on Defect,
+then global roots and dictionaries before collecting unreachable Ref cycles.
+TypeScript keeps source initialization edges for unused imports; release
+application pruning retains eager initializers and their dependencies, including
+through empty facades. Unimported modules remain outside initialization. The
+explicit CoreIr API requires the entry dependency graph.
+
+The `globals` fixture covers a four-module, two-package diamond, a selected
+nested dictionary captured by a global closure, partial application, tuple
+patterns, cold plan replay, and a Ref callback used during finalization.
+
+Polymorphic `CoreBinding` values and constrained values without source
+parameters are rejected before output. Constrained callable aliases already
+eta-expanded by the shared frontend retain their parameters and evidence ABI.
+General polymorphic value initialization remains
 unsupported, including unused bindings. Derived dictionaries, supertraits,
 unimplemented standard operations, async / providers, foreign interop and
 general program WASM retain their existing boundaries. Unsupported code in any
@@ -65,13 +87,23 @@ measurements and shared CoreIr candidates in #816 remain separate evidence.
 
 ## Validation before canonical distribution
 
-Local scoped checks passed: driver 140, native runtime 23, generated native 26,
-project ownership 2, and CLI 13 tests. The CLI lane includes the existing 36
-single-source comparisons and the five-module path-package case in both TS
-profiles. Canonical artifact freshness, exact-head integration, official Release,
-dogfood and installed CLI acceptance are tracked on #837; these checks alone do
-not claim that handoff is complete.
+The initialization slice uses scoped backend, process runtime, and CLI checks.
+Backend coverage includes 24 runtime, 29 generated-program and three project
+ownership tests; the process runtime includes text / JSON initialization failure
+in normal and bundled execution. CLI comparisons cover the existing single-file
+corpus, both multi-package projects, eager initialization Defects, and shared
+initialization diagnostics. Canonical artifact freshness, exact-head integration,
+official Release, dogfood and installed CLI acceptance are tracked on #839 and
+#841. Local checks alone do not establish distribution acceptance.
 
 The ordinary five-module TS build also matches the fixture in development and
 release on fresh Bun 1.3.11 and Node 24.14.0 processes (four executions), with an
 empty runtime PATH. This validates observable behavior, not a speed improvement.
+
+Initialization parity also covers process exit behavior. A top-level Defect
+stops before entry and returns exit 70. The TS process runner handles rejection
+of its literal application imports before provider setup, including structured
+Defect diagnostics, while retaining seed-before-import ordering and bundling.
+Browser startup is unchanged. Native teardown is additionally checked after
+partial initialization, including a 100,000-node graph and Ref cycle on a
+256 KiB stack.

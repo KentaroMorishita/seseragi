@@ -10,6 +10,7 @@ thread_local! {
     static DROP_QUEUE: RefCell<Vec<Box<dyn Any>>> = const { RefCell::new(Vec::new()) };
     static DRAINING: Cell<bool> = const { Cell::new(false) };
     static DICTIONARIES: RefCell<BTreeMap<&'static str, V>> = const { RefCell::new(BTreeMap::new()) };
+    static GLOBALS: RefCell<Vec<V>> = const { RefCell::new(Vec::new()) };
     static LIVE: Cell<usize> = const { Cell::new(0) };
     static PEAK: Cell<usize> = const { Cell::new(0) };
     static ALLOCATIONS: Cell<usize> = const { Cell::new(0) };
@@ -111,6 +112,33 @@ fn cached(key: &'static str, factory: impl FnOnce() -> V) -> V {
 fn clear_dictionaries() {
     let entries = DICTIONARIES.with(|cache| std::mem::take(&mut *cache.borrow_mut()));
     drop(entries);
+}
+
+fn set_global(index: usize, value: V) {
+    // Evaluate the initializer before borrowing storage. Calls can read earlier
+    // bindings, but no initializer or user callback runs under this borrow.
+    GLOBALS.with(|globals| {
+        let mut globals = globals.borrow_mut();
+        assert_eq!(
+            globals.len(),
+            index,
+            "Rust ABI: global initialization order"
+        );
+        globals.push(value);
+    });
+}
+fn get_global(index: usize) -> V {
+    GLOBALS.with(|globals| {
+        globals
+            .borrow()
+            .get(index)
+            .expect("Rust ABI: uninitialized global")
+            .clone()
+    })
+}
+fn clear_globals() {
+    let values = GLOBALS.with(|globals| std::mem::take(&mut *globals.borrow_mut()));
+    drop(values);
 }
 
 #[derive(Clone)]

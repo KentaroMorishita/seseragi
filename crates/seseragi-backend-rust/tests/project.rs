@@ -86,3 +86,32 @@ fn imported_evidence_cannot_be_rebound_to_a_name_or_a_local_factory() {
         assert!(error.module.is_some());
     }
 }
+
+#[test]
+fn initialization_uses_source_import_postorder_instead_of_checking_order() {
+    let loaded = seseragi_project::load_local_project(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/spec/fixtures/rust-backend-projects/globals"
+    ))
+    .unwrap();
+    let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+    let modules = core
+        .compiled
+        .order
+        .iter()
+        .map(|id| &core.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let prefix = core.entry_module.rsplit_once("::").unwrap().0;
+    let left = format!("{prefix}::left");
+    let lib = format!("{prefix}::lib");
+    let position = |order: &[String], id: &str| order.iter().position(|m| m == id).unwrap();
+    assert!(position(&core.compiled.order, &left) < position(&core.compiled.order, &lib));
+    let artifact = emit_rust_project(&modules, &core.entry_module, "main").unwrap();
+    assert!(
+        position(&artifact.metadata.modules, &lib) < position(&artifact.metadata.modules, &left)
+    );
+    assert_eq!(
+        artifact.metadata.modules,
+        seseragi_lowering::core_module_initialization_order(&modules, &core.entry_module).unwrap()
+    );
+}

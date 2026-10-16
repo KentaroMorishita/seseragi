@@ -32,69 +32,72 @@ fn cli() -> Command {
 #[test]
 fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
     let scratch = Scratch::new();
-    let project = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../examples/spec/fixtures/rust-backend-projects/linked");
-    for entry in ["main", "probe"] {
-        let directory = scratch.0.join(entry);
-        let built = cli()
-            .args(["experimental", "build-native"])
-            .arg(&project)
-            .args(["--entry", entry, "--out-dir"])
-            .arg(&directory)
-            .output()
-            .unwrap();
-        assert!(
-            built.status.success(),
-            "{}",
-            String::from_utf8_lossy(&built.stderr)
-        );
-        let executable = directory.join(if cfg!(windows) {
-            "program.exe"
-        } else {
-            "program"
-        });
-        let native = Command::new(executable)
-            .env("PATH", "")
-            .env("SESERAGI_NATIVE_METRICS", "1")
-            .output()
-            .unwrap();
-        assert!(
-            native.status.success(),
-            "{}",
-            String::from_utf8_lossy(&native.stderr)
-        );
-        let expected = fs::read(project.join(if entry == "main" {
-            "expected.stdout"
-        } else {
-            "probe.stdout"
-        }))
-        .unwrap();
-        assert_eq!(native.stdout, expected);
-        if entry == "main" {
-            assert!(String::from_utf8_lossy(&native.stderr).contains("managed-live=0"));
-            for profile in ["development", "release"] {
-                let ts = cli()
-                    .arg("run")
-                    .arg(&project)
-                    .args(["--profile", profile])
-                    .output()
-                    .unwrap();
-                assert!(
-                    ts.status.success(),
-                    "{}",
-                    String::from_utf8_lossy(&ts.stderr)
-                );
-                assert_eq!(native.stdout, ts.stdout, "{profile}");
-            }
-        }
-        let metadata: serde_json::Value =
-            serde_json::from_slice(&fs::read(directory.join("rust-backend.json")).unwrap())
+    for (fixture, count) in [("linked", 5), ("globals", 4)] {
+        let project = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/spec/fixtures/rust-backend-projects")
+            .join(fixture);
+        for entry in ["main", "probe"] {
+            let directory = scratch.0.join(fixture).join(entry);
+            let built = cli()
+                .args(["experimental", "build-native"])
+                .arg(&project)
+                .args(["--entry", entry, "--out-dir"])
+                .arg(&directory)
+                .output()
                 .unwrap();
-        assert_eq!(metadata["modules"].as_array().unwrap().len(), 5);
-        assert!(metadata["entry"]
-            .as_str()
-            .unwrap()
-            .ends_with(&format!("::main::{entry}")));
+            assert!(
+                built.status.success(),
+                "{}",
+                String::from_utf8_lossy(&built.stderr)
+            );
+            let executable = directory.join(if cfg!(windows) {
+                "program.exe"
+            } else {
+                "program"
+            });
+            let native = Command::new(executable)
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1")
+                .output()
+                .unwrap();
+            assert!(
+                native.status.success(),
+                "{}",
+                String::from_utf8_lossy(&native.stderr)
+            );
+            let expected = fs::read(project.join(if entry == "main" {
+                "expected.stdout"
+            } else {
+                "probe.stdout"
+            }))
+            .unwrap();
+            assert_eq!(native.stdout, expected);
+            if entry == "main" {
+                assert!(String::from_utf8_lossy(&native.stderr).contains("managed-live=0"));
+                for profile in ["development", "release"] {
+                    let ts = cli()
+                        .arg("run")
+                        .arg(&project)
+                        .args(["--profile", profile])
+                        .output()
+                        .unwrap();
+                    assert!(
+                        ts.status.success(),
+                        "{}",
+                        String::from_utf8_lossy(&ts.stderr)
+                    );
+                    assert_eq!(native.stdout, ts.stdout, "{profile}");
+                }
+            }
+            let metadata: serde_json::Value =
+                serde_json::from_slice(&fs::read(directory.join("rust-backend.json")).unwrap())
+                    .unwrap();
+            assert_eq!(metadata["modules"].as_array().unwrap().len(), count);
+            assert!(metadata["entry"]
+                .as_str()
+                .unwrap()
+                .ends_with(&format!("::main::{entry}")));
+        }
     }
 }
 
@@ -129,7 +132,7 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
         "private",
         "opaque",
         "unsupported",
-        "top-level",
+        "polymorphic-global",
         "stale",
         "missing",
     ] {
@@ -151,11 +154,11 @@ fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() 
                 .unwrap();
                 ("error[", Some(main.clone()), "value")
             }
-            "unsupported" | "top-level" => {
+            "unsupported" | "polymorphic-global" => {
                 let addition = if kind == "unsupported" {
                     "\npub fn unsupported -> Float = 2.0 ** 3.0\n"
                 } else {
-                    "\nlet initial: Int = 42\n"
+                    "\nlet initial = \\value -> value\n"
                 };
                 fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
                 (
@@ -976,4 +979,165 @@ fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
     assert!(error.contains("async.ssrg:"), "{error}");
     assert!(!output.exists());
     assert!(!output.with_extension("rust-backend.json").exists());
+}
+
+#[test]
+fn native_globals_share_initialization_diagnostics_and_write_nothing() {
+    let scratch = Scratch::new();
+    for (index, source) in [
+        "// λ🙂\nlet first: Int = later\nlet later: Int = 42\npub fn probe -> Int = first\n",
+        "// λ🙂\nfn read -> Int = value\nlet value: Int = read ()\npub fn probe -> Int = value\n",
+        "// λ🙂\nfn read -> Int = later\nlet first: Int = read ()\nlet later: Int = 42\npub fn probe -> Int = first\n",
+    ].iter().enumerate() {
+        let path = scratch.0.join(format!("invalid-{index}.ssrg"));
+        fs::write(&path, source).unwrap();
+        let output_path = scratch.0.join(format!("invalid-{index}.rs"));
+        let output = cli().args(["experimental", "emit-rust"]).arg(&path)
+            .args(["--entry", "probe", "--output"]).arg(&output_path).output().unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert!(!output_path.exists());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("SES-N0201"));
+        for profile in ["development", "release"] {
+            let ts = cli().arg("run").arg(&path).args(["--profile", profile]).output().unwrap();
+            assert_eq!(ts.status.code(), Some(2));
+            assert!(ts.stdout.is_empty());
+            assert!(String::from_utf8_lossy(&ts.stderr).contains("SES-N0201"));
+        }
+    }
+}
+
+#[test]
+fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
+    let scratch = Scratch::new();
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/spec/fixtures/rust-backend-projects/globals");
+    for kind in [
+        "dependency",
+        "source",
+        "siblings",
+        "unused-import",
+        "unreferenced",
+    ] {
+        let project = scratch.0.join(kind);
+        copy_project(&fixture, &project);
+        let library = project.join("vendor/model/src/lib.ssrg");
+        let main = project.join("src/main.ssrg");
+        let first = "\nlet firstDefect: Int = 9007199254740991 + 1\n";
+        let second = "\nlet secondDefect: Int = 9007199254740991 * 9007199254740991\n";
+        match kind {
+            "dependency" => {
+                fs::write(&library, fs::read_to_string(&library).unwrap() + first).unwrap();
+                fs::write(&main, fs::read_to_string(&main).unwrap() + second).unwrap();
+            }
+            "source" => {
+                fs::write(&main, fs::read_to_string(&main).unwrap() + first + second).unwrap()
+            }
+            "siblings" => {
+                let left = project.join("src/left.ssrg");
+                let lib = project.join("src/lib.ssrg");
+                fs::write(&left, fs::read_to_string(&left).unwrap() + first).unwrap();
+                fs::write(&lib, fs::read_to_string(&lib).unwrap() + second).unwrap();
+            }
+            "unused-import" => {
+                fs::write(&library, fs::read_to_string(&library).unwrap() + first).unwrap();
+                fs::write(&main,"import { reader } from \"model\"\npub effect fn main = println \"must not run\"\n").unwrap();
+            }
+            _ => fs::write(project.join("src/unreferenced.ssrg"), first).unwrap(),
+        }
+        write_project_lock(&project);
+        let directory = scratch.0.join(format!("out-{kind}"));
+        let built = cli()
+            .args(["experimental", "build-native"])
+            .arg(&project)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&directory)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{kind}: {}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        let native = Command::new(directory.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        }))
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+        let code = if kind == "unreferenced" { 0 } else { 70 };
+        assert_eq!(native.status.code(), Some(code), "{kind}");
+        if code == 0 {
+            assert_eq!(
+                native.stdout,
+                fs::read(fixture.join("expected.stdout")).unwrap()
+            );
+        } else {
+            assert!(native.stdout.is_empty());
+        }
+        let errors = String::from_utf8_lossy(&native.stderr);
+        if code != 0 {
+            let first_defect = if kind == "siblings" {
+                "Seseragi Defect: Int overflow"
+            } else {
+                "Seseragi Defect: Seseragi Int overflow"
+            };
+            assert!(errors.contains(first_defect), "{kind}: {errors}");
+        }
+        assert!(errors.contains("managed-live=0"), "{kind}: {errors}");
+        for profile in ["development", "release"] {
+            let ts = cli()
+                .arg("run")
+                .arg(&project)
+                .args(["--profile", profile])
+                .output()
+                .unwrap();
+            assert_eq!(
+                ts.status.code(),
+                Some(code),
+                "{kind}: {}",
+                String::from_utf8_lossy(&ts.stderr)
+            );
+            assert_eq!(ts.stdout, native.stdout);
+            if code != 0 {
+                assert!(String::from_utf8_lossy(&ts.stderr).contains("Int overflow"));
+            }
+            // The release application-pruning pass and bundler must retain
+            // eager initialization even when no imported/global name is used.
+            let output = scratch.0.join(format!("{kind}-ts-{profile}"));
+            let built = cli()
+                .arg("build")
+                .arg(&project)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&output)
+                .output()
+                .unwrap();
+            assert!(
+                built.status.success(),
+                "{}",
+                String::from_utf8_lossy(&built.stderr)
+            );
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for runtime in ["bun", "node"] {
+                let ts = Command::new(runtime)
+                    .arg(output.join(manifest["entry"].as_str().unwrap()))
+                    .output()
+                    .unwrap();
+                assert_eq!(
+                    ts.status.code(),
+                    Some(code),
+                    "{kind}/{profile}/{runtime}: {}",
+                    String::from_utf8_lossy(&ts.stderr)
+                );
+                assert_eq!(ts.stdout, native.stdout, "{kind}/{profile}/{runtime}");
+                if code != 0 {
+                    assert!(String::from_utf8_lossy(&ts.stderr).contains("module initialization"));
+                }
+            }
+        }
+    }
 }

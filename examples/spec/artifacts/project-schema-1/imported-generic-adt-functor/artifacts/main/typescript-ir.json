@@ -24,6 +24,7 @@
     {
       "module": "fixture/imported-generic-adt-functor::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Box",

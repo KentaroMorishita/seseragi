@@ -10,6 +10,15 @@ impl Drop for Fixture {
 }
 
 fn execute_startup(browser: bool, seed: RandomSeed, bundled: bool) -> std::process::Output {
+    execute_startup_diagnostics(browser, seed, bundled, crate::DiagnosticFormat::Text)
+}
+
+fn execute_startup_diagnostics(
+    browser: bool,
+    seed: RandomSeed,
+    bundled: bool,
+    diagnostic_format: crate::DiagnosticFormat,
+) -> std::process::Output {
     let fixture = Fixture(prepare_directory().unwrap());
     crate::stage_typescript_package(&fixture.0).unwrap();
     fs::write(
@@ -28,6 +37,7 @@ fn execute_startup(browser: bool, seed: RandomSeed, bundled: bool) -> std::proce
     };
     let options = ProcessRunOptions {
         hash_seed: seed,
+        diagnostic_format,
         ..ProcessRunOptions::default()
     };
     let source = if browser {
@@ -72,6 +82,26 @@ fn execute_startup(browser: bool, seed: RandomSeed, bundled: bool) -> std::proce
         .current_dir(&fixture.0)
         .output()
         .unwrap()
+}
+
+#[test]
+fn process_initialization_defects_use_the_language_exit_and_diagnostic_contract() {
+    for bundled in [false, true] {
+        for format in [crate::DiagnosticFormat::Text, crate::DiagnosticFormat::Json] {
+            let output = execute_startup_diagnostics(false, RandomSeed::Fixed(42), bundled, format);
+            assert_eq!(output.status.code(), Some(70));
+            assert_eq!(output.stdout, b"application:42\n");
+            let error = String::from_utf8(output.stderr).unwrap();
+            assert!(error.contains("application fixture boundary"), "{error}");
+            if format == crate::DiagnosticFormat::Json {
+                let diagnostic: serde_json::Value = serde_json::from_str(error.trim()).unwrap();
+                assert_eq!(diagnostic["kind"], "Defect");
+                assert_eq!(diagnostic["schema"], 1);
+            } else {
+                assert!(error.contains("during module initialization"), "{error}");
+            }
+        }
+    }
 }
 
 #[test]

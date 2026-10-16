@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.37] - 2026-10-16
+
+### Added
+
+- Initialize monomorphic native global values, structures, closures and cold synchronous Effect plans once in checked dependency / source order. Keep canonical imports, selected evidence and source arity, and retain global roots through scope finalizers before releasing dictionaries and Ref cycles. Reject unproved polymorphic value shapes before output (#839).
+
+### Fixed
+
+- Preserve source-import initialization order independently of type checking, and keep eager initializers and unused import edges during TypeScript application pruning so Defects cannot disappear. Use checked CoreIr summaries to preserve task-only foreign modules' lazy loading when imports use only types (#844).
+- Preserve canonical identity when calling monomorphic imported function values, including namespace and renamed imports, in the shared frontend for both TypeScript and Rust (#839).
+- Report TypeScript process application initialization failures as runtime Defects with exit 70 and text / JSON diagnostics, before entry or provider setup. Keep seed initialization order and literal dynamic imports for normal and bundled execution (#841).
+
 ## [0.61.36] - 2026-10-16
 
 ### Added

@@ -12,6 +12,7 @@
     {
       "module": "fixture/higher-kinded-alias-import::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Box",

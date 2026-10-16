@@ -699,7 +699,7 @@ fn keeps_a_namespace_only_edge_as_a_side_effect_import() {
 }
 
 #[test]
-fn omits_a_runtime_edge_for_an_unused_named_value_import() {
+fn keeps_an_unknown_initialization_edge_for_an_unused_named_value_import() {
     let domain_source = "pub let answer: Int = 42\n";
     let main_source = "import { answer } from \"./domain\"\n\npub fn run unit: Unit -> Unit = ()\n";
     let core = linked_core(
@@ -713,10 +713,31 @@ fn omits_a_runtime_edge_for_an_unused_named_value_import() {
     )
     .unwrap();
     assert!(typescript.source_imports[0].bindings.is_empty());
-    assert!(!typescript.source_imports[0].runtime_edge);
+    assert!(typescript.source_imports[0].runtime_edge);
 
     let generated = emit_typescript_module(typescript, main_source);
-    assert!(!generated.typescript.contains("./domain.js"));
+    assert!(generated.typescript.contains("import \"./domain.js\""));
+}
+
+#[test]
+fn omits_an_unused_named_value_import_when_checked_initialization_is_inert() {
+    let domain_source = "pub fn answer -> Int = 42\n";
+    let main_source = "import { answer } from \"./domain\"\n\npub fn run unit: Unit -> Unit = ()\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")])
+            .with_initialization_requirements([("fixture/game::domain".into(), false)]),
+    )
+    .unwrap();
+    assert!(typescript.source_imports[0].bindings.is_empty());
+    assert!(!typescript.source_imports[0].runtime_edge);
+    assert!(!emit_typescript_module(typescript, main_source)
+        .typescript
+        .contains("./domain.js"));
 }
 
 #[test]

@@ -49,6 +49,7 @@
     {
       "module": "fixture/imported-iterable-comprehension::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Countdown",

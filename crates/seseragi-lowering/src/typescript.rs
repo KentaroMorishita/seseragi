@@ -222,6 +222,7 @@ pub struct TypeScriptSourceImportBinding {
 pub struct TypeScriptOutputPlan {
     module_specifiers: BTreeMap<String, String>,
     instance_exports: BTreeMap<(String, String), String>,
+    initialization_requirements: BTreeMap<String, bool>,
 }
 
 impl TypeScriptOutputPlan {
@@ -231,6 +232,7 @@ impl TypeScriptOutputPlan {
         Self {
             module_specifiers: module_specifiers.into_iter().collect(),
             instance_exports: BTreeMap::new(),
+            initialization_requirements: BTreeMap::new(),
         }
     }
 
@@ -244,6 +246,23 @@ impl TypeScriptOutputPlan {
 
     pub fn specifier_for(&self, module: &str) -> Option<&str> {
         self.module_specifiers.get(module).map(String::as_str)
+    }
+
+    /// Compiler-owned summaries of checked source modules. Without a proof of
+    /// inert initialization, retain the dependency's runtime edge.
+    pub fn with_initialization_requirements(
+        mut self,
+        requirements: impl IntoIterator<Item = (String, bool)>,
+    ) -> Self {
+        self.initialization_requirements.extend(requirements);
+        self
+    }
+
+    pub fn requires_initialization(&self, module: &str) -> bool {
+        self.initialization_requirements
+            .get(module)
+            .copied()
+            .unwrap_or(true)
     }
 
     pub fn instance_export_for(&self, module: &str, identity: &str) -> Option<&str> {
