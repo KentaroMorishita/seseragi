@@ -1379,7 +1379,7 @@ fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let fixture = root.join("examples/spec/fixtures/rust-backend-projects/deprecation");
     let loaded = seseragi_project::load_local_project(&fixture).unwrap();
-    let tsc = root.join("apps/playground/node_modules/typescript/bin/tsc");
+    let tsc = root.join("node_modules/typescript/bin/tsc");
     for (name, profile) in [
         ("development", seseragi_driver::BuildProfile::Development),
         ("release", seseragi_driver::BuildProfile::Release),
