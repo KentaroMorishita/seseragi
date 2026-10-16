@@ -1,0 +1,22 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub deprecated "Use modernPrefix" since "0.4.1"
+let prefix: String = "legacy: "
+
+deprecated "Use modernPrint" effect fn cold = println "cold"
+
+pub deprecated "Use modernResult"
+fn render<A> value: A -> String where Show<A> = prefix + show value
+
+pub effect fn main = do {
+  let deferred = cold ()
+  println (render 41)
+  saved <- refs.make (\value: Int -> render value)
+  released <- refs.make 0
+  effects.acquireRelease (effects.succeed 42) (\value: Int -> refs.set value released)
+  callback <- refs.get saved
+  println (callback 42)
+  deferred
+  effects.succeed ()
+}

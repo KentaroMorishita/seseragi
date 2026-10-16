@@ -49,4 +49,5 @@ pub use surface::{
     SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant,
     TypeParameter, TypeRef, Visibility,
 };
+pub use surface_model::{DeclarationDeprecation, Deprecation};
 pub use token::{Token, TokenKind, TokenStream};

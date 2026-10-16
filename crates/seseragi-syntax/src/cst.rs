@@ -1,4 +1,3 @@
-use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 use crate::line_continuation::{ends_after_operator, starts_with_operator};
 use crate::token::{Token, TokenKind, TokenStream};
@@ -92,70 +91,37 @@ impl CstParser<'_> {
     }
 
     fn top_level_declaration_starts(&self) -> Vec<usize> {
-        let mut starts = Vec::new();
-        let mut brace_depth = 0usize;
-        for index in 0..self.non_eof_token_count {
-            match self.kind_at(index) {
-                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
-                Some(TokenKind::PunctuationBraceRight) => {
-                    brace_depth = brace_depth.saturating_sub(1);
-                }
-                Some(
-                    TokenKind::KeywordPub
-                    | TokenKind::KeywordLet
-                    | TokenKind::KeywordFn
-                    | TokenKind::KeywordEffect,
-                ) if brace_depth == 0 && self.is_declaration_boundary(index) => {
-                    starts.push(index);
-                }
-                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
-                    if brace_depth == 0
-                        && self.is_declaration_boundary(index)
-                        && self
-                            .raw_at(index)
-                            .is_some_and(is_contextual_declaration_start) =>
-                {
-                    starts.push(index);
-                }
-                _ => {}
-            }
-        }
-        starts
-    }
-
-    fn is_declaration_boundary(&self, index: usize) -> bool {
-        let Some(previous) = self.previous_significant_token(index) else {
-            return true;
-        };
-        if self.kind_at(previous) == Some(TokenKind::PunctuationSemicolon) {
-            return true;
-        }
-        (previous + 1..index).any(|candidate| {
-            self.kind_at(candidate)
-                .is_some_and(|kind| kind == TokenKind::TriviaNewline)
-        })
+        crate::declaration::top_level_declaration_starts(self.tokens, self.non_eof_token_count)
     }
 
     fn parse_top_decl(&mut self, start: usize, end: usize) -> CstNode {
         let mut children = Vec::new();
-        let first = self.next_significant_token(start, end).unwrap_or(start);
-        let mut decl_start = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
-            children.push(CstNode::new("decl-modifiers", first, first + 1, vec![]));
-            self.next_significant_token(first + 1, end)
-                .unwrap_or(first + 1)
-        } else {
-            first
+        let Ok(prefix) = crate::declaration::declaration_prefix(self.tokens, start, end) else {
+            self.errors.push(CstError {
+                code: "SES-P0001".into(),
+                start_token: start,
+                end_token: end,
+            });
+            return CstNode::new("top-decl", start, end, children);
         };
-        if self.raw_at(decl_start) == Some("opaque") {
-            children.push(CstNode::new(
-                "decl-modifiers",
-                decl_start,
-                decl_start + 1,
-                vec![],
-            ));
-            decl_start = self
-                .next_significant_token(decl_start + 1, end)
-                .unwrap_or(decl_start + 1);
+        let decl_start = prefix.keyword;
+        if prefix.public {
+            children.push(CstNode::new("decl-modifiers", start, start + 1, vec![]));
+        }
+        if let Some(deprecation) = prefix.deprecation {
+            let first = self
+                .tokens
+                .partition_point(|token| token.end <= deprecation.origin.start);
+            let last = self
+                .tokens
+                .partition_point(|token| token.end <= deprecation.origin.end);
+            children.push(CstNode::new("deprecation-clause", first, last, vec![]));
+        }
+        if prefix.opaque {
+            let opaque = self
+                .previous_significant_token(decl_start)
+                .expect("opaque modifier");
+            children.push(CstNode::new("decl-modifiers", opaque, opaque + 1, vec![]));
         }
 
         if self.kind_at(decl_start) == Some(TokenKind::KeywordLet) {

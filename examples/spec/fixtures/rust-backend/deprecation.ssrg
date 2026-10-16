@@ -1,0 +1,16 @@
+pub deprecated "Use replacement" since "0.4.1" fn historical value: Int -> delta: Int -> Int = value + delta
+
+deprecated "Use modernRender"
+fn render<A> value: A -> String where Show<A> = show value
+
+pub deprecated "Use NewLabel"
+type Label = | Label Int
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label item -> "label=" + show item }
+}
+
+pub fn probe -> String = {
+  let saved = historical 40
+  render (Label (saved 2))
+}

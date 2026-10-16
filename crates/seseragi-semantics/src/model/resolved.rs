@@ -31,6 +31,8 @@ pub struct ResolvedModule {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub foreign_modules: Vec<SurfaceForeignModule>,
     pub declarations: Vec<SurfaceDecl>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub deprecations: Vec<seseragi_syntax::DeclarationDeprecation>,
     pub scopes: Vec<ResolvedScope>,
     pub symbols: Vec<ResolvedSymbol>,
     pub references: Vec<ResolvedReference>,

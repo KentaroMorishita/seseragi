@@ -196,6 +196,7 @@ mod tests {
             symbol: format!("artifact/main::{name}"),
             namespace: "type".to_owned(),
             name: name.to_owned(),
+            deprecation: None,
             constructor_of: None,
             call_arity: None,
             visibility: Visibility::Public,

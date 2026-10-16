@@ -39,6 +39,8 @@ pub struct InterfaceExport {
     pub namespace: String,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecation: Option<crate::Deprecation>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub constructor_of: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub call_arity: Option<usize>,

@@ -165,6 +165,7 @@ fn finish_resolved_module(
         dependency_instances,
         foreign_modules: surface.foreign_modules,
         declarations: surface.declarations,
+        deprecations: surface.deprecations,
         scopes: resolver.scopes,
         symbols: resolver.symbols,
         references: resolver.references,

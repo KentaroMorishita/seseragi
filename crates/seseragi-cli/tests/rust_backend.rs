@@ -152,6 +152,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("scalar-globals", 4),
         ("tuple-display", 3),
         ("array-display", 3),
+        ("deprecation", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -375,6 +376,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "array-display",
         "array-nominal",
         "instance-contracts",
+        "deprecation",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -907,6 +909,12 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "deprecation-effects",
+            "fixtures/rust-backend/deprecation-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/deprecation-effects.stdout"),
+            0,
+        ),
+        (
             "array-effects",
             "fixtures/rust-backend/array-effects.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/array-effects.stdout"),
@@ -1305,6 +1313,146 @@ fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
                     assert!(String::from_utf8_lossy(&ts.stderr).contains("module initialization"));
                 }
             }
+        }
+    }
+}
+
+#[test]
+fn invalid_deprecation_prefixes_fail_before_output_or_execution() {
+    let scratch = Scratch::new();
+    for (index, clause) in [
+        "deprecated 41",
+        "deprecated \"\"",
+        "deprecated \"old\" since \"01.2.3\"",
+        "deprecated \"old\";",
+    ]
+    .iter()
+    .enumerate()
+    {
+        let source = scratch.0.join(format!("deprecated-{index}-λ.ssrg"));
+        fs::write(&source, format!("// λ\n{clause}\nfn historical -> Int = 41\npub effect fn main = println \"must not run\"\n")).unwrap();
+        let rust = scratch.0.join(format!("deprecated-{index}.rs"));
+        let result = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&source)
+            .args(["--entry", "main", "--output"])
+            .arg(&rust)
+            .output()
+            .unwrap();
+        assert_eq!(result.status.code(), Some(2), "{result:?}");
+        assert!(result.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("SES-P0001"));
+        assert!(!rust.exists());
+        assert!(!rust.with_extension("rust-backend.json").exists());
+        for profile in ["development", "release"] {
+            let directory = scratch.0.join(format!("deprecated-{index}-{profile}"));
+            let result = cli()
+                .env("PATH", "")
+                .arg("build")
+                .arg(&source)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&directory)
+                .output()
+                .unwrap();
+            assert_eq!(result.status.code(), Some(2), "{result:?}");
+            assert!(result.stdout.is_empty());
+            assert!(!directory.exists());
+            let result = cli()
+                .env("PATH", "")
+                .arg("run")
+                .arg(&source)
+                .args(["--profile", profile, "--diagnostic-format", "json"])
+                .output()
+                .unwrap();
+            assert_eq!(result.status.code(), Some(2));
+            assert!(result.stdout.is_empty());
+            let json: serde_json::Value = serde_json::from_slice(&result.stderr).unwrap();
+            assert!(json.to_string().contains("SES-P0001"));
+        }
+    }
+}
+
+#[test]
+fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let fixture = root.join("examples/spec/fixtures/rust-backend-projects/deprecation");
+    let loaded = seseragi_project::load_local_project(&fixture).unwrap();
+    let tsc = root.join("node_modules/typescript/bin/tsc");
+    for (name, profile) in [
+        ("development", seseragi_driver::BuildProfile::Development),
+        ("release", seseragi_driver::BuildProfile::Release),
+    ] {
+        let project =
+            seseragi_driver::compile_local_project_with_profile(&loaded, Some(profile)).unwrap();
+        let directory = scratch.0.join(name);
+        fs::create_dir_all(&directory).unwrap();
+        let mut inputs = Vec::new();
+        for module in project.compiled.modules.values() {
+            let input = directory.join(&module.generated.metadata.outputs.typescript);
+            fs::create_dir_all(input.parent().unwrap()).unwrap();
+            fs::write(&input, &module.generated.typescript).unwrap();
+            inputs.push(input);
+        }
+        let checked = Command::new("node")
+            .arg(&tsc)
+            .args([
+                "--noEmit",
+                "--strict",
+                "--skipLibCheck",
+                "--target",
+                "ES2022",
+                "--module",
+                "ESNext",
+                "--moduleResolution",
+                "bundler",
+            ])
+            .args(&inputs)
+            .output()
+            .unwrap();
+        assert!(
+            checked.status.success(),
+            "{name}: {}{}",
+            String::from_utf8_lossy(&checked.stdout),
+            String::from_utf8_lossy(&checked.stderr)
+        );
+        let harness = directory.join("harness.ts");
+        let entry = Path::new(
+            &project.compiled.modules[&project.entry_module]
+                .generated
+                .metadata
+                .outputs
+                .typescript,
+        )
+        .with_extension("js");
+        let relative = format!("./{}", entry.to_string_lossy().replace('\\', "/"));
+        fs::write(&harness, "import {main} from './main.js'; import {run} from '@seseragi/runtime/effect'; import {liveConsole} from '@seseragi/runtime/console'; const result = await run(main(undefined), {console:liveConsole}); if (result.kind !== 'success') throw new Error('unexpected failure');\n".replace("./main.js", &relative)).unwrap();
+        let bundle = directory.join("program.mjs");
+        let built = Command::new("bun")
+            .arg("build")
+            .arg(&harness)
+            .args(["--target=node", "--outfile"])
+            .arg(&bundle)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        for runtime in ["bun", "node"] {
+            let output = Command::new(runtime).arg(&bundle).output().unwrap();
+            assert!(
+                output.status.success(),
+                "{name}/{runtime}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(
+                output.stdout,
+                fs::read(fixture.join("expected.stdout")).unwrap()
+            );
+            assert!(output.stderr.is_empty());
         }
     }
 }

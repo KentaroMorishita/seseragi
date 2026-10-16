@@ -193,6 +193,7 @@ mod tests {
                 symbol: "fixture/game::domain::increment".to_owned(),
                 namespace: "value".to_owned(),
                 name: "increment".to_owned(),
+                deprecation: None,
                 constructor_of: None,
                 call_arity: None,
                 visibility: Visibility::Public,

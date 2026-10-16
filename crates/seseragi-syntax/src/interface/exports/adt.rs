@@ -57,6 +57,7 @@ pub(super) fn exports_from_type_decl(
             symbol: format!("{module_name}::{}", variant.name),
             namespace: "value".to_owned(),
             name: variant.name.clone(),
+            deprecation: None,
             constructor_of: Some(owner.clone()),
             call_arity: None,
             visibility: *visibility,

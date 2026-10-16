@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-deprecation@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/deprecation-model@1.0.0#path:vendor/model"
+name = "fixture/deprecation-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:0b847c3d4b5bb0b1f57954dae23f6a617edae50f1b05bee459ebffedb6734723"
+content_digest = "sha256:b9827acdc1e15761bc1ec7a1426343882799674740184c87fd58647b66901cc8"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-deprecation@0.0.0#workspace:."
+name = "fixture/native-deprecation"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:897f29cdda29cdb3941a4b58b345cdd3f967836f9f2be5b2fd2b98266ffbfc2e"
+content_digest = "sha256:04ee4519fcbcb362f7191bff0a61ce75729ba78ca0a2a4f2206334b07ade943e"
+dependencies = [
+  { import = "model", package = "fixture/deprecation-model@1.0.0#path:vendor/model" },
+]

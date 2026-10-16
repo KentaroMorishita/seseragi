@@ -121,6 +121,15 @@ fn parse_unlinked_module_interface_inner(
         .iter()
         .flat_map(|declaration| exports_from_surface_decl(&module_name, declaration))
         .collect::<Vec<_>>();
+    for export in &mut exports {
+        if export.constructor_of.is_none() {
+            export.deprecation = surface_module
+                .deprecations
+                .iter()
+                .find(|entry| entry.declaration == export.declaration)
+                .map(|entry| entry.deprecation.clone());
+        }
+    }
     fn mark(members: &[crate::SurfaceForeignMember], exports: &mut [InterfaceExport]) {
         for member in members {
             match member {

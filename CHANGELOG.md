@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.43] - 2026-10-17
+
+### Fixed
+
+- Keep top-level declarations and public visibility when a deprecated clause
+  shares a line with the declaration or crosses comments and newlines. Share
+  modifier boundaries across CST, surface parsing and validation, retain
+  message/version/source metadata through inferred Effect exports and
+  reexports, and diagnose invalid clauses before output or execution (#856).
+
+- Reexport a merged type and its same-name constructor with one TypeScript
+  specifier when the canonical binding and alias match. Retain both source
+  namespaces and module initialization edges in the IR (#862).
+
 ## [0.61.42] - 2026-10-17
 
 ### Added

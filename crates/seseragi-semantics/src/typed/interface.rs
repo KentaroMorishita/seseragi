@@ -146,9 +146,20 @@ pub(crate) fn typed_interface_from_modules(
     shallow: ModuleInterface,
     typed: &TypedModule,
     dependency_instances: &[ResolvedDependencyInstance],
+    local_deprecations: &[seseragi_syntax::DeclarationDeprecation],
 ) -> TypedModuleInterface {
     let types = InterfaceTypes::new(&typed.external_type_bindings).with_local_nominals(typed);
     let local_symbol_prefix = format!("{}::", shallow.module);
+    let deprecations: std::collections::BTreeMap<_, _> = shallow
+        .exports
+        .iter()
+        .filter_map(|export| {
+            export
+                .deprecation
+                .clone()
+                .map(|metadata| ((export.namespace.clone(), export.symbol.clone()), metadata))
+        })
+        .collect();
     let mut exports = shallow
         .exports
         .into_iter()
@@ -222,6 +233,19 @@ pub(crate) fn typed_interface_from_modules(
             .flat_map(|declaration| typed_value_exports(declaration, &typed.module, &types))
             .collect::<Vec<_>>(),
     );
+
+    for export in &mut exports {
+        if let Some(metadata) = deprecations.get(&(export.namespace.clone(), export.symbol.clone()))
+        {
+            export.deprecation = Some(metadata.clone());
+        } else if export.constructor_of.is_none() && export.symbol.starts_with(&local_symbol_prefix)
+        {
+            export.deprecation = local_deprecations
+                .iter()
+                .find(|entry| entry.declaration == export.declaration)
+                .map(|entry| entry.deprecation.clone());
+        }
+    }
 
     fn mark(members: &[crate::TypedForeignMember], exports: &mut [InterfaceExport]) {
         for member in members {
@@ -343,6 +367,7 @@ fn typed_value_exports(
                 symbol: binding.symbol.clone(),
                 namespace: "value".to_owned(),
                 name: binding.name.clone(),
+                deprecation: None,
                 constructor_of: None,
                 call_arity: None,
                 visibility: *visibility,
@@ -398,6 +423,7 @@ fn typed_value_export(
                 symbol: symbol.clone(),
                 namespace: "value".to_owned(),
                 name: local_name(symbol),
+                deprecation: None,
                 constructor_of: None,
                 call_arity: matches!(scheme.type_ref, crate::TypedType::Function { .. })
                     .then_some(parameters.len()),
@@ -448,6 +474,7 @@ fn typed_value_export(
             symbol: symbol.clone(),
             namespace: "value".to_owned(),
             name: local_name(symbol),
+            deprecation: None,
             constructor_of: None,
             call_arity: None,
             visibility: *visibility,
