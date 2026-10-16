@@ -12,3 +12,8 @@ instance Show<Label> {
 
 pub deprecated "Use modernCold"
 effect fn cold = println "cold"
+
+pub type Token<A> = | Token A
+pub newtype Count = Int
+pub struct Point { x: Int }
+pub type Higher<F<_>, A> = | Higher F<A>

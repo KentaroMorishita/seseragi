@@ -10,3 +10,8 @@ pub effect fn main = do {
   println (probe ())
   deferred
 }
+
+import { Tagged, Count, Point, Higher } from "./facade"
+
+pub fn specimens -> (Count, Point, Tagged<Int>, Higher<Array, Int>) =
+  (Count 1, Point { x: 2 }, Tagged 3, Higher [4])

@@ -32,6 +32,18 @@ fn render_source_imports(module: &TypeScriptModule) -> Vec<String> {
             let bindings = import
                 .reexports
                 .iter()
+                .filter(|binding| {
+                    // A TS value reexport also carries its merged type. Keep
+                    // both Seseragi namespaces in the IR, but do not emit two
+                    // specifiers for the very same constructor/type binding.
+                    !binding.type_only
+                        || !import.reexports.iter().any(|value| {
+                            !value.type_only
+                                && value.imported == binding.imported
+                                && value.local == binding.local
+                                && value.canonical == binding.canonical
+                        })
+                })
                 .map(|binding| {
                     let kind = if binding.type_only { "type " } else { "" };
                     if binding.imported == binding.local {
@@ -178,3 +190,6 @@ fn push_grouped_import<'a>(
         groups.push((module, vec![specifier]));
     }
 }
+
+#[cfg(test)]
+mod tests;

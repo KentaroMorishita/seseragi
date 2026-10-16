@@ -68,6 +68,19 @@ fn imported_and_reexported_metadata_keep_defining_source_and_identity() {
         assert_eq!(project.compiled.modules.len(), 3);
         for (owner, module) in &project.compiled.modules {
             assert_eq!(module.core_ir, core.compiled.modules[owner].core_ir);
+            let label_reexports = module
+                .typescript_ir
+                .source_imports
+                .iter()
+                .flat_map(|group| &group.reexports)
+                .filter(|binding| binding.imported == "Label")
+                .collect::<Vec<_>>();
+            if !label_reexports.is_empty() {
+                assert_eq!(label_reexports.len(), 2);
+                assert!(label_reexports.iter().any(|b| b.type_only));
+                assert!(label_reexports.iter().any(|b| !b.type_only));
+                assert!(!module.generated.typescript.contains("type Label, Label"));
+            }
             for export in &module.typed_interface.exports {
                 if export.symbol.ends_with("::cold") {
                     assert_eq!(
