@@ -132,21 +132,44 @@ pub fn retain_application(
             }
         }
     }
-    // A surviving type-only import still needs its defining output file for
-    // TypeScript module resolution, even when the import has no runtime edge.
-    // Attach that output edge to the type binding itself: a dead named import
-    // must not retain its whole module. Namespace-only runtime dependencies
-    // have no binding node, so their output edge is attached to each
-    // declaration in the importing module instead. The synthetic node is
-    // intentionally not a definition: it retains the file without polluting
-    // the public reachability report or keeping otherwise dead declarations.
+    // A live module initializes every top-level value, even when its name is
+    // unused. Keep these bindings and their dependencies as a separate graph
+    // from callable reachability; "pure" does not imply "cannot Defect".
+    let mut initialization_modules = modules
+        .iter()
+        .filter(|(_, module)| !module.bindings.is_empty() || !module.foreign_modules.is_empty())
+        .map(|(id, _)| id.clone())
+        .collect::<BTreeSet<_>>();
+    loop {
+        let before = initialization_modules.len();
+        for (id, module) in modules.iter() {
+            if module.source_imports.iter().any(|import| {
+                import.runtime_edge && initialization_modules.contains(&import.module)
+            }) {
+                initialization_modules.insert(id.clone());
+            }
+        }
+        if before == initialization_modules.len() {
+            break;
+        }
+    }
     for (id, module) in modules.iter() {
+        let output = (id.clone(), MODULE_OUTPUT.to_owned());
+        for definition in definitions.iter().filter(|(owner, _)| owner == id) {
+            edges
+                .entry(definition.clone())
+                .or_default()
+                .insert(output.clone());
+        }
+        for TypeScriptBinding::Const { name, .. } in &module.bindings {
+            edges
+                .entry(output.clone())
+                .or_default()
+                .insert((id.clone(), name.clone()));
+        }
         for import in &module.source_imports {
             let target = (import.module.clone(), MODULE_OUTPUT.to_owned());
-            let bindings = import.bindings.iter().chain(&import.reexports);
-            let mut has_binding = false;
-            for binding in bindings {
-                has_binding = true;
+            for binding in import.bindings.iter().chain(&import.reexports) {
                 if binding.type_only {
                     edges
                         .entry((id.clone(), binding.local.clone()))
@@ -154,13 +177,8 @@ pub fn retain_application(
                         .insert(target.clone());
                 }
             }
-            if !has_binding && import.runtime_edge {
-                for definition in definitions.iter().filter(|(module, _)| module == id) {
-                    edges
-                        .entry(definition.clone())
-                        .or_default()
-                        .insert(target.clone());
-                }
+            if import.runtime_edge && initialization_modules.contains(&import.module) {
+                edges.entry(output.clone()).or_default().insert(target);
             }
         }
     }
@@ -215,17 +233,11 @@ pub fn retain_application(
             .instances
             .retain(|instance| keep(&instance.dictionary_export));
         module.source_imports.retain_mut(|import| {
-            let namespace_only = import.bindings.is_empty() && import.reexports.is_empty();
-            let live_type_edge = import
-                .bindings
-                .iter()
-                .chain(&import.reexports)
-                .any(|binding| binding.type_only && keep(&binding.local));
             import.bindings.retain(|binding| keep(&binding.local));
             import.reexports.retain(|binding| keep(&binding.local));
             !import.bindings.is_empty()
                 || !import.reexports.is_empty()
-                || (import.runtime_edge && (namespace_only || live_type_edge))
+                || (import.runtime_edge && initialization_modules.contains(&import.module))
         });
         module.imports.retain(|import| keep(&import.local));
         // Type-only runtime features do not imply executable runtime retention.
@@ -713,6 +725,63 @@ mod tests {
 
         assert!(!modules.contains_key("unused"));
         assert!(modules["main"].source_imports.is_empty());
+    }
+    #[test]
+    fn module_initialization_keeps_unused_values_through_an_empty_facade() {
+        let mut main = module("main");
+        main.module = "main".into();
+        let mut side = lower_core_module_to_typescript_ir(lower_typed_module(
+            seseragi_semantics::type_module(
+                "side",
+                "let bad: Int = 9007199254740991 + 1\npub fn unused value: Int -> Int = value\n",
+            ),
+        ));
+        side.module = "side".into();
+        let mut unreachable = side.clone();
+        unreachable.module = "unreachable".into();
+        let mut facade = module("facade");
+        facade.module = "facade".into();
+        facade.functions.clear();
+        let origin = SourceSpan {
+            source: "main.ssrg".into(),
+            start: 0,
+            end: 1,
+        };
+        for (owner, target) in [(&mut main, "facade"), (&mut facade, "side")] {
+            owner.source_imports.push(TypeScriptSourceImport {
+                module: target.into(),
+                specifier: format!("./{target}.js"),
+                runtime_edge: true,
+                bindings: vec![],
+                reexports: vec![],
+                origin: origin.clone(),
+            });
+        }
+        let mut modules = BTreeMap::from([
+            ("main".into(), main),
+            ("facade".into(), facade),
+            ("side".into(), side),
+            ("unreachable".into(), unreachable),
+        ]);
+        retain_application(&mut modules, &[("main".into(), "main".into())]);
+        assert!(!modules.contains_key("unreachable"));
+        assert_eq!(modules["side"].bindings.len(), 1);
+        assert!(modules["side"].functions.is_empty());
+        assert_eq!(modules["main"].source_imports.len(), 1);
+        assert_eq!(modules["facade"].source_imports.len(), 1);
+    }
+    #[test]
+    fn a_live_entry_module_keeps_its_own_eager_initializers() {
+        let mut main = lower_core_module_to_typescript_ir(lower_typed_module(
+            seseragi_semantics::type_module(
+                "main",
+                "let bad: Int = 9007199254740991 + 1\npub fn main value: Int -> Int = value\n",
+            ),
+        ));
+        main.module = "main".into();
+        let mut modules = BTreeMap::from([("main".into(), main)]);
+        retain_application(&mut modules, &[("main".into(), "main".into())]);
+        assert_eq!(modules["main"].bindings.len(), 1);
     }
     #[test]
     fn local_initializer_keeps_an_outer_binding_with_the_same_spelling() {

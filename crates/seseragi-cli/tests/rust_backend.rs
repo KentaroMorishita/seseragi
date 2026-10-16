@@ -1011,18 +1011,38 @@ fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
     let scratch = Scratch::new();
     let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/fixtures/rust-backend-projects/globals");
-    for kind in ["dependency", "source"] {
+    for kind in [
+        "dependency",
+        "source",
+        "siblings",
+        "unused-import",
+        "unreferenced",
+    ] {
         let project = scratch.0.join(kind);
         copy_project(&fixture, &project);
         let library = project.join("vendor/model/src/lib.ssrg");
         let main = project.join("src/main.ssrg");
         let first = "\nlet firstDefect: Int = 9007199254740991 + 1\n";
         let second = "\nlet secondDefect: Int = 9007199254740991 * 9007199254740991\n";
-        if kind == "dependency" {
-            fs::write(&library, fs::read_to_string(&library).unwrap() + first).unwrap();
-            fs::write(&main, fs::read_to_string(&main).unwrap() + second).unwrap();
-        } else {
-            fs::write(&main, fs::read_to_string(&main).unwrap() + first + second).unwrap();
+        match kind {
+            "dependency" => {
+                fs::write(&library, fs::read_to_string(&library).unwrap() + first).unwrap();
+                fs::write(&main, fs::read_to_string(&main).unwrap() + second).unwrap();
+            }
+            "source" => {
+                fs::write(&main, fs::read_to_string(&main).unwrap() + first + second).unwrap()
+            }
+            "siblings" => {
+                let left = project.join("src/left.ssrg");
+                let lib = project.join("src/lib.ssrg");
+                fs::write(&left, fs::read_to_string(&left).unwrap() + first).unwrap();
+                fs::write(&lib, fs::read_to_string(&lib).unwrap() + second).unwrap();
+            }
+            "unused-import" => {
+                fs::write(&library, fs::read_to_string(&library).unwrap() + first).unwrap();
+                fs::write(&main,"import { reader } from \"model\"\npub effect fn main = println \"must not run\"\n").unwrap();
+            }
+            _ => fs::write(project.join("src/unreferenced.ssrg"), first).unwrap(),
         }
         write_project_lock(&project);
         let directory = scratch.0.join(format!("out-{kind}"));
@@ -1035,7 +1055,7 @@ fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
             .unwrap();
         assert!(
             built.status.success(),
-            "{}",
+            "{kind}: {}",
             String::from_utf8_lossy(&built.stderr)
         );
         let native = Command::new(directory.join(if cfg!(windows) {
@@ -1047,18 +1067,26 @@ fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
         .env("SESERAGI_NATIVE_METRICS", "1")
         .output()
         .unwrap();
-        assert_eq!(native.status.code(), Some(70));
-        assert!(native.stdout.is_empty());
+        let code = if kind == "unreferenced" { 0 } else { 70 };
+        assert_eq!(native.status.code(), Some(code), "{kind}");
+        if code == 0 {
+            assert_eq!(
+                native.stdout,
+                fs::read(fixture.join("expected.stdout")).unwrap()
+            );
+        } else {
+            assert!(native.stdout.is_empty());
+        }
         let errors = String::from_utf8_lossy(&native.stderr);
-        assert!(
-            errors.contains("Seseragi Defect: Seseragi Int overflow"),
-            "{errors}"
-        );
-        assert!(
-            !errors.contains("Seseragi Defect: Int overflow"),
-            "{errors}"
-        );
-        assert!(errors.contains("managed-live=0"), "{errors}");
+        if code != 0 {
+            let first_defect = if kind == "siblings" {
+                "Seseragi Defect: Int overflow"
+            } else {
+                "Seseragi Defect: Seseragi Int overflow"
+            };
+            assert!(errors.contains(first_defect), "{kind}: {errors}");
+        }
+        assert!(errors.contains("managed-live=0"), "{kind}: {errors}");
         for profile in ["development", "release"] {
             let ts = cli()
                 .arg("run")
@@ -1068,12 +1096,48 @@ fn native_globals_initialize_eagerly_before_entry_and_release_partial_roots() {
                 .unwrap();
             assert_eq!(
                 ts.status.code(),
-                Some(70),
-                "{}",
+                Some(code),
+                "{kind}: {}",
                 String::from_utf8_lossy(&ts.stderr)
             );
             assert_eq!(ts.stdout, native.stdout);
-            assert!(String::from_utf8_lossy(&ts.stderr).contains("Int overflow"));
+            if code != 0 {
+                assert!(String::from_utf8_lossy(&ts.stderr).contains("Int overflow"));
+            }
+            // The release application-pruning pass and bundler must retain
+            // eager initialization even when no imported/global name is used.
+            let output = scratch.0.join(format!("{kind}-ts-{profile}"));
+            let built = cli()
+                .arg("build")
+                .arg(&project)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&output)
+                .output()
+                .unwrap();
+            assert!(
+                built.status.success(),
+                "{}",
+                String::from_utf8_lossy(&built.stderr)
+            );
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for runtime in ["bun", "node"] {
+                let ts = Command::new(runtime)
+                    .arg(output.join(manifest["entry"].as_str().unwrap()))
+                    .output()
+                    .unwrap();
+                assert_eq!(
+                    ts.status.code(),
+                    Some(code),
+                    "{kind}/{profile}/{runtime}: {}",
+                    String::from_utf8_lossy(&ts.stderr)
+                );
+                assert_eq!(ts.stdout, native.stdout, "{kind}/{profile}/{runtime}");
+                if code != 0 {
+                    assert!(String::from_utf8_lossy(&ts.stderr).contains("module initialization"));
+                }
+            }
         }
     }
 }

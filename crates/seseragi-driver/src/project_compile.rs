@@ -75,6 +75,7 @@ pub struct CompiledProject {
 /// output planning, lowering, runtime staging, or emission.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct CoreProject {
+    /// Checking order, distinct from source-import runtime initialization order.
     pub order: Vec<String>,
     pub modules: BTreeMap<String, crate::CoreCompilation>,
 }

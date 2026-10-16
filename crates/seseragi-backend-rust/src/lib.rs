@@ -51,7 +51,7 @@ pub struct RustMetadata {
     pub closed_dictionary_sites: usize,
     pub entry_kind: String,
     pub capabilities: Vec<String>,
-    /// Original canonical module identities in dependency order.
+    /// Canonical source module identities in runtime initialization order.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub modules: Vec<String>,
 }

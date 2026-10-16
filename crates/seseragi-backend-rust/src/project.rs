@@ -1,5 +1,5 @@
 use crate::{emit, RustArtifact, RustBackendError};
-use seseragi_lowering::{CoreModule, SourceSpan};
+use seseragi_lowering::{core_module_initialization_order, CoreModule, SourceSpan};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) fn at(message: &str, origin: &SourceSpan, module: &str) -> RustBackendError {
@@ -92,10 +92,20 @@ pub(crate) fn emit(
         linked.structs.extend(module.structs.clone());
         linked.instances.extend(module.instances.clone());
         linked.functions.extend(module.functions.clone());
-        // The checked graph is dependency ordered; bindings retain source order.
+    }
+    let initialization = core_module_initialization_order(modules, entry_module)
+        .ok_or("Rust backend: invalid source initialization graph")?;
+    if initialization.len() != modules.len() {
+        return Err("Rust backend: source module is outside the entry dependency graph".into());
+    }
+    for identity in &initialization {
+        let module = modules
+            .iter()
+            .find(|m| &m.module == identity)
+            .expect("checked initialization owner");
         linked.bindings.extend(module.bindings.clone());
     }
     let mut artifact = emit::emit(&linked, entry, &owners)?;
-    artifact.metadata.modules = modules.iter().map(|m| m.module.clone()).collect();
+    artifact.metadata.modules = initialization;
     Ok(artifact)
 }

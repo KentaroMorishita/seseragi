@@ -53,8 +53,8 @@ are rejected. Target diagnostics carry the logical owner separately from the
 portable CoreIr source name; the CLI maps it to the loaded physical source and
 keeps the original byte range, even when basenames coincide.
 
-Top-level initialization now follows the checked dependency order and source
-order within each module. Monomorphic values, structural and algebraic data,
+Top-level initialization uses shared CoreIr analysis of source-import DFS
+postorder, distinct from checking order, and source order within each module. Monomorphic values, structural and algebraic data,
 closures, and cold synchronous Effect plans are evaluated once before entry.
 Function references remain callable before value initialization; delayed reads
 inside functions use the stored global value. Lexical bindings take precedence,
@@ -63,6 +63,11 @@ and module-local CoreIr spellings resolve only against their original owner.
 Global values remain roots through entry execution and all scope finalizers.
 Both pure and Effect entry runners release partial initialization on Defect,
 then global roots and dictionaries before collecting unreachable Ref cycles.
+TypeScript keeps source initialization edges for unused imports; release
+application pruning retains eager initializers and their dependencies, including
+through empty facades. Unimported modules remain outside initialization. The
+explicit CoreIr API requires the entry dependency graph.
+
 The `globals` fixture covers a four-module, two-package diamond, a selected
 nested dictionary captured by a global closure, partial application, tuple
 patterns, cold plan replay, and a Ref callback used during finalization.
@@ -83,7 +88,7 @@ measurements and shared CoreIr candidates in #816 remain separate evidence.
 ## Validation before canonical distribution
 
 The initialization slice uses scoped backend, process runtime, and CLI checks.
-Backend coverage includes 24 runtime, 29 generated-program and two project
+Backend coverage includes 24 runtime, 29 generated-program and three project
 ownership tests; the process runtime includes text / JSON initialization failure
 in normal and bundled execution. CLI comparisons cover the existing single-file
 corpus, both multi-package projects, eager initialization Defects, and shared

@@ -193,7 +193,7 @@ unqualified名はlocal bindingとlocal function、現在moduleの宣言、明示
 
 ## 6.10 初期化と評価
 
-moduleはdependencyのtopological orderで一度だけ初期化します。同一module内のtop-level
+moduleはentryからimport / re-exportのsource順に依存を深さ優先でたどり、依存先を先に一度だけ初期化します。型検査用のtopological orderと独立したruntimeの順序です。同一module内のtop-level
 `let` はsource順に評価します。関数、type、newtype、alias、struct、traitは評価前から
 名前解決できます。
 
@@ -209,7 +209,7 @@ backendは同一moduleの関数runtime bindingをすべて確立してから、t
 `let`を読む場合は、初期化前参照として`SES-N0201`で停止します。関数bodyが後続の`let`を参照していても、
 module初期化中にその関数を呼ばない場合は遅延された参照として許可します。
 
-同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。
+同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。名前を使用しないimportやtop-level値も、初期化で起こるDefectを省略してはなりません。entryからimportされないmoduleは初期化しません。
 初期化中のDefectは後続の初期化とentry実行を停止します。process targetは10章のruntime Defectと同じ終了code 70を使い、JSON診断を指定した場合はDefect診断を出します。
 
 foreign moduleのruntime codeはparser、type checker、formatter、language server、document generatorが評価しては

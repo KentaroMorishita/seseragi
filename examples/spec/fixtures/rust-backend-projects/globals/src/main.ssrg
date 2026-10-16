@@ -1,5 +1,5 @@
-import { left } from "./left"
 import * as branch from "./lib"
+import { left } from "./left"
 import { first, second, both } from "model"
 import * as effects from "std/effect"
 import * as refs from "std/ref"

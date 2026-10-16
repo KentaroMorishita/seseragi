@@ -55,7 +55,9 @@ pub(super) fn lower_module_imports(
                     reexports: Vec::new(),
                     module: dependency.module.clone(),
                     specifier: specifier.to_owned(),
-                    runtime_edge: dependency.imports.is_empty(),
+                    // Even an unused named import initializes its source module.
+                    // Pure top-level initializers can still raise a Defect.
+                    runtime_edge: true,
                     bindings: Vec::new(),
                     origin: dependency.origin.clone(),
                 });
