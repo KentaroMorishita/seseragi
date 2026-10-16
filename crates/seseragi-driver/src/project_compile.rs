@@ -242,6 +242,7 @@ fn compile_project_inner(
 
     let mut compiled: BTreeMap<String, CompiledModule> = BTreeMap::new();
     let mut initialization_requirements = BTreeMap::new();
+    let mut scalar_globals = seseragi_lowering::CoreScalarGlobals::default();
     for module in &order {
         let input = inputs.get(module).expect("graph input was validated");
         // Inferred public contracts can carry a nominal type from a transitive
@@ -256,7 +257,8 @@ fn compile_project_inner(
                 module: module.clone(),
                 error,
             })?
-            .with_initialization_requirements(initialization_requirements.clone());
+            .with_initialization_requirements(initialization_requirements.clone())
+            .with_scalar_globals(scalar_globals.clone());
         let output_paths = generated_output_paths(&input.output_path).map_err(|error| {
             ProjectCompileError::OutputPlan {
                 module: module.clone(),
@@ -286,6 +288,7 @@ fn compile_project_inner(
                 &initialization_requirements,
             ),
         );
+        scalar_globals = scalar_globals.with_module(&compiled_module.core_ir);
         compiled.insert(module.clone(), compiled_module);
     }
 

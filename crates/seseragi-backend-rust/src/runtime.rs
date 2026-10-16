@@ -127,13 +127,27 @@ fn set_global(index: usize, value: V) {
         globals.push(value);
     });
 }
-fn get_global(index: usize) -> V {
+// Only owned clones or immediate scalar extraction run under this borrow;
+// source callbacks and initializer evaluation stay outside global storage.
+fn read_global<T>(index: usize, read: impl FnOnce(&V) -> T) -> T {
     GLOBALS.with(|globals| {
-        globals
-            .borrow()
-            .get(index)
-            .expect("Rust ABI: uninitialized global")
-            .clone()
+        let globals = globals.borrow();
+        read(globals.get(index).expect("Rust ABI: uninitialized global"))
+    })
+}
+fn get_global(index: usize) -> V {
+    read_global(index, V::clone)
+}
+fn get_global_int(index: usize) -> i64 {
+    read_global(index, |value| match value {
+        V::Int(value) => *value,
+        _ => panic!("Rust ABI: expected Int"),
+    })
+}
+fn get_global_bool(index: usize) -> bool {
+    read_global(index, |value| match value {
+        V::Bool(value) => *value,
+        _ => panic!("Rust ABI: expected Bool"),
     })
 }
 fn clear_globals() {
@@ -351,6 +365,30 @@ fn binary(op: &str, a: V, b: V) -> V {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn scalar_global_reads_keep_checked_access_and_release_storage_borrows() {
+        clear_globals();
+        assert!(std::panic::catch_unwind(|| get_global_int(0)).is_err());
+        assert!(std::panic::catch_unwind(|| get_global_bool(0)).is_err());
+        set_global(0, V::Int(42));
+        set_global(1, V::Bool(true));
+        let before = ALLOCATIONS.with(Cell::get);
+        for _ in 0..1000 {
+            assert_eq!(get_global_int(0), 42);
+            assert!(get_global_bool(1));
+        }
+        assert_eq!(ALLOCATIONS.with(Cell::get), before);
+        assert!(std::panic::catch_unwind(|| get_global_int(1)).is_err());
+        assert!(std::panic::catch_unwind(|| get_global_bool(0)).is_err());
+        GLOBALS.with(|globals| assert!(globals.try_borrow_mut().is_ok()));
+        assert_eq!(get_global(0).render(), "42");
+        clear_globals();
+        assert!(std::panic::catch_unwind(|| get_global_int(0)).is_err());
+        set_global(0, V::Int(7));
+        assert_eq!(get_global_int(0), 7);
+        clear_globals();
+    }
+
     #[test]
     fn deep_values_and_closure_captures_drop_on_a_small_stack() {
         std::thread::Builder::new()

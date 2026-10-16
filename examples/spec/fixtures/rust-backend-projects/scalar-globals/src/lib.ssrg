@@ -1,0 +1,4 @@
+pub let increment: Int = 5
+
+pub fn local remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else local (remaining - 1) (total + increment)

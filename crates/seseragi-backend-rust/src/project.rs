@@ -105,7 +105,9 @@ pub(crate) fn emit(
             .expect("checked initialization owner");
         linked.bindings.extend(module.bindings.clone());
     }
-    let mut artifact = emit::emit(&linked, entry, &owners)?;
+    let scalar_globals =
+        seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
+    let mut artifact = emit::emit(&linked, entry, &owners, &scalar_globals)?;
     artifact.metadata.modules = initialization;
     Ok(artifact)
 }

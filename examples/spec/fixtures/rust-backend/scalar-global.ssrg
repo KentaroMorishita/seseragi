@@ -1,0 +1,26 @@
+let increment: Int = 3
+let enabled: Bool = True
+
+pub fn sum remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else sum (remaining - 1) (total + increment)
+
+pub fn retained remaining: Int -> total: Int -> Int = {
+  let current = remaining
+  if current == 0 then total else retained (current - 1) (total + increment)
+}
+
+fn shadow remaining: Int -> increment: Int -> Int =
+  if remaining == 0 then increment else shadow (remaining - 1) (increment + remaining)
+
+fn localShadow remaining: Int -> total: Int -> Int = {
+  let increment = 11
+  if remaining == 0 then total else localShadow (remaining - 1) (total + increment)
+}
+
+fn boolean remaining: Int -> answer: Bool -> Bool =
+  if remaining == 0 then answer else boolean (remaining - 1) enabled
+
+pub fn probe -> (Int, Int, Int, Int, Bool) = {
+  let partial = sum 2
+  (partial 0, partial 1, shadow 2 1, localShadow 2 0, boolean 2 False)
+}

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-scalar-globals@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-scalar-globals@0.0.0#workspace:."
+name = "fixture/native-scalar-globals"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:40f5f1864b2ba0e43b3d207471c437fc2e6e11ef9570dbe594a97a22672cb2e1"
+content_digest = "sha256:bf012f5ca3a303b246217254eec8a9058d552d0c90f68d47932b779e270deabc"
+dependencies = [
+  { import = "model", package = "fixture/scalar-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/scalar-model@1.0.0#path:vendor/model"
+name = "fixture/scalar-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:8db605e5ff08504762ef937bbd109698d2c30739e55c25fc8edaa1e4639c72b3"
+content_digest = "sha256:dc9330d6116bed87603e2022a2f7d845c2d6373c2d9d384e5ac0fef2f19c3f2e"
+dependencies = []

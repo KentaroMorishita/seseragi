@@ -4,7 +4,8 @@ mod core;
 mod core_analysis;
 pub use core_analysis::{
     core_expr_origin, core_free_variables, is_closed_local_evidence, known_pure_call_shape,
-    scalar_self_tail_loop, CoreCallShape, CoreFreeVariables, CoreScalarKind, CoreScalarTailLoop,
+    scalar_self_tail_loop, scalar_self_tail_loop_with_globals, CoreCallShape, CoreFreeVariables,
+    CoreScalarGlobalRead, CoreScalarGlobals, CoreScalarKind, CoreScalarTailLoop,
 };
 mod display_ops;
 mod effect_ops;

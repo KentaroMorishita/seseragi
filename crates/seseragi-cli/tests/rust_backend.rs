@@ -32,7 +32,7 @@ fn cli() -> Command {
 #[test]
 fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
     let scratch = Scratch::new();
-    for (fixture, count) in [("linked", 5), ("globals", 4)] {
+    for (fixture, count) in [("linked", 5), ("globals", 4), ("scalar-globals", 4)] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
             .join(fixture);
@@ -244,6 +244,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "let-shadowing",
         "scalar-tail-loop",
         "scalar-tail-operators",
+        "scalar-global",
         "char-unicode",
         "integer-literals",
         "float-values",
@@ -628,38 +629,48 @@ fn invalid_numeric_spellings_reject_before_rust_emission_or_execution() {
 #[test]
 fn scalar_tail_loops_preserve_primitive_traces_on_bun_and_node() {
     let scratch = Scratch::new();
-    let source = include_str!("../../../examples/spec/fixtures/rust-backend/scalar-tail-loop.ssrg");
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    for (name, profile) in [
-        ("development", seseragi_driver::BuildProfile::Development),
-        ("release", seseragi_driver::BuildProfile::Release),
-    ] {
-        let compiled = seseragi_driver::compile_module(
-            seseragi_driver::CompileInput::new("main.ssrg", "scalar/main", source)
-                .with_profile(profile),
-        )
+    for fixture in ["scalar-tail-loop", "scalar-global"] {
+        let source = fs::read_to_string(root.join(format!(
+            "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
+        )))
         .unwrap();
-        let directory = scratch.0.join(name);
-        fs::create_dir_all(&directory).unwrap();
-        let emitted = directory.join("generated.ts");
-        fs::write(&emitted, compiled.generated.typescript).unwrap();
-        let output = Command::new("bun")
-            .arg(root.join("scripts/scalar-tail-probe.ts"))
-            .arg(&emitted)
-            .current_dir(&root)
-            .output()
+        for (name, profile) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let compiled = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new("main.ssrg", "scalar/main", &source)
+                    .with_profile(profile),
+            )
             .unwrap();
-        assert!(
-            output.status.success(),
-            "{name}: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
-        assert_eq!(
-            String::from_utf8_lossy(&output.stdout)
-                .matches("\"cases\":69")
-                .count(),
-            2
-        );
+            let directory = scratch.0.join(fixture).join(name);
+            fs::create_dir_all(&directory).unwrap();
+            let emitted = directory.join("generated.ts");
+            fs::write(&emitted, compiled.generated.typescript).unwrap();
+            let output = Command::new("bun")
+                .arg(root.join("scripts/scalar-tail-probe.ts"))
+                .arg(&emitted)
+                .args(if fixture == "scalar-global" {
+                    vec!["globals"]
+                } else {
+                    vec![]
+                })
+                .current_dir(&root)
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{name}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&output.stdout)
+                    .matches("\"cases\":69")
+                    .count(),
+                2
+            );
+        }
     }
 }
 
