@@ -99,7 +99,9 @@ pub(super) fn dictionary_comparison(evidence: &[CoreCallEvidence], operator: &st
     standard_constraint(selected, name)
         && matches!(
             selected.evidence,
-            CoreInstanceEvidence::Parameter { .. } | CoreInstanceEvidence::Local { .. }
+            CoreInstanceEvidence::Parameter { .. }
+                | CoreInstanceEvidence::Local { .. }
+                | CoreInstanceEvidence::Imported { .. }
         )
 }
 

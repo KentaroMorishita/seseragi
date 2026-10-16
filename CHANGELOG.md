@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.36] - 2026-10-16
+
+### Added
+
+- Link checked multi-module projects and path dependency packages through the experimental Rust target without TypeScript output planning (#837). Preserve canonical symbols, imported dictionary owners, generic / HKT constraints, returned function stages and synchronous Effect / Ref lifetimes. Validate the existing project lock and reject private / opaque access and unsupported imported code before writing outputs. Top-level initialization, derived dictionaries, supertraits and remaining standard APIs continue separately under #812.
+
 ## [0.61.35] - 2026-10-16
 
 ### Added

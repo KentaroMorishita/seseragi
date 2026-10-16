@@ -18,6 +18,29 @@ pub struct CompiledLocalProject {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CoreLocalProject {
+    pub compiled: crate::CoreProject,
+    pub entry_module: String,
+}
+
+/// Reuses the ordinary package graph, identities and package visibility. This
+/// path stops at checked CoreIr and never invokes a target-specific planner.
+pub fn compile_core_local_project(
+    project: &LoadedLocalProject,
+) -> Result<CoreLocalProject, LocalProjectCompileError> {
+    let (graph, identities_by_id) = local_project_graph(project);
+    let compiled = crate::compile_core_project(
+        graph,
+        local_project_inputs(project, seseragi_project::BuildProfile::Development),
+    )
+    .map_err(|error| local_project_error(error, &identities_by_id))?;
+    Ok(CoreLocalProject {
+        compiled,
+        entry_module: logical_module_id(project.entry()),
+    })
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ForeignHostDirectory {
     pub package_root: PathBuf,
     pub source: PathBuf,
@@ -242,41 +265,13 @@ fn compile_local_project_inner(
         })
         .unwrap_or_default();
     let foreign_host_directories = collect_foreign_host_directories(project);
-    let mut graph = ModuleGraph::new();
-    let mut identities_by_id = BTreeMap::new();
-    for (identity, _) in project.modules() {
-        let module = logical_module_id(identity);
-        identities_by_id.insert(module.clone(), identity.clone());
-        let dependencies = project
-            .graph()
-            .dependencies_for(identity)
-            .expect("loaded local project graph contains every source module")
-            .into_iter()
-            .map(|(specifier, dependency)| (specifier, logical_module_id(&dependency)));
-        graph
-            .add_module(module, dependencies)
-            .expect("loaded local project graph was already validated");
-    }
-    let inputs = project.modules().map(|(identity, module)| {
-        ProjectModuleInput::new(
-            module.source_path().to_string_lossy(),
-            logical_module_id(identity),
-            module.source(),
-            output_path(identity),
-        )
-        .with_package_scope(logical_package_scope(identity.package()))
-        .with_profile(profile)
-    });
+    let (graph, identities_by_id) = local_project_graph(project);
+    let inputs = local_project_inputs(project, profile);
     let compiled = match configuration {
         Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
         None => compile_project(graph, inputs),
     }
-    .map_err(|error| LocalProjectCompileError {
-        module: error_module(&error)
-            .and_then(|module| identities_by_id.get(module).cloned())
-            .map(Box::new),
-        error: Box::new(error),
-    })?;
+    .map_err(|error| local_project_error(error, &identities_by_id))?;
     let root_package = project
         .packages()
         .package(project.packages().root())
@@ -292,6 +287,55 @@ fn compile_local_project_inner(
         compiled,
         foreign_host_directories,
     })
+}
+
+fn local_project_graph(
+    project: &LoadedLocalProject,
+) -> (ModuleGraph<String>, BTreeMap<String, ModuleIdentity>) {
+    let mut graph = ModuleGraph::new();
+    let mut identities = BTreeMap::new();
+    for (identity, _) in project.modules() {
+        let module = logical_module_id(identity);
+        identities.insert(module.clone(), identity.clone());
+        let dependencies = project
+            .graph()
+            .dependencies_for(identity)
+            .expect("loaded local project graph contains every source module")
+            .into_iter()
+            .map(|(specifier, dependency)| (specifier, logical_module_id(&dependency)));
+        graph
+            .add_module(module, dependencies)
+            .expect("loaded graph was already validated");
+    }
+    (graph, identities)
+}
+
+fn local_project_inputs(
+    project: &LoadedLocalProject,
+    profile: seseragi_project::BuildProfile,
+) -> impl Iterator<Item = ProjectModuleInput> + '_ {
+    project.modules().map(move |(identity, module)| {
+        ProjectModuleInput::new(
+            module.source_path().to_string_lossy(),
+            logical_module_id(identity),
+            module.source(),
+            output_path(identity),
+        )
+        .with_package_scope(logical_package_scope(identity.package()))
+        .with_profile(profile)
+    })
+}
+
+fn local_project_error(
+    error: ProjectCompileError,
+    identities: &BTreeMap<String, ModuleIdentity>,
+) -> LocalProjectCompileError {
+    LocalProjectCompileError {
+        module: error_module(&error)
+            .and_then(|module| identities.get(module).cloned())
+            .map(Box::new),
+        error: Box::new(error),
+    }
 }
 
 fn collect_foreign_host_directories(project: &LoadedLocalProject) -> Vec<ForeignHostDirectory> {

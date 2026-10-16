@@ -1,6 +1,7 @@
 //! Experimental Rust target. Checked CoreIr is the semantic authority;
 //! rustc validates generated implementation code, not Seseragi source types.
 mod emit;
+mod project;
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
 
@@ -10,6 +11,8 @@ pub struct RustBackendError {
     pub code: String,
     pub message: String,
     pub origin: Option<SourceSpan>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub module: Option<String>,
 }
 impl From<String> for RustBackendError {
     fn from(message: String) -> Self {
@@ -17,6 +20,7 @@ impl From<String> for RustBackendError {
             code: "SES-RUST-0001".into(),
             message,
             origin: None,
+            module: None,
         }
     }
 }
@@ -47,6 +51,9 @@ pub struct RustMetadata {
     pub closed_dictionary_sites: usize,
     pub entry_kind: String,
     pub capabilities: Vec<String>,
+    /// Original canonical module identities in dependency order.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub modules: Vec<String>,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RustArtifact {
@@ -61,7 +68,17 @@ pub fn emit_rust_module(
     module: &CoreModule,
     entry: &str,
 ) -> Result<RustArtifact, RustBackendError> {
-    emit::emit(module, entry)
+    emit_rust_project(&[module], &module.module, entry)
+}
+
+/// Links checked source modules without changing canonical symbols or passing
+/// through TypeScript. `modules` must contain the closed dependency graph.
+pub fn emit_rust_project(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    entry: &str,
+) -> Result<RustArtifact, RustBackendError> {
+    project::emit(modules, entry_module, entry)
 }
 
 #[cfg(test)]

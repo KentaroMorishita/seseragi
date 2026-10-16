@@ -33,10 +33,11 @@ pub use format::{format_module, format_module_range, format_module_with_options}
 pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
 pub use local_project::{
-    compile_local_benchmarks, compile_local_project, compile_local_project_with_profile,
-    compile_local_project_with_providers, compile_local_project_with_providers_and_profile,
-    compile_local_tests, CompiledLocalBenchmarks, CompiledLocalProject, CompiledLocalTests,
-    CompiledTestModule, ForeignHostDirectory, LocalProjectCompileError, LocalTestCompileError,
+    compile_core_local_project, compile_local_benchmarks, compile_local_project,
+    compile_local_project_with_profile, compile_local_project_with_providers,
+    compile_local_project_with_providers_and_profile, compile_local_tests, CompiledLocalBenchmarks,
+    CompiledLocalProject, CompiledLocalTests, CompiledTestModule, CoreLocalProject,
+    ForeignHostDirectory, LocalProjectCompileError, LocalTestCompileError,
 };
 pub use output::CompiledModule;
 pub use output_plan::{
@@ -45,9 +46,9 @@ pub use output_plan::{
 };
 pub use project_compile::{
     analyze_project, analyze_project_recovering, analyze_project_recovering_with_providers,
-    analyze_project_with_providers, compile_project, compile_project_with_providers,
-    AnalyzedProject, CompiledProject, ProjectCompileError, ProjectModuleDiagnostics,
-    ProjectModuleInput,
+    analyze_project_with_providers, compile_core_project, compile_project,
+    compile_project_with_providers, AnalyzedProject, CompiledProject, CoreProject,
+    ProjectCompileError, ProjectModuleDiagnostics, ProjectModuleInput,
 };
 pub use provider_plan::{
     ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderDiagnosticDetails,

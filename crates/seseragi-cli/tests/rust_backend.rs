@@ -30,6 +30,202 @@ fn cli() -> Command {
 }
 
 #[test]
+fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
+    let scratch = Scratch::new();
+    let project = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/spec/fixtures/rust-backend-projects/linked");
+    for entry in ["main", "probe"] {
+        let directory = scratch.0.join(entry);
+        let built = cli()
+            .args(["experimental", "build-native"])
+            .arg(&project)
+            .args(["--entry", entry, "--out-dir"])
+            .arg(&directory)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        let executable = directory.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        });
+        let native = Command::new(executable)
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1")
+            .output()
+            .unwrap();
+        assert!(
+            native.status.success(),
+            "{}",
+            String::from_utf8_lossy(&native.stderr)
+        );
+        let expected = fs::read(project.join(if entry == "main" {
+            "expected.stdout"
+        } else {
+            "probe.stdout"
+        }))
+        .unwrap();
+        assert_eq!(native.stdout, expected);
+        if entry == "main" {
+            assert!(String::from_utf8_lossy(&native.stderr).contains("managed-live=0"));
+            for profile in ["development", "release"] {
+                let ts = cli()
+                    .arg("run")
+                    .arg(&project)
+                    .args(["--profile", profile])
+                    .output()
+                    .unwrap();
+                assert!(
+                    ts.status.success(),
+                    "{}",
+                    String::from_utf8_lossy(&ts.stderr)
+                );
+                assert_eq!(native.stdout, ts.stdout, "{profile}");
+            }
+        }
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&fs::read(directory.join("rust-backend.json")).unwrap())
+                .unwrap();
+        assert_eq!(metadata["modules"].as_array().unwrap().len(), 5);
+        assert!(metadata["entry"]
+            .as_str()
+            .unwrap()
+            .ends_with(&format!("::main::{entry}")));
+    }
+}
+
+fn copy_project(source: &Path, destination: &Path) {
+    fs::create_dir_all(destination).unwrap();
+    for entry in fs::read_dir(source).unwrap() {
+        let entry = entry.unwrap();
+        let target = destination.join(entry.file_name());
+        if entry.file_type().unwrap().is_dir() {
+            copy_project(&entry.path(), &target);
+        } else {
+            fs::copy(entry.path(), target).unwrap();
+        }
+    }
+}
+
+fn write_project_lock(project: &Path) {
+    let lock = seseragi_project::generate_lockfile(project).unwrap();
+    fs::write(
+        project.join("seseragi.lock"),
+        seseragi_project::write_lockfile(&lock),
+    )
+    .unwrap();
+}
+
+#[test]
+fn native_project_rejects_imported_boundaries_and_stale_locks_without_outputs() {
+    let scratch = Scratch::new();
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../examples/spec/fixtures/rust-backend-projects/linked");
+    for kind in [
+        "private",
+        "opaque",
+        "unsupported",
+        "top-level",
+        "stale",
+        "missing",
+    ] {
+        let project = scratch.0.join(kind);
+        copy_project(&fixture, &project);
+        let library = project.join("vendor/model/src/lib.ssrg");
+        let main = project.join("src/main.ssrg");
+        let (expected, source, needle) = match kind {
+            "private" => {
+                fs::write(&main, "import { privateValue } from \"model\"\npub fn probe -> Int = privateValue ()\n").unwrap();
+                ("SES-N0104", Some(main.clone()), "privateValue")
+            }
+            "opaque" => {
+                fs::write(&library, "pub opaque struct Secret { value: Int }\npub fn secret -> Secret = Secret { value: 1 }\n").unwrap();
+                fs::write(
+                    &main,
+                    "import { secret } from \"model\"\npub fn probe -> Int = (secret ()).value\n",
+                )
+                .unwrap();
+                ("error[", Some(main.clone()), "value")
+            }
+            "unsupported" | "top-level" => {
+                let addition = if kind == "unsupported" {
+                    "\npub fn unsupported -> Float = 2.0 ** 3.0\n"
+                } else {
+                    "\nlet initial: Int = 42\n"
+                };
+                fs::write(&library, fs::read_to_string(&library).unwrap() + addition).unwrap();
+                (
+                    "SES-RUST-0001",
+                    Some(library.clone()),
+                    if kind == "unsupported" {
+                        "2.0 ** 3.0"
+                    } else {
+                        "initial"
+                    },
+                )
+            }
+            _ => ("SES-K0102", None, ""),
+        };
+        if kind != "stale" && kind != "missing" {
+            write_project_lock(&project);
+        } else if kind == "stale" {
+            fs::write(
+                &library,
+                fs::read_to_string(&library).unwrap() + "\n// changed source\n",
+            )
+            .unwrap();
+        } else {
+            fs::remove_file(project.join("seseragi.lock")).unwrap();
+        }
+        let directory = scratch.0.join(format!("out-{kind}"));
+        let output = cli()
+            .args(["experimental", "build-native"])
+            .arg(&project)
+            .args(["--entry", "probe", "--out-dir"])
+            .arg(&directory)
+            .output()
+            .unwrap();
+        assert!(!output.status.success(), "{kind}");
+        let diagnostics = String::from_utf8(output.stderr).unwrap();
+        assert!(diagnostics.contains(expected), "{kind}: {diagnostics}");
+        if let Some(source) = source {
+            assert!(
+                diagnostics.contains(source.to_str().unwrap()),
+                "{kind}: {diagnostics}"
+            );
+            assert!(
+                diagnostics.contains(needle) || diagnostics.contains(".."),
+                "{kind}: {diagnostics}"
+            );
+            if kind == "unsupported" {
+                let prefix = format!("{}:", source.display());
+                let range = diagnostics
+                    .split(&prefix)
+                    .nth(1)
+                    .unwrap()
+                    .split(':')
+                    .next()
+                    .unwrap();
+                let (start, end) = range.split_once("..").unwrap();
+                let bytes = fs::read(&source).unwrap();
+                assert_eq!(
+                    &bytes[start.parse::<usize>().unwrap()..end.parse::<usize>().unwrap()],
+                    needle.as_bytes()
+                );
+            }
+        }
+        assert!(
+            !directory.exists(),
+            "unsupported project created outputs: {kind}"
+        );
+    }
+}
+
+#[test]
 fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
     let scratch = Scratch::new();
     for name in [

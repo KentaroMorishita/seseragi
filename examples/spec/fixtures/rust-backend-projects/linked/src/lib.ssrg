@@ -1,0 +1,7 @@
+import { Read, Unwrap, captured, hkt } from "./facade"
+
+pub fn retain<A> value: A -> (Unit -> Int) where Read<A> = captured value
+
+pub fn higher<F<_>> value: F<Int> -> Int where Unwrap<F> = hkt value
+
+pub fn returned first: Int -> (Int -> Int) = \second -> first + second
