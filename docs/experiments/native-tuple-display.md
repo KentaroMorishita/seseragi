@@ -11,6 +11,11 @@ their canonical instance and provider owner. Their type arguments and
 dependencies are checked against the instance's defining module. Parameter
 children must match the enclosing function or instance constraint. Nested
 standard children continue through their existing checked dictionary paths.
+Declaration templates resolve local/imported type symbols before prelude
+spellings. Checked scalar arguments retain canonical prelude identity, and
+`ExternalNamed` aliases are accepted only for the exact prelude type. The
+nominal fixture exercises user Int/Float/Bool/Char alongside their builtin
+values, including generic children and an imported nominal Float alias.
 
 The runtime captures the selected child methods as ordinary managed values.
 It invokes them from left to right, completing each call before the next. A

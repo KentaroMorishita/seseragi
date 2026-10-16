@@ -48,8 +48,7 @@ fn standard_constraint(evidence: &CoreCallEvidence, name: &str) -> bool {
 
 fn character_evidence(evidence: &CoreCallEvidence, name: &str) -> bool {
     standard_constraint(evidence, name)
-        && matches!(&evidence.constraint.arguments[0],
-            CoreType::Named { name, arguments } if name == "Char" && arguments.is_empty())
+        && canonical::primitive(&evidence.constraint.arguments[0], "Char")
         && matches!(&evidence.evidence,
             CoreInstanceEvidence::Standard { type_arguments, evidence_arguments, .. }
                 if type_arguments.is_empty() && evidence_arguments.is_empty())
@@ -131,7 +130,5 @@ pub(super) fn closed_character_partial(
         && evidence
             .iter()
             .all(|selected| matches!(character_dictionary(selected), Some(Ok(_))))
-        && deferred.iter().all(|ty| {
-            matches!(ty, CoreType::Named { name, arguments } if name == "Char" && arguments.is_empty())
-        })
+        && deferred.iter().all(|ty| canonical::primitive(ty, "Char"))
 }

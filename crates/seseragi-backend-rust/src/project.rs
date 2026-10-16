@@ -34,6 +34,17 @@ pub(crate) fn emit(
         if module.module.starts_with("std/") || !seen.insert(module.module.clone()) {
             return Err("Rust backend: duplicate or reserved source module identity".into());
         }
+        // A local nominal type may shadow a prelude spelling such as Float.
+        // Resolve its checked declaration symbol before imported/builtin names.
+        for (name, symbol) in module
+            .adts
+            .iter()
+            .map(|item| (&item.name, &item.symbol))
+            .chain(module.structs.iter().map(|item| (&item.name, &item.symbol)))
+            .chain(module.aliases.iter().map(|item| (&item.name, &item.symbol)))
+        {
+            type_names.insert((module.module.clone(), name.clone()), symbol.clone());
+        }
         for binding in &module.external_type_bindings {
             let key = (module.module.clone(), binding.spelling.clone());
             if type_names

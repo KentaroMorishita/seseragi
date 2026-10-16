@@ -1,5 +1,11 @@
 pub type Box<A> = | Box A
 pub type Label = | Label Int
+pub type Float = | BoxedFloat Int
+
+instance Show<Float> {
+  fn show value: Float -> String =
+    match value { BoxedFloat n -> "nominal-float=" + show n }
+}
 
 instance Show<Label> {
   fn show value: Label -> String = match value { Label n -> "label=" + show n }

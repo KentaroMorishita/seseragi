@@ -56,6 +56,11 @@ fn emit(source: &str) -> RustArtifact {
 
 #[test]
 fn tuple_display_executes_selected_user_generic_and_higher_kinded_children() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/tuple-nominal.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/tuple-nominal.stdout")
+            .trim_end(),
+    );
     let artifact = emit(include_str!(
         "../../../examples/spec/fixtures/rust-backend/tuple-display.ssrg"
     ));
@@ -236,6 +241,76 @@ fn tuple_display_rejects_counterfeit_types_children_dispatch_and_partial_staging
         assert_eq!(error.code, "SES-RUST-0001");
         assert!(error.origin.is_some());
     }
+}
+
+#[test]
+fn tuple_scalar_aliases_use_canonical_identity_and_preserve_unit_entry_checks() {
+    use seseragi_lowering::{CoreInstanceEvidence, CoreType};
+    let core = compile_core_module(CompileInput::new(
+        "aliases-λ.ssrg",
+        "native/main",
+        "pub fn probe -> String = show (\"x\", ())\n",
+    ))
+    .unwrap()
+    .core_ir;
+    for forged in [false, true] {
+        let mut changed = core.clone();
+        changed.functions[0].parameters[0].type_ref = CoreType::ExternalNamed {
+            name: "EntryUnit".into(),
+            canonical: "std/prelude::Unit".into(),
+            arguments: vec![],
+        };
+        let CoreExpr::Call { evidence, .. } = &mut changed.functions[0].body else {
+            panic!("call")
+        };
+        let string = CoreType::ExternalNamed {
+            name: "Text".into(),
+            canonical: if forged {
+                "user::String"
+            } else {
+                "std/prelude::String"
+            }
+            .into(),
+            arguments: vec![],
+        };
+        let unit = CoreType::ExternalNamed {
+            name: "Nil".into(),
+            canonical: "std/prelude::Unit".into(),
+            arguments: vec![],
+        };
+        let tuple = CoreType::Tuple {
+            elements: vec![string.clone(), unit.clone()],
+        };
+        evidence[0].constraint.arguments = vec![tuple.clone()];
+        let CoreInstanceEvidence::Standard {
+            type_arguments,
+            evidence_arguments,
+            ..
+        } = &mut evidence[0].evidence
+        else {
+            panic!("tuple")
+        };
+        *type_arguments = vec![tuple];
+        evidence_arguments[0].constraint.arguments = vec![string];
+        evidence_arguments[1].constraint.arguments = vec![unit];
+        let result = emit_rust_module(&changed, "probe");
+        if forged {
+            let error = result.unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert!(error.origin.is_some());
+        } else {
+            assert!(result.is_ok(), "{result:?}");
+        }
+    }
+    let mut changed = core;
+    changed.functions[0].parameters[0].type_ref = CoreType::ExternalNamed {
+        name: "Unit".into(),
+        canonical: "user::Unit".into(),
+        arguments: vec![],
+    };
+    let error = emit_rust_module(&changed, "probe").unwrap_err();
+    assert!(error.message.contains("unconstrained Unit"));
+    assert!(error.origin.is_some());
 }
 
 #[test]

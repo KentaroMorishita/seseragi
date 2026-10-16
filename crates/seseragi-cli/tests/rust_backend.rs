@@ -256,6 +256,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "list-core",
         "list-tail",
         "tuple-display",
+        "tuple-nominal",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -321,7 +322,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
 fn list_and_tuple_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
     let scratch = Scratch::new();
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    for fixture in ["list-core", "list-tail", "tuple-display"] {
+    for fixture in ["list-core", "list-tail", "tuple-display", "tuple-nominal"] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
         ));

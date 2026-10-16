@@ -49,7 +49,7 @@ fn float_signature(identity: &str) -> Option<(&'static str, usize)> {
 }
 
 fn is_float(ty: &CoreType) -> bool {
-    matches!(ty, CoreType::Named { name, arguments } if name == "Float" && arguments.is_empty())
+    canonical::primitive(ty, "Float")
 }
 
 pub(super) fn valid_float_dispatch(

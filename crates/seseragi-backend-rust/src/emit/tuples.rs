@@ -104,7 +104,13 @@ impl Backend<'_> {
                     .map(|(parameter, ty)| {
                         (
                             parameter.name.clone(),
-                            canonical_type(ty, self.owner, &BTreeMap::new(), self.type_names),
+                            canonical_type(
+                                ty,
+                                self.owner,
+                                &BTreeMap::new(),
+                                self.type_names,
+                                false,
+                            ),
                         )
                     })
                     .map(|(name, ty)| ty.map(|ty| (name, ty)))
@@ -113,13 +119,15 @@ impl Backend<'_> {
                 let actual = instance
                     .arguments
                     .iter()
-                    .map(|ty| canonical_type(ty, owner, &substitutions, self.type_names))
+                    .map(|ty| canonical_type(ty, owner, &substitutions, self.type_names, true))
                     .collect::<Option<Vec<_>>>();
                 let expected = child
                     .constraint
                     .arguments
                     .iter()
-                    .map(|ty| canonical_type(ty, self.owner, &BTreeMap::new(), self.type_names))
+                    .map(|ty| {
+                        canonical_type(ty, self.owner, &BTreeMap::new(), self.type_names, false)
+                    })
                     .collect::<Option<Vec<_>>>();
                 if actual.is_none() || actual != expected {
                     return Err(format!("Rust backend: tuple child instance type mismatch {identity}: {actual:?} != {expected:?}").into());
@@ -128,13 +136,15 @@ impl Backend<'_> {
                     let actual = constraint
                         .arguments
                         .iter()
-                        .map(|ty| canonical_type(ty, owner, &substitutions, self.type_names))
+                        .map(|ty| canonical_type(ty, owner, &substitutions, self.type_names, true))
                         .collect::<Option<Vec<_>>>();
                     let expected = argument
                         .constraint
                         .arguments
                         .iter()
-                        .map(|ty| canonical_type(ty, self.owner, &BTreeMap::new(), self.type_names))
+                        .map(|ty| {
+                            canonical_type(ty, self.owner, &BTreeMap::new(), self.type_names, false)
+                        })
                         .collect::<Option<Vec<_>>>();
                     if constraint.name != argument.constraint.name
                         || actual.is_none()
@@ -170,13 +180,16 @@ impl Backend<'_> {
 
 // Compare selected user instance arguments in their defining module with the
 // call site's canonical types, after substituting its checked type arguments.
+// Instance templates use declaration scope; checked call-site Named scalars
+// denote prelude types, and shadowing nominal types retain ExternalNamed identity.
 fn canonical_type(
     ty: &CoreType,
     owner: &str,
     substitutions: &BTreeMap<String, CoreType>,
     type_names: &BTreeMap<(String, String), String>,
+    declaration_scope: bool,
 ) -> Option<CoreType> {
-    let recur = |ty| canonical_type(ty, owner, substitutions, type_names);
+    let recur = |ty| canonical_type(ty, owner, substitutions, type_names, declaration_scope);
     Some(match ty {
         CoreType::Hole => return None,
         CoreType::Named { name, arguments } => {
@@ -192,30 +205,35 @@ fn canonical_type(
                 }
                 bound
             } else {
-                let name =
-                    if let Some(canonical) = type_names.get(&(owner.to_owned(), name.clone())) {
-                        canonical.clone()
-                    } else if name.contains("::") {
-                        name.clone()
-                    } else if matches!(
-                        name.as_str(),
-                        "Unit"
-                            | "Int"
-                            | "Bool"
-                            | "String"
-                            | "Char"
-                            | "Float"
-                            | "List"
-                            | "Array"
-                            | "Maybe"
-                            | "Either"
-                            | "Ref"
-                            | "Effect"
-                    ) {
-                        format!("std/prelude::{name}")
-                    } else {
-                        format!("{owner}::{name}")
-                    };
+                let primitive = matches!(
+                    name.as_str(),
+                    "Unit" | "Int" | "Bool" | "String" | "Char" | "Float"
+                );
+                let name = if !declaration_scope && primitive {
+                    format!("std/prelude::{name}")
+                } else if let Some(canonical) = type_names.get(&(owner.to_owned(), name.clone())) {
+                    canonical.clone()
+                } else if name.contains("::") {
+                    name.clone()
+                } else if matches!(
+                    name.as_str(),
+                    "Unit"
+                        | "Int"
+                        | "Bool"
+                        | "String"
+                        | "Char"
+                        | "Float"
+                        | "List"
+                        | "Array"
+                        | "Maybe"
+                        | "Either"
+                        | "Ref"
+                        | "Effect"
+                ) {
+                    format!("std/prelude::{name}")
+                } else {
+                    format!("{owner}::{name}")
+                };
                 CoreType::Named { name, arguments }
             }
         }

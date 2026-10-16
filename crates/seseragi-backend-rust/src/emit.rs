@@ -10,6 +10,7 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod canonical;
 mod characters;
 mod floats;
 mod lists;
@@ -75,7 +76,7 @@ pub fn emit(
         .find(|f| f.symbol == format!("{}::{entry}", module.module))
         .ok_or("Rust backend: entry function not found")?;
     if entry.parameters.len() != 1
-        || !matches!(&entry.parameters[0].type_ref, CoreType::Named { name, arguments } if name == "Unit" && arguments.is_empty())
+        || !canonical::primitive(&entry.parameters[0].type_ref, "Unit")
         || !entry.constraints.is_empty()
     {
         return Err(crate::project::at(

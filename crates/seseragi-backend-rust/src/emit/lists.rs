@@ -90,12 +90,14 @@ pub(super) fn primitive_display(selected: &CoreCallEvidence) -> Option<Result<St
             .find(|primitive| identity == &format!("{method}<std/prelude::{primitive}>"))
             .map(|primitive| (method, primitive))
     })?;
-    let ty = CoreType::Named {
-        name: primitive.into(),
-        arguments: vec![],
+    let [ty] = selected.constraint.arguments.as_slice() else {
+        return Some(Err(
+            "Rust backend: invalid primitive display constraint arity".into(),
+        ));
     };
     Some(
-        if standard_trait(selected, method, &ty)
+        if standard_trait(selected, method, ty)
+            && canonical::primitive(ty, primitive)
             && type_arguments.is_empty()
             && evidence_arguments.is_empty()
         {
