@@ -351,6 +351,9 @@ jobs:
         with:
           ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.11
@@ -373,6 +376,11 @@ jobs:
         with:
           name: seseragi-release-${{ needs.gate.outputs.release_sha }}-vscode-linux-x64
           path: target/release
+      - name: Verify SDK runner and record byte transport controls
+        run: |
+          node --test scripts/local-web-product-e2e-node.test.cjs
+          bun scripts/local-web-product-e2e-transport-probe.cjs target/release/local-web-product-e2e-transport/bun.json
+          node scripts/local-web-product-e2e-transport-probe.cjs target/release/local-web-product-e2e-transport/node.json
       - name: Run downloaded release artifacts through the product journey
         shell: bash
         run: |
@@ -385,9 +393,12 @@ jobs:
             --vsix "target/release/seseragi-v${release_version}-vscode-linux-x64.vsix" \
             --output target/release/local-web-product-e2e
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: seseragi-release-${{ needs.gate.outputs.release_sha }}-local-web-product-e2e
-          path: target/release/local-web-product-e2e
+          path: |
+            target/release/local-web-product-e2e
+            target/release/local-web-product-e2e-transport
           if-no-files-found: error
           overwrite: true
 

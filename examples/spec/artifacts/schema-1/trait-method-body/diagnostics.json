@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.trait-method-body-forbidden",
+      "message": "Trait methods declare signatures without implementation bodies",
+      "primary": {
+        "start": 29,
+        "end": 74
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Move the method implementation into an instance declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

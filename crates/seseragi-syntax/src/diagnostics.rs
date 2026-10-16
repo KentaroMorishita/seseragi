@@ -172,6 +172,9 @@ impl Diagnostic {
             "parser.function-annotations-required" => {
                 "Ordinary functions require parameter and result type annotations".to_owned()
             }
+            "parser.trait-method-body-forbidden" => {
+                "Trait methods declare signatures without implementation bodies".to_owned()
+            }
             "parser.public-let-annotation-required" => {
                 "Public let declarations require a type annotation".to_owned()
             }
@@ -356,6 +359,9 @@ impl Diagnostic {
             }
             "parser.function-annotations-required" => {
                 "Write each parameter as name: Type and end the signature with -> ResultType."
+            }
+            "parser.trait-method-body-forbidden" => {
+                "Move the method implementation into an instance declaration."
             }
             "parser.public-let-annotation-required" => {
                 "Add : Type before =, or make the let declaration private."
@@ -1066,6 +1072,85 @@ fn message_key_for_code(code: &str) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reports_incomplete_trait_and_instance_method_signatures_instead_of_dropping_them() {
+        for source in [
+            "// 雫\ntrait Render<A> { fn render value -> String }\n",
+            "// 雫\ntype Label = | Label\ninstance Show<Label> { fn show value = \"selected\" }\n",
+            "// 雫\ntype Label = | Label\ninstance Show<Label> { fn show value: Label = \"selected\" }\n",
+            "// 雫\ntype Box<A> = | Box A\ninstance<A> Show<Box<A>> where Show<A> { fn show value = \"box\" }\n",
+        ] {
+            let artifact = parse_diagnostics("methods-λ.ssrg", source);
+            let diagnostic = artifact.diagnostics.iter().find(|diagnostic| {
+                diagnostic.message_key == "parser.function-annotations-required"
+            }).unwrap_or_else(|| panic!("{source}\n{artifact:#?}"));
+            assert_eq!(diagnostic.code, "SES-P0001");
+            assert!(source[diagnostic.primary.start..diagnostic.primary.end].starts_with("fn "));
+            assert!(source.is_char_boundary(diagnostic.primary.start));
+            assert!(source.is_char_boundary(diagnostic.primary.end));
+        }
+    }
+
+    #[test]
+    fn validates_all_method_headers_without_confusing_nested_record_braces() {
+        let source = "trait Render<A> { fn first value -> String\nfn second value: A -> String\nfn third value: { count: Int } = \"bad\" }\n";
+        let artifact = parse_diagnostics("methods.ssrg", source);
+        assert_eq!(artifact.diagnostics.len(), 2, "{artifact:#?}");
+        for diagnostic in artifact.diagnostics {
+            assert_eq!(
+                diagnostic.message_key,
+                "parser.function-annotations-required"
+            );
+        }
+        let source = "trait Render<A> { fn render value: A -> String = \"not a contract\" }\n";
+        let artifact = parse_diagnostics("methods.ssrg", source);
+        assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "parser.trait-method-body-forbidden"
+        );
+    }
+
+    #[test]
+    fn keeps_deprecation_prefixes_out_of_previous_trait_signatures() {
+        let source = "trait Render<A> {\nfn first deprecated: A -> since: A -> A\ndeprecated \"Use first\" since \"0.4.1\"\nfn legacy value: A -> A\ndeprecated \"Use legacy\"\nfn last value: A -> A\n}\n";
+        let artifact = parse_diagnostics("methods.ssrg", source);
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+        let module = crate::parse_surface_ast("methods.ssrg", source);
+        let crate::SurfaceDecl::Trait { methods, .. } = &module.declarations[0] else {
+            panic!("trait declaration was lost")
+        };
+        assert_eq!(
+            methods
+                .iter()
+                .map(|method| method.name.as_str())
+                .collect::<Vec<_>>(),
+            ["first", "legacy", "last"]
+        );
+        assert_eq!(methods[0].parameters[0].name, "deprecated");
+        assert_eq!(methods[0].parameters[1].name, "since");
+
+        let semicolons = source.replace("-> A\n", "-> A; ");
+        let artifact = parse_diagnostics("methods.ssrg", &semicolons);
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+        let module = crate::parse_surface_ast("methods.ssrg", &semicolons);
+        let crate::SurfaceDecl::Trait { methods, .. } = &module.declarations[0] else {
+            panic!("semicolon-delimited trait declaration was lost")
+        };
+        assert_eq!(methods.len(), 3);
+
+        let broken = source.replace("deprecated: A", "deprecated");
+        let artifact = parse_diagnostics("methods.ssrg", &broken);
+        assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "parser.function-annotations-required"
+        );
+        assert!(!broken
+            [artifact.diagnostics[0].primary.start..artifact.diagnostics[0].primary.end]
+            .contains("Use first"));
+    }
 
     #[test]
     fn empty_source_diagnostics_for_valid_module() {

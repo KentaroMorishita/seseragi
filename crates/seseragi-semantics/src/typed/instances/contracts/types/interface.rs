@@ -75,7 +75,7 @@ fn contract_constraint(
     })
 }
 
-fn contract_type(
+pub(super) fn contract_type(
     type_ref: &InterfaceType,
     binders: &BTreeMap<String, u32>,
     substitutions: &BTreeMap<String, ContractType>,

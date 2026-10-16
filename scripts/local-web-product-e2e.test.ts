@@ -8,6 +8,9 @@ const runner = await Bun.file(
 const extensionTest = await Bun.file(
   path.join(repositoryRoot, "scripts", "local-web-product-e2e-extension.cjs")
 ).text()
+const sdkRunner = await Bun.file(
+  path.join(repositoryRoot, "scripts", "local-web-product-e2e-node.cjs")
+).text()
 const pullRequestWorkflow = await Bun.file(
   path.join(repositoryRoot, ".github", "workflows", "local-web-product-e2e.yml")
 ).text()
@@ -16,7 +19,7 @@ const releaseWorkflow = await Bun.file(
 ).text()
 
 test("uses installed artifacts and one canonical project for the product journey", () => {
-  expect(runner).toContain("--install-extension")
+  expect(sdkRunner).toContain("--install-extension")
   expect(runner).toContain('SESERAGI_E2E_VSCODE_VERSION ?? "1.133.0"')
   expect(runner).toContain("process.exit(0)")
   expect(runner).toContain("nativeArchiveName")

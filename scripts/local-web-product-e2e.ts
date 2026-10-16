@@ -2,11 +2,6 @@ import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import {
-  downloadAndUnzipVSCode,
-  runTests,
-  runVSCodeCommand,
-} from "@vscode/test-electron"
-import {
   hostNativeReleaseTarget,
   type NativeReleaseTarget,
   nativeArchiveName,
@@ -188,61 +183,30 @@ async function main(): Promise<void> {
     await mkdir(extensionsDirectory)
     await mkdir(userDataDirectory)
 
-    let vscodeExecutablePath = await downloadAndUnzipVSCode(vscodeVersion)
-    if (process.platform === "darwin") {
-      const currentExecutable = path.join(
-        path.dirname(vscodeExecutablePath),
-        "Code"
-      )
-      if (await Bun.file(currentExecutable).exists()) {
-        vscodeExecutablePath = currentExecutable
-      }
-    }
-    await runVSCodeCommand(
-      [
-        "--install-extension",
-        vsix,
-        "--force",
-        `--extensions-dir=${extensionsDirectory}`,
-        `--user-data-dir=${userDataDirectory}`,
-      ],
-      { reuseMachineInstall: true, version: vscodeVersion }
-    )
-
-    await runTests({
-      extensionDevelopmentPath: path.join(
+    // Run the SDK with Node: Bun's child_process stdin pipe can lose buffered
+    // archive bytes under backpressure (#824). The installed-product assertions
+    // still run in the actual downloaded VS Code Extension Host.
+    const configuration = path.join(temporary, "product-journey.json")
+    await writeFile(
+      configuration,
+      JSON.stringify({
+        temporary,
         repositoryRoot,
-        "scripts",
-        "fixtures",
-        "local-web-e2e-driver"
-      ),
-      extensionTestsEnv: {
-        SESERAGI_E2E_CLI: cli,
-        SESERAGI_E2E_OUTPUT: output,
-        SESERAGI_E2E_PLAYWRIGHT: path.join(
-          repositoryRoot,
-          "apps",
-          "playground",
-          "node_modules",
-          "playwright"
-        ),
-        SESERAGI_E2E_PROJECT: project,
-        SESERAGI_E2E_VERSION: version,
-        SESERAGI_E2E_VSIX: vsix,
-      },
-      extensionTestsPath: path.join(
-        repositoryRoot,
-        "scripts",
-        "local-web-product-e2e-extension.cjs"
-      ),
-      launchArgs: [
+        cli,
+        output,
         project,
-        `--extensions-dir=${extensionsDirectory}`,
-        `--user-data-dir=${userDataDirectory}`,
-      ],
-      reuseMachineInstall: true,
-      vscodeExecutablePath,
-    })
+        version,
+        vsix,
+        vscodeVersion,
+        extensionsDirectory,
+        userDataDirectory,
+      })
+    )
+    run([
+      "node",
+      path.join(repositoryRoot, "scripts", "local-web-product-e2e-node.cjs"),
+      configuration,
+    ])
 
     const report = JSON.parse(
       await readFile(path.join(output, "report.json"), "utf8")
@@ -258,7 +222,6 @@ async function main(): Promise<void> {
 
 if (import.meta.main) {
   await main()
-  // Bun can retain a failed child-process exit after test-electron recovers
-  // from a download retry. Only a fully completed journey reaches this point.
+  // Only a fully completed installed-product journey reaches this point.
   process.exit(0)
 }

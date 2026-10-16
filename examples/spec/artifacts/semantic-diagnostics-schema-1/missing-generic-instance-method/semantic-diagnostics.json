@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-method-missing",
+      "message": "Trait instance method missing",
+      "primary": {
+        "start": 33,
+        "end": 74
+      },
+      "related": [
+        {
+          "message": "trait contract requires method show",
+          "primary": {
+            "start": 45,
+            "end": 49
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "trait contract requires method show",
+          "primary": {
+            "start": 45,
+            "end": 49
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+// 雫🙂
+trait Render<A> { fn render value: A -> String = "invalid body" }

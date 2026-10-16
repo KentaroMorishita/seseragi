@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.61.41] - 2026-10-17
+
+### Fixed
+
+- Diagnose missing parameter or result annotations inside trait and instance
+  methods before recovery can discard them. Validate canonical Prelude instance
+  methods against their registered signatures, including required methods,
+  higher-kinded parameters and nominal result types, so incomplete dictionaries
+  cannot reach TypeScript or native code generation (#851).
+- Run the VS Code product-test SDK with Node.js and a fresh private download
+  cache. Preserve archive validation, the installed CLI/VSIX journey and failure
+  receipts while avoiding Bun child-process pipe truncation (#824).
+
 ## [0.61.40] - 2026-10-16
 
 ### Added

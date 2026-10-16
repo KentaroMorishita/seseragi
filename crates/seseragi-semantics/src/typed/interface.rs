@@ -11,6 +11,137 @@ mod types;
 
 use types::InterfaceTypes;
 
+/// Project the canonical Prelude signature through the same representation as
+/// imported trait contracts. Trait parameters are substituted by the instance;
+/// only the remaining method parameters are independently quantified.
+pub(super) fn prelude_method_interface(
+    method: &crate::prelude::PreludeTraitMethod,
+    origin: seseragi_syntax::ByteSpan,
+) -> seseragi_syntax::InterfaceMethod {
+    let signature = crate::prelude::trait_method_signature(method);
+    let trait_spec = crate::prelude::trait_by_name(method.trait_name)
+        .expect("Prelude method has a registered trait");
+    // Registry signatures have canonical external nominals even when the user
+    // does not import them. Their provider cannot depend on local aliases.
+    fn collect_providers(
+        type_ref: &crate::TypedType,
+        bindings: &mut Vec<crate::ExternalTypeBinding>,
+    ) {
+        use crate::TypedType;
+        match type_ref {
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+            } => {
+                let (module, export) = canonical
+                    .rsplit_once("::")
+                    .expect("registered external nominal has a canonical owner");
+                bindings.push(crate::ExternalTypeBinding {
+                    arity: None,
+                    spelling: name.clone(),
+                    canonical: canonical.clone(),
+                    provider: Some(crate::ExternalTypeProvider {
+                        module: module.into(),
+                        export: export.into(),
+                    }),
+                });
+                for argument in arguments {
+                    collect_providers(argument, bindings);
+                }
+            }
+            TypedType::Named { arguments, .. }
+            | TypedType::Tuple {
+                elements: arguments,
+            }
+            | TypedType::RequirementMerge {
+                operands: arguments,
+            } => {
+                for argument in arguments {
+                    collect_providers(argument, bindings);
+                }
+            }
+            TypedType::Function { parameter, result } => {
+                collect_providers(parameter, bindings);
+                collect_providers(result, bindings);
+            }
+            TypedType::Record { fields, .. } => {
+                for field in fields {
+                    collect_providers(&field.type_ref, bindings);
+                }
+            }
+            TypedType::Hole => {}
+        }
+    }
+    let type_ref =
+        signature
+            .parameters
+            .into_iter()
+            .rev()
+            .fold(signature.result, |result, parameter| {
+                crate::TypedType::Function {
+                    parameter: Box::new(parameter),
+                    result: Box::new(result),
+                }
+            });
+    let mut bindings = Vec::new();
+    collect_providers(&type_ref, &mut bindings);
+    for argument in signature
+        .constraints
+        .iter()
+        .flat_map(|constraint| &constraint.arguments)
+    {
+        collect_providers(argument, &mut bindings);
+    }
+    let mut scheme = interface_scheme_from_typed_scheme(
+        &TypedScheme {
+            type_parameters: signature.type_parameters,
+            constraint_identities: signature
+                .constraints
+                .iter()
+                .map(|constraint| {
+                    crate::prelude::trait_by_name(&constraint.name)
+                        .map(|trait_spec| trait_spec.canonical.to_owned())
+                })
+                .collect(),
+            constraints: signature.constraints,
+            type_ref,
+        },
+        &InterfaceTypes::new(&bindings),
+    );
+    scheme
+        .type_parameters
+        .drain(..trait_spec.type_parameters.len());
+    seseragi_syntax::InterfaceMethod {
+        name: method.name.to_owned(),
+        scheme,
+        origin,
+    }
+}
+
+#[cfg(test)]
+mod prelude_contract_tests {
+    #[test]
+    fn projects_every_registered_method_without_user_imports() {
+        for method in crate::prelude::TRAIT_METHODS {
+            let signature = crate::prelude::trait_method_signature(method);
+            let projected = super::prelude_method_interface(
+                method,
+                seseragi_syntax::ByteSpan { start: 0, end: 0 },
+            );
+            let trait_parameters = crate::prelude::trait_by_name(method.trait_name)
+                .unwrap()
+                .type_parameters
+                .len();
+            assert_eq!(projected.name, method.name);
+            assert_eq!(
+                projected.scheme.type_parameters,
+                signature.type_parameters[trait_parameters..]
+            );
+        }
+    }
+}
+
 pub(crate) fn typed_interface_from_modules(
     shallow: ModuleInterface,
     typed: &TypedModule,

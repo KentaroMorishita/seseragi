@@ -1,0 +1,31 @@
+type Label = | Label Int
+type Box<A> = | Box A
+
+alias Name = Label
+alias Text = String
+alias Wrapped<A> = Box<A>
+
+instance Show<Label> {
+  fn show value: Name -> Text = match value { Label n -> "label=" + show n }
+}
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Wrapped<A> -> Wrapped<B> =
+    match value { Box item -> Box (f item) }
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Wrapped<A> -> Text = match value { Box item -> "box=" + show item }
+}
+
+fn savedMethod value: Name -> Text = {
+  let render: Name -> Text = show
+  render value
+}
+
+pub fn probe -> Array<String> = [
+  show (Label 42),
+  show (map (\value -> value + 1) (Box 41)),
+  show (Box (Label 43)),
+  savedMethod (Label 44)
+]

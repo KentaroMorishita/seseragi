@@ -11,7 +11,7 @@
       "message": "Trait instance duplicate",
       "primary": {
         "start": 44,
-        "end": 124
+        "end": 73
       },
       "related": [
         {
@@ -28,6 +28,40 @@
           "primary": {
             "start": 0,
             "end": 42
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-method-missing",
+      "message": "Trait instance method missing",
+      "primary": {
+        "start": 44,
+        "end": 73
+      },
+      "related": [
+        {
+          "message": "trait contract requires method encodeJson",
+          "primary": {
+            "start": 53,
+            "end": 63
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "trait contract requires method encodeJson",
+          "primary": {
+            "start": 53,
+            "end": 63
           }
         }
       ],

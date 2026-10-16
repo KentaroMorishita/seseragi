@@ -1,0 +1,3 @@
+// 雫🙂
+type Label = | Label
+instance Show<Label> { fn show value = "selected" }

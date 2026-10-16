@@ -30,6 +30,120 @@ fn cli() -> Command {
 }
 
 #[test]
+fn incomplete_instance_contracts_reject_before_emission_or_execution() {
+    let scratch = Scratch::new();
+    let artifacts = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec/artifacts");
+    for (schema, name, code) in [
+        ("schema-1", "incomplete-trait-method", "SES-P0001"),
+        ("schema-1", "incomplete-instance-method", "SES-P0001"),
+        ("schema-1", "missing-instance-result", "SES-P0001"),
+        ("schema-1", "trait-method-body", "SES-P0001"),
+        (
+            "semantic-diagnostics-schema-1",
+            "missing-standard-instance-method",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "missing-custom-instance-method",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "wrong-standard-instance-signature",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "missing-generic-instance-method",
+            "SES-T0101",
+        ),
+    ] {
+        let source = scratch.0.join(format!("{name}-λ.ssrg"));
+        fs::write(
+            &source,
+            fs::read_to_string(artifacts.join(schema).join(name).join("main.ssrg")).unwrap()
+                + "\npub effect fn main = println \"must not run\"\n",
+        )
+        .unwrap();
+        let rust = scratch.0.join(format!("{name}.rs"));
+        let output = cli()
+            .env("PATH", "")
+            .args(["experimental", "emit-rust"])
+            .arg(&source)
+            .args(["--entry", "main"])
+            .arg("--output")
+            .arg(&rust)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{name}: {output:?}");
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains(code),
+            "{name}: {output:?}"
+        );
+        assert!(output.stdout.is_empty());
+        assert!(!rust.exists());
+        assert!(!rust.with_extension("rust-backend.json").exists());
+        let native_directory = scratch.0.join(format!("{name}-native"));
+        let output = cli()
+            .env("PATH", "")
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main"])
+            .arg("--out-dir")
+            .arg(&native_directory)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{name}: {output:?}");
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains(code),
+            "{name}: {output:?}"
+        );
+        assert!(output.stdout.is_empty());
+        assert!(!native_directory.exists());
+        for profile in ["development", "release"] {
+            let directory = scratch.0.join(format!("{name}-{profile}"));
+            let output = cli()
+                .env("PATH", "")
+                .arg("build")
+                .arg(&source)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&directory)
+                .output()
+                .unwrap();
+            assert_eq!(
+                output.status.code(),
+                Some(2),
+                "{name}/{profile}: {output:?}"
+            );
+            assert!(
+                String::from_utf8_lossy(&output.stderr).contains(code),
+                "{output:?}"
+            );
+            assert!(output.stdout.is_empty());
+            assert!(!directory.exists());
+            let output = cli()
+                .env("PATH", "")
+                .arg("run")
+                .arg(&source)
+                .args(["--profile", profile])
+                .output()
+                .unwrap();
+            assert_eq!(
+                output.status.code(),
+                Some(2),
+                "{name}/{profile}: {output:?}"
+            );
+            assert!(
+                String::from_utf8_lossy(&output.stderr).contains(code),
+                "{output:?}"
+            );
+            assert!(output.stdout.is_empty());
+        }
+    }
+}
+
+#[test]
 fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
     let scratch = Scratch::new();
     for (fixture, count) in [
@@ -257,6 +371,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "list-tail",
         "tuple-display",
         "tuple-nominal",
+        "instance-contracts",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
