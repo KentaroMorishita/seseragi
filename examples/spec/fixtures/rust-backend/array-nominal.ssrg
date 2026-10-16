@@ -1,0 +1,12 @@
+type Int = | NominalInt
+type Array<A> = | LocalArray A
+instance Show<Int> {
+  fn show value: Int -> String = "selected-int"
+}
+instance<A> Show<Array<A>> where Show<A> {
+  fn show value: Array<A> -> String =
+    match value { LocalArray item -> "local=" + show item }
+}
+pub fn probe -> String = {
+  show ([NominalInt], [LocalArray NominalInt], [1, 2])
+}

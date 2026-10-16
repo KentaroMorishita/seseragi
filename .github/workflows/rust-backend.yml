@@ -96,7 +96,7 @@ jobs:
         run: |
           cargo fmt --all -- --check
           rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs
-      - name: Verify tuple display order and shared depth on Bun and Node
+      - name: Verify Array, Tuple and List display order and shared depth on Bun and Node
         run: |
           bun build runtime/ts/probes/tuple-display.ts --target=node --outfile target/tuple-display.mjs
           node target/tuple-display.mjs

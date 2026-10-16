@@ -1,5 +1,23 @@
 # Change Log
 
+## [0.61.42] - 2026-10-17
+
+### Added
+
+- Execute native Array Show and Debug with the selected element dictionary,
+  including user, generic and higher-kinded instances, saved closures and
+  closed partial calls across modules and path packages. Preserve element
+  order, the shared display depth bound and Ref/Effect resource lifetimes.
+
+### Fixed
+
+- Match local instance heads using resolved nominal types and retain inferred
+  Array evidence under type and parameter shadows, so a user type named Array
+  cannot replace the standard literal-array display dictionary.
+- Join DOM fixture worker exits independently from stderr collection. Preserve
+  diagnostics in an owned file and bound shutdown, forced exit and startup
+  cleanup, including an inherited stderr handle (#860).
+
 ## [0.61.41] - 2026-10-17
 
 ### Fixed

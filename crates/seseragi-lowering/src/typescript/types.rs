@@ -466,6 +466,15 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 _ => unreachable!(),
             }
         }
+        CoreType::ExternalNamed { canonical, arguments, .. }
+            if canonical == "std/prelude::Array" && arguments.len() == 1 =>
+        {
+            TypeScriptType::Array {
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0], imported_types, type_constructor_parameters,
+                )),
+            }
+        }
         CoreType::ExternalNamed {
             name,
             canonical,
@@ -694,6 +703,43 @@ mod tests {
         CoreParameter, CoreType,
     };
     use crate::TypeScriptType;
+
+    #[test]
+    fn canonical_array_evidence_bypasses_local_and_parameter_name_translation() {
+        let element = CoreType::ExternalNamed {
+            name: "Int".into(),
+            canonical: "std/prelude::Int".into(),
+            arguments: vec![],
+        };
+        let mut context = super::TypeScriptTypeContext::default();
+        context.value_parameters.insert("Array".into());
+        context.value_parameters.insert("Int".into());
+        for spelling in ["Array", "Vector"] {
+            let ty = CoreType::ExternalNamed {
+                name: spelling.into(),
+                canonical: "std/prelude::Array".into(),
+                arguments: vec![element.clone()],
+            };
+            assert_eq!(
+                type_ref_from_core_type(&ty, &context),
+                TypeScriptType::Array {
+                    element: Box::new(TypeScriptType::Number),
+                }
+            );
+        }
+        for (canonical, arguments) in [
+            ("user::Array", vec![element.clone()]),
+            ("std/prelude::Array", vec![]),
+            ("std/prelude::Array", vec![element.clone(), element]),
+        ] {
+            let ty = CoreType::ExternalNamed {
+                name: "Array".into(),
+                canonical: canonical.into(),
+                arguments,
+            };
+            assert!(std::panic::catch_unwind(|| type_ref_from_core_type(&ty, &context)).is_err());
+        }
+    }
 
     #[test]
     fn canonical_primitive_evidence_types_lower_without_external_imports() {

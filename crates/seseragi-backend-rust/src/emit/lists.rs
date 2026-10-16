@@ -125,7 +125,12 @@ pub(super) fn valid_display_dispatch(
     };
     if !matches!(
         dictionary.as_str(),
-        "std/list::Show" | "std/list::Debug" | "std/tuple::Show" | "std/tuple::Debug"
+        "std/list::Show"
+            | "std/list::Debug"
+            | "std/tuple::Show"
+            | "std/tuple::Debug"
+            | "std/array::Show"
+            | "std/array::Debug"
     ) && primitive_display(selected).is_none()
     {
         return true;

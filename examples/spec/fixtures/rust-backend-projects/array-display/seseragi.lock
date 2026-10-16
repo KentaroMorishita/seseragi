@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-array@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/array-model@1.0.0#path:vendor/model"
+name = "fixture/array-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:d6d07f8dee7bd8c04714f42b7003960786f981faed59540fdc8eaa5d80cc52db"
+content_digest = "sha256:407de4ace6edc62dd8d1a6c985dfaef77d3cfa860d003d2a2dfedc19b3080806"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-array@0.0.0#workspace:."
+name = "fixture/native-array"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:93fd24f104a84b94e9d6e98e18322468b886ee7fc9545fe1a88a66ebcd236b1d"
+content_digest = "sha256:9763def08df8f2faed504809b7156c7b5f31ae7dda53b298762d695c5bbdf533"
+dependencies = [
+  { import = "model", package = "fixture/array-model@1.0.0#path:vendor/model" },
+]

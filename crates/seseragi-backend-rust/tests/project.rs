@@ -88,80 +88,83 @@ fn imported_evidence_cannot_be_rebound_to_a_name_or_a_local_factory() {
 }
 
 #[test]
-fn tuple_children_keep_provider_identity_and_instantiated_types() {
-    let loaded = seseragi_project::load_local_project(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/spec/fixtures/rust-backend-projects/tuple-display"
-    ))
-    .unwrap();
-    let checked = seseragi_driver::compile_core_local_project(&loaded).unwrap();
-    let modules = checked
-        .compiled
-        .order
-        .iter()
-        .map(|id| checked.compiled.modules[id].core_ir.clone())
-        .collect::<Vec<_>>();
-    emit_rust_project(
-        &modules.iter().collect::<Vec<_>>(),
-        &checked.entry_module,
-        "main",
-    )
-    .unwrap();
-    fn mutate(value: &mut serde_json::Value, kind: usize) -> usize {
-        match value {
-            serde_json::Value::Object(fields) => {
-                if fields.get("kind").and_then(|v| v.as_str()) == Some("imported")
-                    && fields
-                        .get("identity")
-                        .and_then(|v| v.as_str())
-                        .is_some_and(|v| {
-                            v.starts_with("std/prelude::Show<") && v.contains("::Box<")
-                        })
-                {
-                    if kind == 0 {
-                        fields.insert("providerModule".into(), "counterfeit/provider".into());
-                    } else if kind == 1 {
-                        fields.insert(
-                            "typeArguments".into(),
-                            serde_json::json!([{"kind":"named","name":"Bool","arguments":[]}]),
-                        );
-                    } else {
-                        let child = fields["evidenceArguments"][0]["constraint"]
-                            .as_object_mut()
-                            .unwrap();
-                        child.insert("traitIdentity".into(), "user::Show".into());
-                    }
-                    1
-                } else {
-                    fields.values_mut().map(|v| mutate(v, kind)).sum()
-                }
-            }
-            serde_json::Value::Array(items) => items.iter_mut().map(|v| mutate(v, kind)).sum(),
-            _ => 0,
-        }
-    }
-    for kind in 0..3 {
-        let mut encoded = serde_json::to_value(&modules).unwrap();
-        for module in encoded.as_array_mut().unwrap() {
-            for key in ["adts", "bindings", "functions"] {
-                module
-                    .as_object_mut()
-                    .unwrap()
-                    .entry(key)
-                    .or_insert(serde_json::json!([]));
-            }
-        }
-        assert!(mutate(&mut encoded, kind) > 0);
-        let changed: Vec<CoreModule> = serde_json::from_value(encoded).unwrap();
-        let error = emit_rust_project(
-            &changed.iter().collect::<Vec<_>>(),
+fn display_children_keep_provider_identity_and_instantiated_types() {
+    for fixture in ["tuple-display", "array-display"] {
+        let loaded = seseragi_project::load_local_project(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../examples/spec/fixtures/rust-backend-projects")
+                .join(fixture),
+        )
+        .unwrap();
+        let checked = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+        let modules = checked
+            .compiled
+            .order
+            .iter()
+            .map(|id| checked.compiled.modules[id].core_ir.clone())
+            .collect::<Vec<_>>();
+        emit_rust_project(
+            &modules.iter().collect::<Vec<_>>(),
             &checked.entry_module,
             "main",
         )
-        .unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.origin.is_some());
-        assert!(error.module.is_some());
+        .unwrap();
+        fn mutate(value: &mut serde_json::Value, kind: usize) -> usize {
+            match value {
+                serde_json::Value::Object(fields) => {
+                    if fields.get("kind").and_then(|v| v.as_str()) == Some("imported")
+                        && fields
+                            .get("identity")
+                            .and_then(|v| v.as_str())
+                            .is_some_and(|v| {
+                                v.starts_with("std/prelude::Show<") && v.contains("::Box<")
+                            })
+                    {
+                        if kind == 0 {
+                            fields.insert("providerModule".into(), "counterfeit/provider".into());
+                        } else if kind == 1 {
+                            fields.insert(
+                                "typeArguments".into(),
+                                serde_json::json!([{"kind":"named","name":"Bool","arguments":[]}]),
+                            );
+                        } else {
+                            let child = fields["evidenceArguments"][0]["constraint"]
+                                .as_object_mut()
+                                .unwrap();
+                            child.insert("traitIdentity".into(), "user::Show".into());
+                        }
+                        1
+                    } else {
+                        fields.values_mut().map(|v| mutate(v, kind)).sum()
+                    }
+                }
+                serde_json::Value::Array(items) => items.iter_mut().map(|v| mutate(v, kind)).sum(),
+                _ => 0,
+            }
+        }
+        for kind in 0..3 {
+            let mut encoded = serde_json::to_value(&modules).unwrap();
+            for module in encoded.as_array_mut().unwrap() {
+                for key in ["adts", "bindings", "functions"] {
+                    module
+                        .as_object_mut()
+                        .unwrap()
+                        .entry(key)
+                        .or_insert(serde_json::json!([]));
+                }
+            }
+            assert!(mutate(&mut encoded, kind) > 0);
+            let changed: Vec<CoreModule> = serde_json::from_value(encoded).unwrap();
+            let error = emit_rust_project(
+                &changed.iter().collect::<Vec<_>>(),
+                &checked.entry_module,
+                "main",
+            )
+            .unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert!(error.origin.is_some());
+            assert!(error.module.is_some());
+        }
     }
 }
 

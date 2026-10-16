@@ -1,0 +1,25 @@
+pub type Box<A> = | Box A
+pub type Label = | Label Int
+pub type Float = | BoxedFloat Int
+
+instance Show<Float> {
+  fn show value: Float -> String =
+    match value { BoxedFloat n -> "nominal-float=" + show n }
+}
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label n -> "label=" + show n }
+}
+
+instance Debug<Label> {
+  fn debug value: Label -> String = match value { Label n -> "Label{" + show n + "}" }
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+instance<A> Debug<Box<A>> where Debug<A> {
+  fn debug value: Box<A> -> String =
+    match value { Box item -> "Box{" + debug item + "}" }
+}

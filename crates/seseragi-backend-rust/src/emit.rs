@@ -12,11 +12,11 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod canonical;
 mod characters;
+mod display;
 mod floats;
 mod lists;
 mod scalar;
 mod tail;
-mod tuples;
 
 type Scope = BTreeSet<String>;
 type Result<T> = std::result::Result<T, RustBackendError>;
@@ -92,6 +92,7 @@ pub fn emit(
     output.push_str(include_str!("runtime_float.rs"));
     output.push_str(include_str!("runtime_list.rs"));
     output.push_str(include_str!("runtime_tuple.rs"));
+    output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
     let mut initialization = String::new();
@@ -294,7 +295,7 @@ impl Backend<'_> {
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
-            if let Some(dictionary) = self.tuple_dictionary(selected, scope)? {
+            if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
             }
@@ -608,7 +609,7 @@ impl Backend<'_> {
                         arguments.len(),
                         evidence,
                         deferred_evidence_parameters,
-                    ) || tuples::closed_tuple_partial(
+                    ) || display::closed_display_partial(
                         self.module,
                         callee,
                         arguments.len(),

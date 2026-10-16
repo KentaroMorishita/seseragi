@@ -1,7 +1,7 @@
 use super::*;
 
 impl Backend<'_> {
-    pub(super) fn tuple_dictionary(
+    pub(super) fn structural_display_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
         scope: &Scope,
@@ -14,11 +14,38 @@ impl Backend<'_> {
         else {
             return Ok(None);
         };
-        let method = match identity.as_str() {
-            "std/tuple::Show" => "Show",
-            "std/tuple::Debug" => "Debug",
+        let (method, array) = match identity.as_str() {
+            "std/tuple::Show" => ("Show", false),
+            "std/tuple::Debug" => ("Debug", false),
+            "std/array::Show" => ("Show", true),
+            "std/array::Debug" => ("Debug", true),
             _ => return Ok(None),
         };
+        if array {
+            let ([element], [child]) = (type_arguments.as_slice(), evidence_arguments.as_slice())
+            else {
+                return Err("Rust backend: invalid canonical Array display evidence arity".into());
+            };
+            let [ty] = selected.constraint.arguments.as_slice() else {
+                return Err(
+                    "Rust backend: invalid canonical Array display constraint arity".into(),
+                );
+            };
+            if !array_element(ty).is_some_and(|ty| ty == element)
+                || !lists::standard_trait(selected, method, ty)
+                || !lists::standard_trait(child, method, element)
+            {
+                return Err(
+                    "Rust backend: invalid canonical Array display identity or child".into(),
+                );
+            }
+            self.validate_display_child(child, method)?;
+            let children = self.evidence(evidence_arguments, scope)?;
+            return Ok(Some(format!(
+                "native_array_display_dictionary(({children}).remove(0), {})",
+                method == "Debug"
+            )));
+        }
         // Structural identity comes from CoreType::Tuple, never a named type's
         // spelling or an inspection of the runtime value.
         let [tuple @ CoreType::Tuple { elements }] = type_arguments.as_slice() else {
@@ -48,17 +75,17 @@ impl Backend<'_> {
 
     fn validate_display_child(&self, child: &CoreCallEvidence, method: &str) -> Result<()> {
         let [ty] = child.constraint.arguments.as_slice() else {
-            return Err("Rust backend: tuple child constraint arity mismatch".into());
+            return Err("Rust backend: display child constraint arity mismatch".into());
         };
         if !lists::standard_trait(child, method, ty) {
-            return Err("Rust backend: tuple child trait identity mismatch".into());
+            return Err("Rust backend: display child trait identity mismatch".into());
         }
         match &child.evidence {
             CoreInstanceEvidence::Parameter { index } => {
                 let constraint = self
                     .dictionary_constraints
                     .get(*index)
-                    .ok_or("Rust backend: tuple child dictionary parameter out of scope")?;
+                    .ok_or("Rust backend: display child dictionary parameter out of scope")?;
                 if constraint.name != method
                     || constraint.arguments != child.constraint.arguments
                     || constraint
@@ -66,7 +93,7 @@ impl Backend<'_> {
                         .as_deref()
                         .is_some_and(|id| id != format!("std/prelude::{method}"))
                 {
-                    return Err("Rust backend: tuple child dictionary parameter mismatch".into());
+                    return Err("Rust backend: display child dictionary parameter mismatch".into());
                 }
             }
             CoreInstanceEvidence::Local {
@@ -85,7 +112,7 @@ impl Backend<'_> {
                     .instances
                     .iter()
                     .find(|i| &i.identity == identity)
-                    .ok_or("Rust backend: unknown tuple child dictionary")?;
+                    .ok_or("Rust backend: unknown display child dictionary")?;
                 let owner = &self.owners[identity];
                 let trait_identity = format!("std/prelude::{method}");
                 if !identity.starts_with(&format!("{trait_identity}<"))
@@ -94,7 +121,7 @@ impl Backend<'_> {
                     || evidence_arguments.len() != instance.constraints.len()
                 {
                     return Err(
-                        "Rust backend: tuple child instance identity or arity mismatch".into(),
+                        "Rust backend: display child instance identity or arity mismatch".into(),
                     );
                 }
                 let substitutions = instance
@@ -115,7 +142,7 @@ impl Backend<'_> {
                     })
                     .map(|(name, ty)| ty.map(|ty| (name, ty)))
                     .collect::<Option<BTreeMap<_, _>>>()
-                    .ok_or("Rust backend: unproven tuple child type argument")?;
+                    .ok_or("Rust backend: unproven display child type argument")?;
                 let actual = instance
                     .arguments
                     .iter()
@@ -130,7 +157,7 @@ impl Backend<'_> {
                     })
                     .collect::<Option<Vec<_>>>();
                 if actual.is_none() || actual != expected {
-                    return Err(format!("Rust backend: tuple child instance type mismatch {identity}: {actual:?} != {expected:?}").into());
+                    return Err(format!("Rust backend: display child instance type mismatch {identity}: {actual:?} != {expected:?}").into());
                 }
                 for (constraint, argument) in instance.constraints.iter().zip(evidence_arguments) {
                     let actual = constraint
@@ -157,7 +184,7 @@ impl Backend<'_> {
                                     identity != format!("std/prelude::{method}")
                                 }))
                     {
-                        return Err("Rust backend: tuple child dependency mismatch".into());
+                        return Err("Rust backend: display child dependency mismatch".into());
                     }
                     // Only Show/Debug children belong to this display proof.
                     // Other checked constraints use the existing evidence path.
@@ -180,8 +207,8 @@ impl Backend<'_> {
 
 // Compare selected user instance arguments in their defining module with the
 // call site's canonical types, after substituting its checked type arguments.
-// Instance templates use declaration scope; checked call-site Named scalars
-// denote prelude types, and shadowing nominal types retain ExternalNamed identity.
+// Instance templates use declaration scope; checked call-site Named standard
+// types denote prelude types, and nominal shadows retain ExternalNamed identity.
 fn canonical_type(
     ty: &CoreType,
     owner: &str,
@@ -205,11 +232,22 @@ fn canonical_type(
                 }
                 bound
             } else {
-                let primitive = matches!(
+                let prelude = matches!(
                     name.as_str(),
-                    "Unit" | "Int" | "Bool" | "String" | "Char" | "Float"
+                    "Unit"
+                        | "Int"
+                        | "Bool"
+                        | "String"
+                        | "Char"
+                        | "Float"
+                        | "List"
+                        | "Array"
+                        | "Maybe"
+                        | "Either"
+                        | "Ref"
+                        | "Effect"
                 );
-                let name = if !declaration_scope && primitive {
+                let name = if !declaration_scope && prelude {
                     format!("std/prelude::{name}")
                 } else if let Some(canonical) = type_names.get(&(owner.to_owned(), name.clone())) {
                     canonical.clone()
@@ -270,7 +308,23 @@ fn canonical_type(
     })
 }
 
-pub(super) fn closed_tuple_partial(
+fn array_element(ty: &CoreType) -> Option<&CoreType> {
+    let arguments = match ty {
+        CoreType::Named { name, arguments } if name == "Array" => arguments,
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/prelude::Array" => arguments,
+        _ => return None,
+    };
+    let [element] = arguments.as_slice() else {
+        return None;
+    };
+    Some(element)
+}
+
+pub(super) fn closed_display_partial(
     module: &CoreModule,
     callee: &str,
     arguments: usize,
@@ -294,7 +348,7 @@ pub(super) fn closed_tuple_partial(
     let Some(function) = module.functions.iter().find(|f| f.symbol == callee) else {
         return false;
     };
-    // Bind only a complete, closed tuple dictionary before a fixed remaining
+    // Bind only a complete, closed display dictionary before a fixed remaining
     // source arrow. Future arguments cannot select evidence or its staging.
     !function.is_effect && arguments < function.parameters.len()
         && function.parameters.len() - arguments == deferred.len()
@@ -303,5 +357,5 @@ pub(super) fn closed_tuple_partial(
         })
         && !evidence.is_empty() && evidence.len() == function.constraints.len()
         && evidence.iter().all(|selected| closed(selected) && matches!(&selected.evidence,
-            CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/tuple::Show" | "std/tuple::Debug")))
+            CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/tuple::Show" | "std/tuple::Debug" | "std/array::Show" | "std/array::Debug")))
 }

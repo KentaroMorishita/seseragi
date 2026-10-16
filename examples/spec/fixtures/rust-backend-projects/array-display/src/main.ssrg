@@ -1,0 +1,22 @@
+import { Box, Label, Float as ForeignFloat, BoxedFloat } from "model"
+import * as view from "./view"
+import * as refs from "std/ref"
+
+pub fn probe -> Array<String> = {
+  let nominal: ForeignFloat = BoxedFloat 20
+  [
+    view.render (Box (Label 42)),
+    view.higher (Box 7),
+    debug [Box (Label 3), Box (Label 4)],
+    show [(`[(Box (Label 5), False)], True)],
+    show [nominal, BoxedFloat 21]
+  ]
+}
+
+pub effect fn main = do {
+  println (view.render (Box (Label 42)))
+  saved <- refs.make (view.retain (Box (Label 6)))
+  display <- refs.get saved
+  println (display 8)
+  println (show [BoxedFloat 21, BoxedFloat 22])
+}

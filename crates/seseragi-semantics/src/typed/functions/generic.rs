@@ -200,6 +200,28 @@ pub(crate) fn evidence_type(value: &SemanticValueType) -> TypedType {
                 name,
                 arguments: actual_arguments,
             },
+            SemanticTypeKey::NamedGeneric {
+                name: inferred,
+                arguments,
+            },
+        ) if name == "Array"
+            && inferred == name
+            && actual_arguments.len() == 1
+            && arguments.len() == 1 =>
+        {
+            // This identity comes from the inferred collection, not a lexical
+            // relookup of an instance head or a same-named type parameter.
+            TypedType::ExternalNamed {
+                name: name.clone(),
+                canonical: "std/prelude::Array".into(),
+                arguments: evidence_arguments(actual_arguments, arguments),
+            }
+        }
+        (
+            TypedType::Named {
+                name,
+                arguments: actual_arguments,
+            },
             SemanticTypeKey::Adt { arguments, .. }
             | SemanticTypeKey::Struct { arguments, .. }
             | SemanticTypeKey::NamedGeneric { arguments, .. },

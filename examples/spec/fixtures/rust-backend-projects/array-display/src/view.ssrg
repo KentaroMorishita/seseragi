@@ -1,0 +1,5 @@
+pub fn render<A> value: A -> String where Show<A> = show [value, value]
+
+pub fn higher<F<_>> value: F<Int> -> String where Show<F<Int>> = show [value]
+
+pub fn retain<A> value: A -> (Int -> String) where Show<A> = \n -> show [(value, n)]

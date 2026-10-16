@@ -598,6 +598,9 @@ fn contextual_standard_type_ref(
     if let Some(primitive) = canonical_primitive_type_ref(type_ref) {
         return primitive;
     }
+    if let Some(array) = canonical_array_type_ref(type_ref) {
+        return array;
+    }
     let (name, arguments) = match type_ref {
         TypedType::Named { name, arguments }
         | TypedType::ExternalNamed {
@@ -643,7 +646,7 @@ pub(super) fn select_standard_instance(
     let constraint = if constraint
         .arguments
         .iter()
-        .any(|argument| canonical_primitive_type_ref(argument).is_some())
+        .any(|argument| canonical_abi_type_ref(argument).is_some())
     {
         canonical_constraint = TypedConstraint {
             name: constraint.name.clone(),
@@ -651,7 +654,7 @@ pub(super) fn select_standard_instance(
                 .arguments
                 .iter()
                 .map(|argument| {
-                    canonical_primitive_type_ref(argument).unwrap_or_else(|| argument.clone())
+                    canonical_abi_type_ref(argument).unwrap_or_else(|| argument.clone())
                 })
                 .collect(),
         };
@@ -730,7 +733,26 @@ fn canonical_primitive_type_ref(type_ref: &TypedType) -> Option<TypedType> {
         })
 }
 
-/// Retain canonical primitive evidence only where a lexical relookup would
+fn canonical_array_type_ref(type_ref: &TypedType) -> Option<TypedType> {
+    let TypedType::ExternalNamed {
+        canonical,
+        arguments,
+        ..
+    } = type_ref
+    else {
+        return None;
+    };
+    (canonical == "std/prelude::Array" && arguments.len() == 1).then(|| TypedType::Named {
+        name: "Array".into(),
+        arguments: arguments.clone(),
+    })
+}
+
+fn canonical_abi_type_ref(type_ref: &TypedType) -> Option<TypedType> {
+    canonical_primitive_type_ref(type_ref).or_else(|| canonical_array_type_ref(type_ref))
+}
+
+/// Retain canonical scalar/Array evidence where a lexical relookup would
 /// change its already inferred identity. Ordinary programs keep their existing
 /// typed evidence shape. The caller must supply identity-encoded evidence types,
 /// never infer a primitive from a bare display name here.
@@ -738,6 +760,39 @@ pub(crate) fn preserve_evidence_identity(
     type_ref: &TypedType,
     resolution: &TypedResolution<'_>,
 ) -> TypedType {
+    if let Some(array) = canonical_array_type_ref(type_ref) {
+        let shadowed = resolution.resolved().symbols.iter().any(|symbol| {
+            symbol.kind == crate::SymbolKind::TypeParameter && symbol.spelling == "Array"
+        });
+        let ordinary = !shadowed
+            && matches!(resolution.semantic_value_from_typed_type(&array).key,
+            super::semantic_types::SemanticTypeKey::NamedGeneric { name, .. } if name == "Array");
+        let arguments = match &array {
+            TypedType::Named { arguments, .. } => arguments
+                .iter()
+                .map(|ty| preserve_evidence_identity(ty, resolution))
+                .collect(),
+            _ => unreachable!(),
+        };
+        return if ordinary {
+            TypedType::Named {
+                name: "Array".into(),
+                arguments,
+            }
+        } else {
+            let TypedType::ExternalNamed {
+                name, canonical, ..
+            } = type_ref
+            else {
+                unreachable!()
+            };
+            TypedType::ExternalNamed {
+                name: name.clone(),
+                canonical: canonical.clone(),
+                arguments,
+            }
+        };
+    }
     if let Some(primitive) = canonical_primitive_type_ref(type_ref) {
         let parameter_shadow = matches!(&primitive, TypedType::Named {name, ..} if resolution.resolved().symbols.iter().any(|symbol| symbol.kind == crate::SymbolKind::TypeParameter && symbol.spelling == *name));
         return if !parameter_shadow

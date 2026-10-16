@@ -469,9 +469,11 @@ fn match_instance(
         return None;
     }
 
+    // Keep declaration owners when matching a head. A local nominal Array<A>
+    // must not match the prelude Array type inferred for a literal.
     let templates = arguments
         .iter()
-        .map(typed_type_from_type_ref)
+        .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref)
         .collect::<Vec<_>>();
     let matching_templates = templates
         .iter()
