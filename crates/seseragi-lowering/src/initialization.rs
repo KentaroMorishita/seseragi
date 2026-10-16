@@ -3,6 +3,27 @@
 use crate::CoreModule;
 use std::collections::{BTreeMap, BTreeSet};
 
+/// Whether importing this checked module must retain a runtime initialization
+/// edge. Summaries are accumulated in checking order. Missing source summaries
+/// stay conservative; task-only foreign wrappers do not eagerly load a host.
+pub fn core_module_requires_initialization(
+    module: &CoreModule,
+    dependencies: &BTreeMap<String, bool>,
+) -> bool {
+    !module.bindings.is_empty()
+        || module
+            .foreign_modules
+            .iter()
+            .any(|foreign| foreign.pure_load)
+        || module.module_dependencies.iter().any(|dependency| {
+            !dependency.module.starts_with("std/")
+                && dependencies
+                    .get(&dependency.module)
+                    .copied()
+                    .unwrap_or(true)
+        })
+}
+
 /// Canonical, once-only postorder for the source modules reachable from entry.
 /// Runtime-provided standard modules are outside this source graph. Duplicate,
 /// missing or cyclic source identities cannot establish an initialization order.
@@ -98,5 +119,50 @@ mod tests {
         assert!(core_module_initialization_order(&[&a, &a, &shared], "a").is_none());
         let cycle = module("shared", &["a"]);
         assert!(core_module_initialization_order(&[&a, &cycle], "a").is_none());
+    }
+
+    #[test]
+    fn initialization_summaries_preserve_values_and_pure_load_but_not_task_load() {
+        let mut inert = module("inert", &[]);
+        assert!(!core_module_requires_initialization(
+            &inert,
+            &BTreeMap::new()
+        ));
+        inert.foreign_modules.push(crate::CoreForeignModule {
+            visibility: seseragi_syntax::Visibility::Public,
+            language: "typescript".into(),
+            specifier: "fixture-api".into(),
+            pure_load: false,
+            members: vec![],
+            origin: SourceSpan {
+                source: "inert.ssrg".into(),
+                start: 0,
+                end: 1,
+            },
+        });
+        assert!(!core_module_requires_initialization(
+            &inert,
+            &BTreeMap::new()
+        ));
+        inert.foreign_modules[0].pure_load = true;
+        assert!(core_module_requires_initialization(
+            &inert,
+            &BTreeMap::new()
+        ));
+        let values = crate::lower_typed_module(seseragi_semantics::type_module(
+            "values",
+            "let unused: Int = 9007199254740991 + 1\n",
+        ));
+        assert!(core_module_requires_initialization(
+            &values,
+            &BTreeMap::new()
+        ));
+        let facade = module("facade", &["inert", "values", "std/int"]);
+        let mut summaries = BTreeMap::from([("inert".into(), false), ("values".into(), false)]);
+        assert!(!core_module_requires_initialization(&facade, &summaries));
+        summaries.insert("values".into(), true);
+        assert!(core_module_requires_initialization(&facade, &summaries));
+        summaries.remove("values");
+        assert!(core_module_requires_initialization(&facade, &summaries));
     }
 }

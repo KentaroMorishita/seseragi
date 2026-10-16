@@ -20,6 +20,8 @@ mod outputs;
 mod validation;
 
 #[cfg(test)]
+mod initialization_tests;
+#[cfg(test)]
 mod package_scope_tests;
 #[cfg(test)]
 mod provider_resolution_tests;
@@ -239,6 +241,7 @@ fn compile_project_inner(
         .map_err(|diagnostic| ProjectCompileError::Provider { diagnostic })?;
 
     let mut compiled: BTreeMap<String, CompiledModule> = BTreeMap::new();
+    let mut initialization_requirements = BTreeMap::new();
     for module in &order {
         let input = inputs.get(module).expect("graph input was validated");
         // Inferred public contracts can carry a nominal type from a transitive
@@ -252,7 +255,8 @@ fn compile_project_inner(
             .map_err(|error| ProjectCompileError::OutputPlan {
                 module: module.clone(),
                 error,
-            })?;
+            })?
+            .with_initialization_requirements(initialization_requirements.clone());
         let output_paths = generated_output_paths(&input.output_path).map_err(|error| {
             ProjectCompileError::OutputPlan {
                 module: module.clone(),
@@ -275,6 +279,13 @@ fn compile_project_inner(
             module: module.clone(),
             error: LinkedCompileError::TypeScriptPlan(error),
         })?;
+        initialization_requirements.insert(
+            module.clone(),
+            seseragi_lowering::core_module_requires_initialization(
+                &compiled_module.core_ir,
+                &initialization_requirements,
+            ),
+        );
         compiled.insert(module.clone(), compiled_module);
     }
 

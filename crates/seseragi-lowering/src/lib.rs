@@ -12,7 +12,7 @@ mod emit;
 mod equality_ops;
 mod initialization;
 mod int_ops;
-pub use initialization::core_module_initialization_order;
+pub use initialization::{core_module_initialization_order, core_module_requires_initialization};
 mod iterator_ops;
 mod json_ops;
 mod list_ops;

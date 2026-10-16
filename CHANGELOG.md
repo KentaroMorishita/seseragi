@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- Preserve source-import initialization order independently of type checking, and keep eager initializers and unused import edges during TypeScript application pruning so Defects cannot disappear (#839).
+- Preserve source-import initialization order independently of type checking, and keep eager initializers and unused import edges during TypeScript application pruning so Defects cannot disappear. Use checked CoreIr summaries to preserve task-only foreign modules' lazy loading when imports use only types (#844).
 - Preserve canonical identity when calling monomorphic imported function values, including namespace and renamed imports, in the shared frontend for both TypeScript and Rust (#839).
 - Report TypeScript process application initialization failures as runtime Defects with exit 70 and text / JSON diagnostics, before entry or provider setup. Keep seed initialization order and literal dynamic imports for normal and bundled execution (#841).
 

@@ -55,9 +55,10 @@ pub(super) fn lower_module_imports(
                     reexports: Vec::new(),
                     module: dependency.module.clone(),
                     specifier: specifier.to_owned(),
-                    // Even an unused named import initializes its source module.
-                    // Pure top-level initializers can still raise a Defect.
-                    runtime_edge: true,
+                    // Unused imports still initialize source values/pure hosts.
+                    // A checked inert module (including task-only bindings)
+                    // needs no eager edge when only its types are used.
+                    runtime_edge: plan.requires_initialization(&dependency.module),
                     bindings: Vec::new(),
                     origin: dependency.origin.clone(),
                 });
@@ -68,7 +69,6 @@ pub(super) fn lower_module_imports(
         for import in &dependency.imports {
             if let Some(exported) = &import.reexported_as {
                 if matches!(import.namespace.as_str(), "value" | "type") {
-                    group.runtime_edge |= import.namespace == "type";
                     push_reexport(
                         group,
                         TypeScriptSourceImportBinding {
@@ -149,7 +149,6 @@ pub(super) fn lower_module_imports(
                     );
                 }
                 "type" if referenced_types.names.contains(&import.local) => {
-                    group.runtime_edge = true;
                     let local = safe_identifier(&import.local);
                     if !used_types.insert(local.clone())
                         && !group.bindings.iter().any(|binding| {

@@ -137,7 +137,13 @@ pub fn retain_application(
     // from callable reachability; "pure" does not imply "cannot Defect".
     let mut initialization_modules = modules
         .iter()
-        .filter(|(_, module)| !module.bindings.is_empty() || !module.foreign_modules.is_empty())
+        .filter(|(_, module)| {
+            !module.bindings.is_empty()
+                || module
+                    .foreign_modules
+                    .iter()
+                    .any(|foreign| foreign.pure_load)
+        })
         .map(|(id, _)| id.clone())
         .collect::<BTreeSet<_>>();
     loop {
