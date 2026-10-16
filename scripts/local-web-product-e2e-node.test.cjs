@@ -57,6 +57,10 @@ test("uses one private verified SDK install for the installed-product journey", 
         config.project
       )
       assert(options.launchArgs.includes(config.project))
+      await fs.writeFile(
+        path.join(config.output, "report.json"),
+        JSON.stringify({ schema: 1, result: "passed" })
+      )
     },
   })
   assert.deepEqual(calls, ["download", "install", "journey"])
@@ -114,4 +118,31 @@ test("propagates product assertion failures after a valid download", async (t) =
   )
   assert.equal(report.downloadCompleted, true)
   assert.equal(report.journeyCompleted, false)
+})
+
+test("does not accept an SDK exit without a passing product report", async (t) => {
+  for (const product of [undefined, { schema: 1, result: "failed" }]) {
+    const config = await fixture(t)
+    await assert.rejects(
+      runProductJourney(config, {
+        async downloadAndUnzipVSCode(options) {
+          return path.join(options.cachePath, "code")
+        },
+        async runVSCodeCommand() {},
+        async runTests() {
+          if (product) {
+            await fs.writeFile(
+              path.join(config.output, "report.json"),
+              JSON.stringify(product)
+            )
+          }
+        },
+      })
+    )
+    const report = JSON.parse(
+      await fs.readFile(path.join(config.output, "provisioning.json"), "utf8")
+    )
+    assert.equal(report.downloadCompleted, true)
+    assert.equal(report.journeyCompleted, false)
+  }
 })

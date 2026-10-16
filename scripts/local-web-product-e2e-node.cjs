@@ -19,8 +19,8 @@ async function runProductJourney(config, sdk) {
   }
   const save = () =>
     fs.writeFile(receipt, `${JSON.stringify(report, null, 2)}\n`)
-  await save()
   try {
+    await save()
     let vscodeExecutablePath = await sdk.downloadAndUnzipVSCode({
       version: config.vscodeVersion,
       cachePath,
@@ -87,6 +87,12 @@ async function runProductJourney(config, sdk) {
       ],
       vscodeExecutablePath,
     })
+    const product = JSON.parse(
+      await fs.readFile(path.join(config.output, "report.json"), "utf8")
+    )
+    if (product.schema !== 1 || product.result !== "passed") {
+      throw new Error("Extension Host did not produce a passing product report")
+    }
     report.journeyCompleted = true
     await save()
     return report
