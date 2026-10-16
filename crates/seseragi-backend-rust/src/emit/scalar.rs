@@ -29,7 +29,7 @@ impl Backend<'_> {
             ));
             snapshots.push_str(&format!("let {} = {slot};", id(&parameter.id)));
         }
-        let body = self.scalar_tail(&function.body, &slots, plan.result)?;
+        let body = self.scalar_tail(&function.body, &slots, plan)?;
         self.self_tail_calls += plan.self_tail_calls;
         // V parameters/return and the generated curried wrappers keep their
         // ABI. Only the private saturated body uses immediate Rust scalars.
@@ -40,7 +40,7 @@ impl Backend<'_> {
         &mut self,
         expr: &CoreExpr,
         slots: &[String],
-        result: CoreScalarKind,
+        plan: &CoreScalarTailLoop,
     ) -> Result<String> {
         match expr {
             CoreExpr::If {
@@ -50,9 +50,9 @@ impl Backend<'_> {
                 ..
             } => Ok(format!(
                 "if {} {{ {} }} else {{ {} }}",
-                self.scalar_expr(condition)?,
-                self.scalar_tail(then_branch, slots, result)?,
-                self.scalar_tail(else_branch, slots, result)?,
+                self.scalar_expr(condition, plan)?,
+                self.scalar_tail(then_branch, slots, plan)?,
+                self.scalar_tail(else_branch, slots, plan)?,
             )),
             // The shared analysis has excluded all calls except saturated self
             // calls at this exact tail position, with no hidden evidence.
@@ -63,7 +63,7 @@ impl Backend<'_> {
                     let temporary = self.fresh();
                     output.push_str(&format!(
                         "let {temporary} = {};",
-                        self.scalar_expr(argument)?
+                        self.scalar_expr(argument, plan)?
                     ));
                     next.push(temporary);
                 }
@@ -75,13 +75,13 @@ impl Backend<'_> {
             }
             _ => Ok(format!(
                 "return V::{}({});",
-                scalar_tag(result),
-                self.scalar_expr(expr)?
+                scalar_tag(plan.result),
+                self.scalar_expr(expr, plan)?
             )),
         }
     }
 
-    fn scalar_expr(&mut self, expr: &CoreExpr) -> Result<String> {
+    fn scalar_expr(&mut self, expr: &CoreExpr, plan: &CoreScalarTailLoop) -> Result<String> {
         Ok(match expr {
             CoreExpr::Integer { value, .. } => format!(
                 "{}_i64",
@@ -90,10 +90,20 @@ impl Backend<'_> {
                     .map_err(|_| "Rust backend: invalid scalar integer")?
             ),
             CoreExpr::Boolean { value, .. } => value.to_string(),
-            CoreExpr::Variable { name, .. } => id(name),
+            CoreExpr::Variable { name, .. } => match plan.global_reads.get(name) {
+                Some(read) => {
+                    // Do not hoist or inline: an initializer may call this
+                    // function before the global exists. Untaken branches
+                    // must not read it, and get_global keeps that Defect.
+                    let value = self.reference(&read.symbol, &[], &Scope::new())?;
+                    let tag = scalar_tag(read.kind);
+                    format!("{{ let V::{tag}(value) = {value} else {{ panic!(\"Rust ABI: expected {tag}\") }}; value }}")
+                }
+                None => id(name),
+            },
             CoreExpr::Unary { operand, .. } => format!(
                 "checked_int_value(({}).checked_neg().expect(\"Int overflow\"))",
-                self.scalar_expr(operand)?
+                self.scalar_expr(operand, plan)?
             ),
             CoreExpr::Binary {
                 operator,
@@ -103,8 +113,8 @@ impl Backend<'_> {
             } => {
                 let a = self.fresh();
                 let b = self.fresh();
-                let left = self.scalar_expr(left)?;
-                let right = self.scalar_expr(right)?;
+                let left = self.scalar_expr(left, plan)?;
+                let right = self.scalar_expr(right, plan)?;
                 let operation = match operator.as_str() {
                     "+" => "int_add_value",
                     "-" => "int_subtract_value",
@@ -123,9 +133,9 @@ impl Backend<'_> {
                 ..
             } => format!(
                 "if {} {{ {} }} else {{ {} }}",
-                self.scalar_expr(condition)?,
-                self.scalar_expr(then_branch)?,
-                self.scalar_expr(else_branch)?,
+                self.scalar_expr(condition, plan)?,
+                self.scalar_expr(then_branch, plan)?,
+                self.scalar_expr(else_branch, plan)?,
             ),
             _ => return Err("Rust backend: invalid certified scalar expression".into()),
         })

@@ -118,3 +118,163 @@ fn requires_exact_source_arity_and_direct_unstaged_self_calls() {
         assert!(scalar_self_tail_loop(&input).is_none());
     }
 }
+
+fn global_module(path: &str) -> CoreModule {
+    crate::lower_typed_module(seseragi_semantics::type_module(
+        path,
+        &format!(
+            "let increment: Int = 3\n{}",
+            SUM.replace("total + remaining", "total + increment")
+        ),
+    ))
+}
+
+fn global_operand(function: &mut CoreFunction) -> &mut CoreExpr {
+    let CoreExpr::If { else_branch, .. } = &mut function.body else {
+        panic!()
+    };
+    let CoreExpr::Call { arguments, .. } = &mut **else_branch else {
+        panic!()
+    };
+    let CoreExpr::Binary { right, .. } = &mut arguments[1] else {
+        panic!()
+    };
+    right
+}
+
+#[test]
+fn certifies_literal_globals_without_rewriting_the_read_or_initializer() {
+    let module = global_module("scalar/main.ssrg");
+    let before = module.clone();
+    let facts = CoreScalarGlobals::from_modules([&module]);
+    let function = &module.functions[0];
+    assert!(scalar_self_tail_loop(function).is_none());
+    let plan = scalar_self_tail_loop_with_globals(function, &module.module, &facts).unwrap();
+    assert_eq!(plan.global_reads.len(), 1);
+    let read = plan.global_reads.values().next().unwrap();
+    assert_eq!(read.symbol, module.bindings[0].symbol);
+    assert_eq!(read.kind, CoreScalarKind::Int);
+    assert_eq!(module, before);
+}
+
+#[test]
+fn canonical_global_owner_and_lexical_parameter_take_precedence_over_spelling() {
+    let module = global_module("scalar/main.ssrg");
+    let other = global_module("other/lib.ssrg");
+    let facts = CoreScalarGlobals::from_modules([&module, &other]);
+    let mut f = module.functions[0].clone();
+    let CoreExpr::Variable { name, .. } = global_operand(&mut f) else {
+        panic!()
+    };
+    *name = other.bindings[0].symbol.clone();
+    let proof = scalar_self_tail_loop_with_globals(&f, &module.module, &facts).unwrap();
+    assert_eq!(
+        proof.global_reads.values().next().unwrap().symbol,
+        other.bindings[0].symbol
+    );
+    assert!(scalar_self_tail_loop_with_globals(&f, &other.module, &facts).is_none());
+    assert!(scalar_self_tail_loop_with_globals(
+        &f,
+        &module.module,
+        &CoreScalarGlobals::from_modules([&module])
+    )
+    .is_none());
+
+    let shadow = crate::lower_typed_module(seseragi_semantics::type_module("scalar/shadow.ssrg", "let increment: Int = 3\nfn sum remaining: Int -> increment: Int -> Int = if remaining == 0 then increment else sum (remaining - 1) (increment + remaining)\n"));
+    let plan = scalar_self_tail_loop_with_globals(
+        &shadow.functions[0],
+        &shadow.module,
+        &CoreScalarGlobals::from_modules([&shadow]),
+    )
+    .unwrap();
+    assert!(plan.global_reads.is_empty());
+}
+
+#[test]
+fn unproved_duplicate_polymorphic_and_invalid_global_declarations_do_not_certify() {
+    let module = global_module("scalar/main.ssrg");
+    assert!(scalar_self_tail_loop_with_globals(
+        &module.functions[0],
+        &module.module,
+        &CoreScalarGlobals::from_modules([&module, &module])
+    )
+    .is_none());
+    for mutation in 0..4 {
+        let mut changed = module.clone();
+        match mutation {
+            0 => changed.bindings[0].symbol = "wrong/owner::increment".into(),
+            1 => {
+                changed.bindings[0].type_parameters =
+                    function("fn id<A> value: A -> A = value\n").type_parameters
+            }
+            2 => {
+                let CoreExpr::Integer { value, .. } = &mut changed.bindings[0].value else {
+                    panic!()
+                };
+                *value = "9007199254740992".into();
+            }
+            _ => changed.bindings[0].value = changed.functions[0].body.clone(),
+        }
+        assert!(
+            scalar_self_tail_loop_with_globals(
+                &changed.functions[0],
+                &changed.module,
+                &CoreScalarGlobals::from_modules([&changed])
+            )
+            .is_none(),
+            "mutation={mutation}"
+        );
+    }
+}
+
+#[test]
+fn global_facts_do_not_bypass_nominal_identity_evidence_or_source_arity() {
+    let module = global_module("scalar/main.ssrg");
+    let facts = CoreScalarGlobals::from_modules([&module]);
+    for mutation in 0..4 {
+        let mut f = module.functions[0].clone();
+        if mutation == 0 {
+            let CoreExpr::Variable { type_ref, .. } = global_operand(&mut f) else {
+                panic!()
+            };
+            *type_ref = CoreType::ExternalNamed {
+                name: "Int".into(),
+                canonical: "user::Int".into(),
+                arguments: vec![],
+            };
+        } else if mutation == 1 {
+            let CoreExpr::If { condition, .. } = &f.body else {
+                panic!()
+            };
+            let CoreExpr::Binary { evidence, .. } = &**condition else {
+                panic!()
+            };
+            let selected = evidence.clone();
+            let CoreExpr::Variable { evidence, .. } = global_operand(&mut f) else {
+                panic!()
+            };
+            *evidence = selected;
+        } else {
+            let CoreExpr::If { else_branch, .. } = &mut f.body else {
+                panic!()
+            };
+            let CoreExpr::Call {
+                arguments,
+                deferred_evidence_parameters,
+                ..
+            } = &mut **else_branch
+            else {
+                panic!()
+            };
+            if mutation == 2 {
+                arguments.pop();
+            } else {
+                deferred_evidence_parameters.push(CoreType::Hole);
+            }
+        }
+        assert!(
+            scalar_self_tail_loop_with_globals(&f, &module.module, &facts).is_none(),
+            "mutation={mutation}"
+        );
+    }
+}

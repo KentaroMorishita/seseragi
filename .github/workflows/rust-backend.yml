@@ -92,7 +92,10 @@ jobs:
           cargo fmt --all -- --check
           rustfmt --edition 2021 --check crates/seseragi-backend-rust/src/runtime*.rs
       - name: Verify shared frontend boundary
-        run: cargo test --locked -p seseragi-driver --lib core_compile::tests
+        run: |
+          cargo test --locked -p seseragi-driver --lib core_compile::tests
+          cargo test --locked -p seseragi-lowering --lib core_analysis::scalar
+          cargo test --locked -p seseragi-driver --test scalar_globals
       - name: Verify native values, captures, dictionaries, and teardown
         run: cargo test --locked -p seseragi-backend-rust
       - name: Compare the CLI Rust target with TypeScript execution

@@ -223,6 +223,7 @@ pub struct TypeScriptOutputPlan {
     module_specifiers: BTreeMap<String, String>,
     instance_exports: BTreeMap<(String, String), String>,
     initialization_requirements: BTreeMap<String, bool>,
+    scalar_globals: crate::CoreScalarGlobals,
 }
 
 impl TypeScriptOutputPlan {
@@ -233,6 +234,7 @@ impl TypeScriptOutputPlan {
             module_specifiers: module_specifiers.into_iter().collect(),
             instance_exports: BTreeMap::new(),
             initialization_requirements: BTreeMap::new(),
+            scalar_globals: crate::CoreScalarGlobals::default(),
         }
     }
 
@@ -246,6 +248,13 @@ impl TypeScriptOutputPlan {
 
     pub fn specifier_for(&self, module: &str) -> Option<&str> {
         self.module_specifiers.get(module).map(String::as_str)
+    }
+
+    /// Literal scalar binding facts from the checked source graph. The target
+    /// keeps all declarations, initializer order and individual reads intact.
+    pub fn with_scalar_globals(mut self, globals: crate::CoreScalarGlobals) -> Self {
+        self.scalar_globals = globals;
+        self
     }
 
     /// Compiler-owned summaries of checked source modules. Without a proof of
@@ -706,6 +715,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     plan: &TypeScriptOutputPlan,
     options: &TypeScriptLoweringOptions,
 ) -> Result<TypeScriptModule, TypeScriptLoweringError> {
+    let scalar_globals = plan.scalar_globals.clone().with_module(&module);
     let mut module_imports = lower_module_imports(&module, plan)?;
     module_imports.type_names = module_imports
         .type_names
@@ -1003,7 +1013,12 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         .functions
         .into_iter()
         .map(|function| {
-            let scalar_tail_loop = crate::scalar_self_tail_loop(&function).is_some();
+            let scalar_tail_loop = crate::scalar_self_tail_loop_with_globals(
+                &function,
+                &module.module,
+                &scalar_globals,
+            )
+            .is_some();
             let scoped_types = module_imports
                 .type_names
                 .with_parameters(&function.type_parameters);

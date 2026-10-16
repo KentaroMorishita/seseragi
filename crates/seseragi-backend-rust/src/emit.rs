@@ -33,6 +33,7 @@ pub fn emit(
     module: &CoreModule,
     entry: &str,
     owners: &BTreeMap<String, String>,
+    scalar_globals: &seseragi_lowering::CoreScalarGlobals,
 ) -> Result<RustArtifact> {
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
@@ -40,6 +41,7 @@ pub fn emit(
     let mut backend = Backend {
         module,
         owners,
+        scalar_globals,
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
         globals: module
@@ -219,6 +221,7 @@ struct Backend<'a> {
     owner: &'a str,
     functions: BTreeSet<String>,
     globals: BTreeMap<String, usize>,
+    scalar_globals: &'a seseragi_lowering::CoreScalarGlobals,
     constructors: BTreeMap<String, bool>,
     serial: usize,
     direct_calls: usize,

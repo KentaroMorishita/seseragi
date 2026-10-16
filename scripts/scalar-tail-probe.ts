@@ -6,6 +6,7 @@ import ts from "typescript"
 // Execution probe for the canonical compiler fixture. Instrument copies only;
 // product shape checks below inspect the original emitted TypeScript.
 const input = process.argv[2]
+const globalMode = process.argv[3] === "globals"
 assert(input, "expected an emitted TypeScript module")
 const source = await Bun.file(input).text()
 const ast = ts.createSourceFile(input, source, ts.ScriptTarget.Latest, true)
@@ -38,6 +39,19 @@ function checkShape(node: ts.Node, insideLoop = false) {
 }
 checkShape(sum[0])
 assert.equal(loops, 1)
+if (globalMode) {
+  let reads = 0
+  function checkRead(node: ts.Node, insideLoop = false) {
+    const looping = insideLoop || ts.isWhileStatement(node)
+    if (ts.isIdentifier(node) && node.text === "increment") {
+      assert(looping, "global read moved outside its loop branch")
+      reads++
+    }
+    ts.forEachChild(node, (child) => checkRead(child, looping))
+  }
+  checkRead(sum[0])
+  assert.equal(reads, 1, "original global read was inlined or duplicated")
+}
 
 const program = ts.createProgram([input], {
   noEmit: true,
@@ -60,6 +74,34 @@ assert.equal(
 
 const edits: { start: number; end: number; text: string }[] = []
 const wrappers: string[] = []
+if (globalMode) {
+  // Instrument copies of the two bodies only. A trap lets us compare an
+  // untaken branch and a failed read without changing the product source.
+  for (const statement of ast.statements) {
+    if (!ts.isVariableStatement(statement)) continue
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        !ts.isIdentifier(declaration.name) ||
+        !["sum", "retained"].includes(declaration.name.text)
+      )
+        continue
+      function replaceRead(node: ts.Node) {
+        if (ts.isIdentifier(node) && node.text === "increment") {
+          edits.push({
+            start: node.getStart(ast),
+            end: node.end,
+            text: "$probeReadGlobal()",
+          })
+        }
+        ts.forEachChild(node, replaceRead)
+      }
+      replaceRead(declaration)
+    }
+  }
+  wrappers.push(
+    "let $probeReady = true; export const $probeSetReady = (value: boolean) => { $probeReady = value; }; const $probeReadGlobal = (): number => { $probeTrace.push(['global',0,0]); if (!$probeReady) throw new Error('uninitialized global'); return increment; };"
+  )
+}
 let importEnd = 0
 for (const statement of ast.statements) {
   if (!ts.isImportDeclaration(statement)) continue
@@ -93,7 +135,7 @@ for (const statement of ast.statements) {
 }
 assert.equal(
   wrappers.length,
-  3,
+  globalMode ? 4 : 3,
   "expected the three canonical primitive imports"
 )
 edits.push({
@@ -123,7 +165,7 @@ await Bun.write(
   harness,
   `
 import assert from "node:assert/strict";
-import { sum, retained, probe, $probeTakeTrace as trace } from ${JSON.stringify(pathToFileURL(module).href)};
+import { sum, retained, probe, $probeTakeTrace as trace ${globalMode ? ", $probeSetReady as ready" : ""} } from ${JSON.stringify(pathToFileURL(module).href)};
 const MAX = 9007199254740991;
 function observe(fn,n,seed) {
  trace(); let outcome;
@@ -132,21 +174,33 @@ function observe(fn,n,seed) {
  return { outcome, trace: trace() };
 }
 const cases = [];
+${
+  globalMode
+    ? `ready(false);
+for (const n of [0,1]) {
+ const actual = observe(sum,n,42), ordinary = observe(retained,n,42);
+ assert.deepEqual(actual,ordinary);
+ if(n===0) { assert.deepEqual(actual.outcome,{value:42}); assert(!actual.trace.some(x=>x[0]==='global')); }
+ else { assert(actual.outcome.defect); assert.equal(actual.trace.filter(x=>x[0]==='global').length,1); }
+}
+ready(true);`
+    : ""
+}
 for (let n=0;n<=10;n++) for(const seed of [0,1,MAX,MAX-1,-MAX,-MAX+1]) cases.push([n,seed]);
 cases.push([-MAX,0],[-MAX,-MAX],[-MAX,MAX]);
 for (const [n,seed] of cases) {
  const actual = observe(sum,n,seed), ordinary = observe(retained,n,seed);
  assert.deepEqual(actual,ordinary,JSON.stringify({n,seed}));
  if(n>=0) {
-  const exact = BigInt(seed)+BigInt(n)*BigInt(n+1)/2n;
+  const exact = BigInt(seed)+${globalMode ? "BigInt(n)*3n" : "BigInt(n)*BigInt(n+1)/2n"};
   if(exact>=-BigInt(MAX)&&exact<=BigInt(MAX)) assert.deepEqual(actual.outcome,{value:Number(exact)});
   else assert(actual.outcome.defect);
  } else {
   assert(actual.outcome.defect); assert.deepEqual(actual.trace.at(-1),["-",-MAX,1]);
  }
 }
-const partial=sum(40); assert.equal(partial(1),821); assert.equal(partial(2),822);
-assert.deepEqual(probe(undefined),[821,822,821,true,35,42,3628800]);
+const partial=sum(40); assert.equal(partial(1),${globalMode ? 121 : 821}); assert.equal(partial(2),${globalMode ? 122 : 822});
+assert.deepEqual(probe(undefined),${globalMode ? "[6,7,4,22,true]" : "[821,822,821,true,35,42,3628800]"});
 console.log(JSON.stringify({cases:cases.length,primitiveTraceAgrees:true,partialAndProbeAgree:true}));
 `
 )

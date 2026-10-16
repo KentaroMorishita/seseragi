@@ -1,0 +1,49 @@
+import * as remote from "model"
+import * as near from "./lib"
+import * as facade from "./facade"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+let increment: Int = 7
+
+fn own remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else own (remaining - 1) (total + increment)
+
+fn readRemote remaining: Int -> total: Int -> Int =
+  if remaining == 0 then
+    total
+  else
+    readRemote (remaining - 1) (total + remote.increment)
+
+fn byFacade remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else byFacade (remaining - 1) (total + facade.increment)
+
+effect fn announce -> Unit with Console fails ConsoleError = println "cold"
+let plan = announce ()
+
+pub fn probe -> (Int, Int, Int, Int, Int, Int, Int) = {
+  let partial = own 2
+  (
+    own 2 0,
+    near.local 2 0,
+    remote.imported 2 0,
+    readRemote 2 0,
+    byFacade 2 0,
+    partial 1,
+    partial 2
+  )
+}
+
+pub effect fn main = do {
+  let (a, b, c, d, e, f, g) = probe ()
+  println `(${a}, ${b}, ${c}, ${d}, ${e}, ${f}, ${g})`
+  plan
+  plan
+  cell <- refs.make 0
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) (\_: Unit -> refs.set (own 2 0) cell)
+    effects.succeed ()
+  }
+  released <- refs.get cell
+  println ("release: " + show released)
+}

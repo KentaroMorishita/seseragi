@@ -1,5 +1,5 @@
-use crate::{CoreExpr, CoreFunction, CoreInstanceEvidence, CoreType};
-use std::collections::BTreeMap;
+use crate::{CoreExpr, CoreFunction, CoreInstanceEvidence, CoreModule, CoreType};
+use std::collections::{BTreeMap, BTreeSet};
 
 #[cfg(test)]
 mod tests;
@@ -34,15 +34,98 @@ pub struct CoreScalarTailLoop {
     pub parameters: Vec<CoreScalarKind>,
     pub result: CoreScalarKind,
     pub self_tail_calls: usize,
+    /// Original CoreIr spelling -> proven canonical binding. This authorizes
+    /// scalar reads at their original position, never constant propagation or
+    /// moving reads ahead of a branch/module initializer.
+    pub global_reads: BTreeMap<String, CoreScalarGlobalRead>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CoreScalarGlobalRead {
+    pub symbol: String,
+    pub kind: CoreScalarKind,
+}
+
+/// Facts derived from checked declarations, before target type/evidence
+/// erasure. Deliberately limited to closed monomorphic Int/Bool literals.
+/// No values are copied into the certificate, so a target must still read the
+/// original global. Unknown/duplicate declarations cannot provide a proof.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct CoreScalarGlobals {
+    bindings: BTreeMap<String, CoreScalarKind>,
+    seen: BTreeSet<String>,
+}
+
+impl CoreScalarGlobals {
+    pub fn from_modules<'a>(modules: impl IntoIterator<Item = &'a CoreModule>) -> Self {
+        modules.into_iter().fold(Self::default(), Self::with_module)
+    }
+
+    /// Extend a checked project prefix without re-walking earlier modules.
+    pub fn with_module(mut self, module: &CoreModule) -> Self {
+        for binding in &module.bindings {
+            if !self.seen.insert(binding.symbol.clone()) {
+                self.bindings.remove(&binding.symbol);
+                continue;
+            }
+            if binding.symbol.rsplit_once("::").map(|(owner, _)| owner)
+                != Some(module.module.as_str())
+                || !binding.type_parameters.is_empty()
+            {
+                continue;
+            }
+            let kind = match &binding.value {
+                CoreExpr::Integer { value, .. } if safe_integer(value) => CoreScalarKind::Int,
+                CoreExpr::Boolean { .. } => CoreScalarKind::Bool,
+                _ => continue,
+            };
+            self.bindings.insert(binding.symbol.clone(), kind);
+        }
+        self
+    }
+
+    fn resolve(&self, owner: &str, name: &str) -> Option<CoreScalarGlobalRead> {
+        let symbol = if name.contains("::") {
+            name.to_owned()
+        } else {
+            format!("{owner}::{name}")
+        };
+        self.bindings.get(&symbol).map(|kind| CoreScalarGlobalRead {
+            symbol,
+            kind: *kind,
+        })
+    }
+}
+
+fn safe_integer(value: &str) -> bool {
+    value
+        .parse::<i64>()
+        .is_ok_and(|value| (-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value))
 }
 
 /// Recognizes a deliberately small pure slice before erasing type/evidence
 /// identity. Unknown shapes fall back to the backend's ordinary implementation.
 pub fn scalar_self_tail_loop(function: &CoreFunction) -> Option<CoreScalarTailLoop> {
+    scalar_self_tail_loop_with_globals(
+        function,
+        function
+            .symbol
+            .rsplit_once("::")
+            .map_or("", |(owner, _)| owner),
+        &CoreScalarGlobals::default(),
+    )
+}
+
+pub fn scalar_self_tail_loop_with_globals(
+    function: &CoreFunction,
+    owner: &str,
+    globals: &CoreScalarGlobals,
+) -> Option<CoreScalarTailLoop> {
     if function.is_effect
         || !function.type_parameters.is_empty()
         || !function.constraints.is_empty()
         || function.parameters.is_empty()
+        || function.symbol.rsplit_once("::").map(|(owner, _)| owner) != Some(owner)
     {
         return None;
     }
@@ -72,15 +155,20 @@ pub fn scalar_self_tail_loop(function: &CoreFunction) -> Option<CoreScalarTailLo
         parameters: &parameters,
         result,
         self_tail_calls: 0,
+        owner,
+        globals,
+        global_reads: BTreeMap::new(),
     };
     if analysis.expression(&function.body, true)? != result || analysis.self_tail_calls == 0 {
         return None;
     }
     let self_tail_calls = analysis.self_tail_calls;
+    let global_reads = analysis.global_reads;
     Some(CoreScalarTailLoop {
         parameters,
         result,
         self_tail_calls,
+        global_reads,
     })
 }
 
@@ -103,6 +191,9 @@ struct Analysis<'a> {
     parameters: &'a [CoreScalarKind],
     result: CoreScalarKind,
     self_tail_calls: usize,
+    owner: &'a str,
+    globals: &'a CoreScalarGlobals,
+    global_reads: BTreeMap<String, CoreScalarGlobalRead>,
 }
 
 impl Analysis<'_> {
@@ -110,15 +201,21 @@ impl Analysis<'_> {
         use CoreScalarKind::{Bool, Int};
         let kind = match expr {
             CoreExpr::Integer { value, .. } => {
-                let value = value.parse::<i64>().ok()?;
-                if !(-9_007_199_254_740_991..=9_007_199_254_740_991).contains(&value) {
+                if !safe_integer(value) {
                     return None;
                 }
                 Int
             }
             CoreExpr::Boolean { .. } => Bool,
             CoreExpr::Variable { name, evidence, .. } if evidence.is_empty() => {
-                *self.names.get(name.as_str())?
+                if let Some(kind) = self.names.get(name.as_str()) {
+                    *kind
+                } else {
+                    let read = self.globals.resolve(self.owner, name)?;
+                    let kind = read.kind;
+                    self.global_reads.insert(name.clone(), read);
+                    kind
+                }
             }
             CoreExpr::Unary {
                 operator, operand, ..

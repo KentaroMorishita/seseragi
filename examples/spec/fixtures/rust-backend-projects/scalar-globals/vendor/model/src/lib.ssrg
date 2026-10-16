@@ -1,0 +1,4 @@
+pub let increment: Int = 3
+
+pub fn imported remaining: Int -> total: Int -> Int =
+  if remaining == 0 then total else imported (remaining - 1) (total + increment)

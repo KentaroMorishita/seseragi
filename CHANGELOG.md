@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.38] - 2026-10-16
+
+### Improved
+
+- Share checked scalar global-read facts between TypeScript and Rust self-tail loops. Closed monomorphic Int/Bool literal bindings can use scalar loop slots while keeping each original read, declaration and initializer in place. Preserve canonical package/module owners, lexical shadowing, source arity, selected evidence and failure order; unproved bindings keep the ordinary implementation (#843).
+
 ## [0.61.37] - 2026-10-16
 
 ### Added

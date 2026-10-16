@@ -2,7 +2,10 @@
 use crate::{CoreExpr, CoreInstanceEvidence, CoreInstanceImplementation, CoreModule, SourceSpan};
 
 mod scalar;
-pub use scalar::{scalar_self_tail_loop, CoreScalarKind, CoreScalarTailLoop};
+pub use scalar::{
+    scalar_self_tail_loop, scalar_self_tail_loop_with_globals, CoreScalarGlobalRead,
+    CoreScalarGlobals, CoreScalarKind, CoreScalarTailLoop,
+};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum CoreCallShape {

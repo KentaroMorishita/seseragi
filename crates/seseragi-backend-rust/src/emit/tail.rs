@@ -14,7 +14,11 @@ impl Backend<'_> {
         setup: &str,
         scope: &Scope,
     ) -> Result<String> {
-        if let Some(plan) = seseragi_lowering::scalar_self_tail_loop(function) {
+        if let Some(plan) = seseragi_lowering::scalar_self_tail_loop_with_globals(
+            function,
+            self.owner,
+            self.scalar_globals,
+        ) {
             return self.scalar_direct_function(function, &plan);
         }
         let target = TailTarget {
