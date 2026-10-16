@@ -1113,6 +1113,46 @@ mod tests {
     }
 
     #[test]
+    fn keeps_deprecation_prefixes_out_of_previous_trait_signatures() {
+        let source = "trait Render<A> {\nfn first deprecated: A -> since: A -> A\ndeprecated \"Use first\" since \"0.4.1\"\nfn legacy value: A -> A\ndeprecated \"Use legacy\"\nfn last value: A -> A\n}\n";
+        let artifact = parse_diagnostics("methods.ssrg", source);
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+        let module = crate::parse_surface_ast("methods.ssrg", source);
+        let crate::SurfaceDecl::Trait { methods, .. } = &module.declarations[0] else {
+            panic!("trait declaration was lost")
+        };
+        assert_eq!(
+            methods
+                .iter()
+                .map(|method| method.name.as_str())
+                .collect::<Vec<_>>(),
+            ["first", "legacy", "last"]
+        );
+        assert_eq!(methods[0].parameters[0].name, "deprecated");
+        assert_eq!(methods[0].parameters[1].name, "since");
+
+        let semicolons = source.replace("-> A\n", "-> A; ");
+        let artifact = parse_diagnostics("methods.ssrg", &semicolons);
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+        let module = crate::parse_surface_ast("methods.ssrg", &semicolons);
+        let crate::SurfaceDecl::Trait { methods, .. } = &module.declarations[0] else {
+            panic!("semicolon-delimited trait declaration was lost")
+        };
+        assert_eq!(methods.len(), 3);
+
+        let broken = source.replace("deprecated: A", "deprecated");
+        let artifact = parse_diagnostics("methods.ssrg", &broken);
+        assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "parser.function-annotations-required"
+        );
+        assert!(!broken
+            [artifact.diagnostics[0].primary.start..artifact.diagnostics[0].primary.end]
+            .contains("Use first"));
+    }
+
+    #[test]
     fn empty_source_diagnostics_for_valid_module() {
         let diagnostics = parse_diagnostics("main.ssrg", "pub let answer: Int = 42\n");
 

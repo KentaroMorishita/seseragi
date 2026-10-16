@@ -42,10 +42,48 @@ impl SurfaceParser<'_> {
     }
 
     pub(super) fn parse_trait_methods(&self, body_start: usize, end: usize) -> Vec<SurfaceMethod> {
-        self.method_ranges(body_start, end)
+        self.trait_method_ranges(body_start, end)
             .into_iter()
             .filter_map(|(start, method_end)| self.parse_trait_method(start, method_end))
             .collect()
+    }
+
+    pub(super) fn trait_method_ranges(&self, body_start: usize, end: usize) -> Vec<(usize, usize)> {
+        self.method_ranges(body_start, end)
+            .into_iter()
+            .map(|(start, end)| {
+                // A deprecation clause belongs to the following method. Only
+                // recognize its complete grammar before `fn`, so contextual
+                // parameter names such as `deprecated: A` stay in signatures.
+                let prefix = (start..end).find(|index| {
+                    self.raw_at(*index) == Some("deprecated")
+                        && self.is_declaration_boundary(*index)
+                        && self.deprecated_method_after(*index, end + 1) == Some(end)
+                });
+                let end = prefix.unwrap_or(end);
+                let end = self
+                    .previous_significant_token(end)
+                    .filter(|last| self.kind_at(*last) == Some(TokenKind::PunctuationSemicolon))
+                    .unwrap_or(end);
+                (start, end)
+            })
+            .collect()
+    }
+
+    fn deprecated_method_after(&self, start: usize, end: usize) -> Option<usize> {
+        let message = self.next_significant_token(start + 1, end)?;
+        if self.kind_at(message) != Some(TokenKind::LiteralString) {
+            return None;
+        }
+        let mut next = self.next_significant_token(message + 1, end)?;
+        if self.raw_at(next) == Some("since") {
+            let version = self.next_significant_token(next + 1, end)?;
+            if self.kind_at(version) != Some(TokenKind::LiteralString) {
+                return None;
+            }
+            next = self.next_significant_token(version + 1, end)?;
+        }
+        (self.kind_at(next) == Some(TokenKind::KeywordFn)).then_some(next)
     }
 
     pub(super) fn parse_trait_method(&self, start: usize, end: usize) -> Option<SurfaceMethod> {

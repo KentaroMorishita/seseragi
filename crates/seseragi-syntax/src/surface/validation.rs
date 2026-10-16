@@ -219,7 +219,12 @@ impl SurfaceParser<'_> {
             }) {
                 if let Some(close) = self.find_matching_brace(open, end) {
                     if matches!(self.raw_at(keyword), Some("trait" | "instance")) {
-                        for (method, method_end) in self.method_ranges(open, close + 1) {
+                        let methods = if self.raw_at(keyword) == Some("trait") {
+                            self.trait_method_ranges(open, close + 1)
+                        } else {
+                            self.method_ranges(open, close + 1)
+                        };
+                        for (method, method_end) in methods {
                             let equals = self.find_top_level_token(
                                 method,
                                 method_end,
