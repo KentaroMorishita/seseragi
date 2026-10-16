@@ -14,6 +14,9 @@
 - Match local instance heads using resolved nominal types and retain inferred
   Array evidence under type and parameter shadows, so a user type named Array
   cannot replace the standard literal-array display dictionary.
+- Join DOM fixture worker exits independently from stderr collection. Preserve
+  diagnostics in an owned file and bound shutdown, forced exit and startup
+  cleanup, including an inherited stderr handle (#860).
 
 ## [0.61.41] - 2026-10-17
 
