@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.39] - 2026-10-16
+
+### Fixed
+
+- Emit one TypeScript import binding when several direct or reexport paths reach the same canonical value, method or operator. Preserve each module's initialization edge so private facade initializers still run and report Defects before the entry. Verify process builds on Bun and Node in both profiles (#847).
+
 ## [0.61.38] - 2026-10-16
 
 ### Improved

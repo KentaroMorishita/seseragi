@@ -66,6 +66,20 @@ fn namespace_and_reexport_scalar_globals_keep_their_package_owner_in_both_target
         let mut loops = 0;
         for (owner, module) in &project.compiled.modules {
             assert_eq!(module.core_ir, core.compiled.modules[owner].core_ir);
+            let mut imports = std::collections::BTreeSet::new();
+            for binding in module
+                .typescript_ir
+                .source_imports
+                .iter()
+                .flat_map(|group| &group.bindings)
+                .filter(|binding| !binding.type_only)
+            {
+                assert!(
+                    imports.insert(&binding.local),
+                    "duplicate import local {} in {owner}",
+                    binding.local
+                );
+            }
             for function in &module.core_ir.functions {
                 if let Some(proof) = scalar_self_tail_loop_with_globals(function, owner, &globals) {
                     loops += 1;
