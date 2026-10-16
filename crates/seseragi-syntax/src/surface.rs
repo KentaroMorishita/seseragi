@@ -1,4 +1,3 @@
-use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 pub use crate::surface_model::{
     ByteSpan, ForeignCallKind, ForeignCallMode, SurfaceBlockItem, SurfaceComprehensionClause,
@@ -58,12 +57,33 @@ pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> Surfac
     );
     declarations.sort_by_key(|declaration| declaration.span().start);
 
+    let deprecations = parser
+        .top_level_declaration_starts()
+        .into_iter()
+        .filter_map(|start| {
+            let prefix =
+                crate::declaration::declaration_prefix(parser.tokens, start, non_eof_token_count)
+                    .ok()?;
+            let mut deprecation = prefix.deprecation?;
+            deprecation.source.clone_from(&stream.source);
+            let declaration = declarations
+                .iter()
+                .find(|decl| decl.span().start == parser.tokens[start].start)?
+                .span();
+            Some(crate::DeclarationDeprecation {
+                declaration,
+                deprecation,
+            })
+        })
+        .collect();
+
     SurfaceModule {
         schema: 1,
         source: stream.source,
         imports: parser.parse_imports(),
         foreign_modules,
         declarations,
+        deprecations,
     }
 }
 
@@ -89,63 +109,22 @@ impl SurfaceParser<'_> {
     }
 
     fn top_level_declaration_starts(&self) -> Vec<usize> {
-        let mut starts = Vec::new();
-        let mut brace_depth = 0usize;
-        for index in 0..self.non_eof_token_count {
-            match self.kind_at(index) {
-                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
-                Some(TokenKind::PunctuationBraceRight) => {
-                    brace_depth = brace_depth.saturating_sub(1);
-                }
-                Some(
-                    TokenKind::KeywordPub
-                    | TokenKind::KeywordLet
-                    | TokenKind::KeywordFn
-                    | TokenKind::KeywordEffect,
-                ) if brace_depth == 0 && self.is_declaration_boundary(index) => {
-                    starts.push(index);
-                }
-                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
-                    if brace_depth == 0
-                        && self.is_declaration_boundary(index)
-                        && self.is_contextual_declaration_start(index) =>
-                {
-                    starts.push(index);
-                }
-                _ => {}
-            }
-        }
-        starts
+        crate::declaration::top_level_declaration_starts(self.tokens, self.non_eof_token_count)
     }
 
     fn is_declaration_boundary(&self, index: usize) -> bool {
-        let Some(previous) = self.previous_significant_token(index) else {
-            return true;
-        };
-        if self.kind_at(previous) == Some(TokenKind::PunctuationSemicolon) {
-            return true;
-        }
-        (previous + 1..index).any(|candidate| {
-            self.kind_at(candidate)
-                .is_some_and(|kind| kind == TokenKind::TriviaNewline)
-        })
+        crate::declaration::declaration_boundary(self.tokens, index)
     }
 
     fn parse_top_level_declaration(&self, start: usize, end: usize) -> Option<SurfaceDecl> {
-        let first = self.next_significant_token(start, end)?;
-        let (visibility, decl_start) = if self.kind_at(first) == Some(TokenKind::KeywordPub) {
-            (
-                Visibility::Public,
-                self.next_significant_token(first + 1, end)?,
-            )
+        let prefix = crate::declaration::declaration_prefix(self.tokens, start, end).ok()?;
+        let visibility = if prefix.public {
+            Visibility::Public
         } else {
-            (Visibility::Private, first)
+            Visibility::Private
         };
-        let (opaque, decl_start) = if self.raw_at(decl_start) == Some("opaque") {
-            (true, self.next_significant_token(decl_start + 1, end)?)
-        } else {
-            (false, decl_start)
-        };
+        let decl_start = prefix.keyword;
+        let opaque = prefix.opaque;
 
         match self.kind_at(decl_start) {
             Some(TokenKind::KeywordLet) => self.parse_let_decl(visibility, start, decl_start, end),
@@ -404,11 +383,6 @@ impl SurfaceParser<'_> {
 
     fn raw_at(&self, index: usize) -> Option<&str> {
         self.tokens.get(index).map(|token| token.raw.as_str())
-    }
-
-    fn is_contextual_declaration_start(&self, index: usize) -> bool {
-        self.raw_at(index)
-            .is_some_and(is_contextual_declaration_start)
     }
 
     fn is_angle_left(&self, index: usize) -> bool {

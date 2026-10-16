@@ -326,8 +326,10 @@ pub(crate) fn type_resolved_module_with_public_interface(
     resolved: crate::ResolvedModule,
 ) -> (TypedModule, crate::TypedModuleInterface) {
     let dependency_instances = resolved.dependency_instances.clone();
+    let deprecations = resolved.deprecations.clone();
     let typed = typed_module_from_resolved(resolved);
-    let typed_interface = typed_interface_from_modules(shallow, &typed, &dependency_instances);
+    let typed_interface =
+        typed_interface_from_modules(shallow, &typed, &dependency_instances, &deprecations);
     (typed, typed_interface)
 }
 

@@ -24,6 +24,7 @@ fn type_export(name: &str) -> InterfaceExport {
         symbol: format!("artifact/example::{name}"),
         namespace: "type".to_owned(),
         name: name.to_owned(),
+        deprecation: None,
         constructor_of: None,
         call_arity: None,
         visibility: Visibility::Public,

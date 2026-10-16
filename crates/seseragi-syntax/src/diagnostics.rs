@@ -166,6 +166,9 @@ impl Diagnostic {
             "parser.module-expression-statement" => {
                 "Module top level only permits declarations".to_owned()
             }
+            "parser.invalid-declaration-modifiers" => {
+                "Declaration modifiers are incomplete or invalid".to_owned()
+            }
             "parser.invalid-declaration-name" => {
                 "Declaration contains an invalid or reserved name".to_owned()
             }
@@ -353,6 +356,9 @@ impl Diagnostic {
             }
             "parser.module-expression-statement" => {
                 "Bind a pure value with let, or put the expression in a function body."
+            }
+            "parser.invalid-declaration-modifiers" => {
+                "Use [pub] deprecated \"message\" [since \"canonical SemVer\"] before a named top-level declaration."
             }
             "parser.invalid-declaration-name" => {
                 "Use a non-reserved identifier with the letter case required by this declaration."

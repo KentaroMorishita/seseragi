@@ -34,19 +34,28 @@ impl SurfaceParser<'_> {
         module: &SurfaceModule,
         diagnostics: &mut Vec<Diagnostic>,
     ) {
-        let Some(mut keyword) = self.next_significant_token(start, end) else {
-            return;
-        };
-        while matches!(self.raw_at(keyword), Some("pub" | "opaque")) {
-            let Some(next) = self.next_significant_token(keyword + 1, end) else {
+        let prefix = match crate::declaration::declaration_prefix(self.tokens, start, end) {
+            Ok(prefix) => prefix,
+            Err(span) => {
+                diagnostics.push(error("parser.invalid-declaration-modifiers", span));
                 return;
-            };
-            keyword = next;
-        }
+            }
+        };
+        let keyword = prefix.keyword;
         let declaration = module
             .declarations
             .iter()
             .find(|declaration| declaration.span().start == self.tokens[start].start);
+        if prefix.deprecation.is_some()
+            && (declaration.is_none()
+                || matches!(declaration,
+            Some(SurfaceDecl::Let { pattern, .. }) if !matches!(pattern, SurfacePattern::Name { .. })))
+        {
+            diagnostics.push(error(
+                "parser.invalid-declaration-modifiers",
+                prefix.deprecation.unwrap().origin,
+            ));
+        }
         let callable = matches!(
             self.kind_at(keyword),
             Some(TokenKind::KeywordLet | TokenKind::KeywordFn | TokenKind::KeywordEffect)

@@ -1,0 +1,12 @@
+import { older, render, Label, cold } from "./facade"
+
+pub fn probe -> String = {
+  let saved = older 40
+  render (Label (saved 2))
+}
+
+pub effect fn main = do {
+  let deferred = cold ()
+  println (probe ())
+  deferred
+}

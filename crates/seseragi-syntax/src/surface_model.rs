@@ -96,6 +96,25 @@ pub struct SurfaceModule {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub foreign_modules: Vec<SurfaceForeignModule>,
     pub declarations: Vec<SurfaceDecl>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub deprecations: Vec<DeclarationDeprecation>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Deprecation {
+    pub source: String,
+    pub message: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub since: Option<String>,
+    pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeclarationDeprecation {
+    pub declaration: ByteSpan,
+    pub deprecation: Deprecation,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

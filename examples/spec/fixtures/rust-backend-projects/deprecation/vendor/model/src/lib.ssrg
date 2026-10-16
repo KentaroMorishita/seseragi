@@ -1,0 +1,14 @@
+pub deprecated "Use modern" since "0.4.1" fn historical value: Int -> delta: Int -> Int = value + delta
+
+pub deprecated "Use modernRender"
+fn render<A> value: A -> String where Show<A> = "legacy: " + show value
+
+pub deprecated "Use NewLabel" since "0.4.1"
+type Label = | Label Int
+
+instance Show<Label> {
+  fn show value: Label -> String = match value { Label item -> "label=" + show item }
+}
+
+pub deprecated "Use modernCold"
+effect fn cold = println "cold"
