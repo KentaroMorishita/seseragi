@@ -71,3 +71,7 @@ single-source comparisons and the five-module path-package case in both TS
 profiles. Canonical artifact freshness, exact-head integration, official Release,
 dogfood and installed CLI acceptance are tracked on #837; these checks alone do
 not claim that handoff is complete.
+
+The ordinary five-module TS build also matches the fixture in development and
+release on fresh Bun 1.3.11 and Node 24.14.0 processes (four executions), with an
+empty runtime PATH. This validates observable behavior, not a speed improvement.
