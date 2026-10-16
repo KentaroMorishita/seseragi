@@ -9,6 +9,7 @@
     {
       "module": "fixture/imported-derived-show-debug::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Code",

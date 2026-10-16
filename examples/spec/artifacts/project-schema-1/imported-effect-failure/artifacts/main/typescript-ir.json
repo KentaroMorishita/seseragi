@@ -40,6 +40,7 @@
     {
       "module": "fixture/imported-effect-failure::input",
       "specifier": "./input.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "InputError",

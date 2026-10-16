@@ -24,6 +24,7 @@
     {
       "module": "fixture/imported-user-add-operator::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Points",

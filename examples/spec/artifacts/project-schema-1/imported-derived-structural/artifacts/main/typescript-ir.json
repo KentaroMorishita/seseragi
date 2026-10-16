@@ -68,6 +68,7 @@
     {
       "module": "fixture/imported-derived-structural::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "UserId",

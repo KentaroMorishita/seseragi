@@ -23,6 +23,7 @@
     {
       "module": "fixture/imported-struct::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Player",

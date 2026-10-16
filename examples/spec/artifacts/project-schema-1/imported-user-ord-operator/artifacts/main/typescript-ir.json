@@ -34,6 +34,7 @@
     {
       "module": "fixture/imported-user-ord-operator::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Score",

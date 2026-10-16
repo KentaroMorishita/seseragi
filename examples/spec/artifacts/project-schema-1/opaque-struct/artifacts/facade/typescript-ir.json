@@ -129,6 +129,7 @@
       ],
       "module": "fixture/opaque-struct::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [],
       "origin": {
         "source": "facade.ssrg",

@@ -1,5 +1,4 @@
 import { type Player } from "./domain.js"
-import "./domain.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { stringAdd as _ssrg_string_add_dictionary } from "@seseragi/runtime/string"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"

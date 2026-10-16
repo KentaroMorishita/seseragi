@@ -12,6 +12,7 @@
     {
       "module": "fixture/rps-domain-split::domain",
       "specifier": "./domain.js",
+      "runtimeEdge": false,
       "bindings": [
         {
           "imported": "Hand",
