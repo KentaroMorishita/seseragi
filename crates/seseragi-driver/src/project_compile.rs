@@ -71,6 +71,52 @@ pub struct CompiledProject {
     pub provider_resolution: Option<ProviderResolution>,
 }
 
+/// Dependency-ordered, checked input shared by targets, before any TypeScript
+/// output planning, lowering, runtime staging, or emission.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CoreProject {
+    pub order: Vec<String>,
+    pub modules: BTreeMap<String, crate::CoreCompilation>,
+}
+
+pub fn compile_core_project(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+) -> Result<CoreProject, ProjectCompileError> {
+    let order = graph
+        .topological_order()
+        .map_err(ProjectCompileError::Graph)?;
+    let inputs = validation::index_project_inputs(&order, input_iter)?;
+    let frontend = analyze_project_frontend(&graph, &order, &inputs, FrontendRecovery::None)
+        .map_err(|error| match error {
+            ProjectCompileError::Link { module, errors } => {
+                let input = &inputs[&module];
+                let mut diagnostics = parse_diagnostics(&input.source_name, &input.source);
+                crate::dependencies::append_link_diagnostics(errors, &mut diagnostics);
+                ProjectCompileError::Diagnostics {
+                    modules: vec![ProjectModuleDiagnostics {
+                        module,
+                        diagnostics,
+                    }],
+                }
+            }
+            other => other,
+        })?;
+    if !frontend.diagnostics.is_empty() {
+        return Err(ProjectCompileError::Diagnostics {
+            modules: frontend.diagnostics,
+        });
+    }
+    Ok(CoreProject {
+        order,
+        modules: frontend
+            .analyzed
+            .into_iter()
+            .map(|(id, analyzed)| (id, crate::lower_analyzed_module(analyzed)))
+            .collect(),
+    })
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnalyzedProject {
     pub order: Vec<String>,

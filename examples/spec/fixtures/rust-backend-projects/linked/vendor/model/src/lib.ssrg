@@ -1,0 +1,43 @@
+// 別packageと同じbasenameのmodule。identityとUTF-8位置を保つ。
+pub type Box<A> = | Box A
+
+pub trait Read<A> {
+  fn read value: A -> Int
+}
+
+instance Read<Int> {
+  fn read value: Int -> Int = value
+}
+
+instance<A> Read<Box<A>> where Read<A> {
+  fn read value: Box<A> -> Int = match value { Box inner -> read inner }
+}
+
+pub trait Unwrap<F<_>> {
+  fn unwrap value: F<Int> -> Int
+}
+
+instance Unwrap<Box> {
+  fn unwrap value: Box<Int> -> Int = match value { Box n -> n }
+}
+
+fn privateValue -> Int = 999
+
+pub fn probe -> Int = 999
+
+pub fn captured<A> value: A -> (Unit -> Int) where Read<A> = \_ -> read value
+
+pub fn hkt<F<_>> value: F<Int> -> Int where Unwrap<F> = unwrap value
+
+pub type Badge = | Active
+
+instance Show<Badge> {
+  fn show value: Badge -> String = "selected badge"
+}
+
+pub type Number = | Number Int
+
+instance Add<Number, Number, Number> {
+  fn add left: Number -> right: Number -> Number =
+    match (left, right) { (Number a, Number b) -> Number (a + b) }
+}

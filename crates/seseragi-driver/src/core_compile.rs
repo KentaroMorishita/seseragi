@@ -31,6 +31,54 @@ mod tests {
     use super::*;
 
     #[test]
+    fn project_core_matches_ts_input_and_does_not_require_ts_output_paths() {
+        let mut graph = seseragi_project::ModuleGraph::new();
+        graph.add_module("graph/lib".to_owned(), []).unwrap();
+        graph
+            .add_module(
+                "graph/main".to_owned(),
+                [("./lib".to_owned(), "graph/lib".to_owned())],
+            )
+            .unwrap();
+        let inputs = vec![
+            crate::ProjectModuleInput::new(
+                "lib.ssrg",
+                "graph/lib",
+                "pub fn answer -> Int = 42\n",
+                "lib.js",
+            ),
+            crate::ProjectModuleInput::new(
+                "main.ssrg",
+                "graph/main",
+                "import { answer } from \"./lib\"\npub fn probe -> Int = answer ()\n",
+                "main.js",
+            ),
+        ];
+        let core = crate::compile_core_project(graph.clone(), inputs.clone()).unwrap();
+        let ts = crate::compile_project(graph.clone(), inputs.clone()).unwrap();
+        assert_eq!(core.order, ts.order);
+        for id in &core.order {
+            assert_eq!(core.modules[id].core_ir, ts.modules[id].core_ir);
+            assert_eq!(
+                core.modules[id].typed_interface,
+                ts.modules[id].typed_interface
+            );
+        }
+        let targetless = inputs
+            .into_iter()
+            .map(|mut input| {
+                input.output_path = format!("/not-a-ts-plan/{}", input.module_id);
+                input
+            })
+            .collect::<Vec<_>>();
+        assert!(crate::compile_project(graph.clone(), targetless.clone()).is_err());
+        assert_eq!(
+            crate::compile_core_project(graph, targetless).unwrap(),
+            core
+        );
+    }
+
+    #[test]
     fn both_backends_receive_identical_checked_core() {
         let input = CompileInput::new(
             "example.ssrg",

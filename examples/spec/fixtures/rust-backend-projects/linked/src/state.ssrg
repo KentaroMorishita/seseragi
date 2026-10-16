@@ -1,0 +1,22 @@
+import * as refs from "std/ref"
+import * as effects from "std/effect"
+
+pub effect fn make -> refs.Ref<Int> = refs.make 0
+
+pub effect fn record digit: Int -> log: refs.Ref<Int> -> Unit = do {
+  before <- refs.get log
+  refs.set (before * 10 + digit) log
+}
+
+pub effect fn retained log: refs.Ref<Int> -> (Int -> Effect<{}, Never, Int>) =
+  effects.succeed (\n: Int -> do {
+    record n log
+    refs.get log
+    }
+)
+
+pub effect fn scoped log: refs.Ref<Int> -> Unit fails String = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed ()) (\_ -> record 1 log)
+  effects.acquireRelease (effects.succeed ()) (\_ -> record 2 log)
+  effects.fail "project failure"
+}

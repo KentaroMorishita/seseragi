@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-project@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-model@1.0.0#path:vendor/model"
+name = "fixture/native-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:7b89bd33d4a5d46381d8231d204bbcf89b76cb4252178cc1817881539c33a327"
+content_digest = "sha256:42007051d9083597fc4caedc6d112ab41c1351629960787cacd571f104b97920"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-project@0.0.0#workspace:."
+name = "fixture/native-project"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:8130e6ad2636180647fc7c5d5ce61114f6ebf7eed87155fb3e3c82d0e2186735"
+content_digest = "sha256:3c36ab96a3dbec00b8b4c0cd57aa636584f2f8b6910dbb213f1405f4c8572a5e"
+dependencies = [
+  { import = "model", package = "fixture/native-model@1.0.0#path:vendor/model" },
+]

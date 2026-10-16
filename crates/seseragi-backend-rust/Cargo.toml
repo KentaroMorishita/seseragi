@@ -11,4 +11,5 @@ seseragi-lowering = { path = "../seseragi-lowering" }
 
 [dev-dependencies]
 seseragi-driver = { path = "../seseragi-driver" }
+seseragi-project = { path = "../seseragi-project" }
 serde_json.workspace = true

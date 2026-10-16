@@ -1,0 +1,26 @@
+import { Box, Badge, Active, Number } from "./facade"
+import { retain, higher, returned } from "./lib"
+import * as state from "./state"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub fn probe -> (Int, Int, Int, Int) = {
+  let reader = retain (Box (Box 42))
+  let Number total = Number 20 + Number 22
+  (reader (), higher (Box 7), returned 20 22, total)
+}
+
+pub effect fn main = do {
+  let (first, second, third, fourth) = probe ()
+  println `(${first}, ${second}, ${third}, ${fourth})`
+  println (show Active)
+  log <- state.make ()
+  callback <- state.retained log
+  callback 3
+  callback 2
+  value <- refs.get log
+  println ("order: " + show value)
+  effects.recover (\_: String -> effects.succeed ()) (state.scoped log)
+  after <- refs.get log
+  println ("scope: " + show after)
+}
