@@ -81,6 +81,75 @@ fn files_in(root: &Path) -> BTreeMap<String, Vec<u8>> {
 }
 
 #[test]
+fn process_reexports_share_bindings_and_preserve_facade_initialization() {
+    let directory = test_directory("canonical-reexports");
+    let package = locked_copy(
+        &repository_root().join("examples/spec/fixtures/rust-backend-projects/scalar-globals"),
+        &directory,
+        "package",
+    );
+    for defect in [false, true] {
+        if defect {
+            let facade = package.join("src/facade.ssrg");
+            fs::write(
+                &facade,
+                fs::read_to_string(&facade).unwrap()
+                    + "\nlet privateDefect: Int = 9007199254740991 + 1\n",
+            )
+            .unwrap();
+            update_lock(&package);
+        }
+        for profile in ["development", "release"] {
+            let output_directory = directory.join(format!("{profile}-{defect}"));
+            let built = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&package)
+                .args(["--target", "process", "--profile", profile, "--out-dir"])
+                .arg(&output_directory)
+                .output()
+                .unwrap();
+            assert!(
+                built.status.success(),
+                "{}",
+                String::from_utf8_lossy(&built.stderr)
+            );
+            let manifest: serde_json::Value = serde_json::from_slice(
+                &fs::read(output_directory.join("artifact-manifest.json")).unwrap(),
+            )
+            .unwrap();
+            for runtime in ["bun", "node"] {
+                let result = Command::new(runtime)
+                    .arg(output_directory.join(manifest["entry"].as_str().unwrap()))
+                    .output()
+                    .unwrap();
+                if defect {
+                    assert_eq!(
+                        result.status.code(),
+                        Some(70),
+                        "{runtime} {profile}: {}",
+                        String::from_utf8_lossy(&result.stderr)
+                    );
+                    assert!(result.stdout.is_empty());
+                    assert!(String::from_utf8_lossy(&result.stderr).contains("Int overflow"));
+                } else {
+                    assert!(
+                        result.status.success(),
+                        "{runtime} {profile}: {}",
+                        String::from_utf8_lossy(&result.stderr)
+                    );
+                    assert_eq!(
+                        result.stdout,
+                        fs::read(package.join("expected.stdout")).unwrap()
+                    );
+                    assert!(result.stderr.is_empty());
+                }
+            }
+        }
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_malformed_namespaced_reduce_before_project_output() {
     let directory = test_directory("namespaced-reduce-rejection");
     let package = locked_copy(

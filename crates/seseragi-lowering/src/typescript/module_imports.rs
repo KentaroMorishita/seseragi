@@ -1,5 +1,5 @@
 use crate::CoreModule;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::names::{module_value_name, safe_identifier};
 use super::{
@@ -35,6 +35,7 @@ pub(super) fn lower_module_imports(
     let mut used_values = local_value_names(module);
     let mut used_types = local_type_names(module);
     let mut value_names = BTreeMap::new();
+    let mut bound_values = BTreeSet::new();
     let mut imports: Vec<TypeScriptSourceImport> = Vec::new();
 
     for dependency in &module.module_dependencies {
@@ -97,8 +98,9 @@ pub(super) fn lower_module_imports(
                         .entry(import.local.clone())
                         .or_insert_with(|| local.clone());
                     used_values.insert(local.clone());
-                    push_binding(
+                    push_value_binding(
                         group,
+                        &mut bound_values,
                         TypeScriptSourceImportBinding {
                             imported: safe_identifier(&import.imported),
                             local,
@@ -117,8 +119,9 @@ pub(super) fn lower_module_imports(
                         })
                         .clone();
                     used_values.insert(local.clone());
-                    push_binding(
+                    push_value_binding(
                         group,
+                        &mut bound_values,
                         TypeScriptSourceImportBinding {
                             imported: module_value_name(&dependency.module, &import.canonical),
                             local,
@@ -136,8 +139,9 @@ pub(super) fn lower_module_imports(
                         .or_insert_with(|| fresh_name(&imported, &used_values))
                         .clone();
                     used_values.insert(local.clone());
-                    push_binding(
+                    push_value_binding(
                         group,
+                        &mut bound_values,
                         TypeScriptSourceImportBinding {
                             imported,
                             local,
@@ -208,6 +212,20 @@ fn push_reexport(group: &mut TypeScriptSourceImport, binding: TypeScriptSourceIm
             && existing.type_only == binding.type_only
     }) {
         group.reexports.push(binding);
+    }
+}
+
+fn push_value_binding(
+    group: &mut TypeScriptSourceImport,
+    bound_values: &mut BTreeSet<String>,
+    binding: TypeScriptSourceImportBinding,
+) {
+    // Canonical values can be reached through several reexport paths, but their
+    // shared local name must be declared only once in the emitted module. Keep
+    // every dependency group and its runtime edge: a facade may still initialize
+    // private values even when its value binding is supplied by another path.
+    if bound_values.insert(binding.canonical.clone()) {
+        push_binding(group, binding);
     }
 }
 
