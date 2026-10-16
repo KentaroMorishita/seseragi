@@ -35,6 +35,30 @@ fn rejects_dropped_and_missing_methods_of_an_import_aliased_trait() {
 }
 
 #[test]
+fn standard_method_contracts_expand_imported_aliases_by_owner() {
+    for (target, body, valid) in [("String", "\"label\"", true), ("Int", "42", false)] {
+        let domain = format!("pub alias Text = {target}\n");
+        let source = format!("import {{ Text as Result }} from \"./domain\"\ntype Label = | Label\ninstance Show<Label> {{ fn show value: Label -> Result = {body} }}\n");
+        let linked = linked_program(&source, [("./domain", "fixture/game::domain", &domain)]);
+        let result = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main.ssrg", &source),
+            linked,
+            &source,
+        );
+        if valid {
+            result.unwrap();
+        } else {
+            assert!(result
+                .unwrap_err()
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key
+                    == "trait.instance-method-signature-mismatch"));
+        }
+    }
+}
+
+#[test]
 fn accepts_an_instance_that_matches_an_imported_trait_contract() {
     let domain_source = "pub trait Render<A> {\n  fn render value: A -> String\n}\n";
     let main_source = "import { Render } from \"./domain\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render value: Score -> String = \"score\"\n}\n";

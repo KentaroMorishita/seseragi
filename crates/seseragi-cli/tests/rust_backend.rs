@@ -371,6 +371,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "list-tail",
         "tuple-display",
         "tuple-nominal",
+        "instance-contracts",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"

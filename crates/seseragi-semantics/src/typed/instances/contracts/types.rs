@@ -2,6 +2,7 @@ use crate::{ExternalTraitBinding, ExternalTypeBinding, ResolvedModule, SymbolId}
 use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeParameter, TypeRef};
 use std::collections::BTreeMap;
 
+mod aliases;
 mod interface;
 mod model;
 mod resolution;
@@ -81,6 +82,17 @@ pub(super) fn imported_method_contract_matches(
         context.trait_canonical,
     )?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
+    if crate::prelude::trait_by_canonical(context.trait_canonical).is_some() {
+        return Some(
+            match (
+                aliases::normalize(resolved, expected),
+                aliases::normalize(resolved, actual),
+            ) {
+                (Some(expected), Some(actual)) => expected == actual,
+                _ => false,
+            },
+        );
+    }
     Some(expected == actual)
 }
 

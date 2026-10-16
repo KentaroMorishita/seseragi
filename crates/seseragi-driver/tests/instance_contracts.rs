@@ -75,3 +75,27 @@ fn standard_json_contracts_keep_the_registered_provider_nominals() {
         "{diagnostics:#?}"
     );
 }
+
+#[test]
+fn standard_method_contracts_preserve_transparent_aliases() {
+    for method in [
+        "fn show value: Name -> String = \"label\"",
+        "fn show value: Label -> Text = \"label\"",
+        "fn show value: Name -> Text = \"label\"",
+    ] {
+        let source = format!("type Label = | Label\nalias Name = Label\nalias Text = String\ninstance Show<Label> {{ {method} }}\npub effect fn main = println (show Label)\n");
+        compile_module(CompileInput::new(
+            "aliases.ssrg",
+            "fixture/aliases",
+            &source,
+        ))
+        .unwrap();
+    }
+    let source = "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance Functor<Box> { fn map<A, B> f: (A -> B) -> value: Wrapped<A> -> Wrapped<B> = match value { Box item -> Box (f item) } }\n";
+    compile_core_module(CompileInput::new(
+        "hkt-alias.ssrg",
+        "fixture/hkt-alias",
+        source,
+    ))
+    .unwrap();
+}
