@@ -501,7 +501,7 @@ fn scalar_global_reads_preserve_defect_order_zero_step_and_partial_lifetimes() {
         .lines()
         .find(|l| l.starts_with(&format!("fn {sum}_direct(")))
         .unwrap();
-    assert!(direct.contains("get_global(0)"));
+    assert!(direct.contains("get_global_int(0)"));
     assert!(direct.contains("int_add_value("));
     assert!(!direct.contains("binary(") && !direct.contains(".clone()"));
     let fallback = artifact
@@ -521,7 +521,7 @@ fn scalar_global_reads_preserve_defect_order_zero_step_and_partial_lifetimes() {
         assert_eq!(generated.matches(&marker).count(), 1);
         generated = generated.replace(&marker, &format!("{marker} TRACE.with(|trace| trace.borrow_mut().push(format!(\"{op}:{{a}}:{{b}}\")));"));
     }
-    let marker = "fn get_global(index: usize) -> V {";
+    let marker = "fn read_global<T>(index: usize, read: impl FnOnce(&V) -> T) -> T {";
     assert_eq!(generated.matches(marker).count(), 1);
     generated = generated.replace(
         marker,

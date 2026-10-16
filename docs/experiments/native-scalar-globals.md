@@ -8,7 +8,7 @@ Rust project emitter derives the same facts from each original checked module.
 
 The proof preserves declarations and initialization. Each global read remains
 at its original expression position, including inside untaken branches.
-Rust reads the existing global slot and unboxes its immediate value;
+Rust copies an immediate primitive directly from the existing global slot;
 TypeScript retains its ordinary variable/import reference. Public currying,
 source arity, selected arithmetic evidence and integer overflow checks stay
 unchanged. Parameters take precedence over globals, while local binding shapes

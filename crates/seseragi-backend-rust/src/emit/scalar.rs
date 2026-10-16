@@ -95,9 +95,14 @@ impl Backend<'_> {
                     // Do not hoist or inline: an initializer may call this
                     // function before the global exists. Untaken branches
                     // must not read it, and get_global keeps that Defect.
-                    let value = self.reference(&read.symbol, &[], &Scope::new())?;
-                    let tag = scalar_tag(read.kind);
-                    format!("{{ let V::{tag}(value) = {value} else {{ panic!(\"Rust ABI: expected {tag}\") }}; value }}")
+                    let index = self
+                        .globals
+                        .get(&read.symbol)
+                        .ok_or("Rust backend: unknown certified global")?;
+                    format!(
+                        "get_global_{}({index})",
+                        scalar_tag(read.kind).to_ascii_lowercase()
+                    )
                 }
                 None => id(name),
             },
