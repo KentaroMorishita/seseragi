@@ -1,0 +1,3 @@
+// 雫🙂
+type Box<A> = | Box A
+instance<A> Show<Box<A>> where Show<A> {}

@@ -48,7 +48,7 @@ impl SurfaceParser<'_> {
             .collect()
     }
 
-    fn parse_trait_method(&self, start: usize, end: usize) -> Option<SurfaceMethod> {
+    pub(super) fn parse_trait_method(&self, start: usize, end: usize) -> Option<SurfaceMethod> {
         let name_index = self.next_significant_token(start + 1, end)?;
         let name = self.identifier_name_at(name_index)?;
         let (type_parameters, after_type_parameters) =
@@ -72,7 +72,7 @@ impl SurfaceParser<'_> {
         })
     }
 
-    fn method_ranges(&self, body_start: usize, end: usize) -> Vec<(usize, usize)> {
+    pub(super) fn method_ranges(&self, body_start: usize, end: usize) -> Vec<(usize, usize)> {
         if self.kind_at(body_start) != Some(TokenKind::PunctuationBraceLeft) {
             return Vec::new();
         }

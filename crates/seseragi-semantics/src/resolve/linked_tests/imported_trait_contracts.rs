@@ -2,6 +2,39 @@ use super::linked_program;
 use crate::{analyze_linked_module, resolve_linked_module, SymbolNamespace};
 
 #[test]
+fn rejects_dropped_and_missing_methods_of_an_import_aliased_trait() {
+    let domain = "pub trait Show<A> { fn describe value: A -> String }\n";
+    for (method, key) in [
+        ("", "trait.instance-method-missing"),
+        (
+            "fn describe value = \"label\"",
+            "parser.function-annotations-required",
+        ),
+        (
+            "fn describe value: Label -> Int = 42",
+            "trait.instance-method-signature-mismatch",
+        ),
+    ] {
+        let source = format!("// 雫\nimport {{ Show as Render }} from \"./domain\"\ntype Label = | Label\ninstance Render<Label> {{ {method} }}\n");
+        let linked = linked_program(&source, [("./domain", "fixture/game::domain", domain)]);
+        let diagnostics = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main-λ.ssrg", &source),
+            linked,
+            &source,
+        )
+        .unwrap_err();
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key == key),
+            "{source}\n{diagnostics:#?}"
+        );
+        assert_eq!(diagnostics.source, "main-λ.ssrg");
+    }
+}
+
+#[test]
 fn accepts_an_instance_that_matches_an_imported_trait_contract() {
     let domain_source = "pub trait Render<A> {\n  fn render value: A -> String\n}\n";
     let main_source = "import { Render } from \"./domain\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render value: Score -> String = \"score\"\n}\n";

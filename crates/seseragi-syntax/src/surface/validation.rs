@@ -218,6 +218,29 @@ impl SurfaceParser<'_> {
                 kind == TokenKind::PunctuationBraceLeft
             }) {
                 if let Some(close) = self.find_matching_brace(open, end) {
+                    if matches!(self.raw_at(keyword), Some("trait" | "instance")) {
+                        for (method, method_end) in self.method_ranges(open, close + 1) {
+                            let equals = self.find_top_level_token(
+                                method,
+                                method_end,
+                                TokenKind::OperatorEquals,
+                            );
+                            let header_end = equals.unwrap_or(method_end);
+                            if self.parse_trait_method(method, header_end).is_none() {
+                                diagnostics.push(error(
+                                    "parser.function-annotations-required",
+                                    self.declaration_span(method, header_end)
+                                        .expect("method header"),
+                                ));
+                            } else if self.raw_at(keyword) == Some("trait") && equals.is_some() {
+                                diagnostics.push(error(
+                                    "parser.trait-method-body-forbidden",
+                                    self.declaration_span(method, method_end)
+                                        .expect("trait method"),
+                                ));
+                            }
+                        }
+                    }
                     self.unexpected_statements(close + 1, end, diagnostics);
                 }
             }

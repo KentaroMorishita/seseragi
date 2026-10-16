@@ -39,6 +39,40 @@
     },
     {
       "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-method-signature-mismatch",
+      "message": "Trait instance method signature mismatch",
+      "primary": {
+        "start": 184,
+        "end": 225
+      },
+      "related": [
+        {
+          "message": "instance method eq must match this trait contract",
+          "primary": {
+            "start": 193,
+            "end": 195
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "instance method eq must match this trait contract",
+          "primary": {
+            "start": 193,
+            "end": 195
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
       "code": "SES-T0505",
       "severity": "Error",
       "messageKey": "impl.invalid-operator-signature",
@@ -72,7 +106,7 @@
       "actualType": null
     },
     {
-      "id": "d3",
+      "id": "d4",
       "code": "SES-T0504",
       "severity": "Error",
       "messageKey": "impl.operator-not-overloadable",

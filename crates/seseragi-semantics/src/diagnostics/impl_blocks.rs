@@ -297,11 +297,17 @@ mod tests {
             "struct Score { value: Int }\nimpl Score { operator == self -> other: Int -> Int = 0 }\n",
         );
 
-        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0505");
         assert_eq!(
-            diagnostics.diagnostics[0].message_key,
-            "impl.invalid-operator-signature"
+            diagnostics
+                .diagnostics
+                .iter()
+                .map(|diagnostic| diagnostic.message_key.as_str())
+                .collect::<Vec<_>>(),
+            [
+                "trait.instance-method-signature-mismatch",
+                "impl.invalid-operator-signature"
+            ],
+            "{diagnostics:#?}"
         );
     }
 }

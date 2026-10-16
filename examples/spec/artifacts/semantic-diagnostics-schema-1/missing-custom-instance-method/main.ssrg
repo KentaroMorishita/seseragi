@@ -1,0 +1,4 @@
+// 雫🙂
+trait Render<A> { fn render value: A -> String }
+type Label = | Label
+instance Render<Label> {}

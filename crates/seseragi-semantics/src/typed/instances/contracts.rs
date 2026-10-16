@@ -31,7 +31,40 @@ pub(crate) fn analyze_instance_contracts(
             else {
                 return None;
             };
-            let contract = trait_contract(resolved, *trait_name_span)?;
+            let standard = standard_trait_contract(resolved, *trait_name_span);
+            let parameters;
+            let standard_methods;
+            let contract = if let Some(trait_spec) = standard {
+                parameters = trait_spec
+                    .type_parameters
+                    .iter()
+                    .map(|parameter| {
+                        if parameter.arity == 0 {
+                            TypeParameter::value(parameter.name)
+                        } else {
+                            TypeParameter::constructor(parameter.name, parameter.arity)
+                        }
+                    })
+                    .collect::<Vec<_>>();
+                standard_methods = crate::prelude::TRAIT_METHODS
+                    .iter()
+                    .filter(|method| method.trait_name == trait_spec.name)
+                    .map(|method| {
+                        crate::typed::interface::prelude_method_interface(method, *trait_name_span)
+                    })
+                    .collect::<Vec<_>>();
+                TraitContract::Imported {
+                    name: trait_spec.name,
+                    canonical: trait_spec.canonical,
+                    parameters: &parameters,
+                    methods: &standard_methods,
+                    bindings: &[],
+                    trait_bindings: &[],
+                    import_span: *trait_name_span,
+                }
+            } else {
+                trait_contract(resolved, *trait_name_span)?
+            };
             Some(validate_instance(
                 resolved,
                 resolution,
@@ -47,6 +80,21 @@ pub(crate) fn analyze_instance_contracts(
         })
         .flatten()
         .collect()
+}
+
+fn standard_trait_contract(
+    resolved: &ResolvedModule,
+    trait_name_span: ByteSpan,
+) -> Option<&'static crate::prelude::PreludeTrait> {
+    let target = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Trait && reference.origin == trait_name_span
+        })?
+        .target?;
+    let symbol = resolved.symbols.iter().find(|symbol| symbol.id == target)?;
+    crate::prelude::trait_by_canonical(symbol.canonical.as_deref()?)
 }
 
 fn validate_instance(

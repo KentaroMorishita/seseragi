@@ -136,3 +136,37 @@ fn status value: Badge -> String = render value
     );
     assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
 }
+
+#[test]
+fn validates_required_standard_instance_methods_and_their_signatures() {
+    for (body, expected_key) in [
+        ("instance Show<Label> {}", "trait.instance-method-missing"),
+        ("instance Debug<Label> {}", "trait.instance-method-missing"),
+        ("instance Show<Label> { fn show value: Label -> Int = 42 }", "trait.instance-method-signature-mismatch"),
+        ("instance Show<Label> { fn describe value: Label -> String = \"label\" }", "trait.instance-method-missing"),
+        ("instance Show<Label> { fn show value: Label -> String = \"one\"; fn show value: Label -> String = \"two\" }", "name.duplicate-definition"),
+    ] {
+        let source = format!("// 雫\ntype Label = | Label\n{body}\n");
+        let diagnostics = semantic_diagnostics("standard-methods-λ.ssrg", &source);
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| diagnostic.message_key == expected_key), "{source}\n{diagnostics:#?}");
+    }
+}
+
+#[test]
+fn standard_contract_validation_preserves_valid_higher_kinded_and_nominal_methods() {
+    let source = "type Box<A> = | Box A\ninstance Functor<Box> { fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value { Box item -> Box (f item) } }\ninstance<A> Show<Box<A>> where Show<A> { fn show value: Box<A> -> String = match value { Box item -> show item } }\n";
+    let diagnostics = semantic_diagnostics("valid-standard-methods.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn standard_contracts_distinguish_nominal_results_and_method_quantifiers() {
+    for source in [
+        "type Label = | Label\ntype String = | Wrong\ninstance Show<Label> { fn show value: Label -> String = Wrong }\n",
+        "type Box<A> = | Box A\ninstance Functor<Box> { fn map<A> f: (A -> A) -> value: Box<A> -> Box<A> = value }\n",
+        "type Label = | Label\ninstance Show<Label> { fn show value: Label -> String where Eq<Label> = \"label\" }\n",
+    ] {
+        let diagnostics = semantic_diagnostics("standard-contract.ssrg", source);
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| diagnostic.message_key == "trait.instance-method-signature-mismatch"), "{source}\n{diagnostics:#?}");
+    }
+}

@@ -1,5 +1,3 @@
 newtype Badge deriving JsonEncode = String
 
-instance JsonEncode<Badge> {
-  fn encodeJson value: Badge = encodeJson "badge"
-}
+instance JsonEncode<Badge> {}

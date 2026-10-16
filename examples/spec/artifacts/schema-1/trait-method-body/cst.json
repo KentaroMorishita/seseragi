@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 30,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 2,
+        "endToken": 30,
+        "children": [
+          {
+            "kind": "complete-declaration",
+            "startToken": 2,
+            "endToken": 29,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

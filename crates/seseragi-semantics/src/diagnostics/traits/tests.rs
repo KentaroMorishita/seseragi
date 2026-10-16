@@ -94,7 +94,7 @@ fn reports_explicit_and_derived_json_instance_as_duplicate() {
         "artifact/duplicate-derived-json/main.ssrg",
         "\
 newtype Badge deriving JsonEncode = String
-instance JsonEncode<Badge> { fn encodeJson value: Badge = encodeJson \"badge\" }
+instance JsonEncode<Badge> {}
 ",
     );
 
