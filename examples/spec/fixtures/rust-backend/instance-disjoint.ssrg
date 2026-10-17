@@ -1,0 +1,23 @@
+type Pair<A, B> = | Pair (A, B)
+alias Twin<A> = Pair<A, A>
+
+instance<A> Show<Twin<A>> where Show<A> {
+  fn show value: Pair<A, A> -> String =
+    match value { Pair (left, right) -> "twin=" + show left + "/" + show right }
+}
+
+instance Show<Pair<Int, Bool>> {
+  fn show value: Pair<Int, Bool> -> String =
+    match value { Pair (left, right) -> "mixed=" + show left + "/" + show right }
+}
+
+fn retained<A> value: A -> (Int -> String) where Show<A> =
+  \n -> show value + ":" + show n
+
+pub fn probe -> Array<String> = {
+  let same: Pair<Int, Int> = Pair (20, 22)
+  let mixed: Pair<Int, Bool> = Pair (42, True)
+  let saved = retained same
+  let method: Pair<Int, Bool> -> String = show
+  [show same, method mixed, saved 1, saved 2]
+}

@@ -1,6 +1,5 @@
 use crate::{ResolvedModule, TypedInstance, TypedType};
 use seseragi_syntax::ByteSpan;
-use std::collections::BTreeMap;
 
 use super::TypedResolution;
 
@@ -14,7 +13,9 @@ mod user;
 pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_head_key, canonical_instance_identity,
 };
-pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
+pub(crate) use contracts::{
+    analyze_instance_contracts, dependency_head, CoherenceHead, InstanceContractIssue,
+};
 pub(crate) use show::derived_display_requirements;
 pub(crate) use user::canonical_type_ref;
 
@@ -48,6 +49,12 @@ pub(crate) enum DerivedInstanceIssue {
         primary: ByteSpan,
         first: ByteSpan,
     },
+    OverlappingLocalInstance {
+        trait_name: String,
+        identity: String,
+        primary: ByteSpan,
+        first: ByteSpan,
+    },
     OverlappingStandardInstance {
         trait_name: String,
         standard_identity: String,
@@ -71,7 +78,7 @@ pub(crate) fn analyze_instances(
     let mut instances = show.instances;
     instances.extend(user::analyze_user_defined_instances(resolved, resolution));
     issues.extend(show.issues);
-    issues.extend(local_instance_conflicts(&instances));
+    issues.extend(local_instance_conflicts(resolved, &instances));
     issues.extend(standard_instance_conflicts(&instances));
     issues.extend(local_dependency_conflicts(resolved, &instances));
     for instance in &instances {
@@ -128,24 +135,52 @@ fn owns_instance_head(resolved: &ResolvedModule, instance: &TypedInstance) -> bo
     })
 }
 
-fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
-    let mut first_by_head = BTreeMap::new();
+fn local_instance_conflicts(
+    resolved: &ResolvedModule,
+    local_instances: &[TypedInstance],
+) -> Vec<DerivedInstanceIssue> {
+    let heads = local_instances
+        .iter()
+        .map(|instance| contracts::local_head(resolved, instance))
+        .collect::<Vec<_>>();
     let mut issues = Vec::new();
-    for instance in local_instances {
-        let head =
-            canonical_instance_head_key(&instance.trait_identity, &instance.argument_identities);
-        if let Some(first) = first_by_head.get(&head) {
-            issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
-                trait_name: instance.trait_name.clone(),
-                identity: instance.identity.clone(),
-                primary: instance.origin,
-                first: *first,
-            });
-        } else {
-            first_by_head.insert(head, instance.origin);
+    for (index, instance) in local_instances.iter().enumerate() {
+        let first = local_instances[..index].iter().enumerate().find(|(previous, first)| {
+            let exact = canonical_instance_head_key(&first.trait_identity, &first.argument_identities) == canonical_instance_head_key(&instance.trait_identity, &instance.argument_identities);
+            exact || (same_trait(&first.trait_identity, &instance.trait_identity)
+                && matches!((&heads[*previous], &heads[index]), (Some(left), Some(right)) if left.conflicts(right, &canonical_trait(&instance.trait_identity))))
+        });
+        if let Some((_, first)) = first {
+            if first.argument_identities == instance.argument_identities {
+                issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
+                    trait_name: instance.trait_name.clone(),
+                    identity: instance.identity.clone(),
+                    primary: instance.origin,
+                    first: first.origin,
+                });
+            } else {
+                issues.push(DerivedInstanceIssue::OverlappingLocalInstance {
+                    trait_name: instance.trait_name.clone(),
+                    identity: instance.identity.clone(),
+                    primary: instance.origin,
+                    first: first.origin,
+                });
+            }
         }
     }
     issues
+}
+
+pub(crate) fn same_trait(left: &str, right: &str) -> bool {
+    canonical_instance_head_key(left, &[]) == canonical_instance_head_key(right, &[])
+}
+
+pub(crate) fn canonical_trait(identity: &str) -> String {
+    if !identity.contains("::") && crate::prelude::trait_by_name(identity).is_some() {
+        format!("std/prelude::{identity}")
+    } else {
+        identity.to_owned()
+    }
 }
 
 fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
@@ -203,30 +238,21 @@ fn local_dependency_conflicts(
     resolved: &ResolvedModule,
     local_instances: &[TypedInstance],
 ) -> Vec<DerivedInstanceIssue> {
-    local_instances
+    let imported_heads = resolved
+        .dependency_instances
         .iter()
-        .filter_map(|local| {
-            resolved
-                .dependency_instances
-                .iter()
-                .find(|imported| {
-                    canonical_instance_head_key(
-                        &imported.trait_identity,
-                        &imported.argument_identities,
-                    ) == canonical_instance_head_key(
-                        &local.trait_identity,
-                        &local.argument_identities,
-                    )
-                })
-                .map(|imported| DerivedInstanceIssue::AmbiguousInstance {
-                    trait_name: local.trait_name.clone(),
-                    type_identity: local
-                        .type_identity
-                        .clone()
-                        .unwrap_or_else(|| local.argument_identities.join(",")),
-                    provider_module: imported.provider_module.clone(),
-                    primary: local.origin,
-                })
+        .map(dependency_head)
+        .collect::<Vec<_>>();
+    local_instances.iter().filter_map(|local| {
+        let local_head = contracts::local_head(resolved, local);
+        resolved.dependency_instances.iter().zip(&imported_heads).find(|(imported, imported_head)| {
+            let exact = canonical_instance_head_key(&imported.trait_identity, &imported.argument_identities) == canonical_instance_head_key(&local.trait_identity, &local.argument_identities);
+            exact || (same_trait(&imported.trait_identity, &local.trait_identity)
+                && matches!((&local_head, imported_head), (Some(left), Some(right)) if left.conflicts(right, &canonical_trait(&local.trait_identity))))
+        }).map(|(imported, _)| DerivedInstanceIssue::AmbiguousInstance {
+            trait_name: local.trait_name.clone(),
+            type_identity: local.type_identity.clone().unwrap_or_else(|| local.argument_identities.join(",")),
+            provider_module: imported.provider_module.clone(), primary: local.origin,
         })
-        .collect()
+    }).collect()
 }

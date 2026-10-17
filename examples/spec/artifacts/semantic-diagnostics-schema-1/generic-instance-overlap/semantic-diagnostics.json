@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.instance-duplicate",
+      "message": "Trait instance duplicate",
+      "primary": {
+        "start": 127,
+        "end": 198
+      },
+      "related": [
+        {
+          "message": "this Show instance std/prelude::Show<main::Box<std/prelude::Int>> overlaps the instance defined here",
+          "primary": {
+            "start": 48,
+            "end": 126
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "this Show instance std/prelude::Show<main::Box<std/prelude::Int>> overlaps the instance defined here",
+          "primary": {
+            "start": 48,
+            "end": 126
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

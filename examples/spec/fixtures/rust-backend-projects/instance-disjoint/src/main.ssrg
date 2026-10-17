@@ -1,0 +1,20 @@
+import { Pair as Joined, retained } from "./facade"
+import * as refs from "std/ref"
+
+pub fn probe -> Array<String> = {
+  let same: Joined<Int, Int> = Joined (1, 2)
+  let mixed: Joined<Int, Bool> = Joined (3, True)
+  let saved = retained same
+  [show same, show mixed, saved 4, saved 5]
+}
+
+pub effect fn main = do {
+  let same: Joined<Int, Int> = Joined (6, 7)
+  let mixed: Joined<Int, Bool> = Joined (8, False)
+  callback <- refs.make (retained same)
+  saved <- refs.get callback
+  let cold = println (saved 9)
+  println (show mixed)
+  cold
+  cold
+}

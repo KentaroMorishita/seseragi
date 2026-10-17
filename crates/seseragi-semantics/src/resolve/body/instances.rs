@@ -10,6 +10,10 @@ pub(super) fn resolve_dependency_instances(
         crate::instance_identity::CanonicalInstanceHeadKey,
         Vec<ResolvedDependencyInstance>,
     >::new();
+    let mut heads_by_trait = BTreeMap::<
+        crate::instance_identity::CanonicalInstanceHeadKey,
+        Vec<crate::typed::instances::CoherenceHead>,
+    >::new();
     let mut conflict_origins = BTreeSet::new();
     for dependency in dependencies {
         for instance in &dependency.interface.instances {
@@ -20,20 +24,39 @@ pub(super) fn resolve_dependency_instances(
                 &instance.trait_identity,
                 &instance.argument_identities,
             );
-            let candidates = resolved.entry(key).or_default();
-            if candidates.iter().any(|existing| {
-                existing.identity == instance.identity
-                    && existing.provider_module == instance.provider_module
-                    && existing.trait_identity == instance.trait_identity
-                    && existing.type_parameters == instance.type_parameters
-                    && existing.head == instance.head
-                    && existing.constraints == instance.constraints
+            if resolved.get(&key).is_some_and(|candidates| {
+                candidates.iter().any(|existing| {
+                    existing.identity == instance.identity
+                        && existing.provider_module == instance.provider_module
+                        && existing.trait_identity == instance.trait_identity
+                        && existing.type_parameters == instance.type_parameters
+                        && existing.head == instance.head
+                        && existing.constraints == instance.constraints
+                })
             }) {
                 continue;
             }
-            if !candidates.is_empty() {
+            let head = crate::typed::instances::dependency_head(&instance);
+            let trait_key = crate::instance_identity::canonical_instance_head_key(
+                &instance.trait_identity,
+                &[],
+            );
+            let canonical_trait =
+                crate::typed::instances::canonical_trait(&instance.trait_identity);
+            let heads = heads_by_trait.entry(trait_key).or_default();
+            let conflicts = resolved.contains_key(&key)
+                || head.as_ref().is_some_and(|right| {
+                    heads
+                        .iter()
+                        .any(|left| left.conflicts(right, &canonical_trait))
+                });
+            if conflicts {
                 conflict_origins.insert((dependency.origin.start, dependency.origin.end));
             }
+            if let Some(head) = head {
+                heads.push(head);
+            }
+            let candidates = resolved.entry(key).or_default();
             candidates.push(instance);
         }
     }
@@ -236,5 +259,115 @@ mod tests {
             header: None,
             imports: Vec::new(),
         }
+    }
+}
+
+#[cfg(test)]
+mod overlap_tests {
+    use super::resolve_dependency_instances;
+    use seseragi_project::LinkedDependency;
+    use seseragi_syntax::{
+        ByteSpan, InterfaceInstance, InterfaceType, ModuleInterface, TypeParameter,
+    };
+
+    fn dependency(provider: &str, generic: bool, origin: usize) -> LinkedDependency {
+        let argument = if generic { "$0" } else { "std/prelude::Int" };
+        let canonical = format!("fixture/types::Box<{argument}>");
+        LinkedDependency {
+            specifier: format!("./{provider}"),
+            origin: ByteSpan {
+                start: origin,
+                end: origin + 1,
+            },
+            header: None,
+            imports: Vec::new(),
+            interface: ModuleInterface {
+                schema: 1,
+                module: format!("fixture/{provider}"),
+                source: "lib.ssrg".into(),
+                dependencies: Vec::new(),
+                exports: Vec::new(),
+                operators: Vec::new(),
+                instances: vec![InterfaceInstance {
+                    identity: Some(format!("std/prelude::Show<{canonical}>")),
+                    provider_module: Some(format!("fixture/{provider}")),
+                    trait_identity: Some("std/prelude::Show".into()),
+                    trait_name: "Show".into(),
+                    argument_identities: vec![canonical.clone()],
+                    type_identity: Some(canonical),
+                    type_parameters: if generic {
+                        vec![TypeParameter::value("A")]
+                    } else {
+                        vec![]
+                    },
+                    head: InterfaceType::Apply {
+                        constructor: "Show".into(),
+                        arguments: vec![InterfaceType::ExternalNamed {
+                            name: "Box".into(),
+                            canonical: "fixture/types::Box".into(),
+                            provider_module: "fixture/types".into(),
+                            provider_export: "Box".into(),
+                            arguments: vec![InterfaceType::Named {
+                                name: if generic { "A" } else { "Int" }.into(),
+                                arguments: vec![],
+                            }],
+                        }],
+                    },
+                    constraints: vec![],
+                    origin: ByteSpan { start: 0, end: 1 },
+                }],
+            },
+        }
+    }
+
+    #[test]
+    fn overlap_checks_imported_generic_heads_without_selecting_a_dictionary() {
+        for generic_first in [true, false] {
+            let first = dependency("a", generic_first, 1);
+            let second = dependency("b", !generic_first, 3);
+            let (instances, issues) = resolve_dependency_instances(&[first, second]);
+            assert_eq!(instances.len(), 2);
+            assert_eq!(issues.len(), 1);
+            assert_eq!(issues[0].code, "SES-T0202");
+            assert_eq!(issues[0].primary, ByteSpan { start: 3, end: 4 });
+        }
+    }
+
+    #[test]
+    fn overlap_keeps_reexports_unique_and_unrelated_canonical_owners_distinct() {
+        let first = dependency("a", true, 1);
+        let mut facade = first.clone();
+        facade.interface.module = "fixture/facade".into();
+        facade.origin = ByteSpan { start: 3, end: 4 };
+        let (instances, issues) = resolve_dependency_instances(&[first.clone(), facade]);
+        assert_eq!(instances.len(), 1);
+        assert!(issues.is_empty());
+        let mut second = dependency("b", false, 3);
+        second.interface.instances[0].trait_identity = Some("fixture/custom::Show".into());
+        second.interface.instances[0].identity =
+            Some("fixture/custom::Show<fixture/types::Box<std/prelude::Int>>".into());
+        let (_, issues) = resolve_dependency_instances(&[first.clone(), second]);
+        assert!(issues.is_empty());
+        let mut second = dependency("b", false, 3);
+        let instance = &mut second.interface.instances[0];
+        instance.identity = instance
+            .identity
+            .as_ref()
+            .map(|s| s.replace("fixture/types::Box", "fixture/other::Box"));
+        instance.argument_identities[0] =
+            instance.argument_identities[0].replace("fixture/types::Box", "fixture/other::Box");
+        if let InterfaceType::Apply { arguments, .. } = &mut instance.head {
+            if let InterfaceType::ExternalNamed {
+                canonical,
+                provider_module,
+                ..
+            } = &mut arguments[0]
+            {
+                *canonical = "fixture/other::Box".into();
+                *provider_module = "fixture/other".into();
+            }
+        }
+        let (_, issues) = resolve_dependency_instances(&[first, second]);
+        assert!(issues.is_empty());
     }
 }

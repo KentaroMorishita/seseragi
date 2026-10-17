@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-instance-disjoint@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/instance-disjoint-model@1.0.0#path:vendor/model"
+name = "fixture/instance-disjoint-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:2ea084c840b9d4e6fafecf01c36b364f94d52f00fcb93911f570c475dfbb5efe"
+content_digest = "sha256:68ddaf4d2caed09e7d694a517c148587b9fe480f7babd75d6a9949d6e4370746"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-instance-disjoint@0.0.0#workspace:."
+name = "fixture/native-instance-disjoint"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:2aa6002a40cf26f11ab63a9cabba363dd3849cd8aaeeccdc48ac6895441601f1"
+content_digest = "sha256:fd8af307ced74a1196d0ec51be7704220265f5a68e769c3225ba680d26efe65f"
+dependencies = [
+  { import = "model", package = "fixture/instance-disjoint-model@1.0.0#path:vendor/model" },
+]

@@ -34,6 +34,8 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
     let scratch = Scratch::new();
     for (name, source, code) in [
         ("duplicate", "type Label = | Label\nalias Name = Label\ninstance Show<Name> { fn show value: Label -> String = \"alias\" }\ninstance Show<Label> { fn show value: Label -> String = \"label\" }\n", "SES-T0202"),
+        ("generic-concrete", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = \"generic\" }\ninstance Show<Box<Int>> { fn show value: Box<Int> -> String = \"int\" }\n", "SES-T0202"),
+        ("fundep-output", "type Box<A> = | Box A\ninstance<A> Add<Box<A>, Int, Int> { fn add left: Box<A> -> right: Int -> Int = right }\ninstance Add<Box<Bool>, Int, String> { fn add left: Box<Bool> -> right: Int -> String = \"bad\" }\n", "SES-T0202"),
         ("generic-duplicate", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = \"alias\" }\ninstance<B> Show<Box<B>> { fn show value: Box<B> -> String = \"box\" }\n", "SES-T0202"),
         ("standard-duplicate", "alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = \"number\" }\n", "SES-T0202"),
         ("erased-parameter", "type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = \"label\" }\n", "SES-T0101"),
@@ -192,6 +194,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("array-display", 3),
         ("deprecation", 3),
         ("instance-alias", 3),
+        ("instance-disjoint", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -417,6 +420,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "instance-contracts",
         "deprecation",
         "instance-alias",
+        "instance-disjoint",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -490,6 +494,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "array-display",
         "array-nominal",
         "instance-alias",
+        "instance-disjoint",
     ] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
@@ -1426,6 +1431,7 @@ fn invalid_deprecation_prefixes_fail_before_output_or_execution() {
 fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
     strict_project_reexports("deprecation");
     strict_project_reexports("instance-alias");
+    strict_project_reexports("instance-disjoint");
 }
 
 fn strict_project_reexports(name: &str) {
@@ -1511,4 +1517,60 @@ fn strict_project_reexports(name: &str) {
             assert!(output.stderr.is_empty());
         }
     }
+}
+
+#[test]
+fn imported_blanket_overlap_rejects_before_project_output_or_execution() {
+    let scratch = Scratch::new();
+    let root = scratch.0.join("overlap-λ");
+    fs::create_dir_all(root.join("src")).unwrap();
+    fs::write(root.join("seseragi.toml"), "[package]\nname=\"fixture/overlap\"\nversion=\"0.0.0\"\nlanguage=\"^0.1.0\"\n[run]\nentry=\"main\"\n").unwrap();
+    fs::write(root.join("src/provider.ssrg"), "pub trait Tag<A> { fn tag value: A -> String }\ninstance<A> Tag<A> { fn tag value: A -> String = \"generic\" }\n").unwrap();
+    fs::write(root.join("src/main.ssrg"), "// 雫🙂\nimport { Tag } from \"./provider\"\ntype Box<A> = | Box A\ninstance Tag<Box<Int>> { fn tag value: Box<Int> -> String = \"concrete\" }\npub effect fn main = println \"MUST_NOT_RUN\"\n").unwrap();
+    assert!(cli()
+        .env("PATH", "")
+        .args(["lock", "update"])
+        .arg(&root)
+        .output()
+        .unwrap()
+        .status
+        .success());
+    for profile in ["development", "release"] {
+        let destination = scratch.0.join(profile);
+        let output = cli()
+            .env("PATH", "")
+            .arg("build")
+            .arg(&root)
+            .args(["--profile", profile, "--out-dir"])
+            .arg(&destination)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{output:?}");
+        assert!(output.stdout.is_empty());
+        assert!(!destination.exists());
+        let output = cli()
+            .env("PATH", "")
+            .arg("run")
+            .arg(&root)
+            .args(["--profile", profile, "--diagnostic-format", "json"])
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert!(output.stdout.is_empty());
+        let report: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+        assert!(report.to_string().contains("trait.instance-ambiguous"));
+        assert!(report.to_string().contains("main.ssrg"));
+    }
+    let emitted = scratch.0.join("rejected.rs");
+    let output = cli()
+        .env("PATH", "")
+        .args(["experimental", "emit-rust"])
+        .arg(&root)
+        .args(["--entry", "main", "--output"])
+        .arg(&emitted)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(output.stdout.is_empty());
+    assert!(!emitted.exists());
 }

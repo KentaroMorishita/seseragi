@@ -55,6 +55,15 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn disjoint_repeated_binders_keep_selected_and_saved_dictionaries() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/instance-disjoint.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/instance-disjoint.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
 fn alias_heads_keep_selected_generic_higher_kinded_and_saved_dictionaries() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/instance-alias.ssrg"),

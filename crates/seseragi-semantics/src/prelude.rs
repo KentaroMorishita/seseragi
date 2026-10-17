@@ -4444,3 +4444,15 @@ mod tests {
         );
     }
 }
+
+/// The determining prefix is fixed by the standard trait contract, never by
+/// the spelling of a user-defined trait. Shared coherence uses the same rule
+/// for local and imported declarations even when their result types differ.
+pub(crate) fn determining_instance_arguments(trait_identity: &str) -> Option<usize> {
+    match trait_identity {
+        "std/prelude::Iterable" | "std/prelude::Reducible" => Some(1),
+        "std/prelude::Add" | "std/prelude::Sub" | "std/prelude::Mul" | "std/prelude::Div"
+        | "std/prelude::Rem" | "std/prelude::Pow" => Some(2),
+        _ => None,
+    }
+}
