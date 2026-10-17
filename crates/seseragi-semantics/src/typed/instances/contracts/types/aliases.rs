@@ -31,46 +31,87 @@ pub(super) fn normalize_type(
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
 ) -> Option<ContractType> {
+    normalize_with_policy(resolved, type_ref, active, true)
+}
+
+pub(super) fn normalize_coherence_type(
+    resolved: &ResolvedModule,
+    type_ref: ContractType,
+) -> Option<ContractType> {
+    normalize_with_policy(resolved, type_ref, &mut BTreeSet::new(), false)
+}
+
+fn normalize_with_policy(
+    resolved: &ResolvedModule,
+    type_ref: ContractType,
+    active: &mut BTreeSet<TypeIdentity>,
+    allow_partial_alias: bool,
+) -> Option<ContractType> {
     Some(match type_ref {
-        ContractType::Named(identity) => named(resolved, identity, Vec::new(), active)?,
+        ContractType::Named(identity) => {
+            named(resolved, identity, Vec::new(), active, allow_partial_alias)?
+        }
         ContractType::Apply {
             constructor,
             arguments,
         } => {
             let arguments = arguments
                 .into_iter()
-                .map(|argument| normalize_type(resolved, argument, active))
+                .map(|argument| {
+                    normalize_with_policy(resolved, argument, active, allow_partial_alias)
+                })
                 .collect::<Option<Vec<_>>>()?;
             match *constructor {
-                ContractType::Named(identity) => named(resolved, identity, arguments, active)?,
-                constructor => {
-                    apply_arguments(normalize_type(resolved, constructor, active)?, arguments)?
+                ContractType::Named(identity) => {
+                    named(resolved, identity, arguments, active, allow_partial_alias)?
                 }
+                constructor => apply_arguments(
+                    normalize_with_policy(resolved, constructor, active, allow_partial_alias)?,
+                    arguments,
+                )?,
             }
         }
         ContractType::Function { parameter, result } => ContractType::Function {
-            parameter: Box::new(normalize_type(resolved, *parameter, active)?),
-            result: Box::new(normalize_type(resolved, *result, active)?),
+            parameter: Box::new(normalize_with_policy(
+                resolved,
+                *parameter,
+                active,
+                allow_partial_alias,
+            )?),
+            result: Box::new(normalize_with_policy(
+                resolved,
+                *result,
+                active,
+                allow_partial_alias,
+            )?),
         },
         ContractType::Record { closed, fields } => ContractType::Record {
             closed,
             fields: fields
                 .into_iter()
                 .map(|(name, optional, type_ref)| {
-                    Some((name, optional, normalize_type(resolved, type_ref, active)?))
+                    Some((
+                        name,
+                        optional,
+                        normalize_with_policy(resolved, type_ref, active, allow_partial_alias)?,
+                    ))
                 })
                 .collect::<Option<_>>()?,
         },
         ContractType::Tuple(elements) => ContractType::Tuple(
             elements
                 .into_iter()
-                .map(|element| normalize_type(resolved, element, active))
+                .map(|element| {
+                    normalize_with_policy(resolved, element, active, allow_partial_alias)
+                })
                 .collect::<Option<_>>()?,
         ),
         ContractType::RequirementMerge(operands) => ContractType::RequirementMerge(
             operands
                 .into_iter()
-                .map(|operand| normalize_type(resolved, operand, active))
+                .map(|operand| {
+                    normalize_with_policy(resolved, operand, active, allow_partial_alias)
+                })
                 .collect::<Option<_>>()?,
         ),
         leaf => leaf,
@@ -82,6 +123,7 @@ fn named(
     identity: TypeIdentity,
     mut arguments: Vec<ContractType>,
     active: &mut BTreeSet<TypeIdentity>,
+    allow_partial_alias: bool,
 ) -> Option<ContractType> {
     let owner = resolved.symbols.iter().find(|symbol| {
         symbol.namespace == SymbolNamespace::Type
@@ -117,6 +159,13 @@ fn named(
     } else {
         return apply_arguments(ContractType::Named(identity), arguments);
     };
+    // Missing alias parameters are not interchangeable constructor slots:
+    // aliases can reorder, repeat, or erase them. Do not use padded Hole as
+    // evidence of constructor equality or disjointness.
+    if !allow_partial_alias && (arguments.len() < arity || arguments.contains(&ContractType::Hole))
+    {
+        return None;
+    }
     if arguments.len() > arity || !active.insert(identity.clone()) {
         return None;
     }
@@ -144,7 +193,7 @@ fn named(
             import.scheme_type_bindings.as_deref().unwrap_or(&[]),
         )?
     };
-    let normalized = normalize_type(resolved, expanded, active);
+    let normalized = normalize_with_policy(resolved, expanded, active, allow_partial_alias);
     active.remove(&identity);
     normalized
 }

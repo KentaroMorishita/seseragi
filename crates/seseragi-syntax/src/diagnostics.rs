@@ -147,6 +147,9 @@ impl Diagnostic {
             "trait.instance-head-unresolved" => {
                 "The expanded instance head cannot preserve its type parameters".to_owned()
             }
+            "trait.instance-coherence-unproved" => {
+                "The instance heads cannot yet be proved disjoint".to_owned()
+            }
             "record.field-unresolved" => "This record has no such field".to_owned(),
             "struct.field-unresolved" => "This struct has no such field".to_owned(),
             "effect.do-statement-not-effect"

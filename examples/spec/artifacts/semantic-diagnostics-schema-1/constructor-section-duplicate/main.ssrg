@@ -1,0 +1,6 @@
+// 雫🙂
+type Box<A> = | Box A
+trait Tag<F<_>> { fn tag<A> value: F<A> -> String }
+instance Tag<Box> { fn tag<A> value: Box<A> -> String = "bare" }
+instance Tag<Box<_>> { fn tag<A> value: Box<A> -> String = "section" }
+pub effect fn main = println "MUST_NOT_RUN"

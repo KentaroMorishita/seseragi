@@ -673,3 +673,5 @@ fn structural_deriving_composes_nested_generic_nominal_evidence() {
         crate::semantic_diagnostics("artifact/derived-nested-generic/main.ssrg", source)
     );
 }
+
+mod constructor_coherence;

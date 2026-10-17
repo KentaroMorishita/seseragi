@@ -1,0 +1,10 @@
+// 雫🙂
+type Box<A> = | Box A
+type Pair<A, B> = | Pair (A, B)
+instance<F<_>> Show<Box<F<Bool>>> {
+  fn show value: Box<F<Bool>> -> String = "generic"
+}
+instance Show<Box<Pair<Bool, Int>>> {
+  fn show value: Box<Pair<Bool, Int>> -> String = "concrete"
+}
+pub effect fn main = println "MUST_NOT_RUN"

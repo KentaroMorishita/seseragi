@@ -14,7 +14,7 @@ pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_head_key, canonical_instance_identity,
 };
 pub(crate) use contracts::{
-    analyze_instance_contracts, dependency_head, CoherenceHead, InstanceContractIssue,
+    analyze_instance_contracts, dependency_head, CoherenceHead, HeadRelation, InstanceContractIssue,
 };
 pub(crate) use show::derived_display_requirements;
 pub(crate) use user::canonical_type_ref;
@@ -54,6 +54,12 @@ pub(crate) enum DerivedInstanceIssue {
         identity: String,
         primary: ByteSpan,
         first: ByteSpan,
+    },
+    UnprovedInstanceCoherence {
+        trait_name: String,
+        primary: ByteSpan,
+        first: Option<ByteSpan>,
+        provider_module: Option<String>,
     },
     OverlappingStandardInstance {
         trait_name: String,
@@ -145,27 +151,55 @@ fn local_instance_conflicts(
         .collect::<Vec<_>>();
     let mut issues = Vec::new();
     for (index, instance) in local_instances.iter().enumerate() {
-        let first = local_instances[..index].iter().enumerate().find(|(previous, first)| {
-            let exact = canonical_instance_head_key(&first.trait_identity, &first.argument_identities) == canonical_instance_head_key(&instance.trait_identity, &instance.argument_identities);
-            exact || (same_trait(&first.trait_identity, &instance.trait_identity)
-                && matches!((&heads[*previous], &heads[index]), (Some(left), Some(right)) if left.conflicts(right, &canonical_trait(&instance.trait_identity))))
-        });
-        if let Some((_, first)) = first {
-            if first.argument_identities == instance.argument_identities {
-                issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
+        let first = local_instances[..index]
+            .iter()
+            .enumerate()
+            .find_map(|(previous, first)| {
+                let exact =
+                    canonical_instance_head_key(&first.trait_identity, &first.argument_identities)
+                        == canonical_instance_head_key(
+                            &instance.trait_identity,
+                            &instance.argument_identities,
+                        );
+                if !same_trait(&first.trait_identity, &instance.trait_identity) {
+                    return None;
+                }
+                let relation = if exact {
+                    HeadRelation::Overlap
+                } else {
+                    match (&heads[previous], &heads[index]) {
+                        (Some(left), Some(right)) => {
+                            left.relation(right, &canonical_trait(&instance.trait_identity))
+                        }
+                        _ => HeadRelation::Unproved,
+                    }
+                };
+                (relation != HeadRelation::Disjoint).then_some((first, relation))
+            });
+        if let Some((first, relation)) = first {
+            let issue = if relation == HeadRelation::Unproved {
+                DerivedInstanceIssue::UnprovedInstanceCoherence {
+                    trait_name: instance.trait_name.clone(),
+                    primary: instance.origin,
+                    first: Some(first.origin),
+                    provider_module: None,
+                }
+            } else if first.argument_identities == instance.argument_identities {
+                DerivedInstanceIssue::DuplicateLocalInstance {
                     trait_name: instance.trait_name.clone(),
                     identity: instance.identity.clone(),
                     primary: instance.origin,
                     first: first.origin,
-                });
+                }
             } else {
-                issues.push(DerivedInstanceIssue::OverlappingLocalInstance {
+                DerivedInstanceIssue::OverlappingLocalInstance {
                     trait_name: instance.trait_name.clone(),
                     identity: instance.identity.clone(),
                     primary: instance.origin,
                     first: first.origin,
-                });
-            }
+                }
+            };
+            issues.push(issue);
         }
     }
     issues
@@ -243,16 +277,56 @@ fn local_dependency_conflicts(
         .iter()
         .map(dependency_head)
         .collect::<Vec<_>>();
-    local_instances.iter().filter_map(|local| {
-        let local_head = contracts::local_head(resolved, local);
-        resolved.dependency_instances.iter().zip(&imported_heads).find(|(imported, imported_head)| {
-            let exact = canonical_instance_head_key(&imported.trait_identity, &imported.argument_identities) == canonical_instance_head_key(&local.trait_identity, &local.argument_identities);
-            exact || (same_trait(&imported.trait_identity, &local.trait_identity)
-                && matches!((&local_head, imported_head), (Some(left), Some(right)) if left.conflicts(right, &canonical_trait(&local.trait_identity))))
-        }).map(|(imported, _)| DerivedInstanceIssue::AmbiguousInstance {
-            trait_name: local.trait_name.clone(),
-            type_identity: local.type_identity.clone().unwrap_or_else(|| local.argument_identities.join(",")),
-            provider_module: imported.provider_module.clone(), primary: local.origin,
+    local_instances
+        .iter()
+        .filter_map(|local| {
+            let local_head = contracts::local_head(resolved, local);
+            resolved
+                .dependency_instances
+                .iter()
+                .zip(&imported_heads)
+                .find_map(|(imported, imported_head)| {
+                    if !same_trait(&imported.trait_identity, &local.trait_identity) {
+                        return None;
+                    }
+                    let exact = canonical_instance_head_key(
+                        &imported.trait_identity,
+                        &imported.argument_identities,
+                    ) == canonical_instance_head_key(
+                        &local.trait_identity,
+                        &local.argument_identities,
+                    );
+                    let relation = if exact {
+                        HeadRelation::Overlap
+                    } else {
+                        match (&local_head, imported_head) {
+                            (Some(left), Some(right)) => {
+                                left.relation(right, &canonical_trait(&local.trait_identity))
+                            }
+                            _ => HeadRelation::Unproved,
+                        }
+                    };
+                    match relation {
+                        HeadRelation::Disjoint => None,
+                        HeadRelation::Unproved => {
+                            Some(DerivedInstanceIssue::UnprovedInstanceCoherence {
+                                trait_name: local.trait_name.clone(),
+                                primary: local.origin,
+                                first: None,
+                                provider_module: Some(imported.provider_module.clone()),
+                            })
+                        }
+                        HeadRelation::Overlap => Some(DerivedInstanceIssue::AmbiguousInstance {
+                            trait_name: local.trait_name.clone(),
+                            type_identity: local
+                                .type_identity
+                                .clone()
+                                .unwrap_or_else(|| local.argument_identities.join(",")),
+                            provider_module: imported.provider_module.clone(),
+                            primary: local.origin,
+                        }),
+                    }
+                })
         })
-    }).collect()
+        .collect()
 }
