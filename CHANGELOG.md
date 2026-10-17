@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Reject overlapping generic and concrete trait instances before code generation, including derived instances, imported dictionaries and standard functional dependencies. Compare canonical owners and scoped type parameters without changing selected evidence, source arity or evaluation order. Keep disjoint heads and repeated imports of the same provider valid. Unapplied alias constructors remain unsupported (#854).
+- Reject overlapping generic and concrete trait instances before code generation, including derived instances, imported dictionaries and standard functional dependencies. Compare canonical owners and scoped type parameters without changing selected evidence, source arity or evaluation order. Keep disjoint heads and repeated imports of the same provider valid. Higher-kinded constructor sections and unapplied alias constructors remain in progress (#854); generic impl parameter mapping is tracked in #867.
 
 ## [0.61.44] - 2026-10-17
 
