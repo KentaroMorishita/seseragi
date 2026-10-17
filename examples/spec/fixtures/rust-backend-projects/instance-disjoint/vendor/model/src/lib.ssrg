@@ -1,0 +1,15 @@
+pub type Pair<A, B> = | Pair (A, B)
+alias Twin<A> = Pair<A, A>
+
+instance<A> Show<Twin<A>> where Show<A> {
+  fn show value: Pair<A, A> -> String =
+    match value { Pair (left, right) -> "twin=" + show left + "/" + show right }
+}
+
+instance Show<Pair<Int, Bool>> {
+  fn show value: Pair<Int, Bool> -> String =
+    match value { Pair (left, right) -> "mixed=" + show left + "/" + show right }
+}
+
+pub fn retained<A> value: A -> (Int -> String) where Show<A> =
+  \n -> show value + ":" + show n

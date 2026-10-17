@@ -1,0 +1,7 @@
+type Box<A> = | Box A
+instance<A> Add<Box<A>, Int, Int> {
+  fn add left: Box<A> -> right: Int -> Int = right
+}
+instance Add<Box<Bool>, Int, String> {
+  fn add left: Box<Bool> -> right: Int -> String = "bad"
+}

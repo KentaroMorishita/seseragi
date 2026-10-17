@@ -3,10 +3,12 @@ use seseragi_syntax::{InterfaceMethod, SurfaceMethod, TypeParameter, TypeRef};
 use std::collections::BTreeMap;
 
 mod aliases;
+mod coherence;
 mod interface;
 mod model;
 mod resolution;
 
+pub(crate) use coherence::{dependency_head, local_head, CoherenceHead};
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.45] - 2026-10-17
+
+### Fixed
+
+- Reject overlapping generic and concrete trait instances before code generation, including derived instances, imported dictionaries and standard functional dependencies. Compare canonical owners and scoped type parameters without changing selected evidence, source arity or evaluation order. Keep disjoint heads and repeated imports of the same provider valid. Unapplied alias constructors remain unsupported (#854).
+
 ## [0.61.44] - 2026-10-17
 
 ### Fixed

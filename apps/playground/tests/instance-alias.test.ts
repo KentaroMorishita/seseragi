@@ -21,13 +21,17 @@ beforeAll(async () => {
 })
 
 test("alias heads keep selected dictionaries, closures and resource lifetimes", async () => {
-  for (const name of ["instance-alias", "instance-alias-effects"]) {
+  for (const name of [
+    "instance-alias",
+    "instance-disjoint",
+    "instance-alias-effects",
+  ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend/${name}`,
       import.meta.url
     )
     let source = await Bun.file(`${base.pathname}.ssrg`).text()
-    if (name === "instance-alias")
+    if (name !== "instance-alias-effects")
       source += "\npub effect fn main = println (show (probe ()))\n"
     const expected = (
       await Bun.file(`${base.pathname}.stdout`).text()
@@ -49,6 +53,14 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
 
 test("unused duplicate and unrepresented alias heads fail before generation", () => {
   for (const [declarations, key] of [
+    [
+      'type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = "generic" }\ninstance Show<Box<Int>> { fn show value: Box<Int> -> String = "int" }\n',
+      "trait.instance-duplicate",
+    ],
+    [
+      'type Box<A> = | Box A\ninstance<A> Add<Box<A>, Int, Int> { fn add left: Box<A> -> right: Int -> Int = right }\ninstance Add<Box<Bool>, Int, String> { fn add left: Box<Bool> -> right: Int -> String = "bad" }\n',
+      "trait.instance-duplicate",
+    ],
     [
       'type Label = | Label\nalias Name = Label\ninstance Show<Name> { fn show value: Label -> String = "alias" }\ninstance Show<Label> { fn show value: Label -> String = "label" }\n',
       "trait.instance-duplicate",

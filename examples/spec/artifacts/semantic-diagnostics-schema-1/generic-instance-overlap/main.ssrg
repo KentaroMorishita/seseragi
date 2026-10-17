@@ -1,0 +1,8 @@
+type Box<A> = | Box A
+alias Wrapped<A> = Box<A>
+instance<A> Show<Wrapped<A>> {
+  fn show value: Box<A> -> String = "generic"
+}
+instance Show<Box<Int>> {
+  fn show value: Box<Int> -> String = "int"
+}

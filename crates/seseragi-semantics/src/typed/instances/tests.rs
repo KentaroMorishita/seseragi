@@ -5,6 +5,7 @@ use crate::{
 use seseragi_syntax::InterfaceType;
 
 mod alias_heads;
+mod overlap;
 
 #[test]
 fn selects_non_generic_derived_show_as_typed_evidence() {
