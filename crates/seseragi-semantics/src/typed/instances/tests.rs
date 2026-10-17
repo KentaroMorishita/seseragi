@@ -4,6 +4,7 @@ use crate::{
 };
 use seseragi_syntax::InterfaceType;
 
+mod alias_constructors;
 mod alias_heads;
 mod overlap;
 

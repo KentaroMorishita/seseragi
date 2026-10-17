@@ -25,6 +25,7 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
     "instance-alias",
     "instance-disjoint",
     "constructor-disjoint",
+    "alias-constructor",
     "instance-alias-effects",
   ]) {
     const base = new URL(
@@ -75,7 +76,7 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
       "trait.instance-head-unresolved",
     ],
     [
-      'type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = "box" }\n',
+      'type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = "box" }\n',
       "trait.instance-head-unresolved",
     ],
   ]) {
@@ -102,55 +103,60 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
 })
 
 test("dictionary heads retain provider owners across renamed facade exports", async () => {
-  const base = new URL(
-    "../../../examples/spec/fixtures/rust-backend-projects/instance-alias/",
-    import.meta.url
-  )
-  const paths = [
-    ["main.ssrg", "src/main.ssrg"],
-    ["facade.ssrg", "src/facade.ssrg"],
-    ["model.ssrg", "vendor/model/src/lib.ssrg"],
-  ] as const
-  const files = await Promise.all(
-    paths.map(async ([path, file]) => ({
-      path,
-      source: (await Bun.file(new URL(file, base)).text()).replaceAll(
-        'from "model"',
-        'from "./model"'
-      ),
-    }))
-  )
-  const manifest =
-    '[package]\nname="fixture/instance-alias"\nversion="0.0.0"\nlanguage="^0.1.0"\n[run]\nentry="main"\n'
-  const response = JSON.parse(
-    compile_project(JSON.stringify({ schema: 1, manifest, files }))
-  ) as ProjectCompileResponse
-  expect(response.status).toBe("success")
-  if (response.status !== "success" || response.entry.contract === undefined)
-    throw new Error(JSON.stringify(response))
-  expect(response.modules).toHaveLength(3)
-  const expected = (
-    await Bun.file(new URL("expected.stdout", base)).text()
-  ).trimEnd()
-  expect(
-    await executeGeneratedProject(
-      response.modules.map(({ path, generated }) => ({
-        path,
-        typescript: generated.typescript,
-      })),
-      response.entry.path,
-      response.entry.contract
+  for (const name of ["instance-alias", "alias-constructor"]) {
+    const base = new URL(
+      `../../../examples/spec/fixtures/rust-backend-projects/${name}/`,
+      import.meta.url
     )
-  ).toEqual({
-    stdout: expected,
-    debug: "()",
-  })
+    const paths = [
+      ["main.ssrg", "src/main.ssrg"],
+      ["facade.ssrg", "src/facade.ssrg"],
+      ["model.ssrg", "vendor/model/src/lib.ssrg"],
+    ] as const
+    const files = await Promise.all(
+      paths.map(async ([path, file]) => ({
+        path,
+        source: (await Bun.file(new URL(file, base)).text()).replaceAll(
+          'from "model"',
+          'from "./model"'
+        ),
+      }))
+    )
+    const manifest =
+      '[package]\nname="fixture/alias-projection"\nversion="0.0.0"\nlanguage="^0.1.0"\n[run]\nentry="main"\n'
+    const response = JSON.parse(
+      compile_project(JSON.stringify({ schema: 1, manifest, files }))
+    ) as ProjectCompileResponse
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || response.entry.contract === undefined)
+      throw new Error(JSON.stringify(response))
+    expect(response.modules).toHaveLength(3)
+    const expected = (
+      await Bun.file(new URL("expected.stdout", base)).text()
+    ).trimEnd()
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({
+      stdout: expected,
+      debug: "()",
+    })
+  }
 })
 
 test("constructor overlap and unproved HKT heads fail without generated code", async () => {
   for (const [fixture, key] of [
     ["constructor-section-duplicate", "trait.instance-duplicate"],
     ["constructor-coherence-unproved", "trait.instance-coherence-unproved"],
+    ["alias-constructor-duplicate", "trait.instance-duplicate"],
+    ["alias-constructor-noneta", "trait.instance-head-unresolved"],
+    ["alias-method-hole-contract", "trait.instance-method-signature-mismatch"],
   ]) {
     const source = await Bun.file(
       new URL(
@@ -173,6 +179,6 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
       new TextDecoder("utf-8", { fatal: true }).decode(
         bytes.slice(error.primary.start, error.primary.end)
       )
-    ).toStartWith("instance")
+    ).toStartWith(fixture === "alias-method-hole-contract" ? "fn" : "instance")
   }
 })

@@ -115,7 +115,7 @@ fn alias_head_preserves_nominal_and_shadowed_primitive_owners() {
 
 #[test]
 fn alias_head_rejects_an_unrepresented_constructor_before_it_is_used() {
-    let source = "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = \"box\" }\n";
+    let source = "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"pair\" }\n";
     let diagnostics = semantic_diagnostics("artifact/alias-constructor/main.ssrg", source);
     assert!(
         diagnostics

@@ -14,7 +14,8 @@ pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_head_key, canonical_instance_identity,
 };
 pub(crate) use contracts::{
-    analyze_instance_contracts, dependency_head, CoherenceHead, HeadRelation, InstanceContractIssue,
+    analyze_instance_contracts, dependency_head, represented_alias_constructor, CoherenceHead,
+    HeadRelation, InstanceContractIssue,
 };
 pub(crate) use show::derived_display_requirements;
 pub(crate) use user::canonical_type_ref;
@@ -87,6 +88,21 @@ pub(crate) fn analyze_instances(
     issues.extend(local_instance_conflicts(resolved, &instances));
     issues.extend(standard_instance_conflicts(&instances));
     issues.extend(local_dependency_conflicts(resolved, &instances));
+    // A rejected alias template must not silently disappear when canonical
+    // identity construction cannot create its TypedInstance.
+    for declaration in &resolved.declarations {
+        if let seseragi_syntax::SurfaceDecl::Instance {
+            arguments, span, ..
+        } = declaration
+        {
+            if arguments
+                .iter()
+                .any(|argument| contracts::unrepresented_alias_head(resolved, argument))
+            {
+                issues.push(DerivedInstanceIssue::UnresolvedInstanceHead { primary: *span });
+            }
+        }
+    }
     for instance in &instances {
         let erased_parameter = resolved.declarations.iter().any(|declaration| {
             matches!(declaration, seseragi_syntax::SurfaceDecl::Instance { span, type_parameters, arguments, .. }

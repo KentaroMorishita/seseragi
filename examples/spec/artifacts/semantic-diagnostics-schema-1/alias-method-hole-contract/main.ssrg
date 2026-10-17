@@ -1,0 +1,5 @@
+// 雫🙂
+alias Id<A> = A
+trait Tag<A> { fn tag value: Int -> String }
+instance Tag<Int> { fn tag value: Id<_> -> String = "unused" }
+pub effect fn main = println "MUST_NOT_RUN"

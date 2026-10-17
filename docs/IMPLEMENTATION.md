@@ -717,7 +717,15 @@ slotはinstanceやmethodのbinderとは別で、TypedHirやCoreIrの辞書ABIへ
 constructorの形を緩めてもrigidな型が一致しない場合だけ併存を許可し、残る未証明の組合せは
 `trait.instance-coherence-unproved`で生成前に拒否します。単独のHKT instanceはこの理由では拒否しません。
 `Pair<_, Int>`と`Maybe`のように、sectionの中でもcanonical ownerが異なることを証明できるheadは併存を許可します。
-型引数を渡さないaliasは、引数の順序・重複・消失をまだ表現できないため、この証明には使いません。
+型引数を渡さないtransparent aliasは、alias ownerと番号を持つ内部slotで全first-order parameterを展開します。
+展開先の末尾にslotが順番どおり一度ずつ現れ、固定prefixにslotが残らず、canonical ownerと宣言arityも一致する場合だけ、
+`Wrapped<A> = Box<A>`や`IntPair<A> = Pair<Int, A>`を既存constructorへeta正規化します。
+登録・method契約・coherenceとsemantic alias展開でこの証明を共有し、slotは外部schemaや辞書ABIへ渡しません。
+method署名では、型引数をすべて与えたaliasの値型比較とconstructorの証明を区別します。
+`Id<_>`と`Int`の署名不一致を見逃さず、`Constant<_> = Int`の通常の値型置換を保持します。
+alias契約を正規化できない場合も署名検査を見送らず、位置付きの不一致として拒否します。
+引数の並べ替え・重複・消失、非etaの入れ子、aliasのhigher-kinded parameter、暗黙の不足引数と明示holeの混在は
+この範囲では表現せず、未使用のinstanceも`trait.instance-head-unresolved`で生成前に拒否します。
 local・imported・deriveの重複判定と、canonicalな標準functional dependencyへ同じ検査を適用します。
 
 instance headのTypedHir以降のschemaは`trait`とordered `arguments`を分離して保持します。従来の単一`head`型は

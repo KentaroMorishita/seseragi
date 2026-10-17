@@ -4,6 +4,12 @@ use crate::SymbolId;
 pub(super) enum ContractType {
     Binder(u32),
     Parameter(SymbolId),
+    // Private template variables scoped to one alias proof. These must all
+    // disappear before returning a contract, identity, or semantic type.
+    AliasSlot {
+        owner: TypeIdentity,
+        index: u32,
+    },
     Named(TypeIdentity),
     Apply {
         constructor: Box<ContractType>,
