@@ -10,7 +10,9 @@
     "effect.core.flatMap",
     "effect.console.println",
     "core.int.show",
-    "core.int"
+    "core.int",
+    "core.bool.show",
+    "core.bool"
   ],
   "imports": [
     {
@@ -28,6 +30,10 @@
     {
       "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
     }
   ],
   "sourceImports": [
@@ -381,6 +387,112 @@
               "start": 356,
               "end": 382
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "saved",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "saved="
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "forward",
+            "typeParameters": [
+              "Let426T0"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Let426T0",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "read",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "boxed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 412,
+              "end": 454
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "forward",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "42"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -388,14 +500,24 @@
           "callee": "_ssrg_console_println",
           "arguments": [
             {
-              "kind": "call",
-              "callee": "saved",
-              "arguments": [
-                {
-                  "kind": "string",
-                  "value": "saved="
-                }
-              ]
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "forward",
+                "arguments": [
+                  {
+                    "kind": "boolean",
+                    "value": true
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_boolShow"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
             }
           ]
         }
@@ -403,7 +525,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 300,
-        "end": 411
+        "end": 504
       }
     }
   ]

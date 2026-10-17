@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Keep identity-checked generic substitutions when an imported alias return uses a different display name from its parameter. Preserve scoped binders and canonical child dictionary evidence through renamed, namespace and facade imports, including saved closures. Continue rejecting distinct nominal owners, conflicting arguments and opaque representation access before generation (#873).
+- Keep identity-checked generic substitutions when an imported alias return uses a different display name from its parameter. Preserve scoped binders and canonical child dictionary evidence through renamed, namespace and facade imports, including saved closures and rank-1 local lambdas. Continue rejecting distinct nominal owners, conflicting arguments and opaque representation access before generation (#873).
 
 ## [0.61.47] - 2026-10-17
 

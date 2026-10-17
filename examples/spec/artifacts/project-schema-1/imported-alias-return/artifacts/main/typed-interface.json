@@ -51,7 +51,7 @@
       "declarationKind": "effect-function",
       "declaration": {
         "start": 300,
-        "end": 411
+        "end": 504
       },
       "scheme": {
         "typeParameters": [],

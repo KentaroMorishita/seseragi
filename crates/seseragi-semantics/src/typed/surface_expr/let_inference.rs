@@ -418,6 +418,30 @@ impl Inference<'_, '_> {
         }
         map_children(value, |child| self.resolve(child))
     }
+
+    fn nominal_application(&self, value: &TypedType) -> Option<(String, Vec<TypedType>)> {
+        let value = self.context.semantic_value_from_typed_type(value);
+        let (canonical, arguments) = match value.key {
+            SemanticTypeKey::Adt { owner, arguments }
+            | SemanticTypeKey::Struct { owner, arguments } => (
+                self.context.resolution.symbol(owner)?.canonical.clone()?,
+                arguments,
+            ),
+            SemanticTypeKey::ExternalNominal {
+                canonical,
+                arguments,
+            } => (canonical, arguments),
+            _ => return None,
+        };
+        Some((
+            canonical,
+            arguments
+                .into_iter()
+                .map(|argument| argument.type_ref)
+                .collect(),
+        ))
+    }
+
     fn unify(&mut self, left: &TypedType, right: &TypedType) -> Option<()> {
         let left = self.resolve(left);
         let right = self.resolve(right);
@@ -435,6 +459,19 @@ impl Inference<'_, '_> {
             }
             self.substitutions.insert(name.to_owned(), other.clone());
             return Some(());
+        }
+        // A named import and an interface return can spell the same nominal
+        // differently. Compare the resolved owner and expanded arguments;
+        // aliases can reorder, fix or erase arguments, so their raw display
+        // argument lists are not a proof. Scoped parameters and inference
+        // variables have no nominal owner and keep the ordinary path below.
+        if let (Some((left_owner, left_arguments)), Some((right_owner, right_arguments))) = (
+            self.nominal_application(&left),
+            self.nominal_application(&right),
+        ) {
+            return (left_owner == right_owner)
+                .then(|| self.unify_many(&left_arguments, &right_arguments))
+                .flatten();
         }
         match (&left, &right) {
             (

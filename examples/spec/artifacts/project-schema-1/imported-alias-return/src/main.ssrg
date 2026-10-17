@@ -9,4 +9,7 @@ pub effect fn main = do {
   println (read (boxed 42))
   let saved = hold (boxed 7)
   println (saved "saved=")
+  let forward = \value -> read (boxed value)
+  println (forward 42)
+  println (forward True)
 }

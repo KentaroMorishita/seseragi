@@ -6,7 +6,7 @@
     "seseragi://fixture/imported-alias-return::main"
   ],
   "sourcesContent": [
-    "import { Box as Foreign } from \"./domain\"\nimport { boxed } from \"./facade\"\ntype Box<A> = | Local A\nfn read<A> value: Foreign<A> -> String where Show<A> =\n  match value { Foreign inner -> show inner }\nfn hold<A> value: Foreign<A> -> (String -> String) where Show<A> =\n  \\prefix -> prefix + read value\npub effect fn main = do {\n  println (read (boxed 42))\n  let saved = hold (boxed 7)\n  println (saved \"saved=\")\n}\n"
+    "import { Box as Foreign } from \"./domain\"\nimport { boxed } from \"./facade\"\ntype Box<A> = | Local A\nfn read<A> value: Foreign<A> -> String where Show<A> =\n  match value { Foreign inner -> show inner }\nfn hold<A> value: Foreign<A> -> (String -> String) where Show<A> =\n  \\prefix -> prefix + read value\npub effect fn main = do {\n  println (read (boxed 42))\n  let saved = hold (boxed 7)\n  println (saved \"saved=\")\n  let forward = \\value -> read (boxed value)\n  println (forward 42)\n  println (forward True)\n}\n"
   ],
   "names": [
     "Box",
@@ -27,7 +27,16 @@
     "boxed",
     "intShow",
     "println",
-    "saved"
+    "saved",
+    "forward",
+    "read",
+    "boxed",
+    "println",
+    "forward",
+    "intShow",
+    "println",
+    "forward",
+    "boolShow"
   ],
   "mappings": ";;;;;;;;;AAEAA;;AAAgBC;AAChBC;AAEAG;AAEAG"
 }

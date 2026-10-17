@@ -480,7 +480,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 300,
-        "end": 411
+        "end": 504
       },
       "parameters": [
         {
@@ -695,6 +695,257 @@
               "start": 356,
               "end": 382
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "saved",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "saved=",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 400,
+                        "end": 408
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 394,
+                    "end": 408
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 385,
+                "end": 409
+              }
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "forward",
+            "typeParameters": [
+              "Let426T0"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Let426T0",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "fixture/imported-alias-return::main::read",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-alias-return::domain::boxed",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Let426T0",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 448,
+                        "end": 453
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Box",
+                    "canonical": "fixture/imported-alias-return::domain::Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Let426T0",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 442,
+                    "end": 453
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Let426T0",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 436,
+                "end": 454
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 412,
+              "end": 454
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "forward",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "42",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 474,
+                        "end": 476
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 466,
+                    "end": 476
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 457,
+                "end": 477
+              }
+            }
           }
         ],
         "result": {
@@ -727,15 +978,33 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "saved",
+              "callee": "forward",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "saved=",
+                  "kind": "boolean",
+                  "value": true,
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 400,
-                    "end": 408
+                    "start": 497,
+                    "end": 501
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Bool>"
                   }
                 }
               ],
@@ -746,21 +1015,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 394,
-                "end": 408
+                "start": 489,
+                "end": 501
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 385,
-            "end": 409
+            "start": 480,
+            "end": 502
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 321,
-          "end": 411
+          "end": 504
         }
       }
     }

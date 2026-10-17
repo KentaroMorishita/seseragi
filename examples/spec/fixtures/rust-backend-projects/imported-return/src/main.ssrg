@@ -18,10 +18,19 @@ fn through<F<_>, A> value: F<A> -> String where Tag<F, A> = tag "generic=" value
 fn retained<A> value: Foreign<A> -> (String -> String) where Show<A> =
   \prefix -> tag prefix value
 
+fn kept<A> value: Foreign<A> -> (String -> Foreign<A>) = \prefix -> value
+
 pub fn probe -> Array<String> = {
   let method: String -> Foreign<Int> -> String = tag
   let saved = method "saved="
-  [through (boxed 42), saved (boxed 1), saved (boxed 2)]
+  let forward = \value -> kept (boxed value)
+  [
+    through (boxed 42),
+    saved (boxed 1),
+    saved (boxed 2),
+    "lambda=" + show (match forward 42 "saved" { Foreign inner -> inner }),
+    "lambda=" + show (match forward True "saved" { Foreign inner -> inner })
+  ]
 }
 
 pub effect fn main = do {

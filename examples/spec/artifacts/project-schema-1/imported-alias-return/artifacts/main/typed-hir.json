@@ -516,7 +516,7 @@
       "visibility": "public",
       "origin": {
         "start": 300,
-        "end": 411
+        "end": 504
       },
       "inferredContract": true,
       "parameters": [
@@ -769,6 +769,306 @@
               "start": 356,
               "end": 382
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "saved",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "saved=",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 400,
+                        "end": 408
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 394,
+                    "end": 408
+                  }
+                }
+              ],
+              "origin": {
+                "start": 385,
+                "end": 409
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "constraints": [
+              {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "constraintIdentities": [
+              "std/prelude::Show"
+            ],
+            "typeParameters": [
+              "Let426T0"
+            ],
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "forward",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Let426T0",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 416,
+                "end": 423
+              }
+            },
+            "value": {
+              "kind": "lambda",
+              "parameter": {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Let426T0",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 427,
+                  "end": 432
+                }
+              },
+              "body": {
+                "kind": "call",
+                "callee": "fixture/imported-alias-return::main::read",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/imported-alias-return::domain::boxed",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Let426T0",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 448,
+                          "end": 453
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Box",
+                      "canonical": "fixture/imported-alias-return::domain::Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Let426T0",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 442,
+                      "end": 453
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Let426T0",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "parameter",
+                      "index": 0
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 436,
+                  "end": 454
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Let426T0",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 426,
+                "end": 454
+              }
+            },
+            "origin": {
+              "start": 412,
+              "end": 454
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "forward",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "42",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 474,
+                        "end": 476
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 466,
+                    "end": 476
+                  }
+                }
+              ],
+              "origin": {
+                "start": 457,
+                "end": 477
+              }
+            }
           }
         ],
         "result": {
@@ -803,19 +1103,37 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "saved",
+              "callee": "forward",
               "arguments": [
                 {
-                  "kind": "string",
-                  "value": "saved=",
+                  "kind": "boolean",
+                  "value": true,
                   "type": {
                     "kind": "named",
-                    "name": "String",
+                    "name": "Bool",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 400,
-                    "end": 408
+                    "start": 497,
+                    "end": 501
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Bool>"
                   }
                 }
               ],
@@ -825,19 +1143,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 394,
-                "end": 408
+                "start": 489,
+                "end": 501
               }
             }
           ],
           "origin": {
-            "start": 385,
-            "end": 409
+            "start": 480,
+            "end": 502
           }
         },
         "origin": {
           "start": 321,
-          "end": 411
+          "end": 504
         }
       }
     }

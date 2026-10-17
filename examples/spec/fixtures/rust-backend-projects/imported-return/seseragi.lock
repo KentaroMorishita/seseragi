@@ -22,7 +22,7 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:58771cfa7d6e0f26256ca5edc48931b0292d5889623701a002d8c8461059a3f5"
-content_digest = "sha256:7f6211c1ec72c4fc9491f3adb025623ebb32985a561ba9a25177608031b079d1"
+content_digest = "sha256:d894c0cb0fdb64f6cb1a66369981bcb1f473a283bae4df4bcda397c3146ea82e"
 dependencies = [
   { import = "model", package = "fixture/imported-return-model@1.0.0#path:vendor/model" },
 ]

@@ -15,7 +15,9 @@
       "effect.core.flatMap",
       "effect.console.println",
       "core.int.show",
-      "core.int"
+      "core.int",
+      "core.bool.show",
+      "core.bool"
     ]
   },
   "exports": [

@@ -8,6 +8,9 @@ pub alias Again<A> = Wrapped<A>
 pub fn boxed<A> value: A -> Again<A> = Box value
 pub opaque struct Secret<A> { value: A }
 pub fn secret<A> value: A -> Secret<A> = Secret { value: value }
+pub type Pair<A, B> = | Pair (A, B)
+pub alias Flipped<A, B> = Pair<B, A>
+pub fn paired<A> value: A -> Pair<String, A> = Pair ("fixed=", value)
 "#;
 
 fn project(
@@ -147,4 +150,50 @@ fn opaque_returns_keep_their_owner_without_exposing_the_representation() {
     ] {
         project(&format!("{prefix}{body}\n")).unwrap_err();
     }
+}
+
+#[test]
+fn generalizes_local_lambdas_through_imported_nominal_alias_returns() {
+    for local in ["", "type Int = | Nominal Bool\ntype Box<A> = | Local A\n"] {
+        let source = format!(
+            r#"
+import {{ Box as Foreign }} from "model"
+import {{ boxed }} from "./facade"
+{local}fn describe<A> value: Foreign<A> -> String where Show<A> =
+  match value {{ Foreign inner -> show inner }}
+pub effect fn main = do {{
+  let forward = \value -> describe (boxed value)
+  println (forward 42)
+  println (forward True)
+}}
+"#
+        );
+        project(&source).unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+    }
+}
+
+#[test]
+fn rank1_nominal_unification_preserves_alias_arguments_and_rejects_other_owners() {
+    let source = r#"
+import { Pair as Foreign, Flipped, paired } from "model"
+fn describe<A> value: Flipped<A, String> -> String where Show<A> =
+  match value { Foreign (prefix, inner) -> prefix + show inner }
+pub effect fn main = do {
+  let forward = \value -> describe (paired value)
+  println (forward 42)
+}
+"#;
+    project(source).unwrap_or_else(|error| panic!("{error:#?}"));
+    project(
+        r#"
+import { Box as Foreign } from "model"
+type Box<A> = | Local A
+fn keep<A> value: Foreign<A> -> Foreign<A> = value
+pub effect fn main = do {
+  let wrong = \value -> keep (Local value)
+  wrong 42
+}
+"#,
+    )
+    .unwrap_err();
 }
