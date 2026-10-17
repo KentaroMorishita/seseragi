@@ -145,9 +145,37 @@ fn selected_show_instances<'a>(
                     arguments,
                 } if constructor == "Show"
                     && arguments.len() == 1
-                    && &arguments[0] == failure
+                    && local_head_matches(interface, failure, &arguments[0])
             )
     })
+}
+
+fn local_head_matches(
+    interface: &TypedModuleInterface,
+    failure: &InterfaceType,
+    head: &InterfaceType,
+) -> bool {
+    if head == failure {
+        return true;
+    }
+    let InterfaceType::ExternalNamed {
+        canonical,
+        provider_module,
+        provider_export,
+        arguments,
+        ..
+    } = head
+    else {
+        return false;
+    };
+    arguments.is_empty()
+        && local_type_identity(interface, failure).as_ref() == Some(canonical)
+        && provider_module == &interface.module
+        && interface.exports.iter().any(|export| {
+            export.namespace == "type"
+                && export.symbol == *canonical
+                && export.name == *provider_export
+        })
 }
 
 fn local_type_identity(

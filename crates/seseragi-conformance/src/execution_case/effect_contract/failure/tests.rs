@@ -266,6 +266,55 @@ fn requires_exactly_one_matching_generated_dictionary() {
 }
 
 #[test]
+fn local_failure_dictionary_head_checks_canonical_owner_and_export() {
+    let head = InterfaceType::ExternalNamed {
+        name: "RenamedError".to_owned(),
+        canonical: "artifact/example::AppError".to_owned(),
+        provider_module: "artifact/example".to_owned(),
+        provider_export: "AppError".to_owned(),
+        arguments: Vec::new(),
+    };
+    let generated = generated_instances(json!([generated_show("showAppError")]));
+    assert!(resolve_effect_entry_contract(
+        &interface(vec![show_instance(head.clone())]),
+        &named("AppError"),
+        &generated,
+    )
+    .is_ok());
+
+    for kind in ["canonical", "provider", "export", "arguments"] {
+        let mut forged = head.clone();
+        let InterfaceType::ExternalNamed {
+            canonical,
+            provider_module,
+            provider_export,
+            arguments,
+            ..
+        } = &mut forged
+        else {
+            unreachable!();
+        };
+        match kind {
+            "canonical" => *canonical = "artifact/other::AppError".to_owned(),
+            "provider" => *provider_module = "artifact/other".to_owned(),
+            "export" => *provider_export = "OtherError".to_owned(),
+            "arguments" => arguments.push(named("Int")),
+            _ => unreachable!(),
+        }
+        let error = resolve_effect_entry_contract(
+            &interface(vec![show_instance(forged)]),
+            &named("AppError"),
+            &generated,
+        )
+        .unwrap_err();
+        assert!(
+            error.contains("requires a selected Show instance"),
+            "{kind}: {error}"
+        );
+    }
+}
+
+#[test]
 fn rejects_dictionary_exports_that_cannot_be_imported_as_typescript_names() {
     let typed = interface(vec![show_instance(named("AppError"))]);
     let generated = generated_instances(json!([generated_show("bad-name;inject()")]));
