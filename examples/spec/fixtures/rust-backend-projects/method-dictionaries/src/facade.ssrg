@@ -1,0 +1,1 @@
+pub import { Holder, Paint, decorated as draw, make } from "model"

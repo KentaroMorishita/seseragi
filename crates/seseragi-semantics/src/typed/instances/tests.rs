@@ -366,7 +366,7 @@ fn selects_local_instance_evidence_for_a_trait_method_call() {
     assert!(matches!(
         call,
         Some(crate::TypedExpr::Call {
-            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method }),
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method, .. }),
             evidence,
             ..
         }) if trait_identity == "artifact/trait-method-call::trait(Render)"
@@ -444,7 +444,7 @@ fn selects_unconstrained_generic_local_instance_with_concrete_type_arguments() {
     assert!(matches!(
         call,
         Some(crate::TypedExpr::Call {
-            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method }),
+            trait_dispatch: Some(crate::TypedTraitDispatch { trait_identity, method, .. }),
             evidence,
             ..
         }) if trait_identity == "artifact/generic-instance-dispatch::trait(Tag)"

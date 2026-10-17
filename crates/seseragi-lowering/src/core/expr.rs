@@ -199,6 +199,26 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
                 trait_identity: dispatch.trait_identity,
                 method: dispatch.method,
+                method_contract: dispatch.method_contract.map(|contract| {
+                    super::CoreTraitMethodContract {
+                        parameters: contract
+                            .parameters
+                            .into_iter()
+                            .map(lower_typed_type)
+                            .collect(),
+                        constraints: contract
+                            .constraints
+                            .into_iter()
+                            .enumerate()
+                            .map(|(index, constraint)| {
+                                super::instances::lower_constraint_with_identity(
+                                    constraint,
+                                    contract.constraint_identities.get(index).cloned().flatten(),
+                                )
+                            })
+                            .collect(),
+                    }
+                }),
             }),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),

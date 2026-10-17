@@ -16,6 +16,7 @@ mod display;
 mod floats;
 mod lists;
 mod local;
+mod methods;
 mod scalar;
 mod tail;
 
@@ -151,13 +152,6 @@ pub fn emit(
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         let mut values = Vec::new();
         for method in methods {
-            if !method.constraints.is_empty() {
-                return Err(crate::project::at(
-                    "Rust backend: method constraints are unsupported",
-                    &method.origin,
-                    backend.owner,
-                ));
-            }
             let mut method_scope = scope.clone();
             method_scope.type_parameters(
                 method
@@ -166,7 +160,15 @@ pub fn emit(
                     .map(|p| (p.name.clone(), p.arity)),
                 &format!("{}::{}", instance.identity, method.name),
             );
-            let value = backend.function(&method.parameters, &method.body, &method_scope)?;
+            let value = backend
+                .method_function(method, &method_scope)
+                .map_err(|mut error| {
+                    if error.origin.is_none() {
+                        error.origin = Some(method.origin.clone());
+                        error.module = Some(backend.owner.to_owned());
+                    }
+                    error
+                })?;
             values.push(format!("({}, {value})", quoted(&method.name)));
         }
         output.push_str(&format!(
@@ -654,6 +656,12 @@ impl Backend<'_> {
                 check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);
+                }
+                if let Some(dispatch) = trait_dispatch {
+                    if dispatch.method_contract.is_some() {
+                        return self.method_call(expr, scope);
+                    }
+                    self.reject_missing_method_contract(dispatch, evidence)?;
                 }
                 let bound_primitive_partial = trait_dispatch.is_none()
                     && !scope.contains(callee)

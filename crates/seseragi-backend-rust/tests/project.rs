@@ -94,6 +94,7 @@ fn display_children_keep_provider_identity_and_instantiated_types() {
         "array-display",
         "instance-alias",
         "local-dictionaries",
+        "method-dictionaries",
     ] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -122,7 +123,7 @@ fn display_children_keep_provider_identity_and_instantiated_types() {
                             .get("identity")
                             .and_then(|v| v.as_str())
                             .is_some_and(|v| {
-                                v.contains("::Box<")
+                                (v.contains("::Box<") || v.contains("::Holder<"))
                                     && (v.starts_with("std/prelude::Show<")
                                         || v.contains("::trait(Render)<"))
                             })

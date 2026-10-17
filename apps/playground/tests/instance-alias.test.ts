@@ -27,9 +27,11 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
     "constructor-disjoint",
     "alias-constructor",
     "local-dictionaries",
+    "method-dictionaries",
     "binding-scope",
     "instance-alias-effects",
     "local-dictionary-effects",
+    "method-dictionary-effects",
   ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend/${name}`,
@@ -111,6 +113,7 @@ test("dictionary heads retain provider owners across renamed facade exports", as
     "alias-constructor",
     "imported-return",
     "local-dictionaries",
+    "method-dictionaries",
   ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend-projects/${name}/`,

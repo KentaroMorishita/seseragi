@@ -199,6 +199,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("alias-constructor", 3),
         ("imported-return", 3),
         ("local-dictionaries", 3),
+        ("method-dictionaries", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -428,6 +429,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "constructor-disjoint",
         "alias-constructor",
         "local-dictionaries",
+        "method-dictionaries",
         "binding-scope",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
@@ -506,6 +508,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "constructor-disjoint",
         "alias-constructor",
         "local-dictionaries",
+        "method-dictionaries",
         "binding-scope",
     ] {
         let fixture_path = root.join(format!(
@@ -966,6 +969,22 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "method-dictionary-effects",
+            "fixtures/rust-backend/method-dictionary-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-dictionary-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-dictionary-defect",
+            "fixtures/rust-backend/method-dictionary-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-dictionary-defect.stdout"
+            ),
+            70,
+        ),
         (
             "local-dictionary-effects",
             "fixtures/rust-backend/local-dictionary-effects.ssrg",
@@ -1673,4 +1692,9 @@ fn constructor_coherence_rejects_before_output_or_execution() {
             assert!(artifact.to_string().contains("utf-8"));
         }
     }
+}
+
+#[test]
+fn constrained_method_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("method-dictionaries");
 }

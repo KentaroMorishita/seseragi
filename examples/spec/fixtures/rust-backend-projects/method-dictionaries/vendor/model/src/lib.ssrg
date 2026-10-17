@@ -1,0 +1,24 @@
+pub type Holder<T> = | Holder T
+
+pub trait Paint<T> {
+  fn paint<A> prefix: String -> owner: T -> value: A -> (String -> String) where Show<A>, Debug<A>
+}
+
+instance<T> Paint<Holder<T>> where Show<T> {
+  fn paint<A> prefix: String -> owner: Holder<T> -> value: A -> (String -> String) where Show<A>, Debug<A> = match owner {
+    Holder first -> {
+      let outer = show first
+      let item = show value
+      \suffix: String -> prefix + outer + ":" + item + ":" + debug value + suffix
+    }
+  }
+}
+
+pub fn make<T> value: T -> Holder<T> = Holder value
+
+pub fn decorated<T, A> prefix: String -> owner: T -> value: A -> suffix: String -> String where Paint<T>, Show<A>, Debug<A> =
+  paint prefix owner value suffix
+
+instance<T> Show<Holder<T>> where Show<T> {
+  fn show value: Holder<T> -> String = match value { Holder item -> "holder=" + show item }
+}

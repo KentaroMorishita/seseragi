@@ -427,21 +427,58 @@ pub(super) fn lower_core_expr_to_typescript(
                     imported_types,
                 )
                 .expect("local trait dispatch requires materialized primary evidence");
-                arguments.extend(method_evidence.iter().map(|selected| {
-                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                let method_evidence = method_evidence
+                    .iter()
+                    .map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
                         .expect("trait method constraint requires materialized evidence")
-                }));
+                    })
+                    .collect::<Vec<_>>();
+                let mut deferred = Vec::new();
+                let mut result_type = type_ref.clone();
+                let index = if let Some(contract) = &dispatch.method_contract {
+                    for (index, parameter) in
+                        contract.parameters.iter().enumerate().skip(arguments.len())
+                    {
+                        let name = format!("__ssrg$method$partial${index}");
+                        let type_name = render_typescript_type(&type_ref_from_core_type(
+                            parameter,
+                            imported_types,
+                        ));
+                        arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
+                        deferred.push((name, type_name));
+                        let CoreType::Function { result, .. } = result_type else {
+                            unreachable!("checked method partial has a function result")
+                        };
+                        result_type = *result;
+                    }
+                    contract.parameters.len()
+                } else {
+                    arguments.len()
+                };
+                arguments.splice(index..index, method_evidence);
                 // Dictionary methods can erase higher-kinded results. Restore
                 // the instantiated result already proved by source evidence,
                 // just as for ordinary constrained calls below.
-                TypeScriptExpr::CheckedResult {
+                let value = TypeScriptExpr::CheckedResult {
                     value: Box::new(TypeScriptExpr::DictionaryCall {
                         dictionary: Box::new(selected),
                         method: dispatch.method,
                         arguments,
                     }),
-                    type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                }
+                    type_ref: type_ref_from_core_type(&result_type, imported_types),
+                };
+                deferred
+                    .into_iter()
+                    .rev()
+                    .fold(value, |body, (name, ty)| TypeScriptExpr::Lambda {
+                        parameter: format!("{name}: {ty}"),
+                        body: Box::new(body),
+                    })
             } else if let Some(operation) =
                 runtime_collection_for_each_operation(&callee, &evidence)
             {

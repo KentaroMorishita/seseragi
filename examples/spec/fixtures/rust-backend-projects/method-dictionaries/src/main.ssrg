@@ -1,0 +1,28 @@
+import { Holder as Foreign, Paint as Renamed, draw as color, make } from "./facade"
+import * as refs from "std/ref"
+
+type Local = | Local
+instance Renamed<Local> {
+  fn paint<A> prefix: String -> owner: Local -> value: A -> (String -> String) where Show<A>, Debug<A> = {
+    let text = show value
+    \suffix: String -> prefix + text + ":" + debug value + suffix
+  }
+}
+
+fn forward<T, A> owner: T -> value: A -> String where Renamed<T>, Show<A>, Debug<A> =
+  color "generic=" owner value "!"
+
+pub fn probe -> Array<String> = {
+  let method: String -> Foreign<Int> -> Char -> String -> String = color
+  let saved = method "saved=" (make 7) 'λ'
+  let direct = \value: Bool -> color "direct=" (make 2) value "end"
+  [forward (make 1) "x", saved "!", saved "?", direct True, color "local=" Local False "!", show (make 4)]
+}
+
+pub effect fn main = do {
+  let saved = \value: Bool -> color "ref=" (make 3) value "!"
+  cell <- refs.make saved
+  selected <- refs.get cell
+  println (selected True)
+  println (show (probe ()))
+}

@@ -1,0 +1,52 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Token = | Token
+trait Plan<T> {
+  fn plan<A> tag: T -> state: Ref<String> -> value: A -> Effect<{}, Never, String> where Show<A>
+}
+effect fn read<A> state: Ref<String> -> value: A -> String where Show<A> = do {
+ current <- refs.get state
+ effects.succeed (current + ":" + show value)
+}
+
+instance Plan<Token> {
+ fn plan<A> tag: Token -> state: Ref<String> -> value: A -> Effect<{}, Never, String> where Show<A> = effects.defer (\_: Unit -> read state value)
+}
+
+pub effect fn main = do {
+  state <- refs.make "before"
+  let render: Int -> Effect<{}, Never, String> = plan Token state
+  callbacks <- refs.make render
+  let after = \value: Int -> do {
+    next <- refs.get callbacks
+    next (value + 1)
+  }
+  refs.set after callbacks
+  refs.set render callbacks
+  selected <- refs.get callbacks
+  let cold = selected 2
+  println "cold"
+  text <- cold
+  println text
+  refs.set "after" state
+  second <- cold
+  println second
+  let cleanup = \value: String -> do {
+    let pending = plan Token state value
+    last <- pending
+    refs.set last state
+  }
+  recovered <- effects.recover (\value: String -> effects.succeed value) $
+    effects.scoped $
+    do {
+    effects.acquireRelease (effects.succeed "resource") cleanup
+    effects.fail "failure"
+    effects.succeed "unreachable"
+  }
+  println recovered
+  final <- refs.get state
+  println final
+  refs.set after callbacks
+}
