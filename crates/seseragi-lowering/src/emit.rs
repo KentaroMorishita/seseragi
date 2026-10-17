@@ -713,6 +713,7 @@ fn render_function_body_with_return(
 ) -> String {
     let rendered_body = self_name
         .filter(|_| !is_effect)
+        .filter(|name| !parameters.iter().any(|parameter| parameter.name == *name))
         .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
         .map_or_else(
             || render_typescript_expr(body),
@@ -751,6 +752,16 @@ fn render_function_body_with_return(
     }
 }
 
+// Only calls in the scope of the original self binder enter the trampoline.
+fn statements_bind_name(statements: &[TypeScriptStatement], name: &str) -> bool {
+    statements.iter().any(|statement| match statement {
+        TypeScriptStatement::PureLet { name: bound, .. }
+        | TypeScriptStatement::Const { name: bound, .. }
+        | TypeScriptStatement::LocalFunction { name: bound, .. } => bound == name,
+        TypeScriptStatement::Effect { .. } => false,
+    })
+}
+
 fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
     match expr {
         TypeScriptExpr::Call {
@@ -764,11 +775,16 @@ fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity:
             contains_direct_self_tail_call(then_branch, self_name, arity)
                 || contains_direct_self_tail_call(else_branch, self_name, arity)
         }
-        TypeScriptExpr::Decision { branches, .. } => branches
-            .iter()
-            .any(|branch| contains_direct_self_tail_call(&branch.value, self_name, arity)),
-        TypeScriptExpr::Sequence { result, .. } => {
-            contains_direct_self_tail_call(result, self_name, arity)
+        TypeScriptExpr::Decision { branches, .. } => branches.iter().any(|branch| {
+            !branch
+                .bindings
+                .iter()
+                .any(|binding| binding.name == self_name)
+                && contains_direct_self_tail_call(&branch.value, self_name, arity)
+        }),
+        TypeScriptExpr::Sequence { statements, result } => {
+            !statements_bind_name(statements, self_name)
+                && contains_direct_self_tail_call(result, self_name, arity)
         }
         _ => false,
     }
@@ -838,17 +854,31 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
             scrutinee_type,
             branches,
             type_ref,
-        } => decision::render_decision_with_value_renderer(
+        } => decision::render_decision_with_branch_renderer(
             scrutinee,
             scrutinee_type,
             branches,
             type_ref,
-            &|value| render_tail_position_expr(value, self_name, arity),
+            &|branch| {
+                if branch
+                    .bindings
+                    .iter()
+                    .any(|binding| binding.name == self_name)
+                {
+                    render_typescript_expr(&branch.value)
+                } else {
+                    render_tail_position_expr(&branch.value, self_name, arity)
+                }
+            },
         ),
         TypeScriptExpr::Sequence { statements, result } => {
-            render_effect_sequence_with_result_renderer(statements, result, &|value| {
-                render_tail_position_expr(value, self_name, arity)
-            })
+            if statements_bind_name(statements, self_name) {
+                render_typescript_expr(expr)
+            } else {
+                render_effect_sequence_with_result_renderer(statements, result, &|value| {
+                    render_tail_position_expr(value, self_name, arity)
+                })
+            }
         }
         _ => render_typescript_expr(expr),
     }

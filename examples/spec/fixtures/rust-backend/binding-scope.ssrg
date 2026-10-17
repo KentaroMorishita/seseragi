@@ -1,0 +1,34 @@
+fn parameter -> Int = {
+  fn apply apply: (Int -> Int) -> Int = apply 42
+  apply (\value: Int -> value + 7)
+}
+
+fn shadow value: Int -> Int = {
+  let shadow = \value: Int -> value + 1
+  shadow value
+}
+
+fn branch value: ((Int -> Int), Bool) -> Int = match value {
+  (branch, _) -> branch 42
+}
+
+fn count remaining: Int -> Int = if remaining == 0 then 0 else count (remaining - 1)
+
+fn scopedCount remaining: Int -> Int = if remaining == 0 then {
+  let scopedCount = \value: Int -> value + 123
+  scopedCount 0
+} else scopedCount (remaining - 1)
+
+fn patternCount value: (Int, (Int -> Int)) -> Int = match value {
+  (0, patternCount) -> patternCount 42
+  (remaining, callback) -> patternCount (remaining - 1, callback)
+}
+
+pub fn probe -> Array<Int> = [
+  parameter (),
+  shadow 7,
+  branch ((\value: Int -> value + 2), True),
+  count 100000,
+  scopedCount 100000,
+  patternCount (100000, (\value: Int -> value + 2))
+]

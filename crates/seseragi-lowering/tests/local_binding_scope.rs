@@ -89,3 +89,31 @@ fn omitted_binding_scope_metadata_keeps_named_declaration_compatibility() {
         }
     ));
 }
+
+#[test]
+fn parameters_locals_and_patterns_do_not_become_self_tail_calls() {
+    let source = include_str!("../../../examples/spec/fixtures/rust-backend/binding-scope.ssrg");
+    let core = lower_typed_module(type_module("binding-scope.ssrg", source));
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let emitted = seseragi_lowering::emit_typescript_module(typescript, source).typescript;
+    for name in ["parameter", "shadow", "branch"] {
+        let line = emitted
+            .lines()
+            .find(|line| line.starts_with(&format!("const {name} =")))
+            .expect("ordinary function declaration");
+        assert!(!line.contains("$ssrg$tail"), "{name}: {line}");
+    }
+    let count = emitted
+        .lines()
+        .find(|line| line.starts_with("const count ="))
+        .expect("recursive control");
+    assert!(count.contains("while (true)"), "{count}");
+    for name in ["scopedCount", "patternCount"] {
+        let line = emitted
+            .lines()
+            .find(|line| line.starts_with(&format!("const {name} =")))
+            .expect("recursive function with a shadowed base branch");
+        assert!(line.contains("while (true)"), "{line}");
+        assert_eq!(line.matches("({ [$ssrg$tail]:").count(), 1, "{line}");
+    }
+}

@@ -27,6 +27,7 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
     "constructor-disjoint",
     "alias-constructor",
     "local-dictionaries",
+    "binding-scope",
     "instance-alias-effects",
     "local-dictionary-effects",
   ]) {

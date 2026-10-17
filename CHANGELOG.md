@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Distinguish generalized let lambdas from named local function declarations in shared CoreIr. Keep a shadowing lambda's references in the preceding lexical scope on TypeScript, and reject unsupported native named-local recursion before it can resolve to an outer value.
+- Distinguish generalized let lambdas from named local function declarations in shared CoreIr. Keep a shadowing lambda's references in the preceding lexical scope on TypeScript, and reject unsupported native named-local recursion before it can resolve to an outer value. Keep calls through same-named parameters, local bindings and pattern bindings out of the TypeScript self-tail trampoline (#879).
 
 ### Added
 

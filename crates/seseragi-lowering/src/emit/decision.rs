@@ -14,21 +14,17 @@ pub(super) fn render_decision(
     branches: &[TypeScriptDecisionBranch],
     type_ref: &TypeScriptType,
 ) -> String {
-    render_decision_with_value_renderer(
-        scrutinee,
-        scrutinee_type,
-        branches,
-        type_ref,
-        &render_typescript_expr,
-    )
+    render_decision_with_branch_renderer(scrutinee, scrutinee_type, branches, type_ref, &|branch| {
+        render_typescript_expr(&branch.value)
+    })
 }
 
-pub(super) fn render_decision_with_value_renderer(
+pub(super) fn render_decision_with_branch_renderer(
     scrutinee: &TypeScriptExpr,
     scrutinee_type: &TypeScriptType,
     branches: &[TypeScriptDecisionBranch],
     type_ref: &TypeScriptType,
-    render_value: &dyn Fn(&TypeScriptExpr) -> String,
+    render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
     let body = render_branches(branches, type_ref, render_value);
     format!(
@@ -42,13 +38,13 @@ pub(super) fn render_decision_with_value_renderer(
 fn render_branches(
     branches: &[TypeScriptDecisionBranch],
     result: &TypeScriptType,
-    render_value: &dyn Fn(&TypeScriptExpr) -> String,
+    render_value: &dyn Fn(&TypeScriptDecisionBranch) -> String,
 ) -> String {
     let Some((branch, rest)) = branches.split_first() else {
         return "((): never => { throw new Error(\"non-exhaustive Seseragi match\"); })()"
             .to_owned();
     };
-    let value = render_with_bindings(&branch.bindings, &render_value(&branch.value), result);
+    let value = render_with_bindings(&branch.bindings, &render_value(branch), result);
     let Some(condition) = render_condition(branch) else {
         return value;
     };

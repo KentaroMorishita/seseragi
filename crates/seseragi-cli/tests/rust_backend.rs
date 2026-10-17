@@ -428,6 +428,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "constructor-disjoint",
         "alias-constructor",
         "local-dictionaries",
+        "binding-scope",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -505,6 +506,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "constructor-disjoint",
         "alias-constructor",
         "local-dictionaries",
+        "binding-scope",
     ] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
