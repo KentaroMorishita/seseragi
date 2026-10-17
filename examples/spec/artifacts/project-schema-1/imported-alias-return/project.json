@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-alias-return::domain",
+    "fixture/imported-alias-return::facade",
+    "fixture/imported-alias-return::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-alias-return::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-alias-return/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-alias-return::facade",
+      "source": "src/facade.ssrg",
+      "output": "dist/imported-alias-return/facade.js",
+      "artifacts": "artifacts/facade",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-alias-return::domain"
+        }
+      ]
+    },
+    {
+      "id": "fixture/imported-alias-return::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-alias-return/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-alias-return::domain"
+        },
+        {
+          "specifier": "./facade",
+          "module": "fixture/imported-alias-return::facade"
+        }
+      ]
+    }
+  ]
+}

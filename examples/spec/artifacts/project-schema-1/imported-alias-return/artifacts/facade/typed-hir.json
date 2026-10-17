@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "facade.ssrg",
+  "module": "fixture/imported-alias-return::facade",
+  "externalTypeBindings": [
+    {
+      "arity": 1,
+      "spelling": "Box",
+      "canonical": "fixture/imported-alias-return::domain::Box",
+      "provider": {
+        "module": "fixture/imported-alias-return::domain",
+        "export": "Box"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-alias-return::domain",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "reexportedAs": "Box",
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "origin": {
+            "start": 13,
+            "end": 16
+          }
+        },
+        {
+          "reexportedAs": "Box",
+          "namespace": "value",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "origin": {
+            "start": 13,
+            "end": 16
+          }
+        },
+        {
+          "reexportedAs": "boxed",
+          "namespace": "value",
+          "imported": "boxed",
+          "local": "boxed",
+          "canonical": "fixture/imported-alias-return::domain::boxed",
+          "origin": {
+            "start": 18,
+            "end": 23
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": []
+}

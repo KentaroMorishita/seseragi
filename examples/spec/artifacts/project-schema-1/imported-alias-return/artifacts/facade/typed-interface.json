@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-alias-return::facade",
+  "source": "facade.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-alias-return::domain",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Box",
+          "symbol": "fixture/imported-alias-return::domain::Box"
+        },
+        {
+          "namespace": "value",
+          "name": "Box",
+          "symbol": "fixture/imported-alias-return::domain::Box"
+        },
+        {
+          "namespace": "value",
+          "name": "boxed",
+          "symbol": "fixture/imported-alias-return::domain::boxed"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-alias-return::domain::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 13,
+        "end": 16
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::Box",
+      "namespace": "value",
+      "name": "Box",
+      "constructorOf": "fixture/imported-alias-return::domain::Box",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 13,
+        "end": 16
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::boxed",
+      "namespace": "value",
+      "name": "boxed",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 18,
+        "end": 23
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

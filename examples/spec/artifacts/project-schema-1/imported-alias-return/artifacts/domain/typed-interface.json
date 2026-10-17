@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-alias-return::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-alias-return::domain::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 25
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::Box",
+      "namespace": "value",
+      "name": "Box",
+      "constructorOf": "fixture/imported-alias-return::domain::Box",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 20,
+        "end": 23
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::Wrapped",
+      "namespace": "type",
+      "name": "Wrapped",
+      "visibility": "public",
+      "declarationKind": "alias",
+      "declaration": {
+        "start": 26,
+        "end": 55
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Wrapped",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::Again",
+      "namespace": "type",
+      "name": "Again",
+      "visibility": "public",
+      "declarationKind": "alias",
+      "declaration": {
+        "start": 56,
+        "end": 87
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Again",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::domain::boxed",
+      "namespace": "value",
+      "name": "boxed",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 88,
+        "end": 136
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

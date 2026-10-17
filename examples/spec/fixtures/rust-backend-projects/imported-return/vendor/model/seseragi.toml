@@ -1,0 +1,6 @@
+[package]
+name="fixture/imported-return-model"
+version="1.0.0"
+language=">=0.1.0 <0.2.0"
+[exports]
+"."="lib"

@@ -92,6 +92,19 @@ pub(crate) fn instantiated_application_indexed(
             key: signature.semantic_result.clone(),
         },
     );
+    // The semantic pass can infer through a renamed imported nominal even
+    // when the ordinary display types differ (Foreign<A> versus Box<Int>).
+    // Project its owner-checked variable bindings before rebuilding display
+    // types. Otherwise hydration below would overwrite an inferred child with
+    // the still-unresolved source A.
+    for (template, inferred) in &semantic.parameter_bindings {
+        infer_type_parameters(
+            template,
+            &inferred.type_ref,
+            &signature.type_parameters,
+            &mut substitutions,
+        );
+    }
     let semantic_parameters = semantic
         .parameters
         .iter()
@@ -117,6 +130,14 @@ pub(crate) fn instantiated_application_indexed(
                 &mut evidence_bindings,
             );
         }
+    }
+    for (template, inferred) in &semantic.parameter_bindings {
+        infer_type_parameters(
+            template,
+            &evidence_type(inferred),
+            &signature.type_parameters,
+            &mut evidence_bindings,
+        );
     }
     let mut evidence_substitutions = substitutions.clone();
     for (name, inferred) in evidence_bindings {
@@ -717,6 +738,99 @@ mod tests {
             name: name.to_owned(),
             canonical: canonical.to_owned(),
             arguments,
+        }
+    }
+
+    #[test]
+    fn projects_only_owner_checked_generic_bindings_into_display_and_evidence() {
+        use crate::SymbolId;
+        let int = named("Int", vec![]);
+        let parameter = named("A", vec![]);
+        let child = SemanticValueType {
+            type_ref: parameter.clone(),
+            key: SemanticTypeKey::TypeParameter(SymbolId(7)),
+        };
+        let signature = TopLevelPureFunction {
+            symbol: "keep".into(),
+            trait_identity: None,
+            trait_method: None,
+            type_parameters: vec![TypeParameter::value("A"), TypeParameter::value("B")],
+            parameters: vec![named("Foreign", vec![parameter.clone()])],
+            semantic_parameters: vec![SemanticTypeKey::Adt {
+                owner: SymbolId(1),
+                arguments: vec![child],
+            }],
+            result: named("B", vec![]),
+            semantic_result: SemanticTypeKey::TypeParameter(SymbolId(8)),
+            constraints: vec![TypedConstraint {
+                name: "Show".into(),
+                arguments: vec![parameter.clone()],
+            }],
+            constraint_identities: vec![Some("std/prelude::Show".into())],
+        };
+        let empty = instantiated_application(&signature, None, 0, &[], &evidence_type);
+        assert!(empty.resolved_type_parameters.is_empty());
+        let unchanged = SemanticValueType {
+            type_ref: signature.result.clone(),
+            key: signature.semantic_result.clone(),
+        };
+        let semantic = instantiate_callable_indexed(&[], Some(&unchanged), &[], &unchanged);
+        assert!(semantic.parameter_bindings.is_empty());
+        let uninstantiated = SemanticValueType {
+            type_ref: signature.result.clone(),
+            key: SemanticTypeKey::SchemeParameter("B".into()),
+        };
+        let semantic = instantiate_callable_indexed(&[], Some(&uninstantiated), &[], &unchanged);
+        assert!(semantic.parameter_bindings.is_empty());
+        let empty = instantiated_application(&signature, Some(&unchanged), 0, &[], &evidence_type);
+        assert!(empty.resolved_type_parameters.is_empty());
+        for owner in [SymbolId(1), SymbolId(2)] {
+            let actual = SemanticValueType {
+                type_ref: external("Box", "fixture/model::Box", vec![int.clone()]),
+                key: SemanticTypeKey::Adt {
+                    owner,
+                    arguments: vec![SemanticValueType {
+                        type_ref: int.clone(),
+                        key: SemanticTypeKey::Other,
+                    }],
+                },
+            };
+            let application =
+                instantiated_application(&signature, None, 1, &[actual.clone()], &evidence_type);
+            if owner == SymbolId(1) {
+                assert_eq!(
+                    application.parameters[0].type_ref,
+                    named("Foreign", vec![int.clone()])
+                );
+                assert_eq!(application.constraints[0].arguments, vec![int.clone()]);
+                assert_eq!(
+                    application.evidence_constraints[0].arguments,
+                    vec![external("Int", "std/prelude::Int", vec![])]
+                );
+                assert_eq!(
+                    application.resolved_type_parameters,
+                    BTreeSet::from(["A".into()])
+                );
+                assert_eq!(application.result.type_ref, named("B", vec![]));
+                assert!(
+                    crate::typed::semantic_types::semantic_values_are_compatible(
+                        &application.parameters[0],
+                        &actual
+                    )
+                );
+            } else {
+                assert!(application.resolved_type_parameters.is_empty());
+                assert_eq!(
+                    application.parameters[0].type_ref,
+                    named("Foreign", vec![parameter.clone()])
+                );
+                assert!(
+                    !crate::typed::semantic_types::semantic_values_are_compatible(
+                        &application.parameters[0],
+                        &actual
+                    )
+                );
+            }
         }
     }
 

@@ -1,0 +1,768 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-alias-return::main",
+  "externalTypeBindings": [
+    {
+      "arity": 1,
+      "spelling": "Foreign",
+      "canonical": "fixture/imported-alias-return::domain::Box",
+      "provider": {
+        "module": "fixture/imported-alias-return::domain",
+        "export": "Box"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Foreign",
+      "canonical": "fixture/imported-alias-return::domain::Box",
+      "provider": {
+        "module": "fixture/imported-alias-return::facade",
+        "export": "Box"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-alias-return::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Foreign",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 23
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Box",
+          "local": "Foreign",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 23
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./facade",
+      "module": "fixture/imported-alias-return::facade",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 42,
+        "end": 74
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "boxed",
+          "local": "boxed",
+          "canonical": "fixture/imported-alias-return::domain::boxed",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 51,
+            "end": 56
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "fixture/imported-alias-return::main::Box",
+      "name": "Box",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-alias-return::main::Local",
+          "name": "Local",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 91,
+            "end": 96
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 75,
+        "end": 98
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-alias-return::main::read",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 99,
+        "end": 199
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Foreign",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Foreign",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 162,
+            "end": 167
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Foreign",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "fixture/imported-alias-return::domain::Box",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 170,
+                  "end": 183
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "inner",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 178,
+                  "end": 183
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "inner",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 192,
+                    "end": 197
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 187,
+                "end": 197
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 170,
+              "end": 197
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 156,
+          "end": 199
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::main::hold",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 200,
+        "end": 299
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Foreign",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "lambda",
+        "parameter": {
+          "id": "prefix",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        "body": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "variable",
+            "name": "prefix",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 280,
+              "end": 286
+            }
+          },
+          "right": {
+            "kind": "call",
+            "callee": "fixture/imported-alias-return::main::read",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Foreign",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 294,
+                  "end": 299
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Show",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "parameter",
+                  "index": 0
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 289,
+              "end": 299
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Add",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/string::Add"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 280,
+            "end": 299
+          }
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 269,
+          "end": 299
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-alias-return::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 300,
+        "end": 411
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-alias-return::main::read",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-alias-return::domain::boxed",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "42",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 349,
+                            "end": 351
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Box",
+                        "canonical": "fixture/imported-alias-return::domain::Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 343,
+                        "end": 351
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 337,
+                    "end": 352
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 328,
+                "end": 353
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/imported-alias-return::main::hold",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-alias-return::domain::boxed",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "7",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 380,
+                        "end": 381
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Box",
+                    "canonical": "fixture/imported-alias-return::domain::Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 374,
+                    "end": 381
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 368,
+                "end": 382
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 356,
+              "end": 382
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "saved=",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 400,
+                    "end": 408
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 394,
+                "end": 408
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 385,
+            "end": 409
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 321,
+          "end": 411
+        }
+      }
+    }
+  ]
+}

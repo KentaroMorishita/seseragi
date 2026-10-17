@@ -1,0 +1,5 @@
+pub type Box<A> = | Box A
+pub alias Wrapped<A> = Box<A>
+pub alias Again<A> = Wrapped<A>
+
+pub fn boxed<A> value: A -> Again<A> = Box value

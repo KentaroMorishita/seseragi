@@ -341,6 +341,7 @@ fn substitute_semantic_type_parameters(
 pub(crate) struct InstantiatedSemanticCallable {
     pub(crate) parameters: Vec<SemanticValueType>,
     pub(crate) result: SemanticValueType,
+    pub(crate) parameter_bindings: Vec<(TypedType, SemanticValueType)>,
 }
 
 pub(crate) fn instantiate_callable(
@@ -373,12 +374,114 @@ pub(crate) fn instantiate_callable_indexed(
             collect_substitutions(&template.key, argument, &mut substitutions);
         }
     }
+    let mut parameter_bindings = Vec::new();
+    for template in parameter_templates
+        .iter()
+        .chain(std::iter::once(result_template))
+    {
+        collect_parameter_bindings(template, &substitutions, &mut parameter_bindings);
+    }
     InstantiatedSemanticCallable {
         parameters: parameter_templates
             .iter()
             .map(|parameter| substitute_semantic_type_parameters(parameter, &substitutions))
             .collect(),
         result: substitute_semantic_type_parameters(result_template, &substitutions),
+        parameter_bindings,
+    }
+}
+
+/// Retain the source variable alongside each identity-checked substitution.
+/// Reconstructing this information from an instantiated display type would
+/// mistake unchanged variables for inferred ones, or confuse scoped binders.
+fn collect_parameter_bindings(
+    template: &SemanticValueType,
+    substitutions: &BTreeMap<TypeParameterKey, SemanticValueType>,
+    bindings: &mut Vec<(TypedType, SemanticValueType)>,
+) {
+    let parameter = match &template.key {
+        SemanticTypeKey::TypeParameter(parameter) => Some(TypeParameterKey::Resolved(*parameter)),
+        SemanticTypeKey::SchemeParameter(parameter) => {
+            Some(TypeParameterKey::Scheme(parameter.clone()))
+        }
+        _ => None,
+    };
+    if let Some(parameter) = parameter {
+        if let Some(inferred) = substitutions.get(&parameter) {
+            // An expected collection can still carry an uninstantiated
+            // imported scheme behind a masked display hole. It does not make
+            // a call parameter resolved. Lexical TypeParameter IDs, however,
+            // remain valid evidence when forwarding a generic caller's value.
+            if inferred != template && !contains_scheme_parameter(&inferred.key) {
+                bindings.push((template.type_ref.clone(), inferred.clone()));
+            }
+        }
+        return;
+    }
+    match &template.key {
+        SemanticTypeKey::Application {
+            constructor,
+            arguments,
+        } => {
+            collect_parameter_bindings(constructor, substitutions, bindings);
+            for argument in arguments {
+                collect_parameter_bindings(argument, substitutions, bindings);
+            }
+        }
+        SemanticTypeKey::Adt { arguments, .. }
+        | SemanticTypeKey::Struct { arguments, .. }
+        | SemanticTypeKey::ExternalNominal { arguments, .. }
+        | SemanticTypeKey::NamedGeneric { arguments, .. } => {
+            for argument in arguments {
+                collect_parameter_bindings(argument, substitutions, bindings);
+            }
+        }
+        SemanticTypeKey::Record(fields) => {
+            for field in fields.values() {
+                collect_parameter_bindings(field, substitutions, bindings);
+            }
+        }
+        SemanticTypeKey::Tuple(keys) => {
+            if let TypedType::Tuple { elements } = &template.type_ref {
+                for (type_ref, key) in elements.iter().zip(keys) {
+                    collect_parameter_bindings(
+                        &SemanticValueType {
+                            type_ref: type_ref.clone(),
+                            key: key.clone(),
+                        },
+                        substitutions,
+                        bindings,
+                    );
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+fn contains_scheme_parameter(key: &SemanticTypeKey) -> bool {
+    match key {
+        SemanticTypeKey::SchemeParameter(_) => true,
+        SemanticTypeKey::Application {
+            constructor,
+            arguments,
+        } => {
+            contains_scheme_parameter(&constructor.key)
+                || arguments
+                    .iter()
+                    .any(|argument| contains_scheme_parameter(&argument.key))
+        }
+        SemanticTypeKey::Adt { arguments, .. }
+        | SemanticTypeKey::Struct { arguments, .. }
+        | SemanticTypeKey::ExternalNominal { arguments, .. }
+        | SemanticTypeKey::NamedGeneric { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_scheme_parameter(&argument.key)),
+        SemanticTypeKey::Tuple(keys) => keys.iter().any(contains_scheme_parameter),
+        SemanticTypeKey::Record(fields) => fields
+            .values()
+            .any(|field| contains_scheme_parameter(&field.key)),
+        _ => false,
     }
 }
 

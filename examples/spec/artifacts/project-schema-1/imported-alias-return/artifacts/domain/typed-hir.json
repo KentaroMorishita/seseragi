@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-alias-return::domain",
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-alias-return::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-alias-return::domain::Box",
+          "name": "Box",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 20,
+            "end": 23
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 25
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "fixture/imported-alias-return::domain::Wrapped",
+      "name": "Wrapped",
+      "visibility": "public",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 26,
+        "end": 55
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "fixture/imported-alias-return::domain::Again",
+      "name": "Again",
+      "visibility": "public",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 56,
+        "end": 87
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-alias-return::domain::boxed",
+      "visibility": "public",
+      "origin": {
+        "start": 88,
+        "end": 136
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 104,
+            "end": 109
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-alias-return::domain::Box",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 131,
+              "end": 136
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 127,
+          "end": 136
+        }
+      }
+    }
+  ]
+}
