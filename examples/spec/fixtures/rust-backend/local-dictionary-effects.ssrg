@@ -1,0 +1,47 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  state <- refs.make "before"
+  let render = \value -> {
+    let captured = state
+    show value
+  }
+  let integer = \value: Int -> do {
+    current <- refs.get state
+    println (current + ":" + render value)
+  }
+  callbacks <- refs.make (integer, integer)
+  let after = \value: Int -> do {
+    (first, second) <- refs.get callbacks
+    first value
+    second (value + 1)
+  }
+  refs.set (after, after) callbacks
+  (saved, _) <- refs.get callbacks
+  refs.set (integer, integer) callbacks
+  let cold = saved 2
+  println "cold"
+  cold
+  refs.set "after" state
+  cold
+  println ("after:" + render True)
+  let task = \value -> effects.succeed (render value)
+  let pending = task 'λ'
+  println "task-cold"
+  text <- pending
+  println text
+  let cleanup = \value: String -> refs.set (render value) state
+  recovered <- effects.recover (\value: String -> effects.succeed value) $
+    effects.scoped $
+    do {
+    effects.acquireRelease (effects.succeed "resource") (\value: String -> cleanup value)
+    refs.set "released" state
+    effects.fail "failure"
+    effects.succeed "unreachable"
+  }
+  println recovered
+  last <- refs.get state
+  println ("final:" + last)
+  refs.set (after, after) callbacks
+}

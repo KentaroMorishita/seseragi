@@ -89,7 +89,12 @@ fn imported_evidence_cannot_be_rebound_to_a_name_or_a_local_factory() {
 
 #[test]
 fn display_children_keep_provider_identity_and_instantiated_types() {
-    for fixture in ["tuple-display", "array-display", "instance-alias"] {
+    for fixture in [
+        "tuple-display",
+        "array-display",
+        "instance-alias",
+        "local-dictionaries",
+    ] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -117,7 +122,9 @@ fn display_children_keep_provider_identity_and_instantiated_types() {
                             .get("identity")
                             .and_then(|v| v.as_str())
                             .is_some_and(|v| {
-                                v.starts_with("std/prelude::Show<") && v.contains("::Box<")
+                                v.contains("::Box<")
+                                    && (v.starts_with("std/prelude::Show<")
+                                        || v.contains("::trait(Render)<"))
                             })
                     {
                         if kind == 0 {

@@ -1859,6 +1859,7 @@ fn lower_core_statement_to_typescript(
             origin,
         },
         CoreStatement::LocalFunction {
+            initializer_in_outer_scope,
             rec_group,
             return_type,
             name,
@@ -1876,6 +1877,7 @@ fn lower_core_statement_to_typescript(
                 .map(|parameter| parameter.name.clone())
                 .collect::<Vec<_>>();
             TypeScriptStatement::LocalFunction {
+                initializer_in_outer_scope,
                 rec_group,
                 return_type: return_type
                     .as_ref()
@@ -1946,6 +1948,7 @@ fn lower_monad_do_statement(
                     value = *body;
                 }
                 CoreStatement::LocalFunction {
+                    initializer_in_outer_scope: true,
                     rec_group: None,
                     return_type: None,
                     name,

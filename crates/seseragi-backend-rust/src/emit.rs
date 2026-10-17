@@ -15,10 +15,11 @@ mod characters;
 mod display;
 mod floats;
 mod lists;
+mod local;
 mod scalar;
 mod tail;
 
-type Scope = BTreeSet<String>;
+use local::{LocalCallable, Scope};
 type Result<T> = std::result::Result<T, RustBackendError>;
 
 fn id(name: &str) -> String {
@@ -37,6 +38,7 @@ pub fn emit(
     owners: &BTreeMap<String, String>,
     scalar_globals: &seseragi_lowering::CoreScalarGlobals,
     type_names: &BTreeMap<(String, String), String>,
+    trait_names: &BTreeMap<(String, String), String>,
 ) -> Result<RustArtifact> {
     if !module.foreign_modules.is_empty() {
         return Err("Rust backend: foreign modules are unsupported".into());
@@ -46,6 +48,7 @@ pub fn emit(
         owners,
         scalar_globals,
         type_names,
+        trait_names,
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
         globals: module
@@ -67,7 +70,6 @@ pub fn emit(
         direct_calls: 0,
         self_tail_calls: 0,
         closed_dictionary_sites: 0,
-        dictionary_constraints: vec![],
         capabilities: BTreeSet::new(),
     };
     let entry = module
@@ -124,7 +126,6 @@ pub fn emit(
     }
     for instance in &module.instances {
         backend.owner = &owners[&instance.identity];
-        backend.dictionary_constraints = instance.constraints.clone();
         if instance.supertrait_count != 0 {
             return Err(crate::project::at(
                 "Rust backend: supertraits are unsupported",
@@ -140,7 +141,14 @@ pub fn emit(
             ));
         };
         let mut scope = Scope::new();
-        let setup = dictionary_parameters(instance.constraints.len(), &mut scope);
+        scope.type_parameters(
+            instance
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &instance.identity,
+        );
+        let setup = dictionary_parameters(&instance.constraints, &mut scope);
         let mut values = Vec::new();
         for method in methods {
             if !method.constraints.is_empty() {
@@ -150,7 +158,15 @@ pub fn emit(
                     backend.owner,
                 ));
             }
-            let value = backend.function(&method.parameters, &method.body, &scope)?;
+            let mut method_scope = scope.clone();
+            method_scope.type_parameters(
+                method
+                    .type_parameters
+                    .iter()
+                    .map(|p| (p.name.clone(), p.arity)),
+                &format!("{}::{}", instance.identity, method.name),
+            );
+            let value = backend.function(&method.parameters, &method.body, &method_scope)?;
             values.push(format!("({}, {value})", quoted(&method.name)));
         }
         output.push_str(&format!(
@@ -161,7 +177,6 @@ pub fn emit(
     }
     for function in &module.functions {
         backend.owner = &owners[&function.symbol];
-        backend.dictionary_constraints = function.constraints.clone();
         if function.parameters.is_empty() {
             return Err(crate::project::at(
                 "Rust backend: constrained global values without source parameters are unsupported",
@@ -173,7 +188,14 @@ pub fn emit(
             backend.capabilities.insert("effect-sync".into());
         }
         let mut scope = Scope::new();
-        let setup = dictionary_parameters(function.constraints.len(), &mut scope);
+        scope.type_parameters(
+            function
+                .type_parameters
+                .iter()
+                .map(|p| (p.name.clone(), p.arity)),
+            &function.symbol,
+        );
+        let setup = dictionary_parameters(&function.constraints, &mut scope);
         let body = backend.function(&function.parameters, &function.body, &scope)?;
         output.push_str(&format!(
             "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
@@ -214,8 +236,12 @@ pub fn emit(
     })
 }
 
-fn dictionary_parameters(count: usize, scope: &mut Scope) -> String {
-    (0..count)
+fn dictionary_parameters(
+    constraints: &[seseragi_lowering::CoreInstanceConstraint],
+    scope: &mut Scope,
+) -> String {
+    scope.dictionaries = constraints.to_vec();
+    (0..constraints.len())
         .map(|n| {
             let name = format!("\0dictionary_{n}");
             scope.insert(name.clone());
@@ -232,12 +258,12 @@ struct Backend<'a> {
     globals: BTreeMap<String, usize>,
     scalar_globals: &'a seseragi_lowering::CoreScalarGlobals,
     type_names: &'a BTreeMap<(String, String), String>,
+    trait_names: &'a BTreeMap<(String, String), String>,
     constructors: BTreeMap<String, bool>,
     serial: usize,
     direct_calls: usize,
     self_tail_calls: usize,
     closed_dictionary_sites: usize,
-    dictionary_constraints: Vec<seseragi_lowering::CoreInstanceConstraint>,
     capabilities: BTreeSet<String>,
 }
 
@@ -276,6 +302,10 @@ impl Backend<'_> {
     fn closure(parameter: &str, body: &str, scope: &Scope) -> String {
         // Captures are explicit runtime graph edges. Code is a function
         // pointer, so no hidden Rust closure can retain an untraceable value.
+        // A new parameter shadows any captured term with the same source name.
+        let mut captures = scope.clone();
+        captures.retain(|name| name != parameter);
+        let scope = &captures;
         let values = scope
             .iter()
             .map(|name| format!("{}.clone()", id(name)))
@@ -295,6 +325,7 @@ impl Backend<'_> {
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
+            self.validate_parameter_evidence(selected, scope)?;
             if matches!(
                 selected.evidence,
                 CoreInstanceEvidence::Local { .. } | CoreInstanceEvidence::Imported { .. }
@@ -307,7 +338,7 @@ impl Backend<'_> {
                             .as_deref()
                             .is_none_or(|identity| identity == format!("std/prelude::{method}"))
                     {
-                        self.validate_display_child(selected, method)?;
+                        self.validate_display_child(selected, method, scope)?;
                     }
                 }
             }
@@ -395,13 +426,20 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<String> {
+        if scope.is_blocked(name) {
+            return Err("Rust backend: recursive local function is unsupported".into());
+        }
         if scope.contains(name) {
-            if !evidence.is_empty() {
-                return Err(
-                    "Rust backend: constrained local callable aliases are unsupported".into(),
-                );
+            if let Some(callable) = scope.callables.get(name) {
+                self.validate_local_evidence(callable, evidence, scope)?;
+                let values = self.evidence(evidence, scope)?;
+                let value = self.fresh();
+                Ok(format!("{{ let mut {value} = {}.clone(); for dictionary in {values} {{ {value} = {value}.apply(dictionary); }} {value} }}", id(name)))
+            } else if evidence.is_empty() {
+                Ok(format!("{}.clone()", id(name)))
+            } else {
+                Err("Rust backend: evidence for an unproven local callable".into())
             }
-            Ok(format!("{}.clone()", id(name)))
         } else if let Some(index) = self.globals.get(name).or_else(|| {
             // CoreIr also uses module-local spellings for let-bound values and
             // generated pattern temporaries. Resolve those only in their owner.
@@ -565,6 +603,9 @@ impl Backend<'_> {
                 ..
             } => {
                 check_console_argument(callee, arguments)?;
+                if let Some(callable) = scope.callables.get(callee) {
+                    self.validate_local_arguments(callable, arguments, evidence, scope)?;
+                }
                 let function = self.reference(callee, evidence, scope)?;
                 let temporary = self.fresh();
                 let mut value = format!("{{ let mut {temporary} = {function};");
@@ -611,6 +652,9 @@ impl Backend<'_> {
                 ..
             } => {
                 check_console_argument(callee, arguments)?;
+                if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
+                    return self.local_call(expr, scope);
+                }
                 let bound_primitive_partial = trait_dispatch.is_none()
                     && !scope.contains(callee)
                     && (characters::closed_character_partial(
@@ -698,6 +742,17 @@ impl Backend<'_> {
                 let function = if let Some(dispatch) = trait_dispatch {
                     if evidence.len() != 1 {
                         return Err("Rust backend: trait dispatch requires one dictionary".into());
+                    }
+                    if let CoreInstanceEvidence::Parameter { index } = evidence[0].evidence {
+                        self.validate_parameter_evidence(&evidence[0], scope)?;
+                        if scope.dictionaries[index].trait_identity.as_deref()
+                            != Some(dispatch.trait_identity.as_str())
+                        {
+                            return Err(
+                                "Rust backend: dictionary parameter dispatch identity mismatch"
+                                    .into(),
+                            );
+                        }
                     }
                     if !floats::valid_float_dispatch(
                         &evidence[0],
@@ -973,16 +1028,29 @@ impl Backend<'_> {
                 ))
             }
             CoreStatement::LocalFunction {
+                initializer_in_outer_scope,
                 name,
                 constraints,
+                type_parameters,
                 parameters,
                 body,
                 rec_group,
+                origin,
                 ..
-            } if constraints.is_empty() && rec_group.is_none() => {
-                let value = self.function(parameters, body, scope)?;
+            } if rec_group.is_none() => {
+                let mut callable = LocalCallable::new(
+                    type_parameters.iter().map(|p| (p.name.clone(), p.arity)),
+                    constraints,
+                    parameters,
+                );
+                if !initializer_in_outer_scope {
+                    callable.self_name = Some(name.clone());
+                }
+                let value = self
+                    .local_function(&callable, body, scope)
+                    .map_err(|error| crate::project::at(&error.message, origin, self.owner))?;
                 let mut inner = scope.clone();
-                inner.insert(name.clone());
+                inner.insert_callable(name.clone(), callable);
                 Ok(format!(
                     "{{ let {} = {value}; {} }}",
                     id(name),
@@ -996,7 +1064,7 @@ impl Backend<'_> {
                 let unused = self.fresh();
                 self.effect_step(&unused, value, rest, result, scope)
             }
-            _ => Err("Rust backend: recursive/constrained local function is unsupported".into()),
+            _ => Err("Rust backend: recursive local function is unsupported".into()),
         }
     }
 

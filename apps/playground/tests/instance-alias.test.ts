@@ -26,14 +26,17 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
     "instance-disjoint",
     "constructor-disjoint",
     "alias-constructor",
+    "local-dictionaries",
+    "binding-scope",
     "instance-alias-effects",
+    "local-dictionary-effects",
   ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend/${name}`,
       import.meta.url
     )
     let source = await Bun.file(`${base.pathname}.ssrg`).text()
-    if (name !== "instance-alias-effects")
+    if (!name.endsWith("effects"))
       source += "\npub effect fn main = println (show (probe ()))\n"
     const expected = (
       await Bun.file(`${base.pathname}.stdout`).text()
@@ -107,6 +110,7 @@ test("dictionary heads retain provider owners across renamed facade exports", as
     "instance-alias",
     "alias-constructor",
     "imported-return",
+    "local-dictionaries",
   ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend-projects/${name}/`,

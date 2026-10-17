@@ -1,0 +1,25 @@
+import * as effects from "std/effect"
+
+type Trip = | Multiply | Overflow
+
+instance Show<Trip> {
+  fn show value: Trip -> String = match value {
+    Multiply -> show (9007199254740991 * 9007199254740991)
+    Overflow -> show (9007199254740991 + 1)
+  }
+}
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do {
+      println "acquired"
+      effects.succeed ()
+  }) (
+    \_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ())
+      (println "released")
+  )
+  let render = \left -> \right -> show left + ":" + show right
+  let saved: Trip -> String = render Multiply
+  println "partial"
+  println (saved Overflow)
+  println "unreachable"
+}

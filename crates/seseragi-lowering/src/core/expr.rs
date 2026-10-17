@@ -111,6 +111,7 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
             body,
             origin,
         } => vec![CoreStatement::LocalFunction {
+            initializer_in_outer_scope: false,
             rec_group: rec_group.map(|span| source_span(source, span)),
             return_type: return_type.map(lower_typed_type),
             name,
@@ -696,6 +697,7 @@ fn lower_let_pattern_statements(
     };
     let (parameters, body) = peel_lambdas(value);
     vec![CoreStatement::LocalFunction {
+        initializer_in_outer_scope: true,
         rec_group: None,
         return_type: None,
         name,
