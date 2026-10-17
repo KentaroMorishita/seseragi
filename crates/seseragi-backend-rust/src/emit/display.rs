@@ -39,7 +39,7 @@ impl Backend<'_> {
                     "Rust backend: invalid canonical Array display identity or child".into(),
                 );
             }
-            self.validate_display_child(child, method)?;
+            self.validate_display_child(child, method, scope)?;
             let children = self.evidence(evidence_arguments, scope)?;
             return Ok(Some(format!(
                 "native_array_display_dictionary(({children}).remove(0), {})",
@@ -64,7 +64,7 @@ impl Backend<'_> {
             );
         }
         for child in evidence_arguments {
-            self.validate_display_child(child, method)?;
+            self.validate_display_child(child, method, scope)?;
         }
         let children = self.evidence(evidence_arguments, scope)?;
         Ok(Some(format!(
@@ -77,6 +77,7 @@ impl Backend<'_> {
         &self,
         child: &CoreCallEvidence,
         method: &str,
+        scope: &Scope,
     ) -> Result<()> {
         let [ty] = child.constraint.arguments.as_slice() else {
             return Err("Rust backend: display child constraint arity mismatch".into());
@@ -86,16 +87,15 @@ impl Backend<'_> {
         }
         match &child.evidence {
             CoreInstanceEvidence::Parameter { index } => {
-                let constraint = self
-                    .dictionary_constraints
+                let constraint = scope
+                    .dictionaries
                     .get(*index)
                     .ok_or("Rust backend: display child dictionary parameter out of scope")?;
-                if constraint.name != method
-                    || constraint.arguments != child.constraint.arguments
-                    || constraint
-                        .trait_identity
-                        .as_deref()
-                        .is_some_and(|id| id != format!("std/prelude::{method}"))
+                self.validate_parameter_evidence(child, scope)?;
+                if constraint
+                    .trait_identity
+                    .as_deref()
+                    .is_some_and(|id| id != format!("std/prelude::{method}"))
                 {
                     return Err("Rust backend: display child dictionary parameter mismatch".into());
                 }
@@ -192,7 +192,7 @@ impl Backend<'_> {
                     // Only Show/Debug children belong to this display proof.
                     // Other checked constraints use the existing evidence path.
                     if constraint.name == method {
-                        self.validate_display_child(argument, method)?;
+                        self.validate_display_child(argument, method, scope)?;
                     }
                 }
             }
@@ -200,7 +200,7 @@ impl Backend<'_> {
                 evidence_arguments, ..
             } => {
                 for argument in evidence_arguments {
-                    self.validate_display_child(argument, method)?;
+                    self.validate_display_child(argument, method, scope)?;
                 }
             }
         }
@@ -212,7 +212,7 @@ impl Backend<'_> {
 // call site's canonical types, after substituting its checked type arguments.
 // Instance templates use declaration scope; checked call-site Named standard
 // types denote prelude types, and nominal shadows retain ExternalNamed identity.
-fn canonical_type(
+pub(super) fn canonical_type(
     ty: &CoreType,
     owner: &str,
     substitutions: &BTreeMap<String, CoreType>,

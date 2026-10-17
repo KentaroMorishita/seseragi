@@ -198,6 +198,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("instance-disjoint", 3),
         ("alias-constructor", 3),
         ("imported-return", 3),
+        ("local-dictionaries", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -426,6 +427,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "instance-disjoint",
         "constructor-disjoint",
         "alias-constructor",
+        "local-dictionaries",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -502,6 +504,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "instance-disjoint",
         "constructor-disjoint",
         "alias-constructor",
+        "local-dictionaries",
     ] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
@@ -961,6 +964,22 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "local-dictionary-effects",
+            "fixtures/rust-backend/local-dictionary-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/local-dictionary-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "local-dictionary-defect",
+            "fixtures/rust-backend/local-dictionary-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/local-dictionary-defect.stdout"
+            ),
+            70,
+        ),
         (
             "instance-alias-effects",
             "fixtures/rust-backend/instance-alias-effects.ssrg",
@@ -1441,6 +1460,7 @@ fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
     strict_project_reexports("instance-disjoint");
     strict_project_reexports("alias-constructor");
     strict_project_reexports("imported-return");
+    strict_project_reexports("local-dictionaries");
 }
 
 fn strict_project_reexports(name: &str) {

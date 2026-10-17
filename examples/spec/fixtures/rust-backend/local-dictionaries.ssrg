@@ -1,0 +1,102 @@
+trait Read<A> {
+  fn read value: A -> String
+}
+
+instance Read<Int> {
+  fn read value: Int -> String = "int=" + show value
+}
+
+type Box<A> = | Box A
+type Higher<F<_>> = | Higher (F<Int>)
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+instance<F<_>> Show<Higher<F>> where Show<F<Int>> {
+  fn show value: Higher<F> -> String = match value { Higher item -> show item }
+}
+
+fn outer<A> seed: A -> (Bool -> String) where Read<A> = {
+  let render = \value -> read seed + ":" + show value
+  render
+}
+
+fn nested<A> seed: A -> String where Read<A> = {
+  let render = \left -> {
+    let render = \right -> show left + ":" + read seed + ":" + show right
+    render True
+  }
+  render 'λ'
+}
+
+fn higher<F<_>> seed: F<Int> -> String where Show<F<Int>> = {
+  let render = \value -> show (seed, value)
+  render False
+}
+
+fn forward<F<_>, A> seed: F<A> -> String where Show<F<A>> = {
+  fn local<G<_>, B> value: G<B> -> String where Show<G<B>> = show value
+  local seed
+}
+
+fn shadow seed: String -> String = {
+  let render = \seed -> {
+    let identity = \value -> value
+    show (identity seed)
+  }
+  render 42
+}
+
+fn shadowLambda -> String = {
+  let render = \value -> show value
+  {
+    let render = \value -> render value + "!"
+    render 42
+  }
+}
+
+pub fn probe -> Array<String> = {
+  fn declared<A> value: A -> String where Show<A> = show value
+  fn constructed<F<_>> value: F<Int> -> String where Show<F<Int>> = show value
+  let render = \value -> show value
+  let alias = render
+  let second = alias
+  let saved: Int -> String = render
+  let prefixed = \prefix: String -> \value -> prefix + show value
+  let partial: Int -> String = prefixed "n="
+  let captured = outer 7
+  let made = \value -> {
+    let kept = show value
+    \suffix: String -> kept + suffix
+  }
+  let kept = made (Box 8)
+  let both = \left -> \right -> show left + ":" + show right
+  let wrapped: Higher<Box> = Higher (Box 6)
+  let composed = \left -> {
+    let inner = \right -> show (Box left) + ":" + show (Box right)
+    inner True
+  }
+  [
+    render True,
+    saved 42,
+    partial 9,
+    captured True,
+    render [1, 2],
+    render (Box (Box '🙂')),
+    render wrapped,
+    both 1 True,
+    both 'λ' 2.5,
+    kept "!",
+    kept "?",
+    higher (Box 5),
+    shadow "unused",
+    nested 7,
+    declared (Box True),
+    constructed (Box 9),
+    forward (Box 'λ'),
+    composed 3,
+    second (Box 7),
+    shadowLambda ()
+  ]
+}

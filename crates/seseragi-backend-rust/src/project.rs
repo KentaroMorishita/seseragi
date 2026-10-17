@@ -30,6 +30,7 @@ pub(crate) fn emit(
     let mut owners = BTreeMap::new();
     let mut symbols = BTreeSet::new();
     let mut type_names = BTreeMap::new();
+    let mut trait_names = BTreeMap::new();
     for module in modules {
         if module.module.starts_with("std/") || !seen.insert(module.module.clone()) {
             return Err("Rust backend: duplicate or reserved source module identity".into());
@@ -55,6 +56,23 @@ pub(crate) fn emit(
             }
         }
         for dependency in &module.module_dependencies {
+            for import in dependency
+                .imports
+                .iter()
+                .filter(|item| item.namespace == "trait")
+            {
+                let key = (module.module.clone(), import.local.clone());
+                if trait_names
+                    .insert(key, import.canonical.clone())
+                    .is_some_and(|previous| previous != import.canonical)
+                {
+                    return Err(at(
+                        "Rust backend: ambiguous canonical trait alias",
+                        &import.origin,
+                        &module.module,
+                    ));
+                }
+            }
             if !dependency.module.starts_with("std/")
                 && (dependency.module == module.module || !seen.contains(&dependency.module))
             {
@@ -128,7 +146,14 @@ pub(crate) fn emit(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = emit::emit(&linked, entry, &owners, &scalar_globals, &type_names)?;
+    let mut artifact = emit::emit(
+        &linked,
+        entry,
+        &owners,
+        &scalar_globals,
+        &type_names,
+        &trait_names,
+    )?;
     artifact.metadata.modules = initialization;
     Ok(artifact)
 }

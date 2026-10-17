@@ -1,4 +1,4 @@
-# Rustバックエンドの設計と最初の実装
+# Rustバックエンドの設計と対応範囲
 
 [寿命管理とEffectの研究](../experiments/native-lifetimes.md)から、同期Effect / Ref / scopeと
 循環回収をexperimental CLIへ統合する実装を進めている。現在の範囲と検証は
@@ -11,7 +11,7 @@ Rustソース生成を第二のbackendとして段階的に実装する。Sesera
 評価順序の authority は既存frontendとCoreIrに置く。ユーザーにRustの所有権注釈を要求しない。
 生成されたプログラムはRust標準ライブラリのみを使い、実行時にBun、Node、TS runtimeを必要としない。
 
-experimentalな単一moduleのpure / 同期Effectを扱う。既存`process` / `web` targetの意味は
+experimentalなpure / 同期Effectと検証済みの複数module・path packageを扱う。既存`process` / `web` targetの意味は
 変えず、CLIでは`experimental`配下から明示的に選ぶ。純粋entryは結果をinspection表示し、
 Effect entryはnativeの実行loopとresource scopeで実行する。
 
@@ -65,7 +65,7 @@ full scanを512 checkpointごととroot終了時に行う。停止時間の上�
 
 Rustの既知関数の完全適用はdirect helperへ落とす。部分適用・alias・返却関数はcurried ABIを保つ。
 通常のcallは各stageを適用してから次の引数を評価する。たとえば`returned a b`では、`returned a`の
-bodyが実行されてから`b`を評価する。隠れたevidenceの挿入が必要なstagingは未対応として診断する。
+bodyが実行されてから`b`を評価する。選択済み辞書で証明できるlocal callable以外の、未対応stagingは診断する。
 
 純粋関数の直接の自己末尾callは、if / decision / pure sequenceの末尾を辿ってloopへ落とす。
 次のdictionaryと全引数を左から右へ評価した後、freshなloop storageへ代入する。各周回のsource
@@ -81,24 +81,36 @@ parameter-dependent factoryは共有しない。cache keyはinstance identity、
 [TS実測](../experiments/core-ir-performance.md)で改善が見えた二つの処理をこの分析へ戻した。
 TS backendはfree-variable分析を非再帰letのinitializer scope判定へ使う。同名の外側の値を
 参照するinitializerは新しいbindingのscope外で評価し、JSのTDZに捕捉される不具合を防ぐ（#820）。
-direct call / dictionary最適化はまだTSへ適用していない。測定用TSコピーの改善率を、この実装の
-RustやTSの製品性能として扱わない。TSへの適用はhidden evidence / import ABI / defect timingを
-同じfixtureで検証する次の独立sliceとする。
+direct helperとdictionary factoryの共有はRust backendの実装であり、TSへ同じ変換を導入したとは扱わない。
+TS / nativeのscalar self-tail loop認定とscalar global readの共通改善は#822 / #843で検証した。
+過去の測定用TSコピーの改善率を製品性能として扱わず、条件と適用範囲を#816で追跡する。
 
 ## 対応範囲と診断
 
-対応するのは、pure / 同期Effect function、返却closure、部分適用、generic / HKTの型消去、local user instance
-とnested dictionary、Int / Bool / String、Tuple / Array / field-only Record、local ADT、
-if、constructor / Int / Bool decision、let / effect sequence、非再帰・制約なしlocal function、
-限定したchecked Int演算と文字列加算、primitive / local Showによるtemplate。
+対応するのは、pure / 同期Effect function、返却closure、部分適用、generic / HKTの型消去、
+選択済みのuser instanceとnested dictionary、Int / Bool / String、基本Char / Float / List、
+Tuple / Array / field-only Record、local ADT、decision、let / effect sequence。
+Show / Debugは対応済みの標準辞書と選択済みchild methodを使う。
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
+検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
 全source moduleを検査し、未使用の未対応declarationも黙って消さない。
 
-現在の未対応範囲：async Effect、全stdlib、Float / Char / List、top-level let、再帰・制約付きlocal function、
-record spread、複雑なpattern、standard dictionaryの値としてのmaterialization、derived instance、
-supertrait / method constraints、deferred callable evidence、package / source module linking、
-foreign / provider ABI、並列runtime、標準のprogram WASM target、source map、一般のDefect provenance。
+CoreIrはgeneralizeしたlet lambdaと名前付きlocal functionのbinding scopeを区別する。
+let lambdaは前のlexical scopeを捕捉し、名前付き関数のbodyは自身の名前を参照する。
+TSはlet lambdaを外側のscopeで生成してからbindingし、nativeは未対応のlocal self参照を
+同名の外側の値へ解決せず、生成前に拒否する。
+
+非再帰の制約付きlocal functionとgeneralizeしたlambdaは、呼出しごとの辞書を受け取る。
+内部の辞書factoryとsource parameterの段階を分け、選択済みevidenceを辞書frame内のindexへ対応づける。
+外側から継承した制約も明示的に渡す。辞書とterm captureは既存のruntime graphで追跡し、
+保存関数・部分適用・返却closureが使う値を保持する。deferredな部分適用はTSと同じ位置で
+source式を評価する。未証明のconstructor parameterやstagingは生成前に拒否する。
+
+現在の未対応範囲：async Effect、残るstdlib API、一般のpolymorphic global、再帰local function、
+record spreadと未対応pattern、derived instance、supertrait / method固有constraint、
+一般のdeferred callable evidence、foreign / provider ABI、並列runtime、標準のprogram WASM target、
+source map、一般のDefect provenance。Floatに標準Eq / Ord / Hashは導入しない。
 直接の純粋自己末尾call以外はRust stackを使う。一般の再帰・相互再帰のconstant-stack保証はない。
 深い値の破棄と深い関数callは別の境界である。
 

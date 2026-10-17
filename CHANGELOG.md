@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.49] - 2026-10-18
+
+### Fixed
+
+- Distinguish generalized let lambdas from named local function declarations in shared CoreIr. Keep a shadowing lambda's references in the preceding lexical scope on TypeScript, and reject unsupported native named-local recursion before it can resolve to an outer value.
+
+### Added
+
+- Execute nonrecursive constrained local functions and generalized lambdas in the Rust target with explicit dictionary stages. Preserve source arity, inherited evidence frames, canonical trait owners and checked constructor kinds across saved aliases, partial calls, returned closures and path packages. Keep Ref captures traceable, cold Effects and finalizers ordered, and enclosing self-tail calls stack safe. Reject recursive locals and unproved evidence or binder/staging shapes before output (#876).
+
 ## [0.61.48] - 2026-10-17
 
 ### Fixed

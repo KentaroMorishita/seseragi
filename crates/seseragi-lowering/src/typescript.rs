@@ -674,6 +674,8 @@ pub enum TypeScriptStatement {
         origin: SourceSpan,
     },
     LocalFunction {
+        #[serde(default, skip_serializing_if = "is_false")]
+        initializer_in_outer_scope: bool,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rec_group: Option<SourceSpan>,
         #[serde(default, skip_serializing_if = "Option::is_none")]

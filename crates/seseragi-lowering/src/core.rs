@@ -579,6 +579,10 @@ pub enum CoreStatement {
         origin: SourceSpan,
     },
     LocalFunction {
+        /// Let-bound generalized lambdas capture the preceding lexical scope;
+        /// named local declarations bind their own name inside their body.
+        #[serde(default, skip_serializing_if = "is_false")]
+        initializer_in_outer_scope: bool,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rec_group: Option<SourceSpan>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -983,4 +987,8 @@ fn lower_foreign_member(source: &str, member: TypedForeignMember) -> CoreForeign
             origin: source_span(source, origin),
         },
     }
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }

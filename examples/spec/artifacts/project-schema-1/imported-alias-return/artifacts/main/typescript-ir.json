@@ -409,6 +409,7 @@
           },
           {
             "kind": "local-function",
+            "initializerInOuterScope": true,
             "name": "forward",
             "typeParameters": [
               "Let426T0"

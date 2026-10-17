@@ -1294,6 +1294,7 @@ fn render_monad_sequence(
             render_typescript_expr(initializer)
         ),
         TypeScriptStatement::LocalFunction {
+            initializer_in_outer_scope,
             name,
             type_parameters,
             constraints,
@@ -1302,18 +1303,22 @@ fn render_monad_sequence(
             ..
         } => {
             let parameters = evidence_parameters(parameters, 0, constraints.len());
-            format!(
-                "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(
-                    type_parameters,
-                    &parameters,
-                    body,
-                    false,
-                    false,
-                    Some(name),
-                    false
-                )
-            )
+            let value = render_function_body(
+                type_parameters,
+                &parameters,
+                body,
+                false,
+                false,
+                (!initializer_in_outer_scope).then_some(name.as_str()),
+                false,
+            );
+            if *initializer_in_outer_scope {
+                // An IIFE argument is evaluated in the preceding scope. Its
+                // inferred parameter type retains the generic callable ABI.
+                format!("(({name}) => {{ return {continuation}; }})({value})")
+            } else {
+                format!("(() => {{ const {name} = {value}; return {continuation}; }})()")
+            }
         }
     }
 }
@@ -1370,6 +1375,7 @@ fn render_effect_sequence_with_result_renderer(
             render_typescript_type(type_ref)
         ),
         TypeScriptStatement::LocalFunction {
+            initializer_in_outer_scope,
             name,
             type_parameters,
             constraints,
@@ -1378,18 +1384,22 @@ fn render_effect_sequence_with_result_renderer(
             ..
         } => {
             let parameters = evidence_parameters(parameters, 0, constraints.len());
-            format!(
-                "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(
-                    type_parameters,
-                    &parameters,
-                    body,
-                    false,
-                    false,
-                    Some(name),
-                    false
-                )
-            )
+            let value = render_function_body(
+                type_parameters,
+                &parameters,
+                body,
+                false,
+                false,
+                (!initializer_in_outer_scope).then_some(name.as_str()),
+                false,
+            );
+            if *initializer_in_outer_scope {
+                // An IIFE argument is evaluated in the preceding scope. Its
+                // inferred parameter type retains the generic callable ABI.
+                format!("(({name}) => {{ return {continuation}; }})({value})")
+            } else {
+                format!("(() => {{ const {name} = {value}; return {continuation}; }})()")
+            }
         }
     }
 }

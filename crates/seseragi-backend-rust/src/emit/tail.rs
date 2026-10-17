@@ -198,17 +198,37 @@ impl Backend<'_> {
         let Some((first, rest)) = statements.split_first() else {
             return self.tail_body(result, scope, target);
         };
+        let mut inner = scope.clone();
         let (name, value) = match first {
-            CoreStatement::PureLet { name, value, .. } => (name, self.expr(value, scope)?),
+            CoreStatement::PureLet { name, value, .. } => {
+                let value = self.expr(value, scope)?;
+                inner.insert(name.clone());
+                (name, value)
+            }
             CoreStatement::LocalFunction {
+                initializer_in_outer_scope,
                 name,
                 constraints,
+                type_parameters,
                 parameters,
                 body,
                 rec_group,
+                origin,
                 ..
-            } if constraints.is_empty() && rec_group.is_none() => {
-                (name, self.function(parameters, body, scope)?)
+            } if rec_group.is_none() => {
+                let mut callable = LocalCallable::new(
+                    type_parameters.iter().map(|p| (p.name.clone(), p.arity)),
+                    constraints,
+                    parameters,
+                );
+                if !initializer_in_outer_scope {
+                    callable.self_name = Some(name.clone());
+                }
+                let value = self
+                    .local_function(&callable, body, scope)
+                    .map_err(|error| crate::project::at(&error.message, origin, self.owner))?;
+                inner.insert_callable(name.clone(), callable);
+                (name, value)
             }
             // Effect continuations have their own interpreter frames. Never
             // continue a pure caller loop from inside one of those closures.
@@ -219,8 +239,6 @@ impl Backend<'_> {
                 ))
             }
         };
-        let mut inner = scope.clone();
-        inner.insert(name.clone());
         Ok(format!(
             "{{ let {} = {value}; {} }}",
             id(name),
