@@ -173,8 +173,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Packet",
+            "canonical": "artifact/top-level-call-inference::Packet",
+            "providerModule": "artifact/top-level-call-inference",
+            "providerExport": "Packet",
             "arguments": [
               {
                 "kind": "named",
@@ -220,8 +223,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "artifact/top-level-call-inference::Box",
+            "providerModule": "artifact/top-level-call-inference",
+            "providerExport": "Box",
             "arguments": [
               {
                 "kind": "named",

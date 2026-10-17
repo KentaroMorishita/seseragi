@@ -140,8 +140,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Key",
+            "canonical": "artifact/array-list-apis::Key",
+            "providerModule": "artifact/array-list-apis",
+            "providerExport": "Key",
             "arguments": []
           }
         ]
@@ -166,8 +169,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Key",
+            "canonical": "artifact/array-list-apis::Key",
+            "providerModule": "artifact/array-list-apis",
+            "providerExport": "Key",
             "arguments": []
           }
         ]
@@ -192,8 +198,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Key",
+            "canonical": "artifact/array-list-apis::Key",
+            "providerModule": "artifact/array-list-apis",
+            "providerExport": "Key",
             "arguments": []
           }
         ]
@@ -204,8 +213,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Key",
+              "canonical": "artifact/array-list-apis::Key",
+              "providerModule": "artifact/array-list-apis",
+              "providerExport": "Key",
               "arguments": []
             }
           ]

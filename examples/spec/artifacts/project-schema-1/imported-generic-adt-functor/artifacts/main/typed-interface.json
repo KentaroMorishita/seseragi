@@ -101,8 +101,11 @@
         "constructor": "Functor",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-functor::domain::Box",
+            "providerModule": "fixture/imported-generic-adt-functor::domain",
+            "providerExport": "Box",
             "arguments": []
           }
         ]

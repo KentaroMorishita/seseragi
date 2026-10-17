@@ -127,7 +127,9 @@ pub(super) fn contract_type(
             substitutions,
             bindings,
         )?)),
-        InterfaceType::RequirementMerge { .. } => None,
+        InterfaceType::RequirementMerge { operands } => Some(ContractType::RequirementMerge(
+            contract_types(operands, binders, substitutions, bindings)?,
+        )),
         InterfaceType::Hole => Some(ContractType::Hole),
     }
 }

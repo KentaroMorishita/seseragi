@@ -295,6 +295,22 @@ impl Backend<'_> {
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
         let mut values = Vec::new();
         for selected in evidence {
+            if matches!(
+                selected.evidence,
+                CoreInstanceEvidence::Local { .. } | CoreInstanceEvidence::Imported { .. }
+            ) {
+                for method in ["Show", "Debug"] {
+                    if selected.constraint.name == method
+                        && selected
+                            .constraint
+                            .trait_identity
+                            .as_deref()
+                            .is_none_or(|identity| identity == format!("std/prelude::{method}"))
+                    {
+                        self.validate_display_child(selected, method)?;
+                    }
+                }
+            }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;

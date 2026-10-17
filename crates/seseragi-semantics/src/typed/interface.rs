@@ -271,11 +271,11 @@ pub(crate) fn typed_interface_from_modules(
     // A final typed interface replaces shallow instance heads with canonical
     // evidence. Retaining both would expose one source declaration twice.
     let mut instances = Vec::new();
+    let instance_types = types.clone().with_instance_owners(typed);
     instances.extend(
-        typed
-            .instances
-            .iter()
-            .map(|instance| interface_instance_from_typed(instance, &typed.module, &types)),
+        typed.instances.iter().map(|instance| {
+            interface_instance_from_typed(instance, &typed.module, &instance_types)
+        }),
     );
     instances.extend(
         dependency_instances

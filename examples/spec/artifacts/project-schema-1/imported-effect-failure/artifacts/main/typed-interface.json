@@ -137,8 +137,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "AppError",
+            "canonical": "fixture/imported-effect-failure::main::AppError",
+            "providerModule": "fixture/imported-effect-failure::main",
+            "providerExport": "AppError",
             "arguments": []
           }
         ]
@@ -164,8 +167,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "InputError",
+            "canonical": "fixture/imported-effect-failure::input::InputError",
+            "providerModule": "fixture/imported-effect-failure::input",
+            "providerExport": "InputError",
             "arguments": []
           }
         ]

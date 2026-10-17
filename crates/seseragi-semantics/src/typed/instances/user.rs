@@ -57,7 +57,7 @@ fn typed_instance(
         });
     let typed_arguments = arguments
         .iter()
-        .map(typed_type_from_type_ref)
+        .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref)
         .collect::<Vec<_>>();
     let supertraits =
         crate::typed::direct_supertrait_constraints(*trait_name_span, &typed_arguments, resolution);
@@ -97,7 +97,7 @@ fn typed_instance(
                     arguments: constraint
                         .arguments
                         .iter()
-                        .map(typed_type_from_type_ref)
+                        .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref)
                         .collect(),
                 }
             }))
@@ -183,71 +183,5 @@ pub(crate) fn canonical_type_ref(
     resolution: &TypedResolution<'_>,
     binders: &BTreeMap<&str, usize>,
 ) -> Option<String> {
-    match type_ref {
-        TypeRef::Named {
-            name,
-            arguments,
-            span,
-        } => {
-            let constructor = if let Some(index) = binders.get(name.as_str()) {
-                format!("${index}")
-            } else {
-                canonical_reference(resolution, *span, SymbolNamespace::Type)?
-            };
-            if arguments.is_empty() {
-                Some(constructor)
-            } else {
-                Some(format!(
-                    "{constructor}<{}>",
-                    arguments
-                        .iter()
-                        .map(|argument| canonical_type_ref(argument, resolution, binders))
-                        .collect::<Option<Vec<_>>>()?
-                        .join(",")
-                ))
-            }
-        }
-        TypeRef::Hole { .. } => Some("_".to_owned()),
-        TypeRef::Tuple { elements, .. } => Some(format!(
-            "({})",
-            elements
-                .iter()
-                .map(|element| canonical_type_ref(element, resolution, binders))
-                .collect::<Option<Vec<_>>>()?
-                .join(",")
-        )),
-        TypeRef::Function {
-            parameter, result, ..
-        } => Some(format!(
-            "({}->{})",
-            canonical_type_ref(parameter, resolution, binders)?,
-            canonical_type_ref(result, resolution, binders)?
-        )),
-        TypeRef::Record { closed, fields, .. } => {
-            let mut fields = fields
-                .iter()
-                .map(|field| {
-                    Some(format!(
-                        "{}{}:{}",
-                        field.name,
-                        if field.optional { "?" } else { "" },
-                        canonical_type_ref(&field.type_ref, resolution, binders)?
-                    ))
-                })
-                .collect::<Option<Vec<_>>>()?;
-            fields.sort();
-            Some(format!(
-                "{}{{{}}}",
-                if *closed { "" } else { "open" },
-                fields.join(",")
-            ))
-        }
-        TypeRef::RequirementMerge { operands, .. } => Some(
-            operands
-                .iter()
-                .map(|operand| canonical_type_ref(operand, resolution, binders))
-                .collect::<Option<Vec<_>>>()?
-                .join("&"),
-        ),
-    }
+    super::contracts::canonical_type_identity(resolution.resolved(), type_ref, binders)
 }

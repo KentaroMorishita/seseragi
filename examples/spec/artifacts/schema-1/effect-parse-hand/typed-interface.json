@@ -199,8 +199,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "HandInputError",
+            "canonical": "artifact/effect-parse-hand::HandInputError",
+            "providerModule": "artifact/effect-parse-hand",
+            "providerExport": "HandInputError",
             "arguments": []
           }
         ]

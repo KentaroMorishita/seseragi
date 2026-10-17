@@ -4,6 +4,8 @@ use crate::{
 };
 use seseragi_syntax::InterfaceType;
 
+mod alias_heads;
+
 #[test]
 fn selects_non_generic_derived_show_as_typed_evidence() {
     let typed = type_module(
@@ -225,8 +227,11 @@ fn projects_selected_evidence_as_show_adt_interface_instance() {
         interface.instances[0].head,
         InterfaceType::Apply {
             constructor: "Show".to_owned(),
-            arguments: vec![InterfaceType::Named {
+            arguments: vec![InterfaceType::ExternalNamed {
                 name: "AppError".to_owned(),
+                canonical: "artifact/public-derived-show::AppError".to_owned(),
+                provider_module: "artifact/public-derived-show".to_owned(),
+                provider_export: "AppError".to_owned(),
                 arguments: Vec::new(),
             }],
         }

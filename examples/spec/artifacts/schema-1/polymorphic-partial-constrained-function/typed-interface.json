@@ -164,8 +164,11 @@
         "constructor": "Ready",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/polymorphic-partial-constrained-function::Badge",
+            "providerModule": "artifact/polymorphic-partial-constrained-function",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

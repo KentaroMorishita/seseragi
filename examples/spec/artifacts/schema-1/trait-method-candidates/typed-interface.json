@@ -351,8 +351,11 @@
         "constructor": "Render",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/trait-method-candidates::Badge",
+            "providerModule": "artifact/trait-method-candidates",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]
@@ -377,8 +380,11 @@
         "constructor": "Describe",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Mode",
+            "canonical": "artifact/trait-method-candidates::Mode",
+            "providerModule": "artifact/trait-method-candidates",
+            "providerExport": "Mode",
             "arguments": []
           }
         ]

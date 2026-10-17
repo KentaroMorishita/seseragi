@@ -1,0 +1,20 @@
+pub type Label = | Label Int
+pub alias Name = Label
+instance Show<Name> {
+  fn show value: Label -> String = match value { Label n -> "model=" + show n }
+}
+
+pub type Box<A> = | Box A
+pub alias Wrapped<A> = Box<A>
+instance<A> Show<Wrapped<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+pub fn retained<A> value: A -> (Int -> String) where Show<A> =
+  \n -> show value + "/" + show n
+
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+pub fn renderImported<A> value: A -> String where Render<A> = render value

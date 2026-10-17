@@ -638,8 +638,11 @@
         "constructor": "Functor",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Validation",
+            "canonical": "artifact/applicative-validation::Validation",
+            "providerModule": "artifact/applicative-validation",
+            "providerExport": "Validation",
             "arguments": [
               {
                 "kind": "named",
@@ -675,8 +678,11 @@
         "constructor": "Applicative",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Validation",
+            "canonical": "artifact/applicative-validation::Validation",
+            "providerModule": "artifact/applicative-validation",
+            "providerExport": "Validation",
             "arguments": [
               {
                 "kind": "named",
@@ -696,8 +702,11 @@
           "traitIdentity": "artifact/applicative-validation::trait(Functor)",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Validation",
+              "canonical": "artifact/applicative-validation::Validation",
+              "providerModule": "artifact/applicative-validation",
+              "providerExport": "Validation",
               "arguments": [
                 {
                   "kind": "named",

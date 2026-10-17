@@ -153,8 +153,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/template-interpolation::Badge",
+            "providerModule": "artifact/template-interpolation",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

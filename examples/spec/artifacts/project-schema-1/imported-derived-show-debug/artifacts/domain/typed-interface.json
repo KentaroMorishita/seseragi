@@ -171,8 +171,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Code",
+            "canonical": "fixture/imported-derived-show-debug::domain::Code",
+            "providerModule": "fixture/imported-derived-show-debug::domain",
+            "providerExport": "Code",
             "arguments": []
           }
         ]
@@ -198,8 +201,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Code",
+            "canonical": "fixture/imported-derived-show-debug::domain::Code",
+            "providerModule": "fixture/imported-derived-show-debug::domain",
+            "providerExport": "Code",
             "arguments": []
           }
         ]
@@ -227,8 +233,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Remote",
+            "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+            "providerModule": "fixture/imported-derived-show-debug::domain",
+            "providerExport": "Remote",
             "arguments": [
               {
                 "kind": "named",
@@ -274,8 +283,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Remote",
+            "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+            "providerModule": "fixture/imported-derived-show-debug::domain",
+            "providerExport": "Remote",
             "arguments": [
               {
                 "kind": "named",

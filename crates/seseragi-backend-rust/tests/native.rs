@@ -55,6 +55,15 @@ fn emit(source: &str) -> RustArtifact {
 }
 
 #[test]
+fn alias_heads_keep_selected_generic_higher_kinded_and_saved_dictionaries() {
+    run(
+        include_str!("../../../examples/spec/fixtures/rust-backend/instance-alias.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/instance-alias.stdout")
+            .trim_end(),
+    );
+}
+
+#[test]
 fn array_display_executes_selected_user_generic_and_higher_kinded_children() {
     run(
         include_str!("../../../examples/spec/fixtures/rust-backend/array-display.ssrg"),

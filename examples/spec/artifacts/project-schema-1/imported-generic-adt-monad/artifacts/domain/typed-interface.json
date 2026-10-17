@@ -533,8 +533,11 @@
         "constructor": "Functor",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+            "providerModule": "fixture/imported-generic-adt-monad::domain",
+            "providerExport": "Box",
             "arguments": []
           }
         ]
@@ -559,8 +562,11 @@
         "constructor": "Applicative",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+            "providerModule": "fixture/imported-generic-adt-monad::domain",
+            "providerExport": "Box",
             "arguments": []
           }
         ]
@@ -571,8 +577,11 @@
           "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+              "providerModule": "fixture/imported-generic-adt-monad::domain",
+              "providerExport": "Box",
               "arguments": []
             }
           ]
@@ -597,8 +606,11 @@
         "constructor": "Monad",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+            "providerModule": "fixture/imported-generic-adt-monad::domain",
+            "providerExport": "Box",
             "arguments": []
           }
         ]
@@ -609,8 +621,11 @@
           "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+              "providerModule": "fixture/imported-generic-adt-monad::domain",
+              "providerExport": "Box",
               "arguments": []
             }
           ]

@@ -106,8 +106,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "fixture/imported-user-ord-operator::domain::Score",
+            "providerModule": "fixture/imported-user-ord-operator::domain",
+            "providerExport": "Score",
             "arguments": []
           }
         ]
@@ -132,8 +135,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "fixture/imported-user-ord-operator::domain::Score",
+            "providerModule": "fixture/imported-user-ord-operator::domain",
+            "providerExport": "Score",
             "arguments": []
           }
         ]
@@ -144,8 +150,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Score",
+              "canonical": "fixture/imported-user-ord-operator::domain::Score",
+              "providerModule": "fixture/imported-user-ord-operator::domain",
+              "providerExport": "Score",
               "arguments": []
             }
           ]

@@ -326,8 +326,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/show-debug-structural::Badge",
+            "providerModule": "artifact/show-debug-structural",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]
@@ -352,8 +355,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/show-debug-structural::Badge",
+            "providerModule": "artifact/show-debug-structural",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

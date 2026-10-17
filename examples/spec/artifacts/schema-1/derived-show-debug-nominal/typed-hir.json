@@ -397,7 +397,7 @@
           },
           {
             "variantSymbol": "metadata",
-            "typeIdentity": "artifact/derived-show-debug-nominal::Metadata",
+            "typeIdentity": "{active:std/prelude::Bool}",
             "evidence": {
               "kind": "standard",
               "identity": "std/record::Show",
@@ -597,7 +597,7 @@
           },
           {
             "variantSymbol": "metadata",
-            "typeIdentity": "artifact/derived-show-debug-nominal::Metadata",
+            "typeIdentity": "{active:std/prelude::Bool}",
             "evidence": {
               "kind": "standard",
               "identity": "std/record::Debug",

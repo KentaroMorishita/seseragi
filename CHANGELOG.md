@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.44] - 2026-10-17
+
+### Fixed
+
+- Normalize represented instance-head aliases by resolved type owner for registration, method contracts, dictionary selection and duplicate checks. Keep canonical nominal owners through renamed facade exports, and reuse checked source type imports when generating TypeScript. Reject orphan and erased or unrepresented instance heads before output. General generic/concrete overlap checking and unapplied alias constructors remain in progress (#854, #865).
+- Make interface-only conformance artifact refresh resolve standard modules through the same driver path as the canonical checker.
+- Validate type arguments and child evidence for native Show/Debug factories on ordinary calls as well as collection display. Preserve the selected language methods, source arity and resource lifetimes.
+
 ## [0.61.43] - 2026-10-17
 
 ### Fixed

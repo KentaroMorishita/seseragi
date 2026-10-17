@@ -439,8 +439,11 @@
         "constructor": "Semigroup",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Log",
+            "canonical": "artifact/transformers::Log",
+            "providerModule": "artifact/transformers",
+            "providerExport": "Log",
             "arguments": []
           }
         ]
@@ -465,8 +468,11 @@
         "constructor": "Monoid",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Log",
+            "canonical": "artifact/transformers::Log",
+            "providerModule": "artifact/transformers",
+            "providerExport": "Log",
             "arguments": []
           }
         ]
@@ -477,8 +483,11 @@
           "traitIdentity": "std/prelude::Semigroup",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Log",
+              "canonical": "artifact/transformers::Log",
+              "providerModule": "artifact/transformers",
+              "providerExport": "Log",
               "arguments": []
             }
           ]

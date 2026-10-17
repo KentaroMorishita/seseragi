@@ -206,8 +206,11 @@
         "constructor": "Ready",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/constrained-function-dispatch::Badge",
+            "providerModule": "artifact/constrained-function-dispatch",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

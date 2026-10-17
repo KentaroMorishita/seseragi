@@ -1,0 +1,7 @@
+cold
+[[alias=1, alias=2], [alias=2]]
+[[alias=1, alias=2], [alias=3]]
+[[alias=4], [alias=2]]
+[[alias=4], [alias=3]]
+recovered: [alias=7, alias=8]
+released: [alias=4]

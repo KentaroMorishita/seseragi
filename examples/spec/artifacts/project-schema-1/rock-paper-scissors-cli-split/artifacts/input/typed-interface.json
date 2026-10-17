@@ -209,8 +209,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "InputError",
+            "canonical": "fixture/rps-cli-split::input::InputError",
+            "providerModule": "fixture/rps-cli-split::input",
+            "providerExport": "InputError",
             "arguments": []
           }
         ]

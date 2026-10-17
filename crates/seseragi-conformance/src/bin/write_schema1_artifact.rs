@@ -48,8 +48,16 @@ fn write_case(case: &Path, selection: &Selection) -> Result<(), String> {
     let source = fs::read_to_string(&source_path)
         .map_err(|error| format!("failed to read main.ssrg: {error}"))?;
     let source_name = source_name(case)?;
-    let compiled = selection
-        .requires_driver()
+    let requires_linked_interface = selection.contains(Stage::TypedInterface)
+        && seseragi_syntax::parse_unlinked_module_interface(
+            &source_name,
+            &module_id(case)?,
+            &source,
+        )
+        .imports
+        .iter()
+        .any(|import| seseragi_project::is_standard_module(&import.specifier));
+    let compiled = (selection.requires_driver() || requires_linked_interface)
         .then(|| compile_case(case, &source_name, &source))
         .transpose()?;
 
@@ -208,4 +216,35 @@ fn module_id(case: &Path) -> Result<String, String> {
         .and_then(|name| name.to_str())
         .ok_or_else(|| "case directory has no valid name".to_owned())?;
     Ok(format!("artifact/{name}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn interface_only_uses_the_linked_standard_module_contract() {
+        let case = std::env::temp_dir().join(format!(
+            "seseragi-writer-linked-interface-{}",
+            std::process::id()
+        ));
+        fs::create_dir_all(&case).unwrap();
+        let source =
+            "import * as lists from \"std/list\"\npub fn main unit: Unit -> Int = lists.length `[1, 2]\n";
+        fs::write(case.join("main.ssrg"), source).unwrap();
+        let selection = Selection::resolve(&case, Some("--only=typed-interface")).unwrap();
+        write_case(&case, &selection).unwrap();
+
+        let actual: serde_json::Value =
+            serde_json::from_slice(&fs::read(case.join("typed-interface.json")).unwrap()).unwrap();
+        let expected = compile_case(&case, &source_name(&case).unwrap(), source).unwrap();
+        assert_eq!(
+            actual,
+            serde_json::to_value(expected.typed_interface).unwrap()
+        );
+        assert_eq!(actual["dependencies"][0]["module"], "std/list");
+        assert!(!actual["exports"].as_array().unwrap().is_empty());
+        assert!(!case.join("typed-hir.json").exists());
+        fs::remove_dir_all(case).unwrap();
+    }
 }

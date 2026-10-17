@@ -126,8 +126,11 @@
         "constructor": "Add",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/user-add-operator::Score",
+            "providerModule": "artifact/user-add-operator",
+            "providerExport": "Score",
             "arguments": []
           },
           {
@@ -136,8 +139,11 @@
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/user-add-operator::Score",
+            "providerModule": "artifact/user-add-operator",
+            "providerExport": "Score",
             "arguments": []
           }
         ]

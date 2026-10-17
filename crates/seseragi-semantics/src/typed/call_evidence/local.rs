@@ -7,7 +7,6 @@ use std::collections::BTreeMap;
 use super::super::functions::{infer_type_parameters, substitute_type_parameters};
 use super::super::instances::{canonical_instance_head_identity, canonical_type_ref};
 use super::super::semantic_types::semantic_values_are_compatible;
-use super::super::type_ref::typed_type_from_type_ref;
 use super::super::TypedResolution;
 
 pub(super) fn infer_local_functional_instance(
@@ -124,8 +123,12 @@ fn infer_binary_instance_candidate(
     if resolution.symbol(target)?.canonical.as_deref() != Some(trait_identity) {
         return None;
     }
-    let left_template = typed_type_from_type_ref(left_template);
-    let right_template = typed_type_from_type_ref(right_template);
+    let left_template = resolution
+        .semantic_value_from_type_ref(left_template)
+        .type_ref;
+    let right_template = resolution
+        .semantic_value_from_type_ref(right_template)
+        .type_ref;
     let mut substitutions = BTreeMap::<String, TypedType>::new();
     infer_type_parameters(&left_template, left, type_parameters, &mut substitutions);
     infer_type_parameters(&right_template, right, type_parameters, &mut substitutions);
@@ -138,8 +141,12 @@ fn infer_binary_instance_candidate(
             return None;
         }
     }
-    let output =
-        substitute_type_parameters(&typed_type_from_type_ref(output_template), &substitutions);
+    let output = substitute_type_parameters(
+        &resolution
+            .semantic_value_from_type_ref(output_template)
+            .type_ref,
+        &substitutions,
+    );
     let constraint = TypedConstraint {
         name: trait_name.to_owned(),
         arguments: vec![left.clone(), right.clone(), output.clone()],
@@ -179,7 +186,8 @@ fn infer_binary_instance_candidate_from_partial(
     if resolution.symbol(target)?.canonical.as_deref() != Some(trait_identity) {
         return None;
     }
-    let templates = [left_template, right_template, output_template].map(typed_type_from_type_ref);
+    let templates = [left_template, right_template, output_template]
+        .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref);
     let mut substitutions = BTreeMap::<String, TypedType>::new();
     for (template, actual) in templates.iter().zip(expected) {
         if let Some(actual) = actual {
@@ -245,7 +253,9 @@ fn infer_functional_instance_candidate(
         return None;
     }
     let collection_template = normalize_partial_constructor_template(
-        &typed_type_from_type_ref(collection_template),
+        &resolution
+            .semantic_value_from_type_ref(collection_template)
+            .type_ref,
         collection,
     );
     let mut substitutions = BTreeMap::<String, TypedType>::new();
@@ -262,8 +272,12 @@ fn infer_functional_instance_candidate(
     ) {
         return None;
     }
-    let element =
-        substitute_type_parameters(&typed_type_from_type_ref(element_template), &substitutions);
+    let element = substitute_type_parameters(
+        &resolution
+            .semantic_value_from_type_ref(element_template)
+            .type_ref,
+        &substitutions,
+    );
     let constraint = TypedConstraint {
         name: trait_name.to_owned(),
         arguments: vec![collection.clone(), element.clone()],
@@ -535,7 +549,7 @@ fn match_instance(
             arguments: required
                 .arguments
                 .iter()
-                .map(typed_type_from_type_ref)
+                .map(|argument| resolution.semantic_value_from_type_ref(argument).type_ref)
                 .map(|argument| substitute_type_parameters(&argument, &substitutions))
                 .collect(),
         };

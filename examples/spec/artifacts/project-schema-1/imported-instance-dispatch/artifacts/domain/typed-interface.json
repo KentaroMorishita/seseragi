@@ -153,8 +153,11 @@
         "constructor": "Ready",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "fixture/imported-instance-dispatch::domain::Badge",
+            "providerModule": "fixture/imported-instance-dispatch::domain",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

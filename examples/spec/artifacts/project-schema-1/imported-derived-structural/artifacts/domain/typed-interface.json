@@ -496,8 +496,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "fixture/imported-derived-structural::domain::UserId",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -523,8 +526,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "fixture/imported-derived-structural::domain::UserId",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -535,8 +541,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "UserId",
+              "canonical": "fixture/imported-derived-structural::domain::UserId",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "UserId",
               "arguments": []
             }
           ]
@@ -562,8 +571,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "fixture/imported-derived-structural::domain::UserId",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -574,8 +586,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "UserId",
+              "canonical": "fixture/imported-derived-structural::domain::UserId",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "UserId",
               "arguments": []
             }
           ]
@@ -603,8 +618,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Profile",
+            "canonical": "fixture/imported-derived-structural::domain::Profile",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Profile",
             "arguments": [
               {
                 "kind": "named",
@@ -650,8 +668,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Profile",
+            "canonical": "fixture/imported-derived-structural::domain::Profile",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Profile",
             "arguments": [
               {
                 "kind": "named",
@@ -668,8 +689,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Profile",
+              "canonical": "fixture/imported-derived-structural::domain::Profile",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Profile",
               "arguments": [
                 {
                   "kind": "named",
@@ -714,8 +738,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Profile",
+            "canonical": "fixture/imported-derived-structural::domain::Profile",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Profile",
             "arguments": [
               {
                 "kind": "named",
@@ -732,8 +759,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Profile",
+              "canonical": "fixture/imported-derived-structural::domain::Profile",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Profile",
               "arguments": [
                 {
                   "kind": "named",
@@ -778,8 +808,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tree",
+            "canonical": "fixture/imported-derived-structural::domain::Tree",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Tree",
             "arguments": [
               {
                 "kind": "named",
@@ -825,8 +858,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tree",
+            "canonical": "fixture/imported-derived-structural::domain::Tree",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Tree",
             "arguments": [
               {
                 "kind": "named",
@@ -843,8 +879,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Tree",
+              "canonical": "fixture/imported-derived-structural::domain::Tree",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Tree",
               "arguments": [
                 {
                   "kind": "named",
@@ -889,8 +928,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tree",
+            "canonical": "fixture/imported-derived-structural::domain::Tree",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Tree",
             "arguments": [
               {
                 "kind": "named",
@@ -907,8 +949,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Tree",
+              "canonical": "fixture/imported-derived-structural::domain::Tree",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Tree",
               "arguments": [
                 {
                   "kind": "named",
@@ -951,8 +996,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phase",
+            "canonical": "fixture/imported-derived-structural::domain::Phase",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phase",
             "arguments": []
           }
         ]
@@ -978,8 +1026,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phase",
+            "canonical": "fixture/imported-derived-structural::domain::Phase",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phase",
             "arguments": []
           }
         ]
@@ -990,8 +1041,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Phase",
+              "canonical": "fixture/imported-derived-structural::domain::Phase",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Phase",
               "arguments": []
             }
           ]
@@ -1017,8 +1071,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phase",
+            "canonical": "fixture/imported-derived-structural::domain::Phase",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phase",
             "arguments": []
           }
         ]
@@ -1029,8 +1086,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Phase",
+              "canonical": "fixture/imported-derived-structural::domain::Phase",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Phase",
               "arguments": []
             }
           ]
@@ -1058,8 +1118,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Nested",
+            "canonical": "fixture/imported-derived-structural::domain::Nested",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Nested",
             "arguments": [
               {
                 "kind": "named",
@@ -1103,8 +1166,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Reordered",
+            "canonical": "fixture/imported-derived-structural::domain::Reordered",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Reordered",
             "arguments": []
           }
         ]
@@ -1130,8 +1196,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Reordered",
+            "canonical": "fixture/imported-derived-structural::domain::Reordered",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Reordered",
             "arguments": []
           }
         ]
@@ -1142,8 +1211,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Reordered",
+              "canonical": "fixture/imported-derived-structural::domain::Reordered",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Reordered",
               "arguments": []
             }
           ]
@@ -1169,8 +1241,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Reordered",
+            "canonical": "fixture/imported-derived-structural::domain::Reordered",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Reordered",
             "arguments": []
           }
         ]
@@ -1181,8 +1256,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Reordered",
+              "canonical": "fixture/imported-derived-structural::domain::Reordered",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Reordered",
               "arguments": []
             }
           ]
@@ -1210,8 +1288,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phantom",
+            "canonical": "fixture/imported-derived-structural::domain::Phantom",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phantom",
             "arguments": [
               {
                 "kind": "named",
@@ -1245,8 +1326,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phantom",
+            "canonical": "fixture/imported-derived-structural::domain::Phantom",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phantom",
             "arguments": [
               {
                 "kind": "named",
@@ -1263,8 +1347,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Phantom",
+              "canonical": "fixture/imported-derived-structural::domain::Phantom",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Phantom",
               "arguments": [
                 {
                   "kind": "named",
@@ -1298,8 +1385,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Phantom",
+            "canonical": "fixture/imported-derived-structural::domain::Phantom",
+            "providerModule": "fixture/imported-derived-structural::domain",
+            "providerExport": "Phantom",
             "arguments": [
               {
                 "kind": "named",
@@ -1316,8 +1406,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Phantom",
+              "canonical": "fixture/imported-derived-structural::domain::Phantom",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "Phantom",
               "arguments": [
                 {
                   "kind": "named",

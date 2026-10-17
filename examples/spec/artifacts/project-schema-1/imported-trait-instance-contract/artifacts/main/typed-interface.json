@@ -81,8 +81,11 @@
         "constructor": "Render",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "fixture/imported-trait-instance-contract::main::Score",
+            "providerModule": "fixture/imported-trait-instance-contract::main",
+            "providerExport": "Score",
             "arguments": []
           }
         ]

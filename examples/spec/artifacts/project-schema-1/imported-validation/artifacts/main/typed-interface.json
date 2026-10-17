@@ -125,8 +125,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Problem",
+            "canonical": "fixture/imported-validation::main::Problem",
+            "providerModule": "fixture/imported-validation::main",
+            "providerExport": "Problem",
             "arguments": []
           }
         ]
@@ -152,8 +155,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Problem",
+            "canonical": "fixture/imported-validation::main::Problem",
+            "providerModule": "fixture/imported-validation::main",
+            "providerExport": "Problem",
             "arguments": []
           }
         ]
@@ -178,8 +184,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Problem",
+            "canonical": "fixture/imported-validation::main::Problem",
+            "providerModule": "fixture/imported-validation::main",
+            "providerExport": "Problem",
             "arguments": []
           }
         ]

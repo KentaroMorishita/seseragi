@@ -384,8 +384,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           }
         ]
@@ -411,8 +414,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           }
         ]
