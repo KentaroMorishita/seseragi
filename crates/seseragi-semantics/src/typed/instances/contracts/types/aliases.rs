@@ -17,11 +17,11 @@ pub(super) fn normalize(
     mut method: ContractMethod,
 ) -> Option<ContractMethod> {
     let mut active = BTreeSet::new();
-    method.type_ref = normalize_type(resolved, method.type_ref, &mut active)?;
+    method.type_ref = normalize_impl(resolved, method.type_ref, &mut active, false)?;
     for constraint in &mut method.constraints {
         constraint.arguments = std::mem::take(&mut constraint.arguments)
             .into_iter()
-            .map(|argument| normalize_type(resolved, argument, &mut active))
+            .map(|argument| normalize_impl(resolved, argument, &mut active, false))
             .collect::<Option<_>>()?;
     }
     method.constraints.sort();
@@ -33,61 +33,69 @@ pub(super) fn normalize_type(
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
 ) -> Option<ContractType> {
-    normalize_impl(resolved, type_ref, active)
+    normalize_impl(resolved, type_ref, active, true)
 }
 
 pub(super) fn normalize_coherence_type(
     resolved: &ResolvedModule,
     type_ref: ContractType,
 ) -> Option<ContractType> {
-    normalize_impl(resolved, type_ref, &mut BTreeSet::new())
+    normalize_impl(resolved, type_ref, &mut BTreeSet::new(), true)
 }
 
 fn normalize_impl(
     resolved: &ResolvedModule,
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
+    for_head: bool,
 ) -> Option<ContractType> {
     Some(match type_ref {
-        ContractType::Named(identity) => named(resolved, identity, Vec::new(), active)?,
+        ContractType::Named(identity) => named(resolved, identity, Vec::new(), active, for_head)?,
         ContractType::Apply {
             constructor,
             arguments,
         } => {
             let arguments = arguments
                 .into_iter()
-                .map(|argument| normalize_impl(resolved, argument, active))
+                .map(|argument| normalize_impl(resolved, argument, active, for_head))
                 .collect::<Option<Vec<_>>>()?;
             match *constructor {
-                ContractType::Named(identity) => named(resolved, identity, arguments, active)?,
-                constructor => {
-                    apply_arguments(normalize_impl(resolved, constructor, active)?, arguments)?
+                ContractType::Named(identity) => {
+                    named(resolved, identity, arguments, active, for_head)?
                 }
+                constructor => apply_arguments(
+                    normalize_impl(resolved, constructor, active, for_head)?,
+                    arguments,
+                )?,
             }
         }
         ContractType::Function { parameter, result } => ContractType::Function {
-            parameter: Box::new(normalize_impl(resolved, *parameter, active)?),
-            result: Box::new(normalize_impl(resolved, *result, active)?),
+            parameter: Box::new(normalize_impl(resolved, *parameter, active, for_head)?),
+            result: Box::new(normalize_impl(resolved, *result, active, for_head)?),
         },
         ContractType::Record { closed, fields } => ContractType::Record {
             closed,
             fields: fields
                 .into_iter()
                 .map(|(name, optional, type_ref)| {
-                    Some((name, optional, normalize_impl(resolved, type_ref, active)?))
+                    Some((
+                        name,
+                        optional,
+                        normalize_impl(resolved, type_ref, active, for_head)?,
+                    ))
                 })
                 .collect::<Option<_>>()?,
         },
         ContractType::Tuple(elements) => ContractType::Tuple(
             elements
                 .into_iter()
-                .map(|element| normalize_impl(resolved, element, active))
+                .map(|element| normalize_impl(resolved, element, active, for_head))
                 .collect::<Option<_>>()?,
         ),
         ContractType::RequirementMerge(operands) => ContractType::RequirementMerge(
             operands
                 .into_iter()
-                .map(|operand| normalize_impl(resolved, operand, active))
+                .map(|operand| normalize_impl(resolved, operand, active, for_head))
                 .collect::<Option<_>>()?,
         ),
         leaf => leaf,
@@ -99,6 +107,7 @@ fn named(
     identity: TypeIdentity,
     arguments: Vec<ContractType>,
     active: &mut BTreeSet<TypeIdentity>,
+    for_head: bool,
 ) -> Option<ContractType> {
     let owner = resolved.symbols.iter().find(|symbol| {
         symbol.namespace == SymbolNamespace::Type
@@ -138,7 +147,10 @@ fn named(
     if arguments.len() > arity || !active.insert(identity.clone()) {
         return None;
     }
-    let partial = arguments.len() < arity || arguments.contains(&ContractType::Hole);
+    // Method signatures compare fully supplied value-type arguments, including
+    // ordinary inference holes. Constructor identity/coherence must instead
+    // prove every explicit hole from an alias template before using its head.
+    let partial = arguments.len() < arity || (for_head && arguments.contains(&ContractType::Hole));
     // Mixed implicit and explicit sections need their own section/kind proof.
     // Never lose an implicit slot by flattening it into an explicit Hole.
     if partial
@@ -178,7 +190,7 @@ fn named(
             import.scheme_type_bindings.as_deref().unwrap_or(&[]),
         )?
     };
-    let normalized = normalize_impl(resolved, expanded, active)?;
+    let normalized = normalize_impl(resolved, expanded, active, for_head)?;
     let normalized = if partial {
         let constructor = constructors::reduce(resolved, normalized, &identity, arity)?;
         apply_arguments(constructor, arguments)?

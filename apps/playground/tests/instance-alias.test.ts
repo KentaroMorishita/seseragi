@@ -156,6 +156,7 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
     ["constructor-coherence-unproved", "trait.instance-coherence-unproved"],
     ["alias-constructor-duplicate", "trait.instance-duplicate"],
     ["alias-constructor-noneta", "trait.instance-head-unresolved"],
+    ["alias-method-hole-contract", "trait.instance-method-signature-mismatch"],
   ]) {
     const source = await Bun.file(
       new URL(
@@ -178,6 +179,6 @@ test("constructor overlap and unproved HKT heads fail without generated code", a
       new TextDecoder("utf-8", { fatal: true }).decode(
         bytes.slice(error.primary.start, error.primary.end)
       )
-    ).toStartWith("instance")
+    ).toStartWith(fixture === "alias-method-hole-contract" ? "fn" : "instance")
   }
 })

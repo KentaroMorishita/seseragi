@@ -1,6 +1,65 @@
 use crate::{semantic_diagnostics, type_module, TypedType};
 
 #[test]
+fn alias_method_holes_keep_value_comparison_separate_from_constructor_proofs() {
+    for (declarations, signature) in [
+        ("alias Id<A> = A", "Id<_>"),
+        (
+            "type Pair<A, B> = | Pair (A, B)\nalias Dup<A> = Pair<A, A>",
+            "Dup<_>",
+        ),
+    ] {
+        let source = format!("// 雫🙂\n{declarations}\ntrait Tag<A> {{ fn tag value: Int -> String }}\ninstance Tag<Int> {{ fn tag value: {signature} -> String = \"unused\" }}\n");
+        let diagnostics = semantic_diagnostics("artifact/alias-method-hole/main.ssrg", &source);
+        let error = diagnostics
+            .diagnostics
+            .iter()
+            .find(|d| d.message_key == "trait.instance-method-signature-mismatch")
+            .unwrap_or_else(|| panic!("{source}\n{diagnostics:#?}"));
+        assert!(source[error.primary.start..error.primary.end].starts_with("fn tag"));
+    }
+    // The argument is supplied: erasure is ordinary value-type substitution,
+    // not evidence that the unapplied alias is the Int constructor.
+    let source = "alias Constant<A> = Int\ntrait Tag<A> { fn tag value: Int -> String }\ninstance Tag<Int> { fn tag value: Constant<_> -> String = \"ok\" }\n";
+    let diagnostics = semantic_diagnostics("artifact/alias-method-hole/main.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn alias_method_holes_are_checked_against_imported_trait_contracts() {
+    let provider = crate::type_module_public_interface(
+        "fixture/hole-contract/lib.ssrg",
+        "pub trait Tag<A> { fn tag value: Int -> String }\n",
+    )
+    .into_link_interface();
+    let source = "// 雫🙂\nimport { Tag } from \"./provider\"\ntype Local = | Local\nalias Id<A> = A\ninstance Tag<Local> { fn tag value: Id<_> -> String = \"unused\" }\n";
+    let main =
+        seseragi_syntax::parse_unlinked_module_interface("main.ssrg", "fixture/hole-main", source);
+    let linked = seseragi_project::link_module(
+        main,
+        &std::collections::BTreeMap::from([(
+            "./provider".into(),
+            seseragi_project::ModuleLinkTarget::external(provider),
+        )]),
+    )
+    .unwrap();
+    let diagnostics = crate::analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .err()
+    .expect("invalid unused method must be rejected");
+    let error = diagnostics
+        .diagnostics
+        .iter()
+        .find(|d| d.message_key == "trait.instance-method-signature-mismatch")
+        .unwrap_or_else(|| panic!("{diagnostics:#?}"));
+    assert!(source[error.primary.start..error.primary.end].starts_with("fn tag"));
+    assert!(error.related.iter().all(|r| r.primary.end <= source.len()));
+}
+
+#[test]
 fn alias_constructor_eta_keeps_registration_method_contract_and_selected_owner() {
     let source = "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = \"box\" }\npub fn probe -> String = tag (Box 42)\n";
     let diagnostics = semantic_diagnostics("artifact/alias-eta/main.ssrg", source);

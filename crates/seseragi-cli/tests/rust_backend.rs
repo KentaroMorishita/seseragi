@@ -39,6 +39,7 @@ fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
         ("generic-duplicate", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = \"alias\" }\ninstance<B> Show<Box<B>> { fn show value: Box<B> -> String = \"box\" }\n", "SES-T0202"),
         ("standard-duplicate", "alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = \"number\" }\n", "SES-T0202"),
         ("erased-parameter", "type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = \"label\" }\n", "SES-T0101"),
+        ("method-hole-contract", "alias Id<A> = A\ntrait Tag<A> { fn tag value: Int -> String }\ninstance Tag<Int> { fn tag value: Id<_> -> String = \"unused\" }\n", "SES-T0101"),
         ("unrepresented-constructor", "type Pair<A, B> = | Pair (A, B)\nalias Repeated<A> = Pair<A, A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = \"box\" }\n", "SES-T0101"),
     ] {
         let path = scratch.0.join(format!("{name}-λ.ssrg"));

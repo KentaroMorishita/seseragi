@@ -198,7 +198,16 @@ pub(super) fn method_contract_matches(
 
     let expected = contract_method(resolved, expected, &expected_binders, &substitutions)?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
-    Some(aliases::normalize(resolved, expected)? == aliases::normalize(resolved, actual)?)
+    // An unproved alias contract is not permission to skip signature checking.
+    Some(
+        match (
+            aliases::normalize(resolved, expected),
+            aliases::normalize(resolved, actual),
+        ) {
+            (Some(expected), Some(actual)) => expected == actual,
+            _ => false,
+        },
+    )
 }
 
 pub(super) fn imported_method_contract_matches(
@@ -235,7 +244,16 @@ pub(super) fn imported_method_contract_matches(
         context.trait_canonical,
     )?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
-    Some(aliases::normalize(resolved, expected)? == aliases::normalize(resolved, actual)?)
+    // An unproved alias contract is not permission to skip signature checking.
+    Some(
+        match (
+            aliases::normalize(resolved, expected),
+            aliases::normalize(resolved, actual),
+        ) {
+            (Some(expected), Some(actual)) => expected == actual,
+            _ => false,
+        },
+    )
 }
 
 fn contract_method(

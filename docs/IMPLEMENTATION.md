@@ -721,6 +721,9 @@ constructorの形を緩めてもrigidな型が一致しない場合だけ併存�
 展開先の末尾にslotが順番どおり一度ずつ現れ、固定prefixにslotが残らず、canonical ownerと宣言arityも一致する場合だけ、
 `Wrapped<A> = Box<A>`や`IntPair<A> = Pair<Int, A>`を既存constructorへeta正規化します。
 登録・method契約・coherenceとsemantic alias展開でこの証明を共有し、slotは外部schemaや辞書ABIへ渡しません。
+method署名では、型引数をすべて与えたaliasの値型比較とconstructorの証明を区別します。
+`Id<_>`と`Int`の署名不一致を見逃さず、`Constant<_> = Int`の通常の値型置換を保持します。
+alias契約を正規化できない場合も署名検査を見送らず、位置付きの不一致として拒否します。
 引数の並べ替え・重複・消失、非etaの入れ子、aliasのhigher-kinded parameter、暗黙の不足引数と明示holeの混在は
 この範囲では表現せず、未使用のinstanceも`trait.instance-head-unresolved`で生成前に拒否します。
 local・imported・deriveの重複判定と、canonicalな標準functional dependencyへ同じ検査を適用します。
