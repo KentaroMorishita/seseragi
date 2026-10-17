@@ -120,3 +120,13 @@ fn constructor_coherence_refuses_unproved_import_without_using_foreign_spans() {
         );
     }
 }
+
+#[test]
+fn constructor_coherence_preserves_distinct_rigid_owners_inside_sections() {
+    let source = "type Pair<A, B> = | Pair (A, B)\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Pair<_, Int>> { fn tag<A> value: Pair<A, Int> -> String = \"pair\" }\ninstance Tag<Maybe> { fn tag<A> value: Maybe<A> -> String = \"maybe\" }\n";
+    assert!(
+        diagnostics(source).diagnostics.is_empty(),
+        "{:#?}",
+        diagnostics(source)
+    );
+}

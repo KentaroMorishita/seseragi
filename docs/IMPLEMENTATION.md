@@ -716,6 +716,7 @@ slotはinstanceやmethodのbinderとは別で、TypedHirやCoreIrの辞書ABIへ
 適用済みHKT parameterを含むheadは、first-order照合の失敗だけで非重複と判断しません。
 constructorの形を緩めてもrigidな型が一致しない場合だけ併存を許可し、残る未証明の組合せは
 `trait.instance-coherence-unproved`で生成前に拒否します。単独のHKT instanceはこの理由では拒否しません。
+`Pair<_, Int>`と`Maybe`のように、sectionの中でもcanonical ownerが異なることを証明できるheadは併存を許可します。
 型引数を渡さないaliasは、引数の順序・重複・消失をまだ表現できないため、この証明には使いません。
 local・imported・deriveの重複判定と、canonicalな標準functional dependencyへ同じ検査を適用します。
 

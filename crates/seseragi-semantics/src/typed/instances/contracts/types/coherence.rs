@@ -133,6 +133,13 @@ impl CoherenceHead {
         {
             return HeadRelation::Overlap;
         }
+        // Rigid nominal owners remain distinct even under a non-eta section.
+        // Relaxing that section must not discard an already available proof.
+        if pairs.iter().any(|(left, right)| {
+            matches!((rigid_root(left), rigid_root(right)), (Some(left), Some(right)) if left != right)
+        }) {
+            return HeadRelation::Disjoint;
+        }
         // Forget each applied higher-kinded variable and non-eta section.
         // This is a superset of the possible heads, never an overlap witness.
         // Only failure even in that relaxation proves rigid disjointness.
@@ -233,6 +240,15 @@ fn term(type_ref: &ContractType, parameters: &[TypeParameter], side: bool) -> Op
         // A hole or an unscoped parameter is not a wildcard in a checked head.
         ContractType::Hole | ContractType::Parameter(_) => return None,
     })
+}
+
+fn rigid_root(value: &Term) -> Option<&TypeIdentity> {
+    match value {
+        Term::Named(identity) => Some(identity),
+        Term::Apply(constructor, _) => rigid_root(constructor),
+        Term::Section { body, .. } => rigid_root(body),
+        _ => None,
+    }
 }
 
 fn contains_slot(value: &Term, slot: u32) -> bool {
