@@ -105,6 +105,88 @@ fn groups_an_inferred_type_with_an_existing_direct_source_import() {
 }
 
 #[test]
+fn merged_nominal_import_proves_a_type_when_facade_and_owner_both_provide_it() {
+    let canonical = "fixture/domain::Label";
+    let mut checked = module(
+        vec![
+            binding("Label", canonical, "fixture/domain", "Label"),
+            binding("Tag", canonical, "fixture/facade", "Label"),
+        ],
+        vec![external("Label", canonical)],
+    );
+    checked.functions[0].body = CoreExpr::Variable {
+        name: canonical.into(),
+        evidence: Vec::new(),
+        type_ref: external("Label", canonical),
+        origin: origin(),
+    };
+    checked.module_dependencies.push(CoreModuleDependency {
+        specifier: "./facade".into(),
+        module: "fixture/facade".into(),
+        origin: origin(),
+        imports: ["type", "value"]
+            .into_iter()
+            .map(|namespace| crate::CoreModuleImport {
+                namespace: namespace.into(),
+                canonical: canonical.into(),
+                imported: "Label".into(),
+                local: "Tag".into(),
+                reexported_as: None,
+                foreign_scalar_result: None,
+                origin: origin(),
+            })
+            .collect(),
+    });
+    let plan = TypeScriptOutputPlan::new([
+        ("fixture/facade".into(), "./facade.js".into()),
+        ("fixture/domain".into(), "./domain.js".into()),
+    ]);
+    let lowered = lower_module_imports(&checked, &plan).unwrap();
+    assert_eq!(
+        lowered.type_names.get(canonical).map(String::as_str),
+        Some("Tag")
+    );
+    assert_eq!(lowered.imports.len(), 1);
+    assert_eq!(lowered.imports[0].bindings.len(), 1);
+    assert!(!lowered.imports[0].bindings[0].type_only);
+    assert!(lowered.imports[0].runtime_edge);
+
+    let mut inlined_constructor = checked.clone();
+    inlined_constructor.functions[0].body = CoreExpr::Unit { origin: origin() };
+    let inferred = lower_module_imports(&inlined_constructor, &plan).unwrap();
+    assert_eq!(
+        inferred.type_names.get(canonical).map(String::as_str),
+        Some("Tag")
+    );
+    assert!(inferred.imports[0].bindings[0].type_only);
+
+    for fault in 0..3 {
+        let mut unproven = checked.clone();
+        let ty = &mut unproven.module_dependencies[0].imports[0];
+        match fault {
+            0 => ty.canonical = "fixture/other::Label".into(),
+            1 => ty.imported = "Different".into(),
+            _ => ty.local = "Different".into(),
+        }
+        if fault == 0 {
+            assert!(matches!(
+                lower_module_imports(&unproven, &plan),
+                Err(TypeScriptLoweringError::AmbiguousSourceTypeProvider { .. })
+            ));
+        } else {
+            // A separately checked type export may still supply the type, but
+            // it must receive its own binding rather than borrowing value Tag.
+            let separate = lower_module_imports(&unproven, &plan).unwrap();
+            assert_ne!(
+                separate.type_names.get(canonical).map(String::as_str),
+                Some("Tag")
+            );
+            assert_eq!(separate.imports[0].bindings.len(), 2);
+        }
+    }
+}
+
+#[test]
 fn creates_a_type_only_import_for_a_transitive_provider_without_a_source_binding() {
     let canonical = "fixture/domain::Hand";
     let module = module(

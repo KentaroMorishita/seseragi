@@ -137,8 +137,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Status",
+            "canonical": "artifact/user-eq-operator::Status",
+            "providerModule": "artifact/user-eq-operator",
+            "providerExport": "Status",
             "arguments": []
           }
         ]

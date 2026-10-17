@@ -89,7 +89,7 @@ fn imported_evidence_cannot_be_rebound_to_a_name_or_a_local_factory() {
 
 #[test]
 fn display_children_keep_provider_identity_and_instantiated_types() {
-    for fixture in ["tuple-display", "array-display"] {
+    for fixture in ["tuple-display", "array-display", "instance-alias"] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -155,12 +155,14 @@ fn display_children_keep_provider_identity_and_instantiated_types() {
             }
             assert!(mutate(&mut encoded, kind) > 0);
             let changed: Vec<CoreModule> = serde_json::from_value(encoded).unwrap();
-            let error = emit_rust_project(
+            let result = emit_rust_project(
                 &changed.iter().collect::<Vec<_>>(),
                 &checked.entry_module,
                 "main",
-            )
-            .unwrap_err();
+            );
+            let Err(error) = result else {
+                panic!("{fixture}: counterfeit kind {kind} was accepted");
+            };
             assert_eq!(error.code, "SES-RUST-0001");
             assert!(error.origin.is_some());
             assert!(error.module.is_some());

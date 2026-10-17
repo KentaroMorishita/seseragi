@@ -98,8 +98,11 @@
         "constructor": "Add",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "fixture/imported-user-add-operator::domain::Score",
+            "providerModule": "fixture/imported-user-add-operator::domain",
+            "providerExport": "Score",
             "arguments": []
           },
           {
@@ -108,8 +111,11 @@
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "fixture/imported-user-add-operator::domain::Score",
+            "providerModule": "fixture/imported-user-add-operator::domain",
+            "providerExport": "Score",
             "arguments": []
           }
         ]

@@ -92,8 +92,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Reading",
+            "canonical": "artifact/signal-distinct::Reading",
+            "providerModule": "artifact/signal-distinct",
+            "providerExport": "Reading",
             "arguments": []
           }
         ]

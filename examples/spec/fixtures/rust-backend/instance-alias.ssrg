@@ -1,0 +1,67 @@
+type Label = | Label Int
+alias Name = Label
+alias Text = String
+
+instance Show<Name> {
+  fn show value: Label -> Text = match value { Label n -> "label=" + show n }
+}
+
+type Box<A> = | Box A
+alias Wrapped<A> = Box<A>
+alias Nested<A> = Wrapped<A>
+
+instance<A> Show<Nested<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+type Higher<F<_>> = | Higher F<Int>
+alias HigherName<F<_>> = Higher<F>
+
+instance<F<_>> Show<HigherName<F>> where Show<F<Int>> {
+  fn show value: Higher<F> -> String =
+    match value { Higher item -> "higher=" + show item }
+}
+
+type Pair<A, B> = | Pair (A, B)
+alias Flipped<A, B> = Pair<B, A>
+
+instance<A, B> Show<Flipped<A, B>> where Show<A>, Show<B> {
+  fn show value: Pair<B, A> -> String =
+    match value { Pair (left, right) -> "pair=" + show left + "/" + show right }
+}
+
+newtype Distinct = Int
+alias Counter = Distinct
+
+instance Show<Counter> {
+  fn show value: Distinct -> String = match value { Distinct n -> "distinct=" + show n }
+}
+
+trait Describe<A> {
+  fn describe prefix: String -> value: A -> String
+}
+
+instance Describe<Name> {
+  fn describe prefix: String -> value: Label -> String = prefix + show value
+}
+
+fn retained<A> value: A -> (Int -> String) where Show<A> =
+  \n -> "saved=" + show value + "/" + show n
+
+pub fn probe -> Array<String> = {
+  let saved = retained (Label 3)
+  let method: String -> Label -> String = describe
+  let partial = method "method:"
+  let higher: Higher<Box> = Higher (Box 7)
+  [
+    show (Label 1),
+    show (Box (Label 2)),
+    show higher,
+    saved 8,
+    saved 9,
+    partial (Label 4),
+    show (Distinct 5),
+    show `[Box (Label 6)],
+    show (Pair (42, Label 11))
+  ]
+}

@@ -95,8 +95,11 @@
         "constructor": "JsonEncode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Profile",
+            "canonical": "artifact/derived-json-codecs::Profile",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Profile",
             "arguments": [
               {
                 "kind": "named",
@@ -142,8 +145,11 @@
         "constructor": "JsonDecode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Profile",
+            "canonical": "artifact/derived-json-codecs::Profile",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Profile",
             "arguments": [
               {
                 "kind": "named",
@@ -187,8 +193,11 @@
         "constructor": "JsonEncode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "artifact/derived-json-codecs::UserId",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -214,8 +223,11 @@
         "constructor": "JsonDecode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "artifact/derived-json-codecs::UserId",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -243,8 +255,11 @@
         "constructor": "JsonEncode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tree",
+            "canonical": "artifact/derived-json-codecs::Tree",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Tree",
             "arguments": [
               {
                 "kind": "named",
@@ -290,8 +305,11 @@
         "constructor": "JsonDecode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tree",
+            "canonical": "artifact/derived-json-codecs::Tree",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Tree",
             "arguments": [
               {
                 "kind": "named",
@@ -335,8 +353,11 @@
         "constructor": "JsonEncode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Event",
+            "canonical": "artifact/derived-json-codecs::Event",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Event",
             "arguments": []
           }
         ]
@@ -362,8 +383,11 @@
         "constructor": "JsonDecode",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Event",
+            "canonical": "artifact/derived-json-codecs::Event",
+            "providerModule": "artifact/derived-json-codecs",
+            "providerExport": "Event",
             "arguments": []
           }
         ]

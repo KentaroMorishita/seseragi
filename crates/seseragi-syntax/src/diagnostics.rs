@@ -141,6 +141,12 @@ impl Diagnostic {
                 "Expression type does not match the expected type".to_owned()
             }
             "instance.missing" => "A required trait instance is not available".to_owned(),
+            "trait.instance-orphan" => {
+                "The instance module does not own the trait or a head type".to_owned()
+            }
+            "trait.instance-head-unresolved" => {
+                "The expanded instance head cannot preserve its type parameters".to_owned()
+            }
             "record.field-unresolved" => "This record has no such field".to_owned(),
             "struct.field-unresolved" => "This struct has no such field".to_owned(),
             "effect.do-statement-not-effect"

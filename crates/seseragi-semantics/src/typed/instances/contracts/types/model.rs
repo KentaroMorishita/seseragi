@@ -18,6 +18,7 @@ pub(super) enum ContractType {
         fields: Vec<(String, bool, ContractType)>,
     },
     Tuple(Vec<ContractType>),
+    RequirementMerge(Vec<ContractType>),
     Hole,
 }
 

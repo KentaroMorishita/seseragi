@@ -1,0 +1,135 @@
+import { beforeAll, expect, test } from "bun:test"
+import type {
+  CompileResponse,
+  ProjectCompileResponse,
+} from "../src/compiler/types"
+import {
+  executeGeneratedModule,
+  executeGeneratedProject,
+} from "../src/runtime/browser-execution"
+import init, {
+  compile_project,
+  compile_single_file,
+} from "../src/wasm/pkg/seseragi_wasm"
+
+beforeAll(async () => {
+  await init({
+    module_or_path: await Bun.file(
+      new URL("../src/wasm/pkg/seseragi_wasm_bg.wasm", import.meta.url)
+    ).arrayBuffer(),
+  })
+})
+
+test("alias heads keep selected dictionaries, closures and resource lifetimes", async () => {
+  for (const name of ["instance-alias", "instance-alias-effects"]) {
+    const base = new URL(
+      `../../../examples/spec/fixtures/rust-backend/${name}`,
+      import.meta.url
+    )
+    let source = await Bun.file(`${base.pathname}.ssrg`).text()
+    if (name === "instance-alias")
+      source += "\npub effect fn main = println (show (probe ()))\n"
+    const expected = (
+      await Bun.file(`${base.pathname}.stdout`).text()
+    ).trimEnd()
+    const response = JSON.parse(
+      compile_single_file("λ.ssrg", "fixture/instance-alias", source)
+    ) as CompileResponse
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry)
+      throw new Error(JSON.stringify(response))
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expected, debug: "()" })
+  }
+})
+
+test("unused duplicate and unrepresented alias heads fail before generation", () => {
+  for (const [declarations, key] of [
+    [
+      'type Label = | Label\nalias Name = Label\ninstance Show<Name> { fn show value: Label -> String = "alias" }\ninstance Show<Label> { fn show value: Label -> String = "label" }\n',
+      "trait.instance-duplicate",
+    ],
+    [
+      'alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = "number" }\n',
+      "trait.instance-duplicate",
+    ],
+    [
+      'type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = "label" }\n',
+      "trait.instance-head-unresolved",
+    ],
+    [
+      'type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = "box" }\n',
+      "trait.instance-head-unresolved",
+    ],
+  ]) {
+    const source = `// 雫🙂\n${declarations}\npub effect fn main = println "MUST_NOT_RUN"\n`
+    const response = JSON.parse(
+      compile_single_file("λ.ssrg", "fixture/alias-negative", source)
+    ) as CompileResponse
+    expect(response.status).toBe("failure")
+    expect("generated" in response).toBe(false)
+    expect(
+      response.diagnostics.diagnostics.some((d) => d.messageKey === key)
+    ).toBe(true)
+    const bytes = new TextEncoder().encode(source)
+    for (const diagnostic of response.diagnostics.diagnostics) {
+      expect(diagnostic.primary.start).toBeGreaterThanOrEqual(0)
+      expect(diagnostic.primary.end).toBeLessThanOrEqual(bytes.length)
+      expect(() =>
+        new TextDecoder("utf-8", { fatal: true }).decode(
+          bytes.slice(diagnostic.primary.start, diagnostic.primary.end)
+        )
+      ).not.toThrow()
+    }
+  }
+})
+
+test("dictionary heads retain provider owners across renamed facade exports", async () => {
+  const base = new URL(
+    "../../../examples/spec/fixtures/rust-backend-projects/instance-alias/",
+    import.meta.url
+  )
+  const paths = [
+    ["main.ssrg", "src/main.ssrg"],
+    ["facade.ssrg", "src/facade.ssrg"],
+    ["model.ssrg", "vendor/model/src/lib.ssrg"],
+  ] as const
+  const files = await Promise.all(
+    paths.map(async ([path, file]) => ({
+      path,
+      source: (await Bun.file(new URL(file, base)).text()).replaceAll(
+        'from "model"',
+        'from "./model"'
+      ),
+    }))
+  )
+  const manifest =
+    '[package]\nname="fixture/instance-alias"\nversion="0.0.0"\nlanguage="^0.1.0"\n[run]\nentry="main"\n'
+  const response = JSON.parse(
+    compile_project(JSON.stringify({ schema: 1, manifest, files }))
+  ) as ProjectCompileResponse
+  expect(response.status).toBe("success")
+  if (response.status !== "success" || response.entry.contract === undefined)
+    throw new Error(JSON.stringify(response))
+  expect(response.modules).toHaveLength(3)
+  const expected = (
+    await Bun.file(new URL("expected.stdout", base)).text()
+  ).trimEnd()
+  expect(
+    await executeGeneratedProject(
+      response.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      response.entry.path,
+      response.entry.contract
+    )
+  ).toEqual({
+    stdout: expected,
+    debug: "()",
+  })
+})

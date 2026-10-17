@@ -201,8 +201,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "SourceError",
+            "canonical": "artifact/effect-explicit-failure-contract::SourceError",
+            "providerModule": "artifact/effect-explicit-failure-contract",
+            "providerExport": "SourceError",
             "arguments": []
           }
         ]
@@ -228,8 +231,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "AppError",
+            "canonical": "artifact/effect-explicit-failure-contract::AppError",
+            "providerModule": "artifact/effect-explicit-failure-contract",
+            "providerExport": "AppError",
             "arguments": []
           }
         ]

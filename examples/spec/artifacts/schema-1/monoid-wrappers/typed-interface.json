@@ -274,8 +274,11 @@
         "constructor": "Zero",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tally",
+            "canonical": "artifact/monoid-wrappers::Tally",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Tally",
             "arguments": []
           }
         ]
@@ -302,18 +305,27 @@
         "constructor": "Add",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tally",
+            "canonical": "artifact/monoid-wrappers::Tally",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Tally",
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tally",
+            "canonical": "artifact/monoid-wrappers::Tally",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Tally",
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Tally",
+            "canonical": "artifact/monoid-wrappers::Tally",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Tally",
             "arguments": []
           }
         ]
@@ -338,8 +350,11 @@
         "constructor": "One",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Ordered",
+            "canonical": "artifact/monoid-wrappers::Ordered",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Ordered",
             "arguments": []
           }
         ]
@@ -366,18 +381,27 @@
         "constructor": "Mul",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Ordered",
+            "canonical": "artifact/monoid-wrappers::Ordered",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Ordered",
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Ordered",
+            "canonical": "artifact/monoid-wrappers::Ordered",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Ordered",
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Ordered",
+            "canonical": "artifact/monoid-wrappers::Ordered",
+            "providerModule": "artifact/monoid-wrappers",
+            "providerExport": "Ordered",
             "arguments": []
           }
         ]

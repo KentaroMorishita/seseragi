@@ -73,7 +73,11 @@ impl Backend<'_> {
         )))
     }
 
-    fn validate_display_child(&self, child: &CoreCallEvidence, method: &str) -> Result<()> {
+    pub(super) fn validate_display_child(
+        &self,
+        child: &CoreCallEvidence,
+        method: &str,
+    ) -> Result<()> {
         let [ty] = child.constraint.arguments.as_slice() else {
             return Err("Rust backend: display child constraint arity mismatch".into());
         };
@@ -116,7 +120,6 @@ impl Backend<'_> {
                 let owner = &self.owners[identity];
                 let trait_identity = format!("std/prelude::{method}");
                 if !identity.starts_with(&format!("{trait_identity}<"))
-                    || !matches!(instance.trait_name.as_str(), name if name == method || name == trait_identity)
                     || type_arguments.len() != instance.type_parameters.len()
                     || evidence_arguments.len() != instance.constraints.len()
                 {

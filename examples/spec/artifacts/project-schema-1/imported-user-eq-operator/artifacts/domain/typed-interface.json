@@ -84,8 +84,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Status",
+            "canonical": "fixture/imported-user-eq-operator::domain::Status",
+            "providerModule": "fixture/imported-user-eq-operator::domain",
+            "providerExport": "Status",
             "arguments": []
           }
         ]

@@ -286,8 +286,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/show-debug-collections::Badge",
+            "providerModule": "artifact/show-debug-collections",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]
@@ -312,8 +315,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/show-debug-collections::Badge",
+            "providerModule": "artifact/show-debug-collections",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

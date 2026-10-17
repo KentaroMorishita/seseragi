@@ -77,8 +77,11 @@
         "constructor": "Add",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/impl-operator::Score",
+            "providerModule": "artifact/impl-operator",
+            "providerExport": "Score",
             "arguments": []
           },
           {
@@ -87,8 +90,11 @@
             "arguments": []
           },
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/impl-operator::Score",
+            "providerModule": "artifact/impl-operator",
+            "providerExport": "Score",
             "arguments": []
           }
         ]
@@ -113,8 +119,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/impl-operator::Score",
+            "providerModule": "artifact/impl-operator",
+            "providerExport": "Score",
             "arguments": []
           }
         ]

@@ -124,8 +124,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Key",
+            "canonical": "artifact/map-set::Key",
+            "providerModule": "artifact/map-set",
+            "providerExport": "Key",
             "arguments": []
           }
         ]
@@ -150,8 +153,11 @@
         "constructor": "Hash",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Key",
+            "canonical": "artifact/map-set::Key",
+            "providerModule": "artifact/map-set",
+            "providerExport": "Key",
             "arguments": []
           }
         ]

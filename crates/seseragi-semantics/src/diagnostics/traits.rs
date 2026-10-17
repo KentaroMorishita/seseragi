@@ -31,6 +31,32 @@ pub(super) fn collect_trait_diagnostics(
 
 fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
     match issue {
+        DerivedInstanceIssue::OrphanInstance { identity, primary } => Diagnostic {
+            type_difference: None,
+            id: String::new(),
+            code: "SES-T0202".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "trait.instance-orphan".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: format!("{identity} must be defined by the trait or an outermost nominal head type's module; an alias does not create an owner"),
+                primary: byte_range(*primary),
+            }],
+            fixes: Vec::new(),
+        },
+        DerivedInstanceIssue::UnresolvedInstanceHead { primary } => Diagnostic {
+            type_difference: None,
+            id: String::new(),
+            code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "trait.instance-head-unresolved".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: "the expanded instance head must preserve its resolved constructor and all declared type parameters; an unrepresented alias constructor cannot yet be used here".to_owned(),
+                primary: byte_range(*primary),
+            }],
+            fixes: Vec::new(),
+        },
         DerivedInstanceIssue::UnknownTrait {
             trait_name,
             primary,

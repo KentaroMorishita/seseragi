@@ -175,7 +175,9 @@ fn compares_provider_nominals_by_canonical_identity() {
 fn alpha_normalizes_imported_generic_methods_and_prelude_constraints() {
     let domain_source =
         "pub trait Convert<F<_>> {\n  fn convert<A> value: F<A> -> F<A>\n  where Show<A>\n}\n";
-    let main_source = "import { Convert } from \"./domain\"\n\ninstance Convert<Either<String, _>> {\n  fn convert<B> value: Either<String, B> -> Either<String, B>\n  where Show<B> =\n    value\n}\n";
+    // The implementation module owns the outer constructor; importing Convert
+    // does not authorize an instance for a prelude-owned Either constructor.
+    let main_source = "import { Convert } from \"./domain\"\n\ntype Choice<E, A> = | Choice A\ninstance Convert<Choice<String, _>> {\n  fn convert<B> value: Choice<String, B> -> Choice<String, B>\n  where Show<B> =\n    value\n}\n";
     let linked = linked_program(
         main_source,
         [("./domain", "fixture/game::domain", domain_source)],
@@ -187,6 +189,37 @@ fn alpha_normalizes_imported_generic_methods_and_prelude_constraints() {
         main_source,
     )
     .unwrap();
+}
+
+#[test]
+fn alias_head_cannot_create_an_owner_for_an_imported_nominal() {
+    let domain = "pub type Label = | Label\npub alias Name = Label\npub trait Render<A> { fn render value: A -> String }\n";
+    for (head, declaration, allowed) in [
+        ("Name", "", false),
+        ("LocalName", "alias LocalName = Name\n", false),
+        ("Owned", "newtype Owned = Name\n", true),
+    ] {
+        let source = format!("// 雫\nimport {{ Name, Render as Display }} from \"./domain\"\n{declaration}instance Display<{head}> {{ fn render value: {head} -> String = \"label\" }}\n");
+        let linked = linked_program(&source, [("./domain", "fixture/game::domain", domain)]);
+        let result = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main-λ.ssrg", &source),
+            linked,
+            &source,
+        );
+        if allowed {
+            result.unwrap();
+        } else {
+            let diagnostics = result.unwrap_err();
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .any(|d| d.message_key == "trait.instance-orphan"),
+                "{diagnostics:#?}"
+            );
+            assert_eq!(diagnostics.source, "main-λ.ssrg");
+        }
+    }
 }
 
 #[test]

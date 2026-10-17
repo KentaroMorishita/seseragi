@@ -144,8 +144,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "AppError",
+            "canonical": "artifact/http-client-small-response::AppError",
+            "providerModule": "artifact/http-client-small-response",
+            "providerExport": "AppError",
             "arguments": []
           }
         ]

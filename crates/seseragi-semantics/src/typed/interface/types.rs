@@ -6,6 +6,7 @@ pub(super) struct InterfaceTypes<'a> {
     bindings: &'a [ExternalTypeBinding],
     parameters: std::collections::BTreeSet<String>,
     local_nominals: std::collections::BTreeMap<String, (String, String)>,
+    instance_nominals: std::collections::BTreeMap<String, (String, String)>,
 }
 
 impl<'a> InterfaceTypes<'a> {
@@ -14,6 +15,7 @@ impl<'a> InterfaceTypes<'a> {
             bindings,
             parameters: Default::default(),
             local_nominals: Default::default(),
+            instance_nominals: Default::default(),
         }
     }
 
@@ -66,6 +68,21 @@ impl<'a> InterfaceTypes<'a> {
         scoped
     }
 
+    /// An instance can travel through a facade that renames its nominal head.
+    /// Retain the declaration owner in the dictionary interface itself instead
+    /// of requiring the consumer to import the provider's original spelling.
+    pub(super) fn with_instance_owners(mut self, module: &crate::TypedModule) -> Self {
+        for declaration in &module.declarations {
+            if let crate::TypedDecl::Struct { symbol, name, .. }
+            | crate::TypedDecl::Adt { symbol, name, .. } = declaration
+            {
+                self.instance_nominals
+                    .insert(name.clone(), (symbol.clone(), module.module.clone()));
+            }
+        }
+        self
+    }
+
     pub(super) fn convert(&self, type_ref: &TypedType) -> InterfaceType {
         match type_ref {
             TypedType::Named { name, arguments } => {
@@ -90,6 +107,17 @@ impl<'a> InterfaceTypes<'a> {
                         provider_export: name.clone(),
                         arguments,
                     };
+                }
+                if !self.parameters.contains(name) && !primitive_or_collection {
+                    if let Some((canonical, provider)) = self.instance_nominals.get(name) {
+                        return InterfaceType::ExternalNamed {
+                            name: name.clone(),
+                            canonical: canonical.clone(),
+                            provider_module: provider.clone(),
+                            provider_export: name.clone(),
+                            arguments,
+                        };
+                    }
                 }
                 match self.unique_provider_binding(name) {
                     Some(binding) => {

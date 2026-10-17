@@ -75,8 +75,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/user-ord-operator::Score",
+            "providerModule": "artifact/user-ord-operator",
+            "providerExport": "Score",
             "arguments": []
           }
         ]
@@ -101,8 +104,11 @@
         "constructor": "Ord",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Score",
+            "canonical": "artifact/user-ord-operator::Score",
+            "providerModule": "artifact/user-ord-operator",
+            "providerExport": "Score",
             "arguments": []
           }
         ]
@@ -113,8 +119,11 @@
           "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Score",
+              "canonical": "artifact/user-ord-operator::Score",
+              "providerModule": "artifact/user-ord-operator",
+              "providerExport": "Score",
               "arguments": []
             }
           ]

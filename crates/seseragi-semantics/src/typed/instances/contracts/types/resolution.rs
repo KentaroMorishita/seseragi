@@ -79,7 +79,12 @@ pub(super) fn contract_type(
             parameter: Box::new(contract_type(resolved, parameter, binders, substitutions)?),
             result: Box::new(contract_type(resolved, result, binders, substitutions)?),
         }),
-        TypeRef::RequirementMerge { .. } => None,
+        TypeRef::RequirementMerge { operands, .. } => Some(ContractType::RequirementMerge(
+            operands
+                .iter()
+                .map(|operand| contract_type(resolved, operand, binders, substitutions))
+                .collect::<Option<Vec<_>>>()?,
+        )),
     }
 }
 

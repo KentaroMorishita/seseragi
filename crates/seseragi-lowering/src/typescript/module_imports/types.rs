@@ -70,6 +70,31 @@ pub(super) fn lower_external_type_imports(
             continue;
         }
 
+        // A checked merged type/value export already supplies this type. Match
+        // both source namespaces at the same physical import and owner; an
+        // unrelated same-spelling value is not a source-type provider.
+        let merged = imports.iter().find_map(|group| {
+            group.bindings.iter().find(|binding| {
+                !binding.type_only
+                    && binding.canonical == *canonical
+                    && !used_types.contains(&binding.local)
+                    && module.module_dependencies.iter().any(|dependency| {
+                        dependency.module == group.module
+                            && dependency.imports.iter().any(|import| {
+                                import.namespace == "type"
+                                    && import.canonical == *canonical
+                                    && safe_identifier(&import.imported) == binding.imported
+                                    && import.local == binding.source_local
+                            })
+                    })
+            })
+        });
+        if let Some(binding) = merged {
+            used_types.insert(binding.local.clone());
+            names.insert(canonical.clone(), binding.local.clone());
+            continue;
+        }
+
         let candidates = module
             .external_type_bindings
             .iter()
@@ -80,23 +105,34 @@ pub(super) fn lower_external_type_imports(
                 canonical: canonical.clone(),
             });
         }
+        let explicit = module.module_dependencies.iter().find_map(|dependency| {
+            dependency
+                .imports
+                .iter()
+                .find(|import| import.namespace == "type" && import.canonical == *canonical)
+                .map(|import| (dependency, import))
+        });
         let providers = candidates
             .iter()
             .filter_map(|binding| binding.provider.as_ref())
             .map(|provider| (provider.module.as_str(), provider.export.as_str()))
             .collect::<BTreeSet<_>>();
         let mut providers = providers.into_iter();
-        let (provider_module, provider_export) = match (providers.next(), providers.next()) {
-            (None, _) => {
-                return Err(TypeScriptLoweringError::MissingSourceTypeProvider {
-                    canonical: canonical.clone(),
-                });
-            }
-            (Some(provider), None) => provider,
-            (Some(_), Some(_)) => {
-                return Err(TypeScriptLoweringError::AmbiguousSourceTypeProvider {
-                    canonical: canonical.clone(),
-                });
+        let (provider_module, provider_export) = if let Some((dependency, import)) = explicit {
+            (dependency.module.as_str(), import.imported.as_str())
+        } else {
+            match (providers.next(), providers.next()) {
+                (None, _) => {
+                    return Err(TypeScriptLoweringError::MissingSourceTypeProvider {
+                        canonical: canonical.clone(),
+                    });
+                }
+                (Some(provider), None) => provider,
+                (Some(_), Some(_)) => {
+                    return Err(TypeScriptLoweringError::AmbiguousSourceTypeProvider {
+                        canonical: canonical.clone(),
+                    });
+                }
             }
         };
         let specifier = plan.specifier_for(provider_module).ok_or_else(|| {
@@ -105,12 +141,23 @@ pub(super) fn lower_external_type_imports(
                 canonical: canonical.clone(),
             }
         })?;
-        let spelling = candidates
-            .iter()
-            .find(|binding| binding.provider.is_some())
-            .map(|binding| binding.spelling.as_str())
-            .expect("a source provider candidate was selected");
-        let local = fresh_name(&safe_identifier(spelling), used_types);
+        let spelling = explicit
+            .map(|(_, import)| import.local.as_str())
+            .unwrap_or_else(|| {
+                candidates
+                    .iter()
+                    .find(|binding| binding.provider.is_some())
+                    .map(|binding| binding.spelling.as_str())
+                    .expect("a source provider candidate was selected")
+            });
+        let mut occupied = used_types.clone();
+        occupied.extend(
+            imports
+                .iter()
+                .flat_map(|group| &group.bindings)
+                .map(|binding| binding.local.clone()),
+        );
+        let local = fresh_name(&safe_identifier(spelling), &occupied);
         used_types.insert(local.clone());
         names.insert(canonical.clone(), local.clone());
 
@@ -128,7 +175,10 @@ pub(super) fn lower_external_type_imports(
                 });
                 imports.len() - 1
             });
-        let origin = imports[index].origin.clone();
+        let origin = explicit.map_or_else(
+            || imports[index].origin.clone(),
+            |(_, import)| import.origin.clone(),
+        );
         push_binding(
             &mut imports[index],
             TypeScriptSourceImportBinding {

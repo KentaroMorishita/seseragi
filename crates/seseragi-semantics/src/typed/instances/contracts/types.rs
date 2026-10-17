@@ -10,6 +10,127 @@ mod resolution;
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 
+/// Instance registration and selected evidence must use the same expanded
+/// identity as method contracts. Alias substitution keeps resolved symbol
+/// owners and binders, including imported representation bindings.
+pub(in crate::typed::instances) fn canonical_type_identity(
+    resolved: &ResolvedModule,
+    type_ref: &TypeRef,
+    binders: &BTreeMap<&str, usize>,
+) -> Option<String> {
+    let type_ref = contract_type(resolved, type_ref, &BTreeMap::new(), &BTreeMap::new())?;
+    let type_ref = aliases::normalize_type(resolved, type_ref, &mut Default::default())?;
+    render_identity(resolved, &type_ref, binders)
+}
+
+pub(in crate::typed::instances) fn has_unrepresented_parameters(
+    resolved: &ResolvedModule,
+    origin: seseragi_syntax::ByteSpan,
+    parameters: &[TypeParameter],
+    arguments: &[TypeRef],
+) -> bool {
+    fn contains(type_ref: &ContractType, id: SymbolId) -> bool {
+        match type_ref {
+            ContractType::Parameter(actual) => *actual == id,
+            ContractType::Apply {
+                constructor,
+                arguments,
+            } => {
+                contains(constructor, id) || arguments.iter().any(|argument| contains(argument, id))
+            }
+            ContractType::Function { parameter, result } => {
+                contains(parameter, id) || contains(result, id)
+            }
+            ContractType::Tuple(elements) | ContractType::RequirementMerge(elements) => {
+                elements.iter().any(|element| contains(element, id))
+            }
+            ContractType::Record { fields, .. } => {
+                fields.iter().any(|(_, _, field)| contains(field, id))
+            }
+            _ => false,
+        }
+    }
+    let Some(parameters) = declaration_type_parameters(resolved, origin, parameters) else {
+        return false;
+    };
+    let types = arguments
+        .iter()
+        .filter_map(|argument| {
+            let type_ref = contract_type(resolved, argument, &BTreeMap::new(), &BTreeMap::new())?;
+            aliases::normalize_type(resolved, type_ref, &mut Default::default())
+        })
+        .collect::<Vec<_>>();
+    parameters
+        .iter()
+        .any(|parameter| !types.iter().any(|type_ref| contains(type_ref, *parameter)))
+}
+
+fn render_identity(
+    resolved: &ResolvedModule,
+    type_ref: &ContractType,
+    binders: &BTreeMap<&str, usize>,
+) -> Option<String> {
+    use model::TypeIdentity;
+    Some(match type_ref {
+        ContractType::Binder(index) => format!("${index}"),
+        ContractType::Parameter(id) => {
+            let symbol = resolved.symbols.iter().find(|symbol| symbol.id == *id)?;
+            format!("${}", binders.get(symbol.spelling.as_str())?)
+        }
+        ContractType::Named(TypeIdentity::Canonical(identity)) => identity.clone(),
+        ContractType::Named(TypeIdentity::Symbol(id)) => resolved
+            .symbols
+            .iter()
+            .find(|symbol| symbol.id == *id)?
+            .spelling
+            .clone(),
+        ContractType::Apply {
+            constructor,
+            arguments,
+        } => format!(
+            "{}<{}>",
+            render_identity(resolved, constructor, binders)?,
+            arguments
+                .iter()
+                .map(|argument| render_identity(resolved, argument, binders))
+                .collect::<Option<Vec<_>>>()?
+                .join(",")
+        ),
+        ContractType::Function { parameter, result } => format!(
+            "({}->{})",
+            render_identity(resolved, parameter, binders)?,
+            render_identity(resolved, result, binders)?
+        ),
+        ContractType::Tuple(elements) => format!(
+            "({})",
+            elements
+                .iter()
+                .map(|element| render_identity(resolved, element, binders))
+                .collect::<Option<Vec<_>>>()?
+                .join(",")
+        ),
+        ContractType::Record { closed, fields } => format!(
+            "{}{{{}}}",
+            if *closed { "" } else { "open" },
+            fields
+                .iter()
+                .map(|(name, optional, type_ref)| Some(format!(
+                    "{name}{}:{}",
+                    if *optional { "?" } else { "" },
+                    render_identity(resolved, type_ref, binders)?
+                )))
+                .collect::<Option<Vec<_>>>()?
+                .join(",")
+        ),
+        ContractType::Hole => "_".to_owned(),
+        ContractType::RequirementMerge(operands) => operands
+            .iter()
+            .map(|operand| render_identity(resolved, operand, binders))
+            .collect::<Option<Vec<_>>>()?
+            .join("&"),
+    })
+}
+
 pub(super) struct ImportedMethodContext<'a> {
     pub(super) trait_parameters: &'a [TypeParameter],
     pub(super) bindings: &'a [ExternalTypeBinding],
@@ -45,7 +166,7 @@ pub(super) fn method_contract_matches(
 
     let expected = contract_method(resolved, expected, &expected_binders, &substitutions)?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
-    Some(expected == actual)
+    Some(aliases::normalize(resolved, expected)? == aliases::normalize(resolved, actual)?)
 }
 
 pub(super) fn imported_method_contract_matches(
@@ -82,18 +203,7 @@ pub(super) fn imported_method_contract_matches(
         context.trait_canonical,
     )?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
-    if crate::prelude::trait_by_canonical(context.trait_canonical).is_some() {
-        return Some(
-            match (
-                aliases::normalize(resolved, expected),
-                aliases::normalize(resolved, actual),
-            ) {
-                (Some(expected), Some(actual)) => expected == actual,
-                _ => false,
-            },
-        );
-    }
-    Some(expected == actual)
+    Some(aliases::normalize(resolved, expected)? == aliases::normalize(resolved, actual)?)
 }
 
 fn contract_method(

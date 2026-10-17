@@ -53,6 +53,13 @@ pub(crate) enum DerivedInstanceIssue {
         standard_identity: String,
         primary: ByteSpan,
     },
+    OrphanInstance {
+        identity: String,
+        primary: ByteSpan,
+    },
+    UnresolvedInstanceHead {
+        primary: ByteSpan,
+    },
 }
 
 pub(crate) fn analyze_instances(
@@ -67,7 +74,58 @@ pub(crate) fn analyze_instances(
     issues.extend(local_instance_conflicts(&instances));
     issues.extend(standard_instance_conflicts(&instances));
     issues.extend(local_dependency_conflicts(resolved, &instances));
+    for instance in &instances {
+        let erased_parameter = resolved.declarations.iter().any(|declaration| {
+            matches!(declaration, seseragi_syntax::SurfaceDecl::Instance { span, type_parameters, arguments, .. }
+                if *span == instance.origin && contracts::has_unrepresented_parameters(resolved, *span, type_parameters, arguments))
+        });
+        if erased_parameter || instance.arguments.iter().any(|argument| matches!(argument, TypedType::Hole)) {
+            issues.push(DerivedInstanceIssue::UnresolvedInstanceHead { primary: instance.origin });
+        } else if !owns_instance_head(resolved, instance)
+            && !issues.iter().any(|issue| matches!(issue,
+                DerivedInstanceIssue::OverlappingStandardInstance { primary, .. } if *primary == instance.origin))
+        {
+            issues.push(DerivedInstanceIssue::OrphanInstance {
+                identity: instance.identity.clone(), primary: instance.origin,
+            });
+        }
+    }
     InstanceAnalysis { instances, issues }
+}
+
+fn owns_instance_head(resolved: &ResolvedModule, instance: &TypedInstance) -> bool {
+    resolved.declarations.iter().any(|declaration| {
+        let (origin, is_trait) = match declaration {
+            seseragi_syntax::SurfaceDecl::Trait { name_span, .. } => (*name_span, true),
+            seseragi_syntax::SurfaceDecl::Type { name_span, .. }
+            | seseragi_syntax::SurfaceDecl::Newtype { name_span, .. }
+            | seseragi_syntax::SurfaceDecl::Struct { name_span, .. } => (*name_span, false),
+            _ => return false,
+        };
+        let namespace = if is_trait {
+            crate::SymbolNamespace::Trait
+        } else {
+            crate::SymbolNamespace::Type
+        };
+        let Some(owner) = resolved
+            .symbols
+            .iter()
+            .find(|symbol| symbol.namespace == namespace && symbol.origin == origin)
+            .and_then(|symbol| symbol.canonical.as_deref())
+        else {
+            return false;
+        };
+        if is_trait {
+            instance.trait_identity == owner
+        } else {
+            instance.argument_identities.iter().any(|argument| {
+                argument == owner
+                    || argument
+                        .strip_prefix(owner)
+                        .is_some_and(|suffix| suffix.starts_with('<'))
+            })
+        }
+    })
 }
 
 fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {

@@ -223,8 +223,11 @@
         "constructor": "Labeled",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/method-constraint-dispatch::Badge",
+            "providerModule": "artifact/method-constraint-dispatch",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]
@@ -249,8 +252,11 @@
         "constructor": "Render",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/method-constraint-dispatch::Badge",
+            "providerModule": "artifact/method-constraint-dispatch",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

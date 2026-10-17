@@ -137,8 +137,11 @@
         "constructor": "Ready",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "fixture/imported-constrained-function::main::Badge",
+            "providerModule": "fixture/imported-constrained-function::main",
+            "providerExport": "Badge",
             "arguments": []
           }
         ]

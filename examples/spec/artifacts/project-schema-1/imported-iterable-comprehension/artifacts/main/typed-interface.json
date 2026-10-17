@@ -97,8 +97,11 @@
         "constructor": "Iterable",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Countdown",
+            "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+            "providerModule": "fixture/imported-iterable-comprehension::domain",
+            "providerExport": "Countdown",
             "arguments": []
           },
           {
@@ -129,8 +132,11 @@
         "constructor": "Reducible",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Countdown",
+            "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+            "providerModule": "fixture/imported-iterable-comprehension::domain",
+            "providerExport": "Countdown",
             "arguments": []
           },
           {
@@ -146,8 +152,11 @@
           "traitIdentity": "std/prelude::Iterable",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Countdown",
+              "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+              "providerModule": "fixture/imported-iterable-comprehension::domain",
+              "providerExport": "Countdown",
               "arguments": []
             },
             {

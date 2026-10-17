@@ -26,7 +26,7 @@ pub(super) fn normalize(
     Some(method)
 }
 
-fn normalize_type(
+pub(super) fn normalize_type(
     resolved: &ResolvedModule,
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
@@ -65,6 +65,12 @@ fn normalize_type(
             elements
                 .into_iter()
                 .map(|element| normalize_type(resolved, element, active))
+                .collect::<Option<_>>()?,
+        ),
+        ContractType::RequirementMerge(operands) => ContractType::RequirementMerge(
+            operands
+                .into_iter()
+                .map(|operand| normalize_type(resolved, operand, active))
                 .collect::<Option<_>>()?,
         ),
         leaf => leaf,

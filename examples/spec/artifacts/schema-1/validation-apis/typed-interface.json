@@ -134,8 +134,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "FormError",
+            "canonical": "artifact/validation-apis::FormError",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "FormError",
             "arguments": []
           }
         ]
@@ -161,8 +164,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "FormError",
+            "canonical": "artifact/validation-apis::FormError",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "FormError",
             "arguments": []
           }
         ]
@@ -188,8 +194,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "User",
+            "canonical": "artifact/validation-apis::User",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "User",
             "arguments": []
           }
         ]
@@ -215,8 +224,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "User",
+            "canonical": "artifact/validation-apis::User",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "User",
             "arguments": []
           }
         ]
@@ -241,8 +253,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "FormError",
+            "canonical": "artifact/validation-apis::FormError",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "FormError",
             "arguments": []
           }
         ]
@@ -267,8 +282,11 @@
         "constructor": "Eq",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "User",
+            "canonical": "artifact/validation-apis::User",
+            "providerModule": "artifact/validation-apis",
+            "providerExport": "User",
             "arguments": []
           }
         ]

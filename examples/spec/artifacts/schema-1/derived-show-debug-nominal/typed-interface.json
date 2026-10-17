@@ -359,8 +359,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "artifact/derived-show-debug-nominal::UserId",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -386,8 +389,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "UserId",
+            "canonical": "artifact/derived-show-debug-nominal::UserId",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "UserId",
             "arguments": []
           }
         ]
@@ -415,8 +421,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Packet",
+            "canonical": "artifact/derived-show-debug-nominal::Packet",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "Packet",
             "arguments": [
               {
                 "kind": "named",
@@ -462,8 +471,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Packet",
+            "canonical": "artifact/derived-show-debug-nominal::Packet",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "Packet",
             "arguments": [
               {
                 "kind": "named",
@@ -509,8 +521,11 @@
         "constructor": "Show",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Envelope",
+            "canonical": "artifact/derived-show-debug-nominal::Envelope",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "Envelope",
             "arguments": [
               {
                 "kind": "named",
@@ -556,8 +571,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Envelope",
+            "canonical": "artifact/derived-show-debug-nominal::Envelope",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "Envelope",
             "arguments": [
               {
                 "kind": "named",
@@ -601,8 +619,11 @@
         "constructor": "Debug",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Stats",
+            "canonical": "artifact/derived-show-debug-nominal::Stats",
+            "providerModule": "artifact/derived-show-debug-nominal",
+            "providerExport": "Stats",
             "arguments": []
           }
         ]

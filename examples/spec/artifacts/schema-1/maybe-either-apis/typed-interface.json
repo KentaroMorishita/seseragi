@@ -124,8 +124,11 @@
         "constructor": "Functor",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "artifact/maybe-either-apis::Box",
+            "providerModule": "artifact/maybe-either-apis",
+            "providerExport": "Box",
             "arguments": []
           }
         ]
@@ -150,8 +153,11 @@
         "constructor": "Traversable",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "artifact/maybe-either-apis::Box",
+            "providerModule": "artifact/maybe-either-apis",
+            "providerExport": "Box",
             "arguments": []
           }
         ]
@@ -162,8 +168,11 @@
           "traitIdentity": "std/prelude::Functor",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "artifact/maybe-either-apis::Box",
+              "providerModule": "artifact/maybe-either-apis",
+              "providerExport": "Box",
               "arguments": []
             }
           ]
@@ -188,8 +197,11 @@
         "constructor": "Semigroup",
         "arguments": [
           {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Token",
+            "canonical": "artifact/maybe-either-apis::Token",
+            "providerModule": "artifact/maybe-either-apis",
+            "providerExport": "Token",
             "arguments": []
           }
         ]

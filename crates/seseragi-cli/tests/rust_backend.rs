@@ -30,6 +30,44 @@ fn cli() -> Command {
 }
 
 #[test]
+fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
+    let scratch = Scratch::new();
+    for (name, source, code) in [
+        ("duplicate", "type Label = | Label\nalias Name = Label\ninstance Show<Name> { fn show value: Label -> String = \"alias\" }\ninstance Show<Label> { fn show value: Label -> String = \"label\" }\n", "SES-T0202"),
+        ("generic-duplicate", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = \"alias\" }\ninstance<B> Show<Box<B>> { fn show value: Box<B> -> String = \"box\" }\n", "SES-T0202"),
+        ("standard-duplicate", "alias Number = Int\ninstance Show<Number> { fn show value: Int -> String = \"number\" }\n", "SES-T0202"),
+        ("erased-parameter", "type Label = | Label\nalias Erased<A> = Label\ninstance<A> Show<Erased<A>> { fn show value: Label -> String = \"label\" }\n", "SES-T0101"),
+        ("unrepresented-constructor", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ntrait Tag<F<_>> { fn tag<A> value: F<A> -> String }\ninstance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = \"box\" }\n", "SES-T0101"),
+    ] {
+        let path = scratch.0.join(format!("{name}-λ.ssrg"));
+        fs::write(&path, format!("// 雫\n{source}\npub effect fn main = println \"MUST_NOT_RUN\"\n")).unwrap();
+        let rust = scratch.0.join(format!("{name}.rs"));
+        let output = cli().env("PATH", "").args(["experimental", "emit-rust"])
+            .arg(&path).args(["--entry", "main", "--output"]).arg(&rust).output().unwrap();
+        assert_eq!(output.status.code(), Some(2), "{name}: {output:?}");
+        assert!(output.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&output.stderr).contains(code), "{output:?}");
+        assert!(!rust.exists());
+        assert!(!rust.with_extension("rust-backend.json").exists());
+        for profile in ["development", "release"] {
+            let directory = scratch.0.join(format!("{name}-{profile}"));
+            let output = cli().env("PATH", "").arg("build").arg(&path)
+                .args(["--profile", profile, "--out-dir"]).arg(&directory).output().unwrap();
+            assert_eq!(output.status.code(), Some(2), "{name}/{profile}: {output:?}");
+            assert!(output.stdout.is_empty());
+            assert!(!directory.exists());
+            let output = cli().env("PATH", "").arg("run").arg(&path)
+                .args(["--profile", profile, "--diagnostic-format", "json"]).output().unwrap();
+            assert_eq!(output.status.code(), Some(2), "{name}/{profile}: {output:?}");
+            assert!(output.stdout.is_empty());
+            let diagnostics: serde_json::Value = serde_json::from_slice(&output.stderr).unwrap();
+            assert!(diagnostics.to_string().contains(code));
+            assert!(diagnostics.to_string().contains("utf-8"));
+        }
+    }
+}
+
+#[test]
 fn incomplete_instance_contracts_reject_before_emission_or_execution() {
     let scratch = Scratch::new();
     let artifacts = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec/artifacts");
@@ -153,6 +191,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("tuple-display", 3),
         ("array-display", 3),
         ("deprecation", 3),
+        ("instance-alias", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -377,6 +416,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "array-nominal",
         "instance-contracts",
         "deprecation",
+        "instance-alias",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -449,6 +489,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "tuple-nominal",
         "array-display",
         "array-nominal",
+        "instance-alias",
     ] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
@@ -908,6 +949,14 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "instance-alias-effects",
+            "fixtures/rust-backend/instance-alias-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/instance-alias-effects.stdout"
+            ),
+            0,
+        ),
         (
             "deprecation-effects",
             "fixtures/rust-backend/deprecation-effects.ssrg",
@@ -1375,9 +1424,16 @@ fn invalid_deprecation_prefixes_fail_before_output_or_execution() {
 
 #[test]
 fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
+    strict_project_reexports("deprecation");
+    strict_project_reexports("instance-alias");
+}
+
+fn strict_project_reexports(name: &str) {
     let scratch = Scratch::new();
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let fixture = root.join("examples/spec/fixtures/rust-backend-projects/deprecation");
+    let fixture = root
+        .join("examples/spec/fixtures/rust-backend-projects")
+        .join(name);
     let loaded = seseragi_project::load_local_project(&fixture).unwrap();
     let tsc = root.join("node_modules/typescript/bin/tsc");
     for (name, profile) in [
