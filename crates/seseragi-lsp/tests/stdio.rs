@@ -1334,9 +1334,9 @@ fn workspace_operations_preserve_namespaces_reexports_scopes_traits_and_operator
     );
     let instances = concat!(
         "import { Inspect, Ticket } from \"./domain\"\n",
-        "\n",
-        "instance Inspect<Ticket> {\n",
-        "  fn inspect value: Ticket -> String = \"ticket\"\n",
+        "type Envelope = | Envelope Ticket\n",
+        "instance Inspect<Envelope> {\n",
+        "  fn inspect value: Envelope -> String = \"ticket\"\n",
         "}\n",
     );
     workspace.write("main.ssrg", main);
@@ -1530,6 +1530,57 @@ fn workspace_operations_preserve_namespaces_reexports_scopes_traits_and_operator
         }),
         "{main_score_edits:#?}"
     );
+}
+
+#[test]
+fn workspace_orphan_instances_report_the_actual_owner_and_source_range() {
+    let workspace = TempWorkspace::new();
+    workspace.write(
+        "domain.ssrg",
+        "pub type Ticket = | Ticket Int\npub trait Inspect<A> { fn inspect value: A -> String }\n",
+    );
+    let source = concat!(
+        "// 雫🙂\n",
+        "import { Inspect, Ticket } from \"./domain\"\n",
+        "instance Inspect<Ticket> { fn inspect value: Ticket -> String = \"ticket\" }\n",
+    );
+    workspace.write("main.ssrg", source);
+    let uri = file_uri(&workspace.path().join("main.ssrg"));
+    let messages = run_server(&[
+        json!({"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+            "capabilities": {}, "workspaceFolders": [{
+                "uri": file_uri(workspace.path()), "name": "orphan-instance"
+            }]
+        }}),
+        json!({"jsonrpc": "2.0", "method": "textDocument/didOpen", "params": {
+            "textDocument": {"uri": uri, "languageId": "seseragi", "version": 1, "text": source}
+        }}),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ]);
+    let diagnostics = published(&messages, &uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    let orphan = diagnostics
+        .iter()
+        .find(|diagnostic| diagnostic["data"]["messageKey"] == "trait.instance-orphan")
+        .expect("orphan instance diagnostic");
+    assert_eq!(orphan["code"], "SES-T0202");
+    assert_eq!(orphan["range"]["start"], json!({"line": 2, "character": 0}));
+    assert_eq!(
+        orphan["relatedInformation"][0]["location"]["uri"],
+        workspace
+            .path()
+            .join("main.ssrg")
+            .canonicalize()
+            .unwrap()
+            .to_str()
+            .unwrap()
+    );
+    assert!(orphan["relatedInformation"][0]["message"]
+        .as_str()
+        .unwrap()
+        .contains("workspace/domain::Ticket"));
 }
 
 #[test]
