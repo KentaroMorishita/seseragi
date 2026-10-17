@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-alias-return::main",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.string.add-dictionary",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.show",
+      "core.int",
+      "core.bool.show",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-alias-return/main.ts",
+    "sourceMap": "dist/imported-alias-return/main.ts.map"
+  }
+}

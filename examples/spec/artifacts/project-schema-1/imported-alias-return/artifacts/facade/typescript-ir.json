@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-alias-return::facade",
+  "runtimeRequirements": [],
+  "sourceImports": [
+    {
+      "reexports": [
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 13,
+            "end": 16
+          }
+        },
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 13,
+            "end": 16
+          }
+        },
+        {
+          "imported": "boxed",
+          "local": "boxed",
+          "sourceLocal": "boxed",
+          "canonical": "fixture/imported-alias-return::domain::boxed",
+          "typeOnly": false,
+          "origin": {
+            "source": "facade.ssrg",
+            "start": 18,
+            "end": 23
+          }
+        }
+      ],
+      "module": "fixture/imported-alias-return::domain",
+      "specifier": "./domain.js",
+      "runtimeEdge": false,
+      "bindings": [],
+      "origin": {
+        "source": "facade.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+import { Box as Foreign } from "./domain"
+import { boxed } from "./facade"
+type Box<A> = | Local A
+fn read<A> value: Foreign<A> -> String where Show<A> =
+  match value { Foreign inner -> show inner }
+fn hold<A> value: Foreign<A> -> (String -> String) where Show<A> =
+  \prefix -> prefix + read value
+pub effect fn main = do {
+  println (read (boxed 42))
+  let saved = hold (boxed 7)
+  println (saved "saved=")
+  let forward = \value -> read (boxed value)
+  println (forward 42)
+  println (forward True)
+}

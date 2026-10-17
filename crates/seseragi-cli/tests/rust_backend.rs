@@ -197,6 +197,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("instance-alias", 3),
         ("instance-disjoint", 3),
         ("alias-constructor", 3),
+        ("imported-return", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -1439,6 +1440,7 @@ fn merged_constructor_reexports_typecheck_and_run_in_both_profiles() {
     strict_project_reexports("instance-alias");
     strict_project_reexports("instance-disjoint");
     strict_project_reexports("alias-constructor");
+    strict_project_reexports("imported-return");
 }
 
 fn strict_project_reexports(name: &str) {

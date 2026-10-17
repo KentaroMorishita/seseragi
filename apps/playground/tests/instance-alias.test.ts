@@ -103,7 +103,11 @@ test("unused duplicate and unrepresented alias heads fail before generation", ()
 })
 
 test("dictionary heads retain provider owners across renamed facade exports", async () => {
-  for (const name of ["instance-alias", "alias-constructor"]) {
+  for (const name of [
+    "instance-alias",
+    "alias-constructor",
+    "imported-return",
+  ]) {
     const base = new URL(
       `../../../examples/spec/fixtures/rust-backend-projects/${name}/`,
       import.meta.url

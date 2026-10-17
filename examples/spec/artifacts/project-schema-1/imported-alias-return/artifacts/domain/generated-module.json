@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-alias-return::domain",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.adt"
+    ]
+  },
+  "exports": [
+    "Box",
+    "boxed"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-alias-return/domain.ts",
+    "sourceMap": "dist/imported-alias-return/domain.ts.map"
+  }
+}

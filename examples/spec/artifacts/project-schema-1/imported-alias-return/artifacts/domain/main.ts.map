@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/imported-alias-return/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-alias-return::domain"
+  ],
+  "sourcesContent": [
+    "pub type Box<A> = | Box A\npub alias Wrapped<A> = Box<A>\npub alias Again<A> = Wrapped<A>\npub fn boxed<A> value: A -> Again<A> = Box value\n"
+  ],
+  "names": [
+    "Box",
+    "Box",
+    "boxed",
+    "Box"
+  ],
+  "mappings": ";;;AAAAA;;AAAoBC;AAGpBC"
+}

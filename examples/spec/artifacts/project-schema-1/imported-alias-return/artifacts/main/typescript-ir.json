@@ -1,0 +1,532 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-alias-return::main",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.string.add-dictionary",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int.show",
+    "core.int",
+    "core.bool.show",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-alias-return::domain",
+      "specifier": "./domain.js",
+      "runtimeEdge": false,
+      "bindings": [
+        {
+          "imported": "Box",
+          "local": "Foreign",
+          "sourceLocal": "Foreign",
+          "canonical": "fixture/imported-alias-return::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 23
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "module": "fixture/imported-alias-return::facade",
+      "specifier": "./facade.js",
+      "runtimeEdge": false,
+      "bindings": [
+        {
+          "imported": "boxed",
+          "local": "boxed",
+          "sourceLocal": "boxed",
+          "canonical": "fixture/imported-alias-return::domain::boxed",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 51,
+            "end": 56
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 42,
+        "end": 74
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Box",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Local",
+          "tag": "Local",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 91,
+            "end": 96
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 75,
+        "end": 98
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "read",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Foreign<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Foreign",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Box"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "inner",
+                "type": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "inner"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 99,
+        "end": 199
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "hold",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Foreign<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "lambda",
+        "parameter": "prefix: string",
+        "body": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_add_dictionary"
+          },
+          "method": "add",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "prefix"
+            },
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "read",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 200,
+        "end": 299
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "read",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "boxed",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "42"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "hold",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "boxed",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "7"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "string"
+                },
+                "result": {
+                  "kind": "string"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 356,
+              "end": 382
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "saved",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "saved="
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "forward",
+            "typeParameters": [
+              "Let426T0"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Let426T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Let426T0",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "read",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "boxed",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$evidence$0"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 412,
+              "end": 454
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "call",
+                    "callee": "forward",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "42"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "forward",
+                "arguments": [
+                  {
+                    "kind": "boolean",
+                    "value": true
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_boolShow"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 300,
+        "end": 504
+      }
+    }
+  ]
+}

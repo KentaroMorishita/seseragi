@@ -1,0 +1,46 @@
+import { Again, Box as Foreign } from "model"
+import { boxed } from "./facade"
+import * as refs from "std/ref"
+
+type Box<A> = | Local A
+
+trait Tag<F<_>, A> {
+  fn tag prefix: String -> value: F<A> -> String
+}
+
+instance<A> Tag<Foreign, A> where Show<A> {
+  fn tag prefix: String -> value: Foreign<A> -> String =
+    match value { Foreign inner -> prefix + show inner }
+}
+
+fn through<F<_>, A> value: F<A> -> String where Tag<F, A> = tag "generic=" value
+
+fn retained<A> value: Foreign<A> -> (String -> String) where Show<A> =
+  \prefix -> tag prefix value
+
+fn kept<A> value: Foreign<A> -> (String -> Foreign<A>) = \prefix -> value
+
+pub fn probe -> Array<String> = {
+  let method: String -> Foreign<Int> -> String = tag
+  let saved = method "saved="
+  let forward = \value -> kept (boxed value)
+  [
+    through (boxed 42),
+    saved (boxed 1),
+    saved (boxed 2),
+    "lambda=" + show (match forward 42 "saved" { Foreign inner -> inner }),
+    "lambda=" + show (match forward True "saved" { Foreign inner -> inner })
+  ]
+}
+
+pub effect fn main = do {
+  callback <- refs.make (retained (boxed 42))
+  saved <- refs.get callback
+  let cold = println (saved "saved=")
+  println "cold"
+  cold
+  refs.set (retained (boxed 7)) callback
+  cold
+  newer <- refs.get callback
+  println (newer "new=")
+}

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-alias-return::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-alias-return::domain",
+      "origin": {
+        "start": 0,
+        "end": 41
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Box",
+          "symbol": "fixture/imported-alias-return::domain::Box",
+          "localName": "Foreign"
+        },
+        {
+          "namespace": "value",
+          "name": "Box",
+          "symbol": "fixture/imported-alias-return::domain::Box",
+          "localName": "Foreign"
+        }
+      ]
+    },
+    {
+      "specifier": "./facade",
+      "module": "fixture/imported-alias-return::facade",
+      "origin": {
+        "start": 42,
+        "end": 74
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "boxed",
+          "symbol": "fixture/imported-alias-return::domain::boxed"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-alias-return::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 300,
+        "end": 504
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
