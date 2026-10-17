@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-head-unresolved",
+      "message": "The expanded instance head cannot preserve its type parameters",
+      "primary": {
+        "start": 126,
+        "end": 203
+      },
+      "related": [
+        {
+          "message": "the expanded instance head must preserve its resolved constructor and all declared type parameters; an unrepresented alias constructor cannot yet be used here",
+          "primary": {
+            "start": 126,
+            "end": 203
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "the expanded instance head must preserve its resolved constructor and all declared type parameters; an unrepresented alias constructor cannot yet be used here",
+          "primary": {
+            "start": 126,
+            "end": 203
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

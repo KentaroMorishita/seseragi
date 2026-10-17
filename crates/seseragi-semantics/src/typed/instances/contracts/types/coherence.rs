@@ -238,7 +238,9 @@ fn term(type_ref: &ContractType, parameters: &[TypeParameter], side: bool) -> Op
                 .collect::<Option<_>>()?,
         ),
         // A hole or an unscoped parameter is not a wildcard in a checked head.
-        ContractType::Hole | ContractType::Parameter(_) => return None,
+        ContractType::Hole | ContractType::Parameter(_) | ContractType::AliasSlot { .. } => {
+            return None
+        }
     })
 }
 

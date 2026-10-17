@@ -1,0 +1,6 @@
+// 雫🙂
+type Pair<A, B> = | Pair (A, B)
+alias Repeated<A> = Pair<A, A>
+trait Tag<F<_>> { fn tag<A> value: F<A> -> String }
+instance Tag<Repeated> { fn tag<A> value: Pair<A, A> -> String = "repeated" }
+pub effect fn main = println "MUST_NOT_RUN"

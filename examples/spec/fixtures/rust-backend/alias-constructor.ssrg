@@ -1,0 +1,24 @@
+type Box<A> = | Box A
+alias Wrapped<A> = Box<A>
+alias Again<A> = Wrapped<A>
+
+trait Label<F<_>, A> {
+  fn label prefix: String -> value: F<A> -> String
+}
+
+instance<A> Label<Again, A> where Show<A> {
+  fn label prefix: String -> value: Box<A> -> String =
+    match value { Box inner -> prefix + show inner }
+}
+
+fn through<F<_>, A> value: F<A> -> String where Label<F, A> = label "generic=" value
+
+fn retained<A> value: Box<A> -> (String -> String) where Show<A> =
+  \prefix -> label prefix value
+
+pub fn probe -> Array<String> = {
+  let method: String -> Box<Int> -> String = label
+  let saved = method "saved="
+  let closure = retained (Box "kept")
+  [through (Box 42), saved (Box 1), saved (Box 2), closure "first=", closure "second="]
+}

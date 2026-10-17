@@ -39,3 +39,10 @@ pub effect fn main = do {
 "#,
     );
 }
+
+#[test]
+fn compiles_proved_alias_constructors_with_selected_child_and_saved_evidence() {
+    check(include_str!(
+        "../../../examples/spec/fixtures/rust-backend/alias-constructor.ssrg"
+    ));
+}

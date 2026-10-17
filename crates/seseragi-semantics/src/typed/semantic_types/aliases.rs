@@ -227,12 +227,27 @@ impl AliasCatalog {
         resolved: &ResolvedModule,
         owner: SymbolId,
         definition: &AliasDefinition,
-        arguments: Vec<TypedType>,
+        mut arguments: Vec<TypedType>,
         stack: &mut BTreeSet<SymbolId>,
     ) -> TypedType {
-        if arguments.len() != definition.parameter_names.len() || !stack.insert(owner) {
+        let missing = definition
+            .parameter_names
+            .len()
+            .saturating_sub(arguments.len());
+        if arguments.len() > definition.parameter_names.len()
+            || (missing > 0
+                && (arguments
+                    .iter()
+                    .any(|argument| matches!(argument, TypedType::Hole))
+                    || !crate::typed::instances::represented_alias_constructor(resolved, owner)))
+            || !stack.insert(owner)
+        {
             return TypedType::Hole;
         }
+        // Constructor equality was proved using owner-scoped ordinal slots,
+        // independently of these ordinary expansion placeholders. Only the
+        // proved trailing suffix is removed from the semantic projection.
+        arguments.resize(definition.parameter_names.len(), TypedType::Hole);
         let arguments = arguments
             .into_iter()
             .zip(&definition.parameter_arities)
@@ -259,7 +274,35 @@ impl AliasCatalog {
             }
         };
         stack.remove(&owner);
-        expanded
+        if missing == 0 {
+            return expanded;
+        }
+        match expanded {
+            TypedType::Named {
+                name,
+                mut arguments,
+            } => {
+                if !remove_proven_suffix(&mut arguments, missing) {
+                    return TypedType::Hole;
+                }
+                TypedType::Named { name, arguments }
+            }
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                mut arguments,
+            } => {
+                if !remove_proven_suffix(&mut arguments, missing) {
+                    return TypedType::Hole;
+                }
+                TypedType::ExternalNamed {
+                    name,
+                    canonical,
+                    arguments,
+                }
+            }
+            _ => TypedType::Hole,
+        }
     }
 
     fn target(
@@ -275,6 +318,20 @@ impl AliasCatalog {
             })
             .and_then(|reference| reference.target)
     }
+}
+
+fn remove_proven_suffix(arguments: &mut Vec<TypedType>, missing: usize) -> bool {
+    let Some(keep) = arguments.len().checked_sub(missing) else {
+        return false;
+    };
+    if !arguments[keep..]
+        .iter()
+        .all(|argument| matches!(argument, TypedType::Hole))
+    {
+        return false;
+    }
+    arguments.truncate(keep);
+    true
 }
 
 fn expand_interface_type(

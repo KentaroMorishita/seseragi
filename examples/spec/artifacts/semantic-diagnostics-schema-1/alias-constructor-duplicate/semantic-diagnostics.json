@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.instance-duplicate",
+      "message": "Trait instance duplicate",
+      "primary": {
+        "start": 181,
+        "end": 247
+      },
+      "related": [
+        {
+          "message": "Tag instance main::trait(Tag)<main::Box> was first defined here",
+          "primary": {
+            "start": 111,
+            "end": 180
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "Tag instance main::trait(Tag)<main::Box> was first defined here",
+          "primary": {
+            "start": 111,
+            "end": 180
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

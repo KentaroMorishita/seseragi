@@ -1,0 +1,7 @@
+// 雫🙂
+type Box<A> = | Box A
+alias Wrapped<A> = Box<A>
+trait Tag<F<_>> { fn tag<A> value: F<A> -> String }
+instance Tag<Wrapped> { fn tag<A> value: Box<A> -> String = "alias" }
+instance Tag<Box> { fn tag<A> value: Box<A> -> String = "direct" }
+pub effect fn main = println "MUST_NOT_RUN"

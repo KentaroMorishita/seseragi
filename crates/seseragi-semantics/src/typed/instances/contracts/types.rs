@@ -12,6 +12,35 @@ pub(crate) use coherence::{dependency_head, local_head, CoherenceHead, HeadRelat
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 
+/// Shared proof used by semantic alias projection as well as instance contracts.
+/// The caller has already identified a transparent alias by its resolved symbol.
+pub(crate) fn represented_alias_constructor(resolved: &ResolvedModule, owner: SymbolId) -> bool {
+    let Some(symbol) = resolved.symbols.iter().find(|symbol| symbol.id == owner) else {
+        return false;
+    };
+    let identity = symbol.canonical.clone().map_or(
+        model::TypeIdentity::Symbol(owner),
+        model::TypeIdentity::Canonical,
+    );
+    aliases::normalize_type(
+        resolved,
+        ContractType::Named(identity),
+        &mut Default::default(),
+    )
+    .is_some()
+}
+
+pub(in crate::typed::instances) fn unrepresented_alias_head(
+    resolved: &ResolvedModule,
+    type_ref: &TypeRef,
+) -> bool {
+    let Some(raw) = contract_type(resolved, type_ref, &BTreeMap::new(), &BTreeMap::new()) else {
+        // Name resolution reports an unknown type separately.
+        return false;
+    };
+    aliases::normalize_type(resolved, raw, &mut Default::default()).is_none()
+}
+
 /// Instance registration and selected evidence must use the same expanded
 /// identity as method contracts. Alias substitution keeps resolved symbol
 /// owners and binders, including imported representation bindings.
@@ -125,6 +154,7 @@ fn render_identity(
                 .join(",")
         ),
         ContractType::Hole => "_".to_owned(),
+        ContractType::AliasSlot { .. } => return None,
         ContractType::RequirementMerge(operands) => operands
             .iter()
             .map(|operand| render_identity(resolved, operand, binders))

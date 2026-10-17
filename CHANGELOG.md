@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.47] - 2026-10-17
+
+### Added
+
+- Use transparent wrapper aliases as trait instance constructors when a checked eta proof preserves every first-order parameter in order. Share the canonical owner across registration, method contracts, selected dictionaries and overlap checks, including fixed prefixes and imported alias chains. Keep unsupported reordered, repeated, erased and higher-kinded alias templates positioned and rejected before generation; general alias constructor support remains in progress (#854).
+
 ## [0.61.46] - 2026-10-17
 
 ### Fixed

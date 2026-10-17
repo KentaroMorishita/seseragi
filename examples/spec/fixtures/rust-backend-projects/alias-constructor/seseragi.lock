@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-alias-constructor@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/alias-constructor-model@1.0.0#path:vendor/model"
+name = "fixture/alias-constructor-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:c35cd8fddf62e8c1cb02d624540316b69b431c88f2f3ef61cee4de40913fb060"
+content_digest = "sha256:10ba88d6e101bdffe183d37e526ffa618417bd2dd31ec478b7a012851c110807"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-alias-constructor@0.0.0#workspace:."
+name = "fixture/native-alias-constructor"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:b222f70c6415e51b2698a3b7b23a3aae2f2a74eaa396cb51a7bb99e47d13edbb"
+content_digest = "sha256:c7bdca14d691314b54bd4ebd9d9771d49f1c5c75b45f4db479030ffb1c0e7cb3"
+dependencies = [
+  { import = "model", package = "fixture/alias-constructor-model@1.0.0#path:vendor/model" },
+]
