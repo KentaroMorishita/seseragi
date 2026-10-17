@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "trait.instance-coherence-unproved",
+      "message": "The instance heads cannot yet be proved disjoint",
+      "primary": {
+        "start": 155,
+        "end": 255
+      },
+      "related": [
+        {
+          "message": "cannot yet prove this Show instance disjoint from the instance defined here; higher-kinded constructor equality is not fully supported",
+          "primary": {
+            "start": 65,
+            "end": 154
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "cannot yet prove this Show instance disjoint from the instance defined here; higher-kinded constructor equality is not fully supported",
+          "primary": {
+            "start": 65,
+            "end": 154
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

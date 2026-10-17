@@ -10,7 +10,7 @@ mod types;
 pub(crate) use model::InstanceContractIssue;
 use model::{TraitContract, TraitMethodContract};
 pub(super) use types::{canonical_type_identity, has_unrepresented_parameters};
-pub(crate) use types::{dependency_head, local_head, CoherenceHead};
+pub(crate) use types::{dependency_head, local_head, CoherenceHead, HeadRelation};
 
 pub(crate) fn analyze_instance_contracts(
     resolved: &ResolvedModule,

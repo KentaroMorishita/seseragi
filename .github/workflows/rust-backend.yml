@@ -92,6 +92,8 @@ jobs:
           bun build runtime/ts/probes/effect-defer-stack.ts --target=node --outfile target/effect-defer-stack.mjs
           node target/effect-defer-stack.mjs
           bun target/effect-defer-stack.mjs
+      - name: Verify sample command deadlines and inherited output
+        run: bun test scripts/sample-cli-process.test.ts
       - name: Check Rust formatting
         run: |
           cargo fmt --all -- --check

@@ -1,0 +1,22 @@
+type Box<A> = | Box A
+type Other<A> = | Other A
+
+instance<F<_>> Show<Box<F<Bool>>> {
+  fn show value: Box<F<Bool>> -> String = "box"
+}
+
+instance Show<Other<Int>> {
+  fn show value: Other<Int> -> String =
+    match value { Other n -> "other=" + show n }
+}
+
+fn retained<A> value: A -> (Int -> String) where Show<A> =
+  \n -> show value + ":" + show n
+
+pub fn probe -> Array<String> = {
+  let value: Box<Maybe<Bool>> = Box (Just True)
+  let other: Other<Int> = Other 42
+  let saved = retained value
+  let method: Other<Int> -> String = show
+  [show value, method other, saved 1, saved 2]
+}

@@ -710,6 +710,16 @@ instance method bodyやdictionaryがbackendへ残ることの証明ではあり�
 provider dependencyのtraitを参照する場合は、provider interfaceからcanonical trait bindingをresolved importへ運びます。
 bindingが曖昧または解決不能な場合は綴り比較へfallbackせず、誤った契約一致を作りません。
 
+instance headの重複検査は、重複の証明・非重複の証明・未証明を区別します。
+constructor内の`_`は検査専用の順序付きslotで表し、`Box<_>`と`Box`のようなeta同値を正規化します。
+slotはinstanceやmethodのbinderとは別で、TypedHirやCoreIrの辞書ABIへ持ち出しません。
+適用済みHKT parameterを含むheadは、first-order照合の失敗だけで非重複と判断しません。
+constructorの形を緩めてもrigidな型が一致しない場合だけ併存を許可し、残る未証明の組合せは
+`trait.instance-coherence-unproved`で生成前に拒否します。単独のHKT instanceはこの理由では拒否しません。
+`Pair<_, Int>`と`Maybe`のように、sectionの中でもcanonical ownerが異なることを証明できるheadは併存を許可します。
+型引数を渡さないaliasは、引数の順序・重複・消失をまだ表現できないため、この証明には使いません。
+local・imported・deriveの重複判定と、canonicalな標準functional dependencyへ同じ検査を適用します。
+
 instance headのTypedHir以降のschemaは`trait`とordered `arguments`を分離して保持します。従来の単一`head`型は
 derived `Show<A>`のprimary typeしか表現できず、`Add<L, R, O>`や`Iterable<C, A>`を第一引数へ潰すため廃止しました。
 `typeIdentity`はruntimeがnominal dictionary ownerを検証する場合だけ存在するoptional metadataです。coherenceとinstance selectionは

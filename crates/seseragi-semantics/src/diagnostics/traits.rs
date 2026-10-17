@@ -57,6 +57,19 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }],
             fixes: Vec::new(),
         },
+        DerivedInstanceIssue::UnprovedInstanceCoherence { trait_name, primary, first, provider_module } => Diagnostic {
+            type_difference: None, id: String::new(), code: "SES-T0101".to_owned(),
+            severity: DiagnosticSeverity::Error, message_key: "trait.instance-coherence-unproved".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: match provider_module {
+                    Some(provider) => format!("cannot yet prove this {trait_name} instance disjoint from the instance provided by {provider}; higher-kinded constructor equality is not fully supported"),
+                    None => format!("cannot yet prove this {trait_name} instance disjoint from the instance defined here; higher-kinded constructor equality is not fully supported"),
+                },
+                primary: byte_range(first.unwrap_or(*primary)),
+            }],
+            fixes: Vec::new(),
+        },
         DerivedInstanceIssue::UnknownTrait {
             trait_name,
             primary,

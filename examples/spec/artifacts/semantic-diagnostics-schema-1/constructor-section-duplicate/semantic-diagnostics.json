@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.instance-duplicate",
+      "message": "Trait instance duplicate",
+      "primary": {
+        "start": 150,
+        "end": 220
+      },
+      "related": [
+        {
+          "message": "this Tag instance main::trait(Tag)<main::Box<_>> overlaps the instance defined here",
+          "primary": {
+            "start": 85,
+            "end": 149
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "this Tag instance main::trait(Tag)<main::Box<_>> overlaps the instance defined here",
+          "primary": {
+            "start": 85,
+            "end": 149
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

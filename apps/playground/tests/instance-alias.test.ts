@@ -24,6 +24,7 @@ test("alias heads keep selected dictionaries, closures and resource lifetimes", 
   for (const name of [
     "instance-alias",
     "instance-disjoint",
+    "constructor-disjoint",
     "instance-alias-effects",
   ]) {
     const base = new URL(
@@ -144,4 +145,34 @@ test("dictionary heads retain provider owners across renamed facade exports", as
     stdout: expected,
     debug: "()",
   })
+})
+
+test("constructor overlap and unproved HKT heads fail without generated code", async () => {
+  for (const [fixture, key] of [
+    ["constructor-section-duplicate", "trait.instance-duplicate"],
+    ["constructor-coherence-unproved", "trait.instance-coherence-unproved"],
+  ]) {
+    const source = await Bun.file(
+      new URL(
+        `../../../examples/spec/artifacts/semantic-diagnostics-schema-1/${fixture}/main.ssrg`,
+        import.meta.url
+      )
+    ).text()
+    const response = JSON.parse(
+      compile_single_file("雫.ssrg", "fixture/constructor-coherence", source)
+    ) as CompileResponse
+    expect(response.status).toBe("failure")
+    expect("generated" in response).toBe(false)
+    const error = response.diagnostics.diagnostics.find(
+      (diagnostic) => diagnostic.messageKey === key
+    )
+    expect(error).toBeDefined()
+    if (!error) throw new Error(JSON.stringify(response))
+    const bytes = new TextEncoder().encode(source)
+    expect(
+      new TextDecoder("utf-8", { fatal: true }).decode(
+        bytes.slice(error.primary.start, error.primary.end)
+      )
+    ).toStartWith("instance")
+  }
 })

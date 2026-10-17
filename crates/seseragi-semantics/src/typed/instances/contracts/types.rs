@@ -8,7 +8,7 @@ mod interface;
 mod model;
 mod resolution;
 
-pub(crate) use coherence::{dependency_head, local_head, CoherenceHead};
+pub(crate) use coherence::{dependency_head, local_head, CoherenceHead, HeadRelation};
 use model::{ContractMethod, ContractType};
 use resolution::{contract_constraint, contract_type, declaration_type_parameters, method_binders};
 

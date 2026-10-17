@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.46] - 2026-10-17
+
+### Fixed
+
+- Distinguish proved instance overlap, proved disjointness and unsupported higher-kinded comparisons. Normalize constructor section slots for eta-equivalent heads such as `Box` and `Box<_>`, preserve canonical owners and standard functional dependencies across imported providers, and reject unproved combinations before generation with a positioned diagnostic. Keep single HKT instances and provably disjoint heads valid. General alias constructors and higher-order coherence remain in progress (#854).
+
 ## [0.61.45] - 2026-10-17
 
 ### Fixed

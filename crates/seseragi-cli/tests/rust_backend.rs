@@ -421,6 +421,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "deprecation",
         "instance-alias",
         "instance-disjoint",
+        "constructor-disjoint",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -495,6 +496,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "array-nominal",
         "instance-alias",
         "instance-disjoint",
+        "constructor-disjoint",
     ] {
         let fixture_path = root.join(format!(
             "examples/spec/fixtures/rust-backend/{fixture}.ssrg"
@@ -1573,4 +1575,73 @@ fn imported_blanket_overlap_rejects_before_project_output_or_execution() {
     assert_eq!(output.status.code(), Some(2));
     assert!(output.stdout.is_empty());
     assert!(!emitted.exists());
+}
+
+#[test]
+fn constructor_coherence_rejects_before_output_or_execution() {
+    let scratch = Scratch::new();
+    for (fixture, key) in [
+        ("constructor-section-duplicate", "trait.instance-duplicate"),
+        (
+            "constructor-coherence-unproved",
+            "trait.instance-coherence-unproved",
+        ),
+    ] {
+        let source = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/spec/artifacts/semantic-diagnostics-schema-1")
+            .join(fixture)
+            .join("main.ssrg");
+        for native in [false, true] {
+            let output = scratch.0.join(format!("{fixture}-{native}"));
+            let result = if native {
+                cli()
+                    .env("PATH", "")
+                    .args(["experimental", "build-native"])
+                    .arg(&source)
+                    .args(["--entry", "main", "--out-dir"])
+                    .arg(&output)
+                    .output()
+                    .unwrap()
+            } else {
+                cli()
+                    .env("PATH", "")
+                    .args(["experimental", "emit-rust"])
+                    .arg(&source)
+                    .args(["--entry", "main", "--output"])
+                    .arg(&output)
+                    .output()
+                    .unwrap()
+            };
+            assert_eq!(result.status.code(), Some(2), "{result:?}");
+            assert!(result.stdout.is_empty());
+            assert!(!output.exists());
+            assert!(!output.with_extension("rust-backend.json").exists());
+        }
+        for profile in ["development", "release"] {
+            let output = scratch.0.join(format!("{fixture}-{profile}"));
+            let result = cli()
+                .env("PATH", "")
+                .arg("build")
+                .arg(&source)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&output)
+                .output()
+                .unwrap();
+            assert_eq!(result.status.code(), Some(2), "{result:?}");
+            assert!(result.stdout.is_empty());
+            assert!(!output.exists());
+            let result = cli()
+                .env("PATH", "")
+                .arg("run")
+                .arg(&source)
+                .args(["--profile", profile, "--diagnostic-format", "json"])
+                .output()
+                .unwrap();
+            assert_eq!(result.status.code(), Some(2), "{result:?}");
+            assert!(result.stdout.is_empty());
+            let artifact: serde_json::Value = serde_json::from_slice(&result.stderr).unwrap();
+            assert!(artifact.to_string().contains(key), "{artifact:#}");
+            assert!(artifact.to_string().contains("utf-8"));
+        }
+    }
 }

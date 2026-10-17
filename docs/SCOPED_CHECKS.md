@@ -31,6 +31,11 @@ typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ま
 project compileし、全sourceがformatterのcanonical outputと一致することを確認します。
 manifest/hashだけが更新され、壊れたinteractive sourceが通過する状態にはしません。
 
+sample・Tourのコマンド検証は、processの終了とstdout・stderrのEOFを両方確認します。
+期限切れは独立した失敗として返し、後始末で再びstdioを無期限に待ちません。
+POSIXでは親が先に終了しても所有process groupを停止します。親終了後の出力、
+非zero終了、Unicode、期限と後始末は`scripts/sample-cli-process.test.ts`で確認します。
+
 Playgroundのruntime resolverは`runtime/ts/package.json`のexportsと
 `runtime/providers/package.json`の`runtime-browser/*` exportsから生成します。
 `bun run --cwd apps/playground runtime:generate`で更新し、`runtime:check`と

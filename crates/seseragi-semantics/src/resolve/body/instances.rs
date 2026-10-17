@@ -1,7 +1,7 @@
 use crate::{ResolveIssue, ResolvedDependencyInstance};
 use seseragi_project::LinkedDependency;
 use seseragi_syntax::{InterfaceInstance, InterfaceType};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 pub(super) fn resolve_dependency_instances(
     dependencies: &[LinkedDependency],
@@ -12,9 +12,9 @@ pub(super) fn resolve_dependency_instances(
     >::new();
     let mut heads_by_trait = BTreeMap::<
         crate::instance_identity::CanonicalInstanceHeadKey,
-        Vec<crate::typed::instances::CoherenceHead>,
+        Vec<Option<crate::typed::instances::CoherenceHead>>,
     >::new();
-    let mut conflict_origins = BTreeSet::new();
+    let mut conflict_origins = BTreeMap::new();
     for dependency in dependencies {
         for instance in &dependency.interface.instances {
             let Some(instance) = resolved_dependency_instance(dependency, instance) else {
@@ -44,27 +44,59 @@ pub(super) fn resolve_dependency_instances(
             let canonical_trait =
                 crate::typed::instances::canonical_trait(&instance.trait_identity);
             let heads = heads_by_trait.entry(trait_key).or_default();
-            let conflicts = resolved.contains_key(&key)
-                || head.as_ref().is_some_and(|right| {
-                    heads
-                        .iter()
-                        .any(|left| left.conflicts(right, &canonical_trait))
-                });
-            if conflicts {
-                conflict_origins.insert((dependency.origin.start, dependency.origin.end));
+            use crate::typed::instances::HeadRelation;
+            let relation = if resolved.contains_key(&key) {
+                HeadRelation::Overlap
+            } else {
+                heads
+                    .iter()
+                    .map(|left| match (left, &head) {
+                        (Some(left), Some(right)) => left.relation(right, &canonical_trait),
+                        _ => HeadRelation::Unproved,
+                    })
+                    .fold(HeadRelation::Disjoint, |result, next| {
+                        match (result, next) {
+                            (HeadRelation::Overlap, _) | (_, HeadRelation::Overlap) => {
+                                HeadRelation::Overlap
+                            }
+                            (HeadRelation::Unproved, _) | (_, HeadRelation::Unproved) => {
+                                HeadRelation::Unproved
+                            }
+                            _ => HeadRelation::Disjoint,
+                        }
+                    })
+            };
+            if relation != HeadRelation::Disjoint {
+                let origin = (dependency.origin.start, dependency.origin.end);
+                conflict_origins
+                    .entry(origin)
+                    .and_modify(|previous| {
+                        if relation == HeadRelation::Overlap {
+                            *previous = relation;
+                        }
+                    })
+                    .or_insert(relation);
             }
-            if let Some(head) = head {
-                heads.push(head);
-            }
+            heads.push(head);
             let candidates = resolved.entry(key).or_default();
             candidates.push(instance);
         }
     }
     let issues = conflict_origins
         .into_iter()
-        .map(|(start, end)| ResolveIssue {
-            code: "SES-T0202".to_owned(),
-            message_key: "trait.instance-ambiguous".to_owned(),
+        .map(|((start, end), relation)| ResolveIssue {
+            code: if relation == crate::typed::instances::HeadRelation::Overlap {
+                "SES-T0202"
+            } else {
+                "SES-T0101"
+            }
+            .to_owned(),
+            message_key: if relation == crate::typed::instances::HeadRelation::Overlap {
+                "trait.instance-ambiguous"
+            } else {
+                "trait.instance-coherence-unproved"
+            }
+            .to_owned(),
             primary: seseragi_syntax::ByteSpan { start, end },
         })
         .collect();
@@ -369,5 +401,34 @@ mod overlap_tests {
         }
         let (_, issues) = resolve_dependency_instances(&[first, second]);
         assert!(issues.is_empty());
+    }
+    #[test]
+    fn imported_applied_constructors_require_disjointness_and_keep_facades_unique() {
+        let mut first = dependency("a", true, 11);
+        let instance = &mut first.interface.instances[0];
+        instance.identity = Some("std/prelude::Show<$0<std/prelude::Bool>>".into());
+        instance.argument_identities = vec!["$0<std/prelude::Bool>".into()];
+        instance.type_identity = Some(instance.argument_identities[0].clone());
+        instance.type_parameters = vec![TypeParameter::constructor("F", 1)];
+        instance.head = InterfaceType::Apply {
+            constructor: "Show".into(),
+            arguments: vec![InterfaceType::Named {
+                name: "F".into(),
+                arguments: vec![InterfaceType::Named {
+                    name: "Bool".into(),
+                    arguments: vec![],
+                }],
+            }],
+        };
+        let mut facade = first.clone();
+        facade.interface.module = "fixture/facade".into();
+        facade.origin = ByteSpan { start: 21, end: 22 };
+        let second = dependency("b", false, 31);
+        let (instances, issues) = resolve_dependency_instances(&[first, facade, second]);
+        assert_eq!(instances.len(), 2);
+        assert_eq!(issues.len(), 1);
+        assert_eq!(issues[0].code, "SES-T0101");
+        assert_eq!(issues[0].message_key, "trait.instance-coherence-unproved");
+        assert_eq!(issues[0].primary, ByteSpan { start: 31, end: 32 });
     }
 }
