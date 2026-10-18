@@ -129,15 +129,13 @@ where Add<T, T, T> =
     ));
     assert!(matches!(
         value.as_ref(),
-        TypeScriptExpr::Lambda { body, .. }
-            if matches!(body.as_ref(), TypeScriptExpr::Lambda { body, .. }
-                if matches!(body.as_ref(), TypeScriptExpr::DictionaryCall { method, .. }
-                    if method == "add"))
+        TypeScriptExpr::DictionaryCall { dictionary, method, arguments }
+            if method == "add" && arguments.is_empty()
+                && matches!(dictionary.as_ref(), TypeScriptExpr::Identifier { name }
+                    if name == "__ssrg$evidence$0")
     ));
     let bundle = emit_typescript_module(typescript, source);
-    assert!(bundle.typescript.contains(
-        "(_argument0) => (_argument1) => __ssrg$evidence$0[\"add\"](_argument0)(_argument1)"
-    ));
+    assert!(bundle.typescript.contains("__ssrg$evidence$0[\"add\"]"));
 }
 
 #[test]
@@ -154,7 +152,7 @@ pub fn name unit: Unit -> String =
     let bundle = emit_typescript_module(typescript, source);
     assert!(bundle
         .typescript
-        .contains("(_argument0) => (_argument1) => _ssrg_string_add_dictionary[\"add\"](_argument0)(_argument1)"));
+        .contains("_ssrg_string_add_dictionary[\"add\"]"));
     assert!(bundle.typescript.contains("@seseragi/runtime/string"));
     assert!(!bundle.typescript.contains("@seseragi/runtime/int"));
 }

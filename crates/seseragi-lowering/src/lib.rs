@@ -976,7 +976,7 @@ pub fn listLength values: List<Int> -> Int = {
 
         assert!(bundle
             .typescript
-            .contains("export const addTwenty: (argument: number) => number = (_argument1) => _ssrg_int_add(20, _argument1)"));
+            .contains("export const addTwenty: (argument: number) => number = (() => { const __ssrg$operator$saved0: number = 20; return (_argument1: number) => _ssrg_int_add(__ssrg$operator$saved0, _argument1); })()"));
         assert!(bundle
             .typescript
             .contains("[21 === 21, addTwenty(22), 6.0 * 7.0, \"sese\" + \"ragi\"] as const"));
