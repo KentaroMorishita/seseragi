@@ -439,6 +439,7 @@ fn declaration_symbol(
 
 fn hole_expression(origin: seseragi_syntax::ByteSpan) -> TypedExpr {
     TypedExpr::Variable {
+        callable_signature: None,
         name: String::new(),
         evidence: Vec::new(),
         type_ref: TypedType::Hole,

@@ -152,3 +152,85 @@ fn local_hkt_annotations_do_not_accept_mismatches_or_shadowing() {
         assert!(compile_module(CompileInput::new("invalid.ssrg", "fixture/invalid", source)).is_err());
     }
 }
+
+#[test]
+fn projects_checked_hkt_calls_without_casting_ordinary_generics() {
+    use seseragi_lowering::{CoreExpr, TypeScriptExpr, TypeScriptFunction, TypeScriptType};
+    let compiled = compile_module(CompileInput::new(
+        "callee.ssrg",
+        "fixture/callee",
+        r#"
+type F<A> = | Nominal A
+fn keep<F<_>, A> value: F<A> -> F<A> = value
+fn identity<A> value: A -> A = value
+pub fn wrapped value: F<Int> -> F<Int> = keep value
+pub fn ordinary value: Int -> Int = identity value
+pub fn saved -> (F<Int> -> F<Int>) = keep
+"#,
+    ))
+    .unwrap();
+    for function in &compiled.core_ir.functions {
+        if function.symbol.ends_with("::wrapped") {
+            let CoreExpr::Call {
+                callee_signature: Some(signature),
+                arguments,
+                ..
+            } = &function.body
+            else {
+                panic!("{function:?}")
+            };
+            assert_eq!(arguments.len(), 1);
+            assert_eq!(signature.type_parameters[0].arity, 1);
+            assert_eq!(signature.parameters.len(), 1);
+        } else if function.symbol.ends_with("::saved") {
+            assert!(
+                matches!(
+                    &function.body,
+                    CoreExpr::Variable {
+                        callable_signature: Some(_),
+                        evidence,
+                        ..
+                    } if evidence.is_empty()
+                ),
+                "a saved reference remains a value, without calling the function"
+            );
+        } else if function.symbol.ends_with("::ordinary") {
+            assert!(matches!(
+                &function.body,
+                CoreExpr::Call {
+                    callee_signature: None,
+                    ..
+                }
+            ));
+        }
+    }
+    for TypeScriptFunction::ConstFunction { name, body, .. } in &compiled.typescript_ir.functions {
+        if name == "wrapped" {
+            let TypeScriptExpr::Call {
+                checked_callee_type: Some(TypeScriptType::Function { parameter, result }),
+                ..
+            } = body
+            else {
+                panic!("{body:?}")
+            };
+            assert_eq!(parameter, result);
+            assert!(
+                matches!(parameter.as_ref(), TypeScriptType::Reference { name, arguments } if name == "F" && arguments == &[TypeScriptType::Number])
+            );
+        } else if name == "saved" {
+            assert!(matches!(
+                body,
+                TypeScriptExpr::CheckedResult { value, type_ref: TypeScriptType::Function { .. } }
+                    if matches!(value.as_ref(), TypeScriptExpr::Identifier { .. })
+            ));
+        } else if name == "ordinary" {
+            assert!(matches!(
+                body,
+                TypeScriptExpr::Call {
+                    checked_callee_type: None,
+                    ..
+                }
+            ));
+        }
+    }
+}

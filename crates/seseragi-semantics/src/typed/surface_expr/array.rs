@@ -276,6 +276,7 @@ pub(super) fn type_index(
         );
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
+            callee_signature: None,
             // Internal syntax intrinsic, not an additional standard module export.
             // Receiver-first ABI preserves source evaluation order exactly once.
             callee: "builtin::array-index".to_owned(),

@@ -97,6 +97,7 @@ pub(crate) fn type_effectful_for_with(
     let action_parameter = "$ssrg_for_value".to_owned();
     let action_body = TypedExpr::Match {
         scrutinee: Box::new(TypedExpr::Variable {
+            callable_signature: None,
             name: action_parameter.clone(),
             evidence: Vec::new(),
             type_ref: element_type.clone(),
@@ -140,6 +141,7 @@ pub(crate) fn type_effectful_for_with(
         || typed_type_contains_hole(&body_type);
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
+            callee_signature: None,
             callee: "std/prelude::forEach".to_owned(),
             arguments: vec![action, source_analysis.value.clone()],
             evidence: evidence.into_iter().collect(),

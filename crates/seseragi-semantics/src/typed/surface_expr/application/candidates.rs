@@ -102,6 +102,7 @@ pub(super) fn type_trait_method_selection_error(
     let child_context = context.without_expected();
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
+            callable_signature: None,
             name: String::new(),
             evidence: Vec::new(),
             type_ref: TypedType::Hole,

@@ -145,7 +145,7 @@ where Functor<F> =
 
     assert!(
         bundle.typescript.contains(
-            "applyMapper((((__ssrg$partial$0: unknown) => transform(f)(__ssrg$partial$0)(__ssrg$evidence$0)) as (argument: unknown) => unknown))(value)"
+            "(applyMapper as unknown as (argument: (argument: unknown) => unknown) => (argument: unknown) => unknown)((((__ssrg$partial$0: unknown) => transform(f)(__ssrg$partial$0)(__ssrg$evidence$0)) as (argument: unknown) => unknown))(value)"
         ),
         "{}",
         bundle.typescript

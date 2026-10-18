@@ -1,0 +1,27 @@
+pub type Box<A> = | Box A
+pub type Pair<A, B> = | Pair (A, B)
+pub fn boxed<A> value: A -> Box<A> = Box value
+pub fn paired<A> value: A -> Pair<String, A> = Pair ("fixed=", value)
+pub fn keep<F<_>, A> value: F<A> -> F<A> = value
+pub fn choose<F<_>, A> value: F<A> -> flag: Bool -> F<A> = value
+pub fn returned<F<_>, A> value: F<A> -> (Bool -> F<A>) = \flag -> value
+pub fn later<F<_>, A, B> value: F<A> -> callback: (F<A> -> B) -> B = callback value
+pub fn keep2<F<_, _>, A, B> value: F<A, B> -> F<A, B> = value
+pub fn plain<A> value: A -> A = value
+
+fn importedKeep<F<_>, A> value: F<A> -> F<A> = keep value
+fn facadeKeep<F<_>, A> value: F<A> -> F<A> = keep value
+
+// 雫🙂
+fn text value: Pair<String, Int> -> String = match value { Pair (prefix, inner) -> prefix + show inner }
+pub fn probe -> Array<String> = {
+  let saved: Pair<String, Int> -> Pair<String, Int> = keep
+  let polymorphic = importedKeep
+  let arrayHandlers: Array<Pair<String, Int> -> Pair<String, Int>> = [importedKeep, facadeKeep]
+  let handlers: List<Pair<String, Int> -> Pair<String, Int>> = `[importedKeep, facadeKeep]
+  let explicit: Pair<String, Int> -> Pair<String, Int> = importedKeep<Pair<String>, Int>
+  let partial = choose (paired 44)
+  let closure = returned (paired 45)
+  [text (keep (paired 41)), text (importedKeep (paired 42)), text (facadeKeep (paired 43)), text (partial True), text (partial False), text (closure True), text (closure False), text (saved (paired 46)), later (paired 47) (\value -> text value), match keep (boxed [1, 2]) { Box values -> show values }, text (polymorphic (paired 48)), match handlers { `[handler, _] -> text (handler (paired 49)); _ -> "missing" }, text (plain (paired 50)), text (keep2<Pair, String, Int> (paired 51)), text (explicit (paired 52))]
+}
+pub effect fn main = println (show (probe ()))

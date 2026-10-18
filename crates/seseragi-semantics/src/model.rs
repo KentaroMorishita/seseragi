@@ -285,6 +285,20 @@ pub struct TypedCallEvidence {
     pub evidence: TypedInstanceEvidence,
 }
 
+/// Declared callable scheme retained when a higher-kinded application loses
+/// information in a target type system. The call's own type remains the
+/// instantiated, checked result; this scheme does not select new evidence.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedCallSignature {
+    pub type_parameters: Vec<seseragi_syntax::TypeParameter>,
+    pub parameters: Vec<TypedType>,
+    pub result: TypedType,
+    /// Checked value types of supplied arguments, including whole cold Effects.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub argument_types: Vec<TypedType>,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedTraitDispatch {
@@ -560,6 +574,8 @@ pub enum TypedExpr {
     },
     Variable {
         name: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callable_signature: Option<TypedCallSignature>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<TypedCallEvidence>,
         #[serde(rename = "type")]
@@ -583,6 +599,8 @@ pub enum TypedExpr {
     Call {
         callee: String,
         arguments: Vec<TypedExpr>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callee_signature: Option<TypedCallSignature>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<TypedCallEvidence>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

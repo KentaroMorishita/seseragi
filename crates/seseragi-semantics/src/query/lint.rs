@@ -342,6 +342,7 @@ fn readonly_signal_parameters(
                 trait_dispatch,
                 type_ref: result_type,
                 origin: call_origin,
+                ..
             } = expression
             else {
                 return;

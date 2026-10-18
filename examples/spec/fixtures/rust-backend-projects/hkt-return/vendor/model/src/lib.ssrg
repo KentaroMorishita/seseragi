@@ -1,0 +1,10 @@
+pub type Box<A> = | Box A
+pub type Pair<A, B> = | Pair (A, B)
+pub fn boxed<A> value: A -> Box<A> = Box value
+pub fn paired<A> value: A -> Pair<String, A> = Pair ("fixed=", value)
+pub fn keep<F<_>, A> value: F<A> -> F<A> = value
+pub fn choose<F<_>, A> value: F<A> -> flag: Bool -> F<A> = value
+pub fn returned<F<_>, A> value: F<A> -> (Bool -> F<A>) = \flag -> value
+pub fn later<F<_>, A, B> value: F<A> -> callback: (F<A> -> B) -> B = callback value
+pub fn keep2<F<_, _>, A, B> value: F<A, B> -> F<A, B> = value
+pub fn plain<A> value: A -> A = value

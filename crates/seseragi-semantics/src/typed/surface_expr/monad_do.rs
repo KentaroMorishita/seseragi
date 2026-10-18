@@ -287,6 +287,7 @@ fn invalid_monad_do(origin: ByteSpan, issue: MonadDoIssue) -> SurfaceExpressionA
 
 fn hole(origin: ByteSpan) -> TypedExpr {
     TypedExpr::Variable {
+        callable_signature: None,
         name: String::new(),
         evidence: Vec::new(),
         type_ref: TypedType::Hole,

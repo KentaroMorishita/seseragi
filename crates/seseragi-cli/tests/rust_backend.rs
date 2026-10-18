@@ -200,6 +200,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("imported-return", 3),
         ("local-dictionaries", 3),
         ("method-dictionaries", 3),
+        ("hkt-return", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -430,6 +431,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "alias-constructor",
         "local-dictionaries",
         "method-dictionaries",
+        "hkt-callables",
         "binding-scope",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
@@ -469,10 +471,13 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         assert_eq!(metadata["backend"], "rust");
         assert_eq!(metadata["stability"], "experimental");
         assert_eq!(metadata["module"], "experimental/main");
-        let source = format!(
-            "{}\npub effect fn main = println (show (probe ()))\n",
-            fs::read_to_string(&path).unwrap()
-        );
+        let source = fs::read_to_string(&path).unwrap();
+        // A fixture may already provide the same oracle through its Effect main.
+        let source = if source.contains("pub effect fn main") {
+            source
+        } else {
+            format!("{source}\npub effect fn main = println (show (probe ()))\n")
+        };
         let oracle_path = scratch.0.join(format!("{name}-oracle.ssrg"));
         fs::write(&oracle_path, source).unwrap();
         for profile in ["development", "release"] {
@@ -509,6 +514,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "alias-constructor",
         "local-dictionaries",
         "method-dictionaries",
+        "hkt-callables",
         "binding-scope",
     ] {
         let fixture_path = root.join(format!(
@@ -983,6 +989,20 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             include_str!(
                 "../../../examples/spec/fixtures/rust-backend/method-dictionary-defect.stdout"
             ),
+            70,
+        ),
+        (
+            "hkt-callable-effects",
+            "fixtures/rust-backend/hkt-callable-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/hkt-callable-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "hkt-callable-defect",
+            "fixtures/rust-backend/hkt-callable-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/hkt-callable-defect.stdout"),
             70,
         ),
         (
@@ -1697,4 +1717,9 @@ fn constructor_coherence_rejects_before_output_or_execution() {
 #[test]
 fn constrained_method_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("method-dictionaries");
+}
+
+#[test]
+fn unconstrained_hkt_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("hkt-return");
 }

@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-hkt-return@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/hkt-return-model@1.0.0#path:vendor/model"
+name = "fixture/hkt-return-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:badf2ef94765e0448e94fdb05f026573d9057a6f84512521864b91679de16e72"
+content_digest = "sha256:86f8d2c71a70a3bb627be4de201855b820faa50e56b81d6f094092afd3f83908"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-hkt-return@0.0.0#workspace:."
+name = "fixture/native-hkt-return"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:379edae4112c582a3602996188dfff805e706208d9629f309745b764519ac937"
+content_digest = "sha256:cdf775436bad1e9732c34fca38c5ab15563a332f805865db2479af4d8fc3b6b8"
+dependencies = [
+  { import = "model", package = "fixture/hkt-return-model@1.0.0#path:vendor/model" },
+]

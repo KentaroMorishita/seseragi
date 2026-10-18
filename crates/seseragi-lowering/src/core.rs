@@ -206,6 +206,16 @@ pub struct CoreCallEvidence {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct CoreCallSignature {
+    pub type_parameters: Vec<TypeParameter>,
+    pub parameters: Vec<CoreType>,
+    pub result: CoreType,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub argument_types: Vec<CoreType>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CoreTraitDispatch {
     pub trait_identity: String,
     pub method: String,
@@ -412,6 +422,8 @@ pub enum CoreExpr {
     },
     Variable {
         name: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callable_signature: Option<CoreCallSignature>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<CoreCallEvidence>,
         #[serde(rename = "type")]
@@ -421,6 +433,8 @@ pub enum CoreExpr {
     Call {
         callee: String,
         arguments: Vec<CoreExpr>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callee_signature: Option<CoreCallSignature>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         evidence: Vec<CoreCallEvidence>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

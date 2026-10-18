@@ -62,6 +62,7 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
         CoreExpr::Variable {
             name,
+            callable_signature,
             evidence,
             type_ref,
             origin,
@@ -73,6 +74,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     // to ordinary calls instead of emitting an unbound name.
                     return lower_core_expr_to_typescript(
                         CoreExpr::Call {
+                            callee_signature: callable_signature,
                             callee: name,
                             arguments: Vec::new(),
                             evidence,
@@ -200,7 +202,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 }
             }
-            runtime_signal_operation(&name)
+            let value = runtime_signal_operation(&name)
                 .map(|operation| TypeScriptExpr::RuntimeReference {
                     name: operation.local_name.to_owned(),
                 })
@@ -309,11 +311,22 @@ pub(super) fn lower_core_expr_to_typescript(
                         .get(&name)
                         .cloned()
                         .unwrap_or_else(|| local_name(&name)),
-                })
+                });
+            if let Some(signature) = callable_signature {
+                let checked = type_ref_from_core_type(&type_ref, imported_types);
+                if super::types::instantiated_hkt_callee(&signature, &[], &checked).is_some() {
+                    return TypeScriptExpr::CheckedResult {
+                        value: Box::new(value),
+                        type_ref: checked,
+                    };
+                }
+            }
+            value
         }
         CoreExpr::Call {
             callee,
             arguments,
+            callee_signature,
             evidence,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
@@ -903,6 +916,22 @@ pub(super) fn lower_core_expr_to_typescript(
                         && checked_argument_types.iter().skip(1).any(|argument| {
                             matches!(argument, super::TypeScriptType::Function { .. })
                         });
+                    let hkt_callee = (!has_evidence)
+                        .then(|| callee_signature.as_ref())
+                        .flatten()
+                        .filter(|signature| signature.argument_types.len() == arguments.len())
+                        .and_then(|signature| {
+                            let checked = signature
+                                .argument_types
+                                .iter()
+                                .map(|ty| type_ref_from_core_type(ty, imported_types))
+                                .collect::<Vec<_>>();
+                            super::types::instantiated_hkt_callee(
+                                signature,
+                                &checked,
+                                &checked_result,
+                            )
+                        });
                     let evidence_count = evidence.len();
                     // Typed HIR represents an imported effect reference as a
                     // zero-argument partial Call. Preserve the callable value;
@@ -949,6 +978,21 @@ pub(super) fn lower_core_expr_to_typescript(
                         } = &mut call
                         {
                             *checked_callee_type = Some(instantiated);
+                        }
+                    }
+                    if let Some(instantiated) = hkt_callee {
+                        match &mut call {
+                            TypeScriptExpr::Call {
+                                checked_callee_type,
+                                ..
+                            } => *checked_callee_type = Some(instantiated),
+                            TypeScriptExpr::Identifier { .. } => {
+                                call = TypeScriptExpr::CheckedResult {
+                                    value: Box::new(call),
+                                    type_ref: checked_result.clone(),
+                                };
+                            }
+                            _ => {}
                         }
                     }
                     if has_evidence {

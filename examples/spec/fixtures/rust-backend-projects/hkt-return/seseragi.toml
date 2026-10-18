@@ -1,0 +1,9 @@
+[package]
+name="fixture/native-hkt-return"
+version="0.0.0"
+language=">=0.1.0 <0.2.0"
+[run]
+entry="main"
+target="process"
+[dependencies]
+model={package="fixture/hkt-return-model",path="vendor/model"}

@@ -18,6 +18,35 @@ mod candidates;
 
 use candidates::{select_trait_method_candidate, type_trait_method_selection_error};
 
+fn unconstrained_hkt_signature(
+    signature: &TopLevelPureFunction,
+) -> Option<crate::TypedCallSignature> {
+    (signature.constraints.is_empty()
+        && signature.trait_identity.is_none()
+        && signature.type_parameters.iter().any(|p| p.is_constructor()))
+    .then(|| crate::TypedCallSignature {
+        type_parameters: signature.type_parameters.clone(),
+        parameters: signature.parameters.clone(),
+        result: signature.result.clone(),
+        argument_types: Vec::new(),
+    })
+}
+
+fn callable_reference(
+    signature: &TopLevelPureFunction,
+    callee_signature: Option<crate::TypedCallSignature>,
+    type_ref: TypedType,
+    origin: ByteSpan,
+) -> TypedExpr {
+    TypedExpr::Variable {
+        name: signature.symbol.clone(),
+        callable_signature: callee_signature,
+        evidence: Vec::new(),
+        type_ref,
+        origin,
+    }
+}
+
 pub(super) fn type_application(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
@@ -31,20 +60,24 @@ pub(super) fn type_explicit_callable_value(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    let callee_signature = unconstrained_hkt_signature(&signature);
     let (signature, issue) =
         instantiate_explicit_signature(signature, Some(arguments), span, context);
     let mut analysis = type_callable_value(&signature, span, context);
     if issue.is_some() {
         analysis.pure_call_issue = issue;
         analysis.semantic_type = SemanticTypeKey::Invalid;
+    } else if callee_signature.is_some() && analysis.pure_call_issue.is_none() {
+        let type_ref = application_argument_type_from_expr(&analysis.value);
+        analysis.value = callable_reference(&signature, callee_signature, type_ref, span);
     }
     analysis
 }
 
 /// Types a named callable used without value arguments. Unconstrained
-/// callables remain ordinary variables, while constrained callables reuse the
-/// partial-application path so their dictionaries are captured after every
-/// remaining curried value parameter.
+/// ordinary callables remain variables. Higher-kinded references retain their
+/// checked scheme, while constrained callables capture dictionaries after
+/// every remaining curried value parameter.
 pub(super) fn type_callable_value(
     signature: &TopLevelPureFunction,
     span: ByteSpan,
@@ -73,6 +106,7 @@ pub(super) fn type_callable_value(
         )
     {
         let mut analysis = SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+            callable_signature: None,
             name: signature.symbol.clone(),
             evidence: Vec::new(),
             type_ref: TypedType::Hole,
@@ -88,6 +122,7 @@ pub(super) fn type_callable_value(
         .and_then(|expected| context.recursive_call_issue(span, &[], &expected.type_ref))
     {
         let mut analysis = SurfaceExpressionAnalysis::valid(TypedExpr::Variable {
+            callable_signature: None,
             name: signature.symbol.clone(),
             evidence: Vec::new(),
             type_ref: TypedType::Hole,
@@ -105,12 +140,12 @@ pub(super) fn type_callable_value(
             SemanticTypeKey::Other
         };
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
-            TypedExpr::Variable {
-                name: signature.symbol.clone(),
-                evidence: Vec::new(),
-                type_ref: instantiated_application_result_type(&application, 0),
-                origin: span,
-            },
+            callable_reference(
+                signature,
+                unconstrained_hkt_signature(signature),
+                instantiated_application_result_type(&application, 0),
+                span,
+            ),
             semantic_type,
         );
     }
@@ -172,6 +207,7 @@ fn abstract_callable_value(mut value: TypedExpr, arity: usize) -> TypedExpr {
         };
         let name = format!("__ssrg$partial${index}");
         arguments.push(TypedExpr::Variable {
+            callable_signature: None,
             name: name.clone(),
             evidence: Vec::new(),
             type_ref: (*parameter).clone(),
@@ -403,6 +439,7 @@ pub(crate) fn type_known_application_with_explicit(
     context: &PureExpressionContext<'_>,
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
+    let callee_signature = unconstrained_hkt_signature(&signature);
     let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
     let declared_arity = signature.parameters.len();
@@ -769,6 +806,17 @@ pub(crate) fn type_known_application_with_explicit(
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
+            callee_signature: if issue.is_none() {
+                callee_signature.map(|mut signature| {
+                    signature.argument_types = arguments
+                        .iter()
+                        .map(application_argument_type_from_expr)
+                        .collect();
+                    signature
+                })
+            } else {
+                None
+            },
             arguments,
             evidence,
             deferred_evidence_parameters,
@@ -1001,6 +1049,7 @@ fn type_unknown_application(
         callee.merge_issues_from(child);
     }
     callee.value = TypedExpr::Variable {
+        callable_signature: None,
         name: String::new(),
         evidence: Vec::new(),
         type_ref: TypedType::Hole,

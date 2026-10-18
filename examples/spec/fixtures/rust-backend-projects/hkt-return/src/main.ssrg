@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+// 雫🙂
+import { Pair as Foreign, paired, keep as importedKeep, keep2, plain } from "model"
+import { Box, boxed, keep as facadeKeep, choose, returned, later } from "./facade"
+fn keep<F<_>, A> value: F<A> -> F<A> = value
+fn text value: Foreign<String, Int> -> String = match value { Foreign (prefix, inner) -> prefix + show inner }
+pub fn probe -> Array<String> = {
+  let saved: Foreign<String, Int> -> Foreign<String, Int> = keep
+  let polymorphic = importedKeep
+  let arrayHandlers: Array<Foreign<String, Int> -> Foreign<String, Int>> = [importedKeep, facadeKeep]
+  let handlers: List<Foreign<String, Int> -> Foreign<String, Int>> = `[importedKeep, facadeKeep]
+  let explicit: Foreign<String, Int> -> Foreign<String, Int> = importedKeep<Foreign<String>, Int>
+  let partial = choose (paired 44)
+  let closure = returned (paired 45)
+  [text (keep (paired 41)), text (importedKeep (paired 42)), text (facadeKeep (paired 43)), text (partial True), text (partial False), text (closure True), text (closure False), text (saved (paired 46)), later (paired 47) (\value -> text value), match keep (boxed [1, 2]) { Box values -> show values }, text (polymorphic (paired 48)), match handlers { `[handler, _] -> text (handler (paired 49)); _ -> "missing" }, text (plain (paired 50)), text (keep2<Foreign, String, Int> (paired 51)), text (explicit (paired 52))]
+}
+pub effect fn main = do {
+  let pending = importedKeep (effects.succeed (probe ()))
+  values <- pending
+  println (show values)
+}
