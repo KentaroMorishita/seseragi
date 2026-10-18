@@ -12,6 +12,7 @@
       "core.adt",
       "core.int",
       "core.bool",
+      "core.ordering.equal",
       "core.ordering.greater",
       "core.unit",
       "core.int.ord-dictionary",

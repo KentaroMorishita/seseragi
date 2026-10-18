@@ -217,6 +217,8 @@ pub fn probe -> Bool = {
         )
     };
     for name in ["leftValue", "firstStage", "marker", "rightValue"] {
+        // Instrument this test copy's source helpers, keeping the ordinary
+        // generated comparison expression and its capture graph unchanged.
         let start = generated
             .find(&format!(
                 "fn {}_direct(",
@@ -363,28 +365,43 @@ fn all_int_comparison_sections_preserve_equal_negative_and_extreme_operands() {
 }
 
 #[test]
-fn int_ord_does_not_replace_a_scoped_binder_named_int() {
+fn primitive_ord_does_not_replace_scoped_binders_named_int_or_char() {
     use seseragi_lowering::{CoreExpr, CoreInstanceEvidence};
-    let source="fn generic<Int> value: Int -> Bool where Ord<Int> = (<) value value\npub fn probe -> Bool = generic 3";
-    let core = compile_core_module(CompileInput::new("binder-λ.ssrg", "native/main", source))
-        .unwrap()
-        .core_ir;
-    assert!(emit_rust_module(&core, "probe").is_ok());
-    let mut changed = core.clone();
-    let function = changed
-        .functions
-        .iter_mut()
-        .find(|f| f.symbol.ends_with("::generic"))
-        .unwrap();
-    let CoreExpr::Call { evidence, .. } = &mut function.body else {
-        panic!()
-    };
-    evidence[0].evidence = CoreInstanceEvidence::Standard {
-        identity: "std/int::Ord".into(),
-        type_arguments: vec![],
-        evidence_arguments: vec![],
-    };
-    let error = emit_rust_module(&changed, "probe").unwrap_err();
-    assert_eq!(error.code, "SES-RUST-0001");
-    assert_eq!(error.origin.unwrap().source, "binder-λ.ssrg");
+    for (binder, value, identity) in [
+        ("Int", "3", "std/int::Ord"),
+        ("Char", "'λ'", "std/char::Ord"),
+    ] {
+        let source=format!("fn generic<{binder}> value: {binder} -> Bool where Ord<{binder}> = (<) value value\npub fn probe -> Bool = generic {value}");
+        let core = compile_core_module(CompileInput::new("binder-λ.ssrg", "native/main", &source))
+            .unwrap()
+            .core_ir;
+        assert!(emit_rust_module(&core, "probe").is_ok());
+        let mut changed = core.clone();
+        let function = changed
+            .functions
+            .iter_mut()
+            .find(|f| f.symbol.ends_with("::generic"))
+            .unwrap();
+        let CoreExpr::Call { evidence, .. } = &mut function.body else {
+            panic!()
+        };
+        evidence[0].evidence = CoreInstanceEvidence::Standard {
+            identity: identity.into(),
+            type_arguments: vec![],
+            evidence_arguments: vec![],
+        };
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert_eq!(error.origin.unwrap().source, "binder-λ.ssrg");
+    }
+}
+
+#[test]
+fn ord_uses_the_selected_eq_parent_even_for_identical_payloads() {
+    execute(
+        "type Mark = | Mark Int\ninstance Eq<Mark> { fn eq left: Mark -> right: Mark -> Bool = False }\ninstance Ord<Mark> { fn compare left: Mark -> (Mark -> Ordering) = \\right -> if eq left right then Equal else Greater }\npub effect fn main = println (show (((>) (Mark 1)) (Mark 1)))",
+        "parent-policy",
+        "True\n",
+        0,
+    );
 }

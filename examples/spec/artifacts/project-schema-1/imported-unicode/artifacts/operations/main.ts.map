@@ -22,12 +22,17 @@
     "inspectError",
     "textSliceErrorDebug",
     "canonicalize",
-    "normalize",
+    "__ssrg$text_bytes$saved0",
     "NFC",
+    "normalize",
     "takeScalars",
+    "__ssrg$text_bytes$saved0",
+    "__ssrg$text_bytes$saved1",
     "sliceScalars",
     "takeGraphemes",
+    "__ssrg$text_bytes$saved0",
+    "__ssrg$text_bytes$saved1",
     "slice"
   ],
-  "mappings": ";;;;;;;;AAUAA;AACAE;AAEAE;AAEAE;AACAE;AACAE;AAZAE;AACAG;AACAE"
+  "mappings": ";;;;;;;;AAUAA;AACAE;AAEAE;AAEAE;AACAE;AACAE;AAZAE;AACAI;AACAI"
 }

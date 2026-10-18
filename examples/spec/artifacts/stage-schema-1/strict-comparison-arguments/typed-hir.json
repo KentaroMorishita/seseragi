@@ -99,7 +99,7 @@
       "constraints": [],
       "origin": {
         "start": 94,
-        "end": 164
+        "end": 165
       },
       "implementation": {
         "kind": "user-defined",
@@ -145,7 +145,7 @@
             ],
             "body": {
               "kind": "boolean",
-              "value": true,
+              "value": false,
               "type": {
                 "kind": "named",
                 "name": "Bool",
@@ -153,12 +153,12 @@
               },
               "origin": {
                 "start": 158,
-                "end": 162
+                "end": 163
               }
             },
             "origin": {
               "start": 116,
-              "end": 162
+              "end": 163
             }
           }
         ]
@@ -195,8 +195,8 @@
       ],
       "supertraitCount": 1,
       "origin": {
-        "start": 165,
-        "end": 253
+        "start": 166,
+        "end": 287
       },
       "implementation": {
         "kind": "user-defined",
@@ -230,8 +230,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 199,
-                  "end": 203
+                  "start": 200,
+                  "end": 204
                 }
               }
             ],
@@ -246,21 +246,109 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 235,
-                  "end": 240
+                  "start": 236,
+                  "end": 241
                 }
               },
               "body": {
-                "kind": "variable",
-                "name": "std/prelude::Greater",
+                "kind": "if",
+                "condition": {
+                  "kind": "call",
+                  "callee": "std/prelude::Eq::eq",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "Mark",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 251,
+                        "end": 255
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "Mark",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 256,
+                        "end": 261
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Eq",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Mark",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "parameter",
+                        "index": 0
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Eq",
+                    "method": "eq"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 248,
+                    "end": 261
+                  }
+                },
+                "thenBranch": {
+                  "kind": "variable",
+                  "name": "std/prelude::Equal",
+                  "type": {
+                    "kind": "named",
+                    "name": "Ordering",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 267,
+                    "end": 272
+                  }
+                },
+                "elseBranch": {
+                  "kind": "variable",
+                  "name": "std/prelude::Greater",
+                  "type": {
+                    "kind": "named",
+                    "name": "Ordering",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 278,
+                    "end": 285
+                  }
+                },
                 "type": {
                   "kind": "named",
                   "name": "Ordering",
                   "arguments": []
                 },
                 "origin": {
-                  "start": 244,
-                  "end": 251
+                  "start": 245,
+                  "end": 285
                 }
               },
               "type": {
@@ -277,13 +365,13 @@
                 }
               },
               "origin": {
-                "start": 234,
-                "end": 251
+                "start": 235,
+                "end": 285
               }
             },
             "origin": {
-              "start": 188,
-              "end": 251
+              "start": 189,
+              "end": 285
             }
           }
         ]
@@ -340,8 +428,8 @@
       "symbol": "artifact/strict-comparison-arguments::lower",
       "visibility": "private",
       "origin": {
-        "start": 254,
-        "end": 312
+        "start": 288,
+        "end": 346
       },
       "scheme": {
         "typeParameters": [
@@ -386,8 +474,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 266,
-            "end": 270
+            "start": 300,
+            "end": 304
           }
         }
       ],
@@ -404,8 +492,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 308,
-              "end": 312
+              "start": 342,
+              "end": 346
             }
           }
         ],
@@ -445,8 +533,8 @@
           }
         },
         "origin": {
-          "start": 304,
-          "end": 312
+          "start": 338,
+          "end": 346
         }
       }
     },
@@ -455,8 +543,8 @@
       "symbol": "artifact/strict-comparison-arguments::probe",
       "visibility": "public",
       "origin": {
-        "start": 314,
-        "end": 1004
+        "start": 348,
+        "end": 1038
       },
       "scheme": {
         "typeParameters": [],
@@ -490,7 +578,7 @@
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 30,
+              "symbol": 31,
               "name": "less",
               "type": {
                 "kind": "function",
@@ -506,8 +594,8 @@
                 }
               },
               "origin": {
-                "start": 352,
-                "end": 356
+                "start": 386,
+                "end": 390
               }
             },
             "value": {
@@ -523,95 +611,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 376,
-                    "end": 377
-                  }
-                }
-              ],
-              "evidence": [
-                {
-                  "constraint": {
-                    "name": "Ord",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "evidence": {
-                    "kind": "standard",
-                    "identity": "std/int::Ord"
-                  }
-                }
-              ],
-              "traitDispatch": {
-                "traitIdentity": "std/prelude::Ord",
-                "method": "compare"
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                },
-                "result": {
-                  "kind": "named",
-                  "name": "Bool",
-                  "arguments": []
-                }
-              },
-              "origin": {
-                "start": 372,
-                "end": 377
-              }
-            },
-            "origin": {
-              "start": 345,
-              "end": 377
-            }
-          },
-          {
-            "kind": "let",
-            "pattern": {
-              "kind": "binding",
-              "symbol": 32,
-              "name": "atMost",
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                },
-                "result": {
-                  "kind": "named",
-                  "name": "Bool",
-                  "arguments": []
-                }
-              },
-              "origin": {
-                "start": 384,
-                "end": 390
-              }
-            },
-            "value": {
-              "kind": "call",
-              "callee": "<=",
-              "arguments": [
-                {
-                  "kind": "integer",
-                  "value": "1",
-                  "type": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 411,
-                    "end": 412
+                    "start": 410,
+                    "end": 411
                   }
                 }
               ],
@@ -652,19 +653,106 @@
               },
               "origin": {
                 "start": 406,
-                "end": 412
+                "end": 411
               }
             },
             "origin": {
-              "start": 378,
-              "end": 412
+              "start": 379,
+              "end": 411
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 34,
+              "symbol": 33,
+              "name": "atMost",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 418,
+                "end": 424
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "<=",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 445,
+                    "end": 446
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 440,
+                "end": 446
+              }
+            },
+            "origin": {
+              "start": 412,
+              "end": 446
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 35,
               "name": "greater",
               "type": {
                 "kind": "function",
@@ -680,8 +768,8 @@
                 }
               },
               "origin": {
-                "start": 419,
-                "end": 426
+                "start": 453,
+                "end": 460
               }
             },
             "value": {
@@ -697,8 +785,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 446,
-                    "end": 447
+                    "start": 480,
+                    "end": 481
                   }
                 }
               ],
@@ -738,20 +826,20 @@
                 }
               },
               "origin": {
-                "start": 442,
-                "end": 447
+                "start": 476,
+                "end": 481
               }
             },
             "origin": {
-              "start": 413,
-              "end": 447
+              "start": 447,
+              "end": 481
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 36,
+              "symbol": 37,
               "name": "atLeast",
               "type": {
                 "kind": "function",
@@ -767,8 +855,8 @@
                 }
               },
               "origin": {
-                "start": 454,
-                "end": 461
+                "start": 488,
+                "end": 495
               }
             },
             "value": {
@@ -784,8 +872,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 482,
-                    "end": 483
+                    "start": 516,
+                    "end": 517
                   }
                 }
               ],
@@ -825,20 +913,20 @@
                 }
               },
               "origin": {
-                "start": 477,
-                "end": 483
+                "start": 511,
+                "end": 517
               }
             },
             "origin": {
-              "start": 448,
-              "end": 483
+              "start": 482,
+              "end": 517
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 38,
+              "symbol": 39,
               "name": "charLess",
               "type": {
                 "kind": "function",
@@ -854,8 +942,8 @@
                 }
               },
               "origin": {
-                "start": 490,
-                "end": 498
+                "start": 524,
+                "end": 532
               }
             },
             "value": {
@@ -871,8 +959,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 519,
-                    "end": 523
+                    "start": 553,
+                    "end": 557
                   }
                 }
               ],
@@ -912,20 +1000,20 @@
                 }
               },
               "origin": {
-                "start": 515,
-                "end": 523
+                "start": 549,
+                "end": 557
               }
             },
             "origin": {
-              "start": 484,
-              "end": 523
+              "start": 518,
+              "end": 557
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 39,
+              "symbol": 40,
               "name": "chosen",
               "type": {
                 "kind": "function",
@@ -941,8 +1029,8 @@
                 }
               },
               "origin": {
-                "start": 530,
-                "end": 536
+                "start": 564,
+                "end": 570
               }
             },
             "value": {
@@ -962,8 +1050,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 563,
-                        "end": 564
+                        "start": 597,
+                        "end": 598
                       }
                     }
                   ],
@@ -973,8 +1061,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 558,
-                    "end": 564
+                    "start": 592,
+                    "end": 598
                   }
                 }
               ],
@@ -1032,20 +1120,20 @@
                 }
               },
               "origin": {
-                "start": 553,
-                "end": 565
+                "start": 587,
+                "end": 599
               }
             },
             "origin": {
-              "start": 524,
-              "end": 565
+              "start": 558,
+              "end": 599
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 40,
+              "symbol": 41,
               "name": "generic",
               "type": {
                 "kind": "function",
@@ -1061,8 +1149,8 @@
                 }
               },
               "origin": {
-                "start": 572,
-                "end": 579
+                "start": 606,
+                "end": 613
               }
             },
             "value": {
@@ -1078,8 +1166,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 588,
-                    "end": 589
+                    "start": 622,
+                    "end": 623
                   }
                 }
               ],
@@ -1115,20 +1203,20 @@
                 }
               },
               "origin": {
-                "start": 582,
-                "end": 589
+                "start": 616,
+                "end": 623
               }
             },
             "origin": {
-              "start": 566,
-              "end": 589
+              "start": 600,
+              "end": 623
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 42,
+              "symbol": 43,
               "name": "clamp",
               "type": {
                 "kind": "function",
@@ -1150,8 +1238,8 @@
                 }
               },
               "origin": {
-                "start": 596,
-                "end": 601
+                "start": 630,
+                "end": 635
               }
             },
             "value": {
@@ -1167,8 +1255,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 623,
-                    "end": 626
+                    "start": 657,
+                    "end": 660
                   }
                 },
                 {
@@ -1180,8 +1268,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 627,
-                    "end": 631
+                    "start": 661,
+                    "end": 665
                   }
                 }
               ],
@@ -1205,20 +1293,20 @@
                 }
               },
               "origin": {
-                "start": 604,
-                "end": 631
+                "start": 638,
+                "end": 665
               }
             },
             "origin": {
-              "start": 590,
-              "end": 631
+              "start": 624,
+              "end": 665
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 44,
+              "symbol": 45,
               "name": "prefix",
               "type": {
                 "kind": "function",
@@ -1246,8 +1334,8 @@
                 }
               },
               "origin": {
-                "start": 638,
-                "end": 644
+                "start": 672,
+                "end": 678
               }
             },
             "value": {
@@ -1266,8 +1354,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 662,
-                        "end": 663
+                        "start": 696,
+                        "end": 697
                       }
                     }
                   ],
@@ -1283,8 +1371,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 660,
-                    "end": 664
+                    "start": 694,
+                    "end": 698
                   }
                 }
               ],
@@ -1314,20 +1402,20 @@
                 }
               },
               "origin": {
-                "start": 647,
-                "end": 664
+                "start": 681,
+                "end": 698
               }
             },
             "origin": {
-              "start": 632,
-              "end": 664
+              "start": 666,
+              "end": 698
             }
           },
           {
             "kind": "let",
             "pattern": {
               "kind": "binding",
-              "symbol": 47,
+              "symbol": 48,
               "name": "take",
               "type": {
                 "kind": "function",
@@ -1355,8 +1443,8 @@
                 }
               },
               "origin": {
-                "start": 671,
-                "end": 675
+                "start": 705,
+                "end": 709
               }
             },
             "value": {
@@ -1372,8 +1460,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 713,
-                    "end": 714
+                    "start": 747,
+                    "end": 748
                   }
                 }
               ],
@@ -1403,13 +1491,13 @@
                 }
               },
               "origin": {
-                "start": 702,
-                "end": 714
+                "start": 736,
+                "end": 748
               }
             },
             "origin": {
-              "start": 665,
-              "end": 714
+              "start": 699,
+              "end": 748
             }
           }
         ],
@@ -1429,8 +1517,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 728,
-                    "end": 729
+                    "start": 762,
+                    "end": 763
                   }
                 }
               ],
@@ -1440,8 +1528,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 723,
-                "end": 729
+                "start": 757,
+                "end": 763
               }
             },
             {
@@ -1457,8 +1545,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 740,
-                    "end": 741
+                    "start": 774,
+                    "end": 775
                   }
                 }
               ],
@@ -1468,8 +1556,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 735,
-                "end": 741
+                "start": 769,
+                "end": 775
               }
             },
             {
@@ -1485,8 +1573,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 754,
-                    "end": 755
+                    "start": 788,
+                    "end": 789
                   }
                 }
               ],
@@ -1496,8 +1584,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 747,
-                "end": 755
+                "start": 781,
+                "end": 789
               }
             },
             {
@@ -1513,8 +1601,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 769,
-                    "end": 770
+                    "start": 803,
+                    "end": 804
                   }
                 }
               ],
@@ -1524,8 +1612,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 761,
-                "end": 770
+                "start": 795,
+                "end": 804
               }
             },
             {
@@ -1541,8 +1629,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 784,
-                    "end": 785
+                    "start": 818,
+                    "end": 819
                   }
                 }
               ],
@@ -1552,8 +1640,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 776,
-                "end": 785
+                "start": 810,
+                "end": 819
               }
             },
             {
@@ -1569,8 +1657,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 800,
-                    "end": 806
+                    "start": 834,
+                    "end": 840
                   }
                 }
               ],
@@ -1580,8 +1668,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 791,
-                "end": 806
+                "start": 825,
+                "end": 840
               }
             },
             {
@@ -1601,8 +1689,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 825,
-                        "end": 826
+                        "start": 859,
+                        "end": 860
                       }
                     }
                   ],
@@ -1612,8 +1700,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 820,
-                    "end": 826
+                    "start": 854,
+                    "end": 860
                   }
                 }
               ],
@@ -1623,8 +1711,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 812,
-                "end": 827
+                "start": 846,
+                "end": 861
               }
             },
             {
@@ -1640,8 +1728,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 841,
-                    "end": 842
+                    "start": 875,
+                    "end": 876
                   }
                 }
               ],
@@ -1651,8 +1739,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 833,
-                "end": 842
+                "start": 867,
+                "end": 876
               }
             },
             {
@@ -1670,8 +1758,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 861,
-                      "end": 865
+                      "start": 895,
+                      "end": 899
                     }
                   }
                 ],
@@ -1687,8 +1775,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 855,
-                  "end": 865
+                  "start": 889,
+                  "end": 899
                 }
               },
               "arms": [
@@ -1698,7 +1786,7 @@
                     "symbol": "std/prelude::Just",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 52,
+                      "symbol": 53,
                       "name": "value",
                       "type": {
                         "kind": "named",
@@ -1706,8 +1794,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 873,
-                        "end": 878
+                        "start": 907,
+                        "end": 912
                       }
                     },
                     "type": {
@@ -1722,8 +1810,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 868,
-                      "end": 878
+                      "start": 902,
+                      "end": 912
                     }
                   },
                   "body": {
@@ -1739,8 +1827,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 896,
-                          "end": 901
+                          "start": 930,
+                          "end": 935
                         }
                       },
                       {
@@ -1752,8 +1840,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 902,
-                          "end": 906
+                          "start": 936,
+                          "end": 940
                         }
                       }
                     ],
@@ -1763,13 +1851,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 882,
-                      "end": 906
+                      "start": 916,
+                      "end": 940
                     }
                   },
                   "origin": {
-                    "start": 868,
-                    "end": 906
+                    "start": 902,
+                    "end": 940
                   }
                 },
                 {
@@ -1788,8 +1876,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 914,
-                      "end": 921
+                      "start": 948,
+                      "end": 955
                     }
                   },
                   "body": {
@@ -1801,13 +1889,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 925,
-                      "end": 930
+                      "start": 959,
+                      "end": 964
                     }
                   },
                   "origin": {
-                    "start": 914,
-                    "end": 930
+                    "start": 948,
+                    "end": 964
                   }
                 }
               ],
@@ -1818,8 +1906,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 849,
-                "end": 932
+                "start": 883,
+                "end": 966
               }
             },
             {
@@ -1849,8 +1937,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 975,
-                                  "end": 976
+                                  "start": 1009,
+                                  "end": 1010
                                 }
                               },
                               {
@@ -1862,8 +1950,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 984,
-                                  "end": 985
+                                  "start": 1018,
+                                  "end": 1019
                                 }
                               }
                             ],
@@ -1879,8 +1967,8 @@
                               ]
                             },
                             "origin": {
-                              "start": 966,
-                              "end": 991
+                              "start": 1000,
+                              "end": 1025
                             }
                           }
                         ],
@@ -1896,8 +1984,8 @@
                           ]
                         },
                         "origin": {
-                          "start": 959,
-                          "end": 991
+                          "start": 993,
+                          "end": 1025
                         }
                       }
                     ],
@@ -1913,8 +2001,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 953,
-                      "end": 992
+                      "start": 987,
+                      "end": 1026
                     }
                   }
                 ],
@@ -1924,8 +2012,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 939,
-                  "end": 993
+                  "start": 973,
+                  "end": 1027
                 }
               },
               "right": {
@@ -1937,8 +2025,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 997,
-                  "end": 998
+                  "start": 1031,
+                  "end": 1032
                 }
               },
               "evidence": [
@@ -1965,8 +2053,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 939,
-                "end": 998
+                "start": 973,
+                "end": 1032
               }
             }
           ],
@@ -1982,8 +2070,8 @@
             ]
           },
           "origin": {
-            "start": 717,
-            "end": 1002
+            "start": 751,
+            "end": 1036
           }
         },
         "type": {
@@ -1998,8 +2086,8 @@
           ]
         },
         "origin": {
-          "start": 344,
-          "end": 1004
+          "start": 378,
+          "end": 1038
         }
       }
     },
@@ -2008,8 +2096,8 @@
       "symbol": "artifact/strict-comparison-arguments::main",
       "visibility": "public",
       "origin": {
-        "start": 1006,
-        "end": 1052
+        "start": 1040,
+        "end": 1086
       },
       "inferredContract": true,
       "parameters": [
@@ -2094,8 +2182,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1048,
-                      "end": 1050
+                      "start": 1082,
+                      "end": 1084
                     }
                   }
                 ],
@@ -2111,8 +2199,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 1042,
-                  "end": 1050
+                  "start": 1076,
+                  "end": 1084
                 }
               }
             ],
@@ -2175,14 +2263,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 1036,
-              "end": 1051
+              "start": 1070,
+              "end": 1085
             }
           }
         ],
         "origin": {
-          "start": 1027,
-          "end": 1052
+          "start": 1061,
+          "end": 1086
         }
       }
     }

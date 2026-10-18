@@ -583,37 +583,65 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$comparison$stage",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "Score",
+                "arguments": []
+              },
+              "result": {
+                "kind": "ordering"
+              }
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Ord$1",
+                "typeArguments": [],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Eq$0"
+                  }
+                ]
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 792,
+              "end": 801
+            }
+          }
+        ],
+        "result": {
           "kind": "lambda",
-          "parameter": "__ssrg$comparison$argument$1",
+          "parameter": "__ssrg$comparison$right: Score",
           "body": {
             "kind": "binary",
             "operator": "!==",
             "left": {
               "kind": "field-access",
               "receiver": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "__ssrg$instance$Ord$1",
-                  "typeArguments": [],
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "__ssrg$instance$Eq$0"
-                    }
-                  ]
-                },
-                "method": "compare",
+                "kind": "call",
+                "callee": "__ssrg$comparison$stage",
                 "arguments": [
                   {
                     "kind": "identifier",
-                    "name": "left"
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$comparison$argument$1"
+                    "name": "__ssrg$comparison$right"
                   }
                 ]
               },
@@ -623,17 +651,6 @@
               "kind": "string",
               "value": "Greater"
             }
-          }
-        },
-        "type": {
-          "kind": "function",
-          "parameter": {
-            "kind": "reference",
-            "name": "Score",
-            "arguments": []
-          },
-          "result": {
-            "kind": "boolean"
           }
         }
       },
@@ -655,37 +672,65 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "lambda",
-          "parameter": "__ssrg$comparison$left",
-          "body": {
+        "kind": "lambda",
+        "parameter": "__ssrg$comparison$left: Score",
+        "body": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$comparison$stage",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "reference",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "ordering"
+                }
+              },
+              "initializer": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Ord$1",
+                  "typeArguments": [],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$Eq$0"
+                    }
+                  ]
+                },
+                "method": "compare",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$comparison$left"
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 855,
+                "end": 856
+              }
+            }
+          ],
+          "result": {
             "kind": "lambda",
-            "parameter": "__ssrg$comparison$right",
+            "parameter": "__ssrg$comparison$right: Score",
             "body": {
               "kind": "binary",
               "operator": "===",
               "left": {
                 "kind": "field-access",
                 "receiver": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "type-application-call",
-                    "callee": "__ssrg$instance$Ord$1",
-                    "typeArguments": [],
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0"
-                      }
-                    ]
-                  },
-                  "method": "compare",
+                  "kind": "call",
+                  "callee": "__ssrg$comparison$stage",
                   "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "__ssrg$comparison$left"
-                    },
                     {
                       "kind": "identifier",
                       "name": "__ssrg$comparison$right"
@@ -698,25 +743,6 @@
                 "kind": "string",
                 "value": "Less"
               }
-            }
-          }
-        },
-        "type": {
-          "kind": "function",
-          "parameter": {
-            "kind": "reference",
-            "name": "Score",
-            "arguments": []
-          },
-          "result": {
-            "kind": "function",
-            "parameter": {
-              "kind": "reference",
-              "name": "Score",
-              "arguments": []
-            },
-            "result": {
-              "kind": "boolean"
             }
           }
         }
@@ -915,37 +941,65 @@
               }
             },
             "initializer": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "lambda",
-                "parameter": "__ssrg$comparison$left",
-                "body": {
+              "kind": "lambda",
+              "parameter": "__ssrg$comparison$left: Score",
+              "body": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "pure-let",
+                    "name": "__ssrg$comparison$stage",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "Score",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "ordering"
+                      }
+                    },
+                    "initializer": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Ord$1",
+                        "typeArguments": [],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Eq$0"
+                          }
+                        ]
+                      },
+                      "method": "compare",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$left"
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1120,
+                      "end": 1121
+                    }
+                  }
+                ],
+                "result": {
                   "kind": "lambda",
-                  "parameter": "__ssrg$comparison$right",
+                  "parameter": "__ssrg$comparison$right: Score",
                   "body": {
                     "kind": "binary",
                     "operator": "===",
                     "left": {
                       "kind": "field-access",
                       "receiver": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Ord$1",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "__ssrg$instance$Eq$0"
-                            }
-                          ]
-                        },
-                        "method": "compare",
+                        "kind": "call",
+                        "callee": "__ssrg$comparison$stage",
                         "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$comparison$left"
-                          },
                           {
                             "kind": "identifier",
                             "name": "__ssrg$comparison$right"
@@ -958,25 +1012,6 @@
                       "kind": "string",
                       "value": "Less"
                     }
-                  }
-                }
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "reference",
-                  "name": "Score",
-                  "arguments": []
-                },
-                "result": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "boolean"
                   }
                 }
               }
@@ -1002,51 +1037,79 @@
               }
             },
             "initializer": {
-              "kind": "checked-result",
-              "value": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "reference",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Ord$1",
+                      "typeArguments": [],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Eq$0"
+                        }
+                      ]
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "value",
+                            "value": {
+                              "kind": "number",
+                              "value": "1"
+                            }
+                          }
+                        ],
+                        "assertedType": {
+                          "kind": "reference",
+                          "name": "Score",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1154,
+                    "end": 1178
+                  }
+                }
+              ],
+              "result": {
                 "kind": "lambda",
-                "parameter": "__ssrg$comparison$argument$1",
+                "parameter": "__ssrg$comparison$right: Score",
                 "body": {
                   "kind": "binary",
                   "operator": "===",
                   "left": {
                     "kind": "field-access",
                     "receiver": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "type-application-call",
-                        "callee": "__ssrg$instance$Ord$1",
-                        "typeArguments": [],
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$instance$Eq$0"
-                          }
-                        ]
-                      },
-                      "method": "compare",
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "value",
-                              "value": {
-                                "kind": "number",
-                                "value": "1"
-                              }
-                            }
-                          ],
-                          "assertedType": {
-                            "kind": "reference",
-                            "name": "Score",
-                            "arguments": []
-                          }
-                        },
-                        {
                           "kind": "identifier",
-                          "name": "__ssrg$comparison$argument$1"
+                          "name": "__ssrg$comparison$right"
                         }
                       ]
                     },
@@ -1056,17 +1119,6 @@
                     "kind": "string",
                     "value": "Greater"
                   }
-                }
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "reference",
-                  "name": "Score",
-                  "arguments": []
-                },
-                "result": {
-                  "kind": "boolean"
                 }
               }
             },
@@ -1169,37 +1221,65 @@
                         "callee": "apply",
                         "arguments": [
                           {
-                            "kind": "checked-result",
-                            "value": {
-                              "kind": "lambda",
-                              "parameter": "__ssrg$comparison$left",
-                              "body": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$comparison$left: Score",
+                            "body": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "pure-let",
+                                  "name": "__ssrg$comparison$stage",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "reference",
+                                      "name": "Score",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "ordering"
+                                    }
+                                  },
+                                  "initializer": {
+                                    "kind": "dictionary-call",
+                                    "dictionary": {
+                                      "kind": "type-application-call",
+                                      "callee": "__ssrg$instance$Ord$1",
+                                      "typeArguments": [],
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "__ssrg$instance$Eq$0"
+                                        }
+                                      ]
+                                    },
+                                    "method": "compare",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$comparison$left"
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1278,
+                                    "end": 1279
+                                  }
+                                }
+                              ],
+                              "result": {
                                 "kind": "lambda",
-                                "parameter": "__ssrg$comparison$right",
+                                "parameter": "__ssrg$comparison$right: Score",
                                 "body": {
                                   "kind": "binary",
                                   "operator": "===",
                                   "left": {
                                     "kind": "field-access",
                                     "receiver": {
-                                      "kind": "dictionary-call",
-                                      "dictionary": {
-                                        "kind": "type-application-call",
-                                        "callee": "__ssrg$instance$Ord$1",
-                                        "typeArguments": [],
-                                        "arguments": [
-                                          {
-                                            "kind": "identifier",
-                                            "name": "__ssrg$instance$Eq$0"
-                                          }
-                                        ]
-                                      },
-                                      "method": "compare",
+                                      "kind": "call",
+                                      "callee": "__ssrg$comparison$stage",
                                       "arguments": [
-                                        {
-                                          "kind": "identifier",
-                                          "name": "__ssrg$comparison$left"
-                                        },
                                         {
                                           "kind": "identifier",
                                           "name": "__ssrg$comparison$right"
@@ -1212,25 +1292,6 @@
                                     "kind": "string",
                                     "value": "Less"
                                   }
-                                }
-                              }
-                            },
-                            "type": {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "reference",
-                                "name": "Score",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "function",
-                                "parameter": {
-                                  "kind": "reference",
-                                  "name": "Score",
-                                  "arguments": []
-                                },
-                                "result": {
-                                  "kind": "boolean"
                                 }
                               }
                             }

@@ -57,10 +57,20 @@ impl Backend<'_> {
             std::slice::from_ref(selected),
             scope,
         )?;
-        if matches!(&selected.evidence, CoreInstanceEvidence::Standard { identity, .. } if identity == "std/int::Ord")
-            && !self.comparison_builtin(&selected.constraint.arguments[0], "Int", scope)?
-        {
-            return Err("Rust backend: Int Ord cannot stand for a scoped type binder".into());
+        let primitive = match &selected.evidence {
+            CoreInstanceEvidence::Standard { identity, .. } => match identity.as_str() {
+                "std/int::Ord" => Some("Int"),
+                "std/char::Ord" => Some("Char"),
+                _ => None,
+            },
+            _ => None,
+        };
+        if let Some(primitive) = primitive {
+            if !self.comparison_builtin(&selected.constraint.arguments[0], primitive, scope)? {
+                return Err(
+                    "Rust backend: primitive Ord cannot stand for a scoped type binder".into(),
+                );
+            }
         }
         Ok(())
     }

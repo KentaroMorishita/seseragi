@@ -45,8 +45,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 314,
-        "end": 1004
+        "start": 348,
+        "end": 1038
       },
       "scheme": {
         "typeParameters": [],
@@ -79,8 +79,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 1006,
-        "end": 1052
+        "start": 1040,
+        "end": 1086
       },
       "scheme": {
         "typeParameters": [],
@@ -154,7 +154,7 @@
       "constraints": [],
       "origin": {
         "start": 94,
-        "end": 164
+        "end": 165
       }
     },
     {
@@ -197,8 +197,8 @@
         }
       ],
       "origin": {
-        "start": 165,
-        "end": 253
+        "start": 166,
+        "end": 287
       }
     }
   ]

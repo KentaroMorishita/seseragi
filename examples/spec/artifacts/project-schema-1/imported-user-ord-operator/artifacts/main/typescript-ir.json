@@ -262,37 +262,65 @@
               }
             },
             "initializer": {
-              "kind": "checked-result",
-              "value": {
-                "kind": "lambda",
-                "parameter": "__ssrg$comparison$left",
-                "body": {
+              "kind": "lambda",
+              "parameter": "__ssrg$comparison$left: Score",
+              "body": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "pure-let",
+                    "name": "__ssrg$comparison$stage",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "reference",
+                        "name": "Score",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "ordering"
+                      }
+                    },
+                    "initializer": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Ord$1",
+                        "typeArguments": [],
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Eq$0"
+                          }
+                        ]
+                      },
+                      "method": "compare",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$left"
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 250,
+                      "end": 251
+                    }
+                  }
+                ],
+                "result": {
                   "kind": "lambda",
-                  "parameter": "__ssrg$comparison$right",
+                  "parameter": "__ssrg$comparison$right: Score",
                   "body": {
                     "kind": "binary",
                     "operator": "===",
                     "left": {
                       "kind": "field-access",
                       "receiver": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Ord$1",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "__ssrg$instance$Eq$0"
-                            }
-                          ]
-                        },
-                        "method": "compare",
+                        "kind": "call",
+                        "callee": "__ssrg$comparison$stage",
                         "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "__ssrg$comparison$left"
-                          },
                           {
                             "kind": "identifier",
                             "name": "__ssrg$comparison$right"
@@ -305,25 +333,6 @@
                       "kind": "string",
                       "value": "Less"
                     }
-                  }
-                }
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "reference",
-                  "name": "Score",
-                  "arguments": []
-                },
-                "result": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "reference",
-                    "name": "Score",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "boolean"
                   }
                 }
               }

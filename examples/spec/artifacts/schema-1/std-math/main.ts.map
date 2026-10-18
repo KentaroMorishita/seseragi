@@ -31,11 +31,12 @@
     "cosh",
     "tanh",
     "partial",
+    "__ssrg$numeric$saved0",
     "atan2",
     "length",
     "hypot",
     "result",
     "partial"
   ],
-  "mappings": ";;;;AAEAA;AACAK;AAiBAgB;AACAE;AACAE"
+  "mappings": ";;;;AAEAA;AACAK;AAiBAgB;AACAG;AACAE"
 }

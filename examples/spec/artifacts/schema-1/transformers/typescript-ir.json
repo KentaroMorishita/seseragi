@@ -883,21 +883,42 @@
       "initializer": {
         "kind": "checked-result",
         "value": {
-          "kind": "lambda",
-          "parameter": "__ssrg$collection$partial$0: StateT<number, unknown, number>",
-          "body": {
-            "kind": "runtime-call",
-            "callee": "_ssrg_stateTRun",
-            "arguments": [
-              {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$collection$saved0",
+              "type": {
+                "kind": "number"
+              },
+              "initializer": {
                 "kind": "number",
                 "value": "7"
               },
-              {
-                "kind": "identifier",
-                "name": "__ssrg$collection$partial$0"
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1356,
+                "end": 1364
               }
-            ]
+            }
+          ],
+          "result": {
+            "kind": "lambda",
+            "parameter": "__ssrg$collection$partial$0: StateT<number, unknown, number>",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_stateTRun",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$collection$saved0"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$collection$partial$0"
+                }
+              ]
+            }
           }
         },
         "type": {

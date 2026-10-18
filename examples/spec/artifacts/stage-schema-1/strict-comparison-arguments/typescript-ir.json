@@ -7,6 +7,7 @@
     "core.adt",
     "core.int",
     "core.bool",
+    "core.ordering.equal",
     "core.ordering.greater",
     "core.unit",
     "core.int.ord-dictionary",
@@ -27,6 +28,10 @@
     "core.array.show"
   ],
   "imports": [
+    {
+      "feature": "core.ordering.equal",
+      "local": "_ssrg_ordering_Equal"
+    },
     {
       "feature": "core.ordering.greater",
       "local": "_ssrg_ordering_Greater"
@@ -127,7 +132,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 94,
-        "end": 164
+        "end": 165
       },
       "dictionaryExport": "__ssrg$instance$Eq$0",
       "implementation": {
@@ -149,12 +154,12 @@
             ],
             "body": {
               "kind": "boolean",
-              "value": true
+              "value": false
             },
             "origin": {
               "source": "main.ssrg",
               "start": 116,
-              "end": 162
+              "end": 163
             }
           }
         ]
@@ -186,8 +191,8 @@
       "supertraitCount": 1,
       "origin": {
         "source": "main.ssrg",
-        "start": 165,
-        "end": 253
+        "start": 166,
+        "end": 287
       },
       "dictionaryExport": "__ssrg$instance$Ord$1",
       "implementation": {
@@ -206,14 +211,45 @@
               "kind": "lambda",
               "parameter": "right: Mark",
               "body": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_ordering_Greater"
+                "kind": "conditional",
+                "condition": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "left"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "right"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "boolean"
+                  }
+                },
+                "thenBranch": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_ordering_Equal"
+                },
+                "elseBranch": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_ordering_Greater"
+                }
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 188,
-              "end": 251
+              "start": 189,
+              "end": 285
             }
           }
         ]
@@ -281,8 +317,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 304,
-              "end": 312
+              "start": 338,
+              "end": 346
             }
           }
         ],
@@ -315,8 +351,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 254,
-        "end": 312
+        "start": 288,
+        "end": 346
       }
     },
     {
@@ -376,8 +412,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 372,
-                    "end": 377
+                    "start": 406,
+                    "end": 411
                   }
                 }
               ],
@@ -410,8 +446,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 345,
-              "end": 377
+              "start": 379,
+              "end": 411
             }
           },
           {
@@ -457,8 +493,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 406,
-                    "end": 412
+                    "start": 440,
+                    "end": 446
                   }
                 }
               ],
@@ -491,8 +527,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 378,
-              "end": 412
+              "start": 412,
+              "end": 446
             }
           },
           {
@@ -538,8 +574,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 442,
-                    "end": 447
+                    "start": 476,
+                    "end": 481
                   }
                 }
               ],
@@ -572,8 +608,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 413,
-              "end": 447
+              "start": 447,
+              "end": 481
             }
           },
           {
@@ -619,8 +655,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 477,
-                    "end": 483
+                    "start": 511,
+                    "end": 517
                   }
                 }
               ],
@@ -653,8 +689,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 448,
-              "end": 483
+              "start": 482,
+              "end": 517
             }
           },
           {
@@ -700,8 +736,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 515,
-                    "end": 523
+                    "start": 549,
+                    "end": 557
                   }
                 }
               ],
@@ -734,8 +770,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 484,
-              "end": 523
+              "start": 518,
+              "end": 557
             }
           },
           {
@@ -798,8 +834,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 553,
-                    "end": 565
+                    "start": 587,
+                    "end": 599
                   }
                 }
               ],
@@ -832,8 +868,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 524,
-              "end": 565
+              "start": 558,
+              "end": 599
             }
           },
           {
@@ -876,8 +912,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 566,
-              "end": 589
+              "start": 600,
+              "end": 623
             }
           },
           {
@@ -910,8 +946,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 604,
-                    "end": 631
+                    "start": 638,
+                    "end": 665
                   }
                 },
                 {
@@ -926,8 +962,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 604,
-                    "end": 631
+                    "start": 638,
+                    "end": 665
                   }
                 }
               ],
@@ -956,8 +992,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 590,
-              "end": 631
+              "start": 624,
+              "end": 665
             }
           },
           {
@@ -1010,8 +1046,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 647,
-                    "end": 664
+                    "start": 681,
+                    "end": 698
                   }
                 }
               ],
@@ -1037,8 +1073,8 @@
             "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
-              "start": 632,
-              "end": 664
+              "start": 666,
+              "end": 698
             }
           },
           {
@@ -1074,8 +1110,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 702,
-                    "end": 714
+                    "start": 736,
+                    "end": 748
                   }
                 }
               ],
@@ -1101,8 +1137,8 @@
             "initializerInOuterScope": true,
             "origin": {
               "source": "main.ssrg",
-              "start": 665,
-              "end": 714
+              "start": 699,
+              "end": 748
             }
           }
         ],
@@ -1324,8 +1360,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 314,
-        "end": 1004
+        "start": 348,
+        "end": 1038
       }
     },
     {
@@ -1383,8 +1419,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1006,
-        "end": 1052
+        "start": 1040,
+        "end": 1086
       }
     }
   ]
