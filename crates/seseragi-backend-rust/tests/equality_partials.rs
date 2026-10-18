@@ -74,6 +74,10 @@ fn selected_equality_body_runs_before_the_next_statement() {
         70,
     );
     execute("type Mark = | Mark Int\ninstance Eq<Mark> { fn eq left: Mark -> (Mark -> Bool) = { let bad = 9007199254740991 + 1; \\right -> True } }\npub effect fn main = do { let op: Mark -> Mark -> Bool = (!=); let saved = op (Mark 1); println \"unreachable\" }", "negated-defect", "",70);
+    for (operator, name) in [("==", "global-equal"), ("!=", "global-negated")] {
+        let source = format!("type Mark = | Mark Int\ninstance Eq<Mark> {{ fn eq left: Mark -> (Mark -> Bool) = {{ let bad = 9007199254740991 + 1; \\right -> True }} }}\nlet selectedEq: Mark -> Mark -> Bool = ({operator})\nlet partial: Mark -> Bool = selectedEq (Mark 7)\npub effect fn main = println \"MAIN_EXECUTED_MARKER\"\n");
+        execute(&source, name, "", 70);
+    }
 }
 
 #[test]
