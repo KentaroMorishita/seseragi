@@ -125,7 +125,15 @@ async function handleRequest(
   })
   const applicationResponse = await handler(snapshot)
   if (isCancelledHttpServerResponse(applicationResponse)) {
-    return Response.error()
+    // Bun rejects Response.error() because its status is zero. An already
+    // errored body closes the connection before any HTTP headers are sent.
+    return new Response(
+      new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.error()
+        },
+      })
+    )
   }
   const response = validateResponse(applicationResponse)
   const stream =

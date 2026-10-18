@@ -66,6 +66,11 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
   Preserve unfinished or unrelated work and report the reason when a worktree
   must remain. Reuse an appropriate active checkout rather than accumulating
   a new worktree for every step.
+- Record PIDs for browser verification daemons and their child processes. Close
+  each owned session in a `finally` block, use bounded shutdown waits, and verify
+  that its recorded PIDs have exited. Reclaim only verified owned processes on
+  timeout; do not leave Python daemons or test browsers running, or stop unrelated
+  user applications.
 - Keep evidence outside disposable Cargo profile directories. For large
   integration runs without useful incremental reuse, use `CARGO_INCREMENTAL=0`
   and inspect disk usage across related worktrees before and after the run.

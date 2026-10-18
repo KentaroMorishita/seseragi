@@ -3,6 +3,7 @@ name: Portable DTS converter
 on:
   pull_request:
     paths:
+      - ".bun-version"
       - "Cargo.toml"
       - "Cargo.lock"
       - "rust-toolchain.toml"
@@ -74,7 +75,7 @@ jobs:
           node-version: "24.14.0"
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.11
+          bun-version-file: .bun-version
       - uses: ./.github/actions/setup-wasi-sdk
       - name: Check native adapter and memory-only core
         run: |
@@ -83,6 +84,7 @@ jobs:
           cargo test --locked -p seseragi-dts --no-default-features
           cargo test --locked -p seseragi-cli --test dts
           cargo test --locked -p seseragi-wasm
+          cargo test --locked -p seseragi-conformance --bin seseragi-conformance runtime_package::http_server::tests
       - name: Build and execute converter without host imports
         run: bun run check:dts:wasm
       - uses: jetli/wasm-pack-action@v0.4.0

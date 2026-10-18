@@ -166,6 +166,12 @@ fn run_probe(
             String::from_utf8_lossy(&output.stdout)
         ));
     }
+    if !output.stderr.is_empty() {
+        return Err(format!(
+            "HTTP server provider probe wrote unexpected diagnostics: {}",
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
     Ok(())
 }
 
