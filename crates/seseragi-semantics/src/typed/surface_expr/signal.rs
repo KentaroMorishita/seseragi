@@ -16,6 +16,7 @@ pub(super) fn type_read(
     let actual = inferred_type_from_expr(&operand.value);
     let call = crate::standard::standard_signal_read_call(&actual);
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Call {
+        callee_signature: None,
         callee: call
             .as_ref()
             .map(|call| call.canonical)
@@ -72,6 +73,7 @@ pub(super) fn type_assignment(
             (call.canonical, call.result)
         });
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Call {
+        callee_signature: None,
         callee: call.0.to_owned(),
         arguments: vec![value.value.clone(), target.value.clone()],
         evidence: Vec::new(),

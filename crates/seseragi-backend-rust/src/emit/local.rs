@@ -229,6 +229,7 @@ impl Backend<'_> {
                 .map(|type_ref| {
                     let id = format!("\0local_partial_{}", self.fresh());
                     arguments.push(CoreExpr::Variable {
+                        callable_signature: None,
                         name: id.clone(),
                         evidence: vec![],
                         type_ref: type_ref.clone(),

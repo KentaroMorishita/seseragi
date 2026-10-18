@@ -1717,6 +1717,7 @@ pub effect fn main =
         assert_eq!(
             body,
             &TypedExpr::Variable {
+                callable_signature: None,
                 name: "missing".to_owned(),
                 evidence: Vec::new(),
                 type_ref: TypedType::Hole,

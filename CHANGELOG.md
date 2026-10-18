@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.51] - 2026-10-18
+
+### Fixed
+
+- Preserve checked higher-kinded callable signatures when generating TypeScript for unconstrained calls and saved function references. Keep instantiated return types through imported functions, constructor prefixes, partial applications and returned closures without changing source arity, evidence or evaluation order (#875).
+
 ## [0.61.50] - 2026-10-18
 
 ### Added

@@ -304,6 +304,74 @@ pub(super) fn type_ref_from_core_type(
     type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
 }
 
+/// Recover an instantiated callable only when its checked declaration applies
+/// a constructor parameter that TypeScript erases. Ordinary generic calls and
+/// unresolved holes do not supply this proof.
+pub(super) fn instantiated_hkt_callee(
+    signature: &crate::CoreCallSignature,
+    arguments: &[TypeScriptType],
+    result: &TypeScriptType,
+) -> Option<TypeScriptType> {
+    fn applied_constructor(ty: &CoreType, parameters: &[TypeParameter]) -> Option<bool> {
+        let (applied, children): (bool, Vec<&CoreType>) = match ty {
+            CoreType::Named { name, arguments } => {
+                let parameter = parameters.iter().find(|p| p.name == *name);
+                if parameter
+                    .is_some_and(|p| !arguments.is_empty() && p.arity as usize != arguments.len())
+                {
+                    return None;
+                }
+                (
+                    parameter.is_some_and(|p| p.is_constructor() && !arguments.is_empty()),
+                    arguments.iter().collect(),
+                )
+            }
+            CoreType::ExternalNamed { arguments, .. } => (false, arguments.iter().collect()),
+            CoreType::Function { parameter, result } => (false, vec![parameter, result]),
+            CoreType::Tuple { elements } => (false, elements.iter().collect()),
+            CoreType::Record { fields, .. } => {
+                (false, fields.iter().map(|f| &f.type_ref).collect())
+            }
+            CoreType::RequirementMerge { operands } => (false, operands.iter().collect()),
+            CoreType::Hole => return None,
+        };
+        children.into_iter().try_fold(applied, |found, ty| {
+            Some(found | applied_constructor(ty, parameters)?)
+        })
+    }
+    let binders = signature
+        .type_parameters
+        .iter()
+        .map(|p| &p.name)
+        .collect::<BTreeSet<_>>();
+    if binders.len() != signature.type_parameters.len()
+        || signature
+            .parameters
+            .iter()
+            .chain(std::iter::once(&signature.result))
+            .try_fold(false, |found, ty| {
+                Some(found | applied_constructor(ty, &signature.type_parameters)?)
+            })
+            != Some(true)
+    {
+        return None;
+    }
+    // Use only instantiated call-site types here. A declaration can mention
+    // private nominal types or different generic binders that are not in the
+    // caller's annotation scope. No declaration name is imported or inferred.
+    Some(
+        arguments
+            .iter()
+            .rev()
+            .fold(result.clone(), |result, parameter| {
+                TypeScriptType::Function {
+                    parameter: Box::new(parameter.clone()),
+                    result: Box::new(result),
+                }
+            }),
+    )
+}
+
 pub(super) fn type_ref_from_core_type_with_erasure(
     type_ref: &CoreType,
     imported_types: &TypeScriptTypeContext,
@@ -699,10 +767,11 @@ mod tests {
     }
 
     use super::{
-        lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_type,
-        CoreParameter, CoreType,
+        instantiated_hkt_callee, lower_core_parameter_to_typescript, render_typescript_type,
+        type_ref_from_core_type, CoreParameter, CoreType,
     };
     use crate::TypeScriptType;
+    use seseragi_syntax::TypeParameter;
 
     #[test]
     fn canonical_array_evidence_bypasses_local_and_parameter_name_translation() {
@@ -907,6 +976,98 @@ mod tests {
             lower_core_parameter_to_typescript(parameter, &Default::default(), &["F".to_owned()]);
 
         assert_eq!(lowered.type_name, "unknown");
+    }
+
+    #[test]
+    fn instantiates_hkt_calls_from_checked_arguments_and_result_only() {
+        let signature = crate::CoreCallSignature {
+            argument_types: vec![],
+            type_parameters: vec![
+                TypeParameter::constructor("F", 1),
+                TypeParameter::value("A"),
+            ],
+            parameters: vec![CoreType::Named {
+                name: "F".into(),
+                arguments: vec![CoreType::Named {
+                    name: "A".into(),
+                    arguments: vec![],
+                }],
+            }],
+            result: CoreType::Named {
+                name: "F".into(),
+                arguments: vec![CoreType::Named {
+                    name: "A".into(),
+                    arguments: vec![],
+                }],
+            },
+        };
+        let checked = TypeScriptType::Reference {
+            name: "Foreign".into(),
+            arguments: vec![TypeScriptType::String, TypeScriptType::Number],
+        };
+        assert_eq!(
+            instantiated_hkt_callee(&signature, std::slice::from_ref(&checked), &checked),
+            Some(TypeScriptType::Function {
+                parameter: Box::new(checked.clone()),
+                result: Box::new(checked.clone())
+            })
+        );
+        let partial = TypeScriptType::Function {
+            parameter: Box::new(TypeScriptType::Boolean),
+            result: Box::new(checked),
+        };
+        assert_eq!(
+            instantiated_hkt_callee(&signature, &[], &partial),
+            Some(partial)
+        );
+    }
+
+    #[test]
+    fn hkt_projection_does_not_infer_binders_from_names_holes_or_wrong_kinds() {
+        let named = |name: &str, arguments| CoreType::Named {
+            name: name.into(),
+            arguments,
+        };
+        let base = crate::CoreCallSignature {
+            argument_types: vec![],
+            type_parameters: vec![
+                TypeParameter::constructor("F", 1),
+                TypeParameter::value("A"),
+            ],
+            parameters: vec![named("F", vec![named("A", vec![])])],
+            result: named("A", vec![]),
+        };
+        let mut ordinary = base.clone();
+        ordinary.type_parameters[0] = TypeParameter::value("F");
+        let mut wrong_kind = base.clone();
+        wrong_kind.type_parameters[0] = TypeParameter::constructor("F", 2);
+        let mut duplicate = base.clone();
+        duplicate.type_parameters.push(TypeParameter::value("F"));
+        let mut hole = base.clone();
+        hole.result = CoreType::Hole;
+        let mut child_hole = base.clone();
+        child_hole.parameters = vec![named("F", vec![CoreType::Hole])];
+        let mut nominal = base.clone();
+        nominal.parameters = vec![CoreType::ExternalNamed {
+            name: "F".into(),
+            canonical: "other/owner::F".into(),
+            arguments: vec![named("A", vec![])],
+        }];
+        let mut phantom = base.clone();
+        phantom.parameters = vec![named("A", vec![])];
+        for signature in [
+            ordinary, wrong_kind, duplicate, hole, child_hole, nominal, phantom,
+        ] {
+            assert_eq!(
+                instantiated_hkt_callee(
+                    &signature,
+                    &[TypeScriptType::Number],
+                    &TypeScriptType::Number
+                ),
+                None,
+                "{signature:?}"
+            );
+        }
     }
 }
 

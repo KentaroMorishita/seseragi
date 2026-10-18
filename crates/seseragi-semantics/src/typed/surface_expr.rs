@@ -846,6 +846,7 @@ pub(super) fn type_surface_expression(
         }
         SurfaceExpr::Prefix { span, .. } => SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
+                callable_signature: None,
                 name: String::new(),
                 evidence: Vec::new(),
                 type_ref: TypedType::Hole,
@@ -900,6 +901,7 @@ pub(super) fn type_surface_expression(
             // backend as a raw JavaScript operator.
             SurfaceExpressionAnalysis::valid_with_semantic_type(
                 TypedExpr::Variable {
+                    callable_signature: None,
                     name: String::new(),
                     evidence: Vec::new(),
                     type_ref: TypedType::Hole,
@@ -931,6 +933,7 @@ pub(super) fn type_surface_expression(
         } => monad_do::type_monad_do(items, result.as_deref(), *span, context),
         SurfaceExpr::Error { span } => SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
+                callable_signature: None,
                 name: String::new(),
                 evidence: Vec::new(),
                 type_ref: TypedType::Hole,
@@ -1212,6 +1215,7 @@ fn type_name(
     else {
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
+                callable_signature: None,
                 name: name.to_owned(),
                 evidence: Vec::new(),
                 type_ref: TypedType::Hole,
@@ -1228,6 +1232,7 @@ fn type_name(
     if let Some(value_type) = context.parameters.get(&target) {
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
+                callable_signature: None,
                 name: name.to_owned(),
                 evidence: Vec::new(),
                 type_ref: value_type.type_ref.clone(),
@@ -1253,6 +1258,7 @@ fn type_name(
             .unwrap_or_else(|| name.to_owned());
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
+                callable_signature: None,
                 name: resolved_name,
                 evidence: Vec::new(),
                 type_ref: type_ref.clone(),
@@ -1267,6 +1273,7 @@ fn type_name(
 
     SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
+            callable_signature: None,
             name: name.to_owned(),
             evidence: Vec::new(),
             type_ref: TypedType::Hole,
@@ -1347,6 +1354,7 @@ fn type_standard_operator_reference(
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
+            callable_signature: None,
             name: operator.spelling.to_owned(),
             evidence,
             type_ref,

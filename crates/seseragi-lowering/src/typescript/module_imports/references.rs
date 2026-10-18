@@ -251,10 +251,18 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
         }
         CoreExpr::Call {
             arguments,
+            callee_signature,
             type_ref,
             ..
         } => {
             collect_type_names(type_ref, references);
+            if let Some(signature) = callee_signature {
+                // Only instantiated call-site types enter the caller's imports.
+                // The declaration scheme can contain private or scoped names.
+                for argument in &signature.argument_types {
+                    collect_type_names(argument, references);
+                }
+            }
             for argument in arguments {
                 collect_expr_type_names(argument, references);
             }

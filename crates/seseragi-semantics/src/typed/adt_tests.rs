@@ -29,6 +29,7 @@ fn types_nullary_adt_constructors_from_resolved_symbols() {
     assert_eq!(
         body,
         &TypedExpr::Variable {
+            callable_signature: None,
             name: "artifact/hand::Rock".to_owned(),
             evidence: Vec::new(),
             type_ref: named("Hand"),
@@ -130,6 +131,7 @@ fn keeps_nullary_generic_constructor_polymorphic_instead_of_hole() {
     assert_eq!(
         body,
         &TypedExpr::Variable {
+            callable_signature: None,
             name: "artifact/maybe::Nothing".to_owned(),
             evidence: Vec::new(),
             type_ref: TypedType::ExternalNamed {

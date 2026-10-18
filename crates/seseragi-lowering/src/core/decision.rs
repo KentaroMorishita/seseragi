@@ -40,6 +40,7 @@ pub(super) fn projection_expression(
 ) -> CoreExpr {
     CoreExpr::Decision {
         scrutinee: Box::new(CoreExpr::Variable {
+            callable_signature: None,
             name: temporary.to_owned(),
             evidence: Vec::new(),
             type_ref: plan.input_type.clone(),
@@ -51,6 +52,7 @@ pub(super) fn projection_expression(
             bindings: plan.bindings.clone(),
             guard: None,
             value: CoreExpr::Variable {
+                callable_signature: None,
                 name: binding.name.clone(),
                 evidence: Vec::new(),
                 type_ref: binding.type_ref.clone(),
@@ -440,6 +442,7 @@ pub(super) fn lower_fallback(
                 }],
                 guard: None,
                 value: CoreExpr::Variable {
+                    callable_signature: None,
                     name,
                     evidence: vec![],
                     type_ref: type_ref.clone(),

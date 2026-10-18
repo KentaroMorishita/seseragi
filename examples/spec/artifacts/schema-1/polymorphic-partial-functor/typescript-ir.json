@@ -342,7 +342,28 @@
             "kind": "identifier",
             "name": "value"
           }
-        ]
+        ],
+        "checkedCalleeType": {
+          "kind": "function",
+          "parameter": {
+            "kind": "function",
+            "parameter": {
+              "kind": "unknown"
+            },
+            "result": {
+              "kind": "unknown"
+            }
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "unknown"
+            },
+            "result": {
+              "kind": "unknown"
+            }
+          }
+        }
       },
       "origin": {
         "source": "main.ssrg",

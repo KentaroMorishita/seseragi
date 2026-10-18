@@ -167,11 +167,13 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         },
         TypedExpr::Variable {
             name,
+            callable_signature,
             evidence,
             type_ref,
             origin,
         } => CoreExpr::Variable {
             name,
+            callable_signature: callable_signature.map(lower_call_signature),
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
@@ -179,6 +181,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         TypedExpr::Call {
             callee,
             arguments,
+            callee_signature,
             evidence,
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
@@ -189,6 +192,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Call {
             callee,
             arguments: lower_exprs(source, arguments),
+            callee_signature: callee_signature.map(lower_call_signature),
             evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             deferred_evidence_parameters: deferred_evidence_parameters
                 .into_iter()
@@ -663,6 +667,25 @@ fn lower_call_evidence(evidence: TypedCallEvidence) -> CoreCallEvidence {
     CoreCallEvidence {
         constraint: super::instances::lower_constraint(evidence.constraint),
         evidence: super::instances::lower_instance_evidence(evidence.evidence),
+    }
+}
+
+fn lower_call_signature(
+    signature: seseragi_semantics::TypedCallSignature,
+) -> super::CoreCallSignature {
+    super::CoreCallSignature {
+        type_parameters: signature.type_parameters,
+        parameters: signature
+            .parameters
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
+        result: lower_typed_type(signature.result),
+        argument_types: signature
+            .argument_types
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
     }
 }
 

@@ -115,6 +115,7 @@ fn merged_nominal_import_proves_a_type_when_facade_and_owner_both_provide_it() {
         vec![external("Label", canonical)],
     );
     checked.functions[0].body = CoreExpr::Variable {
+        callable_signature: None,
         name: canonical.into(),
         evidence: Vec::new(),
         type_ref: external("Label", canonical),

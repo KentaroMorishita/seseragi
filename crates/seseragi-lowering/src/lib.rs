@@ -38,13 +38,14 @@ mod web_html_ops;
 
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding, CoreCallEvidence,
-    CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection,
-    CoreDecisionTest, CoreExpr, CoreForeignMember, CoreForeignModule, CoreFunction, CoreInstance,
-    CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod,
-    CoreModule, CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter,
-    CorePattern, CoreRecordField, CoreRecordPatternField, CoreRecordValueItem,
-    CoreShowPayloadEvidence, CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart,
-    CoreTraitDispatch, CoreTraitMethodContract, CoreType,
+    CoreCallSignature, CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch,
+    CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreForeignMember, CoreForeignModule,
+    CoreFunction, CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence,
+    CoreInstanceImplementation, CoreInstanceMethod, CoreModule, CoreModuleDependency,
+    CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern, CoreRecordField,
+    CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence, CoreStatement,
+    CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch, CoreTraitMethodContract,
+    CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -1068,8 +1069,10 @@ pub fn listLength values: List<Int> -> Int = {
                     type_ref: int_type.clone(),
                 }],
                 body: CoreExpr::Call {
+                    callee_signature: None,
                     callee: "artifact/calls::default".to_owned(),
                     arguments: vec![CoreExpr::Variable {
+                        callable_signature: None,
                         name: "value".to_owned(),
                         evidence: Vec::new(),
                         type_ref: int_type.clone(),
