@@ -104,9 +104,10 @@ describe("portable WebSocket providers", () => {
           text: "close",
         })
         const remoteClose = await nextEvent(cursor)
+        // Bun 1.4 reports a clean server-initiated close handshake correctly.
         expect(remoteClose).toEqual({
           tag: "RemoteClosed",
-          close: { code: 4000, reason: "done", wasClean: false },
+          close: { code: 4000, reason: "done", wasClean: true },
         })
         expect(await cursor.next()).toEqual({ done: true, value: undefined })
         await cursor.close()

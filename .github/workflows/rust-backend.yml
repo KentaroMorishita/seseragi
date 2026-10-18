@@ -3,6 +3,7 @@ name: Experimental Rust backend
 on:
   pull_request:
     paths:
+      - ".bun-version"
       - ".github/workflows/rust-backend.yml"
       - "Cargo.toml"
       - "Cargo.lock"
@@ -32,6 +33,7 @@ on:
   push:
     branches: [main]
     paths:
+      - ".bun-version"
       - ".github/workflows/rust-backend.yml"
       - "Cargo.toml"
       - "Cargo.lock"
@@ -80,7 +82,7 @@ jobs:
           targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.11
+          bun-version-file: .bun-version
       - uses: actions/setup-node@v4
         with:
           node-version: "24.14.0"
@@ -149,7 +151,7 @@ jobs:
           targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.11
+          bun-version-file: .bun-version
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: v0.15.0
@@ -188,7 +190,7 @@ jobs:
           node-version: "24.14.0"
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.11
+          bun-version-file: .bun-version
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: v0.15.0

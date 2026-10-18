@@ -18,13 +18,15 @@ var __toESM = (mod, isNodeMode, target) => {
       return cached;
   }
   target = mod != null ? __create(__getProtoOf(mod)) : {};
-  const to = isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
-  for (let key of __getOwnPropNames(mod))
-    if (!__hasOwnProp.call(to, key))
-      __defProp(to, key, {
-        get: __accessProp.bind(mod, key),
-        enumerable: true
-      });
+  const to = isNodeMode || !mod || !mod.__esModule || !__hasOwnProp.call(mod, "default") ? __defProp(target, "default", { value: mod, enumerable: true }) : target;
+  if (mod && typeof mod === "object" || typeof mod === "function") {
+    for (let key of __getOwnPropNames(mod))
+      if (!__hasOwnProp.call(to, key))
+        __defProp(to, key, {
+          get: __accessProp.bind(mod, key),
+          enumerable: true
+        });
+  }
   if (canCache)
     cache.set(mod, to);
   return to;
@@ -33,7 +35,7 @@ var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, 
 var __require = import.meta.require;
 
 // node_modules/postgres-array/index.js
-var require_postgres_array = __commonJS((exports) => {
+var require_postgres_array = __commonJS(function(exports) {
   exports.parse = function(source, transform) {
     return new ArrayParser(source, transform).parse();
   };
@@ -129,7 +131,7 @@ var require_postgres_array = __commonJS((exports) => {
 });
 
 // node_modules/pg-types/lib/arrayParser.js
-var require_arrayParser = __commonJS((exports, module) => {
+var require_arrayParser = __commonJS(function(exports, module) {
   var array = require_postgres_array();
   module.exports = {
     create: function(source, transform) {
@@ -143,7 +145,7 @@ var require_arrayParser = __commonJS((exports, module) => {
 });
 
 // node_modules/postgres-date/index.js
-var require_postgres_date = __commonJS((exports, module) => {
+var require_postgres_date = __commonJS(function(exports, module) {
   var DATE_TIME = /(\d{1,})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})(\.\d{1,})?.*?( BC)?$/;
   var DATE = /^(\d{1,})-(\d{2})-(\d{2})( BC)?$/;
   var TIME_ZONE = /([Z+-])(\d{2})?:?(\d{2})?:?(\d{2})?/;
@@ -228,7 +230,7 @@ var require_postgres_date = __commonJS((exports, module) => {
 });
 
 // node_modules/xtend/mutable.js
-var require_mutable = __commonJS((exports, module) => {
+var require_mutable = __commonJS(function(exports, module) {
   module.exports = extend;
   var hasOwnProperty = Object.prototype.hasOwnProperty;
   function extend(target) {
@@ -245,7 +247,7 @@ var require_mutable = __commonJS((exports, module) => {
 });
 
 // node_modules/postgres-interval/index.js
-var require_postgres_interval = __commonJS((exports, module) => {
+var require_postgres_interval = __commonJS(function(exports, module) {
   var extend = require_mutable();
   module.exports = PostgresInterval;
   function PostgresInterval(raw) {
@@ -337,7 +339,7 @@ var require_postgres_interval = __commonJS((exports, module) => {
 });
 
 // node_modules/postgres-bytea/index.js
-var require_postgres_bytea = __commonJS((exports, module) => {
+var require_postgres_bytea = __commonJS(function(exports, module) {
   var bufferFrom = Buffer.from || Buffer;
   module.exports = function parseBytea(input) {
     if (/^\\x/.test(input)) {
@@ -370,7 +372,7 @@ var require_postgres_bytea = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-types/lib/textParsers.js
-var require_textParsers = __commonJS((exports, module) => {
+var require_textParsers = __commonJS(function(exports, module) {
   var array = require_postgres_array();
   var arrayParser = require_arrayParser();
   var parseDate = require_postgres_date();
@@ -573,7 +575,7 @@ var require_textParsers = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-int8/index.js
-var require_pg_int8 = __commonJS((exports, module) => {
+var require_pg_int8 = __commonJS(function(exports, module) {
   var BASE = 1e6;
   function readInt8(buffer) {
     var high = buffer.readInt32BE(0);
@@ -650,13 +652,13 @@ var require_pg_int8 = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-types/lib/binaryParsers.js
-var require_binaryParsers = __commonJS((exports, module) => {
+var require_binaryParsers = __commonJS(function(exports, module) {
   var parseInt64 = require_pg_int8();
   var parseBits = function(data, bits, offset, invert, callback) {
     offset = offset || 0;
     invert = invert || false;
-    callback = callback || function(lastValue, newValue, bits2) {
-      return lastValue * Math.pow(2, bits2) + newValue;
+    callback = callback || function(lastValue, newValue, bits) {
+      return lastValue * Math.pow(2, bits) + newValue;
     };
     var offsetBytes = offset >> 3;
     var inv = function(value) {
@@ -762,8 +764,8 @@ var require_binaryParsers = __commonJS((exports, module) => {
     result.getMicroSeconds = function() {
       return this.usec;
     };
-    result.setMicroSeconds = function(value2) {
-      this.usec = value2;
+    result.setMicroSeconds = function(value) {
+      this.usec = value;
     };
     result.getUTCMicroSeconds = function() {
       return this.usec;
@@ -781,36 +783,36 @@ var require_binaryParsers = __commonJS((exports, module) => {
       offset += 32;
       offset += 32;
     }
-    var parseElement = function(elementType2) {
+    var parseElement = function(elementType) {
       var length = parseBits(value, 32, offset);
       offset += 32;
       if (length == 4294967295) {
         return null;
       }
       var result;
-      if (elementType2 == 23 || elementType2 == 20) {
+      if (elementType == 23 || elementType == 20) {
         result = parseBits(value, length * 8, offset);
         offset += length * 8;
         return result;
-      } else if (elementType2 == 25) {
+      } else if (elementType == 25) {
         result = value.toString(this.encoding, offset >> 3, (offset += length << 3) >> 3);
         return result;
       } else {
-        console.log("ERROR: ElementType not implemented: " + elementType2);
+        console.log("ERROR: ElementType not implemented: " + elementType);
       }
     };
-    var parse = function(dimension, elementType2) {
+    var parse = function(dimension, elementType) {
       var array = [];
-      var i2;
+      var i;
       if (dimension.length > 1) {
         var count = dimension.shift();
-        for (i2 = 0;i2 < count; i2++) {
-          array[i2] = parse(dimension, elementType2);
+        for (i = 0;i < count; i++) {
+          array[i] = parse(dimension, elementType);
         }
         dimension.unshift(count);
       } else {
-        for (i2 = 0;i2 < dimension[0]; i2++) {
-          array[i2] = parseElement(elementType2);
+        for (i = 0;i < dimension[0]; i++) {
+          array[i] = parseElement(elementType);
         }
       }
       return array;
@@ -849,7 +851,7 @@ var require_binaryParsers = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-types/lib/builtins.js
-var require_builtins = __commonJS((exports, module) => {
+var require_builtins = __commonJS(function(exports, module) {
   module.exports = {
     BOOL: 16,
     BYTEA: 17,
@@ -915,7 +917,7 @@ var require_builtins = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-types/index.js
-var require_pg_types = __commonJS((exports) => {
+var require_pg_types = __commonJS(function(exports) {
   var textParsers = require_textParsers();
   var binaryParsers = require_binaryParsers();
   var arrayParser = require_arrayParser();
@@ -954,7 +956,7 @@ var require_pg_types = __commonJS((exports) => {
 });
 
 // node_modules/pg/lib/defaults.js
-var require_defaults = __commonJS((exports, module) => {
+var require_defaults = __commonJS(function(exports, module) {
   var user;
   try {
     user = process.platform === "win32" ? process.env.USERNAME : process.env.USER;
@@ -995,7 +997,7 @@ var require_defaults = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/utils.js
-var require_utils = __commonJS((exports, module) => {
+var require_utils = __commonJS(function(exports, module) {
   var defaults = require_defaults();
   var { isDate } = __require("util/types");
   function escapeElement(elementRepresentation) {
@@ -1144,7 +1146,7 @@ var require_utils = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/crypto/utils.js
-var require_utils2 = __commonJS((exports, module) => {
+var require_utils2 = __commonJS(function(exports, module) {
   var nodeCrypto = __require("crypto");
   module.exports = {
     postgresMd5PasswordHash,
@@ -1193,7 +1195,7 @@ var require_utils2 = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/crypto/cert-signatures.js
-var require_cert_signatures = __commonJS((exports, module) => {
+var require_cert_signatures = __commonJS(function(exports, module) {
   function x509Error(msg, cert) {
     return new Error("SASL channel binding: " + msg + " when parsing public certificate " + cert.toString("base64"));
   }
@@ -1305,7 +1307,7 @@ var require_cert_signatures = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/crypto/sasl.js
-var require_sasl = __commonJS((exports, module) => {
+var require_sasl = __commonJS(function(exports, module) {
   var crypto = require_utils2();
   var { signatureAlgorithmHashFromCertificate } = require_cert_signatures();
   function saslprep(password) {
@@ -1485,7 +1487,7 @@ var require_sasl = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/type-overrides.js
-var require_type_overrides = __commonJS((exports, module) => {
+var require_type_overrides = __commonJS(function(exports, module) {
   var types = require_pg_types();
   function TypeOverrides(userTypes) {
     this._types = userTypes || types;
@@ -1517,11 +1519,11 @@ var require_type_overrides = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-connection-string/index.js
-var require_pg_connection_string = __commonJS((exports, module) => {
+var require_pg_connection_string = __commonJS(function(exports, module) {
   function parse(str, options = {}) {
     if (str.charAt(0) === "/") {
-      const config2 = str.split(" ");
-      return { host: config2[0], database: config2[1] };
+      const config = str.split(" ");
+      return { host: config[0], database: config[1] };
     }
     const config = Object.create(null);
     let result;
@@ -1698,7 +1700,7 @@ See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode de
 });
 
 // node_modules/pg/lib/connection-parameters.js
-var require_connection_parameters = __commonJS((exports, module) => {
+var require_connection_parameters = __commonJS(function(exports, module) {
   var dns = __require("dns");
   var defaults = require_defaults();
   var parse = require_pg_connection_string().parse;
@@ -1845,19 +1847,19 @@ var require_connection_parameters = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/result.js
-var require_result = __commonJS((exports, module) => {
+var require_result = __commonJS(function(exports, module) {
   var types = require_pg_types();
   var matchRegexp = /^([A-Za-z]+)(?: (\d+))?(?: (\d+))?/;
 
   class Result {
-    constructor(rowMode, types2) {
+    constructor(rowMode, types) {
       this.command = null;
       this.rowCount = null;
       this.oid = null;
       this.rows = [];
       this.fields = [];
       this._parsers = undefined;
-      this._types = types2;
+      this._types = types;
       this.RowCtor = null;
       this.rowAsArray = rowMode === "array";
       if (this.rowAsArray) {
@@ -1933,7 +1935,7 @@ var require_result = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/query.js
-var require_query = __commonJS((exports, module) => {
+var require_query = __commonJS(function(exports, module) {
   var { EventEmitter } = __require("events");
   var Result = require_result();
   var utils = require_utils();
@@ -2124,7 +2126,7 @@ var require_query = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-protocol/dist/messages.js
-var require_messages = __commonJS((exports) => {
+var require_messages = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.NoticeMessage = exports.DataRowMessage = exports.CommandCompleteMessage = exports.ReadyForQueryMessage = exports.NotificationResponseMessage = exports.BackendKeyDataMessage = exports.AuthenticationMD5Password = exports.ParameterStatusMessage = exports.ParameterDescriptionMessage = exports.RowDescriptionMessage = exports.Field = exports.CopyResponse = exports.CopyDataMessage = exports.DatabaseError = exports.copyDone = exports.emptyQuery = exports.replicationStart = exports.portalSuspended = exports.noData = exports.closeComplete = exports.bindComplete = exports.parseComplete = undefined;
   exports.parseComplete = {
@@ -2300,7 +2302,7 @@ var require_messages = __commonJS((exports) => {
 });
 
 // node_modules/pg-protocol/dist/buffer-writer.js
-var require_buffer_writer = __commonJS((exports) => {
+var require_buffer_writer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Writer = undefined;
 
@@ -2396,7 +2398,7 @@ var require_buffer_writer = __commonJS((exports) => {
 });
 
 // node_modules/pg-protocol/dist/serializer.js
-var require_serializer = __commonJS((exports) => {
+var require_serializer = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.serialize = undefined;
   var buffer_writer_1 = require_buffer_writer();
@@ -2417,8 +2419,8 @@ var require_serializer = __commonJS((exports) => {
     response.writeInt32BE(80877103, 4);
     return response;
   };
-  var password = (password2) => {
-    return writer.addCString(password2).flush(112);
+  var password = (password) => {
+    return writer.addCString(password).flush(112);
   };
   var sendSASLInitialResponseMessage = function(mechanism, initialResponse) {
     writer.addCString(mechanism).addInt32PrefixedString(initialResponse);
@@ -2431,16 +2433,16 @@ var require_serializer = __commonJS((exports) => {
     return writer.addCString(text).flush(81);
   };
   var emptyArray = [];
-  var parse = (query2) => {
-    const name = query2.name || "";
+  var parse = (query) => {
+    const name = query.name || "";
     if (name.length > 63) {
       console.error("Warning! Postgres only supports 63 characters for query names.");
       console.error("You supplied %s (%s)", name, name.length);
       console.error("This can cause conflicts and silent errors executing queries");
     }
-    const types = query2.types || emptyArray;
+    const types = query.types || emptyArray;
     const len = types.length;
-    const buffer = writer.addCString(name).addCString(query2.text).addInt16(len);
+    const buffer = writer.addCString(name).addCString(query.text).addInt16(len);
     for (let i = 0;i < len; i++) {
       buffer.addInt32(types[i]);
     }
@@ -2564,7 +2566,7 @@ var require_serializer = __commonJS((exports) => {
 });
 
 // node_modules/pg-protocol/dist/buffer-reader.js
-var require_buffer_reader = __commonJS((exports) => {
+var require_buffer_reader = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.BufferReader = undefined;
 
@@ -2620,7 +2622,7 @@ var require_buffer_reader = __commonJS((exports) => {
 });
 
 // node_modules/pg-protocol/dist/parser.js
-var require_parser = __commonJS((exports) => {
+var require_parser = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.Parser = undefined;
   var messages_1 = require_messages();
@@ -2925,7 +2927,7 @@ var require_parser = __commonJS((exports) => {
 });
 
 // node_modules/pg-protocol/dist/index.js
-var require_dist = __commonJS((exports) => {
+var require_dist = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.DatabaseError = exports.serialize = undefined;
   exports.parse = parse;
@@ -2946,44 +2948,44 @@ var require_dist = __commonJS((exports) => {
 });
 
 // node_modules/pg-cloudflare/dist/empty.js
-var require_empty = __commonJS((exports) => {
+var require_empty = __commonJS(function(exports) {
   Object.defineProperty(exports, "__esModule", { value: true });
   exports.default = {};
 });
 
 // node_modules/pg/lib/stream.js
-var require_stream = __commonJS((exports, module) => {
+var require_stream = __commonJS(function(exports, module) {
   var { getStream, getSecureStream } = getStreamFuncs();
   module.exports = {
     getStream,
     getSecureStream
   };
   function getNodejsStreamFuncs() {
-    function getStream2(ssl) {
+    function getStream(ssl) {
       const net = __require("net");
       return new net.Socket;
     }
-    function getSecureStream2(options) {
+    function getSecureStream(options) {
       const tls = __require("tls");
       return tls.connect(options);
     }
     return {
-      getStream: getStream2,
-      getSecureStream: getSecureStream2
+      getStream,
+      getSecureStream
     };
   }
   function getCloudflareStreamFuncs() {
-    function getStream2(ssl) {
+    function getStream(ssl) {
       const { CloudflareSocket } = require_empty();
       return new CloudflareSocket(ssl);
     }
-    function getSecureStream2(options) {
+    function getSecureStream(options) {
       options.socket.startTls(options);
       return options.socket;
     }
     return {
-      getStream: getStream2,
-      getSecureStream: getSecureStream2
+      getStream,
+      getSecureStream
     };
   }
   function isCloudflareRuntime() {
@@ -3007,7 +3009,7 @@ var require_stream = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/connection.js
-var require_connection = __commonJS((exports, module) => {
+var require_connection = __commonJS(function(exports, module) {
   var EventEmitter = __require("events").EventEmitter;
   var { parse, serialize } = require_dist();
   var stream = require_stream();
@@ -3110,8 +3112,8 @@ var require_connection = __commonJS((exports, module) => {
       self.stream.on("error", reportStreamError);
       self.emit("sslconnect");
     }
-    attachListeners(stream2) {
-      parse(stream2, (msg) => {
+    attachListeners(stream) {
+      parse(stream, (msg) => {
         const eventName = msg.name === "error" ? "errorMessage" : msg.name;
         if (this._emitMessage) {
           this.emit("message", msg);
@@ -3200,7 +3202,7 @@ var require_connection = __commonJS((exports, module) => {
 });
 
 // node_modules/split2/index.js
-var require_split2 = __commonJS((exports, module) => {
+var require_split2 = __commonJS(function(exports, module) {
   var { Transform } = __require("stream");
   var { StringDecoder } = __require("string_decoder");
   var kLast = Symbol("last");
@@ -3299,7 +3301,7 @@ var require_split2 = __commonJS((exports, module) => {
 });
 
 // node_modules/pgpass/lib/helper.js
-var require_helper = __commonJS((exports, module) => {
+var require_helper = __commonJS(function(exports, module) {
   var path = __require("path");
   var Stream = __require("stream").Stream;
   var split = require_split2();
@@ -3463,7 +3465,7 @@ var require_helper = __commonJS((exports, module) => {
 });
 
 // node_modules/pgpass/lib/index.js
-var require_lib = __commonJS((exports, module) => {
+var require_lib = __commonJS(function(exports, module) {
   var path = __require("path");
   var fs = __require("fs");
   var helper = require_helper();
@@ -3481,7 +3483,7 @@ var require_lib = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/client.js
-var require_client = __commonJS((exports, module) => {
+var require_client = __commonJS(function(exports, module) {
   var EventEmitter = __require("events").EventEmitter;
   var utils = require_utils();
   var nodeUtils = __require("util");
@@ -4127,7 +4129,7 @@ var require_client = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-pool/index.js
-var require_pg_pool = __commonJS((exports, module) => {
+var require_pg_pool = __commonJS(function(exports, module) {
   var EventEmitter = __require("events").EventEmitter;
   var NOOP = function() {};
   var removeWhere = (list, predicate) => {
@@ -4381,7 +4383,7 @@ var require_pg_pool = __commonJS((exports, module) => {
           this._expired.add(client);
           const idleIndex = this._idle.findIndex((idleItem) => idleItem.client === client);
           if (idleIndex !== -1) {
-            this._acquireClient(client, new PendingItem((err, client2, clientRelease) => clientRelease()), idleListener, false);
+            this._acquireClient(client, new PendingItem((err, client, clientRelease) => clientRelease()), idleListener, false);
           }
         }, this.options.maxLifetimeSeconds * 1000);
         maxLifetimeTimeout.unref();
@@ -4462,11 +4464,11 @@ var require_pg_pool = __commonJS((exports, module) => {
     }
     query(text, values, cb) {
       if (typeof text === "function") {
-        const response2 = promisify(this.Promise, text);
+        const response = promisify(this.Promise, text);
         setImmediate(function() {
-          return response2.callback(new Error("Passing a function as the first parameter to pool.query is not supported"));
+          return response.callback(new Error("Passing a function as the first parameter to pool.query is not supported"));
         });
-        return response2.result;
+        return response.result;
       }
       if (typeof values === "function") {
         cb = values;
@@ -4479,33 +4481,33 @@ var require_pg_pool = __commonJS((exports, module) => {
           return cb(err);
         }
         let clientReleased = false;
-        const onError = (err2) => {
+        const onError = (err) => {
           if (clientReleased) {
             return;
           }
           clientReleased = true;
-          client.release(err2);
-          cb(err2);
+          client.release(err);
+          cb(err);
         };
         client.once("error", onError);
         this.log("dispatching query");
         try {
-          client.query(text, values, (err2, res) => {
+          client.query(text, values, (err, res) => {
             this.log("query dispatched");
             client.removeListener("error", onError);
             if (clientReleased) {
               return;
             }
             clientReleased = true;
-            client.release(err2);
-            if (err2) {
-              return cb(err2);
+            client.release(err);
+            if (err) {
+              return cb(err);
             }
             return cb(undefined, res);
           });
-        } catch (err2) {
-          client.release(err2);
-          return cb(err2);
+        } catch (err) {
+          client.release(err);
+          return cb(err);
         }
       });
       return response.result;
@@ -4539,7 +4541,7 @@ var require_pg_pool = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/native/query.js
-var require_query2 = __commonJS((exports, module) => {
+var require_query2 = __commonJS(function(exports, module) {
   var EventEmitter = __require("events").EventEmitter;
   var util = __require("util");
   var utils = require_utils();
@@ -4675,7 +4677,7 @@ var require_query2 = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/native/client.js
-var require_client2 = __commonJS((exports, module) => {
+var require_client2 = __commonJS(function(exports, module) {
   var nodeUtils = __require("util");
   var Native;
   try {
@@ -4747,16 +4749,16 @@ var require_client2 = __commonJS((exports, module) => {
         conString = self.connectionParameters.nativeConnectionString;
       if (err)
         return cb(err);
-      self.native.connect(conString, function(err2) {
-        if (err2) {
+      self.native.connect(conString, function(err) {
+        if (err) {
           self.native.end();
-          return cb(err2);
+          return cb(err);
         }
         self._connected = true;
-        self.native.on("error", function(err3) {
+        self.native.on("error", function(err) {
           self._queryable = false;
-          self._errorAllQueries(err3);
-          self.emit("error", err3);
+          self._errorAllQueries(err);
+          self.emit("error", err);
         });
         self.native.on("notification", function(msg) {
           self.emit("notification", {
@@ -5001,7 +5003,7 @@ var require_client2 = __commonJS((exports, module) => {
 });
 
 // node_modules/pg/lib/index.js
-var require_lib2 = __commonJS((exports, module) => {
+var require_lib2 = __commonJS(function(exports, module) {
   var Client = require_client();
   var defaults = require_defaults();
   var Connection = require_connection();
@@ -5011,16 +5013,16 @@ var require_lib2 = __commonJS((exports, module) => {
   var TypeOverrides = require_type_overrides();
   var { DatabaseError } = require_dist();
   var { escapeIdentifier, escapeLiteral } = require_utils();
-  var poolFactory = (Client2) => {
+  var poolFactory = (Client) => {
     return class BoundPool extends Pool {
       constructor(options) {
-        super(options, Client2);
+        super(options, Client);
       }
     };
   };
-  var PG = function(clientConstructor2) {
+  var PG = function(clientConstructor) {
     this.defaults = defaults;
-    this.Client = clientConstructor2;
+    this.Client = clientConstructor;
     this.Query = this.Client.Query;
     this.Pool = poolFactory(this.Client);
     this._pools = [];
@@ -5063,8 +5065,8 @@ var require_lib2 = __commonJS((exports, module) => {
 });
 
 // node_modules/pg-cursor/index.js
-var require_pg_cursor = __commonJS((exports, module) => {
-  var Result2 = require_result();
+var require_pg_cursor = __commonJS(function(exports, module) {
+  var Result = require_result();
   var prepare = require_utils().prepareValue;
   var EventEmitter = __require("events").EventEmitter;
   var util = __require("util");
@@ -5079,7 +5081,7 @@ var require_pg_cursor = __commonJS((exports, module) => {
       this.connection = null;
       this._queue = [];
       this.state = "initialized";
-      this._result = new Result2(this._conf.rowMode, this._conf.types);
+      this._result = new Result(this._conf.rowMode, this._conf.types);
       this._Promise = this._conf.Promise || global.Promise;
       this._cb = null;
       this._rows = null;
@@ -5234,7 +5236,7 @@ var require_pg_cursor = __commonJS((exports, module) => {
       let promise;
       if (!cb) {
         promise = new this._Promise((resolve, reject) => {
-          cb = (err, rows2) => err ? reject(err) : resolve(rows2);
+          cb = (err, rows) => err ? reject(err) : resolve(rows);
         });
       }
       if (this.state === "idle" || this.state === "submitted") {
