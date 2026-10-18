@@ -415,11 +415,19 @@ fn passes_equality_operators_as_curried_function_values() {
     assert!(compiled
         .generated
         .typescript
-        .contains("__ssrg$instance$Eq$0[\"eq\"](_argument0)(_argument1)"));
+        .contains("((__ssrg$instance$Eq$0[\"eq\"]) as"));
     assert!(compiled
         .generated
         .typescript
-        .contains("__ssrg$instance$Eq$0[\"eq\"](_argument0)(_argument1) === false"));
+        .contains("const __ssrg$equality$stage:"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$equality$stage(__ssrg$equality$right) === false"));
+    assert!(!compiled
+        .generated
+        .typescript
+        .contains("__ssrg$instance$Eq$0[\"eq\"](_argument0)(_argument1)"));
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
 }
 

@@ -1,0 +1,27 @@
+type Mark = | Mark Int
+
+fn firstStage -> Int = 7
+fn leftValue -> Mark = Mark 1
+fn rightValue -> Mark = Mark 2
+fn marker -> Int = 0
+
+instance Eq<Mark> {
+  fn eq left: Mark -> (Mark -> Bool) = {
+    let stamp = firstStage ()
+    \right -> stamp == 7
+  }
+}
+
+pub fn binaryProbe -> Bool = leftValue () == rightValue ()
+pub fn negatedBinaryProbe -> Bool = leftValue () != rightValue ()
+
+// References use the same selected method stages as infix application.
+pub fn probe -> Array<Bool> = {
+  let equal: Mark -> Mark -> Bool = (==)
+  let different: Mark -> Mark -> Bool = (!=)
+  let saved = equal (leftValue ())
+  let checkpoint = marker ()
+  [saved (rightValue ()), different (leftValue ()) (rightValue ())]
+}
+
+pub effect fn main = println (show (probe ()))

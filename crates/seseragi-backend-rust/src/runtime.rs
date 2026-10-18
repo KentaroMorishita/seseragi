@@ -380,6 +380,7 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Add" | "std/string::Add" => arithmetic!("add", "+"),
             "std/int::Sub" => arithmetic!("sub", "-"),
             "std/int::Mul" => arithmetic!("mul", "*"),
+            "std/int::Eq" => arithmetic!("eq", "=="),
             _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
         }
     })
