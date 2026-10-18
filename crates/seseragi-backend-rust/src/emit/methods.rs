@@ -2,6 +2,137 @@ use super::*;
 use seseragi_lowering::{CoreInstanceMethod, CoreTraitDispatch, CoreTraitMethodContract};
 
 impl Backend<'_> {
+    pub(super) fn validate_bare_method(
+        &self,
+        dispatch: &CoreTraitDispatch,
+        evidence: &[CoreCallEvidence],
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let [selected] = evidence else {
+            return Err("Rust backend: bare method requires one primary dictionary".into());
+        };
+        let mut declared = selected.constraint.clone();
+        declared.trait_identity = Some(dispatch.trait_identity.clone());
+        if !self.valid_constraint_label(&declared)
+            || selected
+                .constraint
+                .trait_identity
+                .as_deref()
+                .is_some_and(|identity| identity != dispatch.trait_identity)
+        {
+            return Err("Rust backend: bare method dictionary trait mismatch".into());
+        }
+        self.validate_local_evidence(
+            &LocalCallable::new(std::iter::empty(), &[declared], &[]),
+            evidence,
+            scope,
+        )?;
+        let (identity, type_arguments) = match &selected.evidence {
+            CoreInstanceEvidence::Local {
+                identity,
+                type_arguments,
+                ..
+            }
+            | CoreInstanceEvidence::Imported {
+                identity,
+                type_arguments,
+                ..
+            } => (identity, type_arguments),
+            _ => return Ok(()), // Standard and parameter dictionaries have their own validators.
+        };
+        let instance = self
+            .module
+            .instances
+            .iter()
+            .find(|i| &i.identity == identity)
+            .ok_or("Rust backend: unknown bare method instance")?;
+        let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
+            return if dispatch.trait_identity == "std/prelude::Show" && dispatch.method == "show" {
+                Ok(())
+            } else {
+                Err("Rust backend: unproven derived method reference".into())
+            };
+        };
+        let method = methods
+            .iter()
+            .find(|m| m.name == dispatch.method)
+            .ok_or("Rust backend: unknown selected method")?;
+        if !method.constraints.is_empty() {
+            return Err("Rust backend: missing bare method constraint stages".into());
+        }
+        for (index, (parameter, actual)) in instance
+            .type_parameters
+            .iter()
+            .zip(type_arguments)
+            .enumerate()
+        {
+            if parameter.arity > 0 {
+                let variable = format!("\0bare_instance_type_{index}");
+                self.match_local_type(
+                    &CoreType::Named {
+                        name: variable.clone(),
+                        arguments: vec![],
+                    },
+                    actual,
+                    &BTreeMap::from([(variable, parameter.arity)]),
+                    &mut BTreeMap::new(),
+                    scope,
+                )?;
+            }
+        }
+        let mut substitutions = instance
+            .type_parameters
+            .iter()
+            .zip(type_arguments)
+            .map(|(p, ty)| {
+                self.local_canonical_type(ty, scope)
+                    .map(|ty| (p.name.clone(), ty))
+            })
+            .collect::<Result<BTreeMap<_, _>>>()?;
+        let mut variables = BTreeMap::new();
+        for (index, parameter) in method.type_parameters.iter().enumerate() {
+            if substitutions.contains_key(&parameter.name) {
+                return Err("Rust backend: unproven overlapping method type scope".into());
+            }
+            let name = format!("\0bare_method_type_{index}");
+            variables.insert(name.clone(), parameter.arity);
+            substitutions.insert(
+                parameter.name.clone(),
+                CoreType::Named {
+                    name,
+                    arguments: vec![],
+                },
+            );
+        }
+        // Reconstruct source stages from the implementation's parameters and
+        // checked body result, including a function returned by that body.
+        // Dictionary stages are deliberately absent from this value type.
+        let mut method_type = local::method_argument_type(&method.body)
+            .ok_or("Rust backend: unproven selected method result")?;
+        for parameter in method.parameters.iter().rev() {
+            method_type = CoreType::Function {
+                parameter: Box::new(parameter.type_ref.clone()),
+                result: Box::new(method_type),
+            };
+        }
+        let method_type = display::canonical_type(
+            &method_type,
+            &self.owners[identity],
+            &substitutions,
+            self.type_names,
+            true,
+        )
+        .ok_or("Rust backend: unproven selected method value type")?;
+        self.match_local_type(
+            &method_type,
+            type_ref,
+            &variables,
+            &mut BTreeMap::new(),
+            scope,
+        )
+    }
+
     pub(super) fn method_function(
         &mut self,
         method: &CoreInstanceMethod,

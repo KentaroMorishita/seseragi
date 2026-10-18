@@ -1,0 +1,41 @@
+type Box<A> = | Box A
+
+instance<A> Add<Box<A>, Box<A>, Box<A>> where Add<A, A, A> {
+  fn add left: Box<A> -> (Box<A> -> Box<A>) = match left {
+    Box value -> {
+      let plus: A -> A -> A = add
+      let saved = plus value
+      \right -> match right { Box other -> Box (saved other) }
+    }
+  }
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "Box " + show item }
+}
+
+fn returned -> (Box<Int> -> Box<Int> -> Box<Int>) = add
+fn scoped<A> value: Box<A> -> String where Show<A> = {
+  let render: Box<A> -> String = show
+  render value
+}
+fn polymorphic -> String = {
+  let render = show
+  render 42 + ":" + render 'λ'
+}
+
+pub effect fn main = do {
+  let selected: Box<Int> -> Box<Int> -> Box<Int> = add
+  let alias = selected
+  let saved = alias (Box 40)
+  let record = { invoke: saved }
+  let equal: Int -> Int -> Bool = eq
+  let compareInts: Int -> Int -> Ordering = compare
+  println (show (record.invoke (Box 2)))
+  println (show (saved (Box 3)))
+  println (show (returned () (Box 20) (Box 4)))
+  println (show (equal 40 40))
+  println (match compareInts 1 2 { Less -> "Less"; Equal -> "Equal"; Greater -> "Greater" })
+  println (scoped (Box '🙂'))
+  println (polymorphic ())
+}

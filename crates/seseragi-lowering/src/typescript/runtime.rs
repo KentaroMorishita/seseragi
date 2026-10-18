@@ -20,7 +20,7 @@ use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::text_ops::runtime_text_operation;
-use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
+use crate::trait_method_ops::{runtime_trait_method_call_operation, RuntimeTraitMethodOperation};
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     display_ops::runtime_display_dictionary_for_identity,
@@ -115,9 +115,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
-            let trait_method_operation = trait_dispatch
-                .as_ref()
-                .and_then(|dispatch| runtime_trait_method_operation(&dispatch.method, evidence));
+            let trait_method_operation = trait_dispatch.as_ref().and_then(|dispatch| {
+                runtime_trait_method_call_operation(&dispatch.method, evidence, arguments.len())
+            });
             if runtime_collection_operation(callee, evidence).is_none()
                 && trait_method_operation.is_none()
             {
@@ -664,9 +664,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             trait_dispatch,
             ..
         } => {
-            let trait_method_operation = trait_dispatch
-                .as_ref()
-                .and_then(|dispatch| runtime_trait_method_operation(&dispatch.method, evidence));
+            let trait_method_operation = trait_dispatch.as_ref().and_then(|dispatch| {
+                runtime_trait_method_call_operation(&dispatch.method, evidence, arguments.len())
+            });
             if runtime_collection_operation(callee, evidence).is_none()
                 && trait_method_operation.is_none()
             {

@@ -1,0 +1,14 @@
+type Mark = | Mark Int
+
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = {
+    let invalid = 9007199254740991 + 1
+    \right -> left
+  }
+}
+
+pub effect fn main = do {
+  let selected: Mark -> Mark -> Mark = add
+  let saved = selected (Mark 1)
+  println "MAIN_EXECUTED_MARKER"
+}

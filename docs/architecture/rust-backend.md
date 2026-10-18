@@ -67,6 +67,12 @@ Rustの既知関数の完全適用はdirect helperへ落とす。部分適用・
 通常のcallは各stageを適用してから次の引数を評価する。たとえば`returned a b`では、`returned a`の
 bodyが実行されてから`b`を評価する。選択済み辞書で証明できるlocal callable以外の、未対応stagingは診断する。
 
+閉じた単相のmethod参照は、選択済みprimary辞書から得た関数値をそのまま保持する。
+保存した`add`や`eq`へ左引数を渡すと、そのsource stageを実行し、返った関数を保存する。
+nativeは辞書のowner・型引数・constructorのkindと、実装のsource parameter / bodyの返り値型を照合する。
+letで汎化するaliasやmethod固有制約の辞書導入は別に扱う。これらのmethod参照と、source引数を並べ替える
+標準演算子のstrict評価は、[部分適用のIssue](https://github.com/KentaroMorishita/seseragi/issues/887)に残る。
+
 純粋関数の直接の自己末尾callは、if / decision / pure sequenceの末尾を辿ってloopへ落とす。
 次のdictionaryと全引数を左から右へ評価した後、freshなloop storageへ代入する。各周回のsource
 parameterはimmutable snapshotなので、closureが前の値を保持でき、letによるshadowingもstorageへ

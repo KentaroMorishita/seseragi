@@ -22,7 +22,7 @@ use crate::standard_ops::runtime_standard_operation;
 use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::text_ops::runtime_text_operation;
-use crate::trait_method_ops::{runtime_trait_method_operation, RuntimeTraitMethodOperation};
+use crate::trait_method_ops::{runtime_trait_method_call_operation, RuntimeTraitMethodOperation};
 use crate::typescript::types::TypeScriptTypeContext;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -1356,7 +1356,7 @@ fn lower_abi_trait_method_call(
     imported_types: &TypeScriptTypeContext,
     origin: &crate::SourceSpan,
 ) -> Option<TypeScriptExpr> {
-    let operation = runtime_trait_method_operation(method, evidence)?;
+    let operation = runtime_trait_method_call_operation(method, evidence, arguments.len())?;
     let binary = |left, right| match operation {
         RuntimeTraitMethodOperation::Int(operation) => TypeScriptExpr::RuntimeCall {
             callee: operation.local_name.to_owned(),

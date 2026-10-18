@@ -8,6 +8,19 @@ pub(crate) enum RuntimeTraitMethodOperation {
     Native(&'static str),
 }
 
+pub(crate) fn runtime_trait_method_call_operation(
+    method: &str,
+    evidence: &[CoreCallEvidence],
+    source_arguments: usize,
+) -> Option<RuntimeTraitMethodOperation> {
+    // A bare reference materializes the selected dictionary method. Only
+    // supplied primitive calls use the binary ABI (including one saved prefix).
+    (1..=2)
+        .contains(&source_arguments)
+        .then(|| runtime_trait_method_operation(method, evidence))
+        .flatten()
+}
+
 pub(crate) fn runtime_trait_method_operation(
     method: &str,
     evidence: &[CoreCallEvidence],

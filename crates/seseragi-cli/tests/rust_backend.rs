@@ -979,6 +979,44 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "method-references",
+            "fixtures/rust-backend/method-references.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-references.stdout"),
+            0,
+        ),
+        (
+            "method-reference-trace",
+            "fixtures/rust-backend/method-reference-trace.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-reference-trace.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-reference-effects",
+            "fixtures/rust-backend/method-reference-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-reference-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-reference-defect",
+            "fixtures/rust-backend/method-reference-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-reference-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "method-reference-children",
+            "fixtures/rust-backend/method-reference-children.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-reference-children.stdout"
+            ),
+            70,
+        ),
+        (
             "equality-partials",
             "fixtures/rust-backend/equality-partials.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/equality-partials.stdout"),
@@ -1836,4 +1874,9 @@ fn operator_partial_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn equality_partial_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("equality-partials");
+}
+
+#[test]
+fn strict_method_references_keep_imported_owners() {
+    strict_project_reexports("method-references");
 }
