@@ -251,7 +251,66 @@ impl Backend<'_> {
                     }
                 })
                 .collect::<Vec<_>>();
-            return self.function(&parameters, &completed, scope);
+            let mut inner = scope.clone();
+            for parameter in &parameters {
+                inner.insert(parameter.id.clone());
+            }
+            let CoreExpr::Call {
+                arguments: completed_arguments,
+                ..
+            } = &completed
+            else {
+                unreachable!()
+            };
+            self.validate_method_contract(
+                dispatch,
+                contract,
+                completed_arguments,
+                evidence,
+                &inner,
+            )?;
+            let primary = self.evidence(&evidence[..1], scope)?;
+            let stage = format!("\0method_stage_{}", self.fresh());
+            let mut output = format!(
+                "{{ let mut {} = ({primary}).remove(0).field({});",
+                id(&stage),
+                quoted(&dispatch.method)
+            );
+            for argument in arguments {
+                output.push_str(&format!(
+                    "{0} = {0}.apply({1});",
+                    id(&stage),
+                    self.expr(argument, scope)?
+                ));
+            }
+            let result = self.fresh();
+            let mut body = format!("{{ let mut {result} = {}.clone();", id(&stage));
+            for parameter in &parameters {
+                body.push_str(&format!(
+                    "{result} = {result}.apply({}.clone());",
+                    id(&parameter.id)
+                ));
+            }
+            for selected in &evidence[1..] {
+                let dictionary = self.evidence(std::slice::from_ref(selected), &inner)?;
+                body.push_str(&format!(
+                    "{result} = {result}.apply(({dictionary}).remove(0));"
+                ));
+            }
+            body.push_str(&format!("{result} }}"));
+            let mut captures = scope.clone();
+            captures.retain(|name| name.starts_with("\0dictionary_"));
+            captures.insert(stage.clone());
+            for (index, parameter) in parameters.iter().enumerate().rev() {
+                let mut previous = captures.clone();
+                for earlier in &parameters[..index] {
+                    previous.insert(earlier.id.clone());
+                }
+                body = Self::closure(&parameter.id, &body, &previous);
+            }
+            output.push_str(&body);
+            output.push_str(" }");
+            return Ok(output);
         }
         self.validate_method_contract(dispatch, contract, arguments, evidence, scope)?;
         let primary = self.evidence(&evidence[..1], scope)?;

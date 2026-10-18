@@ -220,25 +220,78 @@
           {
             "kind": "checked-result",
             "value": {
-              "kind": "lambda",
-              "parameter": "__ssrg$partial$0: string",
-              "body": {
-                "kind": "call",
-                "callee": "describe",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "value"
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$partial$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "string"
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "unknown"
+                      },
+                      "result": {
+                        "kind": "string"
+                      }
+                    }
                   },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$partial$0"
+                  "initializer": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "describe",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "unknown"
+                        },
+                        "result": {
+                          "kind": "string"
+                        }
+                      }
+                    }
                   },
-                  {
-                    "kind": "identifier",
-                    "name": "__ssrg$evidence$0"
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 401,
+                    "end": 415
                   }
-                ]
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$partial$0: string",
+                "body": {
+                  "kind": "call",
+                  "callee": "__ssrg$partial$stage",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$partial$0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    }
+                  ]
+                }
               }
             },
             "type": {

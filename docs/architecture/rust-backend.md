@@ -96,9 +96,9 @@ receiver、indexをこの順で一度ずつ評価する。負数・範囲外・�
 有効な位置では要素の共有edgeをJustへ保持する。取り出した関数・Ref・cold Effectは
 配列本体を破棄しても使える。固定長Arrayパターンと`std/array.get`は未対応。
 標準MaybeのShow / Debugも選択済みchild methodを使い、Nothingでは呼び出さない。
-Maybe表示の辞書を直接・child evidence経由で要求するdeferred partialは、global / local /
-methodの各経路で生成前に拒否する。strictな一回評価の共有課題（#887）を修復するまで、TSの挙動への
-追従で引数の評価位置を変えない。通常の部分適用した関数値をArrayへ保存・取得する経路は扱う。
+検証済みのglobal / local / method部分適用では、渡した引数を作成時に評価する。
+Maybe表示も既存のclosed dictionaryと残るsource parameterの検査を通る範囲で扱う。
+未証明の型・辞書stagingは生成前に拒否する。部分適用した関数値をArrayへ保存・取得する経路も扱う。
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
@@ -112,8 +112,9 @@ TSはlet lambdaを外側のscopeで生成してからbindingし、nativeは未�
 非再帰の制約付きlocal functionとgeneralizeしたlambdaは、呼出しごとの辞書を受け取る。
 内部の辞書factoryとsource parameterの段階を分け、選択済みevidenceを辞書frame内のindexへ対応づける。
 外側から継承した制約も明示的に渡す。辞書とterm captureは既存のruntime graphで追跡し、
-保存関数・部分適用・返却closureが使う値を保持する。deferredな部分適用はTSと同じ位置で
-source式を評価する。未証明のconstructor parameterやstagingは生成前に拒否する。
+保存関数・部分適用・返却closureが使う値を保持する。部分適用を作るときはcalleeと渡したsource式を
+左から右へ一度だけ評価し、未使用でもDefectを省略しない。再利用時は評価済みの値を使う。
+未証明のconstructor parameterやstagingは生成前に拒否する。
 
 instance method固有の`where`制約も、instance factoryの制約と分けて扱う。
 factoryの辞書を受け取ってmethod closureを作り、source parameterの後にmethod用辞書を渡す。
@@ -121,10 +122,14 @@ method内のevidence indexにはfactory側の制約数を加える。返され�
 method用辞書を渡してbodyを実行した後に評価する。
 
 この呼び出しでは、確定したsource parameter型とprimary / method制約をTyped HIRからCoreIrへ保持する。
-nativeはcanonical owner・型引数・辞書の数を検査する。TSも同じsource arityを使い、
-部分適用では既存の制約付きcallと同じ位置までsource式の評価を遅らせる。
+nativeはcanonical owner・型引数・辞書の数を検査する。TSも同じsource arityを使う。
+TSは渡されたsource引数を先に適用して残る関数値を保存し、未適用のsource引数とその後の辞書だけを
+closureへ残す。nativeのmethodも同じ位置まで適用して保存し、method固有の辞書は残りのsource引数の後へ置く。
 保存・返却closureの辞書は既存のcapture graphで追跡する。推論された標準Refは`std/ref::Ref`として比較し、
 同名のユーザー型のownerと混同しない。
+
+この修復はsource定義の関数と固有制約付きmethodの経路を対象にする。比較演算子のsectionや
+標準関数専用の生成経路には、部分適用のstrict評価の調査・修復が残る（#887）。
 
 現在の未対応範囲：async Effect、残るstdlib API、一般のpolymorphic global、再帰local function、
 record spreadと未対応pattern、derived instance、supertrait、一般のMonad辞書を使うdo、

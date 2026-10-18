@@ -18,7 +18,9 @@
     "step",
     "subtractFromTen",
     "applyOne",
+    "__ssrg$partial$stage",
     "__ssrg$operator$3c5e3e",
+    "__ssrg$partial$stage",
     "main",
     "println",
     "intShow",
@@ -27,5 +29,5 @@
     "intShow",
     "subtractFromTen"
   ],
-  "mappings": ";;;;;;AAKAA;AAKAC;AAKAE;AAOAE;AAMAE;AAGAG"
+  "mappings": ";;;;;;AAKAA;AAKAC;AAKAE;AAOAE;AAMAE;AAGAK"
 }

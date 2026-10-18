@@ -1,0 +1,68 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Token = | Token
+
+effect fn read<A> state: Ref<String>
+  -> value: A
+  -> suffix: String
+  -> String
+where Show<A> =
+  do {
+    current <- refs.get state
+    effects.succeed (current + ":" + show value + suffix)
+  }
+
+fn plan<A> state: Ref<String>
+  -> value: A
+  -> suffix: String
+  -> Effect<{}, Never, String>
+where Show<A> =
+  effects.defer (\_: Unit -> read state value suffix)
+
+trait Plan<T> {
+  fn planned<A> tag: T -> state: Ref<String> -> value: A -> suffix: String -> Effect<{}, Never, String> where Show<A>
+}
+instance Plan<Token> {
+  fn planned<A> tag: Token
+    -> state: Ref<String>
+    -> value: A
+    -> suffix: String
+    -> Effect<{}, Never, String>
+  where Show<A> =
+    effects.defer (\_: Unit -> read state value suffix)
+}
+
+pub effect fn main = do {
+  state <- refs.make "before"
+  let saved = plan state [41][0]
+  let localSaved = {
+    fn local<A> value: A -> suffix: String -> Effect<{}, Never, String> where Show<A> =
+      effects.defer (\_: Unit -> read state value suffix)
+    local [42][0]
+  }
+  let methodSaved = planned Token state [43][0]
+  callbacks <- refs.make saved
+  let cycle = \suffix: String -> do { next <- refs.get callbacks; next suffix }
+  let cold = saved "!"
+  println "cold"
+  first <- cold
+  println first
+  refs.set "after" state
+  second <- cold
+  println second
+  let cleanup = \_: Unit -> do {
+    text <- methodSaved "#"
+    refs.set text state
+  }
+  scoped <- effects.scoped $ do {
+    effects.acquireRelease (effects.succeed ()) cleanup
+    text <- localSaved "?"
+    effects.succeed text
+  }
+  println scoped
+  final <- refs.get state
+  println final
+  refs.set cycle callbacks
+}

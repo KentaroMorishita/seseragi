@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.53] - 2026-10-18
+
+### Fixed
+
+- Evaluate supplied source arguments once when creating constrained partial applications of source-defined functions and methods. TypeScript retains the already applied prefix, and native local functions and constrained methods preserve the same strict evaluation, source arity, selected evidence, Ref captures, cold Effects and resource finalizers. Admit proved Maybe display partials through these paths; specialized comparison and standard-library staging remains tracked in #887.
+
 ## [0.61.52] - 2026-10-18
 
 ### Added

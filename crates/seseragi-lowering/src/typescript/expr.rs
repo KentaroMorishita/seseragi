@@ -453,17 +453,14 @@ pub(super) fn lower_core_expr_to_typescript(
                     .collect::<Vec<_>>();
                 let mut deferred = Vec::new();
                 let mut result_type = type_ref.clone();
+                let supplied = arguments.len();
                 let index = if let Some(contract) = &dispatch.method_contract {
                     for (index, parameter) in
                         contract.parameters.iter().enumerate().skip(arguments.len())
                     {
                         let name = format!("__ssrg$method$partial${index}");
-                        let type_name = render_typescript_type(&type_ref_from_core_type(
-                            parameter,
-                            imported_types,
-                        ));
-                        arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
-                        deferred.push((name, type_name));
+                        let parameter_type = type_ref_from_core_type(parameter, imported_types);
+                        deferred.push((name, parameter_type));
                         let CoreType::Function { result, .. } = result_type else {
                             unreachable!("checked method partial has a function result")
                         };
@@ -473,6 +470,20 @@ pub(super) fn lower_core_expr_to_typescript(
                 } else {
                     arguments.len()
                 };
+                if supplied < index {
+                    let initializer = TypeScriptExpr::DictionaryCall {
+                        dictionary: Box::new(selected),
+                        method: dispatch.method,
+                        arguments,
+                    };
+                    return stage_deferred_call(
+                        initializer,
+                        deferred,
+                        method_evidence,
+                        type_ref_from_core_type(&result_type, imported_types),
+                        origin,
+                    );
+                }
                 arguments.splice(index..index, method_evidence);
                 // Dictionary methods can erase higher-kinded results. Restore
                 // the instantiated result already proved by source evidence,
@@ -489,7 +500,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     .into_iter()
                     .rev()
                     .fold(value, |body, (name, ty)| TypeScriptExpr::Lambda {
-                        parameter: format!("{name}: {ty}"),
+                        parameter: format!("{name}: {}", render_typescript_type(&ty)),
                         body: Box::new(body),
                     })
             } else if let Some(operation) =
@@ -951,6 +962,8 @@ pub(super) fn lower_core_expr_to_typescript(
                             deferred_evidence_type_constructor_parameters,
                             evidence_argument_index,
                             imported_types,
+                            checked_result.clone(),
+                            origin,
                         )
                     };
                     if check_late_callback {
@@ -1408,6 +1421,8 @@ fn lower_constrained_call(
     deferred_type_constructor_parameters: Vec<String>,
     evidence_argument_index: Option<usize>,
     imported_types: &TypeScriptTypeContext,
+    mut result_type: super::TypeScriptType,
+    origin: crate::SourceSpan,
 ) -> TypeScriptExpr {
     if deferred_parameters.is_empty() {
         let index = evidence_argument_index.unwrap_or(arguments.len());
@@ -1424,28 +1439,85 @@ fn lower_constrained_call(
         .enumerate()
         .map(|(index, type_ref)| {
             let name = format!("__ssrg$partial${index}");
-            let type_name = render_typescript_type(&type_ref_from_core_type_with_erasure(
+            let parameter_type = type_ref_from_core_type_with_erasure(
                 &type_ref,
                 imported_types,
                 &deferred_type_constructor_parameters,
-            ));
-            arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
-            (name, type_name)
+            );
+            let super::TypeScriptType::Function { result, .. } = &result_type else {
+                unreachable!("checked partial source arity");
+            };
+            result_type = (**result).clone();
+            (name, parameter_type)
         })
         .collect::<Vec<_>>();
-    arguments.extend(evidence);
-
-    parameters.into_iter().rev().fold(
+    let initializer = if arguments.is_empty() {
+        TypeScriptExpr::Identifier { name: callee }
+    } else {
         TypeScriptExpr::Call {
             callee,
             arguments,
             checked_callee_type: None,
+        }
+    };
+    stage_deferred_call(initializer, parameters, evidence, result_type, origin)
+}
+
+/// Evaluate the callee and the supplied source prefix now. Only the remaining
+/// source stages and their following dictionaries belong inside the closure.
+/// The stage type is the checked instantiation, never host inference from a
+/// later argument or an extra source arrow inferred from a returned function.
+fn stage_deferred_call(
+    initializer: TypeScriptExpr,
+    parameters: Vec<(String, super::TypeScriptType)>,
+    evidence: Vec<TypeScriptExpr>,
+    result_type: super::TypeScriptType,
+    origin: crate::SourceSpan,
+) -> TypeScriptExpr {
+    let name = "__ssrg$partial$stage".to_owned();
+    let mut stage_type = result_type;
+    for _ in &evidence {
+        stage_type = super::TypeScriptType::Function {
+            parameter: Box::new(super::TypeScriptType::Unknown),
+            result: Box::new(stage_type),
+        };
+    }
+    for (_, parameter) in parameters.iter().rev() {
+        stage_type = super::TypeScriptType::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(stage_type),
+        };
+    }
+    let arguments = parameters
+        .iter()
+        .map(|(name, _)| TypeScriptExpr::Identifier { name: name.clone() })
+        .chain(evidence)
+        .collect();
+    let result = parameters.into_iter().rev().fold(
+        TypeScriptExpr::Call {
+            callee: name.clone(),
+            arguments,
+            checked_callee_type: None,
         },
-        |body, (name, type_name)| TypeScriptExpr::Lambda {
-            parameter: format!("{name}: {type_name}"),
+        |body, (parameter, ty)| TypeScriptExpr::Lambda {
+            parameter: format!("{parameter}: {}", render_typescript_type(&ty)),
             body: Box::new(body),
         },
-    )
+    );
+    TypeScriptExpr::Sequence {
+        statements: vec![TypeScriptStatement::PureLet {
+            type_parameters: vec![],
+            name,
+            type_ref: stage_type.clone(),
+            initializer: TypeScriptExpr::CheckedResult {
+                value: Box::new(initializer),
+                type_ref: stage_type,
+            },
+            initializer_in_outer_scope: false,
+            origin,
+        }],
+        result: Box::new(result),
+    }
 }
 
 fn core_function_arity(type_ref: &CoreType) -> usize {

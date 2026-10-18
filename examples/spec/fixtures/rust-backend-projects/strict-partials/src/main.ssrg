@@ -1,0 +1,7 @@
+import { saved, prefix } from "./facade"
+pub fn probe -> Array<String> = {
+  let globalSaved = prefix [41][0]
+  let method = saved [True, False]
+  [globalSaved "!", globalSaved "?", method "!", method "?"]
+}
+pub effect fn main = println (show (probe ()))

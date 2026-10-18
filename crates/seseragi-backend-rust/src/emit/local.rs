@@ -181,7 +181,6 @@ impl Backend<'_> {
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
             evidence_argument_index,
-            origin,
             ..
         } = expr
         else {
@@ -193,6 +192,11 @@ impl Backend<'_> {
                 .is_some_and(|index| index != callable.parameters.len() || index > arguments.len())
         {
             return Err("Rust backend: unproven local callable evidence staging".into());
+        }
+        if arguments.len() < callable.parameters.len()
+            && deferred_evidence_parameters.len() != callable.parameters.len() - arguments.len()
+        {
+            return Err("Rust backend: missing local partial source stages".into());
         }
         let mut bindings = self.validate_local_arguments(callable, arguments, evidence, scope)?;
         for (parameter, actual) in callable
@@ -215,36 +219,9 @@ impl Backend<'_> {
             {
                 return Err("Rust backend: local partial source arity mismatch".into());
             }
-            let mut completed = expr.clone();
-            let CoreExpr::Call {
-                arguments,
-                deferred_evidence_parameters: deferred,
-                ..
-            } = &mut completed
-            else {
-                unreachable!()
-            };
-            let parameters = deferred
-                .drain(..)
-                .map(|type_ref| {
-                    let id = format!("\0local_partial_{}", self.fresh());
-                    arguments.push(CoreExpr::Variable {
-                        callable_signature: None,
-                        name: id.clone(),
-                        evidence: vec![],
-                        type_ref: type_ref.clone(),
-                        origin: origin.clone(),
-                    });
-                    CoreParameter {
-                        id,
-                        kind: "named".into(),
-                        type_ref,
-                    }
-                })
-                .collect::<Vec<_>>();
-            // TS keeps the supplied expressions inside the deferred lambda.
-            // Preserve that timing, including defects before later arguments.
-            return self.function(&parameters, &completed, scope);
+            // Local factories take their checked dictionaries before the
+            // source stages. Applying the supplied prefix directly retains
+            // already evaluated values as ordinary traceable closure edges.
         }
         let function = self.reference(callee, evidence, scope)?;
         let value = self.fresh();

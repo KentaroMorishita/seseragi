@@ -1,0 +1,50 @@
+type Token = | Token
+type Box<A> = | Box A
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix
+
+trait Render<T> {
+  fn render<A> tag: T -> value: A -> suffix: String -> String where Show<A>
+  fn returned<A> tag: T -> value: A -> (String -> String) where Show<A>
+}
+
+instance Render<Token> {
+  fn render<A> tag: Token -> value: A -> suffix: String -> String where Show<A> =
+    show value + suffix
+
+  fn returned<A> tag: Token -> value: A -> (String -> String) where Show<A> =
+    \suffix: String -> show value + suffix
+}
+
+fn higher<F<_>> value: F<Int> -> String where Show<F<Int>> = {
+  fn local<A> item: A -> suffix: String -> String where Show<A> = show item + suffix
+  let saved = local value
+  saved "!" + saved "?"
+}
+
+pub fn probe -> Array<String> = {
+  let saved = prefix [41][0]
+  fn local<A> value: A -> suffix: String -> String where Show<A> = show value + suffix
+  let localSaved = local (Box 'λ')
+  let methodSaved = render Token [True, False]
+  let returnedSaved = returned Token (Box 2)
+  let renderValue = \value -> show value
+  [
+    saved "!",
+    saved "?",
+    localSaved "!",
+    localSaved "?",
+    methodSaved "!",
+    methodSaved "?",
+    returnedSaved "!",
+    returnedSaved "?",
+    higher (Box 42),
+    renderValue 7,
+    renderValue '🙂'
+  ]
+}
+

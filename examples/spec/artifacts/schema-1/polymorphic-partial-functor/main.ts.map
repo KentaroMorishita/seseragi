@@ -16,7 +16,9 @@
     "mapper",
     "transformWith",
     "applyMapper",
+    "__ssrg$partial$stage",
     "transform",
+    "__ssrg$partial$stage",
     "increment",
     "add",
     "render",
@@ -26,5 +28,5 @@
     "transformWith",
     "Just"
   ],
-  "mappings": ";;;;;;AAIAA;AAQAC;AAOAE;AAMAE;AAOAG;AAEAE;AAOAC"
+  "mappings": ";;;;;;AAIAA;AAQAC;AAOAE;AAMAE;AAOAK;AAEAE;AAOAC"
 }

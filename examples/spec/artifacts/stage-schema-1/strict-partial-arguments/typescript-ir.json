@@ -1,0 +1,1500 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/strict-partial-arguments",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.string.add-dictionary",
+    "core.int",
+    "core.unit",
+    "core.int.show",
+    "core.maybe.show",
+    "core.array.index",
+    "core.maybe",
+    "core.char.show",
+    "core.char",
+    "core.bool.show",
+    "core.array.show",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.add-dictionary",
+      "local": "_ssrg_string_add_dictionary"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.array.index",
+      "local": "_ssrg_array_index"
+    },
+    {
+      "feature": "core.char.show",
+      "local": "_ssrg_show_charShow"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Token",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Token",
+          "tag": "Token",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 20
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 20
+      }
+    },
+    {
+      "exported": false,
+      "name": "Box",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Box",
+          "tag": "Box",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 37,
+            "end": 40
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 21,
+        "end": 42
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/strict-partial-arguments::Box<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 169
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Box<A>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Box"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_add_dictionary"
+                    },
+                    "method": "add",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "box="
+                      },
+                      {
+                        "kind": "checked-result",
+                        "value": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "identifier",
+                            "name": "__ssrg$evidence$0"
+                          },
+                          "method": "show",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "item"
+                            }
+                          ]
+                        },
+                        "type": {
+                          "kind": "string"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 87,
+              "end": 167
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Token",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 427,
+        "end": 681
+      },
+      "dictionaryExport": "__ssrg$instance$Render$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "tag",
+                "type": "Token",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              },
+              {
+                "name": "suffix",
+                "type": "string",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "suffix"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 454,
+              "end": 557
+            }
+          },
+          {
+            "name": "returned",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "tag",
+                "type": "Token",
+                "implicit": false
+              },
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "lambda",
+              "parameter": "suffix: string",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_string_add_dictionary"
+                },
+                "method": "add",
+                "arguments": [
+                  {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$evidence$0"
+                      },
+                      "method": "show",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "suffix"
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 561,
+              "end": 679
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "prefix",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "suffix",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_string_add_dictionary"
+        },
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "checked-result",
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "suffix"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 256
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "higher",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "unknown"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "local",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "item",
+                "type": "A",
+                "implicit": false
+              },
+              {
+                "name": "suffix",
+                "type": "string",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "suffix"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 745,
+              "end": 830
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "pure-let",
+                    "name": "__ssrg$partial$stage",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "unknown"
+                        },
+                        "result": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    "initializer": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "local",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "value"
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "string"
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "unknown"
+                          },
+                          "result": {
+                            "kind": "string"
+                          }
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 845,
+                      "end": 856
+                    }
+                  }
+                ],
+                "result": {
+                  "kind": "lambda",
+                  "parameter": "__ssrg$partial$0: string",
+                  "body": {
+                    "kind": "call",
+                    "callee": "__ssrg$partial$stage",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$partial$0"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$evidence$0"
+                      }
+                    ]
+                  }
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "string"
+                },
+                "result": {
+                  "kind": "string"
+                }
+              }
+            },
+            "initializerInOuterScope": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 831,
+              "end": 856
+            }
+          }
+        ],
+        "result": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_add_dictionary"
+          },
+          "method": "add",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 683,
+        "end": 882
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "probe",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "pure-let",
+                    "name": "__ssrg$partial$stage",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "unknown"
+                        },
+                        "result": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    "initializer": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "prefix",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_array_index",
+                            "arguments": [
+                              {
+                                "kind": "array",
+                                "elements": [
+                                  {
+                                    "kind": "number",
+                                    "value": "41"
+                                  }
+                                ],
+                                "elementType": {
+                                  "kind": "number"
+                                }
+                              },
+                              {
+                                "kind": "number",
+                                "value": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "string"
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "unknown"
+                          },
+                          "result": {
+                            "kind": "string"
+                          }
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 932,
+                      "end": 946
+                    }
+                  }
+                ],
+                "result": {
+                  "kind": "lambda",
+                  "parameter": "__ssrg$partial$0: string",
+                  "body": {
+                    "kind": "call",
+                    "callee": "__ssrg$partial$stage",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$partial$0"
+                      },
+                      {
+                        "kind": "type-application-call",
+                        "callee": "_ssrg_show_maybeShow",
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_intShow"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "string"
+                },
+                "result": {
+                  "kind": "string"
+                }
+              }
+            },
+            "initializerInOuterScope": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 917,
+              "end": 946
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "local",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              },
+              {
+                "name": "suffix",
+                "type": "string",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_add_dictionary"
+              },
+              "method": "add",
+              "arguments": [
+                {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "string"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "suffix"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 947,
+              "end": 1033
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "sequence",
+                "statements": [
+                  {
+                    "kind": "pure-let",
+                    "name": "__ssrg$partial$stage",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "unknown"
+                        },
+                        "result": {
+                          "kind": "string"
+                        }
+                      }
+                    },
+                    "initializer": {
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "call",
+                        "callee": "local",
+                        "arguments": [
+                          {
+                            "kind": "call",
+                            "callee": "Box",
+                            "arguments": [
+                              {
+                                "kind": "string",
+                                "value": "λ"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "string"
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "unknown"
+                          },
+                          "result": {
+                            "kind": "string"
+                          }
+                        }
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1053,
+                      "end": 1069
+                    }
+                  }
+                ],
+                "result": {
+                  "kind": "lambda",
+                  "parameter": "__ssrg$partial$0: string",
+                  "body": {
+                    "kind": "call",
+                    "callee": "__ssrg$partial$stage",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$partial$0"
+                      },
+                      {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Show$0",
+                        "typeArguments": [
+                          {
+                            "kind": "string"
+                          }
+                        ],
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_show_charShow"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "string"
+                },
+                "result": {
+                  "kind": "string"
+                }
+              }
+            },
+            "initializerInOuterScope": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1034,
+              "end": 1069
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "methodSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$partial$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "string"
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "unknown"
+                      },
+                      "result": {
+                        "kind": "string"
+                      }
+                    }
+                  },
+                  "initializer": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Render$1"
+                      },
+                      "method": "render",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "Token"
+                        },
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "boolean",
+                              "value": true
+                            },
+                            {
+                              "kind": "boolean",
+                              "value": false
+                            }
+                          ],
+                          "elementType": {
+                            "kind": "boolean"
+                          }
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "string"
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "unknown"
+                        },
+                        "result": {
+                          "kind": "string"
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1090,
+                    "end": 1116
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$method$partial$2: string",
+                "body": {
+                  "kind": "call",
+                  "callee": "__ssrg$partial$stage",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$method$partial$2"
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_show_arrayShow",
+                      "typeArguments": [
+                        {
+                          "kind": "boolean"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_boolShow"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1070,
+              "end": 1116
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "returnedSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Render$1"
+                },
+                "method": "returned",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "Token"
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "Box",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "2"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "type-application-call",
+                    "callee": "__ssrg$instance$Show$0",
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "string"
+                },
+                "result": {
+                  "kind": "string"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1117,
+              "end": 1161
+            }
+          },
+          {
+            "kind": "local-function",
+            "initializerInOuterScope": true,
+            "name": "renderValue",
+            "typeParameters": [
+              "Let1182T0"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Let1182T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Let1182T0",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1162,
+              "end": 1202
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "localSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "localSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "methodSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "methodSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "returnedSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "returnedSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?"
+                }
+              ]
+            },
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "higher",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "Box",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "42"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "type-application-call",
+                    "callee": "__ssrg$instance$Show$0",
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            },
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "renderValue",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "7"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            },
+            {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "renderValue",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "🙂"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_charShow"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "string"
+              }
+            }
+          ],
+          "elementType": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 884,
+        "end": 1433
+      }
+    }
+  ]
+}

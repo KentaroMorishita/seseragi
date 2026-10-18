@@ -1,0 +1,6 @@
+pub type Token = | Token
+pub fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix
+pub trait Render<T> { fn render<A> tag: T -> value: A -> suffix: String -> String where Show<A> }
+instance Render<Token> { fn render<A> tag: Token -> value: A -> suffix: String -> String where Show<A> = show value + suffix }
+
+pub fn saved<A> value: A -> (String -> String) where Show<A> = render Token value
