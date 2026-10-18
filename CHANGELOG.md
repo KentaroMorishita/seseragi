@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.56] - 2026-10-19
+
+### Fixed
+
+- Evaluate supplied primitive trait-method arguments when a partial is created, and preserve the first stage of selected arithmetic operator references. Keep source argument types and selected dictionaries separate from returned functions. Support checked native Int Add/Sub/Mul and String Add dictionaries. Other operator-reference paths remain tracked in #887.
+
 ## [0.61.55] - 2026-10-19
 
 ### Changed

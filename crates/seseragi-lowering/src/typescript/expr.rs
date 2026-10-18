@@ -401,9 +401,15 @@ pub(super) fn lower_core_expr_to_typescript(
                     .collect();
                 lower_trait_operator_call(selected, operator, arguments, method_evidence)
             } else if let Some(dispatch) = trait_dispatch {
-                if let Some(lowered) =
-                    lower_abi_trait_method_call(&dispatch.method, &evidence, arguments.clone())
-                {
+                if let Some(lowered) = lower_abi_trait_method_call(
+                    &dispatch.method,
+                    &evidence,
+                    arguments.clone(),
+                    &checked_argument_types,
+                    &type_ref,
+                    imported_types,
+                    &origin,
+                ) {
                     return lowered;
                 }
                 let (selected, method_evidence) = evidence
@@ -1336,6 +1342,10 @@ fn lower_abi_trait_method_call(
     method: &str,
     evidence: &[crate::CoreCallEvidence],
     arguments: Vec<TypeScriptExpr>,
+    argument_types: &[super::TypeScriptType],
+    result_type: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+    origin: &crate::SourceSpan,
 ) -> Option<TypeScriptExpr> {
     let operation = runtime_trait_method_operation(method, evidence)?;
     let binary = |left, right| match operation {
@@ -1352,13 +1362,30 @@ fn lower_abi_trait_method_call(
     match arguments.as_slice() {
         [left, right] => Some(binary(left.clone(), right.clone())),
         [left] => {
+            let CoreType::Function { parameter, .. } = result_type else {
+                unreachable!("checked operator partial has one remaining source stage")
+            };
+            let saved = "__ssrg$operator$saved0".to_owned();
             let right = "_argument1".to_owned();
-            Some(TypeScriptExpr::Lambda {
-                parameter: right.clone(),
-                body: Box::new(binary(
-                    left.clone(),
-                    TypeScriptExpr::Identifier { name: right },
-                )),
+            Some(TypeScriptExpr::Sequence {
+                statements: vec![TypeScriptStatement::PureLet {
+                    type_parameters: vec![],
+                    name: saved.clone(),
+                    type_ref: argument_types[0].clone(),
+                    initializer: left.clone(),
+                    initializer_in_outer_scope: false,
+                    origin: origin.clone(),
+                }],
+                result: Box::new(TypeScriptExpr::Lambda {
+                    parameter: format!(
+                        "{right}: {}",
+                        render_typescript_type(&type_ref_from_core_type(parameter, imported_types))
+                    ),
+                    body: Box::new(binary(
+                        TypeScriptExpr::Identifier { name: saved },
+                        TypeScriptExpr::Identifier { name: right },
+                    )),
+                }),
             })
         }
         _ => None,
@@ -1915,21 +1942,13 @@ fn operator_trait_method(operator: &str) -> Option<&'static str> {
 }
 
 fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str) -> TypeScriptExpr {
-    let left = "_argument0".to_owned();
-    let right = "_argument1".to_owned();
-    TypeScriptExpr::Lambda {
-        parameter: left.clone(),
-        body: Box::new(TypeScriptExpr::Lambda {
-            parameter: right.clone(),
-            body: Box::new(TypeScriptExpr::DictionaryCall {
-                dictionary: Box::new(dictionary),
-                method: method.to_owned(),
-                arguments: vec![
-                    TypeScriptExpr::Identifier { name: left },
-                    TypeScriptExpr::Identifier { name: right },
-                ],
-            }),
-        }),
+    // The selected method already has the language's curried stages. An
+    // eta-expanded two-argument wrapper would delay a one-parameter method's
+    // body until its returned function receives the second source operand.
+    TypeScriptExpr::DictionaryCall {
+        dictionary: Box::new(dictionary),
+        method: method.to_owned(),
+        arguments: vec![],
     }
 }
 

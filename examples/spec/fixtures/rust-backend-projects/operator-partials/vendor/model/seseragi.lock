@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/operator-partials-model@1.0.0#workspace:."
+
+[[packages]]
+id = "fixture/operator-partials-model@1.0.0#workspace:."
+name = "fixture/operator-partials-model"
+version = "1.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d308ad42405587197a433790ba67e4202474f197791742c72f00c08492e579ae"
+content_digest = "sha256:116bb312a6c307f6eb00e217eb684265de07636e0fd8c4593f25be011dc0c9be"
+dependencies = []

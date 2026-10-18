@@ -19,6 +19,7 @@ mod floats;
 mod lists;
 mod local;
 mod methods;
+mod operators;
 mod scalar;
 mod tail;
 
@@ -373,6 +374,10 @@ impl Backend<'_> {
                 values.push(dictionary?);
                 continue;
             }
+            if let Some(dictionary) = self.primitive_operator_dictionary(selected, scope) {
+                values.push(dictionary?);
+                continue;
+            }
             let value = match &selected.evidence {
                 CoreInstanceEvidence::Parameter { index } => {
                     let name = format!("\0dictionary_{index}");
@@ -471,7 +476,8 @@ impl Backend<'_> {
             Ok(format!("{}()", id(name)))
         } else if comparisons::is_comparison(name) {
             self.comparison_reference(name, evidence, scope)
-        } else if floats::float_binary(evidence, name)
+        } else if operators::primitive_reference(name, evidence).is_some()
+            || floats::float_binary(evidence, name)
             || dictionary_arithmetic(evidence, name).is_some()
         {
             let method = match name {
@@ -594,6 +600,10 @@ impl Backend<'_> {
                 if comparisons::is_comparison(name) && !scope.contains(name) {
                     self.comparison_result_type(type_ref, 0, evidence, scope)?;
                 }
+                if operators::primitive_reference(name, evidence).is_some() && !scope.contains(name)
+                {
+                    self.validate_primitive_operator_result(&evidence[0], 0, type_ref, scope)?;
+                }
                 self.reference(name, evidence, scope)?
             }
             CoreExpr::EffectOperation {
@@ -684,6 +694,7 @@ impl Backend<'_> {
                     return self.local_call(expr, scope);
                 }
                 if let Some(dispatch) = trait_dispatch {
+                    self.validate_primitive_operator_call(expr, scope)?;
                     if dispatch.method_contract.is_some() {
                         return self.method_call(expr, scope);
                     }
