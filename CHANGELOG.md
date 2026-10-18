@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.50] - 2026-10-18
+
+### Added
+
+- Execute instance methods with their own type-class constraints in the Rust target. Keep instance factory evidence separate from method evidence, validate instantiated canonical types and source arity, and preserve saved methods, partial calls, returned closures, imported providers, Ref captures and cold Effects (#872).
+
+### Fixed
+
+- Carry the checked method contract through Typed HIR and CoreIr so TypeScript passes method dictionaries after source parameters and before arguments to a returned function. Preserve deferred partial-call expressions, evaluation order, Defects and resource finalizers (#872).
+
 ## [0.61.49] - 2026-10-18
 
 ### Fixed

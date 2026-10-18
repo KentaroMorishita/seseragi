@@ -4,6 +4,7 @@ use seseragi_lowering::CoreInstanceConstraint;
 mod evidence;
 mod types;
 use types::argument_type;
+pub(super) use types::argument_type as method_argument_type;
 
 #[derive(Clone, Default)]
 pub(super) struct Scope {
@@ -18,6 +19,9 @@ pub(super) struct Scope {
 impl Scope {
     pub(super) fn new() -> Self {
         Self::default()
+    }
+    pub(super) fn has_unproven_type_scope(&self) -> bool {
+        self.unproven_type_scope
     }
     pub(super) fn type_parameters(
         &mut self,

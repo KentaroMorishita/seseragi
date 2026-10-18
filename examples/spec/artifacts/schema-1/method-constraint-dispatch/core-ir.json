@@ -292,7 +292,40 @@
             ],
             "traitDispatch": {
               "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
-              "method": "render"
+              "method": "render",
+              "methodContract": {
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Badge",
+                    "arguments": []
+                  }
+                ],
+                "constraints": [
+                  {
+                    "name": "Render",
+                    "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Labeled",
+                    "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             "type": {
               "kind": "named",

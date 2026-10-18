@@ -25,7 +25,7 @@ fn nominal_parts(ty: &CoreType) -> Option<(CoreType, Vec<CoreType>)> {
     }
 }
 
-pub(super) fn argument_type(expr: &CoreExpr) -> Option<CoreType> {
+pub(in crate::emit) fn argument_type(expr: &CoreExpr) -> Option<CoreType> {
     let primitive = match expr {
         CoreExpr::Unit { .. } => "Unit",
         CoreExpr::Integer { .. } => "Int",
@@ -77,7 +77,11 @@ pub(super) fn argument_type(expr: &CoreExpr) -> Option<CoreType> {
 }
 
 impl Backend<'_> {
-    pub(super) fn local_canonical_type(&self, ty: &CoreType, scope: &Scope) -> Result<CoreType> {
+    pub(in crate::emit) fn local_canonical_type(
+        &self,
+        ty: &CoreType,
+        scope: &Scope,
+    ) -> Result<CoreType> {
         let parameters = scope
             .type_parameters
             .iter()
@@ -112,13 +116,13 @@ impl Backend<'_> {
             })
             .or_else(|| match name.as_str() {
                 "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe"
-                | "std/prelude::Ref" => Some(1),
+                | "std/ref::Ref" => Some(1),
                 "std/prelude::Either" => Some(2),
                 _ => None,
             })
     }
 
-    pub(super) fn match_local_type(
+    pub(in crate::emit) fn match_local_type(
         &self,
         template: &CoreType,
         actual: &CoreType,

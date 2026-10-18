@@ -250,7 +250,12 @@ pub(super) fn canonical_type(
                         | "Ref"
                         | "Effect"
                 );
-                let name = if !declaration_scope && prelude {
+                let name = if !declaration_scope && name == "Ref" {
+                    // Inferred Ref keys denote the standard opaque type in
+                    // std/ref. Source declarations/imports use their checked
+                    // owner below; a local nominal Ref keeps ExternalNamed.
+                    "std/ref::Ref".to_owned()
+                } else if !declaration_scope && prelude {
                     format!("std/prelude::{name}")
                 } else if let Some(canonical) = type_names.get(&(owner.to_owned(), name.clone())) {
                     canonical.clone()

@@ -534,7 +534,65 @@
               ],
               "traitDispatch": {
                 "traitIdentity": "std/prelude::Traversable",
-                "method": "traverse"
+                "method": "traverse",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Traversable",
+                      "traitIdentity": "std/prelude::Traversable",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Applicative",
+                      "traitIdentity": "std/prelude::Applicative",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               "type": {
                 "kind": "named",
@@ -709,7 +767,76 @@
               ],
               "traitDispatch": {
                 "traitIdentity": "std/prelude::Traversable",
-                "method": "traverse"
+                "method": "traverse",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Traversable",
+                      "traitIdentity": "std/prelude::Traversable",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Applicative",
+                      "traitIdentity": "std/prelude::Applicative",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               "type": {
                 "kind": "named",
@@ -898,7 +1025,76 @@
               ],
               "traitDispatch": {
                 "traitIdentity": "std/prelude::Traversable",
-                "method": "traverse"
+                "method": "traverse",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Traversable",
+                      "traitIdentity": "std/prelude::Traversable",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Applicative",
+                      "traitIdentity": "std/prelude::Applicative",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               "type": {
                 "kind": "named",
@@ -1191,7 +1387,67 @@
               ],
               "traitDispatch": {
                 "traitIdentity": "std/prelude::Traversable",
-                "method": "traverse"
+                "method": "traverse",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "nonEmpty.NonEmptyList",
+                      "canonical": "std/non-empty-list::NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Traversable",
+                      "traitIdentity": "std/prelude::Traversable",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "nonEmpty.NonEmptyList",
+                          "canonical": "std/non-empty-list::NonEmptyList",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Applicative",
+                      "traitIdentity": "std/prelude::Applicative",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               "type": {
                 "kind": "named",

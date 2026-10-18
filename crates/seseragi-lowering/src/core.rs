@@ -209,6 +209,15 @@ pub struct CoreCallEvidence {
 pub struct CoreTraitDispatch {
     pub trait_identity: String,
     pub method: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub method_contract: Option<CoreTraitMethodContract>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreTraitMethodContract {
+    pub parameters: Vec<CoreType>,
+    pub constraints: Vec<CoreInstanceConstraint>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

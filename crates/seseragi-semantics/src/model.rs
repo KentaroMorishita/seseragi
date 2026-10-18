@@ -290,6 +290,19 @@ pub struct TypedCallEvidence {
 pub struct TypedTraitDispatch {
     pub trait_identity: String,
     pub method: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub method_contract: Option<TypedTraitMethodContract>,
+}
+
+/// Instantiated source parameters and evidence for a method with its own
+/// constraints. The primary trait comes first; instance factory constraints
+/// remain inside that primary evidence rather than becoming method arguments.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedTraitMethodContract {
+    pub parameters: Vec<TypedType>,
+    pub constraints: Vec<TypedConstraint>,
+    pub constraint_identities: Vec<Option<String>>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

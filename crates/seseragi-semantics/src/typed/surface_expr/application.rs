@@ -782,6 +782,18 @@ pub(crate) fn type_known_application_with_explicit(
                 .map(|(trait_identity, method)| crate::TypedTraitDispatch {
                     trait_identity,
                     method,
+                    method_contract: (application.constraints.len() > 1).then(|| {
+                        crate::TypedTraitMethodContract {
+                            parameters: application
+                                .parameters
+                                .iter()
+                                .take(declared_arity)
+                                .map(|parameter| context.evidence_type(parameter))
+                                .collect(),
+                            constraints: application.constraints.clone(),
+                            constraint_identities: application.constraint_identities.clone(),
+                        }
+                    }),
                 }),
             type_ref,
             origin: expression_span,

@@ -107,8 +107,19 @@ TSはlet lambdaを外側のscopeで生成してからbindingし、nativeは未�
 保存関数・部分適用・返却closureが使う値を保持する。deferredな部分適用はTSと同じ位置で
 source式を評価する。未証明のconstructor parameterやstagingは生成前に拒否する。
 
+instance method固有の`where`制約も、instance factoryの制約と分けて扱う。
+factoryの辞書を受け取ってmethod closureを作り、source parameterの後にmethod用辞書を渡す。
+method内のevidence indexにはfactory側の制約数を加える。返された関数への追加引数は、
+method用辞書を渡してbodyを実行した後に評価する。
+
+この呼び出しでは、確定したsource parameter型とprimary / method制約をTyped HIRからCoreIrへ保持する。
+nativeはcanonical owner・型引数・辞書の数を検査する。TSも同じsource arityを使い、
+部分適用では既存の制約付きcallと同じ位置までsource式の評価を遅らせる。
+保存・返却closureの辞書は既存のcapture graphで追跡する。推論された標準Refは`std/ref::Ref`として比較し、
+同名のユーザー型のownerと混同しない。
+
 現在の未対応範囲：async Effect、残るstdlib API、一般のpolymorphic global、再帰local function、
-record spreadと未対応pattern、derived instance、supertrait / method固有constraint、
+record spreadと未対応pattern、derived instance、supertrait、一般のMonad辞書を使うdo、
 一般のdeferred callable evidence、foreign / provider ABI、並列runtime、標準のprogram WASM target、
 source map、一般のDefect provenance。Floatに標準Eq / Ord / Hashは導入しない。
 直接の純粋自己末尾call以外はRust stackを使う。一般の再帰・相互再帰のconstant-stack保証はない。

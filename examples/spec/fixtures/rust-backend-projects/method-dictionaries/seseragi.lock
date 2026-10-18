@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-method-dictionaries@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/method-dictionaries-model@1.0.0#path:vendor/model"
+name = "fixture/method-dictionaries-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:816b2d3568c94b506d55171d6d7a5be73ff9da5d656a363fa12ff93bb4a2a3c9"
+content_digest = "sha256:e9e045d155a8c282c0267db6bd80a5f87dde6676410e64bf7d58dbb5eb6d3293"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-method-dictionaries@0.0.0#workspace:."
+name = "fixture/native-method-dictionaries"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5d88ff17f2153085a720c825ce3de8cbdaa1cd837ffca7e0238672585446325d"
+content_digest = "sha256:313447f9e9c3a74e530a0467734d74bdaec73e6858157c6fa456236cf0bd929c"
+dependencies = [
+  { import = "model", package = "fixture/method-dictionaries-model@1.0.0#path:vendor/model" },
+]

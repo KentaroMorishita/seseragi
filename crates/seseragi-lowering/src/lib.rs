@@ -44,7 +44,7 @@ pub use core::{
     CoreModule, CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter,
     CorePattern, CoreRecordField, CoreRecordPatternField, CoreRecordValueItem,
     CoreShowPayloadEvidence, CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart,
-    CoreTraitDispatch, CoreType,
+    CoreTraitDispatch, CoreTraitMethodContract, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,

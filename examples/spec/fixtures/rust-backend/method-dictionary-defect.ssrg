@@ -1,0 +1,34 @@
+import * as effects from "std/effect"
+
+type Trip = | Multiply | Overflow
+
+instance Show<Trip> {
+  fn show value: Trip -> String = match value {
+    Multiply -> show (9007199254740991 * 9007199254740991)
+    Overflow -> show (9007199254740991 + 1)
+  }
+}
+
+type Token = | Token
+trait Both<T> {
+  fn both<A, B> tag: T -> left: A -> right: B -> String where Show<A>, Show<B>
+}
+
+instance Both<Token> {
+  fn both<A, B> tag: Token -> left: A -> right: B -> String where Show<A>, Show<B> = show left + ":" + show right
+}
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do {
+      println "acquired"
+      effects.succeed ()
+  }) (
+    \_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ())
+      (println "released")
+  )
+  let render: Trip -> Trip -> String = both Token
+  let saved: Trip -> String = render Multiply
+  println "partial"
+  println (saved Overflow)
+  println "unreachable"
+}

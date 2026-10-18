@@ -1,0 +1,91 @@
+type Box<A> = | Box A
+
+trait Label<F<_>> {
+  fn label<A> prefix: String -> value: F<A> -> String where Show<A>
+}
+
+instance Label<Box> {
+  fn label<A> prefix: String -> value: Box<A> -> String where Show<A> =
+    match value { Box inner -> prefix + show inner }
+}
+
+fn through<F<_>, A> value: F<A> -> String where Label<F>, Show<A> =
+  label "generic=" value
+
+fn retained<A> value: Box<A> -> (String -> String) where Show<A> =
+  \prefix -> label prefix value
+
+fn genericPartial<F<_>, A> value: F<A> -> String where Label<F>, Show<A> = {
+  let saved: F<A> -> String = label "partial="
+  saved value
+}
+
+trait Prefix<A> {
+  fn prefix value: A -> String
+}
+
+instance Prefix<Int> {
+  fn prefix value: Int -> String = "outer=" + show value
+}
+
+type Pair<A, B> = | Pair (A, B)
+
+trait Present<F<_>> {
+    fn present<A> value: F<A> -> String where Debug<A>
+}
+
+instance<T> Present<Pair<T>> where Prefix<T> {
+  fn present<A> value: Pair<T, A> -> String where Debug<A> = match value {
+    Pair (first, second) -> {
+      let local = \item -> prefix first + ":" + debug item
+      local second
+    }
+  }
+}
+
+type Token = | Token
+trait Keep<T> {
+  fn keep<A> tag: T -> value: A -> (String -> String) where Show<A>
+  fn higher<F<_>> tag: T -> value: F<Int> -> String where Show<F<Int>>
+}
+
+instance Keep<Token> {
+  fn keep<A> tag: Token -> value: A -> (String -> String) where Show<A> =
+    \suffix: String -> show value + suffix
+
+  fn higher<F<_>> tag: Token -> value: F<Int> -> String where Show<F<Int>> = show value
+}
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+pub fn probe -> Array<String> = {
+  let method: String -> Box<Int> -> String = label
+  let saved = method "saved="
+  let closure = retained (Box "kept")
+  let partial: Int -> String -> String = keep Token
+  let kept = partial 9
+  let inferred = label
+  let keepAlias = keep
+  let presentInt: Pair<Int, Char> -> String = present
+  [
+    through (Box 42),
+    saved (Box 1),
+    saved (Box 2),
+    closure "first=",
+    closure "second=",
+    kept "!",
+    kept "?",
+    keep Token 8 "direct",
+    presentInt (Pair (
+      7,
+      'λ'
+    )),
+    higher Token (Box 6),
+    genericPartial (Box False),
+    inferred "alias=" (Box '🙂'),
+    inferred "next=" (Box True),
+    keepAlias Token False "kept"
+  ]
+}
