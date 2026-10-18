@@ -1359,6 +1359,73 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "S",
+            {
+              "name": "M",
+              "arity": 1
+            },
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "S",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "st.StateT",
+              "canonical": "std/transformer/state::StateT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "M",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "S",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "function",
           "parameter": {
@@ -4336,6 +4403,85 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "W",
+              {
+                "name": "M",
+                "arity": 1
+              },
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "external-named",
+                "name": "wt.WriterT",
+                "canonical": "std/transformer/writer::WriterT",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "W",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "M",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "W",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "external-named",
+                "name": "wt.WriterT",
+                "canonical": "std/transformer/writer::WriterT",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Log",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Maybe",
@@ -5165,6 +5311,70 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -5374,6 +5584,86 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "E",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "et.EitherT",
+                            "canonical": "std/transformer/either::EitherT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "et.EitherT",
+                            "canonical": "std/transformer/either::EitherT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -5633,6 +5923,85 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "R",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "rt.ReaderT",
+                            "canonical": "std/transformer/reader::ReaderT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "rt.ReaderT",
+                            "canonical": "std/transformer/reader::ReaderT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -5802,6 +6171,85 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "R",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "rt.ReaderT",
+                            "canonical": "std/transformer/reader::ReaderT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "rt.ReaderT",
+                            "canonical": "std/transformer/reader::ReaderT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -6213,6 +6661,85 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "W",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "wt.WriterT",
+                            "canonical": "std/transformer/writer::WriterT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "W",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "W",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "wt.WriterT",
+                            "canonical": "std/transformer/writer::WriterT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -6459,6 +6986,70 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -6663,6 +7254,70 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -6867,6 +7522,70 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "mt.MaybeT",
+                            "canonical": "std/transformer/maybe::MaybeT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -7085,6 +7804,95 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "S",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "S",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "st.StateT",
+                            "canonical": "std/transformer/state::StateT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "S",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "S",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "st.StateT",
+                            "canonical": "std/transformer/state::StateT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -7413,6 +8221,95 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "W",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "wt.WriterT",
+                            "canonical": "std/transformer/writer::WriterT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "W",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "W",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "wt.WriterT",
+                            "canonical": "std/transformer/writer::WriterT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -7798,6 +8695,85 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              {
+                                "name": "M",
+                                "arity": 1
+                              },
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "external-named",
+                                "name": "mt.MaybeT",
+                                "canonical": "std/transformer/maybe::MaybeT",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "M",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "M",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "external-named",
+                                "name": "mt.MaybeT",
+                                "canonical": "std/transformer/maybe::MaybeT",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "st.StateT",
+                                    "canonical": "std/transformer/state::StateT",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Maybe",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "hole"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "external-named",
                             "name": "st.StateT",
@@ -7833,6 +8809,101 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "S",
+                          {
+                            "name": "M",
+                            "arity": 1
+                          },
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "S",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "st.StateT",
+                            "canonical": "std/transformer/state::StateT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "S",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "M",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "M",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "S",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "st.StateT",
+                            "canonical": "std/transformer/state::StateT",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -8242,6 +9313,93 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  {
+                    "name": "M",
+                    "arity": 1
+                  },
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "console",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Console",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "ConsoleError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "hole"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
@@ -8485,6 +9643,93 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  {
+                    "name": "M",
+                    "arity": 1
+                  },
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "M",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "console",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Console",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "ConsoleError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "hole"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
