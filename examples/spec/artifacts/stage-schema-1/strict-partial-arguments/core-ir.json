@@ -1,0 +1,2646 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/strict-partial-arguments",
+  "adts": [
+    {
+      "symbol": "artifact/strict-partial-arguments::Token",
+      "name": "Token",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/strict-partial-arguments::Token",
+          "name": "Token",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 15,
+            "end": 20
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 20
+      }
+    },
+    {
+      "symbol": "artifact/strict-partial-arguments::Box",
+      "name": "Box",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/strict-partial-arguments::Box",
+          "name": "Box",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 37,
+            "end": 40
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 21,
+        "end": 42
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/strict-partial-arguments::Box<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 169
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 127,
+                  "end": 132
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/strict-partial-arguments::Box",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 135,
+                        "end": 143
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 139,
+                        "end": 143
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "string",
+                      "value": "box=",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 147,
+                        "end": 153
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/prelude::Show::show",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "item",
+                          "type": {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 161,
+                            "end": 165
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Show",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "parameter",
+                            "index": 0
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Show",
+                        "method": "show"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 156,
+                        "end": 165
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/string::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 147,
+                      "end": 165
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 135,
+                    "end": 165
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 121,
+                "end": 167
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 87,
+              "end": 167
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Token",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 427,
+        "end": 681
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "tag",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Token",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "suffix",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "call",
+                "callee": "std/prelude::Show::show",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 543,
+                      "end": 548
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "parameter",
+                      "index": 0
+                    }
+                  }
+                ],
+                "traitDispatch": {
+                  "traitIdentity": "std/prelude::Show",
+                  "method": "show"
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 538,
+                  "end": 548
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "suffix",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 551,
+                  "end": 557
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 538,
+                "end": 557
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 454,
+              "end": 557
+            }
+          },
+          {
+            "name": "returned",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "tag",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Token",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "lambda",
+              "parameter": {
+                "id": "suffix",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "body": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 665,
+                        "end": 670
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "parameter",
+                        "index": 0
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 660,
+                    "end": 670
+                  }
+                },
+                "right": {
+                  "kind": "variable",
+                  "name": "suffix",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 673,
+                    "end": 679
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 660,
+                  "end": 679
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 641,
+                "end": 679
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 561,
+              "end": 679
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/strict-partial-arguments::prefix",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 256
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "suffix",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "call",
+          "callee": "std/prelude::Show::show",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 242,
+                "end": 247
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "parameter",
+                "index": 0
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Show",
+            "method": "show"
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 237,
+            "end": 247
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "suffix",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 250,
+            "end": 256
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 237,
+          "end": 256
+        }
+      }
+    },
+    {
+      "symbol": "artifact/strict-partial-arguments::higher",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 683,
+        "end": 882
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "local",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "item",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "suffix",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "call",
+                "callee": "std/prelude::Show::show",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "item",
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 817,
+                      "end": 821
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "parameter",
+                      "index": 0
+                    }
+                  }
+                ],
+                "traitDispatch": {
+                  "traitIdentity": "std/prelude::Show",
+                  "method": "show"
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 812,
+                  "end": 821
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "suffix",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 824,
+                  "end": 830
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 812,
+                "end": 830
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 745,
+              "end": 830
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "local",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 851,
+                    "end": 856
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "F",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ],
+              "deferredEvidenceParameters": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 845,
+                "end": 856
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 831,
+              "end": 856
+            }
+          }
+        ],
+        "result": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "call",
+            "callee": "saved",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "!",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 865,
+                  "end": 868
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 859,
+              "end": 868
+            }
+          },
+          "right": {
+            "kind": "call",
+            "callee": "saved",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "?",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 877,
+                  "end": 880
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 871,
+              "end": 880
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Add",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/string::Add"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 859,
+            "end": 880
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 744,
+          "end": 882
+        }
+      }
+    },
+    {
+      "symbol": "artifact/strict-partial-arguments::probe",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 884,
+        "end": 1433
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "saved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/strict-partial-arguments::prefix",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "builtin::array-index",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "value": "41",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 940,
+                            "end": 942
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 939,
+                        "end": 943
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 944,
+                        "end": 945
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 939,
+                    "end": 946
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/maybe::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "deferredEvidenceParameters": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 932,
+                "end": 946
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 917,
+              "end": 946
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "local",
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "suffix",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "call",
+                "callee": "std/prelude::Show::show",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1019,
+                      "end": 1024
+                    }
+                  }
+                ],
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "parameter",
+                      "index": 0
+                    }
+                  }
+                ],
+                "traitDispatch": {
+                  "traitIdentity": "std/prelude::Show",
+                  "method": "show"
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1014,
+                  "end": 1024
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "suffix",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1027,
+                  "end": 1033
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1014,
+                "end": 1033
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 947,
+              "end": 1033
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "local",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/strict-partial-arguments::Box",
+                  "arguments": [
+                    {
+                      "kind": "char",
+                      "value": "λ",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1064,
+                        "end": 1068
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1060,
+                    "end": 1068
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Char",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Char",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Char>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "deferredEvidenceParameters": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1053,
+                "end": 1069
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1034,
+              "end": 1069
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "methodSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/strict-partial-arguments::trait(Render)::render",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/strict-partial-arguments::Token",
+                  "type": {
+                    "kind": "named",
+                    "name": "Token",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1097,
+                    "end": 1102
+                  }
+                },
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "boolean",
+                      "value": true,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1104,
+                        "end": 1108
+                      }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1110,
+                        "end": 1115
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1103,
+                    "end": 1116
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Render",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Token",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Show",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Bool>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+                "method": "render",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "Token",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Render",
+                      "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Token",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1090,
+                "end": 1116
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1070,
+              "end": 1116
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "returnedSaved",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/strict-partial-arguments::trait(Render)::returned",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/strict-partial-arguments::Token",
+                  "type": {
+                    "kind": "named",
+                    "name": "Token",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1148,
+                    "end": 1153
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "artifact/strict-partial-arguments::Box",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "2",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1159,
+                        "end": 1160
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1155,
+                    "end": 1160
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Render",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Token",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+                "method": "returned",
+                "methodContract": {
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "Token",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "name": "Render",
+                      "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Token",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1139,
+                "end": 1161
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1117,
+              "end": 1161
+            }
+          },
+          {
+            "kind": "local-function",
+            "initializerInOuterScope": true,
+            "name": "renderValue",
+            "typeParameters": [
+              "Let1182T0"
+            ],
+            "constraints": [
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Let1182T0",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Let1182T0",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Let1182T0",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1197,
+                    "end": 1202
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Let1182T0",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1192,
+                "end": 1202
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1162,
+              "end": 1202
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1217,
+                    "end": 1220
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1211,
+                "end": 1220
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "saved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1232,
+                    "end": 1235
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1226,
+                "end": 1235
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "localSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1252,
+                    "end": 1255
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1241,
+                "end": 1255
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "localSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1272,
+                    "end": 1275
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1261,
+                "end": 1275
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "methodSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1293,
+                    "end": 1296
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1281,
+                "end": 1296
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "methodSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1314,
+                    "end": 1317
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1302,
+                "end": 1317
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "returnedSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "!",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1337,
+                    "end": 1340
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1323,
+                "end": 1340
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "returnedSaved",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "?",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1360,
+                    "end": 1363
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1346,
+                "end": 1363
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "artifact/strict-partial-arguments::higher",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/strict-partial-arguments::Box",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "42",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1381,
+                        "end": 1383
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1377,
+                    "end": 1383
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1369,
+                "end": 1384
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "renderValue",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "7",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1402,
+                    "end": 1403
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1390,
+                "end": 1403
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "renderValue",
+              "arguments": [
+                {
+                  "kind": "char",
+                  "value": "🙂",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1421,
+                    "end": 1427
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Char>"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1409,
+                "end": 1427
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1205,
+            "end": 1431
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 916,
+          "end": 1433
+        }
+      }
+    }
+  ]
+}

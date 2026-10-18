@@ -19,10 +19,12 @@
     "labeler",
     "label",
     "applyLabel",
+    "__ssrg$partial$stage",
     "describe",
+    "__ssrg$partial$stage",
     "main",
     "println",
     "label"
   ],
-  "mappings": ";;;;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAG;AAKAE;AAMAG"
+  "mappings": ";;;;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAG;AAKAE;AAMAK"
 }

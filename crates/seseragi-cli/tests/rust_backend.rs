@@ -899,7 +899,6 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     );
     assert!(output_path.exists());
     for (name, source) in [
-        ("maybe-deferred-partial", "fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix\npub fn answer -> Unit = { let partial = prefix [9007199254740991 + 1][0]; () }\n"),
         ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n"),
         ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n"),
         ("float-parse", "import * as floats from \"std/float\"\npub fn answer -> Either<floats.FloatParseError, Float> = floats.parse \"1.5\"\n"),

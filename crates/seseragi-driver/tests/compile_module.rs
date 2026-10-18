@@ -389,7 +389,10 @@ fn passes_a_custom_operator_as_a_curried_function_value() {
     assert!(compiled
         .generated
         .typescript
-        .contains("__ssrg$operator$3c5e3e(10)(__ssrg$partial$0)(__ssrg$instance$Difference$0)"));
+        .contains("const __ssrg$partial$stage: (argument: number) => (argument: unknown) => number = ((__ssrg$operator$3c5e3e(10))"));
+    assert!(compiled.generated.typescript.contains(
+        "return (__ssrg$partial$0: number) => __ssrg$partial$stage(__ssrg$partial$0)(__ssrg$instance$Difference$0)"
+    ));
     assert!(!compiled.generated.typescript.contains("<^>"));
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
 }

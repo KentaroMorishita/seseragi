@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-strict-partials@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-strict-partials@0.0.0#workspace:."
+name = "fixture/native-strict-partials"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:c7112db2d9201e7aa16ea667714fd7296e5ccd84420c5d30645ab78fef3634cc"
+content_digest = "sha256:7e17e091e782d5dac76b0eb1bc1c4c182c0b49fd1f52a8ff85ec4895cfa7a951"
+dependencies = [
+  { import = "model", package = "fixture/strict-partials-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/strict-partials-model@1.0.0#path:vendor/model"
+name = "fixture/strict-partials-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:543215084d0a4cf71a05eac69443bf4a1821e4b84c6889be7114617bea3af4cb"
+content_digest = "sha256:75f883854bc0415148f03803625508b1eeddecb8d4f8403af22911fb6a4d88e9"
+dependencies = []

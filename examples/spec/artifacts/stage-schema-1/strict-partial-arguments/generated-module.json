@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "module": "artifact/strict-partial-arguments",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.string.add-dictionary",
+      "core.int",
+      "core.unit",
+      "core.int.show",
+      "core.maybe.show",
+      "core.array.index",
+      "core.maybe",
+      "core.char.show",
+      "core.char",
+      "core.bool.show",
+      "core.array.show",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "probe"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/strict-partial-arguments::Box<$0>",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Token",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Render$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

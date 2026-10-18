@@ -657,20 +657,6 @@ impl Backend<'_> {
                 if callee == "builtin::array-index" {
                     return self.array_index(expr, scope);
                 }
-                // Do not extend the existing deferred-call strictness gap to
-                // newly executable Maybe dictionaries, including method frames
-                // and nested child evidence. Keep the refusal before all routes.
-                let deferred_partial = !deferred_evidence_parameters.is_empty()
-                    || trait_dispatch
-                        .as_ref()
-                        .and_then(|dispatch| dispatch.method_contract.as_ref())
-                        .is_some_and(|contract| arguments.len() < contract.parameters.len());
-                if deferred_partial && self.deferred_maybe_display(evidence, scope)? {
-                    return Err(
-                        "Rust backend: deferred callable evidence for Maybe display is unsupported"
-                            .into(),
-                    );
-                }
                 check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);

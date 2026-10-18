@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "case": "strict-partial-arguments",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/strict-partial-arguments",
+    "export": "probe",
+    "compiledModule": "../../stage-schema-1/strict-partial-arguments/generated-module.json",
+    "typedInterface": "../../stage-schema-1/strict-partial-arguments/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": {
+      "result": "json"
+    }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.string.add-dictionary",
+      "core.int",
+      "core.unit",
+      "core.int.show",
+      "core.maybe.show",
+      "core.array.index",
+      "core.maybe",
+      "core.char.show",
+      "core.char",
+      "core.bool.show",
+      "core.array.show",
+      "core.bool"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

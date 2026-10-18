@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/strict-partial-arguments",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/strict-partial-arguments::probe",
+      "namespace": "value",
+      "name": "probe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 884,
+        "end": 1433
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
+      "providerModule": "artifact/strict-partial-arguments",
+      "traitIdentity": "std/prelude::Show",
+      "argumentIdentities": [
+        "artifact/strict-partial-arguments::Box<$0>"
+      ],
+      "typeIdentity": "artifact/strict-partial-arguments::Box<$0>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "external-named",
+            "name": "Box",
+            "canonical": "artifact/strict-partial-arguments::Box",
+            "providerModule": "artifact/strict-partial-arguments",
+            "providerExport": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 44,
+        "end": 169
+      }
+    },
+    {
+      "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>",
+      "providerModule": "artifact/strict-partial-arguments",
+      "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+      "argumentIdentities": [
+        "artifact/strict-partial-arguments::Token"
+      ],
+      "trait": "Render",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "external-named",
+            "name": "Token",
+            "canonical": "artifact/strict-partial-arguments::Token",
+            "providerModule": "artifact/strict-partial-arguments",
+            "providerExport": "Token",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 427,
+        "end": 681
+      }
+    }
+  ]
+}

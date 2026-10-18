@@ -1,0 +1,35 @@
+type Token = | Token
+fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix
+trait Render<T> {
+  fn render<A> tag: T -> value: A -> suffix: String -> String where Show<A>
+}
+instance Render<Token> {
+  fn render<A> tag: Token -> value: A -> suffix: String -> String where Show<A> =
+    show value + suffix
+}
+
+fn globalValue -> Array<Int> = [1]
+fn localValue -> Array<Int> = [2]
+fn methodValue -> Array<Int> = [3]
+fn tag -> Token = Token
+fn beforeApply -> Unit = ()
+
+pub fn probe -> Array<String> = {
+  let globalSaved = prefix (globalValue ())
+  let localSaved = {
+    fn local<A> value: A -> suffix: String -> String where Show<A> = show value + suffix
+    local (localValue ())
+  }
+  let methodSaved = render (tag ()) (methodValue ())
+  let marker = beforeApply ()
+  [
+    globalSaved "!",
+    globalSaved "?",
+    localSaved "!",
+    localSaved "?",
+    methodSaved "!",
+    methodSaved "?"
+  ]
+}
+
+pub effect fn main = println (show (probe ()))

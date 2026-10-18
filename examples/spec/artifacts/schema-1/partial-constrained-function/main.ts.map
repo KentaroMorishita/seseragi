@@ -20,7 +20,9 @@
     "main",
     "println",
     "applyLabel",
-    "describe"
+    "__ssrg$partial$stage",
+    "describe",
+    "__ssrg$partial$stage"
   ],
   "mappings": ";;;;;AAAAA;;AACIC;AAMJC;AAIAC;AAOAG;AAKAE"
 }
