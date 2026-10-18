@@ -91,6 +91,14 @@ TS / nativeのscalar self-tail loop認定とscalar global readの共通改善は
 選択済みのuser instanceとnested dictionary、Int / Bool / String、基本Char / Float / List、
 Tuple / Array / field-only Record、local ADT、decision、let / effect sequence。
 Show / Debugは対応済みの標準辞書と選択済みchild methodを使う。
+Arrayの`values[index]`はcanonical Array / Int / Maybeと要素型を検証し、
+receiver、indexをこの順で一度ずつ評価する。負数・範囲外・空配列ではNothingを返し、
+有効な位置では要素の共有edgeをJustへ保持する。取り出した関数・Ref・cold Effectは
+配列本体を破棄しても使える。固定長Arrayパターンと`std/array.get`は未対応。
+標準MaybeのShow / Debugも選択済みchild methodを使い、Nothingでは呼び出さない。
+Maybe表示の辞書を直接・child evidence経由で要求するdeferred partialは、global / local /
+methodの各経路で生成前に拒否する。strictな一回評価の共有課題（#887）を修復するまで、TSの挙動への
+追従で引数の評価位置を変えない。通常の部分適用した関数値をArrayへ保存・取得する経路は扱う。
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。

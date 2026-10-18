@@ -1,6 +1,47 @@
 use super::*;
 
 impl Backend<'_> {
+    pub(super) fn deferred_maybe_display(
+        &self,
+        evidence: &[CoreCallEvidence],
+        scope: &Scope,
+    ) -> Result<bool> {
+        for selected in evidence {
+            let children = match &selected.evidence {
+                CoreInstanceEvidence::Standard {
+                    identity,
+                    evidence_arguments,
+                    ..
+                } => {
+                    if matches!(identity.as_str(), "std/maybe::Show" | "std/maybe::Debug") {
+                        return Ok(true);
+                    }
+                    evidence_arguments.as_slice()
+                }
+                CoreInstanceEvidence::Local {
+                    evidence_arguments, ..
+                }
+                | CoreInstanceEvidence::Imported {
+                    evidence_arguments, ..
+                } => evidence_arguments.as_slice(),
+                CoreInstanceEvidence::Parameter { .. } => &[],
+            };
+            if self.deferred_maybe_display(children, scope)? {
+                return Ok(true);
+            }
+            if let [ty] = selected.constraint.arguments.as_slice() {
+                if ["Show", "Debug"]
+                    .into_iter()
+                    .any(|method| lists::standard_trait(selected, method, ty))
+                    && matches!(self.local_canonical_type(ty, scope)?, CoreType::Named {name, arguments} if name == "std/prelude::Maybe" && arguments.len() == 1)
+                {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
     pub(super) fn structural_display_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
@@ -14,35 +55,40 @@ impl Backend<'_> {
         else {
             return Ok(None);
         };
-        let (method, array) = match identity.as_str() {
-            "std/tuple::Show" => ("Show", false),
-            "std/tuple::Debug" => ("Debug", false),
-            "std/array::Show" => ("Show", true),
-            "std/array::Debug" => ("Debug", true),
+        let (method, collection) = match identity.as_str() {
+            "std/tuple::Show" => ("Show", None),
+            "std/tuple::Debug" => ("Debug", None),
+            "std/array::Show" => ("Show", Some("Array")),
+            "std/array::Debug" => ("Debug", Some("Array")),
+            "std/maybe::Show" => ("Show", Some("Maybe")),
+            "std/maybe::Debug" => ("Debug", Some("Maybe")),
             _ => return Ok(None),
         };
-        if array {
+        if let Some(collection) = collection {
             let ([element], [child]) = (type_arguments.as_slice(), evidence_arguments.as_slice())
             else {
-                return Err("Rust backend: invalid canonical Array display evidence arity".into());
+                return Err(
+                    "Rust backend: invalid canonical collection display evidence arity".into(),
+                );
             };
             let [ty] = selected.constraint.arguments.as_slice() else {
                 return Err(
-                    "Rust backend: invalid canonical Array display constraint arity".into(),
+                    "Rust backend: invalid canonical collection display constraint arity".into(),
                 );
             };
-            if !array_element(ty).is_some_and(|ty| ty == element)
+            if !collection_element(ty, collection).is_some_and(|ty| ty == element)
                 || !lists::standard_trait(selected, method, ty)
                 || !lists::standard_trait(child, method, element)
             {
                 return Err(
-                    "Rust backend: invalid canonical Array display identity or child".into(),
+                    "Rust backend: invalid canonical collection display identity or child".into(),
                 );
             }
             self.validate_display_child(child, method, scope)?;
             let children = self.evidence(evidence_arguments, scope)?;
             return Ok(Some(format!(
-                "native_array_display_dictionary(({children}).remove(0), {})",
+                "native_{}_display_dictionary(({children}).remove(0), {})",
+                collection.to_ascii_lowercase(),
                 method == "Debug"
             )));
         }
@@ -316,14 +362,14 @@ pub(super) fn canonical_type(
     })
 }
 
-fn array_element(ty: &CoreType) -> Option<&CoreType> {
+fn collection_element<'a>(ty: &'a CoreType, collection: &str) -> Option<&'a CoreType> {
     let arguments = match ty {
-        CoreType::Named { name, arguments } if name == "Array" => arguments,
+        CoreType::Named { name, arguments } if name == collection => arguments,
         CoreType::ExternalNamed {
             canonical,
             arguments,
             ..
-        } if canonical == "std/prelude::Array" => arguments,
+        } if canonical == &format!("std/prelude::{collection}") => arguments,
         _ => return None,
     };
     let [element] = arguments.as_slice() else {

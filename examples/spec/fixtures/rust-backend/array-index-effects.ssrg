@@ -1,0 +1,31 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  cell <- refs.make 41
+  let kept = match [cell][0] { Just value -> value; Nothing -> cell }
+  let display = \n: Int -> do {
+    current <- refs.get kept
+    println (show (current + n))
+  }
+  let selected = match [display][0] { Just callback -> callback; Nothing -> display }
+  let cold = selected 1
+  let task = match [cold][0] { Just value -> value; Nothing -> cold }
+  println "cold"
+  task
+  refs.set 42 kept
+  task
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed kept) (\value -> refs.set 7 value)
+    task
+  }
+  current <- refs.get cell
+  println (show current)
+  callbacks <- refs.make [display]
+  let after = \n: Int -> do {
+    values <- refs.get callbacks
+    let callback = match values[0] { Just value -> value; Nothing -> display }
+    callback n
+  }
+  refs.set [after, after] callbacks
+}

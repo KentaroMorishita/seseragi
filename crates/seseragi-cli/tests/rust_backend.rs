@@ -201,6 +201,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("local-dictionaries", 3),
         ("method-dictionaries", 3),
         ("hkt-return", 3),
+        ("array-index", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -423,6 +424,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "tuple-nominal",
         "array-display",
         "array-nominal",
+        "array-index",
         "instance-contracts",
         "deprecation",
         "instance-alias",
@@ -508,6 +510,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "tuple-nominal",
         "array-display",
         "array-nominal",
+        "array-index",
         "instance-alias",
         "instance-disjoint",
         "constructor-disjoint",
@@ -896,6 +899,7 @@ fn emission_does_not_launch_rustc_and_invalid_targets_write_nothing() {
     );
     assert!(output_path.exists());
     for (name, source) in [
+        ("maybe-deferred-partial", "fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix\npub fn answer -> Unit = { let partial = prefix [9007199254740991 + 1][0]; () }\n"),
         ("float-power", "pub fn answer -> Float = 1.5 ** 2.0\n"),
         ("float-named-power", "import * as floats from \"std/float\"\npub fn answer -> Float = floats.power 2.0 1.5\n"),
         ("float-parse", "import * as floats from \"std/float\"\npub fn answer -> Either<floats.FloatParseError, Float> = floats.parse \"1.5\"\n"),
@@ -975,6 +979,18 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "array-index-effects",
+            "fixtures/rust-backend/array-index-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/array-index-effects.stdout"),
+            0,
+        ),
+        (
+            "array-index-defect",
+            "fixtures/rust-backend/array-index-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/array-index-defect.stdout"),
+            70,
+        ),
         (
             "method-dictionary-effects",
             "fixtures/rust-backend/method-dictionary-effects.ssrg",
@@ -1722,4 +1738,9 @@ fn constrained_method_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn unconstrained_hkt_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("hkt-return");
+}
+
+#[test]
+fn array_index_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("array-index");
 }
