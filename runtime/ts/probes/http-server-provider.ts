@@ -302,7 +302,11 @@ async function assertCloseCancelsInFlight(
   const closed = await run(close(started.value), environment, execution.context)
   assert(closed.kind === "success", "close must settle after request cancellation")
   await cancellationObserved
-  await request
+  const cancelledRequest = await request
+  assert(
+    cancelledRequest instanceof Error,
+    "cancelled request must close its connection without an HTTP response"
+  )
   assert(finalized === 1, "cancelled request resources must finalize exactly once")
   assertProviderConformanceCase({
     id: "cancellation",

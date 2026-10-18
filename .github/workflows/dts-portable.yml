@@ -84,6 +84,7 @@ jobs:
           cargo test --locked -p seseragi-dts --no-default-features
           cargo test --locked -p seseragi-cli --test dts
           cargo test --locked -p seseragi-wasm
+          cargo test --locked -p seseragi-conformance --bin seseragi-conformance runtime_package::http_server::tests
       - name: Build and execute converter without host imports
         run: bun run check:dts:wasm
       - uses: jetli/wasm-pack-action@v0.4.0

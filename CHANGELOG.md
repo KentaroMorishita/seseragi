@@ -6,6 +6,10 @@
 
 - Use Bun 1.4.3 for development, CI and release verification, with one `.bun-version` file shared by every workflow. Preserve locked dependency versions and the existing TypeScript checker. Require owned browser verification daemons and their child processes to exit after each run (#891).
 
+### Fixed
+
+- Abort cancelled Bun HTTP requests without returning a status-zero response or publishing an HTTP success. Preserve request cancellation, server shutdown and exactly-once resource finalizers on Bun 1.4.3 (#891).
+
 ## [0.61.54] - 2026-10-18
 
 ### Fixed
