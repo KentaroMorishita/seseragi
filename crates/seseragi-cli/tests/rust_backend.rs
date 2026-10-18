@@ -510,6 +510,7 @@ fn collection_normal_bodies_typecheck_and_match_fresh_bun_and_node() {
         "tuple-nominal",
         "array-display",
         "array-nominal",
+        "array-index",
         "instance-alias",
         "instance-disjoint",
         "constructor-disjoint",
@@ -1736,4 +1737,9 @@ fn constrained_method_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn unconstrained_hkt_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("hkt-return");
+}
+
+#[test]
+fn array_index_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("array-index");
 }
