@@ -277,7 +277,11 @@ fn fully_applied_equality_runs_its_first_stage_before_the_right_operand() {
         ));
         fs::create_dir(&directory).unwrap();
         let file = directory.join("program.rs");
-        let exe = directory.join("program");
+        let exe = directory.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        });
         fs::write(&file, rust).unwrap();
         let built = Command::new("rustc")
             .args(["--edition=2021", "-O", "-o"])
