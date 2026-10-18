@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "module": "artifact/strict-comparison-arguments",
+  "target": "typescript-es2022",
+  "profile": "development",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "unicodeVersion": "17.0.0",
+    "requirements": [
+      "core.list",
+      "core.adt",
+      "core.int",
+      "core.bool",
+      "core.ordering.equal",
+      "core.ordering.greater",
+      "core.unit",
+      "core.int.ord-dictionary",
+      "core.char.ord-dictionary",
+      "core.char",
+      "core.string",
+      "core.float64.api.clamp-number",
+      "core.maybe",
+      "core.float64",
+      "core.list.append",
+      "core.list.from-array",
+      "core.list.take",
+      "core.float64.api.ieee-eq",
+      "core.int.eq-dictionary",
+      "core.list.length",
+      "effect.console.println",
+      "core.bool.show",
+      "core.array.show"
+    ]
+  },
+  "exports": [
+    "probe",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Ord$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

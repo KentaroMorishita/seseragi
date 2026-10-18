@@ -259,12 +259,17 @@
     "graphemeSliceErrorDebug",
     "source",
     "normalizeNfc",
-    "normalize",
+    "__ssrg$text_bytes$saved0",
     "NFC",
+    "normalize",
     "scalarSlice",
+    "__ssrg$text_bytes$saved0",
+    "__ssrg$text_bytes$saved1",
     "sliceScalars",
     "graphemeSlice",
+    "__ssrg$text_bytes$saved0",
+    "__ssrg$text_bytes$saved1",
     "slice"
   ],
-  "mappings": ";;;;;;;;;;;;;;AAYAA;AACAE;AAKAE;AAEAE;AAdAkP;AACAC;AACAG;AACAE"
+  "mappings": ";;;;;;;;;;;;;;AAYAA;AACAE;AAKAE;AAEAE;AAdAkP;AACAC;AACAI;AACAI"
 }

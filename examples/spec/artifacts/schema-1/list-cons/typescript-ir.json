@@ -173,26 +173,47 @@
         }
       },
       "initializer": {
-        "kind": "lambda",
-        "parameter": "__ssrg$collection$partial$0: List<number>",
-        "body": {
-          "kind": "type-application-call",
-          "callee": "_ssrg_list_cons",
-          "typeArguments": [
-            {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$collection$saved0",
+            "type": {
               "kind": "number"
-            }
-          ],
-          "arguments": [
-            {
+            },
+            "initializer": {
               "kind": "number",
               "value": "4"
             },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$collection$partial$0"
+            "origin": {
+              "source": "main.ssrg",
+              "start": 210,
+              "end": 215
             }
-          ]
+          }
+        ],
+        "result": {
+          "kind": "lambda",
+          "parameter": "__ssrg$collection$partial$0: List<number>",
+          "body": {
+            "kind": "type-application-call",
+            "callee": "_ssrg_list_cons",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$collection$saved0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$collection$partial$0"
+              }
+            ]
+          }
         }
       },
       "origin": {

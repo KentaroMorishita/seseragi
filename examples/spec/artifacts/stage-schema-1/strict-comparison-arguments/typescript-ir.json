@@ -1,0 +1,1427 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/strict-comparison-arguments",
+  "runtimeRequirements": [
+    "core.list",
+    "core.adt",
+    "core.int",
+    "core.bool",
+    "core.ordering.equal",
+    "core.ordering.greater",
+    "core.unit",
+    "core.int.ord-dictionary",
+    "core.char.ord-dictionary",
+    "core.char",
+    "core.string",
+    "core.float64.api.clamp-number",
+    "core.maybe",
+    "core.float64",
+    "core.list.append",
+    "core.list.from-array",
+    "core.list.take",
+    "core.float64.api.ieee-eq",
+    "core.int.eq-dictionary",
+    "core.list.length",
+    "effect.console.println",
+    "core.bool.show",
+    "core.array.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.ordering.equal",
+      "local": "_ssrg_ordering_Equal"
+    },
+    {
+      "feature": "core.ordering.greater",
+      "local": "_ssrg_ordering_Greater"
+    },
+    {
+      "feature": "core.int.ord-dictionary",
+      "local": "_ssrg_int_ord_dictionary"
+    },
+    {
+      "feature": "core.char.ord-dictionary",
+      "local": "_ssrg_char_ord_dictionary"
+    },
+    {
+      "feature": "core.float64.api.clamp-number",
+      "local": "_ssrg_float_clampNumber"
+    },
+    {
+      "feature": "core.list.append",
+      "local": "_ssrg_list_append"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.list.take",
+      "local": "_ssrg_list_take"
+    },
+    {
+      "feature": "core.float64.api.ieee-eq",
+      "local": "_ssrg_float_ieeeEq"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
+    },
+    {
+      "feature": "core.list.length",
+      "local": "_ssrg_list_length"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Mark",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Mark",
+          "tag": "Mark",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 85,
+            "end": 89
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 93
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 165
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Mark",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Mark",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "boolean",
+              "value": false
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 116,
+              "end": 163
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Mark",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 166,
+        "end": 287
+      },
+      "dictionaryExport": "__ssrg$instance$Ord$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Mark",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "lambda",
+              "parameter": "right: Mark",
+              "body": {
+                "kind": "conditional",
+                "condition": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    },
+                    "method": "eq",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "left"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "right"
+                      }
+                    ]
+                  },
+                  "type": {
+                    "kind": "boolean"
+                  }
+                },
+                "thenBranch": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_ordering_Equal"
+                },
+                "elseBranch": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_ordering_Greater"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 189,
+              "end": 285
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "lower",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$comparison$stage",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "ordering"
+              }
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              "method": "compare",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 338,
+              "end": 346
+            }
+          }
+        ],
+        "result": {
+          "kind": "lambda",
+          "parameter": "__ssrg$comparison$right: A",
+          "body": {
+            "kind": "binary",
+            "operator": "===",
+            "left": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "call",
+                "callee": "__ssrg$comparison$stage",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$comparison$right"
+                  }
+                ]
+              },
+              "field": "tag"
+            },
+            "right": {
+              "kind": "string",
+              "value": "Less"
+            }
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 288,
+        "end": 346
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "probe",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "less",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_ord_dictionary"
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 406,
+                    "end": 411
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: number",
+                "body": {
+                  "kind": "binary",
+                  "operator": "===",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Less"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 379,
+              "end": 411
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "atMost",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_ord_dictionary"
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 440,
+                    "end": 446
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: number",
+                "body": {
+                  "kind": "binary",
+                  "operator": "!==",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Greater"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 412,
+              "end": 446
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "greater",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_ord_dictionary"
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 476,
+                    "end": 481
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: number",
+                "body": {
+                  "kind": "binary",
+                  "operator": "===",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Greater"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 447,
+              "end": 481
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "atLeast",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "number"
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_ord_dictionary"
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 511,
+                    "end": 517
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: number",
+                "body": {
+                  "kind": "binary",
+                  "operator": "!==",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Less"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 482,
+              "end": 517
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "charLess",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "string"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "string"
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_char_ord_dictionary"
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "λ"
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 549,
+                    "end": 557
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: string",
+                "body": {
+                  "kind": "binary",
+                  "operator": "===",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Less"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 518,
+              "end": 557
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "chosen",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "Mark",
+                "arguments": []
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$comparison$stage",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "reference",
+                      "name": "Mark",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "ordering"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Ord$1",
+                      "typeArguments": [],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$instance$Eq$0"
+                        }
+                      ]
+                    },
+                    "method": "compare",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "Mark",
+                        "arguments": [
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 587,
+                    "end": 599
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$comparison$right: Mark",
+                "body": {
+                  "kind": "binary",
+                  "operator": "===",
+                  "left": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "call",
+                      "callee": "__ssrg$comparison$stage",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$comparison$right"
+                        }
+                      ]
+                    },
+                    "field": "tag"
+                  },
+                  "right": {
+                    "kind": "string",
+                    "value": "Greater"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 558,
+              "end": 599
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "generic",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "boolean"
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "call",
+                "callee": "lower",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "3"
+                  },
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_int_ord_dictionary"
+                  }
+                ]
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "number"
+                },
+                "result": {
+                  "kind": "boolean"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 600,
+              "end": 623
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "clamp",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "number"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$numeric$saved0",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "0.0"
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 638,
+                    "end": 665
+                  }
+                },
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$numeric$saved1",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "10.0"
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 638,
+                    "end": 665
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$numeric$partial$0: number",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_float_clampNumber",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$numeric$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$numeric$saved1"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$numeric$partial$0"
+                    }
+                  ]
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 624,
+              "end": 665
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "prefix",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "result": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$collection$saved0",
+                  "type": {
+                    "kind": "list",
+                    "element": {
+                      "kind": "number"
+                    }
+                  },
+                  "initializer": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "number"
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 681,
+                    "end": 698
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$collection$partial$0: List<number>",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_append",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$collection$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$collection$partial$0"
+                    }
+                  ]
+                }
+              }
+            },
+            "initializerInOuterScope": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 666,
+              "end": 698
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "take",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "result": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "sequence",
+              "statements": [
+                {
+                  "kind": "pure-let",
+                  "name": "__ssrg$collection$saved0",
+                  "type": {
+                    "kind": "number"
+                  },
+                  "initializer": {
+                    "kind": "number",
+                    "value": "1"
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 736,
+                    "end": 748
+                  }
+                }
+              ],
+              "result": {
+                "kind": "lambda",
+                "parameter": "__ssrg$collection$partial$0: List<number>",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_take",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$collection$saved0"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$collection$partial$0"
+                    }
+                  ]
+                }
+              }
+            },
+            "initializerInOuterScope": true,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 699,
+              "end": 748
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "less",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "less",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "3"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "atMost",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "greater",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "0"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "atLeast",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "charLess",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "🙂"
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "chosen",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Mark",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "call",
+              "callee": "generic",
+              "arguments": [
+                {
+                  "kind": "number",
+                  "value": "4"
+                }
+              ]
+            },
+            {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "call",
+                "callee": "clamp",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "11.0"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_float_ieeeEq",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "number",
+                        "value": "10.0"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            },
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_eq_dictionary"
+              },
+              "method": "eq",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_length",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "take",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "prefix",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_list_from_array",
+                              "arguments": [
+                                {
+                                  "kind": "array",
+                                  "elements": [
+                                    {
+                                      "kind": "number",
+                                      "value": "2"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "3"
+                                    }
+                                  ],
+                                  "elementType": {
+                                    "kind": "number"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "number",
+                  "value": "1"
+                }
+              ]
+            }
+          ],
+          "elementType": {
+            "kind": "boolean"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 348,
+        "end": 1038
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "checked-result",
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_show_arrayShow",
+                "typeArguments": [
+                  {
+                    "kind": "boolean"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_boolShow"
+                  }
+                ]
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "probe",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1040,
+        "end": 1086
+      }
+    }
+  ]
+}

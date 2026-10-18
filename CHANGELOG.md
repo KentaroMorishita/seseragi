@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.54] - 2026-10-18
+
+### Fixed
+
+- Evaluate supplied comparison and uncurried standard-library partial arguments once at creation. Preserve the selected compare method stage and Ordering-to-Bool conversion, and support certified native Int Ord dictionaries and canonical Ord instances with their proved Eq parent. Other specialized operator ABI paths remain tracked in #887.
+
 ## [0.61.53] - 2026-10-18
 
 ### Fixed

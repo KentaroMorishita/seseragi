@@ -1,0 +1,4 @@
+pub effect fn main = do {
+  let saved: Int -> Bool = (<) (9007199254740991 + 1)
+  println "unreachable"
+}

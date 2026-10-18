@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "case": "strict-comparison-arguments",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/strict-comparison-arguments",
+    "export": "probe",
+    "compiledModule": "../../stage-schema-1/strict-comparison-arguments/generated-module.json",
+    "typedInterface": "../../stage-schema-1/strict-comparison-arguments/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": {
+      "result": "json"
+    }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.adt",
+      "core.int",
+      "core.bool",
+      "core.ordering.equal",
+      "core.ordering.greater",
+      "core.unit",
+      "core.int.ord-dictionary",
+      "core.char.ord-dictionary",
+      "core.char",
+      "core.string",
+      "core.float64.api.clamp-number",
+      "core.maybe",
+      "core.float64",
+      "core.list.append",
+      "core.list.from-array",
+      "core.list.take",
+      "core.float64.api.ieee-eq",
+      "core.int.eq-dictionary",
+      "core.list.length",
+      "effect.console.println",
+      "core.bool.show",
+      "core.array.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

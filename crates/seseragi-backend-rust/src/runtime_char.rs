@@ -106,7 +106,13 @@ fn native_dictionary_comparison(operator: &str, dictionary: V, left: V, right: V
         let equal = dictionary.field("eq").apply(left).apply(right).boolean();
         return V::Bool(if operator == "==" { equal } else { !equal });
     }
-    let order = dictionary.field("compare").apply(left).apply(right);
+    native_ordering_comparison(
+        operator,
+        dictionary.field("compare").apply(left).apply(right),
+    )
+}
+
+fn native_ordering_comparison(operator: &str, order: V) -> V {
     let less = order.tagged("std/prelude::Less");
     let equal = order.tagged("std/prelude::Equal");
     let greater = order.tagged("std/prelude::Greater");
@@ -117,6 +123,35 @@ fn native_dictionary_comparison(operator: &str, dictionary: V, left: V, right: V
         ">" => greater,
         ">=" => greater || equal,
         _ => panic!("Rust ABI: unsupported dictionary comparison"),
+    })
+}
+
+fn native_int_ord_dictionary() -> V {
+    cached("std/int::Ord", || {
+        V::dict(vec![
+            (
+                "eq",
+                V::fun(vec![], |_, left| {
+                    V::fun(vec![left], |c, right| binary("==", c[0].clone(), right))
+                }),
+            ),
+            (
+                "compare",
+                V::fun(vec![], |_, left| {
+                    V::fun(vec![left], |c, right| {
+                        let (V::Int(left), V::Int(right)) = (&c[0], right) else {
+                            panic!("Rust ABI: expected Int Ord operands")
+                        };
+                        let tag = match left.cmp(&right) {
+                            std::cmp::Ordering::Less => "std/prelude::Less",
+                            std::cmp::Ordering::Equal => "std/prelude::Equal",
+                            std::cmp::Ordering::Greater => "std/prelude::Greater",
+                        };
+                        V::adt(tag, V::Unit)
+                    })
+                }),
+            ),
+        ])
     })
 }
 

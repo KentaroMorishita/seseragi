@@ -4,6 +4,6 @@ $ssrg$assertUnicodeVersion("17.0.0")
 
 export const constants: readonly [number, number, number, number] = [_ssrg_math_pi, _ssrg_math_e, _ssrg_math_tau, _ssrg_math_pi] as const;
 export const functions: ReadonlyArray<(argument: number) => number> = [_ssrg_math_sin, _ssrg_math_cos, _ssrg_math_tan, _ssrg_math_asin, _ssrg_math_acos, _ssrg_math_atan, _ssrg_math_exp, _ssrg_math_log, _ssrg_math_log2, _ssrg_math_log10, _ssrg_math_sqrt, _ssrg_math_cbrt, _ssrg_math_sinh, _ssrg_math_cosh, _ssrg_math_tanh];
-export const partial: (argument: number) => number = (__ssrg$numeric$partial$0: number) => _ssrg_math_atan2(1.0, __ssrg$numeric$partial$0);
+export const partial: (argument: number) => number = (() => { const __ssrg$numeric$saved0: number = 1.0; return (__ssrg$numeric$partial$0: number) => _ssrg_math_atan2(__ssrg$numeric$saved0, __ssrg$numeric$partial$0); })();
 export const length: number = _ssrg_math_hypot(3.0, 4.0);
 export const result: number = partial(1.0);

@@ -266,21 +266,42 @@
         }
       },
       "initializer": {
-        "kind": "lambda",
-        "parameter": "__ssrg$numeric$partial$0: number",
-        "body": {
-          "kind": "runtime-call",
-          "callee": "_ssrg_math_atan2",
-          "arguments": [
-            {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$numeric$saved0",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
               "kind": "number",
               "value": "1.0"
             },
-            {
-              "kind": "identifier",
-              "name": "__ssrg$numeric$partial$0"
+            "origin": {
+              "source": "main.ssrg",
+              "start": 453,
+              "end": 462
             }
-          ]
+          }
+        ],
+        "result": {
+          "kind": "lambda",
+          "parameter": "__ssrg$numeric$partial$0: number",
+          "body": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_math_atan2",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$numeric$saved0"
+              },
+              {
+                "kind": "identifier",
+                "name": "__ssrg$numeric$partial$0"
+              }
+            ]
+          }
         }
       },
       "origin": {
