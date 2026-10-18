@@ -1820,7 +1820,7 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
             assert!(!compiled.generated.typescript.contains(removed));
         }
         assert!(compiled.generated.typescript.contains(
-            "(__ssrg$numeric$partial$0: number) => _ssrg_int_checkedAdd(1, __ssrg$numeric$partial$0)"
+            "const __ssrg$numeric$saved0: number = 1; return (__ssrg$numeric$partial$0: number) => _ssrg_int_checkedAdd(__ssrg$numeric$saved0, __ssrg$numeric$partial$0)"
         ));
     }
 
