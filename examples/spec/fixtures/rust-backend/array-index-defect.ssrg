@@ -1,0 +1,17 @@
+import * as effects from "std/effect"
+
+fn receiver -> Array<Int> = {
+  let ignored = 9007199254740991 + 1
+  [1]
+}
+
+fn offset -> Int = 9007199254740991 * 9007199254740991
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do {
+    println "acquired"
+    effects.succeed ()
+  }) (\_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ()) (println "released"))
+  println (show ((receiver ())[offset ()]))
+  println "unreachable"
+}

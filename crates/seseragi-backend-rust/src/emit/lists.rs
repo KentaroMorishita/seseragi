@@ -131,6 +131,8 @@ pub(super) fn valid_display_dispatch(
             | "std/tuple::Debug"
             | "std/array::Show"
             | "std/array::Debug"
+            | "std/maybe::Show"
+            | "std/maybe::Debug"
     ) && primitive_display(selected).is_none()
     {
         return true;

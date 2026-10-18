@@ -1,0 +1,11 @@
+pub type Box<A> = | Box A
+
+instance<A> Show<Box<A>> where Show<A> {
+  fn show value: Box<A> -> String = match value { Box item -> "box=" + show item }
+}
+
+pub fn read<A> values: Array<A> -> offset: Int -> Maybe<A> = values[offset]
+
+pub fn higher<F<_>> values: Array<F<Int>> -> Maybe<F<Int>> = values[0]
+
+pub fn keep<A> value: A -> (Int -> A) = \_: Int -> value

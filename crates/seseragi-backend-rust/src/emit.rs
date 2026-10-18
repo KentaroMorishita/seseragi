@@ -10,6 +10,7 @@ use seseragi_lowering::{
 };
 use std::collections::{BTreeMap, BTreeSet};
 
+mod arrays;
 mod canonical;
 mod characters;
 mod display;
@@ -653,6 +654,9 @@ impl Backend<'_> {
                 evidence_argument_index,
                 ..
             } => {
+                if callee == "builtin::array-index" {
+                    return self.array_index(expr, scope);
+                }
                 check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);

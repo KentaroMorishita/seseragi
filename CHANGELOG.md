@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.52] - 2026-10-18
+
+### Added
+
+- Execute safe Array indexing in the Rust target using the checked canonical Array, Int and Maybe types. Evaluate the receiver and index once in source order, return Nothing outside the array, and retain selected functions, dictionaries, Refs and cold Effects after the container is dropped (#883).
+- Execute standard Maybe Show and Debug with the selected child dictionary. Preserve nested display depth, skip the child for Nothing, and keep Defect and finalizer behavior (#883).
+
 ## [0.61.51] - 2026-10-18
 
 ### Fixed

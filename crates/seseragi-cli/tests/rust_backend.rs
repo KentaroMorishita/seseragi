@@ -201,6 +201,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("local-dictionaries", 3),
         ("method-dictionaries", 3),
         ("hkt-return", 3),
+        ("array-index", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -423,6 +424,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "tuple-nominal",
         "array-display",
         "array-nominal",
+        "array-index",
         "instance-contracts",
         "deprecation",
         "instance-alias",
@@ -975,6 +977,18 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "array-index-effects",
+            "fixtures/rust-backend/array-index-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/array-index-effects.stdout"),
+            0,
+        ),
+        (
+            "array-index-defect",
+            "fixtures/rust-backend/array-index-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/array-index-defect.stdout"),
+            70,
+        ),
         (
             "method-dictionary-effects",
             "fixtures/rust-backend/method-dictionary-effects.ssrg",
