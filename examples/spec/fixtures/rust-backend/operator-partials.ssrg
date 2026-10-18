@@ -1,0 +1,33 @@
+type Mark = | Mark Int
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = \right -> left
+}
+
+fn append<A> left: A -> right: A -> A where Add<A, A, A> = {
+  let operator: A -> A -> A = (+)
+  operator left right
+}
+
+pub fn probe -> Array<String> = {
+  let addition: Int -> Int = add 40
+  let subtraction: Int -> Int = sub 44
+  let multiplication: Int -> Int = mul 21
+  let arithmetic: Int -> Int -> Int = (+)
+  let text: String -> String = add "雫"
+  let chosen: Mark -> Mark -> Mark = (+)
+  let saved = chosen (Mark 7)
+  let floating: Float -> Float = add 1.25
+  [
+    show (addition 2),
+    show (addition 3),
+    show (subtraction 2),
+    show (multiplication 2),
+    show (arithmetic 40 2),
+    text "🙂",
+    show (floating 0.75),
+    show (match saved (Mark 99) { Mark value -> value }),
+    show (match append (Mark 8) (Mark 99) { Mark value -> value })
+  ]
+}
+
+pub effect fn main = println (show (probe ()))

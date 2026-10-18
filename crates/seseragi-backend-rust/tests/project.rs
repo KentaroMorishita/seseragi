@@ -179,6 +179,50 @@ fn display_children_keep_provider_identity_and_instantiated_types() {
 }
 
 #[test]
+fn operator_partial_project_keeps_the_selected_provider_owner() {
+    let loaded = seseragi_project::load_local_project(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/spec/fixtures/rust-backend-projects/operator-partials"
+    ))
+    .unwrap();
+    let checked = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+    let modules = checked
+        .compiled
+        .order
+        .iter()
+        .map(|id| checked.compiled.modules[id].core_ir.clone())
+        .collect::<Vec<_>>();
+    emit_rust_project(
+        &modules.iter().collect::<Vec<_>>(),
+        &checked.entry_module,
+        "probe",
+    )
+    .unwrap();
+    for kind in 0..2 {
+        let mut encoded = serde_json::to_value(&modules).unwrap();
+        for module in encoded.as_array_mut().unwrap() {
+            for key in ["adts", "bindings", "functions"] {
+                module
+                    .as_object_mut()
+                    .unwrap()
+                    .entry(key)
+                    .or_insert(serde_json::json!([]));
+            }
+        }
+        assert!(counterfeit_import(&mut encoded, kind) > 0);
+        let changed: Vec<CoreModule> = serde_json::from_value(encoded).unwrap();
+        let error = emit_rust_project(
+            &changed.iter().collect::<Vec<_>>(),
+            &checked.entry_module,
+            "probe",
+        )
+        .unwrap_err();
+        assert!(error.message.contains("provider owner"), "{error:?}");
+        assert!(error.origin.is_some());
+    }
+}
+
+#[test]
 fn initialization_uses_source_import_postorder_instead_of_checking_order() {
     let loaded = seseragi_project::load_local_project(concat!(
         env!("CARGO_MANIFEST_DIR"),

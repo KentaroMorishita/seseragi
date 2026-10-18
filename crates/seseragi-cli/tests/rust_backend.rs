@@ -979,6 +979,40 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "operator-partials",
+            "fixtures/rust-backend/operator-partials.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/operator-partials.stdout"),
+            0,
+        ),
+        (
+            "operator-partial-defect",
+            "fixtures/rust-backend/operator-partial-defect.ssrg",
+            "",
+            70,
+        ),
+        (
+            "operator-partial-effects",
+            "fixtures/rust-backend/operator-partial-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/operator-partial-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "operator-partial-children",
+            "fixtures/rust-backend/operator-partial-children.ssrg",
+            "",
+            70,
+        ),
+        (
+            "operator-partial-trace",
+            "fixtures/rust-backend/operator-partial-trace.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/operator-partial-trace.stdout"
+            ),
+            0,
+        ),
+        (
             "comparison-partial-defect",
             "fixtures/rust-backend/comparison-partial-defect.ssrg",
             include_str!(
@@ -1758,4 +1792,9 @@ fn unconstrained_hkt_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn array_index_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("array-index");
+}
+
+#[test]
+fn operator_partial_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("operator-partials");
 }

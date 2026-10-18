@@ -1,0 +1,13 @@
+type Mark = | Mark Int
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = {
+    let bad = 9007199254740991 + 1
+    \right -> left
+  }
+}
+
+pub effect fn main = do {
+  let operator: Mark -> Mark -> Mark = (+)
+  let saved = operator (Mark 1)
+  println "unreachable"
+}

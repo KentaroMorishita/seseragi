@@ -362,6 +362,29 @@ fn binary(op: &str, a: V, b: V) -> V {
     }
 }
 
+fn native_operator_dictionary(identity: &'static str) -> V {
+    cached(identity, || {
+        macro_rules! arithmetic {
+            ($method:literal, $operator:literal) => {
+                V::dict(vec![(
+                    $method,
+                    V::fun(vec![], |_, left| {
+                        V::fun(vec![left], |c, right| {
+                            binary($operator, c[0].clone(), right)
+                        })
+                    }),
+                )])
+            };
+        }
+        match identity {
+            "std/int::Add" | "std/string::Add" => arithmetic!("add", "+"),
+            "std/int::Sub" => arithmetic!("sub", "-"),
+            "std/int::Mul" => arithmetic!("mul", "*"),
+            _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
+        }
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

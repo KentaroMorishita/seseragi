@@ -1,0 +1,14 @@
+import { Mark as Foreign, first, number } from "./facade"
+
+pub fn probe -> Array<Int> = {
+  let saved = first (Foreign 41)
+  let numeric = number 40
+  [
+    match saved (Foreign 99) { Foreign value -> value },
+    match saved (Foreign 100) { Foreign value -> value },
+    numeric 2,
+    numeric 3
+  ]
+}
+
+pub effect fn main = println (show (probe ()))

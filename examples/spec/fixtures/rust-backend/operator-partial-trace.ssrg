@@ -1,0 +1,26 @@
+type Mark = | Mark Int
+fn prefixValue -> Int = 40
+fn markValue -> Mark = Mark 7
+fn firstStage -> Unit = ()
+fn marker -> Unit = ()
+fn rightValue -> Int = 2
+
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = {
+    let step = firstStage ()
+    \right -> left
+  }
+}
+
+pub fn probe -> Array<Int> = {
+  let saved: Int -> Int = add (prefixValue ())
+  let operator: Mark -> Mark -> Mark = (+)
+  let selected = operator (markValue ())
+  let before = marker ()
+  let first = saved (rightValue ())
+  let second = saved (rightValue ())
+  let third: Mark = selected (Mark 99)
+  [first, second, match third { Mark value -> value }]
+}
+
+pub effect fn main = println (show (probe ()))

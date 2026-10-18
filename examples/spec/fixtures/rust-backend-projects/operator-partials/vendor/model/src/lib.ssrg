@@ -1,0 +1,11 @@
+pub type Mark = | Mark Int
+instance Add<Mark, Mark, Mark> {
+  fn add left: Mark -> (Mark -> Mark) = \right -> left
+}
+
+pub fn first<A> value: A -> (A -> A) where Add<A, A, A> = {
+  let operator: A -> A -> A = (+)
+  operator value
+}
+
+pub fn number value: Int -> (Int -> Int) = add value

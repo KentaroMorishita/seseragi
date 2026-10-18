@@ -1,0 +1,31 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Watch = | Watch Ref<Watch -> Watch>
+instance Add<Watch, Watch, Watch> {
+  fn add left: Watch -> (Watch -> Watch) = \right -> left
+}
+
+effect fn delayed = do { println "cold"; effects.succeed 42 }
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch -> value)
+  released <- refs.make 0
+  let left = Watch callbacks
+  let cold = delayed ()
+  let operator: Watch -> Watch -> Watch = (+)
+  let saved = operator left
+  refs.set saved callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed saved) (\held: (Watch -> Watch) -> refs.set 1 released)
+    again <- refs.get callbacks
+    value <- cold
+    println (show value)
+    let other: Watch = again left
+    println (show (match other { Watch _ -> 7 }))
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}
