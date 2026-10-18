@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-equality-partials@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/equality-partials-model@1.0.0#path:vendor/model"
+name = "fixture/equality-partials-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:03500251c59a23ac4adc72b63c38a1808d7b8175b8aec5503f8b9cfb3836e3ad"
+content_digest = "sha256:3e5827f2afe6e16105034ff31070044b78b7e8e6277401b6d4ad059fd81e9030"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-equality-partials@0.0.0#workspace:."
+name = "fixture/native-equality-partials"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:78cd4060439210ca443c6860d1f938645da8414d7eceb399fe2fccb1344974fb"
+content_digest = "sha256:ad8ccc4b3285013a40c83153d1f4c95774951a01f0597627103f89ab507c3321"
+dependencies = [
+  { import = "model", package = "fixture/equality-partials-model@1.0.0#path:vendor/model" },
+]

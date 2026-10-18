@@ -979,6 +979,40 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "equality-partials",
+            "fixtures/rust-backend/equality-partials.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/equality-partials.stdout"),
+            0,
+        ),
+        (
+            "equality-partial-trace",
+            "fixtures/rust-backend/equality-partial-trace.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/equality-partial-trace.stdout"
+            ),
+            0,
+        ),
+        (
+            "equality-partial-defect",
+            "fixtures/rust-backend/equality-partial-defect.ssrg",
+            "",
+            70,
+        ),
+        (
+            "equality-partial-children",
+            "fixtures/rust-backend/equality-partial-children.ssrg",
+            "",
+            70,
+        ),
+        (
+            "equality-partial-effects",
+            "fixtures/rust-backend/equality-partial-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/equality-partial-effects.stdout"
+            ),
+            0,
+        ),
+        (
             "operator-partials",
             "fixtures/rust-backend/operator-partials.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/operator-partials.stdout"),
@@ -1797,4 +1831,9 @@ fn array_index_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn operator_partial_project_modules_typecheck_in_both_profiles() {
     strict_project_reexports("operator-partials");
+}
+
+#[test]
+fn equality_partial_project_modules_typecheck_in_both_profiles() {
+    strict_project_reexports("equality-partials");
 }

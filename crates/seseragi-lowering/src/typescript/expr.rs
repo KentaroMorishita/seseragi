@@ -177,7 +177,16 @@ pub(super) fn lower_core_expr_to_typescript(
                         )
                     }) {
                         return checked_operator_reference(
-                            curried_equality_reference(dictionary, name == "!="),
+                            if name == "!=" {
+                                negated_equality_reference(
+                                    dictionary,
+                                    &type_ref,
+                                    imported_types,
+                                    origin,
+                                )
+                            } else {
+                                curried_dictionary_method_reference(dictionary, "eq")
+                            },
                             &type_ref,
                             imported_types,
                         );
@@ -1966,7 +1975,7 @@ fn equality_reference_from_evidence(
     if let Some(dictionary) =
         local_dictionary_expression(&selected.evidence, imported_values, imported_types)
     {
-        return Some(curried_equality_reference(dictionary, false));
+        return Some(curried_dictionary_method_reference(dictionary, "eq"));
     }
     strict_equality_operator_with_evidence("==", evidence).map(curried_binary_reference)
 }
@@ -2011,33 +2020,76 @@ fn lower_trait_operator_call(
     result
 }
 
-fn curried_equality_reference(dictionary: TypeScriptExpr, negated: bool) -> TypeScriptExpr {
-    let left = "_argument0".to_owned();
-    let right = "_argument1".to_owned();
-    let equality = TypeScriptExpr::DictionaryCall {
-        dictionary: Box::new(dictionary),
-        method: "eq".to_owned(),
-        arguments: vec![
-            TypeScriptExpr::Identifier { name: left.clone() },
-            TypeScriptExpr::Identifier {
-                name: right.clone(),
-            },
-        ],
+fn negated_equality_reference(
+    dictionary: TypeScriptExpr,
+    type_ref: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+    origin: crate::SourceSpan,
+) -> TypeScriptExpr {
+    let CoreType::Function {
+        parameter: left_type,
+        result: stage_type,
+    } = type_ref
+    else {
+        unreachable!("checked equality reference must have two source operands")
     };
-    let result = if negated {
-        TypeScriptExpr::Binary {
-            operator: "===".to_owned(),
-            left: Box::new(equality),
-            right: Box::new(TypeScriptExpr::Boolean { value: false }),
-        }
-    } else {
-        equality
+    let CoreType::Function {
+        parameter: right_type,
+        ..
+    } = stage_type.as_ref()
+    else {
+        unreachable!("checked equality reference must return its right source stage")
     };
-    TypeScriptExpr::Lambda {
-        parameter: left,
-        body: Box::new(TypeScriptExpr::Lambda {
-            parameter: right,
-            body: Box::new(result),
+    let method = "__ssrg$equality$method".to_owned();
+    let stage = "__ssrg$equality$stage".to_owned();
+    let left = "__ssrg$equality$left".to_owned();
+    let right = "__ssrg$equality$right".to_owned();
+    TypeScriptExpr::Sequence {
+        statements: vec![TypeScriptStatement::PureLet {
+            type_parameters: vec![],
+            name: method.clone(),
+            type_ref: type_ref_from_core_type(type_ref, imported_types),
+            initializer: curried_dictionary_method_reference(dictionary, "eq"),
+            initializer_in_outer_scope: false,
+            origin: origin.clone(),
+        }],
+        result: Box::new(TypeScriptExpr::Lambda {
+            parameter: format!(
+                "{left}: {}",
+                render_typescript_type(&type_ref_from_core_type(left_type, imported_types))
+            ),
+            body: Box::new(TypeScriptExpr::Sequence {
+                statements: vec![TypeScriptStatement::PureLet {
+                    type_parameters: vec![],
+                    name: stage.clone(),
+                    type_ref: type_ref_from_core_type(stage_type, imported_types),
+                    initializer: TypeScriptExpr::Call {
+                        callee: method,
+                        arguments: vec![TypeScriptExpr::Identifier { name: left }],
+                        checked_callee_type: None,
+                    },
+                    initializer_in_outer_scope: false,
+                    origin,
+                }],
+                result: Box::new(TypeScriptExpr::Lambda {
+                    parameter: format!(
+                        "{right}: {}",
+                        render_typescript_type(&type_ref_from_core_type(
+                            right_type,
+                            imported_types
+                        ))
+                    ),
+                    body: Box::new(TypeScriptExpr::Binary {
+                        operator: "===".to_owned(),
+                        left: Box::new(TypeScriptExpr::Call {
+                            callee: stage,
+                            arguments: vec![TypeScriptExpr::Identifier { name: right }],
+                            checked_callee_type: None,
+                        }),
+                        right: Box::new(TypeScriptExpr::Boolean { value: false }),
+                    }),
+                }),
+            }),
         }),
     }
 }

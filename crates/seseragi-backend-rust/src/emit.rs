@@ -15,6 +15,7 @@ mod canonical;
 mod characters;
 mod comparisons;
 mod display;
+mod equality;
 mod floats;
 mod lists;
 mod local;
@@ -146,6 +147,9 @@ pub fn emit(
             &instance.identity,
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
+        backend
+            .validate_eq_instance(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?;
         let mut values = Vec::new();
         if backend
             .ord_supertrait(instance, &scope)
@@ -374,6 +378,10 @@ impl Backend<'_> {
                 values.push(dictionary?);
                 continue;
             }
+            if let Some(dictionary) = self.int_equality_dictionary(selected, scope) {
+                values.push(dictionary?);
+                continue;
+            }
             if let Some(dictionary) = self.primitive_operator_dictionary(selected, scope) {
                 values.push(dictionary?);
                 continue;
@@ -476,6 +484,8 @@ impl Backend<'_> {
             Ok(format!("{}()", id(name)))
         } else if comparisons::is_comparison(name) {
             self.comparison_reference(name, evidence, scope)
+        } else if equality::is_equality(name) {
+            self.equality_reference(name, evidence, scope)
         } else if operators::primitive_reference(name, evidence).is_some()
             || floats::float_binary(evidence, name)
             || dictionary_arithmetic(evidence, name).is_some()
@@ -597,6 +607,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if equality::is_equality(name) && !scope.contains(name) {
+                    self.equality_result_type(type_ref, 0, evidence, scope)?;
+                }
                 if comparisons::is_comparison(name) && !scope.contains(name) {
                     self.comparison_result_type(type_ref, 0, evidence, scope)?;
                 }
@@ -689,11 +702,17 @@ impl Backend<'_> {
                 if comparisons::is_comparison(callee) && !scope.contains(callee) {
                     return self.comparison_call(expr, scope);
                 }
+                if equality::is_equality(callee) && !scope.contains(callee) {
+                    return self.equality_call(expr, scope);
+                }
                 check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);
                 }
                 if let Some(dispatch) = trait_dispatch {
+                    if dispatch.trait_identity == "std/prelude::Eq" {
+                        return self.equality_call(expr, scope);
+                    }
                     self.validate_primitive_operator_call(expr, scope)?;
                     if dispatch.method_contract.is_some() {
                         return self.method_call(expr, scope);
@@ -915,6 +934,9 @@ impl Backend<'_> {
                     // A selected user method can execute after its first
                     // source argument, before the second argument is evaluated.
                     return Ok(format!("{{ let {function} = ({dictionary}).remove(0).field({}).apply({}); {function}.apply({}) }}", quoted(method), self.expr(left, scope)?, self.expr(right, scope)?));
+                }
+                if equality::is_equality(operator) {
+                    return self.equality_binary(operator, left, right, evidence, type_ref, scope);
                 }
                 if characters::character_comparison(evidence, operator) {
                     return Ok(format!(

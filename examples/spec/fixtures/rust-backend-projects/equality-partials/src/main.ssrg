@@ -1,0 +1,10 @@
+import { Mark as Foreign, different } from "./facade"
+
+pub fn probe -> Array<Bool> = {
+  let equal: Foreign<Int> -> Foreign<Int> -> Bool = (==)
+  let unequal: Foreign<Int> -> Foreign<Int> -> Bool = (!=)
+  let same = equal (Foreign 7)
+  let other = unequal (Foreign 7)
+  [same (Foreign 7), same (Foreign 8), other (Foreign 7), other (Foreign 8), different (Foreign 7) (Foreign 8)]
+}
+pub effect fn main = println (show (probe ()))

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.57] - 2026-10-19
+
+### Fixed
+
+- Preserve the selected Eq method stage when saving equality and negated equality operator references. Run a native user Eq method’s first stage before evaluating the right operand, and retain checked Int Eq dictionaries, generic child evidence, saved closures, cold Effects and finalizers. Shared method-reference staging remains tracked in #887.
+
 ## [0.61.56] - 2026-10-19
 
 ### Fixed

@@ -1,0 +1,14 @@
+type Mark = | Mark Int
+
+instance Eq<Mark> {
+  fn eq left: Mark -> (Mark -> Bool) = {
+    let invalid = 9007199254740991 + 1
+    \right -> True
+  }
+}
+
+pub effect fn main = do {
+  let equal: Mark -> Mark -> Bool = (==)
+  let saved = equal (Mark 1)
+  println "MAIN_EXECUTED_MARKER"
+}

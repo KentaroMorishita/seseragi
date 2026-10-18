@@ -1,0 +1,39 @@
+type Box<A> = | Box A
+
+instance<A> Eq<Box<A>> where Eq<A> {
+  fn eq left: Box<A> -> (Box<A> -> Bool) = match left {
+    Box value -> {
+      let equal: A -> A -> Bool = (==)
+      let same = equal value
+      \right -> match right { Box other -> same other }
+    }
+  }
+}
+
+fn saved<A> left: A -> (A -> Bool) where Eq<A> = {
+  let different: A -> A -> Bool = (!=)
+  different left
+}
+fn forwarded<A> value: A -> Bool where Eq<A> = value == value
+fn differentInts left: Int -> right: Int -> Bool = left != right
+fn equalInts left: Int -> right: Int -> Bool = eq left right
+
+pub fn probe -> Array<Bool> = {
+  let equal: Int -> Int -> Bool = (==)
+  let different: Int -> Int -> Bool = (!=)
+  let same = equal 42
+  let other = different 42
+  let equalBox: Box<Int> -> Box<Int> -> Bool = (==)
+  let boxed = equalBox (Box 7)
+  let differentBox: Box<Int> -> Box<Int> -> Bool = (!=)
+  let negated = differentBox (Box 7)
+  let differentChar: Char -> Char -> Bool = (!=)
+  let character = differentChar 'λ'
+  let savedBox: Box<Int> -> Bool = saved (Box 7)
+  [same 42, same 43, other 42, other 43,
+    boxed (Box 7), boxed (Box 8), negated (Box 7), negated (Box 8),
+    savedBox (Box 8), forwarded (Box 9), character 'λ', character '🙂',
+    equalInts 40 40, equalInts 40 41, differentInts 40 41, differentInts 40 40]
+}
+
+pub effect fn main = println (show (probe ()))
