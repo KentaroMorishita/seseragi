@@ -549,6 +549,7 @@ mod tests {
 
     fn effect_value(failure: TypedType, origin: ByteSpan) -> TypedExpr {
         TypedExpr::Variable {
+            callable_signature: None,
             name: "fixture::effect".to_owned(),
             evidence: Vec::new(),
             type_ref: effect_type(failure),
