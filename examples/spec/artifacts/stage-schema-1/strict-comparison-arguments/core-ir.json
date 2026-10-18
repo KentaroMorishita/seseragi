@@ -1,0 +1,1914 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/strict-comparison-arguments",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/float",
+      "module": "std/float",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "clampNumber",
+          "local": "floats.clampNumber",
+          "canonical": "std/float::clampNumber",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "ieeeEq",
+          "local": "floats.ieeeEq",
+          "canonical": "std/float::ieeeEq",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "append",
+          "local": "lists.append",
+          "canonical": "std/list::append",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "take",
+          "local": "lists.take",
+          "canonical": "std/list::take",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "length",
+          "local": "lists.length",
+          "canonical": "std/list::length",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/strict-comparison-arguments::Mark",
+      "name": "Mark",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/strict-comparison-arguments::Mark",
+          "name": "Mark",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 85,
+            "end": 89
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 93
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 164
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "boolean",
+              "value": true,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 158,
+                "end": 162
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 116,
+              "end": 162
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
+      "trait": "Ord",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Mark",
+          "arguments": []
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Mark",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "supertraitCount": 1,
+      "origin": {
+        "source": "main.ssrg",
+        "start": 165,
+        "end": 253
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "compare",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "lambda",
+              "parameter": {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                }
+              },
+              "body": {
+                "kind": "variable",
+                "name": "std/prelude::Greater",
+                "type": {
+                  "kind": "named",
+                  "name": "Ordering",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 244,
+                  "end": 251
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Ordering",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 234,
+                "end": 251
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 188,
+              "end": 251
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/strict-comparison-arguments::lower",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 254,
+        "end": 312
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Ord",
+          "traitIdentity": "std/prelude::Ord",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "<",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 308,
+              "end": 312
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Ord",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Ord",
+          "method": "compare"
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 304,
+          "end": 312
+        }
+      }
+    },
+    {
+      "symbol": "artifact/strict-comparison-arguments::probe",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 314,
+        "end": 1004
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "less",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "<",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 376,
+                    "end": 377
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 372,
+                "end": 377
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 345,
+              "end": 377
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "atMost",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "<=",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 411,
+                    "end": 412
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 406,
+                "end": 412
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 378,
+              "end": 412
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "greater",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": ">",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 446,
+                    "end": 447
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 442,
+                "end": 447
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 413,
+              "end": 447
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "atLeast",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": ">=",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 482,
+                    "end": 483
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 477,
+                "end": 483
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 448,
+              "end": 483
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "charLess",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Char",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "<",
+              "arguments": [
+                {
+                  "kind": "char",
+                  "value": "λ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 519,
+                    "end": 523
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/char::Ord"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Char",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 515,
+                "end": 523
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 484,
+              "end": 523
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "chosen",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Mark",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": ">",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/strict-comparison-arguments::Mark",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 563,
+                        "end": 564
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Mark",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 558,
+                    "end": 564
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Mark",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Eq",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Mark",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "local",
+                          "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Ord",
+                "method": "compare"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Mark",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 553,
+                "end": 565
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 524,
+              "end": 565
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "generic",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/strict-comparison-arguments::lower",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "3",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 588,
+                    "end": 589
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Ord",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Ord"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 582,
+                "end": 589
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 566,
+              "end": 589
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "clamp",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/float::clampNumber",
+              "arguments": [
+                {
+                  "kind": "float64",
+                  "value": "0.0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 623,
+                    "end": 626
+                  }
+                },
+                {
+                  "kind": "float64",
+                  "value": "10.0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 627,
+                    "end": 631
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 604,
+                "end": 631
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 590,
+              "end": 631
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "prefix",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/list::append",
+              "arguments": [
+                {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 662,
+                        "end": 663
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 660,
+                    "end": 664
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 647,
+                "end": 664
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 632,
+              "end": 664
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "take",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/list::take",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 713,
+                    "end": 714
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 702,
+                "end": 714
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 665,
+              "end": 714
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "call",
+              "callee": "less",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 728,
+                    "end": 729
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 723,
+                "end": 729
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "less",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "3",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 740,
+                    "end": 741
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 735,
+                "end": 741
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "atMost",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 754,
+                    "end": 755
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 747,
+                "end": 755
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "greater",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 769,
+                    "end": 770
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 761,
+                "end": 770
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "atLeast",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 784,
+                    "end": 785
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 776,
+                "end": 785
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "charLess",
+              "arguments": [
+                {
+                  "kind": "char",
+                  "value": "🙂",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 800,
+                    "end": 806
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 791,
+                "end": 806
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "chosen",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/strict-comparison-arguments::Mark",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "2",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 825,
+                        "end": 826
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Mark",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 820,
+                    "end": 826
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 812,
+                "end": 827
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "generic",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "4",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 841,
+                    "end": 842
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 833,
+                "end": 842
+              }
+            },
+            {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "call",
+                "callee": "clamp",
+                "arguments": [
+                  {
+                    "kind": "float64",
+                    "value": "11.0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 861,
+                      "end": 865
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 855,
+                  "end": 865
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Just",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 868,
+                        "end": 878
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 873,
+                        "end": 878
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/float::ieeeEq",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Float",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 896,
+                          "end": 901
+                        }
+                      },
+                      {
+                        "kind": "float64",
+                        "value": "10.0",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 902,
+                          "end": 906
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 882,
+                      "end": 906
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 868,
+                    "end": 906
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false,
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 925,
+                      "end": 930
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 914,
+                    "end": 930
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 849,
+                "end": 932
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "call",
+                "callee": "std/list::length",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "take",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "prefix",
+                        "arguments": [
+                          {
+                            "kind": "list",
+                            "elements": [
+                              {
+                                "kind": "integer",
+                                "value": "2",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 975,
+                                  "end": 976
+                                }
+                              },
+                              {
+                                "kind": "integer",
+                                "value": "3",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 984,
+                                  "end": 985
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "List",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 966,
+                              "end": 991
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 959,
+                          "end": 991
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 953,
+                      "end": 992
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 939,
+                  "end": 993
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "1",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 997,
+                  "end": 998
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 939,
+                "end": 998
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 717,
+            "end": 1002
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 344,
+          "end": 1004
+        }
+      }
+    },
+    {
+      "symbol": "artifact/strict-comparison-arguments::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1006,
+        "end": 1052
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::Show::show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/strict-comparison-arguments::probe",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1048,
+                      "end": 1050
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1042,
+                  "end": 1050
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Show",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Show",
+                  "typeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ],
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Bool>"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "traitDispatch": {
+              "traitIdentity": "std/prelude::Show",
+              "method": "show"
+            },
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1036,
+              "end": 1051
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1027,
+          "end": 1052
+        }
+      }
+    }
+  ]
+}

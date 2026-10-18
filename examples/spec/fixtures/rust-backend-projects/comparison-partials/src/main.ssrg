@@ -1,0 +1,6 @@
+import { Mark as Foreign, larger } from "./facade"
+pub fn probe -> Array<Bool> = {
+  let saved = larger (Foreign 41);
+  [saved (Foreign 42), saved (Foreign 43)]
+}
+pub effect fn main = println (show (probe ()))

@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/strict-comparison-arguments",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/float",
+      "module": "std/float",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/float::*",
+          "localName": "floats"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/strict-comparison-arguments::probe",
+      "namespace": "value",
+      "name": "probe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 314,
+        "end": 1004
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/strict-comparison-arguments::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1006,
+        "end": 1052
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>",
+      "providerModule": "artifact/strict-comparison-arguments",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/strict-comparison-arguments::Mark"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "external-named",
+            "name": "Mark",
+            "canonical": "artifact/strict-comparison-arguments::Mark",
+            "providerModule": "artifact/strict-comparison-arguments",
+            "providerExport": "Mark",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 94,
+        "end": 164
+      }
+    },
+    {
+      "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
+      "providerModule": "artifact/strict-comparison-arguments",
+      "traitIdentity": "std/prelude::Ord",
+      "argumentIdentities": [
+        "artifact/strict-comparison-arguments::Mark"
+      ],
+      "trait": "Ord",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Ord",
+        "arguments": [
+          {
+            "kind": "external-named",
+            "name": "Mark",
+            "canonical": "artifact/strict-comparison-arguments::Mark",
+            "providerModule": "artifact/strict-comparison-arguments",
+            "providerExport": "Mark",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "Mark",
+              "canonical": "artifact/strict-comparison-arguments::Mark",
+              "providerModule": "artifact/strict-comparison-arguments",
+              "providerExport": "Mark",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 165,
+        "end": 253
+      }
+    }
+  ]
+}

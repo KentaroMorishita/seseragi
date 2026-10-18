@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-comparison-partials@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/comparison-partials-model@1.0.0#path:vendor/model"
+name = "fixture/comparison-partials-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:f50b1c17091f56ae5e398b34277ae43f85407c393c23e0abd1f3a2cca1921888"
+content_digest = "sha256:84d8196617fb7443e0c5d7fa080fcd045a26a90b991468e09bcd436c7965535a"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-comparison-partials@0.0.0#workspace:."
+name = "fixture/native-comparison-partials"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:03727b5196ef79f6e150f8d608a475198e566f910806fb83c92fca8adddbe480"
+content_digest = "sha256:9c56a184e951a36e22d06cbbcaf4416157580ca6fe873edf24737059e03a7f2d"
+dependencies = [
+  { import = "model", package = "fixture/comparison-partials-model@1.0.0#path:vendor/model" },
+]

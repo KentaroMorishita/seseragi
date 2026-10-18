@@ -1,0 +1,42 @@
+import * as floats from "std/float"
+import * as lists from "std/list"
+
+type Mark = | Mark Int
+instance Eq<Mark> {
+  fn eq left: Mark -> right: Mark -> Bool = False
+}
+instance Ord<Mark> {
+  fn compare left: Mark -> (Mark -> Ordering) = \right -> if eq left right then Equal else Greater
+}
+fn lower<A> left: A -> (A -> Bool) where Ord<A> = (<) left
+
+pub fn probe -> Array<Bool> = {
+  let less: Int -> Bool = (<) 1
+  let atMost: Int -> Bool = (<=) 1
+  let greater: Int -> Bool = (>) 1
+  let atLeast: Int -> Bool = (>=) 1
+  let charLess: Char -> Bool = (<) 'λ'
+  let chosen: Mark -> Bool = (>) (Mark 1)
+  let generic = lower 3
+  let clamp = floats.clampNumber 0.0 10.0
+  let prefix = lists.append `[1]
+  let take: List<Int> -> List<Int> = lists.take 1
+  [
+    less 2,
+    less 3,
+    atMost 1,
+    greater 0,
+    atLeast 1,
+    charLess '🙂',
+    chosen (Mark 2),
+    generic 4,
+    (match clamp 11.0 { Just value -> floats.ieeeEq value 10.0;
+      Nothing -> False }),
+    lists.length (take (prefix `[
+      2,
+      3
+    ])) == 1
+  ]
+}
+
+pub effect fn main = println (show (probe ()))

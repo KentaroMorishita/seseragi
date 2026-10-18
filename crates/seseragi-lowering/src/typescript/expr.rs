@@ -156,24 +156,14 @@ pub(super) fn lower_core_expr_to_typescript(
                             )
                         })
                         .expect("comparison reference requires materialized Ord evidence");
-                    let left = "__ssrg$comparison$left".to_owned();
-                    let right = "__ssrg$comparison$right".to_owned();
-                    let function = TypeScriptExpr::Lambda {
-                        parameter: left.clone(),
-                        body: Box::new(TypeScriptExpr::Lambda {
-                            parameter: right.clone(),
-                            body: Box::new(comparison_result(
-                                &name,
-                                dictionary,
-                                TypeScriptExpr::Identifier { name: left },
-                                TypeScriptExpr::Identifier { name: right },
-                            )),
-                        }),
-                    };
-                    return TypeScriptExpr::CheckedResult {
-                        value: Box::new(function),
-                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                    };
+                    return lower_comparison_call(
+                        &name,
+                        dictionary,
+                        vec![],
+                        &type_ref,
+                        imported_types,
+                        origin,
+                    );
                 }
                 if matches!(
                     standard_operator(&name).map(|operator| operator.kind),
@@ -376,29 +366,14 @@ pub(super) fn lower_core_expr_to_typescript(
                         )
                     })
                     .expect("comparison application requires materialized Ord evidence");
-                let supplied = arguments.len();
-                for index in supplied..2 {
-                    arguments.push(TypeScriptExpr::Identifier {
-                        name: format!("__ssrg$comparison$argument${index}"),
-                    });
-                }
-                let right = arguments.pop().expect("comparison right operand");
-                let left = arguments.pop().expect("comparison left operand");
-                let mut result = comparison_result(&callee, dictionary, left, right);
-                for index in (supplied..2).rev() {
-                    result = TypeScriptExpr::Lambda {
-                        parameter: format!("__ssrg$comparison$argument${index}"),
-                        body: Box::new(result),
-                    };
-                }
-                if supplied < 2 {
-                    TypeScriptExpr::CheckedResult {
-                        value: Box::new(result),
-                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
-                    }
-                } else {
-                    result
-                }
+                lower_comparison_call(
+                    &callee,
+                    dictionary,
+                    arguments,
+                    &type_ref,
+                    imported_types,
+                    origin,
+                )
             } else if let Some(operator) = standard_trait_operator(&callee) {
                 let dispatch = trait_dispatch
                     .as_ref()
@@ -647,6 +622,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     })
                     .collect::<Vec<_>>();
                 let remaining_parameters = operation.source_arity.saturating_sub(arguments.len());
+                let dictionary_count = dictionaries.len();
                 arguments.splice(0..0, dictionaries);
                 let result = lower_uncurried_runtime_call(
                     operation.local_name.to_owned(),
@@ -656,6 +632,13 @@ pub(super) fn lower_core_expr_to_typescript(
                     "collection",
                     type_arguments,
                     Some(remaining_parameters),
+                    checked_argument_types
+                        .iter()
+                        .cloned()
+                        .enumerate()
+                        .map(|(index, ty)| (index + dictionary_count, ty))
+                        .collect(),
+                    origin,
                 );
                 if operation.result_erased {
                     TypeScriptExpr::CheckedResult {
@@ -711,6 +694,8 @@ pub(super) fn lower_core_expr_to_typescript(
                     "text_bytes",
                     Vec::new(),
                     None,
+                    checked_argument_types.iter().cloned().enumerate().collect(),
+                    origin,
                 )
             } else if let Some(operation) = runtime_json_operation(&callee) {
                 let factory_arity = json_decoder_factory_arity(&callee);
@@ -732,6 +717,13 @@ pub(super) fn lower_core_expr_to_typescript(
                         "json",
                         Vec::new(),
                         Some(arity.saturating_sub(supplied)),
+                        checked_argument_types
+                            .iter()
+                            .take(supplied.min(arity))
+                            .cloned()
+                            .enumerate()
+                            .collect(),
+                        origin.clone(),
                     );
                     if returned_arguments.is_empty() {
                         call
@@ -775,6 +767,8 @@ pub(super) fn lower_core_expr_to_typescript(
                     "numeric",
                     Vec::new(),
                     None,
+                    checked_argument_types.iter().cloned().enumerate().collect(),
+                    origin,
                 )
             } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
@@ -1535,7 +1529,10 @@ fn lower_uncurried_runtime_call(
     parameter_scope: &str,
     type_arguments: Vec<super::TypeScriptType>,
     remaining_parameters: Option<usize>,
+    supplied_types: Vec<(usize, super::TypeScriptType)>,
+    origin: crate::SourceSpan,
 ) -> TypeScriptExpr {
+    let supplied = arguments.len();
     let mut parameters = Vec::new();
     let mut remaining = result_type;
     while let CoreType::Function { parameter, result } = remaining {
@@ -1549,6 +1546,28 @@ fn lower_uncurried_runtime_call(
         parameters.push((name, type_name));
         remaining = result;
     }
+    // A runtime export is uncurried, but its source partial is strict. Capture
+    // only the supplied source values now, using their checked CoreIr types.
+    // Implicit dictionaries keep the runtime ABI's existing placement.
+    let mut statements = Vec::new();
+    if !parameters.is_empty() {
+        for (index, type_ref) in supplied_types {
+            assert!(index < supplied, "checked supplied runtime argument");
+            let name = format!("__ssrg${parameter_scope}$saved{index}");
+            let initializer = std::mem::replace(
+                &mut arguments[index],
+                TypeScriptExpr::Identifier { name: name.clone() },
+            );
+            statements.push(TypeScriptStatement::PureLet {
+                type_parameters: vec![],
+                name,
+                type_ref,
+                initializer,
+                initializer_in_outer_scope: false,
+                origin: origin.clone(),
+            });
+        }
+    }
     let call = if type_arguments.is_empty() {
         TypeScriptExpr::RuntimeCall { callee, arguments }
     } else {
@@ -1558,13 +1577,21 @@ fn lower_uncurried_runtime_call(
             arguments,
         }
     };
-    parameters
+    let result = parameters
         .into_iter()
         .rev()
         .fold(call, |body, (name, type_name)| TypeScriptExpr::Lambda {
             parameter: format!("{name}: {type_name}"),
             body: Box::new(body),
-        })
+        });
+    if statements.is_empty() {
+        result
+    } else {
+        TypeScriptExpr::Sequence {
+            statements,
+            result: Box::new(result),
+        }
+    }
 }
 
 pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
@@ -1766,6 +1793,71 @@ fn lower_binary(
     }
 }
 
+// Applying the first operand invokes the selected method's first stage now.
+// Its body may run before the second operand, including for a saved section.
+fn lower_comparison_call(
+    operator: &str,
+    dictionary: TypeScriptExpr,
+    mut arguments: Vec<TypeScriptExpr>,
+    result_type: &CoreType,
+    imported_types: &TypeScriptTypeContext,
+    origin: crate::SourceSpan,
+) -> TypeScriptExpr {
+    if arguments.len() == 2 {
+        let right = arguments.pop().unwrap();
+        return comparison_result(operator, dictionary, arguments.pop().unwrap(), right);
+    }
+    let CoreType::Function { parameter, result } = result_type else {
+        unreachable!("checked comparison partial type")
+    };
+    let parameter_type = type_ref_from_core_type(parameter, imported_types);
+    if arguments.is_empty() {
+        let left = "__ssrg$comparison$left".to_owned();
+        return TypeScriptExpr::Lambda {
+            parameter: format!("{left}: {}", render_typescript_type(&parameter_type)),
+            body: Box::new(lower_comparison_call(
+                operator,
+                dictionary,
+                vec![TypeScriptExpr::Identifier { name: left }],
+                result,
+                imported_types,
+                origin,
+            )),
+        };
+    }
+    let name = "__ssrg$comparison$stage".to_owned();
+    let right = "__ssrg$comparison$right".to_owned();
+    let stage_type = super::TypeScriptType::Function {
+        parameter: Box::new(parameter_type.clone()),
+        result: Box::new(super::TypeScriptType::Ordering),
+    };
+    TypeScriptExpr::Sequence {
+        statements: vec![TypeScriptStatement::PureLet {
+            type_parameters: vec![],
+            name: name.clone(),
+            type_ref: stage_type,
+            initializer: TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(dictionary),
+                method: "compare".to_owned(),
+                arguments,
+            },
+            initializer_in_outer_scope: false,
+            origin,
+        }],
+        result: Box::new(TypeScriptExpr::Lambda {
+            parameter: format!("{right}: {}", render_typescript_type(&parameter_type)),
+            body: Box::new(comparison_ordering_result(
+                operator,
+                TypeScriptExpr::Call {
+                    callee: name,
+                    arguments: vec![TypeScriptExpr::Identifier { name: right }],
+                    checked_callee_type: None,
+                },
+            )),
+        }),
+    }
+}
+
 /// Inspect the canonical Ordering tag once; operands and compare each execute once.
 fn comparison_result(
     operator: &str,
@@ -1773,6 +1865,17 @@ fn comparison_result(
     left: TypeScriptExpr,
     right: TypeScriptExpr,
 ) -> TypeScriptExpr {
+    comparison_ordering_result(
+        operator,
+        TypeScriptExpr::DictionaryCall {
+            dictionary: Box::new(dictionary),
+            method: "compare".to_owned(),
+            arguments: vec![left, right],
+        },
+    )
+}
+
+fn comparison_ordering_result(operator: &str, ordering: TypeScriptExpr) -> TypeScriptExpr {
     let (test, tag) = match operator {
         "<" => ("===", "Less"),
         "<=" => ("!==", "Greater"),
@@ -1783,11 +1886,7 @@ fn comparison_result(
     TypeScriptExpr::Binary {
         operator: test.to_owned(),
         left: Box::new(TypeScriptExpr::FieldAccess {
-            receiver: Box::new(TypeScriptExpr::DictionaryCall {
-                dictionary: Box::new(dictionary),
-                method: "compare".to_owned(),
-                arguments: vec![left, right],
-            }),
+            receiver: Box::new(ordering),
             field: "tag".to_owned(),
         }),
         right: Box::new(TypeScriptExpr::String {

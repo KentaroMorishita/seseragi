@@ -1,0 +1,8 @@
+pub type Mark = | Mark Int
+instance Eq<Mark> {
+  fn eq left: Mark -> right: Mark -> Bool = False
+}
+instance Ord<Mark> {
+  fn compare left: Mark -> (Mark -> Ordering) = \right -> if eq left right then Equal else Greater
+}
+pub fn larger<A> value: A -> (A -> Bool) where Ord<A> = (>) value

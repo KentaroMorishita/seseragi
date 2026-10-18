@@ -1,0 +1,42 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import * as lists from "std/list"
+import { Ref } from "std/ref"
+
+type Watch = | Watch Ref<Watch -> Bool>
+instance Eq<Watch> { fn eq left: Watch -> right: Watch -> Bool = True }
+instance Ord<Watch> {
+  fn compare left: Watch -> (Watch -> Ordering) = \right -> match left { Watch state -> { let cold = refs.get state; Less } }
+}
+
+effect fn delayed = do { println "cold"; effects.succeed 7 }
+
+pub effect fn main = do {
+  cell <- refs.make `[\n: Int -> effects.succeed n]
+  let callback = \n: Int -> do {
+    stored <- refs.get cell
+    effects.succeed (n + lists.length stored)
+  }
+  let prefix = lists.append `[callback]
+  refs.set (prefix `[]) cell
+  let cold = delayed ()
+  let coldPrefix = lists.append `[cold]
+  println "created"
+  released <- refs.make 0
+  effects.scoped $ do {
+    acquired <- effects.acquireRelease (effects.succeed prefix) (\saved -> refs.set (lists.length (saved `[])) released)
+    stored <- refs.get cell
+    value <- match stored { `[head, ...tail] -> head 40; _ -> effects.succeed 0 }
+    println (show value)
+    result <- match coldPrefix `[] { `[task, ...tail] -> task; _ -> effects.succeed 0 }
+    println (show result)
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+  callbacks <- refs.make (\_: Watch -> False)
+  let left = Watch callbacks
+  let comparison: Watch -> Bool = (<) left
+  refs.set comparison callbacks
+  again <- refs.get callbacks
+  println ("comparison: " + show (again left))
+}

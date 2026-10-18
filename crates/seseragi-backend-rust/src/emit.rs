@@ -13,6 +13,7 @@ use std::collections::{BTreeMap, BTreeSet};
 mod arrays;
 mod canonical;
 mod characters;
+mod comparisons;
 mod display;
 mod floats;
 mod lists;
@@ -128,13 +129,6 @@ pub fn emit(
     }
     for instance in &module.instances {
         backend.owner = &owners[&instance.identity];
-        if instance.supertrait_count != 0 {
-            return Err(crate::project::at(
-                "Rust backend: supertraits are unsupported",
-                &instance.origin,
-                backend.owner,
-            ));
-        }
         let CoreInstanceImplementation::UserDefined { methods } = &instance.implementation else {
             return Err(crate::project::at(
                 "Rust backend: derived instances are unsupported",
@@ -152,6 +146,12 @@ pub fn emit(
         );
         let setup = dictionary_parameters(&instance.constraints, &mut scope);
         let mut values = Vec::new();
+        if backend
+            .ord_supertrait(instance, &scope)
+            .map_err(|error| crate::project::at(&error.message, &instance.origin, backend.owner))?
+        {
+            values.push(format!("(\"eq\", {}.field(\"eq\"))", id("\0dictionary_0")));
+        }
         for method in methods {
             let mut method_scope = scope.clone();
             method_scope.type_parameters(
@@ -329,6 +329,9 @@ impl Backend<'_> {
         let mut values = Vec::new();
         for selected in evidence {
             self.validate_parameter_evidence(selected, scope)?;
+            if selected.constraint.name == "Ord" {
+                self.validate_ord_evidence(selected, scope)?;
+            }
             if matches!(
                 selected.evidence,
                 CoreInstanceEvidence::Local { .. } | CoreInstanceEvidence::Imported { .. }
@@ -363,6 +366,10 @@ impl Backend<'_> {
                 continue;
             }
             if let Some(dictionary) = characters::character_dictionary(selected) {
+                values.push(dictionary?);
+                continue;
+            }
+            if let Some(dictionary) = comparisons::int_ord_dictionary(selected) {
                 values.push(dictionary?);
                 continue;
             }
@@ -462,6 +469,8 @@ impl Backend<'_> {
                 return Err("Rust backend: constructor evidence unsupported".into());
             }
             Ok(format!("{}()", id(name)))
+        } else if comparisons::is_comparison(name) {
+            self.comparison_reference(name, evidence, scope)
         } else if floats::float_binary(evidence, name)
             || dictionary_arithmetic(evidence, name).is_some()
         {
@@ -576,7 +585,17 @@ impl Backend<'_> {
             CoreExpr::String { value, .. } => format!("V::text({})", quoted(value)),
             CoreExpr::Char { value, .. } => characters::character_literal(value)?,
             CoreExpr::Boolean { value, .. } => format!("V::Bool({value})"),
-            CoreExpr::Variable { name, evidence, .. } => self.reference(name, evidence, scope)?,
+            CoreExpr::Variable {
+                name,
+                evidence,
+                type_ref,
+                ..
+            } => {
+                if comparisons::is_comparison(name) && !scope.contains(name) {
+                    self.comparison_result_type(type_ref, 0, evidence, scope)?;
+                }
+                self.reference(name, evidence, scope)?
+            }
             CoreExpr::EffectOperation {
                 operation,
                 arguments,
@@ -656,6 +675,9 @@ impl Backend<'_> {
             } => {
                 if callee == "builtin::array-index" {
                     return self.array_index(expr, scope);
+                }
+                if comparisons::is_comparison(callee) && !scope.contains(callee) {
+                    return self.comparison_call(expr, scope);
                 }
                 check_console_argument(callee, arguments)?;
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
@@ -896,6 +918,10 @@ impl Backend<'_> {
                     let a = self.fresh();
                     let b = self.fresh();
                     let d = self.fresh();
+                    if comparisons::is_comparison(operator) {
+                        let stage = self.fresh();
+                        return Ok(format!("{{ let {stage} = ({dictionary}).remove(0).field(\"compare\").apply({}); native_ordering_comparison({}, {stage}.apply({})) }}", self.expr(left, scope)?, quoted(operator), self.expr(right, scope)?));
+                    }
                     return Ok(format!(
                         "{{ let {d} = ({dictionary}).remove(0); let {a} = {}; let {b} = {}; native_dictionary_comparison({}, {d}, {a}, {b}) }}",
                         self.expr(left, scope)?,

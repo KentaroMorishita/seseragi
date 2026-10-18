@@ -979,6 +979,22 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "comparison-partial-defect",
+            "fixtures/rust-backend/comparison-partial-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/comparison-partial-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "comparison-partial-effects",
+            "fixtures/rust-backend/comparison-partial-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/comparison-partial-effects.stdout"
+            ),
+            0,
+        ),
+        (
             "array-index-effects",
             "fixtures/rust-backend/array-index-effects.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/array-index-effects.stdout"),
