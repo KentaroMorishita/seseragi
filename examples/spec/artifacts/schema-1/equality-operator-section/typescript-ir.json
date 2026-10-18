@@ -364,30 +364,13 @@
           {
             "kind": "checked-result",
             "value": {
-              "kind": "lambda",
-              "parameter": "_argument0",
-              "body": {
-                "kind": "lambda",
-                "parameter": "_argument1",
-                "body": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "identifier",
-                    "name": "__ssrg$evidence$0"
-                  },
-                  "method": "eq",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "_argument0"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "_argument1"
-                    }
-                  ]
-                }
-              }
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              },
+              "method": "eq",
+              "arguments": []
             },
             "type": {
               "kind": "function",
@@ -568,30 +551,13 @@
                       {
                         "kind": "checked-result",
                         "value": {
-                          "kind": "lambda",
-                          "parameter": "_argument0",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "_argument1",
-                            "body": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "identifier",
-                                "name": "__ssrg$instance$Eq$0"
-                              },
-                              "method": "eq",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument0"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument1"
-                                }
-                              ]
-                            }
-                          }
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "identifier",
+                            "name": "__ssrg$instance$Eq$0"
+                          },
+                          "method": "eq",
+                          "arguments": []
                         },
                         "type": {
                           "kind": "function",
@@ -630,35 +596,104 @@
                       {
                         "kind": "checked-result",
                         "value": {
-                          "kind": "lambda",
-                          "parameter": "_argument0",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "_argument1",
-                            "body": {
-                              "kind": "binary",
-                              "operator": "===",
-                              "left": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$equality$method",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "reference",
+                                  "name": "Status",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "reference",
+                                    "name": "Status",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "boolean"
+                                  }
+                                }
+                              },
+                              "initializer": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
                                   "kind": "identifier",
                                   "name": "__ssrg$instance$Eq$0"
                                 },
                                 "method": "eq",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "_argument0"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "_argument1"
-                                  }
-                                ]
+                                "arguments": []
                               },
-                              "right": {
-                                "kind": "boolean",
-                                "value": false
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1113,
+                                "end": 1115
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$equality$left: Status",
+                            "body": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "pure-let",
+                                  "name": "__ssrg$equality$stage",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "reference",
+                                      "name": "Status",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "boolean"
+                                    }
+                                  },
+                                  "initializer": {
+                                    "kind": "call",
+                                    "callee": "__ssrg$equality$method",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$equality$left"
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1113,
+                                    "end": 1115
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "lambda",
+                                "parameter": "__ssrg$equality$right: Status",
+                                "body": {
+                                  "kind": "binary",
+                                  "operator": "===",
+                                  "left": {
+                                    "kind": "call",
+                                    "callee": "__ssrg$equality$stage",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$equality$right"
+                                      }
+                                    ]
+                                  },
+                                  "right": {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                }
                               }
                             }
                           }
@@ -700,30 +735,13 @@
                       {
                         "kind": "checked-result",
                         "value": {
-                          "kind": "lambda",
-                          "parameter": "_argument0",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "_argument1",
-                            "body": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_eq_dictionary"
-                              },
-                              "method": "eq",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument0"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "_argument1"
-                                }
-                              ]
-                            }
-                          }
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_int_eq_dictionary"
+                          },
+                          "method": "eq",
+                          "arguments": []
                         },
                         "type": {
                           "kind": "function",
@@ -758,35 +776,98 @@
                       {
                         "kind": "checked-result",
                         "value": {
-                          "kind": "lambda",
-                          "parameter": "_argument0",
-                          "body": {
-                            "kind": "lambda",
-                            "parameter": "_argument1",
-                            "body": {
-                              "kind": "binary",
-                              "operator": "===",
-                              "left": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$equality$method",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "boolean"
+                                  }
+                                }
+                              },
+                              "initializer": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
                                   "kind": "runtime-reference",
                                   "name": "_ssrg_int_eq_dictionary"
                                 },
                                 "method": "eq",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "_argument0"
-                                  },
-                                  {
-                                    "kind": "identifier",
-                                    "name": "_argument1"
-                                  }
-                                ]
+                                "arguments": []
                               },
-                              "right": {
-                                "kind": "boolean",
-                                "value": false
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1191,
+                                "end": 1193
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$equality$left: number",
+                            "body": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "pure-let",
+                                  "name": "__ssrg$equality$stage",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "number"
+                                    },
+                                    "result": {
+                                      "kind": "boolean"
+                                    }
+                                  },
+                                  "initializer": {
+                                    "kind": "call",
+                                    "callee": "__ssrg$equality$method",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$equality$left"
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1191,
+                                    "end": 1193
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "lambda",
+                                "parameter": "__ssrg$equality$right: number",
+                                "body": {
+                                  "kind": "binary",
+                                  "operator": "===",
+                                  "left": {
+                                    "kind": "call",
+                                    "callee": "__ssrg$equality$stage",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$equality$right"
+                                      }
+                                    ]
+                                  },
+                                  "right": {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                }
                               }
                             }
                           }

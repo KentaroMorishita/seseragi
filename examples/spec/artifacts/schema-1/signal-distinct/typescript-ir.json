@@ -343,30 +343,13 @@
               "callee": "_ssrg_signal_distinct",
               "arguments": [
                 {
-                  "kind": "lambda",
-                  "parameter": "_argument0",
-                  "body": {
-                    "kind": "lambda",
-                    "parameter": "_argument1",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "identifier",
-                        "name": "__ssrg$instance$Eq$0"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "_argument0"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "_argument1"
-                        }
-                      ]
-                    }
-                  }
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Eq$0"
+                  },
+                  "method": "eq",
+                  "arguments": []
                 },
                 {
                   "kind": "identifier",
