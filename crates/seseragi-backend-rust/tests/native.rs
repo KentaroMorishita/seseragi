@@ -63,6 +63,28 @@ fn array_index_keeps_maybe_bounds_generic_elements_and_saved_callables() {
 }
 
 #[test]
+fn maybe_display_rejects_unproved_deferred_partial_frames() {
+    for source in [
+    "// 雫🙂\nfn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix\npub fn probe -> Unit = { let partial = prefix [9007199254740991 + 1][0]; () }\n",
+    "// 雫🙂\npub fn probe -> Unit = { fn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix; let partial = prefix [9007199254740991 + 1][0]; () }\n",
+    "// 雫🙂\ntrait Render<T> { fn render<A> factory: T -> value: A -> suffix: String -> String where Show<A> }\ntype Factory = | Factory\ninstance Render<Factory> { fn render<A> factory: Factory -> value: A -> suffix: String -> String where Show<A> = show value + suffix }\npub fn probe -> Unit = { let partial = render Factory [9007199254740991 + 1][0]; () }\n",
+    ] {
+    let core = compile_core_module(CompileInput::new("partial-λ.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let error = match emit_rust_module(&core, "probe") {
+        Err(error) => error,
+        Ok(_) => panic!("unproved Maybe partial was admitted: {source}"),
+    };
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert!(error.message.contains("deferred callable evidence"));
+    let origin = error.origin.unwrap();
+    assert_eq!(origin.source, "partial-λ.ssrg");
+    assert!(source[origin.start..origin.end].starts_with("prefix ") || source[origin.start..origin.end].starts_with("render "));
+    }
+}
+
+#[test]
 fn array_index_evaluates_receiver_then_offset_once_and_stops_at_defects() {
     let source = "fn receiver -> Array<Int> = [10, 20]\nfn offset -> Int = 1\npub fn probe -> Maybe<Int> = (receiver ())[offset ()]\n";
     let artifact = emit(source);

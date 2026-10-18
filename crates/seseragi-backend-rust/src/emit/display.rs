@@ -1,6 +1,47 @@
 use super::*;
 
 impl Backend<'_> {
+    pub(super) fn deferred_maybe_display(
+        &self,
+        evidence: &[CoreCallEvidence],
+        scope: &Scope,
+    ) -> Result<bool> {
+        for selected in evidence {
+            let children = match &selected.evidence {
+                CoreInstanceEvidence::Standard {
+                    identity,
+                    evidence_arguments,
+                    ..
+                } => {
+                    if matches!(identity.as_str(), "std/maybe::Show" | "std/maybe::Debug") {
+                        return Ok(true);
+                    }
+                    evidence_arguments.as_slice()
+                }
+                CoreInstanceEvidence::Local {
+                    evidence_arguments, ..
+                }
+                | CoreInstanceEvidence::Imported {
+                    evidence_arguments, ..
+                } => evidence_arguments.as_slice(),
+                CoreInstanceEvidence::Parameter { .. } => &[],
+            };
+            if self.deferred_maybe_display(children, scope)? {
+                return Ok(true);
+            }
+            if let [ty] = selected.constraint.arguments.as_slice() {
+                if ["Show", "Debug"]
+                    .into_iter()
+                    .any(|method| lists::standard_trait(selected, method, ty))
+                    && matches!(self.local_canonical_type(ty, scope)?, CoreType::Named {name, arguments} if name == "std/prelude::Maybe" && arguments.len() == 1)
+                {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
     pub(super) fn structural_display_dictionary(
         &mut self,
         selected: &CoreCallEvidence,
@@ -370,5 +411,5 @@ pub(super) fn closed_display_partial(
         })
         && !evidence.is_empty() && evidence.len() == function.constraints.len()
         && evidence.iter().all(|selected| closed(selected) && matches!(&selected.evidence,
-            CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/tuple::Show" | "std/tuple::Debug" | "std/array::Show" | "std/array::Debug" | "std/maybe::Show" | "std/maybe::Debug")))
+            CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/tuple::Show" | "std/tuple::Debug" | "std/array::Show" | "std/array::Debug")))
 }

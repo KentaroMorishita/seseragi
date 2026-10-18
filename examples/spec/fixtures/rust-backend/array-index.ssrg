@@ -10,6 +10,8 @@ fn lookup<A> values: Array<A> -> offset: Int -> Maybe<A> = values[offset]
 
 fn keep<A> value: A -> (Unit -> A) = \_: Unit -> value
 
+fn add left: Int -> right: Int -> Int = left + right
+
 pub fn probe -> Array<String> = {
   let values = [10, 20, 30]
   let empty: Array<Int> = []
@@ -18,6 +20,7 @@ pub fn probe -> Array<String> = {
   let display: Box<Char> -> String = show
   let selected = match [display][0] { Just render -> render; Nothing -> \_: Box<Char> -> "missing" }
   let render: Maybe<Box<Char>> -> String = show
+  let partial = match [add 41][0] { Just selected -> selected; Nothing -> add 0 }
   [
     show values[0],
     show values[2],
@@ -33,6 +36,7 @@ pub fn probe -> Array<String> = {
     show [True, False][1],
     debug ["line\n"][0],
     show [[1][0]][0],
-    render [Box 'λ'][0]
+    render [Box 'λ'][0],
+    show (partial 1)
   ]
 }
