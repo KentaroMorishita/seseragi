@@ -139,14 +139,15 @@ impl Backend<'_> {
         else {
             return Ok(());
         };
-        let [selected] = evidence.as_slice() else {
+        let Some(selected) = evidence.first() else {
             return Ok(());
         };
         let Some(dictionary) = self.primitive_operator_dictionary(selected, scope) else {
             return Ok(());
         };
         dictionary?;
-        if !valid_dispatch(selected, &dispatch.trait_identity, &dispatch.method)
+        if evidence.len() != 1
+            || !valid_dispatch(selected, &dispatch.trait_identity, &dispatch.method)
             || dispatch.method_contract.is_some()
             || !deferred_evidence_parameters.is_empty()
             || !deferred_evidence_type_constructor_parameters.is_empty()

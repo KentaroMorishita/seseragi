@@ -98,7 +98,7 @@ fn primitive_arithmetic_refuses_unproved_identity_types_children_and_stages() {
         .unwrap()
         .core_ir;
     emit_rust_module(&core, "probe").unwrap();
-    for mutation in 0..17 {
+    for mutation in 0..19 {
         let mut changed = core.clone();
         let CoreExpr::Sequence { statements, .. } = &mut changed.functions[0].body else {
             panic!()
@@ -163,12 +163,34 @@ fn primitive_arithmetic_refuses_unproved_identity_types_children_and_stages() {
             13 => deferred_evidence_type_constructor_parameters.push("F".into()),
             14 => *evidence_argument_index = Some(0),
             15 => arguments.push(arguments[0].clone()),
-            _ => {
+            16 => {
                 evidence[0].constraint.arguments[1] = CoreType::ExternalNamed {
                     name: "Int".into(),
                     canonical: "fake::Int".into(),
                     arguments: vec![],
                 }
+            }
+            17 => evidence.push(evidence[0].clone()),
+            _ => {
+                evidence.push(evidence[0].clone());
+                let mut constraints = evidence
+                    .iter()
+                    .map(|e| e.constraint.clone())
+                    .collect::<Vec<_>>();
+                for constraint in &mut constraints {
+                    constraint.trait_identity = Some("std/prelude::Add".into());
+                }
+                trait_dispatch.as_mut().unwrap().method_contract =
+                    Some(seseragi_lowering::CoreTraitMethodContract {
+                        parameters: vec![
+                            CoreType::Named {
+                                name: "Int".into(),
+                                arguments: vec![]
+                            };
+                            2
+                        ],
+                        constraints,
+                    });
             }
         }
         let error = emit_rust_module(&changed, "probe").unwrap_err();
