@@ -143,6 +143,12 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
+        if self.module.trait_methods.iter().any(|declaration| {
+            declaration.trait_identity == dispatch.trait_identity
+                && declaration.method == dispatch.method
+        }) {
+            return self.validate_declared_parameter_method(dispatch, selected, type_ref, scope);
+        }
         if matches!(
             (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
             ("std/prelude::Functor", "map")
@@ -182,6 +188,89 @@ impl Backend<'_> {
             &mut BTreeMap::new(),
             scope,
         )
+    }
+
+    fn validate_declared_parameter_method(
+        &self,
+        dispatch: &CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let declaration = self
+            .module
+            .trait_methods
+            .iter()
+            .find(|declaration| {
+                declaration.trait_identity == dispatch.trait_identity
+                    && declaration.method == dispatch.method
+            })
+            .ok_or("Rust backend: missing abstract method declaration")?;
+        let signature = &declaration.signature;
+        if !declaration.constraints.is_empty()
+            || dispatch.method_contract.is_some()
+            || signature.parameters.is_empty()
+            || !signature.argument_types.is_empty()
+            || declaration.trait_parameters.len() != selected.constraint.arguments.len()
+            || declaration
+                .trait_parameters
+                .iter()
+                .chain(&signature.type_parameters)
+                .any(|p| p.arity != 0)
+        {
+            return Err(
+                "Rust backend: unproven abstract method declaration staging or kind".into(),
+            );
+        }
+        let owner = declaration
+            .trait_identity
+            .rsplit_once("::")
+            .map(|(owner, _)| owner)
+            .ok_or("Rust backend: missing abstract method declaration owner")?;
+        let mut names = BTreeSet::new();
+        let mut substitutions = BTreeMap::new();
+        for (parameter, actual) in declaration
+            .trait_parameters
+            .iter()
+            .zip(&selected.constraint.arguments)
+        {
+            if !names.insert(parameter.name.clone()) {
+                return Err("Rust backend: overlapping abstract method declaration binder".into());
+            }
+            substitutions.insert(
+                parameter.name.clone(),
+                self.local_canonical_type(actual, scope)?,
+            );
+        }
+        let mut variables = BTreeMap::new();
+        for (index, parameter) in signature.type_parameters.iter().enumerate() {
+            if !names.insert(parameter.name.clone()) {
+                return Err("Rust backend: overlapping abstract method declaration binder".into());
+            }
+            let name = format!(
+                "\0declared_method::{}::{}::{index}",
+                dispatch.trait_identity, dispatch.method
+            );
+            variables.insert(name.clone(), parameter.arity);
+            substitutions.insert(
+                parameter.name.clone(),
+                CoreType::Named {
+                    name,
+                    arguments: vec![],
+                },
+            );
+        }
+        let mut expected = signature.result.clone();
+        for parameter in signature.parameters.iter().rev() {
+            expected = CoreType::Function {
+                parameter: Box::new(parameter.clone()),
+                result: Box::new(expected),
+            };
+        }
+        let expected =
+            display::canonical_type(&expected, owner, &substitutions, self.type_names, true)
+                .ok_or("Rust backend: unproven abstract method declaration type")?;
+        self.match_local_type(&expected, type_ref, &variables, &mut BTreeMap::new(), scope)
     }
 
     fn validate_hkt_parameter_method_value(

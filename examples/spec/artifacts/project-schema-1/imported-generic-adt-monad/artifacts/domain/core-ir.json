@@ -940,6 +940,236 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
+      "method": "map",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 108,
+        "end": 111
+      }
+    },
+    {
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
+      "method": "pure",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 350,
+        "end": 354
+      }
+    },
+    {
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
+      "method": "apply",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 380,
+        "end": 385
+      }
+    },
+    {
+      "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
+      "method": "flatMap",
+      "traitParameters": [
+        {
+          "name": "M",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          {
+            "kind": "named",
+            "name": "M",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 727,
+        "end": 734
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-generic-adt-monad::domain::bind",

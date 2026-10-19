@@ -137,6 +137,7 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         external_type_bindings: Vec::new(),
         module_dependencies: Vec::new(),
         instances: Vec::new(),
+        trait_methods: Vec::new(),
         declarations,
     }
 }
@@ -159,6 +160,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
     let external_type_bindings = resolution.external_type_bindings();
     let module_dependencies = resolution.module_dependencies();
     let instances = instances::analyze_instances(&resolved, &resolution).instances;
+    let trait_methods = resolution.trait_method_declarations();
 
     TypedModule {
         schema: 1,
@@ -169,6 +171,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         external_type_bindings,
         module_dependencies,
         instances,
+        trait_methods,
         declarations,
     }
 }

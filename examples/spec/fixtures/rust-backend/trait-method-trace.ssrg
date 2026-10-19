@@ -1,0 +1,32 @@
+trait Pick<A> { fn pick left: A -> right: A -> Bool }
+
+type Mark = | Mark Int
+type Late = | Late Int
+
+fn left -> Mark = Mark 1
+fn right -> Mark = Mark 2
+fn first -> Unit = ()
+fn lateLeft -> Late = Late 1
+fn lateRight -> Late = Late 2
+fn later -> Unit = ()
+
+instance Pick<Mark> {
+  fn pick value: Mark -> (Mark -> Bool) = {
+    let marker = first ()
+    \other -> True
+  }
+}
+instance Pick<Late> {
+  fn pick value: Late -> other: Late -> Bool = { let marker = later (); True }
+}
+
+pub fn probe -> Array<Bool> = {
+  let equal = pick
+  let saved = equal (left ())
+  let one = saved (right ())
+  let two = saved (right ())
+  let three = equal (lateLeft ()) (lateRight ())
+  [one, two, three]
+}
+
+pub effect fn main = do { println (show (probe ())) }

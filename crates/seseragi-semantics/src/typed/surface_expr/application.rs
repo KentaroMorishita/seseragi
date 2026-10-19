@@ -252,12 +252,21 @@ fn available_selected_method_value(
             | ("std/prelude::Div", "div")
             | ("std/prelude::Rem", "rem")
             | ("std/prelude::Pow", "pow")
-    ) {
+    ) && !context.resolution.declared_method_value_scheme(signature)
+    {
         return false;
     }
     (available_method_type(type_ref, &context)
-        || (context.deferred_method_value && standard_method_value_scheme(signature)))
+        || (context.deferred_method_value && method_value_scheme(signature, &context)))
         && available_method_evidence(selected, &dispatch.trait_identity, &context)
+}
+
+pub(super) fn method_value_scheme(
+    signature: &TopLevelPureFunction,
+    context: &PureExpressionContext<'_>,
+) -> bool {
+    standard_method_value_scheme(signature)
+        || context.resolution.declared_method_value_scheme(signature)
 }
 
 /// Bounded dictionary-only alias schemes. Their source signature is the
@@ -282,14 +291,18 @@ pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> 
         )
 }
 
-pub(super) fn standard_method_factory_alias(signature: &TopLevelPureFunction) -> bool {
+pub(super) fn method_factory_alias(
+    signature: &TopLevelPureFunction,
+    context: &PureExpressionContext<'_>,
+) -> bool {
     signature.trait_identity.is_none()
         && signature.parameters.is_empty()
         && signature.constraints.len() == 1
         && signature.type_parameters.iter().all(|p| p.arity == 0)
         && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
             "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
-            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow"))
+            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow")
+            || context.resolution.declared_method_factory_trait(identity))
 }
 
 fn available_method_evidence(
@@ -825,7 +838,7 @@ pub(crate) fn type_known_application_with_explicit(
     let callee_signature = unconstrained_hkt_signature(&signature);
     let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
-    let method_factory_alias = standard_method_factory_alias(&signature);
+    let method_factory_alias = method_factory_alias(&signature, context);
     let declared_arity = signature.parameters.len();
     // Infer across the whole source application, including function-valued results.
     // Dictionary application still belongs immediately after the declared parameters.

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-N0002",
+      "severity": "Error",
+      "messageKey": "name.duplicate-definition",
+      "message": "Name duplicate definition",
+      "primary": {
+        "start": 29,
+        "end": 67
+      },
+      "related": [
+        {
+          "message": "trait declaration",
+          "primary": {
+            "start": 11,
+            "end": 69
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "trait declaration",
+          "primary": {
+            "start": 11,
+            "end": 69
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

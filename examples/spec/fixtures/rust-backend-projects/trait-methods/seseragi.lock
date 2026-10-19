@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-trait-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-trait-methods@0.0.0#workspace:."
+name = "fixture/native-trait-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:dc326679e3a9ae98a99dbb9cdc7b42edba29e92d38aa10befecc38f8db3cbb31"
+content_digest = "sha256:84ad021c8d3441475320d637487ed0c6e5f449d808dd3e89b6ce5911f52e087d"
+dependencies = [
+  { import = "model", package = "fixture/trait-methods-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/trait-methods-model@1.0.0#path:vendor/model"
+name = "fixture/trait-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:db7b7765345569aa5d9d78b662877ba8f281832a11b3acb73474378b06b288f4"
+content_digest = "sha256:ce3c320ef581a86aeca8a93814ecc011bf77b63a2c854df0460bae763407663f"
+dependencies = []

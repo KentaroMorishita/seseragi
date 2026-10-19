@@ -1,0 +1,22 @@
+pub trait Pick<A> { fn pick left: A -> right: A -> Bool }
+
+instance Pick<Int> { fn pick left: Int -> right: Int -> Bool = left == right }
+
+pub type Mark<A> = | Mark A
+let equality = pick
+instance<A> Pick<Mark<A>> where Pick<A> {
+  fn pick left: Mark<A> -> (Mark<A> -> Bool) = match left {
+    Mark value -> {
+      let op = pick
+      let same = op value
+      \right -> match right { Mark other -> same other }
+    }
+  }
+}
+pub fn different<A> left: A -> right: A -> Bool where Pick<A> = { let op = pick; if op left right then False else True }
+
+pub fn selected<A> left: A -> (A -> Bool) where Pick<A> = {
+  let chosen = equality
+  let alias = chosen
+  alias left
+}

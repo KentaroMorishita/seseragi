@@ -1,0 +1,56 @@
+trait Pick<A> {
+  fn pick left: A -> right: A -> Bool
+}
+
+trait Convert<A, B, C> {
+  fn convert left: A -> right: B -> C
+}
+
+trait Keep<A> {
+  fn keep<B> value: B -> marker: A -> B
+}
+
+type Mark = | Mark Int
+instance Pick<Mark> {
+  fn pick left: Mark -> (Mark -> Bool) = match left {
+    Mark value -> \right -> match right { Mark other -> value == other }
+  }
+}
+instance Convert<Mark, Int, (Int -> Int)> {
+  fn convert left: Mark -> right: Int -> (Int -> Int) = match left {
+    Mark value -> \extra -> value + right + extra
+  }
+}
+instance Keep<Mark> {
+  fn keep<B> value: B -> marker: Mark -> B = value
+}
+
+let selected = pick
+let copied = selected
+
+fn capture<A> left: A -> (A -> Bool) where Pick<A> = {
+  let chosen: A -> A -> Bool = pick
+  chosen left
+}
+fn generalize<A> left: A -> (A -> Bool) where Pick<A> = {
+  let chosen = pick
+  let alias = chosen
+  alias left
+}
+fn retain<A, B> value: B -> marker: A -> B where Keep<A> = {
+  let chosen: B -> A -> B = keep
+  chosen value marker
+}
+pub fn probe -> String = {
+  let saved = capture (Mark 1)
+  let again = generalize (Mark 2)
+  let convertSaved: Int -> Int -> Int = convert (Mark 3)
+  let add = convertSaved 4
+  show [
+    saved (Mark 1),
+    saved (Mark 2),
+    again (Mark 2),
+    copied (Mark 3) (Mark 3)
+  ] + ":" + show (add 35) + ":" + retain "λ🙂" (Mark 1)
+}
+pub effect fn main = println (probe ())

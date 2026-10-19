@@ -189,6 +189,76 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+      "method": "label",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 57,
+        "end": 62
+      }
+    },
+    {
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [
+        {
+          "name": "Labeled",
+          "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 118
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/method-constraint-dispatch::main",

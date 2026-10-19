@@ -2,6 +2,36 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-constrained-function::domain",
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 26,
+        "end": 31
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-constrained-function::domain::describe",

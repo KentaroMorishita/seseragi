@@ -1,0 +1,4 @@
+// 雫🙂
+trait Pick<A> {
+  fn pick<A> left: A -> right: A -> Bool
+}

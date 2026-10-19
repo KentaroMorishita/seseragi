@@ -111,6 +111,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/unary-operators::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 867,
+        "end": 873
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "struct",

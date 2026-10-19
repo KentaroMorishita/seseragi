@@ -153,8 +153,8 @@ pub(crate) fn infer(
                     signature.type_parameters.clear();
                 }
                 let method_value_factory =
-                    super::application::standard_method_value_scheme(&signature)
-                        || super::application::standard_method_factory_alias(&signature);
+                    super::application::method_value_scheme(&signature, context)
+                        || super::application::method_factory_alias(&signature, context);
                 if method_value_factory {
                     // These binders belong to the let scheme, not to a
                     // same-spelled outer function parameter. Instantiate only

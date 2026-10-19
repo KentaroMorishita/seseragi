@@ -318,6 +318,64 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 55,
+        "end": 60
+      }
+    },
+    {
+      "traitIdentity": "artifact/constrained-instance-dispatch::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 116
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/constrained-instance-dispatch::label",

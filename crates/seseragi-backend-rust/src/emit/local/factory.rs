@@ -68,7 +68,17 @@ impl Backend<'_> {
                         | ("std/prelude::Div", "div")
                         | ("std/prelude::Rem", "rem")
                         | ("std/prelude::Pow", "pow")
-                )
+                ) && !self.module.trait_methods.iter().any(|declaration| {
+                    declaration.trait_identity == dispatch.trait_identity
+                        && declaration.method == dispatch.method
+                        && declaration.constraints.is_empty()
+                        && !declaration.signature.parameters.is_empty()
+                        && declaration
+                            .trait_parameters
+                            .iter()
+                            .chain(&declaration.signature.type_parameters)
+                            .all(|p| p.arity == 0)
+                })
             {
                 return Err("Rust backend: unproven method factory signature".into());
             }

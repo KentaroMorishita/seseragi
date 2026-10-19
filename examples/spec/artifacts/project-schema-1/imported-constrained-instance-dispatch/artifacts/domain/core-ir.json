@@ -287,6 +287,64 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 26,
+        "end": 31
+      }
+    },
+    {
+      "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
+      "method": "inspect",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 82,
+        "end": 89
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-constrained-instance-dispatch::domain::report",

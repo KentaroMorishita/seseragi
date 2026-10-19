@@ -722,6 +722,171 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
+      "method": "map",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 31,
+        "end": 34
+      }
+    },
+    {
+      "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+      "method": "pure",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 302,
+        "end": 306
+      }
+    },
+    {
+      "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
+      "method": "apply",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 332,
+        "end": 337
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/applicative-maybe::mapped",

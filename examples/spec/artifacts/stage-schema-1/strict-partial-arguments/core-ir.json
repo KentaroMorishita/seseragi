@@ -681,6 +681,115 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "T"
+      ],
+      "signature": {
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 281,
+        "end": 287
+      }
+    },
+    {
+      "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
+      "method": "returned",
+      "traitParameters": [
+        "T"
+      ],
+      "signature": {
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 357,
+        "end": 365
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/strict-partial-arguments::prefix",

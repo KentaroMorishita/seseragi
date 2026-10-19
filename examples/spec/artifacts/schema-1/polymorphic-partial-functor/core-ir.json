@@ -254,6 +254,67 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
+      "method": "map",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 31,
+        "end": 34
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/polymorphic-partial-functor::transform",

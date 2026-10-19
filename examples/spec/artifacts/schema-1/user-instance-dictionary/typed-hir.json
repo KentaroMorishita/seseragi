@@ -159,6 +159,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 67,
+        "end": 73
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",

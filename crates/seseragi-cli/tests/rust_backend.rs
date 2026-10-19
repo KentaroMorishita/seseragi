@@ -99,6 +99,16 @@ fn incomplete_instance_contracts_reject_before_emission_or_execution() {
             "missing-generic-instance-method",
             "SES-T0101",
         ),
+        (
+            "semantic-diagnostics-schema-1",
+            "trait-method-type-parameter-shadow",
+            "SES-N0002",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "local-function-type-parameter-shadow",
+            "SES-N0002",
+        ),
     ] {
         let source = scratch.0.join(format!("{name}-λ.ssrg"));
         fs::write(
@@ -203,6 +213,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("hkt-return", 3),
         ("array-index", 3),
         ("generalized-methods", 3),
+        ("trait-methods", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -979,6 +990,40 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "trait-method-values",
+            "fixtures/rust-backend/trait-method-values.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-values.stdout"),
+            0,
+        ),
+        (
+            "trait-method-trace",
+            "fixtures/rust-backend/trait-method-trace.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-trace.stdout"),
+            0,
+        ),
+        (
+            "trait-method-defect",
+            "fixtures/rust-backend/trait-method-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-defect.stdout"),
+            70,
+        ),
+        (
+            "trait-method-effects",
+            "fixtures/rust-backend/trait-method-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "trait-method-children",
+            "fixtures/rust-backend/trait-method-children.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-method-children.stdout"
+            ),
+            70,
+        ),
         (
             "generalized-method-values",
             "fixtures/rust-backend/generalized-method-values.ssrg",
@@ -1957,4 +2002,9 @@ fn trait_operator_stages_keep_imported_owners_and_source_order() {
 #[test]
 fn generalized_method_factories_keep_imported_owners_and_dictionary_frames() {
     strict_project_reexports("generalized-methods");
+}
+
+#[test]
+fn declared_trait_project_types_preserve_both_strict_profiles() {
+    strict_project_reexports("trait-methods");
 }

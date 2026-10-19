@@ -78,6 +78,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "provider.ssrg",
+        "start": 55,
+        "end": 60
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/transitive-instance-dispatch::provider::describe",

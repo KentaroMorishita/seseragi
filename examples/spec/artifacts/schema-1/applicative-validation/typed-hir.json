@@ -1537,6 +1537,171 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/applicative-validation::trait(Functor)",
+      "method": "map",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 152,
+        "end": 155
+      }
+    },
+    {
+      "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
+      "method": "pure",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 469,
+        "end": 473
+      }
+    },
+    {
+      "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
+      "method": "apply",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 499,
+        "end": 504
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",

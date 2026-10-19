@@ -49,6 +49,7 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
         aliases: Vec::new(),
         structs: Vec::new(),
         instances: Vec::new(),
+        trait_methods: Vec::new(),
         bindings: Vec::new(),
         functions: vec![CoreFunction {
             symbol: "fixture/main::keep".to_owned(),

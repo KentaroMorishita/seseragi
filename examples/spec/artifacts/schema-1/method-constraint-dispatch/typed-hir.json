@@ -200,6 +200,77 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
+      "method": "label",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 57,
+        "end": 62
+      }
+    },
+    {
+      "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [
+        {
+          "name": "Labeled",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "artifact/method-constraint-dispatch::trait(Labeled)"
+      ],
+      "origin": {
+        "start": 112,
+        "end": 118
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",

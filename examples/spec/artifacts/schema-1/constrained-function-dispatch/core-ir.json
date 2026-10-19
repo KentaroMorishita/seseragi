@@ -84,6 +84,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 55,
+        "end": 60
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/constrained-function-dispatch::describe",

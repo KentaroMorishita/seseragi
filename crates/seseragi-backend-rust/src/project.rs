@@ -23,6 +23,7 @@ pub(crate) fn emit(
     linked.aliases.clear();
     linked.structs.clear();
     linked.instances.clear();
+    linked.trait_methods.clear();
     linked.functions.clear();
     linked.bindings.clear();
     linked.module_dependencies.clear();
@@ -31,6 +32,7 @@ pub(crate) fn emit(
     let mut symbols = BTreeSet::new();
     let mut type_names = BTreeMap::new();
     let mut trait_names = BTreeMap::new();
+    let mut method_names = BTreeSet::new();
     for module in modules {
         if module.module.starts_with("std/") || !seen.insert(module.module.clone()) {
             return Err("Rust backend: duplicate or reserved source module identity".into());
@@ -130,6 +132,23 @@ pub(crate) fn emit(
         linked.aliases.extend(module.aliases.clone());
         linked.structs.extend(module.structs.clone());
         linked.instances.extend(module.instances.clone());
+        for method in &module.trait_methods {
+            if method
+                .trait_identity
+                .rsplit_once("::")
+                .map(|(owner, _)| owner)
+                != Some(module.module.as_str())
+                || method.method.is_empty()
+                || !method_names.insert((method.trait_identity.clone(), method.method.clone()))
+            {
+                return Err(at(
+                    "Rust backend: invalid or duplicate trait method declaration owner",
+                    &method.origin,
+                    &module.module,
+                ));
+            }
+            linked.trait_methods.push(method.clone());
+        }
         linked.functions.extend(module.functions.clone());
     }
     let initialization = core_module_initialization_order(modules, entry_module)

@@ -1,0 +1,22 @@
+trait Pick<A> { fn pick left: A -> right: A -> Bool }
+
+type Mark = | Mark Int
+
+instance Pick<Mark> {
+  fn pick left: Mark -> (Mark -> Bool) = {
+    let bad = 9007199254740991 + 1
+    \right -> True
+  }
+}
+
+fn choose<A> left: A -> (A -> Bool) where Pick<A> = {
+  let equal = pick
+  let alias = equal
+  alias left
+}
+
+pub effect fn main = do {
+  println "before"
+  let saved = choose (Mark 1)
+  println "unreachable"
+}

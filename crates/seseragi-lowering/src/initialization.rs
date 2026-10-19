@@ -101,6 +101,7 @@ mod tests {
             aliases: vec![],
             structs: vec![],
             instances: vec![],
+            trait_methods: vec![],
             bindings: vec![],
             functions: vec![],
         }
