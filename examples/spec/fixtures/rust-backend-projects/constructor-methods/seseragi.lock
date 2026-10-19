@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-constructor-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/constructor-methods-model@1.0.0#path:vendor/model"
+name = "fixture/constructor-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:b16265856cc9d350382a842e3a4055a87cd080f9f3b63a17d82b6c737e1bdb81"
+content_digest = "sha256:277e3cc60954a8cfdce5f931a3b98560f818b393bbda092e731f4f4a67f79624"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-constructor-methods@0.0.0#workspace:."
+name = "fixture/native-constructor-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3b8588dfd4470f19a4ebd0d656394d262af2d315783eb88b5059c0bad331eeda"
+content_digest = "sha256:def492930e678d58a30abe0b85d2a97865da51d7dd07830960b7dec1acb6e1ae"
+dependencies = [
+  { import = "model", package = "fixture/constructor-methods-model@1.0.0#path:vendor/model" },
+]

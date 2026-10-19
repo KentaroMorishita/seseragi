@@ -1,0 +1,42 @@
+trait Pick<F<_>> {
+  fn pick<A> left: F<A> -> right: F<A> -> Bool
+}
+
+trait Choose<F<_, _>> {
+  fn choose<A, B> left: F<A, B> -> right: F<A, B> -> Bool
+}
+
+type Box<A> =
+  | Box A
+type Pair<A, B> = | Pair (A, B)
+type Wrap<P, A> = | Wrap (P, A)
+instance Pick<Box> {
+  fn pick<A> left: Box<A> -> (Box<A> -> Bool) = \right -> True
+}
+instance Pick<Wrap<Int
+>> {
+  fn pick<A> left: Wrap<Int, A> -> right: Wrap<Int, A> -> Bool = True
+}
+instance Choose<Pair> {
+  fn choose<A, B> left: Pair<A, B> -> (Pair<A, B> -> Bool) = \right -> True
+}
+fn capture<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {
+  let chosen: F<A> -> F<A> -> Bool = pick
+  chosen left
+}
+fn generalize<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {
+  let chosen = pick
+  let copied = chosen
+  copied left
+}
+fn pair<F<_, _>, A, B> left: F<A, B> -> (F<A, B> -> Bool) where Choose<F> = {
+  let chosen = choose
+  chosen left
+}
+pub fn probe -> Array<Bool> = {
+  let first = capture (Box 1)
+  let second = generalize (Wrap (2, "λ🙂"))
+  let third = pair (Pair (3, 'λ'))
+  [first (Box 4), first (Box 5), second (Wrap (6, "雫")), third (Pair (7, '水'))]
+}
+pub effect fn main = println (show (probe ()))

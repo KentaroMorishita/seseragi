@@ -218,11 +218,7 @@ impl Backend<'_> {
             || signature.parameters.is_empty()
             || !signature.argument_types.is_empty()
             || declaration.trait_parameters.len() != selected.constraint.arguments.len()
-            || declaration
-                .trait_parameters
-                .iter()
-                .chain(&signature.type_parameters)
-                .any(|p| p.arity != 0)
+            || signature.type_parameters.iter().any(|p| p.arity != 0)
         {
             return Err(
                 "Rust backend: unproven abstract method declaration staging or kind".into(),
@@ -242,6 +238,9 @@ impl Backend<'_> {
         {
             if !names.insert(parameter.name.clone()) {
                 return Err("Rust backend: overlapping abstract method declaration binder".into());
+            }
+            if self.declared_method_type_kind(actual, scope) != Some(parameter.arity as usize) {
+                return Err("Rust backend: abstract method trait argument kind mismatch".into());
             }
             substitutions.insert(
                 parameter.name.clone(),
@@ -277,6 +276,102 @@ impl Backend<'_> {
             display::canonical_type(&expected, owner, &substitutions, self.type_names, true)
                 .ok_or("Rust backend: unproven abstract method declaration type")?;
         self.match_local_type(&expected, type_ref, &variables, &mut BTreeMap::new(), scope)
+    }
+
+    /// Kind-check the selected trait arguments before substituting them into
+    /// declaration slots. Fixed prefixes consume slots from the left; scoped
+    /// constructors use their binder identity, never their displayed spelling.
+    fn declared_method_type_kind(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
+        match ty {
+            CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+                if let CoreType::Named { name, .. } = ty {
+                    if let Some(arity) = scope.type_parameter_arity(name) {
+                        if arguments
+                            .iter()
+                            .any(|a| self.declared_method_type_kind(a, scope) != Some(0))
+                        {
+                            return None;
+                        }
+                        return (arity as usize).checked_sub(arguments.len());
+                    }
+                }
+                let mut head = ty.clone();
+                match &mut head {
+                    CoreType::Named { arguments, .. }
+                    | CoreType::ExternalNamed { arguments, .. } => arguments.clear(),
+                    _ => unreachable!(),
+                }
+                let slots = self.declared_method_constructor_slots(&head, scope)?;
+                let remaining = slots.get(arguments.len()..)?;
+                if arguments.iter().zip(&slots).any(|(argument, kind)| {
+                    self.declared_method_type_kind(argument, scope) != Some(*kind as usize)
+                }) || remaining.iter().any(|kind| *kind != 0)
+                {
+                    return None;
+                }
+                // TypeParameter::arity describes a constructor whose remaining
+                // slots all take values. A higher-order residual kind cannot
+                // be certified just by counting its unfilled slots.
+                Some(remaining.len())
+            }
+            CoreType::Function { parameter, result } => {
+                (self.declared_method_type_kind(parameter, scope) == Some(0)
+                    && self.declared_method_type_kind(result, scope) == Some(0))
+                .then_some(0)
+            }
+            CoreType::Tuple { elements } => elements
+                .iter()
+                .all(|e| self.declared_method_type_kind(e, scope) == Some(0))
+                .then_some(0),
+            CoreType::Record { closed, fields } => (*closed
+                && fields
+                    .iter()
+                    .all(|f| self.declared_method_type_kind(&f.type_ref, scope) == Some(0)))
+            .then_some(0),
+            CoreType::Hole | CoreType::RequirementMerge { .. } => None,
+        }
+    }
+
+    fn declared_method_constructor_slots(
+        &self,
+        head: &CoreType,
+        scope: &Scope,
+    ) -> Option<Vec<u32>> {
+        let CoreType::Named { name, .. } = self.local_canonical_type(head, scope).ok()? else {
+            return None;
+        };
+        if let Some(parameters) = self
+            .module
+            .adts
+            .iter()
+            .find(|ty| ty.symbol == name)
+            .map(|ty| &ty.type_parameters)
+            .or_else(|| {
+                self.module
+                    .structs
+                    .iter()
+                    .find(|ty| ty.symbol == name)
+                    .map(|ty| &ty.type_parameters)
+            })
+        {
+            return Some(parameters.iter().map(|p| p.arity).collect());
+        }
+        match name.as_str() {
+            "std/prelude::Unit"
+            | "std/prelude::Never"
+            | "std/prelude::Int"
+            | "std/prelude::Float"
+            | "std/prelude::Bool"
+            | "std/prelude::Char"
+            | "std/prelude::String"
+            | "std/prelude::Ordering" => Some(vec![]),
+            "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref" => {
+                Some(vec![0])
+            }
+            "std/prelude::Either" => Some(vec![0, 0]),
+            "std/prelude::Effect" => Some(vec![0, 0, 0]),
+            _ => None,
+        }
     }
 
     fn validate_hkt_parameter_method_value(

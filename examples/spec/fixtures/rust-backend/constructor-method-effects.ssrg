@@ -1,0 +1,41 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+trait Pick<F<_>> {
+  fn pick<A> left: F<A> -> right: F<A> -> Bool
+}
+
+type Watch<A> =
+  | Watch (Ref<Watch<A> -> Bool>, A)
+instance Pick<Watch> {
+  fn pick<A> left: Watch<A> -> (Watch<A> -> Bool) = {
+    let cold = match left { Watch (state, value) -> refs.get state }
+    \right -> { let retained = cold; True }
+  }
+}
+fn capture<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {
+  let chosen = pick
+  chosen left
+}
+effect fn delayed = do { println "cold"; effects.succeed 42 }
+fn marker -> Int = 1
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch<Int> -> False)
+  released <- refs.make 0
+  let left = Watch (callbacks, marker ())
+  let cold = delayed ()
+  let saved = capture left
+  refs.set saved callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed saved) (\held: (Watch<Int> -> Bool) -> refs.set 1 released)
+    again <- refs.get callbacks
+    value <- cold
+    println (show value)
+    println (show (again left))
+    println (show (saved left))
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

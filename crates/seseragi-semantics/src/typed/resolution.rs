@@ -349,8 +349,10 @@ impl<'a> TypedResolution<'a> {
             .collect()
     }
 
-    /// Only a declaration-backed, value-kinded scheme with one primary
-    /// dictionary can return its method without introducing extra stages.
+    /// A checked source declaration with one primary dictionary can return its
+    /// method without introducing extra source stages. Constructor-kind trait
+    /// parameters retain their declared slots; method-owned binders remain
+    /// value-kind here and method-owned constraints need their own ABI proof.
     pub(crate) fn declared_method_value_scheme(&self, signature: &TopLevelPureFunction) -> bool {
         let Some(identity) = &signature.trait_identity else {
             return false;
@@ -367,7 +369,9 @@ impl<'a> TypedResolution<'a> {
             else {
                 return false;
             };
-            methods.iter().any(|m| m.name == *method)
+            methods
+                .iter()
+                .any(|m| m.name == *method && m.type_parameters.iter().all(|p| p.arity == 0))
                 && self.resolved.symbols.iter().any(|symbol| {
                     symbol.kind == SymbolKind::Trait
                         && symbol.origin == *name_span
@@ -381,12 +385,10 @@ impl<'a> TypedResolution<'a> {
             .is_some_and(|declaration| {
                 declaration.constraints.len() == 1
                     && declaration.constraint_identities.as_slice() == [Some(identity.clone())]
-                    && declaration.type_parameters.iter().all(|p| p.arity == 0)
                     && !declaration.parameters.is_empty()
             })
             && signature.constraints.len() == 1
             && signature.constraint_identities.as_slice() == [Some(identity.clone())]
-            && signature.type_parameters.iter().all(|p| p.arity == 0)
     }
 
     pub(crate) fn declared_method_factory_trait(&self, identity: &str) -> bool {

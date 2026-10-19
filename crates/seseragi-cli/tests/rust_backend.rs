@@ -214,6 +214,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("array-index", 3),
         ("generalized-methods", 3),
         ("trait-methods", 3),
+        ("constructor-methods", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -2007,4 +2008,5 @@ fn generalized_method_factories_keep_imported_owners_and_dictionary_frames() {
 #[test]
 fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("trait-methods");
+    strict_project_reexports("constructor-methods");
 }

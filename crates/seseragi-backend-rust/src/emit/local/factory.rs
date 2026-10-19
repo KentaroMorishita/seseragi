@@ -29,7 +29,11 @@ impl Backend<'_> {
         if !callable.parameters.is_empty()
             || callable.self_name.is_some()
             || callable.constraints.len() != 1
-            || callable.variables.values().any(|arity| *arity != 0)
+            || (callable.variables.values().any(|arity| *arity != 0)
+                && !callable
+                    .constraints
+                    .first()
+                    .is_some_and(|constraint| self.declared_constructor_factory(constraint)))
             || !arguments.is_empty()
             || !deferred_evidence_parameters.is_empty()
             || !deferred_evidence_type_constructor_parameters.is_empty()
@@ -75,9 +79,9 @@ impl Backend<'_> {
                         && declaration.constraints.is_empty()
                         && !declaration.signature.parameters.is_empty()
                         && declaration
-                            .trait_parameters
+                            .signature
+                            .type_parameters
                             .iter()
-                            .chain(&declaration.signature.type_parameters)
                             .all(|p| p.arity == 0)
                 })
             {
@@ -117,7 +121,11 @@ impl Backend<'_> {
             if declaration.is_effect
                 || !declaration.parameters.is_empty()
                 || declaration.constraints.len() != 1
-                || declaration.type_parameters.iter().any(|p| p.arity != 0)
+                || (declaration.type_parameters.iter().any(|p| p.arity != 0)
+                    && !declaration
+                        .constraints
+                        .first()
+                        .is_some_and(|constraint| self.declared_constructor_factory(constraint)))
             {
                 return Err("Rust backend: unproven global method factory".into());
             }
@@ -191,6 +199,23 @@ impl Backend<'_> {
             .ok_or("Rust backend: unproven global method result")?;
         callable.method_value = Some(canonical(&result)?);
         Ok(Some(callable))
+    }
+
+    /// An open constructor scheme needs the checked source declaration. The
+    /// selected method is still independently checked against its exact kind,
+    /// full value type and evidence frame when the factory body is emitted.
+    fn declared_constructor_factory(&self, constraint: &CoreInstanceConstraint) -> bool {
+        self.module.trait_methods.iter().any(|declaration| {
+            Some(&declaration.trait_identity) == constraint.trait_identity.as_ref()
+                && declaration.constraints.is_empty()
+                && !declaration.signature.parameters.is_empty()
+                && declaration
+                    .signature
+                    .type_parameters
+                    .iter()
+                    .all(|p| p.arity == 0)
+                && declaration.trait_parameters.iter().any(|p| p.arity > 0)
+        })
     }
 
     pub(in crate::emit) fn validate_global_method_factory(

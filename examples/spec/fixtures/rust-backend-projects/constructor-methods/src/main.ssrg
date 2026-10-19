@@ -1,0 +1,6 @@
+import { Box as Foreign, selected } from "./facade"
+pub fn probe -> String = {
+  let saved = selected (Foreign "λ🙂")
+  show [saved (Foreign "雫"), saved (Foreign "水")]
+}
+pub effect fn main = println (probe ())
