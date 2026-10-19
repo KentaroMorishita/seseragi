@@ -29,6 +29,9 @@ impl Backend<'_> {
             scope,
         )?;
         let (identity, type_arguments) = match &selected.evidence {
+            CoreInstanceEvidence::Parameter { .. } => {
+                return self.validate_parameter_method_value(dispatch, selected, type_ref, scope);
+            }
             CoreInstanceEvidence::Local {
                 identity,
                 type_arguments,
@@ -39,7 +42,7 @@ impl Backend<'_> {
                 type_arguments,
                 ..
             } => (identity, type_arguments),
-            _ => return Ok(()), // Standard and parameter dictionaries have their own validators.
+            _ => return Ok(()), // Standard dictionaries have their own validators.
         };
         let instance = self
             .module
@@ -128,6 +131,46 @@ impl Backend<'_> {
             &method_type,
             type_ref,
             &variables,
+            &mut BTreeMap::new(),
+            scope,
+        )
+    }
+
+    fn validate_parameter_method_value(
+        &self,
+        dispatch: &CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        // Eq is checked by equality_call. The remaining admitted source
+        // parameter methods have the canonical A -> B -> C arithmetic ABI.
+        if !matches!(
+            (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
+            ("std/prelude::Add", "add")
+                | ("std/prelude::Sub", "sub")
+                | ("std/prelude::Mul", "mul")
+                | ("std/prelude::Div", "div")
+                | ("std/prelude::Rem", "rem")
+                | ("std/prelude::Pow", "pow")
+        ) || selected.constraint.arguments.len() != 3
+        {
+            return Err("Rust backend: unproven scoped method value signature".into());
+        }
+        let [left, right, result] = selected.constraint.arguments.as_slice() else {
+            unreachable!()
+        };
+        let expected = CoreType::Function {
+            parameter: Box::new(left.clone()),
+            result: Box::new(CoreType::Function {
+                parameter: Box::new(right.clone()),
+                result: Box::new(result.clone()),
+            }),
+        };
+        self.match_local_type(
+            &expected,
+            type_ref,
+            &BTreeMap::new(),
             &mut BTreeMap::new(),
             scope,
         )

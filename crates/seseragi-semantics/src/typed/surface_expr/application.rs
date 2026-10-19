@@ -180,10 +180,164 @@ pub(super) fn type_callable_value(
     if analysis.pure_call_issue.is_none()
         && !signature.parameters.is_empty()
         && !closed_selected_method_value(&analysis.value, signature, context)
+        && !available_selected_method_value(&analysis.value, signature, span, context)
     {
         analysis.value = abstract_callable_value(analysis.value, signature.parameters.len());
     }
     analysis
+}
+
+/// A source body can capture a dictionary it already received. A newly
+/// generalized let scheme cannot: its dictionaries are introduced at a later
+/// stage. Keep this proof separate from the closed monomorphic case above.
+fn available_selected_method_value(
+    value: &TypedExpr,
+    signature: &TopLevelPureFunction,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> bool {
+    let TypedExpr::Call {
+        arguments,
+        evidence,
+        trait_dispatch: Some(dispatch),
+        deferred_evidence_parameters,
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        type_ref,
+        ..
+    } = value
+    else {
+        return false;
+    };
+    let [selected] = evidence.as_slice() else {
+        return false;
+    };
+    let context = context.with_lexical_scope(span);
+    if context.deferred_let_evidence
+        || !arguments.is_empty()
+        || dispatch.method_contract.is_some()
+        || !deferred_evidence_parameters.is_empty()
+        || !deferred_evidence_type_constructor_parameters.is_empty()
+        || evidence_argument_index.is_some()
+        || signature.trait_identity.as_deref() != Some(dispatch.trait_identity.as_str())
+        || signature.trait_method.as_deref() != Some(dispatch.method.as_str())
+        || signature.constraint_identities.as_slice() != [Some(dispatch.trait_identity.clone())]
+    {
+        return false;
+    }
+    // Parameter dictionaries have no instance method body in this module.
+    // Certify only the canonical signatures also validated by the native ABI.
+    // A selected local/imported provider retains its checked method body.
+    if matches!(
+        selected.evidence,
+        crate::TypedInstanceEvidence::Parameter { .. }
+    ) && !matches!(
+        (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
+        ("std/prelude::Eq", "eq")
+            | ("std/prelude::Add", "add")
+            | ("std/prelude::Sub", "sub")
+            | ("std/prelude::Mul", "mul")
+            | ("std/prelude::Div", "div")
+            | ("std/prelude::Rem", "rem")
+            | ("std/prelude::Pow", "pow")
+    ) {
+        return false;
+    }
+    available_method_type(type_ref, &context)
+        && available_method_evidence(selected, &dispatch.trait_identity, &context)
+}
+
+fn available_method_evidence(
+    selected: &crate::TypedCallEvidence,
+    trait_identity: &str,
+    context: &PureExpressionContext<'_>,
+) -> bool {
+    use crate::TypedInstanceEvidence;
+    match &selected.evidence {
+        TypedInstanceEvidence::Parameter { .. } => {
+            context.available_method_parameter(selected, trait_identity)
+        }
+        TypedInstanceEvidence::Local {
+            type_arguments,
+            evidence_arguments,
+            ..
+        }
+        | TypedInstanceEvidence::Imported {
+            type_arguments,
+            evidence_arguments,
+            ..
+        } => {
+            selected
+                .constraint
+                .arguments
+                .iter()
+                .chain(type_arguments)
+                .all(|ty| available_method_type(ty, context))
+                && evidence_arguments.iter().all(|child| {
+                    context
+                        .trait_identity(&child.constraint.name)
+                        .is_some_and(|identity| {
+                            available_method_evidence(child, &identity, context)
+                        })
+                })
+        }
+        // Do not recapture a primitive dictionary's erased spelling as a
+        // lexical binder. Conditional standard dictionaries need a separate
+        // proof before their open type arguments enter this path.
+        TypedInstanceEvidence::Standard { .. } => closed_method_evidence(selected, context),
+    }
+}
+
+fn available_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) -> bool {
+    if closed_method_type(ty, context) {
+        return true;
+    }
+    match ty {
+        TypedType::Function { parameter, result } => {
+            available_method_type(parameter, context) && available_method_type(result, context)
+        }
+        TypedType::Tuple { elements } => {
+            elements.iter().all(|ty| available_method_type(ty, context))
+        }
+        TypedType::Record { closed, fields } => {
+            *closed
+                && fields
+                    .iter()
+                    .all(|f| available_method_type(&f.type_ref, context))
+        }
+        TypedType::Named { .. } | TypedType::ExternalNamed { .. } => {
+            fn known(key: &SemanticTypeKey, context: &PureExpressionContext<'_>) -> bool {
+                match key {
+                    SemanticTypeKey::TypeParameter(id) => context
+                        .lexical_type_parameters
+                        .values()
+                        .any(|available| available == id),
+                    SemanticTypeKey::Adt { arguments, .. }
+                    | SemanticTypeKey::Struct { arguments, .. }
+                    | SemanticTypeKey::ExternalNominal { arguments, .. } => {
+                        arguments.iter().all(|a| known(&a.key, context))
+                    }
+                    SemanticTypeKey::NamedGeneric { name, arguments } => {
+                        crate::prelude::type_constructor_arity(name).is_some()
+                            && arguments.iter().all(|a| known(&a.key, context))
+                    }
+                    SemanticTypeKey::Application {
+                        constructor,
+                        arguments,
+                    } => {
+                        known(&constructor.key, context)
+                            && arguments.iter().all(|a| known(&a.key, context))
+                    }
+                    SemanticTypeKey::Tuple(elements) => elements.iter().all(|k| known(k, context)),
+                    // This key does not retain whether its row is closed.
+                    SemanticTypeKey::Record(_) => false,
+                    _ => false,
+                }
+            }
+            known(&context.semantic_value_from_typed_type(ty).key, context)
+        }
+        TypedType::Hole | TypedType::RequirementMerge { .. } => false,
+    }
 }
 
 /// A closed method already has its primary dictionary. Preserve that method

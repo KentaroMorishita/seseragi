@@ -1,0 +1,35 @@
+type Mark = | Mark Int
+instance Eq<Mark> {
+  fn eq left: Mark -> (Mark -> Bool) = match left {
+    Mark value -> \right -> match right { Mark other -> value == other }
+  }
+}
+fn selected<A> left: A -> (A -> Bool) where Eq<A> = {
+  let chosen: A -> A -> Bool = eq
+  let alias = chosen
+  alias left
+}
+fn plus<Number> left: Number -> (Number -> Number) where Add<Number, Number, Number> = {
+  let chosen: Number -> Number -> Number = add
+  chosen left
+}
+fn scopes<A> left: A -> (A -> Bool) where Eq<A> = {
+  fn inner<B> value: B -> (B -> Bool) where Eq<B> = {
+    let chosen: B -> B -> Bool = eq
+    chosen value
+  }
+  let unrelated = inner 'λ'
+  selected left
+}
+pub fn probe -> Array<Bool> = {
+  let saved = selected (Mark 7)
+  let returned = scopes (Mark 8)
+  let generalized = eq
+  [saved (Mark 7), saved (Mark 8), returned (Mark 8), generalized 1 2]
+}
+pub effect fn main = do {
+  println (show (probe ()))
+  let saved = plus 40
+  println (show (saved 2))
+  println (show (saved 3))
+}

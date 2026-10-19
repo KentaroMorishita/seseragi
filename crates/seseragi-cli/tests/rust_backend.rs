@@ -979,6 +979,38 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
         (
+            "scoped-method-values",
+            "fixtures/rust-backend/scoped-method-values.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/scoped-method-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "scoped-method-defect",
+            "fixtures/rust-backend/scoped-method-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/scoped-method-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "scoped-method-effects",
+            "fixtures/rust-backend/scoped-method-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/scoped-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "scoped-method-children",
+            "fixtures/rust-backend/scoped-method-children.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/scoped-method-children.stdout"
+            ),
+            70,
+        ),
+        (
             "method-references",
             "fixtures/rust-backend/method-references.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/method-references.stdout"),
@@ -1879,4 +1911,9 @@ fn equality_partial_project_modules_typecheck_in_both_profiles() {
 #[test]
 fn strict_method_references_keep_imported_owners() {
     strict_project_reexports("method-references");
+}
+
+#[test]
+fn scoped_method_values_keep_imported_owners_and_dictionary_frames() {
+    strict_project_reexports("scoped-methods");
 }

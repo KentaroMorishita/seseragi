@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-scoped-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-scoped-methods@0.0.0#workspace:."
+name = "fixture/native-scoped-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6ba3bd0b955b7ae5b667f2e2c232a61533698c8b78dc505a82f95f9011631296"
+content_digest = "sha256:c24b00d36b562990f90861172310cfc2bf942a8850589a2860227d2b340219b3"
+dependencies = [
+  { import = "model", package = "fixture/scoped-methods-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/scoped-methods-model@1.0.0#path:vendor/model"
+name = "fixture/scoped-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:8ba0b63c965a70e33d940f610c09ecf44b49bc55a1ca233026d35480d5a096b4"
+content_digest = "sha256:14b1bacea576540db9be3cae7903950b55ab455999dce66578032e921cd0a0b3"
+dependencies = []
