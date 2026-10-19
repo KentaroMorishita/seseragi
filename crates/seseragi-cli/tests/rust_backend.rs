@@ -202,6 +202,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("method-dictionaries", 3),
         ("hkt-return", 3),
         ("array-index", 3),
+        ("generalized-methods", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -978,6 +979,36 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
     let scratch = Scratch::new();
     let fixtures = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec");
     for (name, relative, expected, exit) in [
+        (
+            "generalized-method-values",
+            "fixtures/rust-backend/generalized-method-values.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "generalized-method-defect",
+            "fixtures/rust-backend/generalized-method-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "generalized-method-effects",
+            "fixtures/rust-backend/generalized-method-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "generalized-method-children",
+            "fixtures/rust-backend/generalized-method-children.ssrg",
+            "",
+            70,
+        ),
         (
             "scoped-method-values",
             "fixtures/rust-backend/scoped-method-values.ssrg",
@@ -1921,4 +1952,9 @@ fn scoped_method_values_keep_imported_owners_and_dictionary_frames() {
 #[test]
 fn trait_operator_stages_keep_imported_owners_and_source_order() {
     strict_project_reexports("trait-operator-order");
+}
+
+#[test]
+fn generalized_method_factories_keep_imported_owners_and_dictionary_frames() {
+    strict_project_reexports("generalized-methods");
 }

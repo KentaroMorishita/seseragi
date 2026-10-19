@@ -2,6 +2,7 @@ use super::*;
 use seseragi_lowering::CoreInstanceConstraint;
 
 mod evidence;
+mod factory;
 mod types;
 use types::argument_type;
 pub(super) use types::argument_type as method_argument_type;
@@ -89,6 +90,9 @@ pub(super) struct LocalCallable {
     variables: BTreeMap<String, u32>,
     constraints: Vec<CoreInstanceConstraint>,
     parameters: Vec<CoreParameter>,
+    /// A let factory introduces only dictionaries and returns this checked
+    /// method type. It has no implicit Unit or eta-expanded source stages.
+    pub(super) method_value: Option<CoreType>,
 }
 impl LocalCallable {
     pub(super) fn new(
@@ -101,6 +105,7 @@ impl LocalCallable {
             variables: variables.collect(),
             constraints: constraints.to_vec(),
             parameters: parameters.to_vec(),
+            method_value: None,
         }
     }
 }
@@ -112,7 +117,7 @@ impl Backend<'_> {
         body: &CoreExpr,
         scope: &Scope,
     ) -> Result<String> {
-        if callable.parameters.is_empty() {
+        if callable.parameters.is_empty() && callable.method_value.is_none() {
             return Err("Rust backend: local callable needs source parameters".into());
         }
         let mut typed_scope = scope.clone();
@@ -160,6 +165,9 @@ impl Backend<'_> {
         for index in 0..callable.constraints.len() {
             inner.insert(format!("\0dictionary_{index}"));
         }
+        if callable.method_value.is_some() {
+            self.validate_method_factory(callable, body, &inner)?;
+        }
         let mut value = self.function(&callable.parameters, body, &inner)?;
         // These are implementation-only stages, never source parameters. Both
         // dictionaries and source captures remain ordinary traceable V edges.
@@ -174,6 +182,19 @@ impl Backend<'_> {
     }
 
     pub(super) fn local_call(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
+        let CoreExpr::Call { callee, .. } = expr else {
+            unreachable!()
+        };
+        let callable = &scope.callables[callee];
+        self.call_local_value(expr, callable, scope)
+    }
+
+    pub(in crate::emit) fn call_local_value(
+        &mut self,
+        expr: &CoreExpr,
+        callable: &LocalCallable,
+        scope: &Scope,
+    ) -> Result<String> {
         let CoreExpr::Call {
             callee,
             arguments,
@@ -181,12 +202,19 @@ impl Backend<'_> {
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
             evidence_argument_index,
+            type_ref,
             ..
         } = expr
         else {
             unreachable!()
         };
-        let callable = &scope.callables[callee];
+
+        if callable.method_value.is_some()
+            && (!deferred_evidence_parameters.is_empty()
+                || *evidence_argument_index != (!arguments.is_empty()).then_some(0))
+        {
+            return Err("Rust backend: method factory dictionary staging mismatch".into());
+        }
         if !deferred_evidence_type_constructor_parameters.is_empty()
             || evidence_argument_index
                 .is_some_and(|index| index != callable.parameters.len() || index > arguments.len())
@@ -199,6 +227,47 @@ impl Backend<'_> {
             return Err("Rust backend: missing local partial source stages".into());
         }
         let mut bindings = self.validate_local_arguments(callable, arguments, evidence, scope)?;
+        if let Some(method_type) = &callable.method_value {
+            let mut remaining = method_type.clone();
+            for argument in arguments {
+                // A value-kinded result slot can be bound to a function by
+                // the selected dictionary. Follow only those proved formal
+                // substitutions before applying further returned stages.
+                let mut visited = BTreeSet::new();
+                while let CoreType::Named { name, arguments } = &remaining {
+                    if !arguments.is_empty() || !callable.variables.contains_key(name) {
+                        break;
+                    }
+                    let Some(bound) = bindings.get(name) else {
+                        break;
+                    };
+                    if !visited.insert(name.clone()) {
+                        return Err("Rust backend: cyclic method result substitution".into());
+                    }
+                    remaining = bound.clone();
+                }
+                let CoreType::Function { parameter, result } = remaining else {
+                    return Err("Rust backend: method factory source arity mismatch".into());
+                };
+                let actual = argument_type(argument)
+                    .ok_or("Rust backend: unproven method factory argument")?;
+                self.match_local_type(
+                    &parameter,
+                    &actual,
+                    &callable.variables,
+                    &mut bindings,
+                    scope,
+                )?;
+                remaining = *result;
+            }
+            self.match_local_type(
+                &remaining,
+                type_ref,
+                &callable.variables,
+                &mut bindings,
+                scope,
+            )?;
+        }
         for (parameter, actual) in callable
             .parameters
             .iter()

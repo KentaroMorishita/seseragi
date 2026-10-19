@@ -1,0 +1,63 @@
+type Box<A> = | Box A
+type FunctionMark = | FunctionMark
+
+let globalEq = eq
+let globalAlias = globalEq
+let globalAdd = add
+
+instance Add<FunctionMark, FunctionMark, (Int -> Int)> {
+  fn add left: FunctionMark -> right: FunctionMark -> (Int -> Int) = \value -> value + 1
+}
+
+instance Add<FunctionMark, (Int -> Int), Int> {
+  fn add left: FunctionMark -> right: (Int -> Int) -> Int = right 41
+}
+
+instance<A> Add<Box<A>, Box<A>, Box<A>> where Add<A, A, A> {
+  fn add left: Box<A> -> (Box<A> -> Box<A>) = match left {
+    Box value -> {
+      let plus = add
+      let saved: A -> A = plus value
+      \right -> match right { Box other -> Box (saved other) }
+    }
+  }
+}
+
+fn choose<A> left: A -> (A -> Bool) where Eq<A> = {
+  let equal = eq
+  let alias = equal
+  alias left
+}
+
+fn chooseAdd<A> left: A -> (A -> A) where Add<A, A, A> = {
+  let plus = add
+  let alias = plus
+  alias left
+}
+
+pub fn probe -> String = {
+  let plus = add
+  let alias = plus
+  let ints: Int -> Int = alias 40
+  let strings: String -> String = alias "λ"
+  let equal = eq
+  let compareInts = equal 42
+  let compareChars = equal '🙂'
+  let addBox: Box<Int> -> Box<Int> = chooseAdd (Box 40)
+  let Box total = addBox (Box 3)
+  let selectedEq: Int -> Bool = choose 40
+  let returned =
+    globalAdd<FunctionMark, FunctionMark, (Int -> Int)> FunctionMark FunctionMark
+  let callbackResult =
+    alias<FunctionMark, (Int -> Int), Int> FunctionMark (\value: Int -> value + 1)
+  show [
+    ints 2,
+    ints 3,
+    total,
+    globalAdd 20 24,
+    returned 41,
+    callbackResult
+  ] + ":" + strings "🙂" + ":" + show (compareInts 42) + ":" + show (compareChars '🙂') + ":" + show (selectedEq 41) + ":" + show (globalAlias 40 42)
+}
+
+pub effect fn main = do { println (probe ()) }

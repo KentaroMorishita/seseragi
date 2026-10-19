@@ -185,13 +185,6 @@ pub fn emit(
     }
     for function in &module.functions {
         backend.owner = &owners[&function.symbol];
-        if function.parameters.is_empty() {
-            return Err(crate::project::at(
-                "Rust backend: constrained global values without source parameters are unsupported",
-                &function.origin,
-                backend.owner,
-            ));
-        }
         if function.is_effect {
             backend.capabilities.insert("effect-sync".into());
         }
@@ -204,6 +197,19 @@ pub fn emit(
             &function.symbol,
         );
         let setup = dictionary_parameters(&function.constraints, &mut scope);
+        if function.parameters.is_empty() {
+            backend
+                .validate_global_method_factory(function, &scope)
+                .map_err(|error| {
+                    crate::project::at(&error.message, &function.origin, backend.owner)
+                })?;
+            let body = backend.expr(&function.body, &scope)?;
+            output.push_str(&format!(
+                "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
+                id(&function.symbol)
+            ));
+            continue;
+        }
         let body = backend.function(&function.parameters, &function.body, &scope)?;
         output.push_str(&format!(
             "\nfn {}(dicts: Vec<V>) -> V {{ {setup} {body} }}\n",
@@ -713,6 +719,11 @@ impl Backend<'_> {
                 if trait_dispatch.is_none() && scope.callables.contains_key(callee) {
                     return self.local_call(expr, scope);
                 }
+                if trait_dispatch.is_none() && !scope.contains(callee) {
+                    if let Some(factory) = self.global_method_factory(callee)? {
+                        return self.call_local_value(expr, &factory, scope);
+                    }
+                }
                 if let Some(dispatch) = trait_dispatch {
                     if dispatch.trait_identity == "std/prelude::Eq" {
                         return self.equality_call(expr, scope);
@@ -1123,6 +1134,10 @@ impl Backend<'_> {
                 );
                 if !initializer_in_outer_scope {
                     callable.self_name = Some(name.clone());
+                }
+                if *initializer_in_outer_scope && parameters.is_empty() {
+                    callable.method_value = local::method_argument_type(body)
+                        .filter(|ty| matches!(ty, CoreType::Function { .. }));
                 }
                 let value = self
                     .local_function(&callable, body, scope)

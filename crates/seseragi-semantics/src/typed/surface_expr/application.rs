@@ -225,7 +225,7 @@ fn available_selected_method_value(
         return false;
     };
     let context = context.with_lexical_scope(span);
-    if context.deferred_let_evidence
+    if (context.deferred_let_evidence && !context.deferred_method_value)
         || !arguments.is_empty()
         || dispatch.method_contract.is_some()
         || !deferred_evidence_parameters.is_empty()
@@ -255,8 +255,41 @@ fn available_selected_method_value(
     ) {
         return false;
     }
-    available_method_type(type_ref, &context)
+    (available_method_type(type_ref, &context)
+        || (context.deferred_method_value && standard_method_value_scheme(signature)))
         && available_method_evidence(selected, &dispatch.trait_identity, &context)
+}
+
+/// Bounded dictionary-only alias schemes. Their source signature is the
+/// canonical Prelude contract also checked by the native method-value ABI.
+/// User traits and method-owned constraints require their own signature proof.
+pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> bool {
+    let Some(identity) = &signature.trait_identity else {
+        return false;
+    };
+    signature.constraints.len() == 1
+        && signature.constraint_identities.as_slice() == [Some(identity.clone())]
+        && signature.type_parameters.iter().all(|p| p.arity == 0)
+        && matches!(
+            (identity.as_str(), signature.trait_method.as_deref()),
+            ("std/prelude::Eq", Some("eq"))
+                | ("std/prelude::Add", Some("add"))
+                | ("std/prelude::Sub", Some("sub"))
+                | ("std/prelude::Mul", Some("mul"))
+                | ("std/prelude::Div", Some("div"))
+                | ("std/prelude::Rem", Some("rem"))
+                | ("std/prelude::Pow", Some("pow"))
+        )
+}
+
+pub(super) fn standard_method_factory_alias(signature: &TopLevelPureFunction) -> bool {
+    signature.trait_identity.is_none()
+        && signature.parameters.is_empty()
+        && signature.constraints.len() == 1
+        && signature.type_parameters.iter().all(|p| p.arity == 0)
+        && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
+            "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
+            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow"))
 }
 
 fn available_method_evidence(
@@ -792,6 +825,7 @@ pub(crate) fn type_known_application_with_explicit(
     let callee_signature = unconstrained_hkt_signature(&signature);
     let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
+    let method_factory_alias = standard_method_factory_alias(&signature);
     let declared_arity = signature.parameters.len();
     // Infer across the whole source application, including function-valued results.
     // Dictionary application still belongs immediately after the declared parameters.
@@ -1157,7 +1191,30 @@ pub(crate) fn type_known_application_with_explicit(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
             callee_signature: if issue.is_none() {
-                callee_signature.map(|mut signature| {
+                // The source checker has instantiated every method stage.
+                // Preserve that complete returned type at a dictionary-only
+                // alias use; host inference cannot recover a function-valued
+                // result from an erased dictionary argument.
+                let factory_signature = method_factory_alias
+                    .then(|| {
+                        let result = application
+                            .parameters
+                            .iter()
+                            .take(arguments.len())
+                            .rev()
+                            .fold(type_ref.clone(), |result, parameter| TypedType::Function {
+                                parameter: Box::new(context.evidence_type(parameter)),
+                                result: Box::new(result),
+                            });
+                        (!typed_type_contains_hole(&result)).then_some(crate::TypedCallSignature {
+                            type_parameters: Vec::new(),
+                            parameters: Vec::new(),
+                            result,
+                            argument_types: Vec::new(),
+                        })
+                    })
+                    .flatten();
+                factory_signature.or(callee_signature).map(|mut signature| {
                     signature.argument_types = arguments
                         .iter()
                         .map(application_argument_type_from_expr)

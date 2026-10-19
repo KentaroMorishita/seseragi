@@ -1,0 +1,21 @@
+pub type Mark<A> = | Mark A
+let equality = eq
+instance<A> Eq<Mark<A>> where Eq<A> {
+  fn eq left: Mark<A> -> (Mark<A> -> Bool) = match left {
+    Mark value -> {
+      let op = eq
+      let same = op value
+      \right -> match right { Mark other -> same other }
+    }
+  }
+}
+pub fn different<A> left: A -> right: A -> Bool where Eq<A> = {
+  let op: A -> A -> Bool = (!=)
+  op left right
+}
+
+pub fn selected<A> left: A -> (A -> Bool) where Eq<A> = {
+  let chosen = equality
+  let alias = chosen
+  alias left
+}

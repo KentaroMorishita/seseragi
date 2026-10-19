@@ -21,6 +21,18 @@ pub(crate) struct ScopedCallEvidence {
 }
 
 impl ScopedCallEvidence {
+    pub(super) fn deferred_parameter_matches(
+        &self,
+        index: usize,
+        trait_identity: &str,
+        constraint: &TypedConstraint,
+    ) -> bool {
+        self.source_arguments.is_none()
+            && self.index == index
+            && self.trait_identity == trait_identity
+            && self.constraint == *constraint
+    }
+
     pub(crate) fn index(&self) -> usize {
         self.index
     }
@@ -2187,6 +2199,31 @@ mod available_source_frame_tests {
             },
             key: SemanticTypeKey::TypeParameter(SymbolId(id)),
         }
+    }
+
+    #[test]
+    fn deferred_frame_requires_its_fresh_scheme_constraint_and_index() {
+        let constraint = TypedConstraint {
+            name: "Eq".into(),
+            arguments: vec![TypedType::Named {
+                name: "Let42T0".into(),
+                arguments: vec![],
+            }],
+        };
+        let mut frame = ScopedCallEvidence {
+            trait_identity: "std/prelude::Eq".into(),
+            constraint: constraint.clone(),
+            index: 0,
+            source_arguments: None,
+        };
+        assert!(frame.deferred_parameter_matches(0, "std/prelude::Eq", &constraint));
+        assert!(!frame.deferred_parameter_matches(1, "std/prelude::Eq", &constraint));
+        assert!(!frame.deferred_parameter_matches(0, "other::Eq", &constraint));
+        let mut outer = constraint.clone();
+        outer.arguments[0] = parameter(1).type_ref;
+        assert!(!frame.deferred_parameter_matches(0, "std/prelude::Eq", &outer));
+        frame.source_arguments = Some(vec![parameter(1)]);
+        assert!(!frame.deferred_parameter_matches(0, "std/prelude::Eq", &constraint));
     }
 
     #[test]

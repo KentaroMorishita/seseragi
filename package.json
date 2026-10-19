@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.61.60",
+  "version": "0.61.61",
   "private": true,
   "workspaces": [
     "runtime/ts"
