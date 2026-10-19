@@ -282,11 +282,18 @@ impl Backend<'_> {
         }
         let mut bindings = BTreeMap::new();
         self.match_local_type(&expected, type_ref, &variables, &mut bindings, scope)?;
-        if variables
-            .iter()
-            .any(|(name, arity)| *arity > 0 && !bindings.contains_key(name))
-        {
-            return Err("Rust backend: unproven abstract method constructor binder".into());
+        for (name, arity) in variables {
+            match bindings.get(&name) {
+                Some(actual)
+                    if self.declared_method_type_kind(actual, scope) != Some(arity as usize) =>
+                {
+                    return Err("Rust backend: abstract method binder kind mismatch".into());
+                }
+                None if arity > 0 => {
+                    return Err("Rust backend: unproven abstract method constructor binder".into());
+                }
+                _ => {}
+            }
         }
         Ok(())
     }

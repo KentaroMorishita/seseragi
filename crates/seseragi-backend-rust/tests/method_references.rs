@@ -1386,3 +1386,86 @@ fn method_owned_constructor_prefixes_reject_forged_slot_kinds() {
         }
     }
 }
+
+#[test]
+fn method_owned_constructors_cannot_hide_higher_order_slots_in_value_binders() {
+    use seseragi_lowering::CoreStatement;
+    for (declaration, name, arguments) in [
+        (
+            "type Holder<H<_>, A> = | Holder H<A>",
+            "Holder",
+            vec![
+                CoreType::Named {
+                    name: "Maybe".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                },
+            ],
+        ),
+        (
+            "type Holder<P, H<_>, A> = | Holder (P, H<A>)",
+            "Holder",
+            vec![
+                CoreType::Named {
+                    name: "String".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Maybe".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                },
+            ],
+        ),
+    ] {
+        let source = format!("// 雫🙂\ntrait Select<Tag> {{ fn select<G<_, _>, A, B> left: G<A, B> -> right: G<A, B> -> Bool }}\n{declaration}\nfn unused<Tag, G<_, _>, A, B> left: G<A, B> -> Unit where Select<Tag> = {{ let chosen: G<A, B> -> G<A, B> -> Bool = select; () }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "higher-slot-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        let mut changed = core;
+        let function = changed
+            .functions
+            .iter_mut()
+            .find(|f| f.symbol.ends_with("::unused"))
+            .unwrap();
+        let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+            panic!("body")
+        };
+        let CoreStatement::PureLet { value, .. } = &mut statements[0] else {
+            panic!("alias")
+        };
+        let CoreExpr::Call { type_ref, .. } = value else {
+            panic!("method")
+        };
+        let argument = CoreType::Named {
+            name: name.into(),
+            arguments,
+        };
+        *type_ref = CoreType::Function {
+            parameter: Box::new(argument.clone()),
+            result: Box::new(CoreType::Function {
+                parameter: Box::new(argument),
+                result: Box::new(CoreType::Named {
+                    name: "Bool".into(),
+                    arguments: vec![],
+                }),
+            }),
+        };
+        let Err(error) = emit_rust_module(&changed, "probe") else {
+            panic!("accepted a higher-order slot in a value-kind method binder")
+        };
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert_eq!(error.origin.unwrap().source, "higher-slot-λ.ssrg");
+    }
+}
