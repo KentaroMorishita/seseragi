@@ -1073,3 +1073,90 @@ fn constructor_module_factories_reject_forged_kinds_frames_and_alias_cycles() {
         assert_eq!(error.origin.unwrap().source, "constructor-global-λ.ssrg");
     }
 }
+
+#[test]
+fn fixed_constructor_prefixes_follow_declared_slot_kinds() {
+    let source = "trait Pick<F<_>> { fn pick<A> left: F<A> -> right: F<A> -> Bool }\n\
+        type Container<G<_>, A> = | Container G<A>\n\
+        instance Pick<Container<Maybe>> { fn pick<A> left: Container<Maybe, A> -> (Container<Maybe, A> -> Bool) = \\right -> True }\n\
+        fn selected<G<_>, A> left: Container<G, A> -> (Container<G, A> -> Bool) where Pick<Container<G>> = {\n\
+          let chosen: Container<G, A> -> Container<G, A> -> Bool = pick; chosen left\n\
+        }\n\
+        pub effect fn main = do {\n\
+          let saved = selected<Maybe, Int> (Container<Maybe, Int> (Just 1))\n\
+          println (show (saved (Container<Maybe, Int> (Just 2))))\n\
+        }";
+    execute(source, "constructor-kind-prefix", "True\n", 0);
+}
+
+#[test]
+fn constructor_prefix_slot_kinds_reject_forged_adt_and_struct_declarations() {
+    for declaration in [
+        "type Holder<G<_>, A> = | Holder G<A>",
+        "struct Holder<G<_>, A> { value: G<A> }",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool }}\n{declaration}\nfn saved<G<_>, A> left: Holder<G, A> -> (Holder<G, A> -> Bool) where Pick<Holder<G>> = {{ let chosen: Holder<G, A> -> Holder<G, A> -> Bool = pick; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "slot-kinds-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..10 {
+            let mut changed = core.clone();
+            let parameters = if let Some(adt) = changed.adts.first_mut() {
+                &mut adt.type_parameters
+            } else {
+                &mut changed.structs[0].type_parameters
+            };
+            match mutation {
+                0 => parameters[0].arity = 0,
+                1 => parameters[0].arity = 2,
+                2 => {
+                    parameters.swap(0, 1);
+                }
+                3 => {
+                    parameters.pop();
+                }
+                4 => {
+                    let mut next = parameters[0].clone();
+                    next.name = "Unfilled".into();
+                    parameters.push(next);
+                }
+                5 => changed.trait_methods[0].trait_parameters[0].arity = 2,
+                6 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 0
+                }
+                7 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 2
+                }
+                8 => parameters[1].arity = 1,
+                _ => {
+                    parameters.clear();
+                }
+            }
+            let Err(error) = emit_rust_module(&changed, "probe") else {
+                panic!("accepted {declaration} mutation {mutation}");
+            };
+            assert_eq!(
+                error.code, "SES-RUST-0001",
+                "{declaration} mutation {mutation}"
+            );
+            assert!(error.origin.is_some());
+        }
+    }
+}
