@@ -1,0 +1,5 @@
+// 雫🙂
+fn outer<A> value: A -> A = {
+  fn inner<A> other: A -> A = other
+  inner value
+}

@@ -132,3 +132,32 @@ fn method_references_keep_imported_owners_and_child_dictionaries() {
         }
     }
 }
+
+#[test]
+fn type_parameters_cannot_shadow_enclosing_declaration_parameters() {
+    for source in [
+        "// 雫🙂\ntrait Pick<A> { fn pick<A> left: A -> right: A -> Bool }\npub fn probe -> Unit = ()",
+        "// 雫🙂\ntrait Pick<A> { fn pick<A> left: A -> right: A -> Bool }\ninstance Pick<Int> { fn pick<A> left: A -> right: A -> Bool = True }\ninstance Pick<String> { fn pick<A> left: A -> right: A -> Bool = False }\npub effect fn main = do { let chosen = pick; println (show (chosen<Int, String> \"left\" \"right\")) }",
+        "fn outer<A> value: A -> A = { fn inner<A> other: A -> A = other; inner value }\npub fn probe -> Int = outer 42",
+        "trait Hold<A> { fn hold<B> value: B -> marker: A -> B }\ninstance<A> Hold<List<A>> { fn hold<A> value: A -> marker: List<A> -> A = value }\npub fn probe -> Unit = ()",
+        "fn duplicate<A, A> value: A -> A = value\npub fn probe -> Unit = ()",
+    ] {
+        let resolved = seseragi_semantics::resolve_module("binder-λ.ssrg", source);
+        assert!(resolved.issues.iter().any(|issue| issue.code == "SES-N0002"), "{source}: {:?}", resolved.issues);
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let error = compile_module(CompileInput::new("binder-λ.ssrg", "fixture/binders", source).with_profile(profile)).unwrap_err();
+            let diagnostic = error.diagnostics.iter().find(|d| d.code == "SES-N0002" || d.message_key == "trait.instance-method-signature-mismatch").unwrap_or_else(|| panic!("source: {source}; diagnostics: {error:?}"));
+            // The existing contract error retains precedence at a shared span;
+            // the independent resolver check above must still reject shadowing.
+            if diagnostic.code == "SES-N0002" { assert_eq!(diagnostic.message_key, "name.duplicate-definition"); }
+            assert!(source.is_char_boundary(diagnostic.primary.start));
+            assert!(source.is_char_boundary(diagnostic.primary.end));
+            assert!(diagnostic.primary.start < diagnostic.primary.end && diagnostic.primary.end <= source.len());
+        }
+    }
+    for source in [
+        "trait Pick<A> { fn pick<B> left: B -> right: B -> Bool }\ninstance Pick<Int> { fn pick<B> left: B -> right: B -> Bool = True }\ninstance Pick<String> { fn pick<B> left: B -> right: B -> Bool = False }\npub fn probe -> Bool = { let chosen: String -> String -> Bool = pick<Int, String>; chosen \"left\" \"right\" }",
+        "type A = | A Int\nfn first<A> value: A -> A = value\nfn second<A> value: A -> A = value\npub fn probe -> Int = first (second 42)",
+        "trait Two<A> { fn first<B> value: B -> marker: A -> B; fn second<B> value: B -> marker: A -> B }\npub fn probe -> Unit = ()",
+    ] { compile_module(CompileInput::new("distinct.ssrg", "fixture/binders", source)).unwrap(); }
+}

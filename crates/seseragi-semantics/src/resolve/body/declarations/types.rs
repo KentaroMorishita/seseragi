@@ -20,6 +20,23 @@ pub(super) fn register_type_parameters(
     origin: ByteSpan,
 ) {
     for parameter in parameters {
+        // Type parameters remain in scope through the declaration, including
+        // nested methods and local declarations (spec 2.11). A fresh inner
+        // binder cannot reuse an enclosing parameter's spelling. Keep this
+        // separate from ordinary nominal/value shadowing and sibling scopes.
+        if resolver
+            .lookup(scope, SymbolNamespace::Type, &parameter.name)
+            .is_some_and(|id| {
+                let existing = &resolver.symbols[id.0 as usize];
+                existing.kind == SymbolKind::TypeParameter && existing.scope != scope
+            })
+        {
+            resolver.issues.push(crate::ResolveIssue {
+                code: "SES-N0002".into(),
+                message_key: "name.duplicate-definition".into(),
+                primary: origin,
+            });
+        }
         resolver.register(
             scope,
             SymbolNamespace::Type,

@@ -99,6 +99,16 @@ fn incomplete_instance_contracts_reject_before_emission_or_execution() {
             "missing-generic-instance-method",
             "SES-T0101",
         ),
+        (
+            "semantic-diagnostics-schema-1",
+            "trait-method-type-parameter-shadow",
+            "SES-N0002",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "local-function-type-parameter-shadow",
+            "SES-N0002",
+        ),
     ] {
         let source = scratch.0.join(format!("{name}-λ.ssrg"));
         fs::write(
