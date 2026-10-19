@@ -867,6 +867,160 @@ fn constructor_trait_parameter_methods_preserve_the_selected_first_stage() {
 }
 
 #[test]
+fn method_owned_constructor_binders_preserve_the_selected_first_stage() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg");
+    for (name, source) in [
+        ("method-constructor-captured", source.to_string()),
+        (
+            "method-constructor-generalized",
+            source.replace(
+                "let chosen: G<F<A>> -> G<F<A>> -> Bool = pick",
+                "let chosen = pick",
+            ),
+        ),
+        (
+            "method-constructor-child-stage",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-constructor-children.ssrg"
+            )
+            .to_string(),
+        ),
+    ] {
+        execute(&source, name, "", 70);
+    }
+}
+
+#[test]
+fn method_owned_constructors_keep_prefixes_dictionaries_and_managed_lifetimes() {
+    for (name, source, expected) in [
+        (
+            "values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-values.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-values.stdout"),
+        ),
+        (
+            "effects",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-effects.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-effects.stdout"),
+        ),
+        (
+            "prefix-kind",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-prefix-kind.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-prefix-kind.stdout"),
+        ),
+    ] {
+        execute(source, &format!("method-constructor-{name}"), expected, 0);
+    }
+}
+
+#[test]
+fn method_owned_constructor_values_reject_forged_binders_kinds_and_frames() {
+    use seseragi_lowering::CoreStatement;
+    for initializer in [
+        "let chosen: G<F<A>> -> G<F<A>> -> Bool = pick",
+        "let chosen = pick",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool }}\nfn saved<F<_>, G<_>, A> left: G<F<A>> -> (G<F<A>> -> Bool) where Pick<F> = {{ {initializer}; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "method-kind-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..21 {
+            let mut changed = core.clone();
+            let declaration = &mut changed.trait_methods[0];
+            match mutation {
+                0 => declaration.signature.type_parameters[0].arity = 0,
+                1 => declaration.signature.type_parameters[0].arity = 2,
+                2 => declaration.signature.type_parameters[1].arity = 1,
+                3 => declaration.signature.type_parameters[0].name = "F".into(),
+                4 => declaration.signature.type_parameters[1].name = "G".into(),
+                5 => declaration.signature.type_parameters.clear(),
+                6 => declaration.trait_parameters[0].arity = 0,
+                7 => declaration.signature.parameters[0] = CoreType::Hole,
+                8 => {
+                    declaration.signature.result = CoreType::Named {
+                        name: "G".into(),
+                        arguments: vec![],
+                    }
+                }
+                9 => declaration.constraints.push(
+                    core.functions
+                        .iter()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .constraints[0]
+                        .clone(),
+                ),
+                10 => changed.trait_methods.clear(),
+                20 => {
+                    let mut unused = declaration.signature.type_parameters[0].clone();
+                    unused.name = "UnusedConstructor".into();
+                    declaration.signature.type_parameters.push(unused);
+                }
+                _ => {
+                    let function = changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap();
+                    if mutation == 11 {
+                        function.type_parameters[1].arity = 0;
+                    } else if mutation == 12 {
+                        function.type_parameters[1].arity = 2;
+                    } else {
+                        let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                            panic!("body")
+                        };
+                        let value = match &mut statements[0] {
+                            CoreStatement::PureLet { value, .. } => value,
+                            CoreStatement::LocalFunction { body, .. } => body,
+                            _ => panic!("alias"),
+                        };
+                        let CoreExpr::Call {
+                            evidence,
+                            trait_dispatch,
+                            type_ref,
+                            deferred_evidence_parameters,
+                            evidence_argument_index,
+                            ..
+                        } = value
+                        else {
+                            panic!("method")
+                        };
+                        match mutation {
+                            13 => {
+                                evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 }
+                            }
+                            14 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                            15 => trait_dispatch.as_mut().unwrap().method = "other".into(),
+                            16 => {
+                                trait_dispatch.as_mut().unwrap().trait_identity =
+                                    "counterfeit::trait(Pick)".into()
+                            }
+                            17 => *type_ref = CoreType::Hole,
+                            18 => *evidence_argument_index = Some(1),
+                            _ => deferred_evidence_parameters.push(CoreType::Hole),
+                        }
+                    }
+                }
+            }
+            let error = emit_rust_module(&changed, "probe").unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001", "mutation {mutation}");
+            assert_eq!(
+                error.origin.unwrap().source,
+                "method-kind-λ.ssrg",
+                "mutation {mutation}"
+            );
+        }
+    }
+}
+
+#[test]
 fn constructor_method_values_require_canonical_kinds_slots_and_evidence_frames() {
     use seseragi_lowering::CoreStatement;
     for initializer in [
@@ -1096,6 +1250,78 @@ fn constructor_prefix_slot_kinds_reject_forged_adt_and_struct_declarations() {
         "struct Holder<G<_>, A> { value: G<A> }",
     ] {
         let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool }}\n{declaration}\nfn saved<G<_>, A> left: Holder<G, A> -> (Holder<G, A> -> Bool) where Pick<Holder<G>> = {{ let chosen: Holder<G, A> -> Holder<G, A> -> Bool = pick; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "slot-kinds-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..10 {
+            let mut changed = core.clone();
+            let parameters = if let Some(adt) = changed.adts.first_mut() {
+                &mut adt.type_parameters
+            } else {
+                &mut changed.structs[0].type_parameters
+            };
+            match mutation {
+                0 => parameters[0].arity = 0,
+                1 => parameters[0].arity = 2,
+                2 => {
+                    parameters.swap(0, 1);
+                }
+                3 => {
+                    parameters.pop();
+                }
+                4 => {
+                    let mut next = parameters[0].clone();
+                    next.name = "Unfilled".into();
+                    parameters.push(next);
+                }
+                5 => changed.trait_methods[0].trait_parameters[0].arity = 2,
+                6 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 0
+                }
+                7 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 2
+                }
+                8 => parameters[1].arity = 1,
+                _ => {
+                    parameters.clear();
+                }
+            }
+            let Err(error) = emit_rust_module(&changed, "probe") else {
+                panic!("accepted {declaration} mutation {mutation}");
+            };
+            assert_eq!(
+                error.code, "SES-RUST-0001",
+                "{declaration} mutation {mutation}"
+            );
+            assert!(error.origin.is_some());
+        }
+    }
+}
+
+#[test]
+fn method_owned_constructor_prefixes_reject_forged_slot_kinds() {
+    for declaration in [
+        "type Holder<G<_>, A> = | Holder G<A>",
+        "struct Holder<G<_>, A> { value: G<A> }",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<A> {{ fn pick<F<_>> left: F<A> -> right: F<A> -> Bool }}\n{declaration}\nfn saved<G<_>, A> left: Holder<G, A> -> (Holder<G, A> -> Bool) where Pick<A> = {{ let chosen: Holder<G, A> -> Holder<G, A> -> Bool = pick; chosen left }}\npub fn probe -> Unit = ()");
         let core = compile_core_module(CompileInput::new(
             "slot-kinds-λ.ssrg",
             "native/main",

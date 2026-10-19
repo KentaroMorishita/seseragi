@@ -218,7 +218,6 @@ impl Backend<'_> {
             || signature.parameters.is_empty()
             || !signature.argument_types.is_empty()
             || declaration.trait_parameters.len() != selected.constraint.arguments.len()
-            || signature.type_parameters.iter().any(|p| p.arity != 0)
         {
             return Err(
                 "Rust backend: unproven abstract method declaration staging or kind".into(),
@@ -275,7 +274,21 @@ impl Backend<'_> {
         let expected =
             display::canonical_type(&expected, owner, &substitutions, self.type_names, true)
                 .ok_or("Rust backend: unproven abstract method declaration type")?;
-        self.match_local_type(&expected, type_ref, &variables, &mut BTreeMap::new(), scope)
+        // Check the complete selected value before matching declaration-local
+        // constructor variables. Counting an ADT's parameters alone does not
+        // prove the kinds or order of an applied constructor's fixed prefix.
+        if self.declared_method_type_kind(type_ref, scope) != Some(0) {
+            return Err("Rust backend: abstract method value kind mismatch".into());
+        }
+        let mut bindings = BTreeMap::new();
+        self.match_local_type(&expected, type_ref, &variables, &mut bindings, scope)?;
+        if variables
+            .iter()
+            .any(|(name, arity)| *arity > 0 && !bindings.contains_key(name))
+        {
+            return Err("Rust backend: unproven abstract method constructor binder".into());
+        }
+        Ok(())
     }
 
     /// Kind-check the selected trait arguments before substituting them into

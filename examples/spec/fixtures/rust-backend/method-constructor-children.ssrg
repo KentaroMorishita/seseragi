@@ -1,0 +1,31 @@
+trait Pick<P, F<_>> {
+  fn pick<G<_>, A> prefix: P -> left: G<F<A>> -> right: G<F<A>> -> Bool
+}
+
+type Box<A> = | Box A
+type Bad = | Bad Int
+instance Show<Bad> {
+  fn show value: Bad -> String = {
+    let bad = 9007199254740991 + 1
+    "unreachable"
+  }
+}
+instance<P> Pick<P, Box> where Show<P> {
+  fn pick<G<_>, A> prefix: P -> (G<Box<A>> -> G<Box<A>> -> Bool) = {
+    let text = show prefix
+    \left -> \right -> True
+  }
+}
+fn capture<P, F<_>, G<_>, A> prefix: P
+  -> left: G<F<A>>
+  -> (G<F<A>> -> Bool)
+where Pick<P, F> = {
+    let chosen = pick
+    let partial: G<F<A>> -> G<F<A>> -> Bool = chosen prefix
+    partial left
+  }
+
+pub effect fn main = do {
+  let saved = capture<Bad, Box, Maybe, Int> (Bad 1) (Just (Box 2))
+  println "unreachable"
+}

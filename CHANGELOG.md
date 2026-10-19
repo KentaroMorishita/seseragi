@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.65] - 2026-10-20
+
+### Fixed
+
+- Preserve the selected first method stage when a checked source method declares constructor-kind type parameters. Keep declaration binder kinds, captured and generalized dictionaries, aliases, fixed prefixes and returned functions distinct from source argument stages. Independently validate native method value kinds and constructor bindings, including child dictionaries, Ref cycles, cold Effects and finalizers. This covers declarations with source parameters and no method-owned constraints; remaining schemes stay tracked in #887.
+
 ## [0.61.64] - 2026-10-20
 
 ### Fixed

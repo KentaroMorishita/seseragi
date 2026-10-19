@@ -1,0 +1,19 @@
+trait Pick<F<_>> {
+  fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool
+}
+
+type Container<H<_>, A> = | Container H<A>
+instance Pick<Maybe> {
+  fn pick<G<_>, A> left: G<Maybe<A>> -> (G<Maybe<A>> -> Bool) = \right -> True
+}
+fn selected<H<_>, A> left: Container<H, Maybe<A>> -> (Container<H, Maybe<A>> -> Bool) = {
+    let chosen: Container<H, Maybe<A>> -> Container<H, Maybe<A>> -> Bool = pick
+    chosen left
+  }
+
+pub fn probe -> Bool = {
+  let saved = selected<Maybe, Int> (Container<Maybe, Maybe<Int>> (Just (Just 1)))
+  saved (Container<Maybe, Maybe<Int>> (Just (Just 2)))
+}
+
+pub effect fn main = println (show (probe ()))
