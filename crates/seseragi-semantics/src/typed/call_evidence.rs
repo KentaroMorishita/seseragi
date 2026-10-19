@@ -111,13 +111,8 @@ fn same_source_type_identity(left: &SemanticTypeKey, right: &SemanticTypeKey) ->
                     .zip(b)
                     .all(|(a, b)| same_source_type_identity(a, b))
         }
-        (SemanticTypeKey::Record(a), SemanticTypeKey::Record(b)) => {
-            a.len() == b.len()
-                && a.iter().all(|(name, a)| {
-                    b.get(name)
-                        .is_some_and(|b| same_source_type_identity(&a.key, &b.key))
-                })
-        }
+        // Record keys omit row closedness. They cannot certify exact source
+        // constraint identity, including when nested in another type.
         _ => false,
     }
 }
@@ -2214,13 +2209,36 @@ mod available_source_frame_tests {
         let mut inferred = frame.clone();
         inferred.source_arguments = None;
         assert!(!inferred.available_parameter_matches(1, "std/prelude::Eq", &[declared.clone()]));
+        // A record key omits row closedness, so equal keys alone cannot
+        // certify that two source constraint arguments have the same type.
         for key in [
             SemanticTypeKey::Other,
             SemanticTypeKey::Invalid,
             SemanticTypeKey::SchemeParameter("A".into()),
+            SemanticTypeKey::Record(BTreeMap::new()),
         ] {
             assert!(!same_source_type_identity(&key, &key));
         }
+        let closed_record = SemanticValueType {
+            type_ref: TypedType::Record {
+                closed: true,
+                fields: vec![],
+            },
+            key: SemanticTypeKey::Record(BTreeMap::new()),
+        };
+        let open_record = SemanticValueType {
+            type_ref: TypedType::Record {
+                closed: false,
+                fields: vec![],
+            },
+            key: closed_record.key.clone(),
+        };
+        let mut record_frame = frame.clone();
+        record_frame.source_arguments = Some(vec![closed_record.clone()]);
+        record_frame.constraint.arguments = vec![closed_record.type_ref.clone()];
+        assert!(!record_frame.available_parameter_matches(1, "std/prelude::Eq", &[open_record]));
+        let nested_record = SemanticTypeKey::Tuple(vec![closed_record.key]);
+        assert!(!same_source_type_identity(&nested_record, &nested_record));
         let nominal = |owner| SemanticTypeKey::Adt {
             owner: SymbolId(owner),
             arguments: vec![declared.clone()],

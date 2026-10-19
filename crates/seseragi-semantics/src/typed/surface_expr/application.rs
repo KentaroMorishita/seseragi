@@ -329,9 +329,8 @@ fn available_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) ->
                             && arguments.iter().all(|a| known(&a.key, context))
                     }
                     SemanticTypeKey::Tuple(elements) => elements.iter().all(|k| known(k, context)),
-                    SemanticTypeKey::Record(fields) => {
-                        fields.values().all(|v| known(&v.key, context))
-                    }
+                    // This key does not retain whether its row is closed.
+                    SemanticTypeKey::Record(_) => false,
                     _ => false,
                 }
             }
