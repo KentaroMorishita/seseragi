@@ -2,6 +2,13 @@ use super::type_module;
 use crate::{TypedDecl, TypedExpr, TypedInstanceEvidence, TypedPattern, TypedType};
 
 #[test]
+fn reversed_operator_infers_from_the_callback_before_contextual_collections() {
+    let source = "fn first values: Array<Int> -> Maybe<Int> = values[0]\npub fn probe -> Maybe<Int> = [[7]][0] >>= first\n";
+    let diagnostics = crate::semantic_diagnostics("operator-array.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
 fn trait_operator_does_not_relabel_an_incompatible_lexical_method_contract() {
     let source = "// 雫🙂\ntype Box<A> = | Box A\ntrait Monad<M<_>> { fn flatMap<A, B> value: M<A> -> f: (A -> M<B>) -> M<B> }\ninstance Monad<Box> { fn flatMap<A, B> value: Box<A> -> f: (A -> Box<B>) -> Box<B> = match value { Box item -> f item } }\npub fn probe -> Box<Int> = Box 1 >>= (\\n -> Box n)\n";
     let diagnostics = crate::semantic_diagnostics("operator-λ.ssrg", source);
