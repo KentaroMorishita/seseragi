@@ -1924,8 +1924,8 @@ fn globals_reject_unproved_polymorphism_before_emission() {
     let error = emit_rust_module(&core.core_ir, "probe").err().unwrap();
     assert!(error.message.contains("global"), "{error:?}");
     assert!(error.origin.is_some());
-    // The shared frontend eta-expands constrained callable aliases. Those keep
-    // their source parameters and evidence ABI; zero-parameter values don't.
+    // Ordinary constrained aliases keep their source parameters and evidence
+    // ABI. Erasing them cannot turn the body into a certified method factory.
     let source = "fn render<A> value: A -> String where Show<A> = show value\nlet retainedValue = render\npub fn probe -> String = retainedValue 42\n";
     let mut core = compile_core_module(CompileInput::new("global.ssrg", "native/main", source))
         .unwrap()
@@ -1944,11 +1944,14 @@ fn globals_reject_unproved_polymorphism_before_emission() {
         .unwrap()
         .parameters
         .clear();
-    assert!(emit_rust_module(&core, "probe")
-        .err()
-        .unwrap()
-        .message
-        .contains("without source parameters"));
+    let error = emit_rust_module(&core, "probe").err().unwrap();
+    assert!(
+        error
+            .message
+            .contains("method factory introduces source arguments"),
+        "{error:?}"
+    );
+    assert!(error.origin.is_some());
 }
 
 #[test]
