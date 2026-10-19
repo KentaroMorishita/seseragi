@@ -154,25 +154,7 @@ pub(crate) fn infer(
                 }
                 let method_value_factory =
                     super::application::standard_method_value_scheme(&signature)
-                        || (signature.parameters.is_empty()
-                            && signature.constraints.len() == 1
-                            && signature
-                                .constraint_identities
-                                .first()
-                                .is_some_and(|identity| {
-                                    identity.as_deref().is_some_and(|identity| {
-                                        matches!(
-                                            identity,
-                                            "std/prelude::Eq"
-                                                | "std/prelude::Add"
-                                                | "std/prelude::Sub"
-                                                | "std/prelude::Mul"
-                                                | "std/prelude::Div"
-                                                | "std/prelude::Rem"
-                                                | "std/prelude::Pow"
-                                        )
-                                    })
-                                }));
+                        || super::application::standard_method_factory_alias(&signature);
                 if method_value_factory {
                     // These binders belong to the let scheme, not to a
                     // same-spelled outer function parameter. Instantiate only

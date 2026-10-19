@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Preserve the actual selected method value in generalized Prelude Eq and arithmetic aliases. Introduce their dictionaries before source application, keep fresh let binders separate from enclosing parameters, and run the selected first stage when its first source argument is supplied. Validate native factory frames, types, kinds, child evidence and stored closures; retain unproved signatures and broader method-parameter staging in #887.
+- Preserve the actual selected method value in generalized Prelude Eq and arithmetic aliases. Introduce their dictionaries before source application, keep fresh let binders separate from enclosing parameters, and run the selected first stage when its first source argument is supplied. Preserve constrained module aliases and function-valued results using checked native substitutions and instantiated TS signatures. Validate factory frames, types, kinds, child evidence and stored closures; retain unproved signatures and broader method-parameter staging in #887.
 
 ## [0.61.60] - 2026-10-19
 

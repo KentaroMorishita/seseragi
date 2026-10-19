@@ -288,6 +288,8 @@ pub struct TypedCallEvidence {
 /// Declared callable scheme retained when a higher-kinded application loses
 /// information in a target type system. The call's own type remains the
 /// instantiated, checked result; this scheme does not select new evidence.
+/// A checked dictionary-only alias has no source parameters and retains its
+/// complete instantiated method value in `result`, including returned arrows.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedCallSignature {

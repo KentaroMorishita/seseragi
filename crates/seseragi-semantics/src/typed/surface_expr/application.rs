@@ -282,6 +282,16 @@ pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> 
         )
 }
 
+pub(super) fn standard_method_factory_alias(signature: &TopLevelPureFunction) -> bool {
+    signature.trait_identity.is_none()
+        && signature.parameters.is_empty()
+        && signature.constraints.len() == 1
+        && signature.type_parameters.iter().all(|p| p.arity == 0)
+        && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
+            "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
+            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow"))
+}
+
 fn available_method_evidence(
     selected: &crate::TypedCallEvidence,
     trait_identity: &str,
@@ -815,6 +825,7 @@ pub(crate) fn type_known_application_with_explicit(
     let callee_signature = unconstrained_hkt_signature(&signature);
     let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
+    let method_factory_alias = standard_method_factory_alias(&signature);
     let declared_arity = signature.parameters.len();
     // Infer across the whole source application, including function-valued results.
     // Dictionary application still belongs immediately after the declared parameters.
@@ -1180,7 +1191,30 @@ pub(crate) fn type_known_application_with_explicit(
         TypedExpr::Call {
             callee: signature.symbol.clone(),
             callee_signature: if issue.is_none() {
-                callee_signature.map(|mut signature| {
+                // The source checker has instantiated every method stage.
+                // Preserve that complete returned type at a dictionary-only
+                // alias use; host inference cannot recover a function-valued
+                // result from an erased dictionary argument.
+                let factory_signature = method_factory_alias
+                    .then(|| {
+                        let result = application
+                            .parameters
+                            .iter()
+                            .take(arguments.len())
+                            .rev()
+                            .fold(type_ref.clone(), |result, parameter| TypedType::Function {
+                                parameter: Box::new(context.evidence_type(parameter)),
+                                result: Box::new(result),
+                            });
+                        (!typed_type_contains_hole(&result)).then_some(crate::TypedCallSignature {
+                            type_parameters: Vec::new(),
+                            parameters: Vec::new(),
+                            result,
+                            argument_types: Vec::new(),
+                        })
+                    })
+                    .flatten();
+                factory_signature.or(callee_signature).map(|mut signature| {
                     signature.argument_types = arguments
                         .iter()
                         .map(application_argument_type_from_expr)

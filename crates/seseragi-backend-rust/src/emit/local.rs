@@ -2,6 +2,7 @@ use super::*;
 use seseragi_lowering::CoreInstanceConstraint;
 
 mod evidence;
+mod factory;
 mod types;
 use types::argument_type;
 pub(super) use types::argument_type as method_argument_type;
@@ -165,65 +166,7 @@ impl Backend<'_> {
             inner.insert(format!("\0dictionary_{index}"));
         }
         if callable.method_value.is_some() {
-            let CoreExpr::Call {
-                arguments,
-                evidence,
-                trait_dispatch,
-                deferred_evidence_parameters,
-                deferred_evidence_type_constructor_parameters,
-                evidence_argument_index,
-                callee,
-                ..
-            } = body
-            else {
-                return Err("Rust backend: unproven dictionary-only method factory".into());
-            };
-            if !callable.parameters.is_empty()
-                || callable.self_name.is_some()
-                || callable.constraints.len() != 1
-                || callable.variables.values().any(|arity| *arity != 0)
-                || !arguments.is_empty()
-                || !deferred_evidence_parameters.is_empty()
-                || !deferred_evidence_type_constructor_parameters.is_empty()
-                || evidence_argument_index.is_some()
-                || evidence.len() != 1
-                || !matches!(
-                    evidence[0].evidence,
-                    CoreInstanceEvidence::Parameter { index: 0 }
-                )
-                || evidence[0].constraint.name != callable.constraints[0].name
-                || evidence[0].constraint.arguments != callable.constraints[0].arguments
-                || evidence[0]
-                    .constraint
-                    .trait_identity
-                    .as_ref()
-                    .is_some_and(|identity| {
-                        Some(identity) != callable.constraints[0].trait_identity.as_ref()
-                    })
-                || (trait_dispatch.is_none()
-                    && !inner
-                        .callables
-                        .get(callee)
-                        .is_some_and(|c| c.method_value.is_some()))
-            {
-                return Err("Rust backend: unproven dictionary-only method factory".into());
-            }
-            if let Some(dispatch) = trait_dispatch {
-                if dispatch.method_contract.is_some()
-                    || !matches!(
-                        (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
-                        ("std/prelude::Eq", "eq")
-                            | ("std/prelude::Add", "add")
-                            | ("std/prelude::Sub", "sub")
-                            | ("std/prelude::Mul", "mul")
-                            | ("std/prelude::Div", "div")
-                            | ("std/prelude::Rem", "rem")
-                            | ("std/prelude::Pow", "pow")
-                    )
-                {
-                    return Err("Rust backend: unproven method factory signature".into());
-                }
-            }
+            self.validate_method_factory(callable, body, &inner)?;
         }
         let mut value = self.function(&callable.parameters, body, &inner)?;
         // These are implementation-only stages, never source parameters. Both
@@ -239,6 +182,19 @@ impl Backend<'_> {
     }
 
     pub(super) fn local_call(&mut self, expr: &CoreExpr, scope: &Scope) -> Result<String> {
+        let CoreExpr::Call { callee, .. } = expr else {
+            unreachable!()
+        };
+        let callable = &scope.callables[callee];
+        self.call_local_value(expr, callable, scope)
+    }
+
+    pub(in crate::emit) fn call_local_value(
+        &mut self,
+        expr: &CoreExpr,
+        callable: &LocalCallable,
+        scope: &Scope,
+    ) -> Result<String> {
         let CoreExpr::Call {
             callee,
             arguments,
@@ -252,7 +208,7 @@ impl Backend<'_> {
         else {
             unreachable!()
         };
-        let callable = &scope.callables[callee];
+
         if callable.method_value.is_some()
             && (!deferred_evidence_parameters.is_empty()
                 || *evidence_argument_index != (!arguments.is_empty()).then_some(0))
@@ -274,6 +230,22 @@ impl Backend<'_> {
         if let Some(method_type) = &callable.method_value {
             let mut remaining = method_type.clone();
             for argument in arguments {
+                // A value-kinded result slot can be bound to a function by
+                // the selected dictionary. Follow only those proved formal
+                // substitutions before applying further returned stages.
+                let mut visited = BTreeSet::new();
+                while let CoreType::Named { name, arguments } = &remaining {
+                    if !arguments.is_empty() || !callable.variables.contains_key(name) {
+                        break;
+                    }
+                    let Some(bound) = bindings.get(name) else {
+                        break;
+                    };
+                    if !visited.insert(name.clone()) {
+                        return Err("Rust backend: cyclic method result substitution".into());
+                    }
+                    remaining = bound.clone();
+                }
                 let CoreType::Function { parameter, result } = remaining else {
                     return Err("Rust backend: method factory source arity mismatch".into());
                 };

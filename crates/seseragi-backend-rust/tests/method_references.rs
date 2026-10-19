@@ -120,6 +120,105 @@ fn generalized_eq_alias_runs_the_selected_method_first_stage() {
 }
 
 #[test]
+fn constrained_global_method_aliases_preserve_existing_programs_and_first_stage() {
+    execute(
+        "let equal = eq\npub effect fn main = println (show (equal 40 42))",
+        "global-eq-control",
+        "False\n",
+        0,
+    );
+    execute(
+        "type Mark = | Mark Int\n\
+         instance Eq<Mark> { fn eq left: Mark -> (Mark -> Bool) = { let bad = 9007199254740991 + 1; \\right -> True } }\n\
+         let equal = eq\nlet copied = equal\n\
+         pub effect fn main = do { let saved = copied (Mark 1); println \"unreachable\" }",
+        "global-eq-stage", "", 70,
+    );
+}
+
+#[test]
+fn constrained_global_method_factories_reject_forged_signature_and_alias_cycles() {
+    let source = "// 雫🙂\nlet equal = eq\nlet copied = equal\npub fn probe -> Bool = copied 40 42";
+    let core = compile_core_module(CompileInput::new(
+        "global-factory-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..8 {
+        let mut changed = core.clone();
+        let f = changed
+            .functions
+            .iter_mut()
+            .find(|f| f.symbol.ends_with("::equal"))
+            .unwrap();
+        let CoreExpr::Call {
+            callee,
+            evidence,
+            trait_dispatch,
+            type_ref,
+            ..
+        } = &mut f.body
+        else {
+            panic!("factory")
+        };
+        match mutation {
+            0 => {
+                *callee = "native/main::copied".into();
+                *trait_dispatch = None;
+            }
+            1 => f.type_parameters[0].arity = 1,
+            2 => f.constraints.clear(),
+            3 => f.constraints[0].trait_identity = Some("counterfeit::Eq".into()),
+            4 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+            5 => *type_ref = CoreType::Hole,
+            6 => trait_dispatch.as_mut().unwrap().method = "add".into(),
+            _ => f.is_effect = true,
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "case {mutation}");
+        assert_eq!(error.origin.unwrap().source, "global-factory-λ.ssrg");
+    }
+}
+
+#[test]
+fn method_factory_arguments_preserve_nominal_owner_instead_of_display_name() {
+    let source = "type Mark = | Mark Int\ntype Other = | Other Int\ninstance Eq<Mark> { fn eq left: Mark -> right: Mark -> Bool = True }\nlet equal = eq\npub fn probe -> Bool = equal (Mark 1) (Mark 2)";
+    let mut core = compile_core_module(CompileInput::new("owner-λ.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    let probe = core
+        .functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::probe"))
+        .unwrap();
+    let CoreExpr::Call { arguments, .. } = &mut probe.body else {
+        panic!("factory call")
+    };
+    let CoreExpr::Call { type_ref, .. } = &mut arguments[0] else {
+        panic!("constructor")
+    };
+    *type_ref = CoreType::ExternalNamed {
+        name: "Mark".into(),
+        canonical: "native/main::Other".into(),
+        arguments: vec![],
+    };
+    let error = emit_rust_module(&core, "probe").unwrap_err();
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap().source, "owner-λ.ssrg");
+}
+
+#[test]
+fn method_factory_result_substitutions_preserve_returned_function_stages() {
+    let prefix = "type Mark = | Mark Int\ninstance Add<Mark, Mark, (Int -> Int)> { fn add left: Mark -> right: Mark -> (Int -> Int) = \\value -> value + 1 }\n";
+    execute(&format!("{prefix}let chosen = add\npub effect fn main = println (show (chosen<Mark, Mark, (Int -> Int)> (Mark 1) (Mark 2) 41))"), "global-function-result", "42\n", 0);
+    execute(&format!("{prefix}pub effect fn main = do {{ let chosen = add; println (show (chosen<Mark, Mark, (Int -> Int)> (Mark 1) (Mark 2) 41)) }}"), "local-function-result", "42\n", 0);
+}
+
+#[test]
 fn generalized_method_factories_preserve_values_children_and_lifetimes() {
     for (name, source, expected, exit) in [
         (

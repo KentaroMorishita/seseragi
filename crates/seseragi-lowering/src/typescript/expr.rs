@@ -953,6 +953,26 @@ pub(super) fn lower_core_expr_to_typescript(
                             )
                         });
                     let evidence_count = evidence.len();
+                    let factory_callee = (has_evidence
+                        && deferred_evidence_parameters.is_empty()
+                        && evidence_argument_index == (!arguments.is_empty()).then_some(0))
+                    .then(|| callee_signature.as_ref())
+                    .flatten()
+                    .filter(|signature| {
+                        signature.parameters.is_empty()
+                            && signature.type_parameters.is_empty()
+                            && signature.argument_types.len() == arguments.len()
+                            && matches!(signature.result, CoreType::Function { .. })
+                    })
+                    .map(|signature| {
+                        (0..evidence_count).fold(
+                            type_ref_from_core_type(&signature.result, imported_types),
+                            |result, _| super::TypeScriptType::Function {
+                                parameter: Box::new(super::TypeScriptType::Unknown),
+                                result: Box::new(result),
+                            },
+                        )
+                    });
                     // Typed HIR represents an imported effect reference as a
                     // zero-argument partial Call. Preserve the callable value;
                     // emitting f() would construct it before its argument exists.
@@ -1002,7 +1022,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             *checked_callee_type = Some(instantiated);
                         }
                     }
-                    if let Some(instantiated) = hkt_callee {
+                    if let Some(instantiated) = factory_callee.or(hkt_callee) {
                         match &mut call {
                             TypeScriptExpr::Call {
                                 checked_callee_type,
