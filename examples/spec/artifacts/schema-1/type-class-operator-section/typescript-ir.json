@@ -259,22 +259,180 @@
         }
       ],
       "body": {
-        "kind": "dictionary-call",
-        "dictionary": {
-          "kind": "identifier",
-          "name": "__ssrg$evidence$0"
-        },
-        "method": "flatMap",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "identifier",
-            "name": "next"
-          },
-          {
-            "kind": "identifier",
-            "name": "value"
+            "kind": "pure-let",
+            "name": "__ssrg$trait$641$method",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "unknown"
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "unknown"
+                },
+                "result": {
+                  "kind": "unknown"
+                }
+              }
+            },
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "flatMap",
+                "arguments": []
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "unknown"
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "unknown"
+                  },
+                  "result": {
+                    "kind": "unknown"
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 641,
+              "end": 657
+            }
           }
-        ]
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$trait$641$source0",
+              "type": {
+                "kind": "unknown"
+              },
+              "initializer": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 641,
+                "end": 657
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$641$source1",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "unknown"
+                  }
+                },
+                "initializer": {
+                  "kind": "identifier",
+                  "name": "next"
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 641,
+                  "end": 657
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$641$stage0",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "unknown"
+                  },
+                  "result": {
+                    "kind": "unknown"
+                  }
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$641$method",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$641$source1"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 641,
+                  "end": 657
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$641$stage1",
+                "type": {
+                  "kind": "unknown"
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$641$stage0",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$641$source0"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 641,
+                  "end": 657
+                }
+              }
+            ],
+            "result": {
+              "kind": "identifier",
+              "name": "__ssrg$trait$641$stage1"
+            }
+          }
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -461,28 +619,163 @@
                     "callee": "mapWith",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "__ssrg$operator$argument$0",
-                        "body": {
-                          "kind": "lambda",
-                          "parameter": "__ssrg$operator$argument$1",
-                          "body": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_maybe_functor"
-                            },
-                            "method": "map",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$operator$argument$0"
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$1015$method",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "number"
+                                }
                               },
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$operator$argument$1"
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
                               }
-                            ]
+                            },
+                            "initializer": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_maybe_functor"
+                                },
+                                "method": "map",
+                                "arguments": []
+                              },
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1015,
+                              "end": 1018
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$trait$1015$source0: (argument: number) => number",
+                          "body": {
+                            "kind": "sequence",
+                            "statements": [
+                              {
+                                "kind": "pure-let",
+                                "name": "__ssrg$trait$1015$stage0",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                },
+                                "initializer": {
+                                  "kind": "call",
+                                  "callee": "__ssrg$trait$1015$method",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "__ssrg$trait$1015$source0"
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1015,
+                                  "end": 1018
+                                }
+                              }
+                            ],
+                            "result": {
+                              "kind": "lambda",
+                              "parameter": "__ssrg$trait$1015$source1: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+                              "body": {
+                                "kind": "sequence",
+                                "statements": [
+                                  {
+                                    "kind": "pure-let",
+                                    "name": "__ssrg$trait$1015$stage1",
+                                    "type": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "initializer": {
+                                      "kind": "call",
+                                      "callee": "__ssrg$trait$1015$stage0",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "__ssrg$trait$1015$source1"
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1015,
+                                      "end": 1018
+                                    }
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$trait$1015$stage1"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -493,31 +786,197 @@
                     "callee": "applyWith",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "__ssrg$operator$argument$1",
-                        "body": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_maybe_applicative"
-                          },
-                          "method": "apply",
-                          "arguments": [
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_maybe_Just",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "increment"
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$1036$method",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
                                 }
-                              ]
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            },
+                            "initializer": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_maybe_applicative"
+                                },
+                                "method": "apply",
+                                "arguments": []
+                              },
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "number"
+                                    },
+                                    "result": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1036,
+                              "end": 1058
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1036$source0",
+                              "type": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "initializer": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_maybe_Just",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "increment"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1036,
+                                "end": 1058
+                              }
                             },
                             {
-                              "kind": "identifier",
-                              "name": "__ssrg$operator$argument$1"
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1036$stage0",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "__ssrg$trait$1036$method",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$trait$1036$source0"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1036,
+                                "end": 1058
+                              }
                             }
-                          ]
+                          ],
+                          "result": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$trait$1036$source1: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+                            "body": {
+                              "kind": "sequence",
+                              "statements": [
+                                {
+                                  "kind": "pure-let",
+                                  "name": "__ssrg$trait$1036$stage1",
+                                  "type": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  },
+                                  "initializer": {
+                                    "kind": "call",
+                                    "callee": "__ssrg$trait$1036$stage0",
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$trait$1036$source1"
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1036,
+                                    "end": 1058
+                                  }
+                                }
+                              ],
+                              "result": {
+                                "kind": "identifier",
+                                "name": "__ssrg$trait$1036$stage1"
+                              }
+                            }
+                          }
                         }
                       }
                     ]
@@ -596,28 +1055,168 @@
                     "callee": "bindWith",
                     "arguments": [
                       {
-                        "kind": "lambda",
-                        "parameter": "__ssrg$operator$argument$0",
-                        "body": {
-                          "kind": "lambda",
-                          "parameter": "__ssrg$operator$argument$1",
-                          "body": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_maybe_monad"
-                            },
-                            "method": "flatMap",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$operator$argument$1"
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$1117$method",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
                               },
-                              {
-                                "kind": "identifier",
-                                "name": "__ssrg$operator$argument$0"
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
                               }
-                            ]
+                            },
+                            "initializer": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_maybe_monad"
+                                },
+                                "method": "flatMap",
+                                "arguments": []
+                              },
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "number"
+                                  },
+                                  "result": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  },
+                                  "result": {
+                                    "kind": "maybe",
+                                    "element": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1117,
+                              "end": 1120
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$trait$1117$source0: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+                          "body": {
+                            "kind": "sequence",
+                            "statements": [],
+                            "result": {
+                              "kind": "lambda",
+                              "parameter": "__ssrg$trait$1117$source1: (argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+                              "body": {
+                                "kind": "sequence",
+                                "statements": [
+                                  {
+                                    "kind": "pure-let",
+                                    "name": "__ssrg$trait$1117$stage0",
+                                    "type": {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "maybe",
+                                        "element": {
+                                          "kind": "number"
+                                        }
+                                      },
+                                      "result": {
+                                        "kind": "maybe",
+                                        "element": {
+                                          "kind": "number"
+                                        }
+                                      }
+                                    },
+                                    "initializer": {
+                                      "kind": "call",
+                                      "callee": "__ssrg$trait$1117$method",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "__ssrg$trait$1117$source1"
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1117,
+                                      "end": 1120
+                                    }
+                                  },
+                                  {
+                                    "kind": "pure-let",
+                                    "name": "__ssrg$trait$1117$stage1",
+                                    "type": {
+                                      "kind": "maybe",
+                                      "element": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "initializer": {
+                                      "kind": "call",
+                                      "callee": "__ssrg$trait$1117$stage0",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "__ssrg$trait$1117$source0"
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1117,
+                                      "end": 1120
+                                    }
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$trait$1117$stage1"
+                                }
+                              }
+                            }
                           }
                         }
                       },

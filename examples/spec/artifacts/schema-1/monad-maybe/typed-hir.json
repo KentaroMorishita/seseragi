@@ -2952,35 +2952,8 @@
                   "arguments": [
                     {
                       "kind": "call",
-                      "callee": "artifact/monad-maybe::trait(Monad)::flatMap",
+                      "callee": ">>=",
                       "arguments": [
-                        {
-                          "kind": "variable",
-                          "name": "artifact/monad-maybe::incrementMaybe",
-                          "type": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
-                            },
-                            "result": {
-                              "kind": "named",
-                              "name": "Maybe",
-                              "arguments": [
-                                {
-                                  "kind": "named",
-                                  "name": "Int",
-                                  "arguments": []
-                                }
-                              ]
-                            }
-                          },
-                          "origin": {
-                            "start": 1860,
-                            "end": 1874
-                          }
-                        },
                         {
                           "kind": "call",
                           "callee": "artifact/monad-maybe::liftAndBind",
@@ -3094,6 +3067,33 @@
                           "origin": {
                             "start": 1815,
                             "end": 1851
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "artifact/monad-maybe::incrementMaybe",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "start": 1860,
+                            "end": 1874
                           }
                         }
                       ],

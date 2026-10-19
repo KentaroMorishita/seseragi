@@ -447,6 +447,7 @@ fn apply_operator(operator: PendingOperator, left: SurfaceExpr, right: SurfaceEx
             method_operand_sources,
         } => trait_method_application(
             method,
+            &operator.spelling,
             operator.span,
             left,
             right,
@@ -487,35 +488,35 @@ fn custom_operator_application(
 
 fn trait_method_application(
     method: &str,
+    spelling: &str,
     operator_span: ByteSpan,
     left: SurfaceExpr,
     right: SurfaceExpr,
     method_operand_sources: [usize; 2],
     span: ByteSpan,
 ) -> SurfaceExpr {
-    let mut source_operands = [Some(left), Some(right)];
-    let [first_source, second_source] = method_operand_sources;
-    let first = source_operands[first_source]
-        .take()
-        .expect("trait operator method order must be a permutation");
-    let second = source_operands[second_source]
-        .take()
-        .expect("trait operator method order must be a permutation");
+    // Keep source operands in their evaluation order. The checked operator
+    // callable carries its distinct method ABI into shared Core lowering.
+    let callee = if method_operand_sources == [0, 1] {
+        method
+    } else {
+        spelling
+    };
     let first_span = ByteSpan {
-        start: operator_span.start.min(first.span().start),
-        end: operator_span.end.max(first.span().end),
+        start: operator_span.start.min(left.span().start),
+        end: operator_span.end.max(left.span().end),
     };
     SurfaceExpr::Application {
         function: Box::new(SurfaceExpr::Application {
             function: Box::new(SurfaceExpr::Name {
-                name: method.to_owned(),
+                name: callee.to_owned(),
                 type_arguments: None,
                 span: operator_span,
             }),
-            argument: Box::new(first),
+            argument: Box::new(left),
             span: first_span,
         }),
-        argument: Box::new(second),
+        argument: Box::new(right),
         span,
     }
 }

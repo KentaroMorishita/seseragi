@@ -1,0 +1,41 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Box<A> = | Box A
+type Watch = | Watch Ref<Watch -> Bool>
+
+trait Monad<F<_>> {
+  fn flatMap<A, B> f: (A -> F<B>) -> value: F<A> -> F<B>
+}
+
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value {
+    Box item -> f item
+  }
+}
+
+effect fn delayed = do { println "cold"; effects.succeed 42 }
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch -> False)
+  released <- refs.make 0
+  let left = Watch callbacks
+  let saved: (Watch -> Box<Bool>) -> Box<Bool> = (>>=) (Box left)
+  let stored: Watch -> Bool = \ignored -> match (saved (\value -> Box True)) {
+    Box answer -> answer
+  }
+  let cold = delayed ()
+  refs.set stored callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed saved) (\held: ((Watch -> Box<Bool>) -> Box<Bool>) -> refs.set 1 released)
+    again <- refs.get callbacks
+    value <- cold
+    println (show value)
+    println (show (again left))
+    println (show (stored left))
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

@@ -1137,7 +1137,7 @@ fn desugars_pipeline_chains_into_left_associative_application() {
 }
 
 #[test]
-fn desugars_functor_applicative_and_monad_operators_to_trait_methods() {
+fn keeps_source_order_when_trait_method_operands_are_permuted() {
     let mapped = first_body("fn mapped value: Maybe<Int> -> Maybe<Int> = increment <$> value\n");
     assert_trait_operator_application(&mapped, "map", "increment", "value");
 
@@ -1145,7 +1145,7 @@ fn desugars_functor_applicative_and_monad_operators_to_trait_methods() {
     assert_trait_operator_application(&applied, "apply", "wrapped", "value");
 
     let bound = first_body("fn bound value: Maybe<Int> -> Maybe<Int> = value >>= incrementMaybe\n");
-    assert_trait_operator_application(&bound, "flatMap", "incrementMaybe", "value");
+    assert_trait_operator_application(&bound, ">>=", "value", "incrementMaybe");
 }
 
 #[test]
@@ -1203,7 +1203,7 @@ fn keeps_multiline_monad_bind_in_one_expression() {
     let body =
         first_body("fn bound value: Maybe<Int> -> Maybe<Int> =\n  value\n  >>= incrementMaybe\n");
 
-    assert_trait_operator_application(&body, "flatMap", "incrementMaybe", "value");
+    assert_trait_operator_application(&body, ">>=", "value", "incrementMaybe");
 }
 
 fn assert_trait_operator_application(

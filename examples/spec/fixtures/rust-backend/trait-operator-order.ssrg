@@ -1,0 +1,54 @@
+type Box<A> = | Box A
+
+trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+trait Applicative<F<_>> {
+  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>
+}
+
+trait Monad<F<_>> {
+  fn flatMap<A, B> f: (A -> F<B>) -> value: F<A> -> F<B>
+}
+
+instance Functor<Box> {
+  fn map<A, B> f: (A -> B) -> value: Box<A> -> Box<B> = match value {
+    Box item -> Box (f item)
+  }
+}
+
+instance Applicative<Box> {
+  fn apply<A, B> wrapped: Box<A -> B> -> value: Box<A> -> Box<B> =
+    match (wrapped, value) {
+    (Box f, Box item) -> Box (f item)
+  }
+}
+
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value {
+    Box item -> f item
+  }
+}
+
+fn unbox<A> value: Box<A> -> A = match value { Box item -> item }
+
+fn savedBind -> (Box<Int> -> (Int -> Box<Int>) -> Box<Int>) = (>>=)
+
+pub fn probe -> Array<Int> = {
+  let bind: Box<Int> -> (Int -> Box<Int>) -> Box<Int> = (>>=)
+  let partial: (Int -> Box<Int>) -> Box<Int> = bind (Box 40)
+  let mapped: (Int -> Int) -> Box<Int> -> Box<Int> = (<$>)
+  let applied: Box<Int -> Int> -> Box<Int> -> Box<Int> = (<*>)
+  [
+    unbox (Box 40 >>= (\value -> Box (value + 2))),
+    unbox ((>>=) (Box 40) (\value -> Box (value + 3))),
+    unbox (partial (\value -> Box (value + 4))),
+    unbox (partial (\value -> Box (value + 5))),
+    unbox (savedBind () (Box 40) (\value -> Box (value + 6))),
+    unbox (mapped (\value: Int -> value + 7) (Box 40)),
+    unbox (applied (Box (\value: Int -> value + 8)) (Box 40))
+  ]
+}
+
+pub effect fn main = do { println (show (probe ())) }

@@ -8,6 +8,9 @@ fn method_value_stages_share_checked_core_in_both_profiles() {
         include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-defect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-effects.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-children.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-order.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-children.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-defect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-trace.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-effects.ssrg"),
@@ -57,7 +60,11 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
-    for fixture in ["method-references", "scoped-methods"] {
+    for fixture in [
+        "method-references",
+        "scoped-methods",
+        "trait-operator-order",
+    ] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(concat!(
                 env!("CARGO_MANIFEST_DIR"),

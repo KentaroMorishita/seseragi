@@ -1203,8 +1203,8 @@
                                 "children": [
                                   {
                                     "kind": "complete-expression",
-                                    "startToken": 923,
-                                    "endToken": 926,
+                                    "startToken": 913,
+                                    "endToken": 924,
                                     "children": [
                                       {
                                         "kind": "complete-expression",
@@ -1214,43 +1214,43 @@
                                       },
                                       {
                                         "kind": "complete-expression",
-                                        "startToken": 925,
-                                        "endToken": 926,
-                                        "children": []
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "kind": "complete-expression",
-                                    "startToken": 913,
-                                    "endToken": 921,
-                                    "children": [
-                                      {
-                                        "kind": "complete-expression",
-                                        "startToken": 918,
+                                        "startToken": 913,
                                         "endToken": 921,
                                         "children": [
                                           {
                                             "kind": "complete-expression",
                                             "startToken": 918,
-                                            "endToken": 919,
-                                            "children": []
+                                            "endToken": 921,
+                                            "children": [
+                                              {
+                                                "kind": "complete-expression",
+                                                "startToken": 918,
+                                                "endToken": 919,
+                                                "children": []
+                                              },
+                                              {
+                                                "kind": "complete-expression",
+                                                "startToken": 920,
+                                                "endToken": 921,
+                                                "children": []
+                                              }
+                                            ]
                                           },
                                           {
                                             "kind": "complete-expression",
-                                            "startToken": 920,
-                                            "endToken": 921,
+                                            "startToken": 913,
+                                            "endToken": 914,
                                             "children": []
                                           }
                                         ]
-                                      },
-                                      {
-                                        "kind": "complete-expression",
-                                        "startToken": 913,
-                                        "endToken": 914,
-                                        "children": []
                                       }
                                     ]
+                                  },
+                                  {
+                                    "kind": "complete-expression",
+                                    "startToken": 925,
+                                    "endToken": 926,
+                                    "children": []
                                   }
                                 ]
                               }

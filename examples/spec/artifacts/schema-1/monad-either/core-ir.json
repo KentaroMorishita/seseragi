@@ -356,216 +356,77 @@
         }
       ],
       "body": {
-        "kind": "call",
-        "callee": "std/prelude::Monad::flatMap",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "lambda",
-            "parameter": {
-              "id": "first",
-              "kind": "named",
-              "type": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
+            "kind": "pure-let",
+            "name": "__ssrg$trait$286$method",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
               }
             },
-            "body": {
+            "value": {
               "kind": "call",
-              "callee": "std/prelude::Monad::flatMap",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "id": "second",
-                    "kind": "named",
-                    "type": {
-                      "kind": "named",
-                      "name": "Int",
-                      "arguments": []
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Applicative::pure",
-                    "arguments": [
-                      {
-                        "kind": "binary",
-                        "operator": "+",
-                        "left": {
-                          "kind": "variable",
-                          "name": "first",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 345,
-                            "end": 350
-                          }
-                        },
-                        "right": {
-                          "kind": "variable",
-                          "name": "second",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 353,
-                            "end": 359
-                          }
-                        },
-                        "evidence": [
-                          {
-                            "constraint": {
-                              "name": "Add",
-                              "arguments": [
-                                {
-                                  "kind": "named",
-                                  "name": "Int",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "named",
-                                  "name": "Int",
-                                  "arguments": []
-                                },
-                                {
-                                  "kind": "named",
-                                  "name": "Int",
-                                  "arguments": []
-                                }
-                              ]
-                            },
-                            "evidence": {
-                              "kind": "standard",
-                              "identity": "std/int::Add"
-                            }
-                          }
-                        ],
-                        "type": {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "source": "main.ssrg",
-                          "start": 345,
-                          "end": 359
-                        }
-                      }
-                    ],
-                    "evidence": [
-                      {
-                        "constraint": {
-                          "name": "Applicative",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Either",
-                              "arguments": [
-                                {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "evidence": {
-                          "kind": "standard",
-                          "identity": "std/either::Applicative"
-                        }
-                      }
-                    ],
-                    "traitDispatch": {
-                      "traitIdentity": "std/prelude::Applicative",
-                      "method": "pure"
-                    },
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "String",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 338,
-                      "end": 359
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Int",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "String",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Int",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 321,
-                    "end": 359
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "right",
-                  "type": {
-                    "kind": "named",
-                    "name": "Either",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 310,
-                    "end": 315
-                  }
-                }
-              ],
+              "callee": "flatMap",
+              "arguments": [],
               "evidence": [
                 {
                   "constraint": {
@@ -595,6 +456,1091 @@
                 "method": "flatMap"
               },
               "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 286,
+                "end": 361
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 286,
+              "end": 361
+            }
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$trait$286$source0",
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "value": {
+                "kind": "variable",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 290
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 286,
+                "end": 361
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$source1",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "value": {
+                  "kind": "lambda",
+                  "parameter": {
+                    "id": "first",
+                    "kind": "named",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  "body": {
+                    "kind": "sequence",
+                    "statements": [
+                      {
+                        "kind": "pure-let",
+                        "name": "__ssrg$trait$310$method",
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "value": {
+                          "kind": "call",
+                          "callee": "flatMap",
+                          "arguments": [],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Monad",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Either",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/either::Monad"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Monad",
+                            "method": "flatMap"
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 310,
+                            "end": 360
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 310,
+                          "end": 360
+                        }
+                      }
+                    ],
+                    "result": {
+                      "kind": "sequence",
+                      "statements": [
+                        {
+                          "kind": "pure-let",
+                          "name": "__ssrg$trait$310$source0",
+                          "type": {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "value": {
+                            "kind": "variable",
+                            "name": "right",
+                            "type": {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 315
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 310,
+                            "end": 360
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$source1",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            },
+                            "value": {
+                              "kind": "lambda",
+                              "parameter": {
+                                "id": "second",
+                                "kind": "named",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              "body": {
+                                "kind": "call",
+                                "callee": "std/prelude::Applicative::pure",
+                                "arguments": [
+                                  {
+                                    "kind": "binary",
+                                    "operator": "+",
+                                    "left": {
+                                      "kind": "variable",
+                                      "name": "first",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 345,
+                                        "end": 350
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "variable",
+                                      "name": "second",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "source": "main.ssrg",
+                                        "start": 353,
+                                        "end": 359
+                                      }
+                                    },
+                                    "evidence": [
+                                      {
+                                        "constraint": {
+                                          "name": "Add",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Int",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "standard",
+                                          "identity": "std/int::Add"
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 345,
+                                      "end": 359
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "Applicative",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Either",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "String",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/either::Applicative"
+                                    }
+                                  }
+                                ],
+                                "traitDispatch": {
+                                  "traitIdentity": "std/prelude::Applicative",
+                                  "method": "pure"
+                                },
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 338,
+                                  "end": 359
+                                }
+                              },
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 321,
+                                "end": 359
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          },
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$stage0",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            },
+                            "value": {
+                              "kind": "call",
+                              "callee": "__ssrg$trait$310$method",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "__ssrg$trait$310$source1",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Either",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "String",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 310,
+                                    "end": 360
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 310,
+                                "end": 360
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          },
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$stage1",
+                            "type": {
+                              "kind": "named",
+                              "name": "Either",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "value": {
+                              "kind": "call",
+                              "callee": "__ssrg$trait$310$stage0",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "__ssrg$trait$310$source0",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Either",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 310,
+                                    "end": 360
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 310,
+                                "end": 360
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "variable",
+                          "name": "__ssrg$trait$310$stage1",
+                          "type": {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 310,
+                            "end": 360
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 310,
+                          "end": 360
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 310,
+                        "end": 360
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 310,
+                      "end": 360
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 296,
+                    "end": 360
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$stage0",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "value": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$286$method",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "__ssrg$trait$286$source1",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 286,
+                        "end": 361
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 286,
+                    "end": 361
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$stage1",
+                "type": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "value": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$286$stage0",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "__ssrg$trait$286$source0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 286,
+                        "end": 361
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 286,
+                    "end": 361
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              }
+            ],
+            "result": {
+              "kind": "variable",
+              "name": "__ssrg$trait$286$stage1",
+              "type": {
                 "kind": "named",
                 "name": "Either",
                 "arguments": [
@@ -612,109 +1558,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 310,
-                "end": 360
+                "start": 286,
+                "end": 361
               }
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
-              },
-              "result": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 296,
-              "end": 360
-            }
-          },
-          {
-            "kind": "variable",
-            "name": "left",
-            "type": {
-              "kind": "named",
-              "name": "Either",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
             },
             "origin": {
               "source": "main.ssrg",
               "start": 286,
-              "end": 290
+              "end": 361
             }
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 286,
+            "end": 361
           }
-        ],
-        "evidence": [
-          {
-            "constraint": {
-              "name": "Monad",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
-                  ]
-                }
-              ]
-            },
-            "evidence": {
-              "kind": "standard",
-              "identity": "std/either::Monad"
-            }
-          }
-        ],
-        "traitDispatch": {
-          "traitIdentity": "std/prelude::Monad",
-          "method": "flatMap"
-        },
-        "type": {
-          "kind": "named",
-          "name": "Either",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
-            }
-          ]
         },
         "origin": {
           "source": "main.ssrg",

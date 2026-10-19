@@ -326,102 +326,46 @@
           "kind": "application",
           "function": {
             "kind": "name",
-            "name": "flatMap",
+            "name": ">>=",
             "span": {
               "start": 291,
               "end": 294
             }
           },
           "argument": {
-            "kind": "grouped",
-            "value": {
-              "kind": "lambda",
-              "parameter": {
-                "name": "first",
-                "nameSpan": {
-                  "start": 297,
-                  "end": 302
-                }
-              },
-              "body": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 286,
+              "end": 290
+            }
+          },
+          "span": {
+            "start": 286,
+            "end": 294
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "lambda",
+            "parameter": {
+              "name": "first",
+              "nameSpan": {
+                "start": 297,
+                "end": 302
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
                 "kind": "application",
                 "function": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "flatMap",
-                    "span": {
-                      "start": 316,
-                      "end": 319
-                    }
-                  },
-                  "argument": {
-                    "kind": "grouped",
-                    "value": {
-                      "kind": "lambda",
-                      "parameter": {
-                        "name": "second",
-                        "nameSpan": {
-                          "start": 322,
-                          "end": 328
-                        }
-                      },
-                      "body": {
-                        "kind": "application",
-                        "function": {
-                          "kind": "name",
-                          "name": "pure",
-                          "span": {
-                            "start": 338,
-                            "end": 342
-                          }
-                        },
-                        "argument": {
-                          "kind": "binary",
-                          "operator": "+",
-                          "operatorSpan": {
-                            "start": 351,
-                            "end": 352
-                          },
-                          "left": {
-                            "kind": "name",
-                            "name": "first",
-                            "span": {
-                              "start": 345,
-                              "end": 350
-                            }
-                          },
-                          "right": {
-                            "kind": "name",
-                            "name": "second",
-                            "span": {
-                              "start": 353,
-                              "end": 359
-                            }
-                          },
-                          "span": {
-                            "start": 345,
-                            "end": 359
-                          }
-                        },
-                        "span": {
-                          "start": 338,
-                          "end": 359
-                        }
-                      },
-                      "span": {
-                        "start": 321,
-                        "end": 359
-                      }
-                    },
-                    "span": {
-                      "start": 320,
-                      "end": 360
-                    }
-                  },
+                  "kind": "name",
+                  "name": ">>=",
                   "span": {
                     "start": 316,
-                    "end": 360
+                    "end": 319
                   }
                 },
                 "argument": {
@@ -434,30 +378,86 @@
                 },
                 "span": {
                   "start": 310,
+                  "end": 319
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "lambda",
+                  "parameter": {
+                    "name": "second",
+                    "nameSpan": {
+                      "start": 322,
+                      "end": 328
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "pure",
+                      "span": {
+                        "start": 338,
+                        "end": 342
+                      }
+                    },
+                    "argument": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "operatorSpan": {
+                        "start": 351,
+                        "end": 352
+                      },
+                      "left": {
+                        "kind": "name",
+                        "name": "first",
+                        "span": {
+                          "start": 345,
+                          "end": 350
+                        }
+                      },
+                      "right": {
+                        "kind": "name",
+                        "name": "second",
+                        "span": {
+                          "start": 353,
+                          "end": 359
+                        }
+                      },
+                      "span": {
+                        "start": 345,
+                        "end": 359
+                      }
+                    },
+                    "span": {
+                      "start": 338,
+                      "end": 359
+                    }
+                  },
+                  "span": {
+                    "start": 321,
+                    "end": 359
+                  }
+                },
+                "span": {
+                  "start": 320,
                   "end": 360
                 }
               },
               "span": {
-                "start": 296,
+                "start": 310,
                 "end": 360
               }
             },
             "span": {
-              "start": 295,
-              "end": 361
+              "start": 296,
+              "end": 360
             }
           },
           "span": {
-            "start": 291,
+            "start": 295,
             "end": 361
-          }
-        },
-        "argument": {
-          "kind": "name",
-          "name": "left",
-          "span": {
-            "start": 286,
-            "end": 290
           }
         },
         "span": {
@@ -1517,9 +1517,9 @@
     },
     {
       "id": 20,
-      "spelling": "Monad",
-      "canonical": "std/prelude::Monad",
-      "namespace": "trait",
+      "spelling": ">>=",
+      "canonical": "std/prelude::>>=",
+      "namespace": "operator",
       "kind": "prelude",
       "scope": 0,
       "origin": {
@@ -1529,18 +1529,6 @@
     },
     {
       "id": 21,
-      "spelling": "flatMap",
-      "canonical": "std/prelude::Monad::flatMap",
-      "namespace": "value",
-      "kind": "trait-method",
-      "scope": 0,
-      "origin": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 22,
       "spelling": "first",
       "namespace": "value",
       "kind": "parameter",
@@ -1551,7 +1539,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 22,
       "spelling": "second",
       "namespace": "value",
       "kind": "parameter",
@@ -1562,7 +1550,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 23,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -1573,7 +1561,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 24,
       "spelling": "error",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -1584,7 +1572,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 25,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1817,27 +1805,39 @@
       }
     },
     {
-      "spelling": "flatMap",
-      "namespace": "value",
-      "target": 21,
-      "candidates": [
-        21
-      ],
+      "spelling": ">>=",
+      "namespace": "operator",
+      "target": 20,
       "origin": {
         "start": 291,
         "end": 294
       }
     },
     {
-      "spelling": "flatMap",
+      "spelling": "left",
       "namespace": "value",
-      "target": 21,
-      "candidates": [
-        21
-      ],
+      "target": 18,
+      "origin": {
+        "start": 286,
+        "end": 290
+      }
+    },
+    {
+      "spelling": ">>=",
+      "namespace": "operator",
+      "target": 20,
       "origin": {
         "start": 316,
         "end": 319
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 310,
+        "end": 315
       }
     },
     {
@@ -1855,7 +1855,7 @@
     {
       "spelling": "first",
       "namespace": "value",
-      "target": 22,
+      "target": 21,
       "origin": {
         "start": 345,
         "end": 350
@@ -1873,28 +1873,10 @@
     {
       "spelling": "second",
       "namespace": "value",
-      "target": 23,
+      "target": 22,
       "origin": {
         "start": 353,
         "end": 359
-      }
-    },
-    {
-      "spelling": "right",
-      "namespace": "value",
-      "target": 19,
-      "origin": {
-        "start": 310,
-        "end": 315
-      }
-    },
-    {
-      "spelling": "left",
-      "namespace": "value",
-      "target": 18,
-      "origin": {
-        "start": 286,
-        "end": 290
       }
     },
     {
@@ -1936,7 +1918,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 24,
+      "target": 23,
       "origin": {
         "start": 420,
         "end": 425
@@ -1963,7 +1945,7 @@
     {
       "spelling": "error",
       "namespace": "value",
-      "target": 25,
+      "target": 24,
       "origin": {
         "start": 456,
         "end": 461
@@ -1990,7 +1972,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 26,
+      "target": 25,
       "origin": {
         "start": 616,
         "end": 623
@@ -2035,7 +2017,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 26,
+      "target": 25,
       "origin": {
         "start": 690,
         "end": 697
@@ -2080,7 +2062,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 26,
+      "target": 25,
       "origin": {
         "start": 762,
         "end": 769
@@ -2125,7 +2107,7 @@
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 26,
+      "target": 25,
       "origin": {
         "start": 842,
         "end": 849

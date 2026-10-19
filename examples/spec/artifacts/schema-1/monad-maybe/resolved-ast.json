@@ -2504,61 +2504,61 @@
                     "kind": "application",
                     "function": {
                       "kind": "name",
-                      "name": "flatMap",
+                      "name": ">>=",
                       "span": {
                         "start": 1856,
                         "end": 1859
                       }
                     },
                     "argument": {
-                      "kind": "name",
-                      "name": "incrementMaybe",
-                      "span": {
-                        "start": 1860,
-                        "end": 1874
-                      }
-                    },
-                    "span": {
-                      "start": 1856,
-                      "end": 1874
-                    }
-                  },
-                  "argument": {
-                    "kind": "application",
-                    "function": {
                       "kind": "application",
                       "function": {
-                        "kind": "name",
-                        "name": "liftAndBind",
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "liftAndBind",
+                          "span": {
+                            "start": 1825,
+                            "end": 1836
+                          }
+                        },
+                        "argument": {
+                          "kind": "name",
+                          "name": "incrementMaybe",
+                          "span": {
+                            "start": 1837,
+                            "end": 1851
+                          }
+                        },
                         "span": {
                           "start": 1825,
-                          "end": 1836
-                        }
-                      },
-                      "argument": {
-                        "kind": "name",
-                        "name": "incrementMaybe",
-                        "span": {
-                          "start": 1837,
                           "end": 1851
                         }
                       },
-                      "span": {
-                        "start": 1825,
-                        "end": 1851
-                      }
-                    },
-                    "argument": {
-                      "kind": "integer",
-                      "raw": "40",
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "40",
+                        "span": {
+                          "start": 1815,
+                          "end": 1817
+                        }
+                      },
                       "span": {
                         "start": 1815,
-                        "end": 1817
+                        "end": 1851
                       }
                     },
                     "span": {
                       "start": 1815,
-                      "end": 1851
+                      "end": 1859
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "incrementMaybe",
+                    "span": {
+                      "start": 1860,
+                      "end": 1874
                     }
                   },
                   "span": {
@@ -4084,6 +4084,18 @@
         "start": 0,
         "end": 0
       }
+    },
+    {
+      "id": 78,
+      "spelling": ">>=",
+      "canonical": "std/prelude::>>=",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "references": [
@@ -5501,24 +5513,12 @@
       }
     },
     {
-      "spelling": "flatMap",
-      "namespace": "value",
-      "target": 6,
-      "candidates": [
-        6
-      ],
+      "spelling": ">>=",
+      "namespace": "operator",
+      "target": 78,
       "origin": {
         "start": 1856,
         "end": 1859
-      }
-    },
-    {
-      "spelling": "incrementMaybe",
-      "namespace": "value",
-      "target": 9,
-      "origin": {
-        "start": 1860,
-        "end": 1874
       }
     },
     {
@@ -5537,6 +5537,15 @@
       "origin": {
         "start": 1837,
         "end": 1851
+      }
+    },
+    {
+      "spelling": "incrementMaybe",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1860,
+        "end": 1874
       }
     },
     {

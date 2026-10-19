@@ -150,11 +150,18 @@
     "maybeMonad",
     "add",
     "bound",
+    "__ssrg$trait$1544$method",
     "maybeTMonad",
     "maybeMonad",
+    "__ssrg$trait$1544$source0",
+    "__ssrg$trait$1544$source1",
     "optional",
     "add",
     "maybeMonad",
+    "__ssrg$trait$1544$stage0",
+    "__ssrg$trait$1544$method",
+    "__ssrg$trait$1544$stage1",
+    "__ssrg$trait$1544$stage0",
     "stateStep",
     "_ssrg_stateTModify",
     "maybeMonad",
@@ -211,5 +218,5 @@
     "_ssrg_writerTRun",
     "output"
   ],
-  "mappings": ";;;;;;;;;;;AAoBAA;;;;AACAC;AAGAC;AAjBAC;AAGAG;AAGAG;AAEAE;AA2DAI;AA9CAoF;AACAG;AACAI;AACAI;AACAG;AACAI;AACAG;AACAI;AAEAG;AAIAO;AACAM;AACAM;AACAI;AAIAK;AACAI;AACAI;AAKAO;AACAK;AAEAI;AAIAI;AACAI;AACAI;AAKAO"
+  "mappings": ";;;;;;;;;;;AAoBAA;;;;AACAC;AAGAC;AAjBAC;AAGAG;AAGAG;AAEAE;AA2DAI;AA9CAoF;AACAG;AACAI;AACAI;AACAG;AACAI;AACAG;AACAI;AAEAG;AAIAO;AACAM;AACAa;AACAI;AAIAK;AACAI;AACAI;AAKAO;AACAK;AAEAI;AAIAI;AACAI;AACAI;AAKAO"
 }

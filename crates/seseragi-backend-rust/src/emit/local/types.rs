@@ -91,7 +91,11 @@ impl Backend<'_> {
             .ok_or_else(|| "Rust backend: unproven local callable type".into())
     }
 
-    fn local_constructor_arity(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
+    pub(in crate::emit) fn local_constructor_arity(
+        &self,
+        ty: &CoreType,
+        scope: &Scope,
+    ) -> Option<usize> {
         if let CoreType::Named { name, arguments } = ty {
             if arguments.is_empty() {
                 if let Some((arity, _)) = scope.type_parameters.get(name) {

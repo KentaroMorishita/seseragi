@@ -323,102 +323,46 @@
           "kind": "application",
           "function": {
             "kind": "name",
-            "name": "flatMap",
+            "name": ">>=",
             "span": {
               "start": 291,
               "end": 294
             }
           },
           "argument": {
-            "kind": "grouped",
-            "value": {
-              "kind": "lambda",
-              "parameter": {
-                "name": "first",
-                "nameSpan": {
-                  "start": 297,
-                  "end": 302
-                }
-              },
-              "body": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 286,
+              "end": 290
+            }
+          },
+          "span": {
+            "start": 286,
+            "end": 294
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "lambda",
+            "parameter": {
+              "name": "first",
+              "nameSpan": {
+                "start": 297,
+                "end": 302
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
                 "kind": "application",
                 "function": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "flatMap",
-                    "span": {
-                      "start": 316,
-                      "end": 319
-                    }
-                  },
-                  "argument": {
-                    "kind": "grouped",
-                    "value": {
-                      "kind": "lambda",
-                      "parameter": {
-                        "name": "second",
-                        "nameSpan": {
-                          "start": 322,
-                          "end": 328
-                        }
-                      },
-                      "body": {
-                        "kind": "application",
-                        "function": {
-                          "kind": "name",
-                          "name": "pure",
-                          "span": {
-                            "start": 338,
-                            "end": 342
-                          }
-                        },
-                        "argument": {
-                          "kind": "binary",
-                          "operator": "+",
-                          "operatorSpan": {
-                            "start": 351,
-                            "end": 352
-                          },
-                          "left": {
-                            "kind": "name",
-                            "name": "first",
-                            "span": {
-                              "start": 345,
-                              "end": 350
-                            }
-                          },
-                          "right": {
-                            "kind": "name",
-                            "name": "second",
-                            "span": {
-                              "start": 353,
-                              "end": 359
-                            }
-                          },
-                          "span": {
-                            "start": 345,
-                            "end": 359
-                          }
-                        },
-                        "span": {
-                          "start": 338,
-                          "end": 359
-                        }
-                      },
-                      "span": {
-                        "start": 321,
-                        "end": 359
-                      }
-                    },
-                    "span": {
-                      "start": 320,
-                      "end": 360
-                    }
-                  },
+                  "kind": "name",
+                  "name": ">>=",
                   "span": {
                     "start": 316,
-                    "end": 360
+                    "end": 319
                   }
                 },
                 "argument": {
@@ -431,30 +375,86 @@
                 },
                 "span": {
                   "start": 310,
+                  "end": 319
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "lambda",
+                  "parameter": {
+                    "name": "second",
+                    "nameSpan": {
+                      "start": 322,
+                      "end": 328
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "pure",
+                      "span": {
+                        "start": 338,
+                        "end": 342
+                      }
+                    },
+                    "argument": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "operatorSpan": {
+                        "start": 351,
+                        "end": 352
+                      },
+                      "left": {
+                        "kind": "name",
+                        "name": "first",
+                        "span": {
+                          "start": 345,
+                          "end": 350
+                        }
+                      },
+                      "right": {
+                        "kind": "name",
+                        "name": "second",
+                        "span": {
+                          "start": 353,
+                          "end": 359
+                        }
+                      },
+                      "span": {
+                        "start": 345,
+                        "end": 359
+                      }
+                    },
+                    "span": {
+                      "start": 338,
+                      "end": 359
+                    }
+                  },
+                  "span": {
+                    "start": 321,
+                    "end": 359
+                  }
+                },
+                "span": {
+                  "start": 320,
                   "end": 360
                 }
               },
               "span": {
-                "start": 296,
+                "start": 310,
                 "end": 360
               }
             },
             "span": {
-              "start": 295,
-              "end": 361
+              "start": 296,
+              "end": 360
             }
           },
           "span": {
-            "start": 291,
+            "start": 295,
             "end": 361
-          }
-        },
-        "argument": {
-          "kind": "name",
-          "name": "left",
-          "span": {
-            "start": 286,
-            "end": 290
           }
         },
         "span": {

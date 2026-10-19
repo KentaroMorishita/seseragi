@@ -2626,20 +2626,187 @@
                   "callee": "artifact/monad-maybe::render",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "artifact/monad-maybe::trait(Monad)::flatMap",
-                      "arguments": [
+                      "kind": "sequence",
+                      "statements": [
                         {
-                          "kind": "variable",
-                          "name": "artifact/monad-maybe::incrementMaybe",
+                          "kind": "pure-let",
+                          "name": "__ssrg$trait$1815$method",
                           "type": {
                             "kind": "function",
                             "parameter": {
-                              "kind": "named",
-                              "name": "Int",
-                              "arguments": []
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
                             },
                             "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "value": {
+                            "kind": "call",
+                            "callee": "flatMap",
+                            "arguments": [],
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Monad",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "local",
+                                  "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
+                                  "evidenceArguments": [
+                                    {
+                                      "constraint": {
+                                        "name": "Applicative",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Maybe",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "local",
+                                        "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
+                                        "evidenceArguments": [
+                                          {
+                                            "constraint": {
+                                              "name": "Functor",
+                                              "arguments": [
+                                                {
+                                                  "kind": "named",
+                                                  "name": "Maybe",
+                                                  "arguments": []
+                                                }
+                                              ]
+                                            },
+                                            "evidence": {
+                                              "kind": "local",
+                                              "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "traitDispatch": {
+                              "traitIdentity": "artifact/monad-maybe::trait(Monad)",
+                              "method": "flatMap"
+                            },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1815,
+                              "end": 1874
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1815,
+                            "end": 1874
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$1815$source0",
+                            "type": {
                               "kind": "named",
                               "name": "Maybe",
                               "arguments": [
@@ -2649,21 +2816,133 @@
                                   "arguments": []
                                 }
                               ]
+                            },
+                            "value": {
+                              "kind": "call",
+                              "callee": "artifact/monad-maybe::liftAndBind",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "artifact/monad-maybe::incrementMaybe",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1837,
+                                    "end": 1851
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "value": "40",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1815,
+                                    "end": 1817
+                                  }
+                                }
+                              ],
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Monad",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Maybe",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "local",
+                                    "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
+                                    "evidenceArguments": [
+                                      {
+                                        "constraint": {
+                                          "name": "Applicative",
+                                          "arguments": [
+                                            {
+                                              "kind": "named",
+                                              "name": "Maybe",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        },
+                                        "evidence": {
+                                          "kind": "local",
+                                          "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
+                                          "evidenceArguments": [
+                                            {
+                                              "constraint": {
+                                                "name": "Functor",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "named",
+                                                    "name": "Maybe",
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              },
+                                              "evidence": {
+                                                "kind": "local",
+                                                "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1851
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1815,
+                              "end": 1874
                             }
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 1860,
-                            "end": 1874
                           }
-                        },
-                        {
-                          "kind": "call",
-                          "callee": "artifact/monad-maybe::liftAndBind",
-                          "arguments": [
+                        ],
+                        "result": {
+                          "kind": "sequence",
+                          "statements": [
                             {
-                              "kind": "variable",
-                              "name": "artifact/monad-maybe::incrementMaybe",
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$source1",
                               "type": {
                                 "kind": "function",
                                 "parameter": {
@@ -2683,162 +2962,232 @@
                                   ]
                                 }
                               },
-                              "origin": {
-                                "source": "main.ssrg",
-                                "start": 1837,
-                                "end": 1851
-                              }
-                            },
-                            {
-                              "kind": "integer",
-                              "value": "40",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/monad-maybe::incrementMaybe",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Maybe",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1860,
+                                  "end": 1874
+                                }
+                              },
                               "origin": {
                                 "source": "main.ssrg",
                                 "start": 1815,
-                                "end": 1817
+                                "end": 1874
                               }
-                            }
-                          ],
-                          "evidence": [
+                            },
                             {
-                              "constraint": {
-                                "name": "Monad",
-                                "arguments": [
-                                  {
-                                    "kind": "named",
-                                    "name": "Maybe",
-                                    "arguments": []
-                                  }
-                                ]
-                              },
-                              "evidence": {
-                                "kind": "local",
-                                "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
-                                "evidenceArguments": [
-                                  {
-                                    "constraint": {
-                                      "name": "Applicative",
-                                      "arguments": [
-                                        {
-                                          "kind": "named",
-                                          "name": "Maybe",
-                                          "arguments": []
-                                        }
-                                      ]
-                                    },
-                                    "evidence": {
-                                      "kind": "local",
-                                      "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
-                                      "evidenceArguments": [
-                                        {
-                                          "constraint": {
-                                            "name": "Functor",
-                                            "arguments": [
-                                              {
-                                                "kind": "named",
-                                                "name": "Maybe",
-                                                "arguments": []
-                                              }
-                                            ]
-                                          },
-                                          "evidence": {
-                                            "kind": "local",
-                                            "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              }
-                            }
-                          ],
-                          "type": {
-                            "kind": "named",
-                            "name": "Maybe",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "Int",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 1815,
-                            "end": 1851
-                          }
-                        }
-                      ],
-                      "evidence": [
-                        {
-                          "constraint": {
-                            "name": "Monad",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "Maybe",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "evidence": {
-                            "kind": "local",
-                            "identity": "artifact/monad-maybe::trait(Monad)<std/prelude::Maybe>",
-                            "evidenceArguments": [
-                              {
-                                "constraint": {
-                                  "name": "Applicative",
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$stage0",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Maybe",
                                   "arguments": [
                                     {
                                       "kind": "named",
-                                      "name": "Maybe",
+                                      "name": "Int",
                                       "arguments": []
                                     }
                                   ]
                                 },
-                                "evidence": {
-                                  "kind": "local",
-                                  "identity": "artifact/monad-maybe::trait(Applicative)<std/prelude::Maybe>",
-                                  "evidenceArguments": [
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
                                     {
-                                      "constraint": {
-                                        "name": "Functor",
-                                        "arguments": [
-                                          {
-                                            "kind": "named",
-                                            "name": "Maybe",
-                                            "arguments": []
-                                          }
-                                        ]
-                                      },
-                                      "evidence": {
-                                        "kind": "local",
-                                        "identity": "artifact/monad-maybe::trait(Functor)<std/prelude::Maybe>"
-                                      }
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
                                     }
                                   ]
                                 }
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "__ssrg$trait$1815$method",
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "__ssrg$trait$1815$source1",
+                                    "type": {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "result": {
+                                        "kind": "named",
+                                        "name": "Maybe",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1815,
+                                      "end": 1874
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Maybe",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Maybe",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1815,
+                                  "end": 1874
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1874
                               }
-                            ]
+                            },
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$stage1",
+                              "type": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "value": {
+                                "kind": "call",
+                                "callee": "__ssrg$trait$1815$stage0",
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "__ssrg$trait$1815$source0",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Maybe",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 1815,
+                                      "end": 1874
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Maybe",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 1815,
+                                  "end": 1874
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1874
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "variable",
+                            "name": "__ssrg$trait$1815$stage1",
+                            "type": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1815,
+                              "end": 1874
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1815,
+                            "end": 1874
                           }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1815,
+                          "end": 1874
                         }
-                      ],
-                      "traitDispatch": {
-                        "traitIdentity": "artifact/monad-maybe::trait(Monad)",
-                        "method": "flatMap"
-                      },
-                      "type": {
-                        "kind": "named",
-                        "name": "Maybe",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          }
-                        ]
                       },
                       "origin": {
                         "source": "main.ssrg",

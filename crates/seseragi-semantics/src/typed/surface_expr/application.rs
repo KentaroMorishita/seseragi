@@ -54,6 +54,18 @@ pub(super) fn type_application(
     type_application_with(expression, context, type_surface_expression)
 }
 
+pub(super) fn type_trait_operator_contract_error(
+    origin: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_trait_method_selection_error(
+        &[],
+        origin,
+        PureCallIssue::TraitMethodNoMatch { callee: origin },
+        context,
+    )
+}
+
 pub(super) fn type_explicit_callable_value(
     signature: TopLevelPureFunction,
     arguments: &[TypeRef],
@@ -601,6 +613,50 @@ pub(crate) fn type_application_with(
         }
     }
     let callee_span = callee.span();
+    if context.unproved_trait_operator(callee_span) {
+        if argument_nodes.len() >= 2 {
+            if let Some((operator, signature)) = context.trait_operator_method(callee_span) {
+                // Check the real member's signature and dictionary stage in ABI
+                // order, then retain source order for shared Core staging.
+                let mut method_arguments = argument_nodes.clone();
+                for (index, source) in operator.method_operand_sources.iter().enumerate() {
+                    method_arguments[index] = argument_nodes[*source];
+                }
+                let mut analysis = type_known_application_with_explicit(
+                    signature,
+                    explicit_type_arguments,
+                    callee_span,
+                    &method_arguments,
+                    expression.span(),
+                    context,
+                    &mut type_argument,
+                );
+                if !analysis.has_issues() {
+                    if let TypedExpr::Call {
+                        callee,
+                        arguments,
+                        trait_dispatch: Some(_),
+                        ..
+                    } = &mut analysis.value
+                    {
+                        *callee = operator.spelling.to_owned();
+                        if operator.method_operand_sources == [1, 0] {
+                            arguments.swap(0, 1);
+                        }
+                    }
+                }
+                return analysis;
+            }
+        }
+        return type_trait_method_selection_error(
+            &argument_nodes,
+            expression.span(),
+            PureCallIssue::TraitMethodNoMatch {
+                callee: callee_span,
+            },
+            context,
+        );
+    }
     let signature = if let Some(target) = context
         .target(callee_span)
         .or_else(|| context.operator_target(callee_span))

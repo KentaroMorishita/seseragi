@@ -375,7 +375,7 @@ fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
     }
 }
 
-fn typed_expr_type(expression: &TypedExpr) -> TypedType {
+pub(super) fn typed_expr_type(expression: &TypedExpr) -> TypedType {
     match expression {
         TypedExpr::Unit { type_ref, .. }
         | TypedExpr::Integer { type_ref, .. }

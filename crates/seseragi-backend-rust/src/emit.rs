@@ -697,6 +697,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if matches!(callee.as_str(), "<$>" | "<*>" | ">>=") && !scope.contains(callee) {
+                    return Err("Rust backend: unproven trait operator source staging".into());
+                }
                 if callee == "builtin::array-index" {
                     return self.array_index(expr, scope);
                 }
