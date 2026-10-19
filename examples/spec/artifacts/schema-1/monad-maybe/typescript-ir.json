@@ -1173,80 +1173,256 @@
                   "callee": "render",
                   "arguments": [
                     {
-                      "kind": "checked-result",
-                      "value": {
-                        "kind": "dictionary-call",
-                        "dictionary": {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Monad$2",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "type-application-call",
-                              "callee": "__ssrg$instance$Applicative$1",
-                              "typeArguments": [],
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "__ssrg$instance$Functor$0"
+                      "kind": "sequence",
+                      "statements": [
+                        {
+                          "kind": "pure-let",
+                          "name": "__ssrg$trait$1815$method",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
                                 }
-                              ]
+                              }
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
+                                }
+                              },
+                              "result": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
+                                }
+                              }
                             }
-                          ]
-                        },
-                        "method": "flatMap",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "incrementMaybe"
                           },
-                          {
+                          "initializer": {
                             "kind": "checked-result",
                             "value": {
-                              "kind": "call",
-                              "callee": "liftAndBind",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "incrementMaybe"
-                                },
-                                {
-                                  "kind": "number",
-                                  "value": "40"
-                                },
-                                {
-                                  "kind": "type-application-call",
-                                  "callee": "__ssrg$instance$Monad$2",
-                                  "typeArguments": [],
-                                  "arguments": [
-                                    {
-                                      "kind": "type-application-call",
-                                      "callee": "__ssrg$instance$Applicative$1",
-                                      "typeArguments": [],
-                                      "arguments": [
-                                        {
-                                          "kind": "identifier",
-                                          "name": "__ssrg$instance$Functor$0"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "type-application-call",
+                                "callee": "__ssrg$instance$Monad$2",
+                                "typeArguments": [],
+                                "arguments": [
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Applicative$1",
+                                    "typeArguments": [],
+                                    "arguments": [
+                                      {
+                                        "kind": "identifier",
+                                        "name": "__ssrg$instance$Functor$0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "method": "flatMap",
+                              "arguments": []
                             },
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "result": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1815,
+                            "end": 1874
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$1815$source0",
                             "type": {
                               "kind": "maybe",
                               "element": {
                                 "kind": "number"
                               }
+                            },
+                            "initializer": {
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "call",
+                                "callee": "liftAndBind",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "incrementMaybe"
+                                  },
+                                  {
+                                    "kind": "number",
+                                    "value": "40"
+                                  },
+                                  {
+                                    "kind": "type-application-call",
+                                    "callee": "__ssrg$instance$Monad$2",
+                                    "typeArguments": [],
+                                    "arguments": [
+                                      {
+                                        "kind": "type-application-call",
+                                        "callee": "__ssrg$instance$Applicative$1",
+                                        "typeArguments": [],
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "__ssrg$instance$Functor$0"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "type": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 1815,
+                              "end": 1874
                             }
                           }
-                        ]
-                      },
-                      "type": {
-                        "kind": "maybe",
-                        "element": {
-                          "kind": "number"
+                        ],
+                        "result": {
+                          "kind": "sequence",
+                          "statements": [
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$source1",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "number"
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "initializer": {
+                                "kind": "identifier",
+                                "name": "incrementMaybe"
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1874
+                              }
+                            },
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$stage0",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                },
+                                "result": {
+                                  "kind": "maybe",
+                                  "element": {
+                                    "kind": "number"
+                                  }
+                                }
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "__ssrg$trait$1815$method",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$trait$1815$source1"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1874
+                              }
+                            },
+                            {
+                              "kind": "pure-let",
+                              "name": "__ssrg$trait$1815$stage1",
+                              "type": {
+                                "kind": "maybe",
+                                "element": {
+                                  "kind": "number"
+                                }
+                              },
+                              "initializer": {
+                                "kind": "call",
+                                "callee": "__ssrg$trait$1815$stage0",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "__ssrg$trait$1815$source0"
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1815,
+                                "end": 1874
+                              }
+                            }
+                          ],
+                          "result": {
+                            "kind": "identifier",
+                            "name": "__ssrg$trait$1815$stage1"
+                          }
                         }
                       }
                     }

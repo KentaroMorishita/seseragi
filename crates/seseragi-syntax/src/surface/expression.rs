@@ -214,6 +214,7 @@ impl ExpressionParser<'_> {
                     method_operand_sources,
                 } => trait_method_application(
                     method,
+                    &operator.raw,
                     token_span(operator),
                     left,
                     right,
@@ -724,35 +725,35 @@ fn is_unresolved_infix_operator(token: &Token) -> bool {
 
 fn trait_method_application(
     method: &str,
+    spelling: &str,
     operator_span: ByteSpan,
     left: SurfaceExpr,
     right: SurfaceExpr,
     method_operand_sources: [usize; 2],
     span: ByteSpan,
 ) -> SurfaceExpr {
-    let mut source_operands = [Some(left), Some(right)];
-    let [first_source, second_source] = method_operand_sources;
-    let first = source_operands[first_source]
-        .take()
-        .expect("trait operator method order must be a permutation");
-    let second = source_operands[second_source]
-        .take()
-        .expect("trait operator method order must be a permutation");
+    // Reordering the AST would also reorder evaluation. Retain the checked
+    // operator callable when its method ABI differs from source order.
+    let callee = if method_operand_sources == [0, 1] {
+        method
+    } else {
+        spelling
+    };
     let first_span = ByteSpan {
-        start: operator_span.start.min(first.span().start),
-        end: operator_span.end.max(first.span().end),
+        start: operator_span.start.min(left.span().start),
+        end: operator_span.end.max(left.span().end),
     };
     SurfaceExpr::Application {
         function: Box::new(SurfaceExpr::Application {
             function: Box::new(SurfaceExpr::Name {
-                name: method.to_owned(),
+                name: callee.to_owned(),
                 type_arguments: None,
                 span: operator_span,
             }),
-            argument: Box::new(first),
+            argument: Box::new(left),
             span: first_span,
         }),
-        argument: Box::new(second),
+        argument: Box::new(right),
         span,
     }
 }

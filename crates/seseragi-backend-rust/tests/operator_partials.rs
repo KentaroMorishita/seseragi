@@ -8,6 +8,10 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
         .unwrap()
         .core_ir;
     let artifact = emit_rust_module(&core, "main").unwrap();
+    execute_generated(&artifact.source, name, stdout, code);
+}
+
+fn execute_generated(source: &str, name: &str, stdout: &str, code: i32) {
     let directory =
         std::env::temp_dir().join(format!("seseragi-operator-{name}-{}", std::process::id()));
     fs::create_dir(&directory).unwrap();
@@ -17,7 +21,7 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
     } else {
         "program"
     });
-    fs::write(&input, &artifact.source).unwrap();
+    fs::write(&input, source).unwrap();
     let built = Command::new("rustc")
         .args(["--edition=2021", "-O", "-o"])
         .arg(&exe)
@@ -89,6 +93,188 @@ fn a_selected_higher_kinded_child_dictionary_runs_in_the_first_stage() {
         "",
         70,
     );
+}
+
+const MONAD_BOX: &str = r#"
+type Box<A> = | Box A
+trait Monad<F<_>> {
+  fn flatMap<A, B> f: (A -> F<B>) -> value: F<A> -> F<B>
+}
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value { Box item -> f item }
+}
+"#;
+
+#[test]
+fn trait_operator_values_preserve_forward_and_reversed_abis_and_saved_captures() {
+    for (name, source, stdout) in [
+        (
+            "values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-order.ssrg"),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-operator-order.stdout"
+            ),
+        ),
+        (
+            "effects",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-operator-effects.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-operator-effects.stdout"
+            ),
+        ),
+    ] {
+        execute(source, &format!("trait-{name}"), stdout, 0);
+    }
+}
+
+#[test]
+fn trait_operator_partial_retains_conditional_children_through_resource_defect() {
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-children.ssrg"),
+        "trait-children",
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-operator-children.stdout"),
+        70,
+    );
+}
+
+#[test]
+fn full_trait_operator_preserves_method_owned_evidence_and_declared_arity() {
+    for (name, signature, implementation) in [
+        (
+            "two",
+            "f: (A -> M<B>) -> value: M<A> -> M<B>",
+            "f: (A -> Box<B>) -> value: Box<A> -> Box<B> where Show<A> = match value { Box item -> { let text = show item; f item } }",
+        ),
+        (
+            "one",
+            "f: (A -> M<B>) -> (M<A> -> M<B>)",
+            "f: (A -> Box<B>) -> (Box<A> -> Box<B>) where Show<A> = \\value -> match value { Box item -> { let text = show item; f item } }",
+        ),
+    ] {
+        let source = format!(
+            "type Box<A> = | Box A\ntrait Monad<M<_>> {{ fn flatMap<A, B> {signature} where Show<A> }}\ninstance Monad<Box> {{ fn flatMap<A, B> {implementation} }}\npub effect fn main = do {{ let result = Box 40 >>= (\\n: Int -> Box (n + 2)); println (match result {{ Box n -> show n }}) }}\n"
+        );
+        execute(&source, &format!("method-evidence-{name}"), "42\n", 0);
+    }
+}
+
+#[test]
+fn canonical_hkt_parameter_method_values_require_the_full_checked_signature() {
+    let source = "fn mapped<F<_>, A, B> f: (A -> B) -> value: F<A> -> F<B> where Functor<F> = (<$>) f value\nfn applied<F<_>, A, B> f: F<A -> B> -> value: F<A> -> F<B> where Applicative<F> = (<*>) f value\nfn bound<F<_>, A, B> value: F<A> -> f: (A -> F<B>) -> F<B> where Monad<F> = (>>=) value f\npub fn probe -> Unit = ()\n";
+    let core = compile_core_module(CompileInput::new("hkt-order-λ.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "probe").unwrap();
+    execute_generated(&artifact.source, "hkt-signatures", "()\n", 0);
+    for function in 0..3 {
+        for mutation in 0..9 {
+            let mut changed = core.clone();
+            let CoreExpr::Sequence { statements, .. } = &mut changed.functions[function].body
+            else {
+                panic!("operator sequence")
+            };
+            let CoreStatement::PureLet {
+                value:
+                    CoreExpr::Call {
+                        evidence,
+                        trait_dispatch,
+                        type_ref,
+                        deferred_evidence_parameters,
+                        evidence_argument_index,
+                        ..
+                    },
+                ..
+            } = &mut statements[0]
+            else {
+                panic!("selected method")
+            };
+            let dispatch = trait_dispatch.as_mut().unwrap();
+            match mutation {
+                0 => dispatch.trait_identity = "unrelated::Functor".into(),
+                1 => dispatch.method = "unknown".into(),
+                2 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 99 },
+                3 => evidence[0].constraint.arguments.clear(),
+                4 => evidence[0].constraint.arguments.push(CoreType::Hole),
+                5 => *type_ref = CoreType::Hole,
+                6 => {
+                    let CoreType::Function { result, .. } = type_ref else {
+                        panic!()
+                    };
+                    **result = CoreType::Named {
+                        name: "Int".into(),
+                        arguments: vec![],
+                    };
+                }
+                7 => deferred_evidence_parameters.push(CoreType::Hole),
+                _ => *evidence_argument_index = Some(0),
+            }
+            assert!(
+                emit_rust_module(&changed, "probe").is_err(),
+                "function {function}, mutation {mutation}"
+            );
+        }
+    }
+}
+
+#[test]
+fn reversed_trait_operator_partial_evaluates_its_supplied_source_operand() {
+    execute(
+        &format!("{MONAD_BOX}\nfn left -> Box<Int> = {{ let bad = 9007199254740991 + 1; Box 1 }}\npub effect fn main = do {{ let saved: (Int -> Box<Int>) -> Box<Int> = (>>=) (left ()); println \"unreachable\" }}"),
+        "reversed-source-prefix",
+        "",
+        70,
+    );
+}
+
+#[test]
+fn reversed_trait_operator_reference_keeps_source_arguments_and_method_abi_distinct() {
+    execute(
+        &format!("{MONAD_BOX}\nfn unbox<A> box: Box<A> -> A = match box {{ Box item -> item }}\npub effect fn main = do {{ let bind: Box<Int> -> (Int -> Box<Int>) -> Box<Int> = (>>=); let saved = bind (Box 40); println (show (unbox (saved (\\n -> Box (n + 2))))) }}"),
+        "reversed-source-reference",
+        "42\n",
+        0,
+    );
+}
+
+#[test]
+fn reversed_trait_operator_runs_source_expressions_once_before_method_stages() {
+    let header = MONAD_BOX.replace(
+        "fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> = match value { Box item -> f item }",
+        "fn flatMap<A, B> f: (A -> Box<B>) -> (Box<A> -> Box<B>) = { let observed = firstStage (); \\value -> { let observed = lastStage (); match value { Box item -> f item } } }",
+    );
+    for (name, expression) in [
+        ("infix", "left () >>= right ()"),
+        ("bare", "(>>=) (left ()) (right ())"),
+        ("saved", "{ let selected: Box<Int> -> (Int -> Box<Int>) -> Box<Int> = (>>=); selected (left ()) (right ()) }"),
+        ("partial", "{ let saved: (Int -> Box<Int>) -> Box<Int> = (>>=) (left ()); saved (right ()) }"),
+    ] {
+        let source = format!("{header}\nfn firstStage -> Unit = ()\nfn lastStage -> Unit = ()\nfn left -> Box<Int> = Box 40\nfn right -> (Int -> Box<Int>) = \\n -> Box (n + 2)\npub fn probe -> Int = match ({expression}) {{ Box result -> result }}");
+        let core = compile_core_module(CompileInput::new("order-λ.ssrg", "native/main", &source)).unwrap().core_ir;
+        let artifact = emit_rust_module(&core, "probe").unwrap();
+        let end = artifact.source.rfind("fn main()").unwrap();
+        let mut generated = artifact.source[..end].to_owned();
+        let symbol = |name: &str| format!("v_{}", name.bytes().map(|b| format!("{b:02x}")).collect::<String>());
+        // Only this test copy records calls. Separate CLI probes execute the
+        // normal emitted body; these traces establish order and call counts.
+        for function in ["left", "right", "firstStage", "lastStage"] {
+            let start = generated.find(&format!("fn {}_direct(", symbol(&format!("native/main::{function}")))).unwrap();
+            let body = start + generated[start..].find("-> V {").unwrap() + "-> V {".len();
+            generated.insert_str(body, &format!(" TRACE.with(|trace| trace.borrow_mut().push({function:?})); "));
+        }
+        generated.push_str(&format!(r#"
+thread_local! {{ static TRACE: RefCell<Vec<&'static str>> = const {{ RefCell::new(Vec::new()) }}; }}
+fn main() {{
+ let result = {}(vec![]).apply(V::Unit);
+ assert_eq!(result.render(), "42");
+ TRACE.with(|trace| assert_eq!(&*trace.borrow(), &["left", "right", "firstStage", "lastStage"]));
+ drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+ eprintln!("managed-live={{}}", LIVE.with(Cell::get));
+}}
+"#, symbol(&artifact.metadata.entry)));
+        execute_generated(&generated, &format!("reversed-trace-{name}"), "", 0);
+    }
 }
 
 #[test]

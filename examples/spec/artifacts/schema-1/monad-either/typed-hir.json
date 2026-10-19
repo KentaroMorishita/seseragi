@@ -421,8 +421,32 @@
       ],
       "body": {
         "kind": "call",
-        "callee": "std/prelude::Monad::flatMap",
+        "callee": ">>=",
         "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 286,
+              "end": 290
+            }
+          },
           {
             "kind": "lambda",
             "parameter": {
@@ -440,8 +464,32 @@
             },
             "body": {
               "kind": "call",
-              "callee": "std/prelude::Monad::flatMap",
+              "callee": ">>=",
               "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 310,
+                    "end": 315
+                  }
+                },
                 {
                   "kind": "lambda",
                   "parameter": {
@@ -606,30 +654,6 @@
                     "start": 321,
                     "end": 359
                   }
-                },
-                {
-                  "kind": "variable",
-                  "name": "right",
-                  "type": {
-                    "kind": "named",
-                    "name": "Either",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 310,
-                    "end": 315
-                  }
                 }
               ],
               "evidence": [
@@ -708,30 +732,6 @@
             "origin": {
               "start": 296,
               "end": 360
-            }
-          },
-          {
-            "kind": "variable",
-            "name": "left",
-            "type": {
-              "kind": "named",
-              "name": "Either",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
-            },
-            "origin": {
-              "start": 286,
-              "end": 290
             }
           }
         ],
@@ -861,7 +861,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 25,
+                "symbol": 24,
                 "name": "error",
                 "type": {
                   "kind": "named",

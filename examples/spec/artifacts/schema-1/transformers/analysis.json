@@ -1996,43 +1996,15 @@
     },
     {
       "id": 122,
-      "identity": "std/prelude::Monad::flatMap",
-      "name": "flatMap",
+      "identity": "std/prelude::>>=",
+      "name": ">>=",
       "module": "std/prelude",
-      "namespace": "value",
-      "kind": "trait-method",
+      "namespace": "operator",
+      "kind": "prelude",
       "definition": {
         "start": 0,
         "end": 0
-      },
-      "typeName": "(A -> M<B>) -> M<A> -> M<B>",
-      "callable": {
-        "identity": "std/prelude::Monad::flatMap",
-        "name": "flatMap",
-        "module": "std/prelude",
-        "typeParameters": [
-          "M<_>",
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> M<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "M<A>"
-          }
-        ],
-        "result": "M<B>",
-        "constraints": [
-          "Monad<M<_>>"
-        ],
-        "signature": "flatMap<M<_>, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M<_>>",
-        "remainingParameters": []
-      },
-      "description": "Transforms each element to a collection and flattens the results."
+      }
     },
     {
       "id": 123,
@@ -3598,6 +3570,13 @@
     },
     {
       "range": {
+        "start": 1544,
+        "end": 1548
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
         "start": 1558,
         "end": 1561
       },
@@ -3623,13 +3602,6 @@
         "end": 1578
       },
       "symbol": 83
-    },
-    {
-      "range": {
-        "start": 1544,
-        "end": 1548
-      },
-      "symbol": 5
     },
     {
       "range": {
@@ -5368,13 +5340,6 @@
         "end": 1582
       },
       "type": "mt.MaybeT<Maybe, Int>"
-    },
-    {
-      "range": {
-        "start": 1549,
-        "end": 1552
-      },
-      "type": "(A -> M<B>) -> M<A> -> M<B>"
     },
     {
       "range": {
@@ -7404,38 +7369,6 @@
     },
     {
       "range": {
-        "start": 1549,
-        "end": 1552
-      },
-      "callable": {
-        "identity": "std/prelude::Monad::flatMap",
-        "name": "flatMap",
-        "module": "std/prelude",
-        "typeParameters": [
-          "M<_>",
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> M<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "M<A>"
-          }
-        ],
-        "result": "M<B>",
-        "constraints": [
-          "Monad<M<_>>"
-        ],
-        "signature": "flatMap<M<_>, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
         "start": 1565,
         "end": 1573
       },
@@ -9396,38 +9329,6 @@
           "Applicative<F<_>>"
         ],
         "signature": "pure<F<_>, A> arg1: A -> F<A> where Applicative<F<_>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 1544,
-        "end": 1582
-      },
-      "callable": {
-        "identity": "std/prelude::Monad::flatMap",
-        "name": "flatMap",
-        "module": "std/prelude",
-        "typeParameters": [
-          "M<_>",
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> M<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "M<A>"
-          }
-        ],
-        "result": "M<B>",
-        "constraints": [
-          "Monad<M<_>>"
-        ],
-        "signature": "flatMap<M<_>, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M<_>>",
         "remainingParameters": []
       }
     },

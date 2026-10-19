@@ -14,6 +14,75 @@ pub(super) use types::unrepresented_alias_head;
 pub(super) use types::{canonical_type_identity, has_unrepresented_parameters};
 pub(crate) use types::{dependency_head, local_head, CoherenceHead, HeadRelation};
 
+pub(crate) fn has_trait_operator_contract(
+    resolved: &ResolvedModule,
+    identity: &str,
+    operator: &seseragi_syntax::StandardTraitOperator,
+) -> bool {
+    if let Some(standard) = crate::prelude::trait_by_canonical(identity) {
+        return standard.name == operator.trait_name;
+    }
+    let local = resolved.symbols.iter().find(|symbol| {
+        symbol.kind == SymbolKind::Trait && symbol.canonical.as_deref() == Some(identity)
+    });
+    if let Some(symbol) = local {
+        for declaration in &resolved.declarations {
+            if let SurfaceDecl::Trait {
+                name_span,
+                type_parameters,
+                methods,
+                span,
+                ..
+            } = declaration
+            {
+                if *name_span == symbol.origin {
+                    return methods
+                        .iter()
+                        .find(|m| m.name == operator.method_name)
+                        .is_some_and(|method| {
+                            types::local_operator_method_matches(
+                                resolved,
+                                *span,
+                                type_parameters,
+                                method,
+                                operator,
+                            )
+                        });
+                }
+            }
+        }
+    }
+    resolved
+        .imports
+        .iter()
+        .filter(|import| import.export.namespace == "trait" && import.export.symbol == identity)
+        .any(|import| {
+            import
+                .export
+                .methods
+                .iter()
+                .find(|method| method.name == operator.method_name)
+                .is_some_and(|method| {
+                    types::imported_operator_method_matches(
+                        resolved,
+                        &import.export.scheme.type_parameters,
+                        method,
+                        types::ImportedMethodContext {
+                            trait_parameters: &import.export.scheme.type_parameters,
+                            bindings: import.scheme_type_bindings.as_deref().unwrap_or(&[]),
+                            trait_bindings: import
+                                .contract_trait_bindings
+                                .as_deref()
+                                .unwrap_or(&[]),
+                            trait_name: &import.export.name,
+                            trait_canonical: identity,
+                        },
+                        operator,
+                    )
+                })
+        })
+}
+
 pub(crate) fn analyze_instance_contracts(
     resolved: &ResolvedModule,
     resolution: &crate::typed::TypedResolution<'_>,

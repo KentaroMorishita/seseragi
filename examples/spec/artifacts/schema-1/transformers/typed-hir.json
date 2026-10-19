@@ -3752,8 +3752,33 @@
       },
       "value": {
         "kind": "call",
-        "callee": "std/prelude::Monad::flatMap",
+        "callee": ">>=",
         "arguments": [
+          {
+            "kind": "variable",
+            "name": "some",
+            "type": {
+              "kind": "external-named",
+              "name": "mt.MaybeT",
+              "canonical": "std/transformer/maybe::MaybeT",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1544,
+              "end": 1548
+            }
+          },
           {
             "kind": "lambda",
             "parameter": {
@@ -3909,31 +3934,6 @@
             "origin": {
               "start": 1554,
               "end": 1581
-            }
-          },
-          {
-            "kind": "variable",
-            "name": "some",
-            "type": {
-              "kind": "external-named",
-              "name": "mt.MaybeT",
-              "canonical": "std/transformer/maybe::MaybeT",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Maybe",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
-            },
-            "origin": {
-              "start": 1544,
-              "end": 1548
             }
           }
         ],

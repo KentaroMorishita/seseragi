@@ -1,0 +1,34 @@
+import * as effects from "std/effect"
+
+type Token = | Token
+type Wrap<E, A> = | Wrap (E, A)
+
+instance Show<Token> {
+  fn show value: Token -> String = {
+    let bad = 9007199254740991 + 1
+    "unreachable"
+  }
+}
+
+trait Monad<M<_>> {
+  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>
+}
+
+instance<E> Monad<Wrap<E>> where Show<E> {
+  fn flatMap<A, B> f: (A -> Wrap<E, B>) -> value: Wrap<E, A> -> Wrap<E, B> =
+    match value {
+    Wrap (tag, item) -> {
+      let observed = show tag
+      f item
+    }
+  }
+}
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do { println "acquired";
+    effects.succeed () }) (\held: Unit -> effects.recover (\error -> effects.succeed ()) (println "released"))
+  let saved: (Int -> Wrap<Token, Int>) -> Wrap<Token, Int> = (>>=) (Wrap (Token, 40))
+  println "created"
+  let ignored = saved (\value: Int -> Wrap (Token, value))
+  println "unreachable"
+}

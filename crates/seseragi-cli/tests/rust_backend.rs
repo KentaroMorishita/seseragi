@@ -1917,3 +1917,8 @@ fn strict_method_references_keep_imported_owners() {
 fn scoped_method_values_keep_imported_owners_and_dictionary_frames() {
     strict_project_reexports("scoped-methods");
 }
+
+#[test]
+fn trait_operator_stages_keep_imported_owners_and_source_order() {
+    strict_project_reexports("trait-operator-order");
+}

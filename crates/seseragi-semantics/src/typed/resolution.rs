@@ -286,6 +286,21 @@ impl<'a> TypedResolution<'a> {
         self.callables.get(&id)
     }
 
+    pub(crate) fn trait_method_callable(
+        &self,
+        identity: &str,
+        method: &str,
+    ) -> Option<&TopLevelPureFunction> {
+        self.callables.iter().find_map(|(id, callable)| {
+            (self
+                .symbol(*id)
+                .is_some_and(|symbol| symbol.kind == SymbolKind::TraitMethod)
+                && callable.trait_identity.as_deref() == Some(identity)
+                && callable.trait_method.as_deref() == Some(method))
+            .then_some(callable)
+        })
+    }
+
     pub(crate) fn local_trait_dispatch(
         &self,
         expression: &SurfaceExpr,

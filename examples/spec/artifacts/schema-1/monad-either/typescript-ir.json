@@ -168,75 +168,40 @@
         }
       ],
       "body": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_either_monad"
-          },
-          "method": "flatMap",
-          "arguments": [
-            {
-              "kind": "lambda",
-              "parameter": "first: number",
-              "body": {
-                "kind": "checked-result",
-                "value": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_either_monad"
-                  },
-                  "method": "flatMap",
-                  "arguments": [
-                    {
-                      "kind": "lambda",
-                      "parameter": "second: number",
-                      "body": {
-                        "kind": "checked-result",
-                        "value": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_either_applicative"
-                          },
-                          "method": "pure",
-                          "arguments": [
-                            {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_int_add",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "first"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "second"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "type": {
-                          "kind": "either",
-                          "error": {
-                            "kind": "string"
-                          },
-                          "value": {
-                            "kind": "number"
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "right"
-                    }
-                  ]
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$trait$286$method",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "number"
                 },
-                "type": {
+                "result": {
+                  "kind": "either",
+                  "error": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "number"
+                  }
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "either",
+                  "error": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "number"
+                  }
+                },
+                "result": {
                   "kind": "either",
                   "error": {
                     "kind": "string"
@@ -247,19 +212,466 @@
                 }
               }
             },
-            {
-              "kind": "identifier",
-              "name": "left"
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_either_monad"
+                },
+                "method": "flatMap",
+                "arguments": []
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  },
+                  "result": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 286,
+              "end": 361
             }
-          ]
-        },
-        "type": {
-          "kind": "either",
-          "error": {
-            "kind": "string"
-          },
-          "value": {
-            "kind": "number"
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$trait$286$source0",
+              "type": {
+                "kind": "either",
+                "error": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "number"
+                }
+              },
+              "initializer": {
+                "kind": "identifier",
+                "name": "left"
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 286,
+                "end": 361
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$source1",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  }
+                },
+                "initializer": {
+                  "kind": "lambda",
+                  "parameter": "first: number",
+                  "body": {
+                    "kind": "sequence",
+                    "statements": [
+                      {
+                        "kind": "pure-let",
+                        "name": "__ssrg$trait$310$method",
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "either",
+                              "error": {
+                                "kind": "string"
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            }
+                          },
+                          "result": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "either",
+                              "error": {
+                                "kind": "string"
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            },
+                            "result": {
+                              "kind": "either",
+                              "error": {
+                                "kind": "string"
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            }
+                          }
+                        },
+                        "initializer": {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_either_monad"
+                            },
+                            "method": "flatMap",
+                            "arguments": []
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              }
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              },
+                              "result": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 310,
+                          "end": 360
+                        }
+                      }
+                    ],
+                    "result": {
+                      "kind": "sequence",
+                      "statements": [
+                        {
+                          "kind": "pure-let",
+                          "name": "__ssrg$trait$310$source0",
+                          "type": {
+                            "kind": "either",
+                            "error": {
+                              "kind": "string"
+                            },
+                            "value": {
+                              "kind": "number"
+                            }
+                          },
+                          "initializer": {
+                            "kind": "identifier",
+                            "name": "right"
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 310,
+                            "end": 360
+                          }
+                        }
+                      ],
+                      "result": {
+                        "kind": "sequence",
+                        "statements": [
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$source1",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              }
+                            },
+                            "initializer": {
+                              "kind": "lambda",
+                              "parameter": "second: number",
+                              "body": {
+                                "kind": "checked-result",
+                                "value": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_either_applicative"
+                                  },
+                                  "method": "pure",
+                                  "arguments": [
+                                    {
+                                      "kind": "runtime-call",
+                                      "callee": "_ssrg_int_add",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "first"
+                                        },
+                                        {
+                                          "kind": "identifier",
+                                          "name": "second"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "type": {
+                                  "kind": "either",
+                                  "error": {
+                                    "kind": "string"
+                                  },
+                                  "value": {
+                                    "kind": "number"
+                                  }
+                                }
+                              }
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          },
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$stage0",
+                            "type": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              },
+                              "result": {
+                                "kind": "either",
+                                "error": {
+                                  "kind": "string"
+                                },
+                                "value": {
+                                  "kind": "number"
+                                }
+                              }
+                            },
+                            "initializer": {
+                              "kind": "call",
+                              "callee": "__ssrg$trait$310$method",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$trait$310$source1"
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          },
+                          {
+                            "kind": "pure-let",
+                            "name": "__ssrg$trait$310$stage1",
+                            "type": {
+                              "kind": "either",
+                              "error": {
+                                "kind": "string"
+                              },
+                              "value": {
+                                "kind": "number"
+                              }
+                            },
+                            "initializer": {
+                              "kind": "call",
+                              "callee": "__ssrg$trait$310$stage0",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$trait$310$source0"
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 310,
+                              "end": 360
+                            }
+                          }
+                        ],
+                        "result": {
+                          "kind": "identifier",
+                          "name": "__ssrg$trait$310$stage1"
+                        }
+                      }
+                    }
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$stage0",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  },
+                  "result": {
+                    "kind": "either",
+                    "error": {
+                      "kind": "string"
+                    },
+                    "value": {
+                      "kind": "number"
+                    }
+                  }
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$286$method",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$286$source1"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$286$stage1",
+                "type": {
+                  "kind": "either",
+                  "error": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "number"
+                  }
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$286$stage0",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$286$source0"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 286,
+                  "end": 361
+                }
+              }
+            ],
+            "result": {
+              "kind": "identifier",
+              "name": "__ssrg$trait$286$stage1"
+            }
           }
         }
       },

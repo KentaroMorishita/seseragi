@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.60] - 2026-10-19
+
+### Fixed
+
+- Evaluate trait operator operands once in source order before passing their saved values in the selected method's ABI order. Preserve staged Functor/Applicative/Monad references, supplied partial arguments, method-owned dictionaries and returned functions in shared Core lowering. Check lexical and imported operator signatures by canonical owner, kind and scoped binder identity; keep unproved operator references rejected. Generalized method-reference staging remains tracked in #887.
+
 ## [0.61.59] - 2026-10-19
 
 ### Fixed

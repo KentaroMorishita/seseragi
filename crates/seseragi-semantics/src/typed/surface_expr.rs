@@ -153,6 +153,42 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.target(origin, SymbolNamespace::Operator)
     }
 
+    pub(super) fn unproved_trait_operator(&self, origin: ByteSpan) -> bool {
+        let Some(operator) = self
+            .operator_target(origin)
+            .and_then(|target| self.resolution.symbol(target))
+            .and_then(|symbol| standard_trait_operator(&symbol.spelling))
+        else {
+            return false;
+        };
+        self.trait_identity(operator.trait_name)
+            .is_none_or(|identity| {
+                !super::instances::has_trait_operator_contract(
+                    self.resolution.resolved(),
+                    &identity,
+                    operator,
+                )
+            })
+    }
+
+    pub(super) fn trait_operator_method(
+        &self,
+        origin: ByteSpan,
+    ) -> Option<(
+        &'static seseragi_syntax::StandardTraitOperator,
+        TopLevelPureFunction,
+    )> {
+        let operator = self
+            .operator_target(origin)
+            .and_then(|target| self.resolution.symbol(target))
+            .and_then(|symbol| standard_trait_operator(&symbol.spelling))?;
+        let identity = self.trait_identity(operator.trait_name)?;
+        let callable = self
+            .resolution
+            .trait_method_callable(&identity, operator.method_name)?;
+        Some((operator, callable.clone()))
+    }
+
     pub(super) fn binding_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
         self.resolution
             .declaration_symbol(origin, SymbolKind::PatternBinding)
@@ -785,6 +821,9 @@ pub(super) fn type_surface_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    if context.unproved_trait_operator(expression.span()) {
+        return application::type_trait_operator_contract_error(expression.span(), context);
+    }
     if let Some(arguments) = application::explicit_type_arguments(expression) {
         if let Some(signature) = context
             .target(expression.span())

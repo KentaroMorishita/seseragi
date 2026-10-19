@@ -2,6 +2,70 @@ use super::type_module;
 use crate::{TypedDecl, TypedExpr, TypedInstanceEvidence, TypedPattern, TypedType};
 
 #[test]
+fn reversed_operator_infers_from_the_callback_before_contextual_collections() {
+    let source = "fn first values: Array<Int> -> Maybe<Int> = values[0]\npub fn probe -> Maybe<Int> = [[7]][0] >>= first\n";
+    let diagnostics = crate::semantic_diagnostics("operator-array.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn trait_operator_does_not_relabel_an_incompatible_lexical_method_contract() {
+    let source = "// 雫🙂\ntype Box<A> = | Box A\ntrait Monad<M<_>> { fn flatMap<A, B> value: M<A> -> f: (A -> M<B>) -> M<B> }\ninstance Monad<Box> { fn flatMap<A, B> value: Box<A> -> f: (A -> Box<B>) -> Box<B> = match value { Box item -> f item } }\npub fn probe -> Box<Int> = Box 1 >>= (\\n -> Box n)\n";
+    let diagnostics = crate::semantic_diagnostics("operator-λ.ssrg", source);
+    assert!(
+        diagnostics
+            .diagnostics
+            .iter()
+            .any(|d| d.code == "SES-T0101"),
+        "{diagnostics:#?}"
+    );
+}
+
+#[test]
+fn trait_operator_contract_uses_scoped_renamed_binders_and_transparent_aliases() {
+    for parameters in ["Input, Output", "Output, Input"] {
+        let source = format!("type Box<A> = | Box A\nalias Identity<A> = A\ntrait Monad<Container<_>> {{ fn flatMap<{parameters}> callback: (Identity<Input> -> Container<Output>) -> source: Container<Input> -> Container<Output> }}\ninstance Monad<Box> {{ fn flatMap<{parameters}> f: (Input -> Box<Output>) -> value: Box<Input> -> Box<Output> = match value {{ Box item -> f item }} }}\npub fn probe -> Box<String> = Box 1 >>= (\\n: Int -> Box \"λ\")\n");
+        let diagnostics = crate::semantic_diagnostics("operator-λ.ssrg", &source);
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{parameters}: {diagnostics:#?}"
+        );
+    }
+}
+
+#[test]
+fn full_trait_operator_checks_actual_method_constraints_before_source_staging() {
+    let header = "// 雫🙂\ntype Box<A> = | Box A\ntrait Monad<M<_>> { fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B> where Show<A> }\ninstance Monad<Box> { fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> where Show<A> = match value { Box item -> f item } }\n";
+    let named = format!("{header}pub fn probe -> Box<Int> = flatMap (\\n: Int -> Box n) (Box 1)\n");
+    let diagnostics = crate::semantic_diagnostics("named-λ.ssrg", &named);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    for expression in [
+        "Box 1 >>= (\\n: Int -> Box n)",
+        "(>>=) (Box 1) (\\n: Int -> Box n)",
+    ] {
+        let source = format!("{header}pub fn probe -> Box<Int> = {expression}\n");
+        let diagnostics = crate::semantic_diagnostics("operator-λ.ssrg", &source);
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+    for expression in [
+        "{ let saved: Box<Int> -> (Int -> Box<Int>) -> Box<Int> = (>>=); Box 1 }",
+        "{ let saved: (Int -> Box<Int>) -> Box<Int> = (>>=) (Box 1); Box 1 }",
+    ] {
+        let source = format!("{header}pub fn probe -> Box<Int> = {expression}\n");
+        let diagnostics = crate::semantic_diagnostics("operator-λ.ssrg", &source);
+        let diagnostic = diagnostics
+            .diagnostics
+            .iter()
+            .find(|d| d.message_key == "trait.method-no-match")
+            .expect(&format!("{diagnostics:#?}"));
+        assert_eq!(
+            source.get(diagnostic.primary.start..diagnostic.primary.end),
+            Some(">>=")
+        );
+    }
+}
+
+#[test]
 fn preserves_unary_result_types_through_generic_and_trait_evidence_calls() {
     let source = concat!(
         "trait Render<A> { fn render value: A -> String }\n",
@@ -822,7 +886,7 @@ fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
     else {
         panic!("expected flatMap call");
     };
-    assert_eq!(callee, "std/prelude::Monad::flatMap");
+    assert_eq!(callee, ">>=");
     assert_eq!(
         type_ref,
         &applied("Either", vec![named("String"), named("Int")])
@@ -834,7 +898,7 @@ fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
             ..
         }] if identity == "std/either::Monad"
     ));
-    let TypedExpr::Lambda { body, .. } = &arguments[0] else {
+    let TypedExpr::Lambda { body, .. } = &arguments[1] else {
         panic!("expected explicit lambda");
     };
     assert!(matches!(

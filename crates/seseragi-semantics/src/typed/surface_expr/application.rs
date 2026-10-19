@@ -54,6 +54,18 @@ pub(super) fn type_application(
     type_application_with(expression, context, type_surface_expression)
 }
 
+pub(super) fn type_trait_operator_contract_error(
+    origin: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_trait_method_selection_error(
+        &[],
+        origin,
+        PureCallIssue::TraitMethodNoMatch { callee: origin },
+        context,
+    )
+}
+
 pub(super) fn type_explicit_callable_value(
     signature: TopLevelPureFunction,
     arguments: &[TypeRef],
@@ -601,7 +613,51 @@ pub(crate) fn type_application_with(
         }
     }
     let callee_span = callee.span();
-    let signature = if let Some(target) = context
+    if context.unproved_trait_operator(callee_span) {
+        if argument_nodes.len() >= 2 {
+            if let Some((operator, signature)) = context.trait_operator_method(callee_span) {
+                // Check the real member's signature and dictionary stage in ABI
+                // order, then retain source order for shared Core staging.
+                let mut method_arguments = argument_nodes.clone();
+                for (index, source) in operator.method_operand_sources.iter().enumerate() {
+                    method_arguments[index] = argument_nodes[*source];
+                }
+                let mut analysis = type_known_application_with_explicit(
+                    signature,
+                    explicit_type_arguments,
+                    callee_span,
+                    &method_arguments,
+                    expression.span(),
+                    context,
+                    &mut type_argument,
+                );
+                if !analysis.has_issues() {
+                    if let TypedExpr::Call {
+                        callee,
+                        arguments,
+                        trait_dispatch: Some(_),
+                        ..
+                    } = &mut analysis.value
+                    {
+                        *callee = operator.spelling.to_owned();
+                        if operator.method_operand_sources == [1, 0] {
+                            arguments.swap(0, 1);
+                        }
+                    }
+                }
+                return analysis;
+            }
+        }
+        return type_trait_method_selection_error(
+            &argument_nodes,
+            expression.span(),
+            PureCallIssue::TraitMethodNoMatch {
+                callee: callee_span,
+            },
+            context,
+        );
+    }
+    let mut signature = if let Some(target) = context
         .target(callee_span)
         .or_else(|| context.operator_target(callee_span))
     {
@@ -643,6 +699,36 @@ pub(crate) fn type_application_with(
                 type_argument,
             );
         }
+    }
+
+    if argument_nodes.len() >= 2
+        && seseragi_syntax::standard_trait_operator(&signature.symbol)
+            .is_some_and(|operator| operator.method_operand_sources == [1, 0])
+    {
+        // Retain the method's established contextual inference order. This is
+        // static checking only: Core receives source order and stages evaluation.
+        signature.parameters.swap(0, 1);
+        signature.semantic_parameters.swap(0, 1);
+        let mut method_arguments = argument_nodes.clone();
+        method_arguments.swap(0, 1);
+        let mut analysis = type_known_application_with_explicit(
+            signature,
+            explicit_type_arguments,
+            callee_span,
+            &method_arguments,
+            expression.span(),
+            context,
+            type_argument,
+        );
+        if let TypedExpr::Call { arguments, .. } = &mut analysis.value {
+            arguments.swap(0, 1);
+        }
+        if let Some(PureCallIssue::ArgumentType { index, .. }) = &mut analysis.pure_call_issue {
+            if *index < 2 {
+                *index = 1 - *index;
+            }
+        }
+        return analysis;
     }
 
     type_known_application_with_explicit(

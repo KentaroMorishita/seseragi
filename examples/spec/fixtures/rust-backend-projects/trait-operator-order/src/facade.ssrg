@@ -1,0 +1,3 @@
+pub import { Box, Monad, make, unwrap } from "model"
+
+pub fn bump value: Int -> Int = value + 2

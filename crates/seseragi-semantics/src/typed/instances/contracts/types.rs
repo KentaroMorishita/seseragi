@@ -6,7 +6,10 @@ mod aliases;
 mod coherence;
 mod interface;
 mod model;
+mod operator;
 mod resolution;
+
+pub(super) use operator::{imported_operator_method_matches, local_operator_method_matches};
 
 pub(crate) use coherence::{dependency_head, local_head, CoherenceHead, HeadRelation};
 use model::{ContractMethod, ContractType};

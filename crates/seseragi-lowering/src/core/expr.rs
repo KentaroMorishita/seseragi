@@ -15,6 +15,8 @@ use super::{
     CoreParameter, CorePattern, CoreRecordValueItem, CoreStatement, CoreTemplatePart,
 };
 
+mod operator;
+
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
     match body {
         TypedExpr::EffectCall {
@@ -189,44 +191,56 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             trait_dispatch,
             type_ref,
             origin,
-        } => CoreExpr::Call {
-            callee,
-            arguments: lower_exprs(source, arguments),
-            callee_signature: callee_signature.map(lower_call_signature),
-            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
-            deferred_evidence_parameters: deferred_evidence_parameters
-                .into_iter()
+        } => {
+            let argument_types = arguments
+                .iter()
+                .map(super::decision::typed_expr_type)
                 .map(lower_typed_type)
-                .collect(),
-            deferred_evidence_type_constructor_parameters,
-            evidence_argument_index,
-            trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
-                trait_identity: dispatch.trait_identity,
-                method: dispatch.method,
-                method_contract: dispatch.method_contract.map(|contract| {
-                    super::CoreTraitMethodContract {
-                        parameters: contract
-                            .parameters
-                            .into_iter()
-                            .map(lower_typed_type)
-                            .collect(),
-                        constraints: contract
-                            .constraints
-                            .into_iter()
-                            .enumerate()
-                            .map(|(index, constraint)| {
-                                super::instances::lower_constraint_with_identity(
-                                    constraint,
-                                    contract.constraint_identities.get(index).cloned().flatten(),
-                                )
-                            })
-                            .collect(),
-                    }
+                .collect();
+            let call = CoreExpr::Call {
+                callee,
+                arguments: lower_exprs(source, arguments),
+                callee_signature: callee_signature.map(lower_call_signature),
+                evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+                deferred_evidence_parameters: deferred_evidence_parameters
+                    .into_iter()
+                    .map(lower_typed_type)
+                    .collect(),
+                deferred_evidence_type_constructor_parameters,
+                evidence_argument_index,
+                trait_dispatch: trait_dispatch.map(|dispatch| super::CoreTraitDispatch {
+                    trait_identity: dispatch.trait_identity,
+                    method: dispatch.method,
+                    method_contract: dispatch.method_contract.map(|contract| {
+                        super::CoreTraitMethodContract {
+                            parameters: contract
+                                .parameters
+                                .into_iter()
+                                .map(lower_typed_type)
+                                .collect(),
+                            constraints: contract
+                                .constraints
+                                .into_iter()
+                                .enumerate()
+                                .map(|(index, constraint)| {
+                                    super::instances::lower_constraint_with_identity(
+                                        constraint,
+                                        contract
+                                            .constraint_identities
+                                            .get(index)
+                                            .cloned()
+                                            .flatten(),
+                                    )
+                                })
+                                .collect(),
+                        }
+                    }),
                 }),
-            }),
-            type_ref: lower_typed_type(type_ref),
-            origin: source_span(source, origin),
-        },
+                type_ref: lower_typed_type(type_ref),
+                origin: source_span(source, origin),
+            };
+            operator::lower_trait_operator(call, argument_types)
+        }
         TypedExpr::Lambda {
             parameter,
             body,

@@ -447,19 +447,22 @@ fn passes_type_class_operators_as_source_order_function_values() {
     .expect("type-class operator sections should compile");
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
-    assert!(compiled.generated.typescript.contains(
-        "_ssrg_maybe_functor[\"map\"](__ssrg$operator$argument$0)(__ssrg$operator$argument$1)"
-    ));
-    assert!(compiled.generated.typescript.contains(
-        "(__ssrg$operator$argument$1) => _ssrg_maybe_applicative[\"apply\"](_ssrg_maybe_Just(increment))(__ssrg$operator$argument$1)"
-    ));
-    assert!(compiled.generated.typescript.contains(
-        "_ssrg_maybe_monad[\"flatMap\"](__ssrg$operator$argument$1)(__ssrg$operator$argument$0)"
-    ));
     assert!(compiled
         .generated
         .typescript
-        .contains("__ssrg$evidence$0[\"flatMap\"](next)(value)"));
+        .contains("_ssrg_maybe_functor[\"map\"]"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_applicative[\"apply\"]"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_maybe_monad[\"flatMap\"]"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$evidence$0[\"flatMap\"]"));
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
 }
 
@@ -495,12 +498,19 @@ fn resolves_type_class_operator_sections_to_the_lexical_trait_identity() {
                 line.starts_with(&format!("export const {name} = (value: Box<number>) => "))
             })
             .expect("both operator forms retain the concrete Box parameter");
-        // HKT result restoration can wrap the call in a type assertion. The
-        // contract here is lexical dictionary selection and argument order.
+        // Method selection precedes the two saved source values. Separate
+        // execution tests distinguish this order from the method's ABI order.
         assert!(
-            declaration.contains("__ssrg$instance$Monad$0[\"flatMap\"](next)(value)"),
+            declaration.contains("__ssrg$instance$Monad$0[\"flatMap\"]"),
             "{declaration}"
         );
+        let left = declaration
+            .find("$source0: Box<number> = value")
+            .expect(declaration);
+        let right = declaration
+            .find("$source1: (argument: number) => Box<number> = next")
+            .expect(declaration);
+        assert!(left < right, "{declaration}");
     }
 }
 

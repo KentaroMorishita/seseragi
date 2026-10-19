@@ -143,6 +143,14 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
+        if matches!(
+            (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
+            ("std/prelude::Functor", "map")
+                | ("std/prelude::Applicative", "apply")
+                | ("std/prelude::Monad", "flatMap")
+        ) {
+            return self.validate_hkt_parameter_method_value(dispatch, selected, type_ref, scope);
+        }
         // Eq is checked by equality_call. The remaining admitted source
         // parameter methods have the canonical A -> B -> C arithmetic ABI.
         if !matches!(
@@ -171,6 +179,66 @@ impl Backend<'_> {
             &expected,
             type_ref,
             &BTreeMap::new(),
+            &mut BTreeMap::new(),
+            scope,
+        )
+    }
+
+    fn validate_hkt_parameter_method_value(
+        &self,
+        dispatch: &CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let [constructor] = selected.constraint.arguments.as_slice() else {
+            return Err("Rust backend: HKT method dictionary arity mismatch".into());
+        };
+        let mut head = constructor.clone();
+        let prefix = match &mut head {
+            CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+                std::mem::take(arguments)
+            }
+            _ => return Err("Rust backend: unproven HKT method constructor".into()),
+        };
+        if self
+            .local_constructor_arity(&head, scope)
+            .and_then(|arity| arity.checked_sub(prefix.len()))
+            != Some(1)
+        {
+            return Err("Rust backend: HKT method constructor kind mismatch".into());
+        }
+        let variable = |name: &str| CoreType::Named {
+            name: name.to_owned(),
+            arguments: vec![],
+        };
+        let a = variable("\0hkt_method_a");
+        let b = variable("\0hkt_method_b");
+        let applied = |argument: CoreType| {
+            let mut ty = constructor.clone();
+            match &mut ty {
+                CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+                    arguments.push(argument)
+                }
+                _ => unreachable!(),
+            }
+            ty
+        };
+        let arrow = |parameter, result| CoreType::Function {
+            parameter: Box::new(parameter),
+            result: Box::new(result),
+        };
+        let (first, output) = match dispatch.method.as_str() {
+            "map" => (arrow(a.clone(), b.clone()), applied(b.clone())),
+            "apply" => (applied(arrow(a.clone(), b.clone())), applied(b.clone())),
+            "flatMap" => (arrow(a.clone(), applied(b.clone())), applied(b.clone())),
+            _ => unreachable!("canonical HKT method was checked by the caller"),
+        };
+        let expected = arrow(first, arrow(applied(a), output));
+        self.match_local_type(
+            &expected,
+            type_ref,
+            &BTreeMap::from([("\0hkt_method_a".into(), 0), ("\0hkt_method_b".into(), 0)]),
             &mut BTreeMap::new(),
             scope,
         )

@@ -2061,63 +2061,621 @@
         "end": 1582
       },
       "value": {
-        "kind": "call",
-        "callee": "std/prelude::Monad::flatMap",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "lambda",
-            "parameter": {
-              "id": "n",
-              "kind": "named",
-              "type": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
+            "kind": "pure-let",
+            "name": "__ssrg$trait$1544$method",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
               }
             },
-            "body": {
+            "value": {
               "kind": "call",
-              "callee": "artifact/transformers::optional",
-              "arguments": [
+              "callee": "flatMap",
+              "arguments": [],
+              "evidence": [
                 {
-                  "kind": "binary",
-                  "operator": "+",
-                  "left": {
-                    "kind": "variable",
-                    "name": "n",
+                  "constraint": {
+                    "name": "Monad",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "mt.MaybeT",
+                        "canonical": "std/transformer/maybe::MaybeT",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/transformer/maybe::Monad",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Monad",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/maybe::Monad"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Monad",
+                "method": "flatMap"
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1544,
+                "end": 1582
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1544,
+              "end": 1582
+            }
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$trait$1544$source0",
+              "type": {
+                "kind": "external-named",
+                "name": "mt.MaybeT",
+                "canonical": "std/transformer/maybe::MaybeT",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "value": {
+                "kind": "variable",
+                "name": "some",
+                "type": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1548
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1544,
+                "end": 1582
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$source1",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "value": {
+                  "kind": "lambda",
+                  "parameter": {
+                    "id": "n",
+                    "kind": "named",
                     "type": {
                       "kind": "named",
                       "name": "Int",
                       "arguments": []
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 1575,
-                      "end": 1576
                     }
                   },
-                  "right": {
-                    "kind": "integer",
-                    "value": "3",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 1579,
-                      "end": 1580
-                    }
-                  },
-                  "evidence": [
-                    {
-                      "constraint": {
-                        "name": "Add",
-                        "arguments": [
-                          {
+                  "body": {
+                    "kind": "call",
+                    "callee": "artifact/transformers::optional",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "n",
+                          "type": {
                             "kind": "named",
                             "name": "Int",
                             "arguments": []
                           },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1575,
+                            "end": 1576
+                          }
+                        },
+                        "right": {
+                          "kind": "integer",
+                          "value": "3",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1579,
+                            "end": 1580
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1575,
+                          "end": 1580
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Monad",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/maybe::Monad"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "external-named",
+                      "name": "mt.MaybeT",
+                      "canonical": "std/transformer/maybe::MaybeT",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1565,
+                      "end": 1581
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "mt.MaybeT",
+                      "canonical": "std/transformer/maybe::MaybeT",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1554,
+                    "end": 1581
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$stage0",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "value": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$1544$method",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "__ssrg$trait$1544$source1",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "external-named",
+                          "name": "mt.MaybeT",
+                          "canonical": "std/transformer/maybe::MaybeT",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1544,
+                        "end": 1582
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "mt.MaybeT",
+                      "canonical": "std/transformer/maybe::MaybeT",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "mt.MaybeT",
+                      "canonical": "std/transformer/maybe::MaybeT",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1544,
+                    "end": 1582
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$stage1",
+                "type": {
+                  "kind": "external-named",
+                  "name": "mt.MaybeT",
+                  "canonical": "std/transformer/maybe::MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "value": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$1544$stage0",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "__ssrg$trait$1544$source0",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "mt.MaybeT",
+                        "canonical": "std/transformer/maybe::MaybeT",
+                        "arguments": [
                           {
                             "kind": "named",
-                            "name": "Int",
+                            "name": "Maybe",
                             "arguments": []
                           },
                           {
@@ -2127,42 +2685,46 @@
                           }
                         ]
                       },
-                      "evidence": {
-                        "kind": "standard",
-                        "identity": "std/int::Add"
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1544,
+                        "end": 1582
                       }
                     }
                   ],
                   "type": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 1575,
-                    "end": 1580
-                  }
-                }
-              ],
-              "evidence": [
-                {
-                  "constraint": {
-                    "name": "Monad",
+                    "kind": "external-named",
+                    "name": "mt.MaybeT",
+                    "canonical": "std/transformer/maybe::MaybeT",
                     "arguments": [
                       {
                         "kind": "named",
                         "name": "Maybe",
                         "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
                       }
                     ]
                   },
-                  "evidence": {
-                    "kind": "standard",
-                    "identity": "std/maybe::Monad"
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1544,
+                    "end": 1582
                   }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
                 }
-              ],
+              }
+            ],
+            "result": {
+              "kind": "variable",
+              "name": "__ssrg$trait$1544$stage1",
               "type": {
                 "kind": "external-named",
                 "name": "mt.MaybeT",
@@ -2182,138 +2744,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1565,
-                "end": 1581
+                "start": 1544,
+                "end": 1582
               }
-            },
-            "type": {
-              "kind": "function",
-              "parameter": {
-                "kind": "named",
-                "name": "Int",
-                "arguments": []
-              },
-              "result": {
-                "kind": "external-named",
-                "name": "mt.MaybeT",
-                "canonical": "std/transformer/maybe::MaybeT",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "Maybe",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 1554,
-              "end": 1581
-            }
-          },
-          {
-            "kind": "variable",
-            "name": "some",
-            "type": {
-              "kind": "external-named",
-              "name": "mt.MaybeT",
-              "canonical": "std/transformer/maybe::MaybeT",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Maybe",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
             },
             "origin": {
               "source": "main.ssrg",
               "start": 1544,
-              "end": 1548
+              "end": 1582
             }
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1544,
+            "end": 1582
           }
-        ],
-        "evidence": [
-          {
-            "constraint": {
-              "name": "Monad",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "mt.MaybeT",
-                  "canonical": "std/transformer/maybe::MaybeT",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Maybe",
-                      "arguments": []
-                    }
-                  ]
-                }
-              ]
-            },
-            "evidence": {
-              "kind": "standard",
-              "identity": "std/transformer/maybe::Monad",
-              "typeArguments": [
-                {
-                  "kind": "named",
-                  "name": "Maybe",
-                  "arguments": []
-                }
-              ],
-              "evidenceArguments": [
-                {
-                  "constraint": {
-                    "name": "Monad",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Maybe",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "evidence": {
-                    "kind": "standard",
-                    "identity": "std/maybe::Monad"
-                  }
-                }
-              ]
-            }
-          }
-        ],
-        "traitDispatch": {
-          "traitIdentity": "std/prelude::Monad",
-          "method": "flatMap"
-        },
-        "type": {
-          "kind": "external-named",
-          "name": "mt.MaybeT",
-          "canonical": "std/transformer/maybe::MaybeT",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
-            }
-          ]
         },
         "origin": {
           "source": "main.ssrg",

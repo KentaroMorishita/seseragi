@@ -1207,56 +1207,46 @@
         ]
       },
       "initializer": {
-        "kind": "checked-result",
-        "value": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "type-application-call",
-            "callee": "_ssrg_maybeTMonad",
-            "typeArguments": [
-              {
-                "kind": "unknown"
-              }
-            ],
-            "arguments": [
-              {
-                "kind": "runtime-reference",
-                "name": "_ssrg_maybe_monad"
-              }
-            ]
-          },
-          "method": "flatMap",
-          "arguments": [
-            {
-              "kind": "lambda",
-              "parameter": "n: number",
-              "body": {
-                "kind": "checked-result",
-                "value": {
-                  "kind": "call",
-                  "callee": "optional",
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$trait$1544$method",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "number"
+                },
+                "result": {
+                  "kind": "reference",
+                  "name": "MaybeT",
                   "arguments": [
                     {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_int_add",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "n"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "3"
-                        }
-                      ]
+                      "kind": "unknown"
                     },
                     {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_maybe_monad"
+                      "kind": "number"
+                    }
+                  ]
+                }
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "reference",
+                  "name": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "unknown"
+                    },
+                    {
+                      "kind": "number"
                     }
                   ]
                 },
-                "type": {
+                "result": {
                   "kind": "reference",
                   "name": "MaybeT",
                   "arguments": [
@@ -1270,23 +1260,269 @@
                 }
               }
             },
-            {
-              "kind": "identifier",
-              "name": "some"
-            }
-          ]
-        },
-        "type": {
-          "kind": "reference",
-          "name": "MaybeT",
-          "arguments": [
-            {
-              "kind": "unknown"
+            "initializer": {
+              "kind": "checked-result",
+              "value": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_maybeTMonad",
+                  "typeArguments": [
+                    {
+                      "kind": "unknown"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_maybe_monad"
+                    }
+                  ]
+                },
+                "method": "flatMap",
+                "arguments": []
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                }
+              }
             },
-            {
-              "kind": "number"
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1544,
+              "end": 1582
             }
-          ]
+          }
+        ],
+        "result": {
+          "kind": "sequence",
+          "statements": [
+            {
+              "kind": "pure-let",
+              "name": "__ssrg$trait$1544$source0",
+              "type": {
+                "kind": "reference",
+                "name": "MaybeT",
+                "arguments": [
+                  {
+                    "kind": "unknown"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "initializer": {
+                "kind": "identifier",
+                "name": "some"
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1544,
+                "end": 1582
+              }
+            }
+          ],
+          "result": {
+            "kind": "sequence",
+            "statements": [
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$source1",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                },
+                "initializer": {
+                  "kind": "lambda",
+                  "parameter": "n: number",
+                  "body": {
+                    "kind": "checked-result",
+                    "value": {
+                      "kind": "call",
+                      "callee": "optional",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "n"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "3"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_maybe_monad"
+                        }
+                      ]
+                    },
+                    "type": {
+                      "kind": "reference",
+                      "name": "MaybeT",
+                      "arguments": [
+                        {
+                          "kind": "unknown"
+                        },
+                        {
+                          "kind": "number"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$stage0",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "reference",
+                    "name": "MaybeT",
+                    "arguments": [
+                      {
+                        "kind": "unknown"
+                      },
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$1544$method",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$1544$source1"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
+                }
+              },
+              {
+                "kind": "pure-let",
+                "name": "__ssrg$trait$1544$stage1",
+                "type": {
+                  "kind": "reference",
+                  "name": "MaybeT",
+                  "arguments": [
+                    {
+                      "kind": "unknown"
+                    },
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                },
+                "initializer": {
+                  "kind": "call",
+                  "callee": "__ssrg$trait$1544$stage0",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$trait$1544$source0"
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1544,
+                  "end": 1582
+                }
+              }
+            ],
+            "result": {
+              "kind": "identifier",
+              "name": "__ssrg$trait$1544$stage1"
+            }
+          }
         }
       },
       "origin": {
