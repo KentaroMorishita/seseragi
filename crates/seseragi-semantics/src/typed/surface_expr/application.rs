@@ -252,7 +252,8 @@ fn available_selected_method_value(
             | ("std/prelude::Div", "div")
             | ("std/prelude::Rem", "rem")
             | ("std/prelude::Pow", "pow")
-    ) && !context.resolution.declared_method_value_scheme(signature)
+    ) && !canonical_ord_method_scheme(signature)
+        && !context.resolution.declared_method_value_scheme(signature)
     {
         return false;
     }
@@ -273,6 +274,9 @@ pub(super) fn method_value_scheme(
 /// canonical Prelude contract also checked by the native method-value ABI.
 /// User traits and method-owned constraints require their own signature proof.
 pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> bool {
+    if canonical_ord_method_scheme(signature) {
+        return true;
+    }
     let Some(identity) = &signature.trait_identity else {
         return false;
     };
@@ -291,6 +295,57 @@ pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> 
         )
 }
 
+/// Ord has a value-kind primary parameter and an Ordering result. Its trusted
+/// Prelude signature, rather than a same-named source declaration or the number
+/// of arrows in an implementation, certifies the method value's full type.
+fn canonical_ord_value_type(signature: &TopLevelPureFunction) -> Option<TypedType> {
+    if signature.constraint_identities.as_slice() != [Some("std/prelude::Ord".into())]
+        || signature.constraints.len() != 1
+        || signature.type_parameters.iter().any(|p| p.arity != 0)
+    {
+        return None;
+    }
+    let [argument] = signature.constraints[0].arguments.as_slice() else {
+        return None;
+    };
+    if typed_type_contains_hole(argument) {
+        return None;
+    }
+    let method = crate::prelude::trait_method_by_canonical("std/prelude::Ord::compare")?;
+    let declared = crate::prelude::trait_method_signature(method);
+    let [parameter] = declared.type_parameters.as_slice() else {
+        return None;
+    };
+    let substitutions = BTreeMap::from([(parameter.name.clone(), argument.clone())]);
+    let value = declared
+        .parameters
+        .into_iter()
+        .rev()
+        .fold(declared.result, |result, parameter| TypedType::Function {
+            parameter: Box::new(parameter),
+            result: Box::new(result),
+        });
+    Some(substitute_type_parameters(&value, &substitutions))
+}
+
+fn canonical_ord_method_scheme(signature: &TopLevelPureFunction) -> bool {
+    signature.trait_identity.as_deref() == Some("std/prelude::Ord")
+        && signature.trait_method.as_deref() == Some("compare")
+        && canonical_ord_value_type(signature).is_some_and(|expected| {
+            signature
+                .parameters
+                .iter()
+                .rev()
+                .fold(signature.result.clone(), |result, parameter| {
+                    TypedType::Function {
+                        parameter: Box::new(parameter.clone()),
+                        result: Box::new(result),
+                    }
+                })
+                == expected
+        })
+}
+
 pub(super) fn method_factory_alias(
     signature: &TopLevelPureFunction,
     context: &PureExpressionContext<'_>,
@@ -302,7 +357,9 @@ pub(super) fn method_factory_alias(
         && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
             "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
             | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow")
-            || context.resolution.declared_method_factory_trait(identity))
+            || context.resolution.declared_method_factory_trait(identity)
+            || (identity == "std/prelude::Ord"
+                && canonical_ord_value_type(signature).as_ref() == Some(&signature.result)))
 }
 
 fn available_method_evidence(

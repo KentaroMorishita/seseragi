@@ -18,6 +18,9 @@ pub(super) struct Scope {
 }
 
 impl Scope {
+    pub(super) fn type_parameter_arity(&self, name: &str) -> Option<u32> {
+        self.type_parameters.get(name).map(|(arity, _)| *arity)
+    }
     pub(super) fn new() -> Self {
         Self::default()
     }

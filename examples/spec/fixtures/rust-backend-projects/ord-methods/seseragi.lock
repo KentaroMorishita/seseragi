@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-ord-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-ord-methods@0.0.0#workspace:."
+name = "fixture/native-ord-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6fb3697306cd93062213cb45e41e860c9a5bb442fe9019af896206d45bb7e337"
+content_digest = "sha256:9c82a6d082e8782aa7ed954c8d5ac866bff126271779a1f2d7e61f85c4a78149"
+dependencies = [
+  { import = "model", package = "fixture/ord-methods-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/ord-methods-model@1.0.0#path:vendor/model"
+name = "fixture/ord-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:23d1808770575412917407cf7cb5d03c0a68a9d065d3953f5519a55fc4a70f61"
+content_digest = "sha256:662b9e17b01090a1a79bd5d886742fc7c574870fe31fe704b0925ab2d0cf1dca"
+dependencies = []

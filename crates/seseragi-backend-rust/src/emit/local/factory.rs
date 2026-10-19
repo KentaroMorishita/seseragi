@@ -62,6 +62,7 @@ impl Backend<'_> {
                 || !matches!(
                     (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
                     ("std/prelude::Eq", "eq")
+                        | ("std/prelude::Ord", "compare")
                         | ("std/prelude::Add", "add")
                         | ("std/prelude::Sub", "sub")
                         | ("std/prelude::Mul", "mul")

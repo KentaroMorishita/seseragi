@@ -1,0 +1,21 @@
+fn label value: Ordering -> String = match value {
+  Less -> "L"
+  Equal -> "E"
+  Greater -> "G"
+}
+
+let chosen = compare
+let copied = chosen
+
+fn selected<A> left: A -> (A -> Ordering) where Ord<A> = {
+  let value: A -> A -> Ordering = compare
+  value left
+}
+
+pub fn probe -> String = {
+  let less = chosen 1
+  let greater = selected 2
+  label (less 2) + label (less 0) + label (copied 'λ' 'λ') + label (greater 1)
+}
+
+pub effect fn main = println (probe ())
