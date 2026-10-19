@@ -1,0 +1,38 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Watch = | Watch Ref<Watch -> Bool>
+instance Eq<Watch> {
+  fn eq left: Watch -> (Watch -> Bool) = {
+    let cold = match left { Watch state -> refs.get state }
+    \right -> { let retained = cold; True }
+  }
+}
+
+fn selected<A> left: A -> (A -> Bool) where Eq<A> = {
+  let chosen: A -> A -> Bool = eq
+  chosen left
+}
+
+effect fn delayed = do { println "cold"; effects.succeed 42 }
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch -> False)
+  released <- refs.make 0
+  let left = Watch callbacks
+  let cold = delayed ()
+  let saved = selected left
+  refs.set saved callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (effects.succeed saved) (\held: (Watch -> Bool) -> refs.set 1 released)
+    again <- refs.get callbacks
+    value <- cold
+    println (show value)
+    println (show (again left))
+    println (show (saved left))
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

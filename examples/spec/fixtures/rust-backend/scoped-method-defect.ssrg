@@ -1,0 +1,15 @@
+type Mark = | Mark Int
+instance Eq<Mark> {
+  fn eq left: Mark -> (Mark -> Bool) = {
+    let bad = 9007199254740991 + 1
+    \right -> True
+  }
+}
+fn selected<A> left: A -> (A -> Bool) where Eq<A> = {
+  let chosen: A -> A -> Bool = eq
+  chosen left
+}
+pub effect fn main = do {
+  let saved = selected (Mark 1)
+  println "unreachable"
+}

@@ -1,3 +1,4 @@
+use super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 use crate::{
     SymbolNamespace, TypedCallEvidence, TypedConstraint, TypedInstanceEvidence, TypedType,
@@ -13,11 +14,111 @@ pub(crate) struct ScopedCallEvidence {
     trait_identity: String,
     constraint: TypedConstraint,
     index: usize,
+    // Preserve the declaration's binder identities before a nested body can
+    // shadow their spelling. Synthetic let/derived frames are not certified
+    // as already-available source parameters by this metadata.
+    source_arguments: Option<Vec<SemanticValueType>>,
 }
 
 impl ScopedCallEvidence {
     pub(crate) fn index(&self) -> usize {
         self.index
+    }
+
+    pub(super) fn available_parameter_matches(
+        &self,
+        index: usize,
+        trait_identity: &str,
+        arguments: &[SemanticValueType],
+    ) -> bool {
+        self.index == index
+            && self.trait_identity == trait_identity
+            && self.source_arguments.as_ref().is_some_and(|declared| {
+                declared.len() == arguments.len()
+                    && declared
+                        .iter()
+                        .zip(arguments)
+                        .all(|(a, b)| same_source_type_identity(&a.key, &b.key))
+            })
+    }
+}
+
+fn same_source_type_identity(left: &SemanticTypeKey, right: &SemanticTypeKey) -> bool {
+    let arguments_match = |left: &[SemanticValueType], right: &[SemanticValueType]| {
+        left.len() == right.len()
+            && left
+                .iter()
+                .zip(right)
+                .all(|(a, b)| same_source_type_identity(&a.key, &b.key))
+    };
+    match (left, right) {
+        (SemanticTypeKey::TypeParameter(a), SemanticTypeKey::TypeParameter(b)) => a == b,
+        (
+            SemanticTypeKey::Adt {
+                owner: a,
+                arguments: aa,
+            },
+            SemanticTypeKey::Adt {
+                owner: b,
+                arguments: ba,
+            },
+        )
+        | (
+            SemanticTypeKey::Struct {
+                owner: a,
+                arguments: aa,
+            },
+            SemanticTypeKey::Struct {
+                owner: b,
+                arguments: ba,
+            },
+        ) => a == b && arguments_match(aa, ba),
+        (
+            SemanticTypeKey::ExternalNominal {
+                canonical: a,
+                arguments: aa,
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: b,
+                arguments: ba,
+            },
+        ) => a == b && arguments_match(aa, ba),
+        (
+            SemanticTypeKey::NamedGeneric {
+                name: a,
+                arguments: aa,
+            },
+            SemanticTypeKey::NamedGeneric {
+                name: b,
+                arguments: ba,
+            },
+        ) => {
+            a == b && crate::prelude::type_constructor_arity(a).is_some() && arguments_match(aa, ba)
+        }
+        (
+            SemanticTypeKey::Application {
+                constructor: a,
+                arguments: aa,
+            },
+            SemanticTypeKey::Application {
+                constructor: b,
+                arguments: ba,
+            },
+        ) => same_source_type_identity(&a.key, &b.key) && arguments_match(aa, ba),
+        (SemanticTypeKey::Tuple(a), SemanticTypeKey::Tuple(b)) => {
+            a.len() == b.len()
+                && a.iter()
+                    .zip(b)
+                    .all(|(a, b)| same_source_type_identity(a, b))
+        }
+        (SemanticTypeKey::Record(a), SemanticTypeKey::Record(b)) => {
+            a.len() == b.len()
+                && a.iter().all(|(name, a)| {
+                    b.get(name)
+                        .is_some_and(|b| same_source_type_identity(&a.key, &b.key))
+                })
+        }
+        _ => false,
     }
 }
 
@@ -57,6 +158,13 @@ pub(crate) fn scoped_call_evidence_from(
                 trait_identity,
                 constraint: typed.clone(),
                 index: start_index + index,
+                source_arguments: Some(
+                    constraint
+                        .arguments
+                        .iter()
+                        .map(|argument| resolution.semantic_value_from_type_ref(argument))
+                        .collect(),
+                ),
             }];
             evidence.extend(
                 expanded_supertrait_constraints(constraint.name_span, &typed.arguments, resolution)
@@ -65,6 +173,7 @@ pub(crate) fn scoped_call_evidence_from(
                         trait_identity: supertrait.trait_identity,
                         constraint: supertrait.constraint,
                         index: start_index + index,
+                        source_arguments: None,
                     }),
             );
             Some(evidence)
@@ -86,6 +195,7 @@ pub(crate) fn scoped_resolved_call_evidence(
                 trait_identity: constraint.trait_identity.clone(),
                 constraint: constraint.constraint.clone(),
                 index: start_index + index,
+                source_arguments: None,
             }];
             if let Some(origin) = trait_origin(resolution, &constraint.trait_identity) {
                 evidence.extend(
@@ -99,6 +209,7 @@ pub(crate) fn scoped_resolved_call_evidence(
                         trait_identity: supertrait.trait_identity,
                         constraint: supertrait.constraint,
                         index: start_index + index,
+                        source_arguments: None,
                     }),
                 );
             }
@@ -423,11 +534,13 @@ pub(crate) fn select_derived_instance_evidence(
                 trait_identity: required.trait_identity,
                 constraint: required.constraint,
                 index,
+                source_arguments: None,
             });
             std::iter::once(ScopedCallEvidence {
                 trait_identity,
                 constraint,
                 index,
+                source_arguments: None,
             })
             .chain(inherited)
         })
@@ -1678,6 +1791,7 @@ mod tests {
                             trait_identity: format!("std/prelude::{}", requirement.name),
                             constraint: requirement,
                             index,
+                            source_arguments: None,
                         })
                         .collect::<Vec<_>>();
                     select_resolved_evidence(
@@ -2062,5 +2176,62 @@ mod tests {
     #[test]
     fn does_not_select_equality_evidence_for_mixed_types() {
         assert!(select_equality_evidence("==", named("Int"), named("String")).is_empty());
+    }
+}
+
+#[cfg(test)]
+mod available_source_frame_tests {
+    use super::*;
+    use crate::SymbolId;
+
+    fn parameter(id: u32) -> SemanticValueType {
+        SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "A".into(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::TypeParameter(SymbolId(id)),
+        }
+    }
+
+    #[test]
+    fn available_frame_requires_the_declared_binder_owner_index_and_trait() {
+        let declared = parameter(1);
+        let frame = ScopedCallEvidence {
+            trait_identity: "std/prelude::Eq".into(),
+            constraint: TypedConstraint {
+                name: "Eq".into(),
+                arguments: vec![declared.type_ref.clone()],
+            },
+            index: 1,
+            source_arguments: Some(vec![declared.clone()]),
+        };
+        assert!(frame.available_parameter_matches(1, "std/prelude::Eq", &[declared.clone()]));
+        assert!(!frame.available_parameter_matches(0, "std/prelude::Eq", &[declared.clone()]));
+        assert!(!frame.available_parameter_matches(1, "other::Eq", &[declared.clone()]));
+        assert!(!frame.available_parameter_matches(1, "std/prelude::Eq", &[parameter(2)]));
+        assert!(!frame.available_parameter_matches(1, "std/prelude::Eq", &[]));
+        let mut inferred = frame.clone();
+        inferred.source_arguments = None;
+        assert!(!inferred.available_parameter_matches(1, "std/prelude::Eq", &[declared.clone()]));
+        for key in [
+            SemanticTypeKey::Other,
+            SemanticTypeKey::Invalid,
+            SemanticTypeKey::SchemeParameter("A".into()),
+        ] {
+            assert!(!same_source_type_identity(&key, &key));
+        }
+        let nominal = |owner| SemanticTypeKey::Adt {
+            owner: SymbolId(owner),
+            arguments: vec![declared.clone()],
+        };
+        assert!(same_source_type_identity(&nominal(3), &nominal(3)));
+        assert!(!same_source_type_identity(&nominal(3), &nominal(4)));
+        let applied = |id| SemanticTypeKey::Application {
+            constructor: Box::new(parameter(id)),
+            arguments: vec![declared.clone()],
+        };
+        assert!(same_source_type_identity(&applied(5), &applied(5)));
+        assert!(!same_source_type_identity(&applied(5), &applied(6)));
     }
 }

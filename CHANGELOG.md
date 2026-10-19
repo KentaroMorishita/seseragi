@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.59] - 2026-10-19
+
+### Fixed
+
+- Capture already available source dictionaries in monomorphic method aliases, so applying a saved Eq or arithmetic method runs its first source stage immediately. Preserve lexical binder and owner identity, generalized let dictionary introduction, selected child dictionaries and closure lifetimes; validate parameter method signatures in the native ABI. General method-parameter staging and source-order operator permutations remain tracked in #887.
+
 ## [0.61.58] - 2026-10-19
 
 ### Fixed

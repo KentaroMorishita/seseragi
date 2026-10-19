@@ -42,6 +42,7 @@ pub(crate) struct PureExpressionContext<'a> {
     lexical_type_parameters: BTreeMap<String, SymbolId>,
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
+    deferred_let_evidence: bool,
     resolution: &'a TypedResolution<'a>,
     expected: Option<SemanticValueType>,
 }
@@ -54,6 +55,7 @@ impl<'a> PureExpressionContext<'a> {
             lexical_type_parameters: BTreeMap::new(),
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
+            deferred_let_evidence: false,
             resolution,
             expected: None,
         }
@@ -66,6 +68,7 @@ impl<'a> PureExpressionContext<'a> {
             recursive_groups: self.recursive_groups.clone(),
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
+            deferred_let_evidence: self.deferred_let_evidence,
             resolution: self.resolution,
             expected,
         }
@@ -73,6 +76,57 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn without_expected(&self) -> Self {
         self.with_expected(None)
+    }
+
+    pub(super) fn with_lexical_scope(&self, span: ByteSpan) -> Self {
+        let resolved = self.resolution.resolved();
+        let mut scopes = resolved
+            .scopes
+            .iter()
+            .filter(|scope| scope.origin.start <= span.start && span.end <= scope.origin.end)
+            .collect::<Vec<_>>();
+        scopes.sort_by_key(|scope| {
+            (
+                std::cmp::Reverse(scope.origin.end - scope.origin.start),
+                scope.id,
+            )
+        });
+        let mut context = self.with_expected(self.expected.clone());
+        context.lexical_type_parameters.clear();
+        for scope in scopes {
+            for symbol in resolved.symbols.iter().filter(|symbol| {
+                symbol.scope == scope.id
+                    && symbol.kind == SymbolKind::TypeParameter
+                    && symbol.canonical.is_none()
+            }) {
+                context
+                    .lexical_type_parameters
+                    .insert(symbol.spelling.clone(), symbol.id);
+            }
+        }
+        context
+    }
+
+    pub(super) fn available_method_parameter(
+        &self,
+        selected: &crate::TypedCallEvidence,
+        trait_identity: &str,
+    ) -> bool {
+        let crate::TypedInstanceEvidence::Parameter { index } = selected.evidence else {
+            return false;
+        };
+        if self.deferred_let_evidence {
+            return false;
+        }
+        let arguments = selected
+            .constraint
+            .arguments
+            .iter()
+            .map(|ty| self.semantic_value_from_typed_type(ty))
+            .collect::<Vec<_>>();
+        self.evidence_parameters.iter().any(|parameter| {
+            parameter.available_parameter_matches(index, trait_identity, &arguments)
+        })
     }
 
     pub(super) fn expected(&self) -> Option<&SemanticValueType> {
@@ -602,11 +656,11 @@ impl<'a> PureExpressionContext<'a> {
                 },
             )
             .collect::<Vec<_>>();
-        context.with_evidence_parameters(super::call_evidence::scoped_resolved_call_evidence(
-            &constraints,
-            self.resolution,
-            0,
-        ))
+        let mut context = context.with_evidence_parameters(
+            super::call_evidence::scoped_resolved_call_evidence(&constraints, self.resolution, 0),
+        );
+        context.deferred_let_evidence = true;
+        context
     }
 
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
@@ -618,6 +672,7 @@ impl<'a> PureExpressionContext<'a> {
             recursive_groups: self.recursive_groups.clone(),
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
+            deferred_let_evidence: self.deferred_let_evidence,
             resolution: self.resolution,
             expected: self.expected.clone(),
         }
@@ -628,6 +683,7 @@ impl<'a> PureExpressionContext<'a> {
         evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     ) -> Self {
         self.evidence_parameters = evidence_parameters;
+        self.deferred_let_evidence = false;
         self
     }
 }
@@ -710,32 +766,7 @@ pub(crate) fn analyze_resolved_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    let resolved = context.resolution.resolved();
-    let span = expression.span();
-    let mut scopes = resolved
-        .scopes
-        .iter()
-        .filter(|scope| scope.origin.start <= span.start && span.end <= scope.origin.end)
-        .collect::<Vec<_>>();
-    scopes.sort_by_key(|scope| {
-        (
-            std::cmp::Reverse(scope.origin.end - scope.origin.start),
-            scope.id,
-        )
-    });
-    let mut scoped_context = context.with_expected(context.expected.clone());
-    scoped_context.lexical_type_parameters.clear();
-    for scope in scopes {
-        for symbol in resolved.symbols.iter().filter(|symbol| {
-            symbol.scope == scope.id
-                && symbol.kind == SymbolKind::TypeParameter
-                && symbol.canonical.is_none()
-        }) {
-            scoped_context
-                .lexical_type_parameters
-                .insert(symbol.spelling.clone(), symbol.id);
-        }
-    }
+    let scoped_context = context.with_lexical_scope(expression.span());
     let mut analysis = type_surface_expression(expression, &scoped_context);
     ensure_recovery_hole_issue(&mut analysis);
     analysis

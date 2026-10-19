@@ -4,6 +4,10 @@ use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
         include_str!("../../../examples/spec/fixtures/rust-backend/method-references.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-defect.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-children.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-defect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-trace.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-reference-effects.ssrg"),
@@ -53,18 +57,24 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
-    let loaded = seseragi_project::load_local_project(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/../../examples/spec/fixtures/rust-backend-projects/method-references"
-    ))
-    .unwrap();
-    let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
-    assert_eq!(core.compiled.modules.len(), 3);
-    for profile in [BuildProfile::Development, BuildProfile::Release] {
-        let result =
-            seseragi_driver::compile_local_project_with_profile(&loaded, Some(profile)).unwrap();
-        for (id, module) in &result.compiled.modules {
-            assert_eq!(module.core_ir, core.compiled.modules[id].core_ir);
+    for fixture in ["method-references", "scoped-methods"] {
+        let loaded = seseragi_project::load_local_project(
+            std::path::Path::new(concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/../../examples/spec/fixtures/rust-backend-projects/"
+            ))
+            .join(fixture),
+        )
+        .unwrap();
+        let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+        assert_eq!(core.compiled.modules.len(), 3);
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let result =
+                seseragi_driver::compile_local_project_with_profile(&loaded, Some(profile))
+                    .unwrap();
+            for (id, module) in &result.compiled.modules {
+                assert_eq!(module.core_ir, core.compiled.modules[id].core_ir);
+            }
         }
     }
 }
