@@ -353,7 +353,9 @@ pub(super) fn method_factory_alias(
     signature.trait_identity.is_none()
         && signature.parameters.is_empty()
         && signature.constraints.len() == 1
-        && signature.type_parameters.iter().all(|p| p.arity == 0)
+        && (signature.type_parameters.iter().all(|p| p.arity == 0)
+            || matches!(signature.constraint_identities.as_slice(), [Some(identity)]
+                if context.resolution.declared_method_factory_trait(identity)))
         && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
             "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
             | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow")

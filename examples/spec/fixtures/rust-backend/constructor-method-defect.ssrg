@@ -1,0 +1,18 @@
+trait Pick<F<_>> {
+  fn pick<A> left: F<A> -> right: F<A> -> Bool
+}
+
+instance Pick<Maybe> {
+  fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = {
+    let bad = 9007199254740991 + 1
+    \right -> True
+  }
+}
+fn capture<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {
+  let chosen: F<A> -> F<A> -> Bool = pick
+  chosen left
+}
+pub effect fn main = do {
+  let saved = capture (Just 1)
+  println "unreachable"
+}

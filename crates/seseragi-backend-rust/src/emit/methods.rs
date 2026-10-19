@@ -218,11 +218,7 @@ impl Backend<'_> {
             || signature.parameters.is_empty()
             || !signature.argument_types.is_empty()
             || declaration.trait_parameters.len() != selected.constraint.arguments.len()
-            || declaration
-                .trait_parameters
-                .iter()
-                .chain(&signature.type_parameters)
-                .any(|p| p.arity != 0)
+            || signature.type_parameters.iter().any(|p| p.arity != 0)
         {
             return Err(
                 "Rust backend: unproven abstract method declaration staging or kind".into(),
@@ -242,6 +238,9 @@ impl Backend<'_> {
         {
             if !names.insert(parameter.name.clone()) {
                 return Err("Rust backend: overlapping abstract method declaration binder".into());
+            }
+            if self.declared_method_type_kind(actual, scope) != Some(parameter.arity as usize) {
+                return Err("Rust backend: abstract method trait argument kind mismatch".into());
             }
             substitutions.insert(
                 parameter.name.clone(),
@@ -277,6 +276,63 @@ impl Backend<'_> {
             display::canonical_type(&expected, owner, &substitutions, self.type_names, true)
                 .ok_or("Rust backend: unproven abstract method declaration type")?;
         self.match_local_type(&expected, type_ref, &variables, &mut BTreeMap::new(), scope)
+    }
+
+    /// Kind-check the selected trait arguments before substituting them into
+    /// declaration slots. Fixed prefixes consume slots from the left; scoped
+    /// constructors use their binder identity, never their displayed spelling.
+    fn declared_method_type_kind(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
+        match ty {
+            CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
+                if arguments
+                    .iter()
+                    .any(|a| self.declared_method_type_kind(a, scope) != Some(0))
+                {
+                    return None;
+                }
+                let mut head = ty.clone();
+                match &mut head {
+                    CoreType::Named { arguments, .. }
+                    | CoreType::ExternalNamed { arguments, .. } => arguments.clear(),
+                    _ => unreachable!(),
+                }
+                let arity = self.local_constructor_arity(&head, scope).or_else(|| {
+                    let CoreType::Named { name, .. } =
+                        self.local_canonical_type(&head, scope).ok()?
+                    else {
+                        return None;
+                    };
+                    match name.as_str() {
+                        "std/prelude::Unit"
+                        | "std/prelude::Never"
+                        | "std/prelude::Int"
+                        | "std/prelude::Float"
+                        | "std/prelude::Bool"
+                        | "std/prelude::Char"
+                        | "std/prelude::String"
+                        | "std/prelude::Ordering" => Some(0),
+                        "std/prelude::Effect" => Some(3),
+                        _ => None,
+                    }
+                })?;
+                arity.checked_sub(arguments.len())
+            }
+            CoreType::Function { parameter, result } => {
+                (self.declared_method_type_kind(parameter, scope) == Some(0)
+                    && self.declared_method_type_kind(result, scope) == Some(0))
+                .then_some(0)
+            }
+            CoreType::Tuple { elements } => elements
+                .iter()
+                .all(|e| self.declared_method_type_kind(e, scope) == Some(0))
+                .then_some(0),
+            CoreType::Record { closed, fields } => (*closed
+                && fields
+                    .iter()
+                    .all(|f| self.declared_method_type_kind(&f.type_ref, scope) == Some(0)))
+            .then_some(0),
+            CoreType::Hole | CoreType::RequirementMerge { .. } => None,
+        }
     }
 
     fn validate_hkt_parameter_method_value(

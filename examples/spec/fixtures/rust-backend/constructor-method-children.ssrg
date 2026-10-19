@@ -1,0 +1,23 @@
+trait Pick<F<_>> {
+  fn pick<A> left: F<A> -> right: F<A> -> Bool
+}
+
+type Token = | Token
+instance Show<Token> {
+  fn show value: Token -> String = { let bad = 9007199254740991 + 1; "unreachable" }
+}
+type Wrap<P, A> = | Wrap (P, A)
+instance<P> Pick<Wrap<P>> where Show<P> {
+  fn pick<A> left: Wrap<P, A> -> (Wrap<P, A> -> Bool) = {
+    let text = match left { Wrap (prefix, item) -> show prefix }
+    \right -> True
+  }
+}
+fn capture<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {
+  let chosen = pick
+  chosen left
+}
+pub effect fn main = do {
+  let saved = capture (Wrap (Token, 1))
+  println "unreachable"
+}

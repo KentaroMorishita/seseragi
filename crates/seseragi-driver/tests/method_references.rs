@@ -34,6 +34,14 @@ fn abstract_method_authority_retains_declaration_binders_and_constraints() {
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/constructor-method-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/constructor-method-defect.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/constructor-method-effects.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/constructor-method-children.ssrg"
+        ),
         include_str!("../../../examples/spec/fixtures/rust-backend/ord-method-values.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/ord-method-defect.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/ord-method-effects.ssrg"),
@@ -109,6 +117,7 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
     for fixture in [
+        "constructor-methods",
         "ord-methods",
         "method-references",
         "scoped-methods",

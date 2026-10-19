@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.64] - 2026-10-20
+
+### Fixed
+
+- Preserve selected method stages for checked source traits with constructor-kind parameters, value-kind method binders and no method-owned constraints. Capture available dictionaries or introduce generalized dictionary-only factories, including module and local alias chains, without delaying a supplied source argument. Validate canonical declaration owners, constructor slots and fixed prefixes, method binders and evidence frames independently in native generation. Keep one-parameter implementations returning a function distinct from two-parameter bodies, and preserve child dictionaries, Ref cycles, cold Effects and finalizers. Unproved method schemes remain tracked in #887.
+
 ## [0.61.63] - 2026-10-20
 
 ### Fixed

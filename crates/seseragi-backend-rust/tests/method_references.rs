@@ -841,3 +841,235 @@ fn abstract_method_values_require_the_independent_declaration_and_exact_frame() 
         );
     }
 }
+
+#[test]
+fn constructor_trait_parameter_methods_preserve_the_selected_first_stage() {
+    for initializer in [
+        "let chosen: F<A> -> F<A> -> Bool = pick",
+        "let chosen = pick",
+    ] {
+        execute(
+            &format!(
+                "trait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool }}\n\
+                 instance Pick<Maybe> {{ fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = {{\n\
+                   let bad = 9007199254740991 + 1; \\right -> True\n\
+                 }} }}\n\
+                 fn selected<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {{\n\
+                   {initializer}; chosen left\n\
+                 }}\n\
+                 pub effect fn main = do {{ let saved = selected (Just 1); println \"unreachable\" }}"
+            ),
+            if initializer.contains(':') { "constructor-scoped" } else { "constructor-generalized" },
+            "",
+            70,
+        );
+    }
+}
+
+#[test]
+fn constructor_method_values_require_canonical_kinds_slots_and_evidence_frames() {
+    use seseragi_lowering::CoreStatement;
+    for initializer in [
+        "let chosen: F<A> -> F<A> -> Bool = pick",
+        "let chosen = pick",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool }}\nfn saved<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {{ {initializer}; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "constructor-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..24 {
+            let mut changed = core.clone();
+            match mutation {
+                0 => changed.trait_methods[0].trait_parameters[0].arity = 0,
+                1 => changed.trait_methods[0].trait_parameters[0].arity = 2,
+                2 => changed.trait_methods[0].signature.type_parameters[0].arity = 1,
+                3 => changed.trait_methods[0].signature.type_parameters[0].name = "F".into(),
+                4 => changed.trait_methods[0].trait_parameters.clear(),
+                5 => changed.trait_methods[0].trait_identity = "counterfeit::Pick".into(),
+                6 => changed.trait_methods[0].method = "invented".into(),
+                7 => changed.trait_methods[0].constraints.push(
+                    changed
+                        .functions
+                        .iter()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .constraints[0]
+                        .clone(),
+                ),
+                8 => changed.trait_methods[0].signature.parameters[0] = CoreType::Hole,
+                9 => changed.trait_methods[0].signature.parameters.clear(),
+                10 => {
+                    changed.trait_methods[0].signature.result = CoreType::Named {
+                        name: "String".into(),
+                        arguments: vec![],
+                    }
+                }
+                11 => changed.trait_methods[0]
+                    .signature
+                    .argument_types
+                    .push(CoreType::Hole),
+                12 => changed.trait_methods.clear(),
+                13 => changed.trait_methods.push(changed.trait_methods[0].clone()),
+                14 => changed.trait_methods[0].signature.type_parameters.clear(),
+                _ => {
+                    let function = changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap();
+                    let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                        panic!("body")
+                    };
+                    let value = match &mut statements[0] {
+                        CoreStatement::PureLet { value, .. } => value,
+                        CoreStatement::LocalFunction { body, .. } => body,
+                        _ => panic!("method alias"),
+                    };
+                    let CoreExpr::Call {
+                        evidence,
+                        trait_dispatch,
+                        type_ref,
+                        deferred_evidence_parameters,
+                        evidence_argument_index,
+                        ..
+                    } = value
+                    else {
+                        panic!("selected method")
+                    };
+                    match mutation {
+                        15 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                        16 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+                        17 => trait_dispatch.as_mut().unwrap().method = "invented".into(),
+                        18 => {
+                            trait_dispatch.as_mut().unwrap().trait_identity =
+                                "counterfeit::Pick".into()
+                        }
+                        19 => *type_ref = CoreType::Hole,
+                        20 => deferred_evidence_parameters.push(CoreType::Hole),
+                        21 => *evidence_argument_index = Some(0),
+                        22 => {
+                            evidence[0].constraint.trait_identity = Some("counterfeit::Pick".into())
+                        }
+                        _ => evidence[0].constraint.arguments.clear(),
+                    }
+                }
+            }
+            let error = emit_rust_module(&changed, "probe").unwrap_err();
+            assert_eq!(
+                error.code, "SES-RUST-0001",
+                "{initializer} mutation {mutation}"
+            );
+            assert_eq!(error.origin.unwrap().source, "constructor-λ.ssrg");
+        }
+    }
+}
+
+#[test]
+fn constructor_method_values_preserve_fixed_prefixes_children_and_lifetimes() {
+    for (name, source, expected, exit) in [
+        (
+            "values",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-values.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "defect",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-defect.ssrg"
+            ),
+            "",
+            70,
+        ),
+        (
+            "effects",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-effects.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "children",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/constructor-method-children.ssrg"
+            ),
+            "",
+            70,
+        ),
+    ] {
+        execute(source, &format!("constructor-{name}"), expected, exit);
+    }
+}
+
+#[test]
+fn constructor_module_aliases_keep_the_dictionary_factory_and_method_stages() {
+    execute(
+        "trait Pick<F<_>> { fn pick<A> left: F<A> -> right: F<A> -> Bool }\n\
+         instance Pick<Maybe> { fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = { let bad = 9007199254740991 + 1; \\right -> True } }\n\
+         let selectedMethod = pick\nlet copiedMethod = selectedMethod\n\
+         fn selected<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F> = {\n\
+           let chosen: F<A> -> F<A> -> Bool = copiedMethod; chosen left\n\
+         }\n\
+         pub effect fn main = do { let saved = selected (Just 1); println \"unreachable\" }",
+        "constructor-global-alias", "", 70,
+    );
+}
+
+#[test]
+fn constructor_module_factories_reject_forged_kinds_frames_and_alias_cycles() {
+    let source = "// 雫🙂\ntrait Pick<F<_>> { fn pick<A> left: F<A> -> right: F<A> -> Bool }\ninstance Pick<Maybe> { fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = \\right -> True }\nlet selected = pick\nlet copied = selected\npub fn probe -> Bool = copied (Just 1) (Just 2)";
+    let core = compile_core_module(CompileInput::new(
+        "constructor-global-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..8 {
+        let mut changed = core.clone();
+        let function = changed
+            .functions
+            .iter_mut()
+            .find(|f| f.symbol.ends_with("::selected"))
+            .unwrap();
+        let CoreExpr::Call {
+            callee,
+            evidence,
+            trait_dispatch,
+            type_ref,
+            ..
+        } = &mut function.body
+        else {
+            panic!("factory")
+        };
+        match mutation {
+            0 => function.type_parameters[0].arity = 0,
+            1 => function.type_parameters[0].arity = 2,
+            2 => function.constraints[0].arguments.clear(),
+            3 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+            4 => trait_dispatch.as_mut().unwrap().method = "invented".into(),
+            5 => *type_ref = CoreType::Hole,
+            6 => {
+                *callee = "native/main::copied".into();
+                *trait_dispatch = None;
+            }
+            _ => function.is_effect = true,
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "case {mutation}");
+        assert_eq!(error.origin.unwrap().source, "constructor-global-λ.ssrg");
+    }
+}
