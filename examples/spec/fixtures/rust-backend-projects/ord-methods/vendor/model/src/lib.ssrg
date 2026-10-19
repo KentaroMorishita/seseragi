@@ -1,0 +1,18 @@
+pub type Mark<A> = | Mark A
+instance<A> Eq<Mark<A>> {
+  fn eq left: Mark<A> -> right: Mark<A> -> Bool = True
+}
+instance<A> Ord<Mark<A>> where Ord<A> {
+  fn compare left: Mark<A> -> (Mark<A> -> Ordering) = match left {
+    Mark value -> {
+      let chosen = compare
+      let saved = chosen value
+      \right -> match right { Mark other -> saved other }
+    }
+  }
+}
+let comparison = compare
+pub fn selected<A> left: A -> (A -> Ordering) where Ord<A> = {
+  let saved = comparison
+  saved left
+}

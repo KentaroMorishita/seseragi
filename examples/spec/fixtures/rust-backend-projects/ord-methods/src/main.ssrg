@@ -1,0 +1,9 @@
+import { Mark as Foreign, selected } from "./facade"
+fn label value: Ordering -> String =
+  match value { Less -> "L"; Equal -> "E"; Greater -> "G" }
+pub fn probe -> String = {
+  let chosen: Foreign<Int> -> Foreign<Int> -> Ordering = selected
+  let saved = chosen (Foreign 7)
+  label (saved (Foreign 8)) + label (saved (Foreign 7)) + label (saved (Foreign 6))
+}
+pub effect fn main = println (probe ())

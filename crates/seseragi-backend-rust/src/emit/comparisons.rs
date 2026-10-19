@@ -35,6 +35,68 @@ pub(super) fn int_ord_dictionary(selected: &CoreCallEvidence) -> Option<Result<S
 }
 
 impl Backend<'_> {
+    /// A named compare returns Ordering; comparison operator sections project
+    /// that value to Bool elsewhere. Validate the selected method independently
+    /// of its provider's actual source arity (one parameter may return a function).
+    pub(super) fn validate_ord_method_value(
+        &self,
+        dispatch: &seseragi_lowering::CoreTraitDispatch,
+        selected: &CoreCallEvidence,
+        type_ref: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        if dispatch.trait_identity != "std/prelude::Ord"
+            || dispatch.method != "compare"
+            || dispatch.method_contract.is_some()
+        {
+            return Err("Rust backend: invalid canonical Ord method value".into());
+        }
+        self.validate_ord_evidence(selected, scope)?;
+        let expected = &selected.constraint.arguments[0];
+        fn value_binders(ty: &CoreType, scope: &Scope) -> bool {
+            match ty {
+                CoreType::Hole | CoreType::RequirementMerge { .. } => false,
+                CoreType::Named { name, arguments } => {
+                    scope
+                        .type_parameter_arity(name)
+                        .is_none_or(|arity| arity as usize == arguments.len())
+                        && arguments.iter().all(|ty| value_binders(ty, scope))
+                }
+                CoreType::ExternalNamed { arguments, .. } => {
+                    arguments.iter().all(|ty| value_binders(ty, scope))
+                }
+                CoreType::Function { parameter, result } => {
+                    value_binders(parameter, scope) && value_binders(result, scope)
+                }
+                CoreType::Tuple { elements } => elements.iter().all(|ty| value_binders(ty, scope)),
+                CoreType::Record { closed, fields } => {
+                    *closed && fields.iter().all(|f| value_binders(&f.type_ref, scope))
+                }
+            }
+        }
+        if !value_binders(expected, scope) {
+            return Err("Rust backend: Ord method requires a value-kind argument".into());
+        }
+        let mut result_type = type_ref;
+        for _ in 0..2 {
+            let CoreType::Function { parameter, result } = result_type else {
+                return Err("Rust backend: invalid Ord method value arity".into());
+            };
+            self.match_local_type(
+                expected,
+                parameter,
+                &BTreeMap::new(),
+                &mut BTreeMap::new(),
+                scope,
+            )?;
+            result_type = result;
+        }
+        if !self.comparison_builtin(result_type, "Ordering", scope)? {
+            return Err("Rust backend: Ord method value must return canonical Ordering".into());
+        }
+        Ok(())
+    }
+
     pub(super) fn validate_ord_evidence(
         &self,
         selected: &CoreCallEvidence,

@@ -28,6 +28,9 @@ impl Backend<'_> {
             evidence,
             scope,
         )?;
+        if dispatch.trait_identity == "std/prelude::Ord" {
+            self.validate_ord_method_value(dispatch, selected, type_ref, scope)?;
+        }
         let (identity, type_arguments) = match &selected.evidence {
             CoreInstanceEvidence::Parameter { .. } => {
                 return self.validate_parameter_method_value(dispatch, selected, type_ref, scope);
@@ -143,6 +146,9 @@ impl Backend<'_> {
         type_ref: &CoreType,
         scope: &Scope,
     ) -> Result<()> {
+        if dispatch.trait_identity == "std/prelude::Ord" {
+            return self.validate_ord_method_value(dispatch, selected, type_ref, scope);
+        }
         if self.module.trait_methods.iter().any(|declaration| {
             declaration.trait_identity == dispatch.trait_identity
                 && declaration.method == dispatch.method

@@ -1,0 +1,22 @@
+type Mark = | Mark Int
+
+instance Eq<Mark> {
+  fn eq left: Mark -> right: Mark -> Bool = True
+}
+
+instance Ord<Mark> {
+  fn compare left: Mark -> (Mark -> Ordering) = {
+    let bad = 9007199254740991 + 1
+    \right -> Equal
+  }
+}
+
+fn selected<A> left: A -> (A -> Ordering) where Ord<A> = {
+  let chosen: A -> A -> Ordering = compare
+  chosen left
+}
+
+pub effect fn main = do {
+  let saved = selected (Mark 1)
+  println "created"
+}

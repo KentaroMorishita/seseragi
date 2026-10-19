@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.63] - 2026-10-20
+
+### Fixed
+
+- Preserve canonical Ord `compare` values in captured and generalized lets and constrained module aliases. Apply the selected method's first source stage when creating a partial, while keeping a two-parameter body and an ordinary Unit function deferred until their source arguments are supplied. Validate the Ordering result, value-kind binders, provider identity and dictionary frame independently in the native backend; preserve saved closures, child dictionaries, Ref cycles and resource finalizers. Remaining method schemes stay tracked in #887.
+
 ## [0.61.62] - 2026-10-19
 
 ### Fixed
