@@ -34,7 +34,9 @@ fn abstract_method_authority_retains_declaration_binders_and_constraints() {
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
-        include_str!("../../../examples/spec/fixtures/rust-backend/constructor-method-prefix-kind.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/constructor-method-prefix-kind.ssrg"
+        ),
         include_str!("../../../examples/spec/fixtures/rust-backend/constructor-method-values.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/constructor-method-defect.ssrg"),
         include_str!(
