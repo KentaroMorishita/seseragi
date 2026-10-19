@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.58] - 2026-10-19
+
+### Fixed
+
+- Preserve the selected method value for closed monomorphic references, so applying a saved `add` or `eq` runs its first source stage immediately. Keep generalized dictionary introduction separate, materialize the required TypeScript dictionary imports, and verify native method owners, types, constructor kinds and returned-function stages. Generalized method-reference staging and source-order operator permutations remain tracked in #887.
+
 ## [0.61.57] - 2026-10-19
 
 ### Fixed

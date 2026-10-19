@@ -177,10 +177,120 @@ pub(super) fn type_callable_value(
             *type_ref = TypedType::Hole;
         }
     }
-    if analysis.pure_call_issue.is_none() && !signature.parameters.is_empty() {
+    if analysis.pure_call_issue.is_none()
+        && !signature.parameters.is_empty()
+        && !closed_selected_method_value(&analysis.value, signature, context)
+    {
         analysis.value = abstract_callable_value(analysis.value, signature.parameters.len());
     }
     analysis
+}
+
+/// A closed method already has its primary dictionary. Preserve that method
+/// value: eta-expanding all trait parameters would postpone a source method
+/// body whose first stage returns a function. Generalized callables and method
+/// constraints still need their separate dictionary-introduction stages.
+fn closed_selected_method_value(
+    value: &TypedExpr,
+    signature: &TopLevelPureFunction,
+    context: &PureExpressionContext<'_>,
+) -> bool {
+    let TypedExpr::Call {
+        arguments,
+        evidence,
+        trait_dispatch: Some(dispatch),
+        deferred_evidence_parameters,
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        type_ref,
+        ..
+    } = value
+    else {
+        return false;
+    };
+    arguments.is_empty()
+        && evidence.len() == 1
+        && dispatch.method_contract.is_none()
+        && deferred_evidence_parameters.is_empty()
+        && deferred_evidence_type_constructor_parameters.is_empty()
+        && evidence_argument_index.is_none()
+        && signature.trait_identity.as_deref() == Some(dispatch.trait_identity.as_str())
+        && signature.trait_method.as_deref() == Some(dispatch.method.as_str())
+        && signature.constraint_identities.len() == 1
+        && signature.constraint_identities[0].as_deref() == Some(dispatch.trait_identity.as_str())
+        // A residual declaration binder is not a closed type, even if an
+        // inferred substitution kept its spelling. Do not identify it with a
+        // builtin of the same name after erasure; retain scheme abstraction.
+        && !contains_unresolved_type_parameter(type_ref, &signature.type_parameters, &Default::default())
+        && closed_method_type(type_ref, context)
+        && closed_method_evidence(&evidence[0], context)
+}
+
+fn closed_method_evidence(
+    selected: &crate::TypedCallEvidence,
+    context: &PureExpressionContext<'_>,
+) -> bool {
+    use crate::TypedInstanceEvidence;
+    let (type_arguments, children) = match &selected.evidence {
+        TypedInstanceEvidence::Local {
+            type_arguments,
+            evidence_arguments,
+            ..
+        }
+        | TypedInstanceEvidence::Imported {
+            type_arguments,
+            evidence_arguments,
+            ..
+        }
+        | TypedInstanceEvidence::Standard {
+            type_arguments,
+            evidence_arguments,
+            ..
+        } => (type_arguments, evidence_arguments),
+        TypedInstanceEvidence::Parameter { .. } => return false,
+    };
+    selected
+        .constraint
+        .arguments
+        .iter()
+        .chain(type_arguments)
+        .all(|ty| closed_method_type(ty, context))
+        && children
+            .iter()
+            .all(|child| closed_method_evidence(child, context))
+}
+
+fn closed_method_type(ty: &TypedType, context: &PureExpressionContext<'_>) -> bool {
+    match ty {
+        TypedType::Function { parameter, result } => {
+            closed_method_type(parameter, context) && closed_method_type(result, context)
+        }
+        TypedType::Tuple { elements } => elements.iter().all(|ty| closed_method_type(ty, context)),
+        TypedType::Record { closed, fields } => {
+            *closed
+                && fields
+                    .iter()
+                    .all(|field| closed_method_type(&field.type_ref, context))
+        }
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            // Use the scoped semantic key so a binder named Int or Array is
+            // never certified merely because it has a standard spelling.
+            let value = context.semantic_value_from_typed_type(ty);
+            let owner_is_closed = match &value.key {
+                SemanticTypeKey::Adt { .. }
+                | SemanticTypeKey::Struct { .. }
+                | SemanticTypeKey::ExternalNominal { .. } => true,
+                SemanticTypeKey::NamedGeneric { name, .. } => {
+                    crate::prelude::type_constructor_arity(name).is_some()
+                }
+                SemanticTypeKey::Other => matches!(ty, TypedType::Named { name, .. }
+                    if crate::prelude::type_constructor_arity(name).is_some()),
+                _ => false,
+            };
+            owner_is_closed && arguments.iter().all(|ty| closed_method_type(ty, context))
+        }
+        TypedType::Hole | TypedType::RequirementMerge { .. } => false,
+    }
 }
 
 /// Keep a constrained first-class callable's declared arity explicit. This

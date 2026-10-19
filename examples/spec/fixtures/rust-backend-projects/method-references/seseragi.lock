@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-method-references@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/method-references-model@1.0.0#path:vendor/model"
+name = "fixture/method-references-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:ae15bf66e6c4899fb4fb1a0abf6c00a7609180c54a522f6244fbba3cb9294319"
+content_digest = "sha256:a98cc48f407dd14edddc78cef262eb9262c18bf05ea46f0cf4b840b120a92290"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-method-references@0.0.0#workspace:."
+name = "fixture/native-method-references"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e0993ffa868180802ec590da9e73cb457e7c2cc7e9ee8864083e487b5b01a0f0"
+content_digest = "sha256:53a81a41ad9f602c2cf4b709983f882a262b24c63bf65a6174024b169c3e2a6d"
+dependencies = [
+  { import = "model", package = "fixture/method-references-model@1.0.0#path:vendor/model" },
+]

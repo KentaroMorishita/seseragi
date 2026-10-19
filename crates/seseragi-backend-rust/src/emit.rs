@@ -694,6 +694,7 @@ impl Backend<'_> {
                 deferred_evidence_parameters,
                 deferred_evidence_type_constructor_parameters,
                 evidence_argument_index,
+                type_ref,
                 ..
             } => {
                 if callee == "builtin::array-index" {
@@ -718,6 +719,9 @@ impl Backend<'_> {
                         return self.method_call(expr, scope);
                     }
                     self.reject_missing_method_contract(dispatch, evidence)?;
+                    if arguments.is_empty() {
+                        self.validate_bare_method(dispatch, evidence, type_ref, scope)?;
+                    }
                 }
                 let bound_primitive_partial = trait_dispatch.is_none()
                     && !scope.contains(callee)
