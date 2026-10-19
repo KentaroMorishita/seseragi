@@ -78,6 +78,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
+      "method": "ready",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 55,
+        "end": 60
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/polymorphic-partial-constrained-function::describe",

@@ -74,6 +74,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
+      "method": "tag",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 24,
+        "end": 27
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/generic-instance-dispatch::label",

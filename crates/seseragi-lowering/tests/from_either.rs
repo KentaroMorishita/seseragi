@@ -36,6 +36,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
         aliases: Vec::new(),
         structs: Vec::new(),
         instances: Vec::new(),
+        trait_methods: Vec::new(),
         bindings: Vec::new(),
         functions: vec![CoreFunction {
             symbol: "artifact/from-either::lift".to_owned(),

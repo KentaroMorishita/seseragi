@@ -95,6 +95,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
+      "method": "tag",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 24,
+        "end": 27
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "fn",

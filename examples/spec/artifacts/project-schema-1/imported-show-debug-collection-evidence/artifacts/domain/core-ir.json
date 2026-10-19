@@ -362,6 +362,36 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 349,
+        "end": 355
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-show-debug-collection-evidence::domain::renderImported",

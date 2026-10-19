@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.62] - 2026-10-19
+
+### Fixed
+
+- Retain checked source trait method declarations in shared Typed HIR and CoreIr. Use their canonical owner, ordered binders, kinds and complete signature to preserve selected method values from abstract primary dictionaries, including captured and generalized lets, constrained module aliases, saved partials, returned functions and child dictionaries. Validate native declaration membership and dictionary frames independently of call-site metadata; preserve resource lifetimes and the separate standard method ABI proofs. This slice covers value-kinded declaration parameters without method-owned constraints; unproved scopes and remaining method staging stay tracked in #887.
+
 ## [0.61.61] - 2026-10-19
 
 ### Fixed

@@ -3,6 +3,82 @@
   "stage": "typed-hir",
   "source": "contract.ssrg",
   "module": "fixture/imported-trait-instance-contract::contract",
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-trait-instance-contract::contract::trait(Labeled)",
+      "method": "label",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 65,
+        "end": 70
+      }
+    },
+    {
+      "traitIdentity": "fixture/imported-trait-instance-contract::contract::trait(Render)",
+      "method": "render",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "Prefix",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [
+        {
+          "name": "Labeled",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "fixture/imported-trait-instance-contract::contract::trait(Labeled)"
+      ],
+      "origin": {
+        "start": 120,
+        "end": 126
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "adt",

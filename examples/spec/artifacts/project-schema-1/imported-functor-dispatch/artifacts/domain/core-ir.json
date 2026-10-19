@@ -254,6 +254,67 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
+      "method": "map",
+      "traitParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "signature": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "named",
+            "name": "F",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 31,
+        "end": 34
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/imported-functor-dispatch::domain::increment",

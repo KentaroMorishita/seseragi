@@ -147,6 +147,41 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
+      "method": "difference",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "constraintIdentities": [],
+      "origin": {
+        "start": 132,
+        "end": 142
+      }
+    }
+  ],
   "declarations": [
     {
       "kind": "fn",

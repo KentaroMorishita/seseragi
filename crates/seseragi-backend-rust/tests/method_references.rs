@@ -103,6 +103,28 @@ fn scoped_add_method_alias_keeps_its_available_dictionary_stage() {
 }
 
 #[test]
+fn user_trait_parameter_methods_preserve_the_selected_first_stage() {
+    for initializer in ["let chosen: A -> A -> Bool = pick", "let chosen = pick"] {
+        execute(
+            &format!(
+                "type Mark = | Mark Int\n\
+                 trait Pick<A> {{ fn pick left: A -> right: A -> Bool }}\n\
+                 instance Pick<Mark> {{ fn pick left: Mark -> (Mark -> Bool) = {{\n\
+                   let bad = 9007199254740991 + 1; \\right -> True\n\
+                 }} }}\n\
+                 fn selected<A> left: A -> (A -> Bool) where Pick<A> = {{\n\
+                   {initializer}; chosen left\n\
+                 }}\n\
+                 pub effect fn main = do {{ let saved = selected (Mark 1); println \"unreachable\" }}"
+            ),
+            if initializer.contains(':') { "user-scoped" } else { "user-generalized" },
+            "",
+            70,
+        );
+    }
+}
+
+#[test]
 fn generalized_eq_alias_runs_the_selected_method_first_stage() {
     execute(
         "type Mark = | Mark Int\n\
@@ -349,36 +371,38 @@ fn generalized_method_factories_reject_forged_frames_types_and_stages() {
 
 #[test]
 fn generalized_method_values_preserve_source_stages_and_single_evaluation() {
-    let source =
-        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-trace.ssrg");
-    let core = compile_core_module(CompileInput::new("trace.ssrg", "native/main", source))
-        .unwrap()
-        .core_ir;
-    let artifact = emit_rust_module(&core, "probe").unwrap();
-    let mut rust = artifact.source[..artifact.source.rfind("fn main()").unwrap()].to_owned();
-    let id = |name: &str| {
-        format!(
-            "v_{}",
-            name.bytes().map(|b| format!("{b:02x}")).collect::<String>()
-        )
-    };
-    // Observe ordinary helper entries in a test copy. The implementation's
-    // one-source-parameter method and two-parameter method must keep distinct
-    // stages; a saved partial must not repeat its left argument or first stage.
-    for name in ["left", "right", "first", "lateLeft", "lateRight", "later"] {
-        let start = rust
-            .find(&format!(
-                "fn {}_direct(",
-                id(&format!("native/main::{name}"))
-            ))
-            .unwrap();
-        let offset = start + rust[start..].find("-> V {").unwrap() + "-> V {".len();
-        rust.insert_str(
-            offset,
-            &format!(" TRACE.with(|t| t.borrow_mut().push({name:?})); "),
-        );
-    }
-    rust.push_str(&format!(r#"
+    for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-trace.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-trace.ssrg"),
+    ] {
+        let core = compile_core_module(CompileInput::new("trace.ssrg", "native/main", source))
+            .unwrap()
+            .core_ir;
+        let artifact = emit_rust_module(&core, "probe").unwrap();
+        let mut rust = artifact.source[..artifact.source.rfind("fn main()").unwrap()].to_owned();
+        let id = |name: &str| {
+            format!(
+                "v_{}",
+                name.bytes().map(|b| format!("{b:02x}")).collect::<String>()
+            )
+        };
+        // Observe ordinary helper entries in a test copy. The implementation's
+        // one-source-parameter method and two-parameter method must keep distinct
+        // stages; a saved partial must not repeat its left argument or first stage.
+        for name in ["left", "right", "first", "lateLeft", "lateRight", "later"] {
+            let start = rust
+                .find(&format!(
+                    "fn {}_direct(",
+                    id(&format!("native/main::{name}"))
+                ))
+                .unwrap();
+            let offset = start + rust[start..].find("-> V {").unwrap() + "-> V {".len();
+            rust.insert_str(
+                offset,
+                &format!(" TRACE.with(|t| t.borrow_mut().push({name:?})); "),
+            );
+        }
+        rust.push_str(&format!(r#"
 thread_local! {{ static TRACE: RefCell<Vec<&'static str>> = const {{ RefCell::new(Vec::new()) }}; }}
 fn main() {{
  let result = {}(vec![]).apply(V::Unit);
@@ -387,38 +411,39 @@ fn main() {{
  drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
 }}
 "#, id(&artifact.metadata.entry)));
-    let dir =
-        std::env::temp_dir().join(format!("seseragi-generalized-stage-{}", std::process::id()));
-    fs::create_dir(&dir).unwrap();
-    let input = dir.join("program.rs");
-    let executable = dir.join(if cfg!(windows) {
-        "program.exe"
-    } else {
-        "program"
-    });
-    fs::write(&input, rust).unwrap();
-    let built = Command::new("rustc")
-        .args(["--edition=2021", "-O", "-o"])
-        .arg(&executable)
-        .arg(&input)
-        .output()
-        .unwrap();
-    let ran = built
-        .status
-        .success()
-        .then(|| Command::new(&executable).env("PATH", "").output().unwrap());
-    fs::remove_dir_all(&dir).unwrap();
-    assert!(
-        built.status.success(),
-        "{}",
-        String::from_utf8_lossy(&built.stderr)
-    );
-    let ran = ran.unwrap();
-    assert!(
-        ran.status.success(),
-        "{}",
-        String::from_utf8_lossy(&ran.stderr)
-    );
+        let dir =
+            std::env::temp_dir().join(format!("seseragi-generalized-stage-{}", std::process::id()));
+        fs::create_dir(&dir).unwrap();
+        let input = dir.join("program.rs");
+        let executable = dir.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        });
+        fs::write(&input, rust).unwrap();
+        let built = Command::new("rustc")
+            .args(["--edition=2021", "-O", "-o"])
+            .arg(&executable)
+            .arg(&input)
+            .output()
+            .unwrap();
+        let ran = built
+            .status
+            .success()
+            .then(|| Command::new(&executable).env("PATH", "").output().unwrap());
+        fs::remove_dir_all(&dir).unwrap();
+        assert!(
+            built.status.success(),
+            "{}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        let ran = ran.unwrap();
+        assert!(
+            ran.status.success(),
+            "{}",
+            String::from_utf8_lossy(&ran.stderr)
+        );
+    }
 }
 
 #[test]
@@ -696,5 +721,123 @@ fn parameter_method_values_reject_forged_frames_and_signatures() {
                 "accepted {name} mutation {mutation}"
             );
         }
+    }
+}
+
+#[test]
+fn declared_method_values_preserve_types_children_and_lifetimes() {
+    for (name, source, expected, exit) in [
+        (
+            "values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-values.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-values.stdout"),
+            0,
+        ),
+        (
+            "trace",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-trace.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-trace.stdout"),
+            0,
+        ),
+        (
+            "defect",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-defect.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-defect.stdout"),
+            70,
+        ),
+        (
+            "effects",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-effects.ssrg"),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "children",
+            include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-children.ssrg"),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/trait-method-children.stdout"
+            ),
+            70,
+        ),
+    ] {
+        execute(source, &format!("declared-{name}"), expected, exit);
+    }
+}
+
+#[test]
+fn abstract_method_values_require_the_independent_declaration_and_exact_frame() {
+    use seseragi_lowering::CoreStatement;
+    let source = "// 雫🙂\ntrait Pick<A> { fn pick left: A -> right: A -> Bool }\nfn saved<A> left: A -> (A -> Bool) where Pick<A> = { let chosen: A -> A -> Bool = pick; chosen left }\npub fn probe -> Unit = ()";
+    let core = compile_core_module(CompileInput::new("declared-λ.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    assert!(core.instances.is_empty());
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..14 {
+        let mut changed = core.clone();
+        match mutation {
+            0 => changed.trait_methods.clear(),
+            1 => changed.trait_methods[0].trait_identity = "counterfeit::Pick".into(),
+            2 => changed.trait_methods[0].method = "invented".into(),
+            3 => changed.trait_methods.push(changed.trait_methods[0].clone()),
+            4 => changed.trait_methods[0].trait_parameters[0].arity = 1,
+            5 => changed.trait_methods[0].trait_parameters.clear(),
+            6 => changed.trait_methods[0].signature.parameters[0] = CoreType::Hole,
+            7 => {
+                changed.trait_methods[0].signature.result = CoreType::Named {
+                    name: "String".into(),
+                    arguments: vec![],
+                }
+            }
+            8 => {
+                let parameter = changed.trait_methods[0].trait_parameters[0].clone();
+                changed.trait_methods[0]
+                    .signature
+                    .type_parameters
+                    .push(parameter);
+            }
+            9 => changed.trait_methods[0]
+                .signature
+                .argument_types
+                .push(CoreType::Hole),
+            _ => {
+                let function = changed
+                    .functions
+                    .iter_mut()
+                    .find(|f| f.symbol.ends_with("::saved"))
+                    .unwrap();
+                let constraint = function.constraints[0].clone();
+                let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                    panic!("body")
+                };
+                let CoreStatement::PureLet { value, .. } = &mut statements[0] else {
+                    panic!("binding")
+                };
+                let CoreExpr::Call {
+                    evidence,
+                    trait_dispatch,
+                    type_ref,
+                    ..
+                } = value
+                else {
+                    panic!("selected value")
+                };
+                match mutation {
+                    10 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+                    11 => trait_dispatch.as_mut().unwrap().method = "invented".into(),
+                    12 => *type_ref = CoreType::Hole,
+                    _ => changed.trait_methods[0].constraints.push(constraint),
+                }
+            }
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "case {mutation}");
+        assert_eq!(
+            error.origin.unwrap().source,
+            "declared-λ.ssrg",
+            "case {mutation}"
+        );
     }
 }

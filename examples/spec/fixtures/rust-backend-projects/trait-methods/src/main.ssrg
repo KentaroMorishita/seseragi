@@ -1,0 +1,21 @@
+import { Pick, Mark as Foreign, different, selected } from "./facade"
+
+
+
+pub fn probe -> Array<Bool> = {
+  let equal: Foreign<Int> -> Foreign<Int> -> Bool = selected
+  let unequal: Foreign<Int> -> Foreign<Int> -> Bool = selected
+  let same = equal (Foreign 7)
+  let other = unequal (Foreign 7)
+  let global: Foreign<Int> -> Foreign<Int> -> Bool = selected
+  [
+    same (Foreign 7),
+    same (Foreign 8),
+    other (Foreign 7),
+    other (Foreign 8),
+    different (Foreign 7) (Foreign 8),
+    global (Foreign 7) (Foreign 8),
+    global (Foreign 7) (Foreign 7)
+  ]
+}
+pub effect fn main = println (show (probe ()))

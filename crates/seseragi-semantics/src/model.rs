@@ -32,7 +32,23 @@ pub struct TypedModule {
     /// this evidence instead of rediscovering instances from ADT shape.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<TypedInstance>,
+    /// Checked declarations are the signature authority for an abstract
+    /// primary dictionary. A call-site contract alone cannot prove membership.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub trait_methods: Vec<TypedTraitMethodDeclaration>,
     pub declarations: Vec<TypedDecl>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedTraitMethodDeclaration {
+    pub trait_identity: String,
+    pub method: String,
+    pub trait_parameters: Vec<seseragi_syntax::TypeParameter>,
+    pub signature: TypedCallSignature,
+    pub constraints: Vec<TypedConstraint>,
+    pub constraint_identities: Vec<Option<String>>,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

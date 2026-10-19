@@ -301,6 +301,101 @@ impl<'a> TypedResolution<'a> {
         })
     }
 
+    pub(crate) fn trait_method_declarations(&self) -> Vec<crate::TypedTraitMethodDeclaration> {
+        self.resolved
+            .declarations
+            .iter()
+            .filter_map(|declaration| {
+                let SurfaceDecl::Trait {
+                    name_span,
+                    type_parameters,
+                    methods,
+                    ..
+                } = declaration
+                else {
+                    return None;
+                };
+                let identity = self
+                    .resolved
+                    .symbols
+                    .iter()
+                    .find(|symbol| symbol.kind == SymbolKind::Trait && symbol.origin == *name_span)?
+                    .canonical
+                    .as_ref()?;
+                Some(
+                    methods
+                        .iter()
+                        .filter_map(|method| {
+                            let callable = self.trait_method_callable(identity, &method.name)?;
+                            Some(crate::TypedTraitMethodDeclaration {
+                                trait_identity: identity.clone(),
+                                method: method.name.clone(),
+                                trait_parameters: type_parameters.clone(),
+                                signature: crate::TypedCallSignature {
+                                    type_parameters: method.type_parameters.clone(),
+                                    parameters: callable.parameters.clone(),
+                                    result: callable.result.clone(),
+                                    argument_types: Vec::new(),
+                                },
+                                constraints: callable.constraints[1..].to_vec(),
+                                constraint_identities: callable.constraint_identities[1..].to_vec(),
+                                origin: method.name_span,
+                            })
+                        })
+                        .collect::<Vec<_>>(),
+                )
+            })
+            .flatten()
+            .collect()
+    }
+
+    /// Only a declaration-backed, value-kinded scheme with one primary
+    /// dictionary can return its method without introducing extra stages.
+    pub(crate) fn declared_method_value_scheme(&self, signature: &TopLevelPureFunction) -> bool {
+        let Some(identity) = &signature.trait_identity else {
+            return false;
+        };
+        let Some(method) = &signature.trait_method else {
+            return false;
+        };
+        // Materialized Prelude callables are not source declarations in this
+        // module. Their individual ABI proofs remain the separate authority.
+        let declared = self.resolved.declarations.iter().any(|declaration| {
+            let SurfaceDecl::Trait {
+                name_span, methods, ..
+            } = declaration
+            else {
+                return false;
+            };
+            methods.iter().any(|m| m.name == *method)
+                && self.resolved.symbols.iter().any(|symbol| {
+                    symbol.kind == SymbolKind::Trait
+                        && symbol.origin == *name_span
+                        && symbol.canonical.as_ref() == Some(identity)
+                })
+        });
+        if !declared {
+            return false;
+        }
+        self.trait_method_callable(identity, method)
+            .is_some_and(|declaration| {
+                declaration.constraints.len() == 1
+                    && declaration.constraint_identities.as_slice() == [Some(identity.clone())]
+                    && declaration.type_parameters.iter().all(|p| p.arity == 0)
+                    && !declaration.parameters.is_empty()
+            })
+            && signature.constraints.len() == 1
+            && signature.constraint_identities.as_slice() == [Some(identity.clone())]
+            && signature.type_parameters.iter().all(|p| p.arity == 0)
+    }
+
+    pub(crate) fn declared_method_factory_trait(&self, identity: &str) -> bool {
+        self.callables.values().any(|signature| {
+            signature.trait_identity.as_deref() == Some(identity)
+                && self.declared_method_value_scheme(signature)
+        })
+    }
+
     pub(crate) fn local_trait_dispatch(
         &self,
         expression: &SurfaceExpr,

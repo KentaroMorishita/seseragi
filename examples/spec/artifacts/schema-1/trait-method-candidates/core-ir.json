@@ -316,6 +316,64 @@
       }
     }
   ],
+  "traitMethods": [
+    {
+      "traitIdentity": "artifact/trait-method-candidates::trait(Render)",
+      "method": "present",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 109,
+        "end": 116
+      }
+    },
+    {
+      "traitIdentity": "artifact/trait-method-candidates::trait(Describe)",
+      "method": "present",
+      "traitParameters": [
+        "A"
+      ],
+      "signature": {
+        "typeParameters": [],
+        "parameters": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ],
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "constraints": [],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 168,
+        "end": 175
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/trait-method-candidates::badgeLabel",

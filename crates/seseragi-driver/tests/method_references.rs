@@ -1,8 +1,44 @@
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn abstract_method_authority_retains_declaration_binders_and_constraints() {
+    let source = "trait Pick<A> { fn pick<B> value: B -> marker: A -> B where Show<B> }\npub fn probe -> Unit = ()";
+    let module = compile_module(CompileInput::new(
+        "contract-λ.ssrg",
+        "fixture/contracts",
+        source,
+    ))
+    .unwrap();
+    let [declaration] = module.core_ir.trait_methods.as_slice() else {
+        panic!("declaration")
+    };
+    assert_eq!(declaration.trait_identity, "fixture/contracts::trait(Pick)");
+    assert_eq!(declaration.method, "pick");
+    assert_eq!(declaration.trait_parameters[0].name, "A");
+    assert_eq!(declaration.signature.type_parameters[0].name, "B");
+    assert_eq!(declaration.signature.parameters.len(), 2);
+    assert_eq!(
+        declaration.constraints[0].trait_identity.as_deref(),
+        Some("std/prelude::Show")
+    );
+    assert_eq!(declaration.origin.source, "contract-λ.ssrg");
+    let ordinary = compile_module(CompileInput::new(
+        "standard.ssrg",
+        "fixture/standard",
+        "pub fn probe -> String = { let render = show; render 42 }",
+    ))
+    .unwrap();
+    assert!(ordinary.core_ir.trait_methods.is_empty());
+}
+
+#[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-trace.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-defect.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/trait-method-children.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-trace.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-values.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-defect.ssrg"),
@@ -74,6 +110,7 @@ fn method_references_keep_imported_owners_and_child_dictionaries() {
         "scoped-methods",
         "trait-operator-order",
         "generalized-methods",
+        "trait-methods",
     ] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(concat!(

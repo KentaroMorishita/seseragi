@@ -43,6 +43,8 @@ pub struct CoreModule {
     pub structs: Vec<CoreStruct>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<CoreInstance>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub trait_methods: Vec<CoreTraitMethodDeclaration>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -228,6 +230,20 @@ pub struct CoreTraitDispatch {
 pub struct CoreTraitMethodContract {
     pub parameters: Vec<CoreType>,
     pub constraints: Vec<CoreInstanceConstraint>,
+}
+
+/// Declaration authority for a method selected from a primary Parameter.
+/// Trait signature arrows describe its value type, not an implementation's
+/// source arity. Its actual method value retains those implementation stages.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreTraitMethodDeclaration {
+    pub trait_identity: String,
+    pub method: String,
+    pub trait_parameters: Vec<TypeParameter>,
+    pub signature: CoreCallSignature,
+    pub constraints: Vec<CoreInstanceConstraint>,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -700,6 +716,38 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         })
         .collect();
     let instances = lower_instances(&module.source, module.instances);
+    let trait_methods = module
+        .trait_methods
+        .into_iter()
+        .map(|method| CoreTraitMethodDeclaration {
+            trait_identity: method.trait_identity,
+            method: method.method,
+            trait_parameters: method.trait_parameters,
+            signature: CoreCallSignature {
+                type_parameters: method.signature.type_parameters,
+                parameters: method
+                    .signature
+                    .parameters
+                    .into_iter()
+                    .map(types::lower_typed_type)
+                    .collect(),
+                result: types::lower_typed_type(method.signature.result),
+                argument_types: Vec::new(),
+            },
+            constraints: method
+                .constraints
+                .into_iter()
+                .enumerate()
+                .map(|(index, constraint)| {
+                    instances::lower_constraint_with_identity(
+                        constraint,
+                        method.constraint_identities.get(index).cloned().flatten(),
+                    )
+                })
+                .collect(),
+            origin: source_span(&module.source, method.origin),
+        })
+        .collect();
     let mut adts = Vec::new();
     let mut aliases = Vec::new();
     let mut structs = Vec::new();
@@ -918,6 +966,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         aliases,
         structs,
         instances,
+        trait_methods,
         bindings,
         functions,
     }

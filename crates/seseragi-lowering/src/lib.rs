@@ -45,7 +45,7 @@ pub use core::{
     CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern, CoreRecordField,
     CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence, CoreStatement,
     CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch, CoreTraitMethodContract,
-    CoreType,
+    CoreTraitMethodDeclaration, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -269,6 +269,7 @@ mod tests {
                 }],
             }],
             instances: Vec::new(),
+            trait_methods: Vec::new(),
             declarations: Vec::new(),
         };
 
@@ -1055,6 +1056,7 @@ pub fn listLength values: List<Int> -> Int = {
             aliases: Vec::new(),
             structs: Vec::new(),
             instances: Vec::new(),
+            trait_methods: Vec::new(),
             bindings: Vec::new(),
             functions: vec![CoreFunction {
                 symbol: "artifact/calls::invoke".to_owned(),
