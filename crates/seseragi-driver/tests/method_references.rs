@@ -3,6 +3,15 @@ use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-trace.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-defect.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/generalized-method-effects.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/generalized-method-children.ssrg"
+        ),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-references.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-values.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/scoped-method-defect.ssrg"),
@@ -64,6 +73,7 @@ fn method_references_keep_imported_owners_and_child_dictionaries() {
         "method-references",
         "scoped-methods",
         "trait-operator-order",
+        "generalized-methods",
     ] {
         let loaded = seseragi_project::load_local_project(
             std::path::Path::new(concat!(

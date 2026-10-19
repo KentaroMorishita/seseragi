@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-generalized-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/generalized-methods-model@1.0.0#path:vendor/model"
+name = "fixture/generalized-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:7279284e75b6a0b268c5a95925d50b2e8a2786900eb45d7ad9cf5e602b8f0f3e"
+content_digest = "sha256:6a0c49ca48e2550cdb8ab088817bc3438292717201b8017b126184333ba9b199"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-generalized-methods@0.0.0#workspace:."
+name = "fixture/native-generalized-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:cb9845aac6b94fdfcb9395c79909ba1e22ab9e7a094623e89c0bb8f72655a2c4"
+content_digest = "sha256:792f86121640f2dc0cf7108cbf187117e25dc1b9287d55db025dd373f8032577"
+dependencies = [
+  { import = "model", package = "fixture/generalized-methods-model@1.0.0#path:vendor/model" },
+]

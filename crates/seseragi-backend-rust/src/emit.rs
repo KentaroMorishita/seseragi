@@ -1124,6 +1124,10 @@ impl Backend<'_> {
                 if !initializer_in_outer_scope {
                     callable.self_name = Some(name.clone());
                 }
+                if *initializer_in_outer_scope && parameters.is_empty() {
+                    callable.method_value = local::method_argument_type(body)
+                        .filter(|ty| matches!(ty, CoreType::Function { .. }));
+                }
                 let value = self
                     .local_function(&callable, body, scope)
                     .map_err(|error| crate::project::at(&error.message, origin, self.owner))?;

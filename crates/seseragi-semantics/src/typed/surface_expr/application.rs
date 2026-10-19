@@ -225,7 +225,7 @@ fn available_selected_method_value(
         return false;
     };
     let context = context.with_lexical_scope(span);
-    if context.deferred_let_evidence
+    if (context.deferred_let_evidence && !context.deferred_method_value)
         || !arguments.is_empty()
         || dispatch.method_contract.is_some()
         || !deferred_evidence_parameters.is_empty()
@@ -255,8 +255,31 @@ fn available_selected_method_value(
     ) {
         return false;
     }
-    available_method_type(type_ref, &context)
+    (available_method_type(type_ref, &context)
+        || (context.deferred_method_value && standard_method_value_scheme(signature)))
         && available_method_evidence(selected, &dispatch.trait_identity, &context)
+}
+
+/// Bounded dictionary-only alias schemes. Their source signature is the
+/// canonical Prelude contract also checked by the native method-value ABI.
+/// User traits and method-owned constraints require their own signature proof.
+pub(super) fn standard_method_value_scheme(signature: &TopLevelPureFunction) -> bool {
+    let Some(identity) = &signature.trait_identity else {
+        return false;
+    };
+    signature.constraints.len() == 1
+        && signature.constraint_identities.as_slice() == [Some(identity.clone())]
+        && signature.type_parameters.iter().all(|p| p.arity == 0)
+        && matches!(
+            (identity.as_str(), signature.trait_method.as_deref()),
+            ("std/prelude::Eq", Some("eq"))
+                | ("std/prelude::Add", Some("add"))
+                | ("std/prelude::Sub", Some("sub"))
+                | ("std/prelude::Mul", Some("mul"))
+                | ("std/prelude::Div", Some("div"))
+                | ("std/prelude::Rem", Some("rem"))
+                | ("std/prelude::Pow", Some("pow"))
+        )
 }
 
 fn available_method_evidence(

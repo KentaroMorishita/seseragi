@@ -21,11 +21,15 @@ struct Scheme {
 pub(crate) struct InferredLambda {
     pub(crate) value: TypedType,
     arity: usize,
+    method_value_factory: bool,
     pub(crate) parameters: Vec<TypeParameter>,
     pub(crate) constraints: Vec<TypedConstraint>,
     pub(crate) identities: Vec<Option<String>>,
 }
 impl InferredLambda {
+    pub(super) fn is_method_value_factory(&self) -> bool {
+        self.method_value_factory
+    }
     pub(crate) fn callable(
         &self,
         symbol: String,
@@ -148,7 +152,68 @@ pub(crate) fn infer(
                 if context.is_recursive_member(ungrouped.span()) {
                     signature.type_parameters.clear();
                 }
+                let method_value_factory =
+                    super::application::standard_method_value_scheme(&signature)
+                        || (signature.parameters.is_empty()
+                            && signature.constraints.len() == 1
+                            && signature
+                                .constraint_identities
+                                .first()
+                                .is_some_and(|identity| {
+                                    identity.as_deref().is_some_and(|identity| {
+                                        matches!(
+                                            identity,
+                                            "std/prelude::Eq"
+                                                | "std/prelude::Add"
+                                                | "std/prelude::Sub"
+                                                | "std/prelude::Mul"
+                                                | "std/prelude::Div"
+                                                | "std/prelude::Rem"
+                                                | "std/prelude::Pow"
+                                        )
+                                    })
+                                }));
+                if method_value_factory {
+                    // These binders belong to the let scheme, not to a
+                    // same-spelled outer function parameter. Instantiate only
+                    // declaration variables before introducing the new frame.
+                    let substitutions = signature
+                        .type_parameters
+                        .iter_mut()
+                        .enumerate()
+                        .map(|(index, parameter)| {
+                            let old = parameter.name.clone();
+                            let mut name = format!("Let{}T{index}", expression.span().start);
+                            while context
+                                .resolution
+                                .resolved()
+                                .symbols
+                                .iter()
+                                .any(|symbol| symbol.spelling == name)
+                            {
+                                name.push('_');
+                            }
+                            parameter.name = name.clone();
+                            (old, named(&name))
+                        })
+                        .collect();
+                    signature.parameters = signature
+                        .parameters
+                        .iter()
+                        .map(|ty| substitute_type_parameters(ty, &substitutions))
+                        .collect();
+                    signature.result =
+                        substitute_type_parameters(&signature.result, &substitutions);
+                    for constraint in &mut signature.constraints {
+                        constraint.arguments = constraint
+                            .arguments
+                            .iter()
+                            .map(|ty| substitute_type_parameters(ty, &substitutions))
+                            .collect();
+                    }
+                }
                 return Some(InferredLambda {
+                    method_value_factory,
                     value: signature
                         .parameters
                         .iter()
@@ -156,7 +221,14 @@ pub(crate) fn infer(
                         .fold(signature.result.clone(), |result, parameter| {
                             function(parameter.clone(), result)
                         }),
-                    arity: signature.parameters.len(),
+                    // A method alias introduces dictionaries and returns the
+                    // actual selected method. Its source stages are that
+                    // method's stages, not an eta expansion of the trait.
+                    arity: if method_value_factory {
+                        0
+                    } else {
+                        signature.parameters.len()
+                    },
                     parameters: signature.type_parameters,
                     constraints: signature.constraints,
                     identities: signature.constraint_identities,
@@ -256,6 +328,7 @@ pub(crate) fn infer(
         .collect::<BTreeMap<_, _>>();
     Some(InferredLambda {
         arity,
+        method_value_factory: false,
         constraints: constraints
             .into_iter()
             .map(|constraint| TypedConstraint {

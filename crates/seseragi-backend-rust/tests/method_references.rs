@@ -103,6 +103,226 @@ fn scoped_add_method_alias_keeps_its_available_dictionary_stage() {
 }
 
 #[test]
+fn generalized_eq_alias_runs_the_selected_method_first_stage() {
+    execute(
+        "type Mark = | Mark Int\n\
+         instance Eq<Mark> { fn eq left: Mark -> (Mark -> Bool) = {\n\
+           let bad = 9007199254740991 + 1; \\right -> True\n\
+         } }\n\
+         fn selected<A> left: A -> (A -> Bool) where Eq<A> = {\n\
+           let chosen = eq; chosen left\n\
+         }\n\
+         pub effect fn main = do { let saved = selected (Mark 1); println \"unreachable\" }",
+        "generalized-eq-stage",
+        "",
+        70,
+    );
+}
+
+#[test]
+fn generalized_method_factories_preserve_values_children_and_lifetimes() {
+    for (name, source, expected, exit) in [
+        (
+            "values",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-values.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "defect",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-defect.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "effects",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-effects.ssrg"
+            ),
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "children",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/generalized-method-children.ssrg"
+            ),
+            "",
+            70,
+        ),
+    ] {
+        execute(source, &format!("generalized-{name}"), expected, exit);
+    }
+}
+
+#[test]
+fn generalized_method_factories_reject_forged_frames_types_and_stages() {
+    use seseragi_lowering::CoreStatement;
+    let source = "// 雫🙂\npub fn probe -> Bool = { let chosen = eq; chosen 42 43 }";
+    let core = compile_core_module(CompileInput::new("factory-λ.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..18 {
+        let mut changed = core.clone();
+        let CoreExpr::Sequence {
+            statements, result, ..
+        } = &mut changed.functions[0].body
+        else {
+            panic!("sequence")
+        };
+        let CoreStatement::LocalFunction {
+            type_parameters,
+            constraints,
+            parameters,
+            body,
+            ..
+        } = &mut statements[0]
+        else {
+            panic!("method factory")
+        };
+        assert!(parameters.is_empty());
+        let CoreExpr::Call {
+            evidence,
+            trait_dispatch,
+            type_ref,
+            deferred_evidence_parameters,
+            evidence_argument_index,
+            ..
+        } = body
+        else {
+            panic!("selected method")
+        };
+        match mutation {
+            0 => type_parameters[0].name = "counterfeit".into(),
+            1 => type_parameters[0].arity = 1,
+            2 => constraints.clear(),
+            3 => constraints[0].trait_identity = Some("counterfeit::Eq".into()),
+            4 => constraints[0].arguments[0] = CoreType::Hole,
+            5 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+            6 => trait_dispatch.as_mut().unwrap().method = "add".into(),
+            7 => trait_dispatch.as_mut().unwrap().trait_identity = "counterfeit::Eq".into(),
+            8 => *type_ref = CoreType::Hole,
+            9 => {
+                let CoreType::Function { parameter, .. } = type_ref else {
+                    panic!("arrow")
+                };
+                **parameter = CoreType::Hole;
+            }
+            10 => *evidence_argument_index = Some(0),
+            11 => deferred_evidence_parameters.push(CoreType::Hole),
+            12 => constraints.push(constraints[0].clone()),
+            _ => {
+                let CoreExpr::Call {
+                    evidence,
+                    evidence_argument_index,
+                    type_ref,
+                    arguments,
+                    ..
+                } = result.as_mut()
+                else {
+                    panic!("factory call")
+                };
+                match mutation {
+                    13 => *evidence_argument_index = Some(1),
+                    14 => evidence[0].constraint.trait_identity = Some("counterfeit::Eq".into()),
+                    15 => *type_ref = CoreType::Hole,
+                    16 => arguments.clear(),
+                    _ => *evidence_argument_index = None,
+                }
+            }
+        }
+        let error = emit_rust_module(&changed, "probe").unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001", "case {mutation}");
+        assert_eq!(error.origin.unwrap().source, "factory-λ.ssrg");
+    }
+}
+
+#[test]
+fn generalized_method_values_preserve_source_stages_and_single_evaluation() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/generalized-method-trace.ssrg");
+    let core = compile_core_module(CompileInput::new("trace.ssrg", "native/main", source))
+        .unwrap()
+        .core_ir;
+    let artifact = emit_rust_module(&core, "probe").unwrap();
+    let mut rust = artifact.source[..artifact.source.rfind("fn main()").unwrap()].to_owned();
+    let id = |name: &str| {
+        format!(
+            "v_{}",
+            name.bytes().map(|b| format!("{b:02x}")).collect::<String>()
+        )
+    };
+    // Observe ordinary helper entries in a test copy. The implementation's
+    // one-source-parameter method and two-parameter method must keep distinct
+    // stages; a saved partial must not repeat its left argument or first stage.
+    for name in ["left", "right", "first", "lateLeft", "lateRight", "later"] {
+        let start = rust
+            .find(&format!(
+                "fn {}_direct(",
+                id(&format!("native/main::{name}"))
+            ))
+            .unwrap();
+        let offset = start + rust[start..].find("-> V {").unwrap() + "-> V {".len();
+        rust.insert_str(
+            offset,
+            &format!(" TRACE.with(|t| t.borrow_mut().push({name:?})); "),
+        );
+    }
+    rust.push_str(&format!(r#"
+thread_local! {{ static TRACE: RefCell<Vec<&'static str>> = const {{ RefCell::new(Vec::new()) }}; }}
+fn main() {{
+ let result = {}(vec![]).apply(V::Unit);
+ assert_eq!(result.render(), "[True, True, True]");
+ TRACE.with(|t| assert_eq!(&*t.borrow(), &["left", "first", "right", "right", "lateLeft", "lateRight", "later"]));
+ drop(result); clear_dictionaries(); assert_eq!(LIVE.with(Cell::get), 0);
+}}
+"#, id(&artifact.metadata.entry)));
+    let dir =
+        std::env::temp_dir().join(format!("seseragi-generalized-stage-{}", std::process::id()));
+    fs::create_dir(&dir).unwrap();
+    let input = dir.join("program.rs");
+    let executable = dir.join(if cfg!(windows) {
+        "program.exe"
+    } else {
+        "program"
+    });
+    fs::write(&input, rust).unwrap();
+    let built = Command::new("rustc")
+        .args(["--edition=2021", "-O", "-o"])
+        .arg(&executable)
+        .arg(&input)
+        .output()
+        .unwrap();
+    let ran = built
+        .status
+        .success()
+        .then(|| Command::new(&executable).env("PATH", "").output().unwrap());
+    fs::remove_dir_all(&dir).unwrap();
+    assert!(
+        built.status.success(),
+        "{}",
+        String::from_utf8_lossy(&built.stderr)
+    );
+    let ran = ran.unwrap();
+    assert!(
+        ran.status.success(),
+        "{}",
+        String::from_utf8_lossy(&ran.stderr)
+    );
+}
+
+#[test]
 fn bare_methods_preserve_stored_values_and_generalized_aliases() {
     execute(
         include_str!("../../../examples/spec/fixtures/rust-backend/method-references.ssrg"),

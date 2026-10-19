@@ -1,0 +1,21 @@
+type Token = | Token
+instance Show<Token> {
+  fn show value: Token -> String = {
+    let bad = 9007199254740991 + 1
+    "unreachable"
+  }
+}
+
+type Box<F<_>, A> = | Box F<A>
+instance<F<_>, A> Add<Box<F, A>, Box<F, A>, Box<F, A>> where Show<F<A>> {
+  fn add left: Box<F, A> -> (Box<F, A> -> Box<F, A>) = {
+    let text = match left { Box value -> show value }
+    \right -> left
+  }
+}
+
+pub effect fn main = do {
+  let operator = add
+  let saved: Box<Maybe, Token> -> Box<Maybe, Token> = operator (Box (Just Token))
+  println "unreachable"
+}

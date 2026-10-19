@@ -43,6 +43,7 @@ pub(crate) struct PureExpressionContext<'a> {
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     deferred_let_evidence: bool,
+    deferred_method_value: bool,
     resolution: &'a TypedResolution<'a>,
     expected: Option<SemanticValueType>,
 }
@@ -56,6 +57,7 @@ impl<'a> PureExpressionContext<'a> {
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
             deferred_let_evidence: false,
+            deferred_method_value: false,
             resolution,
             expected: None,
         }
@@ -69,6 +71,7 @@ impl<'a> PureExpressionContext<'a> {
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             deferred_let_evidence: self.deferred_let_evidence,
+            deferred_method_value: self.deferred_method_value,
             resolution: self.resolution,
             expected,
         }
@@ -116,7 +119,14 @@ impl<'a> PureExpressionContext<'a> {
             return false;
         };
         if self.deferred_let_evidence {
-            return false;
+            return self.deferred_method_value
+                && self.evidence_parameters.iter().any(|parameter| {
+                    parameter.deferred_parameter_matches(
+                        index,
+                        trait_identity,
+                        &selected.constraint,
+                    )
+                });
         }
         let arguments = selected
             .constraint
@@ -680,6 +690,7 @@ impl<'a> PureExpressionContext<'a> {
         if inferred.constraints.is_empty() {
             return context;
         }
+        let method_value_factory = inferred.is_method_value_factory();
         let constraints = inferred
             .constraints
             .into_iter()
@@ -696,6 +707,7 @@ impl<'a> PureExpressionContext<'a> {
             super::call_evidence::scoped_resolved_call_evidence(&constraints, self.resolution, 0),
         );
         context.deferred_let_evidence = true;
+        context.deferred_method_value = method_value_factory;
         context
     }
 
@@ -709,6 +721,7 @@ impl<'a> PureExpressionContext<'a> {
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             deferred_let_evidence: self.deferred_let_evidence,
+            deferred_method_value: self.deferred_method_value,
             resolution: self.resolution,
             expected: self.expected.clone(),
         }
@@ -720,6 +733,7 @@ impl<'a> PureExpressionContext<'a> {
     ) -> Self {
         self.evidence_parameters = evidence_parameters;
         self.deferred_let_evidence = false;
+        self.deferred_method_value = false;
         self
     }
 }

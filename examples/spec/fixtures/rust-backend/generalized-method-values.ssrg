@@ -1,0 +1,43 @@
+type Box<A> = | Box A
+
+instance<A> Add<Box<A>, Box<A>, Box<A>> where Add<A, A, A> {
+  fn add left: Box<A> -> (Box<A> -> Box<A>) = match left {
+    Box value -> {
+      let plus = add
+      let saved: A -> A = plus value
+      \right -> match right { Box other -> Box (saved other) }
+    }
+  }
+}
+
+fn choose<A> left: A -> (A -> Bool) where Eq<A> = {
+  let equal = eq
+  let alias = equal
+  alias left
+}
+
+fn chooseAdd<A> left: A -> (A -> A) where Add<A, A, A> = {
+  let plus = add
+  let alias = plus
+  alias left
+}
+
+pub fn probe -> String = {
+  let plus = add
+  let alias = plus
+  let ints: Int -> Int = alias 40
+  let strings: String -> String = alias "λ"
+  let equal = eq
+  let compareInts = equal 42
+  let compareChars = equal '🙂'
+  let addBox: Box<Int> -> Box<Int> = chooseAdd (Box 40)
+  let Box total = addBox (Box 3)
+  let selectedEq: Int -> Bool = choose 40
+  show [
+    ints 2,
+    ints 3,
+    total
+  ] + ":" + strings "🙂" + ":" + show (compareInts 42) + ":" + show (compareChars '🙂') + ":" + show (selectedEq 41)
+}
+
+pub effect fn main = do { println (probe ()) }
