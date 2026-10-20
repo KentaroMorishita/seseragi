@@ -130,6 +130,14 @@ impl ImportedTypeContext {
                     return TypedType::Named { name, arguments };
                 }
                 match bindings.iter().find(|binding| binding.spelling == name) {
+                    Some(binding)
+                        if name == "Unit"
+                            && binding.canonical == "std/prelude::Unit"
+                            && arguments.is_empty()
+                            && !self.canonical_unit =>
+                    {
+                        TypedType::Named { name, arguments }
+                    }
                     Some(binding) => TypedType::ExternalNamed {
                         name: localized_name,
                         canonical: binding.canonical.clone(),
@@ -256,6 +264,17 @@ impl ImportedTypeContext {
                     });
                 }
                 if let Some(binding) = bindings.iter().find(|binding| binding.spelling == *name) {
+                    // An anonymous parameter can add this binding to a
+                    // signature whose Effect success still uses the checked
+                    // primitive encoding. Localize both encodings together;
+                    // a nominal owner or quantified slot never takes this path.
+                    if name == "Unit"
+                        && binding.canonical == "std/prelude::Unit"
+                        && arguments.is_empty()
+                        && !self.canonical_unit
+                    {
+                        return Some(SemanticTypeKey::Other);
+                    }
                     return Some(self.canonical_owners.get(&binding.canonical).map_or_else(
                         || SemanticTypeKey::ExternalNominal {
                             canonical: binding.canonical.clone(),
@@ -388,5 +407,90 @@ pub(super) fn flatten_function(type_ref: InterfaceType) -> (Vec<InterfaceType>, 
             }
             result => return (parameters, result),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_anonymous_unit_binding_does_not_change_a_primitive_return_or_a_scheme_slot() {
+        let binding = ExternalTypeBinding {
+            arity: Some(0),
+            spelling: "Unit".to_owned(),
+            canonical: "std/prelude::Unit".to_owned(),
+            provider: None,
+        };
+        for source in ["", "type Unit = | LocalUnit\n"] {
+            let resolved = crate::resolve_module("unit-import.ssrg", source);
+            let types = ImportedTypeContext::new(&resolved);
+            let named = InterfaceType::Named {
+                name: "Unit".to_owned(),
+                arguments: vec![],
+            };
+            let ordinary = types
+                .semantic_value(
+                    named.clone(),
+                    "fixture/model",
+                    &BTreeSet::new(),
+                    std::slice::from_ref(&binding),
+                )
+                .unwrap();
+            if source.is_empty() {
+                assert_eq!(ordinary.key, SemanticTypeKey::Other);
+                assert!(
+                    matches!(&ordinary.type_ref, TypedType::Named { name, arguments } if name == "Unit" && arguments.is_empty())
+                );
+            } else {
+                assert!(
+                    matches!(&ordinary.key, SemanticTypeKey::ExternalNominal { canonical, arguments } if canonical == "std/prelude::Unit" && arguments.is_empty())
+                );
+            }
+            let quantified = types
+                .semantic_value(
+                    named,
+                    "fixture/model",
+                    &BTreeSet::from(["Unit".to_owned()]),
+                    std::slice::from_ref(&binding),
+                )
+                .unwrap();
+            assert_eq!(
+                quantified.key,
+                SemanticTypeKey::SchemeParameter("Unit".to_owned())
+            );
+            assert!(
+                matches!(&quantified.type_ref, TypedType::Named { name, arguments } if name == "Unit" && arguments.is_empty())
+            );
+        }
+    }
+
+    #[test]
+    fn a_nominal_unit_binding_cannot_use_the_intrinsic_primitive_encoding() {
+        let resolved = crate::resolve_module("unit-import.ssrg", "");
+        let types = ImportedTypeContext::new(&resolved);
+        let binding = ExternalTypeBinding {
+            arity: Some(0),
+            spelling: "Unit".to_owned(),
+            canonical: "fixture/model::Unit".to_owned(),
+            provider: None,
+        };
+        let value = types
+            .semantic_value(
+                InterfaceType::Named {
+                    name: "Unit".to_owned(),
+                    arguments: vec![],
+                },
+                "fixture/model",
+                &BTreeSet::new(),
+                &[binding],
+            )
+            .unwrap();
+        assert!(
+            matches!(value.type_ref, TypedType::ExternalNamed { canonical, .. } if canonical == "fixture/model::Unit")
+        );
+        assert!(
+            matches!(value.key, SemanticTypeKey::ExternalNominal { canonical, .. } if canonical == "fixture/model::Unit")
+        );
     }
 }

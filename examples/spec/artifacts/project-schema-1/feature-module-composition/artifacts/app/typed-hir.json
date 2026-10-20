@@ -2880,9 +2880,8 @@
                             "arguments": []
                           },
                           {
-                            "kind": "external-named",
+                            "kind": "named",
                             "name": "Unit",
-                            "canonical": "std/prelude::Unit",
                             "arguments": []
                           }
                         ]
@@ -2935,9 +2934,8 @@
                               "arguments": []
                             },
                             {
-                              "kind": "external-named",
+                              "kind": "named",
                               "name": "Unit",
-                              "canonical": "std/prelude::Unit",
                               "arguments": []
                             }
                           ]
@@ -3910,9 +3908,8 @@
                                 "arguments": []
                               },
                               {
-                                "kind": "external-named",
+                                "kind": "named",
                                 "name": "Unit",
-                                "canonical": "std/prelude::Unit",
                                 "arguments": []
                               }
                             ]
