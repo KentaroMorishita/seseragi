@@ -5,5 +5,5 @@ $ssrg$assertUnicodeVersion("17.0.0")
 type Score =
   | { readonly tag: "ScoreValue" };
 const ScoreValue: Score = { tag: "ScoreValue" } as const;
-export const __ssrg$instance$Render$0 = { "render": (prefix: Prefix) => (value: Score) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => "score" } as const;
+export const __ssrg$instance$Render$0 = { "render": (prefix: Prefix) => (value: Score) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => "score", "__ssrg$method$value$render": (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => (prefix: Prefix) => (value: Score) => "score" } as const;
 export const status = (unit: undefined) => "contract ready"

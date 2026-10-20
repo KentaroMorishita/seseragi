@@ -55,6 +55,259 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
 }
 
 #[test]
+fn method_owned_where_alias_runs_the_selected_first_stage() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg");
+    for (name, source) in [
+        ("captured", source.to_string()),
+        (
+            "generalized",
+            source.replace(
+                "let chosen: F<A> -> F<A> -> Bool = pick",
+                "let chosen = pick",
+            ),
+        ),
+        (
+            "closed",
+            source.replace(
+                "let saved = selected<Maybe, Int> (Just 1)",
+                "let chosen: Maybe<Int> -> Maybe<Int> -> Bool = pick; let saved = chosen (Just 1)",
+            ),
+        ),
+    ] {
+        execute(&source, &format!("where-{name}"), "", 70);
+    }
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.ssrg"),
+        "where-values",
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.stdout"),
+        0,
+    );
+}
+
+#[test]
+fn method_owned_where_values_keep_managed_edges_and_evidence_frames() {
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-effects.ssrg"),
+        "where-effects",
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-effects.stdout"),
+        0,
+    );
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-children.ssrg"),
+        "where-children",
+        "",
+        70,
+    );
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.ssrg"),
+        "where-cold",
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.stdout"),
+        0,
+    );
+}
+
+#[test]
+fn constrained_method_values_keep_never_nominal_and_binder_owners() {
+    execute(
+        "type Never = | Never Int\ntrait Pick<T> { fn pick<A> left: T -> right: A -> String where Show<A> }\ninstance Pick<Never> { fn pick<A> left: Never -> (A -> String) where Show<A> = \\right -> show right }\nfn capture<T, A> left: T -> (A -> String) where Pick<T>, Show<A> = { let chosen: T -> A -> String = pick; chosen left }\npub effect fn main = do { let held = capture<Never, Int> (Never 1); println (held 7) }",
+        "where-never-nominal", "7\n", 0,
+    );
+    execute(
+        "type Tag = | Tag\ntrait Pick<T> { fn pick<A> left: T -> right: A -> String where Show<A> }\ninstance Pick<Tag> { fn pick<A> left: Tag -> (A -> String) where Show<A> = \\right -> show right }\nfn capture<Never> value: Never -> (Never -> String) where Show<Never> = { let chosen: Tag -> Never -> String = pick; chosen Tag }\npub effect fn main = do { let held = capture 1; println (held 7) }",
+        "where-never-binder", "7\n", 0,
+    );
+}
+
+#[test]
+fn method_owned_where_values_reject_forged_contracts_kinds_and_frames() {
+    use seseragi_lowering::CoreStatement;
+    for generalized in [false, true] {
+        let mut source =
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg")
+                .to_string();
+        if generalized {
+            source = source.replace(
+                "let chosen: F<A> -> F<A> -> Bool = pick",
+                "let chosen = pick",
+            );
+        }
+        let core = compile_core_module(CompileInput::new(
+            "method-where-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "main").unwrap();
+        for mutation in 0..34 {
+            let mut changed = core.clone();
+            let declaration = &mut changed.trait_methods[0];
+            match mutation {
+                0 => declaration.constraints.clear(),
+                1 => declaration
+                    .constraints
+                    .push(declaration.constraints[0].clone()),
+                2 => declaration.constraints[0].trait_identity = Some("std/prelude::Debug".into()),
+                3 => declaration.signature.type_parameters[0].arity = 1,
+                4 => declaration.trait_parameters[0].arity = 0,
+                5 => declaration.signature.type_parameters[0].name = "F".into(),
+                6 => declaration.signature.parameters[0] = CoreType::Hole,
+                7 => declaration.signature.result = CoreType::Hole,
+                8 => declaration.signature.parameters.clear(),
+                9 => declaration.signature.argument_types.push(CoreType::Hole),
+                10 => changed.trait_methods.clear(),
+                26..=33 => {
+                    let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+                        &mut changed.instances[0].implementation
+                    else {
+                        panic!("provider")
+                    };
+                    let method = &mut methods[0];
+                    match mutation {
+                        26 => method.constraints.clear(),
+                        27 => {
+                            method.constraints[0].trait_identity = Some("std/prelude::Debug".into())
+                        }
+                        28 => {
+                            method.constraints[0].arguments[0] = CoreType::Named {
+                                name: "String".into(),
+                                arguments: vec![],
+                            }
+                        }
+                        29 => method.type_parameters[0].arity = 1,
+                        30 => method
+                            .type_parameters
+                            .push(method.type_parameters[0].clone()),
+                        31 => method.parameters.clear(),
+                        32 => method.constraints.push(method.constraints[0].clone()),
+                        _ => method.parameters[0].type_ref = CoreType::Hole,
+                    }
+                }
+                _ => {
+                    let function = changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::selected"))
+                        .unwrap();
+                    let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                        panic!("body")
+                    };
+                    let value = match &mut statements[0] {
+                        CoreStatement::PureLet { value, .. } => value,
+                        CoreStatement::LocalFunction { body, .. } => body,
+                        _ => panic!("factory"),
+                    };
+                    let CoreExpr::Call {
+                        evidence,
+                        trait_dispatch,
+                        type_ref,
+                        deferred_evidence_parameters,
+                        evidence_argument_index,
+                        ..
+                    } = value
+                    else {
+                        panic!("method")
+                    };
+                    let dispatch = trait_dispatch.as_mut().unwrap();
+                    match mutation {
+                        11 => dispatch.method = "invented".into(),
+                        12 => dispatch.trait_identity = "counterfeit::trait(Pick)".into(),
+                        13 => dispatch.method_contract = None,
+                        14 => dispatch
+                            .method_contract
+                            .as_mut()
+                            .unwrap()
+                            .parameters
+                            .clear(),
+                        15 => {
+                            dispatch.method_contract.as_mut().unwrap().parameters[0] =
+                                CoreType::Hole
+                        }
+                        16 => {
+                            dispatch.method_contract.as_mut().unwrap().constraints[1]
+                                .trait_identity = Some("std/prelude::Debug".into())
+                        }
+                        17 => {
+                            dispatch.method_contract.as_mut().unwrap().constraints[1].arguments[0] =
+                                CoreType::Named {
+                                    name: "Bool".into(),
+                                    arguments: vec![],
+                                }
+                        }
+                        18 => evidence[1].evidence = CoreInstanceEvidence::Parameter { index: 0 },
+                        19 => evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 },
+                        20 => {
+                            evidence[1].constraint.trait_identity =
+                                Some("std/prelude::Debug".into())
+                        }
+                        21 => {
+                            evidence.pop();
+                        }
+                        22 => *type_ref = CoreType::Hole,
+                        23 => *evidence_argument_index = Some(0),
+                        24 => deferred_evidence_parameters.push(CoreType::Hole),
+                        _ => {
+                            let fake = CoreType::Named {
+                                name: "Bool".into(),
+                                arguments: vec![],
+                            };
+                            evidence[1].constraint.arguments[0] = fake.clone();
+                            dispatch.method_contract.as_mut().unwrap().constraints[1].arguments
+                                [0] = fake;
+                        }
+                    }
+                }
+            }
+            let error = match emit_rust_module(&changed, "main") {
+                Err(error) => error,
+                Ok(_) => {
+                    panic!("accepted method-where mutation {mutation}, generalized {generalized}")
+                }
+            };
+            assert_eq!(
+                error.code, "SES-RUST-0001",
+                "mutation {mutation}, generalized {generalized}"
+            );
+            assert_eq!(error.origin.as_ref().unwrap().source, "method-where-λ.ssrg");
+        }
+    }
+}
+
+#[test]
+fn parameter_method_providers_cannot_add_undeclared_dictionary_stages() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg");
+    let mut core = compile_core_module(CompileInput::new(
+        "undeclared-where-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+        &mut core.instances[0].implementation
+    else {
+        panic!("provider")
+    };
+    methods[0]
+        .constraints
+        .push(seseragi_lowering::CoreInstanceConstraint {
+            name: "Show".into(),
+            trait_identity: Some("std/prelude::Show".into()),
+            arguments: vec![CoreType::Named {
+                name: "A".into(),
+                arguments: vec![],
+            }],
+        });
+    let result = emit_rust_module(&core, "main");
+    assert!(
+        result.is_err(),
+        "accepted undeclared provider dictionary stage"
+    );
+}
+
+#[test]
 fn selected_bare_methods_run_their_first_stage_when_applied() {
     for (method, implementation, result) in [
         ("add", "instance Add<Mark, Mark, Mark> { fn add left: Mark -> (Mark -> Mark) = { let bad = 9007199254740991 + 1; \\right -> left } }", "Mark"),

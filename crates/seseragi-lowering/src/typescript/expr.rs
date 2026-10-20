@@ -443,6 +443,21 @@ pub(super) fn lower_core_expr_to_typescript(
                     .collect::<Vec<_>>();
                 let mut deferred = Vec::new();
                 let mut result_type = type_ref.clone();
+                if arguments.is_empty()
+                    && dispatch
+                        .method_contract
+                        .as_ref()
+                        .is_some_and(|contract| !contract.parameters.is_empty())
+                {
+                    return TypeScriptExpr::CheckedResult {
+                        value: Box::new(TypeScriptExpr::DictionaryCall {
+                            dictionary: Box::new(selected),
+                            method: crate::method_value_factory_name(&dispatch.method),
+                            arguments: method_evidence,
+                        }),
+                        type_ref: type_ref_from_core_type(&type_ref, imported_types),
+                    };
+                }
                 let supplied = arguments.len();
                 let index = if let Some(contract) = &dispatch.method_contract {
                     for (index, parameter) in

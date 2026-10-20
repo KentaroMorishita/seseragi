@@ -98,8 +98,8 @@ impl Backend<'_> {
     ) -> Option<usize> {
         if let CoreType::Named { name, arguments } = ty {
             if arguments.is_empty() {
-                if let Some((arity, _)) = scope.type_parameters.get(name) {
-                    return Some(*arity as usize);
+                if let Some(arity) = scope.type_parameter_arity(name) {
+                    return Some(arity as usize);
                 }
             }
         }

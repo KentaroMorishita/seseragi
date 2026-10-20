@@ -28,7 +28,7 @@ impl Backend<'_> {
         };
         if !callable.parameters.is_empty()
             || callable.self_name.is_some()
-            || callable.constraints.len() != 1
+            || callable.constraints.is_empty()
             || (callable.variables.values().any(|arity| *arity != 0)
                 && !callable
                     .constraints
@@ -38,20 +38,13 @@ impl Backend<'_> {
             || !deferred_evidence_parameters.is_empty()
             || !deferred_evidence_type_constructor_parameters.is_empty()
             || evidence_argument_index.is_some()
-            || evidence.len() != 1
-            || !matches!(
-                evidence[0].evidence,
-                CoreInstanceEvidence::Parameter { index: 0 }
-            )
-            || evidence[0].constraint.name != callable.constraints[0].name
-            || evidence[0].constraint.arguments != callable.constraints[0].arguments
-            || evidence[0]
-                .constraint
-                .trait_identity
-                .as_ref()
-                .is_some_and(|identity| {
-                    Some(identity) != callable.constraints[0].trait_identity.as_ref()
-                })
+            || evidence.len() != callable.constraints.len()
+            || evidence.iter().zip(&callable.constraints).enumerate().any(|(index, (selected, constraint))| {
+                !matches!(selected.evidence, CoreInstanceEvidence::Parameter { index: actual } if actual == index)
+                    || selected.constraint.name != constraint.name
+                    || selected.constraint.arguments != constraint.arguments
+                    || selected.constraint.trait_identity.as_ref().is_some_and(|identity| Some(identity) != constraint.trait_identity.as_ref())
+            })
             || (trait_dispatch.is_none()
                 && !scope
                     .callables
@@ -62,24 +55,23 @@ impl Backend<'_> {
             return Err("Rust backend: unproven dictionary-only method factory".into());
         }
         if let Some(dispatch) = trait_dispatch {
-            if dispatch.method_contract.is_some()
-                || !matches!(
-                    (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
-                    ("std/prelude::Eq", "eq")
-                        | ("std/prelude::Ord", "compare")
-                        | ("std/prelude::Add", "add")
-                        | ("std/prelude::Sub", "sub")
-                        | ("std/prelude::Mul", "mul")
-                        | ("std/prelude::Div", "div")
-                        | ("std/prelude::Rem", "rem")
-                        | ("std/prelude::Pow", "pow")
-                ) && !self.module.trait_methods.iter().any(|declaration| {
-                    declaration.trait_identity == dispatch.trait_identity
-                        && declaration.method == dispatch.method
-                        && declaration.constraints.is_empty()
-                        && !declaration.signature.parameters.is_empty()
-                })
-            {
+            if !matches!(
+                (dispatch.trait_identity.as_str(), dispatch.method.as_str()),
+                ("std/prelude::Eq", "eq")
+                    | ("std/prelude::Ord", "compare")
+                    | ("std/prelude::Add", "add")
+                    | ("std/prelude::Sub", "sub")
+                    | ("std/prelude::Mul", "mul")
+                    | ("std/prelude::Div", "div")
+                    | ("std/prelude::Rem", "rem")
+                    | ("std/prelude::Pow", "pow")
+            ) && !self.module.trait_methods.iter().any(|declaration| {
+                declaration.trait_identity == dispatch.trait_identity
+                    && declaration.method == dispatch.method
+                    && declaration.constraints.len() + 1 == evidence.len()
+                    && dispatch.method_contract.is_some() == !declaration.constraints.is_empty()
+                    && !declaration.signature.parameters.is_empty()
+            }) {
                 return Err("Rust backend: unproven method factory signature".into());
             }
         }
@@ -115,7 +107,7 @@ impl Backend<'_> {
                 .ok_or("Rust backend: unknown method factory declaration")?;
             if declaration.is_effect
                 || !declaration.parameters.is_empty()
-                || declaration.constraints.len() != 1
+                || declaration.constraints.is_empty()
                 || (declaration.type_parameters.iter().any(|p| p.arity != 0)
                     && !declaration
                         .constraints
@@ -202,7 +194,6 @@ impl Backend<'_> {
     fn declared_constructor_factory(&self, constraint: &CoreInstanceConstraint) -> bool {
         self.module.trait_methods.iter().any(|declaration| {
             Some(&declaration.trait_identity) == constraint.trait_identity.as_ref()
-                && declaration.constraints.is_empty()
                 && !declaration.signature.parameters.is_empty()
                 && declaration
                     .trait_parameters

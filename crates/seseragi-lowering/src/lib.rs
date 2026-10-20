@@ -33,6 +33,12 @@ mod sum_ops;
 mod text_ops;
 mod trait_method_ops;
 mod typescript;
+/// Compiler-private dictionary entry for specializing a source method's own
+/// dictionaries before exposing its actual source stages. Existing call ABI
+/// entries keep their source-then-dictionary order.
+pub fn method_value_factory_name(method: &str) -> String {
+    format!("__ssrg$method$value${method}")
+}
 pub use reachability::{retain_application, ApplicationReachability, RetainedDeclaration};
 mod web_html_ops;
 

@@ -1,0 +1,61 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+trait Render<F<_>> {
+  fn render<A> left: A -> right: F<A> -> String where Show<A>
+}
+type Token = | Token Int
+instance Show<Token> {
+  fn show value: Token -> String = match value { Token n -> "token:" + show n }
+}
+type Watch<P, A> = | Watch (Ref<Watch<P, A> -> String>, P, A)
+instance<P> Render<Watch<P>> where Show<P> {
+  fn render<A> left: A -> (Watch<P, A> -> String) where Show<A> = {
+    let prefix = show left
+    let cold = effects.succeed prefix
+    \right -> match right {
+      Watch (callbacks, tag, item) -> {
+        let retained = cold
+        prefix + ":" + show tag + ":" + show item
+      }
+    }
+  }
+}
+fn capture<F<_>, A> left: A -> (F<A> -> String) where Render<F>, Show<A> = {
+  let chosen = render
+  chosen left
+}
+effect fn delayed = do { println "cold"; effects.succeed 42 }
+effect fn acquire held: (Watch<Token, Int> -> String) -> (Watch<Token, Int> -> String) with Console fails ConsoleError = do {
+  println "acquire"
+  effects.succeed held
+}
+fn marker -> Int = 11
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch<Token, Int> -> "empty")
+  released <- refs.make 0
+  let value = Watch (callbacks, Token 7, marker ())
+  let cold = delayed ()
+  let method = capture<Watch<Token>, Int> 42
+  let saved = \right: Watch<Token, Int> -> {
+    let first = method right
+    method value
+  }
+  refs.set saved callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (acquire saved) (\held: (Watch<Token, Int> -> String) -> effects.recover (\error: ConsoleError -> effects.succeed ()) $ do {
+      println "release"
+      refs.set 1 released
+    })
+    again <- refs.get callbacks
+    answer <- cold
+    println (show answer)
+    println (again value)
+    println (saved value)
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

@@ -1,6 +1,55 @@
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn method_owned_where_alias_keeps_primary_and_child_frames_without_source_eta() {
+    use seseragi_lowering::{CoreExpr, CoreStatement};
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg");
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("method-where-λ.ssrg", "fixture/method-where", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let function = compiled
+            .core_ir
+            .functions
+            .iter()
+            .find(|f| f.symbol.ends_with("::selected"))
+            .unwrap();
+        let CoreExpr::Sequence { statements, .. } = &function.body else {
+            panic!("body")
+        };
+        let CoreStatement::PureLet { value, .. } = &statements[0] else {
+            panic!("alias")
+        };
+        let CoreExpr::Call {
+            arguments,
+            evidence,
+            trait_dispatch: Some(dispatch),
+            ..
+        } = value
+        else {
+            panic!("method was eta-expanded")
+        };
+        assert!(arguments.is_empty());
+        assert_eq!(evidence.len(), 2);
+        assert!(matches!(
+            evidence[0].evidence,
+            seseragi_lowering::CoreInstanceEvidence::Parameter { index: 0 }
+        ));
+        assert!(matches!(
+            evidence[1].evidence,
+            seseragi_lowering::CoreInstanceEvidence::Parameter { index: 1 }
+        ));
+        assert_eq!(
+            dispatch.method_contract.as_ref().unwrap().parameters.len(),
+            2
+        );
+    }
+}
+
+#[test]
 fn method_owned_constructor_alias_preserves_the_checked_method_value() {
     use seseragi_lowering::{CoreExpr, CoreStatement};
     let source =
@@ -97,6 +146,11 @@ fn abstract_method_authority_retains_declaration_binders_and_constraints() {
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-effects.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-children.ssrg"),
         include_str!(
             "../../../examples/spec/fixtures/rust-backend/method-constructor-children.ssrg"
         ),
@@ -194,6 +248,7 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
     for fixture in [
+        "method-wheres",
         "method-constructors",
         "constructor-methods",
         "ord-methods",

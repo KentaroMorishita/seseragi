@@ -349,10 +349,8 @@ impl<'a> TypedResolution<'a> {
             .collect()
     }
 
-    /// A checked source declaration with one primary dictionary can return its
-    /// method without introducing extra source stages. Both trait and method
-    /// binders retain the kinds from that declaration. Method-owned constraints
-    /// still need their separate dictionary-introduction proof.
+    /// A checked source declaration can return its method after introducing
+    /// the primary and method-owned dictionaries, without source eta stages.
     pub(crate) fn declared_method_value_scheme(&self, signature: &TopLevelPureFunction) -> bool {
         let Some(identity) = &signature.trait_identity else {
             return false;
@@ -395,12 +393,15 @@ impl<'a> TypedResolution<'a> {
         }
         self.trait_method_callable(identity, method)
             .is_some_and(|declaration| {
-                declaration.constraints.len() == 1
-                    && declaration.constraint_identities.as_slice() == [Some(identity.clone())]
+                declaration.constraint_identities.first() == Some(&Some(identity.clone()))
+                    && declaration
+                        .constraint_identities
+                        .iter()
+                        .all(Option::is_some)
+                    && declaration.constraint_identities == signature.constraint_identities
+                    && declaration.constraints.len() == signature.constraints.len()
                     && !declaration.parameters.is_empty()
             })
-            && signature.constraints.len() == 1
-            && signature.constraint_identities.as_slice() == [Some(identity.clone())]
     }
 
     pub(crate) fn declared_method_factory_trait(&self, identity: &str) -> bool {
