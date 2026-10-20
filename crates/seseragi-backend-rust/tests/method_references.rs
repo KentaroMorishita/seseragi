@@ -3,6 +3,115 @@ use seseragi_driver::{compile_core_module, CompileInput};
 use seseragi_lowering::{CoreExpr, CoreInstanceEvidence, CoreType};
 use std::{fs, process::Command};
 
+#[test]
+fn implicit_unit_methods_keep_the_unit_stage_cold_values_and_managed_edges() {
+    for (name, source, stdout, exit) in [
+        (
+            "values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-values.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-values.stdout"),
+            0,
+        ),
+        (
+            "defect",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-defect.ssrg"),
+            "",
+            70,
+        ),
+        (
+            "cold",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-cold.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-cold.stdout"),
+            0,
+        ),
+        (
+            "effects",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-effects.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-effects.stdout"),
+            0,
+        ),
+    ] {
+        execute(source, &format!("implicit-unit-{name}"), stdout, exit);
+    }
+}
+
+#[test]
+fn implicit_unit_method_contracts_reject_forged_source_stages_and_owners() {
+    use seseragi_lowering::CoreInstanceImplementation;
+    let source = "trait Ready<T> { fn ready<A> -> (T -> A -> String) where Show<A> }\ninstance Ready<Int> { fn ready<A> -> (Int -> A -> String) where Show<A> = \\left -> \\right -> show right }\nfn selected<T, A> -> (T -> A -> String) where Ready<T>, Show<A> = { let saved: Unit -> T -> A -> String = ready; saved () }\npub fn probe -> String = { let first: Int -> Int -> String = selected (); let next = first 7; next 9 }\n";
+    let core = compile_core_module(CompileInput::new(
+        "implicit-unit-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    for mutation in 0..16 {
+        let mut changed = core.clone();
+        match mutation {
+            0 => changed.trait_methods[0].signature.parameters.clear(),
+            1 => changed.trait_methods[0]
+                .signature
+                .parameters
+                .push(CoreType::Hole),
+            2 => changed.trait_methods[0].signature.parameters[0] = CoreType::Hole,
+            3 => {
+                changed.trait_methods[0].signature.parameters[0] = CoreType::ExternalNamed {
+                    name: "Unit".into(),
+                    canonical: "counterfeit::Unit".into(),
+                    arguments: vec![],
+                }
+            }
+            4 => {
+                changed.trait_methods[0].signature.parameters[0] = CoreType::ExternalNamed {
+                    name: "Unit".into(),
+                    canonical: "std/prelude::Unit".into(),
+                    arguments: vec![CoreType::Hole],
+                }
+            }
+            5 => changed.trait_methods[0]
+                .signature
+                .argument_types
+                .push(CoreType::Hole),
+            6 => changed.trait_methods[0].signature.type_parameters[0].arity = 1,
+            7 => changed.trait_methods[0].constraints.clear(),
+            8 => {
+                changed.trait_methods[0].constraints[0].trait_identity =
+                    Some("std/prelude::Debug".into())
+            }
+            9 => changed.trait_methods.clear(),
+            _ => {
+                let CoreInstanceImplementation::UserDefined { methods } =
+                    &mut changed.instances[0].implementation
+                else {
+                    panic!("user provider")
+                };
+                match mutation {
+                    10 => methods[0].parameters.clear(),
+                    11 => methods[0].parameters[0].type_ref = CoreType::Hole,
+                    12 => {
+                        methods[0].parameters[0].type_ref = CoreType::ExternalNamed {
+                            name: "Unit".into(),
+                            canonical: "counterfeit::Unit".into(),
+                            arguments: vec![],
+                        }
+                    }
+                    13 => methods[0].constraints.clear(),
+                    14 => {
+                        methods[0].constraints[0].trait_identity = Some("std/prelude::Debug".into())
+                    }
+                    _ => methods[0].type_parameters[0].arity = 1,
+                }
+            }
+        }
+        let error = emit_rust_module(&changed, "probe")
+            .expect_err(&format!("forged Unit method {mutation}"));
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(error.origin.is_some(), "{mutation}: {error}");
+    }
+}
+
 fn execute(source: &str, name: &str, stdout: &str, code: i32) {
     let core = compile_core_module(CompileInput::new(
         "method-reference-λ.ssrg",

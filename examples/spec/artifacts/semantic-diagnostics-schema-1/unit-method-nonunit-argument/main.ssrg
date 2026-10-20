@@ -1,0 +1,3 @@
+trait Ready<A> { fn ready -> Int }
+instance Ready<Int> { fn ready -> Int = 7 }
+pub fn probe -> Int = ready<Int> 1

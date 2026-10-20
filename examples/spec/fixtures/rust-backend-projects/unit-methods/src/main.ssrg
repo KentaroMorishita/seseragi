@@ -1,0 +1,8 @@
+import { selected } from "./facade"
+
+pub fn probe -> String = {
+  let held: Int -> String = selected ()
+  held 7 + ":" + held 9
+}
+
+pub effect fn main = println (probe ())

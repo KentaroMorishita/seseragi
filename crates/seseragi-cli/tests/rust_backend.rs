@@ -78,6 +78,21 @@ fn incomplete_instance_contracts_reject_before_emission_or_execution() {
         ("schema-1", "incomplete-trait-method", "SES-P0001"),
         (
             "semantic-diagnostics-schema-1",
+            "unit-method-nonunit-argument",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "unit-method-extra-argument",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "unit-method-nominal-argument",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
             "implicit-unit-provider-mismatch",
             "SES-T0101",
         ),
@@ -233,6 +248,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("method-constructors", 3),
         ("method-direct-wheres", 3),
         ("unit-providers", 3),
+        ("unit-methods", 3),
         ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -1241,6 +1257,36 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             70,
         ),
         (
+            "unit-method-values",
+            "fixtures/rust-backend/unit-method-values.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-values.stdout"),
+            0,
+        ),
+        (
+            "unit-method-trace",
+            "fixtures/rust-backend/unit-method-trace.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-trace.stdout"),
+            0,
+        ),
+        (
+            "unit-method-defect",
+            "fixtures/rust-backend/unit-method-defect.ssrg",
+            "",
+            70,
+        ),
+        (
+            "unit-method-cold",
+            "fixtures/rust-backend/unit-method-cold.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-cold.stdout"),
+            0,
+        ),
+        (
+            "unit-method-effects",
+            "fixtures/rust-backend/unit-method-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-effects.stdout"),
+            0,
+        ),
+        (
             "unit-provider-values",
             "fixtures/rust-backend/unit-provider-values.ssrg",
             include_str!(
@@ -2137,4 +2183,5 @@ fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("method-wheres");
     strict_project_reexports("method-direct-wheres");
     strict_project_reexports("unit-providers");
+    strict_project_reexports("unit-methods");
 }

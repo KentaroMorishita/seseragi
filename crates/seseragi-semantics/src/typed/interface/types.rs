@@ -144,6 +144,18 @@ impl<'a> InterfaceTypes<'a> {
                 canonical,
                 arguments,
             } => {
+                // Anonymous parameters can introduce this intrinsic without
+                // a source import. Its canonical identity is its provenance;
+                // a local nominal named Unit still follows the owner table.
+                if canonical == "std/prelude::Unit" && arguments.is_empty() {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        provider_module: "std/prelude".to_owned(),
+                        provider_export: "Unit".to_owned(),
+                        arguments: Vec::new(),
+                    };
+                }
                 if let Some((provider_module, provider_export)) = self.local_nominals.get(canonical)
                 {
                     return InterfaceType::ExternalNamed {

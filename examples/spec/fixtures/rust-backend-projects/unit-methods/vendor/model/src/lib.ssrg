@@ -1,0 +1,11 @@
+pub trait Ready<A> {
+  fn ready -> (A -> String)
+}
+
+instance Ready<Int> {
+  fn ready -> (Int -> String) = \value -> show value
+}
+
+fn staged<A> -> (A -> String) where Ready<A> = ready<A> ()
+
+pub fn selected -> (Int -> String) = staged<Int> ()

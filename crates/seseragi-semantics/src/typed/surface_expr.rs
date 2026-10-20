@@ -853,10 +853,35 @@ pub(super) fn type_surface_expression(
         }
     }
     match expression {
-        SurfaceExpr::Unit { span } => SurfaceExpressionAnalysis::valid(TypedExpr::Unit {
-            type_ref: named_type("Unit"),
-            origin: *span,
-        }),
+        SurfaceExpr::Unit { span } => {
+            // The literal itself proves Unit. Preserve a canonical anonymous
+            // Unit parameter without treating a same-named nominal as Unit.
+            let literal_unit = context.resolution.implicit_unit_type();
+            if matches!(&literal_unit, TypedType::ExternalNamed { canonical, .. }
+                if canonical == "std/prelude::Unit")
+                || context.expected.as_ref().is_some_and(|expected| {
+                    matches!(&expected.type_ref,
+                    TypedType::ExternalNamed { canonical, arguments, .. }
+                        if canonical == "std/prelude::Unit" && arguments.is_empty())
+                        || matches!(&expected.key,
+                        SemanticTypeKey::ExternalNominal { canonical, arguments }
+                            if canonical == "std/prelude::Unit" && arguments.is_empty())
+                })
+            {
+                SurfaceExpressionAnalysis::valid_with_semantic_type(
+                    TypedExpr::Unit {
+                        type_ref: super::resolution::canonical_unit_value_type().type_ref,
+                        origin: *span,
+                    },
+                    super::resolution::canonical_unit_value_type().key,
+                )
+            } else {
+                SurfaceExpressionAnalysis::valid(TypedExpr::Unit {
+                    type_ref: named_type("Unit"),
+                    origin: *span,
+                })
+            }
+        }
         SurfaceExpr::Integer { raw, span } => {
             SurfaceExpressionAnalysis::valid(TypedExpr::Integer {
                 value: seseragi_syntax::decode_integer_literal(raw)

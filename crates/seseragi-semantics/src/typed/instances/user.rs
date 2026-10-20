@@ -115,7 +115,15 @@ fn typed_method(
     scoped_evidence: &[crate::typed::ScopedCallEvidence],
 ) -> Option<TypedInstanceMethod> {
     let body = method.body.as_ref()?;
-    let parameters = typed_parameters_from_surface(&method.parameters, resolution);
+    let parameters = if method.parameters.is_empty()
+        && method.type_parameters.iter().any(|p| p.name == "Unit")
+    {
+        vec![crate::TypedParameter::ImplicitUnit {
+            type_ref: crate::typed::resolution::canonical_unit_value_type().type_ref,
+        }]
+    } else {
+        typed_parameters_from_surface(&method.parameters, resolution)
+    };
     let mut method_evidence = scoped_evidence.to_vec();
     let next_evidence_index = scoped_evidence
         .iter()
