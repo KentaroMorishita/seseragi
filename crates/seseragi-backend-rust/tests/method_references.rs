@@ -257,6 +257,39 @@ fn method_owned_where_values_reject_forged_contracts_kinds_and_frames() {
 }
 
 #[test]
+fn parameter_method_providers_cannot_add_undeclared_dictionary_stages() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg");
+    let mut core = compile_core_module(CompileInput::new(
+        "undeclared-where-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+        &mut core.instances[0].implementation
+    else {
+        panic!("provider")
+    };
+    methods[0]
+        .constraints
+        .push(seseragi_lowering::CoreInstanceConstraint {
+            name: "Show".into(),
+            trait_identity: Some("std/prelude::Show".into()),
+            arguments: vec![CoreType::Named {
+                name: "A".into(),
+                arguments: vec![],
+            }],
+        });
+    let result = emit_rust_module(&core, "main");
+    assert!(
+        result.is_err(),
+        "accepted undeclared provider dictionary stage"
+    );
+}
+
+#[test]
 fn selected_bare_methods_run_their_first_stage_when_applied() {
     for (method, implementation, result) in [
         ("add", "instance Add<Mark, Mark, Mark> { fn add left: Mark -> (Mark -> Mark) = { let bad = 9007199254740991 + 1; \\right -> left } }", "Mark"),

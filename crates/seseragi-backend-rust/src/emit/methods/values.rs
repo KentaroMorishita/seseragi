@@ -16,7 +16,7 @@ impl Backend<'_> {
                 .identity
                 .starts_with(&format!("{}<", d.trait_identity))
                 && d.method == method.name
-                && !d.constraints.is_empty()
+                && (!d.constraints.is_empty() || !method.constraints.is_empty())
                 && !d.signature.parameters.is_empty()
         }) else {
             return Ok(());
