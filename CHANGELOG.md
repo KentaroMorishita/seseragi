@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.69] - 2026-10-20
+
+### Fixed
+
+- Normalize an omitted trait method parameter to one anonymous Prelude Unit stage in checked call signatures and method declarations. Preserve returned functions, dictionary-only factories, actual provider source stages and scoped canonical Unit identity across saved values, cold Effects and resource lifetimes. Retain Unit provenance through inference, interface projection and TypeScript import planning without weakening native evidence guards. Preserve the checked Unit success type when `succeed` elides its literal argument, including imports into a scope with a nominal Unit. Remaining unproved application and dictionary schemes stay tracked in #887.
+
 ## [0.61.68] - 2026-10-20
 
 ### Fixed

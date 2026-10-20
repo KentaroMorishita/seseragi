@@ -1,0 +1,15 @@
+trait Start<A> {
+  fn start -> (A -> Bool)
+}
+
+instance Start<Int> {
+  fn start -> (Int -> Bool) = {
+    let bad = 9007199254740991 + 1
+    \value -> False
+  }
+}
+
+pub effect fn main = do {
+  let held = start<Int> ()
+  println "created"
+}

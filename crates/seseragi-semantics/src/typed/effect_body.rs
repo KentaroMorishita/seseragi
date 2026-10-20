@@ -219,7 +219,15 @@ fn type_effect_expression_analysis(
     if let Some((operation, arguments, success_semantic)) =
         effect_application(expression, context, resolution, issues)
     {
-        let effect = operation_effect(operation, &arguments);
+        let mut effect = operation_effect(operation, &arguments);
+        // `succeed ()` omits its literal Unit from the runtime arguments. The
+        // result contract must still retain that checked value's canonical
+        // identity when a source nominal shadows Unit.
+        if operation.surface_name == "succeed" && arguments.is_empty() {
+            if let Some(success) = &success_semantic {
+                effect.success = success.type_ref.clone();
+            }
+        }
         let success_semantic = success_semantic.or_else(|| {
             (operation.success_type_arguments.is_empty()
                 && matches!(

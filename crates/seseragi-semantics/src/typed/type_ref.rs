@@ -1,4 +1,4 @@
-use crate::{unit_type, TypedEffect, TypedExpr, TypedType};
+use crate::{TypedEffect, TypedExpr, TypedType};
 use seseragi_syntax::{InterfaceType, TypeRef};
 
 pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<TypedType> {
@@ -94,7 +94,7 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
 
 pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
     match expr {
-        TypedExpr::Unit { .. } => unit_type(),
+        TypedExpr::Unit { type_ref, .. } => type_ref.clone(),
         TypedExpr::Integer { .. } => TypedType::Named {
             name: "Int".to_owned(),
             arguments: Vec::new(),

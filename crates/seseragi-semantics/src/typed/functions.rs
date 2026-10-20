@@ -32,10 +32,7 @@ pub(crate) fn typed_parameters_from_surface(
 ) -> Vec<crate::TypedParameter> {
     if parameters.is_empty() {
         return vec![crate::TypedParameter::ImplicitUnit {
-            type_ref: TypedType::Named {
-                name: "Unit".to_owned(),
-                arguments: Vec::new(),
-            },
+            type_ref: resolution.implicit_unit_type(),
         }];
     }
     parameters

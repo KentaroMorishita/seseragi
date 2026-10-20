@@ -1,0 +1,22 @@
+trait Ready<A> {
+  fn ready -> A
+}
+
+instance Ready<Int> {
+  fn ready -> Int = 7
+}
+
+trait Select<A> {
+  fn select -> (A -> Bool)
+}
+
+instance Select<Int> {
+  fn select -> (Int -> Bool) = \value -> False
+}
+
+pub fn probe -> String = {
+  let held = select<Int> ()
+  show (ready<Int> ()) + ":" + show (held 1) + ":" + show (held 2)
+}
+
+pub effect fn main = println (probe ())

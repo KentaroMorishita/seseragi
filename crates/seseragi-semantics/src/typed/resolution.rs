@@ -32,6 +32,10 @@ pub(crate) struct TypedResolution<'a> {
 }
 
 impl<'a> TypedResolution<'a> {
+    pub(crate) fn implicit_unit_type(&self) -> TypedType {
+        implicit_unit_value_type(self.resolved).type_ref
+    }
+
     pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
         let semantic_types = SemanticTypeCatalog::new(resolved);
         let imported_values = imports::collect_imported_values(resolved);
@@ -333,7 +337,15 @@ impl<'a> TypedResolution<'a> {
                                 trait_parameters: type_parameters.clone(),
                                 signature: crate::TypedCallSignature {
                                     type_parameters: method.type_parameters.clone(),
-                                    parameters: callable.parameters.clone(),
+                                    parameters: if method.parameters.is_empty() {
+                                        vec![TypedType::ExternalNamed {
+                                            name: "Unit".to_owned(),
+                                            canonical: "std/prelude::Unit".to_owned(),
+                                            arguments: Vec::new(),
+                                        }]
+                                    } else {
+                                        callable.parameters.clone()
+                                    },
                                     result: callable.result.clone(),
                                     argument_types: Vec::new(),
                                 },
@@ -1235,13 +1247,8 @@ fn callable_parameter_types(
     semantic_types: &SemanticTypeCatalog,
 ) -> (Vec<TypedType>, Vec<SemanticTypeKey>) {
     if parameters.is_empty() {
-        return (
-            vec![TypedType::Named {
-                name: "Unit".to_owned(),
-                arguments: Vec::new(),
-            }],
-            vec![SemanticTypeKey::Other],
-        );
+        let unit = implicit_unit_value_type(resolved);
+        return (vec![unit.type_ref], vec![unit.key]);
     }
     (
         parameters
@@ -1255,6 +1262,51 @@ fn callable_parameter_types(
             .map(|parameter| semantic_types.key_from_type_ref(resolved, &parameter.type_ref))
             .collect(),
     )
+}
+
+/// Syntax omission proves the Prelude Unit identity. Retain its explicit
+/// owner when a resolved source type or binder would reinterpret its spelling;
+/// otherwise use the ordinary primitive representation also used by literals.
+fn implicit_unit_value_type(resolved: &ResolvedModule) -> SemanticValueType {
+    let imported_shadow = resolved.imports.iter().any(|import| {
+        import.in_scope
+            && import.local_name == "Unit"
+            && import.export.namespace == "type"
+            && import.export.symbol != "std/prelude::Unit"
+            && !super::semantic_types::closed_alias_is_intrinsic_unit(resolved, import.symbol)
+    });
+    let local_shadow = resolved.symbols.iter().any(|symbol| {
+        symbol.spelling == "Unit"
+            && symbol.kind == SymbolKind::Type
+            && symbol.canonical.as_deref() != Some("std/prelude::Unit")
+            && !resolved
+                .imports
+                .iter()
+                .any(|import| import.symbol == symbol.id)
+            && !super::semantic_types::closed_alias_is_intrinsic_unit(resolved, symbol.id)
+    });
+    if imported_shadow || local_shadow {
+        canonical_unit_value_type()
+    } else {
+        SemanticValueType {
+            type_ref: named_type("Unit"),
+            key: SemanticTypeKey::Other,
+        }
+    }
+}
+
+pub(super) fn canonical_unit_value_type() -> SemanticValueType {
+    SemanticValueType {
+        type_ref: TypedType::ExternalNamed {
+            name: "Unit".to_owned(),
+            canonical: "std/prelude::Unit".to_owned(),
+            arguments: Vec::new(),
+        },
+        key: SemanticTypeKey::ExternalNominal {
+            canonical: "std/prelude::Unit".to_owned(),
+            arguments: Vec::new(),
+        },
+    }
 }
 
 fn explicit_effect_value_type(
@@ -1912,6 +1964,32 @@ fn collect_local_trait_methods(
                     .iter()
                     .map(|constraint| constraint_identity(resolved, constraint.name_span)),
             );
+            // The omitted source parameter is one anonymous Prelude Unit.
+            // Keep it separate from a function-valued result, and retain its
+            // canonical owner when a resolved source name would shadow it.
+            let (parameters, semantic_parameters) = if method.parameters.is_empty() {
+                let unit = if callable_type_parameters.iter().any(|p| p.name == "Unit") {
+                    canonical_unit_value_type()
+                } else {
+                    implicit_unit_value_type(resolved)
+                };
+                (vec![unit.type_ref], vec![unit.key])
+            } else {
+                (
+                    method
+                        .parameters
+                        .iter()
+                        .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                        .collect(),
+                    method
+                        .parameters
+                        .iter()
+                        .map(|parameter| {
+                            semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
+                        })
+                        .collect(),
+                )
+            };
             callables.insert(
                 symbol.id,
                 TopLevelPureFunction {
@@ -1921,18 +1999,8 @@ fn collect_local_trait_methods(
                     type_parameters: callable_type_parameters,
                     constraints,
                     constraint_identities,
-                    parameters: method
-                        .parameters
-                        .iter()
-                        .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
-                        .collect(),
-                    semantic_parameters: method
-                        .parameters
-                        .iter()
-                        .map(|parameter| {
-                            semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
-                        })
-                        .collect(),
+                    parameters,
+                    semantic_parameters,
                     result: typed_type_from_type_ref(&method.return_type),
                     semantic_result: semantic_types
                         .key_from_type_ref(resolved, &method.return_type),

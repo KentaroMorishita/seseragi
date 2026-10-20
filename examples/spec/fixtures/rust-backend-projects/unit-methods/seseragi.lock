@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-unit-methods@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-unit-methods@0.0.0#workspace:."
+name = "fixture/native-unit-methods"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:39e88b48434d8e3cf3a09ce9d811419d7fd5f6108c185c3ef2e40286ab4d0c96"
+content_digest = "sha256:9b4828e8ea952a586dde8163bf0eeeb232c08f0a263e9dad66f5d181fc4902c7"
+dependencies = [
+  { import = "model", package = "fixture/unit-methods-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/unit-methods-model@1.0.0#path:vendor/model"
+name = "fixture/unit-methods-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:7e722f6b6d5be6343c600ecb98cdc2f0c61cf3b3518201ce9f69e5e9b6147fb8"
+content_digest = "sha256:b9bc6409b271faa567a2e9e63b14ace40326d851ca3e6df5332cb1a316ae18b2"
+dependencies = []

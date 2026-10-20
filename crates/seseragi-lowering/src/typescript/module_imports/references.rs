@@ -546,6 +546,15 @@ fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
             }
         }
         CoreType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } if name == "Unit" && canonical == "std/prelude::Unit" && arguments.is_empty() => {
+            // The checked intrinsic lowers directly to undefined. It has no
+            // source-module import; same-named nominals and malformed kinds
+            // continue through the normal provider checks below.
+        }
+        CoreType::ExternalNamed {
             canonical,
             arguments,
             ..
@@ -575,5 +584,47 @@ fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
             }
         }
         CoreType::Hole => {}
+    }
+}
+
+#[cfg(test)]
+mod implicit_unit_tests {
+    use super::*;
+
+    fn external(name: &str, canonical: &str, arguments: Vec<CoreType>) -> CoreType {
+        CoreType::ExternalNamed {
+            name: name.into(),
+            canonical: canonical.into(),
+            arguments,
+        }
+    }
+
+    #[test]
+    fn canonical_intrinsic_unit_needs_no_source_import() {
+        let mut references = ReferencedTypes {
+            names: BTreeSet::new(),
+            external: BTreeSet::new(),
+        };
+        collect_type_names(
+            &external("Unit", "std/prelude::Unit", vec![]),
+            &mut references,
+        );
+        assert!(references.external.is_empty());
+    }
+
+    #[test]
+    fn nominal_unit_and_malformed_intrinsics_still_require_provider_validation() {
+        for ty in [
+            external("Unit", "model::Unit", vec![]),
+            external("Unit", "std/prelude::Unit", vec![CoreType::Hole]),
+            external("Counterfeit", "std/prelude::Unit", vec![]),
+        ] {
+            let mut references = ReferencedTypes {
+                names: BTreeSet::new(),
+                external: BTreeSet::new(),
+            };
+            collect_type_names(&ty, &mut references);
+            assert_eq!(references.external.len(), 1);
+        }
     }
 }

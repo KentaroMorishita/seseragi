@@ -127,6 +127,24 @@ impl AliasCatalog {
         self.expand_type_ref(resolved, type_ref, &BTreeMap::new(), &mut BTreeSet::new())
     }
 
+    pub(super) fn expand_closed_owner(
+        &self,
+        resolved: &ResolvedModule,
+        owner: SymbolId,
+    ) -> Option<TypedType> {
+        let definition = self.definitions.get(&owner)?;
+        if !definition.parameter_names.is_empty() {
+            return None;
+        }
+        Some(self.instantiate(
+            resolved,
+            owner,
+            definition,
+            Vec::new(),
+            &mut BTreeSet::new(),
+        ))
+    }
+
     fn expand_type_ref(
         &self,
         resolved: &ResolvedModule,

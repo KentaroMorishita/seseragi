@@ -9,6 +9,20 @@ mod imports;
 mod prelude;
 mod substitution;
 
+pub(super) fn closed_alias_is_intrinsic_unit(resolved: &ResolvedModule, owner: SymbolId) -> bool {
+    // Normalize the selected alias owner with its checked target bindings.
+    // An unresolved, parameterized or nominal target cannot prove Unit.
+    match aliases::AliasCatalog::new(resolved).expand_closed_owner(resolved, owner) {
+        Some(TypedType::Named { name, arguments }) => name == "Unit" && arguments.is_empty(),
+        Some(TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        }) => canonical == "std/prelude::Unit" && arguments.is_empty(),
+        _ => false,
+    }
+}
+
 pub(crate) use substitution::{
     instantiate_callable, instantiate_callable_indexed, substitute_remaining_scheme_parameters,
 };

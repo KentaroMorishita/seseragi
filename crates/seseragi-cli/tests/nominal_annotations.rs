@@ -71,6 +71,20 @@ fn nominal_and_genuine_primitive_values_execute_locally_and_across_a_project_imp
 }
 
 #[test]
+fn hidden_imported_unit_does_not_shadow_an_ordinary_unit_parameter() {
+    let domain = "pub struct Unit {value: Int}\npub effect fn genuine = succeed ()\n";
+    let main = "import { genuine } from \"./domain\"\nfn consume value: Unit -> Bool = True\npub effect fn main = do {let argument = (); let checked = consume argument; value <- genuine argument; println (show value)}\n";
+    Project::new(main, Some(domain)).check_profiles("()\n");
+}
+
+#[test]
+fn a_closed_unit_alias_keeps_the_intrinsic_unit_identity() {
+    let domain = "pub alias MyUnit = Unit\n";
+    let main = "import { MyUnit as Unit } from \"./domain\"\nfn consume value: Unit -> Bool = True\npub effect fn main = {let argument = (); println (show (consume argument))}\n";
+    Project::new(main, Some(domain)).check_profiles("True\n");
+}
+
+#[test]
 fn nominal_array_and_list_annotations_coexist_with_builtin_collection_values() {
     for (name, literal, prefix) in [("Array", "[1]", ""), ("List", "`[1]", "`")] {
         let declarations = format!("pub struct {name}<A> {{value: A}}\npub fn read<A> value: {name}<A> -> A = value.value\npub let nominal: {name}<Int> = {name} {{value: 42}}\npub effect fn genuine = succeed {literal}\n");
