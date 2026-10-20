@@ -60,6 +60,22 @@ fn method_owned_where_direct_application_keeps_actual_provider_stages() {
         "../../../examples/spec/fixtures/rust-backend/method-direct-where-defect.ssrg"
     );
     execute(source, "where-direct-first-stage", "", 70);
+    for (name, body) in [
+        ("let", "  let saved = pick left\n  saved"),
+        (
+            "annotated-let",
+            "  let saved: F<A> -> Bool = pick left\n  saved",
+        ),
+        ("nested-let", "  let saved = { pick left }\n  saved"),
+    ] {
+        assert!(source.contains("  pick left"));
+        execute(
+            &source.replace("  pick left", body),
+            &format!("where-direct-{name}"),
+            "",
+            70,
+        );
+    }
     let two_parameters = source
         .replace(
             "fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool)",
