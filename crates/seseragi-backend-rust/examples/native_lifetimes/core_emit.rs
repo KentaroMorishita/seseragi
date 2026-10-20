@@ -29,6 +29,12 @@ fn primitive(ty: &CoreType, name: &str) -> bool {
     matches!(ty, CoreType::Named { name: n, arguments } if n == name && arguments.is_empty())
 }
 
+fn unit_parameter(ty: &CoreType) -> bool {
+    primitive(ty, "Unit")
+        || matches!(ty, CoreType::ExternalNamed { canonical, arguments, .. }
+            if canonical == "std/prelude::Unit" && arguments.is_empty())
+}
+
 pub fn emit(module: &CoreModule) -> Result<String> {
     if !module.instances.is_empty()
         || !module.adts.is_empty()
@@ -47,7 +53,7 @@ pub fn emit(module: &CoreModule) -> Result<String> {
         .ok_or("missing main")?;
     if !main.is_effect
         || main.parameters.len() != 1
-        || !primitive(&main.parameters[0].type_ref, "Unit")
+        || !unit_parameter(&main.parameters[0].type_ref)
         || !main.constraints.is_empty()
     {
         return Err("research entry must be an unconstrained Unit Effect function".into());
@@ -239,4 +245,47 @@ fn effect_step(
     };
     let continuation = sequence(rest, result, &nested)?;
     Ok(format!("{{ let input_effect = {value}; let next = h.callable(vec![{captures}], |h,c,input| {{ {setup} {run} Ok({continuation}) }}); h.bind(input_effect, next) }}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use seseragi_driver::{compile_core_module, CompileInput};
+
+    #[test]
+    fn canonical_unit_entry_keeps_the_restricted_research_contract() {
+        let checked = compile_core_module(CompileInput::new(
+            "resource.ssrg",
+            "research/resource",
+            include_str!("../../../../examples/spec/lessons/18-resource-scope.ssrg"),
+        ))
+        .unwrap();
+        assert!(emit(&checked.core_ir).is_ok());
+
+        for invalid in [
+            CoreType::Hole,
+            CoreType::ExternalNamed {
+                name: "Unit".to_owned(),
+                canonical: "research/model::Unit".to_owned(),
+                arguments: vec![],
+            },
+            CoreType::ExternalNamed {
+                name: "Unit".to_owned(),
+                canonical: "std/prelude::Unit".to_owned(),
+                arguments: vec![CoreType::Hole],
+            },
+        ] {
+            let mut core = checked.core_ir.clone();
+            core.functions
+                .iter_mut()
+                .find(|f| f.symbol.ends_with("::main"))
+                .unwrap()
+                .parameters[0]
+                .type_ref = invalid;
+            assert_eq!(
+                emit(&core).unwrap_err(),
+                "research entry must be an unconstrained Unit Effect function"
+            );
+        }
+    }
 }
