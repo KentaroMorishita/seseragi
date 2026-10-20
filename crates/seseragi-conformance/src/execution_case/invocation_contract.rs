@@ -3,7 +3,7 @@ use seseragi_syntax::InterfaceType;
 
 use crate::execution::{Invocation, InvocationArgument};
 
-use super::effect_contract::standard_types::reject_user_shadow;
+use super::effect_contract::standard_types::{is_canonical_unit, reject_user_shadow};
 
 /// Validates an execution invocation against the final typed value export.
 /// Effect environment and failure contracts are checked by the separate
@@ -91,12 +91,7 @@ fn argument_matches_type(
 ) -> bool {
     // The invocation's literal Unit and this checked intrinsic owner agree
     // even when an unrelated source nominal shadows its display spelling.
-    if matches!(argument, InvocationArgument::Unit)
-        && matches!(type_ref, InterfaceType::ExternalNamed {
-            canonical, provider_module, provider_export, arguments, ..
-        } if canonical == "std/prelude::Unit" && provider_module == "std/prelude"
-            && provider_export == "Unit" && arguments.is_empty())
-    {
+    if matches!(argument, InvocationArgument::Unit) && is_canonical_unit(type_ref) {
         return true;
     }
     let expected = match argument {

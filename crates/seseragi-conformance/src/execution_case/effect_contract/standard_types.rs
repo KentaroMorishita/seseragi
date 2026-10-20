@@ -67,6 +67,9 @@ pub(super) fn validate_effect_success(
     success: &InterfaceType,
     entry_export: &str,
 ) -> Result<(), String> {
+    if is_canonical_unit(success) {
+        return Ok(());
+    }
     if !matches!(
         success,
         InterfaceType::Named { name, arguments }
@@ -78,6 +81,13 @@ pub(super) fn validate_effect_success(
     }
     reject_user_shadow(interface, "Unit", "success type")
         .map_err(|error| format!("execution Effect entry {entry_export} {error}"))
+}
+
+pub(in crate::execution_case) fn is_canonical_unit(type_ref: &InterfaceType) -> bool {
+    matches!(type_ref, InterfaceType::ExternalNamed {
+        canonical, provider_module, provider_export, arguments, ..
+    } if canonical == "std/prelude::Unit" && provider_module == "std/prelude"
+        && provider_export == "Unit" && arguments.is_empty())
 }
 
 pub(in crate::execution_case) fn reject_user_shadow(
@@ -297,5 +307,29 @@ mod tests {
         let shadowed_error =
             validate_effect_success(&shadowed, &named("Unit"), "main").unwrap_err();
         assert!(shadowed_error.contains("resolves to user type artifact/main::Unit"));
+    }
+
+    #[test]
+    fn canonical_effect_success_requires_intrinsic_identity_and_provider() {
+        let mut typed = interface();
+        typed.exports.push(type_export("Unit"));
+        for (canonical, module, export, accepted) in [
+            ("std/prelude::Unit", "std/prelude", "Unit", true),
+            ("artifact/main::Unit", "artifact/main", "Unit", false),
+            ("std/prelude::Unit", "artifact/main", "Unit", false),
+            ("std/prelude::Unit", "std/prelude", "Other", false),
+        ] {
+            let success = InterfaceType::ExternalNamed {
+                name: "Unit".to_owned(),
+                canonical: canonical.to_owned(),
+                provider_module: module.to_owned(),
+                provider_export: export.to_owned(),
+                arguments: vec![],
+            };
+            assert_eq!(
+                validate_effect_success(&typed, &success, "main").is_ok(),
+                accepted
+            );
+        }
     }
 }
