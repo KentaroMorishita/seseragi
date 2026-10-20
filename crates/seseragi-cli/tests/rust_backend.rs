@@ -1282,6 +1282,14 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             0,
         ),
         (
+            "saved-unit-method-alpha",
+            "fixtures/rust-backend/saved-unit-method-alpha.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/saved-unit-method-alpha.stdout"
+            ),
+            0,
+        ),
+        (
             "saved-unit-method-trace",
             "fixtures/rust-backend/saved-unit-method-trace.ssrg",
             include_str!(

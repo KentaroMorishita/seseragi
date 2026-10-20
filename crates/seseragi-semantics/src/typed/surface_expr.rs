@@ -342,6 +342,14 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
+        // Other + the intrinsic Unit type is a previously checked primitive,
+        // not an unresolved source name. Make that identity explicit before
+        // crossing a lexical binder with the same spelling.
+        if self.lexical_type_parameters.contains_key("Unit")
+            && primitive_type_is(&value.type_ref, &value.key, "Unit")
+        {
+            return super::resolution::canonical_unit_value_type();
+        }
         // A method-local binder may require the explicit Prelude Unit owner
         // in its declaration. At a use outside that binder, project this
         // proven identity to the caller's checked intrinsic representation.
@@ -1357,6 +1365,11 @@ fn type_name(
         return application::type_callable_value(&signature, span, context);
     }
     if let Some(value_type) = context.parameters.get(&target) {
+        let value_type = if primitive_type_is(&value_type.type_ref, &value_type.key, "Unit") {
+            context.hydrate_semantic_value(value_type.clone())
+        } else {
+            value_type.clone()
+        };
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 callable_signature: None,

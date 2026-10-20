@@ -130,3 +130,36 @@ fn unit_literal_is_not_the_value_of_a_same_named_type_parameter() {
     let span = diagnostics.diagnostics[0].primary;
     assert_eq!(&source[span.start..span.end], "()");
 }
+
+#[test]
+fn anonymous_method_unit_is_independent_of_caller_and_method_binder_names() {
+    for method_parameter in ["A", "Unit"] {
+        for caller_parameter in ["B", "Unit"] {
+            for body in [
+                "{ let unit = (); let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }",
+                "{ let next: Maybe<Int> -> Bool = load<Maybe, Int> (); next (Just 1) }",
+                "{ let saved = load<Maybe, Int>; let unit = (); let next: Maybe<Int> -> Bool = saved unit; next (Just 1) }",
+                "{ let unit = (); let next: Maybe<Int> -> Bool = load unit; next (Just 1) }",
+            ] {
+                let source = format!("trait Load<F<_>> {{ fn load<{method_parameter}> -> (F<{method_parameter}> -> Bool) where Show<{method_parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<{caller_parameter}> value: {caller_parameter} -> Bool = {body}\npub fn probe -> Bool = selected 7\n");
+                let diagnostics = semantic_diagnostics("caller-unit-alpha-λ.ssrg", &source);
+                assert!(diagnostics.diagnostics.is_empty(), "{source}\n{diagnostics:#?}");
+            }
+        }
+    }
+}
+
+#[test]
+fn checked_unit_values_cross_a_caller_binder_without_becoming_that_binder() {
+    for method_parameter in ["A", "Unit"] {
+        for body in [
+            "{ let unit = (); fn selected<Unit> value: Unit -> Bool = { let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }; selected 7 }",
+            "{ let unit = (); fn selected<Unit> value: Unit -> Bool = { let next: Maybe<Int> -> Bool = load unit; next (Just 1) }; selected 7 }",
+            "selected 7",
+        ] {
+            let source = format!("trait Load<F<_>> {{ fn load<{method_parameter}> -> (F<{method_parameter}> -> Bool) where Show<{method_parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn source -> Unit = ()\nfn selected<Unit> value: Unit -> Bool = {{ let unit = source (); let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }}\npub fn probe -> Bool = {body}\n");
+            let diagnostics = semantic_diagnostics("captured-unit-alpha-λ.ssrg", &source);
+            assert!(diagnostics.diagnostics.is_empty(), "{source}\n{diagnostics:#?}");
+        }
+    }
+}

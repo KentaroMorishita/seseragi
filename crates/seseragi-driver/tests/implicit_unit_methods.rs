@@ -74,3 +74,21 @@ fn unit_literal_cannot_implement_a_same_named_universal_result() {
         assert_eq!(&source[span.start..span.end], "()");
     }
 }
+
+#[test]
+fn anonymous_unit_callers_do_not_capture_the_method_parameter_identity() {
+    for parameter in ["A", "Unit"] {
+        let source = format!("trait Load<F<_>> {{ fn load<{parameter}> -> (F<{parameter}> -> Bool) where Show<{parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<Unit> value: Unit -> Bool = {{ let unit = (); let saved = load<Maybe, Int>; let next: Maybe<Int> -> Bool = saved unit; next (Just 1) }}\npub fn probe -> Bool = selected 7\n");
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let input = CompileInput::new("unit-alpha-λ.ssrg", "fixture/unit-alpha", &source)
+                .with_profile(profile);
+            let core = compile_core_module(input.clone()).unwrap().core_ir;
+            let compiled = compile_module(input).unwrap();
+            assert_eq!(core, compiled.core_ir);
+            assert!(compiled.diagnostics.diagnostics.is_empty());
+        }
+    }
+}
