@@ -99,6 +99,24 @@ fn method_owned_where_values_keep_managed_edges_and_evidence_frames() {
         "",
         70,
     );
+    execute(
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.ssrg"),
+        "where-cold",
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.stdout"),
+        0,
+    );
+}
+
+#[test]
+fn constrained_method_values_keep_never_nominal_and_binder_owners() {
+    execute(
+        "type Never = | Never Int\ntrait Pick<T> { fn pick<A> left: T -> right: A -> String where Show<A> }\ninstance Pick<Never> { fn pick<A> left: Never -> (A -> String) where Show<A> = \\right -> show right }\nfn capture<T, A> left: T -> (A -> String) where Pick<T>, Show<A> = { let chosen: T -> A -> String = pick; chosen left }\npub effect fn main = do { let held = capture<Never, Int> (Never 1); println (held 7) }",
+        "where-never-nominal", "7\n", 0,
+    );
+    execute(
+        "type Tag = | Tag\ntrait Pick<T> { fn pick<A> left: T -> right: A -> String where Show<A> }\ninstance Pick<Tag> { fn pick<A> left: Tag -> (A -> String) where Show<A> = \\right -> show right }\nfn capture<Never> value: Never -> (Never -> String) where Show<Never> = { let chosen: Tag -> Never -> String = pick; chosen Tag }\npub effect fn main = do { let held = capture 1; println (held 7) }",
+        "where-never-binder", "7\n", 0,
+    );
 }
 
 #[test]

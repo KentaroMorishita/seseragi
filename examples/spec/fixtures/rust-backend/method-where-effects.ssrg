@@ -38,7 +38,11 @@ pub effect fn main = do {
   released <- refs.make 0
   let value = Watch (callbacks, Token 7, marker ())
   let cold = delayed ()
-  let saved = capture<Watch<Token>, Int> 42
+  let method = capture<Watch<Token>, Int> 42
+  let saved = \right: Watch<Token, Int> -> {
+    let first = method right
+    method value
+  }
   refs.set saved callbacks
   println "created"
   effects.scoped $ do {

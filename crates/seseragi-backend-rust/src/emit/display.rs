@@ -243,6 +243,7 @@ pub(super) fn canonical_type(
                 let prelude = matches!(
                     name.as_str(),
                     "Unit"
+                        | "Never"
                         | "Int"
                         | "Bool"
                         | "String"
@@ -270,6 +271,7 @@ pub(super) fn canonical_type(
                 } else if matches!(
                     name.as_str(),
                     "Unit"
+                        | "Never"
                         | "Int"
                         | "Bool"
                         | "String"

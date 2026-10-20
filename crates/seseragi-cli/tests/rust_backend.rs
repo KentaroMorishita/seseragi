@@ -1244,6 +1244,12 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             0,
         ),
         (
+            "method-where-cold",
+            "fixtures/rust-backend/method-where-cold.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.stdout"),
+            0,
+        ),
+        (
             "method-where-children",
             "fixtures/rust-backend/method-where-children.ssrg",
             "",

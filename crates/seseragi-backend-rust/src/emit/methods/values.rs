@@ -114,14 +114,38 @@ impl Backend<'_> {
                 evidence: CoreInstanceEvidence::Parameter { index },
             });
         }
-        let type_ref = method.parameters.iter().rev().fold(
-            local::method_argument_type(&method.body)
-                .ok_or("Rust backend: unproven method value provider result")?,
-            |result, p| CoreType::Function {
-                parameter: Box::new(p.type_ref.clone()),
-                result: Box::new(result),
-            },
-        );
+        let method_scope = instance
+            .type_parameters
+            .iter()
+            .chain(&method.type_parameters)
+            .map(|p| {
+                self.local_canonical_type(
+                    &CoreType::Named {
+                        name: p.name.clone(),
+                        arguments: vec![],
+                    },
+                    scope,
+                )
+                .map(|ty| (p.name.clone(), ty))
+            })
+            .collect::<Result<BTreeMap<_, _>>>()?;
+        let result = local::method_argument_type(&method.body)
+            .ok_or("Rust backend: unproven method value provider result")?;
+        let mut type_ref = self.local_canonical_type(&result, scope)?;
+        for parameter in method.parameters.iter().rev() {
+            let parameter = display::canonical_type(
+                &parameter.type_ref,
+                self.owner,
+                &method_scope,
+                self.type_names,
+                true,
+            )
+            .ok_or("Rust backend: unproven method value provider parameter owner")?;
+            type_ref = CoreType::Function {
+                parameter: Box::new(parameter),
+                result: Box::new(type_ref),
+            };
+        }
         self.validate_constrained_method_value(
             &CoreExpr::Call {
                 callee: String::new(),
