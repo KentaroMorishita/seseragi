@@ -238,6 +238,135 @@ fn reports_an_instance_method_signature_mismatch() {
 }
 
 #[test]
+fn instance_contracts_include_the_implicit_unit_parameter() {
+    for (declaration, implementation, valid) in [
+        (
+            "fn pick left: Int -> right: Int -> Bool",
+            "fn pick -> (Int -> Int -> Bool) = \\left -> \\right -> False",
+            false,
+        ),
+        ("fn pick -> Bool", "fn pick -> Bool = False", true),
+        (
+            "fn pick unit: Unit -> Bool",
+            "fn pick -> Bool = False",
+            true,
+        ),
+        (
+            "fn pick -> Bool",
+            "fn pick unit: Unit -> Bool = False",
+            true,
+        ),
+        (
+            "fn pick -> (Int -> Bool)",
+            "fn pick unit: Unit -> (Int -> Bool) = \\value -> False",
+            true,
+        ),
+        (
+            "fn pick unit: Unit -> (Int -> Bool)",
+            "fn pick -> (Int -> Bool) = \\value -> False",
+            true,
+        ),
+        (
+            "fn pick left: Int -> right: Int -> Bool",
+            "fn pick left: Int -> (Int -> Bool) = \\right -> False",
+            true,
+        ),
+        (
+            "fn pick left: Int -> (Int -> Bool)",
+            "fn pick left: Int -> right: Int -> Bool = False",
+            true,
+        ),
+        (
+            "fn pick -> Bool",
+            "fn pick value: Int -> Bool = False",
+            false,
+        ),
+        (
+            "fn pick value: Int -> Bool",
+            "fn pick -> Bool = False",
+            false,
+        ),
+    ] {
+        let source = format!(
+            "// 雫\ntrait Pick<A> {{ {declaration} }}\ninstance Pick<Int> {{ {implementation} }}\n"
+        );
+        let artifact = semantic_diagnostics("implicit-unit.ssrg", &source);
+        if valid {
+            assert!(artifact.diagnostics.is_empty(), "{source}\n{artifact:#?}");
+        } else {
+            let mismatch = artifact
+                .diagnostics
+                .iter()
+                .find(|diagnostic| {
+                    diagnostic.code == "SES-T0101"
+                        && diagnostic.message_key == "trait.instance-method-signature-mismatch"
+                })
+                .unwrap_or_else(|| panic!("{source}\n{artifact:#?}"));
+            assert_eq!(
+                &source[mismatch.primary.start as usize..mismatch.primary.end as usize],
+                implementation
+            );
+            assert_eq!(
+                &source[mismatch.related[0].primary.start as usize
+                    ..mismatch.related[0].primary.end as usize],
+                declaration
+            );
+        }
+    }
+}
+
+#[test]
+fn implicit_unit_contracts_preserve_constructor_binders_and_method_constraints() {
+    for (implementation, valid) in [
+        ("fn pick<B> -> (Maybe<B> -> Maybe<B> -> Bool) where Show<B> = \\left -> \\right -> False", false),
+        ("fn pick<B> left: Maybe<B> -> (Maybe<B> -> Bool) where Show<B> = \\right -> False", true),
+        ("fn pick<B> left: Maybe<B> -> right: Maybe<B> -> Bool where Show<B> = False", true),
+    ] {
+        let source = format!("trait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A> }}\ninstance Pick<Maybe> {{ {implementation} }}\n");
+        let artifact = semantic_diagnostics("implicit-unit-hkt.ssrg", &source);
+        assert_eq!(artifact.diagnostics.iter().any(|diagnostic| diagnostic.message_key == "trait.instance-method-signature-mismatch"), !valid, "{source}\n{artifact:#?}");
+        if valid { assert!(artifact.diagnostics.is_empty(), "{artifact:#?}"); }
+    }
+}
+
+#[test]
+fn implicit_unit_contracts_do_not_capture_a_same_named_nominal() {
+    for (declaration, implementation, valid) in [
+        ("fn pick -> Bool", "fn pick -> Bool = False", true),
+        (
+            "fn pick -> Bool",
+            "fn pick unit: Unit -> Bool = False",
+            false,
+        ),
+        (
+            "fn pick unit: Unit -> Bool",
+            "fn pick -> Bool = False",
+            false,
+        ),
+        (
+            "fn pick unit: Unit -> Bool",
+            "fn pick unit: Unit -> Bool = False",
+            true,
+        ),
+    ] {
+        let source = format!("type Unit = | UserUnit\ntrait Pick<A> {{ {declaration} }}\ninstance Pick<Int> {{ {implementation} }}\n");
+        let artifact = semantic_diagnostics("unit-owner.ssrg", &source);
+        assert_eq!(
+            artifact
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key
+                    == "trait.instance-method-signature-mismatch"),
+            !valid,
+            "{source}\n{artifact:#?}"
+        );
+        if valid {
+            assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+        }
+    }
+}
+
+#[test]
 fn reports_missing_and_unexpected_instance_methods() {
     let artifact = semantic_diagnostics(
         "artifact/instance-method-set/main.ssrg",

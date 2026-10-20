@@ -1,0 +1,3 @@
+// 雫🙂
+trait Ready<A> { fn ready -> Bool }
+instance Ready<Int> { fn ready value: Int -> Bool = False }

@@ -281,6 +281,19 @@ fn contract_method(
                 result: Box::new(result),
             })
         })?;
+    // Omitted source parameters mean one anonymous Prelude Unit parameter.
+    // Compare the full function type, so a returned function remains distinct
+    // from this parameter while explicit currying can still match the contract.
+    let type_ref = if method.parameters.is_empty() {
+        ContractType::Function {
+            parameter: Box::new(ContractType::Named(model::TypeIdentity::Canonical(
+                "std/prelude::Unit".to_owned(),
+            ))),
+            result: Box::new(type_ref),
+        }
+    } else {
+        type_ref
+    };
     let mut constraints = method
         .constraints
         .iter()

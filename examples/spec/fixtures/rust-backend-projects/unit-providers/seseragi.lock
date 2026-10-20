@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-unit-providers@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-unit-providers@0.0.0#workspace:."
+name = "fixture/native-unit-providers"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:8c463ea8df20df6e6b992208b795beedf7526a30f4ae23e23370145af7bb3865"
+content_digest = "sha256:d52f315ba2446c5bdfbfa8892165527eeb90a9fba307681cd3dde5db1a60a4e1"
+dependencies = [
+  { import = "model", package = "fixture/unit-providers-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/unit-providers-model@1.0.0#path:vendor/model"
+name = "fixture/unit-providers-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:4629b3fef4c871595d7d166f705f11db594730fe31ae3a21b18517edc05e7286"
+content_digest = "sha256:23d6eae4336086e05b967df2485b0fe4f4894c47bc05b7a07a5b783521cdcfc2"
+dependencies = []

@@ -99,3 +99,21 @@ fn standard_method_contracts_preserve_transparent_aliases() {
     ))
     .unwrap();
 }
+
+#[test]
+fn rejects_implicit_unit_provider_mismatches_before_core_or_typescript_output() {
+    for provider in [
+        "fn pick<B> -> (Maybe<B> -> Maybe<B> -> Bool) where Show<B> = \\left -> \\right -> False",
+        "fn pick<B> unit: Unit -> (Maybe<B> -> Maybe<B> -> Bool) where Show<B> = \\left -> \\right -> False",
+    ] {
+        // The instance is unused: the signature itself must be checked.
+        let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A> }}\ninstance Pick<Maybe> {{ {provider} }}\npub effect fn main = println \"must not run\"\n");
+        let input = CompileInput::new("provider-λ.ssrg", "fixture/unit-provider", &source);
+        let core_errors = compile_core_module(input.clone()).unwrap_err();
+        let ts_errors = compile_module(input).unwrap_err();
+        assert_eq!(core_errors, ts_errors);
+        let mismatch = core_errors.diagnostics.iter().find(|diagnostic| diagnostic.message_key == "trait.instance-method-signature-mismatch").unwrap();
+        assert_eq!(mismatch.code, "SES-T0101");
+        assert_eq!(&source[mismatch.primary.start..mismatch.primary.end], provider);
+    }
+}

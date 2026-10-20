@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.68] - 2026-10-20
+
+### Fixed
+
+- Include the anonymous Prelude Unit parameter when checking an instance method with omitted source parameters against its trait contract. Reject extra-Unit provider signatures before Core or TypeScript generation, including unused instances and imported traits. Preserve explicit Unit providers, canonical Unit identity, alpha-renamed higher-kinded binders, method constraints, and valid single-argument implementations returning functions. Remaining method application schemes stay tracked in #887.
+
 ## [0.61.67] - 2026-10-20
 
 ### Fixed

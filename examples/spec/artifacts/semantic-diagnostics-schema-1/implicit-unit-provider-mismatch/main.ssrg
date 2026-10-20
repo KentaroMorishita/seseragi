@@ -1,0 +1,3 @@
+// 雫🙂
+trait Pick<F<_>> { fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A> }
+instance Pick<Maybe> { fn pick<A> -> (Maybe<A> -> Maybe<A> -> Bool) where Show<A> = \left -> \right -> False }
