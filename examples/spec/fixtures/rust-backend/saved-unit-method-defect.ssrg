@@ -1,0 +1,16 @@
+trait Load<F<_>> {
+  fn load<Unit> -> (F<Unit> -> Bool) where Show<Unit>
+}
+
+instance Load<Maybe> {
+  fn load<U> -> (Maybe<U> -> Bool) where Show<U> = {
+    let bad = 9007199254740991 + 1;
+    \value -> False
+  }
+}
+
+pub effect fn main = {
+  let unit = ();
+  let next: Maybe<Int> -> Bool = load<Maybe, Int> unit;
+  println "created"
+}

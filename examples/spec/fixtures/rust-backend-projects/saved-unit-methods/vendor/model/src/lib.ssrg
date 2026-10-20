@@ -1,0 +1,12 @@
+pub trait Load<F<_>> {
+  fn load<Unit> -> (F<Unit> -> Bool) where Show<Unit>
+}
+
+instance Load<Maybe> {
+  fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \value -> False
+}
+
+pub fn selected<A> unit: Unit -> (Maybe<A> -> Bool) where Show<A> = {
+  let chosen = load<Maybe, A>
+  chosen unit
+}

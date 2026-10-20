@@ -342,6 +342,20 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
+        // A method-local binder may require the explicit Prelude Unit owner
+        // in its declaration. At a use outside that binder, project this
+        // proven identity to the caller's checked intrinsic representation.
+        // A nominal owner or lexical type parameter cannot prove this case.
+        if !self.lexical_type_parameters.contains_key("Unit")
+            && matches!(&value.type_ref,
+                TypedType::ExternalNamed { canonical, arguments, .. }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty())
+            && matches!(&value.key,
+                SemanticTypeKey::ExternalNominal { canonical, arguments }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty())
+        {
+            return self.resolution.implicit_unit_value();
+        }
         // A resolved primitive identity is already complete. Re-reading its
         // display name in this lexical scope can capture an unrelated nominal
         // declaration; annotated nominal values have their own non-Other key.
@@ -856,7 +870,11 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Unit { span } => {
             // The literal itself proves Unit. Preserve a canonical anonymous
             // Unit parameter without treating a same-named nominal as Unit.
-            let literal_unit = context.resolution.implicit_unit_type();
+            let literal_unit = if context.lexical_type_parameters.contains_key("Unit") {
+                super::resolution::canonical_unit_value_type().type_ref
+            } else {
+                context.resolution.implicit_unit_type()
+            };
             if matches!(&literal_unit, TypedType::ExternalNamed { canonical, .. }
                 if canonical == "std/prelude::Unit")
                 || context.expected.as_ref().is_some_and(|expected| {

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.70] - 2026-10-21
+
+### Fixed
+
+- Preserve the checked Prelude Unit identity when passing saved Unit values to trait methods whose own type parameter is named Unit. Reconcile canonical declaration types with the caller's resolved intrinsic representation, keeping lexical type parameters and same-named nominals distinct. Preserve source stages, returned functions, dictionary frames, Ref cycles, cold Effects and finalizers across local and package calls. Remaining Unit schemes stay tracked in #887.
+
 ## [0.61.69] - 2026-10-20
 
 ### Fixed

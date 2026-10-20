@@ -36,6 +36,10 @@ impl<'a> TypedResolution<'a> {
         implicit_unit_value_type(self.resolved).type_ref
     }
 
+    pub(super) fn implicit_unit_value(&self) -> SemanticValueType {
+        implicit_unit_value_type(self.resolved)
+    }
+
     pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
         let semantic_types = SemanticTypeCatalog::new(resolved);
         let imported_values = imports::collect_imported_values(resolved);

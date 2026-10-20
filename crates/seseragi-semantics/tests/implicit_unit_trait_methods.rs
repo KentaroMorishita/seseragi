@@ -83,3 +83,50 @@ fn implicit_unit_success_retains_its_checked_identity_across_an_effect_bind() {
         .iter()
         .any(|diagnostic| diagnostic.code == "SES-T0201"));
 }
+
+#[test]
+fn saved_units_preserve_the_implicit_method_parameter_identity() {
+    for parameter in ["Unit", "A"] {
+        for body in [
+            "{ let unit = (); load<Maybe, Int> unit }",
+            "{ let unit: Unit = (); load<Maybe, Int> unit }",
+            "{ let (unit, value) = ((), 1); load<Maybe, Int> unit }",
+            "{ let unit = (); let alias = unit; load<Maybe, Int> alias }",
+            "{ let saved = load<Maybe, Int>; let unit = (); saved unit }",
+        ] {
+            let source = format!("trait Load<F<_>> {{ fn load<{parameter}> -> (F<{parameter}> -> Bool) where Show<{parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\npub fn probe -> Bool = {{ let next: Maybe<Int> -> Bool = {body}; next (Just 1) }}\n");
+            let diagnostics = semantic_diagnostics("saved-unit-λ.ssrg", &source);
+            assert!(
+                diagnostics.diagnostics.is_empty(),
+                "{source}\n{diagnostics:#?}"
+            );
+        }
+    }
+    let source = "trait Load<F<_>> { fn load<Unit> -> (F<Unit> -> Bool) where Show<Unit> }\ninstance Load<Maybe> { fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }\npub fn probe<Unit> value: Unit -> Bool = { let unit = (); let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }\n";
+    let diagnostics = semantic_diagnostics("caller-unit-binder-λ.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}
+
+#[test]
+fn implicit_method_unit_does_not_accept_a_source_type_or_caller_binder() {
+    for source in [
+        "type Unit = | LocalUnit\ntrait Ready<A> { fn ready<Unit> -> Bool }\ninstance Ready<Int> { fn ready<A> -> Bool = False }\npub fn probe -> Bool = { let unit = LocalUnit; ready<Int, Int> unit }\n",
+        "trait Ready<A> { fn ready<Unit> -> Bool }\ninstance Ready<Int> { fn ready<A> -> Bool = False }\npub fn probe<Unit> unit: Unit -> Bool = ready<Int, Int> unit\n",
+    ] {
+        let diagnostics = semantic_diagnostics("saved-unit-owner-λ.ssrg", source);
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{source}\n{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "call.argument-type-mismatch");
+        let span = diagnostics.diagnostics[0].primary;
+        assert_eq!(&source[span.start..span.end], "unit");
+    }
+}
+
+#[test]
+fn unit_literal_is_not_the_value_of_a_same_named_type_parameter() {
+    let source = "pub fn wrong<Unit> value: Unit -> Unit = ()\n";
+    let diagnostics = semantic_diagnostics("unit-literal-binder-λ.ssrg", source);
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+    let span = diagnostics.diagnostics[0].primary;
+    assert_eq!(&source[span.start..span.end], "()");
+}
