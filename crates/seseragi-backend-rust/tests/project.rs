@@ -296,3 +296,47 @@ fn constructor_method_declarations_keep_their_package_owner_and_kind() {
         assert!(error.origin.is_some());
     }
 }
+
+#[test]
+fn method_owned_constructors_keep_their_package_owner_and_kind() {
+    let loaded = seseragi_project::load_local_project(
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../examples/spec/fixtures/rust-backend-projects/method-constructors"),
+    )
+    .unwrap();
+    let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+    let modules = core
+        .compiled
+        .order
+        .iter()
+        .map(|id| core.compiled.modules[id].core_ir.clone())
+        .collect::<Vec<_>>();
+    assert_eq!(modules.len(), 3);
+    emit_rust_project(
+        &modules.iter().collect::<Vec<_>>(),
+        &core.entry_module,
+        "main",
+    )
+    .unwrap();
+    for mutation in 0..4 {
+        let mut changed = modules.clone();
+        let declaration = changed
+            .iter_mut()
+            .find_map(|m| m.trait_methods.first_mut())
+            .unwrap();
+        match mutation {
+            0 => declaration.trait_identity = "counterfeit::trait(Pick)".into(),
+            1 => declaration.trait_parameters[0].arity = 0,
+            2 => declaration.signature.type_parameters[0].arity = 0,
+            _ => declaration.signature.type_parameters[0].arity = 2,
+        }
+        let error = emit_rust_project(
+            &changed.iter().collect::<Vec<_>>(),
+            &core.entry_module,
+            "main",
+        )
+        .unwrap_err();
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert!(error.origin.is_some());
+    }
+}

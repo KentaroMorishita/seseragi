@@ -1,6 +1,69 @@
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn method_owned_constructor_alias_preserves_the_checked_method_value() {
+    use seseragi_lowering::{CoreExpr, CoreStatement};
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg");
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("method-kind-λ.ssrg", "fixture/method-kind", source)
+                .with_profile(profile),
+        )
+        .unwrap();
+        let declaration = &compiled.core_ir.trait_methods[0];
+        assert_eq!(declaration.trait_parameters[0].arity, 1);
+        assert_eq!(declaration.signature.type_parameters[0].arity, 1);
+        assert_eq!(declaration.signature.type_parameters[1].arity, 0);
+        assert_eq!(declaration.signature.parameters.len(), 2);
+        let seseragi_lowering::CoreInstanceImplementation::UserDefined { methods } =
+            &compiled.core_ir.instances[0].implementation
+        else {
+            panic!("implementation")
+        };
+        assert_eq!(methods[0].parameters.len(), 1);
+        let function = compiled
+            .core_ir
+            .functions
+            .iter()
+            .find(|f| f.symbol.ends_with("::selected"))
+            .unwrap();
+        let CoreExpr::Sequence { statements, .. } = &function.body else {
+            panic!("body")
+        };
+        let CoreStatement::PureLet { value, .. } = &statements[0] else {
+            panic!("alias")
+        };
+        let CoreExpr::Call {
+            arguments,
+            trait_dispatch: Some(dispatch),
+            ..
+        } = value
+        else {
+            panic!("method value was eta-expanded: {value:?}")
+        };
+        assert!(arguments.is_empty());
+        assert_eq!(dispatch.trait_identity, declaration.trait_identity);
+        assert_eq!(dispatch.method, "pick");
+    }
+}
+
+#[test]
+fn method_owned_constructor_contract_errors_keep_utf8_source_positions() {
+    for source in [
+        "// 雫🙂\ntrait Pick<F<_>> { fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool }\ninstance Pick<Maybe> { fn pick<G<_, _>, A> left: G<Maybe<A>, Int> -> right: G<Maybe<A>, Int> -> Bool = True }\npub effect fn main = println \"unreachable\"",
+        "// 雫🙂\ntrait Pick<F<_>> { fn pick<F<_>, A> left: F<A> -> right: F<A> -> Bool }\npub effect fn main = println \"unreachable\"",
+        "// 雫🙂\ntrait Pick<F<_>> { fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool }\ninstance Pick<Maybe> { fn pick<G<_>, A> left: G<Maybe<A>> -> right: G<Maybe<A>> -> Bool = True }\npub fn bad -> Bool = pick<Maybe, Int, Int> 1 2\npub effect fn main = println \"unreachable\"",
+    ] {
+        for profile in [BuildProfile::Development, BuildProfile::Release] {
+            let error = compile_module(CompileInput::new("invalid-method-kind-λ.ssrg", "fixture/method-kind", source).with_profile(profile)).unwrap_err();
+            assert!(!error.diagnostics.is_empty());
+            assert!(error.diagnostics.iter().all(|d| d.primary.start < d.primary.end && source.is_char_boundary(d.primary.start) && source.is_char_boundary(d.primary.end)));
+        }
+    }
+}
+
+#[test]
 fn abstract_method_authority_retains_declaration_binders_and_constraints() {
     let source = "trait Pick<A> { fn pick<B> value: B -> marker: A -> B where Show<B> }\npub fn probe -> Unit = ()";
     let module = compile_module(CompileInput::new(
@@ -34,6 +97,17 @@ fn abstract_method_authority_retains_declaration_binders_and_constraints() {
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-constructor-children.ssrg"
+        ),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-values.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-constructor-effects.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-constructor-prefix-kind.ssrg"
+        ),
         include_str!(
             "../../../examples/spec/fixtures/rust-backend/constructor-method-prefix-kind.ssrg"
         ),
@@ -120,6 +194,7 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
     for fixture in [
+        "method-constructors",
         "constructor-methods",
         "ord-methods",
         "method-references",

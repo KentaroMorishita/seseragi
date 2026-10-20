@@ -1,0 +1,20 @@
+trait Pick<F<_>> {
+  fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool
+}
+
+instance Pick<Maybe> {
+  fn pick<G<_>, A> left: G<Maybe<A>> -> (G<Maybe<A>> -> Bool) = {
+    let bad = 9007199254740991 + 1
+    \right -> True
+  }
+}
+
+fn selected<F<_>, G<_>, A> left: G<F<A>> -> (G<F<A>> -> Bool) where Pick<F> = {
+  let chosen: G<F<A>> -> G<F<A>> -> Bool = pick
+  chosen left
+}
+
+pub effect fn main = do {
+  let saved = selected<Maybe, Maybe, Int> (Just (Just 1))
+  println "unreachable"
+}

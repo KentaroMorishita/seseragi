@@ -215,6 +215,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("generalized-methods", 3),
         ("trait-methods", 3),
         ("constructor-methods", 3),
+        ("method-constructors", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")

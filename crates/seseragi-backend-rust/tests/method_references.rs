@@ -867,6 +867,160 @@ fn constructor_trait_parameter_methods_preserve_the_selected_first_stage() {
 }
 
 #[test]
+fn method_owned_constructor_binders_preserve_the_selected_first_stage() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-defect.ssrg");
+    for (name, source) in [
+        ("method-constructor-captured", source.to_string()),
+        (
+            "method-constructor-generalized",
+            source.replace(
+                "let chosen: G<F<A>> -> G<F<A>> -> Bool = pick",
+                "let chosen = pick",
+            ),
+        ),
+        (
+            "method-constructor-child-stage",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-constructor-children.ssrg"
+            )
+            .to_string(),
+        ),
+    ] {
+        execute(&source, name, "", 70);
+    }
+}
+
+#[test]
+fn method_owned_constructors_keep_prefixes_dictionaries_and_managed_lifetimes() {
+    for (name, source, expected) in [
+        (
+            "values",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-values.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-values.stdout"),
+        ),
+        (
+            "effects",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-effects.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-effects.stdout"),
+        ),
+        (
+            "prefix-kind",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-prefix-kind.ssrg"),
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-constructor-prefix-kind.stdout"),
+        ),
+    ] {
+        execute(source, &format!("method-constructor-{name}"), expected, 0);
+    }
+}
+
+#[test]
+fn method_owned_constructor_values_reject_forged_binders_kinds_and_frames() {
+    use seseragi_lowering::CoreStatement;
+    for initializer in [
+        "let chosen: G<F<A>> -> G<F<A>> -> Bool = pick",
+        "let chosen = pick",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<F<_>> {{ fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool }}\nfn saved<F<_>, G<_>, A> left: G<F<A>> -> (G<F<A>> -> Bool) where Pick<F> = {{ {initializer}; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "method-kind-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..21 {
+            let mut changed = core.clone();
+            let declaration = &mut changed.trait_methods[0];
+            match mutation {
+                0 => declaration.signature.type_parameters[0].arity = 0,
+                1 => declaration.signature.type_parameters[0].arity = 2,
+                2 => declaration.signature.type_parameters[1].arity = 1,
+                3 => declaration.signature.type_parameters[0].name = "F".into(),
+                4 => declaration.signature.type_parameters[1].name = "G".into(),
+                5 => declaration.signature.type_parameters.clear(),
+                6 => declaration.trait_parameters[0].arity = 0,
+                7 => declaration.signature.parameters[0] = CoreType::Hole,
+                8 => {
+                    declaration.signature.result = CoreType::Named {
+                        name: "G".into(),
+                        arguments: vec![],
+                    }
+                }
+                9 => declaration.constraints.push(
+                    core.functions
+                        .iter()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .constraints[0]
+                        .clone(),
+                ),
+                10 => changed.trait_methods.clear(),
+                20 => {
+                    let mut unused = declaration.signature.type_parameters[0].clone();
+                    unused.name = "UnusedConstructor".into();
+                    declaration.signature.type_parameters.push(unused);
+                }
+                _ => {
+                    let function = changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap();
+                    if mutation == 11 {
+                        function.type_parameters[1].arity = 0;
+                    } else if mutation == 12 {
+                        function.type_parameters[1].arity = 2;
+                    } else {
+                        let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                            panic!("body")
+                        };
+                        let value = match &mut statements[0] {
+                            CoreStatement::PureLet { value, .. } => value,
+                            CoreStatement::LocalFunction { body, .. } => body,
+                            _ => panic!("alias"),
+                        };
+                        let CoreExpr::Call {
+                            evidence,
+                            trait_dispatch,
+                            type_ref,
+                            deferred_evidence_parameters,
+                            evidence_argument_index,
+                            ..
+                        } = value
+                        else {
+                            panic!("method")
+                        };
+                        match mutation {
+                            13 => {
+                                evidence[0].evidence = CoreInstanceEvidence::Parameter { index: 1 }
+                            }
+                            14 => evidence[0].constraint.arguments[0] = CoreType::Hole,
+                            15 => trait_dispatch.as_mut().unwrap().method = "other".into(),
+                            16 => {
+                                trait_dispatch.as_mut().unwrap().trait_identity =
+                                    "counterfeit::trait(Pick)".into()
+                            }
+                            17 => *type_ref = CoreType::Hole,
+                            18 => *evidence_argument_index = Some(1),
+                            _ => deferred_evidence_parameters.push(CoreType::Hole),
+                        }
+                    }
+                }
+            }
+            let error = emit_rust_module(&changed, "probe").unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001", "mutation {mutation}");
+            assert_eq!(
+                error.origin.unwrap().source,
+                "method-kind-λ.ssrg",
+                "mutation {mutation}"
+            );
+        }
+    }
+}
+
+#[test]
 fn constructor_method_values_require_canonical_kinds_slots_and_evidence_frames() {
     use seseragi_lowering::CoreStatement;
     for initializer in [
@@ -1158,5 +1312,289 @@ fn constructor_prefix_slot_kinds_reject_forged_adt_and_struct_declarations() {
             );
             assert!(error.origin.is_some());
         }
+    }
+}
+
+#[test]
+fn method_owned_constructor_prefixes_reject_forged_slot_kinds() {
+    for declaration in [
+        "type Holder<G<_>, A> = | Holder G<A>",
+        "struct Holder<G<_>, A> { value: G<A> }",
+    ] {
+        let source = format!("// 雫🙂\ntrait Pick<A> {{ fn pick<F<_>> left: F<A> -> right: F<A> -> Bool }}\n{declaration}\nfn saved<G<_>, A> left: Holder<G, A> -> (Holder<G, A> -> Bool) where Pick<A> = {{ let chosen: Holder<G, A> -> Holder<G, A> -> Bool = pick; chosen left }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "slot-kinds-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        for mutation in 0..10 {
+            let mut changed = core.clone();
+            let parameters = if let Some(adt) = changed.adts.first_mut() {
+                &mut adt.type_parameters
+            } else {
+                &mut changed.structs[0].type_parameters
+            };
+            match mutation {
+                0 => parameters[0].arity = 0,
+                1 => parameters[0].arity = 2,
+                2 => {
+                    parameters.swap(0, 1);
+                }
+                3 => {
+                    parameters.pop();
+                }
+                4 => {
+                    let mut next = parameters[0].clone();
+                    next.name = "Unfilled".into();
+                    parameters.push(next);
+                }
+                5 => changed.trait_methods[0].trait_parameters[0].arity = 2,
+                6 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 0
+                }
+                7 => {
+                    changed
+                        .functions
+                        .iter_mut()
+                        .find(|f| f.symbol.ends_with("::saved"))
+                        .unwrap()
+                        .type_parameters[0]
+                        .arity = 2
+                }
+                8 => parameters[1].arity = 1,
+                _ => {
+                    parameters.clear();
+                }
+            }
+            let Err(error) = emit_rust_module(&changed, "probe") else {
+                panic!("accepted {declaration} mutation {mutation}");
+            };
+            assert_eq!(
+                error.code, "SES-RUST-0001",
+                "{declaration} mutation {mutation}"
+            );
+            assert!(error.origin.is_some());
+        }
+    }
+}
+
+#[test]
+fn method_owned_constructors_cannot_hide_higher_order_slots_in_value_binders() {
+    use seseragi_lowering::CoreStatement;
+    for (declaration, name, arguments) in [
+        (
+            "type Holder<H<_>, A> = | Holder H<A>",
+            "Holder",
+            vec![
+                CoreType::Named {
+                    name: "Maybe".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                },
+            ],
+        ),
+        (
+            "type Holder<P, H<_>, A> = | Holder (P, H<A>)",
+            "Holder",
+            vec![
+                CoreType::Named {
+                    name: "String".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Maybe".into(),
+                    arguments: vec![],
+                },
+                CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                },
+            ],
+        ),
+    ] {
+        let source = format!("// 雫🙂\ntrait Select<Tag> {{ fn select<G<_, _>, A, B> left: G<A, B> -> right: G<A, B> -> Bool }}\n{declaration}\nfn unused<Tag, G<_, _>, A, B> left: G<A, B> -> Unit where Select<Tag> = {{ let chosen: G<A, B> -> G<A, B> -> Bool = select; () }}\npub fn probe -> Unit = ()");
+        let core = compile_core_module(CompileInput::new(
+            "higher-slot-λ.ssrg",
+            "native/main",
+            &source,
+        ))
+        .unwrap()
+        .core_ir;
+        emit_rust_module(&core, "probe").unwrap();
+        let mut changed = core;
+        let function = changed
+            .functions
+            .iter_mut()
+            .find(|f| f.symbol.ends_with("::unused"))
+            .unwrap();
+        let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+            panic!("body")
+        };
+        let CoreStatement::PureLet { value, .. } = &mut statements[0] else {
+            panic!("alias")
+        };
+        let CoreExpr::Call { type_ref, .. } = value else {
+            panic!("method")
+        };
+        let argument = CoreType::Named {
+            name: name.into(),
+            arguments,
+        };
+        *type_ref = CoreType::Function {
+            parameter: Box::new(argument.clone()),
+            result: Box::new(CoreType::Function {
+                parameter: Box::new(argument),
+                result: Box::new(CoreType::Named {
+                    name: "Bool".into(),
+                    arguments: vec![],
+                }),
+            }),
+        };
+        let Err(error) = emit_rust_module(&changed, "probe") else {
+            panic!("accepted a higher-order slot in a value-kind method binder")
+        };
+        assert_eq!(error.code, "SES-RUST-0001");
+        assert_eq!(error.origin.unwrap().source, "higher-slot-λ.ssrg");
+    }
+}
+
+#[test]
+fn closed_method_values_reject_higher_order_method_constructor_bindings() {
+    let source = "// 雫🙂\ntrait Pick<Tag> { fn pick<G<_, _>, A, B> left: G<A, B> -> right: G<A, B> -> Bool }\ntype Pair<A, B> = | Pair (A, B)\ntype Holder<H<_>, A> = | Holder H<A>\ninstance Pick<Int> { fn pick<G<_, _>, A, B> left: G<A, B> -> (G<A, B> -> Bool) = \\right -> True }\npub fn probe -> (Pair<Int, String> -> Pair<Int, String> -> Bool) = pick<Int, Pair, Int, String>";
+    let mut core = compile_core_module(CompileInput::new(
+        "higher-local-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    let CoreExpr::Call { type_ref, .. } = &mut core
+        .functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::probe"))
+        .unwrap()
+        .body
+    else {
+        panic!("method")
+    };
+    let argument = CoreType::Named {
+        name: "Holder".into(),
+        arguments: vec![
+            CoreType::Named {
+                name: "Maybe".into(),
+                arguments: vec![],
+            },
+            CoreType::Named {
+                name: "Int".into(),
+                arguments: vec![],
+            },
+        ],
+    };
+    *type_ref = CoreType::Function {
+        parameter: Box::new(argument.clone()),
+        result: Box::new(CoreType::Function {
+            parameter: Box::new(argument),
+            result: Box::new(CoreType::Named {
+                name: "Bool".into(),
+                arguments: vec![],
+            }),
+        }),
+    };
+    let Err(error) = emit_rust_module(&core, "probe") else {
+        panic!("accepted a higher-order closed method constructor")
+    };
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap().source, "higher-local-λ.ssrg");
+}
+
+#[test]
+fn closed_method_values_reject_higher_order_instance_constructor_arguments() {
+    let source = "// 雫🙂\ntrait Inspect<A> { fn inspect left: Int -> right: Int -> Bool }\ntype Pair<A, B> = | Pair (A, B)\ntype Outer<F<_, _>> = | Outer Unit\ntype Holder<H<_>, A> = | Holder H<A>\ninstance<F<_, _>> Inspect<Outer<F>> { fn inspect left: Int -> (Int -> Bool) = \\right -> True }\npub fn probe -> (Int -> Int -> Bool) = inspect<Outer<Pair>>";
+    let mut core = compile_core_module(CompileInput::new(
+        "higher-instance-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    let CoreExpr::Call { evidence, .. } = &mut core
+        .functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::probe"))
+        .unwrap()
+        .body
+    else {
+        panic!("method")
+    };
+    let constructor = CoreType::Named {
+        name: "Holder".into(),
+        arguments: vec![],
+    };
+    evidence[0].constraint.arguments[0] = CoreType::Named {
+        name: "Outer".into(),
+        arguments: vec![constructor.clone()],
+    };
+    let CoreInstanceEvidence::Local { type_arguments, .. } = &mut evidence[0].evidence else {
+        panic!("instance")
+    };
+    type_arguments[0] = constructor;
+    let Err(error) = emit_rust_module(&core, "probe") else {
+        panic!("accepted a higher-order instance constructor")
+    };
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap().source, "higher-instance-λ.ssrg");
+}
+
+#[test]
+fn closed_method_values_keep_cold_effect_types_and_returned_values() {
+    for (name, source) in [
+        (
+            "closed-value-effect-kind",
+            r#"import * as effects from "std/effect"
+trait Keep<Tag> { fn keep<A> left: A -> right: A -> A }
+instance Keep<Int> { fn keep<A> left: A -> (A -> A) = \right -> left }
+effect fn cold = do { println "cold"; effects.succeed 42 }
+pub effect fn main = do {
+ let chosen = keep<Int, Effect<{console: Console}, ConsoleError, Int>>
+ let saved = chosen (cold ())
+ println "created"
+ let plan: Effect<{console: Console}, ConsoleError, Int> = saved (cold ())
+ value <- plan
+ println (show value)
+}
+"#,
+        ),
+        (
+            "closed-constructor-effect-kind",
+            r#"import * as effects from "std/effect"
+trait Keep<Tag> { fn keep<G<_>, A> left: G<A> -> right: G<A> -> G<A> }
+instance Keep<Int> { fn keep<G<_>, A> left: G<A> -> (G<A> -> G<A>) = \right -> left }
+effect fn cold = do { println "cold"; effects.succeed 42 }
+pub effect fn main = do {
+ let chosen = keep<Int, Maybe, Effect<{console: Console}, ConsoleError, Int>>
+ let saved = chosen (Just (cold ()))
+ println "created"
+ let plan: Effect<{console: Console}, ConsoleError, Int> = match (saved (Just (cold ()))) { Just held -> held; Nothing -> cold () }
+ value <- plan
+ println (show value)
+}
+"#,
+        ),
+    ] {
+        execute(source, name, "created\ncold\n42\n", 0);
     }
 }

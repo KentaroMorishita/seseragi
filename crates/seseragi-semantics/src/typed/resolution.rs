@@ -350,9 +350,9 @@ impl<'a> TypedResolution<'a> {
     }
 
     /// A checked source declaration with one primary dictionary can return its
-    /// method without introducing extra source stages. Constructor-kind trait
-    /// parameters retain their declared slots; method-owned binders remain
-    /// value-kind here and method-owned constraints need their own ABI proof.
+    /// method without introducing extra source stages. Both trait and method
+    /// binders retain the kinds from that declaration. Method-owned constraints
+    /// still need their separate dictionary-introduction proof.
     pub(crate) fn declared_method_value_scheme(&self, signature: &TopLevelPureFunction) -> bool {
         let Some(identity) = &signature.trait_identity else {
             return false;
@@ -364,19 +364,31 @@ impl<'a> TypedResolution<'a> {
         // module. Their individual ABI proofs remain the separate authority.
         let declared = self.resolved.declarations.iter().any(|declaration| {
             let SurfaceDecl::Trait {
-                name_span, methods, ..
+                name_span,
+                type_parameters,
+                methods,
+                ..
             } = declaration
             else {
                 return false;
             };
-            methods
-                .iter()
-                .any(|m| m.name == *method && m.type_parameters.iter().all(|p| p.arity == 0))
-                && self.resolved.symbols.iter().any(|symbol| {
-                    symbol.kind == SymbolKind::Trait
-                        && symbol.origin == *name_span
-                        && symbol.canonical.as_ref() == Some(identity)
-                })
+            methods.iter().any(|m| {
+                let parameters = type_parameters.iter().chain(&m.type_parameters);
+                let mut names = BTreeSet::new();
+                m.name == *method
+                    && parameters.clone().all(|p| names.insert(&p.name))
+                    && self
+                        .trait_method_callable(identity, method)
+                        .is_some_and(|callable| {
+                            parameters
+                                .map(|p| (&p.name, p.arity))
+                                .eq(callable.type_parameters.iter().map(|p| (&p.name, p.arity)))
+                        })
+            }) && self.resolved.symbols.iter().any(|symbol| {
+                symbol.kind == SymbolKind::Trait
+                    && symbol.origin == *name_span
+                    && symbol.canonical.as_ref() == Some(identity)
+            })
         });
         if !declared {
             return false;

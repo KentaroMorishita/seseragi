@@ -19,7 +19,18 @@ pub(super) struct Scope {
 
 impl Scope {
     pub(super) fn type_parameter_arity(&self, name: &str) -> Option<u32> {
-        self.type_parameters.get(name).map(|(arity, _)| *arity)
+        self.type_parameters
+            .get(name)
+            .map(|(arity, _)| *arity)
+            .or_else(|| {
+                // Matching returns canonical scope identities. Recover their
+                // kind from the recorded binding, without parsing its name.
+                self.type_parameters.values().find_map(|(arity, identity)| {
+                    matches!(identity, CoreType::Named { name: canonical, arguments }
+                        if canonical == name && arguments.is_empty())
+                    .then_some(*arity)
+                })
+            })
     }
     pub(super) fn new() -> Self {
         Self::default()

@@ -78,11 +78,6 @@ impl Backend<'_> {
                         && declaration.method == dispatch.method
                         && declaration.constraints.is_empty()
                         && !declaration.signature.parameters.is_empty()
-                        && declaration
-                            .signature
-                            .type_parameters
-                            .iter()
-                            .all(|p| p.arity == 0)
                 })
             {
                 return Err("Rust backend: unproven method factory signature".into());
@@ -210,11 +205,10 @@ impl Backend<'_> {
                 && declaration.constraints.is_empty()
                 && !declaration.signature.parameters.is_empty()
                 && declaration
-                    .signature
-                    .type_parameters
+                    .trait_parameters
                     .iter()
-                    .all(|p| p.arity == 0)
-                && declaration.trait_parameters.iter().any(|p| p.arity > 0)
+                    .chain(&declaration.signature.type_parameters)
+                    .any(|p| p.arity > 0)
         })
     }
 

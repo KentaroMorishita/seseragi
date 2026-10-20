@@ -1,0 +1,15 @@
+pub trait Pick<F<_>> {
+  fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool
+}
+pub type Box<A> = | Box A
+instance Pick<Box> {
+  fn pick<G<_>, A> left: G<Box<A>> -> (G<Box<A>> -> Bool) = \right -> True
+}
+let selectedMethod = pick
+let copiedMethod = selectedMethod
+fn capture<F<_>, G<_>, A> left: G<F<A>> -> (G<F<A>> -> Bool) where Pick<F> = {
+  let chosen = copiedMethod
+  let copied = chosen
+  copied left
+}
+pub fn selected<G<_>, A> left: G<Box<A>> -> (G<Box<A>> -> Bool) = capture left
