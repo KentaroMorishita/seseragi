@@ -76,6 +76,21 @@ fn incomplete_instance_contracts_reject_before_emission_or_execution() {
     let artifacts = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/spec/artifacts");
     for (schema, name, code) in [
         ("schema-1", "incomplete-trait-method", "SES-P0001"),
+        (
+            "semantic-diagnostics-schema-1",
+            "implicit-unit-provider-mismatch",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "implicit-unit-result-mismatch",
+            "SES-T0101",
+        ),
+        (
+            "semantic-diagnostics-schema-1",
+            "implicit-unit-owner-mismatch",
+            "SES-T0101",
+        ),
         ("schema-1", "incomplete-instance-method", "SES-P0001"),
         ("schema-1", "missing-instance-result", "SES-P0001"),
         ("schema-1", "trait-method-body", "SES-P0001"),
@@ -217,6 +232,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("constructor-methods", 3),
         ("method-constructors", 3),
         ("method-direct-wheres", 3),
+        ("unit-providers", 3),
         ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -1225,6 +1241,28 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             70,
         ),
         (
+            "unit-provider-values",
+            "fixtures/rust-backend/unit-provider-values.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/unit-provider-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "unit-provider-defect",
+            "fixtures/rust-backend/unit-provider-defect.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/unit-provider-defect.stdout"
+            ),
+            70,
+        ),
+        (
+            "unit-provider-cold",
+            "fixtures/rust-backend/unit-provider-cold.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-provider-cold.stdout"),
+            0,
+        ),
+        (
             "method-direct-where-values",
             "fixtures/rust-backend/method-direct-where-values.ssrg",
             include_str!(
@@ -2098,4 +2136,5 @@ fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("constructor-methods");
     strict_project_reexports("method-wheres");
     strict_project_reexports("method-direct-wheres");
+    strict_project_reexports("unit-providers");
 }

@@ -1,0 +1,4 @@
+// 雫🙂
+type Unit = | UserUnit
+trait Ready<A> { fn ready -> Bool }
+instance Ready<Int> { fn ready value: Unit -> Bool = False }

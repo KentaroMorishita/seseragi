@@ -2,6 +2,58 @@ use super::linked_program;
 use crate::{analyze_linked_module, resolve_linked_module, SymbolNamespace};
 
 #[test]
+fn imported_trait_contracts_include_implicit_unit_and_preserve_returned_functions() {
+    for (declaration, implementation, valid) in [
+        (
+            "fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A>",
+            "fn pick<B> -> (Box<B> -> Box<B> -> Bool) where Show<B> = \\left -> \\right -> False",
+            false,
+        ),
+        (
+            "fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A>",
+            "fn pick<B> left: Box<B> -> (Box<B> -> Bool) where Show<B> = \\right -> False",
+            true,
+        ),
+        (
+            "fn pick<A> -> (F<A> -> Bool) where Show<A>",
+            "fn pick<B> unit: Unit -> (Box<B> -> Bool) where Show<B> = \\value -> False",
+            true,
+        ),
+        (
+            "fn pick<A> unit: Unit -> (F<A> -> Bool) where Show<A>",
+            "fn pick<B> -> (Box<B> -> Bool) where Show<B> = \\value -> False",
+            true,
+        ),
+    ] {
+        let domain = format!("pub trait Pick<F<_>> {{ {declaration} }}\n");
+        let source = format!("// 雫\nimport {{ Pick as Choose }} from \"./domain\"\ntype Box<A> = | Box A\ninstance Choose<Box> {{ {implementation} }}\n");
+        let linked = linked_program(&source, [("./domain", "fixture/game::domain", &domain)]);
+        let result = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main-λ.ssrg", &source),
+            linked,
+            &source,
+        );
+        if valid {
+            result.unwrap_or_else(|error| panic!("{source}\n{error:#?}"));
+        } else {
+            let diagnostics = result.unwrap_err();
+            let mismatch = diagnostics
+                .diagnostics
+                .iter()
+                .find(|diagnostic| {
+                    diagnostic.message_key == "trait.instance-method-signature-mismatch"
+                })
+                .unwrap_or_else(|| panic!("{source}\n{diagnostics:#?}"));
+            assert_eq!(diagnostics.source, "main-λ.ssrg");
+            assert_eq!(
+                &source[mismatch.primary.start as usize..mismatch.primary.end as usize],
+                implementation
+            );
+        }
+    }
+}
+
+#[test]
 fn rejects_dropped_and_missing_methods_of_an_import_aliased_trait() {
     let domain = "pub trait Show<A> { fn describe value: A -> String }\n";
     for (method, key) in [

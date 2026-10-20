@@ -1,0 +1,22 @@
+import * as effects from "std/effect"
+type Tag = | Tag
+trait Make<T> {
+  fn make<A> unit: Unit -> (A -> Effect<{}, Never, String>) where Show<A>
+}
+
+instance Make<Tag> {
+  fn make<A> -> (A -> Effect<{}, Never, String>) where Show<A> = {
+    let render: A -> String = show
+    \value -> effects.defer (\_: Unit -> effects.succeed (render value))
+  }
+}
+
+pub effect fn main = do {
+  let saved = make<Tag, Int> ()
+  let cold = saved 42
+  println "created"
+  first <- cold
+  println first
+  second <- cold
+  println second
+}

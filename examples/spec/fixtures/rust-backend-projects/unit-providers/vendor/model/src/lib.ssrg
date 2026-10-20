@@ -1,0 +1,9 @@
+pub trait Ready<A> {
+  fn ready unit: Unit -> (A -> String)
+}
+
+instance Ready<Int> {
+  fn ready -> (Int -> String) = \value -> show value
+}
+
+pub fn selected unit: Unit -> (Int -> String) = ready<Int> unit
