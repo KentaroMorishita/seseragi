@@ -216,6 +216,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("trait-methods", 3),
         ("constructor-methods", 3),
         ("method-constructors", 3),
+        ("method-direct-wheres", 3),
         ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -1224,6 +1225,58 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             70,
         ),
         (
+            "method-direct-where-values",
+            "fixtures/rust-backend/method-direct-where-values.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-values.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-direct-where-trace",
+            "fixtures/rust-backend/method-direct-where-trace.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-trace.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-direct-where-operator",
+            "fixtures/rust-backend/method-direct-where-operator.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-operator.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-direct-where-defect",
+            "fixtures/rust-backend/method-direct-where-defect.ssrg",
+            "",
+            70,
+        ),
+        (
+            "method-direct-where-effects",
+            "fixtures/rust-backend/method-direct-where-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-direct-where-cold",
+            "fixtures/rust-backend/method-direct-where-cold.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-cold.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-direct-where-children",
+            "fixtures/rust-backend/method-direct-where-children.ssrg",
+            "",
+            70,
+        ),
+        (
             "method-where-values",
             "fixtures/rust-backend/method-where-values.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.stdout"),
@@ -2044,4 +2097,5 @@ fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("trait-methods");
     strict_project_reexports("constructor-methods");
     strict_project_reexports("method-wheres");
+    strict_project_reexports("method-direct-wheres");
 }

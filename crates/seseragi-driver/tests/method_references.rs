@@ -1,6 +1,126 @@
 use seseragi_driver::{compile_module, BuildProfile, CompileInput};
 
 #[test]
+fn direct_method_staging_keeps_reversed_operator_operands_in_source_order() {
+    use seseragi_lowering::{CoreExpr, CoreStatement};
+    fn source_calls(expr: &CoreExpr, output: &mut Vec<String>) {
+        match expr {
+            CoreExpr::Call {
+                callee, arguments, ..
+            } => {
+                if ["left", "right"].contains(&callee.as_str()) {
+                    output.push(callee.clone());
+                }
+                for argument in arguments {
+                    source_calls(argument, output);
+                }
+            }
+            CoreExpr::Sequence {
+                statements, result, ..
+            } => {
+                for statement in statements {
+                    if let CoreStatement::PureLet { value, .. } = statement {
+                        source_calls(value, output);
+                    }
+                }
+                source_calls(result, output);
+            }
+            CoreExpr::Lambda { body, .. } => source_calls(body, output),
+            _ => {}
+        }
+    }
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/method-direct-where-operator.ssrg"
+    );
+    for profile in [BuildProfile::Development, BuildProfile::Release] {
+        let compiled = compile_module(
+            CompileInput::new("operand-λ.ssrg", "fixture/operand", source).with_profile(profile),
+        )
+        .unwrap();
+        let body = &compiled
+            .core_ir
+            .functions
+            .iter()
+            .find(|f| f.symbol.ends_with("::ordered"))
+            .unwrap()
+            .body;
+        let mut calls = Vec::new();
+        source_calls(body, &mut calls);
+        assert_eq!(calls, ["left", "right"]);
+    }
+}
+
+#[test]
+fn direct_method_owned_where_uses_the_checked_value_before_source_arguments() {
+    use seseragi_lowering::{CoreExpr, CoreInstanceEvidence, CoreStatement};
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/method-direct-where-defect.ssrg"
+    );
+    let outputs = [BuildProfile::Development, BuildProfile::Release].map(|profile| {
+        compile_module(
+            CompileInput::new("direct-method-λ.ssrg", "fixture/direct-method", source)
+                .with_profile(profile),
+        )
+        .unwrap()
+    });
+    assert_eq!(outputs[0].core_ir, outputs[1].core_ir);
+    let function = outputs[0]
+        .core_ir
+        .functions
+        .iter()
+        .find(|f| f.symbol.ends_with("::selected"))
+        .unwrap();
+    let CoreExpr::Sequence { result, .. } = &function.body else {
+        panic!("source body")
+    };
+    let CoreExpr::Sequence {
+        statements, result, ..
+    } = result.as_ref()
+    else {
+        panic!("checked method value must precede source argument evaluation")
+    };
+    let [CoreStatement::PureLet { name, value, .. }] = statements.as_slice() else {
+        panic!("method value evaluated once")
+    };
+    let CoreExpr::Call {
+        arguments,
+        evidence,
+        trait_dispatch: Some(dispatch),
+        ..
+    } = value
+    else {
+        panic!("selected method value")
+    };
+    assert!(arguments.is_empty());
+    assert!(matches!(
+        evidence[0].evidence,
+        CoreInstanceEvidence::Parameter { index: 0 }
+    ));
+    assert!(matches!(
+        evidence[1].evidence,
+        CoreInstanceEvidence::Parameter { index: 1 }
+    ));
+    assert_eq!(
+        dispatch.method_contract.as_ref().unwrap().parameters.len(),
+        2
+    );
+    let CoreExpr::Call {
+        callee,
+        arguments,
+        evidence,
+        trait_dispatch,
+        ..
+    } = result.as_ref()
+    else {
+        panic!("source application")
+    };
+    assert_eq!(callee, name);
+    assert_eq!(arguments.len(), 1);
+    assert!(evidence.is_empty());
+    assert!(trait_dispatch.is_none());
+}
+
+#[test]
 fn method_owned_where_alias_keeps_primary_and_child_frames_without_source_eta() {
     use seseragi_lowering::{CoreExpr, CoreStatement};
     let source =
@@ -146,6 +266,23 @@ fn abstract_method_authority_retains_declaration_binders_and_constraints() {
 #[test]
 fn method_value_stages_share_checked_core_in_both_profiles() {
     for source in [
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-direct-where-operator.ssrg"
+        ),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-direct-where-trace.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-direct-where-values.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-direct-where-defect.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-direct-where-effects.ssrg"
+        ),
+        include_str!("../../../examples/spec/fixtures/rust-backend/method-direct-where-cold.ssrg"),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/method-direct-where-children.ssrg"
+        ),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-where-cold.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.ssrg"),
         include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg"),
@@ -248,6 +385,7 @@ fn generalized_method_aliases_still_require_the_selected_instance() {
 #[test]
 fn method_references_keep_imported_owners_and_child_dictionaries() {
     for fixture in [
+        "method-direct-wheres",
         "method-wheres",
         "method-constructors",
         "constructor-methods",

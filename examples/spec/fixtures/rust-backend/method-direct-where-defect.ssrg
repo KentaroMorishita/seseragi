@@ -1,0 +1,19 @@
+trait Pick<F<_>> {
+  fn pick<A> left: F<A> -> right: F<A> -> Bool where Show<A>
+}
+
+instance Pick<Maybe> {
+  fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) where Show<A> = {
+    let bad = 9007199254740991 + 1
+    \right -> True
+  }
+}
+
+fn selected<F<_>, A> left: F<A> -> (F<A> -> Bool) where Pick<F>, Show<A> = {
+  pick left
+}
+
+pub effect fn main = do {
+  let saved = selected<Maybe, Int> (Just 1)
+  println "created"
+}

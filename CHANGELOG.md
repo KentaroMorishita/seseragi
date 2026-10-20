@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.67] - 2026-10-20
+
+### Fixed
+
+- Preserve the actual method stages when directly applying a checked source method with method-owned `where` constraints through a primary parameter dictionary. Obtain the validated method value before evaluating source arguments, keeping one-parameter implementations returning a function distinct from two-parameter implementations. Reuse canonical owner, kind and evidence-frame checks; retain operator source order, saved partials, returned closures, Ref cycles, cold Effects and finalizers. Unproved schemes and implicit Unit provider signature checks remain tracked in #887.
+
 ## [0.61.66] - 2026-10-20
 
 ### Fixed

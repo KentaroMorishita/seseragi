@@ -55,6 +55,102 @@ fn execute(source: &str, name: &str, stdout: &str, code: i32) {
 }
 
 #[test]
+fn method_owned_where_direct_application_keeps_actual_provider_stages() {
+    let source = include_str!(
+        "../../../examples/spec/fixtures/rust-backend/method-direct-where-defect.ssrg"
+    );
+    execute(source, "where-direct-first-stage", "", 70);
+    for (name, body) in [
+        ("let", "  let saved = pick left\n  saved"),
+        (
+            "annotated-let",
+            "  let saved: F<A> -> Bool = pick left\n  saved",
+        ),
+        ("nested-let", "  let saved = { pick left }\n  saved"),
+    ] {
+        assert!(source.contains("  pick left"));
+        execute(
+            &source.replace("  pick left", body),
+            &format!("where-direct-{name}"),
+            "",
+            70,
+        );
+    }
+    let two_parameters = source
+        .replace(
+            "fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool)",
+            "fn pick<A> left: Maybe<A> -> right: Maybe<A> -> Bool",
+        )
+        .replace("\\right -> True", "True");
+    execute(
+        &two_parameters,
+        "where-direct-two-source-stages",
+        "created\n",
+        0,
+    );
+    for (source, name, stdout, code) in [
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-operator.ssrg"
+            ),
+            "operator",
+            "42\n",
+            0,
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-trace.ssrg"
+            ),
+            "trace",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-trace.stdout"
+            ),
+            0,
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-values.ssrg"
+            ),
+            "values",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-values.stdout"
+            ),
+            0,
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-effects.ssrg"
+            ),
+            "effects",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-cold.ssrg"
+            ),
+            "cold",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-cold.stdout"
+            ),
+            0,
+        ),
+        (
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-children.ssrg"
+            ),
+            "children",
+            "",
+            70,
+        ),
+    ] {
+        execute(source, &format!("where-direct-{name}"), stdout, code);
+    }
+}
+
+#[test]
 fn method_owned_where_alias_runs_the_selected_first_stage() {
     let source =
         include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg");
@@ -122,15 +218,21 @@ fn constrained_method_values_keep_never_nominal_and_binder_owners() {
 #[test]
 fn method_owned_where_values_reject_forged_contracts_kinds_and_frames() {
     use seseragi_lowering::CoreStatement;
-    for generalized in [false, true] {
+    for mode in ["captured", "generalized", "direct"] {
         let mut source =
             include_str!("../../../examples/spec/fixtures/rust-backend/method-where-defect.ssrg")
                 .to_string();
-        if generalized {
+        if mode == "generalized" {
             source = source.replace(
                 "let chosen: F<A> -> F<A> -> Bool = pick",
                 "let chosen = pick",
             );
+        }
+        if mode == "direct" {
+            source = include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-direct-where-defect.ssrg"
+            )
+            .into();
         }
         let core = compile_core_module(CompileInput::new(
             "method-where-λ.ssrg",
@@ -190,8 +292,19 @@ fn method_owned_where_values_reject_forged_contracts_kinds_and_frames() {
                         .iter_mut()
                         .find(|f| f.symbol.ends_with("::selected"))
                         .unwrap();
-                    let CoreExpr::Sequence { statements, .. } = &mut function.body else {
+                    let CoreExpr::Sequence {
+                        statements, result, ..
+                    } = &mut function.body
+                    else {
                         panic!("body")
+                    };
+                    let statements = if mode == "direct" {
+                        let CoreExpr::Sequence { statements, .. } = result.as_mut() else {
+                            panic!("direct method value")
+                        };
+                        statements
+                    } else {
+                        statements
                     };
                     let value = match &mut statements[0] {
                         CoreStatement::PureLet { value, .. } => value,
@@ -262,12 +375,12 @@ fn method_owned_where_values_reject_forged_contracts_kinds_and_frames() {
             let error = match emit_rust_module(&changed, "main") {
                 Err(error) => error,
                 Ok(_) => {
-                    panic!("accepted method-where mutation {mutation}, generalized {generalized}")
+                    panic!("accepted method-where mutation {mutation}, mode {mode}")
                 }
             };
             assert_eq!(
                 error.code, "SES-RUST-0001",
-                "mutation {mutation}, generalized {generalized}"
+                "mutation {mutation}, mode {mode}"
             );
             assert_eq!(error.origin.as_ref().unwrap().source, "method-where-λ.ssrg");
         }

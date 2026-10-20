@@ -1,0 +1,26 @@
+trait Render<F<_>> {
+  fn render<G<_>, A> left: G<A> -> right: F<G<A>> -> String where Show<G<A>>
+}
+type Bad = | Bad Int
+instance Show<Bad> {
+  fn show value: Bad -> String = {
+    let bad = 9007199254740991 + 1
+    "unreachable"
+  }
+}
+instance Render<Maybe> {
+  fn render<G<_>, A> left: G<A> -> (Maybe<G<A>> -> String) where Show<G<A>> = {
+    let prefix = show left
+    \right -> prefix
+  }
+}
+fn capture<F<_>, G<_>, A> left: G<A>
+  -> (F<G<A>> -> String)
+where Render<F>, Show<G<A>> =
+  {
+    render left
+  }
+pub effect fn main = do {
+  let saved = capture<Maybe, Maybe, Bad> (Just (Bad 1))
+  println "unreachable"
+}

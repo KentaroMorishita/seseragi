@@ -1,0 +1,15 @@
+pub trait Render<F<_>> {
+  fn render<A> left: A -> right: F<A> -> String where Show<A>
+}
+pub type Box<P, A> = | Box (P, A)
+instance<P> Render<Box<P>> where Show<P> {
+  fn render<A> left: A -> (Box<P, A> -> String) where Show<A> = {
+    let prefix = show left
+    \right ->
+      match right { Box (tag, value) -> prefix + ":" + show tag + ":" + show value }
+  }
+}
+fn fromPrimary<F<_>, A> left: A -> (F<A> -> String) where Render<F>, Show<A> =
+  render left
+pub fn selected<P, A> left: A -> (Box<P, A> -> String) where Show<P>, Show<A> =
+  fromPrimary<Box<P>, A> left

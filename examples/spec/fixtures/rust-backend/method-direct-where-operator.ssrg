@@ -1,0 +1,20 @@
+type Box<A> = | Box A
+trait Monad<F<_>> {
+  fn flatMap<A, B> f: (A -> F<B>) -> value: F<A> -> F<B> where Show<A>
+}
+fn first -> Unit = ()
+instance Monad<Box> {
+  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> where Show<A> = {
+    let entered = first ()
+    match value { Box item -> f item }
+  }
+}
+fn left -> Box<Int> = Box 40
+fn right -> (Int -> Box<Int>) = \value -> Box (value + 2)
+fn ordered<F<_>> left: (Unit -> F<Int>)
+  -> right: (Unit -> (Int -> F<Int>))
+  -> F<Int>
+where Monad<F> =
+  (>>=) (left ()) (right ())
+pub fn probe -> Int = match ordered<Box> left right { Box value -> value }
+pub effect fn main = println (show (probe ()))

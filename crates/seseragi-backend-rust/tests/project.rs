@@ -343,43 +343,46 @@ fn method_owned_constructors_keep_their_package_owner_and_kind() {
 
 #[test]
 fn method_owned_constraints_keep_their_package_contract_and_frames() {
-    let loaded = seseragi_project::load_local_project(
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("../../examples/spec/fixtures/rust-backend-projects/method-wheres"),
-    )
-    .unwrap();
-    let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
-    let modules = core
-        .compiled
-        .order
-        .iter()
-        .map(|id| core.compiled.modules[id].core_ir.clone())
-        .collect::<Vec<_>>();
-    assert_eq!(modules.len(), 3);
-    emit_rust_project(
-        &modules.iter().collect::<Vec<_>>(),
-        &core.entry_module,
-        "main",
-    )
-    .unwrap();
-    for mutation in 0..3 {
-        let mut changed = modules.clone();
-        let declaration = changed
-            .iter_mut()
-            .find_map(|m| m.trait_methods.first_mut())
-            .unwrap();
-        match mutation {
-            0 => declaration.constraints[0].trait_identity = Some("std/prelude::Debug".into()),
-            1 => declaration.signature.type_parameters[0].arity = 1,
-            _ => declaration.constraints.clear(),
-        }
-        let error = emit_rust_project(
-            &changed.iter().collect::<Vec<_>>(),
+    for fixture in ["method-wheres", "method-direct-wheres"] {
+        let loaded = seseragi_project::load_local_project(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("../../examples/spec/fixtures/rust-backend-projects")
+                .join(fixture),
+        )
+        .unwrap();
+        let core = seseragi_driver::compile_core_local_project(&loaded).unwrap();
+        let modules = core
+            .compiled
+            .order
+            .iter()
+            .map(|id| core.compiled.modules[id].core_ir.clone())
+            .collect::<Vec<_>>();
+        assert_eq!(modules.len(), 3);
+        emit_rust_project(
+            &modules.iter().collect::<Vec<_>>(),
             &core.entry_module,
             "main",
         )
-        .unwrap_err();
-        assert_eq!(error.code, "SES-RUST-0001");
-        assert!(error.origin.is_some());
+        .unwrap();
+        for mutation in 0..3 {
+            let mut changed = modules.clone();
+            let declaration = changed
+                .iter_mut()
+                .find_map(|m| m.trait_methods.first_mut())
+                .unwrap();
+            match mutation {
+                0 => declaration.constraints[0].trait_identity = Some("std/prelude::Debug".into()),
+                1 => declaration.signature.type_parameters[0].arity = 1,
+                _ => declaration.constraints.clear(),
+            }
+            let error = emit_rust_project(
+                &changed.iter().collect::<Vec<_>>(),
+                &core.entry_module,
+                "main",
+            )
+            .unwrap_err();
+            assert_eq!(error.code, "SES-RUST-0001");
+            assert!(error.origin.is_some());
+        }
     }
 }
