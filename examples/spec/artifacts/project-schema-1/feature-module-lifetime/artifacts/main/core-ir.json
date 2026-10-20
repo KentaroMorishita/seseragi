@@ -4,6 +4,14 @@
   "module": "fixture/feature-module-lifetime::main",
   "externalTypeBindings": [
     {
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "provider": {
+        "module": "std/prelude",
+        "export": "Unit"
+      }
+    },
+    {
       "spelling": "dom.Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {
@@ -50,8 +58,9 @@
           "id": "unit",
           "kind": "implicit",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
             "arguments": []
           }
         }
@@ -80,8 +89,9 @@
           "arguments": []
         },
         "success": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Unit",
+          "canonical": "std/prelude::Unit",
           "arguments": []
         },
         "arguments": [

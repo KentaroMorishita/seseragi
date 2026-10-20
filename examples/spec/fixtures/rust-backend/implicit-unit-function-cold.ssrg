@@ -1,0 +1,19 @@
+import * as effects from "std/effect"
+
+fn delayed<A> value: A -> Effect<{}, Never, String> where Show<A> =
+  effects.defer (\_: Unit -> effects.succeed (show value))
+
+fn selected<Unit> -> (Unit -> Effect<{}, Never, String>) where Show<Unit> = {
+  \value -> delayed value
+}
+
+pub effect fn main = do {
+  let unit = ()
+  let saved = selected<Int> unit
+  let cold = saved 42
+  println "created"
+  first <- cold
+  println first
+  second <- cold
+  println second
+}

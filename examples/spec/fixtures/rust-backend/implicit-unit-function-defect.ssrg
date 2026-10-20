@@ -1,0 +1,10 @@
+fn selected<Unit> -> (Unit -> Bool) = {
+  let bad = 9007199254740991 + 1;
+  \value -> False
+}
+
+pub effect fn main = {
+  let unit = ();
+  let unused: Int -> Bool = selected<Int> unit;
+  println "created"
+}

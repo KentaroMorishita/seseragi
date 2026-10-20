@@ -968,7 +968,7 @@ mod tests {
                 constraints: Vec::new(),
                 constraint_identities: Vec::new(),
                 parameters: vec![TypedParameter::ImplicitUnit {
-                    type_ref: unit_type(),
+                    type_ref: resolution::canonical_unit_value_type().type_ref,
                 }],
                 effect: TypedEffect {
                     environment: TypedType::Record {

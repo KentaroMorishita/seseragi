@@ -487,8 +487,9 @@
           "id": "unit",
           "kind": "implicit",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
             "arguments": []
           }
         }

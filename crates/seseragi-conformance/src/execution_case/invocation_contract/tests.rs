@@ -92,6 +92,36 @@ fn accepts_supported_arguments_across_a_curried_signature() {
 }
 
 #[test]
+fn canonical_anonymous_unit_is_checked_separately_from_source_shadowing() {
+    let argument = Invocation::PureJson {
+        arguments: vec![InvocationArgument::Unit],
+    };
+    for (canonical, module, export, accepted) in [
+        ("std/prelude::Unit", "std/prelude", "Unit", true),
+        ("fixture/main::Unit", "fixture/main", "Unit", false),
+        ("std/prelude::Unit", "fixture/main", "Unit", false),
+        ("std/prelude::Unit", "std/prelude", "Other", false),
+    ] {
+        let mut typed = interface(function(
+            InterfaceType::ExternalNamed {
+                name: "Unit".to_owned(),
+                canonical: canonical.to_owned(),
+                provider_module: module.to_owned(),
+                provider_export: export.to_owned(),
+                arguments: vec![],
+            },
+            named("Bool"),
+        ));
+        typed.exports.push(type_export("Unit", 0));
+        assert_eq!(
+            validate_final_interface_invocation(&typed, "main", &argument).is_ok(),
+            accepted,
+            "{typed:#?}"
+        );
+    }
+}
+
+#[test]
 fn rejects_non_final_interfaces_and_missing_value_exports() {
     let mut shallow = interface(function(named("Unit"), named("String")));
     shallow.stage = "module-interface".to_owned();

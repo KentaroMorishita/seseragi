@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/implicit-unit-function-own-binder",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::probe",
+      "namespace": "value",
+      "name": "probe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 54,
+        "end": 129
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "providerModule": "std/prelude",
+            "providerExport": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 130,
+        "end": 176
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "providerModule": "std/prelude",
+            "providerExport": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

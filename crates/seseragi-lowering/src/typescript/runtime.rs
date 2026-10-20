@@ -1174,7 +1174,14 @@ pub(super) fn collect_type_runtime_requirement(
                 collect_type_runtime_requirement(argument, requirements);
             }
         }
-        CoreType::ExternalNamed { arguments, .. } => {
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => {
+            if canonical == "std/prelude::Unit" && arguments.is_empty() {
+                push_unique(requirements, "core.unit");
+            }
             for argument in arguments {
                 collect_type_runtime_requirement(argument, requirements);
             }
@@ -1206,6 +1213,25 @@ pub(super) fn collect_type_runtime_requirement(
 mod tests {
     use super::collect_type_runtime_requirement;
     use crate::CoreType;
+
+    #[test]
+    fn canonical_unit_retains_its_requirement_without_recognizing_a_nominal_spelling() {
+        for (canonical, expected) in [
+            ("std/prelude::Unit", vec!["core.unit"]),
+            ("fixture/model::Unit", vec![]),
+        ] {
+            let mut requirements = Vec::new();
+            collect_type_runtime_requirement(
+                &CoreType::ExternalNamed {
+                    name: "Unit".to_owned(),
+                    canonical: canonical.to_owned(),
+                    arguments: vec![],
+                },
+                &mut requirements,
+            );
+            assert_eq!(requirements, expected);
+        }
+    }
 
     #[test]
     fn collects_standard_sum_and_nested_payload_requirements() {

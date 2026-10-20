@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-implicit-unit-functions@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/implicit-unit-functions-model@0.0.0#path:vendor/model"
+name = "fixture/implicit-unit-functions-model"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:339f69ea209434725e535c2867803dcf0424df257b1ebc87c6cded1858b96268"
+content_digest = "sha256:b3560abb97904887a773331012d8da50c76a03054f9dfd4c83540835e18e3237"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-implicit-unit-functions@0.0.0#workspace:."
+name = "fixture/native-implicit-unit-functions"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:f53969236af6a9689e810672cdbb7911e2655784229b636ac5d41c8706e50811"
+content_digest = "sha256:6a5999d86332b483e78544585d5085484c08a37600471c0b6254fe599d3ba8f2"
+dependencies = [
+  { import = "model", package = "fixture/implicit-unit-functions-model@0.0.0#path:vendor/model" },
+]

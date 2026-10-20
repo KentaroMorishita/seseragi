@@ -1,0 +1,18 @@
+alias PreludeUnit = Unit
+
+fn selected<Unit> -> (Unit -> Bool) = \value -> False
+
+fn caller<Unit> value: Unit -> Bool = {
+  let unit: PreludeUnit = ();
+  let next: Int -> Bool = selected<Int> unit;
+  next 7
+}
+
+pub fn probe -> String = {
+  fn local<Unit> -> (Unit -> Bool) = \value -> False;
+  let unit = ();
+  let next: Int -> Bool = local<Int> unit;
+  show (next 9) + ":" + show (caller 7)
+}
+
+pub effect fn main = println (probe ())

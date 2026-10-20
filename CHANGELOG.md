@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.71] - 2026-10-21
+
+### Fixed
+
+- Preserve the canonical Prelude Unit source parameter of functions with omitted parameters when their own generic binder is named Unit. Keep generic returned functions and explicit source parameters distinct, including saved aliases and package interfaces. Retain source evaluation stages and dictionary scopes without changing the Core schema or runtime ABI. Remaining unproved Unit schemes stay tracked in #887.
+
 ## [0.61.70] - 2026-10-21
 
 ### Fixed

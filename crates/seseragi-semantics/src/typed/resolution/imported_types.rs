@@ -123,6 +123,12 @@ impl ImportedTypeContext {
                     .into_iter()
                     .map(|argument| self.localize(argument, module, type_parameters, bindings))
                     .collect();
+                // An explicitly quantified slot wins over the binding table.
+                // That table can also contain anonymous Prelude Unit from a
+                // different position in this same callable's contract.
+                if type_parameters.contains(&name) {
+                    return TypedType::Named { name, arguments };
+                }
                 match bindings.iter().find(|binding| binding.spelling == name) {
                     Some(binding) => TypedType::ExternalNamed {
                         name: localized_name,
@@ -139,7 +145,7 @@ impl ImportedTypeContext {
                 name,
                 canonical,
                 arguments,
-            } if self.canonical_unit
+            } if (self.canonical_unit || type_parameters.contains("Unit"))
                 && name == "Unit"
                 && canonical == "std/prelude::Unit"
                 && arguments.is_empty() =>
@@ -274,7 +280,7 @@ impl ImportedTypeContext {
                 canonical,
                 arguments,
                 ..
-            } if self.canonical_unit
+            } if (self.canonical_unit || type_parameters.contains("Unit"))
                 && name == "Unit"
                 && canonical == "std/prelude::Unit"
                 && arguments.is_empty() =>

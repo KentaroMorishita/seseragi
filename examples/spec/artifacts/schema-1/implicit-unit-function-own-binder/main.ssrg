@@ -1,0 +1,3 @@
+fn selected<Unit> -> (Unit -> Bool) = \value -> False
+pub fn probe -> Bool = { let next: Int -> Bool = selected<Int> (); next 1 }
+pub effect fn main = println (show (probe ()))

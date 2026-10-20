@@ -90,6 +90,12 @@ impl<'a> InterfaceTypes<'a> {
                     .iter()
                     .map(|argument| self.convert(argument))
                     .collect();
+                if self.parameters.contains(name) {
+                    return InterfaceType::Named {
+                        name: name.clone(),
+                        arguments,
+                    };
+                }
                 let primitive_or_collection = matches!(
                     name.as_str(),
                     "Unit" | "Bool" | "Int" | "Float" | "Char" | "String" | "Array" | "List"

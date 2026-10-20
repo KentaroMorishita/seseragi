@@ -1,0 +1,13 @@
+import { selected, render } from "./facade"
+
+pub fn probe -> String = {
+  let unit = ();
+  let saved = selected<Int>;
+  let next: Int -> Int = saved unit;
+  let rendered: Int -> String = render<Int> unit;
+  let generic = selected;
+  let returned: Int -> Int = generic<Int> ();
+  show (next 7) + ":" + rendered (returned (next 9))
+}
+
+pub effect fn main = println (probe ())

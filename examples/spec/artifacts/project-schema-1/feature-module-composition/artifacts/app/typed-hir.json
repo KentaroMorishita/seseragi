@@ -25,6 +25,14 @@
       }
     },
     {
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "provider": {
+        "module": "std/prelude",
+        "export": "Unit"
+      }
+    },
+    {
       "arity": 1,
       "spelling": "MutableSignal",
       "canonical": "std/signal::MutableSignal",
@@ -2461,8 +2469,9 @@
         {
           "kind": "implicit-unit",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
             "arguments": []
           }
         }
@@ -2871,8 +2880,9 @@
                             "arguments": []
                           },
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Unit",
+                            "canonical": "std/prelude::Unit",
                             "arguments": []
                           }
                         ]
@@ -2925,8 +2935,9 @@
                               "arguments": []
                             },
                             {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Unit",
+                              "canonical": "std/prelude::Unit",
                               "arguments": []
                             }
                           ]
@@ -3899,8 +3910,9 @@
                                 "arguments": []
                               },
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "Unit",
+                                "canonical": "std/prelude::Unit",
                                 "arguments": []
                               }
                             ]

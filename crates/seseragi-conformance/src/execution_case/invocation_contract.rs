@@ -89,6 +89,16 @@ fn argument_matches_type(
     argument: &InvocationArgument,
     type_ref: &InterfaceType,
 ) -> bool {
+    // The invocation's literal Unit and this checked intrinsic owner agree
+    // even when an unrelated source nominal shadows its display spelling.
+    if matches!(argument, InvocationArgument::Unit)
+        && matches!(type_ref, InterfaceType::ExternalNamed {
+            canonical, provider_module, provider_export, arguments, ..
+        } if canonical == "std/prelude::Unit" && provider_module == "std/prelude"
+            && provider_export == "Unit" && arguments.is_empty())
+    {
+        return true;
+    }
     let expected = match argument {
         InvocationArgument::Unit => "Unit",
         InvocationArgument::String(_) => "String",

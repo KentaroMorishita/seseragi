@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 129,
+        "end": 134
+      },
+      "related": [
+        {
+          "message": "argument 1 expected Unit, received A",
+          "primary": {
+            "start": 54,
+            "end": 144
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 1 expected Unit, received A",
+          "primary": {
+            "start": 54,
+            "end": 144
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Unit",
+      "actualType": "A",
+      "typeDifference": {
+        "expectedType": "Unit",
+        "actualType": "A",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Unit, actual A",
+            "expectedType": "Unit",
+            "actualType": "A"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -33,6 +33,9 @@ fn cli() -> Command {
 fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
     let scratch = Scratch::new();
     for (name, source, code) in [
+        ("omitted-unit-nonunit", "fn selected<Unit> -> (Unit -> Bool) = \\value -> False\nfn probe -> Bool = { let next: Int -> Bool = selected<Int> 7; next 1 }\n", "SES-T0101"),
+        ("omitted-unit-nominal", "type Unit = | LocalUnit\nfn selected<A> -> (A -> Bool) = \\value -> False\nfn probe -> Bool = { let next: Int -> Bool = selected<Int> LocalUnit; next 1 }\n", "SES-T0101"),
+        ("explicit-unit-generic", "fn selected<Unit> value: Unit -> Unit = value\nfn probe -> Int = selected<Int> ()\n", "SES-T0101"),
         ("duplicate", "type Label = | Label\nalias Name = Label\ninstance Show<Name> { fn show value: Label -> String = \"alias\" }\ninstance Show<Label> { fn show value: Label -> String = \"label\" }\n", "SES-T0202"),
         ("generic-concrete", "type Box<A> = | Box A\nalias Wrapped<A> = Box<A>\ninstance<A> Show<Wrapped<A>> { fn show value: Box<A> -> String = \"generic\" }\ninstance Show<Box<Int>> { fn show value: Box<Int> -> String = \"int\" }\n", "SES-T0202"),
         ("fundep-output", "type Box<A> = | Box A\ninstance<A> Add<Box<A>, Int, Int> { fn add left: Box<A> -> right: Int -> Int = right }\ninstance Add<Box<Bool>, Int, String> { fn add left: Box<Bool> -> right: Int -> String = \"bad\" }\n", "SES-T0202"),
@@ -260,6 +263,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("unit-providers", 3),
         ("unit-methods", 3),
         ("saved-unit-methods", 3),
+        ("implicit-unit-functions", 3),
         ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -1274,6 +1278,42 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             0,
         ),
         (
+            "implicit-unit-function-values",
+            "fixtures/rust-backend/implicit-unit-function-values.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-values.stdout"),
+            0,
+        ),
+        (
+            "implicit-unit-function-trace",
+            "fixtures/rust-backend/implicit-unit-function-trace.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-trace.stdout"),
+            0,
+        ),
+        (
+            "implicit-unit-function-alpha",
+            "fixtures/rust-backend/implicit-unit-function-alpha.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-alpha.stdout"),
+            0,
+        ),
+        (
+            "implicit-unit-function-defect",
+            "fixtures/rust-backend/implicit-unit-function-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-defect.stdout"),
+            70,
+        ),
+        (
+            "implicit-unit-function-cold",
+            "fixtures/rust-backend/implicit-unit-function-cold.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-cold.stdout"),
+            0,
+        ),
+        (
+            "implicit-unit-function-effects",
+            "fixtures/rust-backend/implicit-unit-function-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/implicit-unit-function-effects.stdout"),
+            0,
+        ),
+        (
             "saved-unit-method-values",
             "fixtures/rust-backend/saved-unit-method-values.ssrg",
             include_str!(
@@ -2242,4 +2282,5 @@ fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("unit-providers");
     strict_project_reexports("unit-methods");
     strict_project_reexports("saved-unit-methods");
+    strict_project_reexports("implicit-unit-functions");
 }

@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/implicit-unit-function-own-binder"
+  ],
+  "sourcesContent": [
+    "fn selected<Unit> -> (Unit -> Bool) = \\value -> False\npub fn probe -> Bool = { let next: Int -> Bool = selected<Int> (); next 1 }\npub effect fn main = println (show (probe ()))\n"
+  ],
+  "names": [
+    "selected",
+    "probe",
+    "next",
+    "selected",
+    "next",
+    "main",
+    "println",
+    "boolShow",
+    "probe"
+  ],
+  "mappings": ";;;;;AAAAA;AACAC;AACAI"
+}

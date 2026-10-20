@@ -1,0 +1,44 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
+
+type Watch = | Watch (Ref<Watch -> String>, Int)
+
+fn capture<Unit> -> (Unit -> Watch -> String) where Show<Unit> = {
+  let cold = effects.succeed "unit";
+  \tag -> \right -> match right {
+    Watch (callbacks, item) -> { let retained = cold; show tag + ":" + show item }
+  }
+}
+
+effect fn acquire held: (Watch -> String)
+  -> (Watch -> String)
+with Console
+fails ConsoleError =
+  do { println "acquire"; effects.succeed held }
+
+fn marker -> Int = 7
+
+pub effect fn main = do {
+  callbacks <- refs.make (\value: Watch -> "empty")
+  released <- refs.make 0
+  let value = Watch (callbacks, marker ())
+  let unit = ()
+  let returned = capture<Int> unit
+  let method = returned 11
+  let saved = \right: Watch -> { let first = method right; method value }
+  refs.set saved callbacks
+  println "created"
+  effects.scoped $ do {
+    effects.acquireRelease (acquire saved) (\held: (Watch -> String) -> effects.recover (\error: ConsoleError -> effects.succeed ()) $ do {
+        println "release"
+        refs.set 1 released
+      }
+    )
+    again <- refs.get callbacks
+    println (again value)
+    println (saved value)
+  }
+  count <- refs.get released
+  println ("released: " + show count)
+}

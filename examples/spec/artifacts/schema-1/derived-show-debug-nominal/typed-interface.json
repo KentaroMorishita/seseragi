@@ -304,8 +304,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "providerModule": "std/prelude",
+            "providerExport": "Unit",
             "arguments": []
           },
           "result": {

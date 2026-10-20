@@ -1251,7 +1251,10 @@ fn callable_parameter_types(
     semantic_types: &SemanticTypeCatalog,
 ) -> (Vec<TypedType>, Vec<SemanticTypeKey>) {
     if parameters.is_empty() {
-        let unit = implicit_unit_value_type(resolved);
+        // Syntax omission fixes this owner before the callable's own binders
+        // are introduced. A display-only Unit would be substituted by a same
+        // named generic parameter when this signature is instantiated.
+        let unit = canonical_unit_value_type();
         return (vec![unit.type_ref], vec![unit.key]);
     }
     (
