@@ -67,24 +67,9 @@ impl Backend<'_> {
         if !method.constraints.is_empty() {
             return Err("Rust backend: missing bare method constraint stages".into());
         }
-        for (index, (parameter, actual)) in instance
-            .type_parameters
-            .iter()
-            .zip(type_arguments)
-            .enumerate()
-        {
-            if parameter.arity > 0 {
-                let variable = format!("\0bare_instance_type_{index}");
-                self.match_local_type(
-                    &CoreType::Named {
-                        name: variable.clone(),
-                        arguments: vec![],
-                    },
-                    actual,
-                    &BTreeMap::from([(variable, parameter.arity)]),
-                    &mut BTreeMap::new(),
-                    scope,
-                )?;
+        for (parameter, actual) in instance.type_parameters.iter().zip(type_arguments) {
+            if self.declared_method_type_kind(actual, scope) != Some(parameter.arity as usize) {
+                return Err("Rust backend: selected method instance argument kind mismatch".into());
             }
         }
         let mut substitutions = instance
@@ -130,13 +115,7 @@ impl Backend<'_> {
             true,
         )
         .ok_or("Rust backend: unproven selected method value type")?;
-        self.match_local_type(
-            &method_type,
-            type_ref,
-            &variables,
-            &mut BTreeMap::new(),
-            scope,
-        )
+        self.validate_method_value_type(&method_type, type_ref, &variables, scope)
     }
 
     fn validate_parameter_method_value(
@@ -274,6 +253,16 @@ impl Backend<'_> {
         let expected =
             display::canonical_type(&expected, owner, &substitutions, self.type_names, true)
                 .ok_or("Rust backend: unproven abstract method declaration type")?;
+        self.validate_method_value_type(&expected, type_ref, &variables, scope)
+    }
+
+    fn validate_method_value_type(
+        &self,
+        expected: &CoreType,
+        type_ref: &CoreType,
+        variables: &BTreeMap<String, u32>,
+        scope: &Scope,
+    ) -> Result<()> {
         // Check the complete selected value before matching declaration-local
         // constructor variables. Counting an ADT's parameters alone does not
         // prove the kinds or order of an applied constructor's fixed prefix.
@@ -281,15 +270,15 @@ impl Backend<'_> {
             return Err("Rust backend: abstract method value kind mismatch".into());
         }
         let mut bindings = BTreeMap::new();
-        self.match_local_type(&expected, type_ref, &variables, &mut bindings, scope)?;
+        self.match_local_type(expected, type_ref, variables, &mut bindings, scope)?;
         for (name, arity) in variables {
-            match bindings.get(&name) {
+            match bindings.get(name) {
                 Some(actual)
-                    if self.declared_method_type_kind(actual, scope) != Some(arity as usize) =>
+                    if self.declared_method_type_kind(actual, scope) != Some(*arity as usize) =>
                 {
                     return Err("Rust backend: abstract method binder kind mismatch".into());
                 }
-                None if arity > 0 => {
+                None if *arity > 0 => {
                     return Err("Rust backend: unproven abstract method constructor binder".into());
                 }
                 _ => {}
@@ -384,7 +373,9 @@ impl Backend<'_> {
             | "std/prelude::Bool"
             | "std/prelude::Char"
             | "std/prelude::String"
-            | "std/prelude::Ordering" => Some(vec![]),
+            | "std/prelude::Ordering"
+            | "std/prelude::Console"
+            | "std/prelude::ConsoleError" => Some(vec![]),
             "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref" => {
                 Some(vec![0])
             }

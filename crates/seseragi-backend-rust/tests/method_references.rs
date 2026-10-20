@@ -1469,3 +1469,132 @@ fn method_owned_constructors_cannot_hide_higher_order_slots_in_value_binders() {
         assert_eq!(error.origin.unwrap().source, "higher-slot-λ.ssrg");
     }
 }
+
+#[test]
+fn closed_method_values_reject_higher_order_method_constructor_bindings() {
+    let source = "// 雫🙂\ntrait Pick<Tag> { fn pick<G<_, _>, A, B> left: G<A, B> -> right: G<A, B> -> Bool }\ntype Pair<A, B> = | Pair (A, B)\ntype Holder<H<_>, A> = | Holder H<A>\ninstance Pick<Int> { fn pick<G<_, _>, A, B> left: G<A, B> -> (G<A, B> -> Bool) = \\right -> True }\npub fn probe -> (Pair<Int, String> -> Pair<Int, String> -> Bool) = pick<Int, Pair, Int, String>";
+    let mut core = compile_core_module(CompileInput::new(
+        "higher-local-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    let CoreExpr::Call { type_ref, .. } = &mut core
+        .functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::probe"))
+        .unwrap()
+        .body
+    else {
+        panic!("method")
+    };
+    let argument = CoreType::Named {
+        name: "Holder".into(),
+        arguments: vec![
+            CoreType::Named {
+                name: "Maybe".into(),
+                arguments: vec![],
+            },
+            CoreType::Named {
+                name: "Int".into(),
+                arguments: vec![],
+            },
+        ],
+    };
+    *type_ref = CoreType::Function {
+        parameter: Box::new(argument.clone()),
+        result: Box::new(CoreType::Function {
+            parameter: Box::new(argument),
+            result: Box::new(CoreType::Named {
+                name: "Bool".into(),
+                arguments: vec![],
+            }),
+        }),
+    };
+    let Err(error) = emit_rust_module(&core, "probe") else {
+        panic!("accepted a higher-order closed method constructor")
+    };
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap().source, "higher-local-λ.ssrg");
+}
+
+#[test]
+fn closed_method_values_reject_higher_order_instance_constructor_arguments() {
+    let source = "// 雫🙂\ntrait Inspect<A> { fn inspect left: Int -> right: Int -> Bool }\ntype Pair<A, B> = | Pair (A, B)\ntype Outer<F<_, _>> = | Outer Unit\ntype Holder<H<_>, A> = | Holder H<A>\ninstance<F<_, _>> Inspect<Outer<F>> { fn inspect left: Int -> (Int -> Bool) = \\right -> True }\npub fn probe -> (Int -> Int -> Bool) = inspect<Outer<Pair>>";
+    let mut core = compile_core_module(CompileInput::new(
+        "higher-instance-λ.ssrg",
+        "native/main",
+        source,
+    ))
+    .unwrap()
+    .core_ir;
+    emit_rust_module(&core, "probe").unwrap();
+    let CoreExpr::Call { evidence, .. } = &mut core
+        .functions
+        .iter_mut()
+        .find(|f| f.symbol.ends_with("::probe"))
+        .unwrap()
+        .body
+    else {
+        panic!("method")
+    };
+    let constructor = CoreType::Named {
+        name: "Holder".into(),
+        arguments: vec![],
+    };
+    evidence[0].constraint.arguments[0] = CoreType::Named {
+        name: "Outer".into(),
+        arguments: vec![constructor.clone()],
+    };
+    let CoreInstanceEvidence::Local { type_arguments, .. } = &mut evidence[0].evidence else {
+        panic!("instance")
+    };
+    type_arguments[0] = constructor;
+    let Err(error) = emit_rust_module(&core, "probe") else {
+        panic!("accepted a higher-order instance constructor")
+    };
+    assert_eq!(error.code, "SES-RUST-0001");
+    assert_eq!(error.origin.unwrap().source, "higher-instance-λ.ssrg");
+}
+
+#[test]
+fn closed_method_values_keep_cold_effect_types_and_returned_values() {
+    for (name, source) in [
+        (
+            "closed-value-effect-kind",
+            r#"import * as effects from "std/effect"
+trait Keep<Tag> { fn keep<A> left: A -> right: A -> A }
+instance Keep<Int> { fn keep<A> left: A -> (A -> A) = \right -> left }
+effect fn cold = do { println "cold"; effects.succeed 42 }
+pub effect fn main = do {
+ let chosen = keep<Int, Effect<{console: Console}, ConsoleError, Int>>
+ let saved = chosen (cold ())
+ println "created"
+ let plan: Effect<{console: Console}, ConsoleError, Int> = saved (cold ())
+ value <- plan
+ println (show value)
+}
+"#,
+        ),
+        (
+            "closed-constructor-effect-kind",
+            r#"import * as effects from "std/effect"
+trait Keep<Tag> { fn keep<G<_>, A> left: G<A> -> right: G<A> -> G<A> }
+instance Keep<Int> { fn keep<G<_>, A> left: G<A> -> (G<A> -> G<A>) = \right -> left }
+effect fn cold = do { println "cold"; effects.succeed 42 }
+pub effect fn main = do {
+ let chosen = keep<Int, Maybe, Effect<{console: Console}, ConsoleError, Int>>
+ let saved = chosen (Just (cold ()))
+ println "created"
+ let plan: Effect<{console: Console}, ConsoleError, Int> = match (saved (Just (cold ()))) { Just held -> held; Nothing -> cold () }
+ value <- plan
+ println (show value)
+}
+"#,
+        ),
+    ] {
+        execute(source, name, "created\ncold\n42\n", 0);
+    }
+}
