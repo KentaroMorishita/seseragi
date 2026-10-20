@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-method-wheres@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/method-wheres-model@1.0.0#path:vendor/model"
+name = "fixture/method-wheres-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:d1b27a2eec31bee510e8cd5372b2972d83d67824dc6b81f381491188f2d48d16"
+content_digest = "sha256:a2034ee8a18c5320e8a9c2a2d008af94a129e96c358ebacaf9e9f917dff4ba8a"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-method-wheres@0.0.0#workspace:."
+name = "fixture/native-method-wheres"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:868c15481270a1bc728c027c1d69bc129bc24170c5ab7b887df601d25f369182"
+content_digest = "sha256:5ed44290332be6f47aa74d2b1bc8f8355e612738747dfbf6bc8e1661c336ee41"
+dependencies = [
+  { import = "model", package = "fixture/method-wheres-model@1.0.0#path:vendor/model" },
+]

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.66] - 2026-10-20
+
+### Fixed
+
+- Preserve selected method stages when a saved source method has its own `where` constraints. Specialize primary and child dictionaries before exposing source arguments, using a private dictionary value entry while retaining the existing call entry. Check source declaration owners, binder kinds, complete method types and evidence frames independently in native generation. Keep captured and generalized aliases, constructor binders, returned closures, Ref cycles, cold Effects and finalizers intact. Remaining method application schemes stay tracked in #887.
+
 ## [0.61.65] - 2026-10-20
 
 ### Fixed

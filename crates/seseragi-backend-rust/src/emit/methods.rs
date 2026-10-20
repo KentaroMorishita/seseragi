@@ -1,6 +1,8 @@
 use super::*;
 use seseragi_lowering::{CoreInstanceMethod, CoreTraitDispatch, CoreTraitMethodContract};
 
+mod values;
+
 impl Backend<'_> {
     pub(super) fn validate_bare_method(
         &self,
@@ -450,6 +452,23 @@ impl Backend<'_> {
         method: &CoreInstanceMethod,
         scope: &Scope,
     ) -> Result<String> {
+        self.method_function_with_staging(method, scope, false)
+    }
+
+    pub(super) fn method_value_function(
+        &mut self,
+        method: &CoreInstanceMethod,
+        scope: &Scope,
+    ) -> Result<String> {
+        self.method_function_with_staging(method, scope, true)
+    }
+
+    fn method_function_with_staging(
+        &mut self,
+        method: &CoreInstanceMethod,
+        scope: &Scope,
+        dictionaries_first: bool,
+    ) -> Result<String> {
         if !method.constraints.is_empty() && scope.has_unproven_type_scope() {
             return Err("Rust backend: unproven overlapping method type scope".into());
         }
@@ -468,6 +487,9 @@ impl Backend<'_> {
                 kind: "evidence".into(),
                 type_ref: CoreType::Hole,
             });
+        }
+        if dictionaries_first {
+            parameters.rotate_right(method.constraints.len());
         }
         self.function(&parameters, &method.body, &inner)
     }
@@ -658,6 +680,9 @@ impl Backend<'_> {
             .method_contract
             .as_ref()
             .expect("checked method contract");
+        if arguments.is_empty() {
+            return self.constrained_method_value(expr, scope);
+        }
         let arity = contract.parameters.len();
         if !deferred_evidence_parameters.is_empty()
             || !deferred_evidence_type_constructor_parameters.is_empty()

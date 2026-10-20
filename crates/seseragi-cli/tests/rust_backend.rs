@@ -216,6 +216,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("trait-methods", 3),
         ("constructor-methods", 3),
         ("method-constructors", 3),
+        ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/fixtures/rust-backend-projects")
@@ -1223,6 +1224,32 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             70,
         ),
         (
+            "method-where-values",
+            "fixtures/rust-backend/method-where-values.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/method-where-values.stdout"),
+            0,
+        ),
+        (
+            "method-where-defect",
+            "fixtures/rust-backend/method-where-defect.ssrg",
+            "",
+            70,
+        ),
+        (
+            "method-where-effects",
+            "fixtures/rust-backend/method-where-effects.ssrg",
+            include_str!(
+                "../../../examples/spec/fixtures/rust-backend/method-where-effects.stdout"
+            ),
+            0,
+        ),
+        (
+            "method-where-children",
+            "fixtures/rust-backend/method-where-children.ssrg",
+            "",
+            70,
+        ),
+        (
             "method-dictionary-effects",
             "fixtures/rust-backend/method-dictionary-effects.ssrg",
             include_str!(
@@ -2010,4 +2037,5 @@ fn generalized_method_factories_keep_imported_owners_and_dictionary_frames() {
 fn declared_trait_project_types_preserve_both_strict_profiles() {
     strict_project_reexports("trait-methods");
     strict_project_reexports("constructor-methods");
+    strict_project_reexports("method-wheres");
 }

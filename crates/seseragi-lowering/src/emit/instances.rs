@@ -471,13 +471,13 @@ fn render_user_defined_instance(
     let inherited = (0..instance.supertrait_count)
         .map(|index| format!("...{}", crate::typescript::evidence_parameter_name(index)));
     let body = inherited
-        .chain(methods.iter().map(|method| {
+        .chain(methods.iter().flat_map(|method| {
             let parameters = super::evidence_parameters(
                 &method.parameters,
                 instance.constraints.len(),
                 method.constraints.len(),
             );
-            format!(
+            let ordinary = format!(
                 "{:?}: {}",
                 method.name,
                 super::render_function_body(
@@ -489,7 +489,26 @@ fn render_user_defined_instance(
                     None,
                     false,
                 )
-            )
+            );
+            let mut entries = vec![ordinary];
+            if !method.constraints.is_empty() && !method.parameters.is_empty() {
+                let mut parameters = parameters;
+                parameters.rotate_right(method.constraints.len());
+                entries.push(format!(
+                    "{:?}: {}",
+                    crate::method_value_factory_name(&method.name),
+                    super::render_function_body(
+                        &method.type_parameters,
+                        &parameters,
+                        &method.body,
+                        method.is_async,
+                        false,
+                        None,
+                        false,
+                    )
+                ));
+            }
+            entries
         }))
         .collect::<Vec<_>>()
         .join(", ");

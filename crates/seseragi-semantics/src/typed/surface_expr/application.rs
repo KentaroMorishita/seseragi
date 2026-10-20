@@ -221,19 +221,21 @@ fn available_selected_method_value(
     else {
         return false;
     };
-    let [selected] = evidence.as_slice() else {
+    let Some(selected) = evidence.first() else {
         return false;
     };
     let context = context.with_lexical_scope(span);
     if (context.deferred_let_evidence && !context.deferred_method_value)
         || !arguments.is_empty()
-        || dispatch.method_contract.is_some()
+        || (dispatch.method_contract.is_some()
+            && !context.resolution.declared_method_value_scheme(signature))
         || !deferred_evidence_parameters.is_empty()
         || !deferred_evidence_type_constructor_parameters.is_empty()
         || evidence_argument_index.is_some()
         || signature.trait_identity.as_deref() != Some(dispatch.trait_identity.as_str())
         || signature.trait_method.as_deref() != Some(dispatch.method.as_str())
-        || signature.constraint_identities.as_slice() != [Some(dispatch.trait_identity.clone())]
+        || signature.constraint_identities.first() != Some(&Some(dispatch.trait_identity.clone()))
+        || signature.constraints.len() != evidence.len()
     {
         return false;
     }
@@ -259,7 +261,14 @@ fn available_selected_method_value(
     }
     (available_method_type(type_ref, &context)
         || (context.deferred_method_value && method_value_scheme(signature, &context)))
-        && available_method_evidence(selected, &dispatch.trait_identity, &context)
+        && evidence
+            .iter()
+            .zip(&signature.constraint_identities)
+            .all(|(selected, identity)| {
+                identity
+                    .as_ref()
+                    .is_some_and(|identity| available_method_evidence(selected, identity, &context))
+            })
 }
 
 pub(super) fn method_value_scheme(
@@ -352,13 +361,13 @@ pub(super) fn method_factory_alias(
 ) -> bool {
     signature.trait_identity.is_none()
         && signature.parameters.is_empty()
-        && signature.constraints.len() == 1
+        && !signature.constraints.is_empty()
         && (signature.type_parameters.iter().all(|p| p.arity == 0)
-            || matches!(signature.constraint_identities.as_slice(), [Some(identity)]
+            || matches!(signature.constraint_identities.first(), Some(Some(identity))
                 if context.resolution.declared_method_factory_trait(identity)))
-        && matches!(signature.constraint_identities.as_slice(), [Some(identity)] if matches!(identity.as_str(),
+        && matches!(signature.constraint_identities.first(), Some(Some(identity)) if (signature.constraints.len() == 1 && matches!(identity.as_str(),
             "std/prelude::Eq" | "std/prelude::Add" | "std/prelude::Sub"
-            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow")
+            | "std/prelude::Mul" | "std/prelude::Div" | "std/prelude::Rem" | "std/prelude::Pow"))
             || context.resolution.declared_method_factory_trait(identity)
             || (identity == "std/prelude::Ord"
                 && canonical_ord_value_type(signature).as_ref() == Some(&signature.result)))
@@ -480,21 +489,22 @@ fn closed_selected_method_value(
         return false;
     };
     arguments.is_empty()
-        && evidence.len() == 1
-        && dispatch.method_contract.is_none()
+        && !evidence.is_empty()
+        && (dispatch.method_contract.is_none()
+            || context.resolution.declared_method_value_scheme(signature))
         && deferred_evidence_parameters.is_empty()
         && deferred_evidence_type_constructor_parameters.is_empty()
         && evidence_argument_index.is_none()
         && signature.trait_identity.as_deref() == Some(dispatch.trait_identity.as_str())
         && signature.trait_method.as_deref() == Some(dispatch.method.as_str())
-        && signature.constraint_identities.len() == 1
+        && signature.constraint_identities.len() == evidence.len()
         && signature.constraint_identities[0].as_deref() == Some(dispatch.trait_identity.as_str())
         // A residual declaration binder is not a closed type, even if an
         // inferred substitution kept its spelling. Do not identify it with a
         // builtin of the same name after erasure; retain scheme abstraction.
         && !contains_unresolved_type_parameter(type_ref, &signature.type_parameters, &Default::default())
         && closed_method_type(type_ref, context)
-        && closed_method_evidence(&evidence[0], context)
+        && evidence.iter().all(|selected| closed_method_evidence(selected, context))
 }
 
 fn closed_method_evidence(

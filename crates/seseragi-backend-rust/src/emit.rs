@@ -166,6 +166,11 @@ pub fn emit(
                     .map(|p| (p.name.clone(), p.arity)),
                 &format!("{}::{}", instance.identity, method.name),
             );
+            backend
+                .validate_method_value_provider(instance, method, &method_scope)
+                .map_err(|error| {
+                    crate::project::at(&error.message, &method.origin, backend.owner)
+                })?;
             let value = backend
                 .method_function(method, &method_scope)
                 .map_err(|mut error| {
@@ -176,6 +181,17 @@ pub fn emit(
                     error
                 })?;
             values.push(format!("({}, {value})", quoted(&method.name)));
+            if !method.constraints.is_empty() && !method.parameters.is_empty() {
+                let value = backend
+                    .method_value_function(method, &method_scope)
+                    .map_err(|error| {
+                        crate::project::at(&error.message, &method.origin, backend.owner)
+                    })?;
+                values.push(format!(
+                    "({}, {value})",
+                    quoted(&seseragi_lowering::method_value_factory_name(&method.name))
+                ));
+            }
         }
         output.push_str(&format!(
             "\nfn {}(dicts: Vec<V>) -> V {{ {setup} V::dict(vec![{}]) }}\n",
