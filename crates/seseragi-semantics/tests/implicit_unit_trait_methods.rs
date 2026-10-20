@@ -62,3 +62,24 @@ fn anonymous_unit_is_distinct_from_a_same_named_source_nominal() {
         "LocalUnit"
     );
 }
+
+#[test]
+fn implicit_unit_success_retains_its_checked_identity_across_an_effect_bind() {
+    for body in [
+        "pub effect fn main = do { value <- genuine (); println (show value) }",
+        "pub effect fn main = println (show ())",
+    ] {
+        let source =
+            format!("struct Unit {{value: Int}}\neffect fn genuine = succeed ()\n{body}\n");
+        let diagnostics = semantic_diagnostics("unit-effect.ssrg", &source);
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+    let diagnostics = semantic_diagnostics(
+        "nominal-unit-display.ssrg",
+        "struct Unit {value: Int}\npub effect fn main = println (show (Unit {value: 1}))\n",
+    );
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .any(|diagnostic| diagnostic.code == "SES-T0201"));
+}

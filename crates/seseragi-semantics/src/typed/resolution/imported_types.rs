@@ -6,6 +6,9 @@ use super::super::semantic_types::{SemanticTypeKey, SemanticValueType};
 use super::super::type_ref::typed_type_from_interface_type;
 
 pub(super) struct ImportedTypeContext {
+    // Keep the checked intrinsic owner where localizing to the legacy Unit
+    // spelling would reinterpret it as the caller's source nominal.
+    canonical_unit: bool,
     names: BTreeMap<(String, String), String>,
     canonical_names: BTreeMap<String, String>,
     owners: BTreeMap<(String, String), SymbolId>,
@@ -72,6 +75,10 @@ impl ImportedTypeContext {
             .map(|import| import.symbol)
             .collect();
         Self {
+            canonical_unit: matches!(
+                super::implicit_unit_value_type(resolved).type_ref,
+                TypedType::ExternalNamed { .. }
+            ),
             names,
             canonical_names,
             owners,
@@ -126,6 +133,21 @@ impl ImportedTypeContext {
                         name: localized_name,
                         arguments,
                     },
+                }
+            }
+            TypedType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+            } if self.canonical_unit
+                && name == "Unit"
+                && canonical == "std/prelude::Unit"
+                && arguments.is_empty() =>
+            {
+                TypedType::ExternalNamed {
+                    name,
+                    canonical,
+                    arguments,
                 }
             }
             TypedType::ExternalNamed {
@@ -246,6 +268,21 @@ impl ImportedTypeContext {
                         arguments,
                     })
                 }
+            }
+            InterfaceType::ExternalNamed {
+                name,
+                canonical,
+                arguments,
+                ..
+            } if self.canonical_unit
+                && name == "Unit"
+                && canonical == "std/prelude::Unit"
+                && arguments.is_empty() =>
+            {
+                Some(SemanticTypeKey::ExternalNominal {
+                    canonical: canonical.clone(),
+                    arguments: Vec::new(),
+                })
             }
             InterfaceType::ExternalNamed {
                 name,
