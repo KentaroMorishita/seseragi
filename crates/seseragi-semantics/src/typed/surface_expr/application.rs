@@ -1342,7 +1342,115 @@ pub(crate) fn type_known_application_with_explicit(
     for child in child_analyses {
         result.merge_issues_from(child);
     }
+    if !result.has_issues() {
+        result.value = stage_available_method_application(
+            result.value,
+            &signature,
+            instantiated_application_result_type(&application, 0),
+            callee_span,
+            context,
+        );
+    }
     result
+}
+
+/// A primary Parameter describes a method's complete value type, not its
+/// implementation's source stages. Specialize the available dictionaries once
+/// before applying source arguments, using the same checked value entry as a
+/// saved method. Keep ordinary and unproved dictionary ABIs separate.
+fn stage_available_method_application(
+    call: TypedExpr,
+    signature: &TopLevelPureFunction,
+    method_type: TypedType,
+    callee_span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> TypedExpr {
+    let TypedExpr::Call {
+        arguments,
+        evidence,
+        trait_dispatch: Some(dispatch),
+        ..
+    } = &call
+    else {
+        return call;
+    };
+    if arguments.is_empty()
+        || dispatch.method_contract.is_none()
+        // Operator resolution still has to restore source operand order
+        // before the shared Core operator staging selects the method value.
+        || context.operator_target(callee_span).is_some()
+        || seseragi_syntax::standard_trait_operator(&signature.symbol).is_some()
+        || !matches!(
+            evidence.first().map(|selected| &selected.evidence),
+            Some(crate::TypedInstanceEvidence::Parameter { .. })
+        )
+        || !context.resolution.declared_method_value_scheme(signature)
+    {
+        return call;
+    }
+    let mut value = call.clone();
+    let TypedExpr::Call {
+        arguments,
+        callee_signature,
+        deferred_evidence_parameters,
+        deferred_evidence_type_constructor_parameters,
+        evidence_argument_index,
+        type_ref,
+        origin,
+        ..
+    } = &mut value
+    else {
+        unreachable!()
+    };
+    arguments.clear();
+    *callee_signature = None;
+    deferred_evidence_parameters.clear();
+    deferred_evidence_type_constructor_parameters.clear();
+    *evidence_argument_index = None;
+    *type_ref = method_type.clone();
+    *origin = callee_span;
+    if !available_selected_method_value(&value, signature, callee_span, context) {
+        return call;
+    }
+    let TypedExpr::Call {
+        arguments,
+        type_ref,
+        origin,
+        ..
+    } = call
+    else {
+        unreachable!()
+    };
+    let name = format!("__ssrg$method$call${}", callee_span.start);
+    TypedExpr::Block {
+        statements: vec![crate::TypedBlockStatement::Let {
+            constraints: Vec::new(),
+            constraint_identities: Vec::new(),
+            type_parameters: Vec::new(),
+            pattern: crate::TypedPattern::Binding {
+                symbol: crate::SymbolId(u32::MAX),
+                name: name.clone(),
+                type_ref: method_type,
+                origin: callee_span,
+            },
+            value,
+            origin: callee_span,
+        }],
+        result: Box::new(TypedExpr::Call {
+            callee: name,
+            arguments,
+            callee_signature: None,
+            evidence: Vec::new(),
+            deferred_evidence_parameters: Vec::new(),
+            deferred_evidence_type_constructor_parameters: Vec::new(),
+            evidence_argument_index: None,
+            trait_dispatch: None,
+            type_ref: type_ref.clone(),
+            origin,
+        }),
+        type_ref,
+        origin,
+    }
 }
 
 pub(crate) fn explicit_type_arguments(expression: &SurfaceExpr) -> Option<&[TypeRef]> {

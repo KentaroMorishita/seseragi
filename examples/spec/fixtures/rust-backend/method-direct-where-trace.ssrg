@@ -1,0 +1,43 @@
+trait Pick<F<_
+>> {
+  fn pick<G<_>, A> left: G<F<A>> -> right: G<F<A>> -> Bool where Show<G<A>>
+}
+
+type Box<A> = | Box A
+type Late<A> = | Late A
+fn left -> Maybe<Box<Int>> = Just (Box 1)
+fn right -> Maybe<Box<Int>> = Just (Box 2)
+fn first -> Unit = ()
+fn lateLeft -> Maybe<Late<Int>> = Just (Late 1)
+fn lateRight -> Maybe<Late<Int>> = Just (Late 2)
+fn later -> Unit = ()
+instance Pick<Box> {
+  fn pick<G<_>, A> value: G<Box<A>> -> (G<Box<A>> -> Bool) where Show<G<A>> = {
+    let marker = first ();
+    \other -> True
+  }
+}
+instance Pick<Late> {
+  fn pick<G<_>, A> value: G<Late<A>> -> other: G<Late<A>> -> Bool where Show<G<A>> = {
+    let marker = later ();
+    True
+  }
+}
+fn selected<F<_>, G<_>, A> source: (Unit -> G<F<A>>)
+  -> (G<F<A>> -> Bool)
+where Pick<F>, Show<G<A>> =
+  pick (source ())
+fn complete<F<_>, G<_>, A> source: (Unit -> G<F<A>>)
+  -> other: (Unit -> G<F<A>>)
+  -> Bool
+where Pick<F>, Show<G<A>> =
+  pick (source ()) (other ())
+pub fn probe -> Array<Bool> = {
+  let saved = selected<Box, Maybe, Int> left
+  let one = saved (right ())
+  let two = saved (right ())
+  let three = complete<Late, Maybe, Int> lateLeft lateRight
+  let four = complete<Box, Maybe, Int> left right
+  [one, two, three, four]
+}
+pub effect fn main = println (show (probe ()))

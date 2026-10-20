@@ -1,0 +1,29 @@
+trait Render<F<_>> {
+  fn render<A> left: A -> right: F<A> -> String where Show<A>
+}
+
+type Token = | Token Int
+instance Show<Token> {
+  fn show value: Token -> String = match value { Token n -> "token:" + show n }
+}
+instance Render<Maybe> {
+  fn render<A> left: A -> (Maybe<A> -> String) where Show<A> = {
+    let prefix = show left
+    \right -> prefix
+  }
+}
+
+fn capture<F<_>, A> left: A -> (F<A> -> String) where Render<F>, Show<A> = {
+  render left
+}
+
+pub fn probe -> String = {
+  let generalized = render
+  let alias = generalized
+  let first: Maybe<Token> -> String = alias (Token 7)
+  let held = capture<Maybe, Token> (Token 9)
+  let nested = capture<Maybe, Maybe<Token>> (Just (Token 10))
+  first (Just (Token 8)) + "\n" + first Nothing + "\n" + held Nothing + "\n" + nested Nothing
+}
+
+pub effect fn main = println (probe ())
