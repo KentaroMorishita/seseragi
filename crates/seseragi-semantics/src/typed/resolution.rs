@@ -36,6 +36,10 @@ impl<'a> TypedResolution<'a> {
         implicit_unit_value_type(self.resolved).type_ref
     }
 
+    pub(super) fn implicit_unit_value(&self) -> SemanticValueType {
+        implicit_unit_value_type(self.resolved)
+    }
+
     pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
         let semantic_types = SemanticTypeCatalog::new(resolved);
         let imported_values = imports::collect_imported_values(resolved);
@@ -1965,14 +1969,11 @@ fn collect_local_trait_methods(
                     .map(|constraint| constraint_identity(resolved, constraint.name_span)),
             );
             // The omitted source parameter is one anonymous Prelude Unit.
-            // Keep it separate from a function-valued result, and retain its
-            // canonical owner when a resolved source name would shadow it.
+            // Its owner belongs to the declaration, independently of the
+            // method's binders or the scope that later instantiates it.
+            // Re-resolving a Named Unit in a caller can capture its binder.
             let (parameters, semantic_parameters) = if method.parameters.is_empty() {
-                let unit = if callable_type_parameters.iter().any(|p| p.name == "Unit") {
-                    canonical_unit_value_type()
-                } else {
-                    implicit_unit_value_type(resolved)
-                };
+                let unit = canonical_unit_value_type();
                 (vec![unit.type_ref], vec![unit.key])
             } else {
                 (

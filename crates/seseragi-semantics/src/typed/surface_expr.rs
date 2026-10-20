@@ -342,6 +342,28 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
+        // Other + the intrinsic Unit type is a previously checked primitive,
+        // not an unresolved source name. Make that identity explicit before
+        // crossing a lexical binder with the same spelling.
+        if self.lexical_type_parameters.contains_key("Unit")
+            && primitive_type_is(&value.type_ref, &value.key, "Unit")
+        {
+            return super::resolution::canonical_unit_value_type();
+        }
+        // A method-local binder may require the explicit Prelude Unit owner
+        // in its declaration. At a use outside that binder, project this
+        // proven identity to the caller's checked intrinsic representation.
+        // A nominal owner or lexical type parameter cannot prove this case.
+        if !self.lexical_type_parameters.contains_key("Unit")
+            && matches!(&value.type_ref,
+                TypedType::ExternalNamed { canonical, arguments, .. }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty())
+            && matches!(&value.key,
+                SemanticTypeKey::ExternalNominal { canonical, arguments }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty())
+        {
+            return self.resolution.implicit_unit_value();
+        }
         // A resolved primitive identity is already complete. Re-reading its
         // display name in this lexical scope can capture an unrelated nominal
         // declaration; annotated nominal values have their own non-Other key.
@@ -490,7 +512,15 @@ impl<'a> PureExpressionContext<'a> {
         &self,
         type_ref: &seseragi_syntax::TypeRef,
     ) -> SemanticValueType {
-        self.resolution.semantic_value_from_type_ref(type_ref)
+        let value = self.resolution.semantic_value_from_type_ref(type_ref);
+        // A checked closed alias can expand to intrinsic Unit. Preserve that
+        // identity in annotations just as for literals and stored references;
+        // do not re-resolve a nominal or a parameter through its display name.
+        if primitive_type_is(&value.type_ref, &value.key, "Unit") {
+            self.hydrate_semantic_value(value)
+        } else {
+            value
+        }
     }
 
     pub(super) fn select_call_evidence(
@@ -856,7 +886,11 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Unit { span } => {
             // The literal itself proves Unit. Preserve a canonical anonymous
             // Unit parameter without treating a same-named nominal as Unit.
-            let literal_unit = context.resolution.implicit_unit_type();
+            let literal_unit = if context.lexical_type_parameters.contains_key("Unit") {
+                super::resolution::canonical_unit_value_type().type_ref
+            } else {
+                context.resolution.implicit_unit_type()
+            };
             if matches!(&literal_unit, TypedType::ExternalNamed { canonical, .. }
                 if canonical == "std/prelude::Unit")
                 || context.expected.as_ref().is_some_and(|expected| {
@@ -1339,6 +1373,11 @@ fn type_name(
         return application::type_callable_value(&signature, span, context);
     }
     if let Some(value_type) = context.parameters.get(&target) {
+        let value_type = if primitive_type_is(&value_type.type_ref, &value_type.key, "Unit") {
+            context.hydrate_semantic_value(value_type.clone())
+        } else {
+            value_type.clone()
+        };
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 callable_signature: None,

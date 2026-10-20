@@ -1,0 +1,16 @@
+trait Load<F<_>> {
+  fn load<Unit> -> (F<Unit> -> Bool) where Show<Unit>
+}
+
+instance Load<Maybe> {
+  fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \value -> False
+}
+
+pub fn probe -> String = {
+  let unit = ();
+  let saved: Unit -> Maybe<Int> -> Bool = load;
+  let held = saved unit;
+  show (held (Just 7)) + ":" + show (held (Just 9))
+}
+
+pub effect fn main = println (probe ())

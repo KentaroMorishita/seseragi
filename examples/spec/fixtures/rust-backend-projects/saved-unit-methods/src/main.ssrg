@@ -1,0 +1,10 @@
+import { selected } from "./facade"
+
+pub fn probe -> String = {
+  let saved: Unit -> Maybe<Int> -> Bool = selected;
+  let unit = ();
+  let held = saved unit;
+  show (held (Just 7)) + ":" + show (held (Just 9))
+}
+
+pub effect fn main = println (probe ())

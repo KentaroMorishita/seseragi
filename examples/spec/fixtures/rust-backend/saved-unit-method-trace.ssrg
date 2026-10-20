@@ -1,0 +1,20 @@
+trait Load<F<_>> {
+  fn load<Unit> -> (F<Unit> -> Bool) where Show<Unit>
+}
+
+instance Load<Maybe> {
+  fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \value -> False
+}
+
+fn selectStage -> (Unit -> Maybe<Int> -> Bool) = load<Maybe, Int>
+
+fn argumentStage -> Unit = ()
+
+pub fn probe -> String = {
+  let chosen = selectStage ();
+  let unit = argumentStage ();
+  let held = chosen unit;
+  show (held (Just 7)) + ":" + show (held (Just 9))
+}
+
+pub effect fn main = println (probe ())

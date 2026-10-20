@@ -1,0 +1,4 @@
+// 雫
+trait Ready<A> { fn ready<Unit> -> Bool }
+instance Ready<Int> { fn ready<A> -> Bool = False }
+pub fn probe<Unit> unit: Unit -> Bool = ready<Int, Int> unit

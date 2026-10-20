@@ -1,0 +1,5 @@
+// 雫
+type Unit = | LocalUnit
+trait Ready<A> { fn ready<Unit> -> Bool }
+instance Ready<Int> { fn ready<A> -> Bool = False }
+pub fn probe -> Bool = { let unit = LocalUnit; ready<Int, Int> unit }

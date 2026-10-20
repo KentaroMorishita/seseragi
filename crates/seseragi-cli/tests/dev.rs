@@ -1,6 +1,7 @@
 use std::fs;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::ops::{Deref, DerefMut};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::sync::Mutex;
@@ -88,6 +89,15 @@ fn request(port: u16, path: &str) -> Option<(u16, String)> {
 }
 
 fn wait_for(timeout: Duration, mut condition: impl FnMut() -> bool, message: &str) {
+    wait_for_with_diagnostics(timeout, &mut condition, message, String::new);
+}
+
+fn wait_for_with_diagnostics(
+    timeout: Duration,
+    mut condition: impl FnMut() -> bool,
+    message: &str,
+    mut diagnostics: impl FnMut() -> String,
+) {
     let started = Instant::now();
     while started.elapsed() < timeout {
         if condition() {
@@ -95,7 +105,117 @@ fn wait_for(timeout: Duration, mut condition: impl FnMut() -> bool, message: &st
         }
         thread::sleep(Duration::from_millis(100));
     }
-    panic!("timed out waiting for {message}");
+    panic!("timed out waiting for {message}\n{}", diagnostics());
+}
+
+struct DevServer {
+    child: Child,
+    log_path: PathBuf,
+}
+
+impl DevServer {
+    fn spawn(command: &mut Command, log_path: PathBuf) -> Self {
+        #[cfg(unix)]
+        {
+            use std::os::unix::process::CommandExt;
+            command.process_group(0);
+        }
+        Self {
+            child: command.spawn().unwrap(),
+            log_path,
+        }
+    }
+}
+
+impl Deref for DevServer {
+    type Target = Child;
+    fn deref(&self) -> &Child {
+        &self.child
+    }
+}
+
+impl DerefMut for DevServer {
+    fn deref_mut(&mut self) -> &mut Child {
+        &mut self.child
+    }
+}
+
+impl Drop for DevServer {
+    fn drop(&mut self) {
+        if thread::panicking() {
+            eprintln!(
+                "dev server {} log {}:\n{}",
+                self.child.id(),
+                self.log_path.display(),
+                fs::read_to_string(&self.log_path).unwrap_or_default()
+            );
+        }
+        // A live, unreaped Child owns this PID and its dedicated group.
+        // Do not reap the leader between TERM and KILL: its reserved PID
+        // prevents reuse while remaining group members are reclaimed.
+        if matches!(self.child.try_wait(), Ok(Some(_))) {
+            let _ = self.child.wait();
+            return;
+        }
+        #[cfg(unix)]
+        {
+            let _ = Command::new("kill")
+                .args(["-TERM", "--", &format!("-{}", self.child.id())])
+                .status();
+            thread::sleep(Duration::from_millis(100));
+            let _ = Command::new("kill")
+                .args(["-KILL", "--", &format!("-{}", self.child.id())])
+                .status();
+        }
+        let _ = self.child.kill();
+        let _ = self.child.wait();
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn dev_test_guard_reaps_its_process_group_during_unwind() {
+    let directory = test_directory("panic-cleanup");
+    let log_path = directory.join("dev.log");
+    let log = fs::File::create(&log_path).unwrap();
+    let mut server = DevServer::spawn(
+        Command::new("sh")
+            .args(["-c", "sleep 60 & printf '%s\\n' $!; wait"])
+            .stdout(Stdio::from(log)),
+        log_path.clone(),
+    );
+    let parent = server.id();
+    let mut descendant = None;
+    wait_for(
+        Duration::from_secs(5),
+        || {
+            descendant = fs::read_to_string(&log_path)
+                .ok()
+                .and_then(|s| s.trim().parse::<u32>().ok());
+            descendant.is_some()
+        },
+        "owned process group descendant",
+    );
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || {
+        let _owned = &mut server;
+        panic!("exercise owned dev process cleanup on test failure");
+    }));
+    assert!(result.is_err());
+    for pid in [parent, descendant.unwrap()] {
+        wait_for(
+            Duration::from_secs(5),
+            || {
+                !Command::new("kill")
+                    .args(["-0", &pid.to_string()])
+                    .output()
+                    .unwrap()
+                    .status
+                    .success()
+            },
+            "owned process exit after unwind",
+        );
+    }
+    fs::remove_dir_all(directory).unwrap();
 }
 
 fn stop(child: &mut Child) {
@@ -134,17 +254,18 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     update_lock(&project);
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
-    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .args([
-            "dev",
-            project.to_str().unwrap(),
-            "--port",
-            &port.to_string(),
-        ])
-        .stdout(Stdio::from(log.try_clone().unwrap()))
-        .stderr(Stdio::from(log))
-        .spawn()
-        .unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args([
+                "dev",
+                project.to_str().unwrap(),
+                "--port",
+                &port.to_string(),
+            ])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        directory.join("dev.log"),
+    );
 
     wait_for(
         Duration::from_secs(20),
@@ -191,7 +312,7 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
         format!("{changed}\nlet brokenDevValue = missingDevName\n"),
     )
     .unwrap();
-    wait_for(
+    wait_for_with_diagnostics(
         Duration::from_secs(20),
         || {
             let failed = fs::read_to_string(directory.join("dev.log"))
@@ -203,6 +324,14 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
             failed && version_unchanged && previous_build_available
         },
         "failed rebuild preserving the previous output",
+        || {
+            format!(
+                "expected version: {rebuilt_version}; actual version: {:?}; index: {:?}\n{}",
+                request(port, "/__seseragi_dev/version"),
+                request(port, "/").map(|r| r.0),
+                fs::read_to_string(directory.join("dev.log")).unwrap_or_default()
+            )
+        },
     );
     assert!(child.try_wait().unwrap().is_none());
 
@@ -241,17 +370,18 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
     update_lock(&project);
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
-    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .args([
-            "dev",
-            project.to_str().unwrap(),
-            "--port",
-            &port.to_string(),
-        ])
-        .stdout(Stdio::from(log.try_clone().unwrap()))
-        .stderr(Stdio::from(log))
-        .spawn()
-        .unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args([
+                "dev",
+                project.to_str().unwrap(),
+                "--port",
+                &port.to_string(),
+            ])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        directory.join("dev.log"),
+    );
 
     wait_for(
         Duration::from_secs(20),
@@ -422,17 +552,18 @@ fn recovers_when_the_initial_build_has_compiler_diagnostics() {
     .unwrap();
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
-    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .args([
-            "dev",
-            project.to_str().unwrap(),
-            "--port",
-            &port.to_string(),
-        ])
-        .stdout(Stdio::from(log.try_clone().unwrap()))
-        .stderr(Stdio::from(log))
-        .spawn()
-        .unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args([
+                "dev",
+                project.to_str().unwrap(),
+                "--port",
+                &port.to_string(),
+            ])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        directory.join("dev.log"),
+    );
 
     let mut initial_fallback = None;
     wait_for(
@@ -524,22 +655,14 @@ fn rebuilds_custom_shell_and_extensionless_public_assets_with_build_parity() {
     );
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
-    struct Server(Child);
-    impl Drop for Server {
-        fn drop(&mut self) {
-            let _ = self.0.kill();
-            let _ = self.0.wait();
-        }
-    }
-    let mut server = Server(
+    let mut server = DevServer::spawn(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("dev")
             .arg(&project)
             .args(["--port", &port.to_string()])
             .stdout(Stdio::from(log.try_clone().unwrap()))
-            .stderr(Stdio::from(log))
-            .spawn()
-            .unwrap(),
+            .stderr(Stdio::from(log)),
+        directory.join("dev.log"),
     );
     wait_for(
         Duration::from_secs(30),
@@ -583,7 +706,7 @@ fn rebuilds_custom_shell_and_extensionless_public_assets_with_build_parity() {
         Duration::from_secs(30),
         || {
             assert!(
-                server.0.try_wait().unwrap().is_none(),
+                server.try_wait().unwrap().is_none(),
                 "dev server exited during deletion: {}",
                 fs::read_to_string(directory.join("dev.log")).unwrap()
             );
@@ -591,6 +714,6 @@ fn rebuilds_custom_shell_and_extensionless_public_assets_with_build_parity() {
         },
         "deleted asset removal",
     );
-    stop(&mut server.0);
+    stop(&mut server);
     fs::remove_dir_all(directory).unwrap();
 }
