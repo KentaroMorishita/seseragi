@@ -1268,11 +1268,24 @@ fn callable_parameter_types(
 /// owner when a resolved source type or binder would reinterpret its spelling;
 /// otherwise use the ordinary primitive representation also used by literals.
 fn implicit_unit_value_type(resolved: &ResolvedModule) -> SemanticValueType {
-    if resolved.symbols.iter().any(|symbol| {
+    let imported_shadow = resolved.imports.iter().any(|import| {
+        import.in_scope
+            && import.local_name == "Unit"
+            && import.export.namespace == "type"
+            && import.export.symbol != "std/prelude::Unit"
+            && !super::semantic_types::closed_alias_is_intrinsic_unit(resolved, import.symbol)
+    });
+    let local_shadow = resolved.symbols.iter().any(|symbol| {
         symbol.spelling == "Unit"
             && symbol.kind == SymbolKind::Type
             && symbol.canonical.as_deref() != Some("std/prelude::Unit")
-    }) {
+            && !resolved
+                .imports
+                .iter()
+                .any(|import| import.symbol == symbol.id)
+            && !super::semantic_types::closed_alias_is_intrinsic_unit(resolved, symbol.id)
+    });
+    if imported_shadow || local_shadow {
         canonical_unit_value_type()
     } else {
         SemanticValueType {
