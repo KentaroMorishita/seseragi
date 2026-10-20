@@ -112,6 +112,7 @@ fn implicit_method_unit_does_not_accept_a_source_type_or_caller_binder() {
     for source in [
         "type Unit = | LocalUnit\ntrait Ready<A> { fn ready<Unit> -> Bool }\ninstance Ready<Int> { fn ready<A> -> Bool = False }\npub fn probe -> Bool = { let unit = LocalUnit; ready<Int, Int> unit }\n",
         "trait Ready<A> { fn ready<Unit> -> Bool }\ninstance Ready<Int> { fn ready<A> -> Bool = False }\npub fn probe<Unit> unit: Unit -> Bool = ready<Int, Int> unit\n",
+        "type Unit = | LocalUnit\nalias ForeignUnit = Unit\ntrait Ready<A> { fn ready<Unit> -> Bool }\ninstance Ready<Int> { fn ready<A> -> Bool = False }\nfn selected<Unit> value: Unit -> Bool = { let unit: ForeignUnit = LocalUnit; ready<Int, Int> unit }\npub fn probe -> Bool = selected 7\n",
     ] {
         let diagnostics = semantic_diagnostics("saved-unit-owner-λ.ssrg", source);
         assert_eq!(diagnostics.diagnostics.len(), 1, "{source}\n{diagnostics:#?}");
@@ -140,13 +141,26 @@ fn anonymous_method_unit_is_independent_of_caller_and_method_binder_names() {
                 "{ let next: Maybe<Int> -> Bool = load<Maybe, Int> (); next (Just 1) }",
                 "{ let saved = load<Maybe, Int>; let unit = (); let next: Maybe<Int> -> Bool = saved unit; next (Just 1) }",
                 "{ let unit = (); let next: Maybe<Int> -> Bool = load unit; next (Just 1) }",
+                "{ let unit: PreludeUnit = (); let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }",
+                "{ let (unit, n) = ((), 7); let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }",
+                "{ let state = {unit: (), n: 7}; let unit = state.unit; let next: Maybe<Int> -> Bool = load<Maybe, Int> unit; next (Just 1) }",
             ] {
-                let source = format!("trait Load<F<_>> {{ fn load<{method_parameter}> -> (F<{method_parameter}> -> Bool) where Show<{method_parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<{caller_parameter}> value: {caller_parameter} -> Bool = {body}\npub fn probe -> Bool = selected 7\n");
+                let source = format!("alias PreludeUnit = Unit\ntrait Load<F<_>> {{ fn load<{method_parameter}> -> (F<{method_parameter}> -> Bool) where Show<{method_parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<{caller_parameter}> value: {caller_parameter} -> Bool = {body}\npub fn probe -> Bool = selected 7\n");
                 let diagnostics = semantic_diagnostics("caller-unit-alpha-λ.ssrg", &source);
                 assert!(diagnostics.diagnostics.is_empty(), "{source}\n{diagnostics:#?}");
             }
         }
     }
+}
+
+#[test]
+fn a_closed_unit_alias_annotation_does_not_accept_a_caller_type_parameter() {
+    let source = "alias PreludeUnit = Unit\npub fn wrong<Unit> value: Unit -> Bool = { let unit: PreludeUnit = value; False }\n";
+    let diagnostics = semantic_diagnostics("unit-alias-binder-λ.ssrg", source);
+    assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+    assert_eq!(diagnostics.diagnostics[0].message_key, "let.type-mismatch");
+    let span = diagnostics.diagnostics[0].primary;
+    assert_eq!(&source[span.start..span.end], "unit");
 }
 
 #[test]

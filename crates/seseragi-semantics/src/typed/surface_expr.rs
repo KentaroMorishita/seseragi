@@ -512,7 +512,15 @@ impl<'a> PureExpressionContext<'a> {
         &self,
         type_ref: &seseragi_syntax::TypeRef,
     ) -> SemanticValueType {
-        self.resolution.semantic_value_from_type_ref(type_ref)
+        let value = self.resolution.semantic_value_from_type_ref(type_ref);
+        // A checked closed alias can expand to intrinsic Unit. Preserve that
+        // identity in annotations just as for literals and stored references;
+        // do not re-resolve a nominal or a parameter through its display name.
+        if primitive_type_is(&value.type_ref, &value.key, "Unit") {
+            self.hydrate_semantic_value(value)
+        } else {
+            value
+        }
     }
 
     pub(super) fn select_call_evidence(

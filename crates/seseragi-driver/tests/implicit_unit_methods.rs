@@ -78,7 +78,7 @@ fn unit_literal_cannot_implement_a_same_named_universal_result() {
 #[test]
 fn anonymous_unit_callers_do_not_capture_the_method_parameter_identity() {
     for parameter in ["A", "Unit"] {
-        let source = format!("trait Load<F<_>> {{ fn load<{parameter}> -> (F<{parameter}> -> Bool) where Show<{parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<Unit> value: Unit -> Bool = {{ let unit = (); let saved = load<Maybe, Int>; let next: Maybe<Int> -> Bool = saved unit; next (Just 1) }}\npub fn probe -> Bool = selected 7\n");
+        let source = format!("alias PreludeUnit = Unit\ntrait Load<F<_>> {{ fn load<{parameter}> -> (F<{parameter}> -> Bool) where Show<{parameter}> }}\ninstance Load<Maybe> {{ fn load<U> -> (Maybe<U> -> Bool) where Show<U> = \\value -> False }}\nfn selected<Unit> value: Unit -> Bool = {{ let unit: PreludeUnit = (); let saved = load<Maybe, Int>; let next: Maybe<Int> -> Bool = saved unit; next (Just 1) }}\npub fn probe -> Bool = selected 7\n");
         for profile in [
             seseragi_driver::BuildProfile::Development,
             seseragi_driver::BuildProfile::Release,
@@ -90,5 +90,28 @@ fn anonymous_unit_callers_do_not_capture_the_method_parameter_identity() {
             assert_eq!(core, compiled.core_ir);
             assert!(compiled.diagnostics.diagnostics.is_empty());
         }
+    }
+}
+
+#[test]
+fn intrinsic_unit_alias_annotation_rejects_an_unrelated_universal_value() {
+    let source = "// 雫\nalias PreludeUnit = Unit\npub fn wrong<Unit> value: Unit -> Bool = { let unit: PreludeUnit = value; False }\n";
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let input = CompileInput::new(
+            "alias-unit-owner-λ.ssrg",
+            "fixture/alias-unit-owner",
+            source,
+        )
+        .with_profile(profile);
+        let core = compile_core_module(input.clone()).unwrap_err();
+        let ts = compile_module(input).unwrap_err();
+        assert_eq!(core, ts);
+        assert_eq!(core.diagnostics.len(), 1);
+        assert_eq!(core.diagnostics[0].message_key, "let.type-mismatch");
+        let span = core.diagnostics[0].primary;
+        assert_eq!(&source[span.start..span.end], "unit");
     }
 }

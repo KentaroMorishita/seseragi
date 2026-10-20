@@ -1,3 +1,5 @@
+alias PreludeUnit = Unit
+
 trait Load<F<_>> {
   fn load<A> -> (F<A> -> Bool) where Show<A>
 }
@@ -9,7 +11,7 @@ instance Load<Maybe> {
 fn source -> Unit = ()
 
 fn selected<Unit> value: Unit -> Bool = {
-  let unit = source ();
+  let unit: PreludeUnit = source ();
   let saved = load<Maybe, Int>;
   let next: Maybe<Int> -> Bool = saved unit;
   next (Just 1)
