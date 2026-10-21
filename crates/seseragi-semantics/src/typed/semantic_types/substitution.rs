@@ -552,7 +552,8 @@ fn collect_substitutions(
                 SemanticTypeKey::Adt { arguments, .. }
                 | SemanticTypeKey::Struct { arguments, .. }
                 | SemanticTypeKey::ExternalNominal { arguments, .. }
-                | SemanticTypeKey::NamedGeneric { arguments, .. } => Some(arguments),
+                | SemanticTypeKey::NamedGeneric { arguments, .. } => Some(arguments.clone()),
+                SemanticTypeKey::Application { .. } => applied_argument_values(actual),
                 _ => None,
             };
             let mut head_key = actual.key.clone();
@@ -561,6 +562,30 @@ fn collect_substitutions(
                 | SemanticTypeKey::Struct { arguments, .. }
                 | SemanticTypeKey::ExternalNominal { arguments, .. }
                 | SemanticTypeKey::NamedGeneric { arguments, .. } => arguments.truncate(prefix),
+                SemanticTypeKey::Application {
+                    constructor,
+                    arguments,
+                } => {
+                    let fixed = match &constructor.type_ref {
+                        TypedType::Named { arguments, .. }
+                        | TypedType::ExternalNamed { arguments, .. } => arguments.len(),
+                        _ => return,
+                    };
+                    let Some(applied_prefix) = prefix.checked_sub(fixed) else {
+                        return;
+                    };
+                    if applied_prefix > arguments.len() {
+                        return;
+                    }
+                    head_key = if applied_prefix == 0 {
+                        constructor.key.clone()
+                    } else {
+                        SemanticTypeKey::Application {
+                            constructor: constructor.clone(),
+                            arguments: arguments[..applied_prefix].to_vec(),
+                        }
+                    };
+                }
                 _ => head_key = SemanticTypeKey::Other,
             }
             collect_substitutions(
@@ -574,6 +599,7 @@ fn collect_substitutions(
             for (offset, template) in templates.iter().enumerate() {
                 let index = prefix + offset;
                 let argument = keys
+                    .as_ref()
                     .and_then(|keys| keys.get(index))
                     .cloned()
                     .unwrap_or_else(|| SemanticValueType {
@@ -675,6 +701,34 @@ fn collect_substitutions(
         }
         _ => {}
     }
+}
+
+/// Preserve the checked identities of constructor applications, including an
+/// already fixed prefix. A constructor binder is not a same-spelled primitive.
+fn applied_argument_values(value: &SemanticValueType) -> Option<Vec<SemanticValueType>> {
+    let types = match &value.type_ref {
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            arguments
+        }
+        _ => return None,
+    };
+    let values = match &value.key {
+        SemanticTypeKey::Adt { arguments, .. }
+        | SemanticTypeKey::Struct { arguments, .. }
+        | SemanticTypeKey::ExternalNominal { arguments, .. }
+        | SemanticTypeKey::NamedGeneric { arguments, .. } => arguments.clone(),
+        SemanticTypeKey::Application {
+            constructor,
+            arguments,
+        } => {
+            let mut values = applied_argument_values(constructor)?;
+            values.extend(arguments.iter().cloned());
+            values
+        }
+        _ if types.is_empty() => Vec::new(),
+        _ => return None,
+    };
+    (values.len() == types.len()).then_some(values)
 }
 
 fn fill_semantic_constructor_holes(

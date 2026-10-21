@@ -1,6 +1,18 @@
 use seseragi_semantics::{semantic_diagnostics, type_module, TypedDecl, TypedParameter, TypedType};
 
 #[test]
+fn a_function_annotation_keeps_a_constructor_binder_named_int() {
+    for binder in ["Int", "F"] {
+        let source = format!("trait Pick<{binder}<_>> {{ fn pick<A> left: {binder}<A> -> right: {binder}<A> -> Bool }}\ninstance Pick<Maybe> {{ fn pick<A> left: Maybe<A> -> (Maybe<A> -> Bool) = {{ let bad = 9007199254740991 + 1; \\right -> True }} }}\nfn selected<{binder}<_>, A> left: {binder}<A> -> ({binder}<A> -> Bool) where Pick<{binder}> = {{ let chosen: {binder}<A> -> {binder}<A> -> Bool = pick; chosen left }}\npub effect fn main = do {{ let saved = selected (Just 1); println \"created\" }}\n");
+        let diagnostics = semantic_diagnostics("constructor-function-identity.ssrg", &source);
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{source}\n{diagnostics:#?}"
+        );
+    }
+}
+
+#[test]
 fn an_own_unit_binder_keeps_the_show_alias_argument_generic() {
     for binder in ["Unit", "A"] {
         let source = format!(
