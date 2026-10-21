@@ -15,7 +15,9 @@ mod canonical;
 mod characters;
 mod comparisons;
 mod display;
+mod effect_conversions;
 mod equality;
+mod filesystem;
 mod floats;
 mod lists;
 mod local;
@@ -102,6 +104,8 @@ pub fn emit(
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    output.push_str(include_str!("runtime_path.rs"));
+    output.push_str(include_str!("runtime_filesystem.rs"));
     let mut initialization = String::new();
     for (index, binding) in module.bindings.iter().enumerate() {
         backend.owner = &owners[&binding.symbol];
@@ -379,6 +383,10 @@ impl Backend<'_> {
                 values.push(dictionary);
                 continue;
             }
+            if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
+                values.push(dictionary);
+                continue;
+            }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
                 values.push(dictionary);
                 continue;
@@ -629,6 +637,12 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.from_either_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.filesystem_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if equality::is_equality(name) && !scope.contains(name) {
                     self.equality_result_type(type_ref, 0, evidence, scope)?;
                 }
@@ -669,6 +683,12 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.from_either_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.filesystem_call(expr, scope)? {
+                    return Ok(value);
+                }
                 check_console_argument(callee, arguments)?;
                 if let Some(callable) = scope.callables.get(callee) {
                     self.validate_local_arguments(callable, arguments, evidence, scope)?;
@@ -719,6 +739,12 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.from_either_call(expr, scope)? {
+                    return Ok(value);
+                }
+                if let Some(value) = self.filesystem_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if matches!(callee.as_str(), "<$>" | "<*>" | ">>=") && !scope.contains(callee) {
                     return Err("Rust backend: unproven trait operator source staging".into());
                 }

@@ -1,0 +1,30 @@
+import * as paths from "std/path"
+
+fn inspect text: String -> String = match paths.parse text {
+  Left error -> show error
+  Right path -> {
+    let parent = match paths.parent path {
+      Nothing -> "none"
+      Just value -> paths.render value
+    }
+    paths.render (paths.normalize path) + "|" + show (paths.isAbsolute path) + "|" + parent + "|" + show (paths.fileName path) + "|" + show (paths.extension path)
+  }
+}
+
+pub effect fn main = do {
+  println (paths.render (paths.current ()))
+  println (inspect "a/../b.txt")
+  println (inspect "../../a")
+  println (inspect "/../../a")
+  println (inspect "C:/a/../")
+  println (inspect "//server/share/a/..")
+  println (inspect "A💡")
+  println (inspect "")
+  println (inspect "C:local")
+  println (inspect "//server")
+  println (match paths.join (paths.current ()) (paths.current ()) {
+      Left error -> show error
+      Right value -> paths.render value
+      }
+  )
+}

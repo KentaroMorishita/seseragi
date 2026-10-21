@@ -59,6 +59,27 @@ function selection(
 }
 
 describe("TypeScript provider package boundary", () => {
+  test("rejects arbitrary accessor module exports without running them", async () => {
+    const providerIdentity = provider("accessor")
+    let reads = 0
+    const namespace = Object.defineProperty({}, "provider", {
+      get() {
+        reads += 1
+        return entry(providerIdentity)
+      },
+    })
+    const loader = new ProviderPackageLoader("bun-process", [
+      selection(providerIdentity, entry(providerIdentity), {
+        load: async () => namespace,
+      }),
+    ])
+    await expect(loader.load(providerIdentity)).rejects.toThrow(
+      "provider module export is invalid"
+    )
+    expect(reads).toBe(0)
+    await loader.shutdown()
+  })
+
   test("publishes one versioned package identity and branded frozen entries", () => {
     expect(providerPackageRuntime).toEqual({
       identity: "seseragi/provider-package/typescript",

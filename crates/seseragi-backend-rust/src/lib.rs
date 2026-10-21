@@ -93,4 +93,6 @@ mod runtime {
     include!("runtime_array.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_path.rs");
+    include!("runtime_filesystem.rs");
 }

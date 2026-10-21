@@ -292,7 +292,7 @@ impl Backend<'_> {
     /// Kind-check the selected trait arguments before substituting them into
     /// declaration slots. Fixed prefixes consume slots from the left; scoped
     /// constructors use their binder identity, never their displayed spelling.
-    fn declared_method_type_kind(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
+    pub(super) fn declared_method_type_kind(&self, ty: &CoreType, scope: &Scope) -> Option<usize> {
         match ty {
             CoreType::Named { arguments, .. } | CoreType::ExternalNamed { arguments, .. } => {
                 if let CoreType::Named { name, .. } = ty {
@@ -368,7 +368,16 @@ impl Backend<'_> {
             return Some(parameters.iter().map(|p| p.arity).collect());
         }
         match name.as_str() {
-            "std/prelude::Unit"
+            "std/path::Path"
+            | "std/path::PathError"
+            | "std/fs::FileSystem"
+            | "std/fs::FileSystemError"
+            | "std/fs::FileSystemErrorKind"
+            | "std/fs::FileSystemOperation"
+            | "std/fs::FileTextError"
+            | "std/fs::WriteMode"
+            | "std/text::Utf8DecodeError"
+            | "std/prelude::Unit"
             | "std/prelude::Never"
             | "std/prelude::Int"
             | "std/prelude::Float"

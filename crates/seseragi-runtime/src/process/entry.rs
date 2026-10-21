@@ -128,12 +128,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -172,12 +172,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -227,12 +227,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     provider,
                     service,
                     entry_module,
                     entry_export,
-                    entry_module,
+                    provider_module_import(&entry_module, &entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -288,12 +288,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -343,12 +343,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     provider,
                     service,
                     entry_module,
                     entry_export,
-                    entry_module,
+                    provider_module_import(&entry_module, &entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -384,12 +384,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -425,12 +425,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -466,12 +466,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -506,12 +506,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -547,12 +547,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -588,12 +588,12 @@ pub(super) fn entry_source(
                 }
                 let loader = format!("providerLoader{index}");
                 setup.push(format!(
-                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: {} }}]);",
                     selection.provider,
                     selection.service,
                     selection.entry_module,
                     selection.entry_export,
-                    selection.entry_module,
+                    provider_module_import(&selection.entry_module, &selection.entry_export),
                 ));
                 setup.push(format!("await {loader}.start();"));
                 cleanup.push(format!("await {loader}.shutdown();"));
@@ -879,4 +879,12 @@ mod tests {
         assert!(source
             .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
     }
+}
+
+// An ESM binding is a value at this compiler-generated boundary. In a bundled
+// program its namespace can use export getters; materialize only the selected
+// binding as an own data property. The loader still rejects arbitrary accessor
+// namespaces and unbranded/malformed provider entries supplied by callers.
+fn provider_module_import(module: &str, export: &str) -> String {
+    format!("async () => ({{ [{export:?}]: (await import({module:?}))[{export:?}] }})")
 }

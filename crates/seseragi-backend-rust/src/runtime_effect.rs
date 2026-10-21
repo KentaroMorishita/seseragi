@@ -267,6 +267,16 @@ impl NativeContext {
 
 fn native_operation(name: &str, args: Vec<V>) -> V {
     match name {
+        "std/effect::fromEither" => V::leaf(args, |c, _| {
+            let V::Adt(value) = &c[0] else {
+                panic!("Rust ABI: expected Either")
+            };
+            match value.get().0.as_str() {
+                "std/prelude::Left" => Err(NativeExit::Failure(value.get().1.clone())),
+                "std/prelude::Right" => Ok(value.get().1.clone()),
+                _ => panic!("Rust ABI: Either owner"),
+            }
+        }),
         "std/effect::succeed" | "effect.succeed" => V::leaf(args, |c, _| Ok(c[0].clone())),
         "std/effect::fail" | "effect.fail" => {
             V::leaf(args, |c, _| Err(NativeExit::Failure(c[0].clone())))

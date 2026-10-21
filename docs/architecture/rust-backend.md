@@ -107,6 +107,17 @@ Maybe表示も既存のclosed dictionaryと残るsource parameterの検査を通
 未証明の型・辞書stagingは生成前に拒否する。部分適用した関数値をArrayへ保存・取得する経路も扱う。
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
+`std/path`のcurrent / parse / child / join / render / normalize / isAbsolute / parent /
+fileName / extensionと、`std/fs`のreadTextUtf8 / writeTextUtf8を同期native hostで扱う。
+write modeはReplace / CreateNew / Append。Pathはcanonical ownerを持つopaque値として保持し、
+String aliasへ置き換えない。必要なPath・filesystem・UTF8エラーの選択済みShow / Debugと、
+`std/effect.fromEither`のfailure / success型を照合する。
+小さいファイルを全量で読み書きし、handleはoperationが所有する。成功・失敗とも一度closeし、
+read / write / flushの失敗をcloseの失敗で上書きしない。成功後のclose失敗は型付き失敗になる。
+Effectの作成はI/Oせず、同じEffectを実行するたびにI/Oを行う。
+この範囲はFileSystemの標準host実装に限る。packageの明示filesystem provider選択やprovider artifactを含む構成は出力前に拒否し、
+JavaScript providerを黙ってnative hostへ差し替えない。全FileSystem API、async I/O・キャンセル、
+低水準handle公開や一般のprovider ABIの対応を意味しない。
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
 全source moduleを検査し、未使用の未対応declarationも黙って消さない。
 

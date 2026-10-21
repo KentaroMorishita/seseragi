@@ -1,0 +1,3 @@
+import { transform } from "./facade"
+
+pub effect fn main -> Unit with FileSystem fails String = transform ()
