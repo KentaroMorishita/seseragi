@@ -100,6 +100,8 @@ jobs:
         with:
           node-version: "24.14.0"
       - run: bun install --frozen-lockfile
+      - name: Drain pending file stages, close real handles and join exceptional workers
+        run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Compare file programs, pending I/O, cancellation and finalizers on native, Bun and Node
         run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
 
