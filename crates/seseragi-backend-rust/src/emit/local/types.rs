@@ -121,7 +121,10 @@ impl Backend<'_> {
             .or_else(|| match name.as_str() {
                 "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe"
                 | "std/ref::Ref" => Some(1),
-                "std/prelude::Either" => Some(2),
+                "std/prelude::Either"
+                | "std/effect::Fiber"
+                | "std/effect::FiberExit"
+                | "std/deferred::Deferred" => Some(2),
                 _ => None,
             })
     }

@@ -1292,6 +1292,7 @@ pub(super) fn lower_core_expr_to_typescript(
             arguments,
             evidence,
             origin,
+            success,
             ..
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
@@ -1300,6 +1301,33 @@ pub(super) fn lower_core_expr_to_typescript(
                     .expect("constrained effect call requires materializable evidence")
             }));
             if let Some(operation) = runtime_effect_operation(&callee) {
+                if callee == "std/deferred::make" {
+                    let payloads = match &success {
+                        CoreType::ExternalNamed {
+                            canonical,
+                            arguments,
+                            ..
+                        } if canonical == "std/deferred::Deferred" && arguments.len() == 2 => {
+                            Some(arguments)
+                        }
+                        CoreType::Named { name, arguments }
+                            if name == "std/deferred::Deferred" && arguments.len() == 2 =>
+                        {
+                            Some(arguments)
+                        }
+                        _ => None,
+                    };
+                    if let Some(payloads) = payloads {
+                        return TypeScriptExpr::TypeApplicationCall {
+                            callee: operation.local_name.to_owned(),
+                            type_arguments: payloads
+                                .iter()
+                                .map(|ty| type_ref_from_core_type(ty, imported_types))
+                                .collect(),
+                            arguments,
+                        };
+                    }
+                }
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

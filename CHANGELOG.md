@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.74] - 2026-10-21
+
+### Added
+
+- Run structured Fiber and Deferred programs with the experimental native target. Suspend and resume cold Effects on a cooperative FIFO scheduler, detach cancelled waiters, and wait for child cleanup at scope exit. Preserve atomic resource registration, masked finalizers and traced continuation roots. Actual asynchronous host I/O and external shutdown handling remain unsupported.
+
+### Fixed
+
+- Preserve checked Deferred allocation payloads as TypeScript type arguments and accept source Unit arguments in Deferred.make and Effect.yieldNow runtime declarations. Generated programs pass strict checks without adding casts.
+
 ## [0.61.73] - 2026-10-21
 
 ### Added

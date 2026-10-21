@@ -1,7 +1,8 @@
-// Cold synchronous Effect machine. User callbacks return values/plans; they
+// Cold, resumable Effect machine. User callbacks return values/plans; they
 // never recursively enter this interpreter. Frames and scopes own ordinary V
 // handles, so the collector can discover every live continuation as a root.
 type NativeOutcome = Result<V, NativeExit>;
+#[derive(Clone)]
 enum NativeExit {
     Failure(V),
     Defect(Vec<String>),
@@ -18,6 +19,7 @@ enum Instruction {
     Recover,
     MapError,
     Release,
+    Concurrent(ConcurrentOperation),
 }
 struct EffectPlan {
     instruction: Instruction,
@@ -73,7 +75,7 @@ enum NativeState {
     Return(NativeOutcome),
 }
 struct NativeContext {
-    scopes: Vec<Vec<V>>,
+    scopes: Vec<NativeScope>,
     cancelled: bool,
     masked: bool,
     checkpoints: usize,
@@ -113,14 +115,79 @@ impl NativeContext {
             self.scopes.is_empty(),
             "cannot reenter the native Effect machine"
         );
-        self.scopes.push(Vec::new());
-        let mut stack = vec![NativeFrame::Scope];
-        let mut state = match self.checkpoint() {
+        NativeScheduler::run(self, plan)
+    }
+    fn cleanup(
+        &mut self,
+        stack: &mut Vec<NativeFrame>,
+        original: NativeOutcome,
+        defects: Vec<String>,
+        previous_mask: bool,
+    ) -> NativeState {
+        if let Some(next) = self
+            .scopes
+            .last_mut()
+            .expect("closing native scope")
+            .finalizers
+            .pop()
+        {
+            stack.push(NativeFrame::Cleanup {
+                original,
+                defects,
+                previous_mask,
+            });
+            NativeState::Evaluate(next)
+        } else {
+            self.scopes.pop();
+            self.masked = previous_mask;
+            NativeState::Return(if defects.is_empty() {
+                original.and_then(|value| self.checkpoint().map(|_| value))
+            } else {
+                Err(NativeExit::Defect(defects))
+            })
+        }
+    }
+}
+
+#[derive(Default)]
+struct NativeScope {
+    finalizers: Vec<V>,
+    children: Vec<V>,
+}
+struct NativeMachine {
+    context: NativeContext,
+    stack: Vec<NativeFrame>,
+    state: Option<NativeState>,
+}
+enum NativeTurn {
+    Runnable,
+    Operation(ConcurrentOperation, Vec<V>),
+    CloseScope(NativeOutcome, bool),
+    Complete(NativeOutcome),
+}
+impl NativeMachine {
+    fn new(mut context: NativeContext, plan: V) -> Self {
+        context.scopes.push(NativeScope::default());
+        let state = match context.checkpoint() {
             Ok(()) => NativeState::Evaluate(plan),
-            Err(error) => NativeState::Return(Err(error)),
+            Err(exit) => NativeState::Return(Err(exit)),
         };
+        Self {
+            context,
+            stack: vec![NativeFrame::Scope],
+            state: Some(state),
+        }
+    }
+    fn resume(&mut self, outcome: NativeOutcome) {
+        self.state = Some(NativeState::Return(outcome));
+    }
+    fn turn(&mut self) -> NativeTurn {
+        let context = &mut self.context;
+        let stack = &mut self.stack;
+        let before = context.checkpoints;
+        let mut state = self.state.take().expect("runnable native continuation");
         loop {
-            self.peak_frames = self.peak_frames.max(stack.len());
+            context.peak_frames = context.peak_frames.max(stack.len());
             state = match state {
                 NativeState::Evaluate(plan) => {
                     // Checked plans are immutable; no Ref borrow survives an
@@ -128,14 +195,22 @@ impl NativeContext {
                     let (instruction, c) = plan.plan();
                     match instruction {
                         Instruction::Native(code) => NativeState::Return(
-                            self.checkpoint()
-                                .and_then(|_| catch_native(|| code(&c, self))),
+                            context
+                                .checkpoint()
+                                .and_then(|_| catch_native(|| code(&c, context))),
                         ),
+                        Instruction::Concurrent(operation) => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::Operation(operation, c);
+                            }
+                        }
                         Instruction::Bind => {
                             stack.push(NativeFrame::Bind(c[1].clone()));
                             NativeState::Evaluate(c[0].clone())
                         }
-                        Instruction::Defer => match self
+                        Instruction::Defer => match context
                             .checkpoint()
                             .and_then(|_| catch_native(|| Ok(c[0].apply(V::Unit))))
                         {
@@ -143,7 +218,7 @@ impl NativeContext {
                             Err(exit) => NativeState::Return(Err(exit)),
                         },
                         Instruction::Scoped => {
-                            self.scopes.push(Vec::new());
+                            context.scopes.push(NativeScope::default());
                             stack.push(NativeFrame::Scope);
                             NativeState::Evaluate(c[0].clone())
                         }
@@ -168,11 +243,11 @@ impl NativeContext {
                 }
                 NativeState::Return(result) => {
                     let Some(frame) = stack.pop() else {
-                        return result;
+                        return NativeTurn::Complete(result);
                     };
                     match frame {
                         NativeFrame::Bind(next) => match result {
-                            Ok(value) => match self
+                            Ok(value) => match context
                                 .checkpoint()
                                 .and_then(|_| catch_native(|| Ok(next.apply(value))))
                             {
@@ -182,7 +257,7 @@ impl NativeContext {
                             error => NativeState::Return(error),
                         },
                         NativeFrame::Recover(handler) => match result {
-                            Err(NativeExit::Failure(error)) => match self
+                            Err(NativeExit::Failure(error)) => match context
                                 .checkpoint()
                                 .and_then(|_| catch_native(|| Ok(handler.apply(error))))
                             {
@@ -193,7 +268,7 @@ impl NativeContext {
                         },
                         NativeFrame::MapError(handler) => match result {
                             Err(NativeExit::Failure(error)) => {
-                                NativeState::Return(self.checkpoint().and_then(|_| {
+                                NativeState::Return(context.checkpoint().and_then(|_| {
                                     catch_native(|| Err(NativeExit::Failure(handler.apply(error))))
                                 }))
                             }
@@ -201,21 +276,24 @@ impl NativeContext {
                         },
                         NativeFrame::Register(release) => match result {
                             Ok(resource) => {
-                                self.scopes.last_mut().expect("owning native scope").push(
-                                    V::effect(
+                                context
+                                    .scopes
+                                    .last_mut()
+                                    .expect("owning native scope")
+                                    .finalizers
+                                    .push(V::effect(
                                         Instruction::Release,
                                         vec![release, resource.clone()],
-                                    ),
-                                );
+                                    ));
                                 // A successful acquisition owns its finalizer
                                 // BEFORE the next cancellation checkpoint.
-                                NativeState::Return(self.checkpoint().map(|_| resource))
+                                NativeState::Return(context.checkpoint().map(|_| resource))
                             }
                             error => NativeState::Return(error),
                         },
                         NativeFrame::Scope => {
-                            let previous_mask = std::mem::replace(&mut self.masked, true);
-                            self.cleanup(&mut stack, result, Vec::new(), previous_mask)
+                            let previous_mask = std::mem::replace(&mut context.masked, true);
+                            return NativeTurn::CloseScope(result, previous_mask);
                         }
                         NativeFrame::Cleanup {
                             original,
@@ -232,40 +310,25 @@ impl NativeContext {
                                     defects.push("Effect finalizer was cancelled".into())
                                 }
                             }
-                            self.cleanup(&mut stack, original, defects, previous_mask)
+                            context.cleanup(stack, original, defects, previous_mask)
                         }
                     }
                 }
             };
-        }
-    }
-    fn cleanup(
-        &mut self,
-        stack: &mut Vec<NativeFrame>,
-        original: NativeOutcome,
-        defects: Vec<String>,
-        previous_mask: bool,
-    ) -> NativeState {
-        if let Some(next) = self.scopes.last_mut().expect("closing native scope").pop() {
-            stack.push(NativeFrame::Cleanup {
-                original,
-                defects,
-                previous_mask,
-            });
-            NativeState::Evaluate(next)
-        } else {
-            self.scopes.pop();
-            self.masked = previous_mask;
-            NativeState::Return(if defects.is_empty() {
-                original
-            } else {
-                Err(NativeExit::Defect(defects))
-            })
+
+            // Only Effect checkpoints yield. A pure callback runs to completion.
+            if context.checkpoints != before {
+                self.state = Some(state);
+                return NativeTurn::Runnable;
+            }
         }
     }
 }
 
 fn native_operation(name: &str, args: Vec<V>) -> V {
+    if let Some(operation) = ConcurrentOperation::named(name) {
+        return V::effect(Instruction::Concurrent(operation), args);
+    }
     match name {
         "std/effect::fromEither" => V::leaf(args, |c, _| {
             let V::Adt(value) = &c[0] else {

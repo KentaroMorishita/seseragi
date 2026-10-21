@@ -390,7 +390,10 @@ impl Backend<'_> {
             "std/prelude::Array" | "std/prelude::List" | "std/prelude::Maybe" | "std/ref::Ref" => {
                 Some(vec![0])
             }
-            "std/prelude::Either" => Some(vec![0, 0]),
+            "std/prelude::Either"
+            | "std/effect::Fiber"
+            | "std/effect::FiberExit"
+            | "std/deferred::Deferred" => Some(vec![0, 0]),
             "std/prelude::Effect" => Some(vec![0, 0, 0]),
             _ => None,
         }

@@ -11,7 +11,7 @@ Rustソース生成を第二のbackendとして段階的に実装する。Sesera
 評価順序の authority は既存frontendとCoreIrに置く。ユーザーにRustの所有権注釈を要求しない。
 生成されたプログラムはRust標準ライブラリのみを使い、実行時にBun、Node、TS runtimeを必要としない。
 
-experimentalなpure / 同期Effectと検証済みの複数module・path packageを扱う。既存`process` / `web` targetの意味は
+experimentalなpure / Effect、structured Fiber / Deferredと検証済みの複数module・path packageを扱う。既存`process` / `web` targetの意味は
 変えず、CLIでは`experimental`配下から明示的に選ぶ。純粋entryは結果をinspection表示し、
 Effect entryはnativeの実行loopとresource scopeで実行する。
 
@@ -29,7 +29,8 @@ Rust側は`RustArtifact`、`RustMetadata`、`RustBackendError`を返す。
 
 ## 値、closure、メモリ
 
-pure ABI名は`rust-erased-pure-v1`、同期Effectは`rust-erased-sync-v2`。型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
+pure ABI名は`rust-erased-pure-v1`、同期Effectは`rust-erased-sync-v2`、
+Fiber / Deferredを使う生成物は`rust-erased-cooperative-v3`。型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
 再現する必要をなくす。Unit / Int / Boolは即値、文字列・collection・ADT・関数・dictionaryは
 immutableな共有ノードを使う。Intは既存言語のsafe integer範囲を維持し、算術で検査する。
 
@@ -41,14 +42,14 @@ hidden dictionaryだけを捕捉し、不明な式はscope全体へ保守的に�
 親の破棄で発生する子の破棄もキューへ積む。これにより深いADT・collection・captureの破棄が
 Rustのcall stackを再帰的に消費しない。inspection表示も明示的なstackで走査する。
 
-pure programは通常のRCを使う。Refを使うmoduleでは実行前にweak registryを有効にし、
+pure programは通常のRCを使う。Ref / Fiber / Deferredを使うmoduleでは実行前にweak registryを有効にし、
 全container、closure、dictionary、Effect captureのedgeをtraceする。外部rootは強参照数から
-内部edgeとcollectorのsnapshotを差し引いて求める。到達不能なRefのedgeを切り、反復Dropで回収する。
+内部edgeとcollectorのsnapshotを差し引いて求める。到達不能なRef、完了したFiber / Deferredのpayload edgeを切り、反復Dropで回収する。
 
-この回収方法は「現在作れる循環はRefを経由する」ことを前提とする。local recursive closureや
+mutableなedgeを持つRef / Fiber / Deferredは、borrowのないcheckpointでtraceと切断を行う。local recursive closureや
 opaque foreign capture、Signalはまだ未対応。callback captureをWeakへ変えない。
 collectorはlanguage finalizerを実行せず、finalizerはscopeの所有物として実行loopが管理する。
-full scanを512 checkpointごととroot終了時に行う。停止時間の上限やasync schedulerは未実装。
+full scanを512 checkpointごととroot終了時に行う。停止時間の上限やpending host I/Oの接続は未実装。
 
 ## CoreIrで共有する分析
 
@@ -118,6 +119,24 @@ Effectの作成はI/Oせず、同じEffectを実行するたびにI/Oを行う�
 この範囲はFileSystemの標準host実装に限る。packageの明示filesystem provider選択やprovider artifactを含む構成は出力前に拒否し、
 JavaScript providerを黙ってnative hostへ差し替えない。全FileSystem API、async I/O・キャンセル、
 低水準handle公開や一般のprovider ABIの対応を意味しない。
+
+Effect machineはstate、継続frame、resource scopeを保持して中断・再開する。単一runtime threadの
+FIFO queueでcheckpointごとにrunnable Fiberを進め、managedな`V`をhost threadへ渡さない。
+`fork` / `await` / `poll` / `join` / `interrupt` / `yieldNow`と、`std/deferred`の
+make / await / poll / complete / succeed / failを扱う。source引数、環境row、failure / success、
+opaque型のcanonical ownerと各slotのvalue kindを、callと保存した関数値の両方で照合する。
+
+scopeは未完了childへcancellationを要求し、cleanupを待つ。待機者だけの取消はtarget Fiberや
+Deferredを完了させない。Deferredは最初の完了だけを受け入れ、waiter登録順で再開する。
+resource取得成功から登録までを保ち、finalizer中は取消をmaskする。finalizerがDeferredで
+待機しても継続を保持し、他のFiberを動かせる。collectorは待機中のframeとscopeをrootとして扱う。
+完了したFiberのtyped failureはjoinで伝播し、awaitではFiberExitになる。Defectはfailureへ変換しない。
+
+これは非同期I/Oを載せるための中断・再開機構である。現在のFileSystem hostは同期のままであり、
+pending host operation、外部process shutdownのcooperative処理、timer、race / parallel API、
+Queue / Stream等まで対応したという意味ではない。compiler WASMの生成TSで動くことと、一般program
+WASMの対応も分ける。
+
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
 全source moduleを検査し、未使用の未対応declarationも黙って消さない。
 

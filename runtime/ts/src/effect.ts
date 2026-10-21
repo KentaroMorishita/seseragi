@@ -820,7 +820,7 @@ export function interrupt<Failure, Success>(
   }
 }
 
-export function yieldNow(): Effect<unknown, never, Unit> {
+export function yieldNow(_unit?: Unit): Effect<unknown, never, Unit> {
   return async (_environment, context) => {
     const activeContext = context ?? createEffectExecution().context
     await awaitWithCancellation(

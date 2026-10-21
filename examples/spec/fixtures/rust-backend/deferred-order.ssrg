@@ -1,0 +1,35 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+effect fn reader digit: Int gate: deferred.Deferred<Never, Int> log: refs.Ref<Int>
+  -> Int =
+  do {
+    value <- deferred.await gate
+    refs.update (\n: Int -> n * 10 + digit) log
+    effects.succeed value
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let make: Unit -> Task<deferred.Deferred<Never, Int>> = deferred.make
+  gate <- make ()
+  log <- refs.make 0
+  first <- effects.fork (reader 1 gate log)
+  second <- effects.fork (reader 2 gate log)
+  let yield = effects.yieldNow
+  yield ()
+  let complete: Either<Never, Int> -> deferred.Deferred<Never, Int> -> Task<Bool> =
+    deferred.complete
+  let settle = complete (Right 42)
+  won <- settle gate
+  effects.join first
+  effects.join second
+  lost <- deferred.succeed 9 gate
+  value <- refs.get log
+  pending <- deferred.poll gate
+  println (show (won, lost, value))
+  match pending {
+    Just (Right n) -> println (show n)
+    _ -> println "unexpected"
+  }
+}
