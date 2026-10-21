@@ -15,9 +15,9 @@ import {
   body,
   br,
   button,
-  capturePointer,
   type ChangeEvent,
   caption,
+  capturePointer,
   code,
   custom,
   customTag,
@@ -29,9 +29,9 @@ import {
   dialog,
   div,
   domEventPreventsDefault,
+  type EventAction,
   elementRef,
   em,
-  type EventAction,
   type FileChangeEvent,
   fieldset,
   footer,
@@ -66,10 +66,10 @@ import {
   parseWebUrl,
   picture,
   pre,
+  releasePointer,
   renderDocument,
   renderForDom,
   renderToString,
-  releasePointer,
   resolveDomEvent,
   type ScrollEvent,
   select,
@@ -263,6 +263,47 @@ describe("HTML browser runtime", () => {
         value: { tag: "UnsafeWebUrlScheme", value },
       })
     }
+  })
+
+  test("validates custom URL attributes using the WebUrl policy", () => {
+    for (const name of ["action", "formaction", "FORMAction", "xlink:href"]) {
+      for (const value of [
+        "javascript:void(0)",
+        " JaVaScRiPt:void(0)",
+        "java\tscript:void(0)",
+        "data:text/html,unsafe",
+        "//user:secret@example.com/path",
+      ]) {
+        expect(attribute(name, value)).toEqual({
+          tag: "Left",
+          value: { tag: "UnsafeWebUrlScheme", value },
+        })
+      }
+      for (const value of [
+        "",
+        "/submit?q=1&next=2",
+        "#section",
+        "?page=2",
+        "../submit",
+        "//example.com/submit",
+        "https://example.com/submit",
+        "mailto:team@example.com",
+        "tel:+81-3-1234-5678",
+        "javascript&#58;void(0)",
+        "javascript%3Avoid(0)",
+      ]) {
+        const checked = attribute(name, value)
+        expect(checked).toMatchObject({ tag: "Right", value: { name, value } })
+        if (checked.tag !== "Right") throw new Error("expected safe attribute")
+        expect(renderToString(form({ attributes: [checked.value] }))).toContain(
+          `${name}="${value.replaceAll("&", "&amp;")}"`
+        )
+      }
+    }
+    expect(attribute("srcdoc", "<p>raw HTML</p>")).toEqual({
+      tag: "Left",
+      value: { tag: "ReservedAttributeName", value: "srcdoc" },
+    })
   })
 
   test("requires the opaque WebUrl value at the rendering boundary", () => {

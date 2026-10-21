@@ -532,6 +532,8 @@ parseWebUrlはrelative URLと`http`、`https`、`mailto`、`tel`だけを受理�
 `javascript`、`data`、`file` schemeを拒否します。
 
 `a`と`link`の`href`、`img`と`source`の`src`、`video`と`audio`のoptionalな`src`はすべて`WebUrl`です。
+custom attributeのscalar URL（`action`、`formaction`等）とDOMの動的URL attributeも同じ`parseWebUrl`方針で、各書き込み前に検証します。
+`srcdoc`はraw HTMLとなるためcustom attributeと動的attributeの両方で拒否します。動的検証の失敗は`DomOperationFailed`です。
 これらのfieldへ`String`を直接渡せず、`parseWebUrl`の`Right`だけを使用できます。relative URLにはroot-relative、
 path-relative、query、fragment、scheme-relative URLを含みます。authorityを持つURLはscheme-relativeであっても
 usernameまたはpasswordを含められません。ASCII control characterとDELを含む値、構文としてURLに解釈できない値、
