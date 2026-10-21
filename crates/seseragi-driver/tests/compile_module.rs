@@ -59,6 +59,26 @@ fn preserves_generic_unit_aliases_and_anonymous_unit_callbacks_through_lowering(
 }
 
 #[test]
+fn recursive_effect_callback_arrays_keep_their_inferred_contract() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/array-index-effects.ssrg");
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        compile_module(
+            input(
+                "array-index-effects.ssrg",
+                "fixture/array-index-effects",
+                source,
+            )
+            .with_profile(profile),
+        )
+        .expect("the original callback Ref cycle must compile before native or TS emission");
+    }
+}
+
+#[test]
 fn compiles_a_valid_module_through_every_owned_stage() {
     let compiled = compile_module(input(
         "artifact/driver-basic/main.ssrg",
