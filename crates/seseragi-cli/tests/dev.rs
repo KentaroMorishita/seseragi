@@ -66,13 +66,17 @@ fn available_port() -> u16 {
 }
 
 fn request(port: u16, path: &str) -> Option<(u16, String)> {
+    request_with_host(port, path, "127.0.0.1")
+}
+
+fn request_with_host(port: u16, path: &str, host: &str) -> Option<(u16, String)> {
     let mut stream = TcpStream::connect(("127.0.0.1", port)).ok()?;
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
         .unwrap();
     write!(
         stream,
-        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n"
+        "GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
     )
     .unwrap();
     let mut response = String::new();
@@ -276,6 +280,29 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     assert!(index.contains("/__seseragi_dev/version"));
     let (_, source_map) = request(port, "/assets/app.js.map").unwrap();
     assert!(source_map.contains("sources"));
+    for host in [
+        "attacker.example".to_owned(),
+        format!("127.0.0.1.attacker.example:{port}"),
+        "attacker.example\r\nHost: 127.0.0.1".to_owned(),
+        "127.0.0.1\r\nhOsT: attacker.example".to_owned(),
+    ] {
+        for path in [
+            "/",
+            "/assets/app.js",
+            "/assets/app.js.map",
+            "/__seseragi_dev/version",
+        ] {
+            let (status, body) = request_with_host(port, path, &host).unwrap();
+            assert_eq!(status, 403, "host {host:?}, path {path}");
+            assert_eq!(body, "Forbidden request host\n");
+        }
+    }
+    assert_eq!(
+        request_with_host(port, "/", &format!("localhost:{port}"))
+            .unwrap()
+            .0,
+        200
+    );
     let initial_version = request(port, "/__seseragi_dev/version").unwrap().1;
     let production_output = project.join("dist");
     assert!(!production_output.exists());

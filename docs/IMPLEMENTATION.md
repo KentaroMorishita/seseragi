@@ -1009,6 +1009,14 @@ reload clientを`index.html`へ注入するため、production `seseragi build`�
 dependencyは変更しません。SIGINTはwatch loopとlistenerを閉じ、`--host` / `--port` /
 `--open`はhost toolingだけが所有します。
 
+static / source map / reload / build failureの全responseは、完全なHTTP headerを
+8 KiB・1秒以内に受信してからHostを検証します。明示した`--host`、接続先のIP、
+loopback接続時の`localhost`だけを許可し、指定されたportは実際のlisten portと
+一致する必要があります。port省略も受け付けます。重複・欠落・不正なHostと
+無関係なhostnameは拒否し、受信したhostnameのDNS解決やproxy headerを許可判定へ
+使いません。`--host 0.0.0.0` / `::`でも任意のhostnameへは許可を広げず、LANからは
+接続先IPまたは明示的にbindしたhostnameを使います。
+
 VS Code extensionのproject commandsはLSP custom methodを追加せず、
 `seseragi.cli.path`またはPATHで発見したnative CLIを直接spawnします。active
 `.ssrg`からowning workspace内の最も近いmanifestを選ぶため、CLI / LSPと別の
