@@ -137,10 +137,13 @@ fn runtime(name: &str, directory: &Path) -> PathBuf {
 }
 
 fn root() -> PathBuf {
+    // Node24 cannot open script entries through Windows verbatim paths from
+    // fs::canonicalize. Cargo's manifest path is absolute; use lexical parents.
     Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../..")
-        .canonicalize()
-        .unwrap()
+        .ancestors()
+        .nth(2)
+        .expect("repository root above the crate")
+        .to_path_buf()
 }
 fn build(source: &Path, destination: &Path, exports: &[&str]) -> Command {
     let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi"));
