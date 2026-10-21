@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- Load selected provider exports in bundled process releases through compiler-generated data properties, preserving the provider loader's validation and accessor rejection.
+- Load selected provider exports in bundled process releases through compiler-generated data properties, preserving the provider loader's validation and accessor rejection. Accept Path.current's source Unit argument in its TypeScript runtime signature so generated calls pass strict type checking.
 
 ## [0.61.72] - 2026-10-21
 

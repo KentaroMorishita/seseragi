@@ -32,7 +32,19 @@ impl NativeFileHost for NativeStdFileHost {
             }
             _ => panic!("Rust ABI: invalid WriteMode"),
         }
-        options.open(host_path)
+        let result = options.open(&host_path);
+        // Windows reports ERROR_ACCESS_DENIED for opening a directory as a
+        // file. Match the standard Node/Bun provider's IsADirectory result;
+        // ordinary permission errors retain their primary classification.
+        #[cfg(windows)]
+        if let Err(error) = &result {
+            if error.raw_os_error() == Some(5)
+                && std::fs::metadata(&host_path).is_ok_and(|metadata| metadata.is_dir())
+            {
+                return Err(std::io::ErrorKind::IsADirectory.into());
+            }
+        }
+        result
     }
     fn read(&mut self, handle: &mut Self::Handle, bytes: &mut Vec<u8>) -> std::io::Result<()> {
         handle.read_to_end(bytes).map(|_| ())

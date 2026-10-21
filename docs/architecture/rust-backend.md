@@ -115,7 +115,7 @@ String aliasへ置き換えない。必要なPath・filesystem・UTF8エラー�
 小さいファイルを全量で読み書きし、handleはoperationが所有する。成功・失敗とも一度closeし、
 read / write / flushの失敗をcloseの失敗で上書きしない。成功後のclose失敗は型付き失敗になる。
 Effectの作成はI/Oせず、同じEffectを実行するたびにI/Oを行う。
-この範囲はFileSystemの標準host実装に限る。packageの明示provider選択は出力前に拒否し、
+この範囲はFileSystemの標準host実装に限る。packageの明示filesystem provider選択やprovider artifactを含む構成は出力前に拒否し、
 JavaScript providerを黙ってnative hostへ差し替えない。全FileSystem API、async I/O・キャンセル、
 低水準handle公開や一般のprovider ABIの対応を意味しない。
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。

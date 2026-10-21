@@ -210,13 +210,7 @@ fn file_transform_runs_from_source_and_path_package_with_typed_failures() {
                     let error = match scenario {
                         "missing" => "FileNotFound",
                         "invalid-utf8" => "InvalidUtf8 { offset: 2 }",
-                        _ => {
-                            if cfg!(windows) {
-                                "PermissionDenied"
-                            } else {
-                                "IsADirectory"
-                            }
-                        }
+                        _ => "IsADirectory",
                     };
                     assert!(
                         stderr.contains(error),
@@ -265,6 +259,7 @@ fn file_transform_runs_from_source_and_path_package_with_typed_failures() {
             .output()
             .unwrap();
         assert_eq!(result.status.code(), Some(2));
+        assert!(String::from_utf8_lossy(&result.stderr).contains("SES-RUST-0001"));
         assert!(String::from_utf8_lossy(&result.stderr)
             .contains("native filesystem provider selection"));
         assert!(!out.exists());

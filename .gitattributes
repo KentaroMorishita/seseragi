@@ -3,3 +3,8 @@ runtime/unicode/ucd/** -text whitespace=-blank-at-eol,-blank-at-eof
 
 # The canonical renderer emits a trailing space for Right of the empty String.
 examples/spec/artifacts/execution-schema-1/unicode-text/stdout.txt -text whitespace=-blank-at-eol
+
+# The native file acceptance compares bytes and validates package content locks.
+examples/spec/fixtures/rust-backend/filesystem-* text eol=lf
+examples/spec/fixtures/rust-backend/path-portable.* text eol=lf
+examples/spec/fixtures/rust-backend-projects/filesystem/** text eol=lf
