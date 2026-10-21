@@ -182,7 +182,7 @@ fn compile_project(
         .metadata
         .capabilities
         .iter()
-        .any(|capability| capability == "filesystem-sync")
+        .any(|capability| capability == "filesystem-async")
     {
         for (_, package) in project.packages().packages() {
             if package
@@ -191,7 +191,7 @@ fn compile_project(
                 .contains_key("std/fs::FileSystem")
                 || !package.manifest().provider_artifacts.is_empty()
             {
-                return Err(format!("{}: SES-RUST-0001: unsupported native filesystem provider selection/artifact configuration; this target currently uses its built-in synchronous host", package.root().join("seseragi.toml").display()));
+                return Err(format!("{}: SES-RUST-0001: unsupported native filesystem provider selection/artifact configuration; this target currently uses its built-in filesystem host", package.root().join("seseragi.toml").display()));
             }
         }
     }

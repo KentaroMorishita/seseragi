@@ -143,7 +143,7 @@ impl Backend<'_> {
             if name.starts_with("std/path::") {
                 "path"
             } else {
-                "filesystem-sync"
+                "filesystem-async"
             }
             .into(),
         );

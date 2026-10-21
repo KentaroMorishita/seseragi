@@ -30,7 +30,8 @@ Rust側は`RustArtifact`、`RustMetadata`、`RustBackendError`を返す。
 ## 値、closure、メモリ
 
 pure ABI名は`rust-erased-pure-v1`、同期Effectは`rust-erased-sync-v2`、
-Fiber / Deferredを使う生成物は`rust-erased-cooperative-v3`。型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
+Fiber / Deferredを使う生成物は`rust-erased-cooperative-v3`、FileSystemを使う生成物は
+`rust-erased-async-v4`。型消去した共通値`V`を使い、generic / HKTをRustのgenericsで
 再現する必要をなくす。Unit / Int / Boolは即値、文字列・collection・ADT・関数・dictionaryは
 immutableな共有ノードを使う。Intは既存言語のsafe integer範囲を維持し、算術で検査する。
 
@@ -49,7 +50,7 @@ pure programは通常のRCを使う。Ref / Fiber / Deferredを使うmoduleで�
 mutableなedgeを持つRef / Fiber / Deferredは、borrowのないcheckpointでtraceと切断を行う。local recursive closureや
 opaque foreign capture、Signalはまだ未対応。callback captureをWeakへ変えない。
 collectorはlanguage finalizerを実行せず、finalizerはscopeの所有物として実行loopが管理する。
-full scanを512 checkpointごととroot終了時に行う。停止時間の上限やpending host I/Oの接続は未実装。
+full scanを512 checkpointごととroot終了時に行う。pending file I/Oのcaptureはruntime thread側のtaskがrootとして保持する。停止時間の上限は未実装。
 
 ## CoreIrで共有する分析
 
@@ -109,7 +110,7 @@ Maybe表示も既存のclosed dictionaryと残るsource parameterの検査を通
 Effectはsucceed / fail / defer / flatMap / recover / mapError、Refはmake / get / set / update / modify、
 resourceはscoped / acquireRelease、Consoleはprint / printlnとqualified std/consoleの出力を扱う。
 `std/path`のcurrent / parse / child / join / render / normalize / isAbsolute / parent /
-fileName / extensionと、`std/fs`のreadTextUtf8 / writeTextUtf8を同期native hostで扱う。
+fileName / extensionと、`std/fs`のreadTextUtf8 / writeTextUtf8をnative file workerで扱う。
 write modeはReplace / CreateNew / Append。Pathはcanonical ownerを持つopaque値として保持し、
 String aliasへ置き換えない。必要なPath・filesystem・UTF8エラーの選択済みShow / Debugと、
 `std/effect.fromEither`のfailure / success型を照合する。
@@ -117,7 +118,7 @@ String aliasへ置き換えない。必要なPath・filesystem・UTF8エラー�
 read / write / flushの失敗をcloseの失敗で上書きしない。成功後のclose失敗は型付き失敗になる。
 Effectの作成はI/Oせず、同じEffectを実行するたびにI/Oを行う。
 この範囲はFileSystemの標準host実装に限る。packageの明示filesystem provider選択やprovider artifactを含む構成は出力前に拒否し、
-JavaScript providerを黙ってnative hostへ差し替えない。全FileSystem API、async I/O・キャンセル、
+JavaScript providerを黙ってnative hostへ差し替えない。全FileSystem API、
 低水準handle公開や一般のprovider ABIの対応を意味しない。
 
 Effect machineはstate、継続frame、resource scopeを保持して中断・再開する。単一runtime threadの
@@ -132,10 +133,15 @@ resource取得成功から登録までを保ち、finalizer中は取消をmask�
 待機しても継続を保持し、他のFiberを動かせる。collectorは待機中のframeとscopeをrootとして扱う。
 完了したFiberのtyped failureはjoinで伝播し、awaitではFiberExitになる。Defectはfailureへ変換しない。
 
-これは非同期I/Oを載せるための中断・再開機構である。現在のFileSystem hostは同期のままであり、
-pending host operation、外部process shutdownのcooperative処理、timer、race / parallel API、
-Queue / Stream等まで対応したという意味ではない。compiler WASMの生成TSで動くことと、一般program
-WASMの対応も分ける。
+readTextUtf8 / writeTextUtf8はownedなrequestとresultだけをworkerへ渡し、runtime threadのtaskを中断する。
+他のFiberは進行を続け、hostの完了通知後にworkerをjoinして同じtaskを再開する。handleはworkerが
+成功・typed failure・Defect・取消のいずれでも一度closeする。open / read / write / flushに存在しない
+abortを作らず、実行中のOS呼出しを待ち、chunk間で取消を確認する。取消後の遅い結果を成功・失敗として
+公開せず、closeのDefectはcleanupとして保持する。scopeとinterruptはこのdrain・close・joinと
+利用者のmasked finalizerが完了するまで待つ。
+
+外部process shutdownのcooperative処理、強制OS abort、timer、race / parallel API、Queue / Stream等は
+未対応。compiler WASMの生成TSで動くことと、一般program WASMの対応も分ける。
 
 検証済みのsource module / path packageをlinkし、単相globalの初期化順も保持する。
 全source moduleを検査し、未使用の未対応declarationも黙って消さない。
@@ -167,7 +173,7 @@ closureへ残す。nativeのmethodも同じ位置まで適用して保存し、m
 この修復はsource定義の関数と固有制約付きmethodの経路を対象にする。比較演算子のsectionや
 標準関数専用の生成経路には、部分適用のstrict評価の調査・修復が残る（#887）。
 
-現在の未対応範囲：async Effect、残るstdlib API、一般のpolymorphic global、再帰local function、
+現在の未対応範囲：残るasync API、残るstdlib API、一般のpolymorphic global、再帰local function、
 record spreadと未対応pattern、derived instance、supertrait、一般のMonad辞書を使うdo、
 一般のdeferred callable evidence、foreign / provider ABI、並列runtime、標準のprogram WASM target、
 source map、一般のDefect provenance。Floatに標準Eq / Ord / Hashは導入しない。

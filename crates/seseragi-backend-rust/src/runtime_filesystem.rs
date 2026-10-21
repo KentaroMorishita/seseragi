@@ -6,8 +6,8 @@ use std::io::{Read, Write};
 trait NativeFileHost {
     type Handle;
     fn open(&mut self, path: &str, mode: Option<&str>) -> std::io::Result<Self::Handle>;
-    fn read(&mut self, handle: &mut Self::Handle, bytes: &mut Vec<u8>) -> std::io::Result<()>;
-    fn write(&mut self, handle: &mut Self::Handle, bytes: &[u8]) -> std::io::Result<()>;
+    fn read(&mut self, handle: &mut Self::Handle, bytes: &mut [u8]) -> std::io::Result<usize>;
+    fn write(&mut self, handle: &mut Self::Handle, bytes: &[u8]) -> std::io::Result<usize>;
     fn flush(&mut self, handle: &mut Self::Handle) -> std::io::Result<()>;
     fn close(&mut self, handle: Self::Handle) -> std::io::Result<()>;
 }
@@ -46,11 +46,11 @@ impl NativeFileHost for NativeStdFileHost {
         }
         result
     }
-    fn read(&mut self, handle: &mut Self::Handle, bytes: &mut Vec<u8>) -> std::io::Result<()> {
-        handle.read_to_end(bytes).map(|_| ())
+    fn read(&mut self, handle: &mut Self::Handle, bytes: &mut [u8]) -> std::io::Result<usize> {
+        handle.read(bytes)
     }
-    fn write(&mut self, handle: &mut Self::Handle, bytes: &[u8]) -> std::io::Result<()> {
-        handle.write_all(bytes)
+    fn write(&mut self, handle: &mut Self::Handle, bytes: &[u8]) -> std::io::Result<usize> {
+        handle.write(bytes)
     }
     fn flush(&mut self, handle: &mut Self::Handle) -> std::io::Result<()> {
         handle.sync_all()
@@ -113,14 +113,6 @@ struct NativeFileGuard<'a, H: NativeFileHost> {
     host: &'a mut H,
     handle: Option<H::Handle>,
 }
-impl<H: NativeFileHost> NativeFileGuard<'_, H> {
-    fn finish(mut self, result: std::io::Result<()>) -> std::io::Result<()> {
-        let closed = self.host.close(self.handle.take().unwrap());
-        // A failed read/write keeps its primary typed error. A close failure
-        // after successful work is itself a typed FileSystemError.
-        result.and(closed)
-    }
-}
 impl<H: NativeFileHost> Drop for NativeFileGuard<'_, H> {
     fn drop(&mut self) {
         if let Some(handle) = self.handle.take() {
@@ -128,33 +120,141 @@ impl<H: NativeFileHost> Drop for NativeFileGuard<'_, H> {
         }
     }
 }
-fn native_read_file(host: &mut impl NativeFileHost, path: &str) -> std::io::Result<Vec<u8>> {
-    let handle = host.open(path, None)?;
-    let mut guard = NativeFileGuard {
-        host,
-        handle: Some(handle),
+fn native_file_checkpoint(
+    cancelled: &std::sync::atomic::AtomicBool,
+) -> Result<(), NativeFileFault> {
+    if cancelled.load(std::sync::atomic::Ordering::Acquire) {
+        Err(NativeFileFault::Cancelled)
+    } else {
+        Ok(())
+    }
+}
+fn native_run_file_request(
+    host: &mut impl NativeFileHost,
+    request: NativeFileRequest,
+    cancelled: &std::sync::atomic::AtomicBool,
+) -> NativeFileReply {
+    let mut guard = NativeFileGuard { host, handle: None };
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        native_file_checkpoint(cancelled)?;
+        let (path, mode) = match &request {
+            NativeFileRequest::Read { path } => (path, None),
+            NativeFileRequest::Write { path, mode, .. } => (path, Some(*mode)),
+        };
+        guard.handle = Some(guard.host.open(path, mode).map_err(NativeFileFault::Io)?);
+        native_file_checkpoint(cancelled)?;
+        match request {
+            NativeFileRequest::Read { .. } => {
+                let mut bytes = Vec::new();
+                let mut buffer = vec![0; 64 * 1024];
+                loop {
+                    native_file_checkpoint(cancelled)?;
+                    let size = match guard.host.read(guard.handle.as_mut().unwrap(), &mut buffer) {
+                        Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
+                        result => result.map_err(NativeFileFault::Io)?,
+                    };
+                    if size > buffer.len() {
+                        return Err(NativeFileFault::Defect(
+                            "file host returned an invalid read length".into(),
+                        ));
+                    }
+                    if size == 0 {
+                        break;
+                    }
+                    bytes.extend_from_slice(&buffer[..size]);
+                }
+                Ok(NativeFilePayload::Bytes(bytes))
+            }
+            NativeFileRequest::Write { bytes, .. } => {
+                for chunk in bytes.chunks(64 * 1024) {
+                    let mut offset = 0;
+                    while offset < chunk.len() {
+                        native_file_checkpoint(cancelled)?;
+                        let size = match guard
+                            .host
+                            .write(guard.handle.as_mut().unwrap(), &chunk[offset..])
+                        {
+                            Err(error) if error.kind() == std::io::ErrorKind::Interrupted => {
+                                continue
+                            }
+                            result => result.map_err(NativeFileFault::Io)?,
+                        };
+                        if size == 0 {
+                            return Err(NativeFileFault::Io(std::io::ErrorKind::WriteZero.into()));
+                        }
+                        if size > chunk.len() - offset {
+                            return Err(NativeFileFault::Defect(
+                                "file host returned an invalid write length".into(),
+                            ));
+                        }
+                        offset += size;
+                    }
+                }
+                native_file_checkpoint(cancelled)?;
+                guard
+                    .host
+                    .flush(guard.handle.as_mut().unwrap())
+                    .map_err(NativeFileFault::Io)?;
+                Ok(NativeFilePayload::Unit)
+            }
+        }
+    }))
+    .unwrap_or_else(|error| Err(NativeFileFault::Defect(native_panic_message(error))));
+    let close = match guard.handle.take() {
+        Some(handle) => std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            guard.host.close(handle).map_err(NativeFileFault::Io)
+        }))
+        .unwrap_or_else(|error| Err(NativeFileFault::Defect(native_panic_message(error)))),
+        None => Ok(()),
     };
-    let mut bytes = Vec::new();
-    let result = guard.host.read(guard.handle.as_mut().unwrap(), &mut bytes);
-    guard.finish(result)?;
+    NativeFileReply { result, close }
+}
+#[cfg(test)]
+fn native_test_file_result(reply: NativeFileReply) -> std::io::Result<NativeFilePayload> {
+    match reply.result.and_then(|value| reply.close.map(|()| value)) {
+        Ok(value) => Ok(value),
+        Err(NativeFileFault::Io(error)) => Err(error),
+        Err(NativeFileFault::Defect(error)) => panic!("{error}"),
+        Err(NativeFileFault::Cancelled) => {
+            panic!("unexpected cancellation in synchronous host test")
+        }
+    }
+}
+#[cfg(test)]
+fn native_read_file(host: &mut impl NativeFileHost, path: &str) -> std::io::Result<Vec<u8>> {
+    let reply = native_run_file_request(
+        host,
+        NativeFileRequest::Read { path: path.into() },
+        &std::sync::atomic::AtomicBool::new(false),
+    );
+    let NativeFilePayload::Bytes(bytes) = native_test_file_result(reply)? else {
+        panic!("read payload")
+    };
     Ok(bytes)
 }
+#[cfg(test)]
 fn native_write_file(
     host: &mut impl NativeFileHost,
     path: &str,
     mode: &str,
     bytes: &[u8],
 ) -> std::io::Result<()> {
-    let handle = host.open(path, Some(mode))?;
-    let mut guard = NativeFileGuard {
-        host,
-        handle: Some(handle),
+    let mode = match mode {
+        "Replace" => "Replace",
+        "CreateNew" => "CreateNew",
+        "Append" => "Append",
+        _ => panic!("test mode"),
     };
-    let result = guard
-        .host
-        .write(guard.handle.as_mut().unwrap(), bytes)
-        .and_then(|_| guard.host.flush(guard.handle.as_mut().unwrap()));
-    guard.finish(result)
+    let reply = native_run_file_request(
+        host,
+        NativeFileRequest::Write {
+            path: path.into(),
+            mode,
+            bytes: bytes.to_vec(),
+        },
+        &std::sync::atomic::AtomicBool::new(false),
+    );
+    native_test_file_result(reply).map(|_| ())
 }
 fn native_file_error_code(error: &std::io::Error) -> &'static str {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
@@ -253,6 +353,7 @@ fn native_file_error(operation: &str, path: V, error: std::io::Error) -> V {
     ])))
 }
 
+#[cfg(test)]
 fn native_read_text(host: &mut impl NativeFileHost, path: &V) -> NativeOutcome {
     let bytes = native_read_file(host, native_path_text(path)).map_err(|error| {
         NativeExit::Failure(V::adt(
@@ -260,6 +361,9 @@ fn native_read_text(host: &mut impl NativeFileHost, path: &V) -> NativeOutcome {
             native_file_error("ReadFile", path.clone(), error),
         ))
     })?;
+    native_decode_text(bytes)
+}
+fn native_decode_text(bytes: Vec<u8>) -> NativeOutcome {
     match String::from_utf8(bytes) {
         Ok(text) => Ok(V::text(&text)),
         Err(error) => Err(NativeExit::Failure(V::adt(
@@ -280,30 +384,14 @@ fn native_filesystem_operation(name: &str, arguments: Vec<V>) -> V {
     }
     match name {
         "std/fs::Replace" | "std/fs::CreateNew" | "std/fs::Append" => V::adt(name, V::Unit),
-        "std/fs::readTextUtf8" => V::leaf(arguments, |c, _| {
-            native_read_text(&mut NativeStdFileHost, &c[0])
-        }),
-        "std/fs::writeTextUtf8" => V::leaf(arguments, |c, _| {
-            let V::Adt(mode) = &c[0] else {
-                panic!("Rust ABI: expected WriteMode")
-            };
-            let mode = match mode.get().0.as_str() {
-                "std/fs::Replace" => "Replace",
-                "std/fs::CreateNew" => "CreateNew",
-                "std/fs::Append" => "Append",
-                _ => panic!("Rust ABI: WriteMode owner"),
-            };
-            native_write_file(
-                &mut NativeStdFileHost,
-                native_path_text(&c[2]),
-                mode,
-                native_text(&c[1]).as_bytes(),
-            )
-            .map_err(|error| {
-                NativeExit::Failure(native_file_error("WriteFile", c[2].clone(), error))
-            })?;
-            Ok(V::Unit)
-        }),
+        "std/fs::readTextUtf8" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::ReadText),
+            arguments,
+        ),
+        "std/fs::writeTextUtf8" => V::effect(
+            Instruction::FileSystem(NativeFileOperation::WriteText),
+            arguments,
+        ),
         _ => panic!("Rust ABI: unsupported filesystem operation"),
     }
 }
@@ -429,6 +517,7 @@ mod filesystem_tests {
         panic_read: bool,
         live: usize,
         bytes: Option<Vec<u8>>,
+        read_finished: bool,
     }
     impl Host {
         fn event(&mut self, name: &'static str) -> std::io::Result<()> {
@@ -447,16 +536,22 @@ mod filesystem_tests {
             self.live += 1;
             Ok(())
         }
-        fn read(&mut self, _: &mut (), bytes: &mut Vec<u8>) -> std::io::Result<()> {
+        fn read(&mut self, _: &mut (), bytes: &mut [u8]) -> std::io::Result<usize> {
             if self.panic_read {
                 panic!("read defect")
             }
             self.event("read")?;
-            bytes.extend_from_slice(self.bytes.as_deref().unwrap_or(b"hello"));
-            Ok(())
+            if self.read_finished {
+                return Ok(0);
+            }
+            self.read_finished = true;
+            let content = self.bytes.as_deref().unwrap_or(b"hello");
+            bytes[..content.len()].copy_from_slice(content);
+            Ok(content.len())
         }
-        fn write(&mut self, _: &mut (), _: &[u8]) -> std::io::Result<()> {
-            self.event("write")
+        fn write(&mut self, _: &mut (), bytes: &[u8]) -> std::io::Result<usize> {
+            self.event("write")?;
+            Ok(bytes.len())
         }
         fn flush(&mut self, _: &mut ()) -> std::io::Result<()> {
             self.event("flush")
@@ -524,7 +619,7 @@ mod filesystem_tests {
         };
         assert!(error.tagged("std/fs::FileUtf8Failure"));
         assert_eq!(error.payload().payload().field("offset").render(), "2");
-        assert_eq!(host.events, ["open", "read", "close"]);
+        assert_eq!(host.events, ["open", "read", "read", "close"]);
         assert_eq!(host.live, 0);
         let mut host = Host {
             bytes: Some(vec![0xff]),

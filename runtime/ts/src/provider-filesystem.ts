@@ -3,6 +3,7 @@ import {
   registerResourceFinalizer,
   throwIfCancelled,
   type Unit,
+  withResourceAcquisition,
 } from "./effect"
 import {
   type DirectoryHandle,
@@ -204,6 +205,7 @@ type HandleState = {
   readonly handle: FileHandle | DirectoryHandle | TemporaryHandle
   readonly loaded: LoadedProviderEntry
   readonly closeContract: ProviderOperationContract
+  readonly operations: Set<Promise<void>>
   unregisterCleanup: () => void
   closeCompletion?: Promise<ServiceResult<FileError, Unit>>
 }
@@ -224,26 +226,29 @@ export function createProviderFileSystem(
     closeContract: ProviderOperationContract,
     context: EffectContext
   ): Promise<ServiceResult<FileError, Handle>> => {
-    const outcome = await invoke(loaded, contract, input, context)
-    if (outcome.kind !== "success") return operationResult(outcome)
-    const handle = outcome.value as Handle
-    const state: HandleState = {
-      handle,
-      loaded,
-      closeContract,
-      unregisterCleanup: () => undefined,
-    }
-    handles.set(handle, state)
-    const registration = registerResourceFinalizer(context, async () => {
-      const result = await closeState(state)
-      if (result.kind === "failure") {
-        throw new Error(`filesystem cleanup failed: ${result.error.message}`)
+    return withResourceAcquisition(context, async () => {
+      const outcome = await invoke(loaded, contract, input, context)
+      if (outcome.kind !== "success") return operationResult(outcome)
+      const handle = outcome.value as Handle
+      const state: HandleState = {
+        handle,
+        loaded,
+        closeContract,
+        operations: new Set(),
+        unregisterCleanup: () => undefined,
       }
+      handles.set(handle, state)
+      const registration = registerResourceFinalizer(context, async () => {
+        const result = await closeState(state)
+        if (result.kind === "failure") {
+          throw new Error(`filesystem cleanup failed: ${result.error.message}`)
+        }
+      })
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
+      throwIfCancelled(context)
+      return fileSystemSuccess(handle)
     })
-    state.unregisterCleanup = registration.unregister
-    await registration.ready
-    throwIfCancelled(context)
-    return fileSystemSuccess(handle)
   }
 
   const handleCall = async <Success>(
@@ -256,7 +261,21 @@ export function createProviderFileSystem(
     if (state?.closeCompletion !== undefined) {
       throw new TypeError("filesystem resource is closed")
     }
-    return operationResult(await invoke(loaded, contract, input, context))
+    if (state === undefined) {
+      return operationResult(await invoke(loaded, contract, input, context))
+    }
+    let completed = (): void => undefined
+    const pending = new Promise<void>((resolve) => {
+      completed = resolve
+    })
+    // Install supervision before calling a host that may synchronously cancel.
+    state.operations.add(pending)
+    try {
+      return operationResult(await invoke(loaded, contract, input, context))
+    } finally {
+      state.operations.delete(pending)
+      completed()
+    }
   }
 
   const close = async (
@@ -355,11 +374,18 @@ function invoke(
 function closeState(
   state: HandleState
 ): Promise<ServiceResult<FileError, Unit>> {
-  state.unregisterCleanup()
-  state.closeCompletion ??= (async () =>
-    operationResult(
+  state.closeCompletion ??= (async () => {
+    // Publish closeCompletion before the host close can reenter. New operations
+    // are refused; existing unavailable I/O retains its owner until completion.
+    await Promise.all([...state.operations])
+    const result = operationResult<Unit>(
       await invoke(state.loaded, state.closeContract, state.handle)
-    ))()
+    )
+    // An explicit close can overlap cancellation. Keep the scope's owner
+    // until completion; a defect remains available to the cleanup observer.
+    state.unregisterCleanup()
+    return result
+  })()
   return state.closeCompletion
 }
 
