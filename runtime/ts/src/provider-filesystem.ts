@@ -378,7 +378,7 @@ function closeState(
     // Publish closeCompletion before the host close can reenter. New operations
     // are refused; existing unavailable I/O retains its owner until completion.
     await Promise.all([...state.operations])
-    const result = operationResult(
+    const result = operationResult<Unit>(
       await invoke(state.loaded, state.closeContract, state.handle)
     )
     // An explicit close can overlap cancellation. Keep the scope's owner

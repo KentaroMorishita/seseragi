@@ -90,14 +90,14 @@ impl NativeFileOperation {
         let cancelled = cancelled || matches!(&result, Err(NativeFileFault::Cancelled));
         let mut notes = Vec::new();
         if cancelled {
+            if let Err(NativeFileFault::Defect(error)) = &result {
+                notes.push(format!("late host defect after cancellation: {error}"));
+            }
             if let Err(fault) = close {
                 return (
                     Err(NativeExit::Defect(vec![native_file_close_defect(fault)])),
                     notes,
                 );
-            }
-            if let Err(NativeFileFault::Defect(error)) = result {
-                notes.push(format!("late host defect after cancellation: {error}"));
             }
             return (Err(NativeExit::Cancelled), notes);
         }
@@ -110,6 +110,10 @@ impl NativeFileOperation {
                     ])),
                     notes,
                 );
+            }
+            (Err(NativeFileFault::Io(primary)), Err(NativeFileFault::Defect(error))) => {
+                notes.push(format!("file I/O failed before cleanup defect: {primary}"));
+                return (Err(NativeExit::Defect(vec![error])), notes);
             }
             (_, Err(NativeFileFault::Defect(error))) => {
                 return (Err(NativeExit::Defect(vec![error])), notes);
@@ -448,6 +452,8 @@ mod host_tests {
             (false, false, true, false, true),
             (false, false, false, true, true),
             (false, true, false, false, true),
+            (true, false, false, true, false),
+            (false, true, false, true, true),
         ] {
             let scratch = Scratch::new();
             let (mut host, _, _) = host(None);
@@ -498,6 +504,14 @@ mod host_tests {
                     } else {
                         "read defect"
                     }));
+                    if read_failure || (cancel && read_defect) {
+                        assert_eq!(notes.len(), 1);
+                        assert!(notes[0].contains(if read_failure {
+                            "file I/O failed before cleanup defect"
+                        } else {
+                            "late host defect after cancellation"
+                        }));
+                    }
                 }
                 _ => panic!("wrong host failure class"),
             }
