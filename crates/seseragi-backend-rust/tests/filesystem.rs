@@ -14,7 +14,8 @@ fn file_transform_preserves_utf8_input_and_typed_failures() {
         .metadata
         .capabilities
         .iter()
-        .any(|c| c == "filesystem-sync"));
+        .any(|c| c == "filesystem-async"));
+    assert_eq!(artifact.metadata.abi, "rust-erased-async-v4");
     let temp =
         std::env::temp_dir().join(format!("seseragi-filesystem-native-{}", std::process::id()));
     struct Cleanup(std::path::PathBuf);

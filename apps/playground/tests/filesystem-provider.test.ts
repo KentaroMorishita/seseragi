@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test"
-import { createEffectExecution, run } from "../../../runtime/ts/src/effect"
+import {
+  createEffectExecution,
+  EffectCancellation,
+  run,
+  yieldNow,
+} from "../../../runtime/ts/src/effect"
 import {
   close,
   filePath,
@@ -18,6 +23,14 @@ import {
 } from "../../../runtime/ts/src/provider-package"
 
 let fixture = 0
+
+function gate<Value>() {
+  let resolve = (_value: Value): void => undefined
+  const promise = new Promise<Value>((ready) => {
+    resolve = ready
+  })
+  return { promise, resolve }
+}
 
 async function environment(operations: ProviderEntry) {
   fixture += 1
@@ -47,6 +60,163 @@ async function environment(operations: ProviderEntry) {
 }
 
 describe("filesystem provider vertical slice", () => {
+  test.each([false, true])(
+    "keeps explicit close supervised during cancellation (defect=%s)",
+    async (defect) => {
+      const closing = gate<void>()
+      const closed = gate<void>()
+      let closeCalls = 0
+      const selected = await environment({
+        async openRead() {
+          return { kind: "success", value: Object.freeze({ file: "closing" }) }
+        },
+        async close() {
+          closeCalls += 1
+          closing.resolve()
+          await closed.promise
+          if (defect) throw new Error("explicit close defect")
+          return { kind: "success", value: undefined }
+        },
+      })
+      const execution = createEffectExecution()
+      const active = { fileSystem: selected.fileSystem }
+      const opened = await run(
+        openRead(filePath("closing.bin")),
+        active,
+        execution.context
+      )
+      if (opened.kind !== "success") throw new Error("expected an open file")
+      const result = run(close(opened.value), active, execution.context).catch(
+        (error: unknown) => error
+      )
+      await closing.promise
+      let returned = false
+      const cancellation = execution.cancel().then(
+        () => {
+          returned = true
+          return { kind: "success" as const }
+        },
+        (error: unknown) => {
+          returned = true
+          return { kind: "defect" as const, error }
+        }
+      )
+      try {
+        await run(yieldNow(), {})
+        expect(returned).toBe(false)
+        closed.resolve()
+        const outcome = await cancellation
+        expect(outcome.kind).toBe(defect ? "defect" : "success")
+        if (outcome.kind === "defect")
+          expect(outcome.error).toBeInstanceOf(ProviderBoundaryDefect)
+        expect(closeCalls).toBe(1)
+        await result
+      } finally {
+        closed.resolve()
+        await cancellation.catch(() => undefined)
+        await result
+        await selected.loader.shutdown()
+      }
+    }
+  )
+
+  test("waits for late open handoff and close before cancellation completes", async () => {
+    const opening = gate<void>()
+    const opened = gate<void>()
+    const closing = gate<void>()
+    const closed = gate<void>()
+    let closeCalls = 0
+    const selected = await environment({
+      async openRead() {
+        opening.resolve()
+        await opened.promise
+        return { kind: "success", value: Object.freeze({ file: "late" }) }
+      },
+      async close() {
+        closeCalls += 1
+        closing.resolve()
+        await closed.promise
+        return { kind: "success", value: undefined }
+      },
+    })
+    const execution = createEffectExecution()
+    const result = run(
+      openRead(filePath("late.bin")),
+      { fileSystem: selected.fileSystem },
+      execution.context
+    ).catch((error: unknown) => error)
+    await opening.promise
+    let returned = false
+    const cancellation = execution.cancel().then(() => {
+      returned = true
+    })
+    try {
+      await run(yieldNow(), {})
+      expect(returned).toBe(false)
+      opened.resolve()
+      await closing.promise
+      expect(returned).toBe(false)
+      closed.resolve()
+      await cancellation
+      expect(await result).toBeInstanceOf(EffectCancellation)
+      expect(closeCalls).toBe(1)
+      await execution.cancel()
+      expect(closeCalls).toBe(1)
+    } finally {
+      opened.resolve()
+      closed.resolve()
+      await cancellation.catch(() => undefined)
+      await result
+      await selected.loader.shutdown()
+    }
+  })
+
+  test("drains an unavailable read before releasing its file handle", async () => {
+    const reading = gate<void>()
+    const readFinished = gate<void>()
+    let closeCalls = 0
+    const selected = await environment({
+      async openRead() {
+        return { kind: "success", value: Object.freeze({ file: "pending" }) }
+      },
+      async read() {
+        reading.resolve()
+        await readFinished.promise
+        return { kind: "success", value: new Uint8Array([42]) }
+      },
+      async close() {
+        closeCalls += 1
+        return { kind: "success", value: undefined }
+      },
+    })
+    const execution = createEffectExecution()
+    const active = { fileSystem: selected.fileSystem }
+    const opened = await run(
+      openRead(filePath("pending.bin")),
+      active,
+      execution.context
+    )
+    if (opened.kind !== "success") throw new Error("expected an open file")
+    const result = run(read(opened.value, 1), active, execution.context).catch(
+      (error: unknown) => error
+    )
+    await reading.promise
+    const cancellation = execution.cancel()
+    try {
+      await run(yieldNow(), {})
+      expect(closeCalls).toBe(0)
+      readFinished.resolve()
+      await cancellation
+      expect(closeCalls).toBe(1)
+      expect(await result).toBeInstanceOf(EffectCancellation)
+    } finally {
+      readFinished.resolve()
+      await cancellation.catch(() => undefined)
+      await result
+      await selected.loader.shutdown()
+    }
+  })
+
   test("keeps open/read cold and closes once on cancellation", async () => {
     let openCalls = 0
     let readCalls = 0

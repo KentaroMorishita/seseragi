@@ -96,4 +96,5 @@ mod runtime {
     include!("runtime_scheduler.rs");
     include!("runtime_path.rs");
     include!("runtime_filesystem.rs");
+    include!("runtime_host.rs");
 }

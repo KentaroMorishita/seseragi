@@ -19,6 +19,9 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/build.rs"
+      - "crates/seseragi-cli/tests/filesystem.rs"
+      - "crates/seseragi-cli/tests/fibers.rs"
+      - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -49,6 +52,9 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/build.rs"
+      - "crates/seseragi-cli/tests/filesystem.rs"
+      - "crates/seseragi-cli/tests/fibers.rs"
+      - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -94,8 +100,8 @@ jobs:
         with:
           node-version: "24.14.0"
       - run: bun install --frozen-lockfile
-      - name: Compare file programs, typed failures and finalizers on native, Bun and Node
-        run: cargo test --locked -p seseragi-cli --test filesystem --test fibers
+      - name: Compare file programs, pending I/O, cancellation and finalizers on native, Bun and Node
+        run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
 
   native:
     runs-on: ubuntu-24.04

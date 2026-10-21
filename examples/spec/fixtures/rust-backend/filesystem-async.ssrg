@@ -1,0 +1,75 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+effect fn append text: String -> Unit with FileSystem fails String = do {
+  path <- paths.child "trace.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  fs.writeTextUtf8 fs.Append text path |> effects.mapError show
+}
+
+effect fn ignore _error: String -> Unit with FileSystem = do {
+  let unit = ()
+  effects.succeed unit
+}
+
+effect fn waitFinish path: paths.Path -> Unit with FileSystem fails String = do {
+  _content <- fs.readTextUtf8 path |> effects.mapError show
+  let unit = ()
+  effects.succeed unit
+}
+
+effect fn release finish: paths.Path -> _value: Unit -> Unit with FileSystem = do {
+  append "scope-close\n" |> effects.recover ignore
+  waitFinish finish |> effects.recover ignore
+  append "released\n" |> effects.recover ignore
+}
+
+pub effect fn main -> Unit with FileSystem fails String = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  control <- paths.child "control.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  finish <- paths.child "finish.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  reader <- effects.fork $ effects.scoped $ do {
+    effects.acquireRelease (append "scope-open\n") (release finish)
+    content <- fs.readTextUtf8 input |> effects.mapError show
+    match content {
+      "defect" -> effects.succeed (show (9007199254740991 + 1))
+      _ -> effects.succeed content
+    }
+  }
+  command <- fs.readTextUtf8 control |> effects.mapError show
+  match command {
+    "cancel" -> do {
+      stopper <- effects.fork (effects.interrupt reader)
+      effects.yieldNow ()
+      append "cancel-request\n"
+      effects.join stopper
+      effects.interrupt reader
+      exit <- effects.await reader
+      match exit {
+        effects.FiberCancelled -> append "cancelled\n"
+        _ -> effects.fail "unexpected reader exit"
+      }
+    }
+    "parent-defect" -> do {
+      append "parent-stop\n"
+      append (show (9007199254740991 + 1))
+    }
+    _ -> do {
+      content <- effects.join reader
+      fs.writeTextUtf8 fs.Replace ("processed:\n" + content) output
+        |> effects.mapError show
+      append "joined\n"
+    }
+  }
+}

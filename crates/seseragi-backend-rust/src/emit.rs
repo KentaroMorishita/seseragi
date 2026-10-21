@@ -108,6 +108,7 @@ pub fn emit(
     output.push_str(include_str!("runtime_scheduler.rs"));
     output.push_str(include_str!("runtime_path.rs"));
     output.push_str(include_str!("runtime_filesystem.rs"));
+    output.push_str(include_str!("runtime_host.rs"));
     let mut initialization = String::new();
     for (index, binding) in module.bindings.iter().enumerate() {
         backend.owner = &owners[&binding.symbol];
@@ -253,7 +254,9 @@ pub fn emit(
             schema: 1,
             backend: "rust".into(),
             stability: "experimental".into(),
-            abi: if backend.capabilities.contains("fiber")
+            abi: if backend.capabilities.contains("filesystem-async") {
+                "rust-erased-async-v4"
+            } else if backend.capabilities.contains("fiber")
                 || backend.capabilities.contains("deferred")
             {
                 "rust-erased-cooperative-v3"

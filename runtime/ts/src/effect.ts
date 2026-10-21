@@ -48,6 +48,7 @@ type ResourceFinalizerEntry = {
 
 class ResourceScope {
   private readonly finalizers: ResourceFinalizerEntry[] = []
+  private readonly acquisitions = new Set<Promise<void>>()
   private state: "open" | "closing" | "closed" = "open"
   private closing: Promise<void> | undefined
 
@@ -75,9 +76,33 @@ class ResourceScope {
     return this.closing
   }
 
+  async acquire<Resource>(
+    action: () => Resource | Promise<Resource>
+  ): Promise<Resource> {
+    let completed = (): void => undefined
+    const pending = new Promise<void>((resolve) => {
+      completed = resolve
+    })
+    // Register before calling the host: it may request cancellation
+    // synchronously, or finish after this scope starts closing.
+    this.acquisitions.add(pending)
+    try {
+      return await action()
+    } finally {
+      this.acquisitions.delete(pending)
+      completed()
+    }
+  }
+
   private async drain(): Promise<void> {
     const defects: unknown[] = []
-    while (this.finalizers.length > 0) {
+    while (this.finalizers.length > 0 || this.acquisitions.size > 0) {
+      // A late acquisition must install its finalizer before this scope
+      // releases older resources or announces completion.
+      if (this.acquisitions.size > 0) {
+        await Promise.all([...this.acquisitions])
+        continue
+      }
       const entry = this.finalizers.pop()
       if (entry === undefined || !entry.active) continue
       entry.active = false
@@ -135,6 +160,15 @@ export function registerResourceFinalizer(
   finalizer: EffectResourceFinalizer
 ): EffectResourceRegistration {
   return resourceScopeOf(context).register(finalizer)
+}
+
+/** Supervises host acquisition through its atomic resource handoff. */
+export function withResourceAcquisition<Resource>(
+  context: EffectContext,
+  action: () => Resource | Promise<Resource>
+): Promise<Resource> {
+  throwIfCancelled(context)
+  return resourceScopeOf(context).acquire(action)
 }
 
 /** Attaches the shared lifecycle context to a host-owned environment record. */
@@ -592,15 +626,17 @@ export function acquireRelease<Environment, Failure, Resource>(
     // Acquisition and registration deliberately do not use
     // awaitWithCancellation. Once acquisition starts, cancellation is observed
     // only after a successful value has an owning finalizer.
-    const resource = await acquire(environment, activeContext)
-    const scope = resourceScopeOf(activeContext)
-    const finalizerContext = maskedContext(scope)
-    const registration = scope.register(() =>
-      release(resource)(environment, finalizerContext)
-    )
-    await registration.ready
-    throwIfCancelled(activeContext)
-    return resource
+    return withResourceAcquisition(activeContext, async () => {
+      const resource = await acquire(environment, activeContext)
+      const scope = resourceScopeOf(activeContext)
+      const finalizerContext = maskedContext(scope)
+      const registration = scope.register(() =>
+        release(resource)(environment, finalizerContext)
+      )
+      await registration.ready
+      throwIfCancelled(activeContext)
+      return resource
+    })
   }
 }
 
@@ -620,8 +656,11 @@ export function scoped<Environment, Failure, Success>(
         innerContext
       )
     } finally {
-      registration.unregister()
+      // A parent cancellation must observe this same lexical close, including
+      // its failure. Unregister only after success; otherwise an early abort
+      // can consume the source rejection before the parent drains cleanup.
       await innerScope.close()
+      registration.unregister()
     }
   }
 }

@@ -20,6 +20,7 @@ enum Instruction {
     MapError,
     Release,
     Concurrent(ConcurrentOperation),
+    FileSystem(NativeFileOperation),
 }
 struct EffectPlan {
     instruction: Instruction,
@@ -46,13 +47,15 @@ impl V {
     }
 }
 
-fn native_panic(error: Box<dyn Any + Send>) -> NativeExit {
-    let message = error
+fn native_panic_message(error: Box<dyn Any + Send>) -> String {
+    error
         .downcast_ref::<String>()
         .cloned()
         .or_else(|| error.downcast_ref::<&str>().map(|s| (*s).to_owned()))
-        .unwrap_or_else(|| "native host panic".into());
-    NativeExit::Defect(vec![message])
+        .unwrap_or_else(|| "native host panic".into())
+}
+fn native_panic(error: Box<dyn Any + Send>) -> NativeExit {
+    NativeExit::Defect(vec![native_panic_message(error)])
 }
 fn catch_native(action: impl FnOnce() -> NativeOutcome) -> NativeOutcome {
     std::panic::catch_unwind(std::panic::AssertUnwindSafe(action))
@@ -170,6 +173,7 @@ struct NativeMachine {
 enum NativeTurn {
     Runnable,
     Operation(ConcurrentOperation, Vec<V>),
+    FileSystem(NativeFileOperation, Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -215,6 +219,13 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::Operation(operation, c);
+                            }
+                        }
+                        Instruction::FileSystem(operation) => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::FileSystem(operation, c);
                             }
                         }
                         Instruction::Bind => {

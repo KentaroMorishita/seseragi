@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.75] - 2026-10-22
+
+### Added
+
+- Execute native readTextUtf8 and writeTextUtf8 Effects on supervised file workers while other Fibers continue. Keep runtime values on the runtime thread, close owned files and join each worker before resuming the Effect. Cancellation waits for an in-flight OS call to return and checks between chunks; forced OS abort and external shutdown handling remain unsupported.
+
+### Fixed
+
+- Wait for masked lexical finalizers, late filesystem acquisition and pending handle operations before publishing TypeScript Fiber cancellation. Preserve cleanup defects and close owned handles after unavailable host operations drain.
+
 ## [0.61.74] - 2026-10-21
 
 ### Added
