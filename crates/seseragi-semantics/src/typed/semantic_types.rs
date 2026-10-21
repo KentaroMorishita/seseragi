@@ -23,8 +23,11 @@ pub(super) fn closed_alias_is_intrinsic_unit(resolved: &ResolvedModule, owner: S
     }
 }
 
+#[cfg(test)]
+pub(crate) use substitution::instantiate_callable_indexed;
 pub(crate) use substitution::{
-    instantiate_callable, instantiate_callable_indexed, substitute_remaining_scheme_parameters,
+    instantiate_callable, instantiate_callable_indexed_with_display_types,
+    substitute_remaining_scheme_parameters,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]

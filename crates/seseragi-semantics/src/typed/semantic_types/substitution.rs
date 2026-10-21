@@ -1,6 +1,6 @@
 use super::{SemanticTypeKey, SemanticValueType};
 use crate::{SymbolId, TypedType};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 enum TypeParameterKey {
@@ -371,21 +371,52 @@ pub(crate) fn instantiate_callable_indexed(
     arguments: &[(usize, SemanticValueType)],
     result_template: &SemanticValueType,
 ) -> InstantiatedSemanticCallable {
-    let mut substitutions = BTreeMap::new();
+    instantiate_callable_indexed_with_display_types(
+        parameter_templates,
+        expected_result,
+        arguments,
+        result_template,
+        None,
+        arguments.len(),
+    )
+}
+
+pub(crate) fn instantiate_callable_indexed_with_display_types(
+    parameter_templates: &[SemanticValueType],
+    expected_result: Option<&SemanticValueType>,
+    arguments: &[(usize, SemanticValueType)],
+    result_template: &SemanticValueType,
+    display_types: Option<&BTreeMap<String, TypedType>>,
+    source_argument_count: usize,
+) -> InstantiatedSemanticCallable {
+    assert!(source_argument_count <= arguments.len());
+    let mut collected = CallableSubstitutions {
+        values: BTreeMap::new(),
+        source_bindings: BTreeSet::new(),
+        source_argument: false,
+        display_types,
+    };
     if let Some(expected_result) = expected_result {
-        collect_substitutions(result_template, expected_result, &mut substitutions);
+        collect_substitutions(result_template, expected_result, &mut collected);
     }
-    for (index, argument) in arguments {
+    for (position, (index, argument)) in arguments.iter().enumerate() {
+        collected.source_argument = position < source_argument_count;
         if let Some(template) = parameter_templates.get(*index) {
-            collect_substitutions(template, argument, &mut substitutions);
+            collect_substitutions(template, argument, &mut collected);
         }
     }
+    let substitutions = collected.values;
     let mut parameter_bindings = Vec::new();
     for template in parameter_templates
         .iter()
         .chain(std::iter::once(result_template))
     {
-        collect_parameter_bindings(template, &substitutions, &mut parameter_bindings);
+        collect_parameter_bindings(
+            template,
+            &substitutions,
+            &collected.source_bindings,
+            &mut parameter_bindings,
+        );
     }
     InstantiatedSemanticCallable {
         parameters: parameter_templates
@@ -397,12 +428,61 @@ pub(crate) fn instantiate_callable_indexed(
     }
 }
 
+struct CallableSubstitutions<'a> {
+    values: BTreeMap<TypeParameterKey, SemanticValueType>,
+    source_bindings: BTreeSet<TypeParameterKey>,
+    source_argument: bool,
+    display_types: Option<&'a BTreeMap<String, TypedType>>,
+}
+
+impl CallableSubstitutions<'_> {
+    fn bind(
+        &mut self,
+        parameter: TypeParameterKey,
+        template: &SemanticValueType,
+        actual: &SemanticValueType,
+    ) {
+        let selected = match &template.type_ref {
+            TypedType::Named { name, arguments } if arguments.is_empty() => {
+                self.display_types.and_then(|types| types.get(name))
+            }
+            _ => None,
+        };
+        match self.values.entry(parameter.clone()) {
+            std::collections::btree_map::Entry::Vacant(entry) => {
+                if self.source_argument {
+                    self.source_bindings.insert(parameter);
+                }
+                entry.insert(actual.clone());
+            }
+            std::collections::btree_map::Entry::Occupied(mut entry)
+                if selected.is_some_and(|selected| {
+                    actual.type_ref == *selected && entry.get().type_ref != *selected
+                }) =>
+            {
+                // Keep the checked candidate that display inference selected.
+                // The display type is only a selection hint, never owner or
+                // binder evidence. When two candidates share a display type,
+                // preserve the contextual identity and check the argument.
+                if self.source_argument {
+                    self.source_bindings.insert(parameter);
+                } else {
+                    self.source_bindings.remove(&parameter);
+                }
+                entry.insert(actual.clone());
+            }
+            _ => {}
+        }
+    }
+}
+
 /// Retain the source variable alongside each identity-checked substitution.
 /// Reconstructing this information from an instantiated display type would
 /// mistake unchanged variables for inferred ones, or confuse scoped binders.
 fn collect_parameter_bindings(
     template: &SemanticValueType,
     substitutions: &BTreeMap<TypeParameterKey, SemanticValueType>,
+    source_bindings: &BTreeSet<TypeParameterKey>,
     bindings: &mut Vec<(TypedType, SemanticValueType)>,
 ) {
     let parameter = match &template.key {
@@ -414,11 +494,13 @@ fn collect_parameter_bindings(
     };
     if let Some(parameter) = parameter {
         if let Some(inferred) = substitutions.get(&parameter) {
-            // An expected collection can still carry an uninstantiated
-            // imported scheme behind a masked display hole. It does not make
-            // a call parameter resolved. Lexical TypeParameter IDs, however,
-            // remain valid evidence when forwarding a generic caller's value.
-            if inferred != template && !contains_scheme_parameter(&inferred.key) {
+            // Uninstantiated contextual schemes cannot resolve a call. A
+            // distinct caller let scheme selected from a checked source
+            // argument can: retain its slot instead of recognizing its name.
+            if inferred != template
+                && (!contains_scheme_parameter(&inferred.key)
+                    || source_bindings.contains(&parameter))
+            {
                 bindings.push((template.type_ref.clone(), inferred.clone()));
             }
         }
@@ -426,16 +508,16 @@ fn collect_parameter_bindings(
     }
     match &template.key {
         SemanticTypeKey::Function { parameter, result } => {
-            collect_parameter_bindings(parameter, substitutions, bindings);
-            collect_parameter_bindings(result, substitutions, bindings);
+            collect_parameter_bindings(parameter, substitutions, source_bindings, bindings);
+            collect_parameter_bindings(result, substitutions, source_bindings, bindings);
         }
         SemanticTypeKey::Application {
             constructor,
             arguments,
         } => {
-            collect_parameter_bindings(constructor, substitutions, bindings);
+            collect_parameter_bindings(constructor, substitutions, source_bindings, bindings);
             for argument in arguments {
-                collect_parameter_bindings(argument, substitutions, bindings);
+                collect_parameter_bindings(argument, substitutions, source_bindings, bindings);
             }
         }
         SemanticTypeKey::Adt { arguments, .. }
@@ -443,12 +525,12 @@ fn collect_parameter_bindings(
         | SemanticTypeKey::ExternalNominal { arguments, .. }
         | SemanticTypeKey::NamedGeneric { arguments, .. } => {
             for argument in arguments {
-                collect_parameter_bindings(argument, substitutions, bindings);
+                collect_parameter_bindings(argument, substitutions, source_bindings, bindings);
             }
         }
         SemanticTypeKey::Record(fields) => {
             for field in fields.values() {
-                collect_parameter_bindings(field, substitutions, bindings);
+                collect_parameter_bindings(field, substitutions, source_bindings, bindings);
             }
         }
         SemanticTypeKey::Tuple(keys) => {
@@ -460,6 +542,7 @@ fn collect_parameter_bindings(
                             key: key.clone(),
                         },
                         substitutions,
+                        source_bindings,
                         bindings,
                     );
                 }
@@ -501,7 +584,7 @@ fn contains_scheme_parameter(key: &SemanticTypeKey) -> bool {
 fn collect_substitutions(
     template: &SemanticValueType,
     actual: &SemanticValueType,
-    substitutions: &mut BTreeMap<TypeParameterKey, SemanticValueType>,
+    substitutions: &mut CallableSubstitutions<'_>,
 ) {
     match (&template.key, &actual.key) {
         (SemanticTypeKey::Function { parameter, result }, _) => {
@@ -610,14 +693,14 @@ fn collect_substitutions(
             }
         }
         (SemanticTypeKey::TypeParameter(parameter), _) => {
-            substitutions
-                .entry(TypeParameterKey::Resolved(*parameter))
-                .or_insert_with(|| actual.clone());
+            substitutions.bind(TypeParameterKey::Resolved(*parameter), template, actual);
         }
         (SemanticTypeKey::SchemeParameter(parameter), _) => {
-            substitutions
-                .entry(TypeParameterKey::Scheme(parameter.clone()))
-                .or_insert_with(|| actual.clone());
+            substitutions.bind(
+                TypeParameterKey::Scheme(parameter.clone()),
+                template,
+                actual,
+            );
         }
         (
             SemanticTypeKey::Adt {
@@ -822,9 +905,38 @@ fn fill_semantic_constructor_holes(
 
 #[cfg(test)]
 mod tests {
-    use super::instantiate_callable;
+    use super::{instantiate_callable, instantiate_callable_indexed_with_display_types};
     use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
     use crate::{SymbolId, TypedType};
+    use std::collections::BTreeMap;
+
+    #[test]
+    fn projects_checked_caller_schemes_without_resolving_contextual_schemes() {
+        let slot = |name: &str| SemanticValueType {
+            type_ref: TypedType::Named {
+                name: name.to_owned(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::SchemeParameter(name.to_owned()),
+        };
+        let template = slot("A");
+        let caller = slot("Caller");
+        let source = instantiate_callable(&[template.clone()], None, &[caller.clone()], &template);
+        assert_eq!(source.result, caller);
+        assert!(!source.parameter_bindings.is_empty());
+
+        let contextual = instantiate_callable(&[template.clone()], Some(&caller), &[], &template);
+        assert!(contextual.parameter_bindings.is_empty());
+        let remaining = instantiate_callable_indexed_with_display_types(
+            &[template.clone()],
+            None,
+            &[(0, caller)],
+            &template,
+            None,
+            0,
+        );
+        assert!(remaining.parameter_bindings.is_empty());
+    }
 
     #[test]
     fn imported_nominal_substitution_preserves_function_slots_only_for_checked_owners() {
@@ -879,6 +991,68 @@ mod tests {
                 &template,
             );
             assert_eq!(contextual.result, nominal(callback.clone(), local_template));
+
+            let incompatible_context = nominal(
+                SemanticValueType {
+                    type_ref: TypedType::Named {
+                        name: "Bool".to_owned(),
+                        arguments: vec![],
+                    },
+                    key: SemanticTypeKey::Other,
+                },
+                !local_template,
+            );
+            let contextual_without_selection = instantiate_callable(
+                &[template.clone()],
+                Some(&incompatible_context),
+                &[argument.clone()],
+                &template,
+            );
+            assert_eq!(
+                contextual_without_selection.result,
+                nominal(
+                    SemanticValueType {
+                        type_ref: TypedType::Named {
+                            name: "Bool".to_owned(),
+                            arguments: vec![]
+                        },
+                        key: SemanticTypeKey::Other
+                    },
+                    local_template,
+                )
+            );
+            let selected = BTreeMap::from([("A".to_owned(), callback.type_ref.clone())]);
+            let source_selected = instantiate_callable_indexed_with_display_types(
+                &[template.clone()],
+                Some(&incompatible_context),
+                &[(0, argument.clone())],
+                &template,
+                Some(&selected),
+                1,
+            );
+            assert_eq!(
+                source_selected.result,
+                nominal(callback.clone(), local_template)
+            );
+
+            let mut other_binder = callback.clone();
+            if let SemanticTypeKey::Function { parameter, result } = &mut other_binder.key {
+                parameter.key = SemanticTypeKey::TypeParameter(SymbolId(43));
+                result.key = SemanticTypeKey::TypeParameter(SymbolId(43));
+            }
+            let distinct_context = nominal(other_binder.clone(), !local_template);
+            let ambiguous_display = instantiate_callable_indexed_with_display_types(
+                &[template.clone()],
+                Some(&distinct_context),
+                &[(0, argument.clone())],
+                &template,
+                Some(&selected),
+                1,
+            );
+            assert_eq!(
+                ambiguous_display.result,
+                nominal(other_binder, local_template)
+            );
 
             let mut wrong_owner = argument.clone();
             if let TypedType::ExternalNamed { canonical, .. } = &mut wrong_owner.type_ref {

@@ -4,8 +4,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
 use crate::typed::semantic_types::{
-    instantiate_callable_indexed, substitute_remaining_scheme_parameters, SemanticTypeKey,
-    SemanticValueType,
+    instantiate_callable_indexed_with_display_types, substitute_remaining_scheme_parameters,
+    SemanticTypeKey, SemanticValueType,
 };
 use crate::typed::type_ref::typed_type_contains_hole;
 
@@ -96,7 +96,7 @@ pub(crate) fn instantiated_application_indexed(
         semantic_arguments.push((index, parameter));
         expected_remaining = Some(result);
     }
-    let semantic = instantiate_callable_indexed(
+    let semantic = instantiate_callable_indexed_with_display_types(
         &semantic_parameters,
         expected_result.as_ref(),
         &semantic_arguments,
@@ -104,6 +104,8 @@ pub(crate) fn instantiated_application_indexed(
             type_ref: signature.result.clone(),
             key: signature.semantic_result.clone(),
         },
+        Some(&substitutions),
+        arguments.len(),
     );
     // The semantic pass can infer through a renamed imported nominal even
     // when the ordinary display types differ (Foreign<A> versus Box<Int>).
@@ -728,6 +730,7 @@ pub(crate) fn substitute_type_parameters(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::typed::semantic_types::instantiate_callable_indexed;
 
     fn named(name: &str, arguments: Vec<TypedType>) -> TypedType {
         TypedType::Named {
