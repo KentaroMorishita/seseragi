@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.73] - 2026-10-21
+
+### Added
+
+- Execute UTF-8 file transformations with the experimental native target: portable Path operations, cold readTextUtf8 / writeTextUtf8 Effects, Replace / CreateNew / Append, typed filesystem and UTF-8 failures, and fromEither. Close owned file handles after success or failure and preserve primary I/O errors. Source files and linked path packages use the same checked contracts; explicit JavaScript filesystem provider selections are rejected before output. Async I/O, cancellation and the remaining filesystem API are still unsupported.
+
+### Fixed
+
+- Load selected provider exports in bundled process releases through compiler-generated data properties, preserving the provider loader's validation and accessor rejection.
+
 ## [0.61.72] - 2026-10-21
 
 ### Fixed

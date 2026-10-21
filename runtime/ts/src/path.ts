@@ -1,3 +1,4 @@
+import type { Unit } from "./effect"
 import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 const pathBrand: unique symbol = Symbol("seseragi.path")
@@ -94,7 +95,7 @@ export function render(value: Path): string {
   return text
 }
 
-export function current(): Path {
+export function current(_unit?: Unit): Path {
   return pathValue(".")
 }
 

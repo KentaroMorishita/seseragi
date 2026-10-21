@@ -1,0 +1,14 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+pub effect fn transform -> Unit with FileSystem fails String = do {
+  input <- paths.child "input.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  output <- paths.child "output.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  content <- fs.readTextUtf8 input |> effects.mapError show
+  fs.writeTextUtf8 fs.Replace ("processed:\n" + content) output |> effects.mapError show
+}

@@ -1,0 +1,11 @@
+.
+b.txt|False|a/..|Just b.txt|Just txt
+../../a|False|../..|Just a|Nothing
+/a|True|/../..|Just a|Nothing
+C:/|True|C:/a|Just ..|Nothing
+//server/share/|True|//server/share/a|Just ..|Nothing
+A💡|False|.|Just A💡|Nothing
+EmptyPath
+InvalidDriveRoot
+InvalidUncRoot
+.

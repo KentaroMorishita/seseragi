@@ -134,6 +134,7 @@ pub(super) fn valid_display_dispatch(
             | "std/maybe::Show"
             | "std/maybe::Debug"
     ) && primitive_display(selected).is_none()
+        && filesystem::display_contract(dictionary).is_none()
     {
         return true;
     }
