@@ -4,8 +4,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
 use crate::typed::semantic_types::{
-    instantiate_callable_indexed, substitute_remaining_scheme_parameters, SemanticTypeKey,
-    SemanticValueType,
+    instantiate_callable_indexed_with_display_types, substitute_remaining_scheme_parameters,
+    SemanticTypeKey, SemanticValueType,
 };
 use crate::typed::type_ref::typed_type_contains_hole;
 
@@ -83,14 +83,29 @@ pub(crate) fn instantiated_application_indexed(
                 .saturating_sub(application_argument_count),
         )
     });
-    let semantic = instantiate_callable_indexed(
+    // Expected source parameters also carry checked binder/owner identities.
+    // Inferring from their display types alone can turn a caller's Unit binder
+    // into the anonymous Prelude Unit when a callable value is hydrated.
+    let mut semantic_arguments = arguments.to_vec();
+    let mut expected_remaining = expected_application.cloned();
+    for index in application_argument_count..signature.parameters.len() {
+        let Some((parameter, result)) = expected_remaining.and_then(|value| value.function_parts())
+        else {
+            break;
+        };
+        semantic_arguments.push((index, parameter));
+        expected_remaining = Some(result);
+    }
+    let semantic = instantiate_callable_indexed_with_display_types(
         &semantic_parameters,
         expected_result.as_ref(),
-        arguments,
+        &semantic_arguments,
         &SemanticValueType {
             type_ref: signature.result.clone(),
             key: signature.semantic_result.clone(),
         },
+        Some(&substitutions),
+        arguments.len(),
     );
     // The semantic pass can infer through a renamed imported nominal even
     // when the ordinary display types differ (Foreign<A> versus Box<Int>).
@@ -322,21 +337,11 @@ fn expected_final_result(
     expected_application: &SemanticValueType,
     remaining_parameters: usize,
 ) -> Option<SemanticValueType> {
-    let mut type_ref = &expected_application.type_ref;
+    let mut value = expected_application.clone();
     for _ in 0..remaining_parameters {
-        let TypedType::Function { result, .. } = type_ref else {
-            return None;
-        };
-        type_ref = result;
+        value = value.function_parts()?.1;
     }
-    Some(SemanticValueType {
-        type_ref: type_ref.clone(),
-        key: if remaining_parameters == 0 {
-            expected_application.key.clone()
-        } else {
-            crate::typed::semantic_types::SemanticTypeKey::Other
-        },
-    })
+    Some(value)
 }
 
 pub(crate) fn instantiated_application_result_type(
@@ -725,6 +730,7 @@ pub(crate) fn substitute_type_parameters(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::typed::semantic_types::instantiate_callable_indexed;
 
     fn named(name: &str, arguments: Vec<TypedType>) -> TypedType {
         TypedType::Named {

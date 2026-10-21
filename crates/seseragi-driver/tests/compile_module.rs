@@ -26,6 +26,108 @@ fn input<'source>(
 }
 
 #[test]
+fn preserves_generic_unit_aliases_and_anonymous_unit_callbacks_through_lowering() {
+    for source in [
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-values.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-callbacks.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-effects.ssrg"
+        ),
+    ] {
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let compiled = compile_module(
+                input(
+                    "unit-binder-functions.ssrg",
+                    "fixture/unit-binder-functions",
+                    source,
+                )
+                .with_profile(profile),
+            )
+            .expect(
+                "checked generic and anonymous Unit identities must survive every shared stage",
+            );
+            assert!(compiled.diagnostics.diagnostics.is_empty());
+        }
+    }
+}
+
+#[test]
+fn recursive_effect_callback_arrays_keep_their_inferred_contract() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/array-index-effects.ssrg");
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        compile_module(
+            input(
+                "array-index-effects.ssrg",
+                "fixture/array-index-effects",
+                source,
+            )
+            .with_profile(profile),
+        )
+        .expect("the original callback Ref cycle must compile before native or TS emission");
+    }
+}
+
+#[test]
+fn an_invalid_html_action_keeps_argument_inference_and_reports_the_binding() {
+    let source = include_str!("../../../examples/tour/lessons/web-click-action/diagnostic.ssrg");
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let error = compile_module(
+            input("diagnostic.ssrg", "fixture/tour-click", source).with_profile(profile),
+        )
+        .expect_err("a String cannot satisfy the declared Html<Action>");
+        assert_eq!(error.diagnostics.len(), 1);
+        let diagnostic = &error.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-T0101");
+        assert_eq!(diagnostic.message_key, "binding.annotation-type-mismatch");
+        assert_eq!(
+            diagnostic.primary.start as usize,
+            source.find("html.button").unwrap()
+        );
+
+        let valid = source.replace("onClick: \"Increment\"", "onClick: Increment");
+        compile_module(input("valid.ssrg", "fixture/tour-click", &valid).with_profile(profile))
+            .expect("the same button with an Action is valid");
+    }
+}
+
+#[test]
+fn either_result_context_still_rejects_a_wrong_right_payload() {
+    let source = include_str!("../../../examples/tour/lessons/either-map-error/diagnostic.ssrg");
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let error = compile_module(
+            input("diagnostic.ssrg", "fixture/tour-either", source).with_profile(profile),
+        )
+        .expect_err("ErrorInfo cannot be the Right payload declared as Int");
+        assert_eq!(error.diagnostics.len(), 1);
+        assert_eq!(error.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            error.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        let valid = source.replace("Right (ErrorInfo { message: \"wrong\" })", "Right number");
+        compile_module(input("valid.ssrg", "fixture/tour-either", &valid).with_profile(profile))
+            .expect("the declared Int payload remains valid");
+    }
+}
+
+#[test]
 fn compiles_a_valid_module_through_every_owned_stage() {
     let compiled = compile_module(input(
         "artifact/driver-basic/main.ssrg",

@@ -345,6 +345,15 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
+        if let (TypedType::Function { .. }, SemanticTypeKey::Function { .. }) =
+            (&value.type_ref, &value.key)
+        {
+            let (parameter, result) = value.function_parts().expect("matched function type");
+            return SemanticValueType::function(
+                self.hydrate_semantic_value(parameter),
+                self.hydrate_semantic_value(result),
+            );
+        }
         // Other + the intrinsic Unit type is a previously checked primitive,
         // not an unresolved source name. Make that identity explicit before
         // crossing a lexical binder with the same spelling.
@@ -509,6 +518,26 @@ impl<'a> PureExpressionContext<'a> {
             key,
         };
         hydrated
+    }
+
+    pub(super) fn hydrate_callable_parameter(
+        &self,
+        value: SemanticValueType,
+        origin: ByteSpan,
+    ) -> SemanticValueType {
+        // A new quantified let initializer must retain the checked anonymous
+        // source parameter independently of its own same-spelled binder.
+        let canonical_unit = matches!(&value.type_ref,
+            TypedType::ExternalNamed { canonical, arguments, .. }
+                if canonical == "std/prelude::Unit" && arguments.is_empty())
+            && matches!(&value.key,
+                SemanticTypeKey::ExternalNominal { canonical, arguments }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty());
+        if canonical_unit && self.generalized_value_origin == Some(origin) {
+            value
+        } else {
+            self.hydrate_semantic_value(value)
+        }
     }
 
     pub(super) fn semantic_value_from_type_ref(
@@ -718,8 +747,7 @@ impl<'a> PureExpressionContext<'a> {
         let Some(inferred) = self.infer_let(value) else {
             return self.with_expected(None);
         };
-        let mut context =
-            self.with_expected(Some(self.semantic_value_from_typed_type(&inferred.value)));
+        let mut context = self.with_expected(Some(inferred.semantic_value(&inferred.value, self)));
         if !inferred.parameters.is_empty() {
             let mut initializer = value;
             while let SurfaceExpr::Grouped { value, .. } = initializer {

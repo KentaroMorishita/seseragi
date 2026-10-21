@@ -1,0 +1,19 @@
+fn selected<Unit> -> (Unit -> String) where Show<Unit> = {
+  let display: Unit -> String = show;
+  \value -> display value
+}
+
+fn selectStage -> (Unit -> Int -> String) = selected<Int>
+
+fn argumentStage -> Unit = ()
+
+fn valueStage -> Int = 7
+
+pub fn probe -> String = {
+  let chosen = selectStage ();
+  let unit = argumentStage ();
+  let held = chosen unit;
+  held (valueStage ()) + ":" + held 9
+}
+
+pub effect fn main = println (probe ())

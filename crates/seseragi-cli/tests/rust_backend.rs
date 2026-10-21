@@ -33,6 +33,8 @@ fn cli() -> Command {
 fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
     let scratch = Scratch::new();
     for (name, source, code) in [
+        ("generic-unit-callback-owner", "fn invoke<A> callback: (Unit -> A) -> A = callback ()\nfn selected<Unit> value: Unit -> String where Show<Unit> = invoke (\\_: Unit -> show value)\n", "SES-T0101"),
+        ("generic-unit-show-annotation-owner", "alias PreludeUnit = Unit\nfn selected<Unit> value: Unit -> String where Show<Unit> = { let display: Unit -> String = \\_: PreludeUnit -> \"wrong\"; display value }\n", "SES-T0101"),
         ("omitted-unit-nonunit", "fn selected<Unit> -> (Unit -> Bool) = \\value -> False\nfn probe -> Bool = { let next: Int -> Bool = selected<Int> 7; next 1 }\n", "SES-T0101"),
         ("omitted-unit-nominal", "type Unit = | LocalUnit\nfn selected<A> -> (A -> Bool) = \\value -> False\nfn probe -> Bool = { let next: Int -> Bool = selected<Int> LocalUnit; next 1 }\n", "SES-T0101"),
         ("explicit-unit-generic", "fn selected<Unit> value: Unit -> Unit = value\nfn probe -> Int = selected<Int> ()\n", "SES-T0101"),
@@ -264,6 +266,7 @@ fn native_project_links_path_packages_dictionaries_and_ref_callbacks() {
         ("unit-methods", 3),
         ("saved-unit-methods", 3),
         ("implicit-unit-functions", 3),
+        ("unit-binder-functions", 3),
         ("method-wheres", 3),
     ] {
         let project = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -498,6 +501,8 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "method-dictionaries",
         "hkt-callables",
         "binding-scope",
+        "unit-binder-function-values",
+        "unit-binder-function-trace",
     ] {
         let path = Path::new(env!("CARGO_MANIFEST_DIR")).join(format!(
             "../../examples/spec/fixtures/rust-backend/{name}.ssrg"
@@ -1275,6 +1280,42 @@ fn native_effect_cli_preserves_ts_results_scopes_and_typed_payloads() {
             "unit-method-values",
             "fixtures/rust-backend/unit-method-values.ssrg",
             include_str!("../../../examples/spec/fixtures/rust-backend/unit-method-values.stdout"),
+            0,
+        ),
+        (
+            "unit-binder-function-values",
+            "fixtures/rust-backend/unit-binder-function-values.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-values.stdout"),
+            0,
+        ),
+        (
+            "unit-binder-function-trace",
+            "fixtures/rust-backend/unit-binder-function-trace.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-trace.stdout"),
+            0,
+        ),
+        (
+            "unit-binder-function-callbacks",
+            "fixtures/rust-backend/unit-binder-function-callbacks.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-callbacks.stdout"),
+            0,
+        ),
+        (
+            "unit-binder-function-defect",
+            "fixtures/rust-backend/unit-binder-function-defect.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-defect.stdout"),
+            70,
+        ),
+        (
+            "unit-binder-function-cold",
+            "fixtures/rust-backend/unit-binder-function-cold.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-cold.stdout"),
+            0,
+        ),
+        (
+            "unit-binder-function-effects",
+            "fixtures/rust-backend/unit-binder-function-effects.ssrg",
+            include_str!("../../../examples/spec/fixtures/rust-backend/unit-binder-function-effects.stdout"),
             0,
         ),
         (

@@ -233,6 +233,18 @@ impl SemanticTypeCatalog {
                     })
                     .collect(),
             ),
+            TypedType::Function { parameter, result } => SemanticTypeKey::Function {
+                parameter: Box::new(self.value_with_type_parameters(
+                    resolved,
+                    (**parameter).clone(),
+                    parameters,
+                )),
+                result: Box::new(self.value_with_type_parameters(
+                    resolved,
+                    (**result).clone(),
+                    parameters,
+                )),
+            },
             _ => SemanticTypeKey::Other,
         };
         SemanticValueType { type_ref, key }

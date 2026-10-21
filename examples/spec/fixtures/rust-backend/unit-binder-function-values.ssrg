@@ -1,0 +1,14 @@
+fn selected<Unit> -> (Unit -> String) where Show<Unit> = {
+  let display: Unit -> String = show;
+  \value -> display value
+}
+
+pub fn probe -> String = {
+  let unit = ();
+  let saved = selected<Int> unit;
+  let generic = selected;
+  let next = generic<String> ();
+  saved 7 + ":" + saved 9 + ":" + next "held"
+}
+
+pub effect fn main = println (probe ())

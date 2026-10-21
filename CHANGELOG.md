@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.72] - 2026-10-21
+
+### Fixed
+
+- Retain checked parameter and result identities inside function values, including Show aliases and anonymous Unit callbacks in a function whose generic binder is named Unit. Preserve scoped binders, canonical owners and newly quantified let dictionaries through inference and substitution, keeping source application stages and returned functions distinct. Core and runtime ABIs remain unchanged; unproved callable schemes remain tracked in #887.
+
 ## [0.61.71] - 2026-10-21
 
 ### Fixed
