@@ -380,8 +380,21 @@ impl ImportedTypeContext {
                     .collect::<Option<_>>()?,
             )),
             InterfaceType::Hole => Some(SemanticTypeKey::Invalid),
-            InterfaceType::Function { .. }
-            | InterfaceType::TypeConstructor { .. }
+            InterfaceType::Function { parameter, result } => Some(SemanticTypeKey::Function {
+                parameter: Box::new(self.semantic_value(
+                    (**parameter).clone(),
+                    module,
+                    type_parameters,
+                    bindings,
+                )?),
+                result: Box::new(self.semantic_value(
+                    (**result).clone(),
+                    module,
+                    type_parameters,
+                    bindings,
+                )?),
+            }),
+            InterfaceType::TypeConstructor { .. }
             | InterfaceType::Apply { .. }
             | InterfaceType::RequirementMerge { .. } => Some(SemanticTypeKey::Other),
         }

@@ -101,18 +101,7 @@ pub(super) fn type_callable_value(
         });
     refine_collection_parameters(&mut application, signature, context);
     for parameter in &mut application.parameters {
-        // This value can introduce a new quantified let scheme. Localizing
-        // its anonymous source parameter to the caller's primitive spelling
-        // would let the scheme's own Unit binder capture it on reuse.
-        let canonical_unit = matches!(&parameter.type_ref,
-            TypedType::ExternalNamed { canonical, arguments, .. }
-                if canonical == "std/prelude::Unit" && arguments.is_empty())
-            && matches!(&parameter.key,
-                SemanticTypeKey::ExternalNominal { canonical, arguments }
-                    if canonical == "std/prelude::Unit" && arguments.is_empty());
-        if !canonical_unit || context.generalized_value_origin != Some(span) {
-            *parameter = context.hydrate_semantic_value(parameter.clone());
-        }
+        *parameter = context.hydrate_callable_parameter(parameter.clone(), span);
     }
     application.result = context.hydrate_semantic_value(application.result);
 
@@ -923,14 +912,19 @@ pub(crate) fn type_known_application_with_explicit(
     // Infer across the whole source application, including function-valued results.
     // Dictionary application still belongs immediately after the declared parameters.
     while let TypedType::Function { parameter, result } = signature.result.clone() {
-        signature
-            .semantic_parameters
-            .push(context.semantic_value_from_typed_type(&parameter).key);
+        let (parameter_key, result_key) = match &signature.semantic_result {
+            SemanticTypeKey::Function { parameter, result } => {
+                (parameter.key.clone(), result.key.clone())
+            }
+            _ => (
+                context.semantic_value_from_typed_type(&parameter).key,
+                context.semantic_value_from_typed_type(&result).key,
+            ),
+        };
+        signature.semantic_parameters.push(parameter_key);
         signature.parameters.push(*parameter);
         signature.result = *result;
-        signature.semantic_result = context
-            .semantic_value_from_typed_type(&signature.result)
-            .key;
+        signature.semantic_result = result_key;
     }
     let expected_application = context.expected();
     let mut analyses = (0..argument_nodes.len())
@@ -973,7 +967,7 @@ pub(crate) fn type_known_application_with_explicit(
         );
         refine_collection_parameters(&mut partial_application, &signature, context);
         for parameter in &mut partial_application.parameters {
-            *parameter = context.hydrate_semantic_value(parameter.clone());
+            *parameter = context.hydrate_callable_parameter(parameter.clone(), callee_span);
         }
         let expected = partial_application
             .parameters
@@ -1021,7 +1015,7 @@ pub(crate) fn type_known_application_with_explicit(
     );
     refine_collection_parameters(&mut application, &signature, context);
     for parameter in &mut application.parameters {
-        *parameter = context.hydrate_semantic_value(parameter.clone());
+        *parameter = context.hydrate_callable_parameter(parameter.clone(), callee_span);
     }
     application.result = context.hydrate_semantic_value(application.result);
     let child_analyses = analyses

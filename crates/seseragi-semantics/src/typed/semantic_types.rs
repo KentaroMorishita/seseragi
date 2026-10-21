@@ -53,6 +53,10 @@ pub(crate) enum SemanticTypeKey {
     },
     Tuple(Vec<SemanticTypeKey>),
     Record(BTreeMap<String, SemanticValueType>),
+    Function {
+        parameter: Box<SemanticValueType>,
+        result: Box<SemanticValueType>,
+    },
     Other,
     Invalid,
 }
@@ -61,6 +65,43 @@ pub(crate) enum SemanticTypeKey {
 pub(crate) struct SemanticValueType {
     pub(crate) type_ref: TypedType,
     pub(crate) key: SemanticTypeKey,
+}
+
+impl SemanticValueType {
+    pub(crate) fn function_parts(&self) -> Option<(Self, Self)> {
+        let TypedType::Function { parameter, result } = &self.type_ref else {
+            return None;
+        };
+        let (parameter_key, result_key) = match &self.key {
+            SemanticTypeKey::Function { parameter, result } => {
+                (parameter.key.clone(), result.key.clone())
+            }
+            _ => (SemanticTypeKey::Other, SemanticTypeKey::Other),
+        };
+        Some((
+            Self {
+                type_ref: (**parameter).clone(),
+                key: parameter_key,
+            },
+            Self {
+                type_ref: (**result).clone(),
+                key: result_key,
+            },
+        ))
+    }
+
+    pub(crate) fn function(parameter: Self, result: Self) -> Self {
+        Self {
+            type_ref: TypedType::Function {
+                parameter: Box::new(parameter.type_ref.clone()),
+                result: Box::new(result.type_ref.clone()),
+            },
+            key: SemanticTypeKey::Function {
+                parameter: Box::new(parameter),
+                result: Box::new(result),
+            },
+        }
+    }
 }
 
 pub(super) fn is_shadowing_builtin(name: &str, canonical: &str) -> bool {
@@ -163,6 +204,22 @@ pub(crate) fn semantic_values_are_compatible(
     }
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => true,
+        (SemanticTypeKey::TypeParameter(expected), SemanticTypeKey::TypeParameter(actual)) => {
+            expected == actual
+        }
+        (SemanticTypeKey::SchemeParameter(expected), SemanticTypeKey::SchemeParameter(actual)) => {
+            expected == actual
+        }
+        (
+            SemanticTypeKey::Function {
+                parameter: ep,
+                result: er,
+            },
+            SemanticTypeKey::Function {
+                parameter: ap,
+                result: ar,
+            },
+        ) => semantic_values_are_compatible(ep, ap) && semantic_values_are_compatible(er, ar),
         (
             SemanticTypeKey::Adt {
                 owner: expected_owner,
@@ -322,6 +379,22 @@ pub(crate) fn semantic_values_have_same_identity(
 ) -> bool {
     match (&expected.key, &actual.key) {
         (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => false,
+        (
+            SemanticTypeKey::Function {
+                parameter: ep,
+                result: er,
+            },
+            SemanticTypeKey::Function {
+                parameter: ap,
+                result: ar,
+            },
+        ) => {
+            semantic_values_have_same_identity(ep, ap) && semantic_values_have_same_identity(er, ar)
+        }
+        (SemanticTypeKey::Function { .. }, SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::Function { .. }) => {
+            structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
+        }
         (
             SemanticTypeKey::Adt {
                 owner: expected_owner,
@@ -1311,7 +1384,25 @@ fn semantic_key_from_type_ref(
                 })
                 .collect(),
         ),
-        TypeRef::Function { .. } | TypeRef::RequirementMerge { .. } => SemanticTypeKey::Other,
+        TypeRef::Function {
+            parameter, result, ..
+        } => SemanticTypeKey::Function {
+            parameter: Box::new(SemanticValueType {
+                type_ref: aliases.expand(resolved, parameter),
+                key: semantic_key_from_type_ref(
+                    resolved,
+                    owners,
+                    struct_owners,
+                    aliases,
+                    parameter,
+                ),
+            }),
+            result: Box::new(SemanticValueType {
+                type_ref: aliases.expand(resolved, result),
+                key: semantic_key_from_type_ref(resolved, owners, struct_owners, aliases, result),
+            }),
+        },
+        TypeRef::RequirementMerge { .. } => SemanticTypeKey::Other,
     }
 }
 
@@ -1409,6 +1500,58 @@ fn named_generic_key(name: &str, arguments: Vec<SemanticValueType>) -> SemanticT
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn function_arguments_retain_scoped_binders_and_nominal_owners() {
+        let result = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "String".into(),
+                arguments: vec![],
+            },
+            key: SemanticTypeKey::Other,
+        };
+        let binder = |id| {
+            SemanticValueType::function(
+                SemanticValueType {
+                    type_ref: TypedType::Named {
+                        name: "Unit".into(),
+                        arguments: vec![],
+                    },
+                    key: SemanticTypeKey::TypeParameter(SymbolId(id)),
+                },
+                result.clone(),
+            )
+        };
+        let nominal = |canonical: &str| {
+            SemanticValueType::function(
+                SemanticValueType {
+                    type_ref: TypedType::ExternalNamed {
+                        name: "Unit".into(),
+                        canonical: canonical.into(),
+                        arguments: vec![],
+                    },
+                    key: SemanticTypeKey::ExternalNominal {
+                        canonical: canonical.into(),
+                        arguments: vec![],
+                    },
+                },
+                result.clone(),
+            )
+        };
+        for (expected, actual, same) in [
+            (binder(1), binder(1), true),
+            (binder(1), binder(2), false),
+            (binder(1), nominal("std/prelude::Unit"), false),
+            (
+                nominal("std/prelude::Unit"),
+                nominal("fixture/model::Unit"),
+                false,
+            ),
+        ] {
+            assert_eq!(semantic_values_are_compatible(&expected, &actual), same);
+            assert_eq!(semantic_values_have_same_identity(&expected, &actual), same);
+        }
+    }
 
     #[test]
     fn compares_external_nominals_by_canonical_identity_inside_named_generics() {

@@ -1,0 +1,18 @@
+import * as effects from "std/effect"
+
+alias PreludeUnit = Unit
+
+fn selected<Unit> -> (Unit -> Effect<{}, Never, String>) where Show<Unit> = {
+  let display: Unit -> String = show;
+  \value -> effects.defer (\_: PreludeUnit -> {
+      let bad = 9007199254740991 + 1;
+      effects.succeed (display value)
+      }
+  )
+}
+
+pub effect fn main = {
+  let saved = selected<Int> ();
+  let cold = saved 42;
+  println "created"
+}

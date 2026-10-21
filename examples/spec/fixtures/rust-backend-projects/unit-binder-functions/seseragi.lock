@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-unit-binder-functions@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-unit-binder-functions@0.0.0#workspace:."
+name = "fixture/native-unit-binder-functions"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:4e1c7320bad472d695586657a39332a488acd82b872f9ad5d90c253760166095"
+content_digest = "sha256:f2ce0a32db390001ed5de53ea9f27b6a600e203046202437958fbd6e6b7f0320"
+dependencies = [
+  { import = "model", package = "fixture/unit-binder-functions-model@0.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/unit-binder-functions-model@0.0.0#path:vendor/model"
+name = "fixture/unit-binder-functions-model"
+version = "0.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:2836ce306b11564519f876498938465e583a287a0fbead5237dc5a30fc96c831"
+content_digest = "sha256:3c020cae8ca8651919a5b8a745cca6137070d3acb598436e855dab3ac215391d"
+dependencies = []

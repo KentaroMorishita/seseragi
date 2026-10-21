@@ -561,6 +561,7 @@ fn canonical_semantic_value(
         SemanticTypeKey::Invalid
         | SemanticTypeKey::TypeParameter(_)
         | SemanticTypeKey::Application { .. }
+        | SemanticTypeKey::Function { .. }
         | SemanticTypeKey::SchemeParameter(_) => None,
     }
 }

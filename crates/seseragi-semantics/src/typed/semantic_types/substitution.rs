@@ -138,6 +138,12 @@ fn substitute_semantic_type_parameters(
     }
 
     match (&value.type_ref, &value.key) {
+        (TypedType::Function { .. }, SemanticTypeKey::Function { parameter, result }) => {
+            SemanticValueType::function(
+                substitute_semantic_type_parameters(parameter, substitutions),
+                substitute_semantic_type_parameters(result, substitutions),
+            )
+        }
         (TypedType::Named { name, .. }, SemanticTypeKey::Adt { owner, arguments })
         | (TypedType::Named { name, .. }, SemanticTypeKey::Struct { owner, arguments }) => {
             let arguments = arguments
@@ -419,6 +425,10 @@ fn collect_parameter_bindings(
         return;
     }
     match &template.key {
+        SemanticTypeKey::Function { parameter, result } => {
+            collect_parameter_bindings(parameter, substitutions, bindings);
+            collect_parameter_bindings(result, substitutions, bindings);
+        }
         SemanticTypeKey::Application {
             constructor,
             arguments,
@@ -461,6 +471,9 @@ fn collect_parameter_bindings(
 
 fn contains_scheme_parameter(key: &SemanticTypeKey) -> bool {
     match key {
+        SemanticTypeKey::Function { parameter, result } => {
+            contains_scheme_parameter(&parameter.key) || contains_scheme_parameter(&result.key)
+        }
         SemanticTypeKey::SchemeParameter(_) => true,
         SemanticTypeKey::Application {
             constructor,
@@ -491,6 +504,12 @@ fn collect_substitutions(
     substitutions: &mut BTreeMap<TypeParameterKey, SemanticValueType>,
 ) {
     match (template, &actual.key) {
+        (SemanticTypeKey::Function { parameter, result }, _) => {
+            if let Some((actual_parameter, actual_result)) = actual.function_parts() {
+                collect_substitutions(&parameter.key, &actual_parameter, substitutions);
+                collect_substitutions(&result.key, &actual_result, substitutions);
+            }
+        }
         (
             SemanticTypeKey::Application {
                 constructor,

@@ -1,0 +1,11 @@
+fn selected<Unit> -> (Unit -> String) where Show<Unit> = {
+  let display: Unit -> String = show;
+  let bad = 9007199254740991 + 1;
+  \value -> display value
+}
+
+pub effect fn main = {
+  let unit = ();
+  let unused = selected<Int> unit;
+  println "created"
+}

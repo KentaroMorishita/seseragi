@@ -1,0 +1,13 @@
+import * as effects from "std/effect"
+
+alias PreludeUnit = Unit
+
+pub fn selected<Unit> -> (Unit -> String) where Show<Unit> = {
+  let display: Unit -> String = show;
+  \value -> display value
+}
+
+pub fn delayed<Unit> -> (Unit -> Effect<{}, Never, String>) where Show<Unit> = {
+  let display: Unit -> String = show;
+  \value -> effects.defer (\_: PreludeUnit -> effects.succeed (display value))
+}

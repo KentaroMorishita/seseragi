@@ -29,12 +29,10 @@ pub(crate) fn type_lambda_with(
     type_body: impl FnOnce(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let expected_parts = context.expected().and_then(|expected| {
-        let TypedType::Function { parameter, result } = &expected.type_ref else {
-            return None;
-        };
+        let (parameter, result) = expected.function_parts()?;
         Some((
-            context.semantic_value_from_typed_type(parameter),
-            context.semantic_value_from_typed_type(result),
+            context.hydrate_semantic_value(parameter),
+            context.hydrate_semantic_value(result),
         ))
     });
     let annotated = parameter
@@ -110,10 +108,7 @@ pub(crate) fn type_lambda_with(
         }
     }
 
-    let type_ref = TypedType::Function {
-        parameter: Box::new(parameter_type.type_ref.clone()),
-        result: Box::new(actual_result.type_ref),
-    };
+    let function = SemanticValueType::function(parameter_type.clone(), actual_result);
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Lambda {
             parameter: TypedParameter::Named {
@@ -122,13 +117,13 @@ pub(crate) fn type_lambda_with(
                 origin: parameter.name_span,
             },
             body: Box::new(body_analysis.value.clone()),
-            type_ref,
+            type_ref: function.type_ref,
             origin: span,
         },
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::Other
+            function.key
         },
     );
     result.pure_call_issue = issue;

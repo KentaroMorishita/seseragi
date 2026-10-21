@@ -65,7 +65,7 @@ impl InferredLambda {
         }
     }
 
-    fn semantic_value(
+    pub(super) fn semantic_value(
         &self,
         type_ref: &TypedType,
         context: &PureExpressionContext<'_>,
@@ -98,6 +98,10 @@ impl InferredLambda {
                     })
                     .collect(),
             ),
+            TypedType::Function { parameter, result } => SemanticTypeKey::Function {
+                parameter: Box::new(self.semantic_value(parameter, context)),
+                result: Box::new(self.semantic_value(result, context)),
+            },
             TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
                 let arguments = arguments
                     .iter()

@@ -26,6 +26,39 @@ fn input<'source>(
 }
 
 #[test]
+fn preserves_generic_unit_aliases_and_anonymous_unit_callbacks_through_lowering() {
+    for source in [
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-values.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-callbacks.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/rust-backend/unit-binder-function-effects.ssrg"
+        ),
+    ] {
+        for profile in [
+            seseragi_driver::BuildProfile::Development,
+            seseragi_driver::BuildProfile::Release,
+        ] {
+            let compiled = compile_module(
+                input(
+                    "unit-binder-functions.ssrg",
+                    "fixture/unit-binder-functions",
+                    source,
+                )
+                .with_profile(profile),
+            )
+            .expect(
+                "checked generic and anonymous Unit identities must survive every shared stage",
+            );
+            assert!(compiled.diagnostics.diagnostics.is_empty());
+        }
+    }
+}
+
+#[test]
 fn compiles_a_valid_module_through_every_owned_stage() {
     let compiled = compile_module(input(
         "artifact/driver-basic/main.ssrg",

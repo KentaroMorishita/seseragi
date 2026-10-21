@@ -1,6 +1,57 @@
 use seseragi_semantics::{semantic_diagnostics, type_module, TypedDecl, TypedParameter, TypedType};
 
 #[test]
+fn an_own_unit_binder_keeps_the_show_alias_argument_generic() {
+    for binder in ["Unit", "A"] {
+        let source = format!(
+            "fn selected<{binder}> -> ({binder} -> String) where Show<{binder}> = {{ \
+             let display: {binder} -> String = show; \
+             \\value -> display value }}\n\
+             pub effect fn main = {{ let saved = selected<Int> (); println (saved 7) }}"
+        );
+        let diagnostics = semantic_diagnostics("own-unit-show-alias.ssrg", &source);
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{source}\n{diagnostics:#?}"
+        );
+    }
+}
+
+#[test]
+fn an_own_unit_binder_keeps_a_closed_unit_callback_alias_canonical() {
+    for binder in ["Unit", "A"] {
+        let source = format!(
+            "alias PreludeUnit = Unit\n\
+             fn invoke<A> callback: (Unit -> A) -> A = callback ()\n\
+             fn selected<{binder}> -> ({binder} -> String) where Show<{binder}> = \
+             \\value -> invoke (\\_: PreludeUnit -> show value)\n\
+             pub effect fn main = {{ let saved = selected<Int> (); println (saved 7) }}"
+        );
+        let diagnostics = semantic_diagnostics("own-unit-callback-alias.ssrg", &source);
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{source}\n{diagnostics:#?}"
+        );
+    }
+}
+
+#[test]
+fn generic_and_anonymous_unit_function_arguments_do_not_coerce_each_other() {
+    for source in [
+        "alias PreludeUnit = Unit\nfn selected<Unit> value: Unit -> String where Show<Unit> = { let display: Unit -> String = \\_: PreludeUnit -> \"wrong\"; display value }\n",
+        "fn invoke<A> callback: (Unit -> A) -> A = callback ()\nfn selected<Unit> value: Unit -> String where Show<Unit> = invoke (\\_: Unit -> show value)\n",
+    ] {
+        let diagnostics = semantic_diagnostics("unit-function-identity-mismatch.ssrg", source);
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{source}\n{diagnostics:#?}");
+        assert!([
+            "lambda.parameter-type-mismatch",
+            "call.argument-type-mismatch",
+        ].contains(&diagnostics.diagnostics[0].message_key.as_str()), "{source}\n{diagnostics:#?}");
+        assert!(diagnostics.diagnostics[0].primary.start > 0);
+    }
+}
+
+#[test]
 fn an_omitted_function_parameter_is_not_its_own_generic_unit_binder() {
     for binder in ["Unit", "A"] {
         for application in [
