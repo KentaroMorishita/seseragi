@@ -1050,6 +1050,19 @@
         "start": 749,
         "end": 867
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "mode",
@@ -1177,6 +1190,19 @@
         "source": "main.ssrg",
         "start": 869,
         "end": 1029
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1306,6 +1332,19 @@
         "start": 1031,
         "end": 1283
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "mode",
@@ -1433,6 +1472,19 @@
         "source": "main.ssrg",
         "start": 1285,
         "end": 1410
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1562,6 +1614,19 @@
         "start": 1412,
         "end": 1527
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "mode",
@@ -1689,6 +1754,20 @@
         "source": "main.ssrg",
         "start": 1529,
         "end": 1731
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1973,6 +2052,20 @@
         "source": "main.ssrg",
         "start": 1733,
         "end": 1973
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -2304,6 +2397,20 @@
         "source": "main.ssrg",
         "start": 1975,
         "end": 2287
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Action",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -2767,6 +2874,42 @@
         "start": 2289,
         "end": 2569
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            "result": {
+              "kind": "external-named",
+              "name": "html.Html",
+              "canonical": "std/web/html::Html",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "id": "id",
@@ -3034,6 +3177,26 @@
         "source": "main.ssrg",
         "start": 2571,
         "end": 3951
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -4700,6 +4863,27 @@
         "source": "main.ssrg",
         "start": 3953,
         "end": 4093
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Action",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {

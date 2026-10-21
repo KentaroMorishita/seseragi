@@ -261,6 +261,33 @@
         "start": 116,
         "end": 273
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bytes.ByteError",
+              "canonical": "std/bytes::ByteError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -475,6 +502,28 @@
         "source": "main.ssrg",
         "start": 275,
         "end": 467
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {
@@ -809,6 +858,28 @@
         "start": 469,
         "end": 667
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "original",
@@ -1141,6 +1212,28 @@
         "source": "main.ssrg",
         "start": 669,
         "end": 873
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "bytes.Bytes",
+          "canonical": "std/bytes::Bytes",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {
@@ -1475,6 +1568,32 @@
         "start": 875,
         "end": 1040
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "hex.HexDecodeError",
+              "canonical": "std/bytes/hex::HexDecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -1712,6 +1831,32 @@
         "start": 1042,
         "end": 1216
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "base64.Base64DecodeError",
+              "canonical": "std/bytes/base64::Base64DecodeError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "bytes.Bytes",
+              "canonical": "std/bytes::Bytes",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -1948,6 +2093,26 @@
         "source": "main.ssrg",
         "start": 1218,
         "end": 2228
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

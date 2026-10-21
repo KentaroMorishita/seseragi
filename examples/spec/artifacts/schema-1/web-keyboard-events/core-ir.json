@@ -239,6 +239,27 @@
         "start": 114,
         "end": 262
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.KeyboardEvent",
+          "canonical": "std/web/html::KeyboardEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -384,6 +405,67 @@
         "start": 264,
         "end": 379
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "html.KeyboardEvent",
+            "canonical": "std/web/html::KeyboardEvent",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.EventAction",
+            "canonical": "std/web/html::EventAction",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "action",
@@ -499,6 +581,27 @@
         "start": 381,
         "end": 468
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.KeyboardEvent",
+          "canonical": "std/web/html::KeyboardEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -540,6 +643,27 @@
         "source": "main.ssrg",
         "start": 470,
         "end": 676
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -863,6 +987,58 @@
         "source": "main.ssrg",
         "start": 678,
         "end": 841
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
       },
       "parameters": [
         {

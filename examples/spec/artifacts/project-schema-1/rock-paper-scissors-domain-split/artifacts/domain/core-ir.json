@@ -95,6 +95,19 @@
         "start": 110,
         "end": 150
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -131,6 +144,27 @@
         "source": "domain.ssrg",
         "start": 152,
         "end": 448
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Outcome",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {
@@ -584,6 +618,19 @@
         "source": "domain.ssrg",
         "start": 450,
         "end": 613
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

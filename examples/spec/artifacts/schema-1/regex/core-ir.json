@@ -469,6 +469,27 @@
         "start": 88,
         "end": 154
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -573,6 +594,27 @@
         "source": "main.ssrg",
         "start": 156,
         "end": 269
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "typeParameters": [
         "A"
@@ -751,6 +793,19 @@
         "start": 271,
         "end": 332
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -838,6 +893,32 @@
         "source": "main.ssrg",
         "start": 334,
         "end": 513
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "regex.RegexCompileError",
+              "canonical": "std/regex::RegexCompileError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "regex.Regex",
+              "canonical": "std/regex::Regex",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1071,6 +1152,49 @@
         "source": "main.ssrg",
         "start": 515,
         "end": 719
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "regex.Regex",
+            "canonical": "std/regex::Regex",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "regex.RegexCompileError",
+                "canonical": "std/regex::RegexCompileError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "regex.Regex",
+                "canonical": "std/regex::Regex",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {
@@ -1344,6 +1468,26 @@
         "source": "main.ssrg",
         "start": 721,
         "end": 4003
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

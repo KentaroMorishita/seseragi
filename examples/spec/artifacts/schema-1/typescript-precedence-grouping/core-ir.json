@@ -149,6 +149,19 @@
         "start": 0,
         "end": 64
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -341,6 +354,27 @@
         "start": 66,
         "end": 162
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "positive",
@@ -490,6 +524,19 @@
         "source": "main.ssrg",
         "start": 164,
         "end": 211
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
       },
       "parameters": [
         {

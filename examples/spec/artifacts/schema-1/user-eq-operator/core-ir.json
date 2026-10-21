@@ -293,6 +293,27 @@
         "start": 225,
         "end": 288
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Status",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Status",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "left",
@@ -381,6 +402,27 @@
         "source": "main.ssrg",
         "start": 290,
         "end": 363
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "T",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "typeParameters": [
         "T"
@@ -486,6 +528,29 @@
         "source": "main.ssrg",
         "start": 365,
         "end": 508
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

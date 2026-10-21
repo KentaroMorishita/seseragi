@@ -22,6 +22,65 @@ Source → shared frontend → TypedHir → CoreCompilation / CoreIr
                                                                          → rustc → native
 ```
 
+## pure program WASMとtypedな返却関数
+
+`experimental build-wasm`はcompiler WASMとは別の、利用者のprogramを生成する。
+公開する関数を明示して、checked Coreの完全な関数型と宣言のsource引数を照合する。
+単相で制約のないpure関数が対象で、Unit／Bool／Int／String、2〜32要素のTuple、
+標準Maybe／Either、返却する関数を扱う。配列・record・任意ADT・generic公開scheme、
+入力側の関数、Effect／Ref／providerを含むmoduleは出力前に位置付きで拒否する。
+
+```sh
+rustup target add wasm32-unknown-unknown
+seseragi experimental build-wasm \
+  examples/spec/fixtures/rust-backend/program-wasm.ssrg \
+  --export label --export validate --export staged --out-dir target/program
+```
+
+source fileとlock済みpackageを受け取り、`program.wasm`、loaderの`program.mjs`、
+型宣言`program.d.mts`、生成Rustと`program-wasm.json`を出す。manifestには実際のrustc、
+sourceと生成fileのSHA、canonical公開型、source arityとcodecを記録する。失敗したbuildは
+前の完成したartifactを保存し、利用者が編集した出力や無関係なdirectoryは置き換えない。
+
+```typescript
+import { loadProgram } from "./program/program.mjs"
+const program = await loadProgram(wasmBytes)
+const prefix = program.exports.label("合計: ")
+const callback = prefix(40)
+prefix.dispose()
+console.log(callback(2)) // 合計: 42
+callback.dispose()
+program.dispose()
+```
+
+JSの一回の呼出しは一つのsource値を適用する。Unitも一段階であり、辞書の導入や
+返り値関数の引数と混ぜない。返却callbackはstrongな外部rootで、detachするまで捕捉を保つ。
+tokenは再利用せず、detach／instance dispose後の呼出しはWASMへ入らず拒否する。
+通常disposeはglobal・辞書・callbackのrootを解放し、managed-live0を検査する。
+
+loaderはIntのsafe範囲、UTF-8／surrogate、Tupleの要素数とown data field、Maybe／Eitherの
+variantを検査する。Unitは`undefined`、Tupleはreadonly array、Maybe／Eitherは
+`{tag, value}`（Nothingは`{tag}`）で、境界は16MiBまで。loaderとWASMの契約を初期化前に
+照合する。この照合は任意の悪意あるWASMを安全に実行する仕組みではない。
+
+整数Defectもengineのstack trapも`ProgramWasmDefect`となり、instanceをretireして
+host所有参照を閉じる。originは呼出した公開関数を指し、内部の演算位置までは保証しない。
+RustのunwindやEffect finalizerの完了をtrap後に主張せず、`managedLiveAtClose`はnullのままにする。
+WASM physical heapの回収時刻も保証しない。新しいinstanceで実行を再開できる。
+
+```sh
+python3 scripts/build-program-wasm-demo.py --cli seseragi --out target/program-demo
+python3 -m http.server 8080 --directory target/program-demo/site
+```
+
+このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
+program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準packageの
+build/watchへの統合、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
+これだけで#814／#815や実用化全体を完了扱いにしない。
+
+## 共有frontend
+
 `seseragi-driver::compile_core_module`はTS lowering / emissionを呼ばない。
 既存TSの`compile_module`とprojectのchecked-module loweringも同じCoreCompilation経路を使う。
 `CompiledModule`の既存TS APIは互換性を維持する。backend間で一つの巨大な生成物structを共有せず、

@@ -96,6 +96,19 @@
         "start": 110,
         "end": 294
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "HandParse",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "input",

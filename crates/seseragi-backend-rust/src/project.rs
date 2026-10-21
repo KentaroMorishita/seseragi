@@ -14,6 +14,21 @@ pub(crate) fn emit(
     entry_module: &str,
     entry: &str,
 ) -> Result<RustArtifact, RustBackendError> {
+    emit_body(modules, entry_module, Some(entry))
+}
+
+pub(crate) fn emit_library(
+    modules: &[&CoreModule],
+    entry_module: &str,
+) -> Result<RustArtifact, RustBackendError> {
+    emit_body(modules, entry_module, None)
+}
+
+fn emit_body(
+    modules: &[&CoreModule],
+    entry_module: &str,
+    entry: Option<&str>,
+) -> Result<RustArtifact, RustBackendError> {
     let entry_core = modules
         .iter()
         .find(|m| m.module == entry_module)
@@ -165,14 +180,18 @@ pub(crate) fn emit(
     }
     let scalar_globals =
         seseragi_lowering::CoreScalarGlobals::from_modules(modules.iter().copied());
-    let mut artifact = emit::emit(
-        &linked,
-        entry,
-        &owners,
-        &scalar_globals,
-        &type_names,
-        &trait_names,
-    )?;
+    let mut artifact = if let Some(entry) = entry {
+        emit::emit(
+            &linked,
+            entry,
+            &owners,
+            &scalar_globals,
+            &type_names,
+            &trait_names,
+        )
+    } else {
+        emit::emit_library(&linked, &owners, &scalar_globals, &type_names, &trait_names)
+    }?;
     artifact.metadata.modules = initialization;
     Ok(artifact)
 }

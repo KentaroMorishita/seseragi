@@ -642,6 +642,19 @@
         "start": 514,
         "end": 600
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "C",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "C",
         "A"
@@ -763,6 +776,25 @@
         "source": "main.ssrg",
         "start": 601,
         "end": 668
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Sum",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
       },
       "typeParameters": [
         "A"
@@ -892,6 +924,25 @@
         "source": "main.ssrg",
         "start": 669,
         "end": 748
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Product",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
       },
       "typeParameters": [
         "A"

@@ -31,6 +31,34 @@ mod tests {
     use super::*;
 
     #[test]
+    fn retains_checked_function_value_type_without_merging_source_and_returned_stages() {
+        use seseragi_lowering::CoreType;
+        let compiled = compile_core_module(CompileInput::new("stages.ssrg", "stages/main", "pub fn two left: Int -> right: Int -> Bool = True\npub fn returned left: Int -> (Int -> Bool) = \\right -> True\npub fn omitted<Unit> -> (Unit -> Bool) = \\value -> True\n")).unwrap();
+        let functions = &compiled.core_ir.functions;
+        assert_eq!(functions[0].parameters.len(), 2);
+        assert_eq!(functions[1].parameters.len(), 1);
+        assert_eq!(functions[0].value_type, functions[1].value_type);
+        let CoreType::Function { parameter, result } = functions[2].value_type.as_ref().unwrap()
+        else {
+            panic!()
+        };
+        assert!(
+            matches!(parameter.as_ref(), CoreType::ExternalNamed { canonical, arguments, .. } if canonical=="std/prelude::Unit" && arguments.is_empty())
+        );
+        assert!(
+            matches!(result.as_ref(), CoreType::Function { parameter, .. } if matches!(parameter.as_ref(),CoreType::Named{name,arguments}if name=="Unit" && arguments.is_empty()))
+        );
+        assert_eq!(functions[2].type_parameters[0].name, "Unit");
+        let json = serde_json::to_string(&functions[0]).unwrap();
+        let restored: seseragi_lowering::CoreFunction = serde_json::from_str(&json).unwrap();
+        assert_eq!(restored.value_type, functions[0].value_type);
+        let mut older: serde_json::Value = serde_json::from_str(&json).unwrap();
+        older.as_object_mut().unwrap().remove("valueType");
+        let unproven: seseragi_lowering::CoreFunction = serde_json::from_value(older).unwrap();
+        assert!(unproven.value_type.is_none());
+    }
+
+    #[test]
     fn project_core_matches_ts_input_and_does_not_require_ts_output_paths() {
         let mut graph = seseragi_project::ModuleGraph::new();
         graph.add_module("graph/lib".to_owned(), []).unwrap();

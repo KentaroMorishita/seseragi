@@ -517,6 +517,34 @@
         "start": 264,
         "end": 650
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "title",
@@ -1199,6 +1227,27 @@
         "source": "main.ssrg",
         "start": 652,
         "end": 1019
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

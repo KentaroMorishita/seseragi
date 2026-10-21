@@ -1,7 +1,12 @@
 //! Experimental Rust target. Checked CoreIr is the semantic authority;
 //! rustc validates generated implementation code, not Seseragi source types.
 mod emit;
+mod program_wasm;
 mod project;
+pub use program_wasm::{
+    emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
+    PROGRAM_WASM_ABI,
+};
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
 

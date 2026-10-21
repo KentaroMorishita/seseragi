@@ -79,6 +79,19 @@
         "start": 81,
         "end": 124
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -112,6 +125,19 @@
         "source": "facade.ssrg",
         "start": 126,
         "end": 205
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "T",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "typeParameters": [
         "T"

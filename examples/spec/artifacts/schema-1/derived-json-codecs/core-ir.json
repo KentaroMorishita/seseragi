@@ -1007,6 +1007,37 @@
         "start": 355,
         "end": 455
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "text",
@@ -1123,6 +1154,37 @@
         "source": "main.ssrg",
         "start": 457,
         "end": 551
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -1241,6 +1303,31 @@
         "start": 553,
         "end": 644
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Event",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "text",
@@ -1320,6 +1407,19 @@
         "source": "main.ssrg",
         "start": 646,
         "end": 788
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1586,6 +1686,19 @@
         "start": 790,
         "end": 926
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "text",
@@ -1850,6 +1963,19 @@
         "source": "main.ssrg",
         "start": 928,
         "end": 1066
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

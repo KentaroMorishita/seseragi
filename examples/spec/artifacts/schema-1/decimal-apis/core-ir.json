@@ -627,6 +627,33 @@
         "start": 245,
         "end": 411
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "decimals.DecimalParseError",
+              "canonical": "std/decimal::DecimalParseError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "Decimal",
+              "canonical": "std/decimal::Decimal",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "Decimal",
+          "canonical": "std/decimal::Decimal",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -842,6 +869,33 @@
         "source": "main.ssrg",
         "start": 413,
         "end": 623
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "decimals.DecimalContextError",
+              "canonical": "std/decimal::DecimalContextError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "DecimalContext",
+              "canonical": "std/decimal::DecimalContext",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "DecimalContext",
+          "canonical": "std/decimal::DecimalContext",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1103,6 +1157,29 @@
         "start": 625,
         "end": 768
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Decimal",
+          "canonical": "std/decimal::Decimal",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "Decimal",
+            "canonical": "std/decimal::Decimal",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "left",
@@ -1296,6 +1373,20 @@
         "source": "main.ssrg",
         "start": 770,
         "end": 981
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "RoundingMode",
+          "canonical": "std/number::RoundingMode",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1511,6 +1602,32 @@
         "source": "main.ssrg",
         "start": 983,
         "end": 1175
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "decimals.DecimalContextError",
+              "canonical": "std/decimal::DecimalContextError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "DecimalContext",
+              "canonical": "std/decimal::DecimalContext",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1809,6 +1926,21 @@
         "start": 1177,
         "end": 1212
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "Decimal",
+          "canonical": "std/decimal::Decimal",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -1878,6 +2010,21 @@
         "start": 1214,
         "end": 1247
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "Decimal",
+          "canonical": "std/decimal::Decimal",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -1946,6 +2093,32 @@
         "source": "main.ssrg",
         "start": 1249,
         "end": 1344
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "Decimal",
+              "canonical": "std/decimal::Decimal",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -2028,6 +2201,32 @@
         "source": "main.ssrg",
         "start": 1346,
         "end": 1498
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "Decimal",
+              "canonical": "std/decimal::Decimal",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -2309,6 +2508,26 @@
         "source": "main.ssrg",
         "start": 1500,
         "end": 4186
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

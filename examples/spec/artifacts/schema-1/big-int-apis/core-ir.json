@@ -482,6 +482,33 @@
         "start": 77,
         "end": 237
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntParseError",
+              "canonical": "std/big-int::BigIntParseError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "BigInt",
+          "canonical": "std/big-int::BigInt",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -697,6 +724,31 @@
         "source": "main.ssrg",
         "start": 239,
         "end": 390
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntParseError",
+              "canonical": "std/big-int::BigIntParseError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -935,6 +987,32 @@
         "source": "main.ssrg",
         "start": 392,
         "end": 563
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntDivisionError",
+              "canonical": "std/big-int::BigIntDivisionError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1195,6 +1273,32 @@
         "start": 565,
         "end": 730
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntPowerError",
+              "canonical": "std/big-int::BigIntPowerError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "BigInt",
+              "canonical": "std/big-int::BigInt",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "result",
@@ -1453,6 +1557,31 @@
         "source": "main.ssrg",
         "start": 732,
         "end": 894
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "bigints.BigIntConversionError",
+              "canonical": "std/big-int::BigIntConversionError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1730,6 +1859,29 @@
         "start": 896,
         "end": 1037
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "BigInt",
+          "canonical": "std/big-int::BigInt",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "BigInt",
+            "canonical": "std/big-int::BigInt",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "left",
@@ -1923,6 +2075,26 @@
         "source": "main.ssrg",
         "start": 1039,
         "end": 2619
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

@@ -277,6 +277,27 @@
         "start": 121,
         "end": 245
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.MouseEvent",
+          "canonical": "std/web/html::MouseEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -365,6 +386,27 @@
         "source": "main.ssrg",
         "start": 247,
         "end": 381
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.PointerEvent",
+          "canonical": "std/web/html::PointerEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -455,6 +497,27 @@
         "start": 383,
         "end": 498
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.ScrollEvent",
+          "canonical": "std/web/html::ScrollEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -512,6 +575,27 @@
         "source": "main.ssrg",
         "start": 500,
         "end": 883
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

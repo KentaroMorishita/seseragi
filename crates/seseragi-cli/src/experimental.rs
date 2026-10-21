@@ -1,7 +1,13 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf, process::Command};
+mod program_wasm;
 
 pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
+    if let [operation, arguments @ ..] = arguments {
+        if operation == "build-wasm" {
+            return program_wasm::run(arguments);
+        }
+    }
     let [operation, path, flags @ ..] = arguments else {
         return Err(usage().into());
     };
@@ -124,6 +130,61 @@ fn compile_project(
     path: &str,
     entry: &str,
 ) -> Result<(seseragi_backend_rust::RustArtifact, Vec<PathBuf>), String> {
+    let (project, checked) = load_checked_project(path)?;
+    let modules = checked
+        .compiled
+        .order
+        .iter()
+        .map(|id| &checked.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let artifact = seseragi_backend_rust::emit_rust_project(&modules, &checked.entry_module, entry)
+        .map_err(|error| project_target_error(error, &project))?;
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
+        .any(|capability| capability == "filesystem-async")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/fs::FileSystem")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native filesystem provider selection/artifact configuration; this target currently uses its built-in filesystem host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    let source_paths = project
+        .modules()
+        .map(|(_, module)| fs::canonicalize(module.source_path()).map_err(|e| e.to_string()))
+        .collect::<Result<_, _>>()?;
+    Ok((artifact, source_paths))
+}
+
+fn project_target_error(
+    error: seseragi_backend_rust::RustBackendError,
+    project: &seseragi_project::LoadedLocalProject,
+) -> String {
+    let source = error.module.as_deref().and_then(|id| {
+        project
+            .modules()
+            .find(|(identity, _)| seseragi_project::logical_module_id(identity) == id)
+            .map(|(_, module)| module.source_path().to_string_lossy())
+    });
+    target_error(error, source.as_deref())
+}
+
+fn load_checked_project(
+    path: &str,
+) -> Result<
+    (
+        seseragi_project::LoadedLocalProject,
+        seseragi_driver::CoreLocalProject,
+    ),
+    String,
+> {
     seseragi_project::read_and_validate_lockfile(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
     let project = seseragi_project::load_local_project(path)
@@ -162,44 +223,7 @@ fn compile_project(
             );
         }
     }
-    let modules = checked
-        .compiled
-        .order
-        .iter()
-        .map(|id| &checked.compiled.modules[id].core_ir)
-        .collect::<Vec<_>>();
-    let artifact = seseragi_backend_rust::emit_rust_project(&modules, &checked.entry_module, entry)
-        .map_err(|error| {
-            let source = error.module.as_deref().and_then(|id| {
-                project
-                    .modules()
-                    .find(|(identity, _)| seseragi_project::logical_module_id(identity) == id)
-                    .map(|(_, module)| module.source_path().to_string_lossy())
-            });
-            target_error(error, source.as_deref())
-        })?;
-    if artifact
-        .metadata
-        .capabilities
-        .iter()
-        .any(|capability| capability == "filesystem-async")
-    {
-        for (_, package) in project.packages().packages() {
-            if package
-                .manifest()
-                .providers
-                .contains_key("std/fs::FileSystem")
-                || !package.manifest().provider_artifacts.is_empty()
-            {
-                return Err(format!("{}: SES-RUST-0001: unsupported native filesystem provider selection/artifact configuration; this target currently uses its built-in filesystem host", package.root().join("seseragi.toml").display()));
-            }
-        }
-    }
-    let source_paths = project
-        .modules()
-        .map(|(_, module)| fs::canonicalize(module.source_path()).map_err(|e| e.to_string()))
-        .collect::<Result<_, _>>()?;
-    Ok((artifact, source_paths))
+    Ok((project, checked))
 }
 
 fn usage() -> &'static str {

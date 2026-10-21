@@ -288,6 +288,29 @@
         "start": 324,
         "end": 386
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -440,6 +463,37 @@
         "source": "main.ssrg",
         "start": 388,
         "end": 471
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "zeta",
+              "optional": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            {
+              "name": "alpha",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -625,6 +679,59 @@
         "source": "main.ssrg",
         "start": 473,
         "end": 591
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "ranges",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Range",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "name": "label",
+              "optional": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1066,6 +1173,38 @@
         "start": 593,
         "end": 683
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "item",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -1313,6 +1452,28 @@
         "source": "main.ssrg",
         "start": 685,
         "end": 760
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "badge",
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

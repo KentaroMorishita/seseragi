@@ -315,6 +315,20 @@
         "start": 129,
         "end": 203
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.InputEvent",
+          "canonical": "std/web/html::InputEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Action",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -380,6 +394,20 @@
         "source": "main.ssrg",
         "start": 205,
         "end": 345
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.ChangeEvent",
+          "canonical": "std/web/html::ChangeEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Action",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -554,6 +582,34 @@
         "source": "main.ssrg",
         "start": 347,
         "end": 1267
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          }
+        }
       },
       "parameters": [
         {

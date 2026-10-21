@@ -11,6 +11,44 @@
         "start": 0,
         "end": 89
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "score",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "name",
@@ -117,6 +155,28 @@
         "source": "main.ssrg",
         "start": 91,
         "end": 180
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -242,6 +302,36 @@
         "source": "main.ssrg",
         "start": 182,
         "end": 361
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "label",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -627,6 +717,37 @@
         "source": "main.ssrg",
         "start": 363,
         "end": 558
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "label",
+              "optional": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

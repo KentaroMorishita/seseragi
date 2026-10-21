@@ -43,6 +43,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
             visibility: Visibility::Public,
             origin: origin(),
             is_effect: true,
+            value_type: None,
             type_parameters: Vec::new(),
             constraints: Vec::new(),
             parameters: vec![CoreParameter {

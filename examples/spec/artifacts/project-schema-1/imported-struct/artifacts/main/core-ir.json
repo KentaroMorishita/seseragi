@@ -46,6 +46,21 @@
         "start": 35,
         "end": 106
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "player",
@@ -122,6 +137,20 @@
         "source": "main.ssrg",
         "start": 108,
         "end": 215
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
