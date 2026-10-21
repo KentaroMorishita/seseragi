@@ -138,10 +138,17 @@ impl NativeContext {
             });
             NativeState::Evaluate(next)
         } else {
-            self.scopes.pop();
+            let root = self.scopes.pop().expect("closing native scope").root;
             self.masked = previous_mask;
             NativeState::Return(if defects.is_empty() {
-                original.and_then(|value| self.checkpoint().map(|_| value))
+                if root {
+                    // Root source evaluation has already produced its terminal
+                    // outcome. Interrupt still waits for masked cleanup, but
+                    // cannot replace an outcome committed before that request.
+                    original
+                } else {
+                    original.and_then(|value| self.checkpoint().map(|_| value))
+                }
             } else {
                 Err(NativeExit::Defect(defects))
             })
@@ -151,6 +158,7 @@ impl NativeContext {
 
 #[derive(Default)]
 struct NativeScope {
+    root: bool,
     finalizers: Vec<V>,
     children: Vec<V>,
 }
@@ -167,7 +175,10 @@ enum NativeTurn {
 }
 impl NativeMachine {
     fn new(mut context: NativeContext, plan: V) -> Self {
-        context.scopes.push(NativeScope::default());
+        context.scopes.push(NativeScope {
+            root: true,
+            ..NativeScope::default()
+        });
         let state = match context.checkpoint() {
             Ok(()) => NativeState::Evaluate(plan),
             Err(exit) => NativeState::Return(Err(exit)),

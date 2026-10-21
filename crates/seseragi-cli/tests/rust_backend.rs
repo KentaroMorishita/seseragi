@@ -1809,7 +1809,7 @@ fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
     let path = scratch.0.join("async.ssrg");
     fs::write(
         &path,
-        "import * as effects from \"std/effect\"\npub effect fn main = effects.yieldNow ()\n",
+        "import * as effects from \"std/effect\"\npub effect fn main -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n",
     )
     .unwrap();
     let output = scratch.0.join("unsupported.rs");
@@ -1824,7 +1824,7 @@ fn unsupported_async_operation_has_a_source_range_and_writes_nothing() {
     let error = String::from_utf8_lossy(&result.stderr);
     assert_eq!(result.status.code(), Some(2));
     assert!(
-        error.contains("SES-RUST-0001") && error.contains("yieldNow"),
+        error.contains("SES-RUST-0001") && error.contains("race"),
         "{error}"
     );
     assert!(error.contains("async.ssrg:"), "{error}");

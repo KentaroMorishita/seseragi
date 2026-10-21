@@ -1,0 +1,32 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+
+effect fn finish ready: deferred.Deferred<Never, Int> gate: deferred.Deferred<Never, Int> _value: Unit
+  -> Unit =
+  do {
+    deferred.succeed 1 ready
+    deferred.await gate
+    let unit = ()
+    effects.succeed unit
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let unit = ()
+  ready <- deferred.make<Never, Int> ()
+  gate <- deferred.make<Never, Int> ()
+  worker <- effects.fork $ do {
+    effects.acquireRelease (effects.succeed unit) (finish ready gate)
+    effects.succeed unit
+  }
+  deferred.await ready
+  cancelling <- effects.fork (effects.interrupt worker)
+  effects.yieldNow ()
+  deferred.succeed 1 gate
+  effects.join cancelling
+  result <- effects.await worker
+  match result {
+    effects.FiberSucceeded _ -> println "succeeded"
+    effects.FiberCancelled -> println "cancelled"
+    _ -> println "unexpected"
+  }
+}

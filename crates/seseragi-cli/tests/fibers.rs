@@ -227,7 +227,12 @@ fn fiber_generated_typescript_is_strict_in_both_profiles() {
     let scratch = Scratch::new();
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let mut files = Vec::new();
-    for name in ["fiber-finalizer", "fiber-results", "deferred-order"] {
+    for name in [
+        "fiber-finalizer",
+        "fiber-results",
+        "deferred-order",
+        "fiber-cleanup-outcome",
+    ] {
         let source = fs::read_to_string(
             root.join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg")),
         )
@@ -256,4 +261,16 @@ fn fiber_generated_typescript_is_strict_in_both_profiles() {
             .arg(config),
         &scratch.0,
     ));
+}
+
+#[test]
+fn root_outcome_is_committed_before_cleanup_while_scoped_evaluation_remains_cancellable() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/fiber-cleanup-outcome.ssrg");
+    compare(source, "succeeded\n", None, 0, None);
+    let scoped = source.replace(
+        "worker <- effects.fork $ do",
+        "worker <- effects.fork $ effects.scoped $ do",
+    );
+    compare(&scoped, "cancelled\n", None, 0, None);
 }
