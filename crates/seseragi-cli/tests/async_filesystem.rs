@@ -80,15 +80,10 @@ impl Drop for OwnedChild {
                 }
                 // Only this still-live child's dedicated process group.
                 kill(-(self.child.id() as i32), 15);
-                let until = Instant::now() + Duration::from_secs(2);
-                while Instant::now() < until {
-                    if self.child.try_wait().ok().flatten().is_some() {
-                        break;
-                    }
-                    std::thread::sleep(Duration::from_millis(10));
-                }
-                // The group may still contain a compiler descendant after the
-                // parent exits. Reclaim it before reaping the owned parent.
+                // Do not reap the group leader during the grace interval. Its
+                // reserved PID prevents group-ID reuse before the final kill;
+                // compiler descendants may outlive a terminated parent.
+                std::thread::sleep(Duration::from_secs(2));
                 kill(-(self.child.id() as i32), 9);
             }
             #[cfg(windows)]
