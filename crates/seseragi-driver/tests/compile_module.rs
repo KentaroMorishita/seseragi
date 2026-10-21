@@ -861,3 +861,58 @@ fn linked_module(main_source: &str, domain_source: &str) -> seseragi_project::Li
     let main = parse_unlinked_module_interface("main.ssrg", "fixture/game::main", main_source);
     link_module(main, &BTreeMap::from([("./domain".to_owned(), target)])).unwrap()
 }
+
+#[test]
+fn imported_omitted_unit_is_distinct_from_the_returned_generic_function() {
+    let domain = "pub fn selected<Unit> -> (Unit -> Unit) = \\value -> value\n";
+    let dependency = compile_module(input("domain.ssrg", "fixture/game::domain", domain))
+        .expect("the dependency retains the generic return type");
+    let export = &dependency.typed_interface.exports[0];
+    assert_eq!(export.call_arity, Some(1));
+    let seseragi_syntax::InterfaceType::Function { parameter, result } = &export.scheme.type_ref
+    else {
+        panic!("{export:#?}");
+    };
+    assert!(
+        matches!(parameter.as_ref(), seseragi_syntax::InterfaceType::ExternalNamed { canonical, arguments, .. }
+        if canonical == "std/prelude::Unit" && arguments.is_empty())
+    );
+    assert!(
+        matches!(result.as_ref(), seseragi_syntax::InterfaceType::Function { parameter, result }
+        if matches!(parameter.as_ref(), seseragi_syntax::InterfaceType::Named { name, arguments } if name == "Unit" && arguments.is_empty())
+            && parameter == result)
+    );
+    assert_eq!(dependency.core_ir.functions[0].parameters.len(), 1);
+    assert!(
+        matches!(&dependency.core_ir.functions[0].parameters[0].type_ref,
+        seseragi_lowering::CoreType::ExternalNamed { canonical, arguments, .. }
+            if canonical == "std/prelude::Unit" && arguments.is_empty())
+    );
+    let plan = plan_typescript_outputs(
+        "main.js",
+        [TypeScriptModuleOutput::new(
+            "fixture/game::domain",
+            "domain.js",
+        )],
+    )
+    .unwrap();
+    for body in [
+        "{ let unit = (); let next: Int -> Int = selected<Int> unit; next 7 }",
+        "{ let saved = selected<Int>; let next: Int -> Int = saved (); next 7 }",
+        "{ let saved = selected; let next: Int -> Int = saved<Int> (); next 7 }",
+    ] {
+        let source =
+            format!("import {{ selected }} from \"./domain\"\npub fn probe -> Int = {body}\n");
+        compile_linked_module(linked_module(&source, domain), &source, &plan)
+            .expect("the source argument remains anonymous Unit after importing a generic scheme");
+    }
+    for bad in ["7", "True"] {
+        let source = format!("import {{ selected }} from \"./domain\"\npub fn probe -> Int = {{ let next: Int -> Int = selected<Int> {bad}; next 7 }}\n");
+        let error = compile_linked_module(linked_module(&source, domain), &source, &plan)
+            .expect_err("a generic result cannot replace the anonymous source parameter");
+        assert!(
+            matches!(error, LinkedCompileError::Diagnostics(_)),
+            "{error:#?}"
+        );
+    }
+}

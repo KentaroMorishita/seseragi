@@ -43,6 +43,7 @@ pub(crate) struct PureExpressionContext<'a> {
     parameters: BTreeMap<SymbolId, SemanticValueType>,
     evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
     deferred_let_evidence: bool,
+    generalized_value_origin: Option<ByteSpan>,
     deferred_method_value: bool,
     resolution: &'a TypedResolution<'a>,
     expected: Option<SemanticValueType>,
@@ -57,6 +58,7 @@ impl<'a> PureExpressionContext<'a> {
             parameters: resolution.parameter_types(parameters),
             evidence_parameters: Vec::new(),
             deferred_let_evidence: false,
+            generalized_value_origin: None,
             deferred_method_value: false,
             resolution,
             expected: None,
@@ -71,6 +73,7 @@ impl<'a> PureExpressionContext<'a> {
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             deferred_let_evidence: self.deferred_let_evidence,
+            generalized_value_origin: self.generalized_value_origin,
             deferred_method_value: self.deferred_method_value,
             resolution: self.resolution,
             expected,
@@ -715,8 +718,15 @@ impl<'a> PureExpressionContext<'a> {
         let Some(inferred) = self.infer_let(value) else {
             return self.with_expected(None);
         };
-        let context =
+        let mut context =
             self.with_expected(Some(self.semantic_value_from_typed_type(&inferred.value)));
+        if !inferred.parameters.is_empty() {
+            let mut initializer = value;
+            while let SurfaceExpr::Grouped { value, .. } = initializer {
+                initializer = value;
+            }
+            context.generalized_value_origin = Some(initializer.span());
+        }
         if inferred.constraints.is_empty() {
             return context;
         }
@@ -751,6 +761,7 @@ impl<'a> PureExpressionContext<'a> {
             lexical_type_parameters: self.lexical_type_parameters.clone(),
             evidence_parameters: self.evidence_parameters.clone(),
             deferred_let_evidence: self.deferred_let_evidence,
+            generalized_value_origin: self.generalized_value_origin,
             deferred_method_value: self.deferred_method_value,
             resolution: self.resolution,
             expected: self.expected.clone(),

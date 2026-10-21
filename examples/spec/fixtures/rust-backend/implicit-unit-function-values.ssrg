@@ -1,0 +1,12 @@
+fn selected<Unit> -> (Unit -> Unit) = \value -> value
+
+pub fn probe -> String = {
+  let unit = ();
+  let saved = selected<Int>;
+  let held: Int -> Int = saved unit;
+  let generic = selected;
+  let returned: Int -> Int = generic<Int> ();
+  show (held 7) + ":" + show (held 9) + ":" + show (returned 11)
+}
+
+pub effect fn main = println (probe ())

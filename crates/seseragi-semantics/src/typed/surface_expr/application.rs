@@ -101,7 +101,18 @@ pub(super) fn type_callable_value(
         });
     refine_collection_parameters(&mut application, signature, context);
     for parameter in &mut application.parameters {
-        *parameter = context.hydrate_semantic_value(parameter.clone());
+        // This value can introduce a new quantified let scheme. Localizing
+        // its anonymous source parameter to the caller's primitive spelling
+        // would let the scheme's own Unit binder capture it on reuse.
+        let canonical_unit = matches!(&parameter.type_ref,
+            TypedType::ExternalNamed { canonical, arguments, .. }
+                if canonical == "std/prelude::Unit" && arguments.is_empty())
+            && matches!(&parameter.key,
+                SemanticTypeKey::ExternalNominal { canonical, arguments }
+                    if canonical == "std/prelude::Unit" && arguments.is_empty());
+        if !canonical_unit || context.generalized_value_origin != Some(span) {
+            *parameter = context.hydrate_semantic_value(parameter.clone());
+        }
     }
     application.result = context.hydrate_semantic_value(application.result);
 

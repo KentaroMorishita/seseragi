@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/implicit-unit-function-own-binder",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::probe",
+      "namespace": "value",
+      "name": "probe",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 54,
+        "end": 129
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

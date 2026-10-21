@@ -1,0 +1,14 @@
+fn selected<Unit> -> (Unit -> Bool) = \value -> False
+
+fn selectStage -> (Unit -> Int -> Bool) = selected<Int>
+
+fn argumentStage -> Unit = ()
+
+pub fn probe -> String = {
+  let chosen = selectStage ();
+  let unit = argumentStage ();
+  let held = chosen unit;
+  show (held 7) + ":" + show (held 9)
+}
+
+pub effect fn main = println (probe ())

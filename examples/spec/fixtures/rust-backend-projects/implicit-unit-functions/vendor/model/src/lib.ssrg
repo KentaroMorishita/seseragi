@@ -1,0 +1,3 @@
+pub fn selected<Unit> -> (Unit -> Unit) = \value -> value
+
+pub fn render<Unit> -> (Unit -> String) where Show<Unit> = \value -> show value

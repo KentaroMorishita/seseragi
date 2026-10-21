@@ -11,13 +11,23 @@
       "name": "main",
       "visibility": "public",
       "declarationKind": "effect-function",
-      "declaration": { "start": 0, "end": 78 },
+      "declaration": {
+        "start": 0,
+        "end": 78
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
           "kind": "function",
-          "parameter": { "kind": "named", "name": "Unit", "arguments": [] },
+          "parameter": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "providerModule": "std/prelude",
+            "providerExport": "Unit",
+            "arguments": []
+          },
           "result": {
             "kind": "named",
             "name": "Effect",
@@ -41,7 +51,11 @@
                 "name": "ConsoleError",
                 "arguments": []
               },
-              { "kind": "named", "name": "Unit", "arguments": [] }
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
             ]
           }
         }

@@ -1,0 +1,2 @@
+fn selected<Unit> -> (Unit -> Bool) = \value -> False
+pub fn probe<A> value: A -> Bool = { let next: Int -> Bool = selected<Int> value; next 1 }

@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Unit",
+      "nameSpan": {
+        "start": 5,
+        "end": 9
+      },
+      "variants": [
+        {
+          "name": "LocalUnit",
+          "nameSpan": {
+            "start": 14,
+            "end": 23
+          },
+          "span": {
+            "start": 12,
+            "end": 23
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 23
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "selected",
+      "nameSpan": {
+        "start": 27,
+        "end": 35
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [],
+      "returnType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "span": {
+            "start": 43,
+            "end": 44
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "Bool",
+          "span": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        "span": {
+          "start": 43,
+          "end": 52
+        }
+      },
+      "body": {
+        "kind": "lambda",
+        "parameter": {
+          "name": "value",
+          "nameSpan": {
+            "start": 57,
+            "end": 62
+          }
+        },
+        "body": {
+          "kind": "boolean",
+          "value": false,
+          "span": {
+            "start": 66,
+            "end": 71
+          }
+        },
+        "span": {
+          "start": 56,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 24,
+        "end": 71
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "probe",
+      "nameSpan": {
+        "start": 79,
+        "end": 84
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 88,
+          "end": 92
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "next",
+              "nameSpan": {
+                "start": 101,
+                "end": 105
+              },
+              "span": {
+                "start": 101,
+                "end": 105
+              }
+            },
+            "typeRef": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 107,
+                  "end": 110
+                }
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "span": {
+                  "start": 114,
+                  "end": 118
+                }
+              },
+              "span": {
+                "start": 107,
+                "end": 118
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "selected",
+                "typeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "span": {
+                      "start": 130,
+                      "end": 133
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 121,
+                  "end": 134
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "LocalUnit",
+                "span": {
+                  "start": 135,
+                  "end": 144
+                }
+              },
+              "span": {
+                "start": 121,
+                "end": 144
+              }
+            },
+            "span": {
+              "start": 96,
+              "end": 144
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "next",
+            "span": {
+              "start": 146,
+              "end": 150
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "1",
+            "span": {
+              "start": 151,
+              "end": 152
+            }
+          },
+          "span": {
+            "start": 146,
+            "end": 152
+          }
+        },
+        "span": {
+          "start": 95,
+          "end": 154
+        }
+      },
+      "span": {
+        "start": 72,
+        "end": 154
+      }
+    }
+  ]
+}

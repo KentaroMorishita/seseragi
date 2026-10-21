@@ -27,6 +27,14 @@
       }
     },
     {
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "provider": {
+        "module": "std/prelude",
+        "export": "Unit"
+      }
+    },
+    {
       "arity": 0,
       "spelling": "InputError",
       "canonical": "fixture/rps-cli-split::input::InputError",
@@ -240,8 +248,9 @@
         {
           "kind": "implicit-unit",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
             "arguments": []
           }
         }

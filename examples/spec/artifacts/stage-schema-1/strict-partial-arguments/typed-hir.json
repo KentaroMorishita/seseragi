@@ -1500,8 +1500,9 @@
         {
           "kind": "implicit-unit",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Unit",
+            "canonical": "std/prelude::Unit",
             "arguments": []
           }
         }

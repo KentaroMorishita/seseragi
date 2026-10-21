@@ -1,0 +1,298 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/implicit-unit-function-own-binder",
+  "functions": [
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::selected",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 53
+      },
+      "typeParameters": [
+        "Unit"
+      ],
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "lambda",
+        "parameter": {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "body": {
+          "kind": "boolean",
+          "value": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 38,
+          "end": 53
+        }
+      }
+    },
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::probe",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 54,
+        "end": 129
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "next",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/implicit-unit-function-own-binder::selected",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 117,
+                    "end": 119
+                  }
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 103,
+                "end": 119
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 78,
+              "end": 119
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "next",
+          "arguments": [
+            {
+              "kind": "integer",
+              "value": "1",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 126,
+                "end": 127
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 121,
+            "end": 127
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 77,
+          "end": 129
+        }
+      }
+    },
+    {
+      "symbol": "artifact/implicit-unit-function-own-binder::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 130,
+        "end": 176
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "external-named",
+            "name": "Unit",
+            "canonical": "std/prelude::Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::Show::show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/implicit-unit-function-own-binder::probe",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 172,
+                      "end": 174
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 166,
+                  "end": 174
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Show",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "Show<std/prelude::Bool>"
+                }
+              }
+            ],
+            "traitDispatch": {
+              "traitIdentity": "std/prelude::Show",
+              "method": "show"
+            },
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 160,
+              "end": 175
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 151,
+          "end": 176
+        }
+      }
+    }
+  ]
+}
