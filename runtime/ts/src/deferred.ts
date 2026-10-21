@@ -4,7 +4,7 @@ import {
   EffectCancellation,
   fromEither,
 } from "./effect"
-import { type Either, type Maybe, Nothing, Right, Just, Left } from "./sum"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 const deferredBrand: unique symbol = Symbol("seseragi.deferred")
 
@@ -35,11 +35,9 @@ function stateOf<Failure, Success>(
   return state as DeferredState<Failure, Success>
 }
 
-export function make<Failure, Success>(): Effect<
-  unknown,
-  never,
-  Deferred<Failure, Success>
-> {
+export function make<Failure, Success>(
+  _unit?: undefined
+): Effect<unknown, never, Deferred<Failure, Success>> {
   return () => {
     const deferred = Object.freeze({}) as Deferred<Failure, Success>
     deferredStates.set(deferred, { result: undefined, waiters: [] })

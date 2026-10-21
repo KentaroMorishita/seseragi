@@ -1,0 +1,36 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+
+effect fn awaitValue<E, A> fiber: effects.Fiber<E, A> -> A fails E = effects.join fiber
+
+effect fn failed -> Int fails String = effects.fail "child-failure"
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let unit = ()
+  gate <- deferred.make<Never, Int> ()
+  successful <- effects.fork (effects.succeed 42)
+  value <- awaitValue successful
+  println (show value)
+  bad <- effects.fork (failed ())
+  result <- effects.await bad
+  match result {
+    effects.FiberFailed message -> println message
+    _ -> println "unexpected failure"
+  }
+  live <- effects.fork (deferred.await gate)
+  before <- effects.poll live
+  match before { Nothing -> println "pending"; _ -> println "unexpected poll" }
+  effects.interrupt live
+  after <- effects.poll live
+  match after { Just effects.FiberCancelled -> println "cancelled";
+    _ -> println "unexpected cancellation" }
+  failedGate <- deferred.make<String, Int> ()
+  deferred.fail "gate-failure" failedGate
+  failedWait <- effects.fork (deferred.await failedGate)
+  deferredExit <- effects.await failedWait
+  match deferredExit {
+    effects.FiberFailed message -> println message
+    _ -> println "unexpected Deferred failure"
+  }
+  effects.succeed unit
+}

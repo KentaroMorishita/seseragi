@@ -95,7 +95,7 @@ jobs:
           node-version: "24.14.0"
       - run: bun install --frozen-lockfile
       - name: Compare file programs, typed failures and finalizers on native, Bun and Node
-        run: cargo test --locked -p seseragi-cli --test filesystem
+        run: cargo test --locked -p seseragi-cli --test filesystem --test fibers
 
   native:
     runs-on: ubuntu-24.04

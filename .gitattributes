@@ -8,3 +8,7 @@ examples/spec/artifacts/execution-schema-1/unicode-text/stdout.txt -text whitesp
 examples/spec/fixtures/rust-backend/filesystem-* text eol=lf
 examples/spec/fixtures/rust-backend/path-portable.* text eol=lf
 examples/spec/fixtures/rust-backend-projects/filesystem/** text eol=lf
+
+# Fiber/Deferred acceptance traces compare source bytes across hosts.
+examples/spec/fixtures/rust-backend/fiber-* text eol=lf
+examples/spec/fixtures/rust-backend/deferred-* text eol=lf

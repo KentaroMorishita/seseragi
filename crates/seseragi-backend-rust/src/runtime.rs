@@ -173,6 +173,8 @@ enum V {
     Dict(Shared<BTreeMap<String, V>>),
     Reference(Shared<RefCell<V>>),
     Effect(Shared<EffectPlan>),
+    Fiber(Shared<NativeFiber>),
+    Deferred(Shared<NativeDeferred>),
 }
 
 struct Function {
@@ -301,6 +303,8 @@ impl V {
                 V::Fun(_) => output.push_str("<function>"),
                 V::Dict(_) => output.push_str("<dictionary>"),
                 V::Reference(_) => output.push_str("<ref>"),
+                V::Fiber(_) => output.push_str("<Fiber>"),
+                V::Deferred(_) => output.push_str("<Deferred>"),
                 V::Effect(_) => output.push_str("<effect>"),
             }
         }

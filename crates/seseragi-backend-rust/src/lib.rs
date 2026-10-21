@@ -63,7 +63,7 @@ pub struct RustArtifact {
 
 /// Emits a self-contained executable source file. The explicit entry must be
 /// an unconstrained Unit function. Pure entries print an inspection result;
-/// Effect entries execute the cold synchronous plan with native resource scopes.
+/// Effect entries execute cold plans with native resource scopes and cooperative Fibers.
 pub fn emit_rust_module(
     module: &CoreModule,
     entry: &str,
@@ -93,6 +93,7 @@ mod runtime {
     include!("runtime_array.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_scheduler.rs");
     include!("runtime_path.rs");
     include!("runtime_filesystem.rs");
 }

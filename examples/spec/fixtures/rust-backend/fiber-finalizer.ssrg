@@ -1,0 +1,44 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+effect fn append text: String -> Unit with FileSystem fails String = do {
+  path <- paths.child "trace.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  fs.writeTextUtf8 fs.Append text path |> effects.mapError show
+}
+
+effect fn ignore _error: String -> Unit with FileSystem = do {
+  let unit = ()
+  effects.succeed unit
+}
+
+effect fn release _value: Unit -> Unit with FileSystem =
+  append "release\n"
+  |> effects.recover ignore
+
+pub effect fn main -> Unit with FileSystem fails String = do {
+  gate <- deferred.make<Never, Int> ()
+  ready <- deferred.make<Never, Int> ()
+  worker <- effects.fork $ effects.scoped $ do {
+    effects.acquireRelease (append "acquire\n") release
+    deferred.succeed 1 ready
+    value <- deferred.await gate
+    append (show value)
+  }
+  deferred.await ready
+  effects.interrupt worker
+  effects.interrupt worker
+  exit <- effects.await worker
+  match exit {
+    effects.FiberCancelled -> append "cancelled\n"
+    _ -> effects.fail "unexpected worker exit"
+  }
+  pending <- deferred.poll gate
+  match pending {
+    Nothing -> append "uncompleted\n"
+    Just _ -> effects.fail "cancelled waiter completed its Deferred"
+  }
+}

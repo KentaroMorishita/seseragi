@@ -1,6 +1,6 @@
 // Trial deletion for the mutable native slice. Pure programs keep ordinary Rc
 // costs: the registry is enabled before their first allocation only when the
-// checked module uses Ref. All cycles in this slice cross a mutable Ref edge;
+// checked module uses Ref, Fiber or Deferred. Cycles cross their mutable edges;
 // local recursive closures and opaque foreign captures remain unsupported.
 thread_local! {
     static CYCLE_TRACKING: Cell<bool> = const { Cell::new(false) };
@@ -94,6 +94,8 @@ impl V {
             Self::Fun(v) => v.id(),
             Self::Reference(v) => v.id(),
             Self::Effect(v) => v.id(),
+            Self::Fiber(v) => v.id(),
+            Self::Deferred(v) => v.id(),
         })
     }
     fn reference(value: V) -> V {

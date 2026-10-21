@@ -26,6 +26,36 @@ fn input<'source>(
 }
 
 #[test]
+fn deferred_allocation_retains_checked_payload_type_arguments() {
+    let source = "import * as deferred from \"std/deferred\"\neffect fn fresh<E,A> -> deferred.Deferred<E,A> = deferred.make<E,A> ()\npub effect fn main -> deferred.Deferred<Never,Int> = deferred.make<Never,Int> ()\n";
+    for profile in [
+        seseragi_driver::BuildProfile::Development,
+        seseragi_driver::BuildProfile::Release,
+    ] {
+        let compiled = compile_module(
+            input("deferred.ssrg", "fixture/deferred", source).with_profile(profile),
+        )
+        .unwrap();
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_deferred_make<E, A>(undefined)"),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("_ssrg_deferred_make<never, number>(undefined)"),
+            "{}",
+            compiled.generated.typescript
+        );
+    }
+}
+
+#[test]
 fn preserves_generic_unit_aliases_and_anonymous_unit_callbacks_through_lowering() {
     for source in [
         include_str!(

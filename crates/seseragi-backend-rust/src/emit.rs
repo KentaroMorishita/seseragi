@@ -14,6 +14,7 @@ mod arrays;
 mod canonical;
 mod characters;
 mod comparisons;
+mod concurrency;
 mod display;
 mod effect_conversions;
 mod equality;
@@ -104,6 +105,7 @@ pub fn emit(
     output.push_str(include_str!("runtime_array.rs"));
     output.push_str(include_str!("runtime_trace.rs"));
     output.push_str(include_str!("runtime_effect.rs"));
+    output.push_str(include_str!("runtime_scheduler.rs"));
     output.push_str(include_str!("runtime_path.rs"));
     output.push_str(include_str!("runtime_filesystem.rs"));
     let mut initialization = String::new();
@@ -241,9 +243,9 @@ pub fn emit(
         output.push_str(&backend.direct_function(function, &setup, &scope)?);
     }
     if entry.is_effect {
-        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
+        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
     } else {
-        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref")));
+        output.push_str(&format!("\nfn main() {{ std::process::exit(run_native_pure_entry(|| {{ initialize_globals(); {}(vec![]).apply(V::Unit) }}, {})); }}\n", id(&entry.symbol), backend.capabilities.contains("ref") || backend.capabilities.contains("fiber") || backend.capabilities.contains("deferred")));
     }
     Ok(RustArtifact {
         source: output,
@@ -251,7 +253,11 @@ pub fn emit(
             schema: 1,
             backend: "rust".into(),
             stability: "experimental".into(),
-            abi: if backend.capabilities.contains("effect-sync") {
+            abi: if backend.capabilities.contains("fiber")
+                || backend.capabilities.contains("deferred")
+            {
+                "rust-erased-cooperative-v3"
+            } else if backend.capabilities.contains("effect-sync") {
                 "rust-erased-sync-v2"
             } else {
                 "rust-erased-pure-v1"
@@ -637,6 +643,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.from_either_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -683,6 +692,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.concurrency_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.from_either_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -739,6 +751,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.concurrency_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.from_either_call(expr, scope)? {
                     return Ok(value);
                 }

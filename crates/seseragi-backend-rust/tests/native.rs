@@ -1760,14 +1760,14 @@ fn unsupported_features_have_target_codes_and_source_ranges() {
         assert!(origin.end > origin.start);
     }
     let source =
-        "import * as effects from \"std/effect\"\npub effect fn probe = effects.yieldNow ()\n";
+        "import * as effects from \"std/effect\"\npub effect fn probe -> Int = effects.race (effects.succeed 1) (effects.succeed 2)\n";
     let core = compile_core_module(CompileInput::new("bad.ssrg", "native/bad", source))
         .unwrap()
         .core_ir;
     assert!(emit_rust_module(&core, "probe")
         .unwrap_err()
         .message
-        .contains("yieldNow"));
+        .contains("race"));
 }
 
 #[test]
