@@ -522,6 +522,13 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         &scratch.0,
     ));
     assert_ne!(image(&destination)["program.wasm"], before["program.wasm"]);
+    fs::write(scratch.0.join("rebuilt.mjs"),"import {readFile} from 'node:fs/promises'; import assert from 'node:assert/strict'; import {loadProgram} from './owned/program.mjs'; const p=await loadProgram(await readFile(new URL('./owned/program.wasm',import.meta.url))); assert.equal(p.exports.selected(40),42); p.dispose(); assert.equal(p.ownership().managedLiveAtClose,0); console.log('rebuilt body');").unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(scratch.0.join("rebuilt.mjs"))
+            .env("PATH", ""),
+        &scratch.0,
+    ));
     fs::write(destination.join("program.mjs"), "user changes").unwrap();
     let edited = image(&destination);
     let result = bounded(&mut build(&source, &destination, &["selected"]), &scratch.0);
