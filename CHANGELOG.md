@@ -5,7 +5,7 @@
 ### Fixed
 
 - Validate the HTTP Host before serving development HTML, assets, source maps, reload metadata or build-failure pages. Read complete headers within fixed size/time limits and reject missing, duplicate or unrelated authorities while preserving explicit hosts, IPv4/IPv6 and loopback localhost.
-- Update vulnerable Playground build dependencies and extension runtime/packaging dependencies within their existing version ranges. The unpublished braces fix remains tracked as a packaging-tool dependency limitation.
+- Update vulnerable Playground build dependencies and extension runtime/packaging dependencies within their existing version ranges. One upstream braces advisory remains in packaging tools because no fixed release is available.
 
 ## [0.61.76] - 2026-10-22
 
