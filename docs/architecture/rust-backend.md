@@ -58,6 +58,10 @@ JSの一回の呼出しは一つのsource値を適用する。Unitも一段階�
 tokenは再利用せず、detach／instance dispose後の呼出しはWASMへ入らず拒否する。
 通常disposeはglobal・辞書・callbackのrootを解放し、managed-live0を検査する。
 
+このcheckedな完全関数型は共有TS loweringでも使う。pureで単相・制約なしの自己参照関数は、
+primitive／Tuple／Maybe／Eitherと関数で閉じる型をconst注釈へ残し、TSの再帰推論による
+TS7023を防ぐ。unknown、nominal参照、generic、辞書やasyncの署名へ型を補う処理は加えない。
+
 loaderはIntのsafe範囲、UTF-8／surrogate、Tupleの要素数とown data field、Maybe／Eitherの
 variantを検査する。Unitは`undefined`、Tupleはreadonly array、Maybe／Eitherは
 `{tag, value}`（Nothingは`{tag}`）で、境界は16MiBまで。loaderとWASMの契約を初期化前に

@@ -229,6 +229,34 @@ fn checked_program_runs_on_bun_and_node_and_preserves_owned_lifetimes() {
             serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
                 .unwrap();
         let entry = directory.join(manifest["entry"].as_str().unwrap());
+        let profile_value = if profile == "development" {
+            seseragi_project::BuildProfile::Development
+        } else {
+            seseragi_project::BuildProfile::Release
+        };
+        let raw = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new(
+                source.to_str().unwrap(),
+                "proof/program-wasm",
+                &original,
+            )
+            .with_profile(profile_value),
+        )
+        .unwrap();
+        fs::write(directory.join("raw.ts"), raw.generated.typescript).unwrap();
+        let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true},"files":["raw.ts"]});
+        fs::write(
+            directory.join("raw-tsconfig.json"),
+            serde_json::to_vec(&config).unwrap(),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(root().join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(directory.join("raw-tsconfig.json")),
+            &scratch.0,
+        ));
         for engine in ["bun", "node"] {
             let result = successful(bounded(
                 Command::new(runtime(engine, &scratch.0))

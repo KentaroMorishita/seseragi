@@ -59,6 +59,62 @@ mod tests {
     }
 
     #[test]
+    fn recursive_ts_values_use_the_retained_closed_contract_without_filling_holes() {
+        use seseragi_lowering::{TypeScriptFunction, TypeScriptType};
+        let input = CompileInput::new(
+            "recursive.ssrg",
+            "stages/recursive",
+            "pub fn deep value: Int -> Int = if value <= 0 then 0 else 1 + deep (value - 1)\n",
+        );
+        let compiled = crate::compile_module(input).unwrap();
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("export const deep: (argument: number) => number ="),
+            "{}",
+            compiled.generated.typescript
+        );
+        assert!(matches!(
+            &compiled.typescript_ir.functions[0],
+            TypeScriptFunction::ConstFunction {
+                value_type: Some(TypeScriptType::Function { .. }),
+                ..
+            }
+        ));
+        let mut missing = compiled.core_ir.clone();
+        missing.functions[0].value_type = None;
+        let lowered = seseragi_lowering::lower_core_module_to_typescript_ir(missing);
+        assert!(matches!(
+            &lowered.functions[0],
+            TypeScriptFunction::ConstFunction {
+                value_type: None,
+                ..
+            }
+        ));
+        for source in [
+            "type Int = | LocalInt\npub fn repeat value: Int -> Int = repeat value\n",
+            "type Int = | LocalInt\npub fn repeat value: Bool -> Int = if value then LocalInt else repeat True\n",
+            "pub fn repeat<A> value: A -> A = repeat value\n",
+            "pub fn repeat<A> value: A -> A where Show<A> = repeat value\n",
+        ] {
+            let other =
+                crate::compile_module(CompileInput::new("other.ssrg", "stages/other", source))
+                    .unwrap();
+            assert!(
+                matches!(
+                    &other.typescript_ir.functions[0],
+                    TypeScriptFunction::ConstFunction {
+                        value_type: None,
+                        ..
+                    }
+                ),
+                "{source}"
+            );
+        }
+    }
+
+    #[test]
     fn project_core_matches_ts_input_and_does_not_require_ts_output_paths() {
         let mut graph = seseragi_project::ModuleGraph::new();
         graph.add_module("graph/lib".to_owned(), []).unwrap();

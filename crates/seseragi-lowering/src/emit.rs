@@ -151,6 +151,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 is_effect,
                 scalar_tail_loop,
                 name,
+                value_type,
                 type_parameters,
                 constraints,
                 parameters,
@@ -170,7 +171,11 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     Some(name),
                     *scalar_tail_loop,
                 );
-                output.push_str(&format!("const {name} = {rendered_body}\n",));
+                let annotation = value_type
+                    .as_ref()
+                    .map(|ty| format!(": {}", render_typescript_type(ty)))
+                    .unwrap_or_default();
+                output.push_str(&format!("const {name}{annotation} = {rendered_body}\n",));
             }
         }
     }
