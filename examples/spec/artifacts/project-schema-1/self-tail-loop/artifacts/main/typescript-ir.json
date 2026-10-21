@@ -35,6 +35,21 @@
       "exported": false,
       "scalarTailLoop": true,
       "name": "sumTo",
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "number"
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "number"
+          },
+          "result": {
+            "kind": "number"
+          }
+        }
+      },
       "parameters": [
         {
           "name": "current",

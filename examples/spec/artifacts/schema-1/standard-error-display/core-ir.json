@@ -108,6 +108,20 @@
         "start": 73,
         "end": 137
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "dom.DomError",
+          "canonical": "std/web/dom::DomError",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -183,6 +197,20 @@
         "start": 139,
         "end": 205
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "dom.DomError",
+          "canonical": "std/web/dom::DomError",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -257,6 +285,26 @@
         "source": "main.ssrg",
         "start": 207,
         "end": 293
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -376,6 +424,26 @@
         "start": 295,
         "end": 383
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -494,6 +562,20 @@
         "start": 385,
         "end": 462
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.HtmlBuildError",
+          "canonical": "std/web/html::HtmlBuildError",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -568,6 +650,20 @@
         "source": "main.ssrg",
         "start": 464,
         "end": 543
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.HtmlBuildError",
+          "canonical": "std/web/html::HtmlBuildError",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

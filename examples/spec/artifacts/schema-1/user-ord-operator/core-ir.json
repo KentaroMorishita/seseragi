@@ -336,6 +336,27 @@
         "start": 316,
         "end": 386
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -440,6 +461,27 @@
         "source": "main.ssrg",
         "start": 387,
         "end": 462
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "typeParameters": [
         "A"
@@ -552,6 +594,51 @@
         "start": 463,
         "end": 540
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -652,6 +739,51 @@
         "source": "main.ssrg",
         "start": 542,
         "end": 623
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
       },
       "typeParameters": [
         "A"
@@ -754,6 +886,35 @@
         "start": 624,
         "end": 684
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -832,6 +993,35 @@
         "start": 685,
         "end": 749
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -899,6 +1089,27 @@
         "source": "main.ssrg",
         "start": 750,
         "end": 801
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {
@@ -998,6 +1209,35 @@
         "start": 802,
         "end": 857
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -1083,6 +1323,19 @@
         "source": "main.ssrg",
         "start": 859,
         "end": 1633
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
       },
       "parameters": [
         {

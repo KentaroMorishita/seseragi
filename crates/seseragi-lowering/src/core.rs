@@ -182,6 +182,11 @@ pub struct CoreFunction {
     /// IR so the artifact schema remains unchanged.
     #[serde(skip)]
     pub is_effect: bool,
+    /// The checked complete value type, including source parameters and any
+    /// returned function. Absence in an older/unproven Core input is not a
+    /// license for a public ABI to reconstruct a signature from its body.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value_type: Option<CoreType>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub type_parameters: Vec<TypeParameter>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -846,6 +851,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     visibility,
                     origin: source_span(&module.source, origin),
                     is_effect: false,
+                    value_type: Some(types::lower_typed_type(scheme.type_ref)),
                     type_parameters: scheme.type_parameters,
                     constraints: scheme
                         .constraints
@@ -894,12 +900,23 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 parameters,
                 body,
             } => {
+                // A named declaration's scheme stores its RESULT type.
+                // Reconstruct its value type from the checked source parameter
+                // list, not from arrow counting in that result or in the body.
+                let value_type = parameters.iter().rev().fold(
+                    types::lower_typed_type(scheme.type_ref),
+                    |result, parameter| CoreType::Function {
+                        parameter: Box::new(lower_parameter(parameter).type_ref),
+                        result: Box::new(result),
+                    },
+                );
                 let constraint_identities = scheme.constraint_identities;
                 functions.push(CoreFunction {
                     symbol,
                     visibility,
                     origin: source_span(&module.source, origin),
                     is_effect: false,
+                    value_type: Some(value_type),
                     type_parameters: scheme.type_parameters,
                     constraints: scheme
                         .constraints
@@ -935,6 +952,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 visibility,
                 origin: source_span(&module.source, origin),
                 is_effect: true,
+                value_type: None,
                 type_parameters,
                 constraints: constraints
                     .into_iter()

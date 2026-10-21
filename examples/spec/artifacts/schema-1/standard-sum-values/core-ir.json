@@ -59,6 +59,73 @@
         "start": 69,
         "end": 249
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "HandInputError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "HandInputError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Hand",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "unit",

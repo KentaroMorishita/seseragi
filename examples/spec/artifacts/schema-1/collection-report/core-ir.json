@@ -313,6 +313,19 @@
         "start": 273,
         "end": 324
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Sale",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "sale",
@@ -401,6 +414,19 @@
         "source": "main.ssrg",
         "start": 326,
         "end": 395
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Sale",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -546,6 +572,25 @@
         "source": "main.ssrg",
         "start": 397,
         "end": 476
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -777,6 +822,25 @@
         "source": "main.ssrg",
         "start": 478,
         "end": 739
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1304,6 +1368,19 @@
         "source": "main.ssrg",
         "start": 741,
         "end": 802
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

@@ -57,6 +57,27 @@
         "start": 42,
         "end": 107
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "bonus",
@@ -158,6 +179,25 @@
         "source": "main.ssrg",
         "start": 109,
         "end": 199
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -360,6 +400,19 @@
         "source": "main.ssrg",
         "start": 201,
         "end": 319
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

@@ -11,6 +11,25 @@
         "start": 0,
         "end": 129
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "unit",

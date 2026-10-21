@@ -501,6 +501,27 @@
         "start": 379,
         "end": 741
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "TodoAction",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "action",
@@ -1000,6 +1021,50 @@
         "start": 743,
         "end": 880
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "TodoState",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "TodoAction",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "state",
@@ -1127,6 +1192,20 @@
         "start": 882,
         "end": 962
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.InputEvent",
+          "canonical": "std/web/html::InputEvent",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "TodoAction",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "event",
@@ -1192,6 +1271,57 @@
         "source": "feature.ssrg",
         "start": 964,
         "end": 1217
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "TodoState",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
       },
       "parameters": [
         {
@@ -1495,6 +1625,57 @@
         "start": 1219,
         "end": 1390
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "TodoState",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "state",
@@ -1724,6 +1905,57 @@
         "source": "feature.ssrg",
         "start": 1392,
         "end": 1642
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "TodoState",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
       },
       "parameters": [
         {

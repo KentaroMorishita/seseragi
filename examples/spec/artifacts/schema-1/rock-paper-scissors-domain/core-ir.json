@@ -95,6 +95,27 @@
         "start": 110,
         "end": 408
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Outcome",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "first",
@@ -547,6 +568,19 @@
         "source": "main.ssrg",
         "start": 410,
         "end": 573
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Outcome",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

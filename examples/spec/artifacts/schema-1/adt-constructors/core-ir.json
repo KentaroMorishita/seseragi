@@ -116,6 +116,19 @@
         "start": 128,
         "end": 180
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Label",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",

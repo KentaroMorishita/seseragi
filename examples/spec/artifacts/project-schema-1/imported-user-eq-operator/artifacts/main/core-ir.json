@@ -68,6 +68,27 @@
         "start": 51,
         "end": 119
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "T",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "typeParameters": [
         "T"
       ],
@@ -173,6 +194,27 @@
         "start": 121,
         "end": 194
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "T",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      },
       "typeParameters": [
         "T"
       ],
@@ -277,6 +319,29 @@
         "source": "main.ssrg",
         "start": 196,
         "end": 352
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

@@ -17,6 +17,31 @@
         "start": 0,
         "end": 99
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "values",
@@ -317,6 +342,25 @@
         "start": 101,
         "end": 165
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "values",
@@ -474,6 +518,19 @@
         "source": "main.ssrg",
         "start": 167,
         "end": 295
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

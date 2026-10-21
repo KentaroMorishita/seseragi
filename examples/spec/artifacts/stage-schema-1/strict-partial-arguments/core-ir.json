@@ -799,6 +799,27 @@
         "start": 171,
         "end": 256
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -951,6 +972,25 @@
         "source": "main.ssrg",
         "start": 683,
         "end": 882
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "typeParameters": [
         {
@@ -1354,6 +1394,26 @@
         "source": "main.ssrg",
         "start": 884,
         "end": 1433
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

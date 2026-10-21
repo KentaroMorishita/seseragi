@@ -11,6 +11,19 @@
         "start": 0,
         "end": 71
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "C",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "C"
       ],
@@ -147,6 +160,25 @@
         "start": 73,
         "end": 119
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -186,6 +218,19 @@
         "source": "main.ssrg",
         "start": 121,
         "end": 175
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -290,6 +335,19 @@
         "source": "main.ssrg",
         "start": 177,
         "end": 235
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -404,6 +462,19 @@
         "start": 237,
         "end": 290
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -507,6 +578,19 @@
         "start": 292,
         "end": 354
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -601,6 +685,25 @@
         "source": "main.ssrg",
         "start": 356,
         "end": 515
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

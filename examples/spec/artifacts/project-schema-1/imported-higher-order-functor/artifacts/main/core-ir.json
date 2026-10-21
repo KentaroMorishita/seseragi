@@ -35,6 +35,19 @@
         "start": 38,
         "end": 80
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -119,6 +132,25 @@
         "source": "main.ssrg",
         "start": 82,
         "end": 255
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

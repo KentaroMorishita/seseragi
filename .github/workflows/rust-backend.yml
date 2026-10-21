@@ -15,6 +15,7 @@ on:
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-cli/src/experimental.rs"
+      - "crates/seseragi-cli/src/experimental/**"
       - "crates/seseragi-cli/src/main.rs"
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
@@ -22,6 +23,9 @@ on:
       - "crates/seseragi-cli/tests/filesystem.rs"
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
+      - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "scripts/program-wasm-probe.mjs"
+      - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -48,6 +52,7 @@ on:
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-cli/src/experimental.rs"
+      - "crates/seseragi-cli/src/experimental/**"
       - "crates/seseragi-cli/src/main.rs"
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
@@ -55,6 +60,9 @@ on:
       - "crates/seseragi-cli/tests/filesystem.rs"
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
+      - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "scripts/program-wasm-probe.mjs"
+      - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
       - "examples/spec/fixtures/rust-backend-projects/**"
@@ -93,6 +101,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
@@ -104,6 +113,8 @@ jobs:
         run: cargo test --locked -p seseragi-backend-rust --lib runtime::host_tests
       - name: Compare file programs, pending I/O, cancellation and finalizers on native, Bun and Node
         run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
+      - name: Verify product program WASM, generated declarations and callback ownership
+        run: cargo test --locked -p seseragi-cli --test program_wasm
 
   native:
     runs-on: ubuntu-24.04

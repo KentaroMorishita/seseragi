@@ -1605,6 +1605,45 @@
         "start": 556,
         "end": 745
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Errors",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
       "typeParameters": [
         "E"
       ],
@@ -2028,6 +2067,27 @@
         "start": 1317,
         "end": 1382
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "User",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "name",
@@ -2125,6 +2185,30 @@
         "source": "main.ssrg",
         "start": 1384,
         "end": 1511
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {
@@ -2329,6 +2413,30 @@
         "start": 1513,
         "end": 1633
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "age",
@@ -2531,6 +2639,38 @@
         "source": "main.ssrg",
         "start": 1635,
         "end": 1770
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Validation",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "User",
+                "arguments": []
+              }
+            ]
+          }
+        }
       },
       "parameters": [
         {
@@ -2976,6 +3116,25 @@
         "start": 1772,
         "end": 1956
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "errors",
@@ -3107,6 +3266,25 @@
         "source": "main.ssrg",
         "start": 1958,
         "end": 2134
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Errors",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -3300,6 +3478,30 @@
         "source": "main.ssrg",
         "start": 2136,
         "end": 2284
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Validation",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "User",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

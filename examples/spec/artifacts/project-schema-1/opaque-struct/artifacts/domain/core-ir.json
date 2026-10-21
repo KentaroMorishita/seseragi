@@ -134,6 +134,19 @@
         "start": 96,
         "end": 149
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -192,6 +205,19 @@
         "start": 150,
         "end": 198
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "secret",
@@ -239,6 +265,19 @@
         "source": "domain.ssrg",
         "start": 199,
         "end": 277
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -404,6 +443,19 @@
         "start": 278,
         "end": 349
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Secret",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "secret",
@@ -479,6 +531,25 @@
         "start": 350,
         "end": 398
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -545,6 +616,25 @@
         "source": "domain.ssrg",
         "start": 399,
         "end": 472
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
       },
       "typeParameters": [
         "A"
@@ -743,6 +833,25 @@
         "start": 473,
         "end": 571
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Secret",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "boxed",
@@ -940,6 +1049,31 @@
         "source": "domain.ssrg",
         "start": 572,
         "end": 665
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Secret",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

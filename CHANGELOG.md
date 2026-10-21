@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.61.76] - 2026-10-22
+
+### Added
+
+- `experimental build-wasm`で単相pure関数をprogram WASMへ生成する。checkedな公開型からUnit／Bool／Int／String、Tuple、標準Maybe／Eitherと返却関数のcodec、ES module loader・型宣言・build metadataを出力する。
+- 返却callbackのstrong rootと明示detach、instance dispose、trap後のretireと再生成を扱う。source引数と返り値関数の適用段階を保ち、通常disposeはmanaged root0を検査する。型付きのdomain failureとEffect failureは分け、Effect／Ref／providerのWASM ABIは未対応。
+- 別のSeseragi sourceから生成したTS UIで、呼出し・Either・callback解放・instance解放と再生成を試すsampleを追加する。assetの配置は明示的なsample assemblyで、標準build/watchへの統合は残る。
+- checkedな完全関数型を使い、表現できる閉じた型のpure自己参照関数へTSの型注釈を出す。再帰の型推論によるTS7023を避け、generic・辞書・未知のnominal型へ型を補わない。
+
 ## [0.61.75] - 2026-10-22
 
 ### Added

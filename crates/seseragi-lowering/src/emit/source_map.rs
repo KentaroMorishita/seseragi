@@ -574,6 +574,7 @@ mod tests {
                 is_effect: false,
                 scalar_tail_loop: false,
                 name: "run".to_owned(),
+                value_type: None,
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),
                 parameters: Vec::new(),

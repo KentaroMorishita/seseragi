@@ -5088,6 +5088,31 @@
         "start": 258,
         "end": 349
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "F",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "typeParameters": [
         {
           "name": "F",
@@ -5292,6 +5317,31 @@
         "start": 351,
         "end": 449
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "mt.MaybeT",
+          "canonical": "std/transformer/maybe::MaybeT",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "typeParameters": [
         {
           "name": "M",
@@ -5412,6 +5462,37 @@
         "source": "main.ssrg",
         "start": 451,
         "end": 529
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "external-named",
+          "name": "rt.ReaderT",
+          "canonical": "std/transformer/reader::ReaderT",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "M",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
       },
       "typeParameters": [
         {

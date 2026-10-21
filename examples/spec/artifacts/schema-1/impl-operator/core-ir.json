@@ -352,6 +352,19 @@
         "start": 207,
         "end": 264
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -455,6 +468,19 @@
         "source": "main.ssrg",
         "start": 266,
         "end": 444
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

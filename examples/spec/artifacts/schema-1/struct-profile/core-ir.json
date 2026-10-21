@@ -53,6 +53,19 @@
         "start": 53,
         "end": 135
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "player",
@@ -127,6 +140,19 @@
         "source": "main.ssrg",
         "start": 137,
         "end": 330
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

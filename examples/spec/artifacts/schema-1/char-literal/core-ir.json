@@ -547,6 +547,19 @@
         "start": 1,
         "end": 37
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -584,6 +597,19 @@
         "start": 38,
         "end": 78
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -617,6 +643,19 @@
         "source": "main.ssrg",
         "start": 100,
         "end": 182
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Char",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "parameters": [
         {

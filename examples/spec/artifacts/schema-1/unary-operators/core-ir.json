@@ -927,6 +927,19 @@
         "start": 706,
         "end": 749
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -974,6 +987,19 @@
         "source": "main.ssrg",
         "start": 750,
         "end": 799
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1023,6 +1049,19 @@
         "start": 800,
         "end": 842
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -1071,6 +1110,19 @@
         "start": 968,
         "end": 1004
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "A"
       ],
@@ -1107,6 +1159,27 @@
         "source": "main.ssrg",
         "start": 1006,
         "end": 1077
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
       },
       "parameters": [
         {

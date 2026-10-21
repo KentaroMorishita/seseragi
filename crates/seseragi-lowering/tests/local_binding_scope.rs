@@ -105,13 +105,19 @@ fn parameters_locals_and_patterns_do_not_become_self_tail_calls() {
     }
     let count = emitted
         .lines()
-        .find(|line| line.starts_with("const count ="))
-        .expect("recursive control");
+        .find(|line| line.starts_with("const count: (argument: number) => number ="))
+        .expect("recursive control with its checked function type");
     assert!(count.contains("while (true)"), "{count}");
-    for name in ["scopedCount", "patternCount"] {
+    for (name, signature) in [
+        ("scopedCount", "(argument: number) => number"),
+        (
+            "patternCount",
+            "(argument: readonly [number, (argument: number) => number]) => number",
+        ),
+    ] {
         let line = emitted
             .lines()
-            .find(|line| line.starts_with(&format!("const {name} =")))
+            .find(|line| line.starts_with(&format!("const {name}: {signature} =")))
             .expect("recursive function with a shadowed base branch");
         assert!(line.contains("while (true)"), "{line}");
         assert_eq!(line.matches("({ [$ssrg$tail]:").count(), 1, "{line}");

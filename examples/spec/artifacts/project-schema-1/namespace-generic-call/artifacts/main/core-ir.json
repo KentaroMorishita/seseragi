@@ -90,6 +90,19 @@
         "start": 36,
         "end": 89
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "value",
@@ -123,6 +136,19 @@
         "source": "main.ssrg",
         "start": 91,
         "end": 238
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -267,6 +293,19 @@
         "start": 240,
         "end": 390
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "domain.Hand",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "hand",
@@ -394,6 +433,19 @@
         "source": "main.ssrg",
         "start": 392,
         "end": 488
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

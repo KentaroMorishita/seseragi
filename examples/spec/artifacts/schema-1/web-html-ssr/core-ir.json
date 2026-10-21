@@ -273,6 +273,36 @@
         "start": 65,
         "end": 472
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.WebUrl",
+          "canonical": "std/web/html::WebUrl",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
+            "arguments": []
+          },
+          "result": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
       "parameters": [
         {
           "id": "docsUrl",
@@ -920,6 +950,41 @@
         "start": 474,
         "end": 700
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "html.WebUrl",
+          "canonical": "std/web/html::WebUrl",
+          "arguments": []
+        },
+        "result": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      },
       "parameters": [
         {
           "id": "docsUrl",
@@ -1227,6 +1292,32 @@
         "start": 702,
         "end": 951
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "html.WebUrl",
+              "canonical": "std/web/html::WebUrl",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "parsed",
@@ -1524,6 +1615,20 @@
         "start": 953,
         "end": 1047
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -1598,6 +1703,32 @@
         "source": "main.ssrg",
         "start": 1049,
         "end": 1216
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "html.WebUrl",
+              "canonical": "std/web/html::WebUrl",
+              "arguments": []
+            }
+          ]
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {
@@ -1803,6 +1934,20 @@
         "source": "main.ssrg",
         "start": 1218,
         "end": 1305
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "parameters": [
         {

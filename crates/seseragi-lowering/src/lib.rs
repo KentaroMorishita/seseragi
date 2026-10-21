@@ -1069,6 +1069,7 @@ pub fn listLength values: List<Int> -> Int = {
                 visibility: Visibility::Public,
                 origin: origin.clone(),
                 is_effect: false,
+                value_type: None,
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),
                 parameters: vec![CoreParameter {

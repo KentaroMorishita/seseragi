@@ -1,0 +1,66 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+foreign "typescript" from "./bridge.ts" {
+  task fn operate action: String -> input: Int -> String
+}
+
+type Action = | Call | Validate | Reject | Detach | Dispose | Overflow | Reload
+
+fn view state: (Int, String) -> html.Html<Action> = {
+  let (input, status) = state
+  html.main {
+    children: [
+      html.h1 { children: "Seseragi program WASM" },
+      html.p { children: "StringとIntを捕捉した返却関数を呼び出します。" },
+      html.pre { id: "status", children: status },
+      html.button { id: "call", onClick: Call, children: "+1して呼ぶ" },
+      html.button { id: "validate", onClick: Validate, children: "成功値" },
+      html.button { id: "reject", onClick: Reject, children: "型付き失敗" },
+      html.button { id: "detach", onClick: Detach, children: "callbackを解放" },
+      html.button { id: "dispose", onClick: Dispose, children: "instanceを解放" },
+      html.button { id: "overflow", onClick: Overflow, children: "Defect" },
+      html.button { id: "reload", onClick: Reload, children: "再生成" },
+      html.p { id: "input", children: `入力: ${input}` }
+    ]
+  }
+}
+
+effect fn dispatch state: signals.MutableSignal<(Int, String)>
+  -> action: Action
+  -> Unit
+fails Js.Error =
+  do {
+    current <- signals.read state
+    let (input, _) = current
+    let next = match action { Call -> input + 1; _ -> input }
+    let name = match action {
+      Call -> "call"
+      Validate -> "validate"
+      Reject -> "reject"
+      Detach -> "detach"
+      Dispose -> "dispose"
+      Overflow -> "overflow"
+      Reload -> "reload"
+    }
+    status <- operate name next
+    signals.update (\_ -> (next, status)) state
+  }
+
+effect fn release _state: String -> Unit = do {
+  // Disposal clears host references even if its managed-root assertion fails.
+  // This sample attempts cleanup on every exit; normal-close0 is tested separately.
+  _ <- effects.attempt (operate "dispose" 0)
+  effects.succeed ()
+}
+
+pub effect fn main -> Unit with Dom fails String = do {
+  initial <- effects.acquireRelease (operate "reload" 2) release
+    |> effects.mapError show
+  state <- signals.make (2, initial)
+  target <- dom.query "#app" |> effects.mapError show
+  dom.run (dom.defaultOptions ()) target (dispatch state) (signals.map view state)
+    |> effects.mapError show
+}

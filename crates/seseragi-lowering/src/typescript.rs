@@ -354,6 +354,10 @@ pub enum TypeScriptFunction {
         #[serde(default, skip_serializing_if = "is_false")]
         scalar_tail_loop: bool,
         name: String,
+        /// A representable checked type that breaks recursive TS inference.
+        /// Never reconstructed from display names or inferred from the body.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        value_type: Option<TypeScriptType>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -1024,6 +1028,15 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             let scoped_types = module_imports
                 .type_names
                 .with_parameters(&function.type_parameters);
+            let value_type = (!function.is_effect
+                && function.type_parameters.is_empty()
+                && function.constraints.is_empty()
+                && crate::core_free_variables(&function.body)
+                    .is_some_and(|free| free.names.contains(&function.symbol)))
+            .then(|| function.value_type.as_ref())
+            .flatten()
+            .map(|ty| types::type_ref_from_core_type(ty, &scoped_types))
+            .filter(recursive_value_annotation);
             let type_constructor_parameters = function
                 .type_parameters
                 .iter()
@@ -1042,12 +1055,14 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             );
             let body =
                 lower_core_expr_to_typescript(function.body, &function_value_names, &scoped_types);
+            let is_async = typescript_expr_contains_await(&body);
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
-                is_async: typescript_expr_contains_await(&body),
+                is_async,
                 is_effect: function.is_effect,
                 scalar_tail_loop,
                 name: module_value_name(&module.module, &function.symbol),
+                value_type: if is_async { None } else { value_type },
                 type_parameters: function.type_parameters,
                 constraints: function
                     .constraints
@@ -1120,6 +1135,29 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     }
     freshen_runtime_imports(&mut typescript);
     Ok(typescript)
+}
+
+// Start with closed value codecs whose TS representation introduces no nominal
+// type imports or dictionary stages. Other recursive schemes keep their existing
+// lowering until those contracts are carried through type/import planning.
+fn recursive_value_annotation(ty: &TypeScriptType) -> bool {
+    match ty {
+        TypeScriptType::Bigint
+        | TypeScriptType::Number
+        | TypeScriptType::Boolean
+        | TypeScriptType::String
+        | TypeScriptType::Undefined
+        | TypeScriptType::Never => true,
+        TypeScriptType::Function { parameter, result } => {
+            recursive_value_annotation(parameter) && recursive_value_annotation(result)
+        }
+        TypeScriptType::Tuple { elements } => elements.iter().all(recursive_value_annotation),
+        TypeScriptType::Maybe { element } => recursive_value_annotation(element),
+        TypeScriptType::Either { error, value } => {
+            recursive_value_annotation(error) && recursive_value_annotation(value)
+        }
+        _ => false,
+    }
 }
 
 fn lower_foreign_namespace(

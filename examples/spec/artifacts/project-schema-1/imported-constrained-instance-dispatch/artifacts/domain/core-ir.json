@@ -354,6 +354,19 @@
         "start": 374,
         "end": 444
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "T",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
       "typeParameters": [
         "T"
       ],
