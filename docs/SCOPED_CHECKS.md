@@ -61,13 +61,14 @@ conformanceの`stdlib_surface` testを先に実行できます。
 
 ## Dependency installation
 
-検証用のBunはCIとlocalで **1.4.3** に揃える。versionの基準はrootの
+検証用のBunはCIとlocalで **1.4.4** に揃える。versionの基準はrootの
 `.bun-version`で、GitHub Actionsも同じfileを読む。localでは`bun --version`と
 `cat .bun-version`が一致することを確認してから検証する。
 
 以前の1.3.9ではLinux x64 WASMのIPIntクラッシュと同じstackを全体gateで観測し、
 [WebKit更新 #26922](https://github.com/oven-sh/bun/pull/26922)を含む1.3.11へ
-揃えていた。1.4.3への更新後も、この境界の実行を省略しない。
+揃えていた。1.4.4でBrotli decoderのCVE-2026-111497が修正されたため更新し、
+この境界の実行も省略しない。
 WASMの実行・assertionを省略したり、JSCの実行tierを無効化したりはしない。
 既存Docsの過去の実測version表記は、その検証時点の記録として残す。
 

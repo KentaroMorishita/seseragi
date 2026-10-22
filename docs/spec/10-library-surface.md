@@ -2901,10 +2901,16 @@ sendBytesとsendEmptyはexchangeを実行してbodyをmemoryへ集めるsmall-re
 超過時はresponse streamをcancelしてHttpResponseBodyLimitExceededです。informational responseは破棄し、final
 head、body、trailersだけをResponseへ入れます。
 
-redirect、cookie jar、authentication、retry、timeout、content encoding decodeは自動適用しません。redirectは
+標準Node/Bun providerは、gzip、deflate、br（x-gzip、x-deflateを含む）からなるContent-Encodingを
+受信順の逆にstreaming decodeします。既知encodingの重なりは8段までとし、超過はHttpProtocolFailureです。
+未知のencodingを含む場合は全体をdecodeせず、そのまま返します。HEAD、204、205、304の空bodyはdecodeしません。
+browser providerのbodyはFetchがdecodeした値です。small-response APIの上限はdecode後のchunkに適用し、
+圧縮前のContent-Lengthだけを根拠に受信量を許可しません。response headersは受信した値を保つため、
+Content-LengthやContent-Encodingがdecode後のbodyの長さ・形式を表すとは限りません。
+
+redirect、cookie jar、authentication、retry、timeoutは自動適用しません。redirectは
 3xx ResponseとLocationをapplicationが明示処理し、retry / timeoutはEffectまたはSchedule combinatorで包みます。
-body BytesはHTTP transfer framingを除去した後、Content-Encodingをdecodeする前の値です。JSON decodeは
-`std/json` Decoder、text decodeはcharsetを確認するadapterを明示的に使います。
+JSON decodeは`std/json` Decoder、text decodeはcharsetを確認するadapterを明示的に使います。
 
 ### `std/http/server`
 

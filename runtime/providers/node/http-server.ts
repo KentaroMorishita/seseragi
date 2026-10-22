@@ -6,6 +6,7 @@ import {
 } from "node:http"
 import {
   isCancelledHttpServerResponse,
+  onHttpServerForcedClose,
   type ProviderHttpServerResponse,
   type ProviderHttpServerStreamBody,
 } from "@seseragi/runtime/http-server"
@@ -35,6 +36,7 @@ type ServerToken = {
   readonly server: Server
   readonly children: Set<Promise<void>>
   readonly pendingBodies: Set<IncomingMessage>
+  readonly handler: ListenRequest["handler"]
   closed?: Promise<void>
 }
 
@@ -78,7 +80,12 @@ export function createNodeHttpServerProvider(
             )
           })
           await startServer(server, request)
-          const token = { server, children, pendingBodies }
+          const token = {
+            server,
+            children,
+            pendingBodies,
+            handler: request.handler,
+          }
           servers.add(token)
           return { kind: "success", value: token }
         } catch (cause) {
@@ -93,7 +100,7 @@ export function createNodeHttpServerProvider(
       },
     },
     shutdown: async () => {
-      for (const token of [...servers].reverse()) await closeServer(token)
+      for (const token of [...servers].reverse()) await closeServer(token, true)
       servers.clear()
     },
   })
@@ -142,12 +149,18 @@ async function handleRequest(
       return
     }
     const result = validateResponse(applicationResponse)
+    if (response.destroyed) {
+      if (!(result.body instanceof Uint8Array)) {
+        await providerStreamBody(result.body).cancel()
+      }
+      return
+    }
     for (const entry of result.headers) {
       response.appendHeader(entry.name, entry.value)
     }
     response.writeHead(result.status)
     if (result.body instanceof Uint8Array) {
-      response.end(Buffer.from(result.body))
+      await endResponse(response, Buffer.from(result.body))
     } else {
       stream = providerStreamBody(result.body)
       await writeStreamBody(stream, response)
@@ -183,7 +196,9 @@ async function writeStreamBody(
   response.once("close", disconnected)
   try {
     while (true) {
+      if (response.destroyed) throw new Error("HTTP response is closed")
       const next = await body.pull()
+      if (response.destroyed) throw new Error("HTTP response is closed")
       if (next.done) break
       if (!response.write(Buffer.from(next.value))) await waitForDrain(response)
     }
@@ -197,7 +212,10 @@ async function writeStreamBody(
   }
 }
 
-function endResponse(response: ServerResponse): Promise<void> {
+function endResponse(
+  response: ServerResponse,
+  body?: Uint8Array
+): Promise<void> {
   return new Promise((resolve, reject) => {
     const cleanup = (): void => {
       response.off("error", onError)
@@ -213,7 +231,7 @@ function endResponse(response: ServerResponse): Promise<void> {
     }
     response.once("error", onError)
     response.once("close", onClose)
-    response.end(() => {
+    response.end(body, () => {
       cleanup()
       resolve()
     })
@@ -361,7 +379,10 @@ function serverToken(value: unknown): ServerToken {
   return value as ServerToken
 }
 
-function closeServer(token: ServerToken): Promise<void> {
+function closeServer(token: ServerToken, force = false): Promise<void> {
+  const closeConnections = (): void => token.server.closeAllConnections()
+  // Package shutdown can escalate an already pending graceful close.
+  if (force) closeConnections()
   token.closed ??= (async () => {
     const stopped = new Promise<void>((resolve, reject) => {
       token.server.close((error) => {
@@ -373,11 +394,16 @@ function closeServer(token: ServerToken): Promise<void> {
     // A peer may never finish its upload. Cancel reads before waiting for
     // their child tasks, otherwise shutdown can wait forever.
     for (const request of token.pendingBodies) request.destroy()
-    // Also release responses waiting for a peer that no longer reads. Their
-    // close event cancels the stream and rejects a pending drain wait.
-    token.server.closeAllConnections()
-    await Promise.allSettled([...token.children])
-    await stopped
+    const unregister = onHttpServerForcedClose(token.handler, closeConnections)
+    try {
+      await Promise.allSettled([...token.children])
+      // Buffered and streaming children finish their native writes before
+      // this point. Release idle or incomplete-header connections as well.
+      closeConnections()
+      await stopped
+    } finally {
+      unregister()
+    }
   })()
   return token.closed
 }

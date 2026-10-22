@@ -63,8 +63,14 @@ limit and is not the implementation of these bounded public helpers.
 The Node HTTP server bounds one incoming request body to 8 MiB by default,
 checks both declared and received lengths, and returns 413 before dispatching
 an oversized request to the application. The Bun server uses its native limit
-(128 MiB in the pinned Bun 1.4.3). Interrupted uploads are released on server
+(128 MiB in the pinned Bun 1.4.4). Interrupted uploads are released on server
 close. These are per-request limits, not a process-wide or concurrency quota.
+
+The native HTTP client decodes known content encodings incrementally, with at
+most eight decoding stages. The small-response limit applies to decoded chunks,
+including compressed input that expands beyond the limit. Cancellation owns
+both the transport and decoder cleanup. Use Bun 1.4.4 or a patched supported
+Node release: buffering limits do not repair a vulnerable host Brotli decoder.
 
 The Bun HTTP/1 transport bounds response headers and trailers to 16 KiB each,
 chunk-size lines to 1 KiB and informational responses to 16 before a final

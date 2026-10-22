@@ -530,6 +530,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/http1-stream.ts"),
     ),
     (
+        "http-content-decoding.ts",
+        include_str!("../../../runtime/providers/http-content-decoding.ts"),
+    ),
+    (
         "filesystem.ts",
         include_str!("../../../runtime/providers/filesystem.ts"),
     ),

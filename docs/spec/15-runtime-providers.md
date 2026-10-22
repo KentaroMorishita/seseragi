@@ -836,14 +836,16 @@ machine-readableな対応表と実装handoffは`provider-design-validation-schem
 この表の左列とContract operationは同じnamespaceではありません。たとえばHTTP small-response wrapperは
 `sendBytes`と`sendEmpty`は`HttpClient#exchange`を集約し、各body chunkを保持する前に指定された
 `HttpBodyLimit`を検査します。超過時は`HttpResponseBodyLimitExceeded`を返してsubscriptionを終了し、
-response全量の読み込み後にだけ制限を検査する実装にはしません。filesystem wrapperは複数回のopen / read / closeを
+response全量の読み込み後にだけ制限を検査する実装にはしません。標準native providerの既知Content-Encodingは
+backpressureを保ってstreaming decodeし、decode後のbyte数でこの上限を検査します。browserはFetchのdecode済み
+bodyを使います。filesystem wrapperは複数回のopen / read / closeを
 組み立てます。`std/http.exchange`のbody Streamはone-shot `#send`の別名ではなく、15.33〜15.40を満たす
 subscription operationを使います。初期検証用`acme/postgres` identityは
 application package実装時に`seseragi/postgres`へ移行し、標準`Database` application APIは導入しません。
 
 標準Node HTTP server providerは、request bodyを1 requestあたり既定8 MiBまで受信します。
 `Content-Length`の宣言と実際の受信byte数の両方を確認し、超過時はapplication handlerを呼ばず
-413を返して接続を終了します。Bun providerはBunのnative上限を使い、固定toolchainのBun 1.4.3では
+413を返して接続を終了します。Bun providerはBunのnative上限を使い、固定toolchainのBun 1.4.4では
 128 MiBです。これらはhost providerの受信制限であり、全接続の合計memory quotaではありません。
 
 Bun HTTP/1 clientの応答metadataは、status lineを含む各header blockとtrailer blockをそれぞれ

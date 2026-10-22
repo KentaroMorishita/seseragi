@@ -1,5 +1,6 @@
 import {
   isCancelledHttpServerResponse,
+  onHttpServerForcedClose,
   type ProviderHttpServerResponse,
   type ProviderHttpServerStreamBody,
 } from "@seseragi/runtime/http-server"
@@ -38,9 +39,20 @@ type BunHost = Readonly<{
     }>
   ) => BunServer
 }>
+type ActiveStream = Readonly<{
+  cancel: () => Promise<void>
+  completion: Promise<void>
+}>
+type ServerLifecycle = {
+  readonly streams: Set<ActiveStream>
+  forced: boolean
+}
 type ServerToken = {
   server: BunServer
   children: Set<Promise<unknown>>
+  handler: ListenRequest["handler"]
+  lifecycle: ServerLifecycle
+  forceClosed?: Promise<void>
   closed: Promise<void> | undefined
 }
 
@@ -63,13 +75,21 @@ export function createBunHttpServerProvider(
         try {
           const request = listenRequest(value)
           const children = new Set<Promise<unknown>>()
+          const lifecycle: ServerLifecycle = {
+            streams: new Set(),
+            forced: false,
+          }
           const server = host.serve({
             port: request.port,
             ...(request.hostname === undefined
               ? {}
               : { hostname: request.hostname }),
             fetch(nativeRequest) {
-              const child = handleRequest(request.handler, nativeRequest)
+              const child = handleRequest(
+                request.handler,
+                nativeRequest,
+                lifecycle
+              )
               children.add(child)
               void child.then(
                 () => children.delete(child),
@@ -78,7 +98,13 @@ export function createBunHttpServerProvider(
               return child
             },
           })
-          const token = { server, children, closed: undefined }
+          const token: ServerToken = {
+            server,
+            children,
+            handler: request.handler,
+            lifecycle,
+            closed: undefined,
+          }
           servers.add(token)
           return { kind: "success", value: token }
         } catch (cause) {
@@ -93,7 +119,7 @@ export function createBunHttpServerProvider(
       },
     },
     shutdown: async () => {
-      for (const token of [...servers].reverse()) await closeServer(token)
+      for (const token of [...servers].reverse()) await closeServer(token, true)
       servers.clear()
     },
   })
@@ -110,7 +136,8 @@ function unavailable(message: string): ProviderResult {
 
 async function handleRequest(
   handler: ListenRequest["handler"],
-  request: Request
+  request: Request,
+  lifecycle: ServerLifecycle
 ): Promise<Response> {
   const body = new Uint8Array(await request.arrayBuffer())
   const snapshot: AbiRequest = Object.freeze({
@@ -127,54 +154,92 @@ async function handleRequest(
   if (isCancelledHttpServerResponse(applicationResponse)) {
     // Bun rejects Response.error() because its status is zero. An already
     // errored body closes the connection before any HTTP headers are sent.
-    return new Response(
-      new ReadableStream<Uint8Array>({
-        start(controller) {
-          controller.error()
-        },
-      })
-    )
+    return closedResponse()
   }
   const response = validateResponse(applicationResponse)
   const stream =
     response.body instanceof Uint8Array
       ? undefined
       : providerStreamBody(response.body)
+  if (request.signal.aborted || lifecycle.forced) {
+    await stream?.cancel()
+    return closedResponse()
+  }
+  const nativeBody = responseBody(response.body, lifecycle.streams)
   try {
-    return new Response(responseBody(response.body), {
+    return new Response(nativeBody.value, {
       status: response.status,
       headers: response.headers.map(
         ({ name, value }) => [name, value] as [string, string]
       ),
     })
   } catch (cause) {
-    await stream?.cancel().catch(() => undefined)
+    await nativeBody.cancel().catch(() => undefined)
     throw cause
   }
 }
 
+function closedResponse(): Response {
+  return new Response(
+    new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.error()
+      },
+    })
+  )
+}
+
 function responseBody(
-  body: AbiResponse["body"]
-): ArrayBuffer | ReadableStream<Uint8Array<ArrayBuffer>> {
-  if (body instanceof Uint8Array) return Uint8Array.from(body).buffer
+  body: AbiResponse["body"],
+  active: Set<ActiveStream>
+): Readonly<{
+  value: ArrayBuffer | ReadableStream<Uint8Array<ArrayBuffer>>
+  cancel: () => Promise<void>
+}> {
+  if (body instanceof Uint8Array) {
+    return {
+      value: Uint8Array.from(body).buffer,
+      cancel: async () => undefined,
+    }
+  }
   const stream = providerStreamBody(body)
-  return new ReadableStream<Uint8Array<ArrayBuffer>>({
+  let release = (): void => undefined
+  const completion = new Promise<void>((resolve) => {
+    release = resolve
+  })
+  let terminal: Promise<void> | undefined
+  const finalize = (cancelled: boolean): Promise<void> => {
+    terminal ??= Promise.resolve().then(async () => {
+      try {
+        if (cancelled) await stream.cancel()
+        else await stream.complete()
+      } finally {
+        active.delete(owned)
+        release()
+      }
+    })
+    return terminal
+  }
+  const owned: ActiveStream = { cancel: () => finalize(true), completion }
+  active.add(owned)
+  const value = new ReadableStream<Uint8Array<ArrayBuffer>>({
     async pull(controller) {
       try {
         const next = await stream.pull()
         if (next.done) {
-          await stream.complete()
+          await finalize(false)
           controller.close()
         } else controller.enqueue(Uint8Array.from(next.value))
       } catch (cause) {
-        await stream.cancel().catch(() => undefined)
+        await owned.cancel().catch(() => undefined)
         controller.error(cause)
       }
     },
     async cancel() {
-      await stream.cancel()
+      await owned.cancel()
     },
   })
+  return { value, cancel: owned.cancel }
 }
 
 function listenRequest(value: unknown): ListenRequest {
@@ -236,11 +301,32 @@ function serverToken(value: unknown): ServerToken {
   return value as ServerToken
 }
 
-function closeServer(token: ServerToken): Promise<void> {
+function closeServer(token: ServerToken, force = false): Promise<void> {
+  const forceClose = (): void => {
+    token.lifecycle.forced = true
+    token.forceClosed ??= Promise.resolve(token.server.stop(true))
+    // The shared close completion joins this promise below, including when
+    // shutdown escalates a close which is already draining.
+    void token.forceClosed.catch(() => undefined)
+    for (const stream of token.lifecycle.streams) {
+      void stream.cancel().catch(() => undefined)
+    }
+  }
+  if (force) forceClose()
   token.closed ??= (async () => {
-    await token.server.stop(false)
-    await Promise.allSettled([...token.children])
-    await token.server.stop(true)
+    const stopped = token.server.stop(false)
+    const unregister = onHttpServerForcedClose(token.handler, forceClose)
+    try {
+      await stopped
+      await Promise.allSettled([...token.children])
+      forceClose()
+      await Promise.allSettled(
+        [...token.lifecycle.streams].map((stream) => stream.completion)
+      )
+      await token.forceClosed
+    } finally {
+      unregister()
+    }
   })()
   return token.closed
 }

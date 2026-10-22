@@ -11,6 +11,7 @@ import {
   defineProviderPackage,
   type ProviderPackageEntry,
 } from "@seseragi/runtime/provider-package"
+import { createDecodedHttpExchange } from "./http-content-decoding"
 import { createBunHttp1Exchange } from "./http1-stream"
 
 type FetchHost = (input: string, init: RequestInit) => Promise<Response>
@@ -32,9 +33,14 @@ export function createFetchHttpClientProvider(
         return withProviderCancellation(completion, () => controller.abort())
       },
       exchange(value, observer, attachment) {
-        return target === "bun-process"
-          ? createBunHttp1Exchange(value, observer, attachment)
-          : createNodeHttpExchange(value, observer, attachment)
+        return createDecodedHttpExchange(
+          target === "bun-process"
+            ? createBunHttp1Exchange
+            : createNodeHttpExchange,
+          value,
+          observer,
+          attachment
+        )
       },
     },
   })
@@ -129,19 +135,34 @@ function createNodeHttpExchange(
     emit()
   }
 
+  const headers = [
+    "host",
+    url.host,
+    ...requestValue.headers
+      .filter(({ name }) => name.toLowerCase() !== "host")
+      .flatMap(({ name, value }) => [name, value]),
+  ]
+  const hasFraming = requestValue.headers.some(({ name }) => {
+    const normalized = name.toLowerCase()
+    return normalized === "content-length" || normalized === "transfer-encoding"
+  })
+  const knownLength = body.knownLength
+  if (
+    !hasFraming &&
+    typeof knownLength === "number" &&
+    Number.isSafeInteger(knownLength) &&
+    knownLength >= 0
+  ) {
+    headers.push("content-length", String(knownLength))
+  }
+
   const request = transport.request(
     url,
     {
       method: requestValue.method,
       // Node does not synthesize Host for the raw header-array form. Keep the
       // generated authority while preserving duplicate application headers.
-      headers: [
-        "host",
-        url.host,
-        ...requestValue.headers
-          .filter(({ name }) => name.toLowerCase() !== "host")
-          .flatMap(({ name, value }) => [name, value]),
-      ],
+      headers,
     },
     (incoming) => {
       response = incoming

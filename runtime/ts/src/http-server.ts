@@ -100,16 +100,38 @@ type ServerExecutionState = {
   readonly server: HttpServer
   readonly context: EffectContext
   readonly requests: Set<RequestExecution>
+  readonly forceClose: Set<() => void>
+  closeMode: "open" | "draining" | "cancelled"
   unregisterCleanup: () => void
+  unregisterCancellation: () => void
+  cancellation?: Promise<void>
   closeCompletion?: Promise<ServiceResult<never, Unit>>
 }
 
 const serverExecutions = new WeakMap<object, ServerExecutionState>()
+const serverHandlers = new WeakMap<
+  ProviderHttpServerOptions["handler"],
+  ServerExecutionState
+>()
 const cancelledResponses = new WeakSet<object>()
 
 /** Runtime-provider bridge marker; not part of std/http/server. */
 export function isCancelledHttpServerResponse(response: object): boolean {
   return cancelledResponses.has(response)
+}
+
+/** Runtime-provider close lifecycle bridge; not part of std/http/server. */
+export function onHttpServerForcedClose(
+  handler: ProviderHttpServerOptions["handler"],
+  forceClose: () => void
+): () => void {
+  const state = serverHandlers.get(handler)
+  if (state === undefined || state.closeMode !== "draining") {
+    forceClose()
+    return () => undefined
+  }
+  state.forceClose.add(forceClose)
+  return () => state.forceClose.delete(forceClose)
 }
 
 export function requestMethod(request: HttpServerRequest): string {
@@ -273,6 +295,9 @@ export function listen<Environment>(
       closeServerState(state, true).then(() => undefined)
     )
     state.unregisterCleanup = registration.unregister
+    state.unregisterCancellation = context.onCancel(() =>
+      closeServerState(state, true).then(() => undefined)
+    )
     await registration.ready
     return httpServerSuccess(started.value)
   })
@@ -316,6 +341,9 @@ export function serveOnce<Environment>(
       closeServerState(state, true).then(() => undefined)
     )
     state.unregisterCleanup = registration.unregister
+    state.unregisterCancellation = context.onCancel(() =>
+      closeServerState(state, true).then(() => undefined)
+    )
     await registration.ready
     await waitForRequestClaim(requestClaimed, context)
     await closeServerState(state, false)
@@ -382,7 +410,10 @@ function createServerState(
     server,
     context,
     requests: new Set(),
+    forceClose: new Set(),
+    closeMode: "open",
     unregisterCleanup: () => undefined,
+    unregisterCancellation: () => undefined,
   }
 }
 
@@ -391,7 +422,7 @@ function bridgeOptions<Environment>(
   environment: Environment & HttpServerEnvironment,
   state: ServerExecutionState
 ): ProviderHttpServerOptions {
-  return Object.freeze({
+  const bridged: ProviderHttpServerOptions = Object.freeze({
     port: options.port,
     ...(options.hostname === undefined ? {} : { hostname: options.hostname }),
     async handler(request) {
@@ -435,6 +466,8 @@ function bridgeOptions<Environment>(
       }
     },
   })
+  serverHandlers.set(bridged.handler, state)
+  return bridged
 }
 
 function isStreamResponse(response: HttpServerResponse): boolean {
@@ -529,20 +562,33 @@ function closeServerState(
   state: ServerExecutionState,
   cancelRequests: boolean
 ): Promise<ServiceResult<never, Unit>> {
-  state.unregisterCleanup()
+  if (cancelRequests && state.closeMode !== "cancelled") {
+    state.closeMode = "cancelled"
+    state.cancellation = (async () => {
+      // Escalation must also reach a provider already waiting for graceful
+      // transfer. Closing the transport releases native backpressure before
+      // joining request cancellation and its resource finalizers.
+      for (const forceClose of state.forceClose) forceClose()
+      await Promise.allSettled(
+        [...state.requests].map((request) => request.cancel())
+      )
+    })()
+  } else if (state.closeMode === "open") {
+    state.closeMode = "draining"
+  }
   state.closeCompletion ??= (async () => {
     const handle = state.handle
     if (handle === undefined) return httpServerSuccess(undefined)
     const closing = state.server.close(handle, state.context)
-    if (cancelRequests) {
-      await Promise.allSettled(
-        [...state.requests].map((request) => request.cancel())
-      )
-    }
+    await state.cancellation
     const result = await closing
+    await state.cancellation
     serverExecutions.delete(handle)
     return result
-  })()
+  })().finally(() => {
+    state.unregisterCleanup()
+    state.unregisterCancellation()
+  })
   return state.closeCompletion
 }
 
