@@ -458,7 +458,8 @@ fn watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_in
     fs::write(&script, r#"import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {loadProgram,ProgramWasmClosed} from './project/.seseragi/dev/programs/calculation/index.mjs';
-import {closePrograms} from './project/.seseragi/dev/programs/__lifecycle.mjs';
+import {closePrograms,createProgramLifetime,createProgramApplication} from './project/.seseragi/dev/programs/__lifecycle.mjs';
+import {loadProgram as rawLoadProgram} from './project/.seseragi/dev/programs/calculation/program.mjs';
 const bytes=await readFile(new URL('./project/.seseragi/dev/programs/calculation/program.wasm',import.meta.url));
 const first=await loadProgram(bytes),second=await loadProgram(bytes);
 const prefix=second.exports.label('合計: '),saved=prefix(40);prefix.dispose();
@@ -479,6 +480,15 @@ try{
   await assert.rejects(()=>loadProgram(bytes),ProgramWasmClosed);
   assert.equal(first.ownership().managedLiveAtClose,0);
   assert.equal(second.ownership().callbacks,0);
+  const startupLifetime=createProgramLifetime(),application=createProgramApplication(startupLifetime);
+  const primary=new Error('application startup after WASM acquisition');let startupOwner;
+  await assert.rejects(application.run(async()=>{
+    startupOwner=await startupLifetime.load(()=>rawLoadProgram(bytes),()=>new ProgramWasmClosed('closed application'));
+    const prefix=startupOwner.exports.label('startup: '),callback=prefix(40);prefix.dispose();
+    assert.equal(callback(2),'startup: 43');throw primary;
+  }),error=>error===primary);
+  assert.equal(startupOwner.ownership().managedLiveAtClose,0);
+  assert.equal(startupOwner.ownership().callbacks,0);await application.close();
   console.log('real program: late load drained, stale callbacks rejected, managed roots0');
 }finally{WebAssembly.instantiate=instantiate;WebAssembly.compile=compile;gate.resolve();}
 "#).unwrap();
