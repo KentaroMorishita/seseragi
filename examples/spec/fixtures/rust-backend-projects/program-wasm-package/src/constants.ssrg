@@ -1,0 +1,2 @@
+let initial = 0
+pub let offset: Int = initial

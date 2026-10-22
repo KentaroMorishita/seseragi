@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use crate::local_project::{
-    compatible_targets, compile_path_with_profile, LocalProjectCompilation,
+    compatible_targets, compile_path_with_programs, LocalProjectCompilation,
 };
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
@@ -150,17 +150,68 @@ fn build_package(
     profile: Option<seseragi_project::BuildProfile>,
     source_map: Option<seseragi_runtime::artifact::SourceMapPolicy>,
 ) -> Result<i32, String> {
-    let compiled = match compile_path_with_profile(
+    let loaded = seseragi_project::load_local_project(path)
+        .map_err(|error| format!("{}: {error}", error.code()))?;
+    let root_package = loaded
+        .packages()
+        .package(loaded.packages().root())
+        .expect("loaded root package");
+    let mut original_inputs = loaded
+        .modules()
+        .map(|(_, module)| {
+            (
+                module.source_path().to_owned(),
+                module.source().as_bytes().to_vec(),
+            )
+        })
+        .collect::<Vec<_>>();
+    for (_, package) in loaded.packages().packages() {
+        let manifest = package.root().join("seseragi.toml");
+        original_inputs.push((
+            manifest.clone(),
+            std::fs::read(manifest).map_err(|e| e.to_string())?,
+        ));
+    }
+    let mut programs = if let Some(web) = &root_package.manifest().web {
+        if !web.programs.is_empty() && target.is_some_and(|target| target != ProjectTarget::Web) {
+            return Err("web.programs requires --target web".into());
+        }
+        crate::experimental::program_wasm::package_assets(root_package.root(), &web.programs)?
+    } else {
+        Vec::new()
+    };
+    let mut produced = Vec::new();
+    for program in &programs {
+        use sha2::{Digest, Sha256};
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&program.files["program-wasm.json"])
+                .map_err(|e| e.to_string())?;
+        produced.push(seseragi_project::GeneratedProgramRuntime::new(
+            loaded.packages().root().clone(),
+            program.name.clone(),
+            metadata["module"]
+                .as_str()
+                .ok_or("program owner missing")?
+                .to_owned(),
+            format!("{:x}", Sha256::digest(&program.files["program.mjs"])),
+        ));
+    }
+    let compiled = match compile_path_with_programs(
         path,
         ProjectCommand::Build,
         target,
         seseragi_runtime::DiagnosticFormat::Text,
         profile,
+        &produced,
     )? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };
-    seseragi_runtime::build_local_project_with_artifact_options(
+    for program in &mut programs {
+        program.inputs.extend(original_inputs.clone());
+        program.inputs.extend(compiled.source_snapshots.clone());
+    }
+    seseragi_runtime::build_local_project_with_programs(
         &compiled.compiled,
         output_directory,
         build_target(compiled.target),
@@ -169,6 +220,7 @@ fn build_package(
             source_map,
             minify: None,
         },
+        &programs,
     )
     .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());

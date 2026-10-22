@@ -17,7 +17,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | Portable .d.ts converter | `bun run check:dts:wasm` | filesystem featureを無効にしたconverterをwasm32-unknown-unknownへbuildし、host importなしで変換・metadata・再生成report・診断を実行。WASI SDK 25.0とRust WASM targetが必要 |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認。portable declaration parser用のWASI SDK 25.0が必要 |
-| pure program WASM / typed callback | `cargo test -p seseragi-cli --test program_wasm` | 実program WASMをBun／Nodeで実行し、TS両profile／native対照、generated型宣言のstrict、package・UI build、callback／instance寿命とtrap後のretireを検証。`rustup target add wasm32-unknown-unknown`が必要。workspace full gateでも省略しない |
+| pure program WASM / typed callback | `cargo test -p seseragi-cli --test program_wasm` | 実program WASMをBun／Nodeで実行し、TS両profile／native対照、generated型宣言のstrict、標準package module/asset buildと失敗時の保持、生成virtual packageのowner、path依存・初期化、callback／instance寿命とtrap後のretireを検証。`rustup target add wasm32-unknown-unknown`が必要。workspace full gateでも省略しない |
 | VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXのarchive mode・展開・`--version-json` smoke、非LSP migration VSIXのpackage / verify |
 | Local Web product E2E | native archiveとVSIXをpackage後に`bun run test:local-web-e2e` | 展開したCLIとinstall済みVSIXだけを使い、canonical multi-module Web projectのLSP / Dev / browser / edit / diagnostic / recovery / production buildを同一sourceで確認し、reportとPNGを`target/local-web-product-e2e`へ保存 |
 | release metadata / native artifact | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、host向けCLI / LSP archive・checksum・再展開実行smoke |

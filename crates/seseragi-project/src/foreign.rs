@@ -283,6 +283,41 @@ pub fn validate_foreign_runtime_target(
     project: &crate::LoadedLocalProject,
     target: RuntimeTarget,
 ) -> Result<(), Vec<RuntimeLinkageDiagnostic>> {
+    validate_foreign_runtime_target_with_programs(project, target, &[])
+}
+
+/// A completed producer supplies identity and bytes before the UI planner may
+/// accept this import. A manifest name alone never proves a runtime exists.
+#[derive(Clone, Debug)]
+pub struct GeneratedProgramRuntime {
+    pub package: crate::PackageIdentity,
+    pub name: String,
+    pub artifact: seseragi_interop::RuntimeArtifactIdentity,
+}
+
+impl GeneratedProgramRuntime {
+    pub fn new(
+        package: crate::PackageIdentity,
+        name: String,
+        exact_identity: String,
+        content_digest: String,
+    ) -> Self {
+        Self {
+            package,
+            name,
+            artifact: seseragi_interop::RuntimeArtifactIdentity {
+                exact_identity,
+                content_digest,
+            },
+        }
+    }
+}
+
+pub fn validate_foreign_runtime_target_with_programs(
+    project: &crate::LoadedLocalProject,
+    target: RuntimeTarget,
+    generated: &[GeneratedProgramRuntime],
+) -> Result<(), Vec<RuntimeLinkageDiagnostic>> {
     let mut diagnostics = Vec::new();
     for (identity, module) in project.modules() {
         let Some(package) = project.packages().package(identity.package()) else {
@@ -330,6 +365,33 @@ pub fn validate_foreign_runtime_target(
                         package.root(),
                         package.manifest().foreign_typescript.as_ref(),
                         resolved.source(),
+                        &generated
+                            .iter()
+                            .filter(|program| {
+                                program.package == *identity.package()
+                                    && program.package == *project.packages().root()
+                                    && package.manifest().web.as_ref().is_some_and(|web| {
+                                        web.programs.get(&program.name).is_some_and(|config| {
+                                            program.artifact.exact_identity
+                                                == crate::logical_module_id(
+                                                    &crate::ModuleIdentity::new(
+                                                        program.package.clone(),
+                                                        crate::ModuleRoot::Source,
+                                                        config.module.clone(),
+                                                    ),
+                                                )
+                                        })
+                                    })
+                                    && !program.artifact.exact_identity.is_empty()
+                                    && program.artifact.content_digest.len() == 64
+                                    && program
+                                        .artifact
+                                        .content_digest
+                                        .bytes()
+                                        .all(|b| b.is_ascii_hexdigit())
+                            })
+                            .map(|program| format!("@seseragi/programs/{}", program.name))
+                            .collect(),
                     )
                 } else {
                     Ok(())
@@ -357,6 +419,7 @@ fn validate_browser_closure(
     package_root: &Path,
     configuration: Option<&ManifestForeignTypescript>,
     source: &Path,
+    generated: &std::collections::BTreeSet<String>,
 ) -> Result<(), RuntimeLinkageDiagnostic> {
     let mut pending = vec![source.to_owned()];
     let mut visited = std::collections::BTreeSet::new();
@@ -372,6 +435,9 @@ fn validate_browser_closure(
             )
         })?;
         for specifier in crate::runtime_import_specifiers(&source)? {
+            if generated.contains(&specifier) {
+                continue;
+            }
             let resolved = resolve_foreign_typescript_module_for_target(
                 package_root,
                 configuration,
@@ -402,7 +468,12 @@ pub fn resolve_foreign_runtime_artifact_for_target(
         target,
     )?;
     if target == RuntimeTarget::Browser {
-        validate_browser_closure(package_root, configuration, resolved.source())?;
+        validate_browser_closure(
+            package_root,
+            configuration,
+            resolved.source(),
+            &std::collections::BTreeSet::new(),
+        )?;
     }
     Ok(seseragi_interop::RuntimeArtifactIdentity {
         exact_identity: resolved.exact_identity().to_owned(),

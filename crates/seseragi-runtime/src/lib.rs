@@ -27,17 +27,21 @@ pub use package::stage_typescript_package;
 #[cfg(not(target_arch = "wasm32"))]
 pub use process::{
     build_local_project, build_local_project_with_artifact_options,
-    build_local_project_with_options, build_main, build_main_with_artifact_options,
-    build_main_with_options, build_main_with_source_context, run_document_entry_in_directory,
-    run_local_benchmarks_in_directory, run_local_package, run_local_package_with_options,
-    run_local_project, run_local_project_in_directory_with_options, run_local_project_with_options,
-    run_local_tests_in_directory, run_main, run_main_with_options, run_main_with_source_context,
-    BenchmarkConfig, BenchmarkRunOptions, BuildError, BuildTarget, CapturedRunOutcome,
-    DiagnosticFormat, ProcessRunOptions, ProcessSignalMode, RandomSeed, RunError, RunOutcome,
-    SourceFileContext, TestRunOptions,
+    build_local_project_with_options, build_local_project_with_programs, build_main,
+    build_main_with_artifact_options, build_main_with_options, build_main_with_source_context,
+    run_document_entry_in_directory, run_local_benchmarks_in_directory, run_local_package,
+    run_local_package_with_options, run_local_project, run_local_project_in_directory_with_options,
+    run_local_project_with_options, run_local_tests_in_directory, run_main, run_main_with_options,
+    run_main_with_source_context, BenchmarkConfig, BenchmarkRunOptions, BuildError, BuildTarget,
+    CapturedRunOutcome, DiagnosticFormat, ProcessRunOptions, ProcessSignalMode, RandomSeed,
+    RunError, RunOutcome, SourceFileContext, TestRunOptions,
 };
 pub use provider_catalog::{
     browser_provider_configuration, browser_provider_selections,
     bun_process_provider_configuration, BrowserProviderSelection,
 };
+#[cfg(not(target_arch = "wasm32"))]
+mod program_assets;
+#[cfg(not(target_arch = "wasm32"))]
+pub use program_assets::ProgramWasmAssets;
 pub use target::{validate_target, ExecutionTarget, TargetMismatch};

@@ -79,9 +79,45 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準packageの
-build/watchへの統合、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。watch/HMR、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
 これだけで#814／#815や実用化全体を完了扱いにしない。
+
+## 同じpackageのWASM計算とTS UIをbuildする
+
+rootの`seseragi.toml`で計算moduleと公開関数を選ぶ。
+
+```toml
+[web.programs.calculation]
+module = "calculation"
+exports = ["label", "validate", "staged"]
+```
+
+```sh
+seseragi build examples/spec/fixtures/rust-backend-projects/program-wasm-package \
+  --target web --profile development --out-dir target/program-site
+```
+
+このpackageにはSeseragiの`src/calculation.ssrg`と`src/main.ssrg`がある。標準build一回で計算を
+program WASMへ、UIをTSへ生成し、手動copyなしで配布できる。`host/bridge.ts`は生成virtual
+packageの`@seseragi/programs/calculation`から`loadProgram`、所有callbackの型と
+`programWasmPath`をimportする。WASMは`new URL(programWasmPath, document.baseURI)`から取得する。
+外部TSの通常のmanifest／lockfile入力も必要である。
+
+選択moduleはsource rootに対するcanonical module pathで、UIのrun entryを変更しない。
+共有loaderでそのimport closureを読み、path dependencyの可視性・ownerと初期化順を保つ。
+計算moduleから未使用のEffectやforeignを削って認定することはしない。root Web設定が選んだ
+pure ABIだけを生成し、dependency manifestのprogram設定を自動実行しない。実際に生成した
+moduleのidentityとloader digestを渡してUIのbrowser importを検査する。
+
+`programs/calculation/`にWASM・loader・型宣言・生成Rust・receiptを配置する。通常の
+`artifact-manifest.json`の`programs`へcanonical module、ABI、host importと各assetの相対pathを、
+`files`へ実際のbytesとSHAを含める。development／releaseのUIを同じ経路でbundle化する。
+型・capability・rustc・bundleの失敗やpublic assetの衝突、検査済みsourceの変更があれば
+途中のsiteを公開せず、前の完成artifactを保持する。source／manifestのreceiptを通常の出力と分けない。
+
+この経路は`seseragi build --target web`のpure programが対象。configured programを持つ
+`dev`は未生成のままserveせず、buildを使う診断で拒否する。watch/HMRでの古いinstance交換、
+WASM source mapと一般Effect ABIは未対応で、到達点3や#814／#815の全体完了とは分ける。
 
 ## 共有frontend
 

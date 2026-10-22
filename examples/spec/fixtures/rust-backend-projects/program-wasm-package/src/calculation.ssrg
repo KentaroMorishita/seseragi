@@ -1,0 +1,38 @@
+import { offset } from "./constants"
+
+pub fn label prefix: String -> base: Int -> (Int -> String) =
+  \delta -> `${prefix}${base + delta + offset}`
+
+pub fn validate value: Int -> Either<String, Int> =
+  if value < 0 then Left "negative" else Right (value + 1)
+
+pub fn enabled value: Bool -> (Bool, Unit) = (value, ())
+
+pub fn optional value: Int -> Maybe<Int> = if value < 0 then Nothing else Just value
+
+pub fn transport pair: (String, Maybe<Int>, Either<String, Int>)
+  -> (String, Maybe<Int>, Either<String, Int>) =
+  pair
+
+pub fn staged value: Int -> (Int -> Int) = {
+  let checked = 9007199254740991 + value
+  \next -> checked + next
+}
+
+pub fn ready -> (Unit -> Bool) = \unit -> True
+
+pub fn deep value: Int -> Int = if value <= 0 then 0 else 1 + deep (value - 1)
+
+pub fn probe -> String = {
+  let withPrefix = label "合計: "
+  let callback = withPrefix 40
+  let accepted = match validate 2 {
+    Left message -> message
+    Right value -> show value
+  }
+  let rejected = match validate (-1) {
+    Left message -> message
+    Right value -> show value
+  }
+  `${callback 2}|${accepted}|${rejected}`
+}

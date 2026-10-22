@@ -41,6 +41,7 @@ pub use web_assets::{load_web_assets, WebAsset, WebAssetError, WebAssets};
 pub use foreign::{
     resolve_foreign_runtime_artifact_for_target, resolve_foreign_typescript_module,
     resolve_foreign_typescript_module_for_target, validate_foreign_runtime_target,
+    validate_foreign_runtime_target_with_programs, GeneratedProgramRuntime,
     ResolvedForeignTypescriptModule,
 };
 pub use graph::{ModuleGraph, ModuleGraphError};
@@ -71,7 +72,7 @@ pub use local_graph::{
     PackageImportError, ResolvedPackageImport,
 };
 pub use local_project::{
-    load_local_benchmarks, load_local_documents, load_local_project,
+    load_local_benchmarks, load_local_documents, load_local_project, load_local_project_module,
     load_local_project_with_overlays, load_local_tests, LoadedLocalDocuments, LoadedLocalProject,
     LoadedLocalTests, LocalProjectLoadError,
 };
@@ -81,10 +82,11 @@ pub use lockfile::{
     LockHostPackage, LockPackage, LockProviderSelection, LockSourceKind, Lockfile, UNICODE_VERSION,
 };
 pub use manifest::{
-    parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
-    LanguageRequirement, LayoutPath, Manifest, ManifestBenchmark, ManifestDependency,
-    ManifestError, ManifestFilePath, ManifestForeignTypescript, ManifestLayout, ManifestPackage,
-    ManifestRun, ManifestTest, ManifestWeb, ProviderArtifactPath, RunSeed, SignalMode, TargetId,
+    parse_manifest, valid_program_name, DependencyKey, DependencyPath,
+    DependencyVersionRequirement, LanguageRequirement, LayoutPath, Manifest, ManifestBenchmark,
+    ManifestDependency, ManifestError, ManifestFilePath, ManifestForeignTypescript, ManifestLayout,
+    ManifestPackage, ManifestProgramWasm, ManifestRun, ManifestTest, ManifestWeb,
+    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

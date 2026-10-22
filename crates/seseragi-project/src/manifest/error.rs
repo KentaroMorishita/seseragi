@@ -57,6 +57,7 @@ pub enum ManifestError {
     },
     InvalidTestSetting(String),
     InvalidBenchmarkSetting(String),
+    InvalidProgramWasm(String),
     ShutdownGraceWithForwardSignal,
 }
 
@@ -97,6 +98,7 @@ fn expand_table_header(range: Range<usize>, source: &str) -> Range<usize> {
 impl fmt::Display for ManifestError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::InvalidProgramWasm(reason) => formatter.write_str(reason),
             Self::Toml { message, .. } => write!(formatter, "invalid manifest: {message}"),
             Self::PackageName(error) => error.fmt(formatter),
             Self::InvalidVersion(value) => write!(formatter, "invalid package version `{value}`"),
