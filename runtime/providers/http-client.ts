@@ -69,11 +69,14 @@ function createNodeHttpExchange(
   let stopped = false
   let requestBodyDone = false
   let bodyCancelled = false
+  let bodyCancellation: Promise<void> | undefined
+  let stopping: Promise<void> | undefined
 
-  const cancelBody = async (): Promise<void> => {
-    if (bodyCancelled) return
+  const cancelBody = (): Promise<void> => {
+    if (bodyCancellation !== undefined) return bodyCancellation
     bodyCancelled = true
-    await body.cancel()
+    bodyCancellation = Promise.resolve().then(() => body.cancel())
+    return bodyCancellation
   }
   const failure = (error: unknown): void => {
     if (terminal || stopped) return
@@ -208,13 +211,19 @@ function createNodeHttpExchange(
       demand += count
       emit()
     },
-    async unsubscribe() {
-      if (stopped) return
+    unsubscribe() {
+      if (stopping !== undefined) return stopping
       stopped = true
-      await cancelBody()
+      // Do not keep a peer alive while an asynchronous upload finalizer runs.
       response?.destroy()
       request.destroy()
       queued.length = 0
+      stopping = cancelBody().finally(() => {
+        response?.destroy()
+        request.destroy()
+        queued.length = 0
+      })
+      return stopping
     },
   })
 }
