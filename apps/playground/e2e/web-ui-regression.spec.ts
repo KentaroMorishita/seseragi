@@ -109,7 +109,7 @@ async function select(page: Page, entry: MatrixSample): Promise<void> {
 async function run(page: Page, entry: MatrixSample): Promise<FrameLocator> {
   // These visual fixtures intentionally include external images. Grant their
   // temporary permission through the same control as a user before Run.
-  await page.locator("#tools-button").click()
+  await page.locator("#mobile-tools-button").click()
   await page
     .getByRole("menuitemcheckbox", {
       name: "Allow preview HTTP, WebSocket and external images",

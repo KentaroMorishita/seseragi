@@ -338,13 +338,10 @@ let applicationId =
   restoredWorkspace.status === "restored" && linkedSource === undefined
     ? (restoredWorkspace.applicationId ?? crypto.randomUUID())
     : crypto.randomUUID()
-const executionSettings = connectExecutionSettings(
-  requiredElement("#tools-menu", HTMLElement),
-  () => {
-    cancelActiveExecution()
-    showTextOutput("Network設定を変更しました。Runで再実行してください。")
-  }
-)
+const executionSettings = connectExecutionSettings(mobileToolsMenu, () => {
+  cancelActiveExecution()
+  showTextOutput("Network設定を変更しました。Runで再実行してください。")
+})
 const restoredBlank =
   linkedSource === undefined &&
   restoredWorkspace.status === "restored" &&

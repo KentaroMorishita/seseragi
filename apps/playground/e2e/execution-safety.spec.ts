@@ -165,7 +165,7 @@ test("Worker HTTP is blocked by default and available only with explicit permiss
   const permission = page.getByRole("menuitemcheckbox", {
     name: "Allow preview HTTP, WebSocket and external images",
   })
-  await page.locator("#tools-button").click()
+  await page.locator("#mobile-tools-button").click()
   await permission.click()
   await page
     .getByRole("textbox", { name: "Seseragi source editor" })
@@ -231,7 +231,7 @@ test("Text output does not load external images until Preview is selected", asyn
     .fill(
       "pub effect fn main = println \"<img src='https://preview-images.invalid/marker'>\"\n"
     )
-  await page.locator("#tools-button").click()
+  await page.locator("#mobile-tools-button").click()
   await page
     .getByRole("menuitemcheckbox", {
       name: "Allow preview HTTP, WebSocket and external images",
