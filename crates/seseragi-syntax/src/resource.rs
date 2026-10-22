@@ -8,11 +8,16 @@ use std::cell::RefCell;
 
 pub(crate) const RECURSION_LIMIT: usize = 64;
 pub(crate) const EXPRESSION_DEPTH_LIMIT: usize = 128;
+// Constructor patterns are parsed without one native frame per constructor.
+// Keep their allocated tree finite for recursive AST consumers and drop, while
+// allowing semantic coverage's existing 256-level source limit to diagnose it.
+pub(crate) const PATTERN_DEPTH_LIMIT: usize = 512;
 const WORK_LIMIT: usize = 1_000_000;
 
 #[derive(Default)]
 struct Budget {
     depth: usize,
+    pattern_depth: usize,
     work: usize,
     exceeded: Option<ByteSpan>,
 }
@@ -61,6 +66,44 @@ impl Drop for Frame {
     fn drop(&mut self) {
         if self.0 {
             BUDGET.with_borrow_mut(|current| current.as_mut().unwrap().depth -= 1);
+        }
+    }
+}
+
+/// Reserve logical pattern depth independently of native parser frames. A
+/// constructor prefix keeps its reservation while its argument is parsed, so
+/// entering a collection or record cannot reset the tree-depth bound.
+#[derive(Default)]
+pub(crate) struct PatternDepth(usize);
+impl PatternDepth {
+    pub(crate) fn reserve(&mut self, span: ByteSpan) -> bool {
+        let reserved = BUDGET.with_borrow_mut(|current| {
+            let Some(budget) = current else {
+                return None;
+            };
+            if budget.exceeded.is_some() {
+                return Some(false);
+            }
+            budget.work += 1;
+            if budget.pattern_depth >= PATTERN_DEPTH_LIMIT || budget.work > WORK_LIMIT {
+                budget.exceeded.get_or_insert(span);
+                return Some(false);
+            }
+            budget.pattern_depth += 1;
+            Some(true)
+        });
+        if reserved == Some(true) {
+            self.0 += 1;
+        }
+        reserved != Some(false)
+    }
+}
+impl Drop for PatternDepth {
+    fn drop(&mut self) {
+        if self.0 != 0 {
+            BUDGET.with_borrow_mut(|current| {
+                current.as_mut().unwrap().pattern_depth -= self.0;
+            });
         }
     }
 }

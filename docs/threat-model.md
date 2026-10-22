@@ -106,8 +106,11 @@ application authentication, connection limits or a host process sandbox.
 The shared Rust syntax parser reads infix operands once before applying known
 operator precedence. One synchronous parse shares a recursion and work budget
 across helper parsers, including block, do, match and template ranges. Its
-current limits are 64 recursive parser frames, expression depth 128 and
-1,000,000 parsing/checking steps. Custom infix chains account for their later
+current limits are 64 recursive parser frames, expression depth 128,
+cumulative pattern depth 512 and 1,000,000 parsing/checking steps.
+Constructor pattern prefixes are scanned once and folded without a native
+recursive frame per constructor, preserving the existing match-coverage limit.
+Custom infix chains account for their later
 curried application depth. Exceeding a limit reports `SES-P0002` with a UTF-8
 source range; it must not overflow the host stack. Template scanning uses an
 explicit stack before the parser budget applies.

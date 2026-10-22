@@ -104,7 +104,10 @@ fn bounds_type_and_pattern_recursion_before_building_interface_artifacts() {
         "Array<".repeat(count),
         ">".repeat(count)
     ));
-    assert_resource_diagnostic(&format!("let {}value = 0\n", "Some ".repeat(count)));
+    assert_resource_diagnostic(&format!(
+        "let {}value = 0\n",
+        "Some ".repeat(crate::resource::PATTERN_DEPTH_LIMIT)
+    ));
     assert_resource_diagnostic(&format!(
         "foreign \"typescript\" from \"./api.js\" {{\n{}pure fn probe -> Int\n{} }}\n",
         "namespace Nested {\n".repeat(count),
