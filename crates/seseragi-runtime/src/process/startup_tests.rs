@@ -36,7 +36,7 @@ fn execute_startup_diagnostics(
     let source = if browser {
         web_entry_source(&contract, "./application.ts", None, options, false)
     } else {
-        entry_source(&contract, "./application.ts", None, options)
+        entry_source(&contract, "./application.ts", None, options).unwrap()
     };
     fs::write(
         fixture.path().join("entry.ts"),

@@ -170,6 +170,14 @@ fn build_main_with_optional_source(
 ) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
+    let process_entry = if target == BuildTarget::Process {
+        Some(
+            entry_source(&contract, "./main.ts", None, options)
+                .map_err(BuildError::InvalidEntry)?,
+        )
+    } else {
+        None
+    };
     let id = compiled.generated.metadata.module.clone();
     let mut application = std::collections::BTreeMap::from([(id.clone(), compiled.clone())]);
     let reachability = optimize_application(&mut application, &id, &contract);
@@ -185,9 +193,10 @@ fn build_main_with_optional_source(
         if let Some(prepared) = &prepared {
             prepared.stage(staging, target == BuildTarget::Process)?;
         }
-        match target {
-            BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
-            BuildTarget::Web => stage_main_module(compiled, &staging)?,
+        if let Some(entry) = &process_entry {
+            stage_main_program(compiled, &staging, entry)?;
+        } else {
+            stage_main_module(compiled, &staging)?;
         }
         write_json(
             &staging.join("generated-module.json"),
@@ -355,6 +364,21 @@ pub fn build_local_project_with_programs(
         .modules
         .get(&project.entry_module)
         .expect("application root retained");
+    let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)
+        .map_err(BuildError::Host)?;
+    let process_entry = if target == BuildTarget::Process {
+        Some(
+            entry_source(
+                &contract,
+                &format!("./{}", path_string(&entry_path)),
+                project.compiled.provider_resolution.as_ref(),
+                options,
+            )
+            .map_err(BuildError::InvalidEntry)?,
+        )
+    } else {
+        None
+    };
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         stage_foreign_host_directories(&project.foreign_host_directories, staging)?;
@@ -388,18 +412,9 @@ pub fn build_local_project_with_programs(
         }
         crate::stage_typescript_package(staging)?;
         let program_manifest = crate::program_assets::stage(staging, programs)?;
-        let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)?;
-        if target == BuildTarget::Process {
-            fs::write(
-                staging.join("entry.ts"),
-                entry_source(
-                    &contract,
-                    &format!("./{}", path_string(&entry_path)),
-                    project.compiled.provider_resolution.as_ref(),
-                    options,
-                ),
-            )
-            .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
+        if let Some(entry) = &process_entry {
+            fs::write(staging.join("entry.ts"), entry)
+                .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
         }
         match target {
             BuildTarget::Process => write_json(

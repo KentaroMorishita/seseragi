@@ -97,7 +97,8 @@ pub fn run_document_entry_in_directory(
                     random_seed: super::RandomSeed::Fixed(0),
                     ..ProcessRunOptions::default()
                 },
-            ),
+            )
+            .map_err(RunError::InvalidEntry)?,
         )
         .map_err(|error| RunError::Host(format!("failed to stage documentation entry: {error}")))?;
         super::run_target_captured(directory, &application_directory)
@@ -299,26 +300,25 @@ fn run_in_directory(
     options: ProcessRunOptions,
     application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
-    stage_project_modules(compiled, directory).map_err(RunError::Host)?;
-    stage_foreign_host_directories(foreign_host_directories, directory).map_err(RunError::Host)?;
-    crate::stage_typescript_package(directory).map_err(RunError::Host)?;
     let entry = compiled
         .modules
         .get(entry_module)
-        .expect("entry was validated");
+        .ok_or_else(|| RunError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
     let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)
         .map_err(RunError::Host)?;
     let entry_specifier = format!("./{}", entry_path.to_string_lossy());
-    fs::write(
-        directory.join("entry.ts"),
-        entry_source(
-            contract,
-            &entry_specifier,
-            compiled.provider_resolution.as_ref(),
-            options,
-        ),
+    let source = entry_source(
+        contract,
+        &entry_specifier,
+        compiled.provider_resolution.as_ref(),
+        options,
     )
-    .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
+    .map_err(RunError::InvalidEntry)?;
+    stage_project_modules(compiled, directory).map_err(RunError::Host)?;
+    stage_foreign_host_directories(foreign_host_directories, directory).map_err(RunError::Host)?;
+    crate::stage_typescript_package(directory).map_err(RunError::Host)?;
+    fs::write(directory.join("entry.ts"), source)
+        .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
     run_target(directory, application_directory)
 }
 

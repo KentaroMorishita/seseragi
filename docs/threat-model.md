@@ -37,6 +37,12 @@ follow symlinks inside the owned directory. This protects staging ownership;
 CLI programs still execute with the invoking user's filesystem and network
 authority.
 
+Native entry generation validates provider-required services against their
+resolved environment fields before starting a host or publishing process
+output. Missing, duplicate, wrong-target or empty selections return entry
+diagnostics. JSON diagnostics include compile warnings in one document;
+standalone files requiring those services need package provider configuration.
+
 Experimental Rust emission and native builds check every destination leaf before
 generating files, reject symlink and non-regular output leaves, and reject names
 that resolve to a source file. Native output directory leaves cannot be symlinks.

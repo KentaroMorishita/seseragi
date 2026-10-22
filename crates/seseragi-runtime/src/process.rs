@@ -5,7 +5,7 @@ use std::process::Command;
 use seseragi_driver::CompiledModule;
 use tempfile::TempDir;
 
-use crate::{main_contract, validate_target, ExecutionTarget, MainContract, TargetMismatch};
+use crate::{main_contract, validate_target, ExecutionTarget, TargetMismatch};
 
 #[cfg(test)]
 mod directory_tests;
@@ -124,13 +124,27 @@ pub fn run_main_with_source_context(
 ) -> Result<RunOutcome, RunError> {
     run_main_with_optional_source(compiled, options, Some(source))
 }
+
+/// Checks a single-file process entry without staging files or starting a host.
+pub fn validate_main_process_entry(compiled: &CompiledModule) -> Result<(), RunError> {
+    main_entry_source(compiled, ProcessRunOptions::default()).map(|_| ())
+}
+
+fn main_entry_source(
+    compiled: &CompiledModule,
+    options: ProcessRunOptions,
+) -> Result<String, RunError> {
+    let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
+    entry_source(&contract, "./main.ts", None, options).map_err(RunError::InvalidEntry)
+}
+
 fn run_main_with_optional_source(
     compiled: &CompiledModule,
     options: ProcessRunOptions,
     source: Option<&SourceFileContext>,
 ) -> Result<RunOutcome, RunError> {
-    let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
-    validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
+    let entry = main_entry_source(compiled, options)?;
     let owned_directory = prepare_directory().map_err(RunError::Host)?;
     let directory = owned_directory.path();
     let result = (|| {
@@ -144,7 +158,7 @@ fn run_main_with_optional_source(
         let compiled = prepared
             .as_ref()
             .map_or(compiled, |prepared| &prepared.compiled);
-        run_in_directory(compiled, &contract, directory, options)
+        run_in_directory(compiled, &entry, directory)
     })();
     finish_run(result, owned_directory)
 }
@@ -165,27 +179,22 @@ pub(super) fn finish_run<Outcome>(
 
 fn run_in_directory(
     compiled: &CompiledModule,
-    contract: &MainContract,
+    entry: &str,
     directory: &Path,
-    options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    stage_main_program(compiled, contract, directory, options).map_err(RunError::Host)?;
+    stage_main_program(compiled, directory, entry).map_err(RunError::Host)?;
 
     run_target(directory, None)
 }
 
 fn stage_main_program(
     compiled: &CompiledModule,
-    contract: &MainContract,
     directory: &Path,
-    options: ProcessRunOptions,
+    entry: &str,
 ) -> Result<(), String> {
     stage_main_module(compiled, directory)?;
-    fs::write(
-        directory.join("entry.ts"),
-        entry_source(contract, "./main.ts", None, options),
-    )
-    .map_err(|error| format!("failed to stage runtime entry: {error}"))
+    fs::write(directory.join("entry.ts"), entry)
+        .map_err(|error| format!("failed to stage runtime entry: {error}"))
 }
 
 fn stage_main_module(compiled: &CompiledModule, directory: &Path) -> Result<(), String> {
