@@ -79,7 +79,7 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。watch/HMR、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMR、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
 これだけで#814／#815や実用化全体を完了扱いにしない。
 
 ## 同じpackageのWASM計算とTS UIをbuildする
@@ -115,9 +115,17 @@ moduleのidentityとloader digestを渡してUIのbrowser importを検査する�
 型・capability・rustc・bundleの失敗やpublic assetの衝突、検査済みsourceの変更があれば
 途中のsiteを公開せず、前の完成artifactを保持する。source／manifestのreceiptを通常の出力と分けない。
 
-この経路は`seseragi build --target web`のpure programが対象。configured programを持つ
-`dev`は未生成のままserveせず、buildを使う診断で拒否する。watch/HMRでの古いinstance交換、
-WASM source mapと一般Effect ABIは未対応で、到達点3や#814／#815の全体完了とは分ける。
+`seseragi dev`も同じproducer・UI compile・一括公開を使い、計算module・path dependencyとUIの
+変更を監視する。失敗時はそのsessionの最後の完成siteとversionを保持する。reload clientは
+HTMLをserveした時のversionを使い、初回fetchで新しいbuildを見落とさない。
+
+生成UIのloaderから作るpure instanceはbrowser applicationのlifetimeへ登録する。watchのfull-page
+reloadではTS UIをcancelし、finalizer・DOM・providerの終了を待ってから残るinstanceを閉じる。
+UIのfinalizerが旧callbackを使える順序を保ち、開始済みloadも回収してからnavigateする。保存callbackは閉じた
+ownerを拒否する。trapは従来どおりretireし、Rust unwindやWASM physical heapの即時回収は保証しない。
+手動disposeとstandaloneのraw program ABIは維持する。UI stateを保持するHMR、WASM source mapと
+一般Effect ABIは未対応で、到達点3や#814／#815の全体完了とは分ける。通常のtab終了ではbrowserが
+非同期処理の完了を待つ保証はなく、制御したwatch reloadと同じ終了保証を主張しない。
 
 ## 共有frontend
 

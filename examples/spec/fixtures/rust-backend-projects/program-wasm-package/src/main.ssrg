@@ -50,9 +50,9 @@ fails Js.Error =
   }
 
 effect fn release _state: String -> Unit = do {
-  // Disposal clears host references even if its managed-root assertion fails.
+  // The UI finalizer can call the program before disposing its owner.
   // This sample attempts cleanup on every exit; normal-close0 is tested separately.
-  _ <- effects.attempt (operate "dispose" 0)
+  _ <- effects.attempt (operate "finalize" 0)
   effects.succeed ()
 }
 

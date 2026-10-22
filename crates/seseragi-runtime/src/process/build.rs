@@ -220,6 +220,7 @@ fn build_main_with_optional_source(
                 None,
                 options,
                 artifact_options,
+                false,
             )?,
         }
         if target == BuildTarget::Process
@@ -324,7 +325,10 @@ pub fn build_local_project_with_programs(
                 .iter()
                 .any(|program| !declared.contains_key(&program.name))
         {
-            return Err(BuildError::Host("configured program WASM has not been compiled; use seseragi build (dev/watch is not supported yet)".into()));
+            return Err(BuildError::Host(
+                "configured program WASM requires its checked producer before Web publication"
+                    .into(),
+            ));
         }
     }
     let _entry = project
@@ -422,6 +426,7 @@ pub fn build_local_project_with_programs(
                 project.compiled.provider_resolution.as_ref(),
                 options,
                 artifact_options,
+                !programs.is_empty(),
             ),
         }?;
         if target == BuildTarget::Process
@@ -478,10 +483,11 @@ fn finish_web_build(
     providers: Option<&seseragi_driver::ProviderResolution>,
     options: ProcessRunOptions,
     artifact_options: crate::artifact::ArtifactOptions,
+    has_programs: bool,
 ) -> Result<(), String> {
     fs::write(
         staging.join("entry.ts"),
-        web_entry_source(contract, entry_module, providers, options),
+        web_entry_source(contract, entry_module, providers, options, has_programs),
     )
     .map_err(|error| format!("failed to stage browser entry: {error}"))?;
     fs::create_dir(staging.join("assets"))

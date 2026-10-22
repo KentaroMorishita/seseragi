@@ -6,6 +6,7 @@ pub(super) fn web_entry_source(
     entry_module: &str,
     providers: Option<&ProviderResolution>,
     options: ProcessRunOptions,
+    has_programs: bool,
 ) -> String {
     let environment = serde_json::to_string(&contract.environment)
         .expect("the validated browser environment contract must serialize");
@@ -16,6 +17,9 @@ pub(super) fn web_entry_source(
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
         "import { processHashSeed } from \"@seseragi/runtime/hash\";".to_owned(),
     ];
+    if has_programs {
+        imports.push("import { installProgramReload, runProgramApplication } from \"@seseragi/programs/__lifecycle\";".into());
+    }
     let mut application_imports = vec![format!(
         "const {{ main }} = await import(\"{entry_module}\");"
     )];
@@ -70,15 +74,18 @@ pub(super) fn web_entry_source(
 processHashSeed();
 {}
 const execution = createEffectExecution();
+{}
 const browserDom = createBrowserDom(document, () => {{
   document.documentElement.dataset.seseragiStatus = "mounted";
 }});
+{}
 const browserProviderModules = new Map([{}]);
 const browserProviders = await startBrowserProviders({}, async (specifier) => {{
   const module = browserProviderModules.get(specifier);
   if (module === undefined) throw new Error(`unsupported browser provider module: ${{specifier}}`);
   return module;
 }});
+{}
 const environment = createBrowserEnvironment(
   {},
   "",
@@ -87,9 +94,7 @@ const environment = createBrowserEnvironment(
   execution.context,
   browserProviders.services,
 );
-globalThis.addEventListener("pagehide", () => {{
-  void execution.cancel();
-}}, {{ once: true }});
+{}
 
 try {{
   const result = await run(main(undefined), environment, execution.context);
@@ -104,12 +109,9 @@ try {{
     document.documentElement.dataset.seseragiStatus = "defect";
     console.error("seseragi: runtime defect", error);
   }}
-}} finally {{
-  await execution.close();
-  await browserDom.dispose();
-  await browserProviders.shutdown();
 }}
-"#,
+{}
+{}"#,
         imports.join("\n"),
         format!(
             "{}\n{}",
@@ -125,11 +127,44 @@ try {{
                 ),
             }
         ),
-        application_imports.join("\n"),
+        if has_programs {
+            format!(
+                "installProgramReload();\nawait runProgramApplication(async (programApplication) => {{\n{}",
+                application_imports.join("\n")
+            )
+        } else {
+            application_imports.join("\n")
+        },
+        if has_programs {
+            "programApplication.onShutdown(() => execution.cancel());\nprogramApplication.cleanup(() => execution.close());\nif (programApplication.closing) return;"
+        } else {
+            ""
+        },
+        if has_programs {
+            "programApplication.cleanup(() => browserDom.dispose());"
+        } else {
+            ""
+        },
         provider_modules.join(", "),
         provider_selections,
+        if has_programs {
+            "programApplication.cleanup(() => browserProviders.shutdown());\nif (programApplication.closing) return;"
+        } else {
+            ""
+        },
         environment,
+        if has_programs {
+            ""
+        } else {
+            "globalThis.addEventListener(\"pagehide\", () => { void execution.cancel(); }, { once: true });"
+        },
         failure,
+        if has_programs {
+            ""
+        } else {
+            "finally { await execution.close(); await browserDom.dispose(); await browserProviders.shutdown(); }"
+        },
+        if has_programs { "});\n" } else { "" },
     )
 }
 
@@ -184,6 +219,7 @@ mod tests {
             "./main.ts",
             None,
             ProcessRunOptions::default(),
+            false,
         );
 
         assert!(source.contains("createBrowserDom(document"));
@@ -209,6 +245,7 @@ mod tests {
                 random_seed: RandomSeed::Fixed(17),
                 ..ProcessRunOptions::default()
             },
+            false,
         );
 
         assert!(source.contains("globalThis.__SESERAGI_HASH_SEED__ = -11n"));

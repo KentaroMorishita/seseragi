@@ -48,6 +48,13 @@ export async function operate(action: string, input: number): Promise<string> {
         program.dispose()
         result = "disposed"
         break
+      case "finalize":
+        try {
+          result = callback(input)
+        } finally {
+          program.dispose()
+        }
+        break
       case "overflow":
         program.exports.staged(1)
         throw new Error("The first source stage did not raise its Defect")

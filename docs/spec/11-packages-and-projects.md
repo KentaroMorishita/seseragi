@@ -529,5 +529,15 @@ loader／宣言／WASM／receiptの相対pathを、`files`へその実fileのbyt
 計算のbuild、UIのbundleとmanifestがすべて完了してから一括公開します。失敗時は前の完成artifactを保持します。
 
 対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・generic公開schemeは
-含めません。configured programの`dev`／watch、WASM source mapと一般Effect ABIは未対応です。
-未生成programを持つsiteを成功としてserveせず、`build`を使う診断で拒否します。
+含めません。WASM source mapと一般Effect ABIは未対応です。
+
+`seseragi dev`も同じproducerとUI compile／一括公開を使い、計算module・外側のpath dependency・
+UI sourceの変更を監視します。development lockの既存のsource編集許可を使い、依存・provider・
+host入力のlockを迂回しません。失敗した更新は、そのsessionの最後に完成したsiteとreload versionを保持します。
+
+生成UIのloaderが作ったpure instanceは、手動disposeに加えてbrowser applicationの終了処理で閉じます。
+watchの更新はfull-page reloadであり、TS UIのcancelとfinalizer・DOM・providerの終了を待ち、
+残るinstanceと開始済みのloadを回収してからnavigateします。UI finalizerが旧callbackを使える順序を保ちます。
+閉じたinstanceの保存callbackは拒否し、trap済みinstanceはretireとして扱います。UI状態を保持するHMR、
+WASM内の一般Effectのunwind／cancel時のfinalizer保証を、このpure programのlifetimeへ含めません。
+通常のtab終了でbrowserが非同期終了処理を待つ保証はなく、watch reloadと同じ完了保証はありません。

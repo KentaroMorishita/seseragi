@@ -198,33 +198,68 @@ fn load_checked_project_entry(
     ),
     String,
 > {
-    seseragi_project::read_and_validate_lockfile(path)
-        .map_err(|error| format!("{}: {error}", error.code()))?;
+    load_checked_project_entry_for_command(path, module, seseragi_project::ProjectCommand::Build)?
+        .ok_or_else(|| "project compiler did not produce a checked entry".to_owned())
+}
+
+fn load_checked_project_entry_for_command(
+    path: &str,
+    module: Option<&seseragi_project::ModulePath>,
+    command: seseragi_project::ProjectCommand,
+) -> Result<
+    Option<(
+        seseragi_project::LoadedLocalProject,
+        seseragi_driver::CoreLocalProject,
+    )>,
+    String,
+> {
+    if command == seseragi_project::ProjectCommand::Dev {
+        seseragi_project::read_and_validate_development_lockfile(path)
+    } else {
+        seseragi_project::read_and_validate_lockfile(path)
+    }
+    .map_err(|error| format!("{}: {error}", error.code()))?;
     let project = match module {
         Some(module) => seseragi_project::load_local_project_module(path, module),
         None => seseragi_project::load_local_project(path),
     }
     .map_err(|error| format!("{}: {error}", error.code()))?;
-    let checked = seseragi_driver::compile_core_local_project(&project).map_err(|error| {
-        if let seseragi_driver::ProjectCompileError::Diagnostics { modules } = error.error() {
-            modules
-                .iter()
-                .map(|diagnostics| {
-                    let source = project
-                        .modules()
-                        .find(|(identity, _)| {
-                            seseragi_project::logical_module_id(identity) == diagnostics.module
-                        })
-                        .expect("diagnostics belong to a loaded module")
-                        .1
-                        .source();
-                    seseragi_driver::render_terminal_diagnostics(&diagnostics.diagnostics, source)
-                })
-                .collect::<String>()
-        } else {
-            format!("project compiler rejected package: {:?}", error.error())
-        }
-    })?;
+    let result = seseragi_driver::compile_core_local_project(&project);
+    let checked = if command == seseragi_project::ProjectCommand::Dev {
+        let Some(checked) = crate::local_project::render_compile_result(
+            &project,
+            result,
+            seseragi_runtime::DiagnosticFormat::Text,
+        )?
+        else {
+            return Ok(None);
+        };
+        checked
+    } else {
+        result.map_err(|error| {
+            if let seseragi_driver::ProjectCompileError::Diagnostics { modules } = error.error() {
+                modules
+                    .iter()
+                    .map(|diagnostics| {
+                        let source = project
+                            .modules()
+                            .find(|(identity, _)| {
+                                seseragi_project::logical_module_id(identity) == diagnostics.module
+                            })
+                            .expect("diagnostics belong to a loaded module")
+                            .1
+                            .source();
+                        seseragi_driver::render_terminal_diagnostics(
+                            &diagnostics.diagnostics,
+                            source,
+                        )
+                    })
+                    .collect::<String>()
+            } else {
+                format!("project compiler rejected package: {:?}", error.error())
+            }
+        })?
+    };
     for (id, module) in &checked.compiled.modules {
         if !module.diagnostics.diagnostics.is_empty() {
             let source = project
@@ -239,7 +274,7 @@ fn load_checked_project_entry(
             );
         }
     }
-    Ok((project, checked))
+    Ok(Some((project, checked)))
 }
 
 fn usage() -> &'static str {

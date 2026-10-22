@@ -1,6 +1,6 @@
-use crate::local_project::{compile_path, LocalProjectCompilation};
+use crate::local_project::prepare_package_build;
 use seseragi_project::ProjectCommand;
-use seseragi_runtime::{build_local_project, BuildTarget};
+use seseragi_runtime::{build_local_project_with_programs, BuildTarget};
 use std::collections::BTreeMap;
 use std::fs;
 use std::io::{ErrorKind, Read, Write};
@@ -174,20 +174,19 @@ impl DevOptions {
 
 fn rebuild(project: &Path, output: &Path, version: &AtomicU64) -> Result<bool, String> {
     let started = Instant::now();
-    let compiled = match compile_path(
-        project,
-        ProjectCommand::Dev,
-        None,
-        seseragi_runtime::DiagnosticFormat::Text,
-    )? {
-        LocalProjectCompilation::Compiled(compiled) => compiled,
-        LocalProjectCompilation::Diagnostics => {
-            eprintln!("Build failed ({})", elapsed(started));
-            return Ok(false);
-        }
+    let Some(prepared) = prepare_package_build(project, ProjectCommand::Dev, None, None)? else {
+        eprintln!("Build failed ({})", elapsed(started));
+        return Ok(false);
     };
-    build_local_project(&compiled.compiled, output, BuildTarget::Web)
-        .map_err(|error| error.to_string())?;
+    build_local_project_with_programs(
+        &prepared.project.compiled,
+        output,
+        BuildTarget::Web,
+        prepared.project.process_run_options,
+        seseragi_runtime::artifact::ArtifactOptions::default(),
+        &prepared.programs,
+    )
+    .map_err(|error| error.to_string())?;
     let next = version.fetch_add(1, Ordering::SeqCst) + 1;
     println!("Built web app ({}; reload {next})", elapsed(started));
     Ok(true)
@@ -421,6 +420,7 @@ fn serve(
     if !build_available {
         let body = inject_reload(
             b"<!doctype html><title>Seseragi build failed</title><body><h1>Build failed</h1><p>Fix the compiler diagnostics; this page will become available after the next successful build.</p></body>",
+            version.load(Ordering::SeqCst),
         );
         return response(&mut stream, 503, "text/html; charset=utf-8", &body, method);
     }
@@ -451,7 +451,7 @@ fn serve(
     let mut body =
         fs::read(&path).map_err(|error| format!("failed to serve {}: {error}", path.display()))?;
     if path.file_name().and_then(|name| name.to_str()) == Some("index.html") {
-        body = inject_reload(&body);
+        body = inject_reload(&body, version.load(Ordering::SeqCst));
     }
     response(&mut stream, 200, content_type(&path), &body, method)
 }
@@ -600,35 +600,47 @@ fn decode_url_path(value: &str) -> Option<String> {
     String::from_utf8(bytes).ok()
 }
 
-fn inject_reload(index: &[u8]) -> Vec<u8> {
+fn inject_reload(index: &[u8], build_version: u64) -> Vec<u8> {
     const SCRIPT: &str = concat!(
         "<script type=\"module\">\n",
         "const endpoint = '/__seseragi_dev/version';\n",
-        "let version = await (await fetch(endpoint, { cache: 'no-store' })).text();\n",
+        "const version = __SESERAGI_BUILD_VERSION__;\n",
+        "let reloading = false;\n",
         "setInterval(async () => {\n",
         "  try {\n",
         "    const next = await (await fetch(endpoint, { cache: 'no-store' })).text();\n",
-        "    if (next !== version) location.reload();\n",
+        "    if (next !== version && !reloading) {\n",
+        "      reloading = true;\n",
+        "      const closing = new Event('seseragi:before-reload', { cancelable: true });\n",
+        "      if (globalThis.dispatchEvent(closing)) location.reload();\n",
+        "    }\n",
         "  } catch {}\n",
         "}, 250);\n",
         "</script>\n",
     );
+    // Pin the version served with this HTML. Fetching the initial version in
+    // the browser could acknowledge a newer build without ever loading its UI.
+    let script = SCRIPT.replace(
+        "__SESERAGI_BUILD_VERSION__",
+        &serde_json::to_string(&format!("{build_version}\n")).expect("version serializes"),
+    );
     let source = String::from_utf8_lossy(index);
     if let Some(position) = source.rfind("</body>") {
-        let mut output = String::with_capacity(source.len() + SCRIPT.len());
+        let mut output = String::with_capacity(source.len() + script.len());
         output.push_str(&source[..position]);
-        output.push_str(SCRIPT);
+        output.push_str(&script);
         output.push_str(&source[position..]);
         output.into_bytes()
     } else {
-        [index, SCRIPT.as_bytes()].concat()
+        [index, script.as_bytes()].concat()
     }
 }
 
 fn content_type(path: &Path) -> &'static str {
     match path.extension().and_then(|extension| extension.to_str()) {
         Some("html") => "text/html; charset=utf-8",
-        Some("js") => "text/javascript; charset=utf-8",
+        Some("js" | "mjs") => "text/javascript; charset=utf-8",
+        Some("wasm") => "application/wasm",
         Some("css") => "text/css; charset=utf-8",
         Some("map") | Some("json") => "application/json; charset=utf-8",
         Some("svg") => "image/svg+xml",
@@ -883,11 +895,14 @@ mod tests {
         );
         assert_eq!(safe_path("/"), Some(PathBuf::from("index.html")));
         assert_eq!(safe_path("/../secret"), None);
-        let index = inject_reload(b"<body>app</body>");
+        let index = inject_reload(b"<body>app</body>", 7);
         let index = String::from_utf8(index).unwrap();
         assert!(index.contains(RELOAD_PATH));
         assert!(index.ends_with("</body>"));
-        let failed = inject_reload(b"<body>Build failed</body>");
+        assert!(index.contains("const version = \"7\\n\";"));
+        assert!(!index.contains("let version = await"));
+        assert!(index.contains("dispatchEvent(closing)"));
+        let failed = inject_reload(b"<body>Build failed</body>", 0);
         assert!(String::from_utf8(failed).unwrap().contains(RELOAD_PATH));
     }
 

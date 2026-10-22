@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.81] - 2026-10-23
+
+### Added
+
+- Rebuild selected pure program-WASM modules and the generated TypeScript UI through standard package dev/watch, including external path dependencies. Keep the last complete site and reload version after failed edits. Cancel the UI and finish its finalizers before closing remaining program owners and callbacks for full-page reload; also drain late instantiation. Preserve explicit disposal and trap retirement. UI state-preserving HMR, program-WASM source maps and the general Effect ABI remain unsupported.
+
+### Fixed
+
+- Pin each development reload client to the build version served with its HTML, so a newer version observed during startup still triggers an update.
+
 ## [0.61.80] - 2026-10-23
 
 ### Fixed

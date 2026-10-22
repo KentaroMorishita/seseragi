@@ -47,7 +47,8 @@ fn compile(
     exports: &[String],
 ) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
     if Path::new(path).is_dir() {
-        compile_package(path, exports, None)
+        compile_package(path, exports, None, seseragi_project::ProjectCommand::Build)?
+            .ok_or_else(|| "program WASM compiler did not produce a checked output".to_owned())
     } else {
         compile_file(path, exports)
     }
@@ -57,8 +58,13 @@ fn compile_package(
     path: &str,
     exports: &[String],
     module: Option<&seseragi_project::ModulePath>,
-) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
-    let (project, checked) = super::load_checked_project_entry(path, module)?;
+    command: seseragi_project::ProjectCommand,
+) -> Result<Option<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>)>, String> {
+    let Some((project, checked)) =
+        super::load_checked_project_entry_for_command(path, module, command)?
+    else {
+        return Ok(None);
+    };
     for (_, package) in project.packages().packages() {
         if module.is_none()
             && (!package.manifest().providers.is_empty()
@@ -88,7 +94,7 @@ fn compile_package(
         let path = package.root().join("seseragi.toml");
         sources.push((path.clone(), fs::read(path).map_err(|e| e.to_string())?));
     }
-    Ok((artifact, sources))
+    Ok(Some((artifact, sources)))
 }
 
 fn compile_file(
@@ -257,25 +263,28 @@ fn write_artifact(
 pub(crate) fn package_assets(
     root: &Path,
     programs: &std::collections::BTreeMap<String, seseragi_project::ManifestProgramWasm>,
-) -> Result<Vec<seseragi_runtime::ProgramWasmAssets>, String> {
+    command: seseragi_project::ProjectCommand,
+) -> Result<Option<Vec<seseragi_runtime::ProgramWasmAssets>>, String> {
     // Check every selected import closure before starting rustc or producing files.
-    let checked = programs
-        .iter()
-        .map(|(name, config)| {
-            let (artifact, sources) = compile_package(
-                &root.to_string_lossy(),
-                &config.exports,
-                Some(&config.module),
+    let mut checked = Vec::new();
+    for (name, config) in programs {
+        let Some((artifact, sources)) = compile_package(
+            &root.to_string_lossy(),
+            &config.exports,
+            Some(&config.module),
+            command,
+        )
+        .map_err(|error| {
+            format!(
+                "{}: web.programs.{name}: {error}",
+                root.join("seseragi.toml").display()
             )
-            .map_err(|error| {
-                format!(
-                    "{}: web.programs.{name}: {error}",
-                    root.join("seseragi.toml").display()
-                )
-            })?;
-            Ok((name.clone(), artifact, sources))
-        })
-        .collect::<Result<Vec<_>, String>>()?;
+        })?
+        else {
+            return Ok(None);
+        };
+        checked.push((name.clone(), artifact, sources));
+    }
     let mut result = Vec::new();
     for (name, artifact, sources) in checked {
         let temporary = OwnedDirectory::create(&std::env::temp_dir())?;
@@ -295,7 +304,7 @@ pub(crate) fn package_assets(
             inputs: sources,
         });
     }
-    Ok(result)
+    Ok(Some(result))
 }
 
 pub(super) fn run(arguments: &[String]) -> Result<i32, String> {

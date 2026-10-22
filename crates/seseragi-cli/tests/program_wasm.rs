@@ -460,16 +460,30 @@ fn failed_standard_program_build_preserves_the_complete_site() {
     assert!(String::from_utf8_lossy(&result.stderr).contains("collides"));
     assert!(!bad.exists());
     assert_eq!(artifact_image(&site), previous);
-    fs::write(&toml, original).unwrap();
+    fs::write(&toml, &original).unwrap();
+    lock();
+    // Web watch is covered in tests/dev.rs. A process manifest still refuses
+    // dev before rustc, even when it also configures a valid pure program.
+    fs::write(
+        &toml,
+        original.replace("target = \"web\"", "target = \"process\""),
+    )
+    .unwrap();
     lock();
     let result = bounded(
         Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("dev")
-            .arg(&package),
+            .arg(&package)
+            .args(["--port", "0"])
+            .env("PATH", ""),
         &scratch.0,
     );
-    assert!(!result.status.success());
-    assert!(String::from_utf8_lossy(&result.stderr).contains("dev/watch"));
+    assert_eq!(result.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&result.stderr)
+        .contains("dev does not support the `process` target"));
+    assert!(!package.join(".seseragi/dev").exists());
+    fs::write(&toml, &original).unwrap();
+    lock();
     let shadow = package.join("host/node_modules/@seseragi/programs");
     fs::create_dir_all(&shadow).unwrap();
     fs::write(
