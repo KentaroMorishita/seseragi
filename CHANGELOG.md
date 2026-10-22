@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Update the CI Node.js 24 LTS runtime to 24.22.1 for the October 21, 2026 security fixes. Generated JavaScript deployments must update their own Node runtime separately.
 - Validate dynamic scalar URL attributes and custom form action URLs using the same WebUrl policy as typed HTML props. Reject unsafe initial values and updates before DOM writes, preserve typed failure/cleanup behavior, and reject raw HTML via srcdoc.
 - Evaluate Playground and Tour programs, foreign JavaScript, runtime services and interactive DOM inside an opaque sandbox iframe. Keep application Storage behind its namespaced, budgeted operation channel and Navigation inside private preview history.
 - Validate the HTTP Host before serving development HTML, assets, source maps, reload metadata or build-failure pages. Read complete headers within fixed size/time limits and reject missing, duplicate or unrelated authorities while preserving explicit hosts, IPv4/IPv6 and loopback localhost.
