@@ -37,6 +37,17 @@ follow symlinks inside the owned directory. This protects staging ownership;
 CLI programs still execute with the invoking user's filesystem and network
 authority.
 
+Experimental Rust emission and native builds check every destination leaf before
+generating files, reject symlink and non-regular output leaves, and reject names
+that resolve to a source file. Native output directory leaves cannot be symlinks.
+Generation and compilation use an owned private directory on the destination
+filesystem. Publication replaces the checked leaves with rename, so an existing
+hardlink does not cause writes through the source inode. Handled publication
+errors restore prior output bytes and permissions or report the retained backup
+path if restoration fails. The selected output parent is trusted; concurrent
+parent replacement, multi-file crash atomicity and preservation of arbitrary
+extended file metadata are outside this guarantee.
+
 ## Data and network authority
 
 The parent Storage broker checks the entry capability, operation, request ID,

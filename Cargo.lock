@@ -539,6 +539,7 @@ dependencies = [
  "seseragi-runtime",
  "seseragi-syntax",
  "sha2",
+ "tempfile",
  "url",
 ]
 
