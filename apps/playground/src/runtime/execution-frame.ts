@@ -29,7 +29,7 @@ window.addEventListener("message", function connect(event: MessageEvent) {
         port.postMessage({
           type: "error",
           error:
-            "Interactive foreign JavaScript is not supported in the restricted preview. Run this project with the CLI.",
+            "Interactive foreign JavaScript is not supported in the restricted preview. Use the CLI only for projects you trust.",
         })
         return
       }
