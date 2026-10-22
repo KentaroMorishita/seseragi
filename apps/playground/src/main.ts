@@ -96,7 +96,8 @@ import {
   workspaceProjectRequest,
   workspaceProjectRevision,
 } from "./workspace/project-request"
-import { sourceFromPlaygroundUrl } from "./workspace/source-link"
+import { playgroundSession } from "./workspace/shared-session"
+import { connectExecutionSettings } from "./ui/execution-settings"
 
 type WorkspaceAnalysisResult = Readonly<{
   activeDocument?: AnalysisDocument
@@ -326,11 +327,21 @@ const blankWorkspaceOrigin = {
   id: "playground-blank",
   workspaceHash: "workspace:blank-v1",
 }
-const restoredWorkspace = restoreWorkspace(localStorage, [
-  ...samples,
-  blankWorkspaceOrigin,
-])
-const linkedSource = sourceFromPlaygroundUrl(window.location.href)
+const session = playgroundSession(window.location.href)
+const restoredWorkspace = restoreWorkspace(
+  localStorage,
+  [...samples, blankWorkspaceOrigin],
+  session.persistenceKey
+)
+const linkedSource = session.linkedSource
+let applicationId =
+  restoredWorkspace.status === "restored" && linkedSource === undefined
+    ? (restoredWorkspace.applicationId ?? crypto.randomUUID())
+    : crypto.randomUUID()
+const executionSettings = connectExecutionSettings(mobileToolsMenu, () => {
+  cancelActiveExecution()
+  showTextOutput("Network設定を変更しました。Runで再実行してください。")
+})
 const restoredBlank =
   linkedSource === undefined &&
   restoredWorkspace.status === "restored" &&
@@ -518,10 +529,28 @@ if (initialSample !== undefined) {
   sampleGuide.setSample(initialSample)
 } else {
   stdinInput.value =
-    restoredWorkspace.status === "restored" ? restoredWorkspace.stdin : ""
+    linkedSource === undefined && restoredWorkspace.status === "restored"
+      ? restoredWorkspace.stdin
+      : ""
   setStdinVisible(false)
   sampleBrowser.setBlank()
   sampleGuide.setBlank()
+}
+if (
+  session.importedUrl !== undefined ||
+  (restoredWorkspace.status === "restored" &&
+    restoredWorkspace.applicationId === undefined)
+)
+  persistCurrentWorkspace()
+if (session.shared) {
+  const notice = document.createElement("p")
+  notice.className = "workspace-notice"
+  notice.append(document.createTextNode("共有workspaceを別に保存しています。 "))
+  const back = document.createElement("a")
+  back.href = new URL(location.pathname, location.origin).href
+  back.textContent = "元のworkspaceに戻る"
+  notice.append(back)
+  document.querySelector("main.workspace")!.before(notice)
 }
 if (restoredWorkspace.status === "recovered") {
   showTextOutput(restoredWorkspace.diagnostic)
@@ -681,7 +710,7 @@ clearSourceButton.addEventListener("click", () => {
   setStatus("ready", "Source cleared")
   persistCurrentWorkspace()
 })
-stdinInput.addEventListener("input", persistCurrentWorkspace)
+stdinInput.addEventListener("input", () => persistCurrentWorkspace())
 clearOutputButton.addEventListener("click", () => {
   cancelActiveExecution()
   output.textContent = ""
@@ -736,6 +765,8 @@ function loadSample(
     return false
   }
   cancelActiveExecution()
+  executionSettings.reset()
+  applicationId = crypto.randomUUID()
   currentSample = sample
   workspaceState = createWorkspace(sample.workspace)
   outputMode = sample.outputMode
@@ -773,6 +804,8 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
     return false
   }
   cancelActiveExecution()
+  executionSettings.reset()
+  applicationId = crypto.randomUUID()
   currentSample = undefined
   workspaceState = createSingleFileWorkspace("")
   outputMode = "text"
@@ -832,8 +865,10 @@ function applyWorkspaceChange(
   if (
     projectChanged ||
     JSON.stringify(previous.files) !== JSON.stringify(nextState.files)
-  )
+  ) {
+    executionSettings.reset()
     cancelActiveExecution()
+  }
   if (switched) {
     setEditorWhitespaceVisible(editor, showWhitespace)
     editor.dispatch(setDiagnostics(editor.state, []))
@@ -855,6 +890,7 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     bindingConversion.invalidate()
+    executionSettings.reset()
     cancelActiveExecution()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     interopInspector.sync(workspaceState)
@@ -866,21 +902,28 @@ function handleEditorChange(nextSource: string): void {
   scheduleWorkspaceAnalysis()
 }
 
-function persistCurrentWorkspace(): void {
+function persistCurrentWorkspace(reportFailure = false): boolean {
   const result = persistWorkspace(
     localStorage,
     currentSample ?? blankWorkspaceOrigin,
     workspaceState,
-    stdinInput.value
+    stdinInput.value,
+    { key: session.persistenceKey, applicationId }
   )
   if (result.status === "saved") {
     persistenceFailureShown = false
-    return
+    if (
+      session.importedUrl !== undefined &&
+      new URL(location.href).searchParams.has("source")
+    )
+      history.replaceState(null, "", session.importedUrl)
+    return true
   }
-  if (persistenceFailureShown) return
+  if (persistenceFailureShown && !reportFailure) return false
   persistenceFailureShown = true
   showTextOutput(result.diagnostic)
   setStatus("error", "Local save unavailable")
+  return false
 }
 
 function editorHoverAt(position: number) {
@@ -1119,6 +1162,14 @@ async function run(): Promise<void> {
       showIoOnSmallScreens()
       return
     }
+    // Storage must not write under an identity that will be lost on reload.
+    if (
+      compiled.entry.contract.environment.some(
+        ({ service }) => service === "storage"
+      ) &&
+      !persistCurrentWorkspace(true)
+    )
+      return
 
     setStatus("running", "Running…")
     if (revision !== runRevision) {
@@ -1157,6 +1208,7 @@ async function run(): Promise<void> {
         entryPath: compiled.entry.path,
         entry: compiled.entry.contract,
         input: stdinInput.value,
+        storageScope: applicationId,
         foreignRuntime,
         initialHref: new URL(
           `${import.meta.env.BASE_URL}runtime-preview.html`,
@@ -1231,11 +1283,12 @@ function cancelActiveExecution(): void {
 }
 
 function showExecutionOutput(stdout: string): void {
+  clearHtmlPreview()
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
   output.textContent = stdout || "Program completed with no output."
   setOutputMode(outputMode)
-  renderHtmlPreview(stdout)
+  if (outputMode === "html") renderHtmlPreview(stdout)
 }
 
 function showTextOutput(message: string): void {
@@ -1286,7 +1339,9 @@ function renderHtmlPreview(html: string): void {
   if (html === "") return
 
   const url = URL.createObjectURL(
-    new Blob([createPreviewDocument(html)], { type: "text/html" })
+    new Blob([createPreviewDocument(html, executionSettings.allowed())], {
+      type: "text/html",
+    })
   )
   htmlPreviewUrl = url
   htmlPreview.addEventListener(
@@ -1312,6 +1367,7 @@ async function prepareIsolatedExecution(
     const execution = await startIsolatedProject(htmlPreview, request, {
       signal: preparation.signal,
       onDomMounted,
+      networkAllowed: executionSettings.allowed(),
     })
     if (
       preparation.signal.aborted ||
@@ -1338,6 +1394,8 @@ function clearHtmlPreview(): void {
 
 function chooseOutputMode(mode: "text" | "html"): void {
   outputMode = mode
+  if (mode === "html" && !htmlPreview.hasAttribute("srcdoc"))
+    renderHtmlPreview(output.textContent ?? "")
   setOutputMode(mode)
 }
 

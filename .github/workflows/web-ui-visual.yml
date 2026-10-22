@@ -35,7 +35,9 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    # Include the security/lifecycle cases and the full viewport matrix.
+    # The 109-case suite reached case 101 when the former 25-minute job expired.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2

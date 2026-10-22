@@ -116,7 +116,11 @@ test("an explicit Run recovers from a failed actual WASM fetch in the same Worke
 }) => {
   let fetches = 0
   const workers: string[] = []
-  page.on("worker", (worker) => workers.push(worker.url()))
+  // Program runs now own separate short-lived Workers. This assertion is
+  // specifically about retrying the WASM fetch in the same compiler Worker.
+  page.on("worker", (worker) => {
+    if (worker.url().includes("compiler.worker")) workers.push(worker.url())
+  })
   await page.route(
     /\/seseragi_wasm_bg(?:-[A-Za-z0-9_-]+)?\.wasm(?:\?.*)?$/,
     (route) => {

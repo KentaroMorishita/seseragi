@@ -14,6 +14,12 @@ test("runs Tour image, external link, form and Signal interactions", async ({
   await expect(page.locator("#tour-lesson-title")).toContainText(
     "External linkとimageを表示する"
   )
+  await page.locator("#tour-tools-button").click()
+  await page
+    .getByRole("menuitemcheckbox", {
+      name: "Allow preview HTTP, WebSocket and external images",
+    })
+    .click()
   await page.locator("#tour-run-button").click()
   const staticPreview = page.locator("#tour-html-preview").contentFrame()
   const image = staticPreview.getByRole("img", {

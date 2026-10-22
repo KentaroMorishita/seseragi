@@ -30,9 +30,9 @@ export default defineConfig({
     video: "retain-on-failure",
   },
   webServer: {
-    command: "bun run dev -- --host 127.0.0.1 --port 4173",
+    command: `bun run dev -- --host 127.0.0.1 --port ${new URL(baseURL).port || "4173"} --strictPort`,
     url: baseURL,
-    reuseExistingServer: process.env.CI !== "true",
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 })

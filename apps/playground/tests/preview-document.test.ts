@@ -21,6 +21,13 @@ describe("Playground preview document", () => {
     expect(document).not.toContain("<script")
   })
 
+  test("blocks external images until network permission is granted", () => {
+    expect(createPreviewDocument("marker")).toContain(
+      "img-src 'self' data: blob:"
+    )
+    expect(createPreviewDocument("marker")).not.toContain("https:")
+  })
+
   test("keeps the utility vocabulary bounded and host-owned", () => {
     expect(previewUtilityCss).toContain(".grid-cols-2")
     expect(previewUtilityCss).toContain(".sm\\:grid-cols-3")
@@ -38,7 +45,8 @@ describe("Playground preview document", () => {
         '<img src="https://images.unsplash.com/photo.jpg" alt="HTTPS">',
         '<img src="data:image/png;base64,AA==" alt="Data">',
         '<img src="blob:https://example.test/id" alt="Blob">',
-      ].join("")
+      ].join(""),
+      true
     )
     const policy = document.match(
       /http-equiv="Content-Security-Policy" content="([^"]+)"/

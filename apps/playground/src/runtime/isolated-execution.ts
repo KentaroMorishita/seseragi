@@ -21,11 +21,15 @@ export type IsolatedExecutionRequest = Readonly<{
   input: string
   foreignRuntime?: ForeignRuntimeBundle
   initialHref: string
+  storageScope?: string
 }>
 
 export type IsolatedExecutionOptions = Readonly<{
   signal: AbortSignal
   onDomMounted?: () => void
+  networkAllowed?: boolean
+  /** Only reduced deadlines are accepted, primarily for deterministic tests. */
+  timeoutMs?: number
 }>
 
 const storageNamespace = "seseragi:playground:application:"
@@ -33,15 +37,16 @@ const storageOperations = new Set(["get", "set", "remove", "clear", "keys"])
 
 export function createExecutionFrameDocument(
   source: string,
-  session: string
+  session: string,
+  networkAllowed = false
 ): string {
   // Only trusted bundled code is interpolated. Program sources travel over the
   // MessagePort after the frame is established, never through an HTML parser.
   const script = `Function(${JSON.stringify(source).replaceAll("<", "\\u003c")})()`
-  return createPreviewDocument('<div id="app"></div>')
+  return createPreviewDocument('<div id="app"></div>', networkAllowed)
     .replace(
       "script-src 'none'",
-      "script-src 'unsafe-inline' 'unsafe-eval'; connect-src https: http: wss: ws:"
+      `script-src 'unsafe-inline' 'unsafe-eval'; worker-src blob:; connect-src ${networkAllowed ? "https: http: wss: ws:" : "'none'"}`
     )
     .replace(
       "</body>",
@@ -60,23 +65,25 @@ export async function startIsolatedProject(
   const channel = new MessageChannel()
   const port = channel.port1
   const owner = frame.ownerDocument.defaultView!
+  // Scope is chosen by the editor, never by code running inside the frame.
+  const namespace = `${storageNamespace}v2:${encodeURIComponent(request.storageScope ?? crypto.randomUUID())}:`
   const storage = createBrowserStorageProvider(
     createBudgetedStorageHost(
-      createNamespacedStorageHost(
-        createWindowStorageHost(owner),
-        storageNamespace
-      ),
+      createNamespacedStorageHost(createWindowStorageHost(owner), namespace),
       256 * 1024,
-      storageNamespace.length
+      namespace.length
     )
   )
   const allowStorage = request.entry.environment.some(
     ({ service }) => service === "storage"
   )
   let connected = false
+  let running = false
+  let messages = 0
   let settled = false
   let closed = false
   let cancellation: Promise<void> | undefined
+  let deadline: ReturnType<typeof setTimeout> | undefined
   let acknowledgeCancellation: (() => void) | undefined
   let resolveCompletion!: (value: BrowserExecutionCompletion) => void
   let rejectCompletion!: (cause: unknown) => void
@@ -91,6 +98,7 @@ export async function startIsolatedProject(
   const retire = () => {
     if (closed) return
     closed = true
+    clearTimeout(deadline)
     frame.removeEventListener("load", onLoad)
     port.close()
     channel.port2.close()
@@ -104,6 +112,7 @@ export async function startIsolatedProject(
   const finish = (value: BrowserExecutionCompletion) => {
     if (settled) return
     settled = true
+    clearTimeout(deadline)
     resolveCompletion(value)
   }
   const onLoad = () => {
@@ -182,13 +191,42 @@ export async function startIsolatedProject(
       port.onmessage = (event: MessageEvent) => {
         const data = event.data
         if (data === null || typeof data !== "object") return
+        if (++messages > 20_000) {
+          if (!settled) {
+            settled = true
+            rejectCompletion(new Error("Program message limit exceeded"))
+          }
+          port.postMessage({ type: "cancel" })
+          retire()
+          return
+        }
         if (data.type === "connected") {
+          if (running) return
+          running = true
           cleanup()
           if (options.signal.aborted) {
             reject(previewNavigationCancelled())
             return
           }
           port.postMessage({ type: "run", request })
+          if (
+            !request.entry.environment.some(({ service }) => service === "dom")
+          ) {
+            deadline = setTimeout(
+              () => {
+                if (settled) return
+                settled = true
+                port.postMessage({ type: "cancel" })
+                rejectCompletion(
+                  new Error(
+                    "Program time limit exceeded (10 seconds). Simplify the program and run again."
+                  )
+                )
+                retire()
+              },
+              Math.min(10_000, Math.max(1, options.timeoutMs ?? 10_000))
+            )
+          }
           resolve()
         } else if (data.type === "storage") {
           void handleStorage(data)
@@ -199,7 +237,9 @@ export async function startIsolatedProject(
           if (
             value?.kind === "completed" &&
             typeof value.result?.stdout === "string" &&
-            typeof value.result?.debug === "string"
+            value.result.stdout.length <= 256 * 1024 &&
+            typeof value.result?.debug === "string" &&
+            value.result.debug.length <= 16 * 1024
           ) {
             finish({
               kind: "completed",
@@ -213,6 +253,10 @@ export async function startIsolatedProject(
           } else if (value?.kind === "cancelled") {
             finish({ kind: "cancelled" })
             retire()
+          } else if (!settled) {
+            settled = true
+            rejectCompletion(new Error("Invalid or oversized program result"))
+            retire()
           }
         } else if (data.type === "cancelled") {
           acknowledgeCancellation?.()
@@ -220,10 +264,11 @@ export async function startIsolatedProject(
           retire()
         } else if (data.type === "error" && !settled) {
           settled = true
+          clearTimeout(deadline)
           rejectCompletion(
             new Error(
               typeof data.error === "string"
-                ? data.error
+                ? data.error.slice(0, 4096)
                 : "isolated execution failed"
             )
           )
@@ -233,10 +278,14 @@ export async function startIsolatedProject(
       frame.addEventListener("load", onLoad)
       owner.addEventListener("message", onReady)
       options.signal.addEventListener("abort", onAbort, { once: true })
-      frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups")
+      frame.setAttribute("sandbox", "allow-scripts allow-forms")
       frame.dataset.executionSession = session
       frame.removeAttribute("src")
-      frame.srcdoc = createExecutionFrameDocument(source, session)
+      frame.srcdoc = createExecutionFrameDocument(
+        source,
+        session,
+        options.networkAllowed
+      )
       port.start()
     })
   } catch (error) {

@@ -894,11 +894,17 @@ nativeと疑似全画面はいずれもsafe area内にClose操作を常時表示
 scrollを停止します。切替ではOutput surfaceやiframeを再作成・移動せず、Preview document、interactive session、iframe内の
 scroll位置を保持します。sandbox、CSP、referrer policyは通常表示と同じです。
 
-Preview iframeのsandboxは`allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts`
-だけを持ちます。popupは明示的な`target="_blank"` linkの新しいcontextを通常の外部pageとして開くためsandboxを継承
-しませんが、13.7に従って`rel="noopener"`を持つため元Previewの`window.opener`へ到達できません。
-`allow-top-navigation`、`allow-top-navigation-by-user-activation`、`allow-modals`は追加せず、Preview documentの
-`script-src 'none'`、`form-action 'none'`、`base-uri 'none'`を維持します。
+Preview iframeのsandboxは`allow-scripts allow-forms`だけを持ちます。same-origin、popup、top navigationは許可せず、
+`form-action 'none'`、`base-uri 'none'`を維持します。完了したHTML出力は`script-src 'none'`の別documentで表示し、
+Text表示中はHTMLを読み込みません。実行用documentだけはlocal bundleの評価を許可します。
+
+HTTP / WebSocketと外部HTTPS画像は初期状態では拒否し、利用者がTools内のNetworkを選んだ場合だけ許可します。
+許可は保存せず、code・project・lessonの変更時に解除します。通常のPreview内link navigationまで遮断するoffline保証はありません。
+DOMを必要としないprogramは専用Workerへ移し、10秒の期限で停止します。DOM programの同期loop / 関数には計算量監視を入れ、
+監視を回避できるforeign JavaScriptとの併用はPreviewでは拒否します。compiler Workerの応答期限は15秒です。
+Storageはworkspaceごと（Tourはlessonごと）の領域を使い、共有source linkのstdinと保存slotも元workspaceから分離します。
+これらの制限はブラウザ全体のheap quotaや全native処理の強制中断を保証しません。境界と残る制約は
+[`docs/threat-model.md`](../threat-model.md)に記載します。
 
 外部画像を示すcanonical sampleは、検索結果やrandom endpointではなく固定photo IDを含むHTTPS URLを使います。
 各画像は空でない内容説明の`alt`と正の`width` / `height`を持ち、host所有の`aspect-2-1`、`h-auto`、`w-full`、

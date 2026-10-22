@@ -47,7 +47,8 @@ describe("Playground remote sample images", () => {
 
   test("keeps meaningful fallback text inside the HTTPS image policy", () => {
     const document = createPreviewDocument(
-      '<img class="aspect-2-1 h-auto w-full object-cover" src="https://images.unsplash.com/missing-photo" alt="画像を取得できない場合の共同作業スペース" width="960" height="480">'
+      '<img class="aspect-2-1 h-auto w-full object-cover" src="https://images.unsplash.com/missing-photo" alt="画像を取得できない場合の共同作業スペース" width="960" height="480">',
+      true
     )
 
     expect(document).toContain('alt="画像を取得できない場合の共同作業スペース"')

@@ -56,6 +56,12 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 - Use concise, imperative, scope-first commit subjects.
 - Preserve unrelated worktree changes and never edit generated `dist/`
   artifacts by hand.
+- Before merging any PR, inspect GitHub code reviews, inline review threads,
+  and security reviews for the latest head, including Rust-target PRs. Fix
+  applicable findings, run the relevant checks, push, and check the new review
+  results. Record the reason for findings that do not apply; do not count
+  pending or unresolved review findings as completed. Passing CI alone does
+  not complete this review step.
 
 ## Worktree and build-output cleanup
 

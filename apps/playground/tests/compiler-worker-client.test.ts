@@ -87,3 +87,28 @@ test("worker startup failures reject without leaving analysis pending", async ()
     "Worker unavailable"
   )
 })
+
+test("a hung compiler is terminated and the next request uses a fresh worker", async () => {
+  const first = new TestWorker()
+  const second = new TestWorker()
+  let starts = 0
+  const client = createCompilerWorkerClient(
+    () => (++starts === 1 ? first : second),
+    20
+  )
+  const request = client.call("analyzeProject", project)
+  const queued = client.call("compileProject", project)
+  const results = await Promise.allSettled([request, queued])
+  for (const result of results) {
+    expect(result.status).toBe("rejected")
+    if (result.status === "rejected")
+      expect(result.reason.message).toContain("Compiler time limit exceeded")
+  }
+  expect(first.terminated).toBe(true)
+  const next = client.call("analyzeProject", project)
+  first.reply({ id: 3, ok: true, result: compiled })
+  second.reply({ id: 3, ok: true, result: analyzed })
+  expect(await next).toEqual(analyzed)
+  await new Promise((resolve) => setTimeout(resolve, 30))
+  expect(second.terminated).toBe(false)
+})

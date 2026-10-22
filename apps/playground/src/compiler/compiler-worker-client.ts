@@ -12,19 +12,27 @@ type WorkerTransport = Pick<
 >
 
 export function createCompilerWorkerClient(
-  createWorker: () => WorkerTransport
+  createWorker: () => WorkerTransport,
+  timeoutMs = 15_000
 ) {
   let worker: WorkerTransport | undefined
   let nextId = 0
   const pending = new Map<
     number,
-    { resolve: (result: unknown) => void; reject: (error: Error) => void }
+    {
+      resolve: (result: unknown) => void
+      reject: (error: Error) => void
+      timer: ReturnType<typeof setTimeout>
+    }
   >()
 
   const fail = (error: Error): void => {
     worker?.terminate()
     worker = undefined
-    for (const request of pending.values()) request.reject(error)
+    for (const request of pending.values()) {
+      clearTimeout(request.timer)
+      request.reject(error)
+    }
     pending.clear()
   }
 
@@ -40,7 +48,8 @@ export function createCompilerWorkerClient(
       (event: MessageEvent<CompilerReply>) => {
         const reply = event.data
         const request = pending.get(reply.id)
-        if (request === undefined) return
+        if (worker !== transport || request === undefined) return
+        clearTimeout(request.timer)
         pending.delete(reply.id)
         if (reply.ok) request.resolve(reply.result)
         else request.reject(new Error(reply.error))
@@ -67,6 +76,14 @@ export function createCompilerWorkerClient(
           pending.set(id, {
             resolve: (result) => resolve(result as CompilerResult<Method>),
             reject,
+            timer: setTimeout(() => {
+              if (worker === transport)
+                fail(
+                  new Error(
+                    "Compiler time limit exceeded. Edit the source and try again."
+                  )
+                )
+            }, timeoutMs),
           })
           transport.postMessage({ id, method, args } as CompilerRequest)
         } catch (error) {

@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.80] - 2026-10-23
+
+### Fixed
+
+- Open shared Playground source in a separate saved workspace with empty stdin; preserve the preceding local workspace and restore edits to the shared copy after reload. Scope application Storage to each workspace or Tour lesson and persist its identity before Storage execution. Legacy shared application data is retained but is no longer exposed to preview programs.
+- Block preview HTTP/WebSocket and external images until Tools → Network is enabled for the current code; reset permission when code changes and avoid loading HTML images while Text is selected. Keep popup and parent-navigation permissions disabled.
+- Run non-DOM programs in a dedicated Worker with a 10-second deadline, restart unresponsive compiler Workers, and bound output and channel messages. Add cooperative computation guards for generated DOM code and refuse arbitrary foreign JavaScript with DOM in Preview; use the CLI only for projects you trust. These controls do not provide a strict browser heap quota or interrupt every native built-in operation.
+
 ## [0.61.78] - 2026-10-22
 
 ### Added

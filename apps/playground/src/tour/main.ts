@@ -1,3 +1,4 @@
+import { connectExecutionSettings } from "../ui/execution-settings"
 import { setDiagnostics } from "@codemirror/lint"
 import { analysisHoverAt } from "../analysis/hover"
 import {
@@ -221,6 +222,10 @@ let progress: TourProgress = loadTourProgress(
   requestedLesson
 )
 let currentLesson = findTourLesson(progress.currentLessonId)
+const executionSettings = connectExecutionSettings(toolsMenu, () => {
+  cancelActiveExecution()
+  showTextOutput("Network設定を変更しました。Runで再実行してください。")
+})
 let source = currentLesson.source
 let outputMode: "text" | "html" = currentLesson.outputMode
 let latestAnalysis: AnalysisDocument | undefined
@@ -236,6 +241,8 @@ const editor = createEditor(
   editorHost,
   source,
   (nextSource) => {
+    executionSettings.reset()
+    cancelActiveExecution()
     source = nextSource
     latestAnalysis = undefined
     editor.dispatch(setDiagnostics(editor.state, []))
@@ -350,7 +357,11 @@ diagnosticButton.addEventListener("click", () => {
 })
 formatButton.addEventListener("click", () => void formatSource())
 showTextButton.addEventListener("click", () => closeInteractivePreview())
-showPreviewButton.addEventListener("click", () => setOutputMode("html"))
+showPreviewButton.addEventListener("click", () => {
+  if (!htmlPreview.hasAttribute("srcdoc"))
+    renderHtmlPreview(output.textContent ?? "")
+  setOutputMode("html")
+})
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
   event.preventDefault()
@@ -617,6 +628,7 @@ function loadLesson(
   expandedChapterIds.add(currentLesson.chapterId)
   progress = visitTourLesson(progress, currentLesson.id)
   persistProgress()
+  executionSettings.reset()
   source = currentLesson.source
   outputMode = currentLesson.outputMode
   latestAnalysis = undefined
@@ -834,6 +846,7 @@ function sourceExcerpt(sourceText: string, range: TourSourceRange): string {
 
 function selectCanonicalSourceRange(range: TourSourceRange): void {
   if (source !== currentLesson.source) {
+    executionSettings.reset()
     source = currentLesson.source
     replaceEditorSource(editor, source)
     liveAnalysis.schedule(source)
@@ -1010,6 +1023,7 @@ function completeCurrentLesson(): void {
 
 function resetLesson(): void {
   cancelActiveExecution()
+  executionSettings.reset()
   source = currentLesson.source
   outputMode = currentLesson.outputMode
   stdinInput.value = currentLesson.stdin
@@ -1027,6 +1041,7 @@ function loadSourceVariant(
   statusMessage: string
 ): void {
   cancelActiveExecution()
+  executionSettings.reset()
   source = variantSource
   outputMode = "text"
   replaceEditorSource(editor, source)
@@ -1085,8 +1100,10 @@ async function run(): Promise<void> {
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
+  const requestedSource = source
+  const requestedInput = stdinInput.value
   try {
-    const compiled = await compileSingleFile(source)
+    const compiled = await compileSingleFile(requestedSource)
     if (revision !== runRevision) return
     const diagnostics = compiled.diagnostics.diagnostics
     editor.dispatch(
@@ -1115,7 +1132,8 @@ async function run(): Promise<void> {
         ],
         entryPath: "main.ssrg",
         entry: compiled.entry,
-        input: stdinInput.value,
+        input: requestedInput,
+        storageScope: `tour-${currentLesson.id}`,
         initialHref: new URL(
           `${import.meta.env.BASE_URL}runtime-preview.html`,
           window.location.origin
@@ -1175,10 +1193,11 @@ function cancelActiveExecution(): void {
 }
 
 function showExecutionOutput(stdout: string): void {
+  clearHtmlPreview()
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
   output.textContent = stdout || "Program completed with no output."
-  renderHtmlPreview(stdout)
+  if (outputMode === "html") renderHtmlPreview(stdout)
   setOutputMode(outputMode)
 }
 
@@ -1211,7 +1230,9 @@ function renderHtmlPreview(html: string): void {
   clearHtmlPreview()
   if (html === "") return
   const url = URL.createObjectURL(
-    new Blob([createPreviewDocument(html)], { type: "text/html" })
+    new Blob([createPreviewDocument(html, executionSettings.allowed())], {
+      type: "text/html",
+    })
   )
   htmlPreviewUrl = url
   htmlPreview.addEventListener(
@@ -1237,6 +1258,7 @@ async function prepareIsolatedExecution(
     const execution = await startIsolatedProject(htmlPreview, request, {
       signal: preparation.signal,
       onDomMounted,
+      networkAllowed: executionSettings.allowed(),
     })
     if (
       preparation.signal.aborted ||
