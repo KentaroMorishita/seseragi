@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.61.82] - 2026-10-23
+
+### Fixed
+
+- Enforce HTTP response body limits while collecting chunks, cancel at the first overflow, and preserve ordinary browser POST uploads and Node Host headers.
+- Bound Node HTTP request bodies to 8 MiB by default, return 413 before dispatching oversized requests, and release interrupted uploads and stalled response streams during server shutdown.
+- Bound Bun HTTP/1 response headers, trailers, chunk-size lines and informational responses. Preserve complete responses under backpressure, await in-flight upload cancellation on both hosts, and close Node transports even when cancellation fails.
+- Isolate malformed Node WebSocket frames and upgrade URLs to the affected connection. Observe Node/Bun handler failures, release pending sends and receivers, and close listeners during provider shutdown.
+
 ## [0.61.81] - 2026-10-23
 
 ### Added
