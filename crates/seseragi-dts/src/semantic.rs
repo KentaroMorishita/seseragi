@@ -167,6 +167,37 @@ impl Builder {
             policy: None,
         });
     }
+    fn extend_overload(
+        &mut self,
+        previous: TypeId,
+        signature: TypeId,
+        span: Span,
+        rule: &str,
+        reason: &str,
+    ) -> TypeId {
+        if let Some(SemanticType::Overload { signatures }) = self.graph.types.get_mut(&previous) {
+            // One live set owns each signature once. Keeping a new snapshot of
+            // every prefix would retain a quadratic number of signature edges.
+            signatures.push(signature);
+            let origin = self.origin(span, rule);
+            self.graph
+                .type_origins
+                .entry(previous)
+                .or_default()
+                .push(origin);
+            previous
+        } else {
+            let id = self.node(
+                SemanticType::Overload {
+                    signatures: vec![previous, signature],
+                },
+                span,
+                rule,
+            );
+            self.decision(id, SemanticClassification::PolicyRequired, reason);
+            id
+        }
+    }
     fn index(&mut self, scope: &Scope, namespace: &str, internal: bool) {
         for (declaration, private) in scope
             .declarations
@@ -330,30 +361,30 @@ impl Builder {
                 .entry(root)
                 .or_default()
                 .push(origins[0].clone());
-            if let Some(previous) = self.graph.symbols.get(&key).cloned() {
-                if kind == SymbolKind::Callable && previous.kind == SymbolKind::Callable {
-                    let mut signatures = match self.graph.types.get(&previous.type_ref) {
-                        Some(SemanticType::Overload { signatures }) => signatures.clone(),
-                        _ => vec![previous.type_ref],
-                    };
-                    signatures.push(root);
-                    let overload =
-                        self.node(SemanticType::Overload { signatures }, span, "overload-set");
+            if let Some((previous_kind, previous_type)) = self
+                .graph
+                .symbols
+                .get(&key)
+                .map(|symbol| (symbol.kind, symbol.type_ref))
+            {
+                if kind == SymbolKind::Callable && previous_kind == SymbolKind::Callable {
+                    let overload = self.extend_overload(
+                        previous_type,
+                        root,
+                        span,
+                        "overload-set",
+                        "overload selection must be explicit at the runtime binding boundary",
+                    );
                     let symbol = self.graph.symbols.get_mut(&key).unwrap();
                     symbol.type_ref = overload;
                     symbol.origins.extend(origins);
-                    self.decision(
-                        overload,
-                        SemanticClassification::PolicyRequired,
-                        "overload selection must be explicit at the runtime binding boundary",
-                    );
-                } else if kind == SymbolKind::Namespace && previous.kind == SymbolKind::Namespace {
+                } else if kind == SymbolKind::Namespace && previous_kind == SymbolKind::Namespace {
                     let SemanticType::Namespace { members: next } = self.graph.types[&root].clone()
                     else {
                         unreachable!()
                     };
                     let SemanticType::Namespace { members } =
-                        self.graph.types.get_mut(&previous.type_ref).unwrap()
+                        self.graph.types.get_mut(&previous_type).unwrap()
                     else {
                         unreachable!()
                     };
@@ -365,20 +396,20 @@ impl Builder {
                         .origins
                         .extend(origins);
                 } else {
-                    let old = self.graph.types[&previous.type_ref].clone();
+                    let old = self.graph.types[&previous_type].clone();
                     let combined = merge_shapes(&self.graph, &old, &self.graph.types[&root]);
                     let normalized = combined.is_some();
                     let inputs = if let Some(combined) = combined {
                         let snapshot = self.reserve();
                         self.graph.types.insert(snapshot, old);
-                        self.graph.types.insert(previous.type_ref, combined);
+                        self.graph.types.insert(previous_type, combined);
                         vec![snapshot, root]
                     } else if matches!(old, SemanticType::Shape { .. })
                         && matches!(self.graph.types[&root], SemanticType::Shape { .. })
                     {
                         let snapshot = self.reserve();
                         self.graph.types.insert(snapshot, old);
-                        self.graph.types.insert(previous.type_ref, SemanticType::Unresolved { reason: "merged property types or modifiers conflict; no source-order winner was selected".to_owned() });
+                        self.graph.types.insert(previous_type, SemanticType::Unresolved { reason: "merged property types or modifiers conflict; no source-order winner was selected".to_owned() });
                         vec![snapshot, root]
                     } else {
                         vec![root]
@@ -392,11 +423,11 @@ impl Builder {
                     let merged_origin = self.origin(span, "merged-declaration");
                     self.graph
                         .type_origins
-                        .entry(previous.type_ref)
+                        .entry(previous_type)
                         .or_default()
                         .push(merged_origin);
                     self.graph.normalizations.push(Normalization {
-                        output: previous.type_ref,
+                        output: previous_type,
                         inputs,
                         rule: "declaration-merge".to_owned(),
                         classification: if normalized { SemanticClassification::Normalized } else { SemanticClassification::PolicyRequired },
@@ -513,17 +544,13 @@ impl Builder {
                     SemanticType::Callable { .. } | SemanticType::Overload { .. }
                 ) && matches!(self.graph.types[&body], SemanticType::Callable { .. })
                 {
-                    let mut signatures = match &self.graph.types[&previous_body] {
-                        SemanticType::Overload { signatures } => signatures.clone(),
-                        _ => vec![previous.type_ref],
-                    };
-                    signatures.push(id);
-                    id = self.node(
-                        SemanticType::Overload { signatures },
+                    id = self.extend_overload(
+                        previous.type_ref,
+                        id,
                         property.type_ref.span,
                         "method-overload-set",
+                        "method overload selection requires explicit signature and receiver ABI policy",
                     );
-                    self.decision(id, SemanticClassification::PolicyRequired, "method overload selection requires explicit signature and receiver ABI policy");
                 } else {
                     id = self.node(
                         SemanticType::Unresolved {
