@@ -362,6 +362,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | code      | severity | 意味                                        |
 | --------- | -------- | ------------------------------------------- |
 | SES-P0001 | Error    | token / grammarを回復不能な位置で拒否       |
+| SES-P0002 | Error    | parserのnesting / work上限を超えた          |
 | SES-P0101 | Error    | scopeに存在しないcustom operator            |
 | SES-P0102 | Error    | operator fixityが曖昧または両立しない       |
 | SES-P0201 | Error    | literalに未定義または不正なescapeがある     |

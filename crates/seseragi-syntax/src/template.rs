@@ -17,27 +17,7 @@ pub(crate) struct TemplateScan {
 
 pub(crate) fn template_end(source: &str, start: usize) -> usize {
     debug_assert!(source[start..].starts_with('`'));
-    let mut cursor = start + 1;
-    while cursor < source.len() {
-        if source[cursor..].starts_with('\\') {
-            cursor += 1;
-            advance_char(source, &mut cursor);
-            continue;
-        }
-        if source[cursor..].starts_with("${") {
-            cursor += 2;
-            let Some((_, after)) = interpolation_end(source, cursor) else {
-                return source.len();
-            };
-            cursor = after;
-            continue;
-        }
-        if source[cursor..].starts_with('`') {
-            return cursor + 1;
-        }
-        advance_char(source, &mut cursor);
-    }
-    source.len()
+    scan_nested(source, start + 1, ScanContext::Template).map_or(source.len(), |(_, after)| after)
 }
 
 pub(crate) fn scan_template(raw: &str) -> TemplateScan {
@@ -96,44 +76,83 @@ pub(crate) fn scan_template(raw: &str) -> TemplateScan {
 }
 
 fn interpolation_end(source: &str, start: usize) -> Option<(usize, usize)> {
+    scan_nested(source, start, ScanContext::Interpolation { depth: 1 })
+}
+
+enum ScanContext {
+    Template,
+    Interpolation { depth: usize },
+}
+
+/// Template lexing precedes the syntax budget. Keep nested templates and
+/// interpolation braces on an explicit heap stack, rather than the host stack.
+fn scan_nested(source: &str, start: usize, initial: ScanContext) -> Option<(usize, usize)> {
     let mut cursor = start;
-    let mut depth = 1usize;
+    let mut contexts = vec![initial];
     while cursor < source.len() {
-        if source[cursor..].starts_with("//") {
-            cursor += 2;
-            while cursor < source.len() && !source[cursor..].starts_with('\n') {
-                advance_char(source, &mut cursor);
-            }
-            continue;
-        }
-        let character = source[cursor..].chars().next()?;
-        if character == '_' || unicode_ident::is_xid_start(character) {
-            advance_char(source, &mut cursor);
-            while cursor < source.len()
-                && source[cursor..].chars().next().is_some_and(|character| {
-                    character == '\'' || unicode_ident::is_xid_continue(character)
-                })
-            {
-                advance_char(source, &mut cursor);
-            }
-            continue;
-        }
-        match character {
-            '"' | '\'' => skip_quoted(source, &mut cursor, character),
-            '`' => cursor = template_end(source, cursor),
-            '{' => {
-                depth += 1;
-                cursor += 1;
-            }
-            '}' => {
-                let end = cursor;
-                cursor += 1;
-                depth -= 1;
-                if depth == 0 {
-                    return Some((end, cursor));
+        match contexts.last_mut()? {
+            ScanContext::Template => {
+                if source[cursor..].starts_with('\\') {
+                    cursor += 1;
+                    advance_char(source, &mut cursor);
+                } else if source[cursor..].starts_with("${") {
+                    cursor += 2;
+                    contexts.push(ScanContext::Interpolation { depth: 1 });
+                } else if source[cursor..].starts_with('`') {
+                    let end = cursor;
+                    cursor += 1;
+                    contexts.pop();
+                    if contexts.is_empty() {
+                        return Some((end, cursor));
+                    }
+                } else {
+                    advance_char(source, &mut cursor);
                 }
             }
-            _ => advance_char(source, &mut cursor),
+            ScanContext::Interpolation { depth } => {
+                if source[cursor..].starts_with("//") {
+                    cursor += 2;
+                    while cursor < source.len() && !source[cursor..].starts_with('\n') {
+                        advance_char(source, &mut cursor);
+                    }
+                    continue;
+                }
+                let character = source[cursor..].chars().next()?;
+                if character == '_' || unicode_ident::is_xid_start(character) {
+                    advance_char(source, &mut cursor);
+                    while cursor < source.len()
+                        && source[cursor..].chars().next().is_some_and(|character| {
+                            character == '\'' || unicode_ident::is_xid_continue(character)
+                        })
+                    {
+                        advance_char(source, &mut cursor);
+                    }
+                    continue;
+                }
+                match character {
+                    '"' | '\'' => skip_quoted(source, &mut cursor, character),
+                    '`' => {
+                        cursor += 1;
+                        contexts.push(ScanContext::Template);
+                    }
+                    '{' => {
+                        *depth += 1;
+                        cursor += 1;
+                    }
+                    '}' => {
+                        let end = cursor;
+                        cursor += 1;
+                        *depth -= 1;
+                        if *depth == 0 {
+                            contexts.pop();
+                            if contexts.is_empty() {
+                                return Some((end, cursor));
+                            }
+                        }
+                    }
+                    _ => advance_char(source, &mut cursor),
+                }
+            }
         }
     }
     None

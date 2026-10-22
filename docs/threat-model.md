@@ -101,6 +101,23 @@ handler rejection and release connection resources; one failed handler must
 not become an unhandled process-level rejection. These controls do not replace
 application authentication, connection limits or a host process sandbox.
 
+## Compiler input processing
+
+The shared Rust syntax parser reads infix operands once before applying known
+operator precedence. One synchronous parse shares a recursion and work budget
+across helper parsers, including block, do, match and template ranges. Its
+current limits are 64 recursive parser frames, expression depth 128 and
+1,000,000 parsing/checking steps. Custom infix chains account for their later
+curried application depth. Exceeding a limit reports `SES-P0002` with a UTF-8
+source range; it must not overflow the host stack. Template scanning uses an
+explicit stack before the parser budget applies.
+
+Declaration conversion stores one overload set and appends each signature and
+origin once, rather than retaining every previous prefix. These controls remove
+the grouped-expression and overload-storage amplification paths. They do not
+provide a total compiler CPU or heap quota; the browser compiler Worker deadline
+remains a separate availability boundary.
+
 ## Availability limits and remaining assumptions
 
 The compiler request deadline is 15 seconds; non-DOM execution is 10 seconds.

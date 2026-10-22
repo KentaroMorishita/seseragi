@@ -2,6 +2,16 @@ use crate::surface_model::{ByteSpan, SurfacePattern, SurfaceRecordPatternField};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) -> SurfacePattern {
+    let at = tokens
+        .get(start)
+        .map(|token| ByteSpan {
+            start: token.start,
+            end: token.end,
+        })
+        .unwrap_or(ByteSpan { start: 0, end: 0 });
+    let Some(_frame) = crate::resource::enter(at) else {
+        return SurfacePattern::Error { span: at };
+    };
     let significant = significant_indices(tokens, start, end);
     let Some(first) = significant.first().copied() else {
         let at = tokens.get(start).map(|token| token.start).unwrap_or(0);

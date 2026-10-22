@@ -63,6 +63,12 @@ impl SurfaceParser<'_> {
     }
 
     fn parse_foreign_members(&self, start: usize, end: usize) -> Vec<SurfaceForeignMember> {
+        let at = self
+            .byte_span(start)
+            .unwrap_or(ByteSpan { start: 0, end: 0 });
+        let Some(_frame) = crate::resource::enter(at) else {
+            return vec![];
+        };
         let starts = self.foreign_member_starts(start, end);
         starts
             .iter()

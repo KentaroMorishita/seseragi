@@ -46,6 +46,7 @@ pub fn parse_cst(source_name: impl Into<String>, source: &str) -> CstArtifact {
 }
 
 pub fn parse_cst_from_tokens(stream: TokenStream) -> CstArtifact {
+    let _scope = crate::resource::ParseScope::new();
     let non_eof_token_count = stream
         .tokens
         .iter()
@@ -59,6 +60,22 @@ pub fn parse_cst_from_tokens(stream: TokenStream) -> CstArtifact {
     };
     let mut root = parser.parse_module();
     complete::enrich(&mut root, &stream);
+    if let Some(span) = crate::resource::exceeded() {
+        let start_token = stream
+            .tokens
+            .partition_point(|token| token.end <= span.start)
+            .min(non_eof_token_count);
+        let end_token = stream
+            .tokens
+            .partition_point(|token| token.start < span.end)
+            .max(start_token)
+            .min(non_eof_token_count);
+        parser.errors.push(CstError {
+            code: "SES-P0002".to_owned(),
+            start_token,
+            end_token,
+        });
+    }
     CstArtifact {
         schema: 1,
         source: stream.source,
