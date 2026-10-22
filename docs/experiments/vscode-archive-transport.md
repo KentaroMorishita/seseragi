@@ -40,7 +40,8 @@ actual product E2E assertions.
 The Bun orchestration script prepares the native archive, canonical Web starter
 and private extension/user-data directories. A Node SDK runner downloads VS
 Code, installs the supplied VSIX and launches the original Extension Host test.
-CI pins Node 24.14.0 alongside the existing Bun toolchain.
+CI pins Node 24.22.1 alongside the existing Bun toolchain. The Node pin includes
+the October 21, 2026 security fixes; the measurements above used Node 24.14.0.
 
 Each journey gets a fresh private SDK cache. The SDK's archive validation is
 retained, installation cannot start after download rejection, and both failed

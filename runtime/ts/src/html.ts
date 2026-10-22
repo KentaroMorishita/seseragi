@@ -446,6 +446,8 @@ export function attribute(
   ) {
     return Left(ReservedAttributeName(name))
   }
+  const checked = validateAttributeValue(name, value)
+  if (checked.tag === "Left") return checked
   return Right(Object.freeze({ [ATTRIBUTE]: true as const, name, value }))
 }
 
@@ -475,6 +477,42 @@ export function parseWebUrl(value: string): Either<HtmlBuildError, WebUrl> {
   }
 
   return Right(Object.freeze({ [WEB_URL]: true as const, value }))
+}
+
+// Scalar URL attributes share the WebUrl policy at construction and at every
+// reactive write. Preserve the accepted spelling; browsers do not entity-decode
+// strings passed to setAttribute.
+const URL_ATTRIBUTE_NAMES = new Set([
+  "action",
+  "background",
+  "cite",
+  "classid",
+  "codebase",
+  "data",
+  "formaction",
+  "href",
+  "icon",
+  "longdesc",
+  "manifest",
+  "poster",
+  "profile",
+  "src",
+  "usemap",
+  "xlink:href",
+])
+
+export function validateAttributeValue(
+  name: string,
+  value: string
+): Either<HtmlBuildError, string> {
+  const normalized = name.toLowerCase()
+  // Raw HTML is outside the safe Html tree contract.
+  if (normalized === "srcdoc") return Left(ReservedAttributeName(name))
+  if (URL_ATTRIBUTE_NAMES.has(normalized)) {
+    const parsed = parseWebUrl(value)
+    if (parsed.tag === "Left") return parsed
+  }
+  return Right(value)
 }
 
 function containsAsciiControl(value: string): boolean {

@@ -33,14 +33,14 @@ import {
 import { resolveEditorLineWidth } from "./editor/format-width"
 import { createEditorPreferencesStore } from "./preferences/editor-preferences"
 import { createPreviewDocument } from "./preview-document"
-import {
-  type BrowserExecution,
-  startGeneratedProject,
-} from "./runtime/browser-execution"
+import type { BrowserExecution } from "./runtime/browser-execution"
 import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import {
+  type IsolatedExecutionRequest,
+  startIsolatedProject,
+} from "./runtime/isolated-execution"
+import {
   isPreviewNavigationCancellation,
-  loadPreviewDocument,
   previewNavigationCancelled,
 } from "./runtime/preview-navigation"
 import { discoverGroups, samples } from "./samples"
@@ -1121,19 +1121,6 @@ async function run(): Promise<void> {
     }
 
     setStatus("running", "Running…")
-    const needsNavigation = compiled.entry.contract.environment.some(
-      (binding) => binding.service === "navigation"
-    )
-    const needsStorage = compiled.entry.contract.environment.some(
-      (binding) => binding.service === "storage"
-    )
-    const needsDom = compiled.entry.contract.environment.some(
-      (binding) => binding.service === "dom"
-    )
-    const needsInteractivePreview = needsDom || needsNavigation || needsStorage
-    const domDocument = needsInteractivePreview
-      ? await prepareInteractivePreview()
-      : undefined
     if (revision !== runRevision) {
       clearHtmlPreview()
       setOutputMode("text")
@@ -1164,25 +1151,25 @@ async function run(): Promise<void> {
       JSON.stringify(workspaceState.files) !== runtimeRevision
     )
       return
-    const execution = await startGeneratedProject(
-      compiled.modules.map(({ path, generated }) => ({
-        path,
-        typescript: generated.typescript,
-      })),
-      compiled.entry.path,
-      compiled.entry.contract,
-      stdinInput.value,
+    const execution = await prepareIsolatedExecution(
       {
+        modules: generatedModules,
+        entryPath: compiled.entry.path,
+        entry: compiled.entry.contract,
+        input: stdinInput.value,
         foreignRuntime,
-        ...(domDocument === undefined ? {} : { domDocument }),
-        onDomMounted: () => {
-          if (revision !== runRevision) return
-          output.className = "output-text"
-          output.textContent = "Interactive preview is running."
-          setOutputMode("html")
-          setStatus("success", "Interactive")
-          showIoOnSmallScreens()
-        },
+        initialHref: new URL(
+          `${import.meta.env.BASE_URL}runtime-preview.html`,
+          window.location.origin
+        ).href,
+      },
+      () => {
+        if (revision !== runRevision) return
+        output.className = "output-text"
+        output.textContent = "Interactive preview is running."
+        setOutputMode("html")
+        setStatus("success", "Interactive")
+        showIoOnSmallScreens()
       }
     )
     if (revision !== runRevision) {
@@ -1194,7 +1181,11 @@ async function run(): Promise<void> {
       (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
-        if (completion.kind === "cancelled") return
+        if (completion.kind === "cancelled") {
+          showTextOutput("Interactive preview ended.")
+          setStatus("ready", "Preview closed")
+          return
+        }
         showExecutionOutput(completion.result.stdout)
         setStatus("success", "Completed")
         showIoOnSmallScreens()
@@ -1310,44 +1301,26 @@ function renderHtmlPreview(html: string): void {
   htmlPreview.src = url
 }
 
-async function prepareInteractivePreview(): Promise<Document> {
+async function prepareIsolatedExecution(
+  request: IsolatedExecutionRequest,
+  onDomMounted: () => void
+): Promise<BrowserExecution> {
   clearHtmlPreview()
   const preparation = new AbortController()
   activePreviewPreparation = preparation
-  const url = new URL(
-    `${import.meta.env.BASE_URL}runtime-preview.html`,
-    window.location.origin
-  ).href
   try {
-    const document = await loadPreviewDocument(
-      htmlPreview,
-      url,
-      preparation.signal
-    )
-    // A load can resolve just before a workspace switch in the same event turn.
+    const execution = await startIsolatedProject(htmlPreview, request, {
+      signal: preparation.signal,
+      onDomMounted,
+    })
     if (
       preparation.signal.aborted ||
       activePreviewPreparation !== preparation
     ) {
+      await execution.cancel()
       throw previewNavigationCancelled()
     }
-    const template = new DOMParser().parseFromString(
-      createPreviewDocument('<div id="app"></div>'),
-      "text/html"
-    )
-    document.documentElement.lang = template.documentElement.lang
-    document.head.replaceChildren(
-      ...[...template.head.childNodes].map((node) =>
-        document.importNode(node, true)
-      )
-    )
-    document.body.replaceChildren(
-      ...[...template.body.childNodes].map((node) =>
-        document.importNode(node, true)
-      )
-    )
-    setOutputMode("html")
-    return document
+    return execution
   } finally {
     if (activePreviewPreparation === preparation)
       activePreviewPreparation = undefined
@@ -1359,6 +1332,7 @@ function clearHtmlPreview(): void {
   activePreviewPreparation = undefined
   if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
   htmlPreviewUrl = undefined
+  htmlPreview.removeAttribute("srcdoc")
   htmlPreview.removeAttribute("src")
 }
 
@@ -1370,7 +1344,9 @@ function chooseOutputMode(mode: "text" | "html"): void {
 function closeInteractivePreview(): void {
   const wasRunning = activeExecution !== undefined
   const hasPreview =
-    !htmlPreview.hidden || htmlPreview.getAttribute("src") !== null
+    !htmlPreview.hidden ||
+    htmlPreview.getAttribute("src") !== null ||
+    htmlPreview.getAttribute("srcdoc") !== null
   if (hasPreview) {
     cancelActiveExecution()
     clearHtmlPreview()

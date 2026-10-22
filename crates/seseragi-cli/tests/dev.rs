@@ -66,13 +66,17 @@ fn available_port() -> u16 {
 }
 
 fn request(port: u16, path: &str) -> Option<(u16, String)> {
+    request_with_host(port, path, "127.0.0.1")
+}
+
+fn request_with_host(port: u16, path: &str, host: &str) -> Option<(u16, String)> {
     let mut stream = TcpStream::connect(("127.0.0.1", port)).ok()?;
     stream
         .set_read_timeout(Some(Duration::from_secs(2)))
         .unwrap();
     write!(
         stream,
-        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n"
+        "GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
     )
     .unwrap();
     let mut response = String::new();
@@ -276,6 +280,29 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     assert!(index.contains("/__seseragi_dev/version"));
     let (_, source_map) = request(port, "/assets/app.js.map").unwrap();
     assert!(source_map.contains("sources"));
+    for host in [
+        "attacker.example".to_owned(),
+        format!("127.0.0.1.attacker.example:{port}"),
+        "attacker.example\r\nHost: 127.0.0.1".to_owned(),
+        "127.0.0.1\r\nhOsT: attacker.example".to_owned(),
+    ] {
+        for path in [
+            "/",
+            "/assets/app.js",
+            "/assets/app.js.map",
+            "/__seseragi_dev/version",
+        ] {
+            let (status, body) = request_with_host(port, path, &host).unwrap();
+            assert_eq!(status, 403, "host {host:?}, path {path}");
+            assert_eq!(body, "Forbidden request host\n");
+        }
+    }
+    assert_eq!(
+        request_with_host(port, "/", &format!("localhost:{port}"))
+            .unwrap()
+            .0,
+        200
+    );
     let initial_version = request(port, "/__seseragi_dev/version").unwrap().1;
     let production_output = project.join("dist");
     assert!(!production_output.exists());
@@ -287,7 +314,6 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
         "Make room for the next live release.",
     );
     fs::write(&source_path, &changed).unwrap();
-    let mut rebuilt_version = None;
     wait_for(
         Duration::from_secs(20),
         || {
@@ -300,39 +326,65 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
             if version == initial_version || !bundle_updated {
                 return false;
             }
-            rebuilt_version = Some(version);
             true
         },
         "successful rebuild",
     );
-    let rebuilt_version = rebuilt_version.unwrap();
-
     fs::write(
         &source_path,
         format!("{changed}\nlet brokenDevValue = missingDevName\n"),
     )
     .unwrap();
+    let mut preserved_version = None;
     wait_for_with_diagnostics(
         Duration::from_secs(20),
         || {
-            let failed = fs::read_to_string(directory.join("dev.log"))
-                .is_ok_and(|contents| contents.contains("missingDevName"));
+            let log = fs::read_to_string(directory.join("dev.log")).unwrap_or_default();
+            if !log.contains("missingDevName") || !log.contains("Build failed") {
+                return false;
+            }
+            // A source write can overlap a watch snapshot, so another successful
+            // build may finish after the first updated bundle was observed.
+            // A failed build must preserve the last successful reload, not
+            // necessarily that first observation.
+            let Some(last_success) = log.lines().rev().find_map(|line| {
+                line.strip_prefix("Built web app (")?
+                    .rsplit_once("; reload ")?
+                    .1
+                    .strip_suffix(')')?
+                    .parse::<u64>()
+                    .ok()
+            }) else {
+                return false;
+            };
+            let expected = format!("{last_success}\n");
             let version_unchanged = request(port, "/__seseragi_dev/version")
-                .is_some_and(|response| response.1 == rebuilt_version);
+                .is_some_and(|response| response.1 == expected);
             let previous_build_available =
                 request(port, "/").is_some_and(|response| response.0 == 200);
-            failed && version_unchanged && previous_build_available
+            let previous_bundle_available =
+                request(port, "/assets/app.js").is_some_and(|response| {
+                    response.0 == 200
+                        && response.1.contains("Make room for the next live release.")
+                        && !response.1.contains("missingDevName")
+                });
+            if version_unchanged && previous_build_available && previous_bundle_available {
+                preserved_version = Some(expected);
+                return true;
+            }
+            false
         },
         "failed rebuild preserving the previous output",
         || {
             format!(
-                "expected version: {rebuilt_version}; actual version: {:?}; index: {:?}\n{}",
+                "actual version: {:?}; index: {:?}\n{}",
                 request(port, "/__seseragi_dev/version"),
                 request(port, "/").map(|r| r.0),
                 fs::read_to_string(directory.join("dev.log")).unwrap_or_default()
             )
         },
     );
+    let preserved_version = preserved_version.unwrap();
     assert!(child.try_wait().unwrap().is_none());
 
     fs::write(&source_path, &changed).unwrap();
@@ -340,7 +392,7 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
         Duration::from_secs(20),
         || {
             request(port, "/__seseragi_dev/version")
-                .is_some_and(|response| response.1 != rebuilt_version)
+                .is_some_and(|response| response.1 != preserved_version)
         },
         "recovery rebuild",
     );

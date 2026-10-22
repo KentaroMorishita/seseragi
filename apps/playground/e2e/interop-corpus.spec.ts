@@ -46,14 +46,13 @@ for (const name of ["domains", "relations", "structures", "callables"]) {
         explorer: { visible: true, width: 280 },
       },
     }
-    await page.addInitScript(
-      (seed) =>
-        localStorage.setItem(
-          "seseragi.playground.workspace.schema-1",
-          JSON.stringify(seed)
-        ),
-      seed
-    )
+    await page.addInitScript((seed) => {
+      if (window !== window.top) return
+      localStorage.setItem(
+        "seseragi.playground.workspace.schema-1",
+        JSON.stringify(seed)
+      )
+    }, seed)
     const errors: string[] = []
     page.on("pageerror", (error) => errors.push(error.message))
     await page.goto("/")

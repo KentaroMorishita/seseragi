@@ -1,7 +1,9 @@
 import { expect, type Locator, type Page, test } from "@playwright/test"
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear())
+  await page.addInitScript(() => {
+    if (window === window.top) localStorage.clear()
+  })
 })
 
 test("resizes and restores every desktop Tour pane", async ({ page }) => {

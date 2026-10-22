@@ -25,6 +25,7 @@ import {
   messageFromDomEvent,
   renderForDom,
   resolveDomEvent,
+  validateAttributeValue,
 } from "../html"
 import { type ServiceResult, serviceFailure, serviceSuccess } from "../service"
 import {
@@ -1227,22 +1228,17 @@ export function createBrowserDom(
                           target.removeAttribute(binding.name)
                           return "attribute"
                         }
-                      } else if (target.getAttribute(binding.name) !== value) {
-                        target.setAttribute(binding.name, value)
-                        return "attribute"
+                      } else {
+                        return updateAttribute(target, binding.name, value)
                       }
                       return "none"
                     })
                     break
                   case "string-attribute":
                     validateAttributeBindingName(binding.name)
-                    await watch(binding.source, (next) => {
-                      if (target.getAttribute(binding.name) !== next) {
-                        target.setAttribute(binding.name, next)
-                        return "attribute"
-                      }
-                      return "none"
-                    })
+                    await watch(binding.source, (next) =>
+                      updateAttribute(target, binding.name, next)
+                    )
                     break
                   case "number-attribute":
                     validateAttributeBindingName(binding.name)
@@ -1252,12 +1248,7 @@ export function createBrowserDom(
                           `reactive DOM attribute ${binding.name} must be a finite number`
                         )
                       }
-                      const value = String(next)
-                      if (target.getAttribute(binding.name) !== value) {
-                        target.setAttribute(binding.name, value)
-                        return "attribute"
-                      }
-                      return "none"
+                      return updateAttribute(target, binding.name, String(next))
                     })
                     break
                   case "boolean-attribute":
@@ -1278,12 +1269,7 @@ export function createBrowserDom(
                   case "aria-boolean":
                     validateAttributeBindingName(binding.name)
                     await watch(binding.source, (next) => {
-                      const value = String(next)
-                      if (target.getAttribute(binding.name) !== value) {
-                        target.setAttribute(binding.name, value)
-                        return "attribute"
-                      }
-                      return "none"
+                      return updateAttribute(target, binding.name, String(next))
                     })
                     break
                   case "value": {
@@ -1572,11 +1558,25 @@ function validateAttributeBindingName(name: string): void {
   if (
     !/^[A-Za-z_:][A-Za-z0-9_.:-]*$/.test(name) ||
     normalized.startsWith("on") ||
+    normalized === "srcdoc" ||
     normalized === "data-ssrg" ||
     normalized.startsWith("data-ssrg-")
   ) {
     throw new Error(`invalid reactive DOM attribute ${name}`)
   }
+}
+
+function updateAttribute(
+  target: Element,
+  name: string,
+  value: string
+): BrowserDomBindingApplication {
+  if (validateAttributeValue(name, value).tag === "Left") {
+    throw new TypeError(`unsafe reactive DOM attribute ${name}`)
+  }
+  if (target.getAttribute(name) === value) return "none"
+  target.setAttribute(name, value)
+  return "attribute"
 }
 
 function validateStyleBindingName(name: string): void {

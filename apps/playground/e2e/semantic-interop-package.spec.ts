@@ -45,6 +45,7 @@ test("#487 real npm declarations convert through Inspector and generated imports
 }) => {
   const seed = await realPackageWorkspace()
   await page.addInitScript((seed) => {
+    if (window !== window.top) return
     const key = "seseragi.playground.workspace.schema-1"
     if (localStorage.getItem(key) === null)
       localStorage.setItem(key, JSON.stringify(seed))

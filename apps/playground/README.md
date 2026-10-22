@@ -42,10 +42,10 @@ composition中はrerenderを保留し、browserごとのevent順序差を吸収�
 
 ## HTML preview
 
-SSRとinteractive DOMは、iframe-owned scriptをCSPの`script-src 'none'`で拒否する同じsandbox iframeへ表示します。
-WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは停止し、formのsubmit eventには`allow-forms`が
-必要なため、sandbox tokenは`allow-forms allow-same-origin allow-scripts`とします。実行可否はpreview documentの
-`script-src 'none'`、form送信は`form-action 'none'`で拒否します。preview documentには
+SSRはscriptを拒否するCSP付きdocumentへ表示します。PlaygroundとTourの実行時は、runtime registry、generated / foreign JavaScriptの評価、Effect、DOMをすべてopaque originのsandbox iframe内に置きます。親ページはprogramを評価せず、`MessageChannel`で開始、結果、キャンセルを受け渡します。iframeの`allow-same-origin`とpopupのsandbox escapeは許可しません。
+Storageは親ページのworkspace storageを公開せず、宣言されたStorage capabilityに限って既存のapplication namespaceと256 Ki UTF-16 code unitsのbudgetを持つoperation窓口へ接続します。NavigationはPreview内の独立したhistoryで、親ページやbrowserの履歴を変更しません。
+iframeは`allow-forms allow-popups allow-scripts`を持ち、`form-action 'none'`で外部form送信を拒否します。HTTP / WebSocket provider用の通信は許可します。iframe内で実行するbundleをローカル依存から生成するため外部script CDNは不要です。CPU無限loopを強制終了する保証はこのorigin隔離に含みません。
+preview documentには
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`class`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
 利用可能tokenは注入するCSS selectorから機械的に導出され、`samples:check`が`outputMode: html`の
@@ -54,12 +54,7 @@ Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入する
 失敗します。任意式でclassを組み立てる場合は`sample.json`の`preview.dynamicUtilities`へ候補tokenを列挙し、
 見た目を持たないsemantic custom classだけを`preview.customClasses`で明示します。custom classへCSSは
 自動追加されません。視覚的なcustom値とCSS variablesはutility検証外の`html.Style`へ置きます。
-外部CDNとiframe内scriptには依存しません。
-PlaygroundとTourのPreviewは同じcontrollerで全画面化します。Fullscreen APIが未対応または拒否された場合は、
-iframeを作り直さずsafe area対応の疑似全画面へ切り替え、CloseまたはEscapeで元のlayoutへ戻します。
-`target="_blank"`のHTTPS linkは`rel="noopener"`で元Previewへの参照を切り、
-`allow-popups allow-popups-to-escape-sandbox`でsandbox外の新しいtabへだけ開けます。top-level navigationや
-追加のscript権限は許可しません。
+Fullscreenはiframeを作り直さず、未対応時にはsafe area対応の疑似全画面へ切り替えます。`target="_blank"`のlinkはsandboxを継承し、親ページへの参照を許可しません。
 Web UI Showcaseのremote画像は検索・random endpointではなく固定photo IDのHTTPS URLを使い、意味のある`alt`、
 `width` / `height`、`aspect-2-1 h-auto w-full object-cover`で成功時と失敗時のlayoutを安定させます。
 Showcaseの完成条件は[`../../docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)を正本とし、

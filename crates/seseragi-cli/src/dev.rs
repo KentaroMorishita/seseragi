@@ -4,7 +4,7 @@ use seseragi_runtime::{build_local_project, BuildTarget};
 use std::collections::BTreeMap;
 use std::fs;
 use std::io::{ErrorKind, Read, Write};
-use std::net::{TcpListener, TcpStream};
+use std::net::{IpAddr, SocketAddr, TcpListener, TcpStream};
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -61,7 +61,9 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
         loop {
             match listener.accept() {
                 Ok((stream, _)) => {
-                    if let Err(error) = serve(stream, &output, &version, build_available) {
+                    if let Err(error) =
+                        serve(stream, &output, &version, build_available, &options.host)
+                    {
                         eprintln!("seseragi dev: {error}");
                     }
                 }
@@ -353,6 +355,7 @@ fn serve(
     output: &Path,
     version: &AtomicU64,
     build_available: bool,
+    configured_host: &str,
 ) -> Result<(), String> {
     // Accepted sockets can inherit the nonblocking listener state on macOS.
     // Complete large bundles/assets with bounded blocking writes instead of
@@ -366,22 +369,35 @@ fn serve(
     stream
         .set_read_timeout(Some(Duration::from_millis(100)))
         .map_err(|error| format!("failed to configure client: {error}"))?;
-    let mut request = [0_u8; 8192];
-    let length = match stream.read(&mut request) {
-        Ok(0) => return Ok(()),
-        Ok(length) => length,
-        Err(error) if matches!(error.kind(), ErrorKind::WouldBlock | ErrorKind::TimedOut) => {
-            return Ok(())
+    let request = match read_request_head(&mut stream) {
+        Ok(Some(request)) => request,
+        Ok(None) => return Ok(()),
+        Err(_) => {
+            // The incomplete request may be HEAD; do not send a response body.
+            return response(&mut stream, 400, "text/plain; charset=utf-8", b"", "GET");
         }
-        Err(error) => return Err(format!("failed to read request: {error}")),
     };
-    let request = String::from_utf8_lossy(&request[..length]);
     let Some(line) = request.lines().next() else {
         return Ok(());
     };
     let mut parts = line.split_whitespace();
     let method = parts.next().unwrap_or("");
     let request_path = parts.next().unwrap_or("");
+    let local_address = stream
+        .local_addr()
+        .map_err(|error| format!("failed to read client address: {error}"))?;
+    // Binding to loopback alone does not authorize a browser's origin: a
+    // rebinding hostname can resolve to that same address. Never resolve Host
+    // or trust proxy headers when deciding which authority may read artifacts.
+    if !valid_request_host(&request, configured_host, local_address) {
+        return response(
+            &mut stream,
+            403,
+            "text/plain; charset=utf-8",
+            b"Forbidden request host\n",
+            method,
+        );
+    }
     if !matches!(method, "GET" | "HEAD") {
         return response(
             &mut stream,
@@ -438,6 +454,113 @@ fn serve(
         body = inject_reload(&body);
     }
     response(&mut stream, 200, content_type(&path), &body, method)
+}
+
+fn read_request_head(stream: &mut TcpStream) -> std::io::Result<Option<String>> {
+    let started = Instant::now();
+    let mut request = [0_u8; 8192];
+    let mut length = 0;
+    while started.elapsed() < Duration::from_secs(1) && length < request.len() {
+        match stream.read(&mut request[length..]) {
+            Ok(0) if length == 0 => return Ok(None),
+            Ok(0) => break,
+            Ok(read) => {
+                length += read;
+                if let Some(end) = request[..length]
+                    .windows(4)
+                    .position(|part| part == b"\r\n\r\n")
+                {
+                    return String::from_utf8(request[..end + 4].to_vec())
+                        .map(Some)
+                        .map_err(|error| std::io::Error::new(ErrorKind::InvalidData, error));
+                }
+            }
+            Err(error) if matches!(error.kind(), ErrorKind::WouldBlock | ErrorKind::TimedOut) => {}
+            Err(error) => return Err(error),
+        }
+    }
+    Err(std::io::Error::new(
+        ErrorKind::InvalidData,
+        "incomplete or oversized request headers",
+    ))
+}
+
+fn valid_request_host(request: &str, configured_host: &str, local_address: SocketAddr) -> bool {
+    let mut host = None;
+    for line in request
+        .split("\r\n")
+        .skip(1)
+        .take_while(|line| !line.is_empty())
+    {
+        let Some((name, value)) = line.split_once(':') else {
+            return false;
+        };
+        if name.is_empty()
+            || !name
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"!#$%&'*+-.^_`|~".contains(&byte))
+            || value
+                .bytes()
+                .any(|byte| (byte < 32 && byte != b'\t') || byte == 127)
+        {
+            return false;
+        }
+        if name.eq_ignore_ascii_case("host") {
+            if host.is_some() {
+                return false;
+            }
+            host = Some(value.trim_matches([' ', '\t']));
+        }
+    }
+    host.is_some_and(|host| allowed_authority(host, configured_host, local_address))
+}
+
+fn allowed_authority(authority: &str, configured_host: &str, local_address: SocketAddr) -> bool {
+    let (host, port) = if let Some(rest) = authority.strip_prefix('[') {
+        let Some((host, suffix)) = rest.split_once(']') else {
+            return false;
+        };
+        if host.parse::<std::net::Ipv6Addr>().is_err() {
+            return false;
+        }
+        let port = if suffix.is_empty() {
+            None
+        } else if let Some(port) = suffix.strip_prefix(':') {
+            Some(port)
+        } else {
+            return false;
+        };
+        (host, port)
+    } else {
+        match authority.split_once(':') {
+            Some((host, port)) => (host, Some(port)),
+            None => (authority, None),
+        }
+    };
+    if port.is_some_and(|port| {
+        port.is_empty()
+            || !port.bytes().all(|byte| byte.is_ascii_digit())
+            || port.parse::<u16>().ok() != Some(local_address.port())
+    }) {
+        return false;
+    }
+    if let Ok(ip) = host.parse::<IpAddr>() {
+        return ip.to_canonical() == local_address.ip().to_canonical()
+            || configured_host
+                .parse::<IpAddr>()
+                .map(|ip| ip.to_canonical())
+                .ok()
+                == Some(ip.to_canonical());
+    }
+    let host = host.strip_suffix('.').unwrap_or(host);
+    let configured_host = configured_host.strip_suffix('.').unwrap_or(configured_host);
+    !host.is_empty()
+        && host
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || b".-_".contains(&byte))
+        && (host.eq_ignore_ascii_case(configured_host)
+            || (local_address.ip().to_canonical().is_loopback()
+                && host.eq_ignore_ascii_case("localhost")))
 }
 
 fn safe_path(request_path: &str) -> Option<PathBuf> {
@@ -532,6 +655,8 @@ fn response(
 ) -> Result<(), String> {
     let reason = match status {
         200 => "OK",
+        400 => "Bad Request",
+        403 => "Forbidden",
         404 => "Not Found",
         405 => "Method Not Allowed",
         503 => "Service Unavailable",
@@ -576,6 +701,161 @@ fn open_browser(url: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn authorizes_only_explicit_or_connected_hosts() {
+        let local = "127.0.0.1:3000".parse().unwrap();
+        for host in [
+            "127.0.0.1",
+            "127.0.0.1:3000",
+            "LOCALHOST:3000",
+            "localhost.",
+        ] {
+            assert!(allowed_authority(host, "127.0.0.1", local), "{host}");
+        }
+        for host in [
+            "attacker.example",
+            "localhost.attacker.example",
+            "127.0.0.1.attacker.example",
+            "localhost@attacker.example",
+            "localhost/path",
+            "localhost%00",
+            "localhost:3001",
+            "localhost:",
+            "localhost:+3000",
+            "localhost:65536",
+            "[::1]junk",
+            "[localhost]",
+            "",
+            ":3000",
+            "[::1",
+            "::1",
+            "127.0.0.2",
+            "localhost,attacker.example",
+        ] {
+            assert!(!allowed_authority(host, "127.0.0.1", local), "{host}");
+        }
+        assert!(allowed_authority("APP.TEST.:3000", "app.test", local));
+        assert!(!allowed_authority("other.test", "app.test", local));
+        let lan = "192.0.2.10:4321".parse().unwrap();
+        assert!(allowed_authority("192.0.2.10:4321", "0.0.0.0", lan));
+        assert!(allowed_authority("0.0.0.0:4321", "0.0.0.0", lan));
+        assert!(!allowed_authority("attacker.example", "0.0.0.0", lan));
+        assert!(!allowed_authority("localhost", "0.0.0.0", lan));
+        let ipv6 = "[::1]:4321".parse().unwrap();
+        assert!(allowed_authority("[0:0:0:0:0:0:0:1]:4321", "::1", ipv6));
+        assert!(allowed_authority("localhost:4321", "::1", ipv6));
+        let mapped = "[::ffff:127.0.0.1]:4321".parse().unwrap();
+        assert!(allowed_authority("127.0.0.1:4321", "::", mapped));
+        assert!(allowed_authority("localhost:4321", "::", mapped));
+    }
+
+    #[test]
+    fn requires_one_well_formed_host_header() {
+        let local = "127.0.0.1:3000".parse().unwrap();
+        assert!(valid_request_host(
+            "GET / HTTP/1.1\r\nhOsT:\tLOCALHOST:3000 \t\r\n\r\n",
+            "127.0.0.1",
+            local
+        ));
+        for headers in [
+            "",
+            "Host: attacker.example\r\nX-Forwarded-Host: localhost\r\n",
+            "Host: localhost\r\nHost: attacker.example\r\n",
+            "Host: attacker.example\r\nhOsT: localhost\r\n",
+            "Host: localhost\r\nHost: localhost\r\n",
+            "Host: \r\n",
+            "Host : localhost\r\n",
+            " Host: localhost\r\n",
+            "Host: localhost\r\n continuation\r\n",
+            "Host: localhost\0\r\n",
+            "Host: localhost\r\nBad header\r\n",
+        ] {
+            assert!(
+                !valid_request_host(
+                    &format!("GET / HTTP/1.1\r\n{headers}\r\n"),
+                    "127.0.0.1",
+                    local
+                ),
+                "{headers:?}"
+            );
+        }
+    }
+
+    fn request_chunks(chunks: &[&[u8]], build_available: bool) -> String {
+        let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            let (stream, _) = listener.accept().unwrap();
+            // Valid reload/failure requests do not need a filesystem output.
+            serve(
+                stream,
+                Path::new("missing-dev-test-output"),
+                &AtomicU64::new(7),
+                build_available,
+                "127.0.0.1",
+            )
+            .unwrap();
+        });
+        let mut client = TcpStream::connect(address).unwrap();
+        client
+            .set_read_timeout(Some(Duration::from_secs(3)))
+            .unwrap();
+        for (index, chunk) in chunks.iter().enumerate() {
+            if index != 0 {
+                std::thread::sleep(Duration::from_millis(20));
+            }
+            client.write_all(chunk).unwrap();
+        }
+        client.shutdown(std::net::Shutdown::Write).unwrap();
+        let mut result = String::new();
+        client.read_to_string(&mut result).unwrap();
+        server.join().unwrap();
+        result
+    }
+
+    #[test]
+    fn complete_headers_are_checked_before_reload_and_build_failure_responses() {
+        let valid = request_chunks(
+            &[
+                b"GET /__seseragi_dev/version HTTP/1.1\r\nHo",
+                b"st: local",
+                b"host\r\n\r\n",
+            ],
+            true,
+        );
+        assert!(valid.starts_with("HTTP/1.1 200 OK\r\n"));
+        assert!(valid.ends_with("\r\n\r\n7\n"));
+        let valid_head = request_chunks(
+            &[b"HEAD /__seseragi_dev/version HTTP/1.1\r\nHost: localhost\r\n\r\n"],
+            true,
+        );
+        assert!(valid_head.starts_with("HTTP/1.1 200 OK\r\n"));
+        assert!(valid_head.ends_with("\r\n\r\n"));
+        for available in [true, false] {
+            for path in ["/", RELOAD_PATH] {
+                let first = format!("GET {path} HTTP/1.1\r\nHost: ");
+                let result =
+                    request_chunks(&[first.as_bytes(), b"attacker.example\r\n\r\n"], available);
+                assert!(result.starts_with("HTTP/1.1 403 Forbidden\r\n"), "{result}");
+            }
+        }
+        let failure = request_chunks(&[b"GET / HTTP/1.1\r\nHost: localhost\r\n\r\n"], false);
+        assert!(failure.starts_with("HTTP/1.1 503 Service Unavailable\r\n"));
+        for invalid in [
+            b"GET / HTTP/1.1\r\nHost: localhost".as_slice(),
+            b"HEAD / HTTP/1.1\r\nHost: localhost".as_slice(),
+            &vec![b'x'; 8192],
+        ] {
+            let result = request_chunks(&[invalid], false);
+            assert!(
+                result.starts_with("HTTP/1.1 400 Bad Request\r\n"),
+                "{result}"
+            );
+            assert!(result.ends_with("\r\n\r\n"));
+            assert!(result.contains("Content-Length: 0\r\n"));
+        }
+    }
 
     #[test]
     fn parses_options_and_rejects_invalid_ports() {

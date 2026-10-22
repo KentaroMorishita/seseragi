@@ -21,6 +21,7 @@ import {
   mountContent,
   PreserveRenderedDom,
   content as reactiveContent,
+  stringAttributeTarget,
   textTarget,
   unmount,
 } from "../../src/dom"
@@ -51,7 +52,7 @@ import {
   transaction,
   update,
 } from "../../src/signal"
-import { Just, type Maybe } from "../../src/sum"
+import { Just, type Maybe, Nothing } from "../../src/sum"
 import { g, rect, svg, toHtml, viewBoxTarget, xTarget } from "../../src/svg"
 
 declare global {
@@ -749,6 +750,116 @@ const typedBindingMissingRefRejected =
 const typedBindingKindMismatchRejected = kindMismatchFailure.includes(
   "requires svg but found html"
 )
+
+// URL checks must run on initial values and later publications through both
+// selector-based Maybe bindings and reference-based string bindings.
+for (const typed of [false, true]) {
+  for (const name of [
+    "href",
+    "src",
+    "action",
+    "formaction",
+    "HREF",
+    "xlink:href",
+  ]) {
+    for (const unsafe of [
+      "javascript:void(0)",
+      " JaVaScRiPt:void(0)",
+      "java\tscript:void(0)",
+      "data:text/html,unsafe",
+      "//user:secret@example.com/path",
+    ]) {
+      for (const initialUnsafe of [false, true]) {
+        const root = document.createElement("div")
+        host.append(root)
+        const reference = elementRef("url-target")
+        const maybe = await effectValue<MutableSignal<Maybe<string>>>(
+          make(Just(initialUnsafe ? unsafe : "/safe"))
+        )
+        const string = await effectValue<MutableSignal<string>>(
+          make(initialUnsafe ? unsafe : "/safe")
+        )
+        const adapter = createBrowserDom(document, () => undefined)
+        const mounted = await run(
+          mountContent(
+            { ...defaultOptions(unit), cleanup: PreserveRenderedDom },
+            createDomTarget(root),
+            () => async () => unit,
+            reactiveContent(
+              div<string>({ id: "url-target", elementRef: reference }),
+              [
+                typed
+                  ? bind(stringAttributeTarget(reference, name), string)
+                  : bindAttribute<string>("#url-target", name, maybe),
+              ]
+            )
+          ),
+          { dom: adapter.service }
+        )
+        if (initialUnsafe) {
+          assert(
+            mounted.kind === "failure" &&
+              mounted.error.tag === "DomOperationFailed",
+            "unsafe initial URL must fail mount with a typed error"
+          )
+        } else {
+          assert(mounted.kind === "success", "safe URL must mount")
+          const target = root.querySelector("#url-target")!
+          for (const value of [
+            "",
+            "#section",
+            "?page=2",
+            "../path",
+            "//example.com/path",
+            "https://example.com/path",
+            "mailto:team@example.com",
+            "tel:+813",
+            "javascript&#58;void(0)",
+            "javascript%3Avoid(0)",
+          ]) {
+            await effectValue(update(() => value, string))
+            await effectValue(update(() => Just(value), maybe))
+            assert(
+              target.getAttribute(name) === value,
+              "safe URL spelling must survive the DOM write"
+            )
+          }
+          if (!typed) {
+            await effectValue(update(() => Nothing, maybe))
+            assert(
+              !target.hasAttribute(name),
+              "Nothing must remove URL attribute"
+            )
+            await effectValue(update(() => Just("/safe"), maybe))
+          }
+          const previous = target.getAttribute(name)
+          await effectValue(update(() => unsafe, string))
+          await effectValue(update(() => Just(unsafe), maybe))
+          const finished = await run(awaitMount(mounted.value), {})
+          assert(
+            finished.kind === "failure" &&
+              finished.error.tag === "DomFailure" &&
+              finished.error.value.tag === "DomOperationFailed",
+            "unsafe update must finish the mount with a typed error"
+          )
+          assert(
+            target.getAttribute(name) === previous,
+            "unsafe update must never reach setAttribute"
+          )
+          await effectValue(update(() => "/after-failure", string))
+          await effectValue(update(() => Just("/after-failure"), maybe))
+          assert(
+            target.getAttribute(name) === previous,
+            "failed mount must stop all subsequent binding updates"
+          )
+          await unmountTwice(mounted.value)
+        }
+        await adapter.dispose()
+        root.remove()
+      }
+    }
+  }
+}
 
 const reactiveHydrationRoot = document.createElement("div")
 reactiveHydrationRoot.innerHTML =
