@@ -75,12 +75,16 @@ Cancellation owns both the transport and any helper decoder cleanup. Use Bun
 1.4.4 or a patched supported Node release: buffering limits do not repair a
 vulnerable host Brotli decoder.
 
-The Bun HTTP/1 transport bounds response headers and trailers to 16 KiB each,
-chunk-size lines to 1 KiB and informational responses to 16 before a final
-response. Incomplete metadata is checked as bytes arrive. Overflow and bytes
-remaining after a completed body produce a protocol failure and close the
-socket. Backpressure may defer parsing buffered bytes after EOF; it must not
-turn a complete response into a premature-EOF error.
+Both native HTTP transports bound informational responses to 16 before a final
+response, including Node responses queued while consumer demand is zero. The
+Bun HTTP/1 transport also bounds response headers and trailers to 16 KiB each
+and chunk-size lines to 1 KiB. Incomplete metadata is checked as bytes arrive.
+Overflow and bytes remaining after a completed body produce a protocol failure and close the
+socket. Ambiguous transfer-encoding/content-length combinations, invalid header
+names and control characters, unsafe content lengths and out-of-range status
+codes are rejected before publishing the final head. Backpressure may defer
+parsing buffered bytes after EOF; it must not turn a complete response into a
+premature-EOF error.
 
 Node WebSocket receive errors fail and terminate the affected connection.
 Invalid upgrade URLs are rejected before dispatch. Both Node and Bun observe

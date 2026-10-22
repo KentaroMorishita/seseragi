@@ -187,6 +187,7 @@ export function createDecodedHttpExchange(
       .filter(({ name }) => name.toLowerCase() === "content-encoding")
       .flatMap(({ value }) => value.toLowerCase().split(","))
       .map((value) => value.trim())
+      .filter((value) => value.length > 0)
     // Fetch leaves the entire representation unchanged when a coding is not
     // supported. Never decode only a recognized suffix of an unknown stack.
     if (
@@ -216,25 +217,34 @@ export function createDecodedHttpExchange(
         input = register(new PassThrough(options))
         output = register(new PassThrough(options))
         let initialized = false
-        input.once("readable", () => {
+        const initialize = () => {
           if (stopped) return
           try {
-            const prefix = input.read(1) as Buffer | null
+            const prefix = input.read(2) as Buffer | null
             if (prefix === null) return
             initialized = true
+            input.off("readable", initialize)
             // Fetch tolerates HTTP servers sending raw deflate. Sniff before
             // decoding so no full-body replay buffer is needed for that fallback.
+            // FDICT is a valid header flag: a missing dictionary must fail as
+            // zlib, rather than retrying arbitrary bytes as a raw stream.
+            const zlibHeader =
+              prefix.length === 2 &&
+              (prefix[0]! & 0x0f) === 8 &&
+              prefix[0]! >>> 4 <= 7 &&
+              ((prefix[0]! << 8) | prefix[1]!) % 31 === 0
             const decoder = register(
-              (prefix[0]! & 0x0f) === 8
-                ? createInflate(options)
-                : createInflateRaw(options)
+              zlibHeader ? createInflate(options) : createInflateRaw(options)
             )
             input.unshift(prefix)
             input.pipe(decoder).pipe(output)
           } catch (cause) {
             protocolFailure(cause)
           }
-        })
+        }
+        // Keep listening when only one byte is buffered. read(2) also returns a
+        // short final prefix at EOF, allowing the decoder to report truncation.
+        input.on("readable", initialize)
         input.once("end", () => {
           if (!initialized && !stopped) output.end()
         })

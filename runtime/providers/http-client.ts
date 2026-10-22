@@ -79,6 +79,7 @@ function createNodeHttpExchange(
   let bodyCancelled = false
   let bodyCancellation: Promise<void> | undefined
   let stopping: Promise<void> | undefined
+  let informationalResponses = 0
 
   const cancelBody = (): Promise<void> => {
     if (bodyCancellation !== undefined) return bodyCancellation
@@ -125,7 +126,35 @@ function createNodeHttpExchange(
     version: string,
     status: number,
     rawHeaders: ReadonlyArray<string>
-  ): void => {
+  ): boolean => {
+    if (terminal || stopped) return false
+    let invalid =
+      !Number.isSafeInteger(status) || status < 100 || status > 999
+        ? "invalid HTTP response status"
+        : undefined
+    if (kind === "InformationalResponse") {
+      informationalResponses += 1
+      if (informationalResponses > 16)
+        invalid = "HTTP informational response limit exceeded"
+    }
+    for (let index = 0; index < rawHeaders.length; index += 2) {
+      if (rawHeaders[index]?.toLowerCase() !== "content-length") continue
+      const length = rawHeaders[index + 1] ?? ""
+      if (!/^[0-9]+$/.test(length) || !Number.isSafeInteger(Number(length))) {
+        invalid = "invalid response Content-Length"
+        break
+      }
+    }
+    if (invalid !== undefined) {
+      failure({
+        tag: "HttpProtocolFailure",
+        value: invalid,
+      })
+      response?.destroy()
+      request.destroy()
+      queued.length = 0
+      return false
+    }
     queued.push({
       kind,
       head: {
@@ -135,6 +164,7 @@ function createNodeHttpExchange(
       },
     })
     emit()
+    return true
   }
 
   const headers = [
@@ -168,12 +198,15 @@ function createNodeHttpExchange(
     },
     (incoming) => {
       response = incoming
-      enqueueHead(
-        "ResponseStarted",
-        incoming.httpVersion,
-        incoming.statusCode ?? 0,
-        incoming.rawHeaders
+      if (
+        !enqueueHead(
+          "ResponseStarted",
+          incoming.httpVersion,
+          incoming.statusCode ?? 0,
+          incoming.rawHeaders
+        )
       )
+        return
       if (!requestBodyDone) {
         void cancelBody().catch(observer.defect)
       }
@@ -211,12 +244,7 @@ function createNodeHttpExchange(
         }
         const chunk = new Uint8Array(next.value)
         if (chunk.length === 0) continue
-        if (!request.write(chunk)) {
-          await new Promise<void>((resolve, reject) => {
-            request.once("drain", resolve)
-            request.once("error", reject)
-          })
-        }
+        await writeRequestChunk(request, chunk)
       }
       if (!requestBodyDone && !request.writableEnded) request.end()
     } catch (cause) {
@@ -248,6 +276,38 @@ function createNodeHttpExchange(
       })
       return stopping
     },
+  })
+}
+
+function writeRequestChunk(
+  request: http.ClientRequest,
+  chunk: Uint8Array
+): Promise<void> {
+  if (request.destroyed) {
+    return Promise.reject(new Error("HTTP connection is closed"))
+  }
+  if (request.write(chunk)) return Promise.resolve()
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      request.off("drain", onDrain)
+      request.off("error", onError)
+      request.off("close", onClose)
+    }
+    const onDrain = () => {
+      cleanup()
+      resolve()
+    }
+    const onError = (cause: Error) => {
+      cleanup()
+      reject(cause)
+    }
+    const onClose = () => {
+      cleanup()
+      reject(new Error("HTTP connection closed before the request was written"))
+    }
+    request.once("drain", onDrain)
+    request.once("error", onError)
+    request.once("close", onClose)
   })
 }
 
@@ -334,6 +394,9 @@ function httpFailure(cause: unknown) {
   }
   if (code.startsWith("ERR_TLS") || code.includes("CERT")) {
     return { tag: "HttpTlsFailure", value: message }
+  }
+  if (code.startsWith("HPE_")) {
+    return { tag: "HttpProtocolFailure", value: message }
   }
   return { tag: "HttpConnectionFailure", value: message }
 }

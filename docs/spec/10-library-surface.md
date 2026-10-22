@@ -2885,7 +2885,8 @@ exchangeはterminal operationごとに新しいrequestを一件開始するcold 
 InformationalResponse、finalなResponseStarted一件、0件以上のnon-empty ResponseBodyChunk、省略可能な
 ResponseTrailers一件の順に出して正常終了します。statusがnon-2xxでもResponseStartedとして成功し、transport
 failureへ変換しません。一chunkは最大64 KiBで、consumer demandがなければsocket readを止めるlossless
-backpressureです。
+backpressureです。標準Node/Bun providerはfinal response前のinformational responseを16件までに制限し、
+超過時はHttpProtocolFailureで接続を閉じます。
 
 request bodyのpull / writeとresponse readはconcurrentに進めます。serverがbody完了前にfinal responseを返した
 場合はrequest body Streamをcancelし、responseを最後まで処理します。body StreamのEはLeft、DNS、TLS、protocol、
@@ -2897,6 +2898,11 @@ HTTP/1 connectionは安全に再利用できなければcloseします。respons
 connectionだけをHttpClient poolへ戻します。exchange終了前にsocket / stream ownershipを必ず解放し、pool自体は
 HttpClient serviceのscopeに所属します。
 
+標準providerは、Transfer-EncodingとContent-Lengthが併存する応答、不正なheader名・値、
+safe integerで表せないContent-Length、100以上999以下でないstatusをHttpProtocolFailureとして拒否します。
+Bun HTTP/1 providerはTransfer-Encodingの最後がchunkedならchunk framingを除き、それ以外は
+connection closeまでをbodyとして読みます。
+
 sendBytesとsendEmptyはexchangeを実行してbodyをmemoryへ集めるsmall-response APIです。default limitは8 MiBで、
 超過時はresponse streamをcancelしてHttpResponseBodyLimitExceededです。informational responseは破棄し、final
 head、body、trailersだけをResponseへ入れます。
@@ -2904,7 +2910,8 @@ head、body、trailersだけをResponseへ入れます。
 標準Node/Bun providerの公開exchangeはtransfer framingを除いたbody bytesを返し、Content-Encodingを
 decodeしません。明示的なdecoderや、headersとbodyをそのまま転送するproxyはこのbytesを利用できます。
 sendBytesとsendEmptyは、gzip、deflate、br（x-gzip、x-deflateを含む）からなるContent-Encodingを
-受信順の逆にstreaming decodeしてから集約します。既知encodingの重なりは8段までとし、超過は
+受信順の逆にstreaming decodeしてから集約します。Content-Encodingの空list要素は無視します。
+既知encodingの重なりは8段までとし、超過は
 HttpProtocolFailureです。未知のencodingを含む場合は全体をdecodeせず、そのまま返します。
 HEAD、204、205、304の空bodyはdecodeしません。
 browser providerは公開exchangeもsmall-response APIもFetchがdecodeしたbodyを返します。

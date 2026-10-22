@@ -144,10 +144,17 @@ export function createBunHttp1Exchange(
     const lines = buffer.subarray(0, end).toString("latin1").split("\r\n")
     buffer = buffer.subarray(end + 4)
     const statusLine = lines.shift() ?? ""
-    const matched = /^HTTP\/(1\.0|1\.1) ([0-9]{3})(?: |$)/.exec(statusLine)
+    const matched =
+      /^HTTP\/(1\.0|1\.1) ([0-9]{3})(?: [\t\x20-\x7e\x80-\xff]*)?$/.exec(
+        statusLine
+      )
     if (matched === null) throw new TypeError("invalid HTTP status line")
     const status = Number(matched[2])
+    if (status < 100 || status > 999) {
+      throw new TypeError("invalid HTTP response status")
+    }
     const headers = lines.map(parseHeader)
+    const mode = responseBodyMode(requestValue.method, status, headers)
     const head = {
       version: matched[1] === "1.0" ? "Http1_0" : "Http1_1",
       status,
@@ -162,7 +169,7 @@ export function createBunHttp1Exchange(
     }
 
     stopRequestBody()
-    bodyMode = responseBodyMode(requestValue.method, status, headers)
+    bodyMode = mode
     return { kind: "ResponseStarted", head }
   }
 
@@ -515,9 +522,17 @@ function writeSocket(
 function parseHeader(line: string): Header {
   const separator = line.indexOf(":")
   if (separator <= 0) throw new TypeError("invalid HTTP header")
+  const name = line.slice(0, separator)
+  const value = line.slice(separator + 1)
+  if (
+    !/^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(name) ||
+    !/^[\t\x20-\x7e\x80-\xff]*$/.test(value)
+  ) {
+    throw new TypeError("invalid HTTP header")
+  }
   return Object.freeze({
-    name: line.slice(0, separator).toLowerCase(),
-    value: line.slice(separator + 1).trim(),
+    name: name.toLowerCase(),
+    value: value.replace(/^[ \t]+|[ \t]+$/g, ""),
   })
 }
 
@@ -526,37 +541,72 @@ function responseBodyMode(
   status: number,
   headers: ReadonlyArray<Header>
 ): BodyMode {
-  if (method === "HEAD" || status === 204 || status === 304)
-    return { kind: "none" }
-  const transfer = headers
-    .filter((header) => header.name === "transfer-encoding")
-    .map((header) => header.value.toLowerCase())
-  if (
-    transfer.some((value) =>
-      value
-        .split(",")
-        .map((part) => part.trim())
-        .includes("chunked")
-    )
-  ) {
-    return {
-      kind: "chunked",
-      remaining: undefined,
-      expectCrlf: false,
-      readingTrailers: false,
-    }
-  }
+  const transferHeaders = headers.filter(
+    (header) => header.name === "transfer-encoding"
+  )
   const lengths = headers.filter((header) => header.name === "content-length")
+  if (transferHeaders.length > 0 && lengths.length > 0) {
+    throw new TypeError(
+      "HTTP response contains both Transfer-Encoding and Content-Length"
+    )
+  }
+  let length: number | undefined
   if (lengths.length > 0) {
+    length = Number(lengths[0]?.value)
     if (
       lengths.length !== 1 ||
-      !/^(0|[1-9][0-9]*)$/.test(lengths[0]?.value ?? "")
+      !/^(0|[1-9][0-9]*)$/.test(lengths[0]?.value ?? "") ||
+      !Number.isSafeInteger(length)
     ) {
       throw new TypeError("invalid response Content-Length")
     }
-    return { kind: "fixed", remaining: Number(lengths[0]?.value) }
   }
+  const transfer = transferHeaders
+    .flatMap((header) => transferCodings(header.value))
+    .filter((part) => part.length > 0)
+  if (transfer.filter((coding) => coding === "chunked").length > 1) {
+    throw new TypeError(
+      "HTTP response applies chunked transfer coding more than once"
+    )
+  }
+  if (method === "HEAD" || status === 204 || status === 304)
+    return { kind: "none" }
+  // A non-final chunked coding does not delimit a response. Preserve all of
+  // its body until EOF, including unknown transfer codings, per RFC 9112 6.3.
+  if (transferHeaders.length > 0) {
+    return transfer.at(-1) === "chunked"
+      ? {
+          kind: "chunked",
+          remaining: undefined,
+          expectCrlf: false,
+          readingTrailers: false,
+        }
+      : { kind: "until-close" }
+  }
+  if (length !== undefined) return { kind: "fixed", remaining: length }
   return { kind: "until-close" }
+}
+
+function transferCodings(value: string): string[] {
+  const codings: string[] = []
+  let start = 0
+  let quoted = false
+  let escaped = false
+  const append = (end: number) => {
+    const coding = value.slice(start, end).split(";", 1)[0] ?? ""
+    codings.push(coding.trim().toLowerCase())
+    start = end + 1
+  }
+  for (let index = 0; index < value.length; index++) {
+    const character = value[index]
+    if (escaped) escaped = false
+    else if (quoted && character === "\\") escaped = true
+    else if (character === '"') quoted = !quoted
+    else if (character === "," && !quoted) append(index)
+  }
+  if (quoted) throw new TypeError("invalid HTTP Transfer-Encoding parameter")
+  append(value.length)
+  return codings
 }
 
 function httpFailure(cause: unknown) {
