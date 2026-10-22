@@ -41,7 +41,7 @@ fn execute_startup_diagnostics(
         ..ProcessRunOptions::default()
     };
     let source = if browser {
-        web_entry_source(&contract, "./application.ts", None, options)
+        web_entry_source(&contract, "./application.ts", None, options, false)
     } else {
         entry_source(&contract, "./application.ts", None, options)
     };

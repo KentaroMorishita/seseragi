@@ -33,21 +33,102 @@ pub(crate) struct ResolvedLocalProject {
     pub source_snapshots: Vec<(std::path::PathBuf, Vec<u8>)>,
 }
 
-pub(crate) fn compile_path(
+pub(crate) struct PreparedPackageBuild {
+    pub project: ResolvedLocalProject,
+    pub programs: Vec<seseragi_runtime::ProgramWasmAssets>,
+}
+
+// Standard build and dev use the same checked producer, UI compile and snapshot.
+pub(crate) fn prepare_package_build(
     path: &Path,
     command: ProjectCommand,
-    invocation_target: Option<ProjectTarget>,
-    diagnostic_format: DiagnosticFormat,
-) -> Result<LocalProjectCompilation, String> {
-    compile_path_inner(
+    target: Option<ProjectTarget>,
+    profile: Option<seseragi_project::BuildProfile>,
+) -> Result<Option<PreparedPackageBuild>, String> {
+    let loaded = seseragi_project::load_local_project(path)
+        .map_err(|error| format!("{}: {error}", error.code()))?;
+    let root_package = loaded
+        .packages()
+        .package(loaded.packages().root())
+        .expect("loaded root package");
+    if command == ProjectCommand::Dev {
+        // A process manifest must be rejected before any program Rust compiler
+        // starts. Keep the same shared target selection as the UI compilation.
+        select_project_target(
+            command,
+            target,
+            root_package
+                .manifest()
+                .run
+                .as_ref()
+                .and_then(|run| run.target.as_ref()),
+            None,
+        )
+        .map_err(|error| error.to_string())?;
+    }
+    let mut original_inputs = loaded
+        .modules()
+        .map(|(_, module)| {
+            (
+                module.source_path().to_owned(),
+                module.source().as_bytes().to_vec(),
+            )
+        })
+        .collect::<Vec<_>>();
+    for (_, package) in loaded.packages().packages() {
+        let manifest = package.root().join("seseragi.toml");
+        original_inputs.push((
+            manifest.clone(),
+            std::fs::read(manifest).map_err(|e| e.to_string())?,
+        ));
+    }
+    let mut programs = if let Some(web) = &root_package.manifest().web {
+        if !web.programs.is_empty() && target.is_some_and(|target| target != ProjectTarget::Web) {
+            return Err("web.programs requires --target web".into());
+        }
+        crate::experimental::program_wasm::package_assets(
+            root_package.root(),
+            &web.programs,
+            command,
+        )?
+    } else {
+        Vec::new()
+    };
+    let mut produced = Vec::new();
+    for program in &programs {
+        use sha2::{Digest, Sha256};
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&program.files["program-wasm.json"])
+                .map_err(|e| e.to_string())?;
+        produced.push(seseragi_project::GeneratedProgramRuntime::new(
+            loaded.packages().root().clone(),
+            program.name.clone(),
+            metadata["module"]
+                .as_str()
+                .ok_or("program owner missing")?
+                .to_owned(),
+            format!("{:x}", Sha256::digest(&program.files["program.mjs"])),
+        ));
+    }
+    let compiled = match compile_path_with_programs(
         path,
         command,
-        invocation_target,
-        diagnostic_format,
-        true,
-        None,
-        &[],
-    )
+        target,
+        seseragi_runtime::DiagnosticFormat::Text,
+        profile,
+        &produced,
+    )? {
+        LocalProjectCompilation::Compiled(compiled) => compiled,
+        LocalProjectCompilation::Diagnostics => return Ok(None),
+    };
+    for program in &mut programs {
+        program.inputs.extend(original_inputs.clone());
+        program.inputs.extend(compiled.source_snapshots.clone());
+    }
+    Ok(Some(PreparedPackageBuild {
+        project: compiled,
+        programs,
+    }))
 }
 
 pub(crate) fn compile_path_unlocked(
@@ -127,10 +208,10 @@ fn compile_path_inner(
             .packages()
             .package(project.packages().root())
             .and_then(|package| package.manifest().web.as_ref())
-            .is_some_and(|web| !web.programs.is_empty())
+            .is_some_and(|web| !web.programs.is_empty() && programs.is_empty())
     {
         return Err(
-            "configured program WASM: use seseragi build; dev/watch is not supported yet".into(),
+            "configured program WASM requires its checked producer before dev compilation".into(),
         );
     }
     let mut source_snapshots = project

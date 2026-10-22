@@ -9,6 +9,7 @@ use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 static DEV_SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
+const RELOAD_ENDPOINT: &str = "/__seseragi_dev/version";
 
 fn repository_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -242,6 +243,249 @@ fn stop(child: &mut Child) {
         child.kill().unwrap();
         child.wait().unwrap();
     }
+}
+
+fn build_image(directory: &Path) -> std::collections::BTreeMap<String, Vec<u8>> {
+    fn visit(
+        root: &Path,
+        directory: &Path,
+        result: &mut std::collections::BTreeMap<String, Vec<u8>>,
+    ) {
+        for entry in fs::read_dir(directory).unwrap() {
+            let path = entry.unwrap().path();
+            if path.is_dir() {
+                visit(root, &path, result);
+            } else {
+                result.insert(
+                    path.strip_prefix(root)
+                        .unwrap()
+                        .to_string_lossy()
+                        .replace('\\', "/"),
+                    fs::read(path).unwrap(),
+                );
+            }
+        }
+    }
+    let mut result = std::collections::BTreeMap::new();
+    visit(directory, directory, &mut result);
+    result
+}
+
+fn served_resource(port: u16, path: &str) -> (String, Vec<u8>) {
+    let mut stream = TcpStream::connect(("127.0.0.1", port)).unwrap();
+    stream
+        .set_read_timeout(Some(Duration::from_secs(2)))
+        .unwrap();
+    write!(
+        stream,
+        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\n\r\n"
+    )
+    .unwrap();
+    let mut response = Vec::new();
+    stream.read_to_end(&mut response).unwrap();
+    let boundary = response
+        .windows(4)
+        .position(|bytes| bytes == b"\r\n\r\n")
+        .unwrap();
+    let headers = String::from_utf8(response[..boundary].to_vec()).unwrap();
+    assert!(headers.starts_with("HTTP/1.1 200 OK"), "{headers}");
+    (headers, response[boundary + 4..].to_vec())
+}
+
+fn run_program_probe(engine: &str, script: &Path, directory: &Path) {
+    let log_path = directory.join(format!("{engine}-probe.log"));
+    let log = fs::File::create(&log_path).unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(engine)
+            .arg(script)
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        log_path.clone(),
+    );
+    wait_for(
+        Duration::from_secs(20),
+        || child.try_wait().unwrap().is_some(),
+        "actual program lifetime probe",
+    );
+    assert!(
+        child.wait().unwrap().success(),
+        "{}",
+        fs::read_to_string(log_path).unwrap()
+    );
+}
+
+#[test]
+fn watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    let directory = test_directory("program-wasm");
+    let project = directory.join("project");
+    copy_directory(
+        &repository_root()
+            .join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &project,
+    );
+    let dependency = directory.join("data");
+    fs::create_dir_all(dependency.join("src")).unwrap();
+    fs::write(dependency.join("seseragi.toml"), "[package]\nname = \"fixture/watch-data\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[run]\nentry = \"constants\"\n\n[exports]\nconstants = \"constants\"\n").unwrap();
+    let constants = dependency.join("src/constants.ssrg");
+    fs::copy(project.join("src/constants.ssrg"), &constants).unwrap();
+    let manifest = project.join("seseragi.toml");
+    let mut source = fs::read_to_string(&manifest).unwrap();
+    source.push_str(
+        "\n[dependencies]\ndata = { package = \"fixture/watch-data\", path = \"../data\" }\n",
+    );
+    fs::write(&manifest, source).unwrap();
+    let calculation = project.join("src/calculation.ssrg");
+    let source = fs::read_to_string(&calculation).unwrap();
+    assert!(source.contains("\"./constants\""));
+    fs::write(
+        &calculation,
+        source.replace("\"./constants\"", "\"data/constants\""),
+    )
+    .unwrap();
+    update_lock(&project);
+    let port = available_port();
+    let log_path = directory.join("dev.log");
+    let log = fs::File::create(&log_path).unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("dev")
+            .arg(&project)
+            .args(["--port", &port.to_string()])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        log_path.clone(),
+    );
+    wait_for(
+        Duration::from_secs(45),
+        || {
+            assert!(
+                child.try_wait().unwrap().is_none(),
+                "{}",
+                fs::read_to_string(&log_path).unwrap()
+            );
+            request(port, "/").is_some_and(|r| r.0 == 200)
+        },
+        "initial program WASM Web build",
+    );
+    let output = project.join(".seseragi/dev");
+    let receipt_path = output.join("programs/calculation/program-wasm.json");
+    let receipt: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt_path).unwrap()).unwrap();
+    let selected = seseragi_project::load_local_project_module(
+        &project,
+        &seseragi_project::ModulePath::parse("calculation").unwrap(),
+    )
+    .unwrap();
+    let expected = selected
+        .graph()
+        .topological_order()
+        .unwrap()
+        .iter()
+        .map(seseragi_project::logical_module_id)
+        .collect::<Vec<_>>();
+    assert_eq!(expected.len(), 2);
+    assert_eq!(receipt["modules"], serde_json::json!(expected));
+    let (_, loader) = request(port, "/programs/calculation/index.mjs").unwrap();
+    assert!(loader.contains("loadOwnedProgram"));
+    let (headers, bytes) = served_resource(port, "/programs/calculation/index.mjs");
+    assert!(headers.contains("Content-Type: text/javascript; charset=utf-8"));
+    assert_eq!(
+        bytes,
+        fs::read(output.join("programs/calculation/index.mjs")).unwrap()
+    );
+    let (headers, bytes) = served_resource(port, "/programs/calculation/program.wasm");
+    assert!(headers.contains("Content-Type: application/wasm"));
+    assert_eq!(
+        bytes,
+        fs::read(output.join("programs/calculation/program.wasm")).unwrap()
+    );
+    let (_, lifecycle) = request(port, "/programs/__lifecycle.mjs").unwrap();
+    assert!(lifecycle.contains("seseragi:before-reload"));
+    let (_, index) = request(port, "/").unwrap();
+    assert!(index.contains("dispatchEvent(closing)"));
+    let initial_version = request(port, RELOAD_ENDPOINT).unwrap().1;
+    let initial = build_image(&output);
+    fs::write(&constants, "pub let offset: Int = missingWatchValue\n").unwrap();
+    wait_for(
+        Duration::from_secs(45),
+        || {
+            fs::read_to_string(&log_path)
+                .unwrap()
+                .contains("Build failed")
+        },
+        "program compile failure",
+    );
+    assert_eq!(build_image(&output), initial);
+    assert_eq!(request(port, RELOAD_ENDPOINT).unwrap().1, initial_version);
+    fs::write(
+        &constants,
+        "let initial = 1\npub let offset: Int = initial\n",
+    )
+    .unwrap();
+    wait_for(
+        Duration::from_secs(45),
+        || request(port, RELOAD_ENDPOINT).is_some_and(|r| r.1 != initial_version),
+        "external pure program dependency rebuild",
+    );
+    assert_ne!(
+        fs::read(output.join("programs/calculation/program.wasm")).unwrap(),
+        initial["programs/calculation/program.wasm"]
+    );
+    let next_version = request(port, RELOAD_ENDPOINT).unwrap().1;
+    let main = project.join("src/main.ssrg");
+    let source = fs::read_to_string(&main).unwrap();
+    fs::write(
+        &main,
+        source.replace("Seseragi program WASM", "Watched program WASM"),
+    )
+    .unwrap();
+    wait_for(
+        Duration::from_secs(45),
+        || request(port, RELOAD_ENDPOINT).is_some_and(|r| r.1 != next_version),
+        "generated UI rebuild",
+    );
+    assert!(
+        String::from_utf8(fs::read(output.join("assets/app.js")).unwrap())
+            .unwrap()
+            .contains("Watched program WASM")
+    );
+    stop(&mut child);
+
+    let script = directory.join("lifetime.mjs");
+    fs::write(&script, r#"import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {loadProgram,ProgramWasmClosed} from './project/.seseragi/dev/programs/calculation/index.mjs';
+import {closePrograms} from './project/.seseragi/dev/programs/__lifecycle.mjs';
+const bytes=await readFile(new URL('./project/.seseragi/dev/programs/calculation/program.wasm',import.meta.url));
+const first=await loadProgram(bytes),second=await loadProgram(bytes);
+const prefix=second.exports.label('合計: '),saved=prefix(40);prefix.dispose();
+assert.equal(saved(2),'合計: 43');first.dispose();
+const instantiate=WebAssembly.instantiate,compile=WebAssembly.compile;let compileCalls=0;
+WebAssembly.compile=(...args)=>{compileCalls++;return Reflect.apply(compile,WebAssembly,args);};
+const gate=Promise.withResolvers(),ready=Promise.withResolvers();let late;
+WebAssembly.instantiate=async(...args)=>{late=await Reflect.apply(instantiate,WebAssembly,args);ready.resolve();await gate.promise;return late;};
+try{
+  const loading=loadProgram(bytes);assert.equal(compileCalls,1);await ready.promise;
+  let closed=false;const closing=closePrograms().then(()=>{closed=true;});
+  assert.equal(second.ownership().managedLiveAtClose,0);
+  assert.throws(()=>saved(2),ProgramWasmClosed);
+  assert.throws(()=>second.exports.validate(1),ProgramWasmClosed);
+  await Promise.resolve();assert.equal(closed,false);gate.resolve();
+  await assert.rejects(loading,ProgramWasmClosed);await closing;
+  assert.equal(late.exports.ssrg_live(),0);assert.equal(late.exports.ssrg_callbacks(),0);
+  await assert.rejects(()=>loadProgram(bytes),ProgramWasmClosed);
+  assert.equal(first.ownership().managedLiveAtClose,0);
+  assert.equal(second.ownership().callbacks,0);
+  console.log('real program: late load drained, stale callbacks rejected, managed roots0');
+}finally{WebAssembly.instantiate=instantiate;WebAssembly.compile=compile;gate.resolve();}
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        run_program_probe(engine, &script, &directory);
+    }
+    fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]
@@ -656,12 +900,25 @@ fn rejects_process_target_packages_before_entering_the_watch_loop() {
         &package,
     );
     update_lock(&package);
-    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
-        .args(["dev", package.to_str().unwrap(), "--port", "0"])
-        .output()
-        .unwrap();
-    assert_eq!(output.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&output.stderr)
+    let log_path = directory.join("refused-dev.log");
+    let log = fs::File::create(&log_path).unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["dev", package.to_str().unwrap(), "--port", "0"])
+            .stdout(Stdio::from(
+                fs::File::create(directory.join("refused-dev.stdout")).unwrap(),
+            ))
+            .stderr(Stdio::from(log)),
+        log_path.clone(),
+    );
+    wait_for(
+        Duration::from_secs(20),
+        || child.try_wait().unwrap().is_some(),
+        "process target refusal before watching",
+    );
+    assert_eq!(child.wait().unwrap().code(), Some(2));
+    assert!(fs::read_to_string(&log_path)
+        .unwrap()
         .contains("dev does not support the `process` target"));
     fs::remove_dir_all(directory).unwrap();
 }

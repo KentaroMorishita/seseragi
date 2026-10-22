@@ -12,7 +12,7 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:0a30150ac392e9abdf2130834366179a8732743d2f6b14bd1b65e7f365847218"
-content_digest = "sha256:a78986076ec86b2f9a76f69aae40dfd784660349f2c6df2c7418acee233cc225"
+content_digest = "sha256:d24fff94fb7cf089eefcf27e42e26779467290c25230cd074204d190b3b98729"
 dependencies = []
 
 [[foreign_modules]]
@@ -21,4 +21,4 @@ declaration = "src/main.ssrg#149-255"
 specifier = "../host/bridge.ts"
 exact_identity = "workspace:host/bridge.ts"
 declaration_digest = "sha256:984703c280fc2d17871b8ba882e8b8a5ac314095c23b8e0fe73019ac8bf8b1f4"
-content_digest = "sha256:0f1b674d8a7879ca3a7203dfa1ceb461a00d4a1a1c91e7eb5fe360447b22fff7"
+content_digest = "sha256:91d73b804a9ac7f97544b785f82ecbe9132120a3afc34fa4cc9920c9ac922f26"

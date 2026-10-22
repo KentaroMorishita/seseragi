@@ -112,8 +112,9 @@ pub(crate) fn stage(
         }
         let wasm_path = format!("./{base}/program.wasm");
         let value = serde_json::to_string(&wasm_path).map_err(|e| e.to_string())?;
-        let javascript =
-            format!("export * from \"./program.mjs\";\nexport const programWasmPath = {value};\n");
+        let javascript = format!(
+            "export * from \"./program.mjs\";\nimport {{ loadProgram as instantiate, ProgramWasmClosed }} from \"./program.mjs\";\nimport {{ loadOwnedProgram }} from \"../__lifecycle.mjs\";\nexport function loadProgram(bytes) {{ return loadOwnedProgram(() => instantiate(bytes), () => new ProgramWasmClosed(\"Browser program lifetime closed\")); }}\nexport const programWasmPath = {value};\n"
+        );
         let types = format!(
             "export * from \"./program.mjs\";\nexport declare const programWasmPath: {value};\n"
         );
@@ -136,6 +137,20 @@ pub(crate) fn stage(
             declarations: format!("{base}/index.d.mts"),
         });
     }
+    let lifecycle = include_str!("../../../runtime/ts/src/browser/program-lifecycle.js");
+    fs::write(host.join("__lifecycle.mjs"), lifecycle).map_err(|e| e.to_string())?;
+    fs::write(directory.join("programs/__lifecycle.mjs"), lifecycle).map_err(|e| e.to_string())?;
+    let lifecycle_types = include_str!("../../../runtime/ts/src/browser/program-lifecycle.d.ts");
+    fs::write(host.join("__lifecycle.d.mts"), lifecycle_types).map_err(|e| e.to_string())?;
+    fs::write(
+        directory.join("programs/__lifecycle.d.mts"),
+        lifecycle_types,
+    )
+    .map_err(|e| e.to_string())?;
+    exports.insert(
+        "./__lifecycle".into(),
+        serde_json::json!({"types":"./__lifecycle.d.mts","default":"./__lifecycle.mjs"}),
+    );
     fs::write(
         host.join("package.json"),
         serde_json::to_vec(

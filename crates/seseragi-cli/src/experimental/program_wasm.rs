@@ -47,7 +47,7 @@ fn compile(
     exports: &[String],
 ) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
     if Path::new(path).is_dir() {
-        compile_package(path, exports, None)
+        compile_package(path, exports, None, seseragi_project::ProjectCommand::Build)
     } else {
         compile_file(path, exports)
     }
@@ -57,8 +57,9 @@ fn compile_package(
     path: &str,
     exports: &[String],
     module: Option<&seseragi_project::ModulePath>,
+    command: seseragi_project::ProjectCommand,
 ) -> Result<(ProgramWasmArtifact, Vec<(PathBuf, Vec<u8>)>), String> {
-    let (project, checked) = super::load_checked_project_entry(path, module)?;
+    let (project, checked) = super::load_checked_project_entry_for_command(path, module, command)?;
     for (_, package) in project.packages().packages() {
         if module.is_none()
             && (!package.manifest().providers.is_empty()
@@ -257,6 +258,7 @@ fn write_artifact(
 pub(crate) fn package_assets(
     root: &Path,
     programs: &std::collections::BTreeMap<String, seseragi_project::ManifestProgramWasm>,
+    command: seseragi_project::ProjectCommand,
 ) -> Result<Vec<seseragi_runtime::ProgramWasmAssets>, String> {
     // Check every selected import closure before starting rustc or producing files.
     let checked = programs
@@ -266,6 +268,7 @@ pub(crate) fn package_assets(
                 &root.to_string_lossy(),
                 &config.exports,
                 Some(&config.module),
+                command,
             )
             .map_err(|error| {
                 format!(

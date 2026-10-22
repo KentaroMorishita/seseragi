@@ -16,6 +16,7 @@ on:
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-project/**"
       - "crates/seseragi-cli/src/build.rs"
+      - "crates/seseragi-cli/src/dev.rs"
       - "crates/seseragi-cli/src/local_project.rs"
       - "crates/seseragi-cli/src/experimental.rs"
       - "crates/seseragi-cli/src/experimental/**"
@@ -23,6 +24,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/build.rs"
+      - "crates/seseragi-cli/tests/dev.rs"
       - "crates/seseragi-cli/tests/filesystem.rs"
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
@@ -56,6 +58,7 @@ on:
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-project/**"
       - "crates/seseragi-cli/src/build.rs"
+      - "crates/seseragi-cli/src/dev.rs"
       - "crates/seseragi-cli/src/local_project.rs"
       - "crates/seseragi-cli/src/experimental.rs"
       - "crates/seseragi-cli/src/experimental/**"
@@ -63,6 +66,7 @@ on:
       - "crates/seseragi-cli/Cargo.toml"
       - "crates/seseragi-cli/tests/rust_backend.rs"
       - "crates/seseragi-cli/tests/build.rs"
+      - "crates/seseragi-cli/tests/dev.rs"
       - "crates/seseragi-cli/tests/filesystem.rs"
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
@@ -121,6 +125,10 @@ jobs:
         run: cargo test --locked -p seseragi-cli --test filesystem --test fibers --test async_filesystem
       - name: Verify product program WASM, generated declarations and callback ownership
         run: cargo test --locked -p seseragi-cli --test program_wasm
+      - name: Rebuild selected program dependencies and drain old browser owners
+        run: |
+          cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
+          bun test ./runtime/ts/tests/program-lifecycle.test.ts
 
   native:
     runs-on: ubuntu-24.04

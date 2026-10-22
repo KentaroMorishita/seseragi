@@ -198,8 +198,26 @@ fn load_checked_project_entry(
     ),
     String,
 > {
-    seseragi_project::read_and_validate_lockfile(path)
-        .map_err(|error| format!("{}: {error}", error.code()))?;
+    load_checked_project_entry_for_command(path, module, seseragi_project::ProjectCommand::Build)
+}
+
+fn load_checked_project_entry_for_command(
+    path: &str,
+    module: Option<&seseragi_project::ModulePath>,
+    command: seseragi_project::ProjectCommand,
+) -> Result<
+    (
+        seseragi_project::LoadedLocalProject,
+        seseragi_driver::CoreLocalProject,
+    ),
+    String,
+> {
+    if command == seseragi_project::ProjectCommand::Dev {
+        seseragi_project::read_and_validate_development_lockfile(path)
+    } else {
+        seseragi_project::read_and_validate_lockfile(path)
+    }
+    .map_err(|error| format!("{}: {error}", error.code()))?;
     let project = match module {
         Some(module) => seseragi_project::load_local_project_module(path, module),
         None => seseragi_project::load_local_project(path),
