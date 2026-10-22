@@ -86,11 +86,15 @@ pub(crate) fn prepare_package_build(
         if !web.programs.is_empty() && target.is_some_and(|target| target != ProjectTarget::Web) {
             return Err("web.programs requires --target web".into());
         }
-        crate::experimental::program_wasm::package_assets(
+        let Some(programs) = crate::experimental::program_wasm::package_assets(
             root_package.root(),
             &web.programs,
             command,
         )?
+        else {
+            return Ok(None);
+        };
+        programs
     } else {
         Vec::new()
     };
@@ -375,14 +379,11 @@ pub(crate) fn compatible_targets(contract: &seseragi_runtime::MainContract) -> V
         .collect()
 }
 
-fn render_compile_result(
+pub(crate) fn render_compile_result<T>(
     project: &seseragi_project::LoadedLocalProject,
-    result: Result<
-        seseragi_driver::CompiledLocalProject,
-        seseragi_driver::LocalProjectCompileError,
-    >,
+    result: Result<T, seseragi_driver::LocalProjectCompileError>,
     diagnostic_format: DiagnosticFormat,
-) -> Result<Option<seseragi_driver::CompiledLocalProject>, String> {
+) -> Result<Option<T>, String> {
     match result {
         Ok(compiled) => Ok(Some(compiled)),
         Err(error) => {

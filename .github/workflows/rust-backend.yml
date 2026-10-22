@@ -128,6 +128,7 @@ jobs:
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
+          cargo test --locked -p seseragi-cli --test dev initial_program_
           bun test ./runtime/ts/tests/program-lifecycle.test.ts
 
   native:

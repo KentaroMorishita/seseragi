@@ -335,6 +335,186 @@ fn run_program_probe(engine: &str, script: &Path, directory: &Path) {
 }
 
 #[test]
+fn initial_program_diagnostics_recover_without_restarting_dev() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    for external in [false, true] {
+        let directory = test_directory(if external {
+            "initial-program-dependency"
+        } else {
+            "initial-program-module"
+        });
+        let project = directory.join("project");
+        copy_directory(
+            &repository_root()
+                .join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+            &project,
+        );
+        let broken = if external {
+            let dependency = directory.join("data");
+            fs::create_dir_all(dependency.join("src")).unwrap();
+            fs::write(
+                dependency.join("seseragi.toml"),
+                "[package]\nname=\"fixture/watch-data\"\nversion=\"0.0.0\"\nlanguage=\">=0.1.0 <0.2.0\"\n[run]\nentry=\"constants\"\n[exports]\nconstants=\"constants\"\n",
+            )
+            .unwrap();
+            let constants = dependency.join("src/constants.ssrg");
+            fs::copy(project.join("src/constants.ssrg"), &constants).unwrap();
+            let manifest = project.join("seseragi.toml");
+            let source = fs::read_to_string(&manifest).unwrap();
+            fs::write(
+                manifest,
+                format!("{source}\n[dependencies]\ndata={{package=\"fixture/watch-data\",path=\"../data\"}}\n"),
+            )
+            .unwrap();
+            let calculation = project.join("src/calculation.ssrg");
+            let source = fs::read_to_string(&calculation).unwrap();
+            assert!(source.contains("\"./constants\""));
+            fs::write(
+                calculation,
+                source.replace("\"./constants\"", "\"data/constants\""),
+            )
+            .unwrap();
+            constants
+        } else {
+            project.join("src/calculation.ssrg")
+        };
+        update_lock(&project);
+        let original = fs::read_to_string(&broken).unwrap();
+        let (invalid, diagnostic) = if external {
+            (
+                "pub let offset: Int = missingInitialProgramName\n".to_owned(),
+                "SES-N0001",
+            )
+        } else {
+            (
+                format!("{original}\nlet initialProgramError: Int = \"not an int\"\n"),
+                "SES-T0101",
+            )
+        };
+        fs::write(&broken, invalid).unwrap();
+        let log_path = directory.join("dev.log");
+        let log = fs::File::create(&log_path).unwrap();
+        let port = available_port();
+        let mut child = DevServer::spawn(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("dev")
+                .arg(&project)
+                .args(["--port", &port.to_string()])
+                .stdout(Stdio::from(log.try_clone().unwrap()))
+                .stderr(Stdio::from(log)),
+            log_path.clone(),
+        );
+        let fallback = wait_for_value(
+            Duration::from_secs(10),
+            || {
+                assert!(
+                    child.try_wait().unwrap().is_none(),
+                    "{}",
+                    fs::read_to_string(&log_path).unwrap()
+                );
+                request(port, "/").and_then(|(status, body)| (status == 503).then_some(body))
+            },
+            "initial program diagnostic fallback",
+        );
+        assert!(fallback.contains("Build failed") && fallback.contains(RELOAD_ENDPOINT));
+        let diagnostics = fs::read_to_string(&log_path).unwrap();
+        assert!(diagnostics.contains(diagnostic), "{diagnostics}");
+        assert!(diagnostics.contains(broken.file_name().unwrap().to_str().unwrap()));
+        assert!(!project.join(".seseragi/dev").exists());
+        assert_eq!(request(port, RELOAD_ENDPOINT).unwrap().1, "0\n");
+        fs::write(broken, original).unwrap();
+        let recovered_version = wait_for_value(
+            Duration::from_secs(45),
+            || {
+                let (status, _) = request(port, "/")?;
+                if status != 200 {
+                    return None;
+                }
+                let (status, version) = request(port, RELOAD_ENDPOINT)?;
+                if status != 200 {
+                    return None;
+                }
+                let version = version.trim().parse::<u64>().unwrap();
+                assert!(version > 0);
+                Some(version)
+            },
+            "first complete site after program diagnostics",
+        );
+        assert!(recovered_version > 0);
+        let output = project.join(".seseragi/dev/programs/calculation");
+        assert!(fs::read(output.join("program.wasm"))
+            .unwrap()
+            .starts_with(b"\0asm"));
+        stop(&mut child);
+        let probe = directory.join("recovered.mjs");
+        fs::write(&probe, r#"import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {loadProgram} from './project/.seseragi/dev/programs/calculation/index.mjs';
+const bytes=await readFile(new URL('./project/.seseragi/dev/programs/calculation/program.wasm',import.meta.url));
+const program=await loadProgram(bytes), prefix=program.exports.label('recovered: '), callback=prefix(40);
+prefix.dispose();assert.equal(callback(2),'recovered: 42');callback.dispose();program.dispose();
+assert.equal(program.ownership().managedLiveAtClose,0);
+"#).unwrap();
+        for engine in ["bun", "node"] {
+            run_program_probe(engine, &probe, &directory);
+        }
+        fs::remove_dir_all(directory).unwrap();
+    }
+}
+
+#[test]
+fn initial_program_selection_error_remains_fatal() {
+    let directory = test_directory("initial-program-selection");
+    let project = directory.join("project");
+    copy_directory(
+        &repository_root()
+            .join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &project,
+    );
+    let manifest = project.join("seseragi.toml");
+    let source = fs::read_to_string(&manifest).unwrap();
+    assert!(source.contains("exports = [\"label\","));
+    fs::write(
+        manifest,
+        source.replacen(
+            "exports = [\"label\",",
+            "exports = [\"missingInitialProgramExport\",",
+            1,
+        ),
+    )
+    .unwrap();
+    update_lock(&project);
+    let log_path = directory.join("dev.log");
+    let log = fs::File::create(&log_path).unwrap();
+    let mut child = DevServer::spawn(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("dev")
+            .arg(&project)
+            .args(["--port", &available_port().to_string()])
+            .stdout(Stdio::from(log.try_clone().unwrap()))
+            .stderr(Stdio::from(log)),
+        log_path.clone(),
+    );
+    wait_for(
+        Duration::from_secs(10),
+        || child.try_wait().unwrap().is_some(),
+        "invalid program selection rejection",
+    );
+    assert!(!child.wait().unwrap().success());
+    let diagnostics = fs::read_to_string(log_path).unwrap();
+    assert!(
+        diagnostics.contains("web.programs.calculation")
+            && diagnostics.contains("SES-RUST-0001")
+            && diagnostics.contains("selected function is missing"),
+        "{diagnostics}"
+    );
+    assert!(!project.join(".seseragi/dev").exists());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances() {
     let _server = DEV_SERVER_TEST_LOCK
         .lock()
