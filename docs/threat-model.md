@@ -1,4 +1,4 @@
-# Playground execution threat model
+# Seseragi execution threat model
 
 ## Assets and inputs
 
@@ -156,6 +156,13 @@ updated browser. No server-side program execution or privileged filesystem/
 process bridge is introduced by the Playground.
 
 ## Review and verification
+
+The extension's packaging dev dependency includes the unpatched
+[`braces` advisory GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+It is absent from the extension's production dependency closure and the
+Playground/runtime packages. Packaging uses reviewed repository configuration;
+accepting external glob configuration would require a new assessment. Track
+an upstream fix and packaging revalidation in [#929](https://github.com/KentaroMorishita/seseragi/issues/929).
 
 For PRs changing these boundaries, review the actual CSP, port consumer, broker,
 Worker retirement and import/compile paths. Check GitHub code and security review
