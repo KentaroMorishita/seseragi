@@ -100,7 +100,10 @@ function createFetchExchange(
 
   const ready = (async () => {
     try {
-      let content: Uint8Array | ReadableStream<Uint8Array> | undefined = upload
+      let content:
+        | Uint8Array<ArrayBuffer>
+        | ReadableStream<Uint8Array>
+        | undefined = upload
       if (body.knownLength !== undefined && body.knownLength !== 0) {
         // bytesBody is already resident in memory. Pass those known bytes to
         // Fetch directly so small POSTs work without streaming-upload support.
