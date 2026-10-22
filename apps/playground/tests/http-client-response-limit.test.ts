@@ -131,7 +131,9 @@ describe("bounded HTTP convenience responses", () => {
           })
           const upload: number[] = []
           if (init.body instanceof Uint8Array) {
-            upload.push(...init.body)
+            for (let offset = 0; offset < init.body.length; offset += 1) {
+              upload.push(init.body[offset]!)
+            }
           } else if (init.body instanceof ReadableStream) {
             const reader = init.body.getReader()
             try {

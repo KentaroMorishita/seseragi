@@ -49,7 +49,8 @@ test("bounds HTTP uploads and releases incomplete requests on Node", async () =>
       await child.exited
     }
     if (child !== undefined) {
-      expect(() => process.kill(child.pid, 0)).toThrow()
+      const childPid = child.pid
+      expect(() => process.kill(childPid, 0)).toThrow()
     }
     await rm(directory, { recursive: true, force: true })
   }
