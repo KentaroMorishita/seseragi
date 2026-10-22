@@ -3,6 +3,7 @@ name: Experimental Rust backend
 on:
   pull_request:
     paths:
+      - ".gitattributes"
       - ".bun-version"
       - ".github/workflows/rust-backend.yml"
       - "Cargo.toml"
@@ -30,6 +31,8 @@ on:
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
       - "scripts/program-wasm-probe.mjs"
+      - "scripts/program-wasm-effect-probe.mjs"
+      - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
@@ -45,6 +48,7 @@ on:
   push:
     branches: [main]
     paths:
+      - ".gitattributes"
       - ".bun-version"
       - ".github/workflows/rust-backend.yml"
       - "Cargo.toml"
@@ -72,6 +76,8 @@ on:
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
       - "scripts/program-wasm-probe.mjs"
+      - "scripts/program-wasm-effect-probe.mjs"
+      - "scripts/program-wasm-effect-package-probe.mjs"
       - "scripts/build-program-wasm-demo.py"
       - "examples/spec/fixtures/rust-backend/**"
       - "examples/spec/fixtures/rust-backend-research/**"
@@ -129,7 +135,8 @@ jobs:
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances
           cargo test --locked -p seseragi-cli --test dev initial_program_
-          bun test ./runtime/ts/tests/program-lifecycle.test.ts
+          bun test ./runtime/ts/tests/program-lifecycle.test.ts ./runtime/ts/tests/program-lifecycle-async.test.ts
+          bunx tsc --strict --noEmit --skipLibCheck false --target ES2022 --module ESNext --moduleResolution Bundler --lib ES2022,DOM runtime/ts/tests/program-lifecycle-types.ts
 
   native:
     runs-on: ubuntu-24.04

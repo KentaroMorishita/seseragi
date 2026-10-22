@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.61.83] - 2026-10-23
+
+### Added
+
+- Execute checked providerless cold Effects through a separate program-WASM ABI and generated TypeScript UI. Preserve source application stages and returned callbacks; distinguish success, typed failure, explicit Defect and cooperative cancellation. Await masked LIFO finalizers before publishing outcomes or completing asynchronous instance disposal. Unexpected traps retire the instance without claiming Rust unwinding. Host providers, Ref, host-input callbacks, generic public schemes and unproved expressions remain unsupported.
+- Add the cold `std/effect.die` operation with an explicit Defect exit on native, TypeScript and the admitted program-WASM target. Recover and mapError continue to handle typed failures only.
+
+### Fixed
+
+- Annotate closed recursive ordinary functions returning Effects from their checked canonical types, including runtime import planning, so their normal generated TypeScript passes strict checking without casts or inferred placeholder types.
+- Preserve the locked Effect package fixture's manifest, source and bridge bytes during Windows checkout.
+
 ## [0.61.82] - 2026-10-23
 
 ### Fixed
