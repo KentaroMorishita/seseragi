@@ -43,6 +43,7 @@ async function inputWorkspace() {
 test.beforeEach(async ({ page }) => {
   const seed = await inputWorkspace()
   await page.addInitScript((seed) => {
+    if (window !== window.top) return
     const key = "seseragi.playground.workspace.schema-1"
     if (localStorage.getItem(key) === null)
       localStorage.setItem(key, JSON.stringify(seed))

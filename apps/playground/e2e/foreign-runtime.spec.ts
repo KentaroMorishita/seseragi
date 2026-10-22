@@ -157,11 +157,13 @@ test("Playground Run connects a workspace package and reports host mismatch befo
     },
   ]
   await page.addInitScript(
-    (seed) =>
+    (seed) => {
+      if (window !== window.top) return
       localStorage.setItem(
         "seseragi.playground.workspace.schema-1",
         JSON.stringify(seed)
-      ),
+      )
+    },
     {
       schema: 1,
       sampleId: "playground-blank",
