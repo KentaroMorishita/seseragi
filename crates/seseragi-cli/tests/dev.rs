@@ -81,7 +81,10 @@ fn request_with_host(port: u16, path: &str, host: &str) -> Option<(u16, String)>
     )
     .unwrap();
     let mut response = String::new();
-    stream.read_to_string(&mut response).ok()?;
+    if let Err(error) = stream.read_to_string(&mut response) {
+        eprintln!("HTTP request for {path} did not finish: {error}");
+        return None;
+    }
     let status = response
         .lines()
         .next()?
@@ -95,6 +98,23 @@ fn request_with_host(port: u16, path: &str, host: &str) -> Option<(u16, String)>
 
 fn wait_for(timeout: Duration, mut condition: impl FnMut() -> bool, message: &str) {
     wait_for_with_diagnostics(timeout, &mut condition, message, String::new);
+}
+
+fn wait_for_value<T>(
+    timeout: Duration,
+    mut observe: impl FnMut() -> Option<T>,
+    message: &str,
+) -> T {
+    let mut observed = None;
+    wait_for(
+        timeout,
+        || {
+            observed = observe();
+            observed.is_some()
+        },
+        message,
+    );
+    observed.expect("a successful wait retains its observed value")
 }
 
 fn wait_for_with_diagnostics(
@@ -425,16 +445,22 @@ fn watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_in
         "let initial = 1\npub let offset: Int = initial\n",
     )
     .unwrap();
-    wait_for(
+    let (next_version, rebuilt_program) = wait_for_value(
         Duration::from_secs(45),
-        || request(port, RELOAD_ENDPOINT).is_some_and(|r| r.1 != initial_version),
+        || {
+            let (status, version) = request(port, RELOAD_ENDPOINT)?;
+            if status != 200 || version == initial_version {
+                return None;
+            }
+            let program = fs::read(output.join("programs/calculation/program.wasm")).unwrap();
+            Some((version, program))
+        },
         "external pure program dependency rebuild",
     );
     assert_ne!(
-        fs::read(output.join("programs/calculation/program.wasm")).unwrap(),
+        rebuilt_program,
         initial["programs/calculation/program.wasm"]
     );
-    let next_version = request(port, RELOAD_ENDPOINT).unwrap().1;
     let main = project.join("src/main.ssrg");
     let source = fs::read_to_string(&main).unwrap();
     fs::write(
@@ -442,16 +468,19 @@ fn watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_in
         source.replace("Seseragi program WASM", "Watched program WASM"),
     )
     .unwrap();
-    wait_for(
+    let rebuilt_ui = wait_for_value(
         Duration::from_secs(45),
-        || request(port, RELOAD_ENDPOINT).is_some_and(|r| r.1 != next_version),
+        || {
+            let (status, version) = request(port, RELOAD_ENDPOINT)?;
+            if status != 200 || version == next_version {
+                return None;
+            }
+            let source = String::from_utf8(fs::read(output.join("assets/app.js")).ok()?).unwrap();
+            source.contains("Watched program WASM").then_some(source)
+        },
         "generated UI rebuild",
     );
-    assert!(
-        String::from_utf8(fs::read(output.join("assets/app.js")).unwrap())
-            .unwrap()
-            .contains("Watched program WASM")
-    );
+    assert!(rebuilt_ui.contains("Watched program WASM"));
     stop(&mut child);
 
     let script = directory.join("lifetime.mjs");
