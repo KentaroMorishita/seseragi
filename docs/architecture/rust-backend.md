@@ -123,6 +123,9 @@ Ref、Fiber／Deferred、host入力callback、open provider row、generic公開s
 同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
 host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
+標準moduleを明示した`effects.succeed ()`は匿名Unitを渡せる。
+Preludeの裸の`succeed ()`をnativeで拒否する既知の#915は残り、このABIでも共有guardで拒否する。
+
 ## 同じpackageのWASM計算とTS UIをbuildする
 
 rootの`seseragi.toml`で計算moduleと公開関数を選ぶ。

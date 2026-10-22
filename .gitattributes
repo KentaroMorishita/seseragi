@@ -12,3 +12,6 @@ examples/spec/fixtures/rust-backend-projects/filesystem/** text eol=lf
 # Fiber/Deferred acceptance traces compare source bytes across hosts.
 examples/spec/fixtures/rust-backend/fiber-* text eol=lf
 examples/spec/fixtures/rust-backend/deferred-* text eol=lf
+
+# The Effect WASM package lock pins manifest, source and bridge bytes.
+examples/spec/fixtures/rust-backend-projects/program-wasm-effect-package/** text eol=lf
