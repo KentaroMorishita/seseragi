@@ -195,7 +195,7 @@ fn artifact_image(path: &Path) -> std::collections::BTreeMap<String, Vec<u8>> {
                         .strip_prefix(root)
                         .unwrap()
                         .to_string_lossy()
-                        .into_owned(),
+                        .replace('\\', "/"),
                     fs::read(entry.path()).unwrap(),
                 );
             }
