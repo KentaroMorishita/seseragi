@@ -5,5 +5,10 @@ globalThis.addEventListener("message", function connect(event: MessageEvent) {
   const port = event.data?.port
   if (!(port instanceof MessagePort)) return
   globalThis.removeEventListener("message", connect)
+  if (
+    typeof event.data.randomSeed === "string" &&
+    event.data.randomSeed.length <= 100
+  )
+    globalThis.__SESERAGI_RANDOM_SEED__ = event.data.randomSeed
   serveExecutionPort(port)
 })

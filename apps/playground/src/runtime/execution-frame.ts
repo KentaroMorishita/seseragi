@@ -64,7 +64,12 @@ window.addEventListener("message", function connect(event: MessageEvent) {
       } else channel.port1.postMessage(event.data)
     }
     channel.port1.start()
-    worker.postMessage({ port: channel.port2 }, [channel.port2])
+    // Preserve the existing explicit deterministic test seed, not ambient
+    // parent globals or storage. The provider reads it lazily on first use.
+    worker.postMessage(
+      { port: channel.port2, randomSeed: globalThis.__SESERAGI_RANDOM_SEED__ },
+      [channel.port2]
+    )
     channel.port1.postMessage(message.data)
   }
   port.start()
