@@ -1,12 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-const expectedSandbox = [
-  "allow-forms",
-  "allow-popups",
-  "allow-popups-to-escape-sandbox",
-  "allow-same-origin",
-  "allow-scripts",
-]
+const expectedSandbox = ["allow-forms", "allow-popups", "allow-scripts"]
 
 function sandboxTokens(html: string, iframeId: string): string[] {
   const iframe = html.match(
@@ -26,6 +20,8 @@ describe("Playground preview sandbox", () => {
 
     expect(sandboxTokens(playground, "html-preview")).toEqual(expectedSandbox)
     expect(sandboxTokens(tour, "tour-html-preview")).toEqual(expectedSandbox)
+    expect(expectedSandbox).not.toContain("allow-same-origin")
+    expect(expectedSandbox).not.toContain("allow-popups-to-escape-sandbox")
     expect(expectedSandbox).not.toContain("allow-top-navigation")
     expect(expectedSandbox).not.toContain(
       "allow-top-navigation-by-user-activation"

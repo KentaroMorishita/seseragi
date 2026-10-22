@@ -16,6 +16,7 @@ import {
 import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
 import { processHashSeed } from "../../../../runtime/ts/src/hash"
+import type { ProviderPackageEntry } from "../../../../runtime/ts/src/provider-package"
 import {
   renderDebug,
   renderShow,
@@ -57,6 +58,8 @@ export type BrowserExecutionOptions = Readonly<{
   readonly foreignRuntime?: ForeignRuntimeBundle
   readonly domDocument?: Document
   readonly onDomMounted?: () => void
+  readonly storageProvider?: ProviderPackageEntry
+  readonly navigationProvider?: ProviderPackageEntry
 }>
 
 export class ProjectExecutionError extends Error {
@@ -186,9 +189,11 @@ async function startEvaluatedModule(
         options.domDocument?.defaultView !== undefined
       ) {
         return {
-          provider: createBrowserNavigationProvider(
-            createWindowNavigationHost(options.domDocument.defaultView)
-          ),
+          provider:
+            options.navigationProvider ??
+            createBrowserNavigationProvider(
+              createWindowNavigationHost(options.domDocument.defaultView)
+            ),
         }
       }
       if (
@@ -197,23 +202,30 @@ async function startEvaluatedModule(
         options.domDocument?.defaultView !== undefined
       ) {
         return {
-          provider: createBrowserStorageProvider(
-            createBudgetedStorageHost(
-              createNamespacedStorageHost(
-                createWindowStorageHost(options.domDocument.defaultView),
-                playgroundStorageNamespace
-              ),
-              playgroundStorageBudgetCodeUnits,
-              playgroundStorageNamespace.length
-            )
-          ),
+          provider:
+            options.storageProvider ??
+            createBrowserStorageProvider(
+              createBudgetedStorageHost(
+                createNamespacedStorageHost(
+                  createWindowStorageHost(options.domDocument.defaultView),
+                  playgroundStorageNamespace
+                ),
+                playgroundStorageBudgetCodeUnits,
+                playgroundStorageNamespace.length
+              )
+            ),
         }
       }
       const module = resolveModule(specifier)
       if (module === undefined) {
         throw new Error(`unsupported browser provider module: ${specifier}`)
       }
-      return module
+      // IIFE bundlers represent trusted ESM namespaces with accessors. Give
+      // the provider loader a data-property snapshot without weakening its
+      // checks on provider entry metadata or operation descriptors.
+      return Object.hasOwn(runtimeModules, specifier)
+        ? Object.freeze({ ...module })
+        : module
     }
   )
   let stdout = ""

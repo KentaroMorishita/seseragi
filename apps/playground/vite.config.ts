@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url"
+import { build as bundleExecutionFrame } from "esbuild"
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite"
 
 const appRoot = fileURLToPath(new URL(".", import.meta.url))
@@ -146,11 +147,53 @@ const brandSurfacePlugin: Plugin = {
   },
 }
 
+// A classic self-contained bundle can run inside an opaque srcdoc without
+// granting same-origin access or relaxing the dev server's CORS policy.
+const isolatedExecutionPlugin: Plugin = {
+  name: "seseragi-isolated-execution",
+  resolveId(id) {
+    if (id === "virtual:seseragi-execution-frame") return `\0${id}`
+  },
+  generateBundle(_options, bundle) {
+    for (const output of Object.values(bundle)) {
+      if (
+        output.type === "chunk" &&
+        Object.keys(output.modules).some((id) =>
+          id.endsWith("/runtime/browser-execution.ts")
+        )
+      )
+        this.error(
+          "the program evaluator must only run inside the isolated frame"
+        )
+    }
+  },
+  async load(id) {
+    if (id !== "\0virtual:seseragi-execution-frame") return
+    const result = await bundleExecutionFrame({
+      absWorkingDir: appRoot,
+      entryPoints: ["src/runtime/execution-frame.ts"],
+      bundle: true,
+      write: false,
+      format: "iife",
+      platform: "browser",
+      target: "es2022",
+      minify: true,
+      metafile: true,
+    })
+    for (const input of Object.keys(result.metafile!.inputs)) {
+      if (!input.startsWith("(disabled):")) {
+        this.addWatchFile(fileURLToPath(new URL(input, import.meta.url)))
+      }
+    }
+    return `export default ${JSON.stringify(result.outputFiles![0]!.text)}`
+  },
+}
+
 export default defineConfig({
   publicDir: fileURLToPath(
     new URL("../../assets/brand/public", import.meta.url)
   ),
-  plugins: [brandSurfacePlugin],
+  plugins: [brandSurfacePlugin, isolatedExecutionPlugin],
   resolve: {
     dedupe: ["@seseragi/runtime"],
   },

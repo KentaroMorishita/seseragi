@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test"
 import {
+  heldPreviewCount,
+  holdPreviewReadiness,
   installListenerAudit,
   listenerCount,
+  releasePreviewReadiness,
 } from "./preview-navigation-support"
 
 for (const action of ["reset", "lesson", "text"] as const) {
@@ -11,23 +14,11 @@ for (const action of ["reset", "lesson", "text"] as const) {
     await installListenerAudit(page, "tour-html-preview")
     await page.goto("/tour/?lesson=web-dom-run")
     await expect(page.locator("#tour-status-text")).toHaveText("Analysis ready")
-    let release!: () => void
-    const held = new Promise<void>((resolve) => {
-      release = resolve
-    })
-    let arrived!: () => void
-    const requested = new Promise<void>((resolve) => {
-      arrived = resolve
-    })
-    await page.route("**/runtime-preview.html", async (route) => {
-      arrived()
-      await held
-      await route.continue().catch(() => {})
-    })
+    await holdPreviewReadiness(page)
     await page.locator("#tour-run-button").click()
-    await requested
+    await expect.poll(() => heldPreviewCount(page)).toBe(1)
     await expect(page.locator("#tour-run-button")).toBeDisabled()
-    expect(await listenerCount(page)).toBe(2)
+    expect(await listenerCount(page)).toBe(1)
     if (action === "reset") {
       await page.locator("#tour-tools-button").click()
       await page.locator("#tour-reset-button").click()
@@ -38,10 +29,11 @@ for (const action of ["reset", "lesson", "text"] as const) {
       await page.locator("#tour-show-text-button").click()
     }
     await expect(page.locator("#tour-run-button")).toBeEnabled()
-    await expect(page.locator("#tour-html-preview")).not.toHaveAttribute("src")
+    await expect(page.locator("#tour-html-preview")).not.toHaveAttribute(
+      "srcdoc"
+    )
     expect(await listenerCount(page)).toBe(0)
-    release()
-    await page.unroute("**/runtime-preview.html")
+    await releasePreviewReadiness(page)
     if (action !== "text")
       await expect(page.locator("#tour-status-text")).toHaveText(
         "Analysis ready"

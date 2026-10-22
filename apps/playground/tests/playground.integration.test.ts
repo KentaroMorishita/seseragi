@@ -3309,14 +3309,13 @@ fails dom.DomRuntimeError<Never> =
 
     expect(sample?.outputMode).toBe("html")
     expect(html).toContain('id="show-html-preview-button"')
-    expect(html).toContain(
-      'sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"'
-    )
+    expect(html).toContain('sandbox="allow-forms allow-popups allow-scripts"')
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain("createPreviewDocument(html)")
-    expect(main).toContain("prepareInteractivePreview()")
+    expect(main).toContain("startIsolatedProject(htmlPreview")
+    expect(main).not.toContain("startGeneratedProject(")
     expect(main).toContain("runtime-preview.html")
-    expect(main).toContain("document.head.replaceChildren")
+    expect(main).not.toContain("document.head.replaceChildren")
     expect(runtimePreview).toContain("Seseragi Runtime Preview")
     expect(previewDocument).toContain("script-src 'none'")
     expect(previewDocument).toContain("form-action 'none'")
@@ -3368,7 +3367,7 @@ fails dom.DomRuntimeError<Never> =
     expect(sample?.interactive).toBe(true)
     expect(sample?.source).toContain("dom.app {")
     expect(sample?.source).not.toContain("dom.run (dom.defaultOptions ())")
-    expect(main).toContain('binding.service === "dom"')
+    expect(main).toContain("onDomMounted")
     expect(main).toContain('setStatus("success", "Interactive")')
     expect(main).toContain("execution.cancel()")
   })

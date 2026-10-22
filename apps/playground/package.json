@@ -39,6 +39,7 @@
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@types/bun": "latest",
+    "esbuild": "0.28.1",
     "vite": "^7.0.4"
   }
 }

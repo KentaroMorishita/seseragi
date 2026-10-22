@@ -160,7 +160,7 @@ browser runtimeはnative DOM Eventを公開せず、targetの`value` / `checked`
 typed mapperへ渡します。`click` / `input` / `change` / `submit`はmount rootのdelegated listenerを一度だけ登録し、
 再renderではevent binding tableを交換します。submitはMsgをqueueする前に同期的に`preventDefault`します。
 preview iframeはevent生成に必要な`allow-forms`を持ちますが、document CSPの`form-action 'none'`で外部送信と
-default navigationを拒否します。
+default navigationを拒否します。Playground / Tourのprogram評価、runtime registry、Effect / DOMは`allow-same-origin`のないopaque iframe内で実行します。親ページとの専用MessageChannelは結果、キャンセル、宣言されたapplication Storage operationだけを扱います。Storageには既存namespace / budgetを適用し、NavigationはPreview内の独立historyを使います。origin隔離はCPU実行時間の上限を保証しません。
 
 VercelのGit buildへRust / rustup / wasm-pack installを持ち込むとhost差とdownload failureがdeploymentを壊すため、
 `apps/playground/src/wasm/pkg`は例外的にversioned deployment artifactとしてcommitします。Rust compilerまたはWASM

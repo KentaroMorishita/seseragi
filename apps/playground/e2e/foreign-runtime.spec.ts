@@ -11,8 +11,8 @@ test("browser executes a shared foreign binding through declared browser package
     const { prepareBrowserForeignRuntime } = await load(
       "/src/runtime/foreign-runtime.ts"
     )
-    const { executeGeneratedProject } = await load(
-      "/src/runtime/browser-execution.ts"
+    const { startIsolatedProject } = await load(
+      "/src/runtime/isolated-execution.ts"
     )
     const manifest =
       '[package]\nname="fixture/browser-linkage"\nversion="1.0.0"\nlanguage="^0.1.0"\n[run]\nentry="main"\n[foreign.typescript]\nresolver="node"\nmanifest="host/package.json"\nlockfile="host/bun.lock"\n'
@@ -59,13 +59,22 @@ test("browser executes a shared foreign binding through declared browser package
       manifest,
       compiler.resolveBrowserRuntimeModules
     )
-    await executeGeneratedProject(
-      modules,
-      compiled.entry.path,
-      compiled.entry.contract,
-      "",
-      { foreignRuntime: runtime }
+    const frame = document.createElement("iframe")
+    frame.name = "foreign-boundary"
+    document.body.append(frame)
+    const execution = await startIsolatedProject(
+      frame,
+      {
+        modules,
+        entryPath: compiled.entry.path,
+        entry: compiled.entry.contract,
+        input: "",
+        foreignRuntime: runtime,
+        initialHref: new URL("/runtime-preview.html", location.href).href,
+      },
+      { signal: new AbortController().signal }
     )
+    await execution.completion
     const observed = (
       globalThis as unknown as { __interopBrowserObserved?: string }
     ).__interopBrowserObserved
@@ -101,7 +110,17 @@ test("browser executes a shared foreign binding through declared browser package
       ).__interopBrowserObserved,
     }
   })
-  expect(result.observed).toBe("hello-browser")
+  expect(result.observed).toBeUndefined()
+  const child = page
+    .frames()
+    .find((frame) => frame.name() === "foreign-boundary")!
+  expect(
+    await child.evaluate(
+      () =>
+        (globalThis as unknown as { __interopBrowserObserved?: string })
+          .__interopBrowserObserved
+    )
+  ).toBe("hello-browser")
   expect(result.identity).toBe("npm:browser-api@1.2.3/web.js")
   expect(result.error).toContain("SES-F0203")
   expect(result.error).toContain("node:fs")
@@ -188,5 +207,5 @@ test("Playground Run connects a workspace package and reports host mismatch befo
         (globalThis as unknown as { __interopRunObserved?: string })
           .__interopRunObserved
     )
-  ).toBe("hello-browser")
+  ).toBeUndefined()
 })
