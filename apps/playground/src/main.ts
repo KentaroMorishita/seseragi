@@ -536,7 +536,12 @@ if (initialSample !== undefined) {
   sampleBrowser.setBlank()
   sampleGuide.setBlank()
 }
-if (session.importedUrl !== undefined) persistCurrentWorkspace()
+if (
+  session.importedUrl !== undefined ||
+  (restoredWorkspace.status === "restored" &&
+    restoredWorkspace.applicationId === undefined)
+)
+  persistCurrentWorkspace()
 if (session.shared) {
   const notice = document.createElement("p")
   notice.className = "workspace-notice"
@@ -705,7 +710,7 @@ clearSourceButton.addEventListener("click", () => {
   setStatus("ready", "Source cleared")
   persistCurrentWorkspace()
 })
-stdinInput.addEventListener("input", persistCurrentWorkspace)
+stdinInput.addEventListener("input", () => persistCurrentWorkspace())
 clearOutputButton.addEventListener("click", () => {
   cancelActiveExecution()
   output.textContent = ""
@@ -897,7 +902,7 @@ function handleEditorChange(nextSource: string): void {
   scheduleWorkspaceAnalysis()
 }
 
-function persistCurrentWorkspace(): void {
+function persistCurrentWorkspace(reportFailure = false): boolean {
   const result = persistWorkspace(
     localStorage,
     currentSample ?? blankWorkspaceOrigin,
@@ -912,12 +917,13 @@ function persistCurrentWorkspace(): void {
       new URL(location.href).searchParams.has("source")
     )
       history.replaceState(null, "", session.importedUrl)
-    return
+    return true
   }
-  if (persistenceFailureShown) return
+  if (persistenceFailureShown && !reportFailure) return false
   persistenceFailureShown = true
   showTextOutput(result.diagnostic)
   setStatus("error", "Local save unavailable")
+  return false
 }
 
 function editorHoverAt(position: number) {
@@ -1156,6 +1162,14 @@ async function run(): Promise<void> {
       showIoOnSmallScreens()
       return
     }
+    // Storage must not write under an identity that will be lost on reload.
+    if (
+      compiled.entry.contract.environment.some(
+        ({ service }) => service === "storage"
+      ) &&
+      !persistCurrentWorkspace(true)
+    )
+      return
 
     setStatus("running", "Running…")
     if (revision !== runRevision) {

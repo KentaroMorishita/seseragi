@@ -107,6 +107,14 @@ fails AppError = do {
   await page
     .getByRole("textbox", { name: "Seseragi source editor" })
     .fill(source)
+  // Simulate a workspace saved before application identities were introduced.
+  await page.evaluate(() => {
+    const key = "seseragi.playground.workspace.schema-1"
+    const stored = JSON.parse(localStorage.getItem(key)!)
+    delete stored.applicationId
+    localStorage.setItem(key, JSON.stringify(stored))
+  })
+  await page.reload()
   await page.locator("#run-button").click()
   await expect(page.locator("#status-text")).toHaveText("Completed")
   expect(
@@ -121,6 +129,31 @@ fails AppError = do {
       host: localStorage.getItem("isolation-test-host-control"),
     }))
   ).toEqual({ application: "seseragi", host: "keep" })
+  const applicationId = await page.evaluate(
+    () =>
+      JSON.parse(
+        localStorage.getItem("seseragi.playground.workspace.schema-1")!
+      ).applicationId
+  )
+  expect(applicationId).toMatch(/^[0-9a-f-]{36}$/)
+  await page.reload()
+  expect(
+    await page.evaluate(
+      () =>
+        JSON.parse(
+          localStorage.getItem("seseragi.playground.workspace.schema-1")!
+        ).applicationId
+    )
+  ).toBe(applicationId)
+  expect(
+    await page.evaluate(
+      (id) =>
+        localStorage.getItem(
+          `seseragi:playground:application:v2:${id}:profile`
+        ),
+      applicationId
+    )
+  ).toBe("seseragi")
   await page.locator("#run-button").click()
   await expect(page.locator("#status-text")).toHaveText("Completed")
   expect(
@@ -167,6 +200,45 @@ fails AppError = do {
     `${origin}/preview-step?view=1#state\n${origin}/preview-step?view=1#state`
   )
   expect(page.url()).toBe(parentUrl)
+})
+
+test("Storage cannot write under an unsaved identity, while console execution still works", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const setItem = Storage.prototype.setItem
+    Storage.prototype.setItem = function (key, value) {
+      if (key === "seseragi.playground.workspace.schema-1")
+        throw new DOMException("fixture quota", "QuotaExceededError")
+      setItem.call(this, key, value)
+    }
+  })
+  await page.goto("/")
+  const editor = page.getByRole("textbox", { name: "Seseragi source editor" })
+  await editor.fill(`import * as storage from "std/web/storage"
+type AppError deriving Show =
+  | StorageFailure storage.StorageError
+pub effect fn main -> Unit
+with storage: storage.Storage
+fails AppError = do {
+  _ <- storage.set storage.Local "marker" "should-not-write" |> mapError StorageFailure
+  succeed ()
+}\n`)
+  await page.locator("#run-button").click()
+  await expect(page.locator("#status-text")).toHaveText(
+    "Local save unavailable"
+  )
+  expect(
+    await page.evaluate(() =>
+      Object.keys(localStorage).filter((key) =>
+        key.startsWith("seseragi:playground:application:")
+      )
+    )
+  ).toEqual([])
+  await editor.fill('pub effect fn main = println "still works"\n')
+  await page.locator("#run-button").click()
+  await expect(page.locator("#status-text")).toHaveText("Completed")
+  await expect(page.locator("#output")).toHaveText("still works")
 })
 
 test("settles execution when an ordinary same-frame link replaces the preview", async ({

@@ -1,5 +1,5 @@
+import { expect, type Page, test } from "@playwright/test"
 import type { BrowserExecution } from "../src/runtime/browser-execution"
-import { expect, test, type Page } from "@playwright/test"
 
 async function runFixture(
   page: Page,
@@ -170,6 +170,7 @@ test("Worker HTTP is blocked by default and available only with explicit permiss
   await page
     .getByRole("textbox", { name: "Seseragi source editor" })
     .fill('pub effect fn main = println "changed"')
+  await page.locator("#mobile-tools-button").click()
   await expect(permission).toHaveAttribute("aria-checked", "false")
 })
 
