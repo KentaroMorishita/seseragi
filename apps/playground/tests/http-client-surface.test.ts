@@ -115,7 +115,7 @@ describe("std/http small-response application surface", () => {
     })
   })
 
-  test("keeps small responses on HttpClient#send and enforces limits", async () => {
+  test("collects small responses from exchange and enforces limits", async () => {
     const url = right<HttpUrl>(parseUrl("https://example.test/resource"))
     const base = request(post, url)
     const withHeader = right<ReturnType<typeof request>>(
@@ -127,20 +127,44 @@ describe("std/http small-response application surface", () => {
     let calls = 0
     let observedBody: Uint8Array | undefined
     const client: HttpClient = Object.freeze({
-      async send(value) {
+      async send() {
+        throw new Error("bounded responses must not use buffered send")
+      },
+      exchange(_value, body) {
         calls += 1
-        observedBody = value.body
+        let event = 0
         return {
-          kind: "success",
-          value: {
-            status: 201,
-            headers: [{ name: "X-Result", value: "ready" }],
-            body: new Uint8Array([4, 5, 6]),
+          async pull() {
+            if (event++ === 0) {
+              const next = await body.pull()
+              if (!next.done) observedBody = next.value
+              return {
+                done: false as const,
+                value: {
+                  kind: "ResponseStarted" as const,
+                  head: {
+                    version: "Http1_1" as const,
+                    status: 201,
+                    headers: [{ name: "X-Result", value: "ready" }],
+                  },
+                },
+              }
+            }
+            if (event === 2) {
+              return {
+                done: false as const,
+                value: {
+                  kind: "ResponseBodyChunk" as const,
+                  bytes: new Uint8Array([4, 5, 6]),
+                },
+              }
+            }
+            return { done: true as const, value: undefined }
+          },
+          close() {
+            return body.cancel()
           },
         }
-      },
-      exchange() {
-        throw new Error("small-response wrapper must not use exchange")
       },
     })
     const sourceBody = fromUint8Array(new Uint8Array([1, 2, 3]))

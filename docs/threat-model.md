@@ -49,6 +49,36 @@ apply. This is not a total network sandbox: ordinary same-frame link navigation
 is possible. The opaque frame has no authority to navigate the editor itself.
 Type-level capabilities and byte digests do not prove a package author is safe.
 
+## Network provider boundaries
+
+Programs using the official HTTP and WebSocket host providers also receive
+untrusted peer data. The public HTTP `sendBytes` and `sendEmpty` helpers collect
+the existing response stream and check the caller's byte limit before retaining
+each chunk. Overflow returns `HttpResponseBodyLimitExceeded` and closes the
+exchange without waiting for peer EOF. Browser response readers and pending
+fetches are cancelled when their exchange closes. The internal one-shot `send`
+operation remains available for compatibility; it has no caller-supplied body
+limit and is not the implementation of these bounded public helpers.
+
+The Node HTTP server bounds one incoming request body to 8 MiB by default,
+checks both declared and received lengths, and returns 413 before dispatching
+an oversized request to the application. The Bun server uses its native limit
+(128 MiB in the pinned Bun 1.4.3). Interrupted uploads are released on server
+close. These are per-request limits, not a process-wide or concurrency quota.
+
+The Bun HTTP/1 transport bounds response headers and trailers to 16 KiB each,
+chunk-size lines to 1 KiB and informational responses to 16 before a final
+response. Incomplete metadata is checked as bytes arrive. Overflow and bytes
+remaining after a completed body produce a protocol failure and close the
+socket. Backpressure may defer parsing buffered bytes after EOF; it must not
+turn a complete response into a premature-EOF error.
+
+Node WebSocket receive errors fail and terminate the affected connection.
+Invalid upgrade URLs are rejected before dispatch. Both Node and Bun observe
+handler rejection and release connection resources; one failed handler must
+not become an unhandled process-level rejection. These controls do not replace
+application authentication, connection limits or a host process sandbox.
+
 ## Availability limits and remaining assumptions
 
 The compiler request deadline is 15 seconds; non-DOM execution is 10 seconds.

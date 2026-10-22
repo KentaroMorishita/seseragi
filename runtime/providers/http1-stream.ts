@@ -24,6 +24,13 @@ type BodyMode =
     }
   | Readonly<{ kind: "until-close" }>
 
+const headLimitBytes = 16 * 1024
+const trailerLimitBytes = 16 * 1024
+const chunkLineLimitBytes = 1024
+const informationalResponseLimit = 16
+const headDelimiter = Buffer.from("\r\n\r\n")
+const lineDelimiter = Buffer.from("\r\n")
+
 export function createBunHttp1Exchange(
   value: unknown,
   observerValue: unknown,
@@ -45,16 +52,20 @@ export function createBunHttp1Exchange(
   let stopped = false
   let requestBodyDone = false
   let requestBodyCancelled = false
+  let requestBodyCancellation: Promise<void> | undefined
   let draining = false
+  let informationalResponses = 0
 
-  const cancelBody = async (): Promise<void> => {
-    if (requestBodyCancelled) return
+  const cancelBody = (): Promise<void> => {
+    if (requestBodyCancellation !== undefined) return requestBodyCancellation
     requestBodyCancelled = true
-    await body.cancel()
+    requestBodyCancellation = Promise.resolve().then(() => body.cancel())
+    return requestBodyCancellation
   }
   const fail = (cause: unknown): void => {
     if (terminal || stopped) return
     terminal = true
+    buffer = Buffer.alloc(0)
     observer.failure(httpFailure(cause))
     socket.destroy()
     void cancelBody().catch(() => undefined)
@@ -62,6 +73,7 @@ export function createBunHttp1Exchange(
   const finish = (): void => {
     if (terminal || stopped) return
     terminal = true
+    buffer = Buffer.alloc(0)
     observer.complete()
     socket.destroy()
   }
@@ -80,14 +92,19 @@ export function createBunHttp1Exchange(
         demand -= 1
         observer.next(event)
       }
-      if (responseComplete && buffer.length === 0) finish()
+      if (socketEnded && demand > 0 && !responseComplete) {
+        throw new TypeError("HTTP response ended early")
+      }
+      if (responseComplete) {
+        if (buffer.length > 0) {
+          throw new TypeError("HTTP response contains bytes after its body")
+        }
+        finish()
+      }
       if (demand > 0 && !terminal && !stopped) socket.resume()
       else socket.pause()
     } catch (cause) {
-      fail({
-        tag: "HttpProtocolFailure",
-        value: cause instanceof Error ? cause.message : "invalid HTTP response",
-      })
+      fail(protocolFailure(cause))
     } finally {
       draining = false
     }
@@ -122,6 +139,7 @@ export function createBunHttp1Exchange(
 
   const parseHead = (): unknown | undefined => {
     const end = buffer.indexOf("\r\n\r\n")
+    checkMetadataSize(buffer.length, end, 4, headLimitBytes, "headers")
     if (end < 0) return undefined
     const lines = buffer.subarray(0, end).toString("latin1").split("\r\n")
     buffer = buffer.subarray(end + 4)
@@ -136,6 +154,10 @@ export function createBunHttp1Exchange(
       headers,
     }
     if (status >= 100 && status < 200) {
+      informationalResponses += 1
+      if (informationalResponses > informationalResponseLimit) {
+        throw new TypeError("HTTP informational response limit exceeded")
+      }
       return { kind: "InformationalResponse", head }
     }
 
@@ -157,6 +179,13 @@ export function createBunHttp1Exchange(
     }
     if (mode.remaining === undefined) {
       const lineEnd = buffer.indexOf("\r\n")
+      checkMetadataSize(
+        buffer.length,
+        lineEnd,
+        2,
+        chunkLineLimitBytes,
+        "chunk size line"
+      )
       if (lineEnd < 0) return undefined
       const line = buffer.subarray(0, lineEnd).toString("ascii")
       const sizeText = line.split(";", 1)[0] ?? ""
@@ -192,6 +221,7 @@ export function createBunHttp1Exchange(
       return undefined
     }
     const end = buffer.indexOf("\r\n\r\n")
+    checkMetadataSize(buffer.length, end, 4, trailerLimitBytes, "trailers")
     if (end < 0) return undefined
     const trailers = buffer
       .subarray(0, end)
@@ -218,15 +248,51 @@ export function createBunHttp1Exchange(
 
   socket.pause()
   socket.on("data", (chunk) => {
-    buffer = Buffer.concat([buffer, Buffer.from(chunk)])
+    if (terminal || stopped) return
+    try {
+      if (bodyMode === undefined) {
+        checkMetadataAppend(
+          buffer,
+          chunk,
+          headDelimiter,
+          headLimitBytes,
+          "headers"
+        )
+      } else if (bodyMode.kind === "chunked") {
+        if (bodyMode.readingTrailers) {
+          const emptyTrailers =
+            buffer.length > 0
+              ? buffer[0] === 13 && (buffer[1] ?? chunk[0]) === 10
+              : chunk[0] === 13 && chunk[1] === 10
+          if (!emptyTrailers) {
+            checkMetadataAppend(
+              buffer,
+              chunk,
+              headDelimiter,
+              trailerLimitBytes,
+              "trailers"
+            )
+          }
+        } else if (bodyMode.remaining === undefined && !bodyMode.expectCrlf) {
+          checkMetadataAppend(
+            buffer,
+            chunk,
+            lineDelimiter,
+            chunkLineLimitBytes,
+            "chunk size line"
+          )
+        }
+      }
+    } catch (cause) {
+      fail(protocolFailure(cause))
+      return
+    }
+    buffer = buffer.length === 0 ? chunk : Buffer.concat([buffer, chunk])
     drain()
   })
   socket.once("end", () => {
     socketEnded = true
-    if (bodyMode?.kind === "until-close") drain()
-    else if (!responseComplete && !terminal && !stopped) {
-      fail({ tag: "HttpProtocolFailure", value: "HTTP response ended early" })
-    }
+    drain()
   })
   socket.once("error", fail)
   socket.once("connect", () => {
@@ -252,13 +318,66 @@ export function createBunHttp1Exchange(
       drain()
     },
     async unsubscribe() {
-      if (stopped) return
+      if (stopped) {
+        await cancelBody()
+        return
+      }
       stopped = true
       socket.destroy()
       buffer = Buffer.alloc(0)
       await cancelBody()
     },
   })
+}
+
+function checkMetadataAppend(
+  pending: Buffer,
+  incoming: Buffer,
+  delimiter: Buffer,
+  limit: number,
+  section: string
+): void {
+  let end = pending.indexOf(delimiter)
+  if (end < 0) {
+    const tailSize = Math.min(pending.length, delimiter.length - 1)
+    const boundary = Buffer.concat([
+      pending.subarray(pending.length - tailSize),
+      incoming.subarray(0, delimiter.length - 1),
+    ])
+    const boundaryEnd = boundary.indexOf(delimiter)
+    if (boundaryEnd >= 0) end = pending.length - tailSize + boundaryEnd
+    if (end < 0) {
+      const incomingEnd = incoming.indexOf(delimiter)
+      if (incomingEnd >= 0) end = pending.length + incomingEnd
+    }
+  }
+  checkMetadataSize(
+    pending.length + incoming.length,
+    end,
+    delimiter.length,
+    limit,
+    section
+  )
+}
+
+function checkMetadataSize(
+  buffered: number,
+  end: number,
+  delimiterBytes: number,
+  limit: number,
+  section: string
+): void {
+  const size = end < 0 ? buffered : end + delimiterBytes
+  if (size > limit) {
+    throw new TypeError(`HTTP response ${section} exceeds ${limit} bytes`)
+  }
+}
+
+function protocolFailure(cause: unknown) {
+  return {
+    tag: "HttpProtocolFailure",
+    value: cause instanceof Error ? cause.message : "invalid HTTP response",
+  }
 }
 
 function connect(url: URL): net.Socket | tls.TLSSocket {

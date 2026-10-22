@@ -23,7 +23,7 @@ export class ServerConnectionToken {
   readonly #capacity: number
   readonly #queued: Event[] = []
   #observer: ProviderSubscriptionObserver | undefined
-  #overflow = false
+  #failure: unknown
   #terminal = false
   #pendingSends = 0
   #sendTail = Promise.resolve()
@@ -48,8 +48,10 @@ export class ServerConnectionToken {
       return
     }
     if (this.#queued.length >= this.#capacity) {
-      this.#overflow = true
-      this.#terminal = true
+      this.#fail({
+        tag: "WebSocketBufferOverflow",
+        message: `WebSocket receive buffer exceeded ${this.#capacity} messages`,
+      })
       this.#host.close(1008, "receive buffer overflow")
       return
     }
@@ -64,11 +66,8 @@ export class ServerConnectionToken {
       throw new TypeError("WebSocket connection already has an active receiver")
     }
     this.#observer = observer
-    if (this.#overflow) {
-      observer.failure({
-        tag: "WebSocketBufferOverflow",
-        message: `WebSocket receive buffer exceeded ${this.#capacity} messages`,
-      })
+    if (this.#failure !== undefined) {
+      observer.failure(this.#failure)
     } else {
       for (const event of this.#queued.splice(0)) observer.next(event)
       if (this.#terminal) observer.complete()
@@ -96,7 +95,10 @@ export class ServerConnectionToken {
       )
     }
     this.#pendingSends += 1
-    const completion = this.#sendTail.then(() => this.#host.write(message))
+    const completion = this.#sendTail.then(() => {
+      if (this.#terminal) throw new Error("WebSocket is closed")
+      return this.#host.write(message)
+    })
     this.#sendTail = completion.catch(() => undefined)
     return completion
       .then(
@@ -112,6 +114,43 @@ export class ServerConnectionToken {
     if (this.#terminal) return
     this.#host.close(code, reason)
   }
+
+  fail(cause: unknown): void {
+    this.#fail({
+      tag: "WebSocketConnectionFailed",
+      message: errorMessage(cause),
+    })
+  }
+
+  #fail(failureValue: unknown): void {
+    if (this.#terminal) return
+    this.#terminal = true
+    this.#queued.length = 0
+    this.#failure = failureValue
+    this.#observer?.failure(failureValue)
+  }
+}
+
+export function startConnectionHandler(
+  connection: ServerConnectionToken,
+  handler: () => Promise<void>,
+  connections: Set<ServerConnectionToken>,
+  children: Set<Promise<void>>
+): void {
+  const child = Promise.resolve()
+    .then(handler)
+    .then(
+      () => connection.close(1000, "handler completed"),
+      () => connection.close(1011, "handler failed")
+    )
+  children.add(child)
+  const cleanup = (): void => {
+    connections.delete(connection)
+    children.delete(child)
+  }
+  // Observe both outcomes, including a host close failure. An ignored finally()
+  // would create a second rejected Promise when the connection handler fails.
+  void child.then(cleanup, cleanup)
 }
 
 export const connectionOperations = Object.freeze({

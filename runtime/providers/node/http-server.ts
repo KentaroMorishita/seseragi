@@ -34,10 +34,22 @@ type ListenRequest = Readonly<{
 type ServerToken = {
   readonly server: Server
   readonly children: Set<Promise<void>>
+  readonly pendingBodies: Set<IncomingMessage>
   closed?: Promise<void>
 }
 
-export function createNodeHttpServerProvider(): ProviderPackageEntry {
+const defaultMaxRequestBodyBytes = 8 * 1024 * 1024
+
+export function createNodeHttpServerProvider(
+  options: Readonly<{ maxRequestBodyBytes?: number }> = {}
+): ProviderPackageEntry {
+  const maxRequestBodyBytes =
+    options.maxRequestBodyBytes ?? defaultMaxRequestBodyBytes
+  if (!Number.isSafeInteger(maxRequestBodyBytes) || maxRequestBodyBytes <= 0) {
+    throw new TypeError(
+      "HTTP request body limit must be a positive safe integer"
+    )
+  }
   const servers = new Set<ServerToken>()
   return defineProviderPackage({
     abi: providerRuntimeAbi,
@@ -49,11 +61,15 @@ export function createNodeHttpServerProvider(): ProviderPackageEntry {
         try {
           const request = listenRequest(value)
           const children = new Set<Promise<void>>()
+          const pendingBodies = new Set<IncomingMessage>()
           const server = createServer((nativeRequest, nativeResponse) => {
+            pendingBodies.add(nativeRequest)
             const child = handleRequest(
               request.handler,
               nativeRequest,
-              nativeResponse
+              nativeResponse,
+              maxRequestBodyBytes,
+              pendingBodies
             )
             children.add(child)
             void child.then(
@@ -62,7 +78,7 @@ export function createNodeHttpServerProvider(): ProviderPackageEntry {
             )
           })
           await startServer(server, request)
-          const token = { server, children }
+          const token = { server, children, pendingBodies }
           servers.add(token)
           return { kind: "success", value: token }
         } catch (cause) {
@@ -104,11 +120,15 @@ function startServer(server: Server, request: ListenRequest): Promise<void> {
 async function handleRequest(
   handler: ListenRequest["handler"],
   request: IncomingMessage,
-  response: ServerResponse
+  response: ServerResponse,
+  maxRequestBodyBytes: number,
+  pendingBodies: Set<IncomingMessage>
 ): Promise<void> {
   let stream: ProviderHttpServerStreamBody | undefined
   try {
-    const body = await readBody(request)
+    const body = await readBody(request, maxRequestBodyBytes).finally(() =>
+      pendingBodies.delete(request)
+    )
     const applicationResponse = await handler(
       Object.freeze({
         method: request.method ?? "GET",
@@ -133,6 +153,18 @@ async function handleRequest(
       await writeStreamBody(stream, response)
     }
   } catch (cause) {
+    if (cause instanceof RequestBodyTooLarge) {
+      // Do not drain an unbounded upload or reuse its connection. Keep the
+      // socket alive only until the small rejection response has been sent.
+      request.pause()
+      response.shouldKeepAlive = false
+      response.writeHead(413, {
+        connection: "close",
+        "content-type": "text/plain; charset=utf-8",
+      })
+      response.end("Request body too large", () => request.destroy())
+      return
+    }
     await stream?.cancel().catch(() => undefined)
     response.destroy(cause instanceof Error ? cause : new Error(String(cause)))
   }
@@ -144,7 +176,9 @@ async function writeStreamBody(
 ): Promise<void> {
   let completed = false
   const disconnected = (): void => {
-    if (!completed) void body.cancel().catch(() => undefined)
+    if (!completed && !response.writableFinished) {
+      void body.cancel().catch(() => undefined)
+    }
   }
   response.once("close", disconnected)
   try {
@@ -211,12 +245,35 @@ function waitForDrain(response: ServerResponse): Promise<void> {
   })
 }
 
-async function readBody(request: IncomingMessage): Promise<Uint8Array> {
-  const chunks: Buffer[] = []
-  for await (const chunk of request) {
-    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+class RequestBodyTooLarge extends Error {}
+
+async function readBody(
+  request: IncomingMessage,
+  maxBytes: number
+): Promise<Uint8Array> {
+  const declaredBytes = request.headers["content-length"]
+  if (declaredBytes !== undefined && Number(declaredBytes) > maxBytes) {
+    throw new RequestBodyTooLarge()
   }
-  return new Uint8Array(Buffer.concat(chunks))
+  const chunks: Buffer[] = []
+  let byteLength = 0
+  // The default async iterator destroys the socket when a limit check exits
+  // the loop. Preserve it long enough to send the controlled 413 response.
+  for await (const chunk of request.iterator({ destroyOnReturn: false })) {
+    const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+    if (bytes.byteLength > maxBytes - byteLength) {
+      throw new RequestBodyTooLarge()
+    }
+    byteLength += bytes.byteLength
+    chunks.push(bytes)
+  }
+  const body = new Uint8Array(byteLength)
+  let offset = 0
+  for (const chunk of chunks) {
+    body.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return body
 }
 
 function absoluteUrl(request: IncomingMessage): string {
@@ -313,8 +370,13 @@ function closeServer(token: ServerToken): Promise<void> {
       })
     })
     token.server.closeIdleConnections()
-    await Promise.allSettled([...token.children])
+    // A peer may never finish its upload. Cancel reads before waiting for
+    // their child tasks, otherwise shutdown can wait forever.
+    for (const request of token.pendingBodies) request.destroy()
+    // Also release responses waiting for a peer that no longer reads. Their
+    // close event cancels the stream and rejects a pending drain wait.
     token.server.closeAllConnections()
+    await Promise.allSettled([...token.children])
     await stopped
   })()
   return token.closed

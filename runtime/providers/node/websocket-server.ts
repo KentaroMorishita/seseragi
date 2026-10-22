@@ -6,6 +6,7 @@ import {
   connectionOperations,
   listenRequest,
   ServerConnectionToken,
+  startConnectionHandler,
   success,
   unavailable,
 } from "../websocket-server-common"
@@ -19,6 +20,7 @@ type ServerToken = Readonly<{
 }>
 
 const servers = new Set<ServerToken>()
+const closingServers = new WeakMap<ServerToken, Promise<void>>()
 
 export const provider = defineProviderPackage({
   abi: providerRuntimeAbi,
@@ -62,23 +64,33 @@ export const provider = defineProviderPackage({
           children: new Set(),
         }
         server.on("upgrade", (incoming, socket, head) => {
-          const path = new URL(incoming.url ?? "/", "http://localhost").pathname
-          if (path !== request.path) {
-            socket.end("HTTP/1.1 404 Not Found\r\n\r\n")
-            return
+          const onError = (): void => {
+            socket.destroy()
           }
-          if (
-            protocolOrder.size > 0 &&
-            !offeredProtocols(incoming.headers["sec-websocket-protocol"]).some(
-              (protocol) => protocolOrder.has(protocol)
-            )
-          ) {
+          socket.on("error", onError)
+          try {
+            const path = new URL(incoming.url ?? "/", "http://localhost")
+              .pathname
+            if (path !== request.path) {
+              socket.end("HTTP/1.1 404 Not Found\r\n\r\n")
+              return
+            }
+            if (
+              protocolOrder.size > 0 &&
+              !offeredProtocols(
+                incoming.headers["sec-websocket-protocol"]
+              ).some((protocol) => protocolOrder.has(protocol))
+            ) {
+              socket.end("HTTP/1.1 400 Bad Request\r\n\r\n")
+              return
+            }
+            webSockets.handleUpgrade(incoming, socket, head, (webSocket) => {
+              socket.off("error", onError)
+              webSockets.emit("connection", webSocket, incoming)
+            })
+          } catch {
             socket.end("HTTP/1.1 400 Bad Request\r\n\r\n")
-            return
           }
-          webSockets.handleUpgrade(incoming, socket, head, (webSocket) => {
-            webSockets.emit("connection", webSocket, incoming)
-          })
         })
         webSockets.on("connection", (webSocket) => {
           token.sockets.add(webSocket)
@@ -88,14 +100,16 @@ export const provider = defineProviderPackage({
             request.receiveBuffer.value
           )
           token.connections.add(connection)
-          const child = request
-            .handler({ token: connection, protocol: webSocket.protocol })
-            .finally(() => {
-              connection.close(1000, "handler completed")
-              token.connections.delete(connection)
-            })
-          token.children.add(child)
-          void child.finally(() => token.children.delete(child))
+          startConnectionHandler(
+            connection,
+            () =>
+              request.handler({
+                token: connection,
+                protocol: webSocket.protocol,
+              }),
+            token.connections,
+            token.children
+          )
         })
         await start(server, request.port, request.hostname)
         servers.add(token)
@@ -105,39 +119,42 @@ export const provider = defineProviderPackage({
       }
     },
     async closeServer(value) {
-      const token = serverToken(value)
-      for (const connection of token.connections) {
-        connection.close(1001, "server shutdown")
-      }
-      await Promise.allSettled([...token.children])
-      for (const socket of token.sockets) socket.terminate()
-      await new Promise<void>((resolve) =>
-        token.webSockets.close(() => resolve())
-      )
-      await Promise.race([
-        new Promise<void>((resolve, reject) => {
-          token.server.close((error) =>
-            error === undefined ? resolve() : reject(error)
-          )
-          token.server.closeAllConnections()
-        }),
-        new Promise<void>((resolve) => setTimeout(resolve, 250)),
-      ])
-      servers.delete(token)
+      await closeServer(serverToken(value))
       return success(undefined)
     },
     ...connectionOperations,
   },
   shutdown: async () => {
-    for (const token of servers) {
-      for (const connection of token.connections) {
-        connection.close(1001, "server shutdown")
-      }
-      token.server.closeAllConnections()
-    }
-    servers.clear()
+    await Promise.all([...servers].map(closeServer))
   },
 })
+
+function closeServer(token: ServerToken): Promise<void> {
+  const current = closingServers.get(token)
+  if (current !== undefined) return current
+  const closing = (async () => {
+    for (const connection of token.connections) {
+      connection.close(1001, "server shutdown")
+    }
+    await Promise.allSettled([...token.children])
+    for (const socket of token.sockets) socket.terminate()
+    await new Promise<void>((resolve) =>
+      token.webSockets.close(() => resolve())
+    )
+    await Promise.race([
+      new Promise<void>((resolve, reject) => {
+        token.server.close((error) =>
+          error === undefined ? resolve() : reject(error)
+        )
+        token.server.closeAllConnections()
+      }),
+      new Promise<void>((resolve) => setTimeout(resolve, 250)),
+    ])
+    servers.delete(token)
+  })()
+  closingServers.set(token, closing)
+  return closing
+}
 
 function nodeConnection(
   webSocket: WebSocket,
@@ -163,6 +180,10 @@ function nodeConnection(
     },
     capacity
   )
+  webSocket.on("error", (cause) => {
+    token.fail(cause)
+    webSocket.terminate()
+  })
   webSocket.on("message", (data, isBinary) => {
     token.emit(
       isBinary

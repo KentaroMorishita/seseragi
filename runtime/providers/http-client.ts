@@ -1,17 +1,17 @@
-import {
-  providerRuntimeAbi,
-  type ProviderSubscriptionObserver,
-  type ProviderSubscriptionRegistration,
-  withProviderCancellation,
-} from "@seseragi/runtime/provider"
-import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
 import * as http from "node:http"
 import * as https from "node:https"
-import { createBunHttp1Exchange } from "./http1-stream"
+import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
+import {
+  type ProviderSubscriptionObserver,
+  type ProviderSubscriptionRegistration,
+  providerRuntimeAbi,
+  withProviderCancellation,
+} from "@seseragi/runtime/provider"
 import {
   defineProviderPackage,
   type ProviderPackageEntry,
 } from "@seseragi/runtime/provider-package"
+import { createBunHttp1Exchange } from "./http1-stream"
 
 type FetchHost = (input: string, init: RequestInit) => Promise<Response>
 
@@ -82,12 +82,7 @@ function createNodeHttpExchange(
     void cancelBody().catch(() => undefined)
   }
   const completeIfDrained = (): void => {
-    if (
-      responseEnded &&
-      queued.length === 0 &&
-      !terminal &&
-      !stopped
-    ) {
+    if (responseEnded && queued.length === 0 && !terminal && !stopped) {
       terminal = true
       observer.complete()
     }
@@ -135,7 +130,15 @@ function createNodeHttpExchange(
     url,
     {
       method: requestValue.method,
-      headers: requestValue.headers.flatMap(({ name, value }) => [name, value]),
+      // Node does not synthesize Host for the raw header-array form. Keep the
+      // generated authority while preserving duplicate application headers.
+      headers: [
+        "host",
+        url.host,
+        ...requestValue.headers
+          .filter(({ name }) => name.toLowerCase() !== "host")
+          .flatMap(({ name, value }) => [name, value]),
+      ],
     },
     (incoming) => {
       response = incoming
@@ -293,8 +296,7 @@ function httpFailure(cause: unknown) {
     typeof cause === "object" && cause !== null && "code" in cause
       ? String(cause.code)
       : ""
-  const message =
-    cause instanceof Error ? cause.message : "HTTP request failed"
+  const message = cause instanceof Error ? cause.message : "HTTP request failed"
   if (["ENOTFOUND", "EAI_AGAIN"].includes(code)) {
     return { tag: "HttpDnsFailure", value: message }
   }

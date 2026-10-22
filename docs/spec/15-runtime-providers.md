@@ -817,7 +817,7 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | capability | std / package application API | Provider Contract operation | TypeScript ABI / bridge | provider |
 | --- | --- | --- | --- | --- |
 | Clock | `std/clock.now` / `sleep` | `std/clock::Clock#now` / `#sleep` | Unit / Instant codec、Promise result、cancel race | monotonic clock / timer |
-| HTTP client | `std/http.sendBytes` / `sendEmpty` | `std/http::HttpClient#send` | closed record、copied Bytes、one-shot cancellation | fetchまたはexternal client |
+| HTTP client | `std/http.sendBytes` / `sendEmpty` | `std/http::HttpClient#exchange` | closed record、copied Bytes、bounded body集約、subscription cancellation | streaming fetchまたはexternal client |
 | HTTP server | `std/http/server.listen` / `serveOnce` / `close` | `std/http/server::HttpServer#listen` / `#close` | callback queue、opaque handle、child cleanup | listener / response writer |
 | Navigation | `std/web/navigation.current` / `push` / `replace` / `locationSignal` | `std/web/navigation::Navigation#current` / `#push` / `#replace` / `#nextChange` | copied URL、typed same-origin failure、cancellable one-shot | browser location / history / popstate |
 | Storage | `std/web/storage.get` / `set` / `remove` / `clear` / `keys` | `std/web/storage::Storage#get` / `#set` / `#remove` / `#clear` / `#keys` | explicit area、copied String、lookup codec、typed host failure | browser localStorage / sessionStorage |
@@ -834,10 +834,22 @@ defect、cancellation、cleanup、concurrency、invalid value、mismatch、ambig
 machine-readableな対応表と実装handoffは`provider-design-validation-schema-1/system/validation.json`です。
 
 この表の左列とContract operationは同じnamespaceではありません。たとえばHTTP small-response wrapperは
-`sendBytes`と`sendEmpty`を一つの`HttpClient#send`へ投影し、filesystem wrapperは複数回のopen / read / closeを
+`sendBytes`と`sendEmpty`は`HttpClient#exchange`を集約し、各body chunkを保持する前に指定された
+`HttpBodyLimit`を検査します。超過時は`HttpResponseBodyLimitExceeded`を返してsubscriptionを終了し、
+response全量の読み込み後にだけ制限を検査する実装にはしません。filesystem wrapperは複数回のopen / read / closeを
 組み立てます。`std/http.exchange`のbody Streamはone-shot `#send`の別名ではなく、15.33〜15.40を満たす
-subscription operationをContractへ追加してから接続します。初期検証用`acme/postgres` identityは
+subscription operationを使います。初期検証用`acme/postgres` identityは
 application package実装時に`seseragi/postgres`へ移行し、標準`Database` application APIは導入しません。
+
+標準Node HTTP server providerは、request bodyを1 requestあたり既定8 MiBまで受信します。
+`Content-Length`の宣言と実際の受信byte数の両方を確認し、超過時はapplication handlerを呼ばず
+413を返して接続を終了します。Bun providerはBunのnative上限を使い、固定toolchainのBun 1.4.3では
+128 MiBです。これらはhost providerの受信制限であり、全接続の合計memory quotaではありません。
+
+Bun HTTP/1 clientの応答metadataは、status lineを含む各header blockとtrailer blockをそれぞれ
+16 KiB、chunk sizeとextensionの行を1 KiB、最終応答までのinformational responseを16件に制限します。
+区切りがまだ届いていない入力にも制限を適用し、超過時は`HttpProtocolFailure`でsocketとrequest bodyを
+終了します。bodyそのものはStreamのdemandと、集約時に指定された`HttpBodyLimit`で管理します。
 
 PostgreSQLの実装sliceは`pg`と`pg-cursor`をhost packageとしてmanifestへ宣言し、wire protocolを所有しません。
 `seseragi/postgres::Postgres` Contractはpool、transaction、cursorを別のopaque resourceとして扱い、query / fetchのrowをclosed logical

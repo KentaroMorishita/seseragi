@@ -4,6 +4,7 @@ import {
   connectionOperations,
   listenRequest,
   ServerConnectionToken,
+  startConnectionHandler,
   success,
   unavailable,
 } from "../websocket-server-common"
@@ -88,17 +89,16 @@ export const provider = defineProviderPackage({
               )
               sockets.set(webSocket, { token: connection, driver })
               connections.add(connection)
-              const child = request
-                .handler({
-                  token: connection,
-                  protocol: webSocket.data.protocol,
-                })
-                .finally(() => {
-                  connection.close(1000, "handler completed")
-                  connections.delete(connection)
-                })
-              children.add(child)
-              void child.finally(() => children.delete(child))
+              startConnectionHandler(
+                connection,
+                () =>
+                  request.handler({
+                    token: connection,
+                    protocol: webSocket.data.protocol,
+                  }),
+                connections,
+                children
+              )
             },
             message(webSocket: BunSocket, message: string | Uint8Array) {
               const connection = sockets.get(webSocket)?.token
@@ -110,7 +110,9 @@ export const provider = defineProviderPackage({
               )
             },
             close(webSocket: BunSocket, code: number, reason: string) {
-              sockets.get(webSocket)?.token.emit({
+              const connection = sockets.get(webSocket)
+              connection?.driver.closed()
+              connection?.token.emit({
                 tag: "RemoteClosed",
                 close: { code, reason, wasClean: code !== 1006 },
               })
@@ -176,9 +178,13 @@ class BunSocketDriver {
   }
 
   close(code: number, reason: string): void {
+    this.closed()
+    this.#socket.close(code, reason)
+  }
+
+  closed(): void {
     this.#drained?.reject(new Error("Bun WebSocket closed while draining"))
     this.#drained = undefined
-    this.#socket.close(code, reason)
   }
 
   drain(): void {
