@@ -501,3 +501,33 @@ module identityを保ちます。
 
 manifestを持たないsingle-file scratch workspaceは互換fallbackとしてtool-owned ephemeral manifestへ投影できます。
 このfallbackはpackage dependency/importを推測せず、通常manifest packageと同じcompiler/linker pipelineを通します。
+
+### pure program WASM assets
+
+root Web packageは、optionalな`[web.programs.<name>]`でpure計算moduleと公開関数を選べます。
+`module`はsource root内のcanonical module path、`exports`は空でない重複のない公開関数名です。
+program名は小文字英字から始まる48字以内の英小文字・数字・`-`で、Windowsの予約device名は使えません。
+
+```toml
+[web.programs.calculation]
+module = "calculation"
+exports = ["label", "validate"]
+```
+
+`seseragi build --target web`は、共有loaderによる選択moduleのimport closureを先に検査し、
+program WASM・typed loader・型宣言を生成します。UIのrun entry、package visibilityと
+各moduleの初期化順は変えません。pure ABIの未対応bodyを未使用として削除してはなりません。
+dependency packageのprogram設定は自動生成対象になりません。
+
+UIのforeign TS bridgeは、生成された`@seseragi/programs/<name>`からloaderと型、
+`programWasmPath`をimportできます。相対URLはdocumentのbaseから解決します。
+生成virtual packageを通常のhost依存で上書きすることはできません。
+同じcanonical ownerの明示設定と、生成済みのmodule／loaderのidentityに基づいてimportを検査します。
+
+Web artifactは`programs/<name>/`を含み、`artifact-manifest.json`の`programs`へmodule・ABI・
+loader／宣言／WASM／receiptの相対pathを、`files`へその実fileのbytesとSHAを記録します。
+計算のbuild、UIのbundleとmanifestがすべて完了してから一括公開します。失敗時は前の完成artifactを保持します。
+
+対応する境界は閉じたpure値codecと返却callbackです。Effect／Ref／host入力callback・generic公開schemeは
+含めません。configured programの`dev`／watch、WASM source mapと一般Effect ABIは未対応です。
+未生成programを持つsiteを成功としてserveせず、`build`を使う診断で拒否します。

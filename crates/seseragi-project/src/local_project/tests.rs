@@ -11,6 +11,91 @@ fn repository_root() -> PathBuf {
 }
 
 #[test]
+fn selecting_a_program_entry_loads_its_import_closure_not_the_ui() {
+    let root =
+        repository_root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package");
+    let ui = load_local_project(&root).unwrap();
+    assert_eq!(ui.entry().path().as_str(), "main");
+    assert_eq!(ui.modules().count(), 1);
+    let program =
+        load_local_project_module(&root, &crate::ModulePath::parse("calculation").unwrap())
+            .unwrap();
+    let order = program.graph().topological_order().unwrap();
+    assert_eq!(
+        order
+            .iter()
+            .map(|id| id.path().as_str())
+            .collect::<Vec<_>>(),
+        ["constants", "calculation"]
+    );
+    assert_eq!(ui.entry().package(), program.entry().package());
+    assert!(
+        load_local_project_module(&root, &crate::ModulePath::parse("missing").unwrap()).is_err()
+    );
+}
+
+#[test]
+fn generated_browser_import_requires_the_producer_owner_and_declared_module() {
+    let root =
+        repository_root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package");
+    let ui = load_local_project(&root).unwrap();
+    let selected =
+        load_local_project_module(&root, &crate::ModulePath::parse("calculation").unwrap())
+            .unwrap();
+    assert!(crate::validate_foreign_runtime_target(&ui, crate::RuntimeTarget::Browser).is_err());
+    let proof = crate::GeneratedProgramRuntime::new(
+        ui.packages().root().clone(),
+        "calculation".into(),
+        crate::logical_module_id(selected.entry()),
+        "a".repeat(64),
+    );
+    assert!(crate::validate_foreign_runtime_target_with_programs(
+        &ui,
+        crate::RuntimeTarget::Browser,
+        std::slice::from_ref(&proof)
+    )
+    .is_ok());
+    let mut bad = proof.clone();
+    bad.artifact.exact_identity = crate::logical_module_id(ui.entry());
+    assert!(crate::validate_foreign_runtime_target_with_programs(
+        &ui,
+        crate::RuntimeTarget::Browser,
+        &[bad]
+    )
+    .is_err());
+    let mut bad = proof.clone();
+    bad.name = "missing".into();
+    assert!(crate::validate_foreign_runtime_target_with_programs(
+        &ui,
+        crate::RuntimeTarget::Browser,
+        &[bad]
+    )
+    .is_err());
+    let mut bad = proof.clone();
+    bad.artifact.content_digest = "unmeasured".into();
+    assert!(crate::validate_foreign_runtime_target_with_programs(
+        &ui,
+        crate::RuntimeTarget::Browser,
+        &[bad]
+    )
+    .is_err());
+    let mut bad = proof;
+    bad.package = crate::load_local_project(
+        repository_root().join("examples/spec/fixtures/projects/package-path-dependency"),
+    )
+    .unwrap()
+    .entry()
+    .package()
+    .clone();
+    assert!(crate::validate_foreign_runtime_target_with_programs(
+        &ui,
+        crate::RuntimeTarget::Browser,
+        &[bad]
+    )
+    .is_err());
+}
+
+#[test]
 fn discovers_source_modules_across_path_dependencies() {
     let project = load_local_project(
         repository_root().join("examples/spec/fixtures/projects/package-path-dependency"),

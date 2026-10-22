@@ -289,6 +289,44 @@ pub fn build_local_project_with_artifact_options(
     options: ProcessRunOptions,
     artifact_options: crate::artifact::ArtifactOptions,
 ) -> Result<(), BuildError> {
+    build_local_project_with_programs(
+        project,
+        output_directory,
+        target,
+        options,
+        artifact_options,
+        &[],
+    )
+}
+
+pub fn build_local_project_with_programs(
+    project: &CompiledLocalProject,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+    artifact_options: crate::artifact::ArtifactOptions,
+    programs: &[crate::ProgramWasmAssets],
+) -> Result<(), BuildError> {
+    let declared = project.web.as_ref().map(|(_, web)| &web.programs);
+    if !programs.is_empty() || declared.is_some_and(|items| !items.is_empty()) {
+        if target != BuildTarget::Web {
+            return Err(BuildError::Host(
+                "configured program WASM requires a Web build".into(),
+            ));
+        }
+        let Some(declared) = declared else {
+            return Err(BuildError::Host(
+                "program WASM assets require explicit root web.programs configuration".into(),
+            ));
+        };
+        if declared.len() != programs.len()
+            || programs
+                .iter()
+                .any(|program| !declared.contains_key(&program.name))
+        {
+            return Err(BuildError::Host("configured program WASM has not been compiled; use seseragi build (dev/watch is not supported yet)".into()));
+        }
+    }
     let _entry = project
         .compiled
         .modules
@@ -345,6 +383,7 @@ pub fn build_local_project_with_artifact_options(
             });
         }
         crate::stage_typescript_package(staging)?;
+        let program_manifest = crate::program_assets::stage(staging, programs)?;
         let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)?;
         if target == BuildTarget::Process {
             fs::write(
@@ -417,12 +456,14 @@ pub fn build_local_project_with_artifact_options(
         {
             remove_compiler_maps(staging)?;
         }
-        crate::artifact::write_manifest(
+        crate::program_assets::check_inputs(programs)?;
+        crate::artifact::write_manifest_with_programs(
             staging,
             target,
             &project.entry_module,
             project.compiled.modules.values(),
             reachability,
+            program_manifest,
         )
     })
 }

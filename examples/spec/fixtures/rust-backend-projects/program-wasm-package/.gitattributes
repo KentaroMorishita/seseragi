@@ -1,0 +1,2 @@
+# Preserve the raw input bytes recorded by seseragi.lock on every host.
+* text eol=lf

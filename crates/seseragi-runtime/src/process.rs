@@ -17,8 +17,9 @@ mod web_entry;
 
 pub use build::{
     build_local_project, build_local_project_with_artifact_options,
-    build_local_project_with_options, build_main, build_main_with_artifact_options,
-    build_main_with_options, build_main_with_source_context, BuildError, BuildTarget,
+    build_local_project_with_options, build_local_project_with_programs, build_main,
+    build_main_with_artifact_options, build_main_with_options, build_main_with_source_context,
+    BuildError, BuildTarget,
 };
 use entry::entry_source;
 pub use local_package::{

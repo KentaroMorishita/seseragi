@@ -1,6 +1,6 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf, process::Command};
-mod program_wasm;
+pub(crate) mod program_wasm;
 
 pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
     if let [operation, arguments @ ..] = arguments {
@@ -185,10 +185,26 @@ fn load_checked_project(
     ),
     String,
 > {
+    load_checked_project_entry(path, None)
+}
+
+fn load_checked_project_entry(
+    path: &str,
+    module: Option<&seseragi_project::ModulePath>,
+) -> Result<
+    (
+        seseragi_project::LoadedLocalProject,
+        seseragi_driver::CoreLocalProject,
+    ),
+    String,
+> {
     seseragi_project::read_and_validate_lockfile(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
-    let project = seseragi_project::load_local_project(path)
-        .map_err(|error| format!("{}: {error}", error.code()))?;
+    let project = match module {
+        Some(module) => seseragi_project::load_local_project_module(path, module),
+        None => seseragi_project::load_local_project(path),
+    }
+    .map_err(|error| format!("{}: {error}", error.code()))?;
     let checked = seseragi_driver::compile_core_local_project(&project).map_err(|error| {
         if let seseragi_driver::ProjectCompileError::Diagnostics { modules } = error.error() {
             modules

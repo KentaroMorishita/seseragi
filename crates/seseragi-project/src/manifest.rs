@@ -10,7 +10,8 @@ pub use error::ManifestError;
 pub use model::{
     DependencyKey, DependencyPath, DependencyVersionRequirement, LanguageRequirement, LayoutPath,
     Manifest, ManifestBenchmark, ManifestDependency, ManifestFilePath, ManifestForeignTypescript,
-    ManifestLayout, ManifestPackage, ManifestRun, ManifestTest, ManifestWeb, ProviderArtifactPath,
-    RunSeed, SignalMode, TargetId,
+    ManifestLayout, ManifestPackage, ManifestProgramWasm, ManifestRun, ManifestTest, ManifestWeb,
+    ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use parse::parse_manifest;
+pub use parse::valid_program_name;

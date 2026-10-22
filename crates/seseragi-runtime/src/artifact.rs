@@ -55,6 +55,21 @@ pub struct ArtifactManifest {
     pub runtime_retention: Option<Vec<RetainedRuntimeModule>>,
     pub reachability: Option<seseragi_driver::ApplicationReachability>,
     pub bundles: Option<Vec<ArtifactBundle>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub programs: Vec<ArtifactProgramWasm>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ArtifactProgramWasm {
+    pub name: String,
+    pub module: String,
+    pub abi: String,
+    pub host_import: String,
+    pub manifest: String,
+    pub wasm: String,
+    pub loader: String,
+    pub declarations: String,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -139,6 +154,24 @@ pub(crate) fn write_manifest<'a>(
     modules: impl Iterator<Item = &'a seseragi_driver::CompiledModule>,
     reachability: Option<seseragi_driver::ApplicationReachability>,
 ) -> Result<(), String> {
+    write_manifest_with_programs(
+        directory,
+        target,
+        entry_module,
+        modules,
+        reachability,
+        Vec::new(),
+    )
+}
+
+pub(crate) fn write_manifest_with_programs<'a>(
+    directory: &std::path::Path,
+    target: crate::BuildTarget,
+    entry_module: &str,
+    modules: impl Iterator<Item = &'a seseragi_driver::CompiledModule>,
+    reachability: Option<seseragi_driver::ApplicationReachability>,
+    programs: Vec<ArtifactProgramWasm>,
+) -> Result<(), String> {
     use sha2::{Digest, Sha256};
     let modules = modules.collect::<Vec<_>>();
     let entry = modules
@@ -222,6 +255,7 @@ pub(crate) fn write_manifest<'a>(
         serde_json::from_str(include_str!("../../../runtime/ts/package.json"))
             .map_err(|error| error.to_string())?;
     let mut manifest = ArtifactManifest {
+        programs,
         schema: ARTIFACT_MANIFEST_SCHEMA,
         profile,
         target: match target {

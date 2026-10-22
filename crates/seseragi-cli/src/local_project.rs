@@ -30,6 +30,7 @@ pub(crate) struct ResolvedLocalProject {
     pub compiled: seseragi_driver::CompiledLocalProject,
     pub target: ProjectTarget,
     pub process_run_options: ProcessRunOptions,
+    pub source_snapshots: Vec<(std::path::PathBuf, Vec<u8>)>,
 }
 
 pub(crate) fn compile_path(
@@ -45,6 +46,7 @@ pub(crate) fn compile_path(
         diagnostic_format,
         true,
         None,
+        &[],
     )
 }
 
@@ -61,6 +63,7 @@ pub(crate) fn compile_path_unlocked(
         diagnostic_format,
         false,
         None,
+        &[],
     )
 }
 
@@ -71,6 +74,24 @@ pub(crate) fn compile_path_with_profile(
     diagnostic_format: DiagnosticFormat,
     profile: Option<seseragi_project::BuildProfile>,
 ) -> Result<LocalProjectCompilation, String> {
+    compile_path_with_programs(
+        path,
+        command,
+        invocation_target,
+        diagnostic_format,
+        profile,
+        &[],
+    )
+}
+
+pub(crate) fn compile_path_with_programs(
+    path: &Path,
+    command: ProjectCommand,
+    invocation_target: Option<ProjectTarget>,
+    diagnostic_format: DiagnosticFormat,
+    profile: Option<seseragi_project::BuildProfile>,
+    programs: &[seseragi_project::GeneratedProgramRuntime],
+) -> Result<LocalProjectCompilation, String> {
     compile_path_inner(
         path,
         command,
@@ -78,6 +99,7 @@ pub(crate) fn compile_path_with_profile(
         diagnostic_format,
         true,
         profile,
+        programs,
     )
 }
 
@@ -88,6 +110,7 @@ fn compile_path_inner(
     diagnostic_format: DiagnosticFormat,
     validate_lock: bool,
     profile: Option<seseragi_project::BuildProfile>,
+    programs: &[seseragi_project::GeneratedProgramRuntime],
 ) -> Result<LocalProjectCompilation, String> {
     let lockfile = if !validate_lock {
         Ok(None)
@@ -99,11 +122,38 @@ fn compile_path_inner(
     let lockfile = lockfile.map_err(|error| format!("{}: {error}", error.code()))?;
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
+    if command == ProjectCommand::Dev
+        && project
+            .packages()
+            .package(project.packages().root())
+            .and_then(|package| package.manifest().web.as_ref())
+            .is_some_and(|web| !web.programs.is_empty())
+    {
+        return Err(
+            "configured program WASM: use seseragi build; dev/watch is not supported yet".into(),
+        );
+    }
+    let mut source_snapshots = project
+        .modules()
+        .map(|(_, module)| {
+            (
+                module.source_path().to_owned(),
+                module.source().as_bytes().to_vec(),
+            )
+        })
+        .collect::<Vec<_>>();
+    for (_, package) in project.packages().packages() {
+        let path = package.root().join("seseragi.toml");
+        source_snapshots.push((
+            path.clone(),
+            std::fs::read(path).map_err(|e| e.to_string())?,
+        ));
+    }
     // Explicit targets and dev defaults can be checked before semantic compile.
     if let Some(target) =
         invocation_target.or((command == ProjectCommand::Dev).then_some(ProjectTarget::Web))
     {
-        preflight_foreign_runtime(&project, target, diagnostic_format)?;
+        preflight_foreign_runtime(&project, target, diagnostic_format, programs)?;
     }
     let process_run_options = project_run_options(&project);
     let baseline = match render_compile_result(
@@ -135,7 +185,7 @@ fn compile_path_inner(
         infer_from_capabilities.then_some(compatible_targets.as_slice()),
     )
     .map_err(|error| error.to_string())?;
-    preflight_foreign_runtime(&project, selection.target, diagnostic_format)?;
+    preflight_foreign_runtime(&project, selection.target, diagnostic_format, programs)?;
     let (result, provider_target) = match selection.target {
         ProjectTarget::Process => {
             let configuration = seseragi_runtime::bun_process_provider_configuration()?;
@@ -194,6 +244,7 @@ fn compile_path_inner(
                     }
                 }
                 LocalProjectCompilation::Compiled(ResolvedLocalProject {
+                    source_snapshots,
                     compiled,
                     target: selection.target,
                     process_run_options,
@@ -324,6 +375,7 @@ fn preflight_foreign_runtime(
     project: &seseragi_project::LoadedLocalProject,
     target: ProjectTarget,
     format: DiagnosticFormat,
+    programs: &[seseragi_project::GeneratedProgramRuntime],
 ) -> Result<(), String> {
     // Process module-load failures are part of the lazy foreign Effect ABI
     // (#344), including declaration-only bindings not reached by a program.
@@ -333,8 +385,8 @@ fn preflight_foreign_runtime(
         return Ok(());
     }
     let host = seseragi_project::RuntimeTarget::Browser;
-    seseragi_project::validate_foreign_runtime_target(project, host).map_err(|diagnostics| {
-        match format {
+    seseragi_project::validate_foreign_runtime_target_with_programs(project, host, programs)
+        .map_err(|diagnostics| match format {
             DiagnosticFormat::Text => diagnostics
                 .iter()
                 .map(ToString::to_string)
@@ -343,6 +395,5 @@ fn preflight_foreign_runtime(
             DiagnosticFormat::Json => {
                 serde_json::json!({"schema":1,"diagnostics":diagnostics}).to_string()
             }
-        }
-    })
+        })
 }

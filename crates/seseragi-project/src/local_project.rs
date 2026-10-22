@@ -184,21 +184,41 @@ pub fn load_local_project_with_overlays(
     root: impl AsRef<Path>,
     overlays: impl IntoIterator<Item = SourceOverlay>,
 ) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_project_entry(root.as_ref(), overlays, None)
+}
+
+/// Select a root-package source module while keeping ordinary import discovery,
+/// package identity, visibility, cycle checks and initialization ordering.
+pub fn load_local_project_module(
+    root: impl AsRef<Path>,
+    module: &crate::ModulePath,
+) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_project_entry(root.as_ref(), std::iter::empty(), Some(module))
+}
+
+fn load_project_entry(
+    root: &Path,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+    module: Option<&crate::ModulePath>,
+) -> Result<LoadedLocalProject, LocalProjectLoadError> {
     let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
     let overlays = normalize_overlays(overlays)?;
     let root = packages.root().clone();
     let root_manifest = packages
         .package(&root)
         .expect("discovered package graph contains its root");
-    let entry_path = root_manifest
-        .manifest()
-        .run
-        .as_ref()
-        .ok_or_else(|| LocalProjectLoadError::MissingRunEntry {
-            package: Box::new(root.clone()),
-        })?
-        .entry
-        .clone();
+    let entry_path = match module {
+        Some(module) => module.clone(),
+        None => root_manifest
+            .manifest()
+            .run
+            .as_ref()
+            .ok_or_else(|| LocalProjectLoadError::MissingRunEntry {
+                package: Box::new(root.clone()),
+            })?
+            .entry
+            .clone(),
+    };
     let entry = ModuleIdentity::new(root, ModuleRoot::Source, entry_path);
     let (graph, modules) = {
         let mut state = SourceDiscovery::new(&packages, overlays)?;

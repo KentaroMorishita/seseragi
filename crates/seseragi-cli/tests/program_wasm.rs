@@ -170,6 +170,452 @@ fn image(path: &Path) -> std::collections::BTreeMap<String, Vec<u8>> {
         .collect()
 }
 
+fn copy_tree(source: &Path, target: &Path) {
+    fs::create_dir_all(target).unwrap();
+    for entry in fs::read_dir(source).unwrap() {
+        let entry = entry.unwrap();
+        if entry.file_type().unwrap().is_dir() {
+            copy_tree(&entry.path(), &target.join(entry.file_name()));
+        } else {
+            fs::copy(entry.path(), target.join(entry.file_name())).unwrap();
+        }
+    }
+}
+
+fn artifact_image(path: &Path) -> std::collections::BTreeMap<String, Vec<u8>> {
+    fn visit(root: &Path, path: &Path, image: &mut std::collections::BTreeMap<String, Vec<u8>>) {
+        for entry in fs::read_dir(path).unwrap() {
+            let entry = entry.unwrap();
+            if entry.file_type().unwrap().is_dir() {
+                visit(root, &entry.path(), image);
+            } else {
+                image.insert(
+                    entry
+                        .path()
+                        .strip_prefix(root)
+                        .unwrap()
+                        .to_string_lossy()
+                        .replace('\\', "/"),
+                    fs::read(entry.path()).unwrap(),
+                );
+            }
+        }
+    }
+    let mut result = std::collections::BTreeMap::new();
+    visit(path, path, &mut result);
+    result
+}
+
+fn standard_build(package: &Path, output: &Path, profile: &str) -> Command {
+    let mut c = Command::new(env!("CARGO_BIN_EXE_seseragi"));
+    c.arg("build")
+        .arg(package)
+        .args(["--target", "web", "--profile", profile, "--out-dir"])
+        .arg(output);
+    c
+}
+
+#[test]
+fn standard_web_build_owns_program_assets_types_and_the_selected_import_closure() {
+    let root = root();
+    let scratch = Scratch::new();
+    let package = root.join("examples/spec/fixtures/rust-backend-projects/program-wasm-package");
+    let selected = seseragi_project::load_local_project_module(
+        &package,
+        &seseragi_project::ModulePath::parse("calculation").unwrap(),
+    )
+    .unwrap();
+    let core = seseragi_driver::compile_core_local_project(&selected).unwrap();
+    let modules = core
+        .compiled
+        .order
+        .iter()
+        .map(|id| &core.compiled.modules[id].core_ir)
+        .collect::<Vec<_>>();
+    let native =
+        seseragi_backend_rust::emit_rust_project(&modules, &core.entry_module, "probe").unwrap();
+    fs::write(scratch.0.join("oracle.rs"), native.source).unwrap();
+    let binary = scratch.0.join(if cfg!(windows) {
+        "oracle.exe"
+    } else {
+        "oracle"
+    });
+    successful(bounded(
+        Command::new("rustc")
+            .args(["--edition=2021", "--crate-name", "oracle", "-O"])
+            .arg(scratch.0.join("oracle.rs"))
+            .arg("-o")
+            .arg(&binary),
+        &scratch.0,
+    ));
+    let result = successful(bounded(
+        Command::new(&binary)
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(
+        String::from_utf8(result.stdout).unwrap(),
+        "合計: 42|3|negative\n"
+    );
+    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+    for (profile, value) in [
+        ("development", seseragi_project::BuildProfile::Development),
+        ("release", seseragi_project::BuildProfile::Release),
+    ] {
+        let site = scratch.0.join(profile);
+        successful(bounded(
+            &mut standard_build(&package, &site, profile),
+            &scratch.0,
+        ));
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
+        let program = &manifest["programs"][0];
+        assert_eq!(program["hostImport"], "@seseragi/programs/calculation");
+        assert_eq!(program["wasm"], "programs/calculation/program.wasm");
+        let directory = site.join("programs/calculation");
+        let receipt: serde_json::Value =
+            serde_json::from_slice(&fs::read(directory.join("program-wasm.json")).unwrap())
+                .unwrap();
+        assert_eq!(program["module"], receipt["module"]);
+        assert_eq!(receipt["modules"].as_array().unwrap().len(), 2);
+        let expected = selected
+            .graph()
+            .topological_order()
+            .unwrap()
+            .iter()
+            .map(seseragi_project::logical_module_id)
+            .collect::<Vec<_>>();
+        assert_eq!(receipt["modules"], serde_json::json!(expected));
+        for name in [
+            "program.wasm",
+            "program.mjs",
+            "program.d.mts",
+            "program-wasm.json",
+            "index.mjs",
+            "index.d.mts",
+        ] {
+            assert!(manifest["files"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|file| file["path"] == format!("programs/calculation/{name}")));
+        }
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(engine)
+                    .arg(root.join("scripts/program-wasm-probe.mjs"))
+                    .arg(&directory),
+                &scratch.0,
+            ));
+            let proof: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+            assert_eq!(proof["calls"], 1000);
+            assert_eq!(proof["normalManagedLiveAtClose"], 0);
+        }
+        // The generated virtual package declaration checks the original bridge,
+        // without copying an implementation or weakening its declared types.
+        let config = scratch.0.join(format!("types-{profile}.json"));
+        fs::write(&config, serde_json::to_vec(&serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","lib":["ES2022","DOM"],"types":[],"skipLibCheck":true,"paths":{"@seseragi/programs/calculation":[site.join("programs/calculation/index.d.mts")] }},"files":[package.join("host/bridge.ts")]})).unwrap()).unwrap();
+        successful(bounded(
+            Command::new("node")
+                .arg(root.join("node_modules/typescript/bin/tsc"))
+                .arg("-p")
+                .arg(&config),
+            &scratch.0,
+        ));
+        let raw = scratch.0.join(format!("raw-{profile}"));
+        fs::create_dir(&raw).unwrap();
+        let compiled =
+            seseragi_driver::compile_local_project_with_profile(&selected, Some(value)).unwrap();
+        for module in compiled.compiled.modules.values() {
+            let path = raw.join(&module.generated.metadata.outputs.typescript);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, &module.generated.typescript).unwrap();
+        }
+        seseragi_runtime::stage_typescript_package(&raw).unwrap();
+        let entry = &compiled.compiled.modules[&compiled.entry_module]
+            .generated
+            .metadata
+            .outputs
+            .typescript;
+        fs::write(
+            raw.join("oracle.ts"),
+            format!("import {{ probe }} from './{entry}'; console.log(probe(undefined));\n"),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new("bun").current_dir(&raw).args([
+                "build",
+                "oracle.ts",
+                "--target=node",
+                "--outfile=oracle.mjs",
+            ]),
+            &scratch.0,
+        ));
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(engine).arg(raw.join("oracle.mjs")),
+                &scratch.0,
+            ));
+            assert_eq!(
+                String::from_utf8(result.stdout).unwrap(),
+                "合計: 42|3|negative\n"
+            );
+        }
+    }
+}
+
+#[test]
+fn failed_standard_program_build_preserves_the_complete_site() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    let previous = artifact_image(&site);
+    let source = package.join("src/calculation.ssrg");
+    let original = fs::read_to_string(&source).unwrap();
+    for replacement in [
+        "pub fn label value: Ref<Int> -> Int = 1\n",
+        "pub effect fn label -> Unit = ()\n",
+        "pub fn label value: Unknown -> Int = 1\n",
+        "pub fn missing value: Int -> Int = value\n",
+    ] {
+        fs::write(&source, replacement).unwrap();
+        let result = bounded(
+            &mut standard_build(&package, &site, "development"),
+            &scratch.0,
+        );
+        assert!(!result.status.success());
+        assert!(String::from_utf8_lossy(&result.stderr).contains("calculation"));
+        assert_eq!(artifact_image(&site), previous);
+    }
+    fs::write(&source, original).unwrap();
+    let result = bounded(
+        standard_build(&package, &site, "development").env("PATH", ""),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert_eq!(artifact_image(&site), previous);
+    // An unused unsupported body in the selected closure must still fail
+    // admission; exporting only pure functions does not license pruning it.
+    fs::write(
+        &source,
+        format!(
+            "{}\npub effect fn unsupported -> Unit = ()\n",
+            fs::read_to_string(&source).unwrap()
+        ),
+    )
+    .unwrap();
+    let result = bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert_eq!(artifact_image(&site), previous);
+    let original_source = fs::read_to_string(root().join(
+        "examples/spec/fixtures/rust-backend-projects/program-wasm-package/src/calculation.ssrg",
+    ))
+    .unwrap();
+    fs::write(&source, original_source).unwrap();
+    let bad = scratch.0.join("bad");
+    fs::create_dir_all(package.join("public/programs/calculation")).unwrap();
+    fs::write(
+        package.join("public/programs/calculation/program.wasm"),
+        "host collision",
+    )
+    .unwrap();
+    let toml = package.join("seseragi.toml");
+    let original = fs::read_to_string(&toml).unwrap();
+    fs::write(
+        &toml,
+        original.replace(
+            "[web.programs.calculation]",
+            "[web]\npublic='public'\n[web.programs.calculation]",
+        ),
+    )
+    .unwrap();
+    let lock = || {
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .args(["lock", "update"])
+                .arg(&package),
+            &scratch.0,
+        ));
+    };
+    lock();
+    let result = bounded(
+        &mut standard_build(&package, &bad, "development"),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("collides"));
+    assert!(!bad.exists());
+    assert_eq!(artifact_image(&site), previous);
+    fs::write(&toml, original).unwrap();
+    lock();
+    let result = bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("dev")
+            .arg(&package),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("dev/watch"));
+    let shadow = package.join("host/node_modules/@seseragi/programs");
+    fs::create_dir_all(&shadow).unwrap();
+    fs::write(
+        shadow.join("package.json"),
+        "{\"name\":\"@seseragi/programs\",\"type\":\"module\"}",
+    )
+    .unwrap();
+    lock();
+    let result = bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr).contains("reserved @seseragi/programs"));
+    assert_eq!(artifact_image(&site), previous);
+}
+
+#[test]
+fn multiple_programs_keep_path_package_identity_and_initialization() {
+    let scratch = Scratch::new();
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    let dependency = scratch.0.join("dependency");
+    fs::create_dir_all(dependency.join("src")).unwrap();
+    fs::write(dependency.join("seseragi.toml"), "[package]\nname='fixture/program-wasm-dependency'\nversion='0.0.0'\nlanguage='^0.1.0'\n[exports]\n'.'='calculation'\n").unwrap();
+    fs::write(
+        dependency.join("src/calculation.ssrg"),
+        "let initial = 0\npub fn zero -> Int = initial\n",
+    )
+    .unwrap();
+    fs::write(package.join("src/constants.ssrg"), "import { zero } from \"math\"\npub let offset: Int = zero ()\npub fn get -> Int = offset\n").unwrap();
+    let manifest = package.join("seseragi.toml");
+    let original = fs::read_to_string(&manifest).unwrap();
+    fs::write(&manifest, format!("{original}\n[dependencies]\nmath={{package='fixture/program-wasm-dependency',path='../dependency'}}\n[web.programs.constants]\nmodule='constants'\nexports=['get']\n")).unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "release"),
+        &scratch.0,
+    ));
+    let image = artifact_image(&site);
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&image["artifact-manifest.json"]).unwrap();
+    assert_eq!(manifest["programs"].as_array().unwrap().len(), 2);
+    let calc: serde_json::Value =
+        serde_json::from_slice(&image["programs/calculation/program-wasm.json"]).unwrap();
+    assert_eq!(calc["modules"].as_array().unwrap().len(), 3);
+    let selected = seseragi_project::load_local_project_module(
+        &package,
+        &seseragi_project::ModulePath::parse("calculation").unwrap(),
+    )
+    .unwrap();
+    let expected = selected
+        .graph()
+        .topological_order()
+        .unwrap()
+        .iter()
+        .map(seseragi_project::logical_module_id)
+        .collect::<Vec<_>>();
+    assert_eq!(calc["modules"], serde_json::json!(expected));
+    fs::write(scratch.0.join("multi.mjs"), "import assert from 'node:assert/strict'; import {readFile} from 'node:fs/promises'; import {loadProgram} from './site/programs/calculation/index.mjs'; import {loadProgram as loadConstants} from './site/programs/constants/index.mjs'; const p=await loadProgram(await readFile(new URL('./site/programs/calculation/program.wasm',import.meta.url))); const q=await loadConstants(await readFile(new URL('./site/programs/constants/program.wasm',import.meta.url))); const prefix=p.exports.label('合計: ');const cb=prefix(40);prefix.dispose();assert.equal(cb(2),'合計: 42');assert.equal(q.exports.get(undefined),0);p.dispose();assert.equal(q.exports.get(undefined),0);q.dispose();assert.equal(p.ownership().managedLiveAtClose,0);assert.equal(q.ownership().managedLiveAtClose,0);console.log('two instances roots0');").unwrap();
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(engine).arg(scratch.0.join("multi.mjs")),
+            &scratch.0,
+        ));
+        assert_eq!(
+            String::from_utf8(result.stdout).unwrap().trim(),
+            "two instances roots0"
+        );
+    }
+    // Imported initialization is observed, including its first-stage Defect.
+    fs::write(
+        dependency.join("src/calculation.ssrg"),
+        "let initial = 9007199254740991 + 1\npub fn zero -> Int = initial\n",
+    )
+    .unwrap();
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&package),
+        &scratch.0,
+    ));
+    successful(bounded(
+        &mut standard_build(&package, &site, "release"),
+        &scratch.0,
+    ));
+    fs::write(scratch.0.join("initial-defect.mjs"), "import assert from 'node:assert/strict'; import {readFile} from 'node:fs/promises';import {loadProgram,ProgramWasmDefect} from './site/programs/calculation/index.mjs';await assert.rejects(()=>readFile(new URL('./site/programs/calculation/program.wasm',import.meta.url)).then(bytes=>loadProgram(bytes)),ProgramWasmDefect);console.log('imported initializer Defect');").unwrap();
+    for engine in ["bun", "node"] {
+        successful(bounded(
+            Command::new(engine).arg(scratch.0.join("initial-defect.mjs")),
+            &scratch.0,
+        ));
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn changing_checked_ui_during_bundle_cannot_publish_a_mixed_site() {
+    use std::os::unix::fs::PermissionsExt;
+    let scratch = Scratch::new();
+    let package = scratch.0.join("package");
+    copy_tree(
+        &root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-package"),
+        &package,
+    );
+    let site = scratch.0.join("site");
+    successful(bounded(
+        &mut standard_build(&package, &site, "development"),
+        &scratch.0,
+    ));
+    let previous = artifact_image(&site);
+    let bun = successful(bounded(
+        Command::new("bun").args(["-e", "console.log(process.execPath)"]),
+        &scratch.0,
+    ));
+    let bun = String::from_utf8(bun.stdout).unwrap().trim().to_owned();
+    let shim = scratch.0.join("shim");
+    fs::create_dir(&shim).unwrap();
+    fn quote(value: &str) -> String {
+        format!("'{}'", value.replace('\'', "'\\''"))
+    }
+    fs::write(shim.join("bun"), format!("#!/bin/sh\n{} \"$@\"\nstatus=$?\nif [ \"$status\" = 0 ] && [ \"$1\" = build ]; then printf '\\n' >> {}; fi\nexit $status\n", quote(&bun), quote(package.join("src/main.ssrg").to_str().unwrap()))).unwrap();
+    fs::set_permissions(shim.join("bun"), fs::Permissions::from_mode(0o755)).unwrap();
+    let path = std::env::join_paths(
+        std::iter::once(shim).chain(std::env::split_paths(&std::env::var_os("PATH").unwrap())),
+    )
+    .unwrap();
+    let result = bounded(
+        standard_build(&package, &site, "development").env("PATH", path),
+        &scratch.0,
+    );
+    assert!(!result.status.success());
+    assert!(String::from_utf8_lossy(&result.stderr)
+        .contains("source changed during program WASM build"));
+    assert_eq!(artifact_image(&site), previous);
+}
+
 #[test]
 fn checked_program_runs_on_bun_and_node_and_preserves_owned_lifetimes() {
     let scratch = Scratch::new();
@@ -412,7 +858,35 @@ fn links_a_package_through_the_same_checked_core_graph() {
     let metadata: serde_json::Value =
         serde_json::from_slice(&fs::read(output.join("program-wasm.json")).unwrap()).unwrap();
     assert_eq!(metadata["modules"].as_array().unwrap().len(), 2);
-    assert_eq!(metadata["sources"].as_array().unwrap().len(), 2);
+    let inputs = metadata["sources"].as_array().unwrap();
+    assert_eq!(inputs.len(), 3);
+    let names = inputs
+        .iter()
+        .map(|input| {
+            Path::new(input["path"].as_str().unwrap())
+                .file_name()
+                .unwrap()
+                .to_string_lossy()
+                .into_owned()
+        })
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(
+        names,
+        ["main.ssrg", "lib.ssrg", "seseragi.toml"]
+            .into_iter()
+            .map(str::to_owned)
+            .collect()
+    );
+    for input in inputs {
+        use sha2::{Digest, Sha256};
+        assert_eq!(
+            input["sha256"],
+            format!(
+                "{:x}",
+                Sha256::digest(fs::read(input["path"].as_str().unwrap()).unwrap())
+            )
+        );
+    }
     fs::write(scratch.0.join("package-probe.mjs"),"import {readFile} from 'node:fs/promises'; import assert from 'node:assert/strict'; import {loadProgram} from './program/program.mjs'; const p=await loadProgram(await readFile(new URL('./program/program.wasm',import.meta.url))); assert.equal(p.exports.selected(41),'合計: 42'); p.dispose(); assert.equal(p.ownership().managedLiveAtClose,0); console.log('package roots0');").unwrap();
     for engine in ["bun", "node"] {
         let result = successful(bounded(

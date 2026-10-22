@@ -2,6 +2,31 @@ use super::{parse_manifest, ManifestDependency, ManifestError, RunSeed};
 use semver::Version;
 
 #[test]
+fn program_wasm_selection_is_explicit_canonical_and_portable() {
+    let header = "[package]\nname='fixture/programs'\nversion='0.0.0'\nlanguage='^0.1.0'\n";
+    let source =
+        format!("{header}[web.programs.calc]\nmodule='compute/main'\nexports=['label', 'ready']\n");
+    let web = parse_manifest(&source).unwrap().web.unwrap();
+    assert_eq!(web.programs["calc"].module.as_str(), "compute/main");
+    assert_eq!(web.programs["calc"].exports, ["label", "ready"]);
+    for (name, module, exports) in [
+        ("../escape", "calc", "['label']"),
+        ("con", "calc", "['label']"),
+        ("com1", "calc", "['label']"),
+        ("Upper", "calc", "['label']"),
+        ("calc", "../compute", "['label']"),
+        ("calc", "compute", "[]"),
+        ("calc", "compute", "['label', 'label']"),
+    ] {
+        let source =
+            format!("{header}[web.programs.'{name}']\nmodule='{module}'\nexports={exports}\n");
+        let error = parse_manifest(&source).unwrap_err();
+        assert_eq!(error.code(), "SES-K0101");
+    }
+    assert!(parse_manifest(&format!("{source}output='../other'\n")).is_err());
+}
+
+#[test]
 fn parses_executable_manifest_with_canonical_defaults() {
     let manifest = parse_manifest(include_str!(
         "../../../../examples/spec/fixtures/projects/modules-reexport-run/seseragi.toml"

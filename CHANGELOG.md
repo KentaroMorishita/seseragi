@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.78] - 2026-10-22
+
+### Added
+
+- Build explicitly selected pure program-WASM modules and a Seseragi TypeScript UI from one Web package. Generate typed loader imports, preserve package ownership and initialization, and include WASM assets and receipts in the normal artifact manifest. Publish the complete site together; keep the preceding artifact on compilation or bundling failure. Program-WASM watch/HMR and Effect ABI remain unsupported.
+
 ## [0.61.77] - 2026-10-22
 
 ### Fixed

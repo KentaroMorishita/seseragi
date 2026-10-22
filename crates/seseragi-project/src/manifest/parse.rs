@@ -58,6 +58,15 @@ struct RawBuild {
 struct RawWeb {
     index: Option<String>,
     public: Option<String>,
+    #[serde(default)]
+    programs: BTreeMap<String, RawProgramWasm>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawProgramWasm {
+    module: String,
+    exports: Vec<String>,
 }
 
 fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
@@ -75,6 +84,36 @@ fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
         Ok(path)
     }
     Ok(ManifestWeb {
+        programs: raw
+            .programs
+            .into_iter()
+            .map(|(name, program)| {
+                let error = |reason| {
+                    ManifestError::InvalidProgramWasm(format!("web.programs.{name}: {reason}"))
+                };
+                if !valid_program_name(&name) {
+                    return Err(error("expected a portable lowercase program name"));
+                }
+                let module = ModulePath::parse(&program.module)
+                    .map_err(|_| error("expected a canonical source module path"))?;
+                let mut seen = std::collections::BTreeSet::new();
+                if program.exports.is_empty()
+                    || program
+                        .exports
+                        .iter()
+                        .any(|value| value.is_empty() || !seen.insert(value))
+                {
+                    return Err(error("select nonempty, distinct public function names"));
+                }
+                Ok((
+                    name,
+                    super::model::ManifestProgramWasm {
+                        module,
+                        exports: program.exports,
+                    },
+                ))
+            })
+            .collect::<Result<_, _>>()?,
         index: raw
             .index
             .map(|value| path("web.index", value))
@@ -84,6 +123,19 @@ fn parse_web(raw: RawWeb) -> Result<ManifestWeb, ManifestError> {
             .map(|value| path("web.public", value))
             .transpose()?,
     })
+}
+
+pub fn valid_program_name(name: &str) -> bool {
+    !name.is_empty()
+        && name.len() <= 48
+        && name.as_bytes()[0].is_ascii_lowercase()
+        && name
+            .bytes()
+            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
+        && !matches!(name, "con" | "prn" | "aux" | "nul")
+        && !(name.len() == 4
+            && (name.starts_with("com") || name.starts_with("lpt"))
+            && matches!(name.as_bytes()[3], b'1'..=b'9'))
 }
 
 #[derive(Deserialize)]

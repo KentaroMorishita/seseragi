@@ -23,6 +23,13 @@ pub struct Manifest {
 pub struct ManifestWeb {
     pub index: Option<ManifestFilePath>,
     pub public: Option<ManifestFilePath>,
+    pub programs: BTreeMap<String, ManifestProgramWasm>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ManifestProgramWasm {
+    pub module: ModulePath,
+    pub exports: Vec<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
