@@ -41,10 +41,12 @@ window.addEventListener("message", function connect(event: MessageEvent) {
       new Blob([__SESERAGI_EXECUTION_WORKER__], { type: "text/javascript" })
     )
     const worker = new Worker(url)
-    URL.revokeObjectURL(url)
     const channel = new MessageChannel()
     const stop = () => {
       worker.terminate()
+      // WebKit may still be loading the Blob after the Worker constructor
+      // returns. Retain its URL until this bounded execution is retired.
+      URL.revokeObjectURL(url)
       channel.port1.close()
     }
     window.addEventListener("pagehide", stop, { once: true })
