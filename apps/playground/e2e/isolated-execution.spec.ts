@@ -44,7 +44,7 @@ test("evaluates program modules in an opaque preview realm", async ({
             generated: { typescript: string }
           }) => ({
             path,
-            typescript: `globalThis.__isolatedMarker = "child";\n${generated.typescript}`,
+            typescript: `globalThis.__isolatedMarker = "child"; if (typeof document !== "undefined") throw new Error("expected a Worker");\n${generated.typescript}`,
           })
         ),
         entryPath: compiled.entry.path,
@@ -76,7 +76,7 @@ test("evaluates program modules in an opaque preview realm", async ({
       () =>
         (globalThis as unknown as { __isolatedMarker: string }).__isolatedMarker
     )
-  ).toBe("child")
+  ).toBeUndefined()
 })
 
 test("preserves only the namespaced Storage capability across isolated runs", async ({
@@ -112,7 +112,11 @@ fails AppError = do {
   expect(
     await page.evaluate(() => ({
       application: localStorage.getItem(
-        "seseragi:playground:application:profile"
+        Object.keys(localStorage).find(
+          (key) =>
+            key.startsWith("seseragi:playground:application:v2:") &&
+            key.endsWith(":profile")
+        ) ?? "missing-scoped-key"
       ),
       host: localStorage.getItem("isolation-test-host-control"),
     }))

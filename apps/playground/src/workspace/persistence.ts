@@ -27,6 +27,7 @@ export type WorkspaceRestore =
       sampleId: string
       workspace: WorkspaceState
       stdin: string
+      applicationId?: string
     }>
   | Readonly<{ status: "recovered"; diagnostic: string }>
 
@@ -38,11 +39,12 @@ type JsonObject = Record<string, unknown>
 
 export function restoreWorkspace(
   storage: WorkspaceStorage,
-  samples: readonly PersistableSample[]
+  samples: readonly PersistableSample[],
+  key = workspacePersistenceKey
 ): WorkspaceRestore {
   let raw: string | null
   try {
-    raw = storage.getItem(workspacePersistenceKey)
+    raw = storage.getItem(key)
   } catch {
     return {
       status: "recovered",
@@ -72,9 +74,17 @@ export function restoreWorkspace(
         parseWorkspaceSeed(persisted.workspace, "workspace")
       ),
       stdin: expectString(persisted.stdin, "stdin"),
+      ...(typeof persisted.applicationId === "string" &&
+      /^[a-zA-Z0-9-]{1,80}$/.test(persisted.applicationId)
+        ? { applicationId: persisted.applicationId }
+        : {}),
     }
   } catch {
-    removePersistedWorkspace(storage)
+    try {
+      storage.removeItem(key)
+    } catch {
+      /* Storage may be unavailable. */
+    }
     return {
       status: "recovered",
       diagnostic:
@@ -87,17 +97,21 @@ export function persistWorkspace(
   storage: WorkspaceStorage,
   sample: PersistableSample,
   workspace: WorkspaceState,
-  stdin: string
+  stdin: string,
+  options: Readonly<{ key?: string; applicationId?: string }> = {}
 ): WorkspacePersistenceResult {
   try {
     storage.setItem(
-      workspacePersistenceKey,
+      options.key ?? workspacePersistenceKey,
       JSON.stringify({
         schema: workspacePersistenceSchema,
         sampleId: sample.id,
         sampleHash: sample.workspaceHash,
         workspace: workspaceSeed(workspace),
         stdin,
+        ...(options.applicationId === undefined
+          ? {}
+          : { applicationId: options.applicationId }),
       })
     )
     return { status: "saved" }
@@ -286,12 +300,4 @@ function expectNumber(value: unknown, context: string): number {
     throw new Error(`${context} must be a finite number`)
   }
   return value
-}
-
-function removePersistedWorkspace(storage: WorkspaceStorage): void {
-  try {
-    storage.removeItem(workspacePersistenceKey)
-  } catch {
-    // Recovery still proceeds with the in-memory initial sample.
-  }
 }

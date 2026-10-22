@@ -1,3 +1,4 @@
+import { createPreviewDocument } from "../src/preview-document"
 import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
@@ -3309,9 +3310,11 @@ fails dom.DomRuntimeError<Never> =
 
     expect(sample?.outputMode).toBe("html")
     expect(html).toContain('id="show-html-preview-button"')
-    expect(html).toContain('sandbox="allow-forms allow-popups allow-scripts"')
+    expect(html).toContain('sandbox="allow-scripts allow-forms"')
     expect(html).toContain('referrerpolicy="no-referrer"')
-    expect(main).toContain("createPreviewDocument(html)")
+    expect(main).toContain(
+      "createPreviewDocument(html, executionSettings.allowed())"
+    )
     expect(main).toContain("startIsolatedProject(htmlPreview")
     expect(main).not.toContain("startGeneratedProject(")
     expect(main).toContain("runtime-preview.html")
@@ -3319,7 +3322,9 @@ fails dom.DomRuntimeError<Never> =
     expect(runtimePreview).toContain("Seseragi Runtime Preview")
     expect(previewDocument).toContain("script-src 'none'")
     expect(previewDocument).toContain("form-action 'none'")
-    expect(previewDocument).toContain("img-src 'self' https: data: blob:")
+    expect(createPreviewDocument("", true)).toContain(
+      "img-src 'self' https: data: blob:"
+    )
   })
 
   for (const sample of samples) {

@@ -17,7 +17,7 @@ test("browser executes a shared foreign binding through declared browser package
     const manifest =
       '[package]\nname="fixture/browser-linkage"\nversion="1.0.0"\nlanguage="^0.1.0"\n[run]\nentry="main"\n[foreign.typescript]\nresolver="node"\nmanifest="host/package.json"\nlockfile="host/bun.lock"\n'
     const source =
-      'import * as effects from "std/effect"\nforeign "typescript" from "browser-api" {\n pure fn label value: String -> String\n}\nlet value = label "hello"\npub effect fn main -> Unit = effects.succeed ()\n'
+      'import * as effects from "std/effect"\nforeign "typescript" from "browser-api" {\n pure fn label value: String -> String\n}\nlet value = label "hello"\npub effect fn main = println value\n'
     const compiled = await compiler.compileProject({
       schema: 1,
       manifest,
@@ -74,7 +74,7 @@ test("browser executes a shared foreign binding through declared browser package
       },
       { signal: new AbortController().signal }
     )
-    await execution.completion
+    const completion = await execution.completion
     const observed = (
       globalThis as unknown as { __interopBrowserObserved?: string }
     ).__interopBrowserObserved
@@ -102,6 +102,7 @@ test("browser executes a shared foreign binding through declared browser package
     }
     return {
       observed,
+      completion,
       identity:
         runtime.modules["host/node_modules/browser-api/web.js"].exactIdentity,
       error,
@@ -120,7 +121,10 @@ test("browser executes a shared foreign binding through declared browser package
         (globalThis as unknown as { __interopBrowserObserved?: string })
           .__interopBrowserObserved
     )
-  ).toBe("hello-browser")
+  ).toBeUndefined()
+  expect(result.completion.kind).toBe("completed")
+  if (result.completion.kind === "completed")
+    expect(result.completion.result.stdout).toBe("hello-browser")
   expect(result.identity).toBe("npm:browser-api@1.2.3/web.js")
   expect(result.error).toContain("SES-F0203")
   expect(result.error).toContain("node:fs")

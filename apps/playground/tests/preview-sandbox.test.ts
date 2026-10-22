@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 
-const expectedSandbox = ["allow-forms", "allow-popups", "allow-scripts"]
+const expectedSandbox = ["allow-scripts", "allow-forms"]
 
 function sandboxTokens(html: string, iframeId: string): string[] {
   const iframe = html.match(
@@ -13,7 +13,7 @@ function sandboxTokens(html: string, iframeId: string): string[] {
 }
 
 describe("Playground preview sandbox", () => {
-  test("shares the minimal popup permission set across Playground and Tour", async () => {
+  test("shares the minimal permission set without popups across Playground and Tour", async () => {
     const root = new URL("..", import.meta.url)
     const playground = await Bun.file(new URL("index.html", root)).text()
     const tour = await Bun.file(new URL("tour/index.html", root)).text()

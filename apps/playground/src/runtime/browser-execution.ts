@@ -28,6 +28,7 @@ import type {
   EntryContract,
 } from "../compiler/types"
 import type { ForeignRuntimeBundle } from "./foreign-runtime"
+import { checkpointTransformer } from "./execution-budget"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
@@ -60,6 +61,8 @@ export type BrowserExecutionOptions = Readonly<{
   readonly onDomMounted?: () => void
   readonly storageProvider?: ProviderPackageEntry
   readonly navigationProvider?: ProviderPackageEntry
+  readonly maxOutputCodeUnits?: number
+  readonly checkpoint?: () => void
 }>
 
 export class ProjectExecutionError extends Error {
@@ -95,11 +98,13 @@ export async function startGeneratedModule(
   options: BrowserExecutionOptions = {}
 ): Promise<BrowserExecution> {
   processHashSeed()
-  const generated = await evaluate(typescript)
+  const generated = await evaluate(typescript, options.checkpoint)
   return startEvaluatedModule(generated, entry, input, options, (specifier) =>
     specifier === "./main.ts"
       ? generated
-      : (runtimeModules[specifier] as ModuleExports | undefined)
+      : ((Object.hasOwn(runtimeModules, specifier)
+          ? runtimeModules[specifier]
+          : undefined) as ModuleExports | undefined)
   )
 }
 
@@ -132,7 +137,8 @@ export async function startGeneratedProject(
   const evaluated = await evaluateProject(
     modules,
     entryPath,
-    options.foreignRuntime
+    options.foreignRuntime,
+    options.checkpoint
   )
   const generated = evaluated.modules.get(entryModulePath)
   if (generated === undefined) {
@@ -140,7 +146,9 @@ export async function startGeneratedProject(
   }
   return startEvaluatedModule(generated, entry, input, options, (specifier) => {
     if (specifier === "./main.ts") return generated
-    const runtime = runtimeModules[specifier]
+    const runtime = Object.hasOwn(runtimeModules, specifier)
+      ? runtimeModules[specifier]
+      : undefined
     if (runtime !== undefined) return runtime as ModuleExports
     if (!specifier.startsWith(".")) return undefined
     return evaluated.modules.get(generatedContractPath(specifier))
@@ -172,9 +180,9 @@ async function startEvaluatedModule(
     throw new Error("program requires an interactive HTML preview")
   }
   if (
-    (requiresNavigation || requiresStorage) &&
-    (options.domDocument === undefined ||
-      options.domDocument.defaultView === null)
+    ((requiresNavigation && options.navigationProvider === undefined) ||
+      (requiresStorage && options.storageProvider === undefined)) &&
+    options.domDocument?.defaultView == null
   ) {
     throw new Error(
       "program browser capabilities require an interactive HTML preview"
@@ -185,21 +193,21 @@ async function startEvaluatedModule(
     async (specifier) => {
       if (
         specifier === "seseragi/runtime-browser/navigation" &&
-        options.domDocument?.defaultView !== null &&
-        options.domDocument?.defaultView !== undefined
+        (options.navigationProvider !== undefined ||
+          options.domDocument?.defaultView != null)
       ) {
         return {
           provider:
             options.navigationProvider ??
             createBrowserNavigationProvider(
-              createWindowNavigationHost(options.domDocument.defaultView)
+              createWindowNavigationHost(options.domDocument!.defaultView!)
             ),
         }
       }
       if (
         specifier === "seseragi/runtime-browser/storage" &&
-        options.domDocument?.defaultView !== null &&
-        options.domDocument?.defaultView !== undefined
+        (options.storageProvider !== undefined ||
+          options.domDocument?.defaultView != null)
       ) {
         return {
           provider:
@@ -207,7 +215,7 @@ async function startEvaluatedModule(
             createBrowserStorageProvider(
               createBudgetedStorageHost(
                 createNamespacedStorageHost(
-                  createWindowStorageHost(options.domDocument.defaultView),
+                  createWindowStorageHost(options.domDocument!.defaultView!),
                   playgroundStorageNamespace
                 ),
                 playgroundStorageBudgetCodeUnits,
@@ -243,7 +251,16 @@ async function startEvaluatedModule(
       entry.environment,
       input,
       (value) => {
-        if (!effectExecution.context.cancelled) stdout += value
+        if (!effectExecution.context.cancelled) {
+          if (
+            options.maxOutputCodeUnits !== undefined &&
+            stdout.length + value.length > options.maxOutputCodeUnits
+          )
+            throw new Error(
+              `Program output limit exceeded (${options.maxOutputCodeUnits} UTF-16 code units)`
+            )
+          stdout += value
+        }
       },
       browserDom?.service,
       effectExecution.context,
@@ -327,25 +344,39 @@ async function disposeBrowserDom(
   }
 }
 
-async function evaluate(source: string): Promise<ModuleExports> {
-  const javascript = await transpile(source)
+async function evaluate(
+  source: string,
+  checkpoint?: () => void
+): Promise<ModuleExports> {
+  const guardName =
+    checkpoint === undefined
+      ? undefined
+      : `__checkpoint_${crypto.randomUUID().replaceAll("-", "")}`
+  const javascript = await transpile(source, undefined, guardName)
   const module = { exports: {} as ModuleExports }
   const requireRuntime = (specifier: string): unknown => {
-    const runtime = runtimeModules[specifier]
+    const runtime = Object.hasOwn(runtimeModules, specifier)
+      ? runtimeModules[specifier]
+      : undefined
     if (runtime === undefined) {
       throw new Error(`unsupported playground runtime module: ${specifier}`)
     }
     return runtime
   }
-  executeCommonJs(javascript, module, requireRuntime)
+  executeCommonJs(javascript, module, requireRuntime, checkpoint, guardName)
   return module.exports
 }
 
 async function evaluateProject(
   modules: readonly GeneratedProjectModule[],
   entryPath: string,
-  foreignRuntime?: ForeignRuntimeBundle
+  foreignRuntime?: ForeignRuntimeBundle,
+  checkpoint?: () => void
 ): Promise<Readonly<{ modules: ReadonlyMap<string, ModuleExports> }>> {
+  const guardName =
+    checkpoint === undefined
+      ? undefined
+      : `__checkpoint_${crypto.randomUUID().replaceAll("-", "")}`
   const sources = new Map<string, string>()
   for (const module of modules) {
     const path = generatedModulePath(module.path)
@@ -359,16 +390,22 @@ async function evaluateProject(
     }
     sources.set(
       path,
-      await transpile(module.typescript, (specifier) => {
-        const resolved = foreignRuntime?.roots[path]?.[specifier]
-        const artifact =
-          resolved === undefined ? undefined : foreignRuntime?.modules[resolved]
-        if (artifact === undefined)
-          throw new Error(
-            `SES-F0203: unresolved browser runtime identity: ${specifier}`
-          )
-        return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
-      })
+      await transpile(
+        module.typescript,
+        (specifier) => {
+          const resolved = foreignRuntime?.roots[path]?.[specifier]
+          const artifact =
+            resolved === undefined
+              ? undefined
+              : foreignRuntime?.modules[resolved]
+          if (artifact === undefined)
+            throw new Error(
+              `SES-F0203: unresolved browser runtime identity: ${specifier}`
+            )
+          return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
+        },
+        guardName
+      )
     )
   }
 
@@ -377,16 +414,22 @@ async function evaluateProject(
       throw new Error(`foreign runtime shadows generated module: ${path}`)
     sources.set(
       path,
-      await transpile(module.source, (specifier) => {
-        const resolved = module.imports[specifier]
-        const artifact =
-          resolved === undefined ? undefined : foreignRuntime?.modules[resolved]
-        if (artifact === undefined)
-          throw new Error(
-            `SES-F0203: unresolved browser runtime identity: ${specifier}`
-          )
-        return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
-      })
+      await transpile(
+        module.source,
+        (specifier) => {
+          const resolved = module.imports[specifier]
+          const artifact =
+            resolved === undefined
+              ? undefined
+              : foreignRuntime?.modules[resolved]
+          if (artifact === undefined)
+            throw new Error(
+              `SES-F0203: unresolved browser runtime identity: ${specifier}`
+            )
+          return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
+        },
+        guardName
+      )
     )
   }
 
@@ -406,18 +449,28 @@ async function evaluateProject(
     const module = { exports: {} as ModuleExports }
     evaluated.set(path, module.exports)
     try {
-      executeCommonJs(source, module, (specifier) => {
-        const runtime = runtimeModules[specifier]
-        if (runtime !== undefined) return runtime
-        const foreignPath =
-          foreignRuntime?.modules[path]?.imports[specifier] ??
-          foreignRuntime?.roots[path]?.[specifier]
-        if (foreignPath !== undefined) return load(foreignPath)
-        if (!specifier.startsWith(".")) {
-          throw new Error(`unsupported playground runtime module: ${specifier}`)
-        }
-        return load(resolveGeneratedSpecifier(path, specifier))
-      })
+      executeCommonJs(
+        source,
+        module,
+        (specifier) => {
+          const runtime = Object.hasOwn(runtimeModules, specifier)
+            ? runtimeModules[specifier]
+            : undefined
+          if (runtime !== undefined) return runtime
+          const foreignPath =
+            foreignRuntime?.modules[path]?.imports[specifier] ??
+            foreignRuntime?.roots[path]?.[specifier]
+          if (foreignPath !== undefined) return load(foreignPath)
+          if (!specifier.startsWith(".")) {
+            throw new Error(
+              `unsupported playground runtime module: ${specifier}`
+            )
+          }
+          return load(resolveGeneratedSpecifier(path, specifier))
+        },
+        checkpoint,
+        guardName
+      )
       evaluated.set(path, module.exports)
       return module.exports
     } finally {
@@ -435,10 +488,11 @@ async function evaluateProject(
 
 async function transpile(
   source: string,
-  resolveIdentity?: (specifier: string) => string
+  resolveIdentity?: (specifier: string) => string,
+  guardName?: string
 ): Promise<string> {
   const ts = await import("typescript")
-  return ts.transpileModule(source, {
+  const javascript = ts.transpileModule(source, {
     transformers:
       resolveIdentity === undefined
         ? undefined
@@ -484,15 +538,34 @@ async function transpile(
       strict: true,
     },
   }).outputText
+  if (guardName === undefined) return javascript
+  const tree = ts.createSourceFile(
+    "program.js",
+    javascript,
+    ts.ScriptTarget.ES2022,
+    true,
+    ts.ScriptKind.JS
+  )
+  const transformed = ts.transform(tree, [checkpointTransformer(ts, guardName)])
+  try {
+    return ts.createPrinter().printFile(transformed.transformed[0]!)
+  } finally {
+    transformed.dispose()
+  }
 }
 
 function executeCommonJs(
   javascript: string,
   module: { exports: ModuleExports },
-  requireModule: (specifier: string) => unknown
+  requireModule: (specifier: string) => unknown,
+  checkpoint?: () => void,
+  guardName?: string
 ): void {
-  const execute = new Function("require", "module", "exports", javascript)
-  execute(requireModule, module, module.exports)
+  const execute =
+    guardName === undefined
+      ? new Function("require", "module", "exports", javascript)
+      : new Function("require", "module", "exports", guardName, javascript)
+  execute(requireModule, module, module.exports, checkpoint)
 }
 
 function generatedModulePath(sourcePath: string): string {

@@ -169,6 +169,17 @@ const isolatedExecutionPlugin: Plugin = {
   },
   async load(id) {
     if (id !== "\0virtual:seseragi-execution-frame") return
+    const worker = await bundleExecutionFrame({
+      absWorkingDir: appRoot,
+      entryPoints: ["src/runtime/execution-worker.ts"],
+      bundle: true,
+      write: false,
+      format: "iife",
+      platform: "browser",
+      target: "es2022",
+      minify: true,
+      metafile: true,
+    })
     const result = await bundleExecutionFrame({
       absWorkingDir: appRoot,
       entryPoints: ["src/runtime/execution-frame.ts"],
@@ -179,8 +190,16 @@ const isolatedExecutionPlugin: Plugin = {
       target: "es2022",
       minify: true,
       metafile: true,
+      define: {
+        __SESERAGI_EXECUTION_WORKER__: JSON.stringify(
+          worker.outputFiles![0]!.text
+        ),
+      },
     })
-    for (const input of Object.keys(result.metafile!.inputs)) {
+    for (const input of new Set([
+      ...Object.keys(result.metafile!.inputs),
+      ...Object.keys(worker.metafile!.inputs),
+    ])) {
       if (!input.startsWith("(disabled):")) {
         this.addWatchFile(fileURLToPath(new URL(input, import.meta.url)))
       }

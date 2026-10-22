@@ -42,9 +42,11 @@ composition中はrerenderを保留し、browserごとのevent順序差を吸収�
 
 ## HTML preview
 
-SSRはscriptを拒否するCSP付きdocumentへ表示します。PlaygroundとTourの実行時は、runtime registry、generated / foreign JavaScriptの評価、Effect、DOMをすべてopaque originのsandbox iframe内に置きます。親ページはprogramを評価せず、`MessageChannel`で開始、結果、キャンセルを受け渡します。iframeの`allow-same-origin`とpopupのsandbox escapeは許可しません。
-Storageは親ページのworkspace storageを公開せず、宣言されたStorage capabilityに限って既存のapplication namespaceと256 Ki UTF-16 code unitsのbudgetを持つoperation窓口へ接続します。NavigationはPreview内の独立したhistoryで、親ページやbrowserの履歴を変更しません。
-iframeは`allow-forms allow-popups allow-scripts`を持ち、`form-action 'none'`で外部form送信を拒否します。HTTP / WebSocket provider用の通信は許可します。iframe内で実行するbundleをローカル依存から生成するため外部script CDNは不要です。CPU無限loopを強制終了する保証はこのorigin隔離に含みません。
+SSRはscriptを拒否するCSP付きdocumentへ表示し、Text表示中はHTML documentを作りません。PlaygroundとTourの実行はopaque originのsandbox iframeから開始します。DOMを使わないprogramは、そのiframeが所有する専用Workerで評価し、10秒で終了しない場合はWorkerを停止します。DOM programはiframe内で動き、生成されたloopと関数に同期計算量の監視を入れます。任意のforeign JavaScriptはこの監視を回避できるため、DOMとforeign runtimeを併用するprojectはPreviewでは拒否し、CLIでの実行を案内します。
+親ページはprogramを評価せず、`MessageChannel`で開始、結果、キャンセルを受け渡します。iframeは`allow-scripts allow-forms`だけを持ち、same-origin、popup、top navigationを許可しません。HTTP / WebSocketと外部HTTPS画像は初期状態でCSPにより拒否し、Tools内のNetworkを利用者が選んだ場合だけ許可します。許可は保存せず、codeやprojectを変更すると解除します。外部form送信も拒否します。これは完全なoffline保証ではなく、Preview内の通常のlink navigationは残ります。
+Storageはworkspaceごとのeditor所有identity（Tourはlesson ID）と256 Ki UTF-16 code unitsのbudgetを持つoperation窓口へ接続します。親ページのworkspaceや以前の共通application namespaceへは接続しません。古いapplication保存データは削除も自動移行もしません。NavigationはPreview内の独立したhistoryを使います。
+共有source linkは空のstdinと独立した保存slotで開きます。初回保存後はURLをそのslotへ置き換え、reloadで編集済みのcopyを復元します。元のlocal workspaceを上書きせず、`/`へ戻ると元のworkspaceを復元します。
+compiler Workerは15秒で応答がないと停止し、次の要求で再作成します。program出力は256 Ki UTF-16 code unitsまでです。DOM監視は協調的な制限であり、組み込み処理の巨大allocationやブラウザ全体のmemoryをOSのように制限する保証はありません。詳細は`docs/threat-model.md`を参照してください。
 preview documentには
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`class`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
