@@ -1,0 +1,16 @@
+import * as effects from "std/effect"
+
+pub fn saved message: String -> Effect<{}, Never, Never> = {
+  let create = effects.die
+  create message
+}
+
+pub effect fn widened message: String -> Unit fails String = effects.die message
+
+effect fn release name: String -> Unit = effects.die name
+
+pub effect fn probe -> Unit fails String = do {
+  effects.acquireRelease (effects.succeed "outer") release
+  effects.acquireRelease (effects.succeed "inner") release
+  effects.fail "typed failure"
+}

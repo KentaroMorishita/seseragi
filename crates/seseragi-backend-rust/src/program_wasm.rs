@@ -6,6 +6,7 @@ use seseragi_lowering::{CoreModule, CoreType, SourceSpan};
 use std::collections::BTreeSet;
 
 pub const PROGRAM_WASM_ABI: &str = "seseragi-program-wasm-pure-v1";
+pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v1";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
@@ -14,10 +15,24 @@ pub enum ProgramCodec {
     Bool,
     Int,
     String,
-    Tuple { elements: Vec<usize> },
-    Maybe { value: usize },
-    Either { left: usize, right: usize },
-    Function { parameter: usize, result: usize },
+    Tuple {
+        elements: Vec<usize>,
+    },
+    Maybe {
+        value: usize,
+    },
+    Either {
+        left: usize,
+        right: usize,
+    },
+    Function {
+        parameter: usize,
+        result: usize,
+    },
+    Effect {
+        failure: Option<usize>,
+        success: Option<usize>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -68,6 +83,7 @@ pub fn emit_program_wasm(
     let mut seen = BTreeSet::new();
     let mut codecs = Vec::new();
     let mut public = Vec::new();
+    let mut effect_abi = false;
     for name in exports {
         if !seen.insert(name) {
             return Err("program WASM: duplicate export selection".into());
@@ -95,13 +111,12 @@ pub fn emit_program_wasm(
         if function.visibility != seseragi_syntax::Visibility::Public {
             return Err(error("program WASM: selected function must be public"));
         }
-        if function.is_effect
-            || !function.type_parameters.is_empty()
+        if !function.type_parameters.is_empty()
             || !function.constraints.is_empty()
             || function.parameters.is_empty()
         {
             return Err(error(
-                "program WASM: an unconstrained monomorphic pure source function is required",
+                "program WASM: an unconstrained monomorphic source function is required",
             ));
         }
         let ty = function
@@ -134,13 +149,37 @@ pub fn emit_program_wasm(
             }
             remainder = result;
         }
-        if emit::checked_boundary_body_type(module, &function.body).as_ref() != Some(remainder) {
+        let body_type = emit::checked_boundary_body_type(module, &function.body);
+        let effect_result = |mut ty: &CoreType| {
+            while let CoreType::Function { result, .. } = ty {
+                ty = result;
+            }
+            matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Effect" && arguments.len() == 3)
+        };
+        if body_type.as_ref() != Some(remainder)
+            && !(effect_result(remainder)
+                && body_type.as_ref().is_some_and(|actual| {
+                    crate::program_wasm_effect::boundary_accepts(remainder, actual)
+                }))
+        {
             return Err(error(
                 "program WASM: body result identity disagrees with the checked public signature",
             ));
         }
         let codec = codec(&ty, true, &mut codecs)
-            .ok_or_else(|| error("program WASM: unsupported public codec; expected closed Unit/Bool/Int/String, tuple, Maybe/Either or a returned function"))?;
+            .or_else(|| effect_codec(&ty, &mut codecs))
+            .ok_or_else(|| error("program WASM: unsupported public codec; expected closed Unit/Bool/Int/String, tuple, Maybe/Either, a returned function or providerless Effect"))?;
+        let mut terminal = codec;
+        while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
+            terminal = *result;
+        }
+        let returns_effect = matches!(codecs[terminal], ProgramCodec::Effect { .. });
+        if function.is_effect && !returns_effect {
+            return Err(error(
+                "program WASM: checked Effect declaration contract is unavailable",
+            ));
+        }
+        effect_abi |= returns_effect;
         public.push(ProgramWasmExport {
             name: name.clone(),
             symbol: function.symbol.clone(),
@@ -153,7 +192,9 @@ pub fn emit_program_wasm(
     // Reuse the ordinary linker and every native evidence/admission check.
     // This explicit library mode changes no native executable entry contract.
     let mut library = project::emit_library(modules, entry_module)?;
-    if library.metadata.capabilities.iter().any(|c| {
+    if effect_abi {
+        crate::program_wasm_effect::validate(modules)?;
+    } else if library.metadata.capabilities.iter().any(|c| {
         matches!(
             c.as_str(),
             "effect-sync" | "ref" | "fiber" | "deferred" | "filesystem-async" | "console"
@@ -172,7 +213,12 @@ pub fn emit_program_wasm(
     }
     let metadata = ProgramWasmMetadata {
         schema: 1,
-        abi: PROGRAM_WASM_ABI.into(),
+        abi: if effect_abi {
+            PROGRAM_WASM_EFFECT_ABI
+        } else {
+            PROGRAM_WASM_ABI
+        }
+        .into(),
         stability: "experimental".into(),
         module: entry_module.into(),
         modules: library.metadata.modules,
@@ -181,9 +227,11 @@ pub fn emit_program_wasm(
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
     };
-    library
-        .source
-        .push_str(include_str!("runtime_program_wasm.rs"));
+    library.source.push_str(if effect_abi {
+        include_str!("runtime_program_wasm_effect.rs")
+    } else {
+        include_str!("runtime_program_wasm.rs")
+    });
     let specs = metadata
         .codecs
         .iter()
@@ -211,7 +259,7 @@ pub fn emit_program_wasm(
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
     library.source.push_str(&format!("\nconst PROGRAM_CONTRACT: &str = {schema:?};\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_ptr() -> usize {{ PROGRAM_CONTRACT.as_ptr() as usize }}\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_len() -> usize {{ PROGRAM_CONTRACT.len() }}\n"));
     let quoted_schema = serde_json::to_string(&schema).expect("serializable checked ABI text");
-    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n{}", include_str!("program_wasm.js"));
+    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n{}", if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
     let declarations = declarations(&metadata);
     Ok(ProgramWasmArtifact {
         source: library.source,
@@ -219,6 +267,44 @@ pub fn emit_program_wasm(
         javascript,
         declarations,
     })
+}
+
+fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+    let item = match ty {
+        CoreType::Function { parameter, result } => ProgramCodec::Function {
+            parameter: codec(parameter, false, codecs)?,
+            result: effect_codec(result, codecs).or_else(|| codec(result, true, codecs))?,
+        },
+        CoreType::Named { name, arguments } if name == "std/prelude::Effect" => {
+            let [requirements, failure, success] = arguments.as_slice() else {
+                return None;
+            };
+            if !matches!(requirements, CoreType::Record { closed: true, fields } if fields.is_empty())
+            {
+                return None;
+            }
+            let terminal = |ty: &CoreType, callable, codecs: &mut Vec<ProgramCodec>| {
+                if matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
+                {
+                    Some(None)
+                } else {
+                    codec(ty, callable, codecs).map(Some)
+                }
+            };
+            ProgramCodec::Effect {
+                failure: terminal(failure, false, codecs)?,
+                success: terminal(success, true, codecs)?,
+            }
+        }
+        _ => return None,
+    };
+    if let Some(index) = codecs.iter().position(|c| c == &item) {
+        Some(index)
+    } else {
+        let index = codecs.len();
+        codecs.push(item);
+        Some(index)
+    }
 }
 
 fn codec(ty: &CoreType, callable: bool, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
@@ -270,6 +356,9 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         ProgramCodec::Function { parameter, result } => {
             format!("ProgramCode::Function({parameter}, {result})")
         }
+        ProgramCodec::Effect { failure, success } => {
+            format!("ProgramCode::Effect({failure:?}, {success:?})")
+        }
     }
 }
 
@@ -302,6 +391,15 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
                 ty(metadata, *parameter),
                 ty(metadata, *result)
             ),
+            ProgramCodec::Effect { failure, success } => format!(
+                "OwnedEffect<{}, {}>",
+                failure
+                    .map(|id| ty(metadata, id))
+                    .unwrap_or_else(|| "never".into()),
+                success
+                    .map(|id| ty(metadata, id))
+                    .unwrap_or_else(|| "never".into())
+            ),
         }
     }
     let mut result = String::from("export interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
@@ -312,6 +410,10 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
             ty(metadata, export.codec)
         ));
     }
-    result.push_str("}\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): void; ownership(): Ownership; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+    if metadata.abi == PROGRAM_WASM_EFFECT_ABI {
+        result.push_str("}\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+    } else {
+        result.push_str("}\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): void; ownership(): Ownership; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+    }
     result
 }

@@ -46,6 +46,36 @@
         "start": 37,
         "end": 97
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "external-named",
+              "name": "InputError",
+              "canonical": "fixture/transitive-effect-failure::provider::InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "input",

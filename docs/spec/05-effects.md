@@ -303,6 +303,11 @@ defectの例:
 defectはEitherやEffectのfailure channelへ暗黙変換されません。通常codeからcatchできません。
 入力や外部失敗として想定できるものをdefectにしてはなりません。
 
+`std/effect`の`die message`は、実行時に指定したStringを持つdefectで停止するcoldなEffectを返します。
+messageの式はEffect構築時に一度評価し、保存したEffectを実行するたびに新しいdefectを生成します。
+型は`Effect<{}, Never, Never>`で、`recover`、`mapError`、`attempt`は捕捉しません。
+登録済みfinalizerは5.11の規則で実行し、scopeの終了後にdefectを再送出します。
+
 ## 5.11 cancellationとresource
 
 Effectはcooperative cancellationを持ちます。hostがcancellationを要求すると、未完了のEffectは

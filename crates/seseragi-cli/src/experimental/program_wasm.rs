@@ -1,4 +1,6 @@
-use seseragi_backend_rust::{emit_program_wasm, ProgramWasmArtifact, PROGRAM_WASM_ABI};
+use seseragi_backend_rust::{
+    emit_program_wasm, ProgramWasmArtifact, PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
+};
 use seseragi_driver::{compile_core_module, CompileInput};
 use sha2::{Digest, Sha256};
 use std::{
@@ -70,7 +72,10 @@ fn compile_package(
             && (!package.manifest().providers.is_empty()
                 || !package.manifest().provider_artifacts.is_empty())
         {
-            return Err(format!("{}: SES-RUST-0001: this pure program WASM ABI does not accept provider configuration", package.root().join("seseragi.toml").display()));
+            return Err(format!(
+                "{}: SES-RUST-0001: this program WASM ABI does not accept provider configuration",
+                package.root().join("seseragi.toml").display()
+            ));
         }
     }
     let modules = checked
@@ -155,7 +160,9 @@ fn owned_output(path: &Path) -> Result<(), String> {
         &fs::read(path.join("program-wasm.json")).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
-    if manifest["abi"] != PROGRAM_WASM_ABI || manifest["schema"] != 1 {
+    if (manifest["abi"] != PROGRAM_WASM_ABI && manifest["abi"] != PROGRAM_WASM_EFFECT_ABI)
+        || manifest["schema"] != 1
+    {
         return Err("refusing to replace an unknown program WASM artifact".into());
     }
     let files = manifest["files"]

@@ -17,6 +17,7 @@ mod comparisons;
 mod concurrency;
 mod display;
 mod effect_conversions;
+mod effect_defects;
 mod equality;
 mod filesystem;
 mod floats;
@@ -310,6 +311,9 @@ fn emit_body(
             scope.insert(parameter.id.clone());
         }
         output.push_str(&backend.direct_function(function, &setup, &scope)?);
+    }
+    if backend.capabilities.contains("effect-defect") {
+        output.push_str(include_str!("runtime_effect_defect.rs"));
     }
     if let Some(entry) = entry {
         if entry.is_effect {
@@ -721,6 +725,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.die_reference(name, evidence, type_ref, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.concurrency_reference(name, evidence, type_ref, scope)? {
                     return Ok(value);
                 }
@@ -747,6 +754,9 @@ impl Backend<'_> {
                 arguments,
                 ..
             } => {
+                if let Some(value) = self.die_operation(expr, scope)? {
+                    return Ok(value);
+                }
                 let Some(arity) = operation_arity(operation) else {
                     return Err(format!(
                         "Rust backend: unsupported native Effect operation {operation}"
@@ -770,6 +780,9 @@ impl Backend<'_> {
                 evidence,
                 ..
             } => {
+                if let Some(value) = self.die_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.concurrency_call(expr, scope)? {
                     return Ok(value);
                 }
@@ -829,6 +842,9 @@ impl Backend<'_> {
                 type_ref,
                 ..
             } => {
+                if let Some(value) = self.die_call(expr, scope)? {
+                    return Ok(value);
+                }
                 if let Some(value) = self.concurrency_call(expr, scope)? {
                     return Ok(value);
                 }

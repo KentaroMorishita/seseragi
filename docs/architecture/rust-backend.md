@@ -79,8 +79,49 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMR、hostから受け取るcallback、Effectの失敗／cancel／resource ABIは残る。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRとhostから受け取るcallbackは残る。providerless Effectは次の別ABIで扱う。
 これだけで#814／#815や実用化全体を完了扱いにしない。
+
+## providerless Effectを実行・取消する
+
+閉じた公開Effectを選ぶと、`seseragi-program-wasm-effect-v1`を生成する。
+pure ABIとは別のloaderとresumable runtimeを使い、従来のpure出力を保つ。
+source引数を適用するとcoldな`OwnedEffect<E, A>`を返し、`run()`で実行を開始する。
+辞書factory、source引数、返り値関数とEffectの実行を一段階へまとめない。
+
+```typescript
+const plan = program.exports.value("雪")
+const execution = plan.run()
+const outcome = await execution.result
+switch (outcome.tag) {
+  case "Success": console.log(outcome.value); break
+  case "Failure": console.log(outcome.error); break
+  case "Defect": console.error(outcome.messages); break
+  case "Cancelled": break
+}
+plan.dispose()
+await program.dispose()
+```
+
+`Success`、型付き`Failure`、明示的な言語`Defect`、`Cancelled`を区別する。
+`std/effect.die`はStringを受け取るcoldなDefectで、`recover`や`mapError`の対象にはならない。
+scopeの全finalizerをLIFO順で試み、cleanup Defectを失わず結果へ渡す。
+明示Defectの後もinstanceは使える。予期しないWASM trapやprotocol違反はinstanceをretireし、
+その場合のRust unwindやfinalizer完了を保証しない。
+
+一つのinstanceで実行できるroot Effectは一つである。boundedなmachine turnの間でJSのtaskへ
+制御を返し、`execution.cancel()`は取消を要求する。開始済みのacquisitionと登録済みfinalizerを
+保持し、masked cleanupを終えてからterminal outcomeを公開する。planのdetachは実行を取り消さず、
+実行側がそのplanを保持する。返却callbackも独立したrootであり、planのdetach後に利用できる。
+`program.dispose(): Promise<void>`は新しい呼出しを止め、実行中のrootを取消し、cleanup完了後に
+全rootを解放してmanaged-live0を確認する。dispose中のcleanup Defectは解放後にrejectする。
+
+このABIはproviderを持たない閉じた型と、生成前に証明した式だけを扱う。Intはsafe範囲の
+値の受渡しに限り、演算は含めない。String連結、Bool分岐、Tuple／Maybe／Either、source関数の
+保存・部分適用・返却closureと、選択した標準Effect操作を扱う。標準Effect関数自体の保存・部分適用、
+Ref、Fiber／Deferred、host入力callback、open provider row、generic公開scheme、未証明の式や
+同期依存cycleは、未使用のbodyにあっても位置付きで拒否する。取消はcooperativeで、
+host I/O providerやOS resourceのWASM ABIを実装した意味にはならない。
 
 ## 同じpackageのWASM計算とTS UIをbuildする
 
@@ -106,7 +147,7 @@ packageの`@seseragi/programs/calculation`から`loadProgram`、所有callback�
 選択moduleはsource rootに対するcanonical module pathで、UIのrun entryを変更しない。
 共有loaderでそのimport closureを読み、path dependencyの可視性・ownerと初期化順を保つ。
 計算moduleから未使用のEffectやforeignを削って認定することはしない。root Web設定が選んだ
-pure ABIだけを生成し、dependency manifestのprogram設定を自動実行しない。実際に生成した
+pureまたはproviderless Effect ABIを生成し、dependency manifestのprogram設定を自動実行しない。実際に生成した
 moduleのidentityとloader digestを渡してUIのbrowser importを検査する。
 
 `programs/calculation/`にWASM・loader・型宣言・生成Rust・receiptを配置する。通常の
@@ -119,12 +160,13 @@ moduleのidentityとloader digestを渡してUIのbrowser importを検査する�
 変更を監視する。失敗時はそのsessionの最後の完成siteとversionを保持する。reload clientは
 HTMLをserveした時のversionを使い、初回fetchで新しいbuildを見落とさない。
 
-生成UIのloaderから作るpure instanceはbrowser applicationのlifetimeへ登録する。watchのfull-page
+生成UIのloaderから作るinstanceはbrowser applicationのlifetimeへ登録する。watchのfull-page
 reloadではTS UIをcancelし、finalizer・DOM・providerの終了を待ってから残るinstanceを閉じる。
 UIのfinalizerが旧callbackを使える順序を保ち、開始済みloadも回収してからnavigateする。保存callbackは閉じた
 ownerを拒否する。trapは従来どおりretireし、Rust unwindやWASM physical heapの即時回収は保証しない。
 手動disposeとstandaloneのraw program ABIは維持する。UI stateを保持するHMR、WASM source mapと
-一般Effect ABIは未対応で、到達点3や#814／#815の全体完了とは分ける。通常のtab終了ではbrowserが
+host providerを持つ一般Effect ABIは未対応で、到達点3や#814／#815の全体完了とは分ける。Effect instanceの
+非同期disposeも完了を待つ。通常のtab終了ではbrowserが
 非同期処理の完了を待つ保証はなく、制御したwatch reloadと同じ終了保証を主張しない。
 
 ## 共有frontend

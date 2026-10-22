@@ -74,7 +74,12 @@ pub(crate) fn stage(
         let metadata: serde_json::Value =
             serde_json::from_slice(&program.files["program-wasm.json"])
                 .map_err(|e| e.to_string())?;
-        if metadata["schema"] != 1 || metadata["abi"] != "seseragi-program-wasm-pure-v1" {
+        if metadata["schema"] != 1
+            || !matches!(
+                metadata["abi"].as_str(),
+                Some("seseragi-program-wasm-pure-v1" | "seseragi-program-wasm-effect-v1")
+            )
+        {
             return Err("unsupported program WASM asset ABI".into());
         }
         let inventory = metadata["files"]

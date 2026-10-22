@@ -502,6 +502,12 @@ export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   }
 }
 
+export function die(message: string): Effect<unknown, never, never> {
+  return () => {
+    throw new Error(message)
+  }
+}
+
 type EitherFailure<Value> = Value extends Left<infer Failure> ? Failure : never
 
 type EitherSuccess<Value> = Value extends Right<infer Success> ? Success : never

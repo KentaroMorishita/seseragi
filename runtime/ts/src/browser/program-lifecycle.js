@@ -1,4 +1,4 @@
-// A standard Web build owns these pure instances for one browser application.
+// A standard Web build owns program instances for one browser application.
 // The raw program ABI remains usable independently of this page lifetime.
 export function createProgramLifetime() {
   const owners = new Set()
@@ -21,7 +21,7 @@ export function createProgramLifetime() {
         const program = await create()
         if (closing) {
           try {
-            program.dispose()
+            await program.dispose()
           } catch (error) {
             failures.push(error)
             throw error
@@ -29,13 +29,31 @@ export function createProgramLifetime() {
           throw closedError()
         }
         let released = false
+        let disposal
         const dispose = () => {
-          if (released) return
+          if (released) return disposal
           released = true
           try {
-            program.dispose()
-          } finally {
+            const result = program.dispose()
+            if (result !== undefined) {
+              disposal = Promise.resolve(result)
+              pending.add(disposal)
+              const settle = () => {
+                pending.delete(disposal)
+                owners.delete(dispose)
+              }
+              // Observe rejection even when pagehide cannot await. A controlled
+              // close reports it after every other owner has finished cleanup.
+              disposal.then(settle, (error) => {
+                failures.push(error)
+                settle()
+              })
+              return disposal
+            }
             owners.delete(dispose)
+          } catch (error) {
+            owners.delete(dispose)
+            throw error
           }
         }
         owners.add(dispose)
@@ -60,8 +78,8 @@ export function createProgramLifetime() {
       resolve = success
       reject = failure
     })
-    // Close existing pure owners synchronously, including on pagehide. A
-    // controlled reload also waits for any instance still being instantiated.
+    // Begin every close synchronously, including on pagehide. Controlled reload
+    // also waits for asynchronous cancellation/finalizers and late factories.
     for (const dispose of [...owners]) {
       try {
         dispose()

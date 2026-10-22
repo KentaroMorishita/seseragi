@@ -5419,6 +5419,17 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::die",
+      "name": "die",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "die arg1: String -> Effect<{}, Never, Never>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::fail",
       "name": "fail",
       "module": "std/effect",

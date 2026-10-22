@@ -932,7 +932,7 @@ fn links_a_package_through_the_same_checked_core_graph() {
     assert_eq!(result.status.code(), Some(2), "{result:?}");
     assert!(
         String::from_utf8_lossy(&result.stderr)
-            .contains("pure program WASM ABI does not accept provider configuration"),
+            .contains("this program WASM ABI does not accept provider configuration"),
         "{result:?}"
     );
     assert!(result.stdout.is_empty());
@@ -977,7 +977,7 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         "pub fn selected value: (Int -> Int) -> Int = value 1",
         "fn selected value: Int -> Int = value",
         "type Int = | NominalInt\npub fn selected value: Int -> Int = value",
-        "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed value",
+        "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed (value + 1)",
     ].iter().enumerate() {
         let path=scratch.0.join(format!("invalid-{index}-雪.ssrg"));
         fs::write(&path,source).unwrap();
@@ -1040,4 +1040,250 @@ fn rejects_unproven_boundaries_before_rustc_and_preserves_existing_output() {
         .file_name()
         .to_string_lossy()
         .starts_with(".seseragi-program-wasm-")));
+}
+
+#[test]
+fn providerless_program_effects_run_cancel_and_release_on_bun_and_node() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-effects.ssrg");
+    let output = scratch.0.join("effect");
+    successful(bounded(
+        &mut build(
+            &source,
+            &output,
+            &[
+                "value",
+                "rejection",
+                "defect",
+                "callback",
+                "pending",
+                "cleanup",
+                "cancelCleanup",
+                "saved",
+                "staged",
+                "transport",
+                "late",
+            ],
+        ),
+        &scratch.0,
+    ));
+    let former = scratch.0.join("former.ssrg");
+    // This exact source was a pure-v1 rejection. It is now a checked positive
+    // control; the negative suite retains an actual aborting arithmetic case.
+    fs::write(&former, "import * as effects from \"std/effect\"\npub fn selected value: Int -> Effect<{}, Never, Int> = effects.succeed value").unwrap();
+    let former_output = scratch.0.join("former");
+    successful(bounded(
+        &mut build(&former, &former_output, &["selected"]),
+        &scratch.0,
+    ));
+    for engine in ["bun", "node"] {
+        let engine = runtime(engine, &scratch.0);
+        let result = successful(bounded(
+            Command::new(engine)
+                .arg(root().join("scripts/program-wasm-effect-probe.mjs"))
+                .arg(&output)
+                .arg(&former_output)
+                .current_dir(&scratch.0)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+        assert_eq!(report["abi"], "seseragi-program-wasm-effect-v1");
+        assert_eq!(report["callbacks"], 3);
+        assert_eq!(report["cancelled"], 2);
+        assert_eq!(report["disposeDefectObservable"], true);
+        assert_eq!(report["unexpectedTrapAndProtocolRetired"], true);
+        assert_eq!(report["normalManagedLiveAtClose"], 0);
+    }
+    fs::write(scratch.0.join("types.mts"), r#"
+import {loadProgram, type OwnedEffect, type OwnedCallback} from "./effect/program.mjs";
+const owner=await loadProgram(new Uint8Array());
+const plan:OwnedEffect<string,string>=owner.exports.value("input");
+const execution=plan.run(); execution.cancel();
+const exit=await execution.result;
+if(exit.tag==="Failure") { const error:string=exit.error; }
+if(exit.tag==="Success") { const value:string=exit.value; }
+if(exit.tag==="Defect") { const errors:readonly string[]=exit.messages; }
+const stage:OwnedCallback<undefined,OwnedEffect<never,OwnedCallback<string,string>>>=owner.exports.staged("prefix");
+const closing:Promise<void>=owner.dispose(); await closing;
+// @ts-expect-error Effect needs explicit execution, not a sync String result
+const wrong:string=owner.exports.value("input");
+// @ts-expect-error source Unit is separate from the returned String callback
+stage("wrong");
+// @ts-expect-error result must be narrowed before selecting a success value
+const value:string=exit.value;
+"#).unwrap();
+    fs::write(scratch.0.join("tsconfig.json"),r#"{"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false},"files":["types.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
+fn providerless_program_effects_keep_the_same_body_on_ts_and_native() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-effects.ssrg");
+    let original = fs::read_to_string(&source).unwrap();
+    let oracle = scratch.0.join("oracle.ssrg");
+    fs::write(
+        &oracle,
+        format!(
+            r#"{original}
+pub effect fn oracle -> String fails String = do {{
+  first <- value "cold"
+  second <- rejection "typed" |> effects.recover (\message: String -> effects.succeed message)
+  next <- callback "saved:"
+  let rendered = next "closure"
+  final <- late "scope"
+  effects.succeed (first + "|" + second + "|" + rendered + "|" + final)
+}}
+effect fn unexpected message: String -> String = effects.die message
+pub effect fn main = do {{
+  answer <- oracle () |> effects.recover unexpected
+  println answer
+}}
+"#
+        ),
+    )
+    .unwrap();
+    let native = scratch.0.join("native");
+    successful(bounded(
+        Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["experimental", "build-native"])
+            .arg(&oracle)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        &scratch.0,
+    ));
+    let binary = native.join(if cfg!(windows) {
+        "program.exe"
+    } else {
+        "program"
+    });
+    let result = successful(bounded(
+        Command::new(binary)
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+        &scratch.0,
+    ));
+    assert_eq!(
+        String::from_utf8(result.stdout).unwrap(),
+        "cold|typed|saved:closure|scope\n"
+    );
+    assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+    // Both ordinary targets use the identical Console runner and calculation
+    // bodies. The raw program WASM boundary itself remains providerless.
+    for (profile, profile_value) in [
+        ("development", seseragi_project::BuildProfile::Development),
+        ("release", seseragi_project::BuildProfile::Release),
+    ] {
+        let directory = scratch.0.join(profile);
+        successful(bounded(
+            Command::new(env!("CARGO_BIN_EXE_seseragi"))
+                .arg("build")
+                .arg(&oracle)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&directory),
+            &scratch.0,
+        ));
+        let raw = seseragi_driver::compile_module(
+            seseragi_driver::CompileInput::new(
+                "program-wasm-effects.ssrg",
+                "proof/effects",
+                &original,
+            )
+            .with_profile(profile_value),
+        )
+        .unwrap();
+        fs::write(directory.join("raw.ts"), raw.generated.typescript).unwrap();
+        let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root().join("node_modules/@types")],"baseUrl":root(),"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":["raw.ts"]});
+        fs::write(
+            directory.join("tsconfig.json"),
+            serde_json::to_vec(&config).unwrap(),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(root().join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(directory.join("tsconfig.json")),
+            &scratch.0,
+        ));
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(directory.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        let entry = directory.join(manifest["entry"].as_str().unwrap());
+        for engine in ["bun", "node"] {
+            let result = successful(bounded(
+                Command::new(runtime(engine, &scratch.0))
+                    .arg(&entry)
+                    .env("PATH", ""),
+                &scratch.0,
+            ));
+            assert_eq!(
+                String::from_utf8(result.stdout).unwrap(),
+                "cold|typed|saved:closure|scope\n"
+            );
+        }
+    }
+}
+
+#[test]
+fn standard_web_effect_build_owns_async_program_types_and_lifetimes() {
+    let scratch = Scratch::new();
+    let package =
+        root().join("examples/spec/fixtures/rust-backend-projects/program-wasm-effect-package");
+    for profile in ["development", "release"] {
+        let site = scratch.0.join(profile);
+        successful(bounded(
+            standard_build(&package, &site, profile).current_dir(&scratch.0),
+            &scratch.0,
+        ));
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                .unwrap();
+        assert_eq!(manifest["profile"], profile);
+        assert_eq!(manifest["programs"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            manifest["programs"][0]["abi"],
+            "seseragi-program-wasm-effect-v1"
+        );
+        assert_eq!(
+            manifest["programs"][0]["hostImport"],
+            "@seseragi/programs/calculation"
+        );
+        let directory = site.join("programs/calculation");
+        for engine in ["bun", "node"] {
+            for scenario in ["normal", "defect"] {
+                let result = successful(bounded(
+                    Command::new(runtime(engine, &scratch.0))
+                        .arg(root().join("scripts/program-wasm-effect-package-probe.mjs"))
+                        .arg(&directory)
+                        .arg(scenario)
+                        .current_dir(&scratch.0)
+                        .env("PATH", ""),
+                    &scratch.0,
+                ));
+                let proof: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+                assert_eq!(proof["roots"], 2);
+                assert_eq!(proof["normalManagedLiveAtClose"], 0);
+                assert_eq!(proof["cleanupDefect"], scenario == "defect");
+                assert_eq!(proof["lateFactoryClosed"], true);
+            }
+        }
+        let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
+        let config_path = scratch.0.join(format!("{profile}-types.json"));
+        fs::write(&config_path, serde_json::to_vec(&config).unwrap()).unwrap();
+        successful(bounded(
+            Command::new(runtime("node", &scratch.0))
+                .arg(root().join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(config_path),
+            &scratch.0,
+        ));
+    }
 }

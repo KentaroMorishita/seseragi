@@ -1,0 +1,24 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/program-wasm-effect-package@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/program-wasm-effect-package@0.0.0#workspace:."
+name = "fixture/program-wasm-effect-package"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e2ecc3dd94e290a267d95933854c950523a4a7f03ef86cc3b77262aa61f0c52b"
+content_digest = "sha256:4ea443cdefc2583c715ac292fa7694d166f8e4952bc09b31b0261866ed92cc50"
+dependencies = []
+
+[[foreign_modules]]
+package = "fixture/program-wasm-effect-package@0.0.0#workspace:."
+declaration = "src/main.ssrg#149-258"
+specifier = "../host/bridge.ts"
+exact_identity = "workspace:host/bridge.ts"
+declaration_digest = "sha256:c437a31c57cd55a7d4f4bebcd609851ef3b1c111d290ebcd8e9f8b57cc80c797"
+content_digest = "sha256:749a5adc99d3c3e0407530278e20ff043061fc6744ade3d4b469b5c454a606fb"

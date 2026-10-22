@@ -1744,6 +1744,7 @@ Effect moduleは9.8のoperationに加え、次を提供します。
 - value/error変換: `attempt`, `fromEither`, `fromMaybe`
 - temporal control: `timeout`, `retry`, `repeat`
 - resource: `bracket`, `scoped`, `acquireRelease`
+- defect: `die`。coldな計算とfinalizerの規則は5.10、5.11に従います。
 
 ```seseragi
 fn service<R, S>

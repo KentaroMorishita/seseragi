@@ -1,0 +1,50 @@
+import * as effects from "std/effect"
+
+let unit = ()
+
+pub effect fn value input: String -> String fails String = effects.succeed input
+
+pub effect fn rejection input: String -> String fails String = effects.fail input
+
+pub effect fn defect input: String -> String = effects.die input
+
+pub fn callback prefix: String -> Effect<{}, Never, (String -> String)> =
+  effects.succeed (\suffix: String -> prefix + suffix)
+
+fn combine prefix: String -> suffix: String -> String = prefix + suffix
+
+pub fn saved prefix: String -> Effect<{}, Never, (String -> String)> = {
+  let next = combine prefix
+  effects.succeed next
+}
+
+pub effect fn staged prefix: String -> _trigger: Unit -> (String -> String) =
+  effects.succeed (\suffix: String -> prefix + suffix)
+
+pub effect fn transport failing: Bool -> input: (String, Maybe<Int>, Either<String, Bool>) -> (String, Maybe<Int>, Either<String, Bool>) fails (String, Maybe<Int>, Either<String, Bool>) =
+  if failing then effects.fail input else effects.succeed input
+
+fn wait -> Effect<{}, Never, Unit> = effects.defer (\_ -> wait ())
+
+pub effect fn pending resource: String -> Unit = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed resource) (\_value: String -> effects.succeed unit)
+  wait ()
+}
+
+pub effect fn late input: String -> String = do {
+  effects.acquireRelease (effects.succeed input) (\_value: String -> effects.succeed unit)
+  effects.succeed input
+}
+
+effect fn release message: String -> _resource: String -> Unit = effects.die message
+
+pub effect fn cleanup input: String -> String fails String = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed input) (release "outer released")
+  effects.acquireRelease (effects.succeed input) (release "inner released")
+  effects.fail input
+}
+
+pub effect fn cancelCleanup resource: String -> Unit = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed resource) (release "cancel released")
+  wait ()
+}

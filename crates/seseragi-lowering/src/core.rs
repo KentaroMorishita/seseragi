@@ -945,31 +945,51 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 constraints,
                 constraint_identities,
                 parameters,
-                effect: _,
+                effect,
                 body,
-            } => functions.push(CoreFunction {
-                symbol,
-                visibility,
-                origin: source_span(&module.source, origin),
-                is_effect: true,
-                value_type: None,
-                type_parameters,
-                constraints: constraints
-                    .into_iter()
-                    .enumerate()
-                    .map(|(index, constraint)| {
-                        instances::lower_constraint_with_identity(
-                            constraint,
-                            constraint_identities.get(index).cloned().flatten(),
-                        )
-                    })
-                    .collect(),
-                parameters: parameters
-                    .into_iter()
-                    .map(|parameter| lower_parameter(&parameter))
-                    .collect(),
-                body: lower_effect_body(&module.source, body),
-            }),
+            } => {
+                // Keep the checked declaration contract, including each source
+                // parameter. An Effect result is not reconstructed from its body.
+                let result = CoreType::Named {
+                    name: "std/prelude::Effect".into(),
+                    arguments: vec![
+                        types::lower_typed_type(effect.environment),
+                        types::lower_typed_type(effect.failure),
+                        types::lower_typed_type(effect.success),
+                    ],
+                };
+                let value_type =
+                    parameters
+                        .iter()
+                        .rev()
+                        .fold(result, |result, parameter| CoreType::Function {
+                            parameter: Box::new(lower_parameter(parameter).type_ref),
+                            result: Box::new(result),
+                        });
+                functions.push(CoreFunction {
+                    symbol,
+                    visibility,
+                    origin: source_span(&module.source, origin),
+                    is_effect: true,
+                    value_type: Some(value_type),
+                    type_parameters,
+                    constraints: constraints
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, constraint)| {
+                            instances::lower_constraint_with_identity(
+                                constraint,
+                                constraint_identities.get(index).cloned().flatten(),
+                            )
+                        })
+                        .collect(),
+                    parameters: parameters
+                        .into_iter()
+                        .map(|parameter| lower_parameter(&parameter))
+                        .collect(),
+                    body: lower_effect_body(&module.source, body),
+                });
+            }
         }
     }
 
