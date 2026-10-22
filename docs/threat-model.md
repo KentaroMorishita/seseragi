@@ -66,11 +66,14 @@ an oversized request to the application. The Bun server uses its native limit
 (128 MiB in the pinned Bun 1.4.4). Interrupted uploads are released on server
 close. These are per-request limits, not a process-wide or concurrency quota.
 
-The native HTTP client decodes known content encodings incrementally, with at
-most eight decoding stages. The small-response limit applies to decoded chunks,
-including compressed input that expands beyond the limit. Cancellation owns
-both the transport and decoder cleanup. Use Bun 1.4.4 or a patched supported
-Node release: buffering limits do not repair a vulnerable host Brotli decoder.
+The native small-response helpers decode known content encodings incrementally,
+with at most eight decoding stages. Their limit applies to decoded chunks,
+including compressed input that expands beyond the limit. Native public
+`exchange` preserves content-encoded body bytes for explicit decoders and proxy
+forwarding; the browser provider returns Fetch-decoded bytes for both APIs.
+Cancellation owns both the transport and any helper decoder cleanup. Use Bun
+1.4.4 or a patched supported Node release: buffering limits do not repair a
+vulnerable host Brotli decoder.
 
 The Bun HTTP/1 transport bounds response headers and trailers to 16 KiB each,
 chunk-size lines to 1 KiB and informational responses to 16 before a final

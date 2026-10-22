@@ -2901,12 +2901,16 @@ sendBytesとsendEmptyはexchangeを実行してbodyをmemoryへ集めるsmall-re
 超過時はresponse streamをcancelしてHttpResponseBodyLimitExceededです。informational responseは破棄し、final
 head、body、trailersだけをResponseへ入れます。
 
-標準Node/Bun providerは、gzip、deflate、br（x-gzip、x-deflateを含む）からなるContent-Encodingを
-受信順の逆にstreaming decodeします。既知encodingの重なりは8段までとし、超過はHttpProtocolFailureです。
-未知のencodingを含む場合は全体をdecodeせず、そのまま返します。HEAD、204、205、304の空bodyはdecodeしません。
-browser providerのbodyはFetchがdecodeした値です。small-response APIの上限はdecode後のchunkに適用し、
-圧縮前のContent-Lengthだけを根拠に受信量を許可しません。response headersは受信した値を保つため、
-Content-LengthやContent-Encodingがdecode後のbodyの長さ・形式を表すとは限りません。
+標準Node/Bun providerの公開exchangeはtransfer framingを除いたbody bytesを返し、Content-Encodingを
+decodeしません。明示的なdecoderや、headersとbodyをそのまま転送するproxyはこのbytesを利用できます。
+sendBytesとsendEmptyは、gzip、deflate、br（x-gzip、x-deflateを含む）からなるContent-Encodingを
+受信順の逆にstreaming decodeしてから集約します。既知encodingの重なりは8段までとし、超過は
+HttpProtocolFailureです。未知のencodingを含む場合は全体をdecodeせず、そのまま返します。
+HEAD、204、205、304の空bodyはdecodeしません。
+browser providerは公開exchangeもsmall-response APIもFetchがdecodeしたbodyを返します。
+small-response APIの上限はdecode後のchunkに適用し、圧縮前のContent-Lengthだけを根拠に受信量を
+許可しません。response headersは受信した値を保つため、decodeされたbodyの長さ・形式を
+Content-LengthやContent-Encodingが表すとは限りません。
 
 redirect、cookie jar、authentication、retry、timeoutは自動適用しません。redirectは
 3xx ResponseとLocationをapplicationが明示処理し、retry / timeoutはEffectまたはSchedule combinatorで包みます。

@@ -142,7 +142,7 @@ try {
         ),
         environment
       ),
-      "decoded body before trailers"
+      "raw body before trailers"
     )
     assert.equal(events.kind, "success", JSON.stringify(events))
     if (events.kind !== "success") throw new Error("trailers failed")
@@ -157,7 +157,7 @@ try {
     )
     assert.equal(events.value[2]?.tag, "ResponseBodyChunk")
     if (events.value[2]?.tag === "ResponseBodyChunk")
-      assert.deepEqual(Buffer.from(events.value[2].value), plain)
+      assert.deepEqual(Buffer.from(events.value[2].value), gzipSync(plain))
 
     const large = await deadline(
       run(
@@ -169,18 +169,36 @@ try {
         ),
         environment
       ),
-      "draining expanded response before trailers"
+      "draining encoded response before trailers"
     )
     assert.equal(large.kind, "success", JSON.stringify(large))
     if (large.kind !== "success") throw new Error("large response failed")
-    let decodedBytes = 0
+    let rawBytes = 0
     for (const event of large.value) {
       if (event.tag !== "ResponseBodyChunk") continue
       assert(event.value.length <= 64 * 1024)
-      decodedBytes += event.value.length
+      rawBytes += event.value.length
     }
-    assert.equal(decodedBytes, 256 * 1024)
+    assert.equal(rawBytes, gzipSync(Buffer.alloc(256 * 1024, 65)).length)
     assert.equal(large.value.at(-1)?.tag, "ResponseTrailers")
+
+    const decodedLarge = await deadline(
+      run(
+        sendEmpty(
+          limit(256 * 1024),
+          buildRequest(`http://127.0.0.1:${port}/large-trailers`)
+        ),
+        environment
+      ),
+      "helper drains expanded response"
+    )
+    assert.equal(decodedLarge.kind, "success", JSON.stringify(decodedLarge))
+    if (decodedLarge.kind !== "success")
+      throw new Error("decoded helper failed")
+    assert.deepEqual(
+      Buffer.from(decodedLarge.value.body),
+      Buffer.alloc(256 * 1024, 65)
+    )
 
     for (const path of ["truncated", "bad-crc", "too-deep"]) {
       const result = await deadline(
@@ -228,8 +246,9 @@ try {
       case: "native lifecycle",
       postBody: [...state.postBody],
       emptyResponses: 6,
-      fullyDrainedDecodedBytes: decodedBytes,
-      trailersAfterDecodedBody: true,
+      rawExchangeBytes: rawBytes,
+      fullyDrainedDecodedBytes: decodedLarge.value.body.length,
+      publicExchangeTrailersAfterRawBody: true,
       protocolFailures: 3,
       bombWireBytes: state.bombWireBytes,
       bombDecodedBytes: 256 * 1024,
@@ -237,6 +256,7 @@ try {
       recovery: true,
     })
   })
+  await assertDecodedTrailerOrder()
   await assertBoundedDemandAndCleanup()
   await delay(10)
   assert.deepEqual(unhandled, [])
@@ -393,6 +413,83 @@ async function withServer(
     await waitUntil(() => sockets.size === 0, "all fixture sockets closed")
     assert.equal(server.listening, false)
   }
+}
+
+async function assertDecodedTrailerOrder() {
+  const content = Buffer.alloc(256 * 1024, 65)
+  const events: HttpClientEvent[] = [
+    {
+      kind: "InformationalResponse",
+      head: { version: "Http1_1", status: 103, headers: [] },
+    },
+    {
+      kind: "ResponseStarted",
+      head: {
+        version: "Http1_1",
+        status: 200,
+        headers: [{ name: "content-encoding", value: "gzip" }],
+      },
+    },
+    { kind: "ResponseBodyChunk", bytes: gzipSync(content) },
+    {
+      kind: "ResponseTrailers",
+      headers: [{ name: "x-proof", value: "finite" }],
+    },
+  ]
+  const observed: HttpClientEvent[] = []
+  let finish = (): void => undefined
+  let fail = (_cause: unknown): void => undefined
+  const completion = new Promise<void>((resolve, reject) => {
+    finish = resolve
+    fail = reject
+  })
+  let unsubscribes = 0
+  const registration = createDecodedHttpExchange(
+    (_value, observerValue) => ({
+      demand() {
+        const observer = observerValue as ProviderSubscriptionObserver
+        const event = events.shift()
+        if (event !== undefined) observer.next(event)
+        if (events.length === 0) observer.complete()
+      },
+      unsubscribe() {
+        unsubscribes += 1
+      },
+    }),
+    { method: "GET" },
+    {
+      next(value: unknown) {
+        observed.push(value as HttpClientEvent)
+      },
+      complete: finish,
+      failure: fail,
+      defect: fail,
+    },
+    undefined
+  )
+  try {
+    registration.demand(100)
+    await deadline(
+      completion,
+      "decoder drains all output before trailers/completion"
+    )
+    assert.equal(observed[0]?.kind, "InformationalResponse")
+    assert.equal(observed[1]?.kind, "ResponseStarted")
+    assert.equal(observed.at(-1)?.kind, "ResponseTrailers")
+    const chunks = observed.flatMap((event) =>
+      event.kind === "ResponseBodyChunk" ? [event.bytes] : []
+    )
+    assert(chunks.every((bytes) => bytes.length <= 64 * 1024))
+    assert.deepEqual(Buffer.concat(chunks), content)
+  } finally {
+    await registration.unsubscribe()
+  }
+  assert.equal(unsubscribes, 1)
+  results.push({
+    case: "direct decoder trailer ordering",
+    decodedBytes: content.length,
+    rawUnsubscribes: unsubscribes,
+  })
 }
 
 async function assertBoundedDemandAndCleanup() {

@@ -254,6 +254,16 @@ export const ResponseTrailers = (value: Headers): HttpEvent =>
 export const emptyHeaders: Headers = freezeHeaders([])
 const defaultBodyLimitValue: HttpBodyLimit = limitValue(8 * 1024 * 1024)
 const MAX_HTTP_CHUNK_BYTES = 64 * 1024
+const decodedResponseBodies = new WeakSet<object>()
+
+/** Runtime-provider bridge marker; not part of std/http. */
+export function shouldDecodeHttpClientResponse(attachment: unknown): boolean {
+  return (
+    typeof attachment === "object" &&
+    attachment !== null &&
+    decodedResponseBodies.has(attachment)
+  )
+}
 
 const tokenPattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
 const managedHeaders = new Set([
@@ -517,6 +527,18 @@ export function exchange<Environment, Failure>(
   Either<Failure, HttpError>,
   HttpEvent
 > {
+  return exchangeImpl(body, requestValue, false)
+}
+
+function exchangeImpl<Environment, Failure>(
+  body: Body<Environment, Failure>,
+  requestValue: Request,
+  decodeContent: boolean
+): Stream<
+  Environment & HttpClientEnvironment,
+  Either<Failure, HttpError>,
+  HttpEvent
+> {
   return fromPull(async (environment, context) => {
     const openedBody = await attempt((() =>
       body.stream.open(environment, context)) as Effect<
@@ -595,6 +617,11 @@ export function exchange<Environment, Failure>(
         await bodyCursor.close()
       },
     })
+
+    // Only small-response helpers opt into native content decoding. The opaque
+    // attachment retains its closed shape and identity through the provider
+    // bridge; public exchange keeps transfer-decoded, content-encoded bytes.
+    if (decodeContent) decodedResponseBodies.add(requestBody)
 
     let source: PullStreamSource<HttpClientEvent>
     try {
@@ -758,7 +785,7 @@ function sendApplicationRequest(
     const chunks: Uint8Array[] = []
     const events = mapStreamError(
       (error: Either<never, HttpError>) => error.value,
-      exchange(bytesBody<unknown, never>(body), requestValue)
+      exchangeImpl(bytesBody<unknown, never>(body), requestValue, true)
     )
     const collected = await attempt(
       runForEach(

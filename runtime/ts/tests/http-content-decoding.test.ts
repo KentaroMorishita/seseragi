@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve } from "node:path"
 
-test("Node and Bun decode streaming responses with bounded demand and joined cancellation", async () => {
+test("Node and Bun retain raw exchange and bound decoded helpers with joined cancellation", async () => {
   const directory = mkdtempSync(
     join(tmpdir(), "seseragi-http-content-decoding-")
   )

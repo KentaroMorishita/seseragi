@@ -1,6 +1,9 @@
 import * as http from "node:http"
 import * as https from "node:https"
-import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
+import {
+  type HttpClientRequestBody,
+  shouldDecodeHttpClientResponse,
+} from "@seseragi/runtime/http-client"
 import {
   type ProviderSubscriptionObserver,
   type ProviderSubscriptionRegistration,
@@ -33,14 +36,13 @@ export function createFetchHttpClientProvider(
         return withProviderCancellation(completion, () => controller.abort())
       },
       exchange(value, observer, attachment) {
-        return createDecodedHttpExchange(
+        const rawExchange =
           target === "bun-process"
             ? createBunHttp1Exchange
-            : createNodeHttpExchange,
-          value,
-          observer,
-          attachment
-        )
+            : createNodeHttpExchange
+        return shouldDecodeHttpClientResponse(attachment)
+          ? createDecodedHttpExchange(rawExchange, value, observer, attachment)
+          : rawExchange(value, observer, attachment)
       },
     },
   })
