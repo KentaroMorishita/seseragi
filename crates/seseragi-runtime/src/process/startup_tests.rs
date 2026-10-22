@@ -1,13 +1,6 @@
 use super::{entry_source, prepare_directory, web_entry::web_entry_source};
 use crate::{FailureRenderer, MainContract, ProcessRunOptions, RandomSeed};
-use std::{fs, path::PathBuf, process::Command};
-
-struct Fixture(PathBuf);
-impl Drop for Fixture {
-    fn drop(&mut self) {
-        let _ = fs::remove_dir_all(&self.0);
-    }
-}
+use std::{fs, process::Command};
 
 fn execute_startup(browser: bool, seed: RandomSeed, bundled: bool) -> std::process::Output {
     execute_startup_diagnostics(browser, seed, bundled, crate::DiagnosticFormat::Text)
@@ -19,10 +12,10 @@ fn execute_startup_diagnostics(
     bundled: bool,
     diagnostic_format: crate::DiagnosticFormat,
 ) -> std::process::Output {
-    let fixture = Fixture(prepare_directory().unwrap());
-    crate::stage_typescript_package(&fixture.0).unwrap();
+    let fixture = prepare_directory().unwrap();
+    crate::stage_typescript_package(fixture.path()).unwrap();
     fs::write(
-        fixture.0.join("application.ts"),
+        fixture.path().join("application.ts"),
         "import { empty } from '@seseragi/runtime/map';\n\
          import { processHashSeed } from '@seseragi/runtime/hash';\n\
          const topLevelMap = empty();\n\
@@ -46,7 +39,7 @@ fn execute_startup_diagnostics(
         entry_source(&contract, "./application.ts", None, options)
     };
     fs::write(
-        fixture.0.join("entry.ts"),
+        fixture.path().join("entry.ts"),
         format!("Object.defineProperty(globalThis, 'crypto', {{ value: undefined }});\n{source}"),
     )
     .unwrap();
@@ -63,7 +56,7 @@ fn execute_startup_diagnostics(
                 "--outfile=entry.js",
                 "--minify",
             ])
-            .current_dir(&fixture.0)
+            .current_dir(fixture.path())
             .output()
             .unwrap();
         assert!(
@@ -76,10 +69,10 @@ fn execute_startup_diagnostics(
         .arg("run")
         .arg(
             fixture
-                .0
+                .path()
                 .join(if bundled { "entry.js" } else { "entry.ts" }),
         )
-        .current_dir(&fixture.0)
+        .current_dir(fixture.path())
         .output()
         .unwrap()
 }

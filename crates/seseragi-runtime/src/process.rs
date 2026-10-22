@@ -1,12 +1,14 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::Command;
-use std::sync::atomic::{AtomicU64, Ordering};
 
 use seseragi_driver::CompiledModule;
+use tempfile::TempDir;
 
 use crate::{main_contract, validate_target, ExecutionTarget, MainContract, TargetMismatch};
 
+#[cfg(test)]
+mod directory_tests;
 mod entry;
 mod local_package;
 mod source_file;
@@ -69,7 +71,6 @@ impl Default for ProcessRunOptions {
 }
 
 mod build;
-static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct RunOutcome {
@@ -130,28 +131,30 @@ fn run_main_with_optional_source(
 ) -> Result<RunOutcome, RunError> {
     let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
-    let directory = prepare_directory().map_err(RunError::Host)?;
+    let owned_directory = prepare_directory().map_err(RunError::Host)?;
+    let directory = owned_directory.path();
     let result = (|| {
         let prepared = source
             .map(|source| source.prepare(compiled, false))
             .transpose()
             .map_err(RunError::Host)?;
         if let Some(prepared) = &prepared {
-            prepared.stage(&directory, true).map_err(RunError::Host)?;
+            prepared.stage(directory, true).map_err(RunError::Host)?;
         }
         let compiled = prepared
             .as_ref()
             .map_or(compiled, |prepared| &prepared.compiled);
-        run_in_directory(compiled, &contract, &directory, options)
+        run_in_directory(compiled, &contract, directory, options)
     })();
-    finish_run(result, &directory)
+    finish_run(result, owned_directory)
 }
 
-pub(super) fn finish_run(
-    result: Result<RunOutcome, RunError>,
-    directory: &Path,
-) -> Result<RunOutcome, RunError> {
-    let cleanup = fs::remove_dir_all(directory)
+pub(super) fn finish_run<Outcome>(
+    result: Result<Outcome, RunError>,
+    directory: TempDir,
+) -> Result<Outcome, RunError> {
+    let cleanup = directory
+        .close()
         .map_err(|error| RunError::Host(format!("failed to clean execution directory: {error}")));
     match (result, cleanup) {
         (Ok(outcome), Ok(())) => Ok(outcome),
@@ -234,16 +237,21 @@ pub(super) fn run_target_captured(
     })
 }
 
-pub(super) fn prepare_directory() -> Result<PathBuf, String> {
-    let run = NEXT_RUN.fetch_add(1, Ordering::Relaxed);
-    let directory = std::env::temp_dir()
-        .join("seseragi-run")
-        .join(format!("{}-{run}", std::process::id()));
-    if directory.exists() {
-        fs::remove_dir_all(&directory)
-            .map_err(|error| format!("failed to reset execution directory: {error}"))?;
+pub(super) fn prepare_directory() -> Result<TempDir, String> {
+    prepare_directory_in(&std::env::temp_dir())
+}
+
+fn prepare_directory_in(root: &Path) -> Result<TempDir, String> {
+    let mut builder = tempfile::Builder::new();
+    // Create directly in the trusted temp root. A shared, pre-existing parent
+    // must never redirect staging or make another run's files ours to reset.
+    builder.prefix("seseragi-run-").rand_bytes(32);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        builder.permissions(fs::Permissions::from_mode(0o700));
     }
-    fs::create_dir_all(&directory)
-        .map_err(|error| format!("failed to create execution directory: {error}"))?;
-    Ok(directory)
+    builder
+        .tempdir_in(root)
+        .map_err(|error| format!("failed to create execution directory: {error}"))
 }

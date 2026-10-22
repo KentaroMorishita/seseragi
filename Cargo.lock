@@ -690,6 +690,7 @@ dependencies = [
  "seseragi-semantics",
  "seseragi-syntax",
  "sha2",
+ "tempfile",
 ]
 
 [[package]]

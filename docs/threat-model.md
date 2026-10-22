@@ -25,6 +25,18 @@ analysis; execution requires Run or its keyboard shortcut.
 - Output is bounded before accumulation. Text is rendered with textContent;
   HTML output is rendered only when Preview is selected, with scripts denied.
 
+## Local execution staging
+
+CLI single-file, project, test, benchmark and documentation runs create an
+exclusive randomly named directory directly under the configured system temp
+root. That root is trusted. On Unix the new directory is private (0700), and
+the run retains its `TempDir` owner until execution ends. Success and failure
+explicitly close that owned directory; unwinding drops the owner. Pre-existing
+legacy `seseragi-run` paths are never reset or reused, and cleanup must not
+follow symlinks inside the owned directory. This protects staging ownership;
+CLI programs still execute with the invoking user's filesystem and network
+authority.
+
 ## Data and network authority
 
 The parent Storage broker checks the entry capability, operation, request ID,
