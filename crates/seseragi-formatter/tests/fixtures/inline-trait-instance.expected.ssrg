@@ -1,0 +1,7 @@
+trait Read<A> {
+  fn read value: A -> Int
+}
+instance Read<Int> {
+  fn read value: Int -> Int = value
+}
+pub effect fn main = println (show (read 42))

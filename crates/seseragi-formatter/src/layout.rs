@@ -14,12 +14,19 @@ pub(super) fn format_valid_module(
     collect_match_body_braces(&cst.root, &tokens.tokens, &mut match_body_braces);
     let delimiters = Delimiters::new(&tokens.tokens, &angles, &match_body_braces);
     let member_bodies = member_body_map(&tokens.tokens);
+    let declaration_starts = cst
+        .root
+        .children
+        .iter()
+        .map(|declaration| declaration.start_token)
+        .collect();
     let lines = logical_lines(
         &source_lines,
         &tokens.tokens,
         &delimiters,
         &angles,
         &member_bodies,
+        &declaration_starts,
     );
     let mut statement_blocks = HashSet::new();
     collect_statement_blocks(&cst.root, &tokens.tokens, &mut statement_blocks);
@@ -199,6 +206,7 @@ fn logical_lines(
     delimiters: &Delimiters,
     angles: &HashSet<usize>,
     member_bodies: &[Option<MemberBody>],
+    declaration_starts: &HashSet<usize>,
 ) -> Vec<LogicalLine> {
     let mut result = Vec::new();
     let mut pending: Option<(Vec<usize>, usize)> = None;
@@ -216,16 +224,20 @@ fn logical_lines(
         }
 
         if let Some((current, current_indent)) = pending.as_mut() {
-            if should_join(
-                current,
-                &indices,
-                *current_indent,
-                line.indent,
-                tokens,
-                delimiters,
-                angles,
-                member_bodies,
-            ) {
+            // A bodyless member inside a completed block is not a header
+            // continuation across the next shared CST declaration boundary.
+            if !declaration_starts.contains(&indices[0])
+                && should_join(
+                    current,
+                    &indices,
+                    *current_indent,
+                    line.indent,
+                    tokens,
+                    delimiters,
+                    angles,
+                    member_bodies,
+                )
+            {
                 current.extend(indices);
                 continue;
             }
