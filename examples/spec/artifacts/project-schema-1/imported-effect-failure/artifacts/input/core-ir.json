@@ -74,6 +74,35 @@
         "start": 61,
         "end": 125
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "InputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "input",

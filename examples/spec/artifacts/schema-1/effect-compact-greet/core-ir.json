@@ -11,6 +11,44 @@
         "start": 0,
         "end": 48
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "name",

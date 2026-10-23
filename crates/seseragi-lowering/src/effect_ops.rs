@@ -202,6 +202,13 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         export_name: "fail",
         source_map_name: "fail",
     },
+    surface_operation!(
+        "effect.die",
+        "effect.core.die",
+        "_ssrg_effect_die",
+        "@seseragi/runtime/effect",
+        "die"
+    ),
     RuntimeEffectOperation {
         core_name: "effect.mapError",
         runtime_feature: "effect.core.mapError",
@@ -239,6 +246,13 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         "_ssrg_effect_fail",
         "@seseragi/runtime/effect",
         "fail"
+    ),
+    surface_operation!(
+        "std/effect::die",
+        "effect.core.die",
+        "_ssrg_effect_die",
+        "@seseragi/runtime/effect",
+        "die"
     ),
     surface_operation!(
         "std/effect::defer",
@@ -1083,6 +1097,16 @@ mod tests {
 
         assert_eq!(operation.runtime_feature, "effect.core.fail");
         assert_eq!(operation.export_name, "fail");
+    }
+
+    #[test]
+    fn resolves_cold_defect_runtime_abi() {
+        for name in ["effect.die", "std/effect::die"] {
+            let operation = runtime_effect_operation(name).unwrap();
+            assert_eq!(operation.runtime_feature, "effect.core.die");
+            assert_eq!(operation.module, "@seseragi/runtime/effect");
+            assert_eq!(operation.export_name, "die");
+        }
     }
 
     #[test]

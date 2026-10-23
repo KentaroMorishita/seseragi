@@ -466,6 +466,35 @@
         "start": 318,
         "end": 384
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "HandInputError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Hand",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "input",

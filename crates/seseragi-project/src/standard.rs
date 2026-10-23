@@ -2661,6 +2661,14 @@ fn effect_interface() -> ModuleInterface {
         ),
         effect_function_export(
             module,
+            "die",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            effect(record([]), named("Never"), named("Never")),
+        ),
+        effect_function_export(
+            module,
             "defer",
             ["R", "E", "A"],
             Vec::new(),
@@ -10985,6 +10993,7 @@ mod tests {
             "ScheduleError",
             "succeed",
             "fail",
+            "die",
             "defer",
             "mapError",
             "recover",

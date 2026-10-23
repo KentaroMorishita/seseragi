@@ -1,14 +1,18 @@
-export interface BrowserProgram<Exports, Ownership> {
+export interface BrowserProgram<
+  Exports,
+  Ownership,
+  Disposal extends void | Promise<void> = void,
+> {
   readonly exports: Exports
-  dispose(): void
+  dispose(): Disposal
   ownership(): Ownership
 }
 
 export interface ProgramLifetime {
-  load<Exports, Ownership>(
-    create: () => Promise<BrowserProgram<Exports, Ownership>>,
+  load<Exports, Ownership, Disposal extends void | Promise<void>>(
+    create: () => Promise<BrowserProgram<Exports, Ownership, Disposal>>,
     closedError: () => Error
-  ): Promise<BrowserProgram<Exports, Ownership>>
+  ): Promise<BrowserProgram<Exports, Ownership, Disposal>>
   close(): Promise<void>
 }
 

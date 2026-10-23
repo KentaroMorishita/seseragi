@@ -2474,6 +2474,66 @@
         "start": 1644,
         "end": 1845
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "unit",

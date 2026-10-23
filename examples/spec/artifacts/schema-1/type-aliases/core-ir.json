@@ -1888,6 +1888,36 @@
         "start": 1167,
         "end": 1197
       },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
+      },
       "parameters": [
         {
           "id": "unit",
@@ -1933,6 +1963,45 @@
         "source": "main.ssrg",
         "start": 1199,
         "end": 1479
+      },
+      "valueType": {
+        "kind": "function",
+        "parameter": {
+          "kind": "external-named",
+          "name": "Unit",
+          "canonical": "std/prelude::Unit",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "std/prelude::Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
       },
       "parameters": [
         {

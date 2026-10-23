@@ -12,6 +12,7 @@ mod imports;
 mod instances;
 mod module_imports;
 mod names;
+mod recursive;
 mod runtime;
 mod type_imports;
 pub(crate) mod types;
@@ -721,6 +722,14 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     plan: &TypeScriptOutputPlan,
     options: &TypeScriptLoweringOptions,
 ) -> Result<TypeScriptModule, TypeScriptLoweringError> {
+    let recursive_effect_types = module
+        .functions
+        .iter()
+        .filter_map(|function| {
+            recursive::providerless_effect_type(&module, function)
+                .map(|ty| (function.symbol.clone(), ty))
+        })
+        .collect::<BTreeMap<_, _>>();
     let scalar_globals = plan.scalar_globals.clone().with_module(&module);
     let mut module_imports = lower_module_imports(&module, plan)?;
     module_imports.type_names = module_imports
@@ -731,8 +740,8 @@ pub fn lower_core_module_to_typescript_ir_with_options(
     let mut imports = Vec::new();
     let mut type_imports = Vec::new();
     collect_module_type_imports(&module, &mut runtime_requirements, &mut type_imports);
-    // A runtime List and an actual nominal List may coexist. Keep the nominal
-    // source alias and freshen only the runtime annotation import.
+    // Runtime annotation types may coexist with actual nominal types. Keep the
+    // source alias and freshen only the runtime import selected for annotation.
     let mut used_type_names = module
         .structs
         .iter()
@@ -746,10 +755,20 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         )
         .collect::<std::collections::BTreeSet<_>>();
     used_type_names.extend(foreign_opaque_type_names(&module.foreign_modules));
+    if !recursive_effect_types.is_empty() {
+        used_type_names.extend(module.aliases.iter().map(|alias| alias.name.clone()));
+    }
     for import in &mut type_imports {
-        if import.feature == "core.list" {
+        let runtime_type = match import.feature.as_str() {
+            "core.list" => Some(("std/prelude::List", "__ssrg$List")),
+            "effect.core.type" if !recursive_effect_types.is_empty() => {
+                Some(("std/prelude::Effect", "__ssrg$Effect"))
+            }
+            _ => None,
+        };
+        if let Some((canonical, base)) = runtime_type {
             if used_type_names.contains(&import.local) {
-                let mut alias = "__ssrg$List".to_owned();
+                let mut alias = base.to_owned();
                 while used_type_names.contains(&alias) {
                     alias.push('_');
                 }
@@ -758,7 +777,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             used_type_names.insert(import.local.clone());
             module_imports.type_names = module_imports
                 .type_names
-                .with_runtime_type_name("std/prelude::List".into(), import.local.clone());
+                .with_runtime_type_name(canonical.into(), import.local.clone());
         }
     }
 
@@ -1028,15 +1047,20 @@ pub fn lower_core_module_to_typescript_ir_with_options(
             let scoped_types = module_imports
                 .type_names
                 .with_parameters(&function.type_parameters);
-            let value_type = (!function.is_effect
-                && function.type_parameters.is_empty()
-                && function.constraints.is_empty()
-                && crate::core_free_variables(&function.body)
-                    .is_some_and(|free| free.names.contains(&function.symbol)))
-            .then(|| function.value_type.as_ref())
-            .flatten()
-            .map(|ty| types::type_ref_from_core_type(ty, &scoped_types))
-            .filter(recursive_value_annotation);
+            let value_type = recursive_effect_types
+                .get(&function.symbol)
+                .and_then(|checked| recursive::annotation(checked, &scoped_types))
+                .or_else(|| {
+                    (!function.is_effect
+                        && function.type_parameters.is_empty()
+                        && function.constraints.is_empty()
+                        && crate::core_free_variables(&function.body)
+                            .is_some_and(|free| free.names.contains(&function.symbol)))
+                    .then(|| function.value_type.as_ref())
+                    .flatten()
+                    .map(|ty| types::type_ref_from_core_type(ty, &scoped_types))
+                    .filter(recursive_value_annotation)
+                });
             let type_constructor_parameters = function
                 .type_parameters
                 .iter()

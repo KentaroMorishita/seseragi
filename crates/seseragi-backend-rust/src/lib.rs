@@ -2,10 +2,11 @@
 //! rustc validates generated implementation code, not Seseragi source types.
 mod emit;
 mod program_wasm;
+mod program_wasm_effect;
 mod project;
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
-    PROGRAM_WASM_ABI,
+    PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
 };
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
@@ -98,6 +99,7 @@ mod runtime {
     include!("runtime_array.rs");
     include!("runtime_trace.rs");
     include!("runtime_effect.rs");
+    include!("runtime_effect_defect.rs");
     include!("runtime_scheduler.rs");
     include!("runtime_path.rs");
     include!("runtime_filesystem.rs");

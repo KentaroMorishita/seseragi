@@ -276,6 +276,7 @@ lawは次のとおりです。Eqで観測できる範囲で成立しなければ
 ```seseragi
 fn succeed<R, E, A> value: A -> Effect<R, E, A>
 fn fail<R, E, A> error: E -> Effect<R, E, A>
+fn die message: String -> Effect<{}, Never, Never>
 fn defer<R, E, A>
   thunk: (Unit -> Effect<R, E, A>) -> Effect<R, E, A>
 fn mapError<R, E, F, A>
