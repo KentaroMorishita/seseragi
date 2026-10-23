@@ -75,6 +75,15 @@ Cancellation owns both the transport and any helper decoder cleanup. Use Bun
 1.4.4 or a patched supported Node release: buffering limits do not repair a
 vulnerable host Brotli decoder.
 
+Bun small-response helpers preserve the Fetch proxy environment: scheme-specific
+HTTP_PROXY/HTTPS_PROXY, ALL_PROXY fallback, lowercase precedence and NO_PROXY
+host, port, IP and CIDR exclusions. HTTP forwarding and HTTPS CONNECT retain
+the bounded response parser. CONNECT response headers and informational messages
+are bounded before destination TLS starts. Proxy credentials stay on the proxy
+leg, certificate verification applies to both TLS legs, and cancellation owns
+pending and established sockets. Public native `exchange` keeps its existing
+direct transport behavior.
+
 Both native HTTP transports bound informational responses to 16 before a final
 response, including Node responses queued while consumer demand is zero. The
 Bun HTTP/1 transport also bounds response headers and trailers to 16 KiB each

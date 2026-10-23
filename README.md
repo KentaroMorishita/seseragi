@@ -119,6 +119,11 @@ OS別archive・checksum・release identityの詳細は[release contract](./docs/
 main branchからcompilerをbuildして開発する場合に限り、RustとBunを用意してCLIをinstallします。
 これは公開済みreleaseを固定する導入方法ではありません。
 
+Rustのtoolchain managerには、証明書検証のCVE-2026-111943を修正した
+[rustup 1.29.2以降](https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/)を使います。
+Homebrew管理の場合は`brew upgrade rustup`で更新します。
+compiler自体のversionは`rust-toolchain.toml`で固定しています。
+
 ```sh
 cargo install \
   --git https://github.com/KentaroMorishita/seseragi \

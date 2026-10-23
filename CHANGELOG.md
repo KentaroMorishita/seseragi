@@ -6,6 +6,7 @@
 
 - Enforce HTTP response body limits while collecting chunks, cancel at the first overflow, and preserve ordinary browser POST uploads and Node Host headers.
 - Decode native gzip, deflate and Brotli responses incrementally before applying small-response limits, while preserving content-encoded bytes in public `exchange`. Preserve fixed-length Node uploads and graceful `serveOnce` responses; join response cancellation and asynchronous stream cleanup on both hosts.
+- Preserve Bun helper proxy routing and bypass settings while enforcing response limits, verify TLS at both proxy and destination, and release pending CONNECT tunnels. Connect to HTTPS IP literals without sending an invalid TLS server name.
 - Update the pinned Bun toolchain to 1.4.4 for the Brotli decoder fix CVE-2026-111497. Generated JavaScript deployments must update their own Bun or Node runtime separately.
 - Bound Node HTTP request bodies to 8 MiB by default, return 413 before dispatching oversized requests, and release interrupted uploads and stalled response streams during server shutdown.
 - Bound Bun HTTP/1 response headers, trailers and chunk-size lines, and cap informational responses on both native hosts even with no consumer demand. Reject ambiguous or invalid response metadata. Preserve complete responses under backpressure, await in-flight upload cancellation on both hosts, and close Node transports even when cancellation fails.

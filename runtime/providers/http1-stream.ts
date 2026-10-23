@@ -1,10 +1,15 @@
 import * as net from "node:net"
 import * as tls from "node:tls"
-import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
+import {
+  type HttpClientRequestBody,
+  shouldDecodeHttpClientResponse,
+} from "@seseragi/runtime/http-client"
 import type {
   ProviderSubscriptionObserver,
   ProviderSubscriptionRegistration,
 } from "@seseragi/runtime/provider"
+import { createHttpProxyConnection } from "./http-proxy-connection"
+import { selectHttpProxy } from "./http-proxy-environment"
 
 type Header = Readonly<{ name: string; value: string }>
 type RequestValue = Readonly<{
@@ -42,8 +47,15 @@ export function createBunHttp1Exchange(
   validateBridge(observer, body)
 
   const url = new URL(requestValue.url)
-  const socket = connect(url)
-  let buffer = Buffer.alloc(0)
+  const proxy = shouldDecodeHttpClientResponse(body)
+    ? selectHttpProxy(url)
+    : undefined
+  const connection =
+    proxy === undefined
+      ? undefined
+      : createHttpProxyConnection(url, proxy, requestValue.headers)
+  let socket = proxy === undefined ? connect(url) : undefined
+  let buffer: Buffer = Buffer.alloc(0)
   let demand = 0
   let bodyMode: BodyMode | undefined
   let responseComplete = false
@@ -67,7 +79,8 @@ export function createBunHttp1Exchange(
     terminal = true
     buffer = Buffer.alloc(0)
     observer.failure(httpFailure(cause))
-    socket.destroy()
+    socket?.destroy()
+    connection?.cancel()
     void cancelBody().catch(() => undefined)
   }
   const finish = (): void => {
@@ -75,7 +88,8 @@ export function createBunHttp1Exchange(
     terminal = true
     buffer = Buffer.alloc(0)
     observer.complete()
-    socket.destroy()
+    socket?.destroy()
+    connection?.cancel()
   }
   const stopRequestBody = (): void => {
     if (requestBodyDone || requestBodyCancelled) return
@@ -101,8 +115,8 @@ export function createBunHttp1Exchange(
         }
         finish()
       }
-      if (demand > 0 && !terminal && !stopped) socket.resume()
-      else socket.pause()
+      if (demand > 0 && !terminal && !stopped) socket?.resume()
+      else socket?.pause()
     } catch (cause) {
       fail(protocolFailure(cause))
     } finally {
@@ -253,71 +267,98 @@ export function createBunHttp1Exchange(
     return { kind: "ResponseBodyChunk", bytes }
   }
 
-  socket.pause()
-  socket.on("data", (chunk) => {
-    if (terminal || stopped) return
-    try {
-      if (bodyMode === undefined) {
-        checkMetadataAppend(
-          buffer,
-          chunk,
-          headDelimiter,
-          headLimitBytes,
-          "headers"
-        )
-      } else if (bodyMode.kind === "chunked") {
-        if (bodyMode.readingTrailers) {
-          const emptyTrailers =
-            buffer.length > 0
-              ? buffer[0] === 13 && (buffer[1] ?? chunk[0]) === 10
-              : chunk[0] === 13 && chunk[1] === 10
-          if (!emptyTrailers) {
-            checkMetadataAppend(
-              buffer,
-              chunk,
-              headDelimiter,
-              trailerLimitBytes,
-              "trailers"
-            )
-          }
-        } else if (bodyMode.remaining === undefined && !bodyMode.expectCrlf) {
+  const attachSocket = (
+    connectedSocket: net.Socket,
+    connected: boolean,
+    headers: ReadonlyArray<Header>,
+    requestTarget?: string
+  ): void => {
+    connectedSocket.pause()
+    connectedSocket.on("data", (chunk) => {
+      if (terminal || stopped) return
+      try {
+        if (bodyMode === undefined) {
           checkMetadataAppend(
             buffer,
             chunk,
-            lineDelimiter,
-            chunkLineLimitBytes,
-            "chunk size line"
+            headDelimiter,
+            headLimitBytes,
+            "headers"
           )
+        } else if (bodyMode.kind === "chunked") {
+          if (bodyMode.readingTrailers) {
+            const emptyTrailers =
+              buffer.length > 0
+                ? buffer[0] === 13 && (buffer[1] ?? chunk[0]) === 10
+                : chunk[0] === 13 && chunk[1] === 10
+            if (!emptyTrailers) {
+              checkMetadataAppend(
+                buffer,
+                chunk,
+                headDelimiter,
+                trailerLimitBytes,
+                "trailers"
+              )
+            }
+          } else if (bodyMode.remaining === undefined && !bodyMode.expectCrlf) {
+            checkMetadataAppend(
+              buffer,
+              chunk,
+              lineDelimiter,
+              chunkLineLimitBytes,
+              "chunk size line"
+            )
+          }
         }
+      } catch (cause) {
+        fail(protocolFailure(cause))
+        return
       }
-    } catch (cause) {
-      fail(protocolFailure(cause))
-      return
-    }
-    buffer = buffer.length === 0 ? chunk : Buffer.concat([buffer, chunk])
-    drain()
-  })
-  socket.once("end", () => {
-    socketEnded = true
-    drain()
-  })
-  socket.once("error", fail)
-  socket.once("connect", () => {
-    void (async () => {
-      const framing = requestFraming(requestValue.headers, body.knownLength)
-      await writeSocket(socket, requestHead(url, requestValue, framing.headers))
-      await pumpBody(socket, body, framing.chunked, () => {
-        requestBodyDone = true
-      })
-      if (demand > 0) socket.resume()
-    })().catch((cause) => {
-      if (requestBodyCancelled || stopped) return
-      fail({
-        tag: "HttpRequestBodyFailure",
-        value: cause instanceof Error ? cause.message : "request body failed",
-      })
+      buffer = buffer.length === 0 ? chunk : Buffer.concat([buffer, chunk])
+      drain()
     })
-  })
+    connectedSocket.once("end", () => {
+      socketEnded = true
+      drain()
+    })
+    connectedSocket.once("error", fail)
+    const send = () => {
+      void (async () => {
+        const framing = requestFraming(headers, body.knownLength)
+        await writeSocket(
+          connectedSocket,
+          requestHead(url, requestValue, framing.headers, requestTarget)
+        )
+        await pumpBody(connectedSocket, body, framing.chunked, () => {
+          requestBodyDone = true
+        })
+        if (demand > 0) connectedSocket.resume()
+      })().catch((cause) => {
+        if (requestBodyCancelled || stopped) return
+        fail({
+          tag: "HttpRequestBodyFailure",
+          value: cause instanceof Error ? cause.message : "request body failed",
+        })
+      })
+    }
+    if (connected) send()
+    else connectedSocket.once("connect", send)
+  }
+
+  if (connection === undefined) {
+    attachSocket(socket!, false, requestValue.headers)
+  } else {
+    void connection.ready
+      .then((opened) => {
+        if (stopped || terminal) {
+          connection.cancel()
+          return
+        }
+        socket = opened.socket
+        attachSocket(opened.socket, true, opened.headers, opened.target)
+      })
+      .catch(fail)
+  }
 
   return Object.freeze({
     demand(count: number) {
@@ -330,7 +371,8 @@ export function createBunHttp1Exchange(
         return
       }
       stopped = true
-      socket.destroy()
+      socket?.destroy()
+      connection?.cancel()
       buffer = Buffer.alloc(0)
       await cancelBody()
     },
@@ -389,9 +431,17 @@ function protocolFailure(cause: unknown) {
 
 function connect(url: URL): net.Socket | tls.TLSSocket {
   const port = Number(url.port || (url.protocol === "https:" ? 443 : 80))
+  const host = url.hostname.startsWith("[")
+    ? url.hostname.slice(1, -1)
+    : url.hostname
   return url.protocol === "https:"
-    ? tls.connect({ host: url.hostname, port, servername: url.hostname })
-    : net.connect({ host: url.hostname, port })
+    ? tls.connect({
+        host,
+        port,
+        servername: net.isIP(host) === 0 ? host : "",
+        rejectUnauthorized: true,
+      })
+    : net.connect({ host, port })
 }
 
 function validateRequest(value: unknown): RequestValue {
@@ -440,9 +490,10 @@ function requestFraming(headers: ReadonlyArray<Header>, knownLength?: number) {
 function requestHead(
   url: URL,
   request: RequestValue,
-  headers: ReadonlyArray<Header>
+  headers: ReadonlyArray<Header>,
+  requestTarget?: string
 ) {
-  const target = `${url.pathname}${url.search}`
+  const target = requestTarget ?? `${url.pathname}${url.search}`
   const defaultPort = url.protocol === "https:" ? "443" : "80"
   const host =
     url.port !== "" && url.port !== defaultPort
