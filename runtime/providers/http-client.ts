@@ -1,17 +1,21 @@
-import {
-  providerRuntimeAbi,
-  type ProviderSubscriptionObserver,
-  type ProviderSubscriptionRegistration,
-  withProviderCancellation,
-} from "@seseragi/runtime/provider"
-import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
 import * as http from "node:http"
 import * as https from "node:https"
-import { createBunHttp1Exchange } from "./http1-stream"
+import {
+  type HttpClientRequestBody,
+  shouldDecodeHttpClientResponse,
+} from "@seseragi/runtime/http-client"
+import {
+  type ProviderSubscriptionObserver,
+  type ProviderSubscriptionRegistration,
+  providerRuntimeAbi,
+  withProviderCancellation,
+} from "@seseragi/runtime/provider"
 import {
   defineProviderPackage,
   type ProviderPackageEntry,
 } from "@seseragi/runtime/provider-package"
+import { createDecodedHttpExchange } from "./http-content-decoding"
+import { createBunHttp1Exchange } from "./http1-stream"
 
 type FetchHost = (input: string, init: RequestInit) => Promise<Response>
 
@@ -32,9 +36,13 @@ export function createFetchHttpClientProvider(
         return withProviderCancellation(completion, () => controller.abort())
       },
       exchange(value, observer, attachment) {
-        return target === "bun-process"
-          ? createBunHttp1Exchange(value, observer, attachment)
-          : createNodeHttpExchange(value, observer, attachment)
+        const rawExchange =
+          target === "bun-process"
+            ? createBunHttp1Exchange
+            : createNodeHttpExchange
+        return shouldDecodeHttpClientResponse(attachment)
+          ? createDecodedHttpExchange(rawExchange, value, observer, attachment)
+          : rawExchange(value, observer, attachment)
       },
     },
   })
@@ -69,11 +77,15 @@ function createNodeHttpExchange(
   let stopped = false
   let requestBodyDone = false
   let bodyCancelled = false
+  let bodyCancellation: Promise<void> | undefined
+  let stopping: Promise<void> | undefined
+  let informationalResponses = 0
 
-  const cancelBody = async (): Promise<void> => {
-    if (bodyCancelled) return
+  const cancelBody = (): Promise<void> => {
+    if (bodyCancellation !== undefined) return bodyCancellation
     bodyCancelled = true
-    await body.cancel()
+    bodyCancellation = Promise.resolve().then(() => body.cancel())
+    return bodyCancellation
   }
   const failure = (error: unknown): void => {
     if (terminal || stopped) return
@@ -82,12 +94,7 @@ function createNodeHttpExchange(
     void cancelBody().catch(() => undefined)
   }
   const completeIfDrained = (): void => {
-    if (
-      responseEnded &&
-      queued.length === 0 &&
-      !terminal &&
-      !stopped
-    ) {
+    if (responseEnded && queued.length === 0 && !terminal && !stopped) {
       terminal = true
       observer.complete()
     }
@@ -119,7 +126,35 @@ function createNodeHttpExchange(
     version: string,
     status: number,
     rawHeaders: ReadonlyArray<string>
-  ): void => {
+  ): boolean => {
+    if (terminal || stopped) return false
+    let invalid =
+      !Number.isSafeInteger(status) || status < 100 || status > 999
+        ? "invalid HTTP response status"
+        : undefined
+    if (kind === "InformationalResponse") {
+      informationalResponses += 1
+      if (informationalResponses > 16)
+        invalid = "HTTP informational response limit exceeded"
+    }
+    for (let index = 0; index < rawHeaders.length; index += 2) {
+      if (rawHeaders[index]?.toLowerCase() !== "content-length") continue
+      const length = rawHeaders[index + 1] ?? ""
+      if (!/^[0-9]+$/.test(length) || !Number.isSafeInteger(Number(length))) {
+        invalid = "invalid response Content-Length"
+        break
+      }
+    }
+    if (invalid !== undefined) {
+      failure({
+        tag: "HttpProtocolFailure",
+        value: invalid,
+      })
+      response?.destroy()
+      request.destroy()
+      queued.length = 0
+      return false
+    }
     queued.push({
       kind,
       head: {
@@ -129,22 +164,49 @@ function createNodeHttpExchange(
       },
     })
     emit()
+    return true
+  }
+
+  const headers = [
+    "host",
+    url.host,
+    ...requestValue.headers
+      .filter(({ name }) => name.toLowerCase() !== "host")
+      .flatMap(({ name, value }) => [name, value]),
+  ]
+  const hasFraming = requestValue.headers.some(({ name }) => {
+    const normalized = name.toLowerCase()
+    return normalized === "content-length" || normalized === "transfer-encoding"
+  })
+  const knownLength = body.knownLength
+  if (
+    !hasFraming &&
+    typeof knownLength === "number" &&
+    Number.isSafeInteger(knownLength) &&
+    knownLength >= 0
+  ) {
+    headers.push("content-length", String(knownLength))
   }
 
   const request = transport.request(
     url,
     {
       method: requestValue.method,
-      headers: requestValue.headers.flatMap(({ name, value }) => [name, value]),
+      // Node does not synthesize Host for the raw header-array form. Keep the
+      // generated authority while preserving duplicate application headers.
+      headers,
     },
     (incoming) => {
       response = incoming
-      enqueueHead(
-        "ResponseStarted",
-        incoming.httpVersion,
-        incoming.statusCode ?? 0,
-        incoming.rawHeaders
+      if (
+        !enqueueHead(
+          "ResponseStarted",
+          incoming.httpVersion,
+          incoming.statusCode ?? 0,
+          incoming.rawHeaders
+        )
       )
+        return
       if (!requestBodyDone) {
         void cancelBody().catch(observer.defect)
       }
@@ -182,12 +244,7 @@ function createNodeHttpExchange(
         }
         const chunk = new Uint8Array(next.value)
         if (chunk.length === 0) continue
-        if (!request.write(chunk)) {
-          await new Promise<void>((resolve, reject) => {
-            request.once("drain", resolve)
-            request.once("error", reject)
-          })
-        }
+        await writeRequestChunk(request, chunk)
       }
       if (!requestBodyDone && !request.writableEnded) request.end()
     } catch (cause) {
@@ -205,14 +262,52 @@ function createNodeHttpExchange(
       demand += count
       emit()
     },
-    async unsubscribe() {
-      if (stopped) return
+    unsubscribe() {
+      if (stopping !== undefined) return stopping
       stopped = true
-      await cancelBody()
+      // Do not keep a peer alive while an asynchronous upload finalizer runs.
       response?.destroy()
       request.destroy()
       queued.length = 0
+      stopping = cancelBody().finally(() => {
+        response?.destroy()
+        request.destroy()
+        queued.length = 0
+      })
+      return stopping
     },
+  })
+}
+
+function writeRequestChunk(
+  request: http.ClientRequest,
+  chunk: Uint8Array
+): Promise<void> {
+  if (request.destroyed) {
+    return Promise.reject(new Error("HTTP connection is closed"))
+  }
+  if (request.write(chunk)) return Promise.resolve()
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      request.off("drain", onDrain)
+      request.off("error", onError)
+      request.off("close", onClose)
+    }
+    const onDrain = () => {
+      cleanup()
+      resolve()
+    }
+    const onError = (cause: Error) => {
+      cleanup()
+      reject(cause)
+    }
+    const onClose = () => {
+      cleanup()
+      reject(new Error("HTTP connection closed before the request was written"))
+    }
+    request.once("drain", onDrain)
+    request.once("error", onError)
+    request.once("close", onClose)
   })
 }
 
@@ -293,13 +388,15 @@ function httpFailure(cause: unknown) {
     typeof cause === "object" && cause !== null && "code" in cause
       ? String(cause.code)
       : ""
-  const message =
-    cause instanceof Error ? cause.message : "HTTP request failed"
+  const message = cause instanceof Error ? cause.message : "HTTP request failed"
   if (["ENOTFOUND", "EAI_AGAIN"].includes(code)) {
     return { tag: "HttpDnsFailure", value: message }
   }
   if (code.startsWith("ERR_TLS") || code.includes("CERT")) {
     return { tag: "HttpTlsFailure", value: message }
+  }
+  if (code.startsWith("HPE_")) {
+    return { tag: "HttpProtocolFailure", value: message }
   }
   return { tag: "HttpConnectionFailure", value: message }
 }

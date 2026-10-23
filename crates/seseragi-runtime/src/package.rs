@@ -530,6 +530,18 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/http1-stream.ts"),
     ),
     (
+        "http-content-decoding.ts",
+        include_str!("../../../runtime/providers/http-content-decoding.ts"),
+    ),
+    (
+        "http-proxy-connection.ts",
+        include_str!("../../../runtime/providers/http-proxy-connection.ts"),
+    ),
+    (
+        "http-proxy-environment.ts",
+        include_str!("../../../runtime/providers/http-proxy-environment.ts"),
+    ),
+    (
         "filesystem.ts",
         include_str!("../../../runtime/providers/filesystem.ts"),
     ),
@@ -842,6 +854,8 @@ mod tests {
         assert!(providers.join("runtime-bun/http-client.ts").is_file());
         assert!(providers.join("runtime-node/http-client.ts").is_file());
         assert!(providers.join("http1-stream.ts").is_file());
+        assert!(providers.join("http-proxy-connection.ts").is_file());
+        assert!(providers.join("http-proxy-environment.ts").is_file());
         assert!(providers.join("runtime-node/http-server.ts").is_file());
         assert!(providers
             .join("runtime-browser/websocket-client.ts")

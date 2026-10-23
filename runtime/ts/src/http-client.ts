@@ -11,7 +11,9 @@ import { serviceEffect, serviceFailure, serviceSuccess } from "./service"
 import {
   empty as emptyStream,
   fromPull,
+  mapError as mapStreamError,
   type PullStreamSource,
+  runForEach,
   type Stream,
   singleton as singletonStream,
 } from "./stream"
@@ -252,6 +254,16 @@ export const ResponseTrailers = (value: Headers): HttpEvent =>
 export const emptyHeaders: Headers = freezeHeaders([])
 const defaultBodyLimitValue: HttpBodyLimit = limitValue(8 * 1024 * 1024)
 const MAX_HTTP_CHUNK_BYTES = 64 * 1024
+const decodedResponseBodies = new WeakSet<object>()
+
+/** Runtime-provider bridge marker; not part of std/http. */
+export function shouldDecodeHttpClientResponse(attachment: unknown): boolean {
+  return (
+    typeof attachment === "object" &&
+    attachment !== null &&
+    decodedResponseBodies.has(attachment)
+  )
+}
 
 const tokenPattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
 const managedHeaders = new Set([
@@ -515,6 +527,18 @@ export function exchange<Environment, Failure>(
   Either<Failure, HttpError>,
   HttpEvent
 > {
+  return exchangeImpl(body, requestValue, false)
+}
+
+function exchangeImpl<Environment, Failure>(
+  body: Body<Environment, Failure>,
+  requestValue: Request,
+  decodeContent: boolean
+): Stream<
+  Environment & HttpClientEnvironment,
+  Either<Failure, HttpError>,
+  HttpEvent
+> {
   return fromPull(async (environment, context) => {
     const openedBody = await attempt((() =>
       body.stream.open(environment, context)) as Effect<
@@ -593,6 +617,11 @@ export function exchange<Environment, Failure>(
         await bodyCursor.close()
       },
     })
+
+    // Only small-response helpers opt into native content decoding. The opaque
+    // attachment retains its closed shape and identity through the provider
+    // bridge; public exchange keeps transfer-decoded, content-encoded bytes.
+    if (decodeContent) decodedResponseBodies.add(requestBody)
 
     let source: PullStreamSource<HttpClientEvent>
     try {
@@ -751,25 +780,49 @@ function sendApplicationRequest(
       requestBody.length
     )
     if (lengthValidation !== undefined) return serviceFailure(lengthValidation)
-    const result = await environment.httpClient.send(
-      {
-        method: requestValue.method,
-        url: requestValue.url,
-        headers: requestValue.headers,
-        body: requestBody,
-      },
-      context
+    let head: ResponseHead | undefined
+    let length = 0
+    const chunks: Uint8Array[] = []
+    const events = mapStreamError(
+      (error: Either<never, HttpError>) => error.value,
+      exchangeImpl(bytesBody<unknown, never>(body), requestValue, true)
     )
-    if (result.kind === "failure") return result
-    if (result.value.body.length > limit) {
+    const collected = await attempt(
+      runForEach(
+        (event) => async (environment, context) => {
+          if (event.tag === "ResponseStarted") {
+            head = event.value
+          } else if (event.tag === "ResponseBodyChunk") {
+            // Check before retaining or copying the next chunk. runForEach closes
+            // the exchange on failure, cancelling the response before more reads.
+            if (event.value.length > limit - length) {
+              return await fail(
+                HttpResponseBodyLimitExceeded({ limitBytes: limit })
+              )(environment, context)
+            }
+            chunks.push(toUint8Array(event.value))
+            length += event.value.length
+          }
+        },
+        events
+      )
+    )(environment, context)
+    if (collected.tag === "Left") return serviceFailure(collected.value)
+    if (head === undefined) {
       return serviceFailure(
-        HttpResponseBodyLimitExceeded({ limitBytes: limit })
+        HttpProtocolFailure("HTTP response has no final head")
       )
     }
+    const content = new Uint8Array(length)
+    let offset = 0
+    for (const chunk of chunks) {
+      content.set(chunk, offset)
+      offset += chunk.length
+    }
     const response = Object.freeze({
-      status: statusValue(result.value.status),
-      headers: freezeHeaders(result.value.headers),
-      body: fromUint8Array(result.value.body),
+      status: head.status,
+      headers: head.headers,
+      body: fromUint8Array(content),
     }) as Response
     return serviceSuccess(response)
   })

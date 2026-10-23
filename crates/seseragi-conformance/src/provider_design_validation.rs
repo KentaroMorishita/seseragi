@@ -253,8 +253,13 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
             "http-client",
             (
                 "std/http::{sendBytes,sendEmpty}",
-                "std/http::HttpClient#send",
-                BTreeSet::from(["request-response", "copied-bytes", "cancellation"]),
+                "std/http::HttpClient#exchange",
+                BTreeSet::from([
+                    "request-response",
+                    "copied-bytes",
+                    "bounded-response",
+                    "cancellation",
+                ]),
             ),
         ),
         (

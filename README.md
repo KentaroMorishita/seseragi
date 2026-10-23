@@ -104,8 +104,13 @@ Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffect
 
 CLIは[GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases)から
 OS / CPUに合うnative archiveを取得してください。archiveにはCLIとLSPが含まれます。
-生成したprogramの実行にはBunも必要です。コンパイル済みのnative archiveを使う場合、
+生成したprogramの実行にはBun 1.4.4以降も必要です。コンパイル済みのnative archiveを使う場合、
 Rustは不要です。
+
+Bun 1.4.3以前のBrotli decoderにはCVE-2026-111497があるため、
+[修正済みのBun](https://github.com/oven-sh/bun/pull/46392)へ更新してください。
+Nodeで生成物を実行する場合も、22.23.4 / 24.22.1 / 26.12.1以降の
+[対応系列の修正版](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)を使います。
 
 Web appを作る場合は、別の[Local Web Getting Started](./docs/GETTING_STARTED.md)を使います。
 project作成、VS Code、development server、production buildを扱う手順です。
@@ -113,6 +118,11 @@ OS別archive・checksum・release identityの詳細は[release contract](./docs/
 
 main branchからcompilerをbuildして開発する場合に限り、RustとBunを用意してCLIをinstallします。
 これは公開済みreleaseを固定する導入方法ではありません。
+
+Rustのtoolchain managerには、証明書検証のCVE-2026-111943を修正した
+[rustup 1.29.2以降](https://blog.rust-lang.org/2026/10/20/Rustup-1.29.2/)を使います。
+Homebrew管理の場合は`brew upgrade rustup`で更新します。
+compiler自体のversionは`rust-toolchain.toml`で固定しています。
 
 ```sh
 cargo install \

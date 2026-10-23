@@ -68,11 +68,21 @@ function createFetchExchange(
   let responseVersion: HttpClientVersion = "HttpVersionUnknown"
   let trailersEmitted = false
   let pendingChunk = new Uint8Array()
+  let stopping: Promise<void> | undefined
+  let readFailure: unknown
+
+  const fail = (cause: unknown): void => {
+    if (stopped || terminal) return
+    terminal = true
+    observer.failure({
+      tag: "HttpConnectionFailure",
+      value: cause instanceof Error ? cause.message : "HTTP request failed",
+    })
+  }
 
   const upload =
-    body.knownLength === 0
-      ? undefined
-      : new ReadableStream<Uint8Array>({
+    body.knownLength === undefined
+      ? new ReadableStream<Uint8Array>({
           async pull(streamController) {
             try {
               const next = await body.pull()
@@ -86,91 +96,141 @@ function createFetchExchange(
             return body.cancel()
           },
         })
+      : undefined
 
   const ready = (async () => {
     try {
+      let content:
+        | Uint8Array<ArrayBuffer>
+        | ReadableStream<Uint8Array>
+        | undefined = upload
+      if (body.knownLength !== undefined && body.knownLength !== 0) {
+        // bytesBody is already resident in memory. Pass those known bytes to
+        // Fetch directly so small POSTs work without streaming-upload support.
+        const bytes = new Uint8Array(body.knownLength)
+        let offset = 0
+        while (true) {
+          const next = await body.pull()
+          if (stopped) return
+          if (next.done) break
+          bytes.set(next.value, offset)
+          offset += next.value.length
+        }
+        if (offset !== bytes.length) {
+          throw new TypeError("HTTP request body length is invalid")
+        }
+        content = bytes
+      }
+      if (stopped) return
       const init: StreamingRequestInit = {
         method: request.method,
         headers: request.headers.map(
           ({ name, value }) => [name, value] as [string, string]
         ),
-        ...(upload === undefined ? {} : { body: upload }),
+        ...(content === undefined ? {} : { body: content }),
         redirect: "manual",
         signal: controller.signal,
         duplex: "half",
       }
-      response = (await fetchHost(request.url, init)) as StreamingResponse
+      const fetched = (await fetchHost(request.url, init)) as StreamingResponse
+      if (stopped) {
+        await fetched.body?.cancel()
+        return
+      }
+      response = fetched
       responseVersion = response.httpVersion ?? "HttpVersionUnknown"
       reader = response.body?.getReader()
     } catch (cause) {
-      if (stopped) return
-      terminal = true
-      observer.failure({
-        tag: "HttpConnectionFailure",
-        value: cause instanceof Error ? cause.message : "HTTP request failed",
-      })
+      fail(cause)
     }
   })()
 
   return Object.freeze({
     async demand(count: number) {
-      await ready
-      if (stopped || terminal || response === undefined) return
-      const activeResponse = response
-      for (let remaining = count; remaining > 0; remaining -= 1) {
-        if (headPending) {
-          headPending = false
-          observer.next({
-            kind: "ResponseStarted",
-            head: {
-              version: responseVersion,
-              status: activeResponse.status,
-              headers: [...activeResponse.headers].map(([name, value]) => ({
-                name,
-                value,
-              })),
-            },
-          })
-          continue
+      try {
+        await ready
+        if (stopped || terminal || response === undefined) return
+        const activeResponse = response
+        for (let remaining = count; remaining > 0; remaining -= 1) {
+          if (headPending) {
+            headPending = false
+            observer.next({
+              kind: "ResponseStarted",
+              head: {
+                version: responseVersion,
+                status: activeResponse.status,
+                headers: [...activeResponse.headers].map(([name, value]) => ({
+                  name,
+                  value,
+                })),
+              },
+            })
+            continue
+          }
+          while (pendingChunk.length === 0) {
+            const next = await reader?.read()
+            if (stopped) return
+            if (next === undefined || next.done) break
+            pendingChunk = new Uint8Array(next.value)
+          }
+          if (pendingChunk.length > 0) {
+            const chunk = pendingChunk.slice(0, 64 * 1024)
+            pendingChunk = pendingChunk.subarray(chunk.length)
+            observer.next({
+              kind: "ResponseBodyChunk",
+              bytes: chunk,
+            })
+            continue
+          }
+          const trailers = await activeResponse.trailers
+          if (stopped) return
+          if (
+            !trailersEmitted &&
+            trailers !== undefined &&
+            [...trailers].length > 0
+          ) {
+            trailersEmitted = true
+            observer.next({
+              kind: "ResponseTrailers",
+              headers: [...trailers].map(([name, value]) => ({ name, value })),
+            })
+            continue
+          }
+          terminal = true
+          observer.complete()
+          return
         }
-        while (pendingChunk.length === 0) {
-          const next = await reader?.read()
-          if (next === undefined || next.done) break
-          pendingChunk = new Uint8Array(next.value)
-        }
-        if (pendingChunk.length > 0) {
-          const chunk = pendingChunk.slice(0, 64 * 1024)
-          pendingChunk = pendingChunk.slice(chunk.length)
-          observer.next({
-            kind: "ResponseBodyChunk",
-            bytes: chunk,
-          })
-          continue
-        }
-        const trailers = await activeResponse.trailers
-        if (
-          !trailersEmitted &&
-          trailers !== undefined &&
-          [...trailers].length > 0
-        ) {
-          trailersEmitted = true
-          observer.next({
-            kind: "ResponseTrailers",
-            headers: [...trailers].map(([name, value]) => ({ name, value })),
-          })
-          continue
-        }
-        terminal = true
-        observer.complete()
-        return
+      } catch (cause) {
+        readFailure = cause
+        fail(cause)
       }
     },
-    async unsubscribe() {
-      if (stopped) return
+    unsubscribe() {
+      if (stopping !== undefined) return stopping
       stopped = true
+      pendingChunk = new Uint8Array()
+      // Close the reader before aborting Fetch: abort would otherwise error an
+      // open reader and turn a body-limit failure into a cleanup defect.
+      const cancelling = reader?.cancel()
       controller.abort()
-      await reader?.cancel()
-      await body.cancel()
+      stopping = (async () => {
+        try {
+          try {
+            await cancelling
+          } catch (cause) {
+            // Cancelling an errored reader repeats its original read failure.
+            // Keep that transport failure in its typed channel.
+            if (cause !== readFailure) throw cause
+          }
+        } finally {
+          try {
+            reader?.releaseLock()
+          } finally {
+            await body.cancel()
+          }
+        }
+      })()
+      return stopping
     },
   })
 }

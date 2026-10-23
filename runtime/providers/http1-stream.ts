@@ -1,10 +1,15 @@
 import * as net from "node:net"
 import * as tls from "node:tls"
-import type { HttpClientRequestBody } from "@seseragi/runtime/http-client"
+import {
+  type HttpClientRequestBody,
+  shouldDecodeHttpClientResponse,
+} from "@seseragi/runtime/http-client"
 import type {
   ProviderSubscriptionObserver,
   ProviderSubscriptionRegistration,
 } from "@seseragi/runtime/provider"
+import { createHttpProxyConnection } from "./http-proxy-connection"
+import { selectHttpProxy } from "./http-proxy-environment"
 
 type Header = Readonly<{ name: string; value: string }>
 type RequestValue = Readonly<{
@@ -24,6 +29,13 @@ type BodyMode =
     }
   | Readonly<{ kind: "until-close" }>
 
+const headLimitBytes = 16 * 1024
+const trailerLimitBytes = 16 * 1024
+const chunkLineLimitBytes = 1024
+const informationalResponseLimit = 16
+const headDelimiter = Buffer.from("\r\n\r\n")
+const lineDelimiter = Buffer.from("\r\n")
+
 export function createBunHttp1Exchange(
   value: unknown,
   observerValue: unknown,
@@ -35,8 +47,15 @@ export function createBunHttp1Exchange(
   validateBridge(observer, body)
 
   const url = new URL(requestValue.url)
-  const socket = connect(url)
-  let buffer = Buffer.alloc(0)
+  const proxy = shouldDecodeHttpClientResponse(body)
+    ? selectHttpProxy(url)
+    : undefined
+  const connection =
+    proxy === undefined
+      ? undefined
+      : createHttpProxyConnection(url, proxy, requestValue.headers)
+  let socket = proxy === undefined ? connect(url) : undefined
+  let buffer: Buffer = Buffer.alloc(0)
   let demand = 0
   let bodyMode: BodyMode | undefined
   let responseComplete = false
@@ -45,25 +64,32 @@ export function createBunHttp1Exchange(
   let stopped = false
   let requestBodyDone = false
   let requestBodyCancelled = false
+  let requestBodyCancellation: Promise<void> | undefined
   let draining = false
+  let informationalResponses = 0
 
-  const cancelBody = async (): Promise<void> => {
-    if (requestBodyCancelled) return
+  const cancelBody = (): Promise<void> => {
+    if (requestBodyCancellation !== undefined) return requestBodyCancellation
     requestBodyCancelled = true
-    await body.cancel()
+    requestBodyCancellation = Promise.resolve().then(() => body.cancel())
+    return requestBodyCancellation
   }
   const fail = (cause: unknown): void => {
     if (terminal || stopped) return
     terminal = true
+    buffer = Buffer.alloc(0)
     observer.failure(httpFailure(cause))
-    socket.destroy()
+    socket?.destroy()
+    connection?.cancel()
     void cancelBody().catch(() => undefined)
   }
   const finish = (): void => {
     if (terminal || stopped) return
     terminal = true
+    buffer = Buffer.alloc(0)
     observer.complete()
-    socket.destroy()
+    socket?.destroy()
+    connection?.cancel()
   }
   const stopRequestBody = (): void => {
     if (requestBodyDone || requestBodyCancelled) return
@@ -80,14 +106,19 @@ export function createBunHttp1Exchange(
         demand -= 1
         observer.next(event)
       }
-      if (responseComplete && buffer.length === 0) finish()
-      if (demand > 0 && !terminal && !stopped) socket.resume()
-      else socket.pause()
+      if (socketEnded && demand > 0 && !responseComplete) {
+        throw new TypeError("HTTP response ended early")
+      }
+      if (responseComplete) {
+        if (buffer.length > 0) {
+          throw new TypeError("HTTP response contains bytes after its body")
+        }
+        finish()
+      }
+      if (demand > 0 && !terminal && !stopped) socket?.resume()
+      else socket?.pause()
     } catch (cause) {
-      fail({
-        tag: "HttpProtocolFailure",
-        value: cause instanceof Error ? cause.message : "invalid HTTP response",
-      })
+      fail(protocolFailure(cause))
     } finally {
       draining = false
     }
@@ -122,25 +153,37 @@ export function createBunHttp1Exchange(
 
   const parseHead = (): unknown | undefined => {
     const end = buffer.indexOf("\r\n\r\n")
+    checkMetadataSize(buffer.length, end, 4, headLimitBytes, "headers")
     if (end < 0) return undefined
     const lines = buffer.subarray(0, end).toString("latin1").split("\r\n")
     buffer = buffer.subarray(end + 4)
     const statusLine = lines.shift() ?? ""
-    const matched = /^HTTP\/(1\.0|1\.1) ([0-9]{3})(?: |$)/.exec(statusLine)
+    const matched =
+      /^HTTP\/(1\.0|1\.1) ([0-9]{3})(?: [\t\x20-\x7e\x80-\xff]*)?$/.exec(
+        statusLine
+      )
     if (matched === null) throw new TypeError("invalid HTTP status line")
     const status = Number(matched[2])
+    if (status < 100 || status > 999) {
+      throw new TypeError("invalid HTTP response status")
+    }
     const headers = lines.map(parseHeader)
+    const mode = responseBodyMode(requestValue.method, status, headers)
     const head = {
       version: matched[1] === "1.0" ? "Http1_0" : "Http1_1",
       status,
       headers,
     }
     if (status >= 100 && status < 200) {
+      informationalResponses += 1
+      if (informationalResponses > informationalResponseLimit) {
+        throw new TypeError("HTTP informational response limit exceeded")
+      }
       return { kind: "InformationalResponse", head }
     }
 
     stopRequestBody()
-    bodyMode = responseBodyMode(requestValue.method, status, headers)
+    bodyMode = mode
     return { kind: "ResponseStarted", head }
   }
 
@@ -157,6 +200,13 @@ export function createBunHttp1Exchange(
     }
     if (mode.remaining === undefined) {
       const lineEnd = buffer.indexOf("\r\n")
+      checkMetadataSize(
+        buffer.length,
+        lineEnd,
+        2,
+        chunkLineLimitBytes,
+        "chunk size line"
+      )
       if (lineEnd < 0) return undefined
       const line = buffer.subarray(0, lineEnd).toString("ascii")
       const sizeText = line.split(";", 1)[0] ?? ""
@@ -192,6 +242,7 @@ export function createBunHttp1Exchange(
       return undefined
     }
     const end = buffer.indexOf("\r\n\r\n")
+    checkMetadataSize(buffer.length, end, 4, trailerLimitBytes, "trailers")
     if (end < 0) return undefined
     const trailers = buffer
       .subarray(0, end)
@@ -216,35 +267,98 @@ export function createBunHttp1Exchange(
     return { kind: "ResponseBodyChunk", bytes }
   }
 
-  socket.pause()
-  socket.on("data", (chunk) => {
-    buffer = Buffer.concat([buffer, Buffer.from(chunk)])
-    drain()
-  })
-  socket.once("end", () => {
-    socketEnded = true
-    if (bodyMode?.kind === "until-close") drain()
-    else if (!responseComplete && !terminal && !stopped) {
-      fail({ tag: "HttpProtocolFailure", value: "HTTP response ended early" })
-    }
-  })
-  socket.once("error", fail)
-  socket.once("connect", () => {
-    void (async () => {
-      const framing = requestFraming(requestValue.headers, body.knownLength)
-      await writeSocket(socket, requestHead(url, requestValue, framing.headers))
-      await pumpBody(socket, body, framing.chunked, () => {
-        requestBodyDone = true
-      })
-      if (demand > 0) socket.resume()
-    })().catch((cause) => {
-      if (requestBodyCancelled || stopped) return
-      fail({
-        tag: "HttpRequestBodyFailure",
-        value: cause instanceof Error ? cause.message : "request body failed",
-      })
+  const attachSocket = (
+    connectedSocket: net.Socket,
+    connected: boolean,
+    headers: ReadonlyArray<Header>,
+    requestTarget?: string
+  ): void => {
+    connectedSocket.pause()
+    connectedSocket.on("data", (chunk) => {
+      if (terminal || stopped) return
+      try {
+        if (bodyMode === undefined) {
+          checkMetadataAppend(
+            buffer,
+            chunk,
+            headDelimiter,
+            headLimitBytes,
+            "headers"
+          )
+        } else if (bodyMode.kind === "chunked") {
+          if (bodyMode.readingTrailers) {
+            const emptyTrailers =
+              buffer.length > 0
+                ? buffer[0] === 13 && (buffer[1] ?? chunk[0]) === 10
+                : chunk[0] === 13 && chunk[1] === 10
+            if (!emptyTrailers) {
+              checkMetadataAppend(
+                buffer,
+                chunk,
+                headDelimiter,
+                trailerLimitBytes,
+                "trailers"
+              )
+            }
+          } else if (bodyMode.remaining === undefined && !bodyMode.expectCrlf) {
+            checkMetadataAppend(
+              buffer,
+              chunk,
+              lineDelimiter,
+              chunkLineLimitBytes,
+              "chunk size line"
+            )
+          }
+        }
+      } catch (cause) {
+        fail(protocolFailure(cause))
+        return
+      }
+      buffer = buffer.length === 0 ? chunk : Buffer.concat([buffer, chunk])
+      drain()
     })
-  })
+    connectedSocket.once("end", () => {
+      socketEnded = true
+      drain()
+    })
+    connectedSocket.once("error", fail)
+    const send = () => {
+      void (async () => {
+        const framing = requestFraming(headers, body.knownLength)
+        await writeSocket(
+          connectedSocket,
+          requestHead(url, requestValue, framing.headers, requestTarget)
+        )
+        await pumpBody(connectedSocket, body, framing.chunked, () => {
+          requestBodyDone = true
+        })
+        if (demand > 0) connectedSocket.resume()
+      })().catch((cause) => {
+        if (requestBodyCancelled || stopped) return
+        fail({
+          tag: "HttpRequestBodyFailure",
+          value: cause instanceof Error ? cause.message : "request body failed",
+        })
+      })
+    }
+    if (connected) send()
+    else connectedSocket.once("connect", send)
+  }
+
+  if (connection === undefined) {
+    attachSocket(socket!, false, requestValue.headers)
+  } else {
+    void connection.ready
+      .then((opened) => {
+        if (stopped || terminal) {
+          connection.cancel()
+          return
+        }
+        socket = opened.socket
+        attachSocket(opened.socket, true, opened.headers, opened.target)
+      })
+      .catch(fail)
+  }
 
   return Object.freeze({
     demand(count: number) {
@@ -252,20 +366,82 @@ export function createBunHttp1Exchange(
       drain()
     },
     async unsubscribe() {
-      if (stopped) return
+      if (stopped) {
+        await cancelBody()
+        return
+      }
       stopped = true
-      socket.destroy()
+      socket?.destroy()
+      connection?.cancel()
       buffer = Buffer.alloc(0)
       await cancelBody()
     },
   })
 }
 
+function checkMetadataAppend(
+  pending: Buffer,
+  incoming: Buffer,
+  delimiter: Buffer,
+  limit: number,
+  section: string
+): void {
+  let end = pending.indexOf(delimiter)
+  if (end < 0) {
+    const tailSize = Math.min(pending.length, delimiter.length - 1)
+    const boundary = Buffer.concat([
+      pending.subarray(pending.length - tailSize),
+      incoming.subarray(0, delimiter.length - 1),
+    ])
+    const boundaryEnd = boundary.indexOf(delimiter)
+    if (boundaryEnd >= 0) end = pending.length - tailSize + boundaryEnd
+    if (end < 0) {
+      const incomingEnd = incoming.indexOf(delimiter)
+      if (incomingEnd >= 0) end = pending.length + incomingEnd
+    }
+  }
+  checkMetadataSize(
+    pending.length + incoming.length,
+    end,
+    delimiter.length,
+    limit,
+    section
+  )
+}
+
+function checkMetadataSize(
+  buffered: number,
+  end: number,
+  delimiterBytes: number,
+  limit: number,
+  section: string
+): void {
+  const size = end < 0 ? buffered : end + delimiterBytes
+  if (size > limit) {
+    throw new TypeError(`HTTP response ${section} exceeds ${limit} bytes`)
+  }
+}
+
+function protocolFailure(cause: unknown) {
+  return {
+    tag: "HttpProtocolFailure",
+    value: cause instanceof Error ? cause.message : "invalid HTTP response",
+  }
+}
+
 function connect(url: URL): net.Socket | tls.TLSSocket {
   const port = Number(url.port || (url.protocol === "https:" ? 443 : 80))
+  const host = url.hostname.startsWith("[")
+    ? url.hostname.slice(1, -1)
+    : url.hostname
   return url.protocol === "https:"
-    ? tls.connect({ host: url.hostname, port, servername: url.hostname })
-    : net.connect({ host: url.hostname, port })
+    ? tls.connect({
+        host,
+        port,
+        servername: net.isIP(host) === 0 ? host : "",
+        rejectUnauthorized: true,
+      })
+    : net.connect({ host, port })
 }
 
 function validateRequest(value: unknown): RequestValue {
@@ -314,9 +490,10 @@ function requestFraming(headers: ReadonlyArray<Header>, knownLength?: number) {
 function requestHead(
   url: URL,
   request: RequestValue,
-  headers: ReadonlyArray<Header>
+  headers: ReadonlyArray<Header>,
+  requestTarget?: string
 ) {
-  const target = `${url.pathname}${url.search}`
+  const target = requestTarget ?? `${url.pathname}${url.search}`
   const defaultPort = url.protocol === "https:" ? "443" : "80"
   const host =
     url.port !== "" && url.port !== defaultPort
@@ -396,9 +573,17 @@ function writeSocket(
 function parseHeader(line: string): Header {
   const separator = line.indexOf(":")
   if (separator <= 0) throw new TypeError("invalid HTTP header")
+  const name = line.slice(0, separator)
+  const value = line.slice(separator + 1)
+  if (
+    !/^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(name) ||
+    !/^[\t\x20-\x7e\x80-\xff]*$/.test(value)
+  ) {
+    throw new TypeError("invalid HTTP header")
+  }
   return Object.freeze({
-    name: line.slice(0, separator).toLowerCase(),
-    value: line.slice(separator + 1).trim(),
+    name: name.toLowerCase(),
+    value: value.replace(/^[ \t]+|[ \t]+$/g, ""),
   })
 }
 
@@ -407,37 +592,72 @@ function responseBodyMode(
   status: number,
   headers: ReadonlyArray<Header>
 ): BodyMode {
-  if (method === "HEAD" || status === 204 || status === 304)
-    return { kind: "none" }
-  const transfer = headers
-    .filter((header) => header.name === "transfer-encoding")
-    .map((header) => header.value.toLowerCase())
-  if (
-    transfer.some((value) =>
-      value
-        .split(",")
-        .map((part) => part.trim())
-        .includes("chunked")
-    )
-  ) {
-    return {
-      kind: "chunked",
-      remaining: undefined,
-      expectCrlf: false,
-      readingTrailers: false,
-    }
-  }
+  const transferHeaders = headers.filter(
+    (header) => header.name === "transfer-encoding"
+  )
   const lengths = headers.filter((header) => header.name === "content-length")
+  if (transferHeaders.length > 0 && lengths.length > 0) {
+    throw new TypeError(
+      "HTTP response contains both Transfer-Encoding and Content-Length"
+    )
+  }
+  let length: number | undefined
   if (lengths.length > 0) {
+    length = Number(lengths[0]?.value)
     if (
       lengths.length !== 1 ||
-      !/^(0|[1-9][0-9]*)$/.test(lengths[0]?.value ?? "")
+      !/^(0|[1-9][0-9]*)$/.test(lengths[0]?.value ?? "") ||
+      !Number.isSafeInteger(length)
     ) {
       throw new TypeError("invalid response Content-Length")
     }
-    return { kind: "fixed", remaining: Number(lengths[0]?.value) }
   }
+  const transfer = transferHeaders
+    .flatMap((header) => transferCodings(header.value))
+    .filter((part) => part.length > 0)
+  if (transfer.filter((coding) => coding === "chunked").length > 1) {
+    throw new TypeError(
+      "HTTP response applies chunked transfer coding more than once"
+    )
+  }
+  if (method === "HEAD" || status === 204 || status === 304)
+    return { kind: "none" }
+  // A non-final chunked coding does not delimit a response. Preserve all of
+  // its body until EOF, including unknown transfer codings, per RFC 9112 6.3.
+  if (transferHeaders.length > 0) {
+    return transfer.at(-1) === "chunked"
+      ? {
+          kind: "chunked",
+          remaining: undefined,
+          expectCrlf: false,
+          readingTrailers: false,
+        }
+      : { kind: "until-close" }
+  }
+  if (length !== undefined) return { kind: "fixed", remaining: length }
   return { kind: "until-close" }
+}
+
+function transferCodings(value: string): string[] {
+  const codings: string[] = []
+  let start = 0
+  let quoted = false
+  let escaped = false
+  const append = (end: number) => {
+    const coding = value.slice(start, end).split(";", 1)[0] ?? ""
+    codings.push(coding.trim().toLowerCase())
+    start = end + 1
+  }
+  for (let index = 0; index < value.length; index++) {
+    const character = value[index]
+    if (escaped) escaped = false
+    else if (quoted && character === "\\") escaped = true
+    else if (character === '"') quoted = !quoted
+    else if (character === "," && !quoted) append(index)
+  }
+  if (quoted) throw new TypeError("invalid HTTP Transfer-Encoding parameter")
+  append(value.length)
+  return codings
 }
 
 function httpFailure(cause: unknown) {

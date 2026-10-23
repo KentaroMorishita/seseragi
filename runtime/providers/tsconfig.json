@@ -11,6 +11,7 @@
     "filesystem.ts",
     "http1-stream.ts",
     "http-client.ts",
+    "http-content-decoding.ts",
     "browser/**/*.ts",
     "bun/**/*.ts",
     "timezones.ts",

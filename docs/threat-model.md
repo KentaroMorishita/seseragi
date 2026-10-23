@@ -49,6 +49,58 @@ apply. This is not a total network sandbox: ordinary same-frame link navigation
 is possible. The opaque frame has no authority to navigate the editor itself.
 Type-level capabilities and byte digests do not prove a package author is safe.
 
+## Network provider boundaries
+
+Programs using the official HTTP and WebSocket host providers also receive
+untrusted peer data. The public HTTP `sendBytes` and `sendEmpty` helpers collect
+the existing response stream and check the caller's byte limit before retaining
+each chunk. Overflow returns `HttpResponseBodyLimitExceeded` and closes the
+exchange without waiting for peer EOF. Browser response readers and pending
+fetches are cancelled when their exchange closes. The internal one-shot `send`
+operation remains available for compatibility; it has no caller-supplied body
+limit and is not the implementation of these bounded public helpers.
+
+The Node HTTP server bounds one incoming request body to 8 MiB by default,
+checks both declared and received lengths, and returns 413 before dispatching
+an oversized request to the application. The Bun server uses its native limit
+(128 MiB in the pinned Bun 1.4.4). Interrupted uploads are released on server
+close. These are per-request limits, not a process-wide or concurrency quota.
+
+The native small-response helpers decode known content encodings incrementally,
+with at most eight decoding stages. Their limit applies to decoded chunks,
+including compressed input that expands beyond the limit. Native public
+`exchange` preserves content-encoded body bytes for explicit decoders and proxy
+forwarding; the browser provider returns Fetch-decoded bytes for both APIs.
+Cancellation owns both the transport and any helper decoder cleanup. Use Bun
+1.4.4 or a patched supported Node release: buffering limits do not repair a
+vulnerable host Brotli decoder.
+
+Bun small-response helpers preserve the Fetch proxy environment: scheme-specific
+HTTP_PROXY/HTTPS_PROXY, ALL_PROXY fallback, lowercase precedence and NO_PROXY
+host, port, IP and CIDR exclusions. HTTP forwarding and HTTPS CONNECT retain
+the bounded response parser. CONNECT response headers and informational messages
+are bounded before destination TLS starts. Proxy credentials stay on the proxy
+leg, certificate verification applies to both TLS legs, and cancellation owns
+pending and established sockets. Public native `exchange` keeps its existing
+direct transport behavior.
+
+Both native HTTP transports bound informational responses to 16 before a final
+response, including Node responses queued while consumer demand is zero. The
+Bun HTTP/1 transport also bounds response headers and trailers to 16 KiB each
+and chunk-size lines to 1 KiB. Incomplete metadata is checked as bytes arrive.
+Overflow and bytes remaining after a completed body produce a protocol failure and close the
+socket. Ambiguous transfer-encoding/content-length combinations, invalid header
+names and control characters, unsafe content lengths and out-of-range status
+codes are rejected before publishing the final head. Backpressure may defer
+parsing buffered bytes after EOF; it must not turn a complete response into a
+premature-EOF error.
+
+Node WebSocket receive errors fail and terminate the affected connection.
+Invalid upgrade URLs are rejected before dispatch. Both Node and Bun observe
+handler rejection and release connection resources; one failed handler must
+not become an unhandled process-level rejection. These controls do not replace
+application authentication, connection limits or a host process sandbox.
+
 ## Availability limits and remaining assumptions
 
 The compiler request deadline is 15 seconds; non-DOM execution is 10 seconds.
