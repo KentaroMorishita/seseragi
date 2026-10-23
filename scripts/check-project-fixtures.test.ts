@@ -13,12 +13,13 @@ describe("project fixture inventory", () => {
 
     expect(result.status).toBe(0)
     expect(result.stderr).toBe("")
-    expect(result.stdout).toContain("49 project fixture roles")
-    expect(result.stdout).toContain("8 current, 41 contract-only")
+    expect(result.stdout).toContain("94 project fixture roles")
+    expect(result.stdout).toContain("82 current, 12 contract-only")
 
     const settings = await Bun.file(join(root, ".vscode/settings.json")).json()
     const [contractOnlyPattern] = Object.keys(settings["files.associations"])
-    expect(contractOnlyPattern).toContain("dom-hydration-mismatch")
+    expect(contractOnlyPattern).toContain("http-stream-events")
+    expect(contractOnlyPattern).not.toContain("dom-hydration-mismatch")
     expect(contractOnlyPattern).not.toContain("entry-rooted-runtime")
     expect(settings["files.associations"][contractOnlyPattern]).toBe(
       "plaintext"
