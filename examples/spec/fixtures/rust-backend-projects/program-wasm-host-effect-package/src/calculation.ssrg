@@ -1,0 +1,30 @@
+import * as effects from "std/effect"
+
+pub effect fn transfer
+  request: (String -> Effect<{}, String, String>) ->
+  release: (String -> Effect<{}, Never, Unit>) ->
+  input: String -> String fails String =
+  effects.scoped $ do {
+    resource <- effects.acquireRelease (request ("open:" + input)) release
+    result <- request ("read:" + resource)
+    effects.succeed ("processed:" + result)
+  }
+
+pub fn prepared
+  request: (String -> Effect<{}, String, String>) ->
+  release: (String -> Effect<{}, Never, Unit>) ->
+  (String -> Effect<{}, String, String>) = {
+  let execute = transfer request release
+  execute
+}
+
+pub effect fn nested
+  request: (String -> Effect<{}, String, String>) ->
+  release: (String -> Effect<{}, Never, Unit>) ->
+  input: String -> String fails String =
+  effects.scoped $ do {
+    effects.acquireRelease (request ("open:outer:" + input)) release
+    resource <- effects.acquireRelease (request ("open:inner:" + input)) release
+    result <- request ("read:" + resource)
+    effects.succeed ("processed:" + result)
+  }

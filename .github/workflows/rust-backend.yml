@@ -34,6 +34,8 @@ on:
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "crates/seseragi-cli/tests/program_wasm_host_effect.rs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-effect.mjs"
       - "scripts/program-wasm-probe.mjs"
       - "scripts/program-wasm-effect-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
@@ -83,6 +85,8 @@ on:
       - "crates/seseragi-cli/tests/fibers.rs"
       - "crates/seseragi-cli/tests/async_filesystem.rs"
       - "crates/seseragi-cli/tests/program_wasm.rs"
+      - "crates/seseragi-cli/tests/program_wasm_host_effect.rs"
+      - "crates/seseragi-cli/tests/fixtures/program-wasm-host-effect.mjs"
       - "scripts/program-wasm-probe.mjs"
       - "scripts/program-wasm-effect-probe.mjs"
       - "scripts/program-wasm-effect-package-probe.mjs"
@@ -146,7 +150,7 @@ jobs:
       - name: Compare namespace constructor owners and saved generic results
         run: cargo test --locked -p seseragi-cli --test namespace_results
       - name: Verify product program WASM, generated declarations and callback ownership
-        run: cargo test --locked -p seseragi-cli --test program_wasm
+        run: cargo test --locked -p seseragi-cli --test program_wasm --test program_wasm_host_effect
       - name: Rebuild selected program dependencies and drain old browser owners
         run: |
           cargo test --locked -p seseragi-cli --test dev watches_program_wasm_path_dependencies_keeps_failed_builds_and_closes_real_instances

@@ -15,6 +15,7 @@ examples/spec/fixtures/rust-backend/deferred-* text eol=lf
 
 # The Effect WASM package lock pins manifest, source and bridge bytes.
 examples/spec/fixtures/rust-backend-projects/program-wasm-effect-package/** text eol=lf
+examples/spec/fixtures/rust-backend-projects/program-wasm-host-effect-package/** text eol=lf
 
 # Imported type acceptance packages pin manifest and source bytes in their lock.
 examples/spec/fixtures/rust-backend-projects/imported-unit-*/** text eol=lf

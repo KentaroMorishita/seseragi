@@ -77,7 +77,11 @@ pub(crate) fn stage(
         if metadata["schema"] != 1
             || !matches!(
                 metadata["abi"].as_str(),
-                Some("seseragi-program-wasm-pure-v1" | "seseragi-program-wasm-effect-v1")
+                Some(
+                    "seseragi-program-wasm-pure-v1"
+                        | "seseragi-program-wasm-effect-v1"
+                        | "seseragi-program-wasm-host-effect-v1"
+                )
             )
         {
             return Err("unsupported program WASM asset ABI".into());

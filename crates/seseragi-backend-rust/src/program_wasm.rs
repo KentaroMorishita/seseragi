@@ -7,6 +7,7 @@ use std::collections::BTreeSet;
 
 pub const PROGRAM_WASM_ABI: &str = "seseragi-program-wasm-pure-v1";
 pub const PROGRAM_WASM_EFFECT_ABI: &str = "seseragi-program-wasm-effect-v1";
+pub const PROGRAM_WASM_HOST_EFFECT_ABI: &str = "seseragi-program-wasm-host-effect-v1";
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "kebab-case")]
@@ -30,6 +31,11 @@ pub enum ProgramCodec {
         result: usize,
     },
     Effect {
+        failure: Option<usize>,
+        success: Option<usize>,
+    },
+    HostEffect {
+        parameter: usize,
         failure: Option<usize>,
         success: Option<usize>,
     },
@@ -168,6 +174,7 @@ pub fn emit_program_wasm(
         }
         let codec = codec(&ty, true, &mut codecs)
             .or_else(|| effect_codec(&ty, &mut codecs))
+            .or_else(|| host_codec(&ty, &mut codecs))
             .ok_or_else(|| error("program WASM: unsupported public codec; expected closed Unit/Bool/Int/String, tuple, Maybe/Either, a returned function or providerless Effect"))?;
         let mut terminal = codec;
         while let ProgramCodec::Function { result, .. } = &codecs[terminal] {
@@ -189,6 +196,10 @@ pub fn emit_program_wasm(
             origin: function.origin.clone(),
         });
     }
+    let host_abi = codecs
+        .iter()
+        .any(|code| matches!(code, ProgramCodec::HostEffect { .. }));
+    effect_abi |= host_abi;
     // Reuse the ordinary linker and every native evidence/admission check.
     // This explicit library mode changes no native executable entry contract.
     let mut library = project::emit_library(modules, entry_module)?;
@@ -213,7 +224,9 @@ pub fn emit_program_wasm(
     }
     let metadata = ProgramWasmMetadata {
         schema: 1,
-        abi: if effect_abi {
+        abi: if host_abi {
+            PROGRAM_WASM_HOST_EFFECT_ABI
+        } else if effect_abi {
             PROGRAM_WASM_EFFECT_ABI
         } else {
             PROGRAM_WASM_ABI
@@ -227,7 +240,9 @@ pub fn emit_program_wasm(
         trap_policy: "retire-instance".into(),
         max_boundary_bytes: 16 * 1024 * 1024,
     };
-    library.source.push_str(if effect_abi {
+    library.source.push_str(if host_abi {
+        include_str!("runtime_program_wasm_host_effect.rs")
+    } else if effect_abi {
         include_str!("runtime_program_wasm_effect.rs")
     } else {
         include_str!("runtime_program_wasm.rs")
@@ -259,7 +274,7 @@ pub fn emit_program_wasm(
     let schema = serde_json::to_string(&metadata).expect("serializable checked ABI");
     library.source.push_str(&format!("\nconst PROGRAM_CONTRACT: &str = {schema:?};\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_ptr() -> usize {{ PROGRAM_CONTRACT.as_ptr() as usize }}\n#[no_mangle]\npub extern \"C\" fn ssrg_contract_len() -> usize {{ PROGRAM_CONTRACT.len() }}\n"));
     let quoted_schema = serde_json::to_string(&schema).expect("serializable checked ABI text");
-    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n{}", if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
+    let javascript = format!("// Generated checked program WASM ABI.\nconst contract = {quoted_schema};\nconst schema = JSON.parse(contract);\n{}", if host_abi { include_str!("program_wasm_host_effect.js") } else if effect_abi { include_str!("program_wasm_effect.js") } else { include_str!("program_wasm.js") });
     let declarations = declarations(&metadata);
     Ok(ProgramWasmArtifact {
         source: library.source,
@@ -267,6 +282,67 @@ pub fn emit_program_wasm(
         javascript,
         declarations,
     })
+}
+
+fn host_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+    let CoreType::Function { parameter, result } = ty else {
+        return effect_codec(ty, codecs).or_else(|| codec(ty, true, codecs));
+    };
+    let parameter =
+        codec(parameter, false, codecs).or_else(|| host_parameter_codec(parameter, codecs))?;
+    let result = host_codec(result, codecs)?;
+    let item = ProgramCodec::Function { parameter, result };
+    if let Some(index) = codecs.iter().position(|existing| existing == &item) {
+        Some(index)
+    } else {
+        let index = codecs.len();
+        codecs.push(item);
+        Some(index)
+    }
+}
+
+fn host_parameter_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
+    // The transport's AbortSignal is out of band. This checked Function is
+    // exactly one Seseragi source argument followed by one cold Effect plan.
+    let CoreType::Function { parameter, result } = ty else {
+        return None;
+    };
+    let CoreType::Named { name, arguments } = result.as_ref() else {
+        return None;
+    };
+    let [CoreType::Record {
+        closed: true,
+        fields,
+    }, failure, success] = arguments.as_slice()
+    else {
+        return None;
+    };
+    if name != "std/prelude::Effect" || !fields.is_empty() {
+        return None;
+    }
+    let parameter = codec(parameter, false, codecs)?;
+    let mut terminal = |ty: &CoreType| {
+        if matches!(ty, CoreType::Named { name, arguments } if name == "std/prelude::Never" && arguments.is_empty())
+        {
+            Some(None)
+        } else {
+            codec(ty, false, codecs).map(Some)
+        }
+    };
+    let failure = terminal(failure)?;
+    let success = terminal(success)?;
+    let item = ProgramCodec::HostEffect {
+        parameter,
+        failure,
+        success,
+    };
+    if let Some(index) = codecs.iter().position(|existing| existing == &item) {
+        Some(index)
+    } else {
+        let index = codecs.len();
+        codecs.push(item);
+        Some(index)
+    }
 }
 
 fn effect_codec(ty: &CoreType, codecs: &mut Vec<ProgramCodec>) -> Option<usize> {
@@ -359,6 +435,11 @@ fn rust_codec(codec: &ProgramCodec) -> String {
         ProgramCodec::Effect { failure, success } => {
             format!("ProgramCode::Effect({failure:?}, {success:?})")
         }
+        ProgramCodec::HostEffect {
+            parameter,
+            failure,
+            success,
+        } => format!("ProgramCode::HostEffect({parameter}, {failure:?}, {success:?})"),
     }
 }
 
@@ -400,6 +481,20 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
                     .map(|id| ty(metadata, id))
                     .unwrap_or_else(|| "never".into())
             ),
+            ProgramCodec::HostEffect {
+                parameter,
+                failure,
+                success,
+            } => format!(
+                "HostEffect<{}, {}, {}>",
+                ty(metadata, *parameter),
+                failure
+                    .map(|id| ty(metadata, id))
+                    .unwrap_or_else(|| "never".into()),
+                success
+                    .map(|id| ty(metadata, id))
+                    .unwrap_or_else(|| "never".into()),
+            ),
         }
     }
     let mut result = String::from("export interface Ownership { readonly alive: boolean; readonly retired: boolean; readonly callbacks: number; readonly managedLiveAtClose: number | null; }\nexport interface OwnedCallback<A, B> { (argument: A): B; dispose(): void; readonly disposed: boolean; }\nexport class ProgramWasmDefect extends Error { readonly origin?: Readonly<{source: string; start: number; end: number}>; }\nexport class ProgramWasmClosed extends Error {}\nexport interface ProgramExports {\n");
@@ -410,7 +505,9 @@ fn declarations(metadata: &ProgramWasmMetadata) -> String {
             ty(metadata, export.codec)
         ));
     }
-    if metadata.abi == PROGRAM_WASM_EFFECT_ABI {
+    if metadata.abi == PROGRAM_WASM_HOST_EFFECT_ABI {
+        result.push_str("}\nexport type HostResult<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}>;\nexport interface HostEffectContext { readonly signal: AbortSignal; }\nexport type HostEffect<A, E, B> = (argument: A, context: HostEffectContext) => HostResult<E, B> | PromiseLike<HostResult<E, B>>;\nexport type ProgramOutcome<E, A> = HostResult<E, A> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean; hostCallbacks: number; waitingHost: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
+    } else if metadata.abi == PROGRAM_WASM_EFFECT_ABI {
         result.push_str("}\nexport type ProgramOutcome<E, A> = Readonly<{tag: 'Success'; value: A}> | Readonly<{tag: 'Failure'; error: E}> | Readonly<{tag: 'Defect'; messages: readonly string[]}> | Readonly<{tag: 'Cancelled'}>;\nexport interface ProgramExecution<E, A> { readonly result: Promise<ProgramOutcome<E, A>>; cancel(): void; }\nexport interface OwnedEffect<E, A> { run(): ProgramExecution<E, A>; dispose(): void; readonly disposed: boolean; }\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): Promise<void>; ownership(): Ownership & Readonly<{plans: number; running: boolean; closing: boolean}>; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");
     } else {
         result.push_str("}\nexport interface ProgramInstance { readonly exports: ProgramExports; dispose(): void; ownership(): Ownership; }\nexport function loadProgram(bytes: BufferSource): Promise<ProgramInstance>;\n");

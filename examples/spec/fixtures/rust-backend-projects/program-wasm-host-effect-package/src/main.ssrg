@@ -1,0 +1,82 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+foreign "typescript" from "../host/bridge.ts" {
+  task fn operate action: String -> input: String -> String
+}
+
+type Action =
+  | Prepare | Run | Failure | Defect | Cleanup | Nested
+  | Open | Read | Release | Resume | Cancel | Finish
+  | Detach | Dispose | Reload
+
+fn view state: (Int, String) -> html.Html<Action> = {
+  let (count, status) = state
+  html.main {
+    children: [
+      html.h1 { children: "Seseragi host Effect program WASM" },
+      html.p { children: "TSの非同期callbackで読み込み、Seseragiで処理してresourceを閉じます。" },
+      html.pre { id: "status", children: status },
+      html.button { id: "prepare", onClick: Prepare, children: "cold planを作る" },
+      html.button { id: "run", onClick: Run, children: "run／再実行" },
+      html.button { id: "failure", onClick: Failure, children: "読み込みの型付き失敗" },
+      html.button { id: "defect", onClick: Defect, children: "hostのDefect" },
+      html.button { id: "cleanup", onClick: Cleanup, children: "解放時のDefect" },
+      html.button { id: "nested", onClick: Nested, children: "二つのresourceをLIFOで閉じる" },
+      html.button { id: "open", onClick: Open, children: "openを保留して開始" },
+      html.button { id: "read", onClick: Read, children: "readを保留して開始" },
+      html.button { id: "release", onClick: Release, children: "releaseを保留して開始" },
+      html.button { id: "resume", onClick: Resume, children: "保留を解除" },
+      html.button { id: "cancel", onClick: Cancel, children: "取消を要求" },
+      html.button { id: "finish", onClick: Finish, children: "処理と解放の完了を待つ" },
+      html.button { id: "detach", onClick: Detach, children: "planを解放" },
+      html.button { id: "dispose", onClick: Dispose, children: "instanceの終了を要求" },
+      html.button { id: "reload", onClick: Reload, children: "instanceを再生成" },
+      html.p { id: "count", children: `操作: ${count}` }
+    ]
+  }
+}
+
+effect fn dispatch state: signals.MutableSignal<(Int, String)>
+  -> action: Action
+  -> Unit
+fails Js.Error = do {
+  current <- signals.read state
+  let (count, _) = current
+  let next = count + 1
+  let name = match action {
+    Prepare -> "prepare"
+    Run -> "run"
+    Failure -> "failure"
+    Defect -> "defect"
+    Cleanup -> "cleanup"
+    Nested -> "nested"
+    Open -> "open"
+    Read -> "read"
+    Release -> "release"
+    Resume -> "resume"
+    Cancel -> "cancel"
+    Finish -> "finish"
+    Detach -> "detach"
+    Dispose -> "dispose"
+    Reload -> "reload"
+  }
+  status <- operate name `雪 / 操作 ${next}`
+  signals.update (\_ -> (next, status)) state
+}
+
+effect fn release _initial: String -> Unit = do {
+  _ <- effects.attempt (operate "finalize" "UI finalizer")
+  effects.succeed ()
+}
+
+pub effect fn main -> Unit with Dom fails String = do {
+  initial <- effects.acquireRelease (operate "reload" "初期") release
+    |> effects.mapError show
+  state <- signals.make (0, initial)
+  target <- dom.query "#app" |> effects.mapError show
+  dom.run (dom.defaultOptions ()) target (dispatch state) (signals.map view state)
+    |> effects.mapError show
+}

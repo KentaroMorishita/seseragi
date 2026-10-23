@@ -7,7 +7,7 @@ mod project;
 mod type_names;
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
-    PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
+    PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI, PROGRAM_WASM_HOST_EFFECT_ABI,
 };
 use serde::{Deserialize, Serialize};
 use seseragi_lowering::{CoreModule, SourceSpan};
