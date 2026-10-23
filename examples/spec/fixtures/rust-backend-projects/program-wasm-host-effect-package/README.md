@@ -6,4 +6,6 @@ hostの関数はSeseragiでは一引数でEffectを返す。JS loaderが渡すAb
 
 requestは実際の非同期fetchで`public/input.txt`を読み、JSが所有するresource記録をreleaseで閉じる。OS file descriptorのWASM ABIは扱わない。open／read／releaseを保留するボタンから取消と終了待ちを観測できる。hostのPromiseが応答しない場合の強制終了や、自分自身のinstanceのdispose完了をhost関数内で待つ循環は扱わない。
 
-このfixtureは未統合・未配布の先行実装である。最終mainへの載せ替え、必要なCI／review、正式配布・dogfoodと配布CLIの実行を別に記録し、到達点3全体の完了とは分ける。
+標準devでは、不正なprogram編集によって完成済みsiteやreload versionを変更しない。修復後の更新では、UIの終了処理とhostの取消応答、masked releaseの完了を待ってから新しいページへ移る。解放時のDefectは全resourceを解放してから報告し、自動遷移を止める。hostのPromise実行中に同じinstanceへ再入する操作は引き続き拒否する。
+
+このfixtureは未統合・未配布の先行実装である。最終mainへの載せ替え、必要なCI、既存指摘と手元の差分レビュー、正式配布・dogfoodと配布CLIの実行を別に記録し、到達点3全体の完了とは分ける。
