@@ -283,6 +283,20 @@ fn standard_web_host_effect_build_keeps_typed_assets_and_source_stages() {
                     &scratch.0,
                 ));
             assert_eq!(result.stdout, b"host Effect 23 cases passed\n");
+            let lifetime =
+                successful(bounded(
+                    Command::new(runtime(engine, &scratch.0))
+                        .arg(root().join(
+                            "crates/seseragi-cli/tests/fixtures/program-wasm-host-lifetime.mjs",
+                        ))
+                        .arg(&site)
+                        .env("PATH", ""),
+                    &scratch.0,
+                ));
+            assert_eq!(
+                lifetime.stdout,
+                b"generated host page lifetime drained both owners and reported cleanup Defect\n"
+            );
         }
         let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":[],"lib":["ES2022","DOM"],"skipLibCheck":false,"paths":{"@seseragi/programs/calculation":[directory.join("index.d.mts")]}},"files":[package.join("host/bridge.ts")]});
         let config_path = scratch.0.join(format!("{profile}-types.json"));
