@@ -170,7 +170,7 @@ function nodeConnection(
               ? message.text
               : Buffer.from(message.bytes)
           webSocket.send(value, (error) =>
-            error === undefined ? resolve() : reject(error)
+            error === undefined || error === null ? resolve() : reject(error)
           )
         })
       },
