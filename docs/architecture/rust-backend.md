@@ -251,6 +251,10 @@ TS / nativeのscalar self-tail loop認定とscalar global readの共通改善は
 選択済みのuser instanceとnested dictionary、Int / Bool / String、基本Char / Float / List、
 Tuple / Array / field-only Record、local ADT、decision、let / effect sequence。
 Show / Debugは対応済みの標準辞書と選択済みchild methodを使う。
+nativeのInt除算はcanonicalな`std/int::Div`の型・evidence・source段階を照合する。
+商は0方向へ切り捨て、保存したmethodや再利用する部分適用でも同じsafe integer範囲を保つ。
+0除算はDefectとなり、Effectのresource scopeを閉じてからprocessを終了する。
+Rem／Powやprogram WASMのInt算術は、この対応には含まない。
 Arrayの`values[index]`はcanonical Array / Int / Maybeと要素型を検証し、
 receiver、indexをこの順で一度ずつ評価する。負数・範囲外・空配列ではNothingを返し、
 有効な位置では要素の共有edgeをJustへ保持する。取り出した関数・Ref・cold Effectは

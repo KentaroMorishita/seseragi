@@ -120,6 +120,7 @@ fn emit_body(
         scalar_globals,
         type_names,
         trait_names,
+        program_wasm_library: entry.is_none(),
         owner: &module.module,
         functions: module.functions.iter().map(|f| f.symbol.clone()).collect(),
         globals: module
@@ -374,6 +375,8 @@ fn dictionary_parameters(
 
 struct Backend<'a> {
     module: &'a CoreModule,
+    // The explicit library emission path currently backs program WASM.
+    program_wasm_library: bool,
     owners: &'a BTreeMap<String, String>,
     owner: &'a str,
     functions: BTreeSet<String>,
@@ -1129,6 +1132,20 @@ impl Backend<'_> {
                         self.expr(left, scope)?,
                         self.expr(right, scope)?,
                         quoted(operator)
+                    ));
+                }
+                if operator == "/" {
+                    self.validate_primitive_operator_binary(
+                        operator,
+                        [left, right],
+                        evidence,
+                        type_ref,
+                        scope,
+                    )?;
+                    return Ok(format!(
+                        "binary(\"/\", {}, {})",
+                        self.expr(left, scope)?,
+                        self.expr(right, scope)?
                     ));
                 }
                 let standard = evidence.iter().all(|e| matches!(&e.evidence, CoreInstanceEvidence::Standard { identity, .. } if matches!(identity.as_str(), "std/int::Add" | "std/int::Sub" | "std/int::Mul" | "std/int::Eq" | "std/int::Ord" | "std/string::Add")));

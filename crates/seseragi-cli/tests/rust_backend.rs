@@ -30,6 +30,158 @@ fn cli() -> Command {
 }
 
 #[test]
+fn native_int_division_matches_ts_profiles_and_awaits_cleanup_on_defect() {
+    let scratch = Scratch::new();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
+    let fixtures = root.join("examples/spec/fixtures/rust-backend");
+    let engines = ["bun", "node"].map(|name| {
+        let located = Command::new(if cfg!(windows) { "where" } else { "which" })
+            .arg(name)
+            .output()
+            .unwrap();
+        assert!(located.status.success());
+        PathBuf::from(
+            String::from_utf8(located.stdout)
+                .unwrap()
+                .lines()
+                .next()
+                .unwrap(),
+        )
+    });
+    for (name, code) in [
+        ("int-division", 0),
+        ("int-division-effects", 0),
+        ("int-division-defect", 70),
+    ] {
+        let source = fixtures.join(format!("{name}.ssrg"));
+        let expected = if code == 0 {
+            fs::read(fixtures.join(format!("{name}.stdout"))).unwrap()
+        } else {
+            vec![]
+        };
+        let destination = scratch.0.join(format!("{name}-native"));
+        let built = cli()
+            .args(["experimental", "build-native"])
+            .arg(&source)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&destination)
+            .output()
+            .unwrap();
+        assert!(
+            built.status.success(),
+            "{name}: {}",
+            String::from_utf8_lossy(&built.stderr)
+        );
+        let cwd = scratch.0.join(format!("{name}-native-run"));
+        fs::create_dir(&cwd).unwrap();
+        let native = Command::new(destination.join(if cfg!(windows) {
+            "program.exe"
+        } else {
+            "program"
+        }))
+        .current_dir(&cwd)
+        .env("PATH", "")
+        .env("SESERAGI_NATIVE_METRICS", "1")
+        .output()
+        .unwrap();
+        assert_eq!(
+            native.status.code(),
+            Some(code),
+            "{name}: {}",
+            String::from_utf8_lossy(&native.stderr)
+        );
+        assert_eq!(native.stdout, expected, "{name}");
+        assert!(String::from_utf8_lossy(&native.stderr).contains("managed-live=0"));
+        if code == 70 {
+            assert!(String::from_utf8_lossy(&native.stderr).contains("Int division by zero"));
+            assert_eq!(
+                fs::read(cwd.join("trace.txt")).unwrap(),
+                b"acquire\nsaved\nrelease\n"
+            );
+        }
+        for (profile, value) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let output = scratch.0.join(format!("{name}-{profile}"));
+            let built = cli()
+                .arg("build")
+                .arg(&source)
+                .args(["--profile", profile, "--out-dir"])
+                .arg(&output)
+                .output()
+                .unwrap();
+            assert!(
+                built.status.success(),
+                "{name}/{profile}: {}",
+                String::from_utf8_lossy(&built.stderr)
+            );
+            let text = fs::read_to_string(&source).unwrap();
+            let raw = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new("division.ssrg", "proof/division", &text)
+                    .with_profile(value),
+            )
+            .unwrap();
+            fs::write(output.join("raw.ts"), raw.generated.typescript).unwrap();
+            let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root.join("node_modules/@types")],"baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":["raw.ts"]});
+            fs::write(
+                output.join("tsconfig.json"),
+                serde_json::to_vec(&config).unwrap(),
+            )
+            .unwrap();
+            let strict = Command::new(&engines[1])
+                .arg(root.join("node_modules/typescript/bin/tsc"))
+                .arg("--project")
+                .arg(output.join("tsconfig.json"))
+                .output()
+                .unwrap();
+            assert!(
+                strict.status.success(),
+                "{name}/{profile}: {}{}",
+                String::from_utf8_lossy(&strict.stdout),
+                String::from_utf8_lossy(&strict.stderr)
+            );
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(output.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for (index, engine) in engines.iter().enumerate() {
+                let cwd = scratch.0.join(format!("{name}-{profile}-run-{index}"));
+                fs::create_dir(&cwd).unwrap();
+                let result = Command::new(engine)
+                    .arg(output.join(manifest["entry"].as_str().unwrap()))
+                    .current_dir(&cwd)
+                    .env("PATH", "")
+                    .output()
+                    .unwrap();
+                assert_eq!(
+                    result.status.code(),
+                    Some(code),
+                    "{name}/{profile}/{index}: {}",
+                    String::from_utf8_lossy(&result.stderr)
+                );
+                assert_eq!(result.stdout, expected, "{name}/{profile}/{index}");
+                if code == 70 {
+                    assert!(String::from_utf8_lossy(&result.stderr).contains("runtime defect"));
+                    assert_eq!(
+                        fs::read(cwd.join("trace.txt")).unwrap(),
+                        b"acquire\nsaved\nrelease\n"
+                    );
+                } else {
+                    assert!(
+                        result.stderr.is_empty(),
+                        "{name}/{profile}/{index}: {}",
+                        String::from_utf8_lossy(&result.stderr)
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn alias_head_conflicts_and_unrepresented_parameters_reject_before_output() {
     let scratch = Scratch::new();
     for (name, source, code) in [

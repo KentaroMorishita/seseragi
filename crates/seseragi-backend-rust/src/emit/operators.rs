@@ -5,6 +5,7 @@ fn primitive_operator(identity: &str) -> Option<(&'static str, &'static str, &'s
         "std/int::Add" => ("Add", "add", "Int"),
         "std/int::Sub" => ("Sub", "sub", "Int"),
         "std/int::Mul" => ("Mul", "mul", "Int"),
+        "std/int::Div" => ("Div", "div", "Int"),
         "std/string::Add" => ("Add", "add", "String"),
         _ => return None,
     })
@@ -21,7 +22,7 @@ pub(super) fn primitive_reference(
     let (_, method, _) = primitive_operator(identity)?;
     (matches!(
         (operator, method),
-        ("+", "add") | ("-", "sub") | ("*", "mul")
+        ("+", "add") | ("-", "sub") | ("*", "mul") | ("/", "div")
     ))
     .then_some(method)
 }
@@ -40,6 +41,35 @@ pub(super) fn valid_dispatch(selected: &CoreCallEvidence, identity: &str, method
 }
 
 impl Backend<'_> {
+    pub(super) fn validate_primitive_operator_binary(
+        &self,
+        operator: &str,
+        operands: [&CoreExpr; 2],
+        evidence: &[CoreCallEvidence],
+        result_type: &CoreType,
+        scope: &Scope,
+    ) -> Result<()> {
+        let [selected] = evidence else {
+            return Err("Rust backend: primitive arithmetic requires one dictionary".into());
+        };
+        if primitive_reference(operator, evidence).is_none() {
+            return Err("Rust backend: primitive arithmetic operator/provider mismatch".into());
+        }
+        self.validate_primitive_operator_result(selected, 2, result_type, scope)?;
+        for (expected, operand) in selected.constraint.arguments.iter().zip(operands) {
+            let actual = local::method_argument_type(operand)
+                .ok_or("Rust backend: unproven primitive arithmetic operand type")?;
+            self.match_local_type(
+                expected,
+                &actual,
+                &BTreeMap::new(),
+                &mut BTreeMap::new(),
+                scope,
+            )?;
+        }
+        Ok(())
+    }
+
     pub(super) fn primitive_operator_dictionary(
         &self,
         selected: &CoreCallEvidence,
@@ -55,6 +85,12 @@ impl Backend<'_> {
         };
         let (trait_name, _, primitive) = primitive_operator(identity)?;
         Some((|| {
+            if self.program_wasm_library && identity == "std/int::Div" {
+                return Err(
+                    "program WASM: native Int division requires a target-specific arithmetic proof"
+                        .into(),
+                );
+            }
             if selected.constraint.name != trait_name
                 || selected
                     .constraint
