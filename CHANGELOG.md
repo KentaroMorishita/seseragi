@@ -11,6 +11,7 @@
 - Bound Node HTTP request bodies to 8 MiB by default, return 413 before dispatching oversized requests, and release interrupted uploads and stalled response streams during server shutdown.
 - Bound Bun HTTP/1 response headers, trailers and chunk-size lines, and cap informational responses on both native hosts even with no consumer demand. Reject ambiguous or invalid response metadata. Preserve complete responses under backpressure, await in-flight upload cancellation on both hosts, and close Node transports even when cancellation fails.
 - Isolate malformed Node WebSocket frames and upgrade URLs to the affected connection. Observe Node/Bun handler failures, release pending sends and receivers, and close listeners during provider shutdown.
+- Accept null or undefined WebSocket send callback errors as success, preserving Node-provider text and binary echoes under Bun 1.4.4.
 
 ## [0.61.81] - 2026-10-23
 
