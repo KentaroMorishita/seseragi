@@ -304,6 +304,30 @@ pub(super) fn type_ref_from_core_type(
     type_ref_from_core_type_with_erasure(type_ref, imported_types, &[])
 }
 
+/// Canonical intrinsics represented directly by TypeScript, without a source
+/// type import. Keep owner, scalar spelling and kind checks shared with import
+/// planning. Canonical Array identity also permits an imported display alias.
+pub(super) fn canonical_inline_type_name(type_ref: &CoreType) -> Option<&str> {
+    let CoreType::ExternalNamed {
+        name,
+        canonical,
+        arguments,
+    } = type_ref
+    else {
+        return None;
+    };
+    if canonical == "std/prelude::Array" && arguments.len() == 1 {
+        return Some("Array");
+    }
+    if canonical.strip_prefix("std/prelude::") != Some(name.as_str()) {
+        return None;
+    }
+    match (name.as_str(), arguments.len()) {
+        ("Bool" | "Int" | "Float" | "Char" | "String" | "Unit", 0) => Some(name),
+        _ => None,
+    }
+}
+
 /// Recover an instantiated callable only when its checked declaration applies
 /// a constructor parameter that TypeScript erases. Ordinary generic calls and
 /// unresolved holes do not supply this proof.
@@ -521,10 +545,8 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         // Instance selection can preserve primitive identity canonically when
         // its display name is shadowed. These builtins need no external import,
         // and must bypass lexical nominal/type-parameter name translation.
-        CoreType::ExternalNamed { name, canonical, arguments }
-            if arguments.is_empty()
-                && canonical == &format!("std/prelude::{name}")
-                && matches!(name.as_str(), "Bool" | "Int" | "Float" | "Char" | "String" | "Unit") =>
+        CoreType::ExternalNamed { name, arguments, .. }
+            if arguments.is_empty() && canonical_inline_type_name(type_ref).is_some() =>
         {
             match name.as_str() {
                 "Bool" => TypeScriptType::Boolean,
@@ -534,8 +556,8 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 _ => unreachable!(),
             }
         }
-        CoreType::ExternalNamed { canonical, arguments, .. }
-            if canonical == "std/prelude::Array" && arguments.len() == 1 =>
+        CoreType::ExternalNamed { arguments, .. }
+            if canonical_inline_type_name(type_ref) == Some("Array") =>
         {
             TypeScriptType::Array {
                 element: Box::new(type_ref_from_core_type_with_erasure(
@@ -982,6 +1004,7 @@ mod tests {
     fn instantiates_hkt_calls_from_checked_arguments_and_result_only() {
         let signature = crate::CoreCallSignature {
             argument_types: vec![],
+            instantiated_type_arguments: Vec::new(),
             type_parameters: vec![
                 TypeParameter::constructor("F", 1),
                 TypeParameter::value("A"),
@@ -1030,6 +1053,7 @@ mod tests {
         };
         let base = crate::CoreCallSignature {
             argument_types: vec![],
+            instantiated_type_arguments: Vec::new(),
             type_parameters: vec![
                 TypeParameter::constructor("F", 1),
                 TypeParameter::value("A"),

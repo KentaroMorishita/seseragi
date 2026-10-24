@@ -17,6 +17,7 @@
       "http-client.method-type",
       "core.bytes.type",
       "http-client.response-type",
+      "http-client.service-type",
       "http-client.body-limit-type",
       "core.adt",
       "core.show.dictionary",

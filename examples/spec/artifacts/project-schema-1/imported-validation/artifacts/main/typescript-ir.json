@@ -613,6 +613,22 @@
                     }
                   ]
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Problem",
+                  "arguments": []
+                },
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
               ]
             },
             "origin": {
@@ -792,6 +808,16 @@
                           {
                             "kind": "identifier",
                             "name": "result"
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "Problem",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "number"
                           }
                         ]
                       }

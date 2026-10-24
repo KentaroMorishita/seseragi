@@ -34,12 +34,14 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
         },
         TypedExpr::EffectInvoke {
             callee,
+            callee_signature,
             effect,
             arguments,
             evidence,
             origin,
         } => CoreExpr::EffectInvoke {
             callee,
+            callee_signature: callee_signature.map(lower_call_signature),
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
@@ -452,12 +454,14 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         },
         TypedExpr::EffectInvoke {
             callee,
+            callee_signature,
             effect,
             arguments,
             evidence,
             origin,
         } => CoreExpr::EffectInvoke {
             callee,
+            callee_signature: callee_signature.map(lower_call_signature),
             requirements: lower_typed_type(effect.environment),
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
@@ -695,6 +699,11 @@ fn lower_call_signature(
             .map(lower_typed_type)
             .collect(),
         result: lower_typed_type(signature.result),
+        instantiated_type_arguments: signature
+            .instantiated_type_arguments
+            .into_iter()
+            .map(lower_typed_type)
+            .collect(),
         argument_types: signature
             .argument_types
             .into_iter()

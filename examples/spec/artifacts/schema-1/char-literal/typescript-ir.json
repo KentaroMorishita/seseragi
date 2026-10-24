@@ -146,6 +146,11 @@
                 "kind": "identifier",
                 "name": "account$prime"
               }
+            ],
+            "typeArguments": [
+              {
+                "kind": "string"
+              }
             ]
           },
           {

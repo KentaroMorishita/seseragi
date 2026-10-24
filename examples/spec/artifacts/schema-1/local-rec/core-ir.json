@@ -2298,6 +2298,37 @@
                                     }
                                   }
                                 ],
+                                "calleeSignature": {
+                                  "typeParameters": [
+                                    "A"
+                                  ],
+                                  "parameters": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  },
+                                  "argumentTypes": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Bool",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Bool",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
                                 "type": {
                                   "kind": "named",
                                   "name": "Bool",
@@ -2323,6 +2354,37 @@
                                     }
                                   }
                                 ],
+                                "calleeSignature": {
+                                  "typeParameters": [
+                                    "A"
+                                  ],
+                                  "parameters": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  },
+                                  "argumentTypes": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ],
+                                  "instantiatedTypeArguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
                                 "type": {
                                   "kind": "named",
                                   "name": "Int",

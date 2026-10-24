@@ -1241,6 +1241,93 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "LayoutState",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "LayoutState",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "LayoutState",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "LayoutState",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Effect",
@@ -3034,6 +3121,90 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "external-named",
+                "name": "html.Html",
+                "canonical": "std/web/html::Html",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "external-named",
+                "name": "html.Html",
+                "canonical": "std/web/html::Html",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
           "type": {
             "kind": "external-named",
             "name": "Signal",
@@ -4174,6 +4345,60 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "MutableSignal",
+                      "canonical": "std/signal::MutableSignal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
@@ -4673,6 +4898,136 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A",
+                  "B"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "LayoutState",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "LayoutState",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -4805,6 +5160,90 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A",
+                  "B"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "LayoutState",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "LayoutState",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "LayoutState",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -5605,6 +6044,150 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A",
+                          "B"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "external-named",
+                              "name": "Signal",
+                              "canonical": "std/signal::Signal",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "B",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "Signal",
+                            "canonical": "std/signal::Signal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "external-named",
+                          "name": "Signal",
+                          "canonical": "std/signal::Signal",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "B",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "LayoutState",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "external-named",
+                              "name": "Signal",
+                              "canonical": "std/signal::Signal",
+                              "arguments": [
+                                {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Never",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Unit",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "LayoutState",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "LayoutState",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "html.Html",
+                            "canonical": "std/web/html::Html",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "external-named",
                         "name": "Signal",
@@ -6229,6 +6812,217 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "Action",
+                  "Failure"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "requirement-merge",
+                      "operands": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "dom",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "dom.Dom",
+                                "canonical": "std/web/dom::Dom",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "dom.DomRuntimeError",
+                      "canonical": "std/web/dom::DomRuntimeError",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",

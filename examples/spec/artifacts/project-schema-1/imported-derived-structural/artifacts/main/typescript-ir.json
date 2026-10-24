@@ -1455,6 +1455,11 @@
                           "kind": "number",
                           "value": "1"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
                       ]
                     },
                     {
@@ -1465,9 +1470,19 @@
                           "kind": "number",
                           "value": "2"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
                       ]
                     }
                   ]
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "number"
                 }
               ]
             },
@@ -1531,6 +1546,11 @@
                                         "kind": "number",
                                         "value": "1"
                                       }
+                                    ],
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
                                     ]
                                   },
                                   {
@@ -1541,9 +1561,19 @@
                                         "kind": "number",
                                         "value": "2"
                                       }
+                                    ],
+                                    "typeArguments": [
+                                      {
+                                        "kind": "number"
+                                      }
                                     ]
                                   }
                                 ]
+                              }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "number"
                               }
                             ]
                           }
@@ -1632,6 +1662,11 @@
                                             "kind": "number",
                                             "value": "1"
                                           }
+                                        ],
+                                        "typeArguments": [
+                                          {
+                                            "kind": "number"
+                                          }
                                         ]
                                       },
                                       {
@@ -1642,9 +1677,19 @@
                                             "kind": "number",
                                             "value": "3"
                                           }
+                                        ],
+                                        "typeArguments": [
+                                          {
+                                            "kind": "number"
+                                          }
                                         ]
                                       }
                                     ]
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
                                   }
                                 ]
                               }
@@ -1787,6 +1832,11 @@
                                               "kind": "number",
                                               "value": "1"
                                             }
+                                          ],
+                                          "typeArguments": [
+                                            {
+                                              "kind": "number"
+                                            }
                                           ]
                                         },
                                         {
@@ -1797,9 +1847,19 @@
                                               "kind": "number",
                                               "value": "2"
                                             }
+                                          ],
+                                          "typeArguments": [
+                                            {
+                                              "kind": "number"
+                                            }
                                           ]
                                         }
                                       ]
+                                    }
+                                  ],
+                                  "typeArguments": [
+                                    {
+                                      "kind": "number"
                                     }
                                   ]
                                 }
@@ -3111,6 +3171,11 @@
                               {
                                 "kind": "number",
                                 "value": "1"
+                              }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "number"
                               }
                             ]
                           }

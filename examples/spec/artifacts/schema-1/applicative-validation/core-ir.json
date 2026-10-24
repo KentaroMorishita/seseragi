@@ -373,6 +373,54 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -465,6 +513,66 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -614,6 +722,54 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Validation",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Validation",
@@ -981,6 +1137,54 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -1149,6 +1353,77 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "E"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Errors",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "type": {
                           "kind": "named",
                           "name": "Errors",
@@ -1167,6 +1442,66 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -1268,6 +1603,66 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -1369,6 +1764,66 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "E",
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "Validation",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Validation",
@@ -1816,6 +2271,75 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E"
+                ],
+                "parameters": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Errors",
@@ -1970,6 +2494,70 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "E"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "Errors",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Errors",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "E",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Errors",
@@ -2016,6 +2604,75 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E"
+                ],
+                "parameters": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Errors",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Errors",
@@ -2301,6 +2958,43 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Errors",
@@ -2319,6 +3013,66 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "E",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Validation",
@@ -2360,6 +3114,54 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "E",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Validation",
@@ -2524,6 +3326,54 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "E",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Validation",
@@ -2569,6 +3419,43 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "E"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Errors",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Errors",
@@ -2587,6 +3474,66 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "E",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Validation",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "Errors",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "FormError",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "FormError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Validation",

@@ -1028,6 +1028,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Call {
             callee,
             arguments,
+            type_arguments,
             checked_callee_type,
         } => {
             let callee = checked_callee_type.as_ref().map_or_else(
@@ -1039,6 +1040,18 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                     )
                 },
             );
+            let callee = if type_arguments.is_empty() {
+                callee
+            } else {
+                format!(
+                    "{callee}<{}>",
+                    type_arguments
+                        .iter()
+                        .map(render_typescript_type)
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                )
+            };
             if arguments.is_empty() {
                 return format!("{callee}()");
             }

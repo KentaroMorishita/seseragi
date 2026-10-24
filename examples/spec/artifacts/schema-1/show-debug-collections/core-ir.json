@@ -1561,6 +1561,66 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "E",
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "E",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Either",
@@ -1590,6 +1650,77 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Maybe",
@@ -1679,6 +1810,60 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "E",
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "E",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "E",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Either",
@@ -1708,6 +1893,77 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Maybe",
@@ -1888,6 +2144,66 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "E",
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "E",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Either",
@@ -1917,6 +2233,77 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Maybe",
@@ -2006,6 +2393,60 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "E",
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "E",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Either",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "E",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Either",
@@ -2035,6 +2476,77 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Maybe",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Either",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Bool",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Maybe",
@@ -2338,6 +2850,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Badge",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Maybe",

@@ -11,5 +11,5 @@ export type Box<A> = {
 const replace = <A,>(value: A) => (box: Box<A>) => (({ ...box, "value": value } as const) as unknown as Box<A>)
 const unwrap = <A,>(box: Box<A>) => (($ssrg_match: Box<A>): A => ((value: A): A => value)($ssrg_match["value"]))(box)
 const render = (value: number) => "Generic Struct: " + _ssrg_show_intShow["show"](value)
-export const main = (_unit: undefined) => _ssrg_console_println(render(unwrap(replace(42)(inferred))))
+export const main = (_unit: undefined) => _ssrg_console_println(render(unwrap<number>(replace<number>(42)(inferred))))
 export const inferred: Box<number> = (({ "value": 42 } as const) as unknown as Box<number>);

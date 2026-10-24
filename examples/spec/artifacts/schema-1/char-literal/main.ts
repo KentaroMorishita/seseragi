@@ -9,5 +9,5 @@ const classify = (value: string) => (($ssrg_match: string): number => $ssrg_matc
 const account$prime: string = "瀬";
 const escaped: string = "λ";
 const nested: ReadonlyArray<{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: string }> = [_ssrg_maybe_Just("a"), _ssrg_maybe_Just(escaped)];
-const tuple: readonly [string, string] = [identity(account$prime), character("'")] as const;
+const tuple: readonly [string, string] = [identity<string>(account$prime), character("'")] as const;
 export const result: string = _ssrg_show_tupleShow<readonly [string, string]>(_ssrg_show_charShow, _ssrg_show_charShow)["show"](tuple) + ", " + _ssrg_show_arrayShow<{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: string }>(_ssrg_show_maybeShow<string>(_ssrg_show_charShow))["show"](nested) + ", " + _ssrg_show_charShow["show"]("λ");

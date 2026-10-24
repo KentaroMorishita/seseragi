@@ -1071,6 +1071,13 @@
               "arguments": []
             }
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "UserId",
+            "arguments": []
+          }
         ]
       },
       "origin": {

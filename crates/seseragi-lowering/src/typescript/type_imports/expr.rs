@@ -29,6 +29,19 @@ pub(super) fn collect_expr_type_imports(
     requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
+    if let CoreExpr::Call {
+        callee_signature: Some(signature),
+        ..
+    }
+    | CoreExpr::EffectInvoke {
+        callee_signature: Some(signature),
+        ..
+    } = expr
+    {
+        for argument in &signature.instantiated_type_arguments {
+            collect_type_imports(argument, bindings, requirements, imports);
+        }
+    }
     match expr {
         CoreExpr::Unit { .. }
         | CoreExpr::Integer { .. }

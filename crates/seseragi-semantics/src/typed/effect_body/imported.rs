@@ -35,6 +35,7 @@ pub(super) fn type_imported_effect_application(
 
     let TypedExpr::Call {
         callee,
+        callee_signature,
         arguments,
         evidence,
         type_ref,
@@ -49,6 +50,7 @@ pub(super) fn type_imported_effect_application(
     add_standard_temporal_requirement(&callee, &arguments, &mut effect);
     analysis.value = TypedExpr::EffectInvoke {
         callee,
+        callee_signature,
         effect,
         arguments,
         evidence,

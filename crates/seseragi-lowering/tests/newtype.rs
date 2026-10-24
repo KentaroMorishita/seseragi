@@ -55,5 +55,11 @@ pub fn answer unit: Unit -> Int =
     assert!(bundle
         .typescript
         .contains("export const Tagged = <A>(value: A): Tagged<A>"));
-    assert!(bundle.typescript.contains("untag(Tagged(42))"));
+    assert!(
+        bundle
+            .typescript
+            .contains("untag<number>(Tagged<number>(42))"),
+        "{}",
+        bundle.typescript
+    );
 }

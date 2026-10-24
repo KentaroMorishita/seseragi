@@ -319,6 +319,18 @@
                           }
                         ]
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
                     ]
                   }
                 },
@@ -358,6 +370,18 @@
                       {
                         "kind": "identifier",
                         "name": "errors"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
                       }
                     ]
                   }
@@ -462,6 +486,18 @@
                 {
                   "kind": "identifier",
                   "name": "value"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                },
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
                 }
               ]
             },
@@ -631,6 +667,18 @@
                           }
                         ]
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
                     ]
                   }
                 },
@@ -721,7 +769,26 @@
                             "kind": "identifier",
                             "name": "right"
                           }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "reference",
+                            "name": "E",
+                            "arguments": []
+                          }
                         ]
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
                       }
                     ]
                   }
@@ -772,6 +839,18 @@
                         "kind": "identifier",
                         "name": "errors"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
                     ]
                   }
                 },
@@ -820,6 +899,18 @@
                       {
                         "kind": "identifier",
                         "name": "errors"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
                       }
                     ]
                   }
@@ -930,6 +1021,13 @@
                     }
                   ]
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
+                }
               ]
             }
           },
@@ -1009,6 +1107,13 @@
                       ]
                     }
                   ]
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "E",
+                  "arguments": []
                 }
               ]
             }
@@ -1116,7 +1221,24 @@
                   "kind": "identifier",
                   "name": "NameRequired"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "FormError",
+                  "arguments": []
+                }
               ]
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "string"
             }
           ]
         },
@@ -1127,6 +1249,16 @@
             {
               "kind": "identifier",
               "name": "name"
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "string"
             }
           ]
         }
@@ -1188,6 +1320,16 @@
               "kind": "identifier",
               "name": "age"
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "number"
+            }
           ]
         },
         "elseBranch": {
@@ -1202,7 +1344,24 @@
                   "kind": "identifier",
                   "name": "AgeMustBePositive"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "FormError",
+                  "arguments": []
+                }
               ]
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "FormError",
+              "arguments": []
+            },
+            {
+              "kind": "number"
             }
           ]
         }

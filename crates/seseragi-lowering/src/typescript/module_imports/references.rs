@@ -259,7 +259,11 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             if let Some(signature) = callee_signature {
                 // Only instantiated call-site types enter the caller's imports.
                 // The declaration scheme can contain private or scoped names.
-                for argument in &signature.argument_types {
+                for argument in signature
+                    .argument_types
+                    .iter()
+                    .chain(&signature.instantiated_type_arguments)
+                {
                     collect_type_names(argument, references);
                 }
             }
@@ -405,6 +409,15 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             arguments,
             ..
         } => {
+            if let CoreExpr::EffectInvoke {
+                callee_signature: Some(signature),
+                ..
+            } = expr
+            {
+                for argument in &signature.instantiated_type_arguments {
+                    collect_type_names(argument, references);
+                }
+            }
             collect_type_names(requirements, references);
             collect_type_names(failure, references);
             collect_type_names(success, references);
@@ -545,14 +558,14 @@ fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
                 collect_type_names(argument, references);
             }
         }
-        CoreType::ExternalNamed {
-            name,
-            canonical,
-            arguments,
-        } if name == "Unit" && canonical == "std/prelude::Unit" && arguments.is_empty() => {
-            // The checked intrinsic lowers directly to undefined. It has no
-            // source-module import; same-named nominals and malformed kinds
-            // continue through the normal provider checks below.
+        CoreType::ExternalNamed { arguments, .. }
+            if super::super::types::canonical_inline_type_name(type_ref).is_some() =>
+        {
+            // These checked intrinsics lower directly to TypeScript types.
+            // Nested arguments still need their own canonical source providers.
+            for argument in arguments {
+                collect_type_names(argument, references);
+            }
         }
         CoreType::ExternalNamed {
             canonical,
@@ -610,6 +623,79 @@ mod implicit_unit_tests {
             &mut references,
         );
         assert!(references.external.is_empty());
+    }
+
+    #[test]
+    fn canonical_inline_types_keep_nested_provider_requirements() {
+        for name in ["Bool", "Int", "Float", "Char", "String", "Unit"] {
+            let mut references = ReferencedTypes {
+                names: BTreeSet::new(),
+                external: BTreeSet::new(),
+            };
+            collect_type_names(
+                &external(name, &format!("std/prelude::{name}"), vec![]),
+                &mut references,
+            );
+            assert!(references.external.is_empty(), "{name}");
+        }
+        for spelling in ["Array", "Vector"] {
+            let mut references = ReferencedTypes {
+                names: BTreeSet::new(),
+                external: BTreeSet::new(),
+            };
+            collect_type_names(
+                &external(
+                    spelling,
+                    "std/prelude::Array",
+                    vec![external("Hand", "model::Hand", vec![])],
+                ),
+                &mut references,
+            );
+            assert_eq!(references.external, BTreeSet::from(["model::Hand".into()]));
+        }
+    }
+
+    #[test]
+    fn same_name_nominals_and_malformed_inline_types_need_provider_validation() {
+        for (name, arity) in [
+            ("Bool", 0),
+            ("Int", 0),
+            ("Float", 0),
+            ("Char", 0),
+            ("String", 0),
+            ("Array", 1),
+        ] {
+            let valid_arguments = vec![
+                CoreType::Named {
+                    name: "Int".into(),
+                    arguments: vec![],
+                };
+                arity
+            ];
+            let mut malformed = vec![
+                external(name, &format!("model::{name}"), valid_arguments.clone()),
+                external(
+                    name,
+                    &format!("std/prelude::{name}"),
+                    vec![CoreType::Hole; arity + 1],
+                ),
+            ];
+            if name != "Array" {
+                malformed.push(external(
+                    "Counterfeit",
+                    &format!("std/prelude::{name}"),
+                    valid_arguments,
+                ));
+            }
+            for ty in malformed {
+                let mut references = ReferencedTypes {
+                    names: BTreeSet::new(),
+                    external: BTreeSet::new(),
+                };
+                collect_type_names(&ty, &mut references);
+                assert_eq!(references.external.len(), 1, "{ty:?}");
+            }
+        }
     }
 
     #[test]

@@ -798,6 +798,11 @@
                                     "kind": "boolean",
                                     "value": true
                                   }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "boolean"
+                                  }
                                 ]
                               },
                               "origin": {
@@ -819,6 +824,11 @@
                                   {
                                     "kind": "number",
                                     "value": "9"
+                                  }
+                                ],
+                                "typeArguments": [
+                                  {
+                                    "kind": "number"
                                   }
                                 ]
                               },

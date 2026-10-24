@@ -195,13 +195,24 @@ pub fn saved -> (F<Int> -> F<Int>) = keep
                 "a saved reference remains a value, without calling the function"
             );
         } else if function.symbol.ends_with("::ordinary") {
-            assert!(matches!(
-                &function.body,
-                CoreExpr::Call {
-                    callee_signature: None,
-                    ..
-                }
-            ));
+            let CoreExpr::Call {
+                callee_signature: Some(signature),
+                arguments,
+                evidence,
+                ..
+            } = &function.body
+            else {
+                panic!("ordinary generic calls must retain checked binder selections");
+            };
+            assert_eq!(arguments.len(), 1);
+            assert!(evidence.is_empty());
+            assert_eq!(signature.parameters.len(), 1);
+            assert_eq!(signature.type_parameters.len(), 1);
+            assert_eq!(signature.type_parameters[0].arity, 0);
+            assert_eq!(
+                signature.instantiated_type_arguments,
+                vec![function.parameters[0].type_ref.clone()]
+            );
         }
     }
     for TypeScriptFunction::ConstFunction { name, body, .. } in &compiled.typescript_ir.functions {
@@ -228,8 +239,9 @@ pub fn saved -> (F<Int> -> F<Int>) = keep
                 body,
                 TypeScriptExpr::Call {
                     checked_callee_type: None,
+                    type_arguments,
                     ..
-                }
+                } if type_arguments == &vec![TypeScriptType::Number]
             ));
         }
     }

@@ -103,6 +103,14 @@
             "kind": "identifier",
             "name": "value"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {

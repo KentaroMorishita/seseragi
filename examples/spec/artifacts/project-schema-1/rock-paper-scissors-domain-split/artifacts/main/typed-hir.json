@@ -507,6 +507,39 @@
                     }
                   }
                 ],
+                "calleeSignature": {
+                  "typeParameters": [
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "argumentTypes": [
+                    {
+                      "kind": "external-named",
+                      "name": "Outcome",
+                      "canonical": "fixture/rps-domain-split::domain::Outcome",
+                      "arguments": []
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "Outcome",
+                      "canonical": "fixture/rps-domain-split::domain::Outcome",
+                      "arguments": []
+                    }
+                  ]
+                },
                 "type": {
                   "kind": "external-named",
                   "name": "Outcome",
@@ -530,6 +563,37 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "String",

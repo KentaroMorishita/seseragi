@@ -509,6 +509,37 @@
                     }
                   }
                 ],
+                "calleeSignature": {
+                  "typeParameters": [
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "argumentTypes": [
+                    {
+                      "kind": "named",
+                      "name": "domain.Hand",
+                      "arguments": []
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "domain.Hand",
+                      "arguments": []
+                    }
+                  ]
+                },
                 "type": {
                   "kind": "named",
                   "name": "domain.Hand",
@@ -531,6 +562,37 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "String",

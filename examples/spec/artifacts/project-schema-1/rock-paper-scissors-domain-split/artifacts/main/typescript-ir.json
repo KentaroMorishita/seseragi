@@ -279,9 +279,21 @@
                       }
                     ]
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Outcome",
+                    "arguments": []
+                  }
                 ]
               }
             ]
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "string"
           }
         ]
       },

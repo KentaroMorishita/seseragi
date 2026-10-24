@@ -301,8 +301,8 @@ pub struct TypedCallEvidence {
     pub evidence: TypedInstanceEvidence,
 }
 
-/// Declared callable scheme retained when a higher-kinded application loses
-/// information in a target type system. The call's own type remains the
+/// Declared callable scheme retained when target inference loses a checked
+/// instantiation, including ordinary phantom type parameters. The call's own type remains the
 /// instantiated, checked result; this scheme does not select new evidence.
 /// A checked dictionary-only alias has no source parameters and retains its
 /// complete instantiated method value in `result`, including returned arrows.
@@ -315,6 +315,10 @@ pub struct TypedCallSignature {
     /// Checked value types of supplied arguments, including whole cold Effects.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub argument_types: Vec<TypedType>,
+    /// Checked actual type arguments, in this declaration's binder order.
+    /// Empty when no complete source instantiation has been proved.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instantiated_type_arguments: Vec<TypedType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -720,6 +724,8 @@ pub enum TypedExpr {
     },
     EffectInvoke {
         callee: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callee_signature: Option<TypedCallSignature>,
         effect: TypedEffect,
         arguments: Vec<TypedExpr>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

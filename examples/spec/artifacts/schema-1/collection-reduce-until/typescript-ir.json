@@ -2646,6 +2646,11 @@
                                   }
                                 ]
                               }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "number"
+                              }
                             ]
                           },
                           {
@@ -2661,6 +2666,11 @@
                                     "value": "done"
                                   }
                                 ]
+                              }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "string"
                               }
                             ]
                           }

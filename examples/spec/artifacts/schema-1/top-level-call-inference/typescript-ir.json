@@ -386,6 +386,11 @@
             "kind": "number",
             "value": "42"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -415,6 +420,11 @@
             "kind": "number",
             "value": "42"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -441,6 +451,11 @@
             "kind": "number",
             "value": "42"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -466,6 +481,11 @@
           {
             "kind": "number",
             "value": "42"
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
           }
         ]
       },
@@ -496,6 +516,11 @@
             "kind": "number",
             "value": "42"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -524,6 +549,11 @@
           {
             "kind": "number",
             "value": "42"
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
           }
         ]
       },
@@ -786,6 +816,13 @@
           {
             "kind": "identifier",
             "name": "value"
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
           }
         ]
       },

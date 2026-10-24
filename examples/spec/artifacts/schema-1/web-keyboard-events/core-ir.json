@@ -378,6 +378,44 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "Action"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "html.EventAction",
+            "canonical": "std/web/html::EventAction",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "html.EventAction",
@@ -538,6 +576,76 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "Action"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "html.EventAction",
+            "canonical": "std/web/html::EventAction",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "html.EventAction",

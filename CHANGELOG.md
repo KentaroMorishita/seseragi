@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.86] - 2026-10-24
+
+### Fixed
+
+- Preserve checked scalar generic type arguments when emitting ordinary calls and cold Effect factories. Local and imported generic Deferred factories now produce strict TypeScript with the selected success and failure types while retaining source argument evaluation and Effect replay behavior.
+
 ## [0.61.85] - 2026-10-24
 
 ### Fixed

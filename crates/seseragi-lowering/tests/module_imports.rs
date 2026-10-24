@@ -460,7 +460,7 @@ fn lowers_a_namespace_member_call_to_a_selected_named_import() {
     )));
     assert!(generated
         .typescript
-        .contains("export const run = (value: string) => domain$member$identity(value)"));
+        .contains("export const run = (value: string) => domain$member$identity<string>(value)"));
 }
 
 #[test]

@@ -181,7 +181,20 @@
                   ]
                 }
               }
+            ],
+            "typeArguments": [
+              {
+                "kind": "number"
+              },
+              {
+                "kind": "number"
+              }
             ]
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
           }
         ]
       },

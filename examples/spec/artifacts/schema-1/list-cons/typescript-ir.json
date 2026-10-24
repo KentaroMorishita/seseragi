@@ -543,6 +543,11 @@
                             "kind": "identifier",
                             "name": "values"
                           }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
                         ]
                       }
                     ]

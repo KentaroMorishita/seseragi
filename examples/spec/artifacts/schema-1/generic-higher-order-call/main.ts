@@ -4,4 +4,4 @@ $ssrg$assertUnicodeVersion("17.0.0")
 
 export const apply = <A, B,>(f: (argument: A) => B) => (value: A) => f(value)
 export const increment = (value: number) => _ssrg_int_add(value, 1)
-export const example = (value: number) => apply(increment)(value)
+export const example = (value: number) => apply<number, number>(increment)(value)

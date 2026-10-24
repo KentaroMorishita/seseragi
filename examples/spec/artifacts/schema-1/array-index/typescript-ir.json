@@ -145,6 +145,11 @@
             "kind": "identifier",
             "name": "values"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -664,6 +669,11 @@
                           {
                             "kind": "number",
                             "value": "1"
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
                           }
                         ]
                       }

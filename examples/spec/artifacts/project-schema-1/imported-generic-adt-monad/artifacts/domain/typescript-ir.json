@@ -162,6 +162,13 @@
                           }
                         ]
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
+                      }
                     ]
                   }
                 }
@@ -235,6 +242,13 @@
                 {
                   "kind": "identifier",
                   "name": "value"
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
                 }
               ]
             },
@@ -393,6 +407,13 @@
                             "name": "item"
                           }
                         ]
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "reference",
+                        "name": "B",
+                        "arguments": []
                       }
                     ]
                   }

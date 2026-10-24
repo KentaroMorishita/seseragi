@@ -5,5 +5,5 @@ import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const evaluate = (value: number) => get(map(box(value))((item: number) => _ssrg_int_add(item, item)))
+const evaluate = (value: number) => get<number>(map<number>(box<number>(value))((item: number) => _ssrg_int_add(item, item)))
 export const main = (_unit: undefined) => _ssrg_console_println("Imported inherent method: " + _ssrg_show_intShow["show"](evaluate(21)))

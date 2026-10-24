@@ -161,6 +161,46 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "Unit"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "Unit",
+                    "canonical": "std/prelude::Unit",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "function",
                 "parameter": {

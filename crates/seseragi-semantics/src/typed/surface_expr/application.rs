@@ -18,18 +18,29 @@ mod candidates;
 
 use candidates::{select_trait_method_candidate, type_trait_method_selection_error};
 
-fn unconstrained_hkt_signature(
+fn unconstrained_generic_signature(
     signature: &TopLevelPureFunction,
 ) -> Option<crate::TypedCallSignature> {
     (signature.constraints.is_empty()
         && signature.trait_identity.is_none()
-        && signature.type_parameters.iter().any(|p| p.is_constructor()))
+        && !signature.type_parameters.is_empty())
     .then(|| crate::TypedCallSignature {
         type_parameters: signature.type_parameters.clone(),
         parameters: signature.parameters.clone(),
         result: signature.result.clone(),
         argument_types: Vec::new(),
+        instantiated_type_arguments: Vec::new(),
     })
+}
+
+// First-class references keep the existing HKT-only projection. Ordinary
+// monomorphic value uses already carry their checked callable type; the new
+// instantiation descriptor belongs to applying a named generic call.
+fn unconstrained_hkt_signature(
+    signature: &TopLevelPureFunction,
+) -> Option<crate::TypedCallSignature> {
+    unconstrained_generic_signature(signature)
+        .filter(|value| value.type_parameters.iter().any(|p| p.is_constructor()))
 }
 
 fn callable_reference(
@@ -904,7 +915,13 @@ pub(crate) fn type_known_application_with_explicit(
     context: &PureExpressionContext<'_>,
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
-    let callee_signature = unconstrained_hkt_signature(&signature);
+    let callee_signature = unconstrained_generic_signature(&signature);
+    let explicit_instantiation = explicit_type_arguments.map(|arguments| {
+        arguments
+            .iter()
+            .map(|argument| context.evidence_type(&context.semantic_value_from_type_ref(argument)))
+            .collect::<Vec<_>>()
+    });
     let (mut signature, explicit_issue) =
         instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
     let method_factory_alias = method_factory_alias(&signature, context);
@@ -1298,10 +1315,31 @@ pub(crate) fn type_known_application_with_explicit(
                             parameters: Vec::new(),
                             result,
                             argument_types: Vec::new(),
+                            instantiated_type_arguments: Vec::new(),
                         })
                     })
                     .flatten();
                 factory_signature.or(callee_signature).map(|mut signature| {
+                    let selected = explicit_instantiation.clone().or_else(|| {
+                        signature
+                            .type_parameters
+                            .iter()
+                            .map(|parameter| {
+                                application
+                                    .instantiated_type_arguments
+                                    .get(&parameter.name)
+                                    .cloned()
+                            })
+                            .collect::<Option<Vec<_>>>()
+                    });
+                    if let Some(selected) = selected.filter(|selected| {
+                        selected.len() == signature.type_parameters.len()
+                            && selected
+                                .iter()
+                                .all(|value| !typed_type_contains_hole(value))
+                    }) {
+                        signature.instantiated_type_arguments = selected;
+                    }
                     signature.argument_types = arguments
                         .iter()
                         .map(application_argument_type_from_expr)

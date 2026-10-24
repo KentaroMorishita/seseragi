@@ -400,6 +400,13 @@
             "kind": "identifier",
             "name": "right"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
         ]
       },
       "origin": {

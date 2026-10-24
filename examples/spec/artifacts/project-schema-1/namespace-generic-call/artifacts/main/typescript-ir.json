@@ -269,9 +269,21 @@
                       }
                     ]
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "domain$member$Hand",
+                    "arguments": []
+                  }
                 ]
               }
             ]
+          }
+        ],
+        "typeArguments": [
+          {
+            "kind": "string"
           }
         ]
       },

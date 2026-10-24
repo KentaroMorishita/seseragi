@@ -1756,6 +1756,51 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "Action"
+              ],
+              "parameters": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "argumentTypes": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                }
+              ]
+            },
             "type": {
               "kind": "named",
               "name": "String",

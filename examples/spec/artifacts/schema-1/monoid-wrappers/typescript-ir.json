@@ -808,6 +808,11 @@
                               ]
                             }
                           }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
                         ]
                       }
                     ]
@@ -929,6 +934,11 @@
                                 }
                               ]
                             }
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
                           }
                         ]
                       }
@@ -1074,6 +1084,11 @@
                               ]
                             }
                           }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
+                          }
                         ]
                       }
                     ]
@@ -1149,6 +1164,11 @@
                                 }
                               ]
                             }
+                          }
+                        ],
+                        "typeArguments": [
+                          {
+                            "kind": "number"
                           }
                         ]
                       }
@@ -1281,6 +1301,13 @@
                       }
                     ]
                   }
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Tally",
+                  "arguments": []
                 }
               ]
             },
@@ -1444,6 +1471,13 @@
                     ]
                   }
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Ordered",
+                  "arguments": []
+                }
               ]
             },
             "origin": {
@@ -1588,6 +1622,11 @@
                             ]
                           }
                         ]
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
                       }
                     ]
                   }
