@@ -1124,6 +1124,187 @@ const value:string=exit.value;
 }
 
 #[test]
+fn literal_unit_values_match_native_and_strict_ts_profiles() {
+    let scratch = Scratch::new();
+    let root = root();
+    let cli = Path::new(env!("CARGO_BIN_EXE_seseragi"));
+    let fixtures = root.join("examples/spec/fixtures/rust-backend");
+    let engines = [runtime("bun", &scratch.0), runtime("node", &scratch.0)];
+    for (name, entry, code) in [
+        ("effect-unit-values", "main", 0),
+        ("effect-unit-finalizers", "failed", 1),
+        ("effect-unit-finalizers", "crash", 70),
+    ] {
+        let case = scratch.0.join(format!("{name}-{entry}"));
+        fs::create_dir(&case).unwrap();
+        let mut text = fs::read_to_string(fixtures.join(format!("{name}.ssrg"))).unwrap();
+        if entry != "main" {
+            text.push_str(&format!("\npub effect fn main = {entry} ()\n"));
+        }
+        let source = case.join("main.ssrg");
+        fs::write(&source, &text).unwrap();
+        let expected = if code == 0 {
+            fs::read(fixtures.join(format!("{name}.stdout"))).unwrap()
+        } else {
+            vec![]
+        };
+        let native = case.join("native");
+        successful(bounded(
+            Command::new(cli)
+                .args(["experimental", "build-native"])
+                .arg(&source)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            &scratch.0,
+        ));
+        let cwd = case.join("native-run");
+        fs::create_dir(&cwd).unwrap();
+        let result = bounded(
+            Command::new(native.join(if cfg!(windows) {
+                "program.exe"
+            } else {
+                "program"
+            }))
+            .current_dir(&cwd)
+            .env("PATH", "")
+            .env("SESERAGI_NATIVE_METRICS", "1"),
+            &scratch.0,
+        );
+        assert_eq!(result.status.code(), Some(code), "{result:?}");
+        assert_eq!(result.stdout, expected);
+        assert!(String::from_utf8_lossy(&result.stderr).contains("managed-live=0"));
+        if code != 0 {
+            assert_eq!(
+                fs::read(cwd.join("trace.txt")).unwrap(),
+                b"acquire\nbody: ()\nrelease\n"
+            );
+        }
+        for (profile, value) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let site = case.join(profile);
+            successful(bounded(
+                Command::new(cli)
+                    .arg("build")
+                    .arg(&source)
+                    .args(["--target", "process", "--profile", profile, "--out-dir"])
+                    .arg(&site),
+                &scratch.0,
+            ));
+            let raw = seseragi_driver::compile_module(
+                seseragi_driver::CompileInput::new("unit.ssrg", "proof/unit", &text)
+                    .with_profile(value),
+            )
+            .unwrap();
+            fs::write(site.join("raw.ts"), raw.generated.typescript).unwrap();
+            let config = serde_json::json!({"compilerOptions":{"strict":true,"skipLibCheck":false,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","allowImportingTsExtensions":true,"lib":["ES2023","DOM","DOM.Iterable"],"types":["node"],"typeRoots":[root.join("node_modules/@types")],"baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]}},"files":["raw.ts"]});
+            fs::write(
+                site.join("unit-tsconfig.json"),
+                serde_json::to_vec(&config).unwrap(),
+            )
+            .unwrap();
+            successful(bounded(
+                Command::new(&engines[1])
+                    .arg(root.join("node_modules/typescript/bin/tsc"))
+                    .arg("--project")
+                    .arg(site.join("unit-tsconfig.json")),
+                &scratch.0,
+            ));
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for (index, engine) in engines.iter().enumerate() {
+                let cwd = case.join(format!("{profile}-run-{index}"));
+                fs::create_dir(&cwd).unwrap();
+                let result = bounded(
+                    Command::new(engine)
+                        .arg(site.join(manifest["entry"].as_str().unwrap()))
+                        .current_dir(&cwd)
+                        .env("PATH", ""),
+                    &scratch.0,
+                );
+                assert_eq!(result.status.code(), Some(code), "{result:?}");
+                assert_eq!(result.stdout, expected);
+                if code != 0 {
+                    assert_eq!(
+                        fs::read(cwd.join("trace.txt")).unwrap(),
+                        b"acquire\nbody: ()\nrelease\n"
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn literal_unit_program_effects_replay_and_finish_their_finalizers() {
+    let scratch = Scratch::new();
+    let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-unit-values.ssrg");
+    let output = scratch.0.join("unit");
+    successful(bounded(
+        &mut build(&source, &output, &["value", "scoped", "releaseCheck"]),
+        &scratch.0,
+    ));
+    let probe = scratch.0.join("probe.mjs");
+    fs::write(&probe, r#"
+import assert from "node:assert/strict";
+import {readFile} from "node:fs/promises";
+import {loadProgram,ProgramWasmClosed} from "./unit/program.mjs";
+const program=await loadProgram(await readFile(new URL("./unit/program.wasm",import.meta.url)));
+let runs=0;
+try {
+  for(const [name,expected] of [["value",{tag:"Success",value:undefined}],["scoped",{tag:"Success",value:"雪🙂"}],["releaseCheck",{tag:"Defect",messages:["released"]}]]) {
+    const plan=program.exports[name]("雪🙂");
+    assert.equal(program.ownership().running,false);
+    assert.equal(program.ownership().plans,1);
+    for(let replay=0;replay<2;replay++) { assert.deepEqual(await plan.run().result,expected); runs++; }
+    plan.dispose();
+    assert.throws(()=>plan.run(),ProgramWasmClosed);
+    assert.equal(program.ownership().plans,0);
+    assert.equal(program.ownership().retired,false);
+  }
+} finally { await program.dispose(); }
+assert.equal(program.ownership().managedLiveAtClose,0);
+assert.equal(program.ownership().callbacks,0);
+console.log(JSON.stringify({runs,managedLiveAtClose:0}));
+"#).unwrap();
+    for engine in ["bun", "node"] {
+        let result = successful(bounded(
+            Command::new(runtime(engine, &scratch.0))
+                .arg(&probe)
+                .env("PATH", ""),
+            &scratch.0,
+        ));
+        let report: serde_json::Value = serde_json::from_slice(&result.stdout).unwrap();
+        assert_eq!(report["runs"], 6);
+        assert_eq!(report["managedLiveAtClose"], 0);
+    }
+    fs::write(
+        scratch.0.join("unit.mts"),
+        r#"
+import {loadProgram,type OwnedEffect} from "./unit/program.mjs";
+const owner=await loadProgram(new Uint8Array());
+const plan:OwnedEffect<never,undefined>=owner.exports.value("input");
+// @ts-expect-error Unit is not a numeric success
+const wrong:OwnedEffect<never,number>=owner.exports.value("input");
+const exit=await plan.run().result;
+if(exit.tag==="Success") { const value:undefined=exit.value; }
+await owner.dispose();
+"#,
+    )
+    .unwrap();
+    fs::write(scratch.0.join("unit-tsconfig.json"), r#"{"compilerOptions":{"strict":true,"skipLibCheck":false,"noEmit":true,"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","types":[],"lib":["ES2022","DOM"]},"files":["unit.mts"]}"#).unwrap();
+    successful(bounded(
+        Command::new(runtime("node", &scratch.0))
+            .arg(root().join("node_modules/typescript/bin/tsc"))
+            .arg("--project")
+            .arg(scratch.0.join("unit-tsconfig.json")),
+        &scratch.0,
+    ));
+}
+
+#[test]
 fn providerless_program_effects_keep_the_same_body_on_ts_and_native() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-effects.ssrg");
