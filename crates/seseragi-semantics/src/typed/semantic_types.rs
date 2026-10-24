@@ -115,9 +115,9 @@ pub(super) fn is_shadowing_builtin(name: &str, canonical: &str) -> bool {
             .any(|sum| sum.name == name && sum.canonical == canonical)
 }
 
-/// Disambiguate only an actual local nominal declaration whose spelling is a
-/// backend primitive. Type parameters, primitive values and ordinary names are
-/// unchanged; the resolved owner, rather than the spelling, proves identity.
+/// Disambiguate an actual nominal declaration or checked import whose spelling
+/// is a backend primitive. Type parameters, primitive values and ordinary names
+/// are unchanged; the resolved owner proves identity at construction sites too.
 pub(crate) fn nominal_type_ref(
     resolved: &ResolvedModule,
     owner: SymbolId,
@@ -142,7 +142,15 @@ pub(crate) fn nominal_type_ref(
     let nominal = symbol.is_some_and(|symbol| {
         symbol.kind == SymbolKind::Type
             && symbol.spelling == name
-            && (resolved
+            && (resolved.imports.iter().any(|import| {
+                import.symbol == owner
+                    && import.export.namespace == "type"
+                    && import.export.symbol == symbol.canonical.as_deref().unwrap_or("")
+                    && matches!(
+                        import.export.declaration_kind.as_deref(),
+                        Some("struct" | "opaque-struct" | "type" | "newtype" | "opaque-type")
+                    )
+            }) || resolved
                 .foreign_modules
                 .iter()
                 .any(|foreign| foreign_owner(&foreign.members, symbol.origin))

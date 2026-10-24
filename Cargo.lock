@@ -521,6 +521,7 @@ dependencies = [
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
+ "seseragi-semantics",
  "seseragi-syntax",
 ]
 

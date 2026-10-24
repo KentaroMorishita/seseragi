@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-imported-unit-reexport@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-imported-unit-reexport@0.0.0#workspace:."
+name = "fixture/native-imported-unit-reexport"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:b39f7848deb6e12ffdf81e46a1a938282cabbf9db7e7a75a311dd89617df1ad0"
+content_digest = "sha256:74e0b906d5f342b5aacc6db22b19be3705cfea9103c8c5dd19890fe307c5afb5"
+dependencies = []

@@ -45,32 +45,11 @@ fn emit_body(
     let mut seen = BTreeSet::new();
     let mut owners = BTreeMap::new();
     let mut symbols = BTreeSet::new();
-    let mut type_names = BTreeMap::new();
     let mut trait_names = BTreeMap::new();
     let mut method_names = BTreeSet::new();
     for module in modules {
         if module.module.starts_with("std/") || !seen.insert(module.module.clone()) {
             return Err("Rust backend: duplicate or reserved source module identity".into());
-        }
-        // A local nominal type may shadow a prelude spelling such as Float.
-        // Resolve its checked declaration symbol before imported/builtin names.
-        for (name, symbol) in module
-            .adts
-            .iter()
-            .map(|item| (&item.name, &item.symbol))
-            .chain(module.structs.iter().map(|item| (&item.name, &item.symbol)))
-            .chain(module.aliases.iter().map(|item| (&item.name, &item.symbol)))
-        {
-            type_names.insert((module.module.clone(), name.clone()), symbol.clone());
-        }
-        for binding in &module.external_type_bindings {
-            let key = (module.module.clone(), binding.spelling.clone());
-            if type_names
-                .insert(key, binding.canonical.clone())
-                .is_some_and(|old| old != binding.canonical)
-            {
-                return Err("Rust backend: ambiguous canonical type binding".into());
-            }
         }
         for dependency in &module.module_dependencies {
             for import in dependency
@@ -166,6 +145,7 @@ fn emit_body(
         }
         linked.functions.extend(module.functions.clone());
     }
+    let type_names = crate::type_names::for_modules(modules)?;
     let initialization = core_module_initialization_order(modules, entry_module)
         .ok_or("Rust backend: invalid source initialization graph")?;
     if initialization.len() != modules.len() {

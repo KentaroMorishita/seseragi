@@ -1,0 +1,47 @@
+import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+
+
+pub trait Ready<A> {
+  fn ready -> (A -> String)
+}
+
+instance Ready<Int> {
+  fn ready -> (Int -> String) = \value -> show value
+}
+
+fn staged<A> -> (A -> String) where Ready<A> = ready<A> ()
+
+pub fn selected -> (Int -> String) = staged<Int> ()
+
+
+pub effect fn genuine = { let unit = (); succeed unit }
+
+pub effect fn scoped<Unit> value: Unit = succeed ()
+
+effect fn append text: String -> Unit with FileSystem fails String = do {
+  path <- paths.child "trace.txt" (paths.current ())
+    |> effects.fromEither
+    |> effects.mapError show
+  fs.writeTextUtf8 fs.Append text path |> effects.mapError show
+}
+
+effect fn ignore _error: String -> Unit with FileSystem = succeed ()
+
+effect fn release _value: Unit -> Unit with FileSystem =
+  append "release\n" |> effects.recover ignore
+
+pub effect fn failed -> Unit with FileSystem fails String = effects.scoped $ do {
+  effects.acquireRelease (append "acquire\n") release
+  value <- genuine ()
+  append ("body: " + show value + "\n")
+  fail "expected"
+}
+
+pub effect fn crash -> Unit with FileSystem fails String = effects.scoped $ do {
+  effects.acquireRelease (append "acquire\n") release
+  value <- genuine ()
+  append ("body: " + show value + "\n")
+  effects.die "expected Defect"
+}

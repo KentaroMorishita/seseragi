@@ -115,7 +115,7 @@ fn imported_nominal_and_primitive_exports_from_same_provider_stay_distinct() {
             declarations(name, payload, literal),
             primitive_literal(name)
         );
-        let source = format!("import {{{name}, read, nominal, genuine}} from \"./domain\"\npub fn inspect value: {name} -> {payload} = read value\npub effect fn main = do {{println (show (read nominal)); primitive <- genuine (); println (show primitive)}}\n");
+        let source = format!("import {{{name}, read, nominal, genuine}} from \"./domain\"\npub fn inspect value: {name} -> {payload} = read value\npub fn construct -> {name} = {name} {{value: {literal}}}\npub effect fn main = do {{println (show (read nominal)); primitive <- genuine (); println (show primitive)}}\n");
         let mut graph = ModuleGraph::new();
         graph
             .add_module(
@@ -173,6 +173,26 @@ fn imported_nominal_and_primitive_exports_from_same_provider_stay_distinct() {
             main.generated
                 .typescript
                 .contains(&format!("inspect = (value: {name})")),
+            "{}",
+            main.generated.typescript
+        );
+        let constructed = main
+            .core_ir
+            .functions
+            .iter()
+            .find(|f| f.symbol.ends_with("::construct"))
+            .unwrap();
+        let seseragi_lowering::CoreExpr::Record { type_ref, .. } = &constructed.body else {
+            panic!("checked nominal construction: {:?}", constructed.body);
+        };
+        assert!(
+            matches!(type_ref, seseragi_lowering::CoreType::ExternalNamed {canonical, arguments, ..} if canonical == &format!("fixture/annotations::domain::{name}") && arguments.is_empty()),
+            "{type_ref:?}"
+        );
+        assert!(
+            main.generated
+                .typescript
+                .contains(&format!("as unknown as {name}")),
             "{}",
             main.generated.typescript
         );

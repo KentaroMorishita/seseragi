@@ -1,0 +1,5 @@
+pub import { selected, genuine, scoped, failed, crash } from "model"
+
+pub struct Unit {value: Int}
+
+pub fn payload value: Unit -> Int = value.value
