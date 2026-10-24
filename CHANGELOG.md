@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.85] - 2026-10-24
+
+### Fixed
+
+- Preserve top-level declaration boundaries when formatting an inline trait with a bodyless method followed by an instance. Formatted source reparses, remains idempotent, and keeps the same native and TypeScript behavior.
+
 ## [0.61.84] - 2026-10-23
 
 ### Fixed
