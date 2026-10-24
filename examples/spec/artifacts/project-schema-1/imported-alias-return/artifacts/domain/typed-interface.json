@@ -86,8 +86,11 @@
         }
       },
       "representation": {
-        "kind": "named",
+        "kind": "external-named",
         "name": "Box",
+        "canonical": "fixture/imported-alias-return::domain::Box",
+        "providerModule": "fixture/imported-alias-return::domain",
+        "providerExport": "Box",
         "arguments": [
           {
             "kind": "named",
@@ -119,8 +122,11 @@
         }
       },
       "representation": {
-        "kind": "named",
+        "kind": "external-named",
         "name": "Box",
+        "canonical": "fixture/imported-alias-return::domain::Box",
+        "providerModule": "fixture/imported-alias-return::domain",
+        "providerExport": "Box",
         "arguments": [
           {
             "kind": "named",
@@ -153,8 +159,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-alias-return::domain::Box",
+            "providerModule": "fixture/imported-alias-return::domain",
+            "providerExport": "Box",
             "arguments": [
               {
                 "kind": "named",

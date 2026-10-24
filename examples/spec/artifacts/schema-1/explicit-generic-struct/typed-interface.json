@@ -62,8 +62,11 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Marker",
+          "canonical": "artifact/explicit-generic-struct::Marker",
+          "providerModule": "artifact/explicit-generic-struct",
+          "providerExport": "Marker",
           "arguments": [
             {
               "kind": "named",

@@ -6,7 +6,7 @@ pub(super) struct InterfaceTypes<'a> {
     bindings: &'a [ExternalTypeBinding],
     parameters: std::collections::BTreeSet<String>,
     local_nominals: std::collections::BTreeMap<String, (String, String)>,
-    instance_nominals: std::collections::BTreeMap<String, (String, String)>,
+    nominal_owners: std::collections::BTreeMap<String, (String, String)>,
 }
 
 impl<'a> InterfaceTypes<'a> {
@@ -15,7 +15,7 @@ impl<'a> InterfaceTypes<'a> {
             bindings,
             parameters: Default::default(),
             local_nominals: Default::default(),
-            instance_nominals: Default::default(),
+            nominal_owners: Default::default(),
         }
     }
 
@@ -68,6 +68,32 @@ impl<'a> InterfaceTypes<'a> {
         scoped
     }
 
+    /// Public declaration identity must travel with aliases and callable
+    /// signatures, even when a facade exports only an alias for that type.
+    /// The provider is the checked public declaration, never its display name
+    /// reconstructed in the consumer or a private representation.
+    pub(super) fn with_public_owners(mut self, module: &crate::TypedModule) -> Self {
+        for declaration in &module.declarations {
+            if let crate::TypedDecl::Struct {
+                symbol,
+                name,
+                visibility: seseragi_syntax::Visibility::Public,
+                ..
+            }
+            | crate::TypedDecl::Adt {
+                symbol,
+                name,
+                visibility: seseragi_syntax::Visibility::Public,
+                ..
+            } = declaration
+            {
+                self.nominal_owners
+                    .insert(name.clone(), (symbol.clone(), module.module.clone()));
+            }
+        }
+        self
+    }
+
     /// An instance can travel through a facade that renames its nominal head.
     /// Retain the declaration owner in the dictionary interface itself instead
     /// of requiring the consumer to import the provider's original spelling.
@@ -76,7 +102,7 @@ impl<'a> InterfaceTypes<'a> {
             if let crate::TypedDecl::Struct { symbol, name, .. }
             | crate::TypedDecl::Adt { symbol, name, .. } = declaration
             {
-                self.instance_nominals
+                self.nominal_owners
                     .insert(name.clone(), (symbol.clone(), module.module.clone()));
             }
         }
@@ -115,7 +141,7 @@ impl<'a> InterfaceTypes<'a> {
                     };
                 }
                 if !self.parameters.contains(name) && !primitive_or_collection {
-                    if let Some((canonical, provider)) = self.instance_nominals.get(name) {
+                    if let Some((canonical, provider)) = self.nominal_owners.get(name) {
                         return InterfaceType::ExternalNamed {
                             name: name.clone(),
                             canonical: canonical.clone(),

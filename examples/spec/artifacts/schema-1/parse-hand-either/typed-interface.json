@@ -162,13 +162,19 @@
             "name": "Either",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "HandInputError",
+                "canonical": "artifact/parse-hand-either::HandInputError",
+                "providerModule": "artifact/parse-hand-either",
+                "providerExport": "HandInputError",
                 "arguments": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Hand",
+                "canonical": "artifact/parse-hand-either::Hand",
+                "providerModule": "artifact/parse-hand-either",
+                "providerExport": "Hand",
                 "arguments": []
               }
             ]

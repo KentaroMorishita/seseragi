@@ -84,8 +84,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "InputError",
+                "canonical": "fixture/imported-effect-failure::input::InputError",
+                "providerModule": "fixture/imported-effect-failure::input",
+                "providerExport": "InputError",
                 "arguments": []
               },
               {

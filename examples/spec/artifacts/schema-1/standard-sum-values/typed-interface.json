@@ -115,13 +115,19 @@
                 "name": "Either",
                 "arguments": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "HandInputError",
+                    "canonical": "artifact/standard-sum-values::HandInputError",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "HandInputError",
                     "arguments": []
                   },
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "artifact/standard-sum-values::Hand",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "Hand",
                     "arguments": []
                   }
                 ]
@@ -131,13 +137,19 @@
                 "name": "Either",
                 "arguments": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "HandInputError",
+                    "canonical": "artifact/standard-sum-values::HandInputError",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "HandInputError",
                     "arguments": []
                   },
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "artifact/standard-sum-values::Hand",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "Hand",
                     "arguments": []
                   }
                 ]
@@ -147,8 +159,11 @@
                 "name": "Maybe",
                 "arguments": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "artifact/standard-sum-values::Hand",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "Hand",
                     "arguments": []
                   }
                 ]
@@ -158,8 +173,11 @@
                 "name": "Maybe",
                 "arguments": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Hand",
+                    "canonical": "artifact/standard-sum-values::Hand",
+                    "providerModule": "artifact/standard-sum-values",
+                    "providerExport": "Hand",
                     "arguments": []
                   }
                 ]

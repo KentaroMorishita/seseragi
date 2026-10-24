@@ -79,8 +79,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "artifact/effect-fail-adt::AppError",
+                "providerModule": "artifact/effect-fail-adt",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {

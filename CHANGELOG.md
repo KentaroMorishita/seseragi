@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.93] - 2026-10-25
+
+### Fixed
+
+- Export first-order public type aliases in generated TypeScript and preserve their scoped type parameters. Carry checked nominal owners through facade aliases and factory signatures so opaque values keep their defining identity in TypeScript and native programs. Preserve type-only import initialization and opaque brand checks; higher-kinded alias projection remains unsupported.
+
 ## [0.61.92] - 2026-10-25
 
 ### Fixed

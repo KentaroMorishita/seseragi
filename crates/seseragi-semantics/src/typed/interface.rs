@@ -148,7 +148,9 @@ pub(crate) fn typed_interface_from_modules(
     dependency_instances: &[ResolvedDependencyInstance],
     local_deprecations: &[seseragi_syntax::DeclarationDeprecation],
 ) -> TypedModuleInterface {
-    let types = InterfaceTypes::new(&typed.external_type_bindings).with_local_nominals(typed);
+    let types = InterfaceTypes::new(&typed.external_type_bindings)
+        .with_local_nominals(typed)
+        .with_public_owners(typed);
     let local_symbol_prefix = format!("{}::", shallow.module);
     let deprecations: std::collections::BTreeMap<_, _> = shallow
         .exports

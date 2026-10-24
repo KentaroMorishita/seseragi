@@ -1,9 +1,9 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding, TypeScriptExpr,
     TypeScriptForeignMember, TypeScriptForeignNamespace, TypeScriptForeignOpaqueType,
     TypeScriptFunction, TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement,
-    TypeScriptStruct,
+    TypeScriptStruct, TypeScriptType,
 };
 use serde::{Deserialize, Serialize};
 
@@ -89,6 +89,11 @@ pub fn emit_typescript_module_with_output_paths(
 
 fn render_typescript(module: &TypeScriptModule) -> String {
     let mut output = String::new();
+    let aliases = module
+        .aliases
+        .iter()
+        .filter_map(render_type_alias)
+        .collect::<Vec<_>>();
     let mut import_lines = render_import_lines(module);
     if !module.foreign_modules.is_empty() {
         import_lines.push(
@@ -121,6 +126,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     ));
     if !import_lines.is_empty()
         && (!module.adts.is_empty()
+            || !aliases.is_empty()
             || !module.structs.is_empty()
             || !module.instances.is_empty()
             || !module.foreign_modules.is_empty()
@@ -135,6 +141,9 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     }
     for structure in &module.structs {
         render_struct(&mut output, structure);
+    }
+    for alias in aliases {
+        output.push_str(&alias);
     }
     render_typescript_instances(
         &mut output,
@@ -202,6 +211,57 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         }
     }
     output
+}
+
+/// A transparent public alias needs an actual type export for facade reexports.
+/// Constructor-kinded parameters and erased targets remain metadata-only until
+/// the TS IR has a faithful higher-kinded representation; do not export their
+/// current `unknown` erasure as if it were the source alias contract.
+fn render_type_alias(alias: &TypeScriptAlias) -> Option<String> {
+    if !alias.exported
+        || alias
+            .type_parameters
+            .iter()
+            .any(|parameter| parameter.is_constructor())
+        || !exact_alias_target(&alias.target)
+    {
+        return None;
+    }
+    Some(format!(
+        "export type {}{} = {}\n",
+        alias.name,
+        render_type_parameters(&alias.type_parameters),
+        render_typescript_type(&alias.target)
+    ))
+}
+
+fn exact_alias_target(target: &TypeScriptType) -> bool {
+    match target {
+        TypeScriptType::Unknown => false,
+        TypeScriptType::Reference { arguments, .. } => arguments.iter().all(exact_alias_target),
+        TypeScriptType::Maybe { element }
+        | TypeScriptType::Array { element }
+        | TypeScriptType::List { element } => exact_alias_target(element),
+        TypeScriptType::Either { error, value } => {
+            exact_alias_target(error) && exact_alias_target(value)
+        }
+        TypeScriptType::Tuple { elements } => elements.iter().all(exact_alias_target),
+        TypeScriptType::Record { fields } => fields
+            .iter()
+            .all(|field| exact_alias_target(&field.type_ref)),
+        TypeScriptType::Function { parameter, result } => {
+            exact_alias_target(parameter) && exact_alias_target(result)
+        }
+        TypeScriptType::Intersection { operands } => operands.iter().all(exact_alias_target),
+        TypeScriptType::Bigint
+        | TypeScriptType::Number
+        | TypeScriptType::Boolean
+        | TypeScriptType::String
+        | TypeScriptType::Undefined
+        | TypeScriptType::Never
+        | TypeScriptType::Ordering
+        | TypeScriptType::Range => true,
+    }
 }
 
 fn render_foreign_modules(output: &mut String, module: &TypeScriptModule) {

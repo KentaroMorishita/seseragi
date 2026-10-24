@@ -103,6 +103,20 @@ fn module_names_and_mappings(
         generated_line += rendered.lines().count();
     }
 
+    for alias in &module.aliases {
+        if let Some(rendered) = super::render_type_alias(alias) {
+            push_declaration_mapping(
+                &mut names,
+                &mut mappings,
+                generated_line,
+                &alias.name,
+                &alias.origin,
+                source_text,
+            );
+            generated_line += rendered.lines().count();
+        }
+    }
+
     for instance in &module.instances {
         push_declaration_mapping(
             &mut names,
@@ -183,6 +197,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
         + usize::from(
             import_lines > 0
                 && (!module.adts.is_empty()
+                    || module.aliases.iter().any(|alias| super::render_type_alias(alias).is_some())
                     || !module.structs.is_empty()
                     || !module.instances.is_empty()
                     || !module.bindings.is_empty()
@@ -531,6 +546,32 @@ mod tests {
     fn counts_original_columns_as_utf16_code_units() {
         assert_eq!(source_position("// 🌊\npub let", 8), (1, 0));
         assert_eq!(source_position("// 🌊pub let", 7), (0, 5));
+    }
+
+    #[test]
+    fn public_alias_projection_maps_alias_and_following_value_to_actual_lines() {
+        let source = "pub alias Item = Int\npub fn value -> Int = 42\n";
+        let module = crate::lower_core_module_to_typescript_ir(crate::lower_typed_module(
+            seseragi_semantics::type_module("artifact/alias-map/main.ssrg", source),
+        ));
+        let generated = super::super::render_typescript(&module);
+        let (names, mappings) =
+            module_names_and_mappings(&module, source, &runtime_helper_names(&module));
+        for (name, prefix, original_line) in [
+            ("Item", "export type Item", 0),
+            ("value", "export const value", 1),
+        ] {
+            let actual_line = generated
+                .lines()
+                .position(|line| line.starts_with(prefix))
+                .unwrap();
+            let mapping = mappings
+                .iter()
+                .find(|mapping| names[mapping.name_index] == name)
+                .unwrap();
+            assert_eq!(mapping.generated_line, actual_line, "{name}");
+            assert_eq!(mapping.original_line, original_line, "{name}");
+        }
     }
 
     #[test]

@@ -162,8 +162,11 @@
             "name": "Maybe",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Badge",
+                "canonical": "artifact/constrained-instance-dispatch::Badge",
+                "providerModule": "artifact/constrained-instance-dispatch",
+                "providerExport": "Badge",
                 "arguments": []
               }
             ]

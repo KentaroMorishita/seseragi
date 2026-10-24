@@ -1,0 +1,14 @@
+pub type Box<A> = | Box A
+pub alias Wrapper<A> = Box<A>
+pub alias Chain<A> = Wrapper<A>
+pub alias MyUnit = Unit
+pub alias Identity<Int> = Int
+pub alias UnitField<Unit> = { value: Unit }
+pub alias Items<A> = List<A>
+
+pub opaque struct Secret { value: Int }
+pub alias KeptSecret = Secret
+pub fn secret value: Int -> KeptSecret = Secret { value }
+pub fn readSecret value: KeptSecret -> Int = value.value
+pub fn unbox<A> value: Chain<A> -> A = match value { Box inner -> inner }
+pub fn pass value: MyUnit -> MyUnit = value

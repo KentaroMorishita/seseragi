@@ -9,6 +9,24 @@
       "spelling": "Secret",
       "canonical": "fixture/opaque-struct::domain::Secret",
       "provider": {
+        "module": "fixture/opaque-struct::domain",
+        "export": "Secret"
+      }
+    },
+    {
+      "arity": 1,
+      "spelling": "Box",
+      "canonical": "fixture/opaque-struct::domain::Box",
+      "provider": {
+        "module": "fixture/opaque-struct::domain",
+        "export": "Box"
+      }
+    },
+    {
+      "arity": 0,
+      "spelling": "Secret",
+      "canonical": "fixture/opaque-struct::domain::Secret",
+      "provider": {
         "module": "fixture/opaque-struct::facade",
         "export": "Secret"
       }

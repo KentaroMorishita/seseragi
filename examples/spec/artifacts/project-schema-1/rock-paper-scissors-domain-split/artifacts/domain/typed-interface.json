@@ -217,20 +217,29 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Hand",
+            "canonical": "fixture/rps-domain-split::domain::Hand",
+            "providerModule": "fixture/rps-domain-split::domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {
             "kind": "function",
             "parameter": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Hand",
+              "canonical": "fixture/rps-domain-split::domain::Hand",
+              "providerModule": "fixture/rps-domain-split::domain",
+              "providerExport": "Hand",
               "arguments": []
             },
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Outcome",
+              "canonical": "fixture/rps-domain-split::domain::Outcome",
+              "providerModule": "fixture/rps-domain-split::domain",
+              "providerExport": "Outcome",
               "arguments": []
             }
           }
@@ -253,8 +262,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Outcome",
+            "canonical": "fixture/rps-domain-split::domain::Outcome",
+            "providerModule": "fixture/rps-domain-split::domain",
+            "providerExport": "Outcome",
             "arguments": []
           },
           "result": {

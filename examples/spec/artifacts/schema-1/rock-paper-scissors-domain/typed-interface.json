@@ -187,20 +187,29 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Hand",
+            "canonical": "artifact/rock-paper-scissors-domain::Hand",
+            "providerModule": "artifact/rock-paper-scissors-domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {
             "kind": "function",
             "parameter": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Hand",
+              "canonical": "artifact/rock-paper-scissors-domain::Hand",
+              "providerModule": "artifact/rock-paper-scissors-domain",
+              "providerExport": "Hand",
               "arguments": []
             },
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Outcome",
+              "canonical": "artifact/rock-paper-scissors-domain::Outcome",
+              "providerModule": "artifact/rock-paper-scissors-domain",
+              "providerExport": "Outcome",
               "arguments": []
             }
           }
@@ -223,8 +232,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Outcome",
+            "canonical": "artifact/rock-paper-scissors-domain::Outcome",
+            "providerModule": "artifact/rock-paper-scissors-domain",
+            "providerExport": "Outcome",
             "arguments": []
           },
           "result": {

@@ -14,7 +14,11 @@ pub(in crate::execution_case::effect_contract) fn resolve(
     entry_module_specifier: &str,
     catalog: &ProjectFailureRendererCatalog<'_>,
 ) -> Result<EffectEntryContract, String> {
-    if matches!(failure, InterfaceType::ExternalNamed { .. }) {
+    // A checked public local nominal also carries ExternalNamed provenance.
+    // Resolve its entry-owned dictionary before consulting imported providers.
+    if matches!(failure, InterfaceType::ExternalNamed { .. })
+        && super::local_type_identity(interface, failure).is_none()
+    {
         return resolve_external_show_dictionary(interface, failure, catalog);
     }
     resolve_effect_entry_contract(interface, failure, generated_module, entry_module_specifier)

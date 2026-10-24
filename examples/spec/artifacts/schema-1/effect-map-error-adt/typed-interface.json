@@ -133,8 +133,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "artifact/effect-map-error-adt::AppError",
+                "providerModule": "artifact/effect-map-error-adt",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {

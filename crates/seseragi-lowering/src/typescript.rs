@@ -905,6 +905,9 @@ pub fn lower_core_module_to_typescript_ir_with_options(
         .aliases
         .iter()
         .map(|alias| {
+            let type_names = module_imports
+                .type_names
+                .with_parameters(&alias.type_parameters);
             let type_constructor_parameters = alias
                 .type_parameters
                 .iter()
@@ -917,7 +920,7 @@ pub fn lower_core_module_to_typescript_ir_with_options(
                 type_parameters: alias.type_parameters.clone(),
                 target: types::type_ref_from_core_type_with_erasure(
                     &alias.target,
-                    &module_imports.type_names,
+                    &type_names,
                     &type_constructor_parameters,
                 ),
                 origin: alias.origin.clone(),

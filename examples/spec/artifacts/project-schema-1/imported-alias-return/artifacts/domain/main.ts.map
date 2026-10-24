@@ -11,8 +11,10 @@
   "names": [
     "Box",
     "Box",
+    "Wrapped",
+    "Again",
     "boxed",
     "Box"
   ],
-  "mappings": ";;;AAAAA;;AAAoBC;AAGpBC"
+  "mappings": ";;;AAAAA;;AAAoBC;AACpBC;AACAC;AACAC"
 }

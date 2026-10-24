@@ -174,8 +174,11 @@
                 ]
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "fixture/rps-cli-split::main::AppError",
+                "providerModule": "fixture/rps-cli-split::main",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {
