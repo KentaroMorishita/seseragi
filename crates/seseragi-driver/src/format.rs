@@ -75,6 +75,45 @@ mod tests {
     }
 
     #[test]
+    fn preserves_inline_trait_instance_compilation_and_converges() {
+        let input = include_str!(
+            "../../seseragi-formatter/tests/fixtures/inline-trait-instance.input.ssrg"
+        );
+        let expected = include_str!(
+            "../../seseragi-formatter/tests/fixtures/inline-trait-instance.expected.ssrg"
+        );
+        let formatted = format_module("main.ssrg", input).expect("valid trait and instance");
+        assert_eq!(formatted.text, expected);
+
+        let original = compile_module(CompileInput::new("main.ssrg", "app/main", input))
+            .expect("original compiles");
+        let after = compile_module(CompileInput::new("main.ssrg", "app/main", &formatted.text))
+            .expect("formatted source compiles");
+        // Layout updates source spans. The checked public contract and emitted
+        // program, including its selected trait dictionary, must stay identical.
+        assert_eq!(
+            after
+                .typed_interface
+                .exports
+                .iter()
+                .map(|export| (&export.symbol, &export.scheme, export.call_arity))
+                .collect::<Vec<_>>(),
+            original
+                .typed_interface
+                .exports
+                .iter()
+                .map(|export| (&export.symbol, &export.scheme, export.call_arity))
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(after.generated.typescript, original.generated.typescript);
+
+        let converged =
+            format_module("main.ssrg", &formatted.text).expect("formatted source parses");
+        assert!(!converged.changed);
+        assert_eq!(converged.text, expected);
+    }
+
+    #[test]
     fn returns_shared_parse_diagnostics_instead_of_formatting_recovery_nodes() {
         let source = "pub let answer: Int =\n";
         let diagnostics = format_module("broken.ssrg", source).expect_err("invalid source");

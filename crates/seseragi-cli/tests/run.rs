@@ -1889,6 +1889,14 @@ fn formats_dogfood_indentation_and_converges() {
 }
 
 #[test]
+fn formats_inline_trait_and_instance_without_joining_declarations() {
+    assert_file_formatting(
+        include_str!("../../seseragi-formatter/tests/fixtures/inline-trait-instance.input.ssrg"),
+        include_str!("../../seseragi-formatter/tests/fixtures/inline-trait-instance.expected.ssrg"),
+    );
+}
+
+#[test]
 fn formats_match_regression_fixtures_and_converges() {
     for (input, expected) in [
         (

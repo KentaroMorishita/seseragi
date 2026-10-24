@@ -412,6 +412,14 @@ let result=(account','\u{03BB}','\'','\\')
     }
 
     #[test]
+    fn preserves_top_level_boundaries_after_inline_trait_members() {
+        assert_safe_and_converged_fixture(
+            include_str!("../tests/fixtures/inline-trait-instance.input.ssrg"),
+            include_str!("../tests/fixtures/inline-trait-instance.expected.ssrg"),
+        );
+    }
+
+    #[test]
     fn canonicalizes_logical_operator_spacing() {
         let first = format("pub let result=True&&False||True\n");
         assert_eq!(first.text, "pub let result = True && False || True\n");
