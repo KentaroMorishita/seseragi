@@ -63,11 +63,12 @@ impl SemanticTypeCatalog {
                 owner,
                 SemanticAdt {
                     name: owner_import.local_name.clone(),
-                    external_canonical: (owner_import.export.declaration_kind.as_deref()
-                        == Some("opaque-type")
-                        || super::is_shadowing_builtin(&owner_import.export.name, owner_canonical)
-                        || super::is_shadowing_builtin(&owner_import.local_name, owner_canonical))
-                    .then(|| owner_canonical.clone()),
+                    // Imported constructors must carry the checked owner into
+                    // inferred result types as well as semantic keys. A namespace
+                    // can select a constructor without putting its type name in
+                    // lexical scope; preserving only the name loses its provider
+                    // inside generic arguments and saved callbacks.
+                    external_canonical: Some(owner_canonical.clone()),
                     type_parameters: type_parameters
                         .iter()
                         .map(|parameter| parameter.id)

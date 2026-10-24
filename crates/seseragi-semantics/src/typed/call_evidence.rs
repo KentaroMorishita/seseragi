@@ -1532,7 +1532,13 @@ pub(crate) fn select_binary_same_type_evidence(
         name: trait_name.to_owned(),
         arguments: vec![left.clone()],
     };
-    if left != right || matches!(left, TypedType::Hole) {
+    if matches!(left, TypedType::Hole)
+        || (left != right
+            && !super::semantic_types::semantic_values_have_same_identity(
+                &resolution.semantic_value_from_typed_type(&left),
+                &resolution.semantic_value_from_typed_type(&right),
+            ))
+    {
         return Err(missing());
     }
     let constraint = missing();

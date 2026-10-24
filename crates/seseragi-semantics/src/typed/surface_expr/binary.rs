@@ -6,6 +6,7 @@ use super::{
     SurfaceExpressionAnalysis,
 };
 use crate::typed::pure_issues::{PureCallIssue, RangeIssue};
+use crate::typed::semantic_types::{semantic_values_have_same_identity, SemanticValueType};
 use crate::typed::type_ref::inferred_type_from_expr;
 
 pub(super) fn type_binary(
@@ -29,16 +30,16 @@ pub(super) fn type_binary(
     let right = type_surface_expression(right, &operand_context);
     let left_type = inferred_type_from_expr(&left.value);
     let right_type = inferred_type_from_expr(&right.value);
-    let left_evidence_type =
-        context.evidence_type(&crate::typed::semantic_types::SemanticValueType {
-            type_ref: left_type.clone(),
-            key: left.semantic_type.clone(),
-        });
-    let right_evidence_type =
-        context.evidence_type(&crate::typed::semantic_types::SemanticValueType {
-            type_ref: right_type.clone(),
-            key: right.semantic_type.clone(),
-        });
+    let left_value_type = SemanticValueType {
+        type_ref: left_type.clone(),
+        key: left.semantic_type.clone(),
+    };
+    let right_value_type = SemanticValueType {
+        type_ref: right_type.clone(),
+        key: right.semantic_type.clone(),
+    };
+    let left_evidence_type = context.evidence_type(&left_value_type);
+    let right_evidence_type = context.evidence_type(&right_value_type);
     let mut missing_instance = None;
     let standard = standard_operator(operator);
     let (result_type, evidence) = if let Some(standard) =
@@ -66,7 +67,12 @@ pub(super) fn type_binary(
             StandardOperatorKind::Equality | StandardOperatorKind::Comparison
         )
     }) {
-        if left_type != TypedType::Hole && right_type != TypedType::Hole && left_type != right_type
+        // An annotation and a constructor may spell the same checked owner
+        // differently. Compare resolved identities and scoped arguments before
+        // selecting evidence; equal display names cannot prove nominal identity.
+        if left_type != TypedType::Hole
+            && right_type != TypedType::Hole
+            && !semantic_values_have_same_identity(&left_value_type, &right_value_type)
         {
             missing_instance = Some(PureCallIssue::ArgumentType {
                 argument: right_span,

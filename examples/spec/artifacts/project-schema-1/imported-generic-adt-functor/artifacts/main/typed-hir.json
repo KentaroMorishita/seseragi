@@ -467,8 +467,9 @@
                         }
                       ],
                       "result": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Box",
+                        "canonical": "fixture/imported-generic-adt-functor::domain::Box",
                         "arguments": [
                           {
                             "kind": "named",
@@ -493,8 +494,9 @@
                       ]
                     },
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Box",
+                      "canonical": "fixture/imported-generic-adt-functor::domain::Box",
                       "arguments": [
                         {
                           "kind": "named",
@@ -515,8 +517,9 @@
                       "name": "Functor",
                       "arguments": [
                         {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Box",
+                          "canonical": "fixture/imported-generic-adt-functor::domain::Box",
                           "arguments": []
                         }
                       ]

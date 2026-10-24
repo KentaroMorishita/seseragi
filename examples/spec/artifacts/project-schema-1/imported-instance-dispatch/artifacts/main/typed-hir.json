@@ -134,8 +134,9 @@
                 "kind": "variable",
                 "name": "fixture/imported-instance-dispatch::domain::Active",
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Badge",
+                  "canonical": "fixture/imported-instance-dispatch::domain::Badge",
                   "arguments": []
                 },
                 "origin": {
@@ -150,8 +151,9 @@
                   "name": "Ready",
                   "arguments": [
                     {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Badge",
+                      "canonical": "fixture/imported-instance-dispatch::domain::Badge",
                       "arguments": []
                     }
                   ]

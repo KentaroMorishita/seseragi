@@ -54,6 +54,18 @@
             "start": 0,
             "end": 43
           }
+        },
+        {
+          "imported": "Badge",
+          "local": "Badge",
+          "sourceLocal": "Badge",
+          "canonical": "fixture/imported-instance-dispatch::domain::Badge",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 43
+          }
         }
       ],
       "origin": {

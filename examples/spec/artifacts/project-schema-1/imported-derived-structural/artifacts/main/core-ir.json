@@ -712,8 +712,9 @@
             "kind": "pure-let",
             "name": "one",
             "type": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "UserId",
+              "canonical": "fixture/imported-derived-structural::domain::UserId",
               "arguments": []
             },
             "value": {
@@ -731,8 +732,9 @@
                 }
               ],
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "UserId",
+                "canonical": "fixture/imported-derived-structural::domain::UserId",
                 "arguments": []
               },
               "origin": {
@@ -751,8 +753,9 @@
             "kind": "pure-let",
             "name": "two",
             "type": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "UserId",
+              "canonical": "fixture/imported-derived-structural::domain::UserId",
               "arguments": []
             },
             "value": {
@@ -770,8 +773,9 @@
                 }
               ],
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "UserId",
+                "canonical": "fixture/imported-derived-structural::domain::UserId",
                 "arguments": []
               },
               "origin": {
@@ -827,8 +831,9 @@
                         "kind": "variable",
                         "name": "one",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -852,8 +857,9 @@
                           }
                         ],
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -869,8 +875,9 @@
                             "traitIdentity": "std/prelude::Eq",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "UserId",
+                                "canonical": "fixture/imported-derived-structural::domain::UserId",
                                 "arguments": []
                               }
                             ]
@@ -977,8 +984,9 @@
                         "kind": "variable",
                         "name": "one",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -991,8 +999,9 @@
                         "kind": "variable",
                         "name": "two",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -1008,8 +1017,9 @@
                             "traitIdentity": "std/prelude::Ord",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "UserId",
+                                "canonical": "fixture/imported-derived-structural::domain::UserId",
                                 "arguments": []
                               }
                             ]
@@ -1141,8 +1151,9 @@
                             "kind": "variable",
                             "name": "one",
                             "type": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "UserId",
+                              "canonical": "fixture/imported-derived-structural::domain::UserId",
                               "arguments": []
                             },
                             "origin": {
@@ -1159,8 +1170,9 @@
                               "traitIdentity": "std/prelude::Hash",
                               "arguments": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "UserId",
+                                  "canonical": "fixture/imported-derived-structural::domain::UserId",
                                   "arguments": []
                                 }
                               ]
@@ -1353,8 +1365,9 @@
                     "kind": "variable",
                     "name": "one",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "UserId",
+                      "canonical": "fixture/imported-derived-structural::domain::UserId",
                       "arguments": []
                     },
                     "origin": {
@@ -1435,8 +1448,9 @@
                     "kind": "variable",
                     "name": "two",
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "UserId",
+                      "canonical": "fixture/imported-derived-structural::domain::UserId",
                       "arguments": []
                     },
                     "origin": {
@@ -1794,8 +1808,9 @@
                               "kind": "variable",
                               "name": "one",
                               "type": {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "UserId",
+                                "canonical": "fixture/imported-derived-structural::domain::UserId",
                                 "arguments": []
                               },
                               "origin": {
@@ -2146,8 +2161,9 @@
                                   "kind": "variable",
                                   "name": "one",
                                   "type": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "UserId",
+                                    "canonical": "fixture/imported-derived-structural::domain::UserId",
                                     "arguments": []
                                   },
                                   "origin": {
@@ -2437,8 +2453,9 @@
                           }
                         ],
                         "result": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Tree",
+                          "canonical": "fixture/imported-derived-structural::domain::Tree",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2463,8 +2480,9 @@
                         ]
                       },
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2505,8 +2523,9 @@
                           }
                         ],
                         "result": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Tree",
+                          "canonical": "fixture/imported-derived-structural::domain::Tree",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2531,8 +2550,9 @@
                         ]
                       },
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2552,8 +2572,9 @@
                     "kind": "tuple",
                     "elements": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2563,8 +2584,9 @@
                         ]
                       },
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2616,8 +2638,9 @@
                   }
                 ],
                 "result": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Tree",
+                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                   "arguments": [
                     {
                       "kind": "named",
@@ -2631,8 +2654,9 @@
                     "kind": "tuple",
                     "elements": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2642,8 +2666,9 @@
                         ]
                       },
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Tree",
+                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2664,8 +2689,9 @@
                 ]
               },
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Tree",
+                "canonical": "fixture/imported-derived-structural::domain::Tree",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2776,8 +2802,9 @@
                                     }
                                   ],
                                   "result": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "Tree",
+                                    "canonical": "fixture/imported-derived-structural::domain::Tree",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2802,8 +2829,9 @@
                                   ]
                                 },
                                 "type": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -2844,8 +2872,9 @@
                                     }
                                   ],
                                   "result": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "Tree",
+                                    "canonical": "fixture/imported-derived-structural::domain::Tree",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -2870,8 +2899,9 @@
                                   ]
                                 },
                                 "type": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -2891,8 +2921,9 @@
                               "kind": "tuple",
                               "elements": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -2902,8 +2933,9 @@
                                   ]
                                 },
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -2955,8 +2987,9 @@
                             }
                           ],
                           "result": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Tree",
+                            "canonical": "fixture/imported-derived-structural::domain::Tree",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -2970,8 +3003,9 @@
                               "kind": "tuple",
                               "elements": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -2981,8 +3015,9 @@
                                   ]
                                 },
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3003,8 +3038,9 @@
                           ]
                         },
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Tree",
+                          "canonical": "fixture/imported-derived-structural::domain::Tree",
                           "arguments": [
                             {
                               "kind": "named",
@@ -3215,8 +3251,9 @@
                                     }
                                   ],
                                   "result": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "Tree",
+                                    "canonical": "fixture/imported-derived-structural::domain::Tree",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -3241,8 +3278,9 @@
                                   ]
                                 },
                                 "type": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3283,8 +3321,9 @@
                                     }
                                   ],
                                   "result": {
-                                    "kind": "named",
+                                    "kind": "external-named",
                                     "name": "Tree",
+                                    "canonical": "fixture/imported-derived-structural::domain::Tree",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -3309,8 +3348,9 @@
                                   ]
                                 },
                                 "type": {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3330,8 +3370,9 @@
                               "kind": "tuple",
                               "elements": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3341,8 +3382,9 @@
                                   ]
                                 },
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3394,8 +3436,9 @@
                             }
                           ],
                           "result": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Tree",
+                            "canonical": "fixture/imported-derived-structural::domain::Tree",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3409,8 +3452,9 @@
                               "kind": "tuple",
                               "elements": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3420,8 +3464,9 @@
                                   ]
                                 },
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3442,8 +3487,9 @@
                           ]
                         },
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Tree",
+                          "canonical": "fixture/imported-derived-structural::domain::Tree",
                           "arguments": [
                             {
                               "kind": "named",
@@ -3832,8 +3878,9 @@
                                         }
                                       ],
                                       "result": {
-                                        "kind": "named",
+                                        "kind": "external-named",
                                         "name": "Tree",
+                                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -3858,8 +3905,9 @@
                                       ]
                                     },
                                     "type": {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -3900,8 +3948,9 @@
                                         }
                                       ],
                                       "result": {
-                                        "kind": "named",
+                                        "kind": "external-named",
                                         "name": "Tree",
+                                        "canonical": "fixture/imported-derived-structural::domain::Tree",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -3926,8 +3975,9 @@
                                       ]
                                     },
                                     "type": {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -3947,8 +3997,9 @@
                                   "kind": "tuple",
                                   "elements": [
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -3958,8 +4009,9 @@
                                       ]
                                     },
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4011,8 +4063,9 @@
                                 }
                               ],
                               "result": {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "Tree",
+                                "canonical": "fixture/imported-derived-structural::domain::Tree",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -4026,8 +4079,9 @@
                                   "kind": "tuple",
                                   "elements": [
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4037,8 +4091,9 @@
                                       ]
                                     },
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Tree",
+                                      "canonical": "fixture/imported-derived-structural::domain::Tree",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -4059,8 +4114,9 @@
                               ]
                             },
                             "type": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Tree",
+                              "canonical": "fixture/imported-derived-structural::domain::Tree",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -4083,8 +4139,9 @@
                               "traitIdentity": "std/prelude::Hash",
                               "arguments": [
                                 {
-                                  "kind": "named",
+                                  "kind": "external-named",
                                   "name": "Tree",
+                                  "canonical": "fixture/imported-derived-structural::domain::Tree",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4319,8 +4376,9 @@
                           }
                         ],
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Phase",
+                          "canonical": "fixture/imported-derived-structural::domain::Phase",
                           "arguments": []
                         },
                         "origin": {
@@ -4344,8 +4402,9 @@
                           }
                         ],
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Phase",
+                          "canonical": "fixture/imported-derived-structural::domain::Phase",
                           "arguments": []
                         },
                         "origin": {
@@ -4361,8 +4420,9 @@
                             "traitIdentity": "std/prelude::Ord",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "Phase",
+                                "canonical": "fixture/imported-derived-structural::domain::Phase",
                                 "arguments": []
                               }
                             ]
@@ -4501,8 +4561,9 @@
                           }
                         ],
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Phase",
+                          "canonical": "fixture/imported-derived-structural::domain::Phase",
                           "arguments": []
                         },
                         "origin": {
@@ -4515,8 +4576,9 @@
                         "kind": "variable",
                         "name": "fixture/imported-derived-structural::domain::Empty",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Phase",
+                          "canonical": "fixture/imported-derived-structural::domain::Phase",
                           "arguments": []
                         },
                         "origin": {
@@ -4532,8 +4594,9 @@
                             "traitIdentity": "std/prelude::Ord",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "Phase",
+                                "canonical": "fixture/imported-derived-structural::domain::Phase",
                                 "arguments": []
                               }
                             ]
@@ -5676,8 +5739,9 @@
               "kind": "variable",
               "name": "fixture/imported-derived-structural::domain::Phantom",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Phantom",
+                "canonical": "fixture/imported-derived-structural::domain::Phantom",
                 "arguments": [
                   {
                     "kind": "named",
@@ -7342,8 +7406,9 @@
                         "kind": "variable",
                         "name": "one",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -7356,8 +7421,9 @@
                         "kind": "variable",
                         "name": "two",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -7373,8 +7439,9 @@
                             "traitIdentity": "std/prelude::Eq",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "UserId",
+                                "canonical": "fixture/imported-derived-structural::domain::UserId",
                                 "arguments": []
                               }
                             ]
@@ -7481,8 +7548,9 @@
                         "kind": "variable",
                         "name": "one",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -7495,8 +7563,9 @@
                         "kind": "variable",
                         "name": "two",
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "UserId",
+                          "canonical": "fixture/imported-derived-structural::domain::UserId",
                           "arguments": []
                         },
                         "origin": {
@@ -7512,8 +7581,9 @@
                             "traitIdentity": "std/prelude::Ord",
                             "arguments": [
                               {
-                                "kind": "named",
+                                "kind": "external-named",
                                 "name": "UserId",
+                                "canonical": "fixture/imported-derived-structural::domain::UserId",
                                 "arguments": []
                               }
                             ]
@@ -7866,8 +7936,9 @@
                             }
                           ],
                           "result": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Tree",
+                            "canonical": "fixture/imported-derived-structural::domain::Tree",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -7892,8 +7963,9 @@
                           ]
                         },
                         "type": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Tree",
+                          "canonical": "fixture/imported-derived-structural::domain::Tree",
                           "arguments": [
                             {
                               "kind": "named",
@@ -8065,8 +8137,9 @@
                       }
                     ],
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Phase",
+                      "canonical": "fixture/imported-derived-structural::domain::Phase",
                       "arguments": []
                     },
                     "origin": {
@@ -8090,8 +8163,9 @@
                       }
                     ],
                     "type": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Phase",
+                      "canonical": "fixture/imported-derived-structural::domain::Phase",
                       "arguments": []
                     },
                     "origin": {
@@ -8107,8 +8181,9 @@
                         "traitIdentity": "std/prelude::Eq",
                         "arguments": [
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Phase",
+                            "canonical": "fixture/imported-derived-structural::domain::Phase",
                             "arguments": []
                           }
                         ]

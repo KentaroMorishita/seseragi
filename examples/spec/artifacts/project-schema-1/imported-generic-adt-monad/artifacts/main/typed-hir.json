@@ -219,8 +219,9 @@
             }
           ],
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
             "arguments": [
               {
                 "kind": "named",
@@ -245,8 +246,9 @@
           ]
         },
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Box",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Box",
           "arguments": [
             {
               "kind": "named",
@@ -667,8 +669,9 @@
               }
             ],
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
               "arguments": [
                 {
                   "kind": "named",
@@ -693,8 +696,9 @@
             ]
           },
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
             "arguments": [
               {
                 "kind": "named",
@@ -1046,8 +1050,9 @@
                 }
               ],
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Profile",
+                "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                 "arguments": []
               },
               "origin": {
@@ -1176,8 +1181,9 @@
                 }
               ],
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Profile",
+                "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                 "arguments": []
               },
               "origin": {
@@ -1198,8 +1204,9 @@
               }
             ],
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
               "arguments": [
                 {
                   "kind": "named",
@@ -1210,8 +1217,9 @@
             },
             "argumentTypes": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Profile",
+                "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                 "arguments": []
               }
             ],
@@ -1224,8 +1232,9 @@
             ]
           },
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
             "arguments": [
               {
                 "kind": "named",
@@ -1780,8 +1789,9 @@
                     }
                   ],
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Profile",
+                    "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                     "arguments": []
                   },
                   "origin": {
@@ -1802,8 +1812,9 @@
                   }
                 ],
                 "result": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Box",
+                  "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                   "arguments": [
                     {
                       "kind": "named",
@@ -1814,8 +1825,9 @@
                 },
                 "argumentTypes": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Profile",
+                    "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                     "arguments": []
                   }
                 ],
@@ -1828,8 +1840,9 @@
                 ]
               },
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Box",
+                "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2054,8 +2067,9 @@
                   }
                 },
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Profile",
+                  "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                   "arguments": []
                 },
                 "origin": {
@@ -2064,12 +2078,14 @@
                 }
               },
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Box",
+                "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                 "arguments": [
                   {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Profile",
+                    "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                     "arguments": []
                   }
                 ]
@@ -2094,12 +2110,14 @@
                   "arguments": []
                 },
                 "success": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Box",
+                  "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                   "arguments": [
                     {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Profile",
+                      "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                       "arguments": []
                     }
                   ]
@@ -2166,8 +2184,9 @@
                         }
                       ],
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Profile",
+                        "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                         "arguments": []
                       },
                       "origin": {
@@ -2188,8 +2207,9 @@
                       }
                     ],
                     "result": {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Box",
+                      "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                       "arguments": [
                         {
                           "kind": "named",
@@ -2200,26 +2220,30 @@
                     },
                     "argumentTypes": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Profile",
+                        "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                         "arguments": []
                       }
                     ],
                     "instantiatedTypeArguments": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Profile",
+                        "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                         "arguments": []
                       }
                     ]
                   },
                   "type": {
-                    "kind": "named",
+                    "kind": "external-named",
                     "name": "Box",
+                    "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                     "arguments": [
                       {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Profile",
+                        "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                         "arguments": []
                       }
                     ]
@@ -2482,8 +2506,9 @@
                               }
                             ],
                             "result": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Box",
+                              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2508,8 +2533,9 @@
                             ]
                           },
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Box",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -2690,8 +2716,9 @@
                               }
                             ],
                             "result": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Box",
+                              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2716,8 +2743,9 @@
                             ]
                           },
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Box",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -2761,8 +2789,9 @@
                               }
                             ],
                             "result": {
-                              "kind": "named",
+                              "kind": "external-named",
                               "name": "Box",
+                              "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -2787,8 +2816,9 @@
                             ]
                           },
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Box",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -2936,8 +2966,9 @@
                             }
                           ],
                           "type": {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Profile",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                             "arguments": []
                           },
                           "origin": {
@@ -2958,8 +2989,9 @@
                           }
                         ],
                         "result": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Box",
+                          "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2970,8 +3002,9 @@
                         },
                         "argumentTypes": [
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Profile",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
                             "arguments": []
                           }
                         ],
@@ -2984,8 +3017,9 @@
                         ]
                       },
                       "type": {
-                        "kind": "named",
+                        "kind": "external-named",
                         "name": "Box",
+                        "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                         "arguments": [
                           {
                             "kind": "named",

@@ -1,10 +1,10 @@
 import * as model from "./facade"
-import { Box } from "./facade"
 
 pub fn probe -> Array<String> = {
-  let saved = model.read [model.keep (Box 42)]
-  let callback = match saved 0 { Just value -> value; Nothing -> model.keep (Box 0) }
-  [show (callback 1), show (model.higher [Box 7]), show (model.read [True] (-1))]
+  let saved = model.read [model.keep (model.Box 42)]
+  let callback =
+    match saved 0 { Just value -> value; Nothing -> model.keep (model.Box 0) }
+  [show (callback 1), show (model.higher [model.Box 7]), show (model.read [True] (-1))]
 }
 
 pub effect fn main = println (show (probe ()))
