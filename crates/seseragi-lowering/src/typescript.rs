@@ -534,6 +534,8 @@ pub enum TypeScriptExpr {
     Call {
         callee: String,
         arguments: Vec<TypeScriptExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_arguments: Vec<TypeScriptType>,
         /// Source-checked instantiation when host currying would infer too early.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         checked_callee_type: Option<TypeScriptType>,

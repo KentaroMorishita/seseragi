@@ -480,7 +480,7 @@ fn instantiates_a_generic_higher_order_function() {
     assert!(compiled
         .generated
         .typescript
-        .contains("apply(increment)(value)"));
+        .contains("apply<number, number>(increment)(value)"));
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
 }
 

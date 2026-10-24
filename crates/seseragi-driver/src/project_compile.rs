@@ -747,7 +747,7 @@ mod tests {
             Some(seseragi_syntax::InterfaceType::Record { .. })
         ));
         let main = project.modules.get("fixture/alias::main").unwrap();
-        assert!(main.generated.typescript.contains("pair(value)"));
+        assert!(main.generated.typescript.contains("pair<number>(value)"));
         assert!(!main.generated.typescript.contains("type Pair"));
     }
 
@@ -1170,7 +1170,10 @@ mod tests {
             .generated
             .typescript
             .contains("__ssrg$method$Box$map as map"));
-        assert!(main.generated.typescript.contains("get(map(box(value))"));
+        assert!(main
+            .generated
+            .typescript
+            .contains("get<number>(map<number>(box<number>(value))"));
     }
 
     #[test]

@@ -448,7 +448,9 @@ fn expression(value: &TypeScriptExpr) -> Names {
             {
                 types(value, &mut refs);
             }
-            if let TypeScriptExpr::TypeApplicationCall { type_arguments, .. } = value {
+            if let TypeScriptExpr::Call { type_arguments, .. }
+            | TypeScriptExpr::TypeApplicationCall { type_arguments, .. } = value
+            {
                 for value in type_arguments {
                     types(value, &mut refs);
                 }
@@ -630,6 +632,7 @@ mod tests {
             *body = TypeScriptExpr::Call {
                 callee: "next".to_owned(),
                 arguments: vec![],
+                type_arguments: Vec::new(),
                 checked_callee_type: None,
             };
             module.source_imports.push(TypeScriptSourceImport {

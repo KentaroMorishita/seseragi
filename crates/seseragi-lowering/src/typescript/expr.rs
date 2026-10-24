@@ -778,6 +778,7 @@ pub(super) fn lower_core_expr_to_typescript(
                             result: Box::new(TypeScriptExpr::Call {
                                 callee: name,
                                 arguments: returned_arguments,
+                                type_arguments: Vec::new(),
                                 checked_callee_type: None,
                             }),
                         }
@@ -1010,6 +1011,13 @@ pub(super) fn lower_core_expr_to_typescript(
                             origin,
                         )
                     };
+                    if let TypeScriptExpr::Call { type_arguments, .. } = &mut call {
+                        *type_arguments = ordinary_call_type_arguments(
+                            callee_signature.as_ref(),
+                            has_evidence,
+                            imported_types,
+                        );
+                    }
                     if check_late_callback {
                         // TypeScript fixes generic parameters at the first
                         // curried argument. The source checker used every
@@ -1289,6 +1297,7 @@ pub(super) fn lower_core_expr_to_typescript(
         } => lower_effect_operation(operation, arguments, imported_values, imported_types),
         CoreExpr::EffectInvoke {
             callee,
+            callee_signature,
             arguments,
             evidence,
             origin,
@@ -1365,6 +1374,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     TypeScriptExpr::Call {
                         callee: callee_name,
                         arguments,
+                        type_arguments: ordinary_call_type_arguments(
+                            callee_signature.as_ref(),
+                            !evidence.is_empty(),
+                            imported_types,
+                        ),
                         checked_callee_type: None,
                     }
                 }
@@ -1523,6 +1537,7 @@ fn lower_constrained_call(
         return TypeScriptExpr::Call {
             callee,
             arguments,
+            type_arguments: Vec::new(),
             checked_callee_type: None,
         };
     }
@@ -1550,6 +1565,7 @@ fn lower_constrained_call(
         TypeScriptExpr::Call {
             callee,
             arguments,
+            type_arguments: Vec::new(),
             checked_callee_type: None,
         }
     };
@@ -1590,6 +1606,7 @@ fn stage_deferred_call(
         TypeScriptExpr::Call {
             callee: name.clone(),
             arguments,
+            type_arguments: Vec::new(),
             checked_callee_type: None,
         },
         |body, (parameter, ty)| TypeScriptExpr::Lambda {
@@ -1950,6 +1967,7 @@ fn lower_comparison_call(
                 TypeScriptExpr::Call {
                     callee: name,
                     arguments: vec![TypeScriptExpr::Identifier { name: right }],
+                    type_arguments: Vec::new(),
                     checked_callee_type: None,
                 },
             )),
@@ -2129,6 +2147,7 @@ fn negated_equality_reference(
                     initializer: TypeScriptExpr::Call {
                         callee: method,
                         arguments: vec![TypeScriptExpr::Identifier { name: left }],
+                        type_arguments: Vec::new(),
                         checked_callee_type: None,
                     },
                     initializer_in_outer_scope: false,
@@ -2147,6 +2166,7 @@ fn negated_equality_reference(
                         left: Box::new(TypeScriptExpr::Call {
                             callee: stage,
                             arguments: vec![TypeScriptExpr::Identifier { name: right }],
+                            type_arguments: Vec::new(),
                             checked_callee_type: None,
                         }),
                         right: Box::new(TypeScriptExpr::Boolean { value: false }),
@@ -2382,4 +2402,31 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
         }
         TypeScriptStatement::LocalFunction { body, .. } => typescript_expr_contains_await(body),
     }
+}
+
+// Reify only a complete ordinary source instantiation. Higher-kinded erasure,
+// runtime intrinsics, foreign tasks and dictionary stages keep their ABI paths.
+fn ordinary_call_type_arguments(
+    signature: Option<&crate::CoreCallSignature>,
+    has_evidence: bool,
+    imported_types: &TypeScriptTypeContext,
+) -> Vec<super::TypeScriptType> {
+    signature
+        .filter(|signature| {
+            !has_evidence
+                && !signature.type_parameters.is_empty()
+                && signature
+                    .type_parameters
+                    .iter()
+                    .all(|p| !p.is_constructor())
+                && signature.instantiated_type_arguments.len() == signature.type_parameters.len()
+        })
+        .map(|signature| {
+            signature
+                .instantiated_type_arguments
+                .iter()
+                .map(|ty| type_ref_from_core_type(ty, imported_types))
+                .collect()
+        })
+        .unwrap_or_default()
 }

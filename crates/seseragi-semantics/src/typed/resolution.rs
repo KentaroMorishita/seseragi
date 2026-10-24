@@ -352,6 +352,7 @@ impl<'a> TypedResolution<'a> {
                                     },
                                     result: callable.result.clone(),
                                     argument_types: Vec::new(),
+                                    instantiated_type_arguments: Vec::new(),
                                 },
                                 constraints: callable.constraints[1..].to_vec(),
                                 constraint_identities: callable.constraint_identities[1..].to_vec(),

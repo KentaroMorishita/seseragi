@@ -219,6 +219,10 @@ pub struct CoreCallSignature {
     pub result: CoreType,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub argument_types: Vec<CoreType>,
+    /// Checked actual type arguments, in this declaration's binder order.
+    /// Empty when no complete source instantiation has been proved.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub instantiated_type_arguments: Vec<CoreType>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -573,6 +577,8 @@ pub enum CoreExpr {
     },
     EffectInvoke {
         callee: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        callee_signature: Option<CoreCallSignature>,
         requirements: CoreType,
         failure: CoreType,
         success: CoreType,
@@ -738,6 +744,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     .collect(),
                 result: types::lower_typed_type(method.signature.result),
                 argument_types: Vec::new(),
+                instantiated_type_arguments: Vec::new(),
             },
             constraints: method
                 .constraints

@@ -274,6 +274,69 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A",
+            "B"
+          ],
+          "parameters": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "B",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Int",

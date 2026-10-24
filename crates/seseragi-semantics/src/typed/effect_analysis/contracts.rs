@@ -517,6 +517,7 @@ mod tests {
     fn effect_invoke(failure: TypedType, origin: ByteSpan) -> TypedExpr {
         TypedExpr::EffectInvoke {
             callee: "fixture::operation".to_owned(),
+            callee_signature: None,
             effect: TypedEffect {
                 environment: TypedType::Record {
                     closed: true,

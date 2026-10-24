@@ -259,7 +259,11 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             if let Some(signature) = callee_signature {
                 // Only instantiated call-site types enter the caller's imports.
                 // The declaration scheme can contain private or scoped names.
-                for argument in &signature.argument_types {
+                for argument in signature
+                    .argument_types
+                    .iter()
+                    .chain(&signature.instantiated_type_arguments)
+                {
                     collect_type_names(argument, references);
                 }
             }
@@ -405,6 +409,15 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             arguments,
             ..
         } => {
+            if let CoreExpr::EffectInvoke {
+                callee_signature: Some(signature),
+                ..
+            } = expr
+            {
+                for argument in &signature.instantiated_type_arguments {
+                    collect_type_names(argument, references);
+                }
+            }
             collect_type_names(requirements, references);
             collect_type_names(failure, references);
             collect_type_names(success, references);

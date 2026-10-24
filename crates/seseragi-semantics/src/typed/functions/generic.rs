@@ -17,6 +17,8 @@ pub(crate) struct InstantiatedApplication {
     pub(crate) evidence_constraints: Vec<TypedConstraint>,
     pub(crate) constraint_identities: Vec<Option<String>>,
     pub(crate) resolved_type_parameters: BTreeSet<String>,
+    /// Canonical projection of the existing owner-checked inference bindings.
+    pub(crate) instantiated_type_arguments: BTreeMap<String, TypedType>,
 }
 
 pub(crate) fn instantiated_application(
@@ -196,7 +198,17 @@ pub(crate) fn instantiated_application_indexed(
                 .collect(),
         })
         .collect();
+    let mut instantiated_type_arguments = BTreeMap::new();
+    for (template, inferred) in &semantic.parameter_bindings {
+        infer_type_parameters(
+            template,
+            &evidence_type(inferred),
+            &signature.type_parameters,
+            &mut instantiated_type_arguments,
+        );
+    }
     InstantiatedApplication {
+        instantiated_type_arguments,
         parameters: parameter_types
             .into_iter()
             .zip(semantic_parameters)

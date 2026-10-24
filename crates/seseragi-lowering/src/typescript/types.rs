@@ -982,6 +982,7 @@ mod tests {
     fn instantiates_hkt_calls_from_checked_arguments_and_result_only() {
         let signature = crate::CoreCallSignature {
             argument_types: vec![],
+            instantiated_type_arguments: Vec::new(),
             type_parameters: vec![
                 TypeParameter::constructor("F", 1),
                 TypeParameter::value("A"),
@@ -1030,6 +1031,7 @@ mod tests {
         };
         let base = crate::CoreCallSignature {
             argument_types: vec![],
+            instantiated_type_arguments: Vec::new(),
             type_parameters: vec![
                 TypeParameter::constructor("F", 1),
                 TypeParameter::value("A"),
