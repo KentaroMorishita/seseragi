@@ -1,0 +1,28 @@
+import { Unit, payload, selected, genuine, scoped, failed as failedResource, crash as crashResource } from "./facade"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  let owned: Unit = Unit {value: 7}
+  println (show (payload owned))
+  let held: Int -> String = selected ()
+  println (held 7 + ":" + held 9)
+  count <- refs.make 0
+  let cold = do {
+    refs.update (\n -> n + 1) count
+    genuine ()
+  }
+  before <- refs.get count
+  println ("created: " + show before)
+  first <- cold
+  second <- cold
+  println (show first + ":" + show second)
+  scopedValue <- scoped<Int> 3
+  println (show scopedValue)
+  runs <- refs.get count
+  println ("runs: " + show runs)
+}
+
+
+pub effect fn failed = failedResource ()
+
+pub effect fn crash = crashResource ()

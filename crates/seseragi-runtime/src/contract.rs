@@ -529,7 +529,15 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
 }
 
 fn is_named(type_ref: &TypedType, expected: &str) -> bool {
-    matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
+    match type_ref {
+        TypedType::Named { name, arguments } => name == expected && arguments.is_empty(),
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => canonical == &format!("std/prelude::{expected}") && arguments.is_empty(),
+        _ => false,
+    }
 }
 
 #[cfg(test)]
@@ -548,6 +556,66 @@ pub effect fn main -> Unit
 fails DomRuntimeError<Never> =
   succeed ()
 "#;
+
+    #[test]
+    fn canonical_main_unit_requires_its_prelude_owner_and_zero_arity() {
+        let source = "pub effect fn main = succeed ()\n";
+        let original = compile_module(CompileInput::new("main.ssrg", "test/main", source)).unwrap();
+        for (success, accepted) in [
+            (
+                TypedType::Named {
+                    name: "Unit".into(),
+                    arguments: vec![],
+                },
+                true,
+            ),
+            (
+                TypedType::ExternalNamed {
+                    name: "Unit".into(),
+                    canonical: "std/prelude::Unit".into(),
+                    arguments: vec![],
+                },
+                true,
+            ),
+            (
+                TypedType::ExternalNamed {
+                    name: "Unit".into(),
+                    canonical: "app/domain::Unit".into(),
+                    arguments: vec![],
+                },
+                false,
+            ),
+            (
+                TypedType::ExternalNamed {
+                    name: "Unit".into(),
+                    canonical: "std/prelude::Unit".into(),
+                    arguments: vec![TypedType::Named {
+                        name: "Int".into(),
+                        arguments: vec![],
+                    }],
+                },
+                false,
+            ),
+            (TypedType::Hole, false),
+        ] {
+            let mut compiled = original.clone();
+            let main = compiled
+                .typed_hir
+                .declarations
+                .iter_mut()
+                .find_map(|decl| {
+                    if let seseragi_semantics::TypedDecl::EffectFn { effect, .. } = decl {
+                        Some(effect)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap();
+            main.success = success;
+            let result = main_contract(&compiled);
+            assert_eq!(result.is_ok(), accepted, "{result:?}");
+        }
+    }
 
     #[test]
     fn derives_host_services_and_failure_dictionary_from_compiler_output() {

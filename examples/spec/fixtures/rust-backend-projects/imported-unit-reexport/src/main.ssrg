@@ -1,0 +1,9 @@
+import { Unit as LocalUnit, genuine } from "./bridge"
+
+pub effect fn main = do {
+  let owned: LocalUnit = LocalUnit {value: 42}
+  println (show owned.value)
+  let argument = ()
+  value <- genuine argument
+  println (show value)
+}

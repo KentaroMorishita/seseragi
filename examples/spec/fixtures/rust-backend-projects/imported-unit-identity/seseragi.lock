@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-imported-unit-identity@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-imported-unit-identity@0.0.0#workspace:."
+name = "fixture/native-imported-unit-identity"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3766c3dbc641b60e4d977fd73ae043f022a68c27668219eb62893e5253137d52"
+content_digest = "sha256:f51da10c7ff97009f9999224b360f11c6f7f1b9e0ee2a733d92a71e8aed4feaf"
+dependencies = []

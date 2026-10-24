@@ -1537,6 +1537,56 @@ mod tests {
     }
 
     #[test]
+    fn imported_nominal_unit_construction_keeps_its_owner_and_anonymous_entry() {
+        let source = concat!(
+            "import {Unit, genuine} from \"./bridge\"\n",
+            "pub effect fn main = do {\n",
+            "  let owned: Unit = Unit {value: 42}\n",
+            "  genuine ()\n",
+            "}\n"
+        );
+        let make_request = |main: &str| {
+            request(
+                json!([
+                    {
+                        "path": "domain.ssrg",
+                        "source": include_str!("../../../examples/spec/fixtures/rust-backend-projects/imported-unit-identity/src/domain.ssrg")
+                    },
+                    {
+                        "path": "bridge.ssrg",
+                        "source": "pub import {Unit, genuine} from \"./domain\"\n"
+                    },
+                    {"path": "main.ssrg", "source": main}
+                ]),
+                "main.ssrg",
+            )
+        };
+        let compiled: Value =
+            serde_json::from_str(&compile_project(&make_request(source))).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        assert!(compiled["entry"].get("error").is_none(), "{compiled}");
+        assert!(compiled["entry"]["contract"].is_object(), "{compiled}");
+        let main = compiled["modules"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|module| module["path"] == "main.ssrg")
+            .unwrap();
+        let typescript = main["generated"]["typescript"].as_str().unwrap();
+        assert!(typescript.contains("as unknown as Unit"), "{typescript}");
+        assert!(typescript.contains("genuine(undefined)"), "{typescript}");
+
+        let wrong_argument = source.replace("genuine ()", "genuine (Unit {value: 42})");
+        let refused: Value =
+            serde_json::from_str(&compile_project(&make_request(&wrong_argument))).unwrap();
+        assert_eq!(refused["status"], "failure", "{refused}");
+        assert!(refused.get("modules").is_none(), "{refused}");
+        assert!(refused["diagnostics"]
+            .as_array()
+            .is_some_and(|d| !d.is_empty()));
+    }
+
+    #[test]
     fn compiles_and_analyzes_a_multi_module_browser_workspace() {
         let request = request(
             json!([

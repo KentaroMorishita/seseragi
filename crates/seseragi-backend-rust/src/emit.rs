@@ -77,25 +77,7 @@ pub(crate) fn emit_library(
 }
 
 pub(crate) fn canonical_boundary_type(module: &CoreModule, ty: &CoreType) -> Option<CoreType> {
-    let mut names = BTreeMap::new();
-    for (name, symbol) in module
-        .adts
-        .iter()
-        .map(|d| (&d.name, &d.symbol))
-        .chain(module.structs.iter().map(|d| (&d.name, &d.symbol)))
-        .chain(module.aliases.iter().map(|d| (&d.name, &d.symbol)))
-    {
-        names.insert((module.module.clone(), name.clone()), symbol.clone());
-    }
-    for binding in &module.external_type_bindings {
-        let key = (module.module.clone(), binding.spelling.clone());
-        if names
-            .insert(key, binding.canonical.clone())
-            .is_some_and(|old| old != binding.canonical)
-        {
-            return None;
-        }
-    }
+    let names = crate::type_names::for_boundary(module).ok()?;
     display::canonical_type(ty, &module.module, &BTreeMap::new(), &names, true)
 }
 

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.89] - 2026-10-24
+
+### Fixed
+
+- Preserve the canonical identities of imported nominal types when they share a name with a built-in type. Native module and path-package Effects now retain their checked type providers through reexports, while TypeScript constructors and entry contracts keep the same owner, arity and resource behavior.
+
 ## [0.61.88] - 2026-10-24
 
 ### Fixed

@@ -1,0 +1,2 @@
+pub struct Unit {value: Int}
+pub effect fn genuine = { let unit = (); succeed unit }

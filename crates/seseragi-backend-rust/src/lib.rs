@@ -4,6 +4,7 @@ mod emit;
 mod program_wasm;
 mod program_wasm_effect;
 mod project;
+mod type_names;
 pub use program_wasm::{
     emit_program_wasm, ProgramCodec, ProgramWasmArtifact, ProgramWasmExport, ProgramWasmMetadata,
     PROGRAM_WASM_ABI, PROGRAM_WASM_EFFECT_ABI,
