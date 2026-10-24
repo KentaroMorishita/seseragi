@@ -198,6 +198,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
             "evidence": {
               "kind": "parameter",
               "index": 0

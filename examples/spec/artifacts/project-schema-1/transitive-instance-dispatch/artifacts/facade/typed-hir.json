@@ -191,6 +191,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
             "evidence": {
               "kind": "parameter",
               "index": 0

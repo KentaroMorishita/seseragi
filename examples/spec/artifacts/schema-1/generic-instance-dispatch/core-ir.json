@@ -178,6 +178,7 @@
           {
             "constraint": {
               "name": "Tag",
+              "traitIdentity": "artifact/generic-instance-dispatch::trait(Tag)",
               "arguments": [
                 {
                   "kind": "named",

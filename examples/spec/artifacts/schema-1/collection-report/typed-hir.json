@@ -458,6 +458,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Ord",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Ord"
@@ -549,6 +550,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::String>"
@@ -607,6 +609,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::Int>"
@@ -758,6 +761,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Iterable",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/array::Iterable"
@@ -809,6 +813,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -825,6 +830,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Zero",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Zero"
@@ -851,6 +857,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -1151,6 +1158,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Functor",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/array::Functor"
@@ -1331,6 +1339,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Reducible",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/array::Reducible"
@@ -1358,6 +1367,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::String>"
@@ -1417,6 +1427,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -1480,6 +1491,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Reducible",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/array::Reducible"

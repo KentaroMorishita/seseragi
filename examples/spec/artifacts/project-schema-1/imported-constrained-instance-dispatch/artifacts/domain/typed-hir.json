@@ -274,6 +274,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -457,6 +458,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
             "evidence": {
               "kind": "parameter",
               "index": 0

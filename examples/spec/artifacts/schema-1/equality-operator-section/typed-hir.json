@@ -803,6 +803,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Eq",
                 "evidence": {
                   "kind": "parameter",
                   "index": 0
@@ -1347,6 +1348,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Eq",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::Eq<artifact/equality-operator-section::Status>"
@@ -1435,6 +1437,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Eq",
                             "evidence": {
                               "kind": "local",
                               "identity": "std/prelude::Eq<artifact/equality-operator-section::Status>"
@@ -1523,6 +1526,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Eq",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::Eq"
@@ -1611,6 +1615,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Eq",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::Eq"
@@ -1723,6 +1728,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "local",
                           "identity": "std/prelude::Eq<artifact/equality-operator-section::Status>"

@@ -315,6 +315,7 @@
             "evidence": {
               "constraint": {
                 "name": "Show",
+                "traitIdentity": "std/prelude::Show",
                 "arguments": [
                   {
                     "kind": "named",
@@ -1616,6 +1617,7 @@
                       {
                         "constraint": {
                           "name": "Sub",
+                          "traitIdentity": "std/prelude::Sub",
                           "arguments": [
                             {
                               "kind": "named",
@@ -2822,6 +2824,7 @@
                       {
                         "constraint": {
                           "name": "Sub",
+                          "traitIdentity": "std/prelude::Sub",
                           "arguments": [
                             {
                               "kind": "named",

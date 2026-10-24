@@ -1796,8 +1796,9 @@ pub effect fn main =
                 if operator == "+"
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
+                        trait_identity: Some(trait_identity),
                         evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
-                    }] if name == "Add"
+                    }] if trait_identity == "std/prelude::Add" && name == "Add"
                         && arguments == &vec![int_type(), int_type(), int_type()]
                         && identity == "std/int::Add")
         ));
@@ -1821,8 +1822,9 @@ pub effect fn main =
                     && type_ref == &string
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
+                        trait_identity: Some(trait_identity),
                         evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
-                    }] if name == "Add"
+                    }] if trait_identity == "std/prelude::Add" && name == "Add"
                         && arguments == &vec![string.clone(), string.clone(), string.clone()]
                         && identity == "std/string::Add")
         ));
@@ -1849,8 +1851,9 @@ pub effect fn main =
                     && matches!(type_ref, TypedType::Named { name, arguments } if name == "Score" && arguments.is_empty())
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
+                        trait_identity: Some(trait_identity),
                         evidence: crate::TypedInstanceEvidence::Local { identity, .. },
-                    }] if name == "Add"
+                    }] if trait_identity == "std/prelude::Add" && name == "Add"
                         && arguments.len() == 3
                         && identity.starts_with("std/prelude::Add<"))
         ));
@@ -1873,8 +1876,9 @@ pub effect fn main =
                     && matches!(type_ref, TypedType::Named { name, arguments } if name == "Bool" && arguments.is_empty())
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
+                        trait_identity: Some(trait_identity),
                         evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
-                    }] if name == "Eq"
+                    }] if trait_identity == "std/prelude::Eq" && name == "Eq"
                         && arguments == &vec![string_type()]
                         && identity == "std/string::Eq")
         ));

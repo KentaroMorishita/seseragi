@@ -393,6 +393,8 @@ pub(crate) fn select_call_evidence(
             let evidence =
                 select_standard_instance(None, &constraint).ok_or_else(|| constraint.clone())?;
             Ok(TypedCallEvidence {
+                trait_identity: crate::prelude::trait_by_name(&constraint.name)
+                    .map(|declaration| declaration.canonical.to_owned()),
                 constraint,
                 evidence,
             })
@@ -440,6 +442,11 @@ pub(crate) fn select_function_call_evidence(
                 .unwrap_or_else(|| constraint.clone())
             })?;
             Ok(TypedCallEvidence {
+                trait_identity: Some(
+                    trait_identity
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| format!("std/prelude::{}", constraint.name)),
+                ),
                 constraint,
                 evidence,
             })
@@ -659,6 +666,7 @@ fn select_contextual_standard_instance(
                     stack,
                 )?;
                 Some(TypedCallEvidence {
+                    trait_identity: Some(required_trait_identity),
                     constraint: required,
                     evidence,
                 })
@@ -699,6 +707,7 @@ fn select_contextual_standard_instance(
                 stack,
             )?;
             Some(TypedCallEvidence {
+                trait_identity: Some(required_trait_identity),
                 constraint: required,
                 evidence,
             })
@@ -807,6 +816,7 @@ pub(super) fn select_standard_instance(
                     let evidence =
                         select_standard_instance(Some(&required_trait_identity), &required)?;
                     Some(TypedCallEvidence {
+                        trait_identity: Some(required_trait_identity),
                         constraint: required,
                         evidence,
                     })
@@ -987,6 +997,7 @@ fn select_structural_standard_instance(
             let required_trait_identity = format!("std/prelude::{}", required.name);
             let evidence = select_standard_instance(Some(&required_trait_identity), &required)?;
             Some(TypedCallEvidence {
+                trait_identity: Some(required_trait_identity),
                 constraint: required,
                 evidence,
             })
@@ -1152,6 +1163,7 @@ pub(crate) fn select_collection_evidence(
             return Ok((
                 element,
                 TypedCallEvidence {
+                    trait_identity: Some(available.trait_identity.clone()),
                     constraint: available.constraint.clone(),
                     evidence: TypedInstanceEvidence::Parameter {
                         index: available.index,
@@ -1169,6 +1181,7 @@ pub(crate) fn select_collection_evidence(
             return Ok((
                 element.clone(),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: vec![collection, element],
@@ -1187,6 +1200,7 @@ pub(crate) fn select_collection_evidence(
             return Ok((
                 element.clone(),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: vec![collection, element],
@@ -1237,6 +1251,7 @@ pub(crate) fn select_binary_operator_evidence(
             return Ok((
                 output,
                 TypedCallEvidence {
+                    trait_identity: Some(available.trait_identity.clone()),
                     constraint: available.constraint.clone(),
                     evidence: TypedInstanceEvidence::Parameter {
                         index: available.index,
@@ -1255,6 +1270,7 @@ pub(crate) fn select_binary_operator_evidence(
             return Ok((
                 output.clone(),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: vec![left, right, output],
@@ -1274,6 +1290,7 @@ pub(crate) fn select_binary_operator_evidence(
             return Ok((
                 output.clone(),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: vec![left, right, output],
@@ -1346,6 +1363,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             return Ok((
                 contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
+                    trait_identity: Some(available.trait_identity.clone()),
                     constraint: available.constraint.clone(),
                     evidence: TypedInstanceEvidence::Parameter {
                         index: available.index,
@@ -1363,6 +1381,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             return Ok((
                 contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: head.to_vec(),
@@ -1381,6 +1400,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             return Ok((
                 contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
+                    trait_identity: Some(trait_identity.to_owned()),
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
                         arguments: head.to_vec(),
@@ -1525,6 +1545,7 @@ pub(crate) fn select_binary_same_type_evidence(
     )
     .ok_or_else(|| constraint.clone())?;
     Ok(TypedCallEvidence {
+        trait_identity: Some(trait_identity.unwrap_or(&fallback_identity).to_owned()),
         constraint,
         evidence,
     })
@@ -1574,6 +1595,7 @@ pub(crate) fn select_same_type_operator_reference_evidence(
             return Ok((
                 value.clone(),
                 TypedCallEvidence {
+                    trait_identity: Some(available.trait_identity.clone()),
                     constraint: available.constraint.clone(),
                     evidence: TypedInstanceEvidence::Parameter {
                         index: available.index,
@@ -1734,8 +1756,9 @@ mod tests {
             evidence.as_slice(),
             [TypedCallEvidence {
                 constraint: TypedConstraint { name, arguments },
+                trait_identity: Some(trait_identity),
                 evidence: TypedInstanceEvidence::Standard { identity, .. },
-            }] if name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
+            }] if trait_identity == "std/prelude::Add" && name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
         ));
     }
 
@@ -1836,8 +1859,9 @@ mod tests {
                 evidence.as_slice(),
                 [TypedCallEvidence {
                     constraint: TypedConstraint { name, arguments },
+                    trait_identity: Some(trait_identity),
                     evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
-                }] if name == trait_name && arguments.len() == 3 && selected == identity
+                }] if trait_identity == &format!("std/prelude::{trait_name}") && name == trait_name && arguments.len() == 3 && selected == identity
             ));
         }
     }
@@ -1853,8 +1877,9 @@ mod tests {
             evidence.as_slice(),
             [TypedCallEvidence {
                 constraint: TypedConstraint { name, arguments },
+                trait_identity: Some(trait_identity),
                 evidence: TypedInstanceEvidence::Standard { identity, .. },
-            }] if name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
+            }] if trait_identity == "std/prelude::Add" && name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
         ));
     }
 
@@ -2174,8 +2199,9 @@ mod tests {
                 evidence.as_slice(),
                 [TypedCallEvidence {
                     constraint: TypedConstraint { name, arguments },
+                    trait_identity: Some(trait_identity),
                     evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
-                }] if name == "Eq" && arguments.len() == 1 && selected == identity
+                }] if trait_identity == "std/prelude::Eq" && name == "Eq" && arguments.len() == 1 && selected == identity
             ));
         }
     }

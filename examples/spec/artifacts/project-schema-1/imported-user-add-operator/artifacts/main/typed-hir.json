@@ -144,6 +144,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "imported",
               "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
@@ -277,6 +278,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "imported",
                       "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,std/prelude::Int,fixture/imported-user-add-operator::domain::Score>",
@@ -353,6 +355,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Reducible",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Reducible"

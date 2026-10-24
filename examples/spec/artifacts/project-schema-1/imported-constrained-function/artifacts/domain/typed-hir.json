@@ -112,6 +112,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
             "evidence": {
               "kind": "parameter",
               "index": 0

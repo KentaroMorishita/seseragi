@@ -297,6 +297,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "local",
                     "identity": "Eq<fixture/imported-derived-structural::domain::UserId>"
@@ -399,6 +400,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "local",
                     "identity": "Eq<fixture/imported-derived-structural::domain::UserId>"
@@ -527,6 +529,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "local",
                     "identity": "Eq<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -549,6 +552,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -574,6 +578,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "local",
                     "identity": "Eq<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -596,6 +601,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -737,6 +743,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "local",
                     "identity": "Ord<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -765,6 +772,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -781,6 +789,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Ord",
                         "evidence": {
                           "kind": "parameter",
                           "index": 1
@@ -806,6 +815,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "local",
                     "identity": "Ord<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -834,6 +844,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -850,6 +861,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Ord",
                         "evidence": {
                           "kind": "parameter",
                           "index": 1
@@ -990,6 +1002,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Hash",
                   "evidence": {
                     "kind": "local",
                     "identity": "Hash<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -1018,6 +1031,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -1034,6 +1048,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Hash",
                         "evidence": {
                           "kind": "parameter",
                           "index": 1
@@ -1059,6 +1074,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Hash",
                   "evidence": {
                     "kind": "local",
                     "identity": "Hash<fixture/imported-derived-structural::domain::Tree<$0>>",
@@ -1087,6 +1103,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -1103,6 +1120,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Hash",
                         "evidence": {
                           "kind": "parameter",
                           "index": 1
@@ -1397,6 +1415,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/list::Eq",
@@ -1453,6 +1472,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/maybe::Eq",
@@ -1497,6 +1517,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Eq",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/either::Eq",
@@ -1524,6 +1545,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Eq",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/string::Eq"
@@ -1540,6 +1562,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Eq",
                                     "evidence": {
                                       "kind": "parameter",
                                       "index": 0

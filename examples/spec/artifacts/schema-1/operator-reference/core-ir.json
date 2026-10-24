@@ -206,6 +206,7 @@
               {
                 "constraint": {
                   "name": "Add",
+                  "traitIdentity": "std/prelude::Add",
                   "arguments": [
                     {
                       "kind": "named",

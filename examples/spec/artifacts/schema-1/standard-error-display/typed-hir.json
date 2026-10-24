@@ -160,6 +160,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "Show<std/web/dom::DomError>"
@@ -246,6 +247,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "Debug<std/web/dom::DomError>"
@@ -350,6 +352,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/dom::DomRuntimeError::Show",
@@ -372,6 +375,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::String>"
@@ -479,6 +483,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/dom::DomRuntimeError::Debug",
@@ -501,6 +506,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/prelude::String>"
@@ -590,6 +596,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "Show<std/web/html::HtmlBuildError>"
@@ -676,6 +683,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "Debug<std/web/html::HtmlBuildError>"
@@ -825,6 +833,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/web/html::HtmlBuildError>"
@@ -930,6 +939,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/web/html::HtmlBuildError>"

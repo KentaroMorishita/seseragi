@@ -511,6 +511,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
             "evidence": {
               "kind": "parameter",
               "index": 0

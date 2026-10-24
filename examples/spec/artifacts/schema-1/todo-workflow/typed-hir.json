@@ -625,6 +625,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Eq"
@@ -1165,6 +1166,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::Int>"
@@ -1223,6 +1225,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::String>"
@@ -1358,6 +1361,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Functor",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Functor"
@@ -1408,6 +1412,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -1819,6 +1824,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -1899,6 +1905,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -1979,6 +1986,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"

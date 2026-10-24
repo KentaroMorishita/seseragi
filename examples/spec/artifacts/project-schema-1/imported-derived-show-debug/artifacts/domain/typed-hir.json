@@ -146,6 +146,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -229,6 +230,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0

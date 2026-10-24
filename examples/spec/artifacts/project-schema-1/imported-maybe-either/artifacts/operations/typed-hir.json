@@ -164,6 +164,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Traversable",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -327,6 +328,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Traversable",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -492,6 +494,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Reducible"
@@ -514,6 +517,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monoid",
             "evidence": {
               "kind": "standard",
               "identity": "std/maybe::Monoid",
@@ -536,6 +540,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Semigroup",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0

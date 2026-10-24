@@ -511,6 +511,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/functor-maybe::trait(Functor)",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -621,6 +622,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -1042,6 +1044,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "artifact/functor-maybe::trait(Functor)",
                       "evidence": {
                         "kind": "local",
                         "identity": "artifact/functor-maybe::trait(Functor)<std/prelude::Maybe>"

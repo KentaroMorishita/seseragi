@@ -497,11 +497,13 @@ fn selects_required_local_evidence_for_a_constrained_generic_instance() {
             && type_arguments == &[named("Badge")]
             && matches!(evidence_arguments.as_slice(), [crate::TypedCallEvidence {
                 constraint: crate::TypedConstraint { name, arguments },
+                trait_identity: Some(trait_identity),
                 evidence: TypedInstanceEvidence::Local {
                     identity: required_identity,
                     ..
                 },
-            }] if name == "Ready"
+            }] if trait_identity == "artifact/constrained-instance-dispatch::trait(Ready)"
+                && name == "Ready"
                 && arguments == &[named("Badge")]
                 && required_identity == "artifact/constrained-instance-dispatch::trait(Ready)<artifact/constrained-instance-dispatch::Badge>"))
     ));

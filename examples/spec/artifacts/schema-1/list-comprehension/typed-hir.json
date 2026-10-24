@@ -107,6 +107,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Mul",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Mul"
@@ -181,6 +182,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/list::Iterable"
@@ -247,6 +249,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Rem",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/int::Rem"
@@ -288,6 +291,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -407,6 +411,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Add",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/int::Add"
@@ -482,6 +487,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "standard",
               "identity": "std/list::Reducible"

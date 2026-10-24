@@ -488,6 +488,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -637,6 +638,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/string::Add"
@@ -688,6 +690,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -929,6 +932,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -1038,6 +1042,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/string::Add"
@@ -1122,6 +1127,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"

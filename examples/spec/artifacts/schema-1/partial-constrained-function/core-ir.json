@@ -200,6 +200,7 @@
             {
               "constraint": {
                 "name": "Ready",
+                "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
                 "arguments": [
                   {
                     "kind": "named",
@@ -247,6 +248,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -471,6 +473,7 @@
                   {
                     "constraint": {
                       "name": "Ready",
+                      "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
                       "arguments": [
                         {
                           "kind": "named",

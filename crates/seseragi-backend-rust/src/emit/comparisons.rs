@@ -148,6 +148,9 @@ impl Backend<'_> {
         scope: &Scope,
     ) -> Result<bool> {
         if instance.supertrait_count == 0 {
+            if instance.identity.starts_with("std/prelude::Ord<") {
+                return Err("Rust backend: missing canonical Ord parent evidence".into());
+            }
             return Ok(false);
         }
         let Some(parent) = instance.constraints.first() else {

@@ -1244,6 +1244,7 @@ pub(crate) fn type_known_application_with_explicit(
                     context.resolution,
                 );
                 evidence.push(crate::TypedCallEvidence {
+                    trait_identity: None,
                     constraint: crate::TypedConstraint {
                         name: "ForeignCodec".into(),
                         arguments: vec![value.clone()],

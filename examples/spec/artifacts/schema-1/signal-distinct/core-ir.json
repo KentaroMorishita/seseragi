@@ -251,6 +251,7 @@
                   {
                     "constraint": {
                       "name": "Rem",
+                      "traitIdentity": "std/prelude::Rem",
                       "arguments": [
                         {
                           "kind": "named",
@@ -330,6 +331,7 @@
                   {
                     "constraint": {
                       "name": "Rem",
+                      "traitIdentity": "std/prelude::Rem",
                       "arguments": [
                         {
                           "kind": "named",
@@ -369,6 +371,7 @@
                 {
                   "constraint": {
                     "name": "Eq",
+                    "traitIdentity": "std/prelude::Eq",
                     "arguments": [
                       {
                         "kind": "named",
@@ -782,6 +785,7 @@
                 {
                   "constraint": {
                     "name": "Eq",
+                    "traitIdentity": "std/prelude::Eq",
                     "arguments": [
                       {
                         "kind": "named",
@@ -889,6 +893,7 @@
                             {
                               "constraint": {
                                 "name": "Add",
+                                "traitIdentity": "std/prelude::Add",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2118,6 +2123,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",
@@ -2180,6 +2186,7 @@
                   "evidence": {
                     "constraint": {
                       "name": "Show",
+                      "traitIdentity": "std/prelude::Show",
                       "arguments": [
                         {
                           "kind": "named",

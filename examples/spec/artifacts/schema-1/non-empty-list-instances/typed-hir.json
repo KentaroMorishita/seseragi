@@ -1190,6 +1190,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/int::Add"
@@ -1419,6 +1420,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -1522,6 +1524,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Mul",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/int::Mul"
@@ -1993,6 +1996,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Applicative",
             "evidence": {
               "kind": "standard",
               "identity": "std/non-empty-list::Applicative"
@@ -2374,6 +2378,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/non-empty-list::Ord",
@@ -2396,6 +2401,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Ord",
                     "evidence": {
                       "kind": "local",
                       "identity": "std/prelude::Ord<artifact/non-empty-list-instances::Rank>",
@@ -2411,6 +2417,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Eq",
                           "evidence": {
                             "kind": "local",
                             "identity": "std/prelude::Eq<artifact/non-empty-list-instances::Rank>"
@@ -2750,6 +2757,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/non-empty-list::Show",
@@ -2772,6 +2780,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -2997,6 +3006,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Show",
@@ -3019,6 +3029,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -3139,6 +3150,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Debug",
@@ -3161,6 +3173,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Debug",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Debug<std/prelude::Int>"
@@ -3288,6 +3301,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Hash",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/non-empty-list::Hash",
@@ -3310,6 +3324,7 @@
                                       }
                                     ]
                                   },
+                                  "traitIdentity": "std/prelude::Hash",
                                   "evidence": {
                                     "kind": "standard",
                                     "identity": "std/int::Hash"
@@ -3391,6 +3406,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Hash",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/non-empty-list::Hash",
@@ -3413,6 +3429,7 @@
                                       }
                                     ]
                                   },
+                                  "traitIdentity": "std/prelude::Hash",
                                   "evidence": {
                                     "kind": "standard",
                                     "identity": "std/int::Hash"
@@ -3448,6 +3465,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Eq",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/int::Eq"
@@ -3477,6 +3495,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Bool>"
@@ -3737,6 +3756,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Eq",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/non-empty-list::Eq",
@@ -3759,6 +3779,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "std/prelude::Eq",
                                 "evidence": {
                                   "kind": "standard",
                                   "identity": "std/int::Eq"
@@ -3791,6 +3812,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Bool>"
@@ -4218,6 +4240,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/list::Show",
@@ -4240,6 +4263,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -4413,6 +4437,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -4601,6 +4626,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/list::Show",
@@ -4623,6 +4649,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -4774,6 +4801,7 @@
                                       }
                                     ]
                                   },
+                                  "traitIdentity": "std/prelude::Add",
                                   "evidence": {
                                     "kind": "standard",
                                     "identity": "std/int::Add"
@@ -4979,6 +5007,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -5173,6 +5202,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Semigroup",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/non-empty-list::Semigroup"
@@ -5220,6 +5250,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Show",
@@ -5242,6 +5273,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -5378,6 +5410,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "std/prelude::Mul",
                                 "evidence": {
                                   "kind": "standard",
                                   "identity": "std/int::Mul"
@@ -5460,6 +5493,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Functor",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/non-empty-list::Functor"
@@ -5507,6 +5541,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Show",
@@ -5529,6 +5564,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -5649,6 +5685,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Show",
@@ -5671,6 +5708,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -5911,6 +5949,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Monad",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/non-empty-list::Monad"
@@ -5958,6 +5997,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/non-empty-list::Show",
@@ -5980,6 +6020,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -6147,6 +6188,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Mul",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/int::Mul"
@@ -6198,6 +6240,7 @@
                                       }
                                     ]
                                   },
+                                  "traitIdentity": "std/prelude::Add",
                                   "evidence": {
                                     "kind": "standard",
                                     "identity": "std/int::Add"
@@ -6317,6 +6360,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Reducible",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/non-empty-list::Reducible"
@@ -6346,6 +6390,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -6491,6 +6536,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "std/prelude::Show",
                                 "evidence": {
                                   "kind": "standard",
                                   "identity": "Show<std/prelude::Int>"
@@ -6663,6 +6709,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/non-empty-list::Iterable"

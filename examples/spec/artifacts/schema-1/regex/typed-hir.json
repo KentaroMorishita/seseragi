@@ -528,6 +528,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Eq",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -651,6 +652,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "parameter",
                 "index": 0
@@ -826,6 +828,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -995,6 +998,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/regex::RegexCompileError>"
@@ -1259,6 +1263,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/regex::RegexCompileError>"
@@ -1515,6 +1520,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/maybe::Show",
@@ -1539,6 +1545,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/regex::RegexMatch>"
@@ -1747,6 +1754,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/maybe::Show",
@@ -1771,6 +1779,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/regex::RegexMatch>"
@@ -1979,6 +1988,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/maybe::Show",
@@ -2003,6 +2013,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/regex::RegexMatch>"
@@ -2197,6 +2208,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -2388,6 +2400,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -2579,6 +2592,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -2769,6 +2783,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Show",
                           "evidence": {
                             "kind": "standard",
                             "identity": "Show<std/prelude::Bool>"
@@ -2843,6 +2858,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Show",
                           "evidence": {
                             "kind": "standard",
                             "identity": "Show<std/prelude::Bool>"
@@ -3050,6 +3066,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/array::Show",
@@ -3074,6 +3091,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/regex::RegexMatch>"
@@ -3280,6 +3298,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/array::Show",
@@ -3302,6 +3321,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Show",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Show<std/prelude::String>"
@@ -3689,6 +3709,7 @@
                                     }
                                   ]
                                 },
+                                "traitIdentity": "std/prelude::Show",
                                 "evidence": {
                                   "kind": "standard",
                                   "identity": "Show<std/prelude::String>"
@@ -3933,6 +3954,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -4045,6 +4067,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Add",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/string::Add"
@@ -4096,6 +4119,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Add",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/string::Add"
@@ -4345,6 +4369,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -4647,6 +4672,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -4949,6 +4975,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -5269,6 +5296,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/regex::RegexOptions>"
@@ -5328,6 +5356,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5387,6 +5416,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5446,6 +5476,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5505,6 +5536,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5550,6 +5582,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5595,6 +5628,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5654,6 +5688,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5713,6 +5748,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5772,6 +5808,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5817,6 +5854,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5876,6 +5914,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5935,6 +5974,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -5994,6 +6034,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -6053,6 +6094,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -6112,6 +6154,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -6214,6 +6257,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -6295,6 +6339,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Eq<std/regex::RegexCompileErrorKind>"
@@ -6322,6 +6367,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Bool>"
@@ -6375,6 +6421,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Debug",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Debug<std/regex::RegexCompileErrorKind>"
@@ -6402,6 +6449,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::String>"
@@ -6480,6 +6528,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Ord",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Ord<std/regex::RegexSpan>"
@@ -6507,6 +6556,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Bool>"
@@ -6849,6 +6899,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Iterable",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Iterable"

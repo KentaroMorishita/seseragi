@@ -156,6 +156,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-instance-dispatch::domain::trait(Ready)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/imported-instance-dispatch::domain::trait(Ready)<fixture/imported-instance-dispatch::domain::Badge>",

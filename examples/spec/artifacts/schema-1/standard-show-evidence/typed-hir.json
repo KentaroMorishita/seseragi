@@ -205,6 +205,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -420,6 +421,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/standard-show-evidence::trait(Render)",
             "evidence": {
               "kind": "local",
               "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
@@ -442,6 +444,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::String>"

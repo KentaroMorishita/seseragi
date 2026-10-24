@@ -176,6 +176,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Add",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::Add"
@@ -370,6 +371,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "local",
               "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>"
@@ -499,6 +501,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "local",
                       "identity": "std/prelude::Add<artifact/user-add-operator::Score,std/prelude::Int,artifact/user-add-operator::Score>"
@@ -574,6 +577,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Reducible",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Reducible"

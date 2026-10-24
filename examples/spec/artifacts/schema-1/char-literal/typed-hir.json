@@ -903,6 +903,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/tuple::Show",
@@ -935,6 +936,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Char>"
@@ -951,6 +953,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Char>"
@@ -1023,6 +1026,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/array::Show",
@@ -1057,6 +1061,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/maybe::Show",
@@ -1079,6 +1084,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Show",
                           "evidence": {
                             "kind": "standard",
                             "identity": "Show<std/prelude::Char>"
@@ -1130,6 +1136,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::Char>"

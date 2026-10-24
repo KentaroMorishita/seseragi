@@ -295,6 +295,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Eq",
                       "evidence": {
                         "kind": "parameter",
                         "index": 0
@@ -509,6 +510,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Ord",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -629,6 +631,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -716,6 +719,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -803,6 +807,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -890,6 +895,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -977,6 +983,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/char::Ord"
@@ -1079,6 +1086,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "local",
                     "identity": "std/prelude::Ord<artifact/strict-comparison-arguments::Mark>",
@@ -1094,6 +1102,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Eq",
                         "evidence": {
                           "kind": "local",
                           "identity": "std/prelude::Eq<artifact/strict-comparison-arguments::Mark>"
@@ -1184,6 +1193,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Ord",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Ord"
@@ -2193,6 +2203,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -2375,6 +2386,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Show",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Show",
@@ -2397,6 +2409,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Bool>"

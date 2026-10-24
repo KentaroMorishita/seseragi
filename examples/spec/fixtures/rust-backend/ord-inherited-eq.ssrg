@@ -1,0 +1,34 @@
+type Mark = | Mark Int
+
+instance Eq<Mark> {
+  fn eq left: Mark -> (Mark -> Bool) = {
+    let first = match left { Mark value -> value }
+    \right -> first == match right { Mark value -> value }
+  }
+}
+
+instance Ord<Mark> {
+  fn compare left: Mark -> right: Mark -> Ordering = Equal
+}
+
+fn equal<A> left: A -> right: A -> Bool where Eq<A> = left == right
+
+fn selected<A> left: A -> (A -> Bool) where Ord<A> = {
+  let op: A -> A -> Bool = (==)
+  op left
+}
+
+fn probe<A> left: A -> right: A -> Array<Bool> where Ord<A> = {
+  let op: A -> A -> Bool = (==)
+  let held = op left
+  let forwarded = selected left
+  [left == right, held right, equal left right, forwarded right, left != right]
+}
+
+pub effect fn main = do {
+  println (show (probe 42 42))
+  println (show (probe 40 41))
+  println (show (probe '雫' '🙂'))
+  println (show (probe (Mark 1) (Mark 1)))
+  println (show (probe (Mark 1) (Mark 2)))
+}

@@ -250,6 +250,7 @@
           {
             "constraint": {
               "name": "Render",
+              "traitIdentity": "artifact/user-instance-dictionary::trait(Render)",
               "arguments": [
                 {
                   "kind": "named",

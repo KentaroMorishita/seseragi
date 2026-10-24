@@ -538,6 +538,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(StyleRecord)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::StyleRecord<Record>"
@@ -781,6 +782,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/web/html::trait(StyleRecord)",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/web/html::StyleRecord<Record>"
@@ -871,6 +873,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1011,6 +1014,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/web/html::trait(StyleRecord)",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/web/html::StyleRecord<Record>"
@@ -1101,6 +1105,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1234,6 +1239,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"
@@ -1472,6 +1478,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1652,6 +1659,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"

@@ -109,6 +109,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -527,6 +528,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
                     "evidence": {
                       "kind": "imported",
                       "identity": "fixture/imported-higher-order-functor::domain::trait(Functor)<std/prelude::Maybe>",

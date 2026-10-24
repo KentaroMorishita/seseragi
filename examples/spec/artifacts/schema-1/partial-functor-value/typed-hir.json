@@ -451,6 +451,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -920,6 +921,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "artifact/partial-functor-value::trait(Functor)",
                         "evidence": {
                           "kind": "local",
                           "identity": "artifact/partial-functor-value::trait(Functor)<std/prelude::Maybe>"

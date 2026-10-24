@@ -230,6 +230,7 @@
                   }
                 ]
               },
+              "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
               "evidence": {
                 "kind": "parameter",
                 "index": 0
@@ -285,6 +286,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Add"
@@ -481,6 +483,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
                     "evidence": {
                       "kind": "local",
                       "identity": "artifact/partial-constrained-function::trait(Ready)<artifact/partial-constrained-function::Badge>"

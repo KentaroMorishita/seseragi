@@ -145,6 +145,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Add",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Add"
@@ -314,6 +315,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Applicative",
             "evidence": {
               "kind": "standard",
               "identity": "std/effect::Applicative"
@@ -517,6 +519,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Applicative",
             "evidence": {
               "kind": "standard",
               "identity": "std/effect::Applicative"
@@ -749,6 +752,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -789,6 +793,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Applicative",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/effect::Applicative"
@@ -1031,6 +1036,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Functor",
             "evidence": {
               "kind": "standard",
               "identity": "std/effect::Functor"
@@ -1255,6 +1261,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Applicative",
             "evidence": {
               "kind": "standard",
               "identity": "std/effect::Applicative"
@@ -1479,6 +1486,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monad",
             "evidence": {
               "kind": "standard",
               "identity": "std/effect::Monad"
@@ -1590,6 +1598,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::String>"
@@ -1635,6 +1644,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "standard",
                 "identity": "Show<std/prelude::Int>"

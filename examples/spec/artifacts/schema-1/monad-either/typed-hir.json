@@ -231,6 +231,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -266,6 +267,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Applicative",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/either::Applicative"
@@ -314,6 +316,7 @@
               }
             ]
           },
+          "traitIdentity": "std/prelude::Monad",
           "evidence": {
             "kind": "standard",
             "identity": "std/either::Monad"
@@ -560,6 +563,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Add",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::Add"
@@ -595,6 +599,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Applicative",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/either::Applicative"
@@ -674,6 +679,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Monad",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/either::Monad"
@@ -753,6 +759,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Monad",
             "evidence": {
               "kind": "standard",
               "identity": "std/either::Monad"
@@ -945,6 +952,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"

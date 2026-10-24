@@ -106,6 +106,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -206,6 +207,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Mul",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Mul"

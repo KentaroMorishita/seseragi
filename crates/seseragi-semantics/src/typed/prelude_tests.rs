@@ -306,8 +306,9 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
             if name == "+"
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                     constraint: crate::TypedConstraint { name, .. },
+                    trait_identity: Some(trait_identity),
                     evidence: TypedInstanceEvidence::Standard { identity, .. },
-                }] if name == "Add" && identity == "std/int::Add")
+                }] if trait_identity == "std/prelude::Add" && name == "Add" && identity == "std/int::Add")
     ));
 }
 
@@ -859,8 +860,9 @@ fn selects_standard_power_evidence_for_an_operator_function_value() {
             if name == "**"
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                     constraint: crate::TypedConstraint { name, .. },
+                    trait_identity: Some(trait_identity),
                     evidence: TypedInstanceEvidence::Standard { identity, .. },
-                }] if name == "Pow" && identity == "std/int::Pow")
+                }] if trait_identity == "std/prelude::Pow" && name == "Pow" && identity == "std/int::Pow")
     ));
 }
 

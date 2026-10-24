@@ -425,6 +425,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -544,6 +545,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -1389,6 +1391,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "external-named",
@@ -1519,6 +1522,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1753,6 +1757,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "external-named",
@@ -2121,6 +2126,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "external-named",
@@ -2533,6 +2539,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "external-named",

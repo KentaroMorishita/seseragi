@@ -451,6 +451,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -588,6 +589,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
             "evidence": {
               "kind": "parameter",
               "index": 0

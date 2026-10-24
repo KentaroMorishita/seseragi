@@ -196,6 +196,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",

@@ -374,6 +374,7 @@
                   {
                     "constraint": {
                       "name": "Functor",
+                      "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
                       "arguments": [
                         {
                           "kind": "named",

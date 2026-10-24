@@ -371,6 +371,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
@@ -393,6 +394,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonEncode",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -418,6 +420,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
@@ -440,6 +443,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonEncode",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -563,6 +567,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
@@ -585,6 +590,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonDecode",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -610,6 +616,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
@@ -632,6 +639,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonDecode",
                         "evidence": {
                           "kind": "parameter",
                           "index": 0
@@ -713,6 +721,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonEncode"
@@ -729,6 +738,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::JsonEncode"
@@ -807,6 +817,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonDecode"
@@ -823,6 +834,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::JsonDecode"
@@ -1239,6 +1251,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::JsonDecode",
             "evidence": {
               "kind": "local",
               "identity": "JsonDecode<artifact/derived-json-codecs::Profile<$0>>",
@@ -1261,6 +1274,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonDecode"
@@ -1385,6 +1399,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::JsonDecode",
             "evidence": {
               "kind": "local",
               "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
@@ -1407,6 +1422,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonDecode",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::JsonDecode"
@@ -1519,6 +1535,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::JsonDecode",
             "evidence": {
               "kind": "local",
               "identity": "JsonDecode<artifact/derived-json-codecs::Event>"
@@ -1786,6 +1803,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
@@ -1808,6 +1826,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonEncode",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::JsonEncode"
@@ -2083,6 +2102,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
@@ -2105,6 +2125,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::JsonEncode",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::JsonEncode"
@@ -2344,6 +2365,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::JsonEncode",
                   "evidence": {
                     "kind": "local",
                     "identity": "JsonEncode<artifact/derived-json-codecs::Event>"
@@ -2544,6 +2566,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::JsonEncode",
                       "evidence": {
                         "kind": "local",
                         "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
@@ -2566,6 +2589,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::JsonEncode",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::JsonEncode"
@@ -2736,6 +2760,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::JsonEncode",
                       "evidence": {
                         "kind": "local",
                         "identity": "JsonEncode<artifact/derived-json-codecs::UserId>"
@@ -3094,6 +3119,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::JsonEncode",
                       "evidence": {
                         "kind": "local",
                         "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
@@ -3116,6 +3142,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::JsonEncode",
                             "evidence": {
                               "kind": "standard",
                               "identity": "std/int::JsonEncode"
@@ -3346,6 +3373,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::JsonEncode",
                       "evidence": {
                         "kind": "local",
                         "identity": "JsonEncode<artifact/derived-json-codecs::Event>"

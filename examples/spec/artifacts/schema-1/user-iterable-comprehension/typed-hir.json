@@ -609,6 +609,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Reducible",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/range::Reducible"
@@ -800,6 +801,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Ord"
@@ -887,6 +889,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Add",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/int::Add"
@@ -1155,6 +1158,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Mul",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Mul"
@@ -1217,6 +1221,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "local",
                 "identity": "std/prelude::Iterable<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"
@@ -1283,6 +1288,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Rem",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/int::Rem"
@@ -1324,6 +1330,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -1459,6 +1466,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Add"
@@ -1606,6 +1614,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Reducible",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -1710,6 +1719,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/int::Add"
@@ -1800,6 +1810,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Reducible",
                 "evidence": {
                   "kind": "standard",
                   "identity": "std/array::Reducible"
@@ -1851,6 +1862,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "std/prelude::Reducible",
                 "evidence": {
                   "kind": "local",
                   "identity": "std/prelude::Reducible<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
@@ -1871,6 +1883,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Iterable",
                       "evidence": {
                         "kind": "local",
                         "identity": "std/prelude::Iterable<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>"

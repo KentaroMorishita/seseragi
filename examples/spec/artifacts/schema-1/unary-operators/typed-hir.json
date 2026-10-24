@@ -82,6 +82,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"
@@ -1817,6 +1818,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Sub",
             "evidence": {
               "kind": "standard",
               "identity": "std/int::Sub"
@@ -2056,6 +2058,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Debug<std/prelude::Int>"
@@ -2158,6 +2161,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"
@@ -2260,6 +2264,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "artifact/unary-operators::trait(Render)",
                       "evidence": {
                         "kind": "local",
                         "identity": "artifact/unary-operators::trait(Render)<std/prelude::Int>"
@@ -2362,6 +2367,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Float>"
@@ -2464,6 +2470,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Debug<std/prelude::Bool>"
@@ -2566,6 +2573,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Debug<std/prelude::Int>"
@@ -2720,6 +2728,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/array::Debug",
@@ -2742,6 +2751,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Debug",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Debug<std/prelude::Int>"
@@ -2874,6 +2884,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/prelude::Int>"

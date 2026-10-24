@@ -127,6 +127,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Show",
@@ -149,6 +150,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "imported",
                     "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
@@ -254,6 +256,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "std/maybe::Debug",
@@ -276,6 +279,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "imported",
                     "identity": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
@@ -381,6 +385,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
             "evidence": {
               "kind": "imported",
               "identity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
@@ -410,6 +415,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/array::Show",
@@ -432,6 +438,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "imported",
                           "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",

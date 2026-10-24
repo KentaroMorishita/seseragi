@@ -171,6 +171,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -408,6 +409,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/method-constraint-dispatch::trait(Render)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/method-constraint-dispatch::trait(Render)<artifact/method-constraint-dispatch::Badge>"
@@ -424,6 +426,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/method-constraint-dispatch::trait(Labeled)<artifact/method-constraint-dispatch::Badge>"

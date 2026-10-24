@@ -220,6 +220,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
             "evidence": {
               "kind": "parameter",
               "index": 0
@@ -346,6 +347,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/constrained-function-dispatch::trait(Ready)<artifact/constrained-function-dispatch::Badge>"

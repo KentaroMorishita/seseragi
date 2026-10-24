@@ -436,6 +436,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -554,6 +555,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1400,6 +1402,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<Html>"
@@ -1532,6 +1535,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"
@@ -1718,6 +1722,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/web/html::HtmlBuildError>"
@@ -2061,6 +2066,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/web/html::HtmlBuildError>"
@@ -2449,6 +2455,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/web/html::HtmlBuildError>"

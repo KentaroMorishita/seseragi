@@ -433,6 +433,7 @@ fn match_derived_display(
                 stack,
             )?;
             Some(TypedCallEvidence {
+                trait_identity: Some(format!("std/prelude::{}", required.name)),
                 constraint: required,
                 evidence,
             })
@@ -537,6 +538,7 @@ fn match_instance(
             stack,
         )?;
         evidence_arguments.push(TypedCallEvidence {
+            trait_identity: Some(required.trait_identity),
             constraint: required.constraint,
             evidence,
         });
@@ -561,6 +563,7 @@ fn match_instance(
             stack,
         )?;
         evidence_arguments.push(TypedCallEvidence {
+            trait_identity: Some(required_trait),
             constraint,
             evidence,
         });

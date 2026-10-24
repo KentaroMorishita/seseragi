@@ -787,6 +787,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -3199,6 +3200,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/web/html::trait(IntoChildren)",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/web/html::IntoChildren<String>"
@@ -3296,6 +3298,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<Html>"
@@ -4329,6 +4332,7 @@
                                         }
                                       ]
                                     },
+                                    "traitIdentity": "std/prelude::Eq",
                                     "evidence": {
                                       "kind": "standard",
                                       "identity": "std/string::Eq"
@@ -4425,6 +4429,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -4549,6 +4554,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"

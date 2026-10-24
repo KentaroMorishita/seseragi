@@ -3350,6 +3350,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Eq",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/string::Eq"
@@ -3718,6 +3719,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Ord"
@@ -4116,6 +4118,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
                     "evidence": {
                       "kind": "local",
                       "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
@@ -4144,6 +4147,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                           "evidence": {
                             "kind": "local",
                             "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
@@ -4259,6 +4263,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
                 "evidence": {
                   "kind": "local",
                   "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
@@ -4287,6 +4292,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                       "evidence": {
                         "kind": "local",
                         "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",
@@ -4394,6 +4400,7 @@
                 }
               ]
             },
+            "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
             "evidence": {
               "kind": "local",
               "identity": "artifact/applicative-validation::trait(Applicative)<artifact/applicative-validation::Validation<$0,_>>",
@@ -4422,6 +4429,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                   "evidence": {
                     "kind": "local",
                     "identity": "artifact/applicative-validation::trait(Functor)<artifact/applicative-validation::Validation<$0,_>>",

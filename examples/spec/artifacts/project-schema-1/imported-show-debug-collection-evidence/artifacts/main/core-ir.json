@@ -122,6 +122,7 @@
           {
             "constraint": {
               "name": "Show",
+              "traitIdentity": "std/prelude::Show",
               "arguments": [
                 {
                   "kind": "named",
@@ -150,6 +151,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",
@@ -257,6 +259,7 @@
           {
             "constraint": {
               "name": "Debug",
+              "traitIdentity": "std/prelude::Debug",
               "arguments": [
                 {
                   "kind": "named",
@@ -285,6 +288,7 @@
                 {
                   "constraint": {
                     "name": "Debug",
+                    "traitIdentity": "std/prelude::Debug",
                     "arguments": [
                       {
                         "kind": "named",
@@ -392,6 +396,7 @@
           {
             "constraint": {
               "name": "Render",
+              "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
               "arguments": [
                 {
                   "kind": "named",
@@ -421,6 +426,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",
@@ -449,6 +455,7 @@
                       {
                         "constraint": {
                           "name": "Show",
+                          "traitIdentity": "std/prelude::Show",
                           "arguments": [
                             {
                               "kind": "named",

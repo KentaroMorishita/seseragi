@@ -84,6 +84,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Show",
             "evidence": {
               "kind": "standard",
               "identity": "std/range::Show",
@@ -106,6 +107,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"
@@ -210,6 +212,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "std/range::Debug",
@@ -232,6 +235,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Debug<std/prelude::Int>"
@@ -354,6 +358,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Debug",
             "evidence": {
               "kind": "standard",
               "identity": "std/array::Debug",
@@ -388,6 +393,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/range::Debug",
@@ -410,6 +416,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Debug",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Debug<std/prelude::Int>"
@@ -586,6 +593,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/range::Show",
@@ -608,6 +616,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -738,6 +747,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Debug",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/range::Debug",
@@ -760,6 +770,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Debug",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Debug<std/prelude::Int>"
@@ -890,6 +901,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/range::Show",
@@ -912,6 +924,7 @@
                                 }
                               ]
                             },
+                            "traitIdentity": "std/prelude::Show",
                             "evidence": {
                               "kind": "standard",
                               "identity": "Show<std/prelude::Int>"
@@ -1118,6 +1131,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Debug",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/array::Debug",
@@ -1152,6 +1166,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Debug",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/range::Debug",
@@ -1174,6 +1189,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Debug",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "Debug<std/prelude::Int>"

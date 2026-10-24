@@ -475,6 +475,7 @@
           {
             "constraint": {
               "name": "StyleRecord",
+              "traitIdentity": "std/web/html::trait(StyleRecord)",
               "arguments": [
                 {
                   "kind": "record",
@@ -758,6 +759,7 @@
           {
             "constraint": {
               "name": "StyleRecord",
+              "traitIdentity": "std/web/html::trait(StyleRecord)",
               "arguments": [
                 {
                   "kind": "record",
@@ -980,6 +982,7 @@
           {
             "constraint": {
               "name": "StyleRecord",
+              "traitIdentity": "std/web/html::trait(StyleRecord)",
               "arguments": [
                 {
                   "kind": "record",
@@ -1977,6 +1980,7 @@
           {
             "constraint": {
               "name": "StyleRecord",
+              "traitIdentity": "std/web/html::trait(StyleRecord)",
               "arguments": [
                 {
                   "kind": "record",
@@ -2306,6 +2310,7 @@
           {
             "constraint": {
               "name": "StyleRecord",
+              "traitIdentity": "std/web/html::trait(StyleRecord)",
               "arguments": [
                 {
                   "kind": "record",
@@ -2535,6 +2540,7 @@
                 {
                   "constraint": {
                     "name": "StyleRecord",
+                    "traitIdentity": "std/web/html::trait(StyleRecord)",
                     "arguments": [
                       {
                         "kind": "record",
@@ -2674,6 +2680,7 @@
                 {
                   "constraint": {
                     "name": "StyleRecord",
+                    "traitIdentity": "std/web/html::trait(StyleRecord)",
                     "arguments": [
                       {
                         "kind": "record",
@@ -2802,6 +2809,7 @@
                 {
                   "constraint": {
                     "name": "StyleRecord",
+                    "traitIdentity": "std/web/html::trait(StyleRecord)",
                     "arguments": [
                       {
                         "kind": "record",
@@ -3132,6 +3140,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",
@@ -3453,6 +3462,7 @@
                                                     {
                                                       "constraint": {
                                                         "name": "IntoChildren",
+                                                        "traitIdentity": "std/web/html::trait(IntoChildren)",
                                                         "arguments": [
                                                           {
                                                             "kind": "named",
@@ -3567,6 +3577,7 @@
                                                     {
                                                       "constraint": {
                                                         "name": "IntoChildren",
+                                                        "traitIdentity": "std/web/html::trait(IntoChildren)",
                                                         "arguments": [
                                                           {
                                                             "kind": "named",
@@ -3682,6 +3693,7 @@
                                       {
                                         "constraint": {
                                           "name": "IntoChildren",
+                                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -3830,6 +3842,7 @@
                                       {
                                         "constraint": {
                                           "name": "IntoChildren",
+                                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -3965,6 +3978,7 @@
                                       {
                                         "constraint": {
                                           "name": "IntoChildren",
+                                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -4136,6 +4150,7 @@
                                                 {
                                                   "constraint": {
                                                     "name": "IntoChildren",
+                                                    "traitIdentity": "std/web/html::trait(IntoChildren)",
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
@@ -4221,6 +4236,7 @@
                                       {
                                         "constraint": {
                                           "name": "IntoChildren",
+                                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                                           "arguments": [
                                             {
                                               "kind": "external-named",
@@ -4539,6 +4555,7 @@
                                       {
                                         "constraint": {
                                           "name": "IntoChildren",
+                                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -4676,6 +4693,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4805,6 +4823,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",

@@ -369,6 +369,7 @@
           {
             "constraint": {
               "name": "Eq",
+              "traitIdentity": "std/prelude::Eq",
               "arguments": [
                 {
                   "kind": "named",
@@ -495,6 +496,7 @@
           {
             "constraint": {
               "name": "Eq",
+              "traitIdentity": "std/prelude::Eq",
               "arguments": [
                 {
                   "kind": "named",
@@ -869,6 +871,7 @@
                       {
                         "constraint": {
                           "name": "Eq",
+                          "traitIdentity": "std/prelude::Eq",
                           "arguments": [
                             {
                               "kind": "named",

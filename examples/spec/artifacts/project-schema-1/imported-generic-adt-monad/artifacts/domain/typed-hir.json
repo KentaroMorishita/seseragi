@@ -1544,6 +1544,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
             "evidence": {
               "kind": "parameter",
               "index": 0

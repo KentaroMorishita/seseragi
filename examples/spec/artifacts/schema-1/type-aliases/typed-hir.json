@@ -1177,6 +1177,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Add"
@@ -1519,6 +1520,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -1624,6 +1626,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<String>"
@@ -2811,6 +2814,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Int>"
@@ -2856,6 +2860,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Int>"

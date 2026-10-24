@@ -92,6 +92,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Rem",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Rem"
@@ -159,6 +160,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Rem",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Rem"
@@ -454,6 +456,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Int>"
@@ -646,6 +649,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/range::Iterable"

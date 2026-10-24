@@ -970,6 +970,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Iterable",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/array::Iterable"

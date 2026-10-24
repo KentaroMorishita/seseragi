@@ -268,6 +268,7 @@
                         {
                           "constraint": {
                             "name": "Add",
+                            "traitIdentity": "std/prelude::Add",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -316,6 +317,7 @@
                       {
                         "constraint": {
                           "name": "Add",
+                          "traitIdentity": "std/prelude::Add",
                           "arguments": [
                             {
                               "kind": "named",
@@ -570,6 +572,7 @@
                       {
                         "constraint": {
                           "name": "Add",
+                          "traitIdentity": "std/prelude::Add",
                           "arguments": [
                             {
                               "kind": "named",
@@ -722,6 +725,7 @@
           {
             "constraint": {
               "name": "Reducible",
+              "traitIdentity": "std/prelude::Reducible",
               "arguments": [
                 {
                   "kind": "named",
@@ -743,6 +747,7 @@
           {
             "constraint": {
               "name": "Monoid",
+              "traitIdentity": "std/prelude::Monoid",
               "arguments": [
                 {
                   "kind": "named",
@@ -1405,6 +1410,7 @@
                             {
                               "constraint": {
                                 "name": "Reducible",
+                                "traitIdentity": "std/prelude::Reducible",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -1444,6 +1450,7 @@
                             {
                               "constraint": {
                                 "name": "Monoid",
+                                "traitIdentity": "std/prelude::Monoid",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -1472,6 +1479,7 @@
                                   {
                                     "constraint": {
                                       "name": "Zero",
+                                      "traitIdentity": "std/prelude::Zero",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -1488,6 +1496,7 @@
                                   {
                                     "constraint": {
                                       "name": "Add",
+                                      "traitIdentity": "std/prelude::Add",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -1592,6 +1601,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -1907,6 +1917,7 @@
                             {
                               "constraint": {
                                 "name": "Reducible",
+                                "traitIdentity": "std/prelude::Reducible",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -1946,6 +1957,7 @@
                             {
                               "constraint": {
                                 "name": "Monoid",
+                                "traitIdentity": "std/prelude::Monoid",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -1974,6 +1986,7 @@
                                   {
                                     "constraint": {
                                       "name": "One",
+                                      "traitIdentity": "std/prelude::One",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -1990,6 +2003,7 @@
                                   {
                                     "constraint": {
                                       "name": "Mul",
+                                      "traitIdentity": "std/prelude::Mul",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -2094,6 +2108,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2308,6 +2323,7 @@
                             {
                               "constraint": {
                                 "name": "Reducible",
+                                "traitIdentity": "std/prelude::Reducible",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2347,6 +2363,7 @@
                             {
                               "constraint": {
                                 "name": "Monoid",
+                                "traitIdentity": "std/prelude::Monoid",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2375,6 +2392,7 @@
                                   {
                                     "constraint": {
                                       "name": "Zero",
+                                      "traitIdentity": "std/prelude::Zero",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -2391,6 +2409,7 @@
                                   {
                                     "constraint": {
                                       "name": "Add",
+                                      "traitIdentity": "std/prelude::Add",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -2495,6 +2514,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -2605,6 +2625,7 @@
                             {
                               "constraint": {
                                 "name": "Reducible",
+                                "traitIdentity": "std/prelude::Reducible",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2644,6 +2665,7 @@
                             {
                               "constraint": {
                                 "name": "Monoid",
+                                "traitIdentity": "std/prelude::Monoid",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -2672,6 +2694,7 @@
                                   {
                                     "constraint": {
                                       "name": "One",
+                                      "traitIdentity": "std/prelude::One",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -2688,6 +2711,7 @@
                                   {
                                     "constraint": {
                                       "name": "Mul",
+                                      "traitIdentity": "std/prelude::Mul",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -2792,6 +2816,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3061,6 +3086,7 @@
                     {
                       "constraint": {
                         "name": "Reducible",
+                        "traitIdentity": "std/prelude::Reducible",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3100,6 +3126,7 @@
                     {
                       "constraint": {
                         "name": "Monoid",
+                        "traitIdentity": "std/prelude::Monoid",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3128,6 +3155,7 @@
                           {
                             "constraint": {
                               "name": "Zero",
+                              "traitIdentity": "std/prelude::Zero",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -3144,6 +3172,7 @@
                           {
                             "constraint": {
                               "name": "Add",
+                              "traitIdentity": "std/prelude::Add",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -3316,6 +3345,7 @@
                     {
                       "constraint": {
                         "name": "Show",
+                        "traitIdentity": "std/prelude::Show",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3585,6 +3615,7 @@
                     {
                       "constraint": {
                         "name": "Reducible",
+                        "traitIdentity": "std/prelude::Reducible",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3624,6 +3655,7 @@
                     {
                       "constraint": {
                         "name": "Monoid",
+                        "traitIdentity": "std/prelude::Monoid",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3652,6 +3684,7 @@
                           {
                             "constraint": {
                               "name": "One",
+                              "traitIdentity": "std/prelude::One",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -3668,6 +3701,7 @@
                           {
                             "constraint": {
                               "name": "Mul",
+                              "traitIdentity": "std/prelude::Mul",
                               "arguments": [
                                 {
                                   "kind": "named",
@@ -3944,6 +3978,7 @@
                 {
                   "constraint": {
                     "name": "Semigroup",
+                    "traitIdentity": "std/prelude::Semigroup",
                     "arguments": [
                       {
                         "kind": "named",
@@ -3972,6 +4007,7 @@
                       {
                         "constraint": {
                           "name": "Add",
+                          "traitIdentity": "std/prelude::Add",
                           "arguments": [
                             {
                               "kind": "named",
@@ -4227,6 +4263,7 @@
                 {
                   "constraint": {
                     "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
                     "arguments": [
                       {
                         "kind": "named",

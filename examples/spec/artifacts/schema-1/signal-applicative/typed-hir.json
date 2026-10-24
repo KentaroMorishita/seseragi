@@ -706,6 +706,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Mul",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::Mul"
@@ -774,6 +775,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Functor",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/signal::Functor"
@@ -907,6 +909,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::Add"
@@ -1115,6 +1118,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Applicative",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/signal::Applicative"
@@ -1703,6 +1707,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "standard",
                       "identity": "Show<std/prelude::Int>"

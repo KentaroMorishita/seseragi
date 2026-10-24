@@ -2910,6 +2910,7 @@
             {
               "constraint": {
                 "name": "Eq",
+                "traitIdentity": "std/prelude::Eq",
                 "arguments": [
                   {
                     "kind": "named",
@@ -3282,6 +3283,7 @@
             {
               "constraint": {
                 "name": "Ord",
+                "traitIdentity": "std/prelude::Ord",
                 "arguments": [
                   {
                     "kind": "named",
@@ -3686,6 +3688,7 @@
                   {
                     "constraint": {
                       "name": "Applicative",
+                      "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
                       "arguments": [
                         {
                           "kind": "named",
@@ -3714,6 +3717,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3832,6 +3836,7 @@
               {
                 "constraint": {
                   "name": "Applicative",
+                  "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
                   "arguments": [
                     {
                       "kind": "named",
@@ -3860,6 +3865,7 @@
                     {
                       "constraint": {
                         "name": "Functor",
+                        "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3970,6 +3976,7 @@
           {
             "constraint": {
               "name": "Applicative",
+              "traitIdentity": "artifact/applicative-validation::trait(Applicative)",
               "arguments": [
                 {
                   "kind": "named",
@@ -3998,6 +4005,7 @@
                 {
                   "constraint": {
                     "name": "Functor",
+                    "traitIdentity": "artifact/applicative-validation::trait(Functor)",
                     "arguments": [
                       {
                         "kind": "named",

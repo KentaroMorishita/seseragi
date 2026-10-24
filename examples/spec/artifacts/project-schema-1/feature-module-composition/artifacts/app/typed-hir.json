@@ -1479,6 +1479,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1593,6 +1594,7 @@
                                           }
                                         ]
                                       },
+                                      "traitIdentity": "std/prelude::Show",
                                       "evidence": {
                                         "kind": "standard",
                                         "identity": "Show<std/prelude::String>"
@@ -1674,6 +1676,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/web/html::trait(IntoChildren)",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/web/html::IntoChildren<String>"
@@ -1870,6 +1873,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"
@@ -2410,6 +2414,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/web/html::trait(IntoChildren)",
             "evidence": {
               "kind": "standard",
               "identity": "std/web/html::IntoChildren<Array>"
@@ -3701,6 +3706,7 @@
                                   }
                                 ]
                               },
+                              "traitIdentity": "std/prelude::Functor",
                               "evidence": {
                                 "kind": "standard",
                                 "identity": "std/signal::Functor"
@@ -3901,6 +3907,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Applicative",
                           "evidence": {
                             "kind": "standard",
                             "identity": "std/signal::Applicative"
@@ -4070,6 +4077,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Applicative",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/signal::Applicative"
@@ -4208,6 +4216,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Applicative",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/signal::Applicative"

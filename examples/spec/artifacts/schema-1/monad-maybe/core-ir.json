@@ -1491,6 +1491,7 @@
           {
             "constraint": {
               "name": "Monad",
+              "traitIdentity": "artifact/monad-maybe::trait(Monad)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1686,6 +1687,7 @@
               {
                 "constraint": {
                   "name": "Applicative",
+                  "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                   "arguments": [
                     {
                       "kind": "named",
@@ -1726,6 +1728,7 @@
           {
             "constraint": {
               "name": "Monad",
+              "traitIdentity": "artifact/monad-maybe::trait(Monad)",
               "arguments": [
                 {
                   "kind": "named",
@@ -1834,6 +1837,7 @@
               {
                 "constraint": {
                   "name": "Add",
+                  "traitIdentity": "std/prelude::Add",
                   "arguments": [
                     {
                       "kind": "named",
@@ -1987,6 +1991,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -2093,6 +2098,7 @@
             {
               "constraint": {
                 "name": "Ord",
+                "traitIdentity": "std/prelude::Ord",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2422,6 +2428,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",
@@ -2487,6 +2494,7 @@
             {
               "constraint": {
                 "name": "Applicative",
+                "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                 "arguments": [
                   {
                     "kind": "named",
@@ -2502,6 +2510,7 @@
                   {
                     "constraint": {
                       "name": "Functor",
+                      "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                       "arguments": [
                         {
                           "kind": "named",
@@ -2543,6 +2552,7 @@
         "evidence": {
           "constraint": {
             "name": "Monad",
+            "traitIdentity": "artifact/monad-maybe::trait(Monad)",
             "arguments": [
               {
                 "kind": "named",
@@ -2558,6 +2568,7 @@
               {
                 "constraint": {
                   "name": "Applicative",
+                  "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                   "arguments": [
                     {
                       "kind": "named",
@@ -2573,6 +2584,7 @@
                     {
                       "constraint": {
                         "name": "Functor",
+                        "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                         "arguments": [
                           {
                             "kind": "named",
@@ -3026,6 +3038,7 @@
                         {
                           "constraint": {
                             "name": "Functor",
+                            "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3297,6 +3310,7 @@
                         {
                           "constraint": {
                             "name": "Applicative",
+                            "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -3312,6 +3326,7 @@
                               {
                                 "constraint": {
                                   "name": "Functor",
+                                  "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3465,6 +3480,7 @@
                               {
                                 "constraint": {
                                   "name": "Monad",
+                                  "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -3480,6 +3496,7 @@
                                     {
                                       "constraint": {
                                         "name": "Applicative",
+                                        "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                         "arguments": [
                                           {
                                             "kind": "named",
@@ -3495,6 +3512,7 @@
                                           {
                                             "constraint": {
                                               "name": "Functor",
+                                              "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                               "arguments": [
                                                 {
                                                   "kind": "named",
@@ -3642,6 +3660,7 @@
                                 {
                                   "constraint": {
                                     "name": "Monad",
+                                    "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                                     "arguments": [
                                       {
                                         "kind": "named",
@@ -3657,6 +3676,7 @@
                                       {
                                         "constraint": {
                                           "name": "Applicative",
+                                          "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -3672,6 +3692,7 @@
                                             {
                                               "constraint": {
                                                 "name": "Functor",
+                                                "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                                 "arguments": [
                                                   {
                                                     "kind": "named",
@@ -4074,6 +4095,7 @@
                         {
                           "constraint": {
                             "name": "Monad",
+                            "traitIdentity": "artifact/monad-maybe::trait(Monad)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -4089,6 +4111,7 @@
                               {
                                 "constraint": {
                                   "name": "Applicative",
+                                  "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
                                   "arguments": [
                                     {
                                       "kind": "named",
@@ -4104,6 +4127,7 @@
                                     {
                                       "constraint": {
                                         "name": "Functor",
+                                        "traitIdentity": "artifact/monad-maybe::trait(Functor)",
                                         "arguments": [
                                           {
                                             "kind": "named",

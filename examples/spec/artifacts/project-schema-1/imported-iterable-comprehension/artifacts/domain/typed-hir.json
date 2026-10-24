@@ -609,6 +609,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Reducible",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/range::Reducible"
@@ -800,6 +801,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Ord",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/int::Ord"
@@ -887,6 +889,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Add",
                       "evidence": {
                         "kind": "standard",
                         "identity": "std/int::Add"

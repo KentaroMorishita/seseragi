@@ -93,6 +93,7 @@
           {
             "constraint": {
               "name": "Add",
+              "traitIdentity": "std/prelude::Add",
               "arguments": [
                 {
                   "kind": "named",
@@ -191,6 +192,7 @@
           {
             "constraint": {
               "name": "Mul",
+              "traitIdentity": "std/prelude::Mul",
               "arguments": [
                 {
                   "kind": "named",

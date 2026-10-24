@@ -186,6 +186,7 @@
           {
             "constraint": {
               "name": "Ready",
+              "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
               "arguments": [
                 {
                   "kind": "named",
@@ -326,6 +327,7 @@
               {
                 "constraint": {
                   "name": "Ready",
+                  "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
                   "arguments": [
                     {
                       "kind": "named",

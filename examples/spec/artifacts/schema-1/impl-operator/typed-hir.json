@@ -153,6 +153,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/int::Add"
@@ -321,6 +322,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Eq",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/int::Eq"
@@ -478,6 +480,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "local",
               "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>"
@@ -592,6 +595,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Eq",
               "evidence": {
                 "kind": "local",
                 "identity": "std/prelude::Eq<artifact/impl-operator::Score>"
@@ -697,6 +701,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "standard",
                         "identity": "Show<std/prelude::Int>"

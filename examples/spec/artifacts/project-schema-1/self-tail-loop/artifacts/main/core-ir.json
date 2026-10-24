@@ -84,6 +84,7 @@
             {
               "constraint": {
                 "name": "Ord",
+                "traitIdentity": "std/prelude::Ord",
                 "arguments": [
                   {
                     "kind": "named",
@@ -157,6 +158,7 @@
                 {
                   "constraint": {
                     "name": "Sub",
+                    "traitIdentity": "std/prelude::Sub",
                     "arguments": [
                       {
                         "kind": "named",
@@ -227,6 +229,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",
@@ -368,6 +371,7 @@
           {
             "constraint": {
               "name": "Eq",
+              "traitIdentity": "std/prelude::Eq",
               "arguments": [
                 {
                   "kind": "named",

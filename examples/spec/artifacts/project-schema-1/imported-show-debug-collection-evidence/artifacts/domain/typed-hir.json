@@ -563,6 +563,7 @@
                 }
               ]
             },
+            "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
             "evidence": {
               "kind": "parameter",
               "index": 0

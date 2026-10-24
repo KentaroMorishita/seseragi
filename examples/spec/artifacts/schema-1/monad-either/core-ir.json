@@ -228,6 +228,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",
@@ -268,6 +269,7 @@
             {
               "constraint": {
                 "name": "Applicative",
+                "traitIdentity": "std/prelude::Applicative",
                 "arguments": [
                   {
                     "kind": "named",
@@ -317,6 +319,7 @@
         "evidence": {
           "constraint": {
             "name": "Monad",
+            "traitIdentity": "std/prelude::Monad",
             "arguments": [
               {
                 "kind": "named",
@@ -539,6 +542,7 @@
                 {
                   "constraint": {
                     "name": "Monad",
+                    "traitIdentity": "std/prelude::Monad",
                     "arguments": [
                       {
                         "kind": "named",
@@ -809,6 +813,7 @@
                             {
                               "constraint": {
                                 "name": "Monad",
+                                "traitIdentity": "std/prelude::Monad",
                                 "arguments": [
                                   {
                                     "kind": "named",
@@ -1042,6 +1047,7 @@
                                       {
                                         "constraint": {
                                           "name": "Add",
+                                          "traitIdentity": "std/prelude::Add",
                                           "arguments": [
                                             {
                                               "kind": "named",
@@ -1082,6 +1088,7 @@
                                   {
                                     "constraint": {
                                       "name": "Applicative",
+                                      "traitIdentity": "std/prelude::Applicative",
                                       "arguments": [
                                         {
                                           "kind": "named",
@@ -1850,6 +1857,7 @@
                 {
                   "constraint": {
                     "name": "Add",
+                    "traitIdentity": "std/prelude::Add",
                     "arguments": [
                       {
                         "kind": "named",

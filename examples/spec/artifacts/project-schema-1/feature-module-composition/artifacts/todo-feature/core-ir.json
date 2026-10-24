@@ -722,6 +722,7 @@
                   {
                     "constraint": {
                       "name": "Eq",
+                      "traitIdentity": "std/prelude::Eq",
                       "arguments": [
                         {
                           "kind": "named",
@@ -1917,6 +1918,7 @@
               {
                 "constraint": {
                   "name": "Reducible",
+                  "traitIdentity": "std/prelude::Reducible",
                   "arguments": [
                     {
                       "kind": "named",
@@ -2354,6 +2356,7 @@
                         {
                           "constraint": {
                             "name": "IntoChildren",
+                            "traitIdentity": "std/web/html::trait(IntoChildren)",
                             "arguments": [
                               {
                                 "kind": "named",
@@ -2525,6 +2528,7 @@
           {
             "constraint": {
               "name": "IntoChildren",
+              "traitIdentity": "std/web/html::trait(IntoChildren)",
               "arguments": [
                 {
                   "kind": "named",

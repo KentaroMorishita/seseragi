@@ -184,6 +184,7 @@
                               }
                             ]
                           },
+                          "traitIdentity": "std/prelude::Show",
                           "evidence": {
                             "kind": "parameter",
                             "index": 0
@@ -226,6 +227,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Add",
                         "evidence": {
                           "kind": "standard",
                           "identity": "std/string::Add"
@@ -390,6 +392,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "parameter",
                       "index": 0
@@ -445,6 +448,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -577,6 +581,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "std/prelude::Show",
                       "evidence": {
                         "kind": "parameter",
                         "index": 0
@@ -632,6 +637,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Add",
                     "evidence": {
                       "kind": "standard",
                       "identity": "std/string::Add"
@@ -966,6 +972,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Show",
               "evidence": {
                 "kind": "parameter",
                 "index": 0
@@ -1021,6 +1028,7 @@
                 }
               ]
             },
+            "traitIdentity": "std/prelude::Add",
             "evidence": {
               "kind": "standard",
               "identity": "std/string::Add"
@@ -1186,6 +1194,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "parameter",
                       "index": 0
@@ -1241,6 +1250,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -1328,6 +1338,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "parameter",
                     "index": 0
@@ -1446,6 +1457,7 @@
                   }
                 ]
               },
+              "traitIdentity": "std/prelude::Add",
               "evidence": {
                 "kind": "standard",
                 "identity": "std/string::Add"
@@ -1624,6 +1636,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/maybe::Show",
@@ -1646,6 +1659,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -1767,6 +1781,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "parameter",
                       "index": 0
@@ -1822,6 +1837,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Add",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/string::Add"
@@ -1961,6 +1977,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "local",
                     "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
@@ -1983,6 +2000,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Char>"
@@ -2122,6 +2140,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
                   "evidence": {
                     "kind": "local",
                     "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>"
@@ -2144,6 +2163,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "std/array::Show",
@@ -2166,6 +2186,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Bool>"
@@ -2384,6 +2405,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "artifact/strict-partial-arguments::trait(Render)",
                   "evidence": {
                     "kind": "local",
                     "identity": "artifact/strict-partial-arguments::trait(Render)<artifact/strict-partial-arguments::Token>"
@@ -2406,6 +2428,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "local",
                     "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
@@ -2428,6 +2451,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -2603,6 +2627,7 @@
                         }
                       ]
                     },
+                    "traitIdentity": "std/prelude::Show",
                     "evidence": {
                       "kind": "parameter",
                       "index": 0
@@ -2968,6 +2993,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "local",
                     "identity": "std/prelude::Show<artifact/strict-partial-arguments::Box<$0>>",
@@ -2990,6 +3016,7 @@
                             }
                           ]
                         },
+                        "traitIdentity": "std/prelude::Show",
                         "evidence": {
                           "kind": "standard",
                           "identity": "Show<std/prelude::Int>"
@@ -3039,6 +3066,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Int>"
@@ -3085,6 +3113,7 @@
                       }
                     ]
                   },
+                  "traitIdentity": "std/prelude::Show",
                   "evidence": {
                     "kind": "standard",
                     "identity": "Show<std/prelude::Char>"

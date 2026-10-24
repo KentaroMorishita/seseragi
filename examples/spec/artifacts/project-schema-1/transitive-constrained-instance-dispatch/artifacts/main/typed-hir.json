@@ -196,6 +196,7 @@
                     }
                   ]
                 },
+                "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
                 "evidence": {
                   "kind": "imported",
                   "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)<std/prelude::Maybe<$0>>",
@@ -219,6 +220,7 @@
                           }
                         ]
                       },
+                      "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
                       "evidence": {
                         "kind": "imported",
                         "identity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)<std/prelude::Int>",
