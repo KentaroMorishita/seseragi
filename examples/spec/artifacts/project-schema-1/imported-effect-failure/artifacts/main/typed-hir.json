@@ -282,7 +282,20 @@
               "arguments": []
             }
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "type": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "origin": {
+                "start": 193,
+                "end": 195
+              }
+            }
+          ],
           "origin": {
             "start": 185,
             "end": 195

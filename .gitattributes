@@ -15,3 +15,6 @@ examples/spec/fixtures/rust-backend/deferred-* text eol=lf
 
 # The Effect WASM package lock pins manifest, source and bridge bytes.
 examples/spec/fixtures/rust-backend-projects/program-wasm-effect-package/** text eol=lf
+
+# Program stdout fixtures are byte-exact oracles, including line endings.
+*.stdout -text

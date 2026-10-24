@@ -63,7 +63,20 @@
               "arguments": []
             }
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "type": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "origin": {
+                "start": 44,
+                "end": 46
+              }
+            }
+          ],
           "origin": {
             "start": 36,
             "end": 46

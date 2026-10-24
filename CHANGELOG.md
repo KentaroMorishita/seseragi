@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.88] - 2026-10-24
+
+### Fixed
+
+- Preserve literal Unit as a checked succeed argument through Typed HIR and CoreIr. Native `succeed ()` now matches stored Unit values, including nominal and scoped Unit shadows, while retaining source arity, canonical result types, cold replay and resource finalizers. Keep the same Unit value in the existing providerless program-WASM Effect ABI.
+
 ## [0.61.87] - 2026-10-24
 
 ### Added

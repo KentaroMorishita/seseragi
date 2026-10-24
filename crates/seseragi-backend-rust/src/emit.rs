@@ -755,6 +755,7 @@ impl Backend<'_> {
             CoreExpr::EffectOperation {
                 operation,
                 arguments,
+                success,
                 ..
             } => {
                 if let Some(value) = self.die_operation(expr, scope)? {
@@ -768,6 +769,19 @@ impl Backend<'_> {
                 };
                 if arguments.len() != arity {
                     return Err(format!("Rust backend: native operation arity {operation}").into());
+                }
+                if matches!(operation.as_str(), "effect.succeed" | "std/effect::succeed")
+                    && matches!(arguments.as_slice(), [CoreExpr::Unit { .. }])
+                    && self.local_canonical_type(success, scope)?
+                        != (CoreType::Named {
+                            name: "std/prelude::Unit".into(),
+                            arguments: vec![],
+                        })
+                {
+                    return Err(
+                        "Rust backend: literal Unit success requires its canonical result type"
+                            .into(),
+                    );
                 }
                 self.require_operation(operation);
                 check_console_argument(operation, arguments)?;

@@ -210,7 +210,20 @@
               "arguments": []
             }
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "type": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "origin": {
+                "start": 91,
+                "end": 93
+              }
+            }
+          ],
           "origin": {
             "start": 83,
             "end": 93

@@ -1,0 +1,18 @@
+import * as effects from "std/effect"
+
+pub effect fn value _input: String -> Unit = succeed ()
+
+pub effect fn scoped input: String -> String = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed input) (\_resource: String -> succeed ())
+  succeed input
+}
+
+effect fn release _resource: String -> Unit = do {
+  succeed ()
+  effects.die "released"
+}
+
+pub effect fn releaseCheck input: String -> String = effects.scoped $ do {
+  effects.acquireRelease (effects.succeed input) release
+  succeed input
+}

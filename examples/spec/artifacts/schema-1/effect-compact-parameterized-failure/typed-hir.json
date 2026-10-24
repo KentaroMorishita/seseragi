@@ -350,7 +350,20 @@
             "arguments": []
           }
         },
-        "arguments": [],
+        "arguments": [
+          {
+            "kind": "unit",
+            "type": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            },
+            "origin": {
+              "start": 201,
+              "end": 203
+            }
+          }
+        ],
         "origin": {
           "start": 193,
           "end": 203
@@ -1597,7 +1610,20 @@
                   "arguments": []
                 }
               },
-              "arguments": [],
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 595,
+                    "end": 597
+                  }
+                }
+              ],
               "origin": {
                 "start": 587,
                 "end": 597

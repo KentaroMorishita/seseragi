@@ -179,7 +179,16 @@
           "name": "Unit",
           "arguments": []
         },
-        "arguments": [],
+        "arguments": [
+          {
+            "kind": "unit",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 168,
+              "end": 170
+            }
+          }
+        ],
         "origin": {
           "source": "main.ssrg",
           "start": 160,
@@ -350,7 +359,16 @@
             "name": "Unit",
             "arguments": []
           },
-          "arguments": [],
+          "arguments": [
+            {
+              "kind": "unit",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 270,
+                "end": 272
+              }
+            }
+          ],
           "origin": {
             "source": "main.ssrg",
             "start": 262,
