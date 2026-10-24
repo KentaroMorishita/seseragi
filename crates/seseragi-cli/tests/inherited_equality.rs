@@ -319,17 +319,21 @@ fn inherited_ord_eq_matches_raw_strict_profiles_and_native_stages() {
                 .with_profile(value),
             )
             .unwrap();
-            fs::write(destination.join("raw.ts"), raw.generated.typescript).unwrap();
+            // An adjacent proof-only tsconfig can affect Bun's normal bundle
+            // resolution, so keep the raw strict output in its own directory.
+            let raw_directory = scratch.0.join(format!("{name}-raw-{profile}"));
+            fs::create_dir(&raw_directory).unwrap();
+            fs::write(raw_directory.join("raw.ts"), raw.generated.typescript).unwrap();
             let config = serde_json::json!({"compilerOptions":{"strict":true,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","types":["bun","node"],"typeRoots":[root.join("node_modules/@types")],"baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]},"lib":["ES2022","DOM"],"allowImportingTsExtensions":true,"skipLibCheck":false},"files":["raw.ts"]});
             fs::write(
-                destination.join("tsconfig.json"),
+                raw_directory.join("tsconfig.json"),
                 serde_json::to_vec(&config).unwrap(),
             )
             .unwrap();
             let strict = Command::new(&engines[1])
                 .arg(root.join("node_modules/typescript/bin/tsc"))
                 .arg("--project")
-                .arg(destination.join("tsconfig.json"))
+                .arg(raw_directory.join("tsconfig.json"))
                 .output()
                 .unwrap();
             assert!(
