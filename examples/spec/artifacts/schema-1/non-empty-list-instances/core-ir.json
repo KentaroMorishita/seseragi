@@ -821,6 +821,66 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "nonEmpty.NonEmptyList",
+            "canonical": "std/non-empty-list::NonEmptyList",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "nonEmpty.NonEmptyList",
@@ -984,6 +1044,66 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "nonEmpty.NonEmptyList",
+            "canonical": "std/non-empty-list::NonEmptyList",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "nonEmpty.NonEmptyList",
@@ -1274,6 +1394,90 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "nonEmpty.NonEmptyList",
+            "canonical": "std/non-empty-list::NonEmptyList",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "nonEmpty.NonEmptyList",
@@ -1384,6 +1588,66 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "nonEmpty.NonEmptyList",
+            "canonical": "std/non-empty-list::NonEmptyList",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "nonEmpty.NonEmptyList",
@@ -1666,6 +1930,66 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "external-named",
+            "name": "nonEmpty.NonEmptyList",
+            "canonical": "std/non-empty-list::NonEmptyList",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Rank",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Rank",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Rank",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "external-named",
           "name": "nonEmpty.NonEmptyList",
@@ -2072,6 +2396,62 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "nonEmpty.NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Maybe",
@@ -3054,6 +3434,66 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "List",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "result": {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "List",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "type": {
                           "kind": "external-named",
                           "name": "nonEmpty.NonEmptyList",
@@ -3474,6 +3914,57 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "List",
@@ -3634,6 +4125,51 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -3757,6 +4293,57 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "List",
@@ -4055,6 +4642,93 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "result": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "nonEmpty.NonEmptyList",
+                            "canonical": "std/non-empty-list::NonEmptyList",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -4191,6 +4865,44 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "external-named",
                             "name": "nonEmpty.NonEmptyList",
@@ -4861,6 +5573,66 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "result": {
+                              "kind": "external-named",
+                              "name": "nonEmpty.NonEmptyList",
+                              "canonical": "std/non-empty-list::NonEmptyList",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "external-named",
                             "name": "nonEmpty.NonEmptyList",

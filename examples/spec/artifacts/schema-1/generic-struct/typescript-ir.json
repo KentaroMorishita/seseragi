@@ -288,7 +288,17 @@
                         "kind": "identifier",
                         "name": "inferred"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
                     ]
+                  }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "number"
                   }
                 ]
               }

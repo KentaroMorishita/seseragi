@@ -354,6 +354,7 @@ fn eager_global_cycles_are_rejected_while_direct_defer_cycles_are_admitted() {
     let wait = function(&mut module, "wait");
     wait.body = CoreExpr::EffectInvoke {
         callee: wait.symbol.clone(),
+        callee_signature: None,
         requirements: requirements(),
         failure: named("Never"),
         success: named("Unit"),

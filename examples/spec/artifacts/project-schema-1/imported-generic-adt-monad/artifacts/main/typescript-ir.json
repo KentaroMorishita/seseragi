@@ -168,6 +168,11 @@
               }
             ]
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {
@@ -330,6 +335,11 @@
                   "name": "second"
                 }
               ]
+            }
+          ],
+          "typeArguments": [
+            {
+              "kind": "number"
             }
           ]
         }
@@ -753,6 +763,13 @@
                 }
               ]
             }
+          ],
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            }
           ]
         }
       },
@@ -956,6 +973,13 @@
                       ]
                     }
                   ]
+                }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Profile",
+                  "arguments": []
                 }
               ]
             },
@@ -1253,6 +1277,13 @@
                         }
                       ]
                     }
+                  ],
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Profile",
+                      "arguments": []
+                    }
                   ]
                 }
               ]
@@ -1538,6 +1569,11 @@
                                 "kind": "number",
                                 "value": "41"
                               }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "number"
+                              }
                             ]
                           },
                           {
@@ -1597,6 +1633,11 @@
                               "kind": "number",
                               "value": "20"
                             }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "number"
+                            }
                           ]
                         },
                         {
@@ -1606,6 +1647,11 @@
                             {
                               "kind": "number",
                               "value": "22"
+                            }
+                          ],
+                          "typeArguments": [
+                            {
+                              "kind": "number"
                             }
                           ]
                         }
@@ -1651,6 +1697,13 @@
                               ]
                             }
                           ]
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Profile",
+                          "arguments": []
                         }
                       ]
                     }

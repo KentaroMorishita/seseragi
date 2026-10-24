@@ -218,6 +218,11 @@
                           "kind": "number",
                           "value": "41"
                         }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
                       ]
                     },
                     {

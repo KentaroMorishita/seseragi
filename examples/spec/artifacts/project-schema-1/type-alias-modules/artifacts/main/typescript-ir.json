@@ -145,6 +145,11 @@
                         "kind": "string",
                         "value": "Imported alias"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "string"
+                      }
                     ]
                   }
                 ]

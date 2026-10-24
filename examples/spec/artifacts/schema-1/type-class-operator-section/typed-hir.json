@@ -220,6 +220,43 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Maybe",
@@ -354,6 +391,43 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "A"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
             "type": {
               "kind": "named",
               "name": "Maybe",
@@ -468,6 +542,43 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "A"
+              ],
+              "parameters": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "result": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "argumentTypes": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
             "type": {
               "kind": "named",
               "name": "Maybe",
@@ -1476,6 +1587,59 @@
                                 }
                               }
                             ],
+                            "calleeSignature": {
+                              "typeParameters": [
+                                "A"
+                              ],
+                              "parameters": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ],
+                              "result": {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "argumentTypes": [
+                                {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                }
+                              ],
+                              "instantiatedTypeArguments": [
+                                {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            },
                             "type": {
                               "kind": "named",
                               "name": "Maybe",
@@ -1592,6 +1756,43 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "type": {
                           "kind": "named",
                           "name": "Maybe",

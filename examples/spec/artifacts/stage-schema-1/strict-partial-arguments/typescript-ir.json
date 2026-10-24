@@ -1003,6 +1003,11 @@
                                 "kind": "string",
                                 "value": "λ"
                               }
+                            ],
+                            "typeArguments": [
+                              {
+                                "kind": "string"
+                              }
                             ]
                           }
                         ]
@@ -1235,6 +1240,11 @@
                         "kind": "number",
                         "value": "2"
                       }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
                     ]
                   },
                   {
@@ -1420,6 +1430,11 @@
                       {
                         "kind": "number",
                         "value": "42"
+                      }
+                    ],
+                    "typeArguments": [
+                      {
+                        "kind": "number"
                       }
                     ]
                   },

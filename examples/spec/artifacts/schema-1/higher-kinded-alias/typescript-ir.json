@@ -285,6 +285,11 @@
             "kind": "number",
             "value": "42"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
         ]
       },
       "origin": {

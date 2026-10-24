@@ -223,6 +223,63 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Maybe",
@@ -382,6 +439,71 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Maybe",
@@ -440,6 +562,71 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Iterator",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Maybe",
@@ -842,6 +1029,71 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -900,6 +1152,71 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Iterator",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Iterator",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Maybe",
@@ -1473,6 +1790,107 @@
                     }
                   }
                 ],
+                "calleeSignature": {
+                  "typeParameters": [
+                    "S",
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "S",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "S",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "named",
+                      "name": "S",
+                      "arguments": []
+                    }
+                  ],
+                  "result": {
+                    "kind": "named",
+                    "name": "Iterator",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "argumentTypes": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
                 "type": {
                   "kind": "named",
                   "name": "Iterator",

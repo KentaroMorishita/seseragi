@@ -22,14 +22,14 @@ const wrapMaybe = <A,>(value: A) => _ssrg_maybe_Just(value)
 const wrapEither = <A,>(value: A) => _ssrg_either_Right(value)
 const wrapArray = <A,>(value: A) => [value]
 const wrapList = <A,>(value: A) => _ssrg_list_from_array([value])
-const wrapPacket = <A,>(value: A) => Packet(value)
+const wrapPacket = <A,>(value: A) => Packet<A>(value)
 const wrapBox = <A,>(value: A) => (({ "value": value } as const) as unknown as Box<A>)
 export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_maybeDebug<number>(_ssrg_debug_intDebug)["debug"](success)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_maybeDebug<number>(_ssrg_debug_intDebug)["debug"](stopped)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_maybeDebug<number>(_ssrg_debug_intDebug)["debug"](wrapped)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_eitherDebug<string, number>(_ssrg_debug_stringDebug, _ssrg_debug_intDebug)["debug"](eitherValue)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug)["debug"](arrayValue)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((_ssrg_debug_listDebug<number>(_ssrg_debug_intDebug)["debug"](listValue)) as string)), () => _ssrg_effect_flatMap(_ssrg_console_println(((__ssrg$instance$Debug$0<number>(_ssrg_debug_intDebug)["debug"](packetValue)) as string)), () => _ssrg_console_println(((__ssrg$instance$Debug$1<number>(_ssrg_debug_intDebug)["debug"](boxValue)) as string)))))))))
 const success: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number } = addMaybe(_ssrg_maybe_Just(20))(_ssrg_maybe_Just(22));
 const stopped: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number } = addMaybe(_ssrg_maybe_Just(20))(_ssrg_maybe_Nothing);
-const wrapped: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number } = wrapMaybe(42);
-const eitherValue: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number } = wrapEither(42);
-const arrayValue: ReadonlyArray<number> = wrapArray(42);
-const listValue: List<number> = wrapList(42);
-const packetValue: Packet<number> = wrapPacket(42);
-const boxValue: Box<number> = wrapBox(42);
+const wrapped: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number } = wrapMaybe<number>(42);
+const eitherValue: { readonly tag: "Left"; readonly value: string } | { readonly tag: "Right"; readonly value: number } = wrapEither<number>(42);
+const arrayValue: ReadonlyArray<number> = wrapArray<number>(42);
+const listValue: List<number> = wrapList<number>(42);
+const packetValue: Packet<number> = wrapPacket<number>(42);
+const boxValue: Box<number> = wrapBox<number>(42);

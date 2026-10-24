@@ -107,6 +107,13 @@
             "kind": "identifier",
             "name": "value"
           }
+        ],
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
         ]
       },
       "origin": {

@@ -258,6 +258,44 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "external-named",
+                      "name": "ReduceStep",
+                      "canonical": "std/collection::ReduceStep",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "external-named",
                     "name": "ReduceStep",
@@ -351,6 +389,44 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "external-named",
+                      "name": "ReduceStep",
+                      "canonical": "std/collection::ReduceStep",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "external-named",
                     "name": "ReduceStep",
@@ -881,6 +957,55 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "external-named",
+              "name": "effects.LoopControl",
+              "canonical": "std/effect::LoopControl",
+              "arguments": []
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "external-named",
+              "name": "effects.LoopControl",
+              "canonical": "std/effect::LoopControl",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Effect",

@@ -5291,6 +5291,197 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "State",
+            "Action"
+          ],
+          "parameters": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "target",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "initial",
+                  "type": {
+                    "kind": "named",
+                    "name": "State",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "update",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "State",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "State",
+                        "arguments": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "view",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "State",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "dom",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Dom",
+                      "canonical": "std/web/dom::Dom",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "argumentTypes": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "initial",
+                  "type": {
+                    "kind": "named",
+                    "name": "Mode",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "target",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "update",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "view",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Mode",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Mode",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Effect",

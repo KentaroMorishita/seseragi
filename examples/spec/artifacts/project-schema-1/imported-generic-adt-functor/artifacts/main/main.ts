@@ -6,4 +6,4 @@ $ssrg$assertUnicodeVersion("17.0.0")
 
 const increment = (value: number) => _ssrg_int_add(value, 1)
 const render = (value: Box<number>) => (($ssrg_match: Box<number>): string => $ssrg_match.tag === "Boxed" && $ssrg_match.value === 42 ? "Imported Box Functor: 42" : "Imported Box Functor: another value")(value)
-export const main = (_unit: undefined) => _ssrg_console_println(render(((transform(increment)(Boxed(41))(__ssrg$instance$Functor$0)) as Box<number>)))
+export const main = (_unit: undefined) => _ssrg_console_println(render(((transform(increment)(Boxed<number>(41))(__ssrg$instance$Functor$0)) as Box<number>)))

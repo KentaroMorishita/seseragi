@@ -82,6 +82,11 @@
                 {
                   "kind": "undefined"
                 }
+              ],
+              "typeArguments": [
+                {
+                  "kind": "number"
+                }
               ]
             },
             "origin": {

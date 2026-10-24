@@ -126,6 +126,11 @@
                       }
                     ]
                   }
+                ],
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
                 ]
               },
               "elseBranch": {

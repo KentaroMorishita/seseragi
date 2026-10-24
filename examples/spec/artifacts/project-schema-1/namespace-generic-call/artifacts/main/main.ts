@@ -5,4 +5,4 @@ $ssrg$assertUnicodeVersion("17.0.0")
 export const keep = (value: domain$member$Hand) => value
 export const choose = (value: string) => (($ssrg_match: string): domain$member$Hand => $ssrg_match === "paper" ? domain$member$Paper : $ssrg_match === "scissors" ? domain$member$Scissors : domain$member$Rock)(value)
 export const render = (hand: domain$member$Hand) => (($ssrg_match: domain$member$Hand): string => $ssrg_match.tag === "Rock" ? "rock" : $ssrg_match.tag === "Paper" ? "paper" : "scissors")(hand)
-export const run = (value: string) => domain$member$identity(render(domain$member$identity(choose(value))))
+export const run = (value: string) => domain$member$identity<string>(render(domain$member$identity<domain$member$Hand>(choose(value))))

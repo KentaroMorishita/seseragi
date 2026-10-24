@@ -12,6 +12,7 @@
     "http-client.method-type",
     "core.bytes.type",
     "http-client.response-type",
+    "http-client.service-type",
     "http-client.body-limit-type",
     "core.adt",
     "core.show.dictionary",
@@ -143,6 +144,10 @@
     {
       "feature": "http-client.response-type",
       "local": "Response"
+    },
+    {
+      "feature": "http-client.service-type",
+      "local": "HttpClient"
     },
     {
       "feature": "http-client.body-limit-type",

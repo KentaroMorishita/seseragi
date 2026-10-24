@@ -195,6 +195,60 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "MutableSignal",
+                      "canonical": "std/signal::MutableSignal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
@@ -264,6 +318,60 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "MutableSignal",
+                      "canonical": "std/signal::MutableSignal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
@@ -389,6 +497,90 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A",
+                  "B"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -719,6 +911,60 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -1016,6 +1262,120 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Subscription",
+                      "canonical": "std/signal::Subscription",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",

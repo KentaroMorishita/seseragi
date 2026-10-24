@@ -528,6 +528,134 @@
             "value": {
               "kind": "effect-invoke",
               "callee": "std/effect::mapError",
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "E",
+                  "F",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "http.HttpBuildError",
+                        "canonical": "std/http::HttpBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "HttpUrl",
+                        "canonical": "std/http::HttpUrl",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "http.HttpBuildError",
+                    "canonical": "std/http::HttpBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "HttpUrl",
+                    "canonical": "std/http::HttpUrl",
+                    "arguments": []
+                  }
+                ]
+              },
               "requirements": {
                 "kind": "record",
                 "closed": true,
@@ -571,6 +699,85 @@
                 {
                   "kind": "effect-invoke",
                   "callee": "std/effect::fromEither",
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "E",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "http.HttpBuildError",
+                            "canonical": "std/http::HttpBuildError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "HttpUrl",
+                            "canonical": "std/http::HttpUrl",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "http.HttpBuildError",
+                        "canonical": "std/http::HttpBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "HttpUrl",
+                        "canonical": "std/http::HttpUrl",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "requirements": {
                     "kind": "record",
                     "closed": true,
@@ -664,6 +871,134 @@
             "value": {
               "kind": "effect-invoke",
               "callee": "std/effect::mapError",
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "E",
+                  "F",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "http.HttpBuildError",
+                        "canonical": "std/http::HttpBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Request",
+                        "canonical": "std/http::Request",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "http.HttpBuildError",
+                    "canonical": "std/http::HttpBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Request",
+                    "canonical": "std/http::Request",
+                    "arguments": []
+                  }
+                ]
+              },
               "requirements": {
                 "kind": "record",
                 "closed": true,
@@ -707,6 +1042,85 @@
                 {
                   "kind": "effect-invoke",
                   "callee": "std/effect::fromEither",
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "E",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "http.HttpBuildError",
+                            "canonical": "std/http::HttpBuildError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "Request",
+                            "canonical": "std/http::Request",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "http.HttpBuildError",
+                        "canonical": "std/http::HttpBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Request",
+                        "canonical": "std/http::Request",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "requirements": {
                     "kind": "record",
                     "closed": true,
@@ -851,6 +1265,134 @@
             "value": {
               "kind": "effect-invoke",
               "callee": "std/effect::mapError",
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "E",
+                  "F",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "bytes.ByteError",
+                      "canonical": "std/bytes::ByteError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "bytes.ByteError",
+                        "canonical": "std/bytes::ByteError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "bytes.ByteError",
+                    "canonical": "std/bytes::ByteError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "arguments": []
+                  }
+                ]
+              },
               "requirements": {
                 "kind": "record",
                 "closed": true,
@@ -894,6 +1436,85 @@
                 {
                   "kind": "effect-invoke",
                   "callee": "std/effect::fromEither",
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "E",
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "bytes.ByteError",
+                            "canonical": "std/bytes::ByteError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "Bytes",
+                            "canonical": "std/bytes::Bytes",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "bytes.ByteError",
+                        "canonical": "std/bytes::ByteError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "requirements": {
                     "kind": "record",
                     "closed": true,
@@ -1066,6 +1687,154 @@
             "value": {
               "kind": "effect-invoke",
               "callee": "std/effect::mapError",
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "E",
+                  "F",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "F",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpError",
+                      "canonical": "std/http::HttpError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "httpClient",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "HttpClient",
+                              "canonical": "std/http::HttpClient",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "http.HttpError",
+                        "canonical": "std/http::HttpError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Response",
+                        "canonical": "std/http::Response",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "httpClient",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "HttpClient",
+                          "canonical": "std/http::HttpClient",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "http.HttpError",
+                    "canonical": "std/http::HttpError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "AppError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Response",
+                    "canonical": "std/http::Response",
+                    "arguments": []
+                  }
+                ]
+              },
               "requirements": {
                 "kind": "record",
                 "closed": true,
@@ -1226,6 +1995,132 @@
         "result": {
           "kind": "effect-invoke",
           "callee": "std/effect::mapError",
+          "calleeSignature": {
+            "typeParameters": [
+              "R",
+              "E",
+              "F",
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "E",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "R",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "F",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "text.Utf8DecodeError",
+                  "canonical": "std/text::Utf8DecodeError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "text.Utf8DecodeError",
+                    "canonical": "std/text::Utf8DecodeError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "instantiatedTypeArguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "external-named",
+                "name": "text.Utf8DecodeError",
+                "canonical": "std/text::Utf8DecodeError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
           "requirements": {
             "kind": "record",
             "closed": true,
@@ -1268,6 +2163,83 @@
             {
               "kind": "effect-invoke",
               "callee": "std/effect::fromEither",
+              "calleeSignature": {
+                "typeParameters": [
+                  "E",
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "text.Utf8DecodeError",
+                        "canonical": "std/text::Utf8DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "text.Utf8DecodeError",
+                    "canonical": "std/text::Utf8DecodeError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
               "requirements": {
                 "kind": "record",
                 "closed": true,

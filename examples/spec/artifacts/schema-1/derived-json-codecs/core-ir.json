@@ -2616,6 +2616,43 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Tree",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Tree",
@@ -2647,6 +2684,43 @@
                                   }
                                 }
                               ],
+                              "calleeSignature": {
+                                "typeParameters": [
+                                  "A"
+                                ],
+                                "parameters": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ],
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Tree",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "A",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "argumentTypes": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ],
+                                "instantiatedTypeArguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
                               "type": {
                                 "kind": "named",
                                 "name": "Tree",
@@ -2699,6 +2773,87 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "A",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Tree",

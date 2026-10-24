@@ -613,6 +613,58 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -755,6 +807,185 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "Action",
+                  "Failure"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "requirement-merge",
+                      "operands": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "dom",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "Dom",
+                                "canonical": "std/web/dom::Dom",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "dom.DomRuntimeError",
+                      "canonical": "std/web/dom::DomRuntimeError",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",
@@ -911,6 +1142,185 @@
               }
             }
           ],
+          "calleeSignature": {
+            "typeParameters": [
+              "R",
+              "Action",
+              "Failure"
+            ],
+            "parameters": [
+              {
+                "kind": "external-named",
+                "name": "DomOptions",
+                "canonical": "std/web/dom::DomOptions",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "dom.DomTarget",
+                "canonical": "std/web/dom::DomTarget",
+                "arguments": []
+              },
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "requirement-merge",
+                  "operands": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "dom",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Dom",
+                            "canonical": "std/web/dom::Dom",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            },
+            "argumentTypes": [
+              {
+                "kind": "external-named",
+                "name": "DomOptions",
+                "canonical": "std/web/dom::DomOptions",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "dom.DomTarget",
+                "canonical": "std/web/dom::DomTarget",
+                "arguments": []
+              },
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
           "type": {
             "kind": "named",
             "name": "Effect",
@@ -1084,6 +1494,58 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ],
+                "result": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "external-named",
                 "name": "Signal",
@@ -1345,6 +1807,185 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "R",
+                  "Action",
+                  "Failure"
+                ],
+                "parameters": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "requirement-merge",
+                      "operands": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "dom",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "Dom",
+                                "canonical": "std/web/dom::Dom",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "dom.DomRuntimeError",
+                      "canonical": "std/web/dom::DomRuntimeError",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Effect",

@@ -1780,6 +1780,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Char",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Box",
@@ -2150,6 +2187,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Box",
@@ -2623,6 +2697,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Box",

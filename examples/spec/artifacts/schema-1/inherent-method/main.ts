@@ -11,5 +11,5 @@ type Box<A> = {
 };
 const __ssrg$method$Box$get = <A,>(self: Box<A>) => (self)["value"]
 const __ssrg$method$Box$map = <A, B,>(self: Box<A>) => (transform: (argument: A) => B) => (({ "value": transform((self)["value"]) } as const) as unknown as Box<B>)
-const evaluate = (box: Box<number>) => __ssrg$method$Box$get(__ssrg$method$Box$map(box)((value: number) => _ssrg_int_add(value, value)))
+const evaluate = (box: Box<number>) => __ssrg$method$Box$get<number>(__ssrg$method$Box$map<number, number>(box)((value: number) => _ssrg_int_add(value, value)))
 export const main = (_unit: undefined) => _ssrg_console_println("Inherent method: " + _ssrg_show_intShow["show"](evaluate((({ "value": 21 } as const) as unknown as Box<number>))))

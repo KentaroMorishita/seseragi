@@ -1200,6 +1200,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Sum",
@@ -1234,6 +1271,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Sum",
@@ -1268,6 +1342,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Sum",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Sum",
@@ -1439,6 +1550,49 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -1554,6 +1708,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Product",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Product",
@@ -1588,6 +1779,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Product",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Product",
@@ -1622,6 +1850,43 @@
                                       }
                                     }
                                   ],
+                                  "calleeSignature": {
+                                    "typeParameters": [
+                                      "A"
+                                    ],
+                                    "parameters": [
+                                      {
+                                        "kind": "named",
+                                        "name": "A",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Product",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "A",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "argumentTypes": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ],
+                                    "instantiatedTypeArguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
                                   "type": {
                                     "kind": "named",
                                     "name": "Product",
@@ -1793,6 +2058,49 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -2160,6 +2468,49 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Sum",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -2411,6 +2762,49 @@
                           }
                         }
                       ],
+                      "calleeSignature": {
+                        "typeParameters": [
+                          "A"
+                        ],
+                        "parameters": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "result": {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        },
+                        "argumentTypes": [
+                          {
+                            "kind": "named",
+                            "name": "Product",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "instantiatedTypeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
                       "type": {
                         "kind": "named",
                         "name": "Int",
@@ -2528,6 +2922,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Sum",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Sum",
@@ -2584,6 +3015,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Sum",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Tally",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Sum",
@@ -2755,6 +3223,49 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Sum",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tally",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Tally",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Tally",
@@ -2939,6 +3450,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Product",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Product",
@@ -2995,6 +3543,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Product",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Ordered",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Product",
@@ -3166,6 +3751,49 @@
                   }
                 }
               ],
+              "calleeSignature": {
+                "typeParameters": [
+                  "A"
+                ],
+                "parameters": [
+                  {
+                    "kind": "named",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "argumentTypes": [
+                  {
+                    "kind": "named",
+                    "name": "Product",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Ordered",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ],
+                "instantiatedTypeArguments": [
+                  {
+                    "kind": "named",
+                    "name": "Ordered",
+                    "arguments": []
+                  }
+                ]
+              },
               "type": {
                 "kind": "named",
                 "name": "Ordered",
@@ -3304,6 +3932,43 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "Sum",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Sum",
@@ -3480,6 +4145,43 @@
                               }
                             }
                           ],
+                          "calleeSignature": {
+                            "typeParameters": [
+                              "A"
+                            ],
+                            "parameters": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ],
+                            "result": {
+                              "kind": "named",
+                              "name": "Sum",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "A",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "argumentTypes": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ],
+                            "instantiatedTypeArguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
                           "type": {
                             "kind": "named",
                             "name": "Sum",
@@ -3514,6 +4216,49 @@
                       }
                     }
                   ],
+                  "calleeSignature": {
+                    "typeParameters": [
+                      "A"
+                    ],
+                    "parameters": [
+                      {
+                        "kind": "named",
+                        "name": "Sum",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "result": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "argumentTypes": [
+                      {
+                        "kind": "named",
+                        "name": "Sum",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ],
+                    "instantiatedTypeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
                   "type": {
                     "kind": "named",
                     "name": "Int",

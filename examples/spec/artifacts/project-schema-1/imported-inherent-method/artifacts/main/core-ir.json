@@ -123,6 +123,44 @@
                     }
                   }
                 ],
+                "calleeSignature": {
+                  "typeParameters": [
+                    "A"
+                  ],
+                  "parameters": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Box",
+                    "canonical": "fixture/imported-inherent-method::domain::Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "argumentTypes": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ],
+                  "instantiatedTypeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
                 "type": {
                   "kind": "external-named",
                   "name": "Box",
@@ -242,6 +280,84 @@
                 }
               }
             ],
+            "calleeSignature": {
+              "typeParameters": [
+                "A"
+              ],
+              "parameters": [
+                {
+                  "kind": "external-named",
+                  "name": "Box",
+                  "canonical": "fixture/imported-inherent-method::domain::Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                }
+              ],
+              "result": {
+                "kind": "external-named",
+                "name": "Box",
+                "canonical": "fixture/imported-inherent-method::domain::Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "argumentTypes": [
+                {
+                  "kind": "external-named",
+                  "name": "Box",
+                  "canonical": "fixture/imported-inherent-method::domain::Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ],
+              "instantiatedTypeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
             "type": {
               "kind": "external-named",
               "name": "Box",
@@ -261,6 +377,51 @@
             }
           }
         ],
+        "calleeSignature": {
+          "typeParameters": [
+            "A"
+          ],
+          "parameters": [
+            {
+              "kind": "external-named",
+              "name": "Box",
+              "canonical": "fixture/imported-inherent-method::domain::Box",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "result": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "argumentTypes": [
+            {
+              "kind": "external-named",
+              "name": "Box",
+              "canonical": "fixture/imported-inherent-method::domain::Box",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ],
+          "instantiatedTypeArguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
         "type": {
           "kind": "named",
           "name": "Int",

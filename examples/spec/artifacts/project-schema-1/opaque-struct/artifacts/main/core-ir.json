@@ -683,6 +683,44 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "external-named",
+                            "name": "Box",
+                            "canonical": "fixture/opaque-struct::domain::Box",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "type": {
                           "kind": "external-named",
                           "name": "Box",
@@ -702,6 +740,51 @@
                         }
                       }
                     ],
+                    "calleeSignature": {
+                      "typeParameters": [
+                        "A"
+                      ],
+                      "parameters": [
+                        {
+                          "kind": "external-named",
+                          "name": "Box",
+                          "canonical": "fixture/opaque-struct::domain::Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "result": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      },
+                      "argumentTypes": [
+                        {
+                          "kind": "external-named",
+                          "name": "Box",
+                          "canonical": "fixture/opaque-struct::domain::Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ],
+                      "instantiatedTypeArguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
                     "type": {
                       "kind": "named",
                       "name": "Int",
@@ -775,6 +858,46 @@
                             }
                           }
                         ],
+                        "calleeSignature": {
+                          "typeParameters": [
+                            "A"
+                          ],
+                          "parameters": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ],
+                          "result": {
+                            "kind": "external-named",
+                            "name": "Box",
+                            "canonical": "fixture/opaque-struct::domain::Box",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "argumentTypes": [
+                            {
+                              "kind": "external-named",
+                              "name": "Secret",
+                              "canonical": "fixture/opaque-struct::domain::Secret",
+                              "arguments": []
+                            }
+                          ],
+                          "instantiatedTypeArguments": [
+                            {
+                              "kind": "external-named",
+                              "name": "Secret",
+                              "canonical": "fixture/opaque-struct::domain::Secret",
+                              "arguments": []
+                            }
+                          ]
+                        },
                         "type": {
                           "kind": "external-named",
                           "name": "Box",
