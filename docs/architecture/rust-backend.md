@@ -79,7 +79,7 @@ python3 -m http.server 8080 --directory target/program-demo/site
 
 このsampleは、別のSeseragi sourceを既存web targetでTSへ生成し、task foreign bridgeから
 program WASMを呼ぶ。画面で成功値・Eitherのdomain failure・callback detach・instance dispose・
-Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRとhostから受け取るcallbackは残る。providerless Effectは次の別ABIで扱う。
+Defect後の再生成を確認できる。assetの配置はsample scriptで明示している。標準package buildへの統合は次の経路を使う。UI stateを保持するHMRと一般の同期host callbackは残る。providerless Effectと型付きのhost Effect callbackは次の別ABIで扱う。
 これだけで#814／#815や実用化全体を完了扱いにしない。
 
 ## providerless Effectを実行・取消する
