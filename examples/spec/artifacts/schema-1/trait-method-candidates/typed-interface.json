@@ -241,8 +241,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/trait-method-candidates::Badge",
+            "providerModule": "artifact/trait-method-candidates",
+            "providerExport": "Badge",
             "arguments": []
           },
           "result": {
@@ -269,8 +272,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Mode",
+            "canonical": "artifact/trait-method-candidates::Mode",
+            "providerModule": "artifact/trait-method-candidates",
+            "providerExport": "Mode",
             "arguments": []
           },
           "result": {

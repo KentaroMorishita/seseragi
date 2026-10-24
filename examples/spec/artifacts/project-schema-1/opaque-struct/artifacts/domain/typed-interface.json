@@ -68,8 +68,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           }
         }
@@ -91,8 +94,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           },
           "result": {
@@ -119,8 +125,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           },
           "result": {
@@ -147,13 +156,19 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Secret",
+            "canonical": "fixture/opaque-struct::domain::Secret",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Secret",
             "arguments": []
           }
         }
@@ -182,8 +197,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/opaque-struct::domain::Box",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Box",
             "arguments": [
               {
                 "kind": "named",
@@ -213,8 +231,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/opaque-struct::domain::Box",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Box",
             "arguments": [
               {
                 "kind": "named",
@@ -247,12 +268,18 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/opaque-struct::domain::Box",
+            "providerModule": "fixture/opaque-struct::domain",
+            "providerExport": "Box",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Secret",
+                "canonical": "fixture/opaque-struct::domain::Secret",
+                "providerModule": "fixture/opaque-struct::domain",
+                "providerExport": "Secret",
                 "arguments": []
               }
             ]
@@ -285,8 +312,11 @@
             "name": "Array",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Secret",
+                "canonical": "fixture/opaque-struct::domain::Secret",
+                "providerModule": "fixture/opaque-struct::domain",
+                "providerExport": "Secret",
                 "arguments": []
               }
             ]

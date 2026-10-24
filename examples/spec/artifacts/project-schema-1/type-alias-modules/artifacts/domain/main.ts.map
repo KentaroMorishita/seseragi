@@ -9,7 +9,8 @@
     "pub alias Pair<A> = { left: A, right: A }\n\npub fn duplicate<A> value: A -> Pair<A> =\n  { left: value, right: value }\n"
   ],
   "names": [
+    "Pair",
     "duplicate"
   ],
-  "mappings": ";;;AAEAA"
+  "mappings": ";;;AAAAA;AAEAC"
 }

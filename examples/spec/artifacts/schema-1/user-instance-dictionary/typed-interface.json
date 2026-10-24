@@ -131,8 +131,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "artifact/user-instance-dictionary::Badge",
+            "providerModule": "artifact/user-instance-dictionary",
+            "providerExport": "Badge",
             "arguments": []
           },
           "result": {

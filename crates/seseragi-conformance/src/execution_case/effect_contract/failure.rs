@@ -158,41 +158,42 @@ fn local_head_matches(
     if head == failure {
         return true;
     }
-    let InterfaceType::ExternalNamed {
-        canonical,
-        provider_module,
-        provider_export,
-        arguments,
-        ..
-    } = head
-    else {
-        return false;
-    };
-    arguments.is_empty()
-        && local_type_identity(interface, failure).as_ref() == Some(canonical)
-        && provider_module == &interface.module
-        && interface.exports.iter().any(|export| {
-            export.namespace == "type"
-                && export.symbol == *canonical
-                && export.name == *provider_export
-        })
+    match (
+        local_type_identity(interface, failure),
+        local_type_identity(interface, head),
+    ) {
+        (Some(failure), Some(head)) => failure == head,
+        _ => false,
+    }
 }
 
 fn local_type_identity(
     interface: &TypedModuleInterface,
     failure: &InterfaceType,
 ) -> Option<String> {
-    let InterfaceType::Named { name, arguments } = failure else {
-        return None;
-    };
-    if !arguments.is_empty() {
-        return None;
+    match failure {
+        InterfaceType::Named { name, arguments } if arguments.is_empty() => interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "type" && export.name == *name)
+            .map(|export| export.symbol.clone()),
+        InterfaceType::ExternalNamed {
+            canonical,
+            provider_module,
+            provider_export,
+            arguments,
+            ..
+        } if arguments.is_empty() && provider_module == &interface.module => interface
+            .exports
+            .iter()
+            .find(|export| {
+                export.namespace == "type"
+                    && export.symbol == *canonical
+                    && export.name == *provider_export
+            })
+            .map(|export| export.symbol.clone()),
+        _ => None,
     }
-    interface
-        .exports
-        .iter()
-        .find(|export| export.namespace == "type" && export.name == *name)
-        .map(|export| export.symbol.clone())
 }
 
 fn is_never(type_ref: &InterfaceType) -> bool {

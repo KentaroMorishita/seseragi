@@ -1,0 +1,34 @@
+import {
+  ExportedBox as Foreign,
+  PublicWrapper,
+  Chain,
+  MyUnit,
+  Identity,
+  UnitField,
+  Items,
+  PublicSecret,
+  secret,
+  readSecret,
+  unbox,
+  pass
+} from "./facade"
+import * as lists from "std/list"
+
+type Box<A> = | Local A
+pub fn keepSecret value: PublicSecret -> PublicSecret = value
+
+pub effect fn main = do {
+  let first: PublicWrapper<Int> = Foreign 42
+  let second: Chain<Int> = first
+  let done: MyUnit = pass ()
+  let token: Identity<String> = "binder"
+  let field: UnitField<String> = { value: "scoped" }
+  let items: Items<Int> = `[1, 2]
+  let hidden: PublicSecret = secret 7
+  println (show (unbox second))
+  println (show done)
+  println token
+  println field.value
+  println (show (lists.length items))
+  println (show (readSecret hidden))
+}

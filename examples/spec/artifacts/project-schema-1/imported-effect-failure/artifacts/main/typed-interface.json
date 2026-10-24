@@ -108,8 +108,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "fixture/imported-effect-failure::main::AppError",
+                "providerModule": "fixture/imported-effect-failure::main",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {

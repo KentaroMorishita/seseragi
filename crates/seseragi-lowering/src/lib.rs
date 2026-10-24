@@ -762,6 +762,47 @@ where Lift<F> =
     }
 
     #[test]
+    fn public_alias_projection_preserves_its_scoped_value_binders() {
+        let source = concat!(
+            "pub alias Identity<Int> = Int\n",
+            "pub alias UnitField<Unit> = { value: Unit }\n",
+            "pub alias MyUnit = Unit\n",
+        );
+        let core = lower_typed_module(type_module("artifact/alias-binders/main.ssrg", source));
+        assert!(matches!(
+            &core.aliases[0].target,
+            CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty()
+        ));
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.aliases[0].target,
+            TypeScriptType::Reference { name, arguments }
+                if name == "Int" && arguments.is_empty()
+        ));
+        let TypeScriptType::Record { fields } = &typescript.aliases[1].target else {
+            panic!("UnitField must preserve its record representation");
+        };
+        assert!(matches!(
+            &fields[0].type_ref,
+            TypeScriptType::Reference { name, arguments }
+                if name == "Unit" && arguments.is_empty()
+        ));
+        assert_eq!(typescript.aliases[2].target, TypeScriptType::Undefined);
+        let generated = emit_typescript_module(typescript, source);
+        assert!(generated
+            .typescript
+            .contains("export type Identity<Int> = Int"));
+        assert!(generated.typescript.contains("export type UnitField<Unit>"));
+        assert!(generated
+            .typescript
+            .contains("export type MyUnit = undefined"));
+        assert!(
+            generated.metadata.exports.is_empty(),
+            "aliases have no runtime export"
+        );
+    }
+
+    #[test]
     fn preserves_higher_kinded_alias_binders_in_core_and_typescript_ir() {
         let source = "pub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n";
         let core = lower_typed_module(type_module("artifact/hkt-alias/main.ssrg", source));
@@ -780,6 +821,11 @@ where Lift<F> =
         assert_eq!(typescript.aliases.len(), 1);
         assert_eq!(typescript.aliases[0].type_parameters[1].name, "M");
         assert_eq!(typescript.aliases[0].type_parameters[1].arity, 1);
+        let generated = emit_typescript_module(typescript, source);
+        assert!(
+            !generated.typescript.contains("export type StateT"),
+            "constructor erasure must not be exposed as a faithful public alias"
+        );
     }
 
     #[test]

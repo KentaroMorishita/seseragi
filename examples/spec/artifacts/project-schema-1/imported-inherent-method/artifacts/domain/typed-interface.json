@@ -138,8 +138,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Box",
+            "canonical": "fixture/imported-inherent-method::domain::Box",
+            "providerModule": "fixture/imported-inherent-method::domain",
+            "providerExport": "Box",
             "arguments": [
               {
                 "kind": "named",

@@ -752,6 +752,211 @@ mod tests {
     }
 
     #[test]
+    fn public_alias_projection_defines_facade_reexport_targets() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module("fixture/public-alias::model".to_owned(), [])
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/public-alias::facade".to_owned(),
+                [(
+                    "./model".to_owned(),
+                    "fixture/public-alias::model".to_owned(),
+                )],
+            )
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/public-alias::main".to_owned(),
+                [(
+                    "./facade".to_owned(),
+                    "fixture/public-alias::facade".to_owned(),
+                )],
+            )
+            .unwrap();
+        let project = compile_project(graph, [
+            ProjectModuleInput::new("model.ssrg", "fixture/public-alias::model", concat!(
+                "pub type Box<A> = | Box A\n",
+                "pub alias Wrapper<A> = Box<A>\n",
+                "pub alias Chain<A> = Wrapper<A>\n",
+                "pub alias MyUnit = Unit\n",
+            ), "dist/public-alias/model.js"),
+            ProjectModuleInput::new("facade.ssrg", "fixture/public-alias::facade",
+                "pub import { Box, Wrapper as PublicWrapper, Chain, MyUnit } from \"./model\"\n",
+                "dist/public-alias/facade.js"),
+            ProjectModuleInput::new("main.ssrg", "fixture/public-alias::main", concat!(
+                "import { PublicWrapper, Chain, MyUnit } from \"./facade\"\n",
+                "pub fn keep value: PublicWrapper<Int> -> Chain<Int> = value\n",
+                "pub fn pass value: MyUnit -> MyUnit = value\n",
+            ), "dist/public-alias/main.js"),
+        ]).unwrap();
+        let model = project.modules.get("fixture/public-alias::model").unwrap();
+        assert!(model
+            .generated
+            .typescript
+            .contains("export type Wrapper<A> = Box<A>"));
+        assert!(model
+            .generated
+            .typescript
+            .contains("export type Chain<A> = Box<A>"));
+        assert!(model
+            .generated
+            .typescript
+            .contains("export type MyUnit = undefined"));
+        assert!(!model
+            .generated
+            .metadata
+            .exports
+            .iter()
+            .any(|name| matches!(name.as_str(), "Wrapper" | "Chain" | "MyUnit")));
+        let facade = project.modules.get("fixture/public-alias::facade").unwrap();
+        assert!(facade
+            .generated
+            .typescript
+            .contains("type Wrapper as PublicWrapper"));
+        assert!(facade.generated.typescript.contains("type Chain"));
+        assert!(facade.generated.typescript.contains("type MyUnit"));
+        let main = project.modules.get("fixture/public-alias::main").unwrap();
+        assert!(!main.generated.typescript.contains("type PublicWrapper"));
+        assert!(main.generated.typescript.contains("value: undefined"));
+    }
+
+    #[test]
+    fn public_nominal_owners_do_not_capture_alias_or_function_binders() {
+        let compiled = crate::compile_module(crate::CompileInput::new(
+            "model.ssrg",
+            "fixture/alias-binder::model",
+            concat!(
+                "pub type Box<A> = | Box A\n",
+                "pub alias Identity<Box> = Box\n",
+                "pub fn identity<Box> value: Identity<Box> -> Identity<Box> = value\n",
+                "pub fn make value: Int -> Box<Int> = Box value\n",
+            ),
+        ))
+        .unwrap();
+        let identity_alias = compiled
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "Identity")
+            .unwrap();
+        assert!(matches!(
+            &identity_alias.representation,
+            Some(seseragi_syntax::InterfaceType::Named { name, arguments })
+                if name == "Box" && arguments.is_empty()
+        ));
+        let identity = compiled
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "identity")
+            .unwrap();
+        assert!(matches!(
+            &identity.scheme.type_ref,
+            seseragi_syntax::InterfaceType::Function { parameter, result }
+                if matches!(parameter.as_ref(), seseragi_syntax::InterfaceType::Named { name, arguments }
+                    if name == "Box" && arguments.is_empty())
+                && parameter == result
+        ));
+        let make = compiled
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "make")
+            .unwrap();
+        assert!(matches!(
+            &make.scheme.type_ref,
+            seseragi_syntax::InterfaceType::Function { result, .. }
+                if matches!(result.as_ref(), seseragi_syntax::InterfaceType::ExternalNamed { canonical, .. }
+                    if canonical == "fixture/alias-binder::model::Box")
+        ));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("export type Identity<Box> = Box"));
+    }
+
+    #[test]
+    fn public_alias_opaque_target_and_callable_keep_their_defining_owner() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module("fixture/opaque-alias::model".to_owned(), [])
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/opaque-alias::facade".to_owned(),
+                [(
+                    "./model".to_owned(),
+                    "fixture/opaque-alias::model".to_owned(),
+                )],
+            )
+            .unwrap();
+        graph
+            .add_module(
+                "fixture/opaque-alias::main".to_owned(),
+                [(
+                    "./facade".to_owned(),
+                    "fixture/opaque-alias::facade".to_owned(),
+                )],
+            )
+            .unwrap();
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "model.ssrg",
+                    "fixture/opaque-alias::model",
+                    concat!(
+                        "pub opaque struct Secret { value: Int }\n",
+                        "pub alias Hidden = Secret\n",
+                        "pub fn make value: Int -> Hidden = Secret { value }\n",
+                        "pub fn read value: Hidden -> Int = value.value\n",
+                    ),
+                    "dist/opaque-alias/model.js",
+                ),
+                ProjectModuleInput::new(
+                    "facade.ssrg",
+                    "fixture/opaque-alias::facade",
+                    "pub import { Hidden as PublicSecret, make, read } from \"./model\"\n",
+                    "dist/opaque-alias/facade.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/opaque-alias::main",
+                    concat!(
+                        "import { PublicSecret, make, read } from \"./facade\"\n",
+                        "pub fn keep value: PublicSecret -> PublicSecret = value\n",
+                        "pub fn use value: Int -> Int = read (make value)\n",
+                    ),
+                    "dist/opaque-alias/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+        let model = project.modules.get("fixture/opaque-alias::model").unwrap();
+        let hidden = model
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "Hidden")
+            .unwrap();
+        assert!(
+            matches!(&hidden.representation, Some(seseragi_syntax::InterfaceType::ExternalNamed {
+            canonical, provider_module, provider_export, arguments, ..
+        }) if canonical == "fixture/opaque-alias::model::Secret"
+            && provider_module == "fixture/opaque-alias::model" && provider_export == "Secret" && arguments.is_empty())
+        );
+        let main = project.modules.get("fixture/opaque-alias::main").unwrap();
+        assert!(main
+            .core_ir
+            .external_type_bindings
+            .iter()
+            .any(|binding| binding.canonical == "fixture/opaque-alias::model::Secret"));
+        assert!(main.generated.typescript.contains("from \"./model.js\""));
+    }
+
+    #[test]
     fn expands_imported_higher_kinded_aliases_with_standard_and_user_constructors() {
         let mut graph = ModuleGraph::new();
         graph

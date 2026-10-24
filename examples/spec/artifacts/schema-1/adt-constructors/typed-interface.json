@@ -171,8 +171,11 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Hand",
+          "canonical": "artifact/adt-constructors::Hand",
+          "providerModule": "artifact/adt-constructors",
+          "providerExport": "Hand",
           "arguments": []
         }
       }
@@ -198,8 +201,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Label",
+            "canonical": "artifact/adt-constructors::Label",
+            "providerModule": "artifact/adt-constructors",
+            "providerExport": "Label",
             "arguments": []
           }
         }

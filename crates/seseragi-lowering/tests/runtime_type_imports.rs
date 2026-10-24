@@ -54,3 +54,33 @@ fn does_not_import_a_runtime_type_for_a_local_shadow() {
         .requirements
         .contains(&"effect.stdin.error".to_owned()));
 }
+
+#[test]
+fn public_alias_projection_collects_target_runtime_types_but_respects_own_binders() {
+    let generated = compile(
+        "artifact/alias-runtime-target/main.ssrg",
+        "pub alias Input<A> = { value: A, error: StdinError }\n",
+    );
+    assert!(generated
+        .typescript
+        .contains("import { type StdinError as StdinError } from \"@seseragi/runtime/stdin\""));
+    assert!(generated.typescript.contains("export type Input<A>"));
+    assert!(generated
+        .metadata
+        .runtime
+        .requirements
+        .contains(&"effect.stdin.error".to_owned()));
+    let bound = compile(
+        "artifact/alias-runtime-binder/main.ssrg",
+        "pub alias Identity<StdinError> = StdinError\n",
+    );
+    assert!(bound
+        .typescript
+        .contains("export type Identity<StdinError> = StdinError"));
+    assert!(!bound.typescript.contains("@seseragi/runtime/stdin"));
+    assert!(!bound
+        .metadata
+        .runtime
+        .requirements
+        .contains(&"effect.stdin.error".to_owned()));
+}

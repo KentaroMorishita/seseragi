@@ -128,8 +128,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "artifact/effect-explicit-failure-contract::AppError",
+                "providerModule": "artifact/effect-explicit-failure-contract",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {
@@ -175,8 +178,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "AppError",
+                "canonical": "artifact/effect-explicit-failure-contract::AppError",
+                "providerModule": "artifact/effect-explicit-failure-contract",
+                "providerExport": "AppError",
                 "arguments": []
               },
               {

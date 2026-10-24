@@ -289,8 +289,11 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Snapshot",
+          "canonical": "artifact/unary-operators::Snapshot",
+          "providerModule": "artifact/unary-operators",
+          "providerExport": "Snapshot",
           "arguments": []
         }
       }

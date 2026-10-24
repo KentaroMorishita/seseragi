@@ -16,6 +16,27 @@ pub(super) fn collect_module_type_imports(
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
     let type_bindings = runtime_type_bindings(module);
+    for alias in &module.aliases {
+        if alias.visibility != seseragi_syntax::Visibility::Public
+            || alias
+                .type_parameters
+                .iter()
+                .any(|parameter| parameter.is_constructor())
+        {
+            continue;
+        }
+        let scoped_bindings = type_bindings
+            .iter()
+            .filter(|binding| {
+                !alias
+                    .type_parameters
+                    .iter()
+                    .any(|parameter| parameter.name == binding.spelling)
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        collect_type_imports(&alias.target, &scoped_bindings, requirements, imports);
+    }
     for foreign in &module.foreign_modules {
         collect_foreign_member_type_imports(
             &foreign.members,

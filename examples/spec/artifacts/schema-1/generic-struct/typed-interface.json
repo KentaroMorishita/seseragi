@@ -54,8 +54,11 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Box",
+          "canonical": "artifact/generic-struct::Box",
+          "providerModule": "artifact/generic-struct",
+          "providerExport": "Box",
           "arguments": [
             {
               "kind": "named",

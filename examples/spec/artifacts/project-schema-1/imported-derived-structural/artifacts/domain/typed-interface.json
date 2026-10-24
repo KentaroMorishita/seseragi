@@ -87,8 +87,11 @@
           {
             "name": "id",
             "type": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "UserId",
+              "canonical": "fixture/imported-derived-structural::domain::UserId",
+              "providerModule": "fixture/imported-derived-structural::domain",
+              "providerExport": "UserId",
               "arguments": []
             }
           },

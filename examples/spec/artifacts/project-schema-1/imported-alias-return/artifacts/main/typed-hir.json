@@ -12,15 +12,6 @@
         "module": "fixture/imported-alias-return::domain",
         "export": "Box"
       }
-    },
-    {
-      "arity": 1,
-      "spelling": "Foreign",
-      "canonical": "fixture/imported-alias-return::domain::Box",
-      "provider": {
-        "module": "fixture/imported-alias-return::facade",
-        "export": "Box"
-      }
     }
   ],
   "moduleDependencies": [
@@ -629,7 +620,7 @@
                         ],
                         "result": {
                           "kind": "external-named",
-                          "name": "Box",
+                          "name": "Foreign",
                           "canonical": "fixture/imported-alias-return::domain::Box",
                           "arguments": [
                             {
@@ -656,7 +647,7 @@
                       },
                       "type": {
                         "kind": "external-named",
-                        "name": "Box",
+                        "name": "Foreign",
                         "canonical": "fixture/imported-alias-return::domain::Box",
                         "arguments": [
                           {
@@ -767,7 +758,7 @@
                     ],
                     "result": {
                       "kind": "external-named",
-                      "name": "Box",
+                      "name": "Foreign",
                       "canonical": "fixture/imported-alias-return::domain::Box",
                       "arguments": [
                         {
@@ -794,7 +785,7 @@
                   },
                   "type": {
                     "kind": "external-named",
-                    "name": "Box",
+                    "name": "Foreign",
                     "canonical": "fixture/imported-alias-return::domain::Box",
                     "arguments": [
                       {
@@ -1011,7 +1002,7 @@
                       ],
                       "result": {
                         "kind": "external-named",
-                        "name": "Box",
+                        "name": "Foreign",
                         "canonical": "fixture/imported-alias-return::domain::Box",
                         "arguments": [
                           {
@@ -1038,7 +1029,7 @@
                     },
                     "type": {
                       "kind": "external-named",
-                      "name": "Box",
+                      "name": "Foreign",
                       "canonical": "fixture/imported-alias-return::domain::Box",
                       "arguments": [
                         {

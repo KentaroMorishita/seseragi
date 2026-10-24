@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-public-alias-projection@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/native-public-alias-projection@0.0.0#workspace:."
+name = "fixture/native-public-alias-projection"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:75fb7a3f0dbfb369ba31b8c99bb93210cfb87f59be9cc64b4b2c224602684656"
+content_digest = "sha256:9b64f1ed75bd8aff756d19f361e6b992df8f293bcbad48ea83a2cd0ae375d033"
+dependencies = [
+  { import = "model", package = "fixture/public-alias-model@1.0.0#path:vendor/model" },
+]
+
+[[packages]]
+id = "fixture/public-alias-model@1.0.0#path:vendor/model"
+name = "fixture/public-alias-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:206cda4dc5dfcbe8a374b47bfb62467a907f22296b9ce79d79e73de36e46a53d"
+content_digest = "sha256:6dee97d1d5c9a525607e4e17f8ede9594956a9fa32d7cd21b0dee6a2b404fdd8"
+dependencies = []

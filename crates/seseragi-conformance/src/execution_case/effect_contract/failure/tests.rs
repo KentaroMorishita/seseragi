@@ -266,6 +266,71 @@ fn requires_exactly_one_matching_generated_dictionary() {
 }
 
 #[test]
+fn canonical_local_failure_owner_preserves_selected_show_for_both_entry_paths() {
+    let failure = InterfaceType::ExternalNamed {
+        name: "RenamedError".to_owned(),
+        canonical: "artifact/example::AppError".to_owned(),
+        provider_module: "artifact/example".to_owned(),
+        provider_export: "AppError".to_owned(),
+        arguments: Vec::new(),
+    };
+    let generated = generated_instances(json!([generated_show("showAppError")]));
+    let catalog = ProjectFailureRendererCatalog::new(
+        Vec::<(String, &GeneratedModule)>::new(),
+        Vec::<(String, &TypedModuleInterface)>::new(),
+        Vec::<(String, String)>::new(),
+    );
+    for head in [named("AppError"), failure.clone()] {
+        let typed = interface(vec![show_instance(head)]);
+        let expected = EffectEntryContract {
+            failure_renderer: FailureRenderer::Show {
+                dictionary: DictionaryImport {
+                    module: "./main.ts".to_owned(),
+                    export: "showAppError".to_owned(),
+                },
+            },
+        };
+        assert_eq!(
+            resolve_effect_entry_contract(&typed, &failure, &generated).unwrap(),
+            expected
+        );
+        assert_eq!(
+            super::project::resolve(&typed, &failure, &generated, "./main.ts", &catalog).unwrap(),
+            expected
+        );
+        for kind in ["canonical", "provider", "export", "arguments"] {
+            let mut forged = failure.clone();
+            let InterfaceType::ExternalNamed {
+                canonical,
+                provider_module,
+                provider_export,
+                arguments,
+                ..
+            } = &mut forged
+            else {
+                unreachable!();
+            };
+            match kind {
+                "canonical" => *canonical = "artifact/other::AppError".to_owned(),
+                "provider" => *provider_module = "artifact/other".to_owned(),
+                "export" => *provider_export = "OtherError".to_owned(),
+                "arguments" => arguments.push(named("Int")),
+                _ => unreachable!(),
+            }
+            assert!(
+                resolve_effect_entry_contract(&typed, &forged, &generated).is_err(),
+                "{kind}"
+            );
+            assert!(
+                super::project::resolve(&typed, &forged, &generated, "./main.ts", &catalog)
+                    .is_err(),
+                "{kind}"
+            );
+        }
+    }
+}
+
+#[test]
 fn local_failure_dictionary_head_checks_canonical_owner_and_export() {
     let head = InterfaceType::ExternalNamed {
         name: "RenamedError".to_owned(),

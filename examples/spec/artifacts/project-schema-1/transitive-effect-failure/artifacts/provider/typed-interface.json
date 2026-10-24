@@ -84,8 +84,11 @@
                 "fields": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "InputError",
+                "canonical": "fixture/transitive-effect-failure::provider::InputError",
+                "providerModule": "fixture/transitive-effect-failure::provider",
+                "providerExport": "InputError",
                 "arguments": []
               },
               {
