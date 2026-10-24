@@ -344,6 +344,14 @@ fn int_subtract_value(a: i64, b: i64) -> i64 {
 fn int_multiply_value(a: i64, b: i64) -> i64 {
     checked_int_value(a.checked_mul(b).expect("Int overflow"))
 }
+fn int_divide_value(a: i64, b: i64) -> i64 {
+    if b == 0 {
+        panic!("Int division by zero");
+    }
+    checked_int_value(a);
+    checked_int_value(b);
+    checked_int_value(a.checked_div(b).expect("Int overflow"))
+}
 fn int_equal_value(a: i64, b: i64) -> bool {
     a == b
 }
@@ -358,6 +366,7 @@ fn binary(op: &str, a: V, b: V) -> V {
         ("+", V::Int(a), V::Int(b)) => V::Int(int_add_value(a, b)),
         ("-", V::Int(a), V::Int(b)) => V::Int(int_subtract_value(a, b)),
         ("*", V::Int(a), V::Int(b)) => V::Int(int_multiply_value(a, b)),
+        ("/", V::Int(a), V::Int(b)) => V::Int(int_divide_value(a, b)),
         ("==", V::Int(a), V::Int(b)) => V::Bool(int_equal_value(a, b)),
         ("<", V::Int(a), V::Int(b)) => V::Bool(int_less_value(a, b)),
         ("<=", V::Int(a), V::Int(b)) => V::Bool(int_less_equal_value(a, b)),
@@ -384,6 +393,7 @@ fn native_operator_dictionary(identity: &'static str) -> V {
             "std/int::Add" | "std/string::Add" => arithmetic!("add", "+"),
             "std/int::Sub" => arithmetic!("sub", "-"),
             "std/int::Mul" => arithmetic!("mul", "*"),
+            "std/int::Div" => arithmetic!("div", "/"),
             "std/int::Eq" => arithmetic!("eq", "=="),
             _ => panic!("Rust ABI: unsupported arithmetic dictionary"),
         }

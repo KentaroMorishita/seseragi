@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.87] - 2026-10-24
+
+### Added
+
+- Execute canonical Int division in native programs, including saved methods, partial applications and generic dictionaries. Preserve strict once-only source evaluation, truncate negative quotients toward zero, and complete masked resource finalizers before reporting division by zero as a Defect. Program-WASM division remains unsupported with a source-positioned diagnostic.
+
 ## [0.61.86] - 2026-10-24
 
 ### Fixed
