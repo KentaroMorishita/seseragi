@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.90] - 2026-10-24
+
+### Fixed
+
+- Preserve nominal type and trait identities through renamed facade exports. Imported generic functions and returned closures now retain their checked provider dictionaries when a facade renames the type, the trait, or both, so native and TypeScript programs keep the same results and evaluation order.
+
 ## [0.61.89] - 2026-10-24
 
 ### Fixed
