@@ -1,4 +1,4 @@
-# Playground execution threat model
+# Seseragi execution threat model
 
 ## Assets and inputs
 
@@ -24,6 +24,35 @@ analysis; execution requires Run or its keyboard shortcut.
   could evade those checkpoints and block the editor event loop.
 - Output is bounded before accumulation. Text is rendered with textContent;
   HTML output is rendered only when Preview is selected, with scripts denied.
+
+## Local execution staging
+
+CLI single-file, project, test, benchmark and documentation runs create an
+exclusive randomly named directory directly under the configured system temp
+root. That root is trusted. On Unix the new directory is private (0700), and
+the run retains its `TempDir` owner until execution ends. Success and failure
+explicitly close that owned directory; unwinding drops the owner. Pre-existing
+legacy `seseragi-run` paths are never reset or reused, and cleanup must not
+follow symlinks inside the owned directory. This protects staging ownership;
+CLI programs still execute with the invoking user's filesystem and network
+authority.
+
+Native entry generation validates provider-required services against their
+resolved environment fields before starting a host or publishing process
+output. Missing, duplicate, wrong-target or empty selections return entry
+diagnostics. JSON diagnostics include compile warnings in one document;
+standalone files requiring those services need package provider configuration.
+
+Experimental Rust emission and native builds check every destination leaf before
+generating files, reject symlink and non-regular output leaves, and reject names
+that resolve to a source file. Native output directory leaves cannot be symlinks.
+Generation and compilation use an owned private directory on the destination
+filesystem. Publication replaces the checked leaves with rename, so an existing
+hardlink does not cause writes through the source inode. Handled publication
+errors restore prior output bytes and permissions or report the retained backup
+path if restoration fails. The selected output parent is trusted; concurrent
+parent replacement, multi-file crash atomicity and preservation of arbitrary
+extended file metadata are outside this guarantee.
 
 ## Data and network authority
 
@@ -101,6 +130,26 @@ handler rejection and release connection resources; one failed handler must
 not become an unhandled process-level rejection. These controls do not replace
 application authentication, connection limits or a host process sandbox.
 
+## Compiler input processing
+
+The shared Rust syntax parser reads infix operands once before applying known
+operator precedence. One synchronous parse shares a recursion and work budget
+across helper parsers, including block, do, match and template ranges. Its
+current limits are 64 recursive parser frames, expression depth 128,
+cumulative pattern depth 512 and 1,000,000 parsing/checking steps.
+Constructor pattern prefixes are scanned once and folded without a native
+recursive frame per constructor, preserving the existing match-coverage limit.
+Custom infix chains account for their later
+curried application depth. Exceeding a limit reports `SES-P0002` with a UTF-8
+source range; it must not overflow the host stack. Template scanning uses an
+explicit stack before the parser budget applies.
+
+Declaration conversion stores one overload set and appends each signature and
+origin once, rather than retaining every previous prefix. These controls remove
+the grouped-expression and overload-storage amplification paths. They do not
+provide a total compiler CPU or heap quota; the browser compiler Worker deadline
+remains a separate availability boundary.
+
 ## Availability limits and remaining assumptions
 
 The compiler request deadline is 15 seconds; non-DOM execution is 10 seconds.
@@ -113,6 +162,13 @@ updated browser. No server-side program execution or privileged filesystem/
 process bridge is introduced by the Playground.
 
 ## Review and verification
+
+The extension's packaging dev dependency includes the unpatched
+[`braces` advisory GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+It is absent from the extension's production dependency closure and the
+Playground/runtime packages. Packaging uses reviewed repository configuration;
+accepting external glob configuration would require a new assessment. Track
+an upstream fix and packaging revalidation in [#929](https://github.com/KentaroMorishita/seseragi/issues/929).
 
 For PRs changing these boundaries, review the actual CSP, port consumer, broker,
 Worker retirement and import/compile paths. Check GitHub code and security review

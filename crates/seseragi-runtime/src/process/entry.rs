@@ -2,14 +2,17 @@ use crate::{
     DiagnosticFormat, DisplayDictionary, FailureRenderer, HostService, MainContract,
     ProcessRunOptions, ProcessSignalMode, RandomSeed,
 };
-use seseragi_driver::ProviderResolution;
+use seseragi_driver::{ProviderResolution, ProviderSelectionMetadata};
+
+#[cfg(test)]
+mod provider_tests;
 
 pub(super) fn entry_source(
     contract: &MainContract,
     entry_module: &str,
     providers: Option<&ProviderResolution>,
     options: ProcessRunOptions,
-) -> String {
+) -> Result<String, String> {
     let mut imports = vec![
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
         "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
@@ -105,13 +108,11 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: liveProcess"));
             }
             HostService::ChildProcesses => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution.selected.iter().find(|selection| {
-                            selection.service == "std/child-process::ChildProcesses"
-                        })
-                    })
-                    .expect("child process entry requires a resolved provider");
+                let selection = required_provider(
+                    providers,
+                    &binding.field,
+                    "std/child-process::ChildProcesses",
+                )?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -145,17 +146,14 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::Dom | HostService::Navigation | HostService::Storage => {
-                unreachable!("process target compatibility was validated before entry generation")
+                return Err(format!(
+                    "native entry cannot provide environment field `{}` ({})",
+                    binding.field,
+                    binding.service.name()
+                ))
             }
             HostService::Clock => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "std/clock::Clock")
-                    })
-                    .expect("Clock entry requires a resolved provider");
+                let selection = required_provider(providers, &binding.field, "std/clock::Clock")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -260,14 +258,7 @@ pub(super) fn entry_source(
                     ),
                     _ => unreachable!(),
                 };
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == service)
-                    })
-                    .expect("random/entropy entry requires a resolved provider");
+                let selection = required_provider(providers, &binding.field, service)?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -360,14 +351,8 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::HttpClient => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "std/http::HttpClient")
-                    })
-                    .expect("HTTP client entry requires a resolved provider");
+                let selection =
+                    required_provider(providers, &binding.field, "std/http::HttpClient")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -401,14 +386,8 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::HttpServer => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "std/http/server::HttpServer")
-                    })
-                    .expect("HTTP server entry requires a resolved provider");
+                let selection =
+                    required_provider(providers, &binding.field, "std/http/server::HttpServer")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -442,14 +421,8 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::WebSocketClient => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "std/websocket::WebSocketClient")
-                    })
-                    .expect("WebSocket client entry requires a resolved provider");
+                let selection =
+                    required_provider(providers, &binding.field, "std/websocket::WebSocketClient")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -483,13 +456,11 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::WebSocketServer => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution.selected.iter().find(|selection| {
-                            selection.service == "std/websocket/server::WebSocketServer"
-                        })
-                    })
-                    .expect("WebSocket server entry requires a resolved provider");
+                let selection = required_provider(
+                    providers,
+                    &binding.field,
+                    "std/websocket/server::WebSocketServer",
+                )?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -523,14 +494,8 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::Postgres => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "seseragi/postgres::Postgres")
-                    })
-                    .expect("PostgreSQL entry requires a resolved provider");
+                let selection =
+                    required_provider(providers, &binding.field, "seseragi/postgres::Postgres")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -564,14 +529,8 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::Sqlite => {
-                let selection = providers
-                    .and_then(|resolution| {
-                        resolution
-                            .selected
-                            .iter()
-                            .find(|selection| selection.service == "seseragi/sqlite::Sqlite")
-                    })
-                    .expect("SQLite entry requires a resolved provider");
+                let selection =
+                    required_provider(providers, &binding.field, "seseragi/sqlite::Sqlite")?;
                 if !imports_provider_runtime {
                     imports.push(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
@@ -677,7 +636,7 @@ pub(super) fn entry_source(
             )
         })
         .collect::<Vec<_>>();
-    format!(
+    Ok(format!(
         "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet runtimeDefect;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else {{ hasRuntimeDefect = true; runtimeDefect = runDefect; }}\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (cleanupDefect) {{\n  hasRuntimeDefect = true;\n  runtimeDefect ??= cleanupDefect;\n}}\nif (hasRuntimeDefect) {{\n  {}\n}} else if (wasCancelled) {{\n  {}\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
         format!("{}\n{}\n{}", imports.join("\n"), startup.join("\n"), application_imports.join("\n")),
         setup.join("\n"),
@@ -688,7 +647,43 @@ pub(super) fn entry_source(
         defect,
         cancellation,
         failure,
-    )
+    ))
+}
+
+fn required_provider<'a>(
+    providers: Option<&'a ProviderResolution>,
+    field: &str,
+    service: &str,
+) -> Result<&'a ProviderSelectionMetadata, String> {
+    let mut selections = providers
+        .into_iter()
+        .flat_map(|resolution| &resolution.selected)
+        .filter(|selection| selection.field == field && selection.service == service);
+    let Some(selection) = selections.next() else {
+        return Err(format!(
+            "environment field `{field}` requires a resolved provider for `{service}`; use a package with provider configuration"
+        ));
+    };
+    if selections.next().is_some() {
+        return Err(format!(
+            "environment field `{field}` has multiple resolved providers for `{service}`"
+        ));
+    }
+    if selection.target != "bun-process" {
+        return Err(format!(
+            "environment field `{field}` provider for `{service}` targets `{}` instead of `bun-process`",
+            selection.target
+        ));
+    }
+    if selection.provider.is_empty()
+        || selection.entry_module.is_empty()
+        || selection.entry_export.is_empty()
+    {
+        return Err(format!(
+            "environment field `{field}` provider for `{service}` has an empty provider identity or entry"
+        ));
+    }
+    Ok(selection)
 }
 
 fn display_dictionary_expression(
@@ -751,7 +746,8 @@ mod tests {
             "./main.ts",
             None,
             ProcessRunOptions::default(),
-        );
+        )
+        .unwrap();
 
         assert!(source.contains("liveConsole"));
         assert!(source.contains("createProcessStdin"));
@@ -791,7 +787,8 @@ mod tests {
             "./main.ts",
             None,
             ProcessRunOptions::default(),
-        );
+        )
+        .unwrap();
 
         assert_eq!(source.matches("import { liveConsole }").count(), 1);
         assert!(source.contains("\"first\": liveConsole"));
@@ -817,7 +814,8 @@ mod tests {
                 random_seed: RandomSeed::Entropy,
                 diagnostic_format: DiagnosticFormat::Text,
             },
-        );
+        )
+        .unwrap();
 
         assert!(source.contains("import { liveProcess } from \"@seseragi/runtime/process\";"));
         assert!(source.contains("\"process\": liveProcess"));
@@ -846,7 +844,8 @@ mod tests {
                 diagnostic_format: DiagnosticFormat::Json,
                 ..ProcessRunOptions::default()
             },
-        );
+        )
+        .unwrap();
 
         assert!(source.contains("process.env.SESERAGI_HASH_SEED = \"-7\""));
         assert!(source.contains("process.env.SESERAGI_RANDOM_SEED = \"42\""));
@@ -873,7 +872,8 @@ mod tests {
             "./main.ts",
             None,
             ProcessRunOptions::default(),
-        );
+        )
+        .unwrap();
 
         assert!(source.contains("const failureShow = failureDisplay0(failureDisplay1);"));
         assert!(source

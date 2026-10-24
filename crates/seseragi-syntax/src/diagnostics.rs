@@ -191,6 +191,9 @@ impl Diagnostic {
                 "Public let declarations require a type annotation".to_owned()
             }
             "parser.error" => "Could not parse this syntax".to_owned(),
+            "parser.resource-limit" => {
+                "Syntax exceeded the parser's nesting or work limit".to_owned()
+            }
             "alias.arity-mismatch" => {
                 "Type alias was used with the wrong number of arguments".to_owned()
             }
@@ -359,6 +362,7 @@ impl Diagnostic {
                 "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."
             }
             "match.coverage-limit" => "Simplify the patterns or split this match into smaller matches.",
+            "parser.resource-limit" => "Reduce nesting or split the expression into smaller bindings.",
             "parser.expected-pattern" => "Complete the pattern at the highlighted location.",
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
@@ -531,12 +535,22 @@ pub struct DiagnosticEdit {
 
 pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
+    let _scope = crate::resource::ParseScope::new();
     let tokens = lex(source_name.clone(), source);
+    let surface = parse_surface_ast(&source_name, source);
+    if let Some(span) = crate::resource::exceeded() {
+        return resource_diagnostics(source_name, span);
+    }
     let literal_diagnostics = literal_diagnostics(&tokens.tokens);
     let template_diagnostics = template_literal_diagnostics(&tokens.tokens);
+    if let Some(span) = crate::resource::exceeded() {
+        return resource_diagnostics(source_name, span);
+    }
     let source_tokens = tokens.tokens.clone();
-    let surface = parse_surface_ast(source_name, source);
     let cst = parse_cst_from_tokens(tokens);
+    if let Some(span) = crate::resource::exceeded() {
+        return resource_diagnostics(source_name, span);
+    }
     let mut artifact = diagnostics_from_cst(&cst, &source_tokens);
     let surface_declaration_diagnostics = missing_surface_declaration_diagnostics(
         &cst.root,
@@ -579,10 +593,44 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         })
         .collect();
     append_diagnostics(&mut artifact, literal_diagnostics);
+    if let Some(span) = crate::resource::exceeded() {
+        return resource_diagnostics(source_name, span);
+    }
     artifact
 }
 
+fn resource_diagnostics(source: String, span: crate::ByteSpan) -> DiagnosticArtifact {
+    DiagnosticArtifact {
+        schema: 1,
+        source,
+        position_encoding: "utf-8".to_owned(),
+        diagnostics: vec![Diagnostic {
+            id: "d1".to_owned(),
+            code: "SES-P0002".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "parser.resource-limit".to_owned(),
+            primary: ByteRange {
+                start: span.start,
+                end: span.end,
+            },
+            related: vec![],
+            fixes: vec![],
+            type_difference: None,
+        }],
+    }
+}
+
 fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    let at = tokens
+        .first()
+        .map(|token| crate::ByteSpan {
+            start: token.start,
+            end: token.end,
+        })
+        .unwrap_or(crate::ByteSpan { start: 0, end: 0 });
+    let Some(_frame) = crate::resource::enter(at) else {
+        return vec![];
+    };
     let mut diagnostics = Vec::new();
     for token in tokens
         .iter()

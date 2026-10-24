@@ -12,7 +12,11 @@ mod record;
 mod template;
 pub(super) use do_block::split_segments;
 #[cfg(test)]
+mod resource_tests;
+#[cfg(test)]
 mod tests;
+#[cfg(test)]
+thread_local! { static PREFIX_PARSES: std::cell::Cell<usize> = const { std::cell::Cell::new(0) }; }
 
 impl SurfaceParser<'_> {
     pub(super) fn parse_expression(&self, start: usize, end: usize) -> Option<SurfaceExpr> {
@@ -79,12 +83,20 @@ struct ExpressionParser<'tokens> {
 
 impl ExpressionParser<'_> {
     fn parse_expr_bp(&mut self, min_bp: u8, stops: &[TokenKind]) -> Option<SurfaceExpr> {
+        self.skip_trivia();
+        let at = self
+            .tokens
+            .get(self.cursor)
+            .map(token_span)
+            .unwrap_or(ByteSpan { start: 0, end: 0 });
+        let _frame = crate::resource::enter(at)?;
+        let expression = self.parse_expr_bp_inner(min_bp, stops)?;
+        crate::resource::check_expression(&expression).then_some(expression)
+    }
+
+    fn parse_expr_bp_inner(&mut self, min_bp: u8, stops: &[TokenKind]) -> Option<SurfaceExpr> {
         if min_bp == 0 {
-            let saved = self.cursor;
-            if let Some(chain) = self.parse_unresolved_infix_chain(stops) {
-                return Some(chain);
-            }
-            self.cursor = saved;
+            return self.parse_infix_chain(stops);
         }
 
         self.skip_trivia();
@@ -92,6 +104,7 @@ impl ExpressionParser<'_> {
             return None;
         }
         let mut left = self.parse_prefix(stops)?;
+        let mut postfix_steps = 0;
 
         loop {
             self.skip_trivia();
@@ -99,6 +112,11 @@ impl ExpressionParser<'_> {
                 break;
             }
 
+            postfix_steps += 1;
+            if postfix_steps > crate::resource::EXPRESSION_DEPTH_LIMIT {
+                crate::resource::exhaust(token_span(&self.tokens[self.cursor]));
+                return None;
+            }
             // Adjacency distinguishes indexing from applying a function to an Array.
             if self.kind_at_cursor() == Some(TokenKind::PunctuationSquareLeft)
                 && self.tokens[self.cursor].start == left.span().end
@@ -188,47 +206,7 @@ impl ExpressionParser<'_> {
             }
             self.cursor = operator_index + 1;
             let right = self.parse_expr_bp(right_bp, stops)?;
-            let span = ByteSpan {
-                start: left.span().start,
-                end: right.span().end,
-            };
-            left = match operator_kind {
-                ParsedOperator::Apply => SurfaceExpr::Application {
-                    function: Box::new(left),
-                    argument: Box::new(right),
-                    span,
-                },
-                ParsedOperator::Pipeline => SurfaceExpr::Application {
-                    function: Box::new(right),
-                    argument: Box::new(left),
-                    span,
-                },
-                ParsedOperator::Assignment => SurfaceExpr::Assignment {
-                    target: Box::new(left),
-                    value: Box::new(right),
-                    operator_span: token_span(operator),
-                    span,
-                },
-                ParsedOperator::TraitMethod {
-                    method,
-                    method_operand_sources,
-                } => trait_method_application(
-                    method,
-                    &operator.raw,
-                    token_span(operator),
-                    left,
-                    right,
-                    method_operand_sources,
-                    span,
-                ),
-                ParsedOperator::Binary => SurfaceExpr::Binary {
-                    operator: operator.raw.clone(),
-                    operator_span: token_span(operator),
-                    left: Box::new(left),
-                    right: Box::new(right),
-                    span,
-                },
-            };
+            left = apply_operator(operator, operator_kind, left, right);
         }
 
         Some(left)
@@ -238,9 +216,9 @@ impl ExpressionParser<'_> {
     /// whose fixity must be supplied by module semantics. Known operators are
     /// kept in the same flat sequence so a later stage can reassociate the
     /// whole expression rather than inheriting an arbitrary parser choice.
-    /// Expressions containing only language-defined operators continue down
-    /// the existing Pratt path unchanged.
-    fn parse_unresolved_infix_chain(&mut self, stops: &[TokenKind]) -> Option<SurfaceExpr> {
+    /// Known-only sequences are associated from these same parsed operands;
+    /// retrying Pratt parsing would recursively parse grouped operands twice.
+    fn parse_infix_chain(&mut self, stops: &[TokenKind]) -> Option<SurfaceExpr> {
         const INFIX_OPERAND_BP: u8 = 70;
 
         self.skip_trivia();
@@ -266,16 +244,24 @@ impl ExpressionParser<'_> {
             self.cursor = operator.next;
             let operand = self.parse_expr_bp(INFIX_OPERAND_BP, stops)?;
             let operator_span = token_span(&operator.token);
-            steps.push(SurfaceInfixStep {
-                operator: operator.token.raw,
-                operator_span,
-                operand,
-            });
+            if steps.len() >= crate::resource::EXPRESSION_DEPTH_LIMIT {
+                crate::resource::exhaust(operator_span);
+                return None;
+            }
+            steps.push((operator.token, operand, operator_span));
         }
 
         if !contains_unresolved {
-            return None;
+            return associate_known_infix(first, steps);
         }
+        let steps = steps
+            .into_iter()
+            .map(|(operator, operand, operator_span)| SurfaceInfixStep {
+                operator: operator.raw,
+                operator_span,
+                operand,
+            })
+            .collect::<Vec<_>>();
         let end = steps.last()?.operand.span().end;
         Some(SurfaceExpr::InfixChain {
             span: ByteSpan {
@@ -324,6 +310,8 @@ impl ExpressionParser<'_> {
     }
 
     fn parse_prefix(&mut self, stops: &[TokenKind]) -> Option<SurfaceExpr> {
+        #[cfg(test)]
+        PREFIX_PARSES.with(|count| count.set(count.get() + 1));
         self.skip_trivia();
         let index = self.cursor;
         let token = self.tokens.get(index)?;
@@ -586,6 +574,10 @@ impl ExpressionParser<'_> {
                 None
             };
             let name_span = token_span(&parameter);
+            if parameters.len() >= crate::resource::EXPRESSION_DEPTH_LIMIT {
+                crate::resource::exhaust(name_span);
+                return None;
+            }
             parameters.push(SurfaceLambdaParameter {
                 name: parameter.raw,
                 name_span,
@@ -651,6 +643,88 @@ impl ExpressionParser<'_> {
         {
             self.cursor += 1;
         }
+    }
+}
+
+/// Iterative precedence reduction preserves Pratt's associativity without
+/// reparsing an operand or recursively descending a right-associative chain.
+fn associate_known_infix(
+    first: SurfaceExpr,
+    steps: Vec<(Token, SurfaceExpr, ByteSpan)>,
+) -> Option<SurfaceExpr> {
+    let mut operands = vec![first];
+    let mut operators: Vec<Token> = Vec::new();
+    for (operator, operand, _) in steps {
+        let (left_bp, _, _) = binary_binding_power(&operator)?;
+        while operators.last().is_some_and(|previous| {
+            let (_, right_bp, _) = binary_binding_power(previous).unwrap();
+            left_bp < right_bp
+        }) {
+            reduce_operator(&mut operands, operators.pop()?)?;
+        }
+        operators.push(operator);
+        operands.push(operand);
+    }
+    while let Some(operator) = operators.pop() {
+        reduce_operator(&mut operands, operator)?;
+    }
+    operands.pop()
+}
+
+fn reduce_operator(operands: &mut Vec<SurfaceExpr>, operator: Token) -> Option<()> {
+    let right = operands.pop()?;
+    let left = operands.pop()?;
+    let (_, _, kind) = binary_binding_power(&operator)?;
+    operands.push(apply_operator(&operator, kind, left, right));
+    Some(())
+}
+
+fn apply_operator(
+    operator: &Token,
+    kind: ParsedOperator,
+    left: SurfaceExpr,
+    right: SurfaceExpr,
+) -> SurfaceExpr {
+    let span = ByteSpan {
+        start: left.span().start,
+        end: right.span().end,
+    };
+    match kind {
+        ParsedOperator::Apply => SurfaceExpr::Application {
+            function: Box::new(left),
+            argument: Box::new(right),
+            span,
+        },
+        ParsedOperator::Pipeline => SurfaceExpr::Application {
+            function: Box::new(right),
+            argument: Box::new(left),
+            span,
+        },
+        ParsedOperator::Assignment => SurfaceExpr::Assignment {
+            target: Box::new(left),
+            value: Box::new(right),
+            operator_span: token_span(operator),
+            span,
+        },
+        ParsedOperator::TraitMethod {
+            method,
+            method_operand_sources,
+        } => trait_method_application(
+            method,
+            &operator.raw,
+            token_span(operator),
+            left,
+            right,
+            method_operand_sources,
+            span,
+        ),
+        ParsedOperator::Binary => SurfaceExpr::Binary {
+            operator: operator.raw.clone(),
+            operator_span: token_span(operator),
+            left: Box::new(left),
+            right: Box::new(right),
+            span,
+        },
     }
 }
 

@@ -9,6 +9,11 @@ impl SurfaceParser<'_> {
     }
 
     pub(super) fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
+        let at = self
+            .next_significant_token(start, end)
+            .and_then(|index| self.byte_span(index))
+            .unwrap_or(ByteSpan { start: 0, end: 0 });
+        let _frame = crate::resource::enter(at)?;
         let (parameter, after_parameter) = self.parse_requirement_merge_type(start, end)?;
         let next = self.next_significant_token(after_parameter, end);
         if next.is_some_and(|index| self.kind_at(index) == Some(TokenKind::OperatorArrow)) {
@@ -59,6 +64,11 @@ impl SurfaceParser<'_> {
     }
 
     pub(super) fn parse_type_atom(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
+        let at = self
+            .next_significant_token(start, end)
+            .and_then(|index| self.byte_span(index))
+            .unwrap_or(ByteSpan { start: 0, end: 0 });
+        let _frame = crate::resource::enter(at)?;
         let type_index = self.next_significant_token(start, end)?;
         if self.kind_at(type_index) == Some(TokenKind::PunctuationBraceLeft) {
             return self.parse_record_type_ref(type_index, end);

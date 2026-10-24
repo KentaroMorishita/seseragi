@@ -37,6 +37,7 @@ mod validation;
 pub(crate) use validation::declaration_diagnostics;
 
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
+    let _scope = crate::resource::ParseScope::new();
     let stream = lex(source_name, source);
     let non_eof_token_count = stream
         .tokens

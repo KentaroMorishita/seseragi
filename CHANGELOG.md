@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.84] - 2026-10-23
+
+### Fixed
+
+- Parse infix operands once and bound parser recursion, work and expression/pattern depth with source-range diagnostics. Retain each declaration overload signature once instead of keeping every previous prefix.
+- Keep native execution directories private and owned through cleanup. Stage experimental Rust outputs before publication, reject destination aliases, and restore previous outputs if publication fails.
+- Return native entry diagnostics for missing or malformed provider selections. Combine JSON compiler warnings and entry errors into one document while preserving warning display before normal execution.
+
 ## [0.61.83] - 2026-10-23
 
 ### Added

@@ -13,3 +13,6 @@ seseragi-project = { path = "../seseragi-project" }
 seseragi-driver = { path = "../seseragi-driver" }
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tempfile = "3.27"

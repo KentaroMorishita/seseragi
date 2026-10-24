@@ -76,10 +76,11 @@ pub fn run_document_entry_in_directory(
         )));
     }
     let application_directory = absolute_application_directory(application_directory)?;
-    let directory = prepare_directory().map_err(RunError::Host)?;
+    let owned_directory = prepare_directory().map_err(RunError::Host)?;
+    let directory = owned_directory.path();
     let result = (|| {
-        stage_project_modules(compiled, &directory).map_err(RunError::Host)?;
-        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        stage_project_modules(compiled, directory).map_err(RunError::Host)?;
+        crate::stage_typescript_package(directory).map_err(RunError::Host)?;
         let entry = compiled
             .modules
             .get(entry_module)
@@ -96,18 +97,13 @@ pub fn run_document_entry_in_directory(
                     random_seed: super::RandomSeed::Fixed(0),
                     ..ProcessRunOptions::default()
                 },
-            ),
+            )
+            .map_err(RunError::InvalidEntry)?,
         )
         .map_err(|error| RunError::Host(format!("failed to stage documentation entry: {error}")))?;
-        super::run_target_captured(&directory, &application_directory)
+        super::run_target_captured(directory, &application_directory)
     })();
-    let cleanup = fs::remove_dir_all(&directory)
-        .map_err(|error| RunError::Host(format!("failed to clean execution directory: {error}")));
-    match (result, cleanup) {
-        (Ok(outcome), Ok(())) => Ok(outcome),
-        (Err(error), _) => Err(error),
-        (Ok(_), Err(error)) => Err(error),
-    }
+    finish_run(result, owned_directory)
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -127,18 +123,19 @@ pub fn run_local_tests_in_directory(
     options: &TestRunOptions,
 ) -> Result<RunOutcome, RunError> {
     let application_directory = absolute_application_directory(application_directory)?;
-    let directory = prepare_directory().map_err(RunError::Host)?;
+    let owned_directory = prepare_directory().map_err(RunError::Host)?;
+    let directory = owned_directory.path();
     let result = (|| {
-        stage_project_modules(&project.compiled, &directory).map_err(RunError::Host)?;
-        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        stage_project_modules(&project.compiled, directory).map_err(RunError::Host)?;
+        crate::stage_typescript_package(directory).map_err(RunError::Host)?;
         fs::write(
             directory.join("entry.ts"),
             test_entry_source(project, options)?,
         )
         .map_err(|error| RunError::Host(format!("failed to stage test entry: {error}")))?;
-        run_target(&directory, Some(&application_directory))
+        run_target(directory, Some(&application_directory))
     })();
-    finish_run(result, &directory)
+    finish_run(result, owned_directory)
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
@@ -175,12 +172,13 @@ pub fn run_local_benchmarks_in_directory(
     options: &BenchmarkRunOptions,
 ) -> Result<RunOutcome, RunError> {
     let application_directory = absolute_application_directory(application_directory)?;
-    let directory = prepare_directory().map_err(RunError::Host)?;
+    let owned_directory = prepare_directory().map_err(RunError::Host)?;
+    let directory = owned_directory.path();
     let result = (|| {
-        stage_project_modules(&project.compiled, &directory).map_err(RunError::Host)?;
-        stage_foreign_host_directories(&project.foreign_host_directories, &directory)
+        stage_project_modules(&project.compiled, directory).map_err(RunError::Host)?;
+        stage_foreign_host_directories(&project.foreign_host_directories, directory)
             .map_err(RunError::Host)?;
-        crate::stage_typescript_package(&directory).map_err(RunError::Host)?;
+        crate::stage_typescript_package(directory).map_err(RunError::Host)?;
         let mut source = String::from(
             "import { runBenchmarkModules } from \"@seseragi/runtime/benchmark-host\";\ntry {\n",
         );
@@ -205,9 +203,9 @@ pub fn run_local_benchmarks_in_directory(
         source.push_str(&format!("process.exit(await runBenchmarkModules([{}], {options}));\n}} catch (error) {{ console.error('benchmark discovery:', error); process.exit(2); }}\n", modules.join(", ")));
         fs::write(directory.join("entry.ts"), source)
             .map_err(|error| RunError::Host(error.to_string()))?;
-        run_target(&directory, Some(&application_directory))
+        run_target(directory, Some(&application_directory))
     })();
-    finish_run(result, &directory)
+    finish_run(result, owned_directory)
 }
 
 fn test_entry_source(
@@ -279,17 +277,18 @@ fn run_compiled_project(
 ) -> Result<RunOutcome, RunError> {
     let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
-    let directory = prepare_directory().map_err(RunError::Host)?;
+    let owned_directory = prepare_directory().map_err(RunError::Host)?;
+    let directory = owned_directory.path();
     let result = run_in_directory(
         compiled,
         entry_module,
         foreign_host_directories,
         &contract,
-        &directory,
+        directory,
         options,
         application_directory,
     );
-    finish_run(result, &directory)
+    finish_run(result, owned_directory)
 }
 
 fn run_in_directory(
@@ -301,26 +300,25 @@ fn run_in_directory(
     options: ProcessRunOptions,
     application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
-    stage_project_modules(compiled, directory).map_err(RunError::Host)?;
-    stage_foreign_host_directories(foreign_host_directories, directory).map_err(RunError::Host)?;
-    crate::stage_typescript_package(directory).map_err(RunError::Host)?;
     let entry = compiled
         .modules
         .get(entry_module)
-        .expect("entry was validated");
+        .ok_or_else(|| RunError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
     let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)
         .map_err(RunError::Host)?;
     let entry_specifier = format!("./{}", entry_path.to_string_lossy());
-    fs::write(
-        directory.join("entry.ts"),
-        entry_source(
-            contract,
-            &entry_specifier,
-            compiled.provider_resolution.as_ref(),
-            options,
-        ),
+    let source = entry_source(
+        contract,
+        &entry_specifier,
+        compiled.provider_resolution.as_ref(),
+        options,
     )
-    .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
+    .map_err(RunError::InvalidEntry)?;
+    stage_project_modules(compiled, directory).map_err(RunError::Host)?;
+    stage_foreign_host_directories(foreign_host_directories, directory).map_err(RunError::Host)?;
+    crate::stage_typescript_package(directory).map_err(RunError::Host)?;
+    fs::write(directory.join("entry.ts"), source)
+        .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
     run_target(directory, application_directory)
 }
 

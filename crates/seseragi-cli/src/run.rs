@@ -54,6 +54,38 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
             return Ok(2);
         }
     };
+    let preflight = seseragi_runtime::validate_main_process_entry(&compiled);
+    if let Err(seseragi_runtime::RunError::InvalidEntry(message)) = &preflight {
+        if format == DiagnosticFormat::Json {
+            let mut artifact = compiled.diagnostics.clone();
+            let primary = seseragi_syntax::ByteRange { start: 0, end: 0 };
+            artifact.diagnostics.push(seseragi_syntax::Diagnostic {
+                id: "entry.invalid:0".to_owned(),
+                code: "SES-K0001".to_owned(),
+                severity: seseragi_syntax::DiagnosticSeverity::Error,
+                message_key: "entry.invalid".to_owned(),
+                primary,
+                related: vec![seseragi_syntax::RelatedDiagnostic {
+                    message: message.clone(),
+                    primary,
+                }],
+                fixes: Vec::new(),
+                type_difference: None,
+            });
+            eprint!(
+                "{}",
+                render_diagnostics(
+                    format,
+                    &[DiagnosticDocument {
+                        path: &source_name,
+                        source: &source,
+                        artifact: &artifact,
+                    }],
+                )?
+            );
+            return Ok(2);
+        }
+    }
     if !compiled.diagnostics.diagnostics.is_empty() {
         eprint!(
             "{}",
@@ -67,6 +99,7 @@ fn run_file(invocation: &Invocation) -> Result<i32, String> {
             )?
         );
     }
+    preflight.map_err(|error| error.to_string())?;
     let options = invocation.apply(ProcessRunOptions::default())?;
     let source_context = seseragi_runtime::SourceFileContext::new(path)?;
     seseragi_runtime::run_main_with_source_context(&compiled, options, &source_context)

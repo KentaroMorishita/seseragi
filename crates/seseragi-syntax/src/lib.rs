@@ -8,6 +8,7 @@ mod interface_model;
 mod lexer;
 mod line_continuation;
 mod literal;
+mod resource;
 mod source;
 mod standard_operator;
 mod surface;

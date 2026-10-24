@@ -1,7 +1,23 @@
 use crate::surface_model::{ByteSpan, SurfacePattern, SurfaceRecordPatternField};
 use crate::token::{Token, TokenKind};
 
+#[cfg(test)]
+mod tests;
+
+#[cfg(test)]
+thread_local! { static SIGNIFICANT_TOKEN_VISITS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) }; }
+
 pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) -> SurfacePattern {
+    let at = tokens
+        .get(start)
+        .map(|token| ByteSpan {
+            start: token.start,
+            end: token.end,
+        })
+        .unwrap_or(ByteSpan { start: 0, end: 0 });
+    let Some(_frame) = crate::resource::enter(at) else {
+        return SurfacePattern::Error { span: at };
+    };
     let significant = significant_indices(tokens, start, end);
     let Some(first) = significant.first().copied() else {
         let at = tokens.get(start).map(|token| token.start).unwrap_or(0);
@@ -15,6 +31,103 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
         end: tokens[last].end,
     };
 
+    // Constructor application is right-nested, but scanning each argument as a
+    // fresh range rescans the same suffix and uses one native frame per prefix.
+    // Consume the already indexed prefix once, then build its nodes backwards.
+    let mut remaining = significant.as_slice();
+    let mut constructors = Vec::new();
+    let mut depth = crate::resource::PatternDepth::default();
+    let mut argument = loop {
+        let first = remaining[0];
+        let current_span = ByteSpan {
+            start: tokens[first].start,
+            end: span.end,
+        };
+        if !depth.reserve(current_span) {
+            return SurfacePattern::Error { span };
+        }
+        // An unqualified constructor followed by braces is a struct pattern,
+        // not another constructor prefix. Its fields retain the same budget.
+        if tokens[first].kind == TokenKind::IdentifierUpper
+            && remaining.get(1).is_some_and(|index| {
+                tokens[*index].kind == TokenKind::PunctuationBraceLeft
+                    && tokens[last].kind == TokenKind::PunctuationBraceRight
+            })
+        {
+            let record = parse_record_pattern(tokens, remaining[1], last, current_span);
+            break Some(match record {
+                SurfacePattern::Record { fields, .. } => SurfacePattern::Struct {
+                    name: tokens[first].raw.clone(),
+                    name_span: ByteSpan {
+                        start: tokens[first].start,
+                        end: tokens[first].end,
+                    },
+                    fields,
+                    span: current_span,
+                },
+                _ => SurfacePattern::Error { span: current_span },
+            });
+        }
+        let (name, name_span, consumed) = if tokens[first].kind == TokenKind::IdentifierUpper {
+            (
+                tokens[first].raw.clone(),
+                ByteSpan {
+                    start: tokens[first].start,
+                    end: tokens[first].end,
+                },
+                1,
+            )
+        } else if tokens[first].kind == TokenKind::IdentifierLower
+            && remaining
+                .get(1)
+                .is_some_and(|index| tokens[*index].kind == TokenKind::PunctuationDot)
+            && remaining
+                .get(2)
+                .is_some_and(|index| tokens[*index].kind == TokenKind::IdentifierUpper)
+        {
+            let constructor_name = remaining[2];
+            (
+                format!("{}.{}", tokens[first].raw, tokens[constructor_name].raw),
+                ByteSpan {
+                    start: tokens[first].start,
+                    end: tokens[constructor_name].end,
+                },
+                3,
+            )
+        } else {
+            break Some(parse_non_constructor_pattern(
+                tokens,
+                remaining,
+                current_span,
+            ));
+        };
+        constructors.push((name, name_span, current_span));
+        remaining = &remaining[consumed..];
+        if remaining.is_empty() {
+            break None;
+        }
+    };
+    if matches!(argument, Some(SurfacePattern::Error { .. })) {
+        return SurfacePattern::Error { span };
+    }
+    for (name, name_span, span) in constructors.into_iter().rev() {
+        argument = Some(SurfacePattern::Constructor {
+            name,
+            name_span,
+            argument: argument.map(Box::new),
+            span,
+        });
+    }
+    argument.unwrap()
+}
+
+fn parse_non_constructor_pattern(
+    tokens: &[Token],
+    significant: &[usize],
+    span: ByteSpan,
+) -> SurfacePattern {
+    let first = significant[0];
+    let last = *significant.last().unwrap();
     if tokens[first].kind == TokenKind::PunctuationParenLeft
         && tokens[last].kind == TokenKind::PunctuationParenRight
     {
@@ -31,77 +144,6 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
         && tokens[last].kind == TokenKind::PunctuationBraceRight
     {
         return parse_record_pattern(tokens, first, last, span);
-    }
-    if tokens[first].kind == TokenKind::IdentifierUpper {
-        let significant = significant_indices(tokens, first + 1, end);
-        if significant.first().is_some_and(|index| {
-            tokens[*index].kind == TokenKind::PunctuationBraceLeft
-                && tokens[last].kind == TokenKind::PunctuationBraceRight
-        }) {
-            let open = significant[0];
-            if let SurfacePattern::Record { fields, .. } =
-                parse_record_pattern(tokens, open, last, span)
-            {
-                return SurfacePattern::Struct {
-                    name: tokens[first].raw.clone(),
-                    name_span: ByteSpan {
-                        start: tokens[first].start,
-                        end: tokens[first].end,
-                    },
-                    fields,
-                    span,
-                };
-            }
-            return SurfacePattern::Error { span };
-        }
-    }
-    let constructor = if tokens[first].kind == TokenKind::IdentifierUpper {
-        Some((
-            tokens[first].raw.clone(),
-            ByteSpan {
-                start: tokens[first].start,
-                end: tokens[first].end,
-            },
-            first + 1,
-        ))
-    } else if tokens[first].kind == TokenKind::IdentifierLower
-        && significant
-            .get(1)
-            .is_some_and(|index| tokens[*index].kind == TokenKind::PunctuationDot)
-        && significant
-            .get(2)
-            .is_some_and(|index| tokens[*index].kind == TokenKind::IdentifierUpper)
-    {
-        let constructor_name = significant[2];
-        Some((
-            format!("{}.{}", tokens[first].raw, tokens[constructor_name].raw),
-            ByteSpan {
-                start: tokens[first].start,
-                end: tokens[constructor_name].end,
-            },
-            constructor_name + 1,
-        ))
-    } else {
-        None
-    };
-    if let Some((name, name_span, argument_start)) = constructor {
-        let argument = (significant
-            .last()
-            .is_some_and(|last| *last >= argument_start))
-        .then(|| parse_pattern_range(tokens, argument_start, end))
-        .map(Box::new);
-        if argument
-            .as_deref()
-            .is_some_and(|argument| matches!(argument, SurfacePattern::Error { .. }))
-        {
-            return SurfacePattern::Error { span };
-        }
-        return SurfacePattern::Constructor {
-            name,
-            name_span,
-            argument,
-            span,
-        };
     }
     if significant.len() == 2
         && tokens[first].kind == TokenKind::OperatorArithmetic
@@ -353,6 +395,8 @@ fn split_top_level_commas(tokens: &[Token], start: usize, end: usize) -> Vec<(us
 fn significant_indices(tokens: &[Token], start: usize, end: usize) -> Vec<usize> {
     (start..end)
         .filter(|index| {
+            #[cfg(test)]
+            SIGNIFICANT_TOKEN_VISITS.with(|visits| visits.set(visits.get() + 1));
             tokens.get(*index).is_some_and(|token| {
                 !matches!(
                     token.kind,

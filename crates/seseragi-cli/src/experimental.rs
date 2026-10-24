@@ -1,5 +1,6 @@
 use seseragi_driver::{compile_core_module, CompileInput};
 use std::{fs, path::PathBuf, process::Command};
+mod output;
 pub(crate) mod program_wasm;
 
 pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
@@ -58,55 +59,41 @@ pub(crate) fn run(arguments: &[String]) -> Result<i32, String> {
             vec![fs::canonicalize(path).map_err(|e| e.to_string())?],
         )
     };
-    // Check the complete target capability before writing any output.
-    // Keep generated source, manifest, and compiler artifacts together.
-    let (rust_path, metadata_path) = if native {
-        fs::create_dir_all(&destination).map_err(|e| e.to_string())?;
-        (
-            destination.join("program.rs"),
-            destination.join("rust-backend.json"),
-        )
+    // Target admission precedes filesystem changes. Generate and compile only
+    // inside owned staging, then replace the checked output leaves together.
+    let selected = if native {
+        output::Destination::Native(&destination)
     } else {
-        (
-            destination.clone(),
-            destination.with_extension("rust-backend.json"),
-        )
+        output::Destination::Rust(&destination)
     };
-    if [&rust_path, &metadata_path].iter().any(|output| {
-        fs::canonicalize(output)
-            .ok()
-            .is_some_and(|p| source_paths.contains(&p))
-    }) {
-        return Err("output must differ from the source file".into());
-    }
-    fs::write(&rust_path, &artifact.source).map_err(|e| format!("{}: {e}", rust_path.display()))?;
-    fs::write(
-        &metadata_path,
-        serde_json::to_string_pretty(&artifact.metadata).map_err(|e| e.to_string())?,
-    )
-    .map_err(|e| e.to_string())?;
-    if native {
-        let executable = destination.join(if cfg!(windows) {
-            "program.exe"
-        } else {
-            "program"
-        });
-        let output = Command::new("rustc")
-            .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
-            .arg(&rust_path)
-            .arg("-o")
-            .arg(&executable)
-            .output()
-            .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
-        if !output.status.success() {
-            return Err(format!(
-                "Rust target compilation failed:\n{}",
-                String::from_utf8_lossy(&output.stderr)
-            ));
+    output::publish(selected, &source_paths, |staged| {
+        fs::write(&staged.rust, &artifact.source).map_err(|e| e.to_string())?;
+        fs::write(
+            &staged.metadata,
+            serde_json::to_string_pretty(&artifact.metadata).map_err(|e| e.to_string())?,
+        )
+        .map_err(|e| e.to_string())?;
+        if let Some(executable) = &staged.executable {
+            let output = Command::new("rustc")
+                .args(["--edition=2021", "--crate-name", "seseragi_program", "-O"])
+                .arg(&staged.rust)
+                .arg("-o")
+                .arg(executable)
+                .output()
+                .map_err(|e| format!("could not start rustc: {e}; install a Rust toolchain"))?;
+            if !output.status.success() {
+                return Err(format!(
+                    "Rust target compilation failed:\n{}",
+                    String::from_utf8_lossy(&output.stderr)
+                ));
+            }
         }
-        println!("{}", executable.display());
+        Ok(())
+    })?;
+    if native {
+        println!("{}", destination.join(output::EXECUTABLE).display());
     } else {
-        println!("{}", rust_path.display());
+        println!("{}", destination.display());
     }
     Ok(0)
 }

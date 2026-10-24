@@ -20,6 +20,7 @@ seseragi-runtime = { path = "../seseragi-runtime" }
 seseragi-syntax = { path = "../seseragi-syntax" }
 serde_json.workspace = true
 sha2.workspace = true
+tempfile = "3.27"
 
 [dev-dependencies]
 seseragi-lsp = { path = "../seseragi-lsp" }
