@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.92] - 2026-10-25
+
+### Fixed
+
+- Type generated process bootstrap callback parameters so original program modules and their entry pass strict TypeScript checks. Preserve initialization Defect diagnostics and exit 70 before main runs, including JSON diagnostic source lookup.
+
 ## [0.61.91] - 2026-10-25
 
 ### Fixed
