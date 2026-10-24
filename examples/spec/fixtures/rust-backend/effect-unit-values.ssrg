@@ -1,0 +1,27 @@
+import * as effects from "std/effect"
+import * as refs from "std/ref"
+
+pub effect fn main = do {
+  value <- succeed ()
+  let stored = ()
+  saved <- succeed stored
+  println ("literal: " + show value)
+  println ("stored: " + show saved)
+  count <- refs.make 0
+  released <- refs.make 0
+  let cold = do {
+    refs.update (\n -> n + 1) count
+    succeed ()
+  }
+  before <- refs.get count
+  println ("created: " + show before)
+  effects.scoped $ do {
+    effects.acquireRelease (succeed ()) (\_ -> refs.update (\n -> n + 1) released)
+    cold
+    cold
+  }
+  runs <- refs.get count
+  releases <- refs.get released
+  println ("runs: " + show runs)
+  println ("released: " + show releases)
+}
