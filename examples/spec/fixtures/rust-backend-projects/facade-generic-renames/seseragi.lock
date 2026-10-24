@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "fixture/native-facade-generic-renames@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/local-dictionaries-model@1.0.0#path:vendor/model"
+name = "fixture/local-dictionaries-model"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/model"
+manifest_digest = "sha256:1b8c2f735dccc5c95597baca31e0c0ca3176b1baca893f860e99f97452557b9c"
+content_digest = "sha256:1fe72bb54204de6613308bb7e656cb4329461a67a1a67066b2accb4a73be2d41"
+dependencies = []
+
+[[packages]]
+id = "fixture/native-facade-generic-renames@0.0.0#workspace:."
+name = "fixture/native-facade-generic-renames"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:800b39e2b0f4ec532468153ddc371ee2afe85f67deb42eb9e2a51956378d2c1a"
+content_digest = "sha256:4be1a9ba2f9ec9afeafaad83f0bdfdf859dc55afa9307857b4d3acc5b729c75a"
+dependencies = [
+  { import = "model", package = "fixture/local-dictionaries-model@1.0.0#path:vendor/model" },
+]

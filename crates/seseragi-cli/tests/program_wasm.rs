@@ -1409,6 +1409,136 @@ fn nominal_unit_is_not_an_anonymous_imported_effect_argument() {
 }
 
 #[test]
+fn facade_generic_renames_keep_cold_ref_closures_and_raw_strict_ts() {
+    let scratch = Scratch::new();
+    let root = root();
+    let cli = Path::new(env!("CARGO_BIN_EXE_seseragi"));
+    let fixture = root.join("examples/spec/fixtures/rust-backend-projects/facade-generic-renames");
+    let engines = [runtime("bun", &scratch.0), runtime("node", &scratch.0)];
+    for (name, box_name, trait_name) in [
+        ("control", "Box", "Render"),
+        ("type", "ExportedBox", "Render"),
+        ("trait", "Box", "ExportedTrait"),
+        ("both", "ExportedBox", "ExportedTrait"),
+    ] {
+        let case = scratch.0.join(name);
+        fs::create_dir(&case).unwrap();
+        let package = case.join("package");
+        copy_tree(&fixture, &package);
+        fs::write(
+            package.join("src/facade.ssrg"),
+            format!("pub import {{Box as {box_name}, Render as {trait_name}, rendered, boxed}} from \"model\"\n"),
+        ).unwrap();
+        let main = package.join("src/main.ssrg");
+        fs::write(
+            &main,
+            fs::read_to_string(&main)
+                .unwrap()
+                .replace("ExportedBox as Foreign", &format!("{box_name} as Foreign"))
+                .replace(
+                    "ExportedTrait as Display",
+                    &format!("{trait_name} as Display"),
+                ),
+        )
+        .unwrap();
+        successful(bounded(
+            Command::new(cli).args(["lock", "update"]).arg(&package),
+            &scratch.0,
+        ));
+        for (entry, oracle) in [("main", "expected.stdout"), ("probe", "probe.stdout")] {
+            let native = case.join(format!("native-{entry}"));
+            successful(bounded(
+                Command::new(cli)
+                    .args(["experimental", "build-native"])
+                    .arg(&package)
+                    .args(["--entry", entry, "--out-dir"])
+                    .arg(&native),
+                &scratch.0,
+            ));
+            let cwd = case.join(format!("native-run-{entry}"));
+            fs::create_dir(&cwd).unwrap();
+            let executed = successful(bounded(
+                Command::new(native.join(if cfg!(windows) {
+                    "program.exe"
+                } else {
+                    "program"
+                }))
+                .current_dir(cwd)
+                .env("PATH", "")
+                .env("SESERAGI_NATIVE_METRICS", "1"),
+                &scratch.0,
+            ));
+            assert_eq!(
+                executed.stdout,
+                fs::read(package.join(oracle)).unwrap(),
+                "{name}/{entry}"
+            );
+            assert!(String::from_utf8_lossy(&executed.stderr).contains("managed-live=0"));
+        }
+        let loaded = seseragi_project::load_local_project(&package).unwrap();
+        for (profile, value) in [
+            ("development", seseragi_driver::BuildProfile::Development),
+            ("release", seseragi_driver::BuildProfile::Release),
+        ] {
+            let site = case.join(profile);
+            successful(bounded(
+                Command::new(cli)
+                    .arg("build")
+                    .arg(&package)
+                    .args(["--target", "process", "--profile", profile, "--out-dir"])
+                    .arg(&site),
+                &scratch.0,
+            ));
+            let raw = case.join(format!("raw-{profile}"));
+            fs::create_dir(&raw).unwrap();
+            let compiled =
+                seseragi_driver::compile_local_project_with_profile(&loaded, Some(value)).unwrap();
+            let mut files = Vec::new();
+            for module in compiled.compiled.modules.values() {
+                let file = raw.join(&module.generated.metadata.outputs.typescript);
+                assert!(file.starts_with(&raw));
+                fs::create_dir_all(file.parent().unwrap()).unwrap();
+                fs::write(&file, &module.generated.typescript).unwrap();
+                files.push(file);
+            }
+            let config = serde_json::json!({"compilerOptions":{"strict":true,"skipLibCheck":false,"noEmit":true,"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","allowImportingTsExtensions":true,"lib":["ES2023","DOM","DOM.Iterable"],"types":["node"],"typeRoots":[root.join("node_modules/@types")],"baseUrl":root,"paths":{"@seseragi/runtime/*":["runtime/ts/src/*"]}},"files":files});
+            fs::write(
+                raw.join("tsconfig.json"),
+                serde_json::to_vec(&config).unwrap(),
+            )
+            .unwrap();
+            successful(bounded(
+                Command::new(&engines[1])
+                    .arg(root.join("node_modules/typescript/bin/tsc"))
+                    .arg("--project")
+                    .arg(raw.join("tsconfig.json")),
+                &scratch.0,
+            ));
+            let manifest: serde_json::Value =
+                serde_json::from_slice(&fs::read(site.join("artifact-manifest.json")).unwrap())
+                    .unwrap();
+            for (index, engine) in engines.iter().enumerate() {
+                let cwd = case.join(format!("{profile}-run-{index}"));
+                fs::create_dir(&cwd).unwrap();
+                let executed = successful(bounded(
+                    Command::new(engine)
+                        .arg(site.join(manifest["entry"].as_str().unwrap()))
+                        .current_dir(cwd)
+                        .env("PATH", ""),
+                    &scratch.0,
+                ));
+                assert_eq!(
+                    executed.stdout,
+                    fs::read(package.join("expected.stdout")).unwrap(),
+                    "{name}/{profile}/{index}"
+                );
+                assert!(executed.stderr.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
 fn literal_unit_program_effects_replay_and_finish_their_finalizers() {
     let scratch = Scratch::new();
     let source = root().join("examples/spec/fixtures/rust-backend/program-wasm-unit-values.ssrg");

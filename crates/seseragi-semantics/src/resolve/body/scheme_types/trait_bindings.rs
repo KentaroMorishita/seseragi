@@ -41,6 +41,28 @@ fn collect_constraint_bindings<'a>(
 ) -> Option<Vec<ExternalTraitBinding>> {
     let mut bindings = Vec::new();
     for constraint in constraints {
+        if let Some(canonical) = &constraint.trait_identity {
+            // Final interfaces already selected the trait declaration. Its
+            // source spelling need not be the facade's renamed export.
+            if candidates
+                .values()
+                .flatten()
+                .any(|binding| binding.canonical == *canonical)
+            {
+                let binding = ExternalTraitBinding {
+                    spelling: constraint.name.clone(),
+                    canonical: canonical.clone(),
+                };
+                if !bindings.contains(&binding) {
+                    bindings.push(binding);
+                }
+            } else if !crate::prelude::trait_by_name(&constraint.name)
+                .is_some_and(|registered| registered.canonical == canonical)
+            {
+                return None;
+            }
+            continue;
+        }
         match candidates.get(&constraint.name) {
             Some(matches) => {
                 let [binding] = matches.as_slice() else {
@@ -112,6 +134,54 @@ mod tests {
         ByteSpan, InterfaceConstraint, InterfaceDependency, InterfaceExport, InterfaceImport,
         InterfaceMethod, InterfaceScheme, InterfaceType, ModuleInterface, Visibility,
     };
+
+    #[test]
+    fn canonical_constraint_uses_a_renamed_trait_without_rebinding_its_owner() {
+        let mut ready = trait_export("Ready", Vec::new());
+        ready.name = "ExportedReady".to_owned();
+        let mut describe = function_export("describe");
+        describe.scheme.constraints.push(InterfaceConstraint {
+            name: "Ready".to_owned(),
+            trait_identity: Some("fixture/provider::trait(Ready)".to_owned()),
+            arguments: vec![named("T")],
+        });
+        let provider = module(vec![ready]);
+        let bindings = export_scheme_trait_bindings(&provider, &describe).unwrap();
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "Ready");
+        assert_eq!(bindings[0].canonical, "fixture/provider::trait(Ready)");
+
+        describe.scheme.constraints[0].trait_identity =
+            Some("fixture/unrelated::trait(Ready)".to_owned());
+        assert_eq!(export_scheme_trait_bindings(&provider, &describe), None);
+    }
+
+    #[test]
+    fn unknown_canonical_constraint_cannot_fall_back_to_a_prelude_spelling() {
+        let mut describe = function_export("describe");
+        describe.scheme.constraints.push(InterfaceConstraint {
+            name: "Show".to_owned(),
+            trait_identity: Some("fixture/unrelated::trait(Show)".to_owned()),
+            arguments: vec![named("T")],
+        });
+        assert_eq!(
+            export_scheme_trait_bindings(&module(Vec::new()), &describe),
+            None
+        );
+        describe.scheme.constraints[0].trait_identity = Some(
+            crate::prelude::trait_by_name("Show")
+                .unwrap()
+                .canonical
+                .to_owned(),
+        );
+        assert_eq!(
+            super::collect_constraint_bindings(
+                describe.scheme.constraints.iter(),
+                &super::provider_trait_candidates(&module(Vec::new())),
+            ),
+            Some(Vec::new())
+        );
+    }
 
     #[test]
     fn collects_provider_traits_from_trait_method_constraints() {
