@@ -1,0 +1,2 @@
+let startupOverflow: Int = 9007199254740991 + 1
+pub effect fn main = println "must not run"

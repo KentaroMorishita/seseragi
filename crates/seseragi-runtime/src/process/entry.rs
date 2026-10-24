@@ -62,7 +62,7 @@ pub(super) fn entry_source(
         );
         imports.push("import { readFileSync } from \"node:fs\";".to_owned());
         imports.push("import { fileURLToPath } from \"node:url\";".to_owned());
-        startup.push("const readDiagnosticSource = (url) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
+        startup.push("const readDiagnosticSource = (url: string) => { try { return readFileSync(url.startsWith(\"file:\") ? fileURLToPath(url) : url, \"utf8\"); } catch { return undefined; } };".to_owned());
     }
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
@@ -626,7 +626,7 @@ pub(super) fn entry_source(
     } else {
         "\"seseragi: runtime defect during module initialization: \" + String(runtimeDefect) + \"\\n\""
     };
-    startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
+    startup.push(format!("const reportApplicationImportDefect = async (runtimeDefect: unknown) => {{ await new Promise((resolve) => process.stderr.write({initialization_defect}, resolve)); process.exit(70); }};"));
     let application_imports = application_imports
         .iter()
         .map(|line| {
